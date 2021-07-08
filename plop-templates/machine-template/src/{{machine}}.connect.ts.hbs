@@ -1,0 +1,22 @@
+import {
+  defaultPropNormalizer,
+  PropNormalizer,
+  StateMachine as S,
+} from "@chakra-ui/machine"
+import { DOMHTMLProps } from "../type-utils"
+import { getElementIds, getElements } from "./{{machine}}.dom"
+import { {{capitalize machine}}MachineContext, {{capitalize machine}}MachineState } from "./{{machine}}.machine"
+
+export function connect{{capitalize machine}}Machine(
+  state: S.State<{{capitalize machine}}MachineContext, {{capitalize machine}}MachineState>,
+  send: (event: S.Event<S.AnyEventObject>) => void,
+  normalize: PropNormalizer = defaultPropNormalizer,
+) {
+  const { context: ctx } = state
+  const ids = getElementIds(ctx.uid)
+
+  return {
+    elProps: normalize<DOMHTMLProps>({
+    }),
+  }
+}

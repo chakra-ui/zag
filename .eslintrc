@@ -1,0 +1,78 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 10,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "tsconfig.json"
+  },
+  "extends": [
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "prettier"
+  ],
+  "plugins": ["jest", "@typescript-eslint/eslint-plugin", "testing-library"],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "no-param-reassign": "off",
+    "no-console": "off",
+    "jsx-a11y/no-autofocus": "off",
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off",
+    "no-shadow": "off",
+    "no-plusplus": "off",
+    "spaced-comment": "off",
+    "guard-for-in": "off",
+    "operator-assignment": "off",
+    "prefer-destructuring": "off",
+    "consistent-return": "off",
+    "no-restricted-syntax": "off",
+    "no-continue": "off",
+    "eqeqeq": "off",
+    "@typescript-eslint/dot-notation": "off",
+    "no-bitwise": "off",
+    "no-redeclare": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "import/no-extraneous-dependencies": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
+    "no-alert": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "import/no-named-as-default": "off",
+    "prefer-object-spread": "off",
+    "arrow-body-style": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "default-case": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.jsx"],
+      "parserOptions": {
+        "project": "tsconfig.eslint.json"
+      }
+    },
+    {
+      "files": ["*.test.*", "*.test.*"],
+      "extends": ["plugin:jest/recommended", "plugin:jest/style"],
+      "rules": {
+        "jsx-a11y/label-has-associated-control": "off",
+        "global-require": "off",
+        "no-new": "off"
+      }
+    }
+  ]
+}

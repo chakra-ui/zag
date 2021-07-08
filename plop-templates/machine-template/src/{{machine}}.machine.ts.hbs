@@ -1,0 +1,40 @@
+import { createMachine, preserve } from "@chakra-ui/machine"
+import { WithDOM } from "../type-utils"
+
+export type {{capitalize machine}}MachineContext = WithDOM<{}>
+
+export type {{capitalize machine}}MachineState = {
+  value: "open" | "closed"
+}
+
+export const {{machine}}Machine = createMachine<
+  {{capitalize machine}}MachineContext,
+  {{capitalize machine}}MachineState
+>(
+  {
+    id: "{{machine}}-machine",
+    initial: "closed",
+    context: {
+    },
+    on: {
+      MOUNT: {
+        actions: ["setId", "setOwnerDocument"],
+      },
+    },
+    states: {
+    },
+  },
+  {
+    guards: {
+   
+    },
+    actions: {
+      setId(ctx, evt) {
+        ctx.uid = evt.id
+      },
+      setOwnerDocument(ctx, evt) {
+        ctx.doc = preserve(evt.doc)
+      },
+    },
+  },
+)
