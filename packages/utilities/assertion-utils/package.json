@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-utilities-assertion-utils.cjs.js",
+  "module": "dist/ui-machines-utilities-assertion-utils.esm.js"
+}
