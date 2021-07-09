@@ -54,4 +54,12 @@ export class DOMCollection<
 
     return matched
   }
+
+  // get active descendant
+  getActiveDescendantId(node?: HTMLElement) {
+    const el = node ?? this.root
+    return el instanceof HTMLElement
+      ? el.getAttribute("aria-activedescendant")
+      : undefined
+  }
 }

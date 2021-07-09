@@ -1,0 +1,34 @@
+{
+  "name": "@ui-machines/machines",
+  "version": "1.0.0",
+  "description": "Framework-agnostic State Machines for common UI Patterns",
+  "main": "dist/ui-machines-core.cjs.js",
+  "module": "dist/ui-machines-core.esm.js",
+  "repository": "https://github.com/chakra-ui/core/tree/main/packages/ui-machines",
+  "author": "Tim Kolberger <tim@kolberger.eu>",
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./dist/ui-machines-core.cjs.js",
+      "default": "./dist/ui-machines-core.esm.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/core/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@ui-machines/core": "0.1.0",
+    "@types/react": "^17.0.6",
+    "valtio": "^1.0.5"
+  }
+}

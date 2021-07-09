@@ -39,6 +39,8 @@ export function once<T extends AnyFunction>(fn: T) {
   return exec as T
 }
 
+export const noop = () => {}
+
 export function warn(message: string): void
 export function warn(condition: boolean, message: string): void
 export function warn(...args: any[]): void {
