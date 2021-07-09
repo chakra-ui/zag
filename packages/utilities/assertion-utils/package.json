@@ -1,4 +1,4 @@
 {
-  "main": "dist/ui-machines-utilities-assertion-utils.cjs.js",
-  "module": "dist/ui-machines-utilities-assertion-utils.esm.js"
+  "main": "dist/ui-machines-utils-assertion-utils.cjs.js",
+  "module": "dist/ui-machines-utils-assertion-utils.esm.js"
 }

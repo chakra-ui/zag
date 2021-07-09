@@ -82,8 +82,9 @@
     ]
   },
   "workspaces": [
-    "core/*",
-    "machines/*",
+    "packages/utilities",
+    "packages/machines/*",
+    "packages/core/*",
     "examples/*"
   ]
 }

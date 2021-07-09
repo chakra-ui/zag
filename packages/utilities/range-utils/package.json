@@ -1,4 +1,4 @@
 {
-  "main": "dist/ui-machines-utilities-range-utils.cjs.js",
-  "module": "dist/ui-machines-utilities-range-utils.esm.js"
+  "main": "dist/ui-machines-utils-range-utils.cjs.js",
+  "module": "dist/ui-machines-utils-range-utils.esm.js"
 }

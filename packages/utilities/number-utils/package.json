@@ -1,4 +1,4 @@
 {
-  "main": "dist/ui-machines-utilities-number-utils.cjs.js",
-  "module": "dist/ui-machines-utilities-number-utils.esm.js"
+  "main": "dist/ui-machines-utils-number-utils.cjs.js",
+  "module": "dist/ui-machines-utils-number-utils.esm.js"
 }

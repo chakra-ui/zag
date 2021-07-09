@@ -25,3 +25,5 @@ export function runIfFn<T>(
 ): T extends AnyFunction ? ReturnType<T> : T {
   return isFunction(value) ? value(...args) : value
 }
+
+export const cast = <T>(value: unknown) => value as T

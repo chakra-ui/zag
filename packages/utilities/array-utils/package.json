@@ -1,4 +1,4 @@
 {
-  "main": "dist/ui-machines-utilities-array-utils.cjs.js",
-  "module": "dist/ui-machines-utilities-array-utils.esm.js"
+  "main": "dist/ui-machines-utils-array-utils.cjs.js",
+  "module": "dist/ui-machines-utils-array-utils.esm.js"
 }

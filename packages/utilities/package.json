@@ -1,6 +1,6 @@
 {
-  "name": "@ui-machines/utilities",
-  "version": "1.0.0",
+  "name": "@ui-machines/utils",
+  "version": "0.1.0",
   "description": "javscript utilities for ui-machines",
   "keywords": [
     "ui-machines",
@@ -11,14 +11,14 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/ui-machines/core#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-utilities.cjs.js",
-  "module": "dist/ui-machines-utilities.esm.js",
+  "main": "dist/ui-machines-utils.cjs.js",
+  "module": "dist/ui-machines-utils.esm.js",
   "repository": "https://github.com/ui-machines/core/tree/main/packages/utilities",
   "sideEffects": false,
   "exports": {
     ".": {
-      "require": "./dist/ui-machines-utilities.cjs.js",
-      "default": "./dist/ui-machines-utilities.esm.js"
+      "require": "./dist/ui-machines-utils.cjs.js",
+      "default": "./dist/ui-machines-utils.esm.js"
     }
   },
   "preconstruct": {
