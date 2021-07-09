@@ -78,7 +78,9 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/*"
+      "packages/utilities",
+      "packages/machines/*",
+      "packages/core/*"
     ]
   },
   "workspaces": [

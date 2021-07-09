@@ -21,11 +21,6 @@
       "default": "./dist/ui-machines-core.esm.js"
     }
   },
-  "preconstruct": {
-    "entrypoints": [
-      "index.ts"
-    ]
-  },
   "files": [
     "dist"
   ],
