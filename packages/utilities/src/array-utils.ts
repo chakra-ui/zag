@@ -1,9 +1,16 @@
+export type MaybeArray<T> = T | T[]
+
+export function toArray<T>(value: T | T[] | undefined): T[] {
+  if (!value) return []
+  return Array.isArray(value) ? value : [value]
+}
+
 export class ArrayUtil<T> {
   value: T[]
 
   // static method to convert value to array instance
-  static from<T>(value: T | T[] | undefined) {
-    const result = Array.isArray(value) ? value : [value]
+  static from<T>(value: T | T[]) {
+    const result = toArray(value)
     return new ArrayUtil(result)
   }
 

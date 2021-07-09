@@ -1,7 +1,7 @@
 import {
-  addEventListener,
   cast,
   contains,
+  DOMEvent,
   MaybeArray,
   toArray,
 } from "@ui-machines/utils"
@@ -18,7 +18,7 @@ export function trackPointerDown(ctx: {
       ctx.pointerdownNode = ref(event.target)
     }
   }
-  return addEventListener(doc, "pointerdown", listener)
+  return DOMEvent.on(doc, "pointerdown", listener)
 }
 
 type DetermineBlurOptions = {

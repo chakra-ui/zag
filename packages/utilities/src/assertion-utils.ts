@@ -6,6 +6,14 @@ export function isNumeric(value: unknown): value is number {
   return isNumber(value) || !Number.isNaN(value) || Number.isFinite(value)
 }
 
+export function isBoolean(value: unknown): value is boolean {
+  return typeof value === "boolean"
+}
+
+export function isArray(value: unknown): value is any[] {
+  return Array.isArray(value)
+}
+
 export function isDecimal(value: string | number) {
   return !Number.isInteger(Number.parseFloat(value.toString()))
 }

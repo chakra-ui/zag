@@ -1,4 +1,5 @@
 import { isFunction } from "./assertion-utils"
+import { __DEV__ } from "./environment-utils"
 
 // schedule task to next tick using double `requestAnimationFrame`
 export function nextTick(fn: VoidFunction) {
@@ -27,3 +28,26 @@ export function runIfFn<T>(
 }
 
 export const cast = <T>(value: unknown) => value as T
+
+export function once<T extends AnyFunction>(fn: T) {
+  let called = false
+  function exec(...args: Parameters<T>) {
+    if (called) return
+    called = true
+    return fn(...args)
+  }
+  return exec as T
+}
+
+export function warn(message: string): void
+export function warn(condition: boolean, message: string): void
+export function warn(...args: any[]): void {
+  const message = args.length === 1 ? args[0] : args[1]
+  const condition = args.length === 2 ? args[0] : true
+
+  once(() => {
+    if (condition && __DEV__) {
+      console.warn(message)
+    }
+  })
+}

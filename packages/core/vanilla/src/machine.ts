@@ -5,9 +5,7 @@ import {
   isObject,
   isString,
 } from "@ui-machines/utils/assertion-utils"
-import { runIfFn, warn } from "@ui-machines/utils/function-utils"
-import { globals } from "@ui-machines/utils/global-utils"
-import { cast } from "@ui-machines/utils/type-utils"
+import { cast, runIfFn, warn } from "@ui-machines/utils/function-utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"
@@ -68,19 +66,10 @@ export class Machine<
   ) {
     this.id = config.id ?? `machine-${uniqueId()}`
     this.state = createProxyState(config)
-
-    if (options?.guards) {
-      this.guardMap = options.guards
-    }
-    if (options?.actions) {
-      this.actionMap = options.actions
-    }
-    if (options?.delays) {
-      this.delayMap = options.delays
-    }
-    if (options?.activities) {
-      this.activityMap = options.activities
-    }
+    this.guardMap = options?.guards
+    this.actionMap = options?.actions
+    this.delayMap = options?.delays
+    this.activityMap = options?.activities
   }
 
   // immutable state value
@@ -367,18 +356,18 @@ export class Machine<
     const determineDelay = determineDelayFn(transition.delay, this.delayMap)
     const delay = determineDelay(this.contextSnapshot, event) ?? 0
 
-    let id: ReturnType<typeof globals.setTimeout>
+    let id: ReturnType<typeof globalThis.setTimeout>
 
     return {
       entry: () => {
-        id = globals.setTimeout(() => {
+        id = globalThis.setTimeout(() => {
           const current = this.state.value!
           const next = this.getNextStateInfo(transition, event)
           this.performStateChangeEffects(current, next, event)
         }, delay)
       },
       exit: () => {
-        globals.clearTimeout(id)
+        globalThis.clearTimeout(id)
       },
     }
   }
@@ -476,10 +465,7 @@ export class Machine<
       const fn = isString(activity) ? this.activityMap?.[activity] : activity
 
       if (!fn) {
-        warn(
-          isString(activity),
-          `[machine] No implementation found for activity type ${activity}`,
-        )
+        warn(`[machine] No implementation found for activity type ${activity}`)
         continue
       }
 
@@ -530,7 +516,7 @@ export class Machine<
           this.executeActions(picked.actions, event)
         }, delay)
         return () => {
-          globals.clearInterval(id)
+          globalThis.clearInterval(id)
         }
       }
       callbackfn(activity)
@@ -546,11 +532,11 @@ export class Machine<
 
         // create the activity to run for each `every` reaction
         const activity = () => {
-          const id = globals.setInterval(() => {
+          const id = globalThis.setInterval(() => {
             this.executeActions(actions, event)
           }, delay)
           return () => {
-            globals.clearInterval(id)
+            globalThis.clearInterval(id)
           }
         }
         callbackfn(activity)
@@ -631,21 +617,6 @@ export class Machine<
     // execute transition actions
     const t = this.determineTransition(transition, event)
     this.executeActions(t?.actions, event)
-  }
-
-  /**
-   * @see https://statecharts.dev/glossary/self-transition.html
-   */
-  private performSelfTransition = (
-    transition: S.Transitions<TContext, TState["value"], TEvent> | undefined,
-    event: TEvent,
-  ) => {
-    const target = this.state.value!
-
-    this.performExitEffects(target, event)
-    this.performTransitionEffects(transition, event)
-    this.setState(target)
-    this.performEntryEffects(target, event)
   }
 
   /**
