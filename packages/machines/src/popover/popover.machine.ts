@@ -1,5 +1,10 @@
-import { createMachine, guards, ref, trackPointerDown } from "@ui-machines/core"
-import { getFirstFocusable, isTabbable, nextTick } from "@ui-machines/utils"
+import {
+  createMachine,
+  guards,
+  preserve,
+  trackPointerDown,
+} from "@chakra-ui/machine"
+import { getFirstFocusable, isTabbable, nextTick } from "@chakra-ui/utilities"
 import { WithDOM } from "../type-utils"
 import { getElements } from "./popover.dom"
 
@@ -88,7 +93,7 @@ export const popoverMachine = createMachine<
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = ref(evt.doc)
+        ctx.doc = preserve(evt.doc)
       },
       clearPointerDown(ctx) {
         ctx.pointerdownNode = null

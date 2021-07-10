@@ -1,4 +1,0 @@
-{
-  "main": "dist/ui-machines-utils-dom-query-utils.cjs.js",
-  "module": "dist/ui-machines-utils-dom-query-utils.esm.js"
-}

@@ -2,7 +2,7 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
+} from "@chakra-ui/machine"
 import { snapshot } from "valtio"
 import { DOMButtonProps, DOMHTMLProps } from "../type-utils"
 import {

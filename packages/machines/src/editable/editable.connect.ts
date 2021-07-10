@@ -3,8 +3,8 @@ import {
   determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
-import { ariaAttr } from "@ui-machines/utils"
+} from "@chakra-ui/machine"
+import { ariaAttr } from "@chakra-ui/utilities"
 import {
   DOMButtonProps,
   DOMHTMLProps,

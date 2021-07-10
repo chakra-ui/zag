@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-utils-dom-helper.cjs.js",
+  "module": "dist/ui-machines-utils-dom-helper.esm.js"
+}

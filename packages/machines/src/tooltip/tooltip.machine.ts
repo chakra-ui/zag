@@ -1,5 +1,5 @@
-import { createMachine, preserve } from "@ui-machines/core"
-import { addEventListener } from "@ui-machines/utils/event-utils"
+import { createMachine, preserve } from "@chakra-ui/machine"
+import { addEventListener } from "@chakra-ui/utilities/event-utils"
 import { proxy } from "valtio"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })

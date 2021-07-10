@@ -1,0 +1,46 @@
+{
+  "name": "@ui-machines/svelte",
+  "version": "0.1.0",
+  "description": "The svelte wrapper for ui-machines",
+  "keywords": [
+    "ui-machines",
+    "svelte",
+    "use-machine",
+    "hook"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-svelte.cjs.js",
+  "module": "dist/ui-machines-svelte.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/svelte",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./dist/ui-machines-machine.cjs.js",
+      "default": "./dist/ui-machines-machine.esm.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@ui-machines/core": "0.1.0",
+    "@ui-machines/utils": "0.1.0"
+  },
+  "devDependencies": {
+    "svelte": "^3.38.2"
+  },
+  "peerDependencies": {
+    "svelte": "^3.38.2"
+  }
+}

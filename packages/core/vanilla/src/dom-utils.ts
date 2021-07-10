@@ -1,40 +1,17 @@
-import {
-  cast,
-  contains,
-  DOMEvent,
-  MaybeArray,
-  toArray,
-} from "@ui-machines/utils"
+import { trackPointerDown as onPointerDown } from "@ui-machines/utils"
 import { ref } from "valtio"
 import { Dict } from "./types"
 
-export function trackPointerDown(ctx: {
+type TrackPointerDownOptions = {
   doc?: Document
   pointerdownNode?: HTMLElement | null
-}) {
+}
+
+export function trackPointerDown(ctx: TrackPointerDownOptions) {
   const doc = ctx.doc ?? document
-  const listener = (event: any) => {
-    if (event.target instanceof HTMLElement) {
-      ctx.pointerdownNode = ref(event.target)
-    }
-  }
-  return DOMEvent.on(doc, "pointerdown", listener)
-}
-
-type DetermineBlurOptions = {
-  exclude: MaybeArray<HTMLElement | null>
-  pointerdownNode?: HTMLElement | null
-}
-
-export function determineBlur(
-  event: Pick<FocusEvent, "relatedTarget">,
-  options: DetermineBlurOptions,
-) {
-  const exclude = toArray(options.exclude)
-  const relatedTarget = cast<HTMLElement>(
-    event.relatedTarget ?? options.pointerdownNode,
-  )
-  return exclude.every((el) => !contains(el, relatedTarget))
+  return onPointerDown(doc, (el) => {
+    ctx.pointerdownNode = ref(el)
+  })
 }
 
 export interface PropNormalizer {
@@ -42,23 +19,3 @@ export interface PropNormalizer {
 }
 
 export const defaultPropNormalizer: PropNormalizer = (props: Dict) => props
-
-export function dispatchInputEvent(input: HTMLElement, value: string | number) {
-  if (!(input instanceof HTMLInputElement)) return
-
-  input.type = "text"
-  input.hidden = true
-
-  const set = Object.getOwnPropertyDescriptor(
-    HTMLInputElement.prototype,
-    "value",
-  )?.set
-
-  set?.call(input, value)
-
-  const evt = new Event("input", { bubbles: true })
-  input.dispatchEvent(evt)
-
-  input.type = "hidden"
-  input.hidden = false
-}

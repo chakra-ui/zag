@@ -2,8 +2,8 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
-import { RangeUtil } from "@ui-machines/utils/range-utils"
+} from "@chakra-ui/machine/vanilla"
+import { Range } from "@chakra-ui/utilities/range-utils"
 import { getStepMultipler } from "../event-utils"
 import { DOMButtonProps, DOMInputProps, EventKeyMap } from "../type-utils"
 import { getElementIds } from "./number-input.dom"
@@ -21,7 +21,7 @@ export function connectNumberInputMachine(
   const { context: ctx } = state
 
   const { inputId, incButtonId, decButtonId } = getElementIds(ctx.uid)
-  const range = new RangeUtil(ctx)
+  const range = new Range(ctx)
   const canIncrement = !ctx.disabled && !range.isAtMax
   const canDecrement = !ctx.disabled && !range.isAtMin
 

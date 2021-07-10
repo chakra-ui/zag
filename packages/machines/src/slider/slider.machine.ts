@@ -1,4 +1,4 @@
-import { createMachine, dispatchInputEvent, preserve } from "@ui-machines/core"
+import { createMachine, dispatchInputEvent, preserve } from "@chakra-ui/machine"
 import {
   addPointerEvent,
   EventListenerWithPointInfo as Listener,
@@ -6,7 +6,7 @@ import {
   nextTick,
   pipe,
   Range,
-} from "@ui-machines/utils"
+} from "@chakra-ui/utilities"
 import { WithDOM } from "../type-utils"
 import { getElements, pointToValue } from "./slider.dom"
 

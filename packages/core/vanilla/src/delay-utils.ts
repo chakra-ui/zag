@@ -1,8 +1,4 @@
-import {
-  isFunction,
-  isNumber,
-  isString,
-} from "@ui-machines/utils/assertion-utils"
+import { isFunction, isNumber, isString } from "@ui-machines/utils/assertion"
 
 import { StateMachine as S } from "./types"
 

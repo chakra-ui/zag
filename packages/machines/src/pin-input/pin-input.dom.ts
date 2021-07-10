@@ -1,4 +1,4 @@
-import { DOMCollection } from "@ui-machines/utils"
+import { createCollection } from "@chakra-ui/utilities"
 import { PinInputMachineContext } from "./pin-input.machine"
 
 export function getElementIds(uid: string) {
@@ -12,5 +12,5 @@ export function collection(ctx: PinInputMachineContext) {
   const doc = ctx.doc ?? document
   const ids = getElementIds(ctx.uid)
   const selector = `input[data-ownedby=${ids.root}]`
-  return new DOMCollection<HTMLInputElement>(doc, selector)
+  return createCollection<HTMLInputElement>(doc, selector)
 }

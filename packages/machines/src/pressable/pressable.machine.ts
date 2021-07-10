@@ -1,4 +1,4 @@
-import { createMachine } from "@ui-machines/core"
+import { createMachine } from "@chakra-ui/machine"
 
 export type PressableMachineState = {
   value: "hover" | "pressIn" | "idle" | "longPressIn" | "test"

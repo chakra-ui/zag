@@ -1,4 +1,4 @@
-import { Booleanish, Dict } from "@ui-machines/utils/type-utils"
+import { Booleanish, Dict } from "@chakra-ui/utilities/type-utils"
 import type {
   ButtonHTMLAttributes,
   CSSProperties,

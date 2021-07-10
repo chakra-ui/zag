@@ -1,5 +1,5 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/utils"
+import { createMachine, guards, preserve } from "@chakra-ui/machine"
+import { isArrayEmpty, nextTick } from "@chakra-ui/utilities"
 import { WithDOM } from "../type-utils"
 import { collection } from "./pin-input.dom"
 
@@ -103,12 +103,12 @@ export const pinInputMachine = createMachine<
         return ctx.value.every(Boolean)
       },
       isLastValueBeforeComplete: (ctx) => {
-        const inputs = collection(ctx)
-        return ctx.value.filter(Boolean).length === inputs.length - 1
+        const { count } = collection(ctx)
+        return ctx.value.filter(Boolean).length === count - 1
       },
       isLastInputFocused: (ctx) => {
-        const inputs = collection(ctx)
-        return ctx.focusedIndex === inputs.length - 1
+        const { count } = collection(ctx)
+        return ctx.focusedIndex === count - 1
       },
     },
     actions: {
@@ -117,17 +117,17 @@ export const pinInputMachine = createMachine<
       },
       initializeValue: (ctx) => {
         nextTick(() => {
-          const inputs = collection(ctx)
-          const empty = [...new Array(inputs.length).fill("")]
-          ctx.value = ctx.value.length === 0 ? ref(empty) : ctx.value
+          const dom = collection(ctx)
+          const empty = [...new Array(dom.count).fill("")]
+          ctx.value = isArrayEmpty(ctx.value) ? preserve(empty) : ctx.value
         })
       },
       setOwnerDocument: (ctx, evt) => {
-        ctx.doc = ref(evt.doc)
+        ctx.doc = preserve(evt.doc)
       },
       focusInput: (ctx) => {
-        const inputs = collection(ctx)
-        const input = inputs.itemAt(ctx.focusedIndex)
+        const dom = collection(ctx)
+        const input = dom.item(ctx.focusedIndex)
         nextTick(() => input.focus())
       },
       invokeComplete: (ctx) => {
@@ -177,8 +177,8 @@ export const pinInputMachine = createMachine<
       },
       setNextFocusedIndex: (ctx, evt, { guards }) => {
         if (guards?.isValueComplete(ctx, evt)) return
-        const inputs = collection(ctx)
-        let nextIndex = Math.min(ctx.focusedIndex + 1, inputs.length)
+        const dom = collection(ctx)
+        let nextIndex = Math.min(ctx.focusedIndex + 1, dom.count)
         ctx.focusedIndex = nextIndex
       },
       setPrevFocusIndex: (ctx) => {

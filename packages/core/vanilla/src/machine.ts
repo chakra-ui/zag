@@ -1,11 +1,11 @@
-import { toArray } from "@ui-machines/utils/array-utils"
+import { toArray } from "@ui-machines/utils/array"
 import {
   isArray,
   isBoolean,
   isObject,
   isString,
-} from "@ui-machines/utils/assertion-utils"
-import { cast, runIfFn, warn } from "@ui-machines/utils/function-utils"
+} from "@ui-machines/utils/assertion"
+import { cast, runIfFn, warn } from "@ui-machines/utils/function"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"

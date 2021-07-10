@@ -1,4 +1,4 @@
-import { createCollection } from "@ui-machines/utils"
+import { createCollection } from "@chakra-ui/utilities"
 import { TagsInputMachineContext } from "./tags-input.machine"
 
 export function getElementIds(uid: string) {

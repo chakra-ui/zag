@@ -1,4 +1,4 @@
-import { cast } from "@ui-machines/utils"
+import { cast } from "@ui-machines/utils/function"
 import { proxyWithComputed as proxy } from "valtio/utils"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 

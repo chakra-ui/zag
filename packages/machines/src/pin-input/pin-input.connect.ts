@@ -2,7 +2,7 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
+} from "@chakra-ui/machine/vanilla"
 import { DOMInputProps, EventKeyMap, WithDataAttr } from "../type-utils"
 import { getElementIds } from "./pin-input.dom"
 import {

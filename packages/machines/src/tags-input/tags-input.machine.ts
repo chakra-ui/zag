@@ -1,5 +1,5 @@
-import { createMachine, guards, preserve } from "@ui-machines/core"
-import { isActiveElement, nextTick } from "@ui-machines/utils"
+import { createMachine, guards, preserve } from "@chakra-ui/machine"
+import { isActiveElement, nextTick } from "@chakra-ui/utilities"
 import { WithDOM } from "../type-utils"
 import { collection, getElements } from "./tags-input.dom"
 

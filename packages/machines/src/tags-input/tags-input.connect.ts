@@ -3,8 +3,8 @@ import {
   determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core/vanilla"
-import { dataAttr } from "@ui-machines/utils"
+} from "@chakra-ui/machine/vanilla"
+import { dataAttr } from "@chakra-ui/utilities"
 import { determineEventKey } from "../event-utils"
 import {
   DOMButtonProps,

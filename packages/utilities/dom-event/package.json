@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-utils-dom-event.cjs.js",
+  "module": "dist/ui-machines-utils-dom-event.esm.js"
+}

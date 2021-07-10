@@ -1,5 +1,5 @@
 export { subscribeKey, watch, addComputed } from "valtio/utils"
-export { ref, subscribe, snapshot } from "valtio/vanilla"
+export { ref as preserve, subscribe, snapshot } from "valtio/vanilla"
 export * from "./create-machine"
 export * from "./dom-utils"
 export { guards } from "./guard-utils"

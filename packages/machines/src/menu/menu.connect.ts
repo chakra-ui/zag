@@ -3,7 +3,7 @@ import {
   determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
+} from "@chakra-ui/machine"
 import {
   DOMButtonProps,
   DOMHTMLProps,

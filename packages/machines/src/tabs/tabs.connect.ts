@@ -2,8 +2,8 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
-import { cast, isSafari } from "@ui-machines/utils"
+} from "@chakra-ui/machine"
+import { cast, isSafari } from "@chakra-ui/utilities"
 import { determineEventKey } from "../event-utils"
 import {
   DOMButtonProps,

@@ -3,7 +3,7 @@ import {
   determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@ui-machines/core"
+} from "@chakra-ui/machine"
 import { DOMHTMLProps } from "../type-utils"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"

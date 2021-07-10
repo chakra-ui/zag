@@ -24,30 +24,30 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
-      "array-utils.ts",
-      "assertion-utils.ts",
-      "dom-collection-utils.ts",
-      "dom-event-utils.ts",
-      "dom-query-utils.ts",
-      "function-utils.ts",
-      "number-utils.ts",
-      "point-utils.ts",
-      "range-utils.ts",
-      "rect-utils.ts"
+      "array.ts",
+      "assertion.ts",
+      "dom-collection.ts",
+      "dom-event.ts",
+      "dom-helper.ts",
+      "function.ts",
+      "number.ts",
+      "point.ts",
+      "range.ts",
+      "rect.ts"
     ]
   },
   "files": [
     "dist",
-    "array-utils",
-    "assertion-utils",
-    "dom-collection-utils",
-    "dom-event-utils",
-    "dom-query-utils",
-    "function-utils",
-    "number-utils",
-    "point-utils",
-    "range-utils",
-    "rect-utils"
+    "array",
+    "assertion",
+    "dom-collection",
+    "dom-event",
+    "dom-helper",
+    "function",
+    "number",
+    "point",
+    "range",
+    "rect"
   ],
   "publishConfig": {
     "access": "public"

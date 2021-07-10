@@ -17,8 +17,8 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "require": "./dist/ui-machines-machine.cjs.js",
-      "default": "./dist/ui-machines-machine.esm.js"
+      "require": "./dist/ui-machines-react.cjs.js",
+      "default": "./dist/ui-machines-react.esm.js"
     }
   },
   "files": [

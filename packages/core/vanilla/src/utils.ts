@@ -1,5 +1,5 @@
-import { isString } from "@ui-machines/utils/assertion-utils"
-import { cast } from "@ui-machines/utils/function-utils"
+import { isString } from "@ui-machines/utils/assertion"
+import { cast } from "@ui-machines/utils/function"
 
 import { StateMachine as S } from "./types"
 

@@ -1,6 +1,5 @@
-import { toArray } from "@ui-machines/utils/array-utils"
-import { isArray, isObject, isString } from "@ui-machines/utils/assertion-utils"
-
+import { toArray } from "@ui-machines/utils/array"
+import { isArray, isObject, isString } from "@ui-machines/utils/assertion"
 import { determineGuardFn } from "./guard-utils"
 import { StateMachine as S } from "./types"
 

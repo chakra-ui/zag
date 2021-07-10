@@ -1,5 +1,10 @@
-import { createMachine, guards, ref, trackPointerDown } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/utils/function-utils"
+import {
+  createMachine,
+  guards,
+  preserve,
+  trackPointerDown,
+} from "@chakra-ui/machine"
+import { nextTick } from "@chakra-ui/utilities"
 import { WithDOM } from "../type-utils"
 import { getElements } from "./editable.dom"
 
@@ -92,13 +97,15 @@ export const editableMachine = createMachine<
       isAtMaxLength: (ctx) =>
         ctx.maxLength != null && ctx.value.length === ctx.maxLength,
     },
-    activities: { trackPointerDown },
+    activities: {
+      trackPointerDown: trackPointerDown,
+    },
     actions: {
       setId: (ctx, evt) => {
         ctx.uid = evt.id
       },
       setOwnerDocument: (ctx, evt) => {
-        ctx.doc = ref(evt.doc)
+        ctx.doc = preserve(evt.doc)
       },
       focusEditButton(ctx) {
         nextTick(() => {

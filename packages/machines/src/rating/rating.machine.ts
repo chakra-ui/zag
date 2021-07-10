@@ -1,5 +1,5 @@
-import { createMachine, preserve } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/utils"
+import { createMachine, preserve } from "@chakra-ui/machine"
+import { nextTick } from "@chakra-ui/utilities"
 import { WithDOM } from "../type-utils"
 import { getElements } from "./rating.dom"
 

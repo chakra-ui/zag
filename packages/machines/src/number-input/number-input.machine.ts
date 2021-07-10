@@ -1,5 +1,5 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { DOMEvent, nextTick, noop, RangeUtil } from "@ui-machines/utils"
+import { createMachine, guards, preserve } from "@chakra-ui/machine"
+import { addEventListener, nextTick, noop, Range } from "@chakra-ui/utilities"
 import { getElements } from "./number-input.dom"
 import { sanitize } from "./number-input.utils"
 
@@ -125,9 +125,9 @@ export const numberInputMachine = createMachine<
     },
     guards: {
       shouldClampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
-      isAtMin: (ctx) => new RangeUtil(ctx).isAtMin,
-      isAtMax: (ctx) => new RangeUtil(ctx).isAtMax,
-      isInRange: (ctx) => new RangeUtil(ctx).isInRange,
+      isAtMin: (ctx) => new Range(ctx).isAtMin,
+      isAtMax: (ctx) => new Range(ctx).isAtMax,
+      isInRange: (ctx) => new Range(ctx).isInRange,
     },
     activities: {
       attachWheelListener(ctx) {
@@ -144,12 +144,12 @@ export const numberInputMachine = createMachine<
           const dir = Math.sign(event.deltaY) * -1
 
           if (dir === 1) {
-            ctx.value = new RangeUtil(ctx).increment().clamp().toString()
+            ctx.value = new Range(ctx).increment().clamp().toString()
           } else if (dir === -1) {
-            ctx.value = new RangeUtil(ctx).decrement().clamp().toString()
+            ctx.value = new Range(ctx).decrement().clamp().toString()
           }
         }
-        return DOMEvent.on(input, "wheel", listener, { passive: false })
+        return addEventListener(input, "wheel", listener, { passive: false })
       },
     },
     actions: {
@@ -157,20 +157,20 @@ export const numberInputMachine = createMachine<
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = ref(evt.doc)
+        ctx.doc = preserve(evt.doc)
       },
       focusInput(ctx) {
         const { input } = getElements(ctx)
         nextTick(() => input?.focus())
       },
       increment(ctx) {
-        ctx.value = new RangeUtil(ctx).increment().clamp().toString()
+        ctx.value = new Range(ctx).increment().clamp().toString()
       },
       decrement(ctx) {
-        ctx.value = new RangeUtil(ctx).decrement().clamp().toString()
+        ctx.value = new Range(ctx).decrement().clamp().toString()
       },
       clampValue(ctx) {
-        ctx.value = new RangeUtil(ctx).clamp().toString()
+        ctx.value = new Range(ctx).clamp().toString()
       },
       setValue(ctx, event) {
         ctx.value = sanitize(event.value)
@@ -182,10 +182,10 @@ export const numberInputMachine = createMachine<
         ctx.value = ctx.min.toString()
       },
       incrementBy(ctx, evt) {
-        ctx.value = new RangeUtil(ctx).increment(evt.step).clamp().toString()
+        ctx.value = new Range(ctx).increment(evt.step).clamp().toString()
       },
       decrementBy(ctx, evt) {
-        ctx.value = new RangeUtil(ctx).decrement(evt.step).clamp().toString()
+        ctx.value = new Range(ctx).decrement(evt.step).clamp().toString()
       },
     },
   },

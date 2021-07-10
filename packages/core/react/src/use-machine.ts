@@ -1,4 +1,4 @@
-import { runIfFn, cast } from "@ui-machines/utils/function-utils"
+import { runIfFn, cast } from "@ui-machines/utils/function"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
