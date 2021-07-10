@@ -20,21 +20,18 @@ export function getElements(ctx: TagsInputMachineContext) {
   }
 }
 
-export function collection(ctx: TagsInputMachineContext) {
+export function dom(ctx: TagsInputMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { root, input } = getElements(ctx)
   const selector = `[data-ownedby=${ids.root}]`
-  const { first, last, prevById, nextById, indexOfId } = new DOMCollection(
-    root,
-    selector,
-  )
+  const collection = new DOMCollection(root, selector)
 
   return {
     isInputFocused: domHelper(input).isActiveElement,
-    first,
-    last,
-    indexOfId,
-    prev: prevById,
-    next: nextById,
+    first: collection.first,
+    last: collection.last,
+    indexOfId: collection.indexOfId,
+    prev: collection.prevById,
+    next: collection.nextById,
   }
 }

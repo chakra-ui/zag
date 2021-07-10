@@ -1,4 +1,8 @@
-import { collection } from "../src/array"
+import { ArrayCollection } from "../src/array"
+
+function collection<T>(values: T[]) {
+  return new ArrayCollection(values)
+}
 
 const array = [1, 2, 3, 4, 5, 6, 7, 8]
 

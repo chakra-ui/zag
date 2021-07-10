@@ -22,14 +22,14 @@ export class Rect {
   /**
    * Creates a rectangle from an HTML element
    */
-  static fromElement(element: HTMLElement) {
-    return new Rect(element.getBoundingClientRect())
+  static fromElement = (el: HTMLElement) => {
+    return new Rect(el.getBoundingClientRect())
   }
 
   /**
    * Creates a rectangle from two points
    */
-  static fromTwoPoints(a: Point, b: Point) {
+  static fromTwoPoints = (a: Point, b: Point) => {
     return new Rect({
       x: Math.min(a.x, b.x),
       y: Math.min(a.y, b.y),
@@ -120,7 +120,7 @@ export class Rect {
   /**
    * Returns whether a rectangle contains a specified point.
    */
-  containsPoint(point: Point) {
+  containsPoint = (point: Point) => {
     if (point.x < this.minX) return false
     if (point.x > this.maxX) return false
 
@@ -136,7 +136,7 @@ export class Rect {
   /**
    * Returns the distance of a rect from a point
    */
-  distanceFromPoint(point: Point) {
+  distanceFromPoint = (point: Point) => {
     let x = 0
     let y = 0
 
@@ -159,7 +159,7 @@ export class Rect {
   /**
    * Returns a new rectangle with its origin shifted by the specified delta
    */
-  shiftBy(delta: PointDelta) {
+  shiftBy = (delta: PointDelta) => {
     const xOffset = typeof delta.dx === "number" ? delta.dx : 0
     const yOffset = typeof delta.dy === "number" ? delta.dy : 0
     return new Rect({
@@ -173,7 +173,7 @@ export class Rect {
   /**
    * Returns a string representation of the rect
    */
-  toString() {
+  toString = () => {
     return `Rect: [x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height}]`
   }
 }

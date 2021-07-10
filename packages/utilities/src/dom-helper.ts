@@ -55,23 +55,23 @@ const FOCUSABLE_ELEMENT_SELECTOR = focusableElements.join()
 export class DOMHelper {
   constructor(public el: HTMLElement | null | undefined) {}
 
-  attr(value: string) {
+  attr = (value: string) => {
     return this.el?.getAttribute(value)
   }
 
-  has(value: string) {
+  has = (value: string) => {
     return this.el?.hasAttribute(value)
   }
 
-  $<T extends HTMLElement>(selector: string) {
+  $ = <T extends HTMLElement>(selector: string) => {
     return this.el?.querySelector<T>(selector)
   }
 
-  $$<T extends HTMLElement>(selector: string) {
+  $$ = <T extends HTMLElement>(selector: string) => {
     return Array.from(this.el?.querySelectorAll<T>(selector) ?? [])
   }
 
-  getFocusables(includeContainer = false) {
+  getFocusables = (includeContainer = false) => {
     if (!this.el) return []
 
     let els = this.$$(FOCUSABLE_ELEMENT_SELECTOR)
@@ -88,7 +88,7 @@ export class DOMHelper {
     return els
   }
 
-  getTabbables(includeContainer = false) {
+  getTabbables = (includeContainer = false) => {
     return this.getFocusables(includeContainer).filter((el) => {
       return domHelper(el).isTabbable
     })
@@ -141,7 +141,7 @@ export class DOMHelper {
     return this.el?.ownerDocument.defaultView ?? window
   }
 
-  contains(node: DOMNode) {
+  contains = (node: DOMNode) => {
     return contains(this.el, node)
   }
 

@@ -47,7 +47,10 @@ export class Point {
   /**
    * Returns a point instance from a touch event
    */
-  static fromTouchEvent(event: TouchEvent, pointType: PointType = "page") {
+  static fromTouchEvent = (
+    event: TouchEvent,
+    pointType: PointType = "page",
+  ) => {
     const primaryTouch = event.touches[0] || event.changedTouches[0]
     const point = primaryTouch || defaultPagePoint
 
@@ -60,10 +63,10 @@ export class Point {
   /**
    * Returns a point instance from a mouse event
    */
-  static fromMouseEvent(
+  static fromMouseEvent = (
     event: MouseEvent | PointerEvent,
     pointType: PointType = "page",
-  ) {
+  ) => {
     return new Point({
       x: event[`${pointType}X`],
       y: event[`${pointType}Y`],
@@ -73,10 +76,10 @@ export class Point {
   /**
    * Returns a point instance from a pointer event
    */
-  static fromPointerEvent(
+  static fromPointerEvent = (
     event: AnyPointerEvent,
     pointType: PointType = "page",
-  ) {
+  ) => {
     return isTouchEvent(event)
       ? Point.fromTouchEvent(event, pointType)
       : Point.fromMouseEvent(event, pointType)
@@ -85,7 +88,7 @@ export class Point {
   /**
    * Returns a the distance between two points
    */
-  static distance(a: Point, b: Point) {
+  static distance = (a: Point, b: Point) => {
     const deltaX = Math.abs(a.x - b.x)
     const deltaY = Math.abs(a.y - b.y)
     return Math.sqrt(deltaX * deltaX + deltaY * deltaY)
@@ -100,7 +103,7 @@ export class Point {
    * Returns a function used to check the closest point
    * from a list of points
    */
-  static closest(...points: Point[]) {
+  static closest = (...points: Point[]) => {
     return (pointToCheck: Point) => {
       const distances = points.map((point) =>
         Point.distance(point, pointToCheck),
@@ -113,21 +116,21 @@ export class Point {
   /**
    * Returns the angle between two points
    */
-  static angle(a: Point, b: Point) {
+  static angle = (a: Point, b: Point) => {
     return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI - 90
   }
 
   /**
    * Returns a the distance from another point
    */
-  distance(point?: Point) {
+  distance = (point?: Point) => {
     return Point.distance(this, point ?? Point.zero)
   }
 
   /**
    * Returns a point coordinates relative to an HTMLELement
    */
-  relativeToNode(el: HTMLElement) {
+  relativeToNode = (el: HTMLElement) => {
     const rect = el.getBoundingClientRect()
     const { width, height } = rect
 
@@ -143,7 +146,7 @@ export class Point {
     })
   }
 
-  private percent(options: { xLength: number; yLength: number }) {
+  private percent = (options: { xLength: number; yLength: number }) => {
     const { xLength, yLength } = options
     this.xPercent = this.x / xLength
     this.yPercent = this.y / yLength
@@ -153,7 +156,7 @@ export class Point {
   /**
    * Returns a string representation of the point
    */
-  toString() {
+  toString = () => {
     return `Point: [x: ${this.x}, y: ${this.y}]`
   }
 }

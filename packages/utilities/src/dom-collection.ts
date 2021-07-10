@@ -10,30 +10,30 @@ export class DOMCollection<
   }
 
   // get a node by id
-  itemById(id: string) {
+  itemById = (id: string) => {
     return this.find((node) => node.id === id)
   }
 
   // get the index of a node by `id`
-  indexOfId(id: string) {
+  indexOfId = (id: string) => {
     const item = this.itemById(id)
     return item ? this.value.indexOf(item) : -1
   }
 
   // get the next node by current node's id
-  nextById(id: string, loop?: boolean) {
+  nextById = (id: string, loop?: boolean) => {
     const index = this.indexOfId(id)
     return this.next(index, 1, loop)
   }
 
   // get the prev node by current node's id
-  prevById(id: string, loop?: boolean) {
+  prevById = (id: string, loop?: boolean) => {
     const index = this.indexOfId(id)
     return this.prev(index, 1, loop)
   }
 
   // get the node whose text content matches the event key pressed
-  findByEventKey(key: string, currentId?: string | null) {
+  findByEventKey = (key: string, currentId?: string | null) => {
     const fn = (item: T) =>
       !!item.textContent?.toLowerCase().startsWith(key.toLowerCase())
 
@@ -49,17 +49,10 @@ export class DOMCollection<
   }
 
   // get active descendant
-  getActiveDescendantId(node?: HTMLElement) {
+  getActiveDescendantId = (node?: HTMLElement) => {
     const el = node ?? this.root
     return el instanceof HTMLElement
       ? el.getAttribute("aria-activedescendant")
       : undefined
   }
-}
-
-export function createDOMCollection<T extends HTMLElement>(
-  root: Document | Element | null,
-  selector: string,
-) {
-  return new DOMCollection<T>(root, selector)
 }

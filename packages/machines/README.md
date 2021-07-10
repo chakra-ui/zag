@@ -21,11 +21,11 @@ const counter = createMachine<CounterMachineState, CounterMachineContext>()
 This file contains the helper function you need to query the DOM for elements,
 or measure dom elements.
 
-We call this function the "collection". In most cases, we use this function to
-get the `first`, `last`, `next`, `prev`, and `rect` of an element.
+We call this function the "dom". In most cases, we use this function to get the
+`first`, `last`, `next`, `prev`, and `rect` of an element.
 
 ```jsx
-function collection(ctx: CounterMachineContext) {
+function dom(ctx: CounterMachineContext) {
   return {
     getRectById(id: string) {},
     first: "...",

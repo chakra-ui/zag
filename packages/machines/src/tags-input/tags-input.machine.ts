@@ -1,7 +1,7 @@
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
-import { collection, getElements } from "./tags-input.dom"
+import { dom, getElements } from "./tags-input.dom"
 
 const { and, not } = guards
 
@@ -194,14 +194,14 @@ export const tagsInputMachine = createMachine<
       isAtMax: (ctx) => ctx.max != null && ctx.value.length === ctx.max,
       hasFocusedId: (ctx) => ctx.focusedId !== null,
       isInputFocused: (ctx) => {
-        const { isInputFocused } = collection(ctx)
+        const { isInputFocused } = dom(ctx)
         return isInputFocused
       },
       isTagFocused(ctx, evt) {
         return ctx.focusedId === evt.id
       },
       isLastTagFocused(ctx) {
-        const { last } = collection(ctx)
+        const { last } = dom(ctx)
         return last?.id === ctx.focusedId
       },
       isInputValueEmpty: (ctx) => ctx.inputValue.trim().length === 0,
@@ -223,7 +223,7 @@ export const tagsInputMachine = createMachine<
         ctx.doc = preserve(evt.doc)
       },
       focusNextTag(ctx) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         if (!ctx.focusedId) return
         const nextTag = tags.next(ctx.focusedId)
         if (nextTag) {
@@ -231,11 +231,11 @@ export const tagsInputMachine = createMachine<
         }
       },
       focusLastTag(ctx) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         ctx.focusedId = tags.last.id
       },
       focusPrevTag(ctx) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         if (!ctx.focusedId) return
         const tag = tags.prev(ctx.focusedId, false)
         if (tag) {
@@ -246,12 +246,12 @@ export const tagsInputMachine = createMachine<
         ctx.focusedId = evt.id
       },
       deleteTag(ctx, evt) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         const index = tags.indexOfId(evt.id)
         ctx.value.splice(index, 1)
       },
       deleteFocusedTag(ctx) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         if (!ctx.focusedId) return
         const index = tags.indexOfId(ctx.focusedId)
         ctx.value.splice(index, 1)
@@ -269,13 +269,13 @@ export const tagsInputMachine = createMachine<
         ctx.editedTagValue = evt.value
       },
       submitEditedTagValue(ctx) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         if (!ctx.editedId) return
         const index = tags.indexOfId(ctx.editedId)
         ctx.value[index] = ctx.editedTagValue ?? ""
       },
       initEditedTagValue(ctx) {
-        const tags = collection(ctx)
+        const tags = dom(ctx)
         if (!ctx.editedId) return
         const index = tags.indexOfId(ctx.editedId)
         ctx.editedTagValue = ctx.value[index]

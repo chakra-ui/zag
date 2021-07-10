@@ -40,7 +40,7 @@ export class Range {
   /**
    * Converts a string value to a number and strips letters
    */
-  static parse(value: string | number) {
+  static parse = (value: string | number) => {
     return parseFloat(value.toString().replace(/[^\w.-]+/g, ""))
   }
 
@@ -55,7 +55,7 @@ export class Range {
    * console.log(getValue(100)) // => 0.5
    * ```
    */
-  static transform(inputTuple: RangeTuple, outputTuple: RangeTuple) {
+  static transform = (inputTuple: RangeTuple, outputTuple: RangeTuple) => {
     const input = Range.fromTuple(inputTuple)
     const output = Range.fromTuple(outputTuple)
 
@@ -71,7 +71,7 @@ export class Range {
   /**
    * Returns a new range instance based on the specified `[min, max]` range
    */
-  static fromTuple(range: RangeTuple) {
+  static fromTuple = (range: RangeTuple) => {
     const [min, max] = range
     return new Range({ min, max })
   }
@@ -79,7 +79,7 @@ export class Range {
   /**
    * Converts an array of values to an array of ranges
    */
-  static valuesToRanges(options: ValuesToRangesOptions) {
+  static valuesToRanges = (options: ValuesToRangesOptions) => {
     return options.value
       .map((value, index) => [
         options.value[index - 1] ?? options.min,
@@ -92,7 +92,7 @@ export class Range {
   /**
    * Overrides the range's value
    */
-  setValue(value: string | number) {
+  setValue = (value: string | number) => {
     this.value = value
     return this
   }
@@ -100,17 +100,17 @@ export class Range {
   /**
    * Overrides the range's `step` value
    */
-  setStep(step: number) {
+  setStep = (step: number) => {
     this.step = step
     return this
   }
 
-  setToMin() {
+  setToMin = () => {
     this.value = this.min.toString()
     return this
   }
 
-  setToMax() {
+  setToMax = () => {
     this.value = this.max.toString()
     return this
   }
@@ -118,14 +118,14 @@ export class Range {
   /**
    * Creates a new range instance with new options
    */
-  withOptions(options: Partial<RangeOptions>) {
+  withOptions = (options: Partial<RangeOptions>) => {
     return new Range({ ...this.options, ...options })
   }
 
   /**
    * Converts the value (string or number) to a floating-point number.
    */
-  valueOf() {
+  valueOf = () => {
     return Range.parse(this.value)
   }
 
@@ -133,7 +133,7 @@ export class Range {
    * Converts the value (string or number) to the string.
    * The returned string is rounded to the maximum precision
    */
-  toString() {
+  toString = () => {
     const num = this.valueOf()
     return toFixed(num, this.decimalCount)
   }
@@ -141,7 +141,7 @@ export class Range {
   /**
    * Converts the value to a percentage value between the `min` and `max`
    */
-  toPercent() {
+  toPercent = () => {
     return ((this.valueOf() - this.min) * 100) / (this.max - this.min)
   }
 
@@ -149,7 +149,7 @@ export class Range {
    * Returns the instance with a new `value` that is derived from the `percent`
    * value passed.
    */
-  fromPercent(percent: number | Range) {
+  fromPercent = (percent: number | Range) => {
     percent = percent instanceof Range ? percent.valueOf() : percent
     this.value = (this.max - this.min) * percent + this.min
     return this
@@ -158,7 +158,7 @@ export class Range {
   /**
    * Returns the range instance with its `value` clamped between `min` and `max`
    */
-  clamp(keepWithinRange = true) {
+  clamp = (keepWithinRange = true) => {
     let nextValue: number | null = this.valueOf()
 
     if (keepWithinRange) {
@@ -173,7 +173,7 @@ export class Range {
    * Increments the range's value by the specified step
    * @param step The number of steps to increment by
    */
-  increment(step = this.step) {
+  increment = (step = this.step) => {
     if (this.value === "") {
       this.value = Range.parse(step)
     } else {
@@ -186,7 +186,7 @@ export class Range {
    * Decrements the range's value by the specified step
    * @param step The number of steps to decrement by
    */
-  decrement(step = this.step) {
+  decrement = (step = this.step) => {
     if (this.value === "") {
       this.value = Range.parse(-step)
     } else {
@@ -198,7 +198,7 @@ export class Range {
   /**
    * Rounds the value to the nearest step
    */
-  snapToStep(value: number | Range) {
+  snapToStep = (value: number | Range) => {
     const current = this.valueOf()
     value = value instanceof Range ? value.valueOf() : value
 
@@ -214,7 +214,7 @@ export class Range {
   /**
    * Resets the range values to the initial
    */
-  reset() {
+  reset = () => {
     this.value = this.options.value ?? 0
     this.step = this.options.step ?? 1
     this.min = this.options.min ?? 0
@@ -226,7 +226,7 @@ export class Range {
   /**
    * Returns a new copy of the range
    */
-  clone() {
+  clone = () => {
     return new Range(this)
   }
 
@@ -277,8 +277,4 @@ export class Range {
       current += this.step
     }
   }
-}
-
-export function createRange(options: RangeOptions) {
-  return new Range(options)
 }

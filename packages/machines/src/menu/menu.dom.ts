@@ -1,4 +1,4 @@
-import { createDOMCollection } from "@ui-machines/utils"
+import { DOMCollection } from "@ui-machines/utils"
 import { MenuMachineContext } from "./menu.machine"
 
 export function getElementIds(uid: string) {
@@ -21,23 +21,16 @@ export function dom(ctx: MenuMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { menu } = getElements(ctx)
   const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([disabled])`
-  const {
-    prevById,
-    nextById,
-    first,
-    last,
-    findByEventKey,
-    getActiveDescendantId,
-  } = createDOMCollection(menu, selector)
+  const collection = new DOMCollection(menu, selector)
 
   return {
-    first,
-    last,
-    prev: prevById,
-    next: nextById,
+    first: collection.first,
+    last: collection.last,
+    prev: collection.prevById,
+    next: collection.nextById,
     searchByKey(key: string) {
-      const activeId = getActiveDescendantId()
-      return findByEventKey(key, activeId)
+      const activeId = collection.getActiveDescendantId()
+      return collection.findByEventKey(key, activeId)
     },
   }
 }

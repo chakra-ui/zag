@@ -44,24 +44,24 @@ export class ArrayCollection<T> {
   }
 
   // get an item at index
-  itemAt(index: number) {
+  itemAt = (index: number) => {
     return this.value[index]
   }
 
   // Update the array
-  set(array: T[]) {
+  set = (array: T[]) => {
     this.value = array
     return this
   }
 
   // Add an item to the end of the array
-  add(...items: T[]) {
+  add = (...items: T[]) => {
     this.value.push(...items)
     return this
   }
 
   // remove item from array at index
-  removeAt(index: number) {
+  removeAt = (index: number) => {
     if (index > -1) {
       this.value.splice(index, 1)
     }
@@ -69,18 +69,18 @@ export class ArrayCollection<T> {
   }
 
   // remove an item from the array
-  remove(item: T) {
+  remove = (item: T) => {
     const index = this.value.indexOf(item)
     return this.removeAt(index)
   }
 
   // clone instance
-  clone(): ArrayCollection<T> {
+  clone = (): ArrayCollection<T> => {
     return new ArrayCollection([...this.value])
   }
 
   // Faster version `Array.prototype.find`
-  find(fn: (value: T, key: number, arr: T[]) => boolean): T | undefined {
+  find = (fn: (value: T, key: number, arr: T[]) => boolean): T | undefined => {
     for (let i = 0, len = this.count; i < len; ++i) {
       if (fn(this.value[i], i, this.value)) {
         return this.value[i]
@@ -89,7 +89,7 @@ export class ArrayCollection<T> {
   }
 
   // Faster version `Array.prototype.filter`
-  filter(fn: (value: T, key: number, arr: T[]) => boolean) {
+  filter = (fn: (value: T, key: number, arr: T[]) => boolean) => {
     const filteredArr = []
 
     for (let i = 0, len = this.count; i < len; ++i) {
@@ -104,7 +104,7 @@ export class ArrayCollection<T> {
   }
 
   // Given an index, get the next index in the array
-  nextIndex(index: number, step = 1, loop = true): number {
+  nextIndex = (index: number, step = 1, loop = true): number => {
     const nextIndex = index + step
 
     const length = this.value.length
@@ -126,28 +126,28 @@ export class ArrayCollection<T> {
   }
 
   // Get the next item in the array
-  next(index: number, step = 1, loop = true): T {
+  next = (index: number, step = 1, loop = true): T => {
     const nextIndex = this.nextIndex(index, step, loop)
     return this.value[nextIndex]
   }
 
   // Given an index, returns the index of the previous item
-  prevIndex(index: number, step = 1, loop = true) {
+  prevIndex = (index: number, step = 1, loop = true) => {
     return this.nextIndex(index, -step, loop)
   }
 
   // Get the previous item in the array
-  prev(index: number, step = 1, loop = true): T {
+  prev = (index: number, step = 1, loop = true): T => {
     const prevIndex = this.prevIndex(index, step, loop)
     return this.value[prevIndex]
   }
 
   // Search for an item in the array by query
-  search(
+  search = (
     query: string | null | undefined,
     toString: (item: T) => string,
     current: T | undefined,
-  ): T | undefined {
+  ): T | undefined => {
     if (query === null || query === undefined) {
       return current
     }
@@ -179,8 +179,4 @@ export class ArrayCollection<T> {
     // If there are multiple matches, return the next one after the current item
     return filtered.next(this.value.indexOf(current))
   }
-}
-
-export function collection<T>(values: T[]) {
-  return new ArrayCollection(values)
 }

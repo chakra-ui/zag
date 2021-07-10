@@ -1,4 +1,4 @@
-import { createDOMCollection } from "@ui-machines/utils"
+import { DOMCollection } from "@ui-machines/utils"
 import { TabsMachineContext } from "./tabs.machine"
 
 export function getElementIds(uid: string) {
@@ -15,7 +15,7 @@ export function dom(ctx: TabsMachineContext) {
   const tablist = doc.getElementById(ids.tablist)
 
   const selector = `[role=tab][data-ownedby='${ids.tablist}']`
-  const collection = createDOMCollection(tablist, selector)
+  const collection = new DOMCollection(tablist, selector)
 
   return {
     first: collection.first,
