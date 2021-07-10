@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@ui-machines/core": "0.1.0",
+    "@ui-machines/utils": "0.1.0",
     "@types/react": "^17.0.6",
     "valtio": "^1.0.5"
   }

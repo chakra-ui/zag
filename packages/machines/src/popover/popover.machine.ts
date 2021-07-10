@@ -3,10 +3,10 @@ import {
   guards,
   preserve,
   trackPointerDown,
-} from "@chakra-ui/machine"
-import { getFirstFocusable, isTabbable, nextTick } from "@chakra-ui/utilities"
+} from "@ui-machines/core"
+import { DOMHelper, nextTick } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
-import { getElements } from "./popover.dom"
+import { dom, getElements } from "./popover.dom"
 
 const { and } = guards
 
@@ -85,7 +85,8 @@ export const popoverMachine = createMachine<
     activities: { trackPointerDown },
     guards: {
       shouldCloseOnEsc: (ctx) => !!ctx.closeOnEsc,
-      isPointerdownFocusable: (ctx) => isTabbable(ctx.pointerdownNode),
+      isPointerdownFocusable: (ctx) =>
+        new DOMHelper(ctx.pointerdownNode).isTabbable,
       shouldCloseOnOutsideClick: (ctx) => !!ctx.closeOnOutsideClick,
     },
     actions: {
@@ -100,10 +101,9 @@ export const popoverMachine = createMachine<
       },
       autoFocus(ctx) {
         nextTick(() => {
-          const nodes = getElements(ctx)
-          if (!nodes.content) return
-          const el = getFirstFocusable(nodes.content) ?? nodes.content
-          el.focus()
+          const { getFirstFocusable } = dom(ctx)
+          const el = getFirstFocusable()
+          el?.focus()
         })
       },
       restoreFocus(ctx) {

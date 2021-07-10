@@ -1,5 +1,5 @@
-import { createMachine, preserve } from "@chakra-ui/machine"
-import { addEventListener } from "@chakra-ui/utilities/event-utils"
+import { createMachine, preserve } from "@ui-machines/core"
+import { addDomEvent } from "@ui-machines/utils/dom-event"
 import { proxy } from "valtio"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
@@ -75,7 +75,7 @@ export const tooltipMachine = createMachine<
     activities: {
       attachEscapeKeyListener: (ctx, evt, { send }) => {
         const doc = ctx.doc ?? document
-        return addEventListener(doc, "keydown", (event) => {
+        return addDomEvent(doc, "keydown", (event) => {
           if (event.key === "Escape") {
             send("ESCAPE")
           }

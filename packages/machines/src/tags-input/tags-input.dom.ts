@@ -1,4 +1,4 @@
-import { createCollection } from "@chakra-ui/utilities"
+import { DOMCollection, domHelper } from "@ui-machines/utils"
 import { TagsInputMachineContext } from "./tags-input.machine"
 
 export function getElementIds(uid: string) {
@@ -22,6 +22,19 @@ export function getElements(ctx: TagsInputMachineContext) {
 
 export function collection(ctx: TagsInputMachineContext) {
   const ids = getElementIds(ctx.uid)
-  const { root } = getElements(ctx)
-  return createCollection(root, `[data-ownedby=${ids.root}]`)
+  const { root, input } = getElements(ctx)
+  const selector = `[data-ownedby=${ids.root}]`
+  const { first, last, prevById, nextById, indexOfId } = new DOMCollection(
+    root,
+    selector,
+  )
+
+  return {
+    isInputFocused: domHelper(input).isActiveElement,
+    first,
+    last,
+    indexOfId,
+    prev: prevById,
+    next: nextById,
+  }
 }

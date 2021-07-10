@@ -14,12 +14,17 @@ export class ArrayCollection<T> {
     return new ArrayCollection(result)
   }
 
+  static fromLength(length: number, fill: string | number = "") {
+    const result = [...new Array(length).fill(fill)]
+    return new ArrayCollection(result)
+  }
+
   constructor(array: T[]) {
     this.value = [...array]
   }
 
   // Get the length of the array
-  get size() {
+  get count() {
     return this.value.length
   }
 
@@ -30,12 +35,12 @@ export class ArrayCollection<T> {
 
   // Get the last item in the array
   get last(): T {
-    return this.value[this.size - 1]
+    return this.value[this.count - 1]
   }
 
   // Check if the array instance is empty
   get isEmpty(): boolean {
-    return this.size === 0
+    return this.count === 0
   }
 
   // get an item at index
@@ -76,7 +81,7 @@ export class ArrayCollection<T> {
 
   // Faster version `Array.prototype.find`
   find(fn: (value: T, key: number, arr: T[]) => boolean): T | undefined {
-    for (let i = 0, len = this.size; i < len; ++i) {
+    for (let i = 0, len = this.count; i < len; ++i) {
       if (fn(this.value[i], i, this.value)) {
         return this.value[i]
       }
@@ -87,7 +92,7 @@ export class ArrayCollection<T> {
   filter(fn: (value: T, key: number, arr: T[]) => boolean) {
     const filteredArr = []
 
-    for (let i = 0, len = this.size; i < len; ++i) {
+    for (let i = 0, len = this.count; i < len; ++i) {
       const value = this.value[i]
 
       if (fn(value, i, this.value)) {
@@ -167,7 +172,7 @@ export class ArrayCollection<T> {
     }
 
     // If there is only one match, return it
-    if (filtered.size === 1) {
+    if (filtered.count === 1) {
       return filtered.first
     }
 

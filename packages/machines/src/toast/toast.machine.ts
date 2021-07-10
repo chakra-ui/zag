@@ -1,4 +1,4 @@
-import { createMachine, Machine } from "@chakra-ui/machine"
+import { createMachine, Machine } from "@ui-machines/core"
 import { defaultTimeouts } from "./toast.utils"
 
 export type ToastType = "success" | "error" | "loading" | "blank" | "custom"

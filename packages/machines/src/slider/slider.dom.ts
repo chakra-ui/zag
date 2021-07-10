@@ -1,4 +1,4 @@
-import { Point, Range } from "@chakra-ui/utilities"
+import { Point, Range } from "@ui-machines/utils"
 import { SliderMachineContext } from "./slider.machine"
 
 export function getElementIds(uid: string) {

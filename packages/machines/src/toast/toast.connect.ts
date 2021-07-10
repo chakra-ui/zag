@@ -2,7 +2,7 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine"
+} from "@ui-machines/core"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import { ToastMachineContext, ToastPlacement } from "./toast.machine"

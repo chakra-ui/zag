@@ -1,13 +1,51 @@
-import { MaybeArray, toArray } from "./array"
-import { isMouseEvent, isRefObject, isRightClickEvent } from "./assertion"
+import { toArray, MaybeArray } from "./array"
+import { isObject, isRefObject } from "./assertion"
 import { contains, domHelper, isHTMLElement } from "./dom-helper"
 import {
   supportsMouseEvents,
   supportsPointerEvents,
   supportsTouchEvents,
 } from "./env"
-import { cast, runIfFn } from "./function"
+import { runIfFn, cast } from "./function"
 import { AnyPointerEvent, Point, PointType } from "./point"
+
+/* -----------------------------------------------------------------------------
+ * Event assertions
+ * -----------------------------------------------------------------------------*/
+
+export function isInputEvent(
+  event: unknown,
+): event is { target: HTMLInputElement } {
+  return (
+    event != null &&
+    isObject(event) &&
+    "target" in event &&
+    event.target instanceof HTMLInputElement
+  )
+}
+
+export function isRightClickEvent(event: unknown) {
+  return isMouseEvent(event) && event.button !== 0
+}
+
+export function isTouchEvent(event: unknown): event is TouchEvent {
+  return Boolean(event instanceof TouchEvent && event.touches)
+}
+
+export function isMouseEvent(event: unknown): event is MouseEvent {
+  // PointerEvent inherits from MouseEvent so we can't use a straight instanceof check.
+  return isPointerEvent(event)
+    ? event.pointerType === "mouse"
+    : event instanceof MouseEvent
+}
+
+export function isMultiTouchEvent(event: unknown) {
+  return isTouchEvent(event) && event.touches.length > 1
+}
+
+export function isPointerEvent(event: unknown): event is PointerEvent {
+  return typeof PointerEvent !== "undefined" && event instanceof PointerEvent
+}
 
 /* -----------------------------------------------------------------------------
  * Pointer Events
@@ -62,19 +100,19 @@ export type EventListenerWithPointInfo = (
 export function addDomEvent<K extends keyof WindowEventMap>(
   target: DOMEventTarget,
   type: K,
-  listener: (ev: WindowEventMap[K]) => any,
+  listener: (ev: WindowEventMap[K], info: PointerEventInfo) => void,
   options?: EventListenerOptions,
 ): VoidFunction
 export function addDomEvent<K extends keyof HTMLElementEventMap>(
   target: DOMEventTarget,
   event: K,
-  listener: (ev: HTMLElementEventMap[K]) => any,
+  listener: (ev: HTMLElementEventMap[K], info: PointerEventInfo) => void,
   options?: EventListenerOptions,
 ): VoidFunction
 export function addDomEvent<K extends keyof DocumentEventMap>(
   target: DOMEventTarget,
   event: K,
-  listener: EventListener,
+  listener: EventListenerWithPointInfo,
   options?: EventListenerOptions,
 ) {
   const node = isRefObject(target) ? target.current : runIfFn(target)

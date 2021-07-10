@@ -17,7 +17,11 @@ export function nextTick(fn: VoidFunction) {
   }
 }
 
-type AnyFunction = (...args: any) => void
+export type AnyFunction = (...args: any[]) => void
+
+export type MaybeFunction<T, Args extends any[] = []> =
+  | T
+  | ((...args: Args) => T)
 
 // invokes a value if it is a function
 export function runIfFn<T>(
@@ -53,3 +57,20 @@ export function warn(...args: any[]): void {
     }
   })
 }
+
+/**
+ * Compose multiple functions, from right-to-left into a single function
+ * ```jsx
+ * import { pipe } from "@chakra-ui/function-utils"
+ *
+ * const getName = (p) => p.name;
+ * const getLength = (str) => str.length;
+ *
+ * const fn = pipe(getName, getLength)
+ * const result = fn({ name: 'Sage' }) // => 4
+ * ```
+ */
+export const pipe =
+  <T>(...fns: Array<(a: T) => T>) =>
+  (v: T) =>
+    fns.reduce((a, b) => b(a), v)

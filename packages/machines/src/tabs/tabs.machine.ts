@@ -1,7 +1,7 @@
-import { createMachine, guards, preserve } from "@chakra-ui/machine"
-import { nextTick } from "@chakra-ui/utilities"
+import { createMachine, guards, preserve } from "@ui-machines/core"
+import { nextTick } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
-import { collection } from "./tabs.dom"
+import { dom } from "./tabs.dom"
 
 const { not } = guards
 
@@ -95,27 +95,27 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
         ctx.activeTabId = evt.uid
       },
       focusFirstTab(ctx) {
-        const tabs = collection(ctx)
+        const tabs = dom(ctx)
         nextTick(() => tabs.first.focus())
       },
       focusLastTab(ctx) {
-        const tabs = collection(ctx)
+        const tabs = dom(ctx)
         nextTick(() => tabs.last.focus())
       },
       focusNextTab(ctx) {
         if (!ctx.focusedTabId) return
-        const tabs = collection(ctx)
+        const tabs = dom(ctx)
         const next = tabs.next(ctx.focusedTabId)
         nextTick(() => next.focus())
       },
       focusPrevTab(ctx) {
         if (!ctx.focusedTabId) return
-        const tabs = collection(ctx)
+        const tabs = dom(ctx)
         const prev = tabs.prev(ctx.focusedTabId)
         nextTick(() => prev.focus())
       },
       setActiveTabRect(ctx) {
-        const tabs = collection(ctx)
+        const tabs = dom(ctx)
         ctx.indicatorRect = tabs.rectById(ctx.activeTabId)
         if (ctx.measuredRect) return
         setTimeout(() => {

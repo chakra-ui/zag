@@ -1,9 +1,9 @@
 import {
   defaultPropNormalizer,
-  determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine"
+} from "@ui-machines/core"
+import { isValidBlurEvent } from "@ui-machines/utils"
 import { DOMHTMLProps } from "../type-utils"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
@@ -42,7 +42,7 @@ export function connectPopoverMachine(
       },
       onBlur(event) {
         const { trigger } = getElements(ctx)
-        const isValidBlur = determineBlur(event, {
+        const isValidBlur = isValidBlurEvent(event, {
           exclude: trigger,
           pointerdownNode: ctx.pointerdownNode,
         })

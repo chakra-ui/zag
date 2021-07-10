@@ -1,4 +1,4 @@
-import { createMachine, Machine, preserve } from "@chakra-ui/machine"
+import { createMachine, Machine, preserve } from "@ui-machines/core"
 import { WithDOM } from "../type-utils"
 import {
   createToastMachine,

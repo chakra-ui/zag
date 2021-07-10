@@ -17,7 +17,7 @@ export function getElements(ctx: RatingMachineContext) {
   const rootNode = doc.getElementById(rootId)
 
   const selector = `[role=radio][aria-posinset='${Math.ceil(ctx.value)}']`
-  const radio = rootNode?.querySelector(selector) as HTMLElement | null
+  const radio = rootNode?.querySelector<HTMLElement>(selector)
 
   return {
     radio,

@@ -1,4 +1,4 @@
-import { createCollection } from "@chakra-ui/utilities"
+import { createDOMCollection } from "@ui-machines/utils"
 import { MenuMachineContext } from "./menu.machine"
 
 export function getElementIds(uid: string) {
@@ -17,17 +17,27 @@ export function getElements(ctx: MenuMachineContext) {
   }
 }
 
-export function collection(ctx: MenuMachineContext) {
+export function dom(ctx: MenuMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { menu } = getElements(ctx)
   const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([disabled])`
-  const dom = createCollection(menu, selector)
+  const {
+    prevById,
+    nextById,
+    first,
+    last,
+    findByEventKey,
+    getActiveDescendantId,
+  } = createDOMCollection(menu, selector)
 
   return {
-    ...dom,
-    getElementByCharacter(key: string) {
-      const activeDescendant = menu?.getAttribute("aria-activedescendant")
-      return dom.searchByKey(key, activeDescendant)
+    first,
+    last,
+    prev: prevById,
+    next: nextById,
+    searchByKey(key: string) {
+      const activeId = getActiveDescendantId()
+      return findByEventKey(key, activeId)
     },
   }
 }

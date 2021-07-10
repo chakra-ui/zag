@@ -1,4 +1,3 @@
-import { Booleanish, Dict } from "@chakra-ui/utilities/type-utils"
 import type {
   ButtonHTMLAttributes,
   CSSProperties,
@@ -6,6 +5,10 @@ import type {
   InputHTMLAttributes,
   KeyboardEvent,
 } from "react"
+
+export type Dict<T = any> = Record<string, T>
+
+export type Booleanish = boolean | "true" | "false"
 
 export type WithDataAttr<T> = T & {
   "data-uid"?: string

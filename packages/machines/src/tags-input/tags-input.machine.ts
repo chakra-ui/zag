@@ -1,5 +1,5 @@
-import { createMachine, guards, preserve } from "@chakra-ui/machine"
-import { isActiveElement, nextTick } from "@chakra-ui/utilities"
+import { createMachine, guards, preserve } from "@ui-machines/core"
+import { nextTick } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
 import { collection, getElements } from "./tags-input.dom"
 
@@ -194,7 +194,8 @@ export const tagsInputMachine = createMachine<
       isAtMax: (ctx) => ctx.max != null && ctx.value.length === ctx.max,
       hasFocusedId: (ctx) => ctx.focusedId !== null,
       isInputFocused: (ctx) => {
-        return isActiveElement(getElements(ctx).input)
+        const { isInputFocused } = collection(ctx)
+        return isInputFocused
       },
       isTagFocused(ctx, evt) {
         return ctx.focusedId === evt.id

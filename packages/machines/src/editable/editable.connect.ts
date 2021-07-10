@@ -1,10 +1,10 @@
 import {
   defaultPropNormalizer,
-  determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine"
-import { ariaAttr } from "@chakra-ui/utilities"
+} from "@ui-machines/core"
+import { ariaAttr } from "@ui-machines/utils/dom-helper"
+import { isValidBlurEvent } from "@ui-machines/utils/dom-event"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -42,7 +42,7 @@ export function connectEditableMachine(
       value: ctx.value,
       onBlur(event) {
         const { cancelBtn, submitBtn } = getElements(ctx)
-        const isValidBlur = determineBlur(event, {
+        const isValidBlur = isValidBlurEvent(event, {
           pointerdownNode: ctx.pointerdownNode,
           exclude: [cancelBtn, submitBtn],
         })

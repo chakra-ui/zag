@@ -1,9 +1,9 @@
 import {
   defaultPropNormalizer,
-  determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine"
+} from "@ui-machines/core"
+import { isValidBlurEvent } from "@ui-machines/utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -65,7 +65,7 @@ export function connectMenuMachine(
       onBlur(event) {
         const { button } = getElements(ctx)
 
-        const isValidBlur = determineBlur(event, {
+        const isValidBlur = isValidBlurEvent(event, {
           exclude: button,
           pointerdownNode: ctx.pointerdownNode,
         })

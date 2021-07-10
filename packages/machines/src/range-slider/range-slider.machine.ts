@@ -1,14 +1,14 @@
-import { createMachine, dispatchInputEvent, preserve } from "@chakra-ui/machine"
+import { createMachine, preserve } from "@ui-machines/core"
 import {
-  addPointerEvent,
-  nextTick,
-  pipe,
+  addDomEvent,
+  dispatchInputEvent,
   EventListenerWithPointInfo as Listener,
   isMouseEvent,
-  Point,
-  Rect,
-  Range,
-} from "@chakra-ui/utilities"
+} from "@ui-machines/utils/dom-event"
+import { nextTick, pipe } from "@ui-machines/utils/function"
+import { Rect } from "@ui-machines/utils/rect"
+import { Point } from "@ui-machines/utils/point"
+import { Range } from "@ui-machines/utils/range"
 import { WithDOM } from "../type-utils"
 import { getElements, getRangeAtIndex, pointToValue } from "./range-slider.dom"
 
@@ -152,10 +152,10 @@ export const rangeSliderMachine = createMachine<
         }
 
         return pipe(
-          addPointerEvent(doc, "pointermove", onPointerMove, false),
-          addPointerEvent(doc, "pointerup", onPointerUp, false),
-          addPointerEvent(doc, "pointercancel", onPointerUp, false),
-          addPointerEvent(doc, "contextmenu", onPointerUp, false),
+          addDomEvent(doc, "pointermove", onPointerMove, false),
+          addDomEvent(doc, "pointerup", onPointerUp, false),
+          addDomEvent(doc, "pointercancel", onPointerUp, false),
+          addDomEvent(doc, "contextmenu", onPointerUp, false),
         )
       },
     },

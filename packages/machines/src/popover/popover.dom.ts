@@ -1,3 +1,4 @@
+import { ArrayCollection, DOMHelper } from "@ui-machines/utils"
 import { PopoverMachineContext } from "./popover.machine"
 
 export function getElementIds(uid: string) {
@@ -18,5 +19,16 @@ export function getElements(ctx: PopoverMachineContext) {
     content: doc.getElementById(ids.content),
     header: doc.getElementById(ids.header),
     body: doc.getElementById(ids.body),
+  }
+}
+
+export function dom(ctx: PopoverMachineContext) {
+  const { content } = getElements(ctx)
+  return {
+    getFirstFocusable() {
+      const focusables = new DOMHelper(content).getFocusables(true)
+      const nodelist = new ArrayCollection(focusables)
+      return nodelist.first
+    },
   }
 }

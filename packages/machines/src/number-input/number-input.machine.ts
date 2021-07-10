@@ -1,5 +1,5 @@
-import { createMachine, guards, preserve } from "@chakra-ui/machine"
-import { addEventListener, nextTick, noop, Range } from "@chakra-ui/utilities"
+import { createMachine, guards, preserve } from "@ui-machines/core"
+import { addDomEvent, nextTick, noop, Range } from "@ui-machines/utils"
 import { getElements } from "./number-input.dom"
 import { sanitize } from "./number-input.utils"
 
@@ -149,7 +149,7 @@ export const numberInputMachine = createMachine<
             ctx.value = new Range(ctx).decrement().clamp().toString()
           }
         }
-        return addEventListener(input, "wheel", listener, { passive: false })
+        return addDomEvent(input, "wheel", listener, { passive: false })
       },
     },
     actions: {

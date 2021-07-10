@@ -2,10 +2,10 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine"
-import { Point } from "@chakra-ui/utilities/point-utils"
-import { Rect } from "@chakra-ui/utilities/rect-utils"
-import { cast } from "@chakra-ui/utilities/type-utils"
+} from "@ui-machines/core"
+import { cast } from "@ui-machines/utils/function"
+import { Point } from "@ui-machines/utils/point"
+import { Rect } from "@ui-machines/utils/rect"
 import { determineEventKey } from "../event-utils"
 import {
   DOMHTMLProps,

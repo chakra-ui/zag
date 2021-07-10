@@ -40,7 +40,7 @@ export class DOMCollection<
     const matched = this.find(fn)
     const filtered = this.filter(fn)
 
-    if (matched && matched.id === currentId && filtered.size > 1) {
+    if (matched && matched.id === currentId && filtered.count > 1) {
       const index = filtered.value.indexOf(matched)
       return this.next(index)
     }
@@ -55,4 +55,11 @@ export class DOMCollection<
       ? el.getAttribute("aria-activedescendant")
       : undefined
   }
+}
+
+export function createDOMCollection<T extends HTMLElement>(
+  root: Document | Element | null,
+  selector: string,
+) {
+  return new DOMCollection<T>(root, selector)
 }

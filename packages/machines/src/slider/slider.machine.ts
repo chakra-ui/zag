@@ -1,12 +1,12 @@
-import { createMachine, dispatchInputEvent, preserve } from "@chakra-ui/machine"
+import { createMachine, preserve } from "@ui-machines/core"
 import {
-  addPointerEvent,
+  addDomEvent,
+  dispatchInputEvent,
   EventListenerWithPointInfo as Listener,
   isMouseEvent,
-  nextTick,
-  pipe,
-  Range,
-} from "@chakra-ui/utilities"
+} from "@ui-machines/utils/dom-event"
+import { nextTick, pipe } from "@ui-machines/utils/function"
+import { Range } from "@ui-machines/utils/range"
 import { WithDOM } from "../type-utils"
 import { getElements, pointToValue } from "./slider.dom"
 
@@ -145,10 +145,10 @@ export const sliderMachine = createMachine<
         }
 
         return pipe(
-          addPointerEvent(doc, "pointermove", onPointerMove, false),
-          addPointerEvent(doc, "pointerup", onPointerUp, false),
-          addPointerEvent(doc, "pointercancel", onPointerUp, false),
-          addPointerEvent(doc, "contextmenu", onPointerUp, false),
+          addDomEvent(doc, "pointermove", onPointerMove, false),
+          addDomEvent(doc, "pointerup", onPointerUp, false),
+          addDomEvent(doc, "pointercancel", onPointerUp, false),
+          addDomEvent(doc, "contextmenu", onPointerUp, false),
         )
       },
     },

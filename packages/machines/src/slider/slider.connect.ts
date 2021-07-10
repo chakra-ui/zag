@@ -2,8 +2,8 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine"
-import { cast, dataAttr, Point, Range } from "@chakra-ui/utilities"
+} from "@ui-machines/core"
+import { cast, dataAttr, Point, Range } from "@ui-machines/utils"
 import { determineEventKey, getStepMultipler } from "../event-utils"
 import {
   DOMHTMLProps,

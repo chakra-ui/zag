@@ -3,8 +3,8 @@ import {
   guards,
   preserve,
   trackPointerDown,
-} from "@chakra-ui/machine"
-import { nextTick } from "@chakra-ui/utilities"
+} from "@ui-machines/core"
+import { nextTick } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
 import { getElements } from "./editable.dom"
 

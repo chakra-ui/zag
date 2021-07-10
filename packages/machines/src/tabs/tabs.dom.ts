@@ -1,4 +1,4 @@
-import { createCollection } from "@chakra-ui/utilities"
+import { createDOMCollection } from "@ui-machines/utils"
 import { TabsMachineContext } from "./tabs.machine"
 
 export function getElementIds(uid: string) {
@@ -9,25 +9,25 @@ export function getElementIds(uid: string) {
   }
 }
 
-export function collection(ctx: TabsMachineContext) {
+export function dom(ctx: TabsMachineContext) {
   const doc = ctx.doc ?? document
-
   const ids = getElementIds(ctx.uid)
   const tablist = doc.getElementById(ids.tablist)
 
   const selector = `[role=tab][data-ownedby='${ids.tablist}']`
+  const collection = createDOMCollection(tablist, selector)
 
-  const dom = createCollection(tablist, selector)
   return {
-    ...dom,
+    first: collection.first,
+    last: collection.last,
     next(id: string) {
-      return dom.next(ids.getTabId(id))
+      return collection.nextById(ids.getTabId(id))
     },
     prev(id: string) {
-      return dom.prev(ids.getTabId(id))
+      return collection.prevById(ids.getTabId(id))
     },
     rectById(id: string) {
-      const tab = dom.itemById(ids.getTabId(id))
+      const tab = collection.itemById(ids.getTabId(id))
       return {
         left: tab?.offsetLeft,
         width: tab?.offsetWidth,

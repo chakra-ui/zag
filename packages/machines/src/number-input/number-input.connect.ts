@@ -2,8 +2,8 @@ import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine/vanilla"
-import { Range } from "@chakra-ui/utilities/range-utils"
+} from "@ui-machines/core"
+import { Range } from "@ui-machines/utils/range"
 import { getStepMultipler } from "../event-utils"
 import { DOMButtonProps, DOMInputProps, EventKeyMap } from "../type-utils"
 import { getElementIds } from "./number-input.dom"

@@ -1,10 +1,9 @@
 import {
   defaultPropNormalizer,
-  determineBlur,
   PropNormalizer,
   StateMachine as S,
-} from "@chakra-ui/machine/vanilla"
-import { dataAttr } from "@chakra-ui/utilities"
+} from "@ui-machines/core"
+import { dataAttr, isValidBlurEvent } from "@ui-machines/utils"
 import { determineEventKey } from "../event-utils"
 import {
   DOMButtonProps,
@@ -61,7 +60,7 @@ export function connectTagsInputMachine(
         send("FOCUS")
       },
       onBlur(event) {
-        const isValidBlur = determineBlur(event, {
+        const isValidBlur = isValidBlurEvent(event, {
           exclude: getElements(ctx).root,
         })
         if (isValidBlur) {

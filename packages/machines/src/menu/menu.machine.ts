@@ -1,7 +1,7 @@
-import { createMachine, preserve, trackPointerDown } from "@chakra-ui/machine"
-import { nextTick } from "@chakra-ui/utilities"
+import { createMachine, preserve, trackPointerDown } from "@ui-machines/core"
+import { nextTick } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
-import { collection, getElements } from "./menu.dom"
+import { dom, getElements } from "./menu.dom"
 
 export type MenuMachineContext = WithDOM<{
   activeDescendantId: string | null
@@ -122,20 +122,20 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         nextTick(() => menu?.focus())
       },
       focusFirstItem(ctx) {
-        const menuitems = collection(ctx)
+        const menuitems = dom(ctx)
         ctx.activeDescendantId = menuitems.first.id
       },
       focusLastItem(ctx) {
-        const menuitems = collection(ctx)
+        const menuitems = dom(ctx)
         ctx.activeDescendantId = menuitems.last.id
       },
       focusNextItem(ctx) {
-        const menuitems = collection(ctx)
+        const menuitems = dom(ctx)
         const next = menuitems.next(ctx.activeDescendantId ?? "")
         ctx.activeDescendantId = next?.id ?? null
       },
       focusPrevItem(ctx) {
-        const menuitems = collection(ctx)
+        const menuitems = dom(ctx)
         const prev = menuitems.prev(ctx.activeDescendantId ?? "")
         ctx.activeDescendantId = prev?.id ?? null
       },
@@ -150,7 +150,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         nextTick(() => button?.focus())
       },
       focusMatchedItem(ctx, evt) {
-        const menuitems = collection(ctx)
+        const menuitems = dom(ctx)
         const node = menuitems.searchByKey(evt.key)
         ctx.activeDescendantId = node?.id ?? ctx.activeDescendantId
       },

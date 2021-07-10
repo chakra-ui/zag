@@ -10,7 +10,7 @@ export function isSelectableInput(el: unknown): el is HTMLInputElement {
   return el instanceof HTMLInputElement && "select" in el
 }
 
-export function contains(parent: DOMNode, child: DOMNode) {
+export function contains(parent: DOMNode | undefined, child: DOMNode) {
   if (!parent) return false
   return (
     parent === child ||
@@ -19,7 +19,7 @@ export function contains(parent: DOMNode, child: DOMNode) {
 }
 
 export function isHidden(
-  node: HTMLElement | null,
+  node: HTMLElement | null | undefined,
   { until }: { until?: HTMLElement | null } = {},
 ) {
   if (!node || getComputedStyle(node).visibility === "hidden") return true
@@ -53,25 +53,27 @@ const focusableElements = [
 const FOCUSABLE_ELEMENT_SELECTOR = focusableElements.join()
 
 export class DOMHelper {
-  constructor(public el: HTMLElement) {}
+  constructor(public el: HTMLElement | null | undefined) {}
 
   attr(value: string) {
-    return this.el.getAttribute(value)
+    return this.el?.getAttribute(value)
   }
 
   has(value: string) {
-    return this.el.hasAttribute(value)
+    return this.el?.hasAttribute(value)
   }
 
   $<T extends HTMLElement>(selector: string) {
-    return this.el.querySelector<T>(selector)
+    return this.el?.querySelector<T>(selector)
   }
 
   $$<T extends HTMLElement>(selector: string) {
-    return Array.from(this.el.querySelectorAll<T>(selector))
+    return Array.from(this.el?.querySelectorAll<T>(selector) ?? [])
   }
 
   getFocusables(includeContainer = false) {
+    if (!this.el) return []
+
     let els = this.$$(FOCUSABLE_ELEMENT_SELECTOR)
 
     if (includeContainer) {
@@ -93,14 +95,16 @@ export class DOMHelper {
   }
 
   get hasDisplayNone() {
+    if (!this.el) return false
     return this.win.getComputedStyle(this.el).display === "none"
   }
 
   get hasTabIndex() {
-    return this.el.hasAttribute("tabindex")
+    return this.el?.hasAttribute("tabindex")
   }
 
   get hasNegativeTabIndex() {
+    if (!this.el) return false
     return this.hasTabIndex && this.el.tabIndex < 0
   }
 
@@ -115,14 +119,14 @@ export class DOMHelper {
   }
 
   get isContentEditable() {
-    return this.el.isContentEditable
+    return this.el?.isContentEditable
   }
 
   get isFocusable() {
     if (!isHTMLElement(this.el) || this.isHidden || this.isDisabled) {
       return false
     }
-    return this.el.matches(FOCUSABLE_ELEMENT_SELECTOR)
+    return this.el?.matches(FOCUSABLE_ELEMENT_SELECTOR)
   }
 
   get isTabbable() {
@@ -130,11 +134,11 @@ export class DOMHelper {
   }
 
   get doc() {
-    return this.el.ownerDocument
+    return this.el?.ownerDocument ?? document
   }
 
   get win() {
-    return this.el.ownerDocument.defaultView ?? window
+    return this.el?.ownerDocument.defaultView ?? window
   }
 
   contains(node: DOMNode) {
@@ -146,7 +150,7 @@ export class DOMHelper {
   }
 
   get tagName() {
-    return this.el.tagName.toLowerCase()
+    return this.el?.tagName.toLowerCase()
   }
 }
 
