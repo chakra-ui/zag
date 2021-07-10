@@ -15,12 +15,6 @@
   "module": "dist/ui-machines-vue.esm.js",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/vue",
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "require": "./dist/ui-machines-machine.cjs.js",
-      "default": "./dist/ui-machines-machine.esm.js"
-    }
-  },
   "files": [
     "dist"
   ],

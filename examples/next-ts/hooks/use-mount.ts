@@ -1,4 +1,4 @@
-import { AnyFunction } from "@chakra-ui/utilities"
+import { AnyFunction } from "@ui-machines/utils/function"
 import { useId } from "@reach/auto-id"
 import { useEffect, useRef } from "react"
 

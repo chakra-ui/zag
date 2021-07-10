@@ -1,4 +1,4 @@
-import { isTouchEvent } from "./assertion"
+import { isTouchEvent } from "./dom-event"
 
 const defaultPagePoint = { pageX: 0, pageY: 0 }
 

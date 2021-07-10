@@ -15,12 +15,6 @@
   "module": "dist/ui-machines-utils.esm.js",
   "repository": "https://github.com/ui-machines/core/tree/main/packages/utilities",
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "require": "./dist/ui-machines-utils.cjs.js",
-      "default": "./dist/ui-machines-utils.esm.js"
-    }
-  },
   "preconstruct": {
     "entrypoints": [
       "index.ts",

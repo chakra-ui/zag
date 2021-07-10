@@ -1,4 +1,4 @@
-import { isBrowser } from "@chakra-ui/utilities/platform-utils"
+import { isBrowser } from "@ui-machines/utils/env-utils"
 import { h } from "vue"
 
 export function StateVisualizer(props: { state: Record<string, any> }) {
