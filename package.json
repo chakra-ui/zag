@@ -79,13 +79,13 @@
   "preconstruct": {
     "packages": [
       "packages/utilities",
-      "packages/machines/*",
+      "packages/machines",
       "packages/core/*"
     ]
   },
   "workspaces": [
     "packages/utilities",
-    "packages/machines/*",
+    "packages/machines",
     "packages/core/*",
     "examples/*"
   ]
