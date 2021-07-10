@@ -1,5 +1,5 @@
 import { isFunction } from "./assertion"
-import { __DEV__ } from "./environment"
+import { __DEV__ } from "./env"
 
 // schedule task to next tick using double `requestAnimationFrame`
 export function nextTick(fn: VoidFunction) {

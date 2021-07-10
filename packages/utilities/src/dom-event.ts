@@ -5,7 +5,7 @@ import {
   supportsMouseEvents,
   supportsPointerEvents,
   supportsTouchEvents,
-} from "./environment"
+} from "./env"
 import { cast, runIfFn } from "./function"
 import { AnyPointerEvent, Point, PointType } from "./point"
 
