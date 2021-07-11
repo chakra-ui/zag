@@ -1,10 +1,16 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@1.6.0/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "$schema": "https://unpkg.com/@changesets/config@1.4.0/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "chakra-ui/ui-machines" }
+  ],
   "commit": false,
   "linked": [],
-  "access": "restricted",
-  "baseBranch": "master",
+  "access": "public",
+  "baseBranch": "main",
   "updateInternalDependencies": "patch",
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "onlyUpdatePeerDependentsWhenOutOfRange": true
+  },
   "ignore": []
 }
