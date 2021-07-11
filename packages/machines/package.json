@@ -1,6 +1,6 @@
 {
   "name": "@ui-machines/dom",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Framework-agnostic State Machines for common UI Patterns",
   "main": "dist/ui-machines-dom.cjs.js",
   "module": "dist/ui-machines-dom.esm.js",
@@ -33,8 +33,8 @@
   },
   "dependencies": {
     "@types/react": "^17.0.6",
-    "@ui-machines/core": "0.1.0",
-    "@ui-machines/utils": "0.1.0",
+    "@ui-machines/core": "0.0.0",
+    "@ui-machines/utils": "0.0.0",
     "valtio": "^1.0.5"
   }
 }

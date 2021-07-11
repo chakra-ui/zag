@@ -1,6 +1,6 @@
 {
   "name": "@ui-machines/react",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "The react wrapper for ui-machines",
   "keywords": [
     "ui-machines",
@@ -34,8 +34,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@ui-machines/core": "0.1.0",
-    "@ui-machines/utils": "0.1.0",
+    "@ui-machines/core": "0.0.0",
+    "@ui-machines/utils": "0.0.0",
     "valtio": "^1.0.5"
   },
   "devDependencies": {
