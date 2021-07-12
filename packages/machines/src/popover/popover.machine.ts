@@ -102,8 +102,8 @@ export const popoverMachine = createMachine<
       autoFocus(ctx) {
         nextTick(() => {
           const { getFirstFocusable } = dom(ctx)
-          const el = getFirstFocusable()
-          el?.focus()
+          const firstFocusable = getFirstFocusable()
+          firstFocusable?.focus()
         })
       },
       restoreFocus(ctx) {

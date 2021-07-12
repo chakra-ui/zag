@@ -26,9 +26,9 @@ export function dom(ctx: PopoverMachineContext) {
   const { content } = getElements(ctx)
   return {
     getFirstFocusable() {
-      const focusables = new DOMHelper(content).getFocusables(true)
-      const nodelist = new ArrayCollection(focusables)
-      return nodelist.first
+      const focusables = new DOMHelper(content).getFocusables()
+      const collection = new ArrayCollection(focusables)
+      return !collection.isEmpty ? collection.first : content
     },
   }
 }
