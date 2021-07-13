@@ -1,5 +1,5 @@
 import { createMachine, Machine } from "@ui-machines/core"
-import { defaultTimeouts } from "./toast.utils"
+import { getToastDuration } from "./toast.utils"
 
 export type ToastType = "success" | "error" | "loading" | "blank" | "custom"
 
@@ -20,6 +20,7 @@ export type ToastMachineContext = {
   role: "status" | "alert"
   "aria-live": "assertive" | "off" | "polite"
   duration?: number
+  progress?: { max: number; value: number }
 }
 
 export type ToastMachineState = {
@@ -29,22 +30,38 @@ export type ToastMachineState = {
 export type ToastMachine = Machine<ToastMachineContext, ToastMachineState>
 
 export function createToastMachine(options: Partial<ToastMachineContext>) {
+  const {
+    type = "blank",
+    role = "status",
+    duration,
+    id = "toast",
+    ...rest
+  } = options
+
+  const timeout = getToastDuration(duration, type)
+
   const toast = createMachine<ToastMachineContext, ToastMachineState>(
     {
       id: options.id,
       initial: "active",
       context: {
-        type: "blank",
-        role: "status",
+        type,
+        role,
         "aria-live": "polite",
-        id: "toast",
-        duration: 3000,
-        ...options,
+        id,
+        duration: timeout,
+        progress: { max: timeout, value: timeout },
+        ...rest,
       },
       on: {
-        UPDATE: {
-          actions: "updateToast",
-        },
+        UPDATE: [
+          {
+            cond: "hasDurationChanged",
+            target: "active:temp",
+            actions: "updateToast",
+          },
+          { actions: "updateToast" },
+        ],
       },
       states: {
         "active:temp": {
@@ -61,16 +78,23 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
           after: {
             VISIBLE_DURATION: "dismissing",
           },
+          every: {
+            PROGRESS_INTERVAL: "setProgress",
+          },
           on: {
             DISMISS: "dismissing",
-            PAUSE: "visible",
-            CHANGE_DURATION: {
-              target: "active:temp",
-              actions: "setDuration",
+            PAUSE: {
+              target: "visible",
+              actions: "setDurationToProgress",
+            },
+            FORCE_DISMISS: {
+              target: "inactive",
+              actions: "notifyParent",
             },
           },
         },
         dismissing: {
+          entry: "setProgress",
           after: {
             DISMISS_DURATION: {
               target: "inactive",
@@ -84,11 +108,27 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
       },
     },
     {
+      guards: {
+        hasDurationChanged(ctx, evt) {
+          const { duration, type } = evt
+          const durationChanged = duration != null && duration !== ctx.duration
+          const typeChanged = type != null && type !== ctx.type
+          return durationChanged || typeChanged
+        },
+      },
       delays: {
-        VISIBLE_DURATION: (ctx) => ctx.duration ?? defaultTimeouts[ctx.type],
-        DISMISS_DURATION: 600,
+        VISIBLE_DURATION: (ctx) => ctx.duration!,
+        DISMISS_DURATION: 1000,
+        PROGRESS_INTERVAL: 10,
       },
       actions: {
+        setDurationToProgress(ctx) {
+          ctx.duration = ctx.progress?.value
+        },
+        setProgress(ctx) {
+          if (!ctx.progress) return
+          ctx.progress.value -= 10
+        },
         notifyParent() {
           toast.sendParent({ type: "REMOVE_TOAST", id: toast.id })
         },
@@ -96,8 +136,15 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
           ctx.duration = evt.value
         },
         updateToast(ctx, evt) {
+          const { duration: _duration, type: _type } = evt.toast
+          const duration = getToastDuration(_duration, _type)
+
           for (const key in evt.toast) {
             ctx[key] = evt.toast[key]
+          }
+
+          if (_type && _duration == null) {
+            ctx.duration = duration
           }
         },
       },

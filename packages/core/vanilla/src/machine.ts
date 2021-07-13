@@ -354,7 +354,7 @@ export class Machine<
     const event = toEvent<TEvent>(ActionTypes.After)
 
     const determineDelay = determineDelayFn(transition.delay, this.delayMap)
-    const delay = determineDelay(this.contextSnapshot, event) ?? 0
+    const delay = determineDelay(this.contextSnapshot, event)
 
     let id: ReturnType<typeof globalThis.setTimeout>
 

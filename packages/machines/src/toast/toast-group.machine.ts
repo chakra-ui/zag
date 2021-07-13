@@ -32,6 +32,13 @@ export const toastsMachine = createMachine<ToastGroupMachineContext>(
           })
         },
       },
+      PAUSE_TOAST: {
+        actions: (ctx, evt) => {
+          const toast = ctx.toasts.find((toast) => toast.id === evt.id)
+          if (!toast) return
+          toastsMachine.sendChild("PAUSE", toast.id)
+        },
+      },
       PAUSE_ALL: {
         actions: (ctx) => {
           ctx.toasts.forEach((toast) => {

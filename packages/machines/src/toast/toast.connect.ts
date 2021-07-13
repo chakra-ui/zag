@@ -3,9 +3,13 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
+import { runIfFn } from "@ui-machines/utils/function"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import { ToastMachineContext, ToastPlacement } from "./toast.machine"
+import { getPlacementStyle } from "./toast.utils"
+
+type ToastOptions = Partial<ToastMachineContext>
 
 export function connectToastMachine(
   state: S.State<ToastGroupMachineContext>,
@@ -15,39 +19,83 @@ export function connectToastMachine(
   const { context: ctx } = state
 
   return {
-    isToastVisible(id: string) {
+    isVisible(id: string) {
       if (!ctx.toasts.length) return false
       return !!ctx.toasts.find((toast) => toast.id == id)
     },
 
-    addToast(options: Partial<ToastMachineContext>) {
+    create(options: ToastOptions) {
       const uid = "toast-" + Math.random().toString(36).substr(2, 9)
       const id = options.id ? options.id : uid
 
-      if (this.isToastVisible(id)) return
+      if (this.isVisible(id)) return
       send({ type: "ADD_TOAST", toast: { ...options, id } })
 
       return id
     },
 
-    dismissToast(id: string) {
-      if (!this.isToastVisible(id)) return
-      send({ type: "DISMISS_TOAST", id })
+    upsert(options: ToastOptions) {
+      const { id } = options
+      const isVisible = id ? this.isVisible(id) : false
+      if (isVisible && id != null) {
+        return this.update(id, options)
+      } else {
+        return this.create(options)
+      }
     },
 
-    dismissAll() {
-      send("DISMISS_ALL")
+    dismiss(id?: string) {
+      if (id == null) {
+        send("DISMISS_ALL")
+      } else if (this.isVisible(id)) {
+        send({ type: "DISMISS_TOAST", id })
+      }
     },
 
-    updateToast(id: string, options: Partial<ToastMachineContext>) {
-      if (!this.isToastVisible(id)) return
+    update(id: string, options: ToastOptions) {
+      if (!this.isVisible(id)) return
       send({ type: "UPDATE_TOAST", id, toast: options })
+      return id
     },
 
-    // promise<T>(promise: Promise<T>, messages: any, options: any) {
-    //   promise.then((res) => {}).catch((err) => {})
-    //   return promise
-    // },
+    loading(options: ToastOptions) {
+      options.type = "loading"
+      return this.upsert(options)
+    },
+
+    success(options: ToastOptions) {
+      options.type = "success"
+      return this.upsert(options)
+    },
+
+    error(options: ToastOptions) {
+      options.type = "error"
+      return this.upsert(options)
+    },
+
+    promise<T>(promise: Promise<T>, msgs: any, opts: ToastOptions) {
+      const id = this.loading({ ...opts, type: "loading", title: msgs.loading })
+
+      promise
+        .then((response) => {
+          const message = runIfFn(msgs.loading, response)
+          this.success({ ...opts, id, title: message })
+        })
+        .catch((error) => {
+          const message = runIfFn(msgs.error, error)
+          this.error({ ...opts, id, title: message })
+        })
+
+      return promise
+    },
+
+    pause(id?: string) {
+      if (id == null) {
+        send("PAUSE_ALL")
+      } else if (this.isVisible(id)) {
+        send({ type: "PAUSE_TOAST", id })
+      }
+    },
 
     getContainerProps(placement: ToastPlacement) {
       return normalize<WithDataAttr<DOMHTMLProps>>({
@@ -56,30 +104,5 @@ export function connectToastMachine(
         style: getPlacementStyle(placement),
       })
     },
-  }
-}
-
-const placementMap = {
-  top: "calc(env(safe-area-inset-top) + 1rem)",
-  left: "calc(env(safe-area-inset-left) + 1rem)",
-  right: "calc(env(safe-area-inset-right) + 1rem)",
-  bottom: "calc(env(safe-area-inset-bottom) + 1rem)",
-}
-
-function getPlacementStyle(placement: ToastPlacement): DOMHTMLProps["style"] {
-  const isTopOrBottom = placement === "top" || placement === "bottom"
-
-  const styles = Object.fromEntries(
-    Object.entries(placementMap).filter(([key]) => placement.includes(key)),
-  )
-
-  return {
-    ...styles,
-    position: "fixed",
-    zIndex: 9999,
-    pointerEvents: "none",
-    display: "flex",
-    flexDirection: "column",
-    margin: isTopOrBottom ? "0 auto" : undefined,
   }
 }

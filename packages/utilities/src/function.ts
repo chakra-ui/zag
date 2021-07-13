@@ -74,3 +74,14 @@ export const pipe =
   <T>(...fns: Array<(a: T) => T>) =>
   (v: T) =>
     fns.reduce((a, b) => b(a), v)
+
+/**
+ * Generates a unique id
+ */
+export const uuid = (() => {
+  let count = 0
+  return () => {
+    count++
+    return count.toString(36).substr(2, 9)
+  }
+})()
