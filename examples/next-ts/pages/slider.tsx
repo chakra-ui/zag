@@ -1,5 +1,5 @@
 import { useMachine } from "@ui-machines/react"
-import { connectSliderMachine, sliderMachine } from "@ui-machines/dom"
+import { connectSliderMachine, sliderMachine } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"

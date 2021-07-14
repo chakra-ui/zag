@@ -1,9 +1,9 @@
 {
-  "name": "@ui-machines/dom",
+  "name": "@ui-machines/web",
   "version": "0.0.0",
   "description": "Framework-agnostic State Machines for common UI Patterns",
-  "main": "dist/ui-machines-dom.cjs.js",
-  "module": "dist/ui-machines-dom.esm.js",
+  "main": "dist/ui-machines-web.cjs.js",
+  "module": "dist/ui-machines-web.esm.js",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/ui-machines",
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",

@@ -3,7 +3,7 @@ import {
   connectTooltipMachine,
   tooltipMachine,
   tooltipStore,
-} from "@ui-machines/dom"
+} from "@ui-machines/web"
 import { useMount } from "hooks/use-mount"
 
 const Tooltip = (props: { id?: string }) => {

@@ -51,7 +51,7 @@ the component state machines.
 ### React
 
 ```jsx
-import { toggleMachine, connectToggleMachine } from "@ui-machines/dom"
+import { toggleMachine, connectToggleMachine } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
 function Tabs() {

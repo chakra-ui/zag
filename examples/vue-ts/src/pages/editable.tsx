@@ -9,7 +9,7 @@ import {
   watch,
   watchEffect,
 } from "vue"
-import { connectEditableMachine, editableMachine } from "@ui-machines/dom"
+import { connectEditableMachine, editableMachine } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { StateVisualizer } from "../components/state-visualizer"
 

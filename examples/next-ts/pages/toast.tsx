@@ -3,7 +3,7 @@ import {
   connectToastMachine,
   toastGroupMachine,
   ToastMachine,
-} from "@ui-machines/dom"
+} from "@ui-machines/web"
 import { useActor, useMachine } from "@ui-machines/react"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"

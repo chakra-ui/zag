@@ -1,5 +1,5 @@
 import { useMachine } from "@ui-machines/react"
-import { connectNumberInputMachine, numberInputMachine } from "@ui-machines/dom"
+import { connectNumberInputMachine, numberInputMachine } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 

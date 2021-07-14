@@ -1,5 +1,5 @@
 import { useMachine } from "@ui-machines/react"
-import { connectEditableMachine, editableMachine } from "@ui-machines/dom"
+import { connectEditableMachine, editableMachine } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 

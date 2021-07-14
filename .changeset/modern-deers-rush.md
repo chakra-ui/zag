@@ -5,7 +5,7 @@
 "@ui-machines/svelte": minor
 "@ui-machines/core": minor
 "@ui-machines/vue": minor
-"@ui-machines/dom": minor
+"@ui-machines/web": minor
 "@ui-machines/utils": minor
 ---
 
