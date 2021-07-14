@@ -15,7 +15,7 @@ import { getPlacementStyle } from "./toast.utils"
 
 type ToastOptions = Partial<ToastMachineContext>
 
-export function connectToastMachine(
+export function connectToastGroupMachine(
   state: S.State<ToastGroupMachineContext>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize: PropNormalizer = defaultPropNormalizer,

@@ -76,9 +76,9 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
           {
             cond: or("hasDurationChanged", "hasTypeChanged"),
             target: "active:temp",
-            actions: "updateContext",
+            actions: "setContext",
           },
-          { actions: "updateContext" },
+          { actions: "setContext" },
         ],
       },
       states: {
@@ -182,7 +182,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         invokeOnClose(ctx) {
           ctx.onClose?.()
         },
-        updateContext(ctx, evt) {
+        setContext(ctx, evt) {
           const { duration: newDuration, type: newType } = evt.toast
           const duration = getToastDuration(newDuration, newType)
 

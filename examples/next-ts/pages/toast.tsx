@@ -1,10 +1,10 @@
-import { useActor, useMachine } from "@ui-machines/react"
 import {
-  toastsMachine,
-  ToastMachine,
+  connectToastGroupMachine,
   connectToastMachine,
+  toastGroupMachine,
+  ToastMachine,
 } from "@ui-machines/dom"
-import { StateVisualizer } from "components/state-visualizer"
+import { useActor, useMachine } from "@ui-machines/react"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
@@ -19,38 +19,30 @@ const backgrounds = {
 const Toast = ({ actor }: { actor: ToastMachine }) => {
   const [state, send] = useActor(actor)
   const ctx = state.context
+
+  const toast = connectToastMachine(state, send)
+
   return (
     <pre
-      style={{ padding: 10, background: backgrounds[ctx.type] }}
-      onPointerEnter={() => {
-        send("PAUSE")
-      }}
-      onPointerLeave={() => {
-        send("RESUME")
-      }}
+      hidden={!toast.isVisible}
+      style={{ padding: 10, background: backgrounds[ctx.type], maxWidth: 400 }}
+      onPointerEnter={toast.pause}
+      onPointerLeave={toast.resume}
     >
       <progress max={ctx.progress?.max} value={ctx.progress?.value} />
       <p>{ctx.title}</p>
-      <p>
-        {ctx.type} {ctx.type === "loading" ? <BeatLoader /> : null}
-      </p>
-      <p>{String(ctx.duration)}</p>
-      <StateVisualizer
-        state={state}
-        reset
-        style={{ display: "inline-block" }}
-      />
-      <button onClick={() => send("DISMISS")}>Close</button>
+      <p>{ctx.type === "loading" ? <BeatLoader /> : null}</p>
+      <button onClick={toast.dismiss}>Close</button>
     </pre>
   )
 }
 
 function Page() {
-  const [state, send] = useMachine(toastsMachine)
+  const [state, send] = useMachine(toastGroupMachine)
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
-  const toasts = connectToastMachine(state, send)
+  const toasts = connectToastGroupMachine(state, send)
 
   const id = useRef<string>()
 

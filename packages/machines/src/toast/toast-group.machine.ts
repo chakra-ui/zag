@@ -11,7 +11,7 @@ export type ToastGroupMachineContext = WithDOM<{
   max: number
 }>
 
-export const toastsMachine = createMachine<ToastGroupMachineContext>(
+export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
   {
     id: "toaster",
     initial: "active",
@@ -36,7 +36,7 @@ export const toastsMachine = createMachine<ToastGroupMachineContext>(
         actions: (ctx, evt) => {
           const toast = ctx.toasts.find((toast) => toast.id === evt.id)
           if (!toast) return
-          toastsMachine.sendChild("PAUSE", toast.id)
+          toastGroupMachine.sendChild("PAUSE", toast.id)
         },
       },
       PAUSE_ALL: {
@@ -56,24 +56,29 @@ export const toastsMachine = createMachine<ToastGroupMachineContext>(
       ADD_TOAST: {
         cond: (ctx) => ctx.toasts.length < ctx.max,
         actions: (ctx, evt) => {
-          ctx.toasts.push(toastsMachine.spawn(createToastMachine(evt.toast)))
+          ctx.toasts.push(
+            toastGroupMachine.spawn(createToastMachine(evt.toast)),
+          )
         },
       },
       UPDATE_TOAST: {
         actions: (ctx, evt) => {
-          toastsMachine.sendChild({ type: "UPDATE", toast: evt.toast }, evt.id)
+          toastGroupMachine.sendChild(
+            { type: "UPDATE", toast: evt.toast },
+            evt.id,
+          )
         },
       },
       DISMISS_TOAST: {
         actions: (ctx, evt) => {
           const toast = ctx.toasts.find((toast) => toast.id === evt.id)
           if (!toast) return
-          toastsMachine.sendChild("DISMISS", toast.id)
+          toastGroupMachine.sendChild("DISMISS", toast.id)
         },
       },
       REMOVE_TOAST: {
         actions: (ctx, evt) => {
-          toastsMachine.stopChild(evt.id)
+          toastGroupMachine.stopChild(evt.id)
           ctx.toasts = ctx.toasts.filter((toast) => toast.id !== evt.id)
         },
       },
