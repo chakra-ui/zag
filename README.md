@@ -27,11 +27,11 @@ patterns using the state machine and XState methodology.
 ## Installation
 
 ```sh
-npm i --save @ui-machines/core
+npm i --save @ui-machines/web
 
 # or
 
-yarn add @ui-machines/core
+yarn add @ui-machines/web
 ```
 
 For framework specific solutions, we provide simple wrappers to help you consume
@@ -59,10 +59,10 @@ function Tabs() {
   const [state, send] = useMachine(toggleMachine)
 
   // convert machine details into `DOM` props
-  const { getButtonProps } = connectToggleMachine(state, send)
+  const { buttonProps } = connectToggleMachine(state, send)
 
   // consume into components
-  return <button {...getButtonProps()}>Toggle me</button>
+  return <button {...buttonProps}>Toggle me</button>
 }
 ```
 
