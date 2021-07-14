@@ -1,10 +1,7 @@
 import { defineComponent } from "@vue/runtime-core"
 import { computed, nextTick, onMounted, ref, h, Fragment, watch } from "vue"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
-import {
-  numberInputMachine,
-  connectNumberInputMachine,
-} from "@ui-machines/core"
+import { numberInputMachine, connectNumberInputMachine } from "@ui-machines/web"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default defineComponent({
