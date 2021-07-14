@@ -1,5 +1,8 @@
-import { createMachine, Machine } from "@ui-machines/core"
+import { createMachine, guards, Machine } from "@ui-machines/core"
+import { addDomEvent, noop, Range } from "@ui-machines/utils"
 import { getToastDuration } from "./toast.utils"
+
+const { or, not } = guards
 
 export type ToastType = "success" | "error" | "loading" | "blank" | "custom"
 
@@ -11,6 +14,18 @@ export type ToastPlacement =
   | "bottom"
   | "bottom-end"
 
+export function getToastsByPlacement(toasts: ToastMachine[]) {
+  const result: Partial<Record<ToastPlacement, ToastMachine[]>> = {}
+
+  for (const toast of toasts) {
+    const placement = toast.state.context.placement!
+    result[placement] ||= []
+    result[placement]!.push(toast)
+  }
+
+  return result
+}
+
 export type ToastMachineContext = {
   id: string
   type: ToastType
@@ -21,6 +36,8 @@ export type ToastMachineContext = {
   "aria-live": "assertive" | "off" | "polite"
   duration?: number
   progress?: { max: number; value: number }
+  onClose?: VoidFunction
+  pauseOnPageIdle?: boolean
 }
 
 export type ToastMachineState = {
@@ -51,36 +68,45 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         id,
         duration: timeout,
         progress: { max: timeout, value: timeout },
+        pauseOnPageIdle: false,
         ...rest,
       },
       on: {
         UPDATE: [
           {
-            cond: "hasDurationChanged",
+            cond: or("hasDurationChanged", "hasTypeChanged"),
             target: "active:temp",
-            actions: "updateToast",
+            actions: "updateContext",
           },
-          { actions: "updateToast" },
+          { actions: "updateContext" },
         ],
       },
       states: {
         "active:temp": {
           after: {
+            // we use this to force a re-entry into the "active" state
             0: "active",
           },
         },
         visible: {
+          activities: "checkDocumentVisibility",
           on: {
             RESUME: "active",
+            DISMISS: "dismissing",
           },
         },
         active: {
+          activities: "checkDocumentVisibility",
           after: {
             VISIBLE_DURATION: "dismissing",
           },
-          every: {
-            PROGRESS_INTERVAL: "setProgress",
-          },
+          every: [
+            {
+              cond: not("isLoadingType"),
+              actions: "setProgressValue",
+              delay: "PROGRESS_INTERVAL",
+            },
+          ],
           on: {
             DISMISS: "dismissing",
             PAUSE: {
@@ -89,31 +115,45 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
             },
             FORCE_DISMISS: {
               target: "inactive",
-              actions: "notifyParent",
+              actions: "notifyParentToRemove",
             },
           },
         },
         dismissing: {
-          entry: "setProgress",
+          entry: "clearProgressValue",
           after: {
             DISMISS_DURATION: {
               target: "inactive",
-              actions: "notifyParent",
+              actions: "notifyParentToRemove",
             },
           },
         },
         inactive: {
+          entry: "invokeOnClose",
           type: "final",
         },
       },
     },
     {
+      activities: {
+        checkDocumentVisibility(ctx, evt, { send }) {
+          if (!ctx.pauseOnPageIdle) return noop
+          return addDomEvent(document, "visibilitychange", () => {
+            const isPageHidden =
+              document.hidden || document.msHidden || document.webkitHidden
+            send(isPageHidden ? "PAUSE" : "RESUME")
+          })
+        },
+      },
       guards: {
+        isLoadingType(ctx) {
+          return ctx.type === "loading"
+        },
+        hasTypeChanged(ctx, evt) {
+          return evt.type != null && evt.type !== ctx.type
+        },
         hasDurationChanged(ctx, evt) {
-          const { duration, type } = evt
-          const durationChanged = duration != null && duration !== ctx.duration
-          const typeChanged = type != null && type !== ctx.type
-          return durationChanged || typeChanged
+          return evt.duration != null && evt.duration !== ctx.duration
         },
       },
       delays: {
@@ -125,26 +165,34 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         setDurationToProgress(ctx) {
           ctx.duration = ctx.progress?.value
         },
-        setProgress(ctx) {
+        setProgressValue(ctx) {
           if (!ctx.progress) return
-          ctx.progress.value -= 10
+          const { max, value } = ctx.progress
+          // adding `- 1` makes setInterval work consistently across browsers
+          const range = new Range({ min: 0, max, step: 10, value: value - 1 })
+          ctx.progress.value = range.decrement().clamp().valueOf()
         },
-        notifyParent() {
+        clearProgressValue(ctx) {
+          if (!ctx.progress) return
+          ctx.progress.value = 0
+        },
+        notifyParentToRemove() {
           toast.sendParent({ type: "REMOVE_TOAST", id: toast.id })
         },
-        setDuration(ctx, evt) {
-          ctx.duration = evt.value
+        invokeOnClose(ctx) {
+          ctx.onClose?.()
         },
-        updateToast(ctx, evt) {
-          const { duration: _duration, type: _type } = evt.toast
-          const duration = getToastDuration(_duration, _type)
+        updateContext(ctx, evt) {
+          const { duration: newDuration, type: newType } = evt.toast
+          const duration = getToastDuration(newDuration, newType)
 
           for (const key in evt.toast) {
             ctx[key] = evt.toast[key]
           }
 
-          if (_type && _duration == null) {
+          if (newType && newDuration == null) {
             ctx.duration = duration
+            ctx.progress!.value = duration
           }
         },
       },

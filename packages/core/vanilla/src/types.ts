@@ -193,7 +193,7 @@ export declare namespace StateMachine {
     every?:
       | Record<string | number, Actions<TContext, TEvent>>
       | Array<{
-          interval?: number | string | Expression<TContext, TEvent, number>
+          delay?: number | string | Expression<TContext, TEvent, number>
           actions: Actions<TContext, TEvent>
           cond?: Condition<TContext, TEvent>
         }>

@@ -497,18 +497,18 @@ export class Machine<
       // picked = { interval: string | number | <ref>, actions: [...], cond: ... }
       const picked = toArray(every).find((t) => {
         //
-        const determineDelay = determineDelayFn(t.interval, this.delayMap)
-        t.interval = determineDelay(this.contextSnapshot, event)
+        const determineDelay = determineDelayFn(t.delay, this.delayMap)
+        t.delay = determineDelay(this.contextSnapshot, event)
 
         const determineGuard = determineGuardFn(t.cond, this.guardMap)
         const cond = determineGuard(this.contextSnapshot, event)
 
-        return cond ?? t.interval
+        return cond ?? t.delay
       })
 
       if (!picked) return
 
-      const determineDelay = determineDelayFn(picked.interval, this.delayMap)
+      const determineDelay = determineDelayFn(picked.delay, this.delayMap)
       const delay = determineDelay(this.contextSnapshot, event)
 
       const activity = () => {
@@ -559,6 +559,9 @@ export class Machine<
     const currentState = this.state.value!
     const stateNode = current ? this.getStateNode(current) : undefined
 
+    // cleanup activities for current state
+    this.stopActivities(currentState)
+
     // get explicit exit and implicit "after.exit" actions for current state
     const exitActions = toArray(stateNode?.exit)
 
@@ -569,25 +572,10 @@ export class Machine<
 
     // call all exit actions for current state
     this.executeActions(exitActions, event)
-
-    // cleanup activities for current state
-    this.stopActivities(currentState)
   }
 
   private performEntryEffects = (next: TState["value"], event: TEvent) => {
     const stateNode = this.getStateNode(next)
-
-    // get all entry actions
-    const entryActions = toArray(stateNode?.entry)
-    const afterActions = this.getDelayedEventActions(next)
-
-    if (stateNode?.after && afterActions) {
-      this.delayedEvents.set(next, afterActions?.exits)
-      entryActions.push(...afterActions.entries)
-    }
-
-    // execute entry actions for next state
-    this.executeActions(entryActions, event)
 
     // execute activities for next state
     const activities = toArray(stateNode?.activities)
@@ -600,6 +588,18 @@ export class Machine<
     if (activities.length > 0) {
       this.executeActivities(event, activities)
     }
+
+    // get all entry actions
+    const entryActions = toArray(stateNode?.entry)
+    const afterActions = this.getDelayedEventActions(next)
+
+    if (stateNode?.after && afterActions) {
+      this.delayedEvents.set(next, afterActions?.exits)
+      entryActions.push(...afterActions.entries)
+    }
+
+    // execute entry actions for next state
+    this.executeActions(entryActions, event)
 
     if (stateNode?.type === "final") {
       this.state.done = true

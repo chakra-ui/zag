@@ -6,7 +6,11 @@ import {
 import { runIfFn } from "@ui-machines/utils/function"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
-import { ToastMachineContext, ToastPlacement } from "./toast.machine"
+import {
+  getToastsByPlacement,
+  ToastMachineContext,
+  ToastPlacement,
+} from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
 type ToastOptions = Partial<ToastMachineContext>
@@ -19,6 +23,12 @@ export function connectToastMachine(
   const { context: ctx } = state
 
   return {
+    count: ctx.toasts.length,
+
+    toasts: ctx.toasts,
+
+    toastsMap: getToastsByPlacement(ctx.toasts),
+
     isVisible(id: string) {
       if (!ctx.toasts.length) return false
       return !!ctx.toasts.find((toast) => toast.id == id)
@@ -49,6 +59,13 @@ export function connectToastMachine(
         send("DISMISS_ALL")
       } else if (this.isVisible(id)) {
         send({ type: "DISMISS_TOAST", id })
+      }
+    },
+
+    dismissByPlacement(placement: ToastPlacement) {
+      const toasts = this.toastsMap[placement]
+      if (toasts) {
+        toasts.forEach((toast) => this.dismiss(toast.id))
       }
     },
 

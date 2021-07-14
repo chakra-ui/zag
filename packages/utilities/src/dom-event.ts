@@ -29,7 +29,8 @@ export function isRightClickEvent(event: unknown) {
 }
 
 export function isTouchEvent(event: unknown): event is TouchEvent {
-  return Boolean(event instanceof TouchEvent && event.touches)
+  if (window.TouchEvent && event instanceof window.TouchEvent) return true
+  return event != null && isObject(event) && "touches" in event
 }
 
 export function isMouseEvent(event: unknown): event is MouseEvent {
@@ -101,6 +102,12 @@ export function addDomEvent<K extends keyof WindowEventMap>(
   target: DOMEventTarget,
   type: K,
   listener: (ev: WindowEventMap[K], info: PointerEventInfo) => void,
+  options?: EventListenerOptions,
+): VoidFunction
+export function addDomEvent<K extends keyof DocumentEventMap>(
+  target: DOMEventTarget,
+  type: K,
+  listener: (ev: DocumentEventMap[K], info: PointerEventInfo) => void,
   options?: EventListenerOptions,
 ): VoidFunction
 export function addDomEvent<K extends keyof HTMLElementEventMap>(
