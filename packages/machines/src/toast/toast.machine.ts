@@ -139,8 +139,8 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         checkDocumentVisibility(ctx, evt, { send }) {
           if (!ctx.pauseOnPageIdle) return noop
           return addDomEvent(document, "visibilitychange", () => {
-            const isPageHidden =
-              document.hidden || document.msHidden || document.webkitHidden
+            const doc = document as any
+            const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden
             send(isPageHidden ? "PAUSE" : "RESUME")
           })
         },
