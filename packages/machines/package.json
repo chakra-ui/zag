@@ -8,12 +8,6 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "require": "./dist/ui-machines-dom.cjs.js",
-      "default": "./dist/ui-machines-dom.esm.js"
-    }
-  },
   "preconstruct": {
     "entrypoints": [
       "index.ts"

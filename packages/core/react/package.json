@@ -15,12 +15,6 @@
   "module": "dist/ui-machines-react.esm.js",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/react",
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "require": "./dist/ui-machines-react.cjs.js",
-      "default": "./dist/ui-machines-react.esm.js"
-    }
-  },
   "files": [
     "dist"
   ],
