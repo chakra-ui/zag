@@ -1,15 +1,16 @@
 import { createMachine, preserve, guards } from "@ui-machines/core"
-import { isArray, ArrayCollection } from "@ui-machines/utils"
+import { isArray, ArrayCollection, focus } from "@ui-machines/utils"
 import { WithDOM } from "../type-utils"
+import { dom } from "./accordion.dom"
 
 const { and, not } = guards
 
 export type AccordionMachineContext = WithDOM<{
   allowMultiple?: boolean
   allowToggle?: boolean
-  focusedId?: string
+  focusedId: string | null
   disabled?: boolean
-  activeId?: string | string[]
+  activeId: string | string[] | null
   defaultActiveId?: string | string[]
   onChange?: (activeId: string | string[]) => void
 }>
@@ -26,7 +27,10 @@ export const accordionMachine = createMachine<
     id: "accordion-machine",
     initial: "idle",
     context: {
+      focusedId: null,
+      activeId: null,
       uid: "testing",
+      allowToggle: false,
     },
     on: {
       MOUNT: {
@@ -67,6 +71,7 @@ export const accordionMachine = createMachine<
             actions: "focusLastAccordion",
           },
           BLUR: {
+            target: "idle",
             actions: "clearFocusedId",
           },
         },
@@ -75,8 +80,8 @@ export const accordionMachine = createMachine<
   },
   {
     guards: {
-      canShowMultiple(ctx) {
-        return isArray(ctx.activeId) && !!ctx.allowMultiple
+      canToggle(ctx) {
+        return !!ctx.allowToggle || !!ctx.allowMultiple
       },
       isAccordionActive(ctx, evt) {
         return isArray(ctx.activeId)
@@ -86,28 +91,44 @@ export const accordionMachine = createMachine<
     },
     actions: {
       closeAccordion(ctx, evt) {
-        if (isArray(ctx.activeId) && ctx.allowMultiple) {
-          ctx.activeId = new ArrayCollection(ctx.activeId).remove(evt.id).value
+        if (ctx.allowMultiple) {
+          ctx.activeId = ArrayCollection.from(ctx.activeId).remove(evt.id).value
         } else {
-          ctx.activeId = undefined
+          ctx.activeId = null
         }
       },
       openAccordion(ctx, evt) {
-        if (isArray(ctx.activeId) && ctx.allowMultiple) {
-          ctx.activeId = new ArrayCollection(ctx.activeId).add(evt.id).value
+        if (ctx.allowMultiple) {
+          ctx.activeId = ArrayCollection.from(ctx.activeId).add(evt.id).value
         } else {
           ctx.activeId = evt.id
         }
       },
-      focusFirstAccordion() {},
-      focusLastAccordion() {},
-      focusNextAccordion() {},
-      focusPrevAccordion() {},
+      focusFirstAccordion(ctx) {
+        const { first } = dom(ctx)
+        focus.nextTick(first)
+      },
+      focusLastAccordion(ctx) {
+        const { last } = dom(ctx)
+        focus.nextTick(last)
+      },
+      focusNextAccordion(ctx) {
+        const { next } = dom(ctx)
+        if (ctx.focusedId) {
+          focus.nextTick(next(ctx.focusedId))
+        }
+      },
+      focusPrevAccordion(ctx) {
+        const { prev } = dom(ctx)
+        if (ctx.focusedId) {
+          focus.nextTick(prev(ctx.focusedId))
+        }
+      },
       setFocusedId(ctx, evt) {
-        ctx.focusedId = evt.uid
+        ctx.focusedId = evt.id
       },
       clearFocusedId(ctx) {
-        ctx.focusedId = undefined
+        ctx.focusedId = null
       },
       setId(ctx, evt) {
         ctx.uid = evt.id

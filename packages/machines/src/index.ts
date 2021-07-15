@@ -1,3 +1,4 @@
+/* PLOP_INJECT_EXPORT */
 export * from "./editable"
 export * from "./menu"
 export * from "./number-input"
@@ -10,3 +11,4 @@ export * from "./tabs"
 export * from "./tags-input"
 export * from "./toast"
 export * from "./tooltip"
+export * from "./accordion"

@@ -28,9 +28,6 @@ export function connectAccordionMachine(
   return {
     rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
       id: ids.root,
-      onBlur() {
-        send("BLUR")
-      },
     }),
 
     getAccordionProps({ uid, disabled }: { uid: string; disabled?: boolean }) {
@@ -66,6 +63,9 @@ export function connectAccordionMachine(
           "data-ownedby": ids.root,
           onFocus() {
             send({ type: "FOCUS", id: uid })
+          },
+          onBlur() {
+            send("BLUR")
           },
           onClick() {
             send({ type: "CLICK", id: uid })
