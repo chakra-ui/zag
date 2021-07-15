@@ -32,7 +32,7 @@ async function createMachine() {
       actions.push({
         type: "addMany",
         templateFiles: "machine-template/**",
-        destination: `../packages/ui-machines/src/{{dashCase machine}}`,
+        destination: `../packages/machines/src/{{dashCase machine}}`,
         base: "machine-template/",
         data: { machine },
         abortOnFail: true,
@@ -40,7 +40,7 @@ async function createMachine() {
 
       actions.push({
         type: "append",
-        path: "../packages/ui-machines/src/index.ts",
+        path: "../packages/machines/src/index.ts",
         pattern: `/* PLOP_INJECT_EXPORT */`,
         template: `export * from "./{{dashCase machine}}"`,
       })

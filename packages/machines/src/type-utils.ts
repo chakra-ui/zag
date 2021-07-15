@@ -14,6 +14,7 @@ export type WithDataAttr<T> = T & {
   "data-uid"?: string
   "data-ownedby"?: string
   "data-selected"?: Booleanish
+  "data-expanded"?: Booleanish
   "data-highlighted"?: Booleanish
   "data-focus"?: Booleanish
   "data-hover"?: Booleanish
