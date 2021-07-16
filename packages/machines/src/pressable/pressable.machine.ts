@@ -1,7 +1,7 @@
 import { createMachine } from "@ui-machines/core"
 
 export type PressableMachineState = {
-  value: "hover" | "pressIn" | "idle" | "longPressIn" | "test"
+  value: "hover" | "press:in" | "idle" | "long:press"
 }
 
 export const pressableMachine = createMachine<{}, PressableMachineState>({
@@ -9,27 +9,27 @@ export const pressableMachine = createMachine<{}, PressableMachineState>({
   states: {
     idle: {
       on: {
-        pointerover: "hover",
+        POINTER_OVER: "hover",
       },
     },
     hover: {
       on: {
-        pointerleave: "idle",
-        pointerdown: "pressIn",
+        POINTER_LEAVE: "idle",
+        POINTER_DOWN: "press:in",
       },
     },
-    pressIn: {
+    "press:in": {
       after: {
-        500: "longPressIn",
+        500: "long:press",
       },
       on: {
-        pointerup: "hover",
+        POINTER_UP: "hover",
       },
     },
-    longPressIn: {
+    "long:press": {
       on: {
-        pointerup: "hover",
-        pointerleave: "idle",
+        POINTER_UP: "hover",
+        POINTER_LEAVE: "idle",
       },
     },
   },

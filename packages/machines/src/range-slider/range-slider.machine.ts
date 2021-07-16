@@ -29,7 +29,7 @@ export type RangeSliderMachineContext = WithDOM<{
 }>
 
 export type RangeSliderMachineState = {
-  value: "idle" | "panning" | "focus"
+  value: "mounted" | "idle" | "panning" | "focus"
 }
 
 export const rangeSliderMachine = createMachine<
@@ -38,7 +38,7 @@ export const rangeSliderMachine = createMachine<
 >(
   {
     id: "range-slider-machine",
-    initial: "idle",
+    initial: "mounted",
     context: {
       uid: "48",
       threshold: 5,
@@ -50,12 +50,15 @@ export const rangeSliderMachine = createMachine<
       orientation: "horizontal",
       direction: "ltr",
     },
-    on: {
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
-    },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         on: {
           POINTER_DOWN: {

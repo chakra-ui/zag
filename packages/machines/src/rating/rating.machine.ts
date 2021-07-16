@@ -15,7 +15,7 @@ export type RatingMachineContext = WithDOM<{
 }>
 
 export type RatingMachineState = {
-  value: "idle" | "interacting"
+  value: "mounted" | "idle" | "interacting"
 }
 
 export const ratingMachine = createMachine<
@@ -23,18 +23,21 @@ export const ratingMachine = createMachine<
   RatingMachineState
 >(
   {
-    initial: "idle",
+    initial: "mounted",
     context: {
       uid: "rating-input",
       value: -1,
       hoveredValue: -1,
     },
-    on: {
-      MOUNT: {
-        actions: ["setOwnerDocument", "setId"],
-      },
-    },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setOwnerDocument", "setId"],
+          },
+        },
+      },
       idle: {
         entry: "clearHoveredValue",
         on: {

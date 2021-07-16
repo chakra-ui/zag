@@ -28,7 +28,7 @@ export type SliderMachineContext = WithDOM<{
 }>
 
 export type SliderMachineState = {
-  value: "idle" | "panning" | "focus"
+  value: "mounted" | "idle" | "panning" | "focus"
 }
 
 export const sliderMachine = createMachine<
@@ -37,7 +37,7 @@ export const sliderMachine = createMachine<
 >(
   {
     id: "slider-machine",
-    initial: "idle",
+    initial: "mounted",
     context: {
       uid: "slider",
       disabled: false,
@@ -51,11 +51,16 @@ export const sliderMachine = createMachine<
     },
     on: {
       STOP: "focus",
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
     },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         on: {
           POINTER_DOWN: {

@@ -39,7 +39,7 @@ export type TagsInputMachineContext = WithDOM<{
 }>
 
 export type TagsInputMachineState = {
-  value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  value: "mounted" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
 }
 
 export const tagsInputMachine = createMachine<
@@ -48,11 +48,8 @@ export const tagsInputMachine = createMachine<
 >(
   {
     id: "tags-input",
-    initial: "idle",
+    initial: "mounted",
     on: {
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
       DOUBLE_CLICK_TAG: {
         target: "editing:tag",
         actions: ["setEditedId", "initEditedTagValue"],
@@ -79,6 +76,14 @@ export const tagsInputMachine = createMachine<
       direction: "ltr",
     },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         on: {
           FOCUS: "focused:input",

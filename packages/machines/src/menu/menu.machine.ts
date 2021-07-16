@@ -9,7 +9,7 @@ export type MenuMachineContext = WithDOM<{
 }>
 
 export type MenuMachineState = {
-  value: "idle" | "open" | "close"
+  value: "mounted" | "idle" | "open" | "close"
 }
 
 /**
@@ -27,12 +27,15 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       activeDescendantId: null,
       uid: "testing",
     },
-    on: {
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
-    },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         on: {
           BUTTON_CLICK: {

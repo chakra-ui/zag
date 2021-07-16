@@ -10,7 +10,7 @@ export function useMount<T extends HTMLElement = HTMLElement>(
 
   useEffect(() => {
     if (!id) return
-    send({ type: "MOUNT", doc: ref.current?.ownerDocument, id })
+    send({ type: "SETUP", doc: ref.current?.ownerDocument, id })
   }, [send, id])
 
   return ref

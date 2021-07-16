@@ -15,12 +15,12 @@ export type TabsMachineContext = WithDOM<{
 }>
 
 export type TabsMachineState = {
-  value: "idle" | "focused"
+  value: "mounted" | "idle" | "focused"
 }
 
 export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
   {
-    initial: "idle",
+    initial: "mounted",
     context: {
       direction: "ltr",
       orientation: "horizontal",
@@ -32,12 +32,17 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
       measuredRect: false,
     },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         entry: "setActiveTabRect",
         on: {
-          MOUNT: {
-            actions: ["setId", "setOwnerDocument"],
-          },
           TAB_FOCUS: { target: "focused", actions: "setFocusedId" },
           TAB_CLICK: {
             target: "focused",

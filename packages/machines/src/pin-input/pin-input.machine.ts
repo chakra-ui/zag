@@ -19,7 +19,7 @@ export type PinInputMachineContext = WithDOM<{
 }>
 
 export type PinInputMachineState = {
-  value: "idle" | "focused"
+  value: "mounted" | "idle" | "focused"
 }
 
 export const pinInputMachine = createMachine<
@@ -28,25 +28,25 @@ export const pinInputMachine = createMachine<
 >(
   {
     id: "pin-input",
-    initial: "idle",
+    initial: "mounted",
     context: {
       uid: "pin-input",
       value: [],
       focusedIndex: -1,
     },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument", "setInitialValue"],
+          },
+        },
+      },
       idle: {
         on: {
           CLEAR: {
             actions: ["clearValue", "setFocusIndexToFirst", "focusInput"],
-          },
-          MOUNT: {
-            actions: [
-              "setId",
-              "initializeValue",
-              "setOwnerDocument",
-              "autoFocus",
-            ],
           },
           FOCUS: {
             target: "focused",
@@ -115,7 +115,7 @@ export const pinInputMachine = createMachine<
       setId: (ctx, evt) => {
         ctx.uid = evt.id
       },
-      initializeValue: (ctx) => {
+      setInitialValue: (ctx) => {
         nextTick(() => {
           const inputs = dom(ctx)
           const empty = ArrayCollection.fromLength(inputs.count)

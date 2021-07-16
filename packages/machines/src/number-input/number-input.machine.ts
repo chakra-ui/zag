@@ -22,7 +22,13 @@ export type NumberInputMachineContext = {
 }
 
 export type NumberInputMachineState = {
-  value: "idle" | "spinUp" | "spinDown" | "decrementing" | "incrementing"
+  value:
+    | "mounted"
+    | "idle"
+    | "increment:interval"
+    | "decrement:interval"
+    | "decrement"
+    | "increment"
 }
 
 export const numberInputMachine = createMachine<
@@ -31,7 +37,7 @@ export const numberInputMachine = createMachine<
 >(
   {
     id: "number-input",
-    initial: "idle",
+    initial: "mounted",
     context: {
       uid: "test-id",
       value: "",
@@ -40,12 +46,15 @@ export const numberInputMachine = createMachine<
       max: Number.MAX_SAFE_INTEGER,
       allowMouseWheel: true,
     },
-    on: {
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
-    },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         activities: "attachWheelListener",
         on: {
@@ -63,12 +72,12 @@ export const numberInputMachine = createMachine<
           },
           PRESS_DOWN_INC: {
             cond: not("isAtMax"),
-            target: "incrementing",
+            target: "increment",
             actions: "focusInput",
           },
           PRESS_DOWN_DEC: {
             cond: not("isAtMin"),
-            target: "decrementing",
+            target: "decrement",
             actions: "focusInput",
           },
           INPUT_CHANGE: {
@@ -80,23 +89,23 @@ export const numberInputMachine = createMachine<
           },
         },
       },
-      spinUp: {
+      "increment:interval": {
         every: { CHANGE_INTERVAL: "increment" },
         on: {
           PRESS_UP_INC: "idle",
         },
       },
-      spinDown: {
+      "decrement:interval": {
         every: { CHANGE_INTERVAL: "decrement" },
         on: {
           PRESS_UP_DEC: "idle",
         },
       },
-      incrementing: {
+      increment: {
         entry: "increment",
         after: {
           CHANGE_DELAY: {
-            target: "spinUp",
+            target: "increment:interval",
             cond: "isInRange",
           },
         },
@@ -104,11 +113,11 @@ export const numberInputMachine = createMachine<
           PRESS_UP_INC: "idle",
         },
       },
-      decrementing: {
+      decrement: {
         entry: "decrement",
         after: {
           CHANGE_DELAY: {
-            target: "spinDown",
+            target: "decrement:interval",
             cond: "isInRange",
           },
         },

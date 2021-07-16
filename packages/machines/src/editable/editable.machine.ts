@@ -28,7 +28,7 @@ export type EditableMachineContext = WithDOM<{
 }>
 
 export type EditableMachineState = {
-  value: "preview" | "edit"
+  value: "mounted" | "preview" | "edit"
 }
 
 export const editableMachine = createMachine<
@@ -37,7 +37,7 @@ export const editableMachine = createMachine<
 >(
   {
     id: "editable-machine",
-    initial: "preview",
+    initial: "mounted",
     context: {
       uid: "32",
       value: "",
@@ -46,12 +46,15 @@ export const editableMachine = createMachine<
       submitOnBlur: true,
       selectOnFocus: true,
     },
-    on: {
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
-    },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "preview",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       preview: {
         entry: ["clearPointerdownNode"],
         on: {

@@ -16,7 +16,7 @@ export type AccordionMachineContext = WithDOM<{
 }>
 
 export type AccordionMachineState = {
-  value: "idle" | "focused"
+  value: "mounted" | "idle" | "focused"
 }
 
 export const accordionMachine = createMachine<
@@ -25,19 +25,22 @@ export const accordionMachine = createMachine<
 >(
   {
     id: "accordion-machine",
-    initial: "idle",
+    initial: "mounted",
     context: {
       focusedId: null,
       activeId: null,
       uid: "testing",
       allowToggle: false,
     },
-    on: {
-      MOUNT: {
-        actions: ["setId", "setOwnerDocument"],
-      },
-    },
     states: {
+      mounted: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
       idle: {
         on: {
           FOCUS: {

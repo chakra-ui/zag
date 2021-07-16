@@ -10,7 +10,7 @@ export type TooltipMachineContext = {
 }
 
 export type TooltipMachineState = {
-  value: "idle" | "opening" | "open" | "closing" | "closed"
+  value: "mounted" | "idle" | "opening" | "open" | "closing" | "closed"
 }
 
 export const tooltipMachine = createMachine<
@@ -19,13 +19,18 @@ export const tooltipMachine = createMachine<
 >(
   {
     id: "tooltip",
-    initial: "idle",
+    initial: "mounted",
     states: {
-      idle: {
+      mounted: {
         on: {
-          MOUNT: {
+          SETUP: {
+            target: "idle",
             actions: "setOwnerDocument",
           },
+        },
+      },
+      idle: {
+        on: {
           POINTER_ENTER: [
             { cond: "noVisibleTooltip", target: "opening" },
             { target: "open" },
@@ -48,7 +53,6 @@ export const tooltipMachine = createMachine<
             { cond: "isVisible", target: "closing" },
             { target: "closed" },
           ],
-          // POINTER_DOWN: "closed",
           ESCAPE: "closed",
         },
       },
