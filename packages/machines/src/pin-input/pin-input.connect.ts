@@ -21,7 +21,7 @@ export function connectPinInputMachine(
   return {
     getInputProps({ index }: { index: number }) {
       return normalize<WithDataAttr<DOMInputProps>>({
-        id: ids.getInputId(index.toString()),
+        id: ids.getInputId(index),
         "data-ownedby": ids.root,
         "aria-label": "Please enter your pin code",
         inputMode: ctx.type === "number" ? "numeric" : "text",

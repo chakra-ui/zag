@@ -4,7 +4,7 @@ import { PinInputMachineContext } from "./pin-input.machine"
 export function getElementIds(uid: string) {
   return {
     root: `pin-input-${uid}`,
-    getInputId: (id: string) => `pin-input-${uid}-${id}`,
+    getInputId: (id: string | number) => `pin-input-${uid}-${id}`,
   }
 }
 
