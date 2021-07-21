@@ -152,6 +152,34 @@ export class DOMHelper {
   get tagName() {
     return this.el?.tagName.toLowerCase()
   }
+
+  get parent() {
+    return this.el?.parentElement
+  }
+
+  /**
+   *  Cache the element's computed style.
+   *
+   *  The returned style is a live CSSStyleDeclaration object,
+   *  which updates automatically when the element's styles are changed.
+   *
+   * @see MDN https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle
+   */
+  private _computedStyleCache: CSSStyleDeclaration | null = null
+
+  get computedStyle() {
+    if (!this.el) return {} as CSSStyleDeclaration
+
+    if (!this._computedStyleCache) {
+      this._computedStyleCache = this.win.getComputedStyle(this.el)
+    }
+
+    return this._computedStyleCache
+  }
+
+  css(property: string) {
+    return this.computedStyle?.getPropertyValue(property)
+  }
 }
 
 export const domHelper = (el: HTMLElement) => {
