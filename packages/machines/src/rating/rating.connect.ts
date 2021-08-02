@@ -1,12 +1,11 @@
+import { cast } from "@core-foundation/utils/fn"
+import { Point } from "@core-graphics/point"
 import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { cast } from "@ui-machines/utils/function"
-import { Point } from "@ui-machines/utils/point"
-import { Rect } from "@ui-machines/utils/rect"
-import { determineEventKey } from "../event-utils"
+import { determineEventKey } from "../dom-utils"
 import {
   DOMHTMLProps,
   DOMInputProps,
@@ -61,9 +60,9 @@ export function connectRatingMachine(
         "aria-posinset": index,
         "data-highlighted": isHighlighted || undefined,
         onPointerMove(event) {
-          const rect = Rect.fromElement(event.currentTarget)
           const point = Point.fromPointerEvent(cast(event))
-          const isMidway = point.x < rect.centerPoint.x
+          const { progress } = point.relativeToNode(event.currentTarget)
+          const isMidway = progress.x < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {

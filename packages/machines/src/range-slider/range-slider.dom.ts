@@ -1,4 +1,5 @@
-import { Point, Range } from "@ui-machines/utils"
+import { Point } from "@core-graphics/point"
+import { NumericRange } from "@core-foundation/numeric-range"
 import { RangeSliderMachineContext } from "./range-slider.machine"
 
 export function getElementIds(uid: string) {
@@ -28,7 +29,7 @@ export function getElements(ctx: RangeSliderMachineContext) {
 
 export function getRangeAtIndex(ctx: RangeSliderMachineContext) {
   const { activeIndex, step, value: values } = ctx
-  const thumbRanges = Range.valuesToRanges(ctx)
+  const thumbRanges = NumericRange.fromValues(ctx.value, ctx)
   const range = thumbRanges[activeIndex]
   return range.withOptions({ value: values[activeIndex], step })
 }
@@ -38,13 +39,11 @@ export function pointToValue(ctx: RangeSliderMachineContext, info: Point) {
   if (!root) return
 
   const range = getRangeAtIndex(ctx)
-
-  const point = info.relativeToNode(root)
-
   const max = range.max / ctx.max
   const min = range.min / ctx.max
 
-  const percent = new Range({ min, max, value: point.xPercent }).clamp()
+  const { progress } = info.relativeToNode(root)
+  const percent = new NumericRange({ min, max, value: progress.x }).clamp()
 
   const opts = {
     min: ctx.min,
@@ -53,6 +52,6 @@ export function pointToValue(ctx: RangeSliderMachineContext, info: Point) {
     step: ctx.step,
   }
 
-  const value = new Range(opts).fromPercent(percent)
-  return new Range(opts).snapToStep(value).valueOf()
+  const value = NumericRange.fromPercent(+percent, opts).valueOf()
+  return new NumericRange(opts).setValue(value).snapToStep().valueOf()
 }

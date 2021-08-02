@@ -28,8 +28,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@ui-machines/core": "0.0.0",
-    "@ui-machines/utils": "0.0.0"
+    "@ui-machines/core": "0.0.0"
   },
   "devDependencies": {
     "svelte": "^3.38.2"

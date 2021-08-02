@@ -3,8 +3,10 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { cast, dataAttr, Point, Range } from "@ui-machines/utils"
-import { determineEventKey, getStepMultipler } from "../event-utils"
+import { cast } from "@core-foundation/utils/fn"
+import { NumericRange } from "@core-foundation/numeric-range"
+import { Point } from "@core-graphics/point"
+import { dataAttr, determineEventKey, getStepMultipler } from "../dom-utils"
 import {
   DOMHTMLProps,
   DOMInputProps,
@@ -39,9 +41,10 @@ export function connectRangeSliderMachine(
 
   return {
     getThumbProps(index: number) {
-      const percent = new Range({ min, max, value: values[index] }).toPercent()
-      const range = Range.valuesToRanges(ctx)[index]
-      const ariaValueText = ctx.getAriaValueText?.(values[index], index)
+      const value = values[index]
+      const percent = new NumericRange({ min, max, value }).toPercent()
+      const range = NumericRange.fromValues(ctx.value, ctx)[index]
+      const ariaValueText = ctx.getAriaValueText?.(value, index)
 
       return normalize<WithDataAttr<DOMHTMLProps>>({
         id: ids.getThumbId(index),

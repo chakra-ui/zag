@@ -1,10 +1,12 @@
+import { NumericRange } from "@core-foundation/numeric-range"
+import { cast } from "@core-foundation/utils"
+import { Point } from "@core-graphics/point"
 import {
   defaultPropNormalizer,
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { cast, dataAttr, Point, Range } from "@ui-machines/utils"
-import { determineEventKey, getStepMultipler } from "../event-utils"
+import { dataAttr, determineEventKey, getStepMultipler } from "../dom-utils"
 import {
   DOMHTMLProps,
   DOMInputProps,
@@ -20,7 +22,7 @@ export function connectSliderMachine(
   normalize: PropNormalizer = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const range = new Range(ctx)
+  const range = new NumericRange(ctx)
   const ids = getElementIds(ctx.uid)
 
   const ariaLabel = ctx["aria-label"]

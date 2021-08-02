@@ -1,4 +1,4 @@
-import { isFunction, isNumber, isString } from "@ui-machines/utils/assertion"
+import { is } from "@core-foundation/utils/is"
 
 import { StateMachine as S } from "./types"
 
@@ -15,13 +15,13 @@ export function determineDelayFn<TContext, TEvent extends S.EventObject>(
   delaysMap: S.DelayMap<TContext, TEvent> | undefined,
 ) {
   return (context: TContext, event: TEvent) => {
-    if (isNumber(delay)) return delay
+    if (is.number(delay)) return delay
 
-    if (isFunction(delay)) {
+    if (is.func(delay)) {
       return delay(context, event)
     }
 
-    if (isString(delay)) {
+    if (is.string(delay)) {
       const value = Number.parseFloat(delay)
 
       if (!Number.isNaN(value)) {
@@ -34,7 +34,7 @@ export function determineDelayFn<TContext, TEvent extends S.EventObject>(
           const msg = `[machine] Cannot determine delay for ${delay}. It doesn't exist in options.delays`
           throw new Error(msg)
         }
-        return isFunction(valueOrFn) ? valueOrFn(context, event) : valueOrFn
+        return is.func(valueOrFn) ? valueOrFn(context, event) : valueOrFn
       }
     }
   }

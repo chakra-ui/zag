@@ -1,4 +1,4 @@
-import { isBrowser } from "@ui-machines/utils/env"
+import { env } from "@core-foundation/utils/env"
 
 export function StateVisualizer(props: {
   state: Record<string, any>
@@ -26,7 +26,7 @@ export function StateVisualizer(props: {
       {JSON.stringify(
         state,
         (_, value) => {
-          return isBrowser() && value instanceof HTMLElement
+          return env.dom() && value instanceof HTMLElement
             ? value.tagName
             : value
         },

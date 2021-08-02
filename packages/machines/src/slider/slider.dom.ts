@@ -1,4 +1,4 @@
-import { Point, Range } from "@ui-machines/utils"
+import { Point, Range } from "@core-foundation/utils"
 import { SliderMachineContext } from "./slider.machine"
 
 export function getElementIds(uid: string) {

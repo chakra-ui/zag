@@ -1,5 +1,5 @@
 import { createMachine, preserve, trackPointerDown } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/utils"
+import { nextTick } from "@core-foundation/utils/fn"
 import { WithDOM } from "../type-utils"
 import { dom, getElements } from "./menu.dom"
 

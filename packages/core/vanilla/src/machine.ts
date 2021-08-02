@@ -1,11 +1,6 @@
-import { toArray } from "@ui-machines/utils/array"
-import {
-  isArray,
-  isBoolean,
-  isObject,
-  isString,
-} from "@ui-machines/utils/assertion"
-import { cast, runIfFn, warn } from "@ui-machines/utils/function"
+import { cast, runIfFn, toArray } from "@core-foundation/utils/fn"
+import { warn } from "@core-foundation/utils/warn"
+import { is } from "@core-foundation/utils/is"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"
@@ -87,11 +82,11 @@ export class Machine<
   private get sync() {
     const { syncListeners } = this.config
 
-    const syncState = isBoolean(syncListeners)
+    const syncState = is.bool(syncListeners)
       ? syncListeners
       : syncListeners?.state
 
-    const syncContext = isBoolean(syncListeners)
+    const syncContext = is.bool(syncListeners)
       ? syncListeners
       : syncListeners?.context
 
@@ -109,7 +104,7 @@ export class Machine<
     const event = toEvent<TEvent>(ActionTypes.Init)
 
     if (init) {
-      const resolved = isObject(init)
+      const resolved = is.object(init)
         ? init
         : { context: this.config.context!, value: init }
 
@@ -388,7 +383,7 @@ export class Machine<
     const entries: VoidFunction[] = []
     const exits: VoidFunction[] = []
 
-    if (isArray(stateNode.after)) {
+    if (is.array(stateNode.after)) {
       //
       const transition = this.determineTransition(stateNode.after, event)
       if (!transition) return
@@ -397,7 +392,7 @@ export class Machine<
       entries.push(actions.entry)
       exits.push(actions.exit)
       //
-    } else if (isObject(stateNode.after)) {
+    } else if (is.object(stateNode.after)) {
       //
       for (const delay in stateNode.after) {
         const transition = stateNode.after[delay]
@@ -407,12 +402,12 @@ export class Machine<
           TEvent
         > = {}
 
-        if (isArray(transition)) {
+        if (is.array(transition)) {
           //
           const picked = this.determineTransition(transition, event)
           if (picked) resolvedTransition = picked
           //
-        } else if (isString(transition)) {
+        } else if (is.string(transition)) {
           resolvedTransition = { target: transition, delay }
         } else {
           resolvedTransition = { ...transition, delay }
@@ -437,10 +432,10 @@ export class Machine<
     event: TEvent,
   ) => {
     for (const action of toArray(actions)) {
-      const fn = isString(action) ? this.actionMap?.[action] : action
+      const fn = is.string(action) ? this.actionMap?.[action] : action
 
       warn(
-        isString(action) && !fn,
+        is.string(action) && !fn,
         `[machine] No implementation found for action type ${action}`,
       )
 
@@ -462,7 +457,7 @@ export class Machine<
     activities: Array<S.Activity<TContext, TState, TEvent>>,
   ) => {
     for (const activity of activities) {
-      const fn = isString(activity) ? this.activityMap?.[activity] : activity
+      const fn = is.string(activity) ? this.activityMap?.[activity] : activity
 
       if (!fn) {
         warn(`[machine] No implementation found for activity type ${activity}`)
@@ -493,7 +488,7 @@ export class Machine<
     const event = toEvent<TEvent>(ActionTypes.Every)
 
     // every: [{ interval: 2000, actions: [...], cond: "isValid" },  { interval: 1000, actions: [...] }]
-    if (isArray(every)) {
+    if (is.array(every)) {
       // picked = { interval: string | number | <ref>, actions: [...], cond: ... }
       const picked = toArray(every).find((t) => {
         //
@@ -685,7 +680,7 @@ export class Machine<
     state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null,
     evt: S.Event<TEvent>,
   ) => {
-    const stateNode = isString(state)
+    const stateNode = is.string(state)
       ? this.getStateNode(state)
       : state?.stateNode
 

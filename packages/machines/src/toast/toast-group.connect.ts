@@ -3,7 +3,7 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { runIfFn } from "@ui-machines/utils/function"
+import { runIfFn } from "@core-foundation/utils/fn"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import {

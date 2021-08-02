@@ -1,4 +1,4 @@
-import { AnyFunction } from "@ui-machines/utils/function"
+import { AnyFunction } from "@core-foundation/utils/fn"
 import { useId } from "@reach/auto-id"
 import { useEffect, useRef } from "react"
 

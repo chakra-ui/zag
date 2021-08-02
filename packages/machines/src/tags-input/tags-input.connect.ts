@@ -3,8 +3,8 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { dataAttr, isValidBlurEvent } from "@ui-machines/utils"
-import { determineEventKey } from "../event-utils"
+import { validateBlur } from "@core-dom/event"
+import { determineEventKey, dataAttr } from "../dom-utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -60,7 +60,7 @@ export function connectTagsInputMachine(
         send("FOCUS")
       },
       onBlur(event) {
-        const isValidBlur = isValidBlurEvent(event, {
+        const isValidBlur = validateBlur(event, {
           exclude: getElements(ctx).root,
         })
         if (isValidBlur) {

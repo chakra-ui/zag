@@ -4,7 +4,7 @@ import {
   preserve,
   trackPointerDown,
 } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/utils"
+import { nextTick } from "@core-foundation/utils/fn"
 import { WithDOM } from "../type-utils"
 import { getElements } from "./editable.dom"
 
@@ -101,7 +101,7 @@ export const editableMachine = createMachine<
         ctx.maxLength != null && ctx.value.length === ctx.maxLength,
     },
     activities: {
-      trackPointerDown: trackPointerDown,
+      trackPointerDown,
     },
     actions: {
       setId: (ctx, evt) => {

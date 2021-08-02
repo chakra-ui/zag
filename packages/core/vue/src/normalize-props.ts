@@ -1,4 +1,4 @@
-import { isString, warn } from "@ui-machines/utils"
+import { is, warn } from "@core-foundation/utils"
 import { PropNormalizer } from "@ui-machines/core"
 
 type Dict = Record<string, string>
@@ -30,11 +30,10 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
     if (key === "children") {
-      if (isString(props[key])) {
+      if (is.string(props[key])) {
         normalized["innerHTML"] = props[key]
       } else {
         warn(
-          true,
           "[Vue Normalize Prop] : avoid passing non-primitive value as `children`",
         )
       }

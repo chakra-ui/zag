@@ -1,14 +1,13 @@
-import { createMachine, preserve } from "@ui-machines/core"
 import {
   addDomEvent,
   dispatchInputEvent,
   EventListenerWithPointInfo as Listener,
-  isMouseEvent,
-} from "@ui-machines/utils/dom-event"
-import { nextTick, pipe } from "@ui-machines/utils/function"
-import { Rect } from "@ui-machines/utils/rect"
-import { Point } from "@ui-machines/utils/point"
-import { Range } from "@ui-machines/utils/range"
+} from "@core-dom/event"
+import { NumericRange } from "@core-foundation/numeric-range"
+import { is, nextTick, pipe } from "@core-foundation/utils"
+import { Point } from "@core-graphics/point"
+import { Rect } from "@core-graphics/rect"
+import { createMachine, preserve } from "@ui-machines/core"
 import { WithDOM } from "../type-utils"
 import { getElements, getRangeAtIndex, pointToValue } from "./range-slider.dom"
 
@@ -137,7 +136,7 @@ export const rangeSliderMachine = createMachine<
           }
 
           // Because Safari doesn't trigger mouseup events when it's above a `<select>`
-          if (isMouseEvent(event) && event.button === 0) {
+          if (is.mouseEvent(event) && event.button === 0) {
             send("POINTER_UP")
             return
           }
@@ -217,7 +216,7 @@ export const rangeSliderMachine = createMachine<
         const range = getRangeAtIndex(ctx).decrement(evt.step)
         ctx.value[ctx.activeIndex] = range
           .clone()
-          .snapToStep(range)
+          .snapToStep()
           .clamp()
           .valueOf()
       },
@@ -225,7 +224,7 @@ export const rangeSliderMachine = createMachine<
         const range = getRangeAtIndex(ctx).increment(evt.step)
         ctx.value[ctx.activeIndex] = range
           .clone()
-          .snapToStep(range)
+          .snapToStep()
           .clamp()
           .valueOf()
       },
@@ -234,8 +233,8 @@ export const rangeSliderMachine = createMachine<
         ctx.value[ctx.activeIndex] = range.clone().setToMin().valueOf()
       },
       setActiveThumbToMax(ctx) {
-        const options = getRangeAtIndex(ctx)
-        ctx.value[ctx.activeIndex] = new Range(options).setToMax().valueOf()
+        const opts = getRangeAtIndex(ctx)
+        ctx.value[ctx.activeIndex] = new NumericRange(opts).setToMax().valueOf()
       },
     },
   },

@@ -1,4 +1,4 @@
-import { DOMCollection } from "@ui-machines/utils"
+import { DOMNodeList } from "@core-dom/node-list"
 import { MenuMachineContext } from "./menu.machine"
 
 export function getElementIds(uid: string) {
@@ -21,7 +21,7 @@ export function dom(ctx: MenuMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { menu } = getElements(ctx)
   const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([disabled])`
-  const collection = new DOMCollection(menu, selector)
+  const collection = DOMNodeList.fromSelector(menu, selector)
 
   return {
     first: collection.first,
@@ -29,8 +29,8 @@ export function dom(ctx: MenuMachineContext) {
     prev: collection.prevById,
     next: collection.nextById,
     searchByKey(key: string) {
-      const activeId = collection.getActiveDescendantId()
-      return collection.findByEventKey(key, activeId)
+      const activeId = menu?.getAttribute("aria-activedescendant")
+      return collection.findByText(key, activeId)
     },
   }
 }

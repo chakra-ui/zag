@@ -1,4 +1,4 @@
-import { DOMCollection } from "@ui-machines/utils"
+import { DOMNodeList } from "@core-dom/node-list"
 import { AccordionMachineContext } from "./accordion.machine"
 
 export function getElementIds(uid: string) {
@@ -16,7 +16,7 @@ export function dom(ctx: AccordionMachineContext) {
   const root = doc.getElementById(ids.root)
 
   const selector = `[aria-controls][data-ownedby='${ids.root}']:not([disabled])`
-  const collection = new DOMCollection(root, selector)
+  const collection = DOMNodeList.fromSelector(root, selector)
 
   return {
     first: collection.first,

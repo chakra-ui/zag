@@ -1,5 +1,7 @@
+import { addDomEvent } from "@core-dom/event"
+import { NumericRange } from "@core-foundation/numeric-range"
+import { noop } from "@core-foundation/utils/fn"
 import { createMachine, guards, Machine } from "@ui-machines/core"
-import { addDomEvent, noop, Range } from "@ui-machines/utils"
 import { getToastDuration } from "./toast.utils"
 
 const { or, not } = guards
@@ -169,7 +171,12 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
           if (!ctx.progress) return
           const { max, value } = ctx.progress
           // adding `- 1` makes setInterval work consistently across browsers
-          const range = new Range({ min: 0, max, step: 10, value: value - 1 })
+          const range = new NumericRange({
+            min: 0,
+            max,
+            step: 10,
+            value: value - 1,
+          })
           ctx.progress.value = range.decrement().clamp().valueOf()
         },
         clearProgressValue(ctx) {

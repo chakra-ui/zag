@@ -3,8 +3,8 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { isArray, dataAttr } from "@ui-machines/utils"
-import { determineEventKey } from "../event-utils"
+import { is } from "@core-foundation/utils/is"
+import { dataAttr, determineEventKey } from "../dom-utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -31,7 +31,7 @@ export function connectAccordionMachine(
     }),
 
     getAccordionProps({ uid, disabled }: { uid: string; disabled?: boolean }) {
-      const isVisible = isArray(ctx.activeId)
+      const isVisible = is.array(ctx.activeId)
         ? ctx.activeId.includes(uid)
         : uid === ctx.activeId
 

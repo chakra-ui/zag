@@ -3,8 +3,8 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { Range } from "@ui-machines/utils/range"
-import { getStepMultipler } from "../event-utils"
+import { NumericRange } from "@core-foundation/numeric-range"
+import { getStepMultipler } from "../dom-utils"
 import { DOMButtonProps, DOMInputProps, EventKeyMap } from "../type-utils"
 import { getElementIds } from "./number-input.dom"
 import {
@@ -21,7 +21,7 @@ export function connectNumberInputMachine(
   const { context: ctx } = state
 
   const { inputId, incButtonId, decButtonId } = getElementIds(ctx.uid)
-  const range = new Range(ctx)
+  const range = new NumericRange(ctx)
   const canIncrement = !ctx.disabled && !range.isAtMax
   const canDecrement = !ctx.disabled && !range.isAtMin
 

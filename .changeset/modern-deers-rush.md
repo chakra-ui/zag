@@ -6,7 +6,6 @@
 "@ui-machines/core": minor
 "@ui-machines/vue": minor
 "@ui-machines/web": minor
-"@ui-machines/utils": minor
 ---
 
 Initial release of packages

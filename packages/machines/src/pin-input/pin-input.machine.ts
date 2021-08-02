@@ -1,5 +1,6 @@
 import { createMachine, guards, preserve } from "@ui-machines/core"
-import { ArrayCollection, nextTick } from "@ui-machines/utils"
+import { nextTick } from "@core-foundation/utils/fn"
+import { ArrayList } from "@core-foundation/array-list"
 import { WithDOM } from "../type-utils"
 import { dom } from "./pin-input.dom"
 
@@ -103,12 +104,12 @@ export const pinInputMachine = createMachine<
         return ctx.value.every(Boolean)
       },
       isLastValueBeforeComplete: (ctx) => {
-        const { count } = dom(ctx)
-        return ctx.value.filter(Boolean).length === count - 1
+        const inputs = dom(ctx)
+        return ctx.value.filter(Boolean).length === inputs.size - 1
       },
       isLastInputFocused: (ctx) => {
-        const { count } = dom(ctx)
-        return ctx.focusedIndex === count - 1
+        const inputs = dom(ctx)
+        return ctx.focusedIndex === inputs.size - 1
       },
     },
     actions: {
@@ -118,7 +119,7 @@ export const pinInputMachine = createMachine<
       setInitialValue: (ctx) => {
         nextTick(() => {
           const inputs = dom(ctx)
-          const empty = ArrayCollection.fromLength(inputs.count)
+          const empty = ArrayList.fromLength(inputs.size, (v) => v.toString())
           ctx.value = ctx.value.length === 0 ? preserve(empty.value) : ctx.value
         })
       },
@@ -127,7 +128,7 @@ export const pinInputMachine = createMachine<
       },
       focusInput: (ctx) => {
         const inputs = dom(ctx)
-        const input = inputs.itemAt(ctx.focusedIndex)
+        const input = inputs.at(ctx.focusedIndex)
         nextTick(() => input.focus())
       },
       invokeComplete: (ctx) => {
@@ -178,12 +179,11 @@ export const pinInputMachine = createMachine<
       setNextFocusedIndex: (ctx, evt, { guards }) => {
         if (guards?.isValueComplete(ctx, evt)) return
         const inputs = dom(ctx)
-        let nextIndex = Math.min(ctx.focusedIndex + 1, inputs.count)
-        ctx.focusedIndex = nextIndex
+        ctx.focusedIndex = inputs.nextIndex(ctx.focusedIndex, 1, false)
       },
       setPrevFocusIndex: (ctx) => {
-        let prevIndex = Math.max(ctx.focusedIndex - 1, 0)
-        ctx.focusedIndex = prevIndex
+        const inputs = dom(ctx)
+        ctx.focusedIndex = inputs.prevIndex(ctx.focusedIndex)
       },
     },
   },

@@ -1331,6 +1331,68 @@
   dependencies:
     chalk "^4.0.0"
 
+"@core-dom/element@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.1.tgz#50799bfbf35e2a47e0a760c0bd05111369af6b6e"
+  integrity sha512-voCuxFmcnolJZa2OWCz55fmyXd1bBA1iSIh6VtibZNcA0TTNo9J1lowRn9Jv6VofBoo4KHdqCqxcDW7XCFooGA==
+
+"@core-dom/event@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.3.tgz#25a179993c35653ec8effd2553341d26ce6f6c42"
+  integrity sha512-wIb6V2rDTIUuQWDK/YPbpd2E3/vwYfxGyjBJDmvXO6nM8Cc8FAikvP3dl527ItIG+mO6vKW9E58D0NiSchkoNw==
+  dependencies:
+    "@core-foundation/utils" "0.1.4"
+    "@core-graphics/point" "0.1.1"
+
+"@core-dom/node-list@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.1.tgz#2d877d48c6a18f22df836c776f0ee9a810e1e401"
+  integrity sha512-+3TW5Od3J1aJ9jbzZVhM1eS7JDQTzucyLDtojSc1BGKOXpb+tUub+vTaFiVnmqu5LMu601bg/RPJsmk8Ql9ruQ==
+  dependencies:
+    "@core-foundation/array-list" "0.1.1"
+
+"@core-foundation/array-list@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-foundation/array-list/-/array-list-0.1.1.tgz#69f0fcef9fd30a139bb176c05f0eb41df21e24c1"
+  integrity sha512-y9xepfH/KM7Z4iTflcXOaaqSTUEVZVzFE7Ye+nd309BpuVJbLwB2QJnKjuAc3tvdpdYNu8E7RMM1bjv84CIIXA==
+
+"@core-foundation/numeral@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@core-foundation/numeral/-/numeral-0.1.0.tgz#38c6b47185aa591ce1f11608d72d5e290e7d21c2"
+  integrity sha512-LjJzS7imnDdC4GpjYPS3g8oWKcyFO/lWORMcI55L6AdgmdDuOqyUAiunRvlde3HC4bZr5+zwmBojaQWtpO3c5g==
+
+"@core-foundation/numeric-range@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-foundation/numeric-range/-/numeric-range-0.1.1.tgz#53397436ad3e404b7a69d4034f0d430c8b9febd3"
+  integrity sha512-1zbskCquX3SzV0TkjHmQKB9iR//udE96PQD7mWPgNdaT6PzfMkyRvDl9NLxnPnrmm0tBsKtxg0+zetJZx2/bNw==
+  dependencies:
+    "@core-foundation/numeral" "0.1.0"
+
+"@core-foundation/utils@0.1.4", "@core-foundation/utils@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.4.tgz#d2357bb9f92f330438face8e1823d2f728c881c3"
+  integrity sha512-CbL5au/4jgMJgvXlR+fANI1jalIm1uVrKRMnKH6Ll+A+KMBESXoEbRIuJDje8NG5r1CNCArbzFyFZUwRd1mFJA==
+
+"@core-graphics/point@0.1.1", "@core-graphics/point@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.1.tgz#2f83469c159d886c1f732db289672868f12e38c2"
+  integrity sha512-Mb6seUXa3SGUx5P9/SOKGRgDS7q27pEp//2kIjZTUU3lB/934zBIjyrpPGxclyxD14lcEC8gcYR7LfbZ5v2gPg==
+  dependencies:
+    "@core-foundation/numeral" "0.1.0"
+
+"@core-graphics/rect@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.1.tgz#46e08a94be0006f51738d13ec7ecee2c1b0ff320"
+  integrity sha512-4KSPIRIIjq1Nf6EqlFnqwTVkMeI6xPrF3U3LNLC4JvkUQfQtqnBVn9BugAYor1s9cnIiso+76XwepcU17j3SMA==
+  dependencies:
+    "@core-graphics/point" "0.1.1"
+    "@core-graphics/size" "0.1.1"
+
+"@core-graphics/size@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-graphics/size/-/size-0.1.1.tgz#a148db02949986ad3b2023451f41e11fa9ad35f9"
+  integrity sha512-3kM7Nrf+6rFuen75GB0SDgigVn269XjOE6rE5nJIQnDPcEhinstvgGYL+yGL/fnw2TBvL+DEpRtS1hrhzO3TOA==
+
 "@emotion/cache@^11.4.0":
   version "11.4.0"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-11.4.0.tgz#293fc9d9a7a38b9aad8e9337e5014366c3b09ac0"
@@ -2131,6 +2193,15 @@
   version "17.0.14"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.14.tgz#f0629761ca02945c4e8fea99b8177f4c5c61fb0f"
   integrity sha512-0WwKHUbWuQWOce61UexYuWTGuGY/8JvtUe/dtQ6lR4sZ3UiylHotJeWpf3ArP9+DSGUoLY3wbU59VyMrJps5VQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^17.0.15":
+  version "17.0.15"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.15.tgz#c7533dc38025677e312606502df7656a6ea626d0"
+  integrity sha512-uTKHDK9STXFHLaKv6IMnwp52fm0hwU+N89w/p9grdUqcFA6WuqDyPhaWopbNyE1k/VhgzmHl8pu1L4wITtmlLw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -9690,10 +9761,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valtio@^1.0.5:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.0.7.tgz#bbcf1bdf722923d1a3b91452c05936c6ab127b21"
-  integrity sha512-zaaM+QiE6P0pBllFIyDnbjaRILEYsy1YYJf6F1D8dsADKxL2r+Fb3SupM8SHQn2tNx4cbSTu9aarOaoiH+X1dg==
+valtio@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.1.3.tgz#e5a922769d64c511b5d9858f2a4156ffa50df7a0"
+  integrity sha512-51WE5jUcqfPcTh6zLB34wt1EtCJJPBGTxX30vP83I7OAyPG7C9fQ6AmDjqS6wBo+A1ulABTMbIImUaCnwf1A8A==
   dependencies:
     proxy-compare "2.0.1"
 

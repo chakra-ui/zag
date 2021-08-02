@@ -3,8 +3,9 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { cast, isSafari } from "@ui-machines/utils"
-import { determineEventKey } from "../event-utils"
+import { cast } from "@core-foundation/utils/fn"
+import { env } from "@core-foundation/utils/env"
+import { determineEventKey } from "../dom-utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -85,7 +86,7 @@ export function connectTabsMachine(
         onClick(event) {
           send({ type: "TAB_CLICK", uid })
           // ensure browser focus for safari
-          if (isSafari()) {
+          if (env.safari()) {
             event.currentTarget.focus()
           }
         },

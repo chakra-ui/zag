@@ -1,5 +1,5 @@
-import { toArray } from "@ui-machines/utils/array"
-import { isArray, isObject, isString } from "@ui-machines/utils/assertion"
+import { toArray } from "@core-foundation/utils/fn"
+import { is } from "@core-foundation/utils/is"
 import { determineGuardFn } from "./guard-utils"
 import { StateMachine as S } from "./types"
 
@@ -21,7 +21,7 @@ export function toTarget<
 >(
   target: S.Transition<TContext, TState, TEvent>,
 ): S.TransitionDefinition<TContext, TState, TEvent> {
-  return isString(target) ? { target } : target
+  return is.string(target) ? { target } : target
 }
 
 export function determineTransitionFn<
@@ -52,7 +52,7 @@ export function toTransition<
   transition: S.Transitions<TContext, TState, TEvent> | undefined,
   current?: TState | null,
 ) {
-  const resolvedTransition = isString(transition)
+  const resolvedTransition = is.string(transition)
     ? toTarget(transition)
     : transition
 
@@ -66,11 +66,11 @@ export function toTransition<
     return t
   }
 
-  if (isArray(resolvedTransition)) {
+  if (is.array(resolvedTransition)) {
     return resolvedTransition.map(callbackfn)
   }
 
-  if (isObject(resolvedTransition)) {
+  if (is.object(resolvedTransition)) {
     return callbackfn(resolvedTransition)
   }
 }

@@ -1,5 +1,5 @@
 import { createMachine, preserve } from "@ui-machines/core"
-import { addDomEvent } from "@ui-machines/utils/dom-event"
+import { addDomEvent } from "@core-dom/event"
 import { proxy } from "valtio"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })

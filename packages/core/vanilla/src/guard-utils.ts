@@ -1,4 +1,4 @@
-import { isFunction, isObject, isString } from "@ui-machines/utils/assertion"
+import { is } from "@core-foundation/utils/is"
 
 import { Dict, StateMachine as S } from "./types"
 
@@ -9,7 +9,7 @@ function or<TContext, TEvent extends S.EventObject>(
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
-          if (isString(condition)) {
+          if (is.string(condition)) {
             return !!guards[condition]?.(ctx, event)
           }
           return condition.exec(guards)(ctx, event)
@@ -25,7 +25,7 @@ function and<TContext, TEvent extends S.EventObject>(
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
-          if (isString(condition)) {
+          if (is.string(condition)) {
             return !!guards[condition]?.(ctx, event)
           }
           return condition.exec(guards)(ctx, event)
@@ -39,7 +39,7 @@ function not<TContext, TEvent extends S.EventObject>(
 ): S.ConditionHelper<TContext, TEvent> {
   return {
     exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) => {
-      if (isString(condition)) {
+      if (is.string(condition)) {
         return !guardMap[condition]?.(ctx, event)
       }
       return !condition.exec(guardMap)(ctx, event)
@@ -50,7 +50,7 @@ function not<TContext, TEvent extends S.EventObject>(
 export const guards = { or, and, not }
 
 export function isGuardHelper(value: unknown): value is { exec: Function } {
-  return isObject(value) && value.exec != null
+  return is.object(value) && value.exec != null
 }
 
 export const TruthyGuard = () => true
@@ -66,9 +66,9 @@ export function determineGuardFn<TContext, TEvent extends S.EventObject>(
 ) {
   cond = cond ?? TruthyGuard
   return (context: TContext, event: TEvent) => {
-    if (isString(cond)) {
+    if (is.string(cond)) {
       const value = guardMap?.[cond]
-      return isFunction(value) ? value(context, event) : value
+      return is.func(value) ? value(context, event) : value
     }
 
     if (isGuardHelper(cond)) {

@@ -1,5 +1,7 @@
+import { NumericRange } from "@core-foundation/numeric-range"
+import { nextTick, noop } from "@core-foundation/utils/fn"
+import { addDomEvent } from "@core-dom/event"
 import { createMachine, guards, preserve } from "@ui-machines/core"
-import { addDomEvent, nextTick, noop, Range } from "@ui-machines/utils"
 import { getElements } from "./number-input.dom"
 import { sanitize } from "./number-input.utils"
 
@@ -134,9 +136,9 @@ export const numberInputMachine = createMachine<
     },
     guards: {
       shouldClampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
-      isAtMin: (ctx) => new Range(ctx).isAtMin,
-      isAtMax: (ctx) => new Range(ctx).isAtMax,
-      isInRange: (ctx) => new Range(ctx).isInRange,
+      isAtMin: (ctx) => new NumericRange(ctx).isAtMin,
+      isAtMax: (ctx) => new NumericRange(ctx).isAtMax,
+      isInRange: (ctx) => new NumericRange(ctx).isInRange,
     },
     activities: {
       attachWheelListener(ctx) {
@@ -153,9 +155,9 @@ export const numberInputMachine = createMachine<
           const dir = Math.sign(event.deltaY) * -1
 
           if (dir === 1) {
-            ctx.value = new Range(ctx).increment().clamp().toString()
+            ctx.value = new NumericRange(ctx).increment().clamp().toString()
           } else if (dir === -1) {
-            ctx.value = new Range(ctx).decrement().clamp().toString()
+            ctx.value = new NumericRange(ctx).decrement().clamp().toString()
           }
         }
         return addDomEvent(input, "wheel", listener, { passive: false })
@@ -173,13 +175,13 @@ export const numberInputMachine = createMachine<
         nextTick(() => input?.focus())
       },
       increment(ctx) {
-        ctx.value = new Range(ctx).increment().clamp().toString()
+        ctx.value = new NumericRange(ctx).increment().clamp().toString()
       },
       decrement(ctx) {
-        ctx.value = new Range(ctx).decrement().clamp().toString()
+        ctx.value = new NumericRange(ctx).decrement().clamp().toString()
       },
       clampValue(ctx) {
-        ctx.value = new Range(ctx).clamp().toString()
+        ctx.value = new NumericRange(ctx).clamp().toString()
       },
       setValue(ctx, event) {
         ctx.value = sanitize(event.value)
@@ -191,10 +193,10 @@ export const numberInputMachine = createMachine<
         ctx.value = ctx.min.toString()
       },
       incrementBy(ctx, evt) {
-        ctx.value = new Range(ctx).increment(evt.step).clamp().toString()
+        ctx.value = new NumericRange(ctx).increment(evt.step).clamp().toString()
       },
       decrementBy(ctx, evt) {
-        ctx.value = new Range(ctx).decrement(evt.step).clamp().toString()
+        ctx.value = new NumericRange(ctx).decrement(evt.step).clamp().toString()
       },
     },
   },

@@ -4,7 +4,8 @@ import {
   preserve,
   trackPointerDown,
 } from "@ui-machines/core"
-import { DOMHelper, nextTick } from "@ui-machines/utils"
+import { nextTick } from "@core-foundation/utils"
+import { DOMElement } from "@core-dom/element"
 import { WithDOM } from "../type-utils"
 import { dom, getElements } from "./popover.dom"
 
@@ -88,8 +89,10 @@ export const popoverMachine = createMachine<
     activities: { trackPointerDown },
     guards: {
       shouldCloseOnEsc: (ctx) => !!ctx.closeOnEsc,
-      isPointerdownFocusable: (ctx) =>
-        new DOMHelper(ctx.pointerdownNode).isTabbable,
+      isPointerdownFocusable: (ctx) => {
+        const el = new DOMElement(ctx.pointerdownNode)
+        return !!el.isTabbable
+      },
       shouldCloseOnOutsideClick: (ctx) => !!ctx.closeOnOutsideClick,
     },
     actions: {

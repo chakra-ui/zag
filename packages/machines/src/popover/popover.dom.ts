@@ -1,4 +1,5 @@
-import { ArrayCollection, DOMHelper } from "@ui-machines/utils"
+import { DOMElement } from "@core-dom/element"
+import { ArrayList } from "@core-foundation/array-list"
 import { PopoverMachineContext } from "./popover.machine"
 
 export function getElementIds(uid: string) {
@@ -26,8 +27,8 @@ export function dom(ctx: PopoverMachineContext) {
   const { content } = getElements(ctx)
   return {
     getFirstFocusable() {
-      const focusables = new DOMHelper(content).getFocusables()
-      const collection = new ArrayCollection(focusables)
+      const focusables = new DOMElement(content).getFocusables()
+      const collection = new ArrayList(focusables)
       return !collection.isEmpty ? collection.first : content
     },
   }

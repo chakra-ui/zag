@@ -1,4 +1,4 @@
-import { isBrowser } from "@ui-machines/utils/env-utils"
+import { env } from "@core-foundation/utils/env"
 import { h } from "vue"
 
 export function StateVisualizer(props: { state: Record<string, any> }) {
@@ -17,7 +17,7 @@ export function StateVisualizer(props: { state: Record<string, any> }) {
       {JSON.stringify(
         state,
         (_, value) => {
-          return isBrowser() && value instanceof HTMLElement
+          return env.dom() && value instanceof HTMLElement
             ? value.tagName
             : value
         },

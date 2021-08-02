@@ -1,5 +1,5 @@
 import { createMachine, guards, preserve } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/utils"
+import { nextTick } from "@core-foundation/utils"
 import { WithDOM } from "../type-utils"
 import { dom, getElements } from "./tags-input.dom"
 

@@ -41,3 +41,13 @@ export function getStepMultipler(event: KeyboardEvent) {
     isPageKey || (event.shiftKey && ARROW_KEYS.includes(event.key))
   return isSkipKey ? 10 : 1
 }
+
+type Booleanish = boolean | "true" | "false"
+
+export const dataAttr = (cond: boolean | undefined) => {
+  return (cond ? "" : undefined) as Booleanish
+}
+
+export const ariaAttr = (cond: boolean | undefined) => {
+  return cond ? true : undefined
+}

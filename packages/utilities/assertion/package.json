@@ -1,4 +1,0 @@
-{
-  "main": "dist/ui-machines-utils-assertion.cjs.js",
-  "module": "dist/ui-machines-utils-assertion.esm.js"
-}

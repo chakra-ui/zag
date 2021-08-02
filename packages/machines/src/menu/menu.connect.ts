@@ -3,7 +3,7 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { isValidBlurEvent } from "@ui-machines/utils"
+import { validateBlur } from "@core-dom/event"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -65,9 +65,9 @@ export function connectMenuMachine(
       onBlur(event) {
         const { button } = getElements(ctx)
 
-        const isValidBlur = isValidBlurEvent(event, {
+        const isValidBlur = validateBlur(event, {
           exclude: button,
-          pointerdownNode: ctx.pointerdownNode,
+          fallback: ctx.pointerdownNode,
         })
 
         if (isValidBlur) {

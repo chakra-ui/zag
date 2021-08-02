@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
-    "@ui-machines/utils": "0.0.0"
+    "@core-foundation/utils": "^0.1.4"
   },
   "devDependencies": {
     "vue": "^3.0.5"

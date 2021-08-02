@@ -3,8 +3,8 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { ariaAttr } from "@ui-machines/utils/dom-helper"
-import { isValidBlurEvent } from "@ui-machines/utils/dom-event"
+import { ariaAttr } from "../dom-utils"
+import { validateBlur } from "@core-dom/event"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -42,8 +42,8 @@ export function connectEditableMachine(
       value: ctx.value,
       onBlur(event) {
         const { cancelBtn, submitBtn } = getElements(ctx)
-        const isValidBlur = isValidBlurEvent(event, {
-          pointerdownNode: ctx.pointerdownNode,
+        const isValidBlur = validateBlur(event, {
+          fallback: ctx.pointerdownNode,
           exclude: [cancelBtn, submitBtn],
         })
         if (isValidBlur) {

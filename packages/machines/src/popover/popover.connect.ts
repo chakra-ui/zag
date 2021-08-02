@@ -3,7 +3,7 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { isValidBlurEvent } from "@ui-machines/utils"
+import { validateBlur } from "@core-dom/event"
 import { DOMHTMLProps } from "../type-utils"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
@@ -42,9 +42,9 @@ export function connectPopoverMachine(
       },
       onBlur(event) {
         const { trigger } = getElements(ctx)
-        const isValidBlur = isValidBlurEvent(event, {
+        const isValidBlur = validateBlur(event, {
           exclude: trigger,
-          pointerdownNode: ctx.pointerdownNode,
+          fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
           send("CLICK_OUTSIDE")

@@ -28,7 +28,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@ui-machines/utils": "0.0.0",
-    "valtio": "^1.0.5"
+    "@core-foundation/utils": "^0.1.4",
+    "@core-dom/event": "^0.1.3",
+    "valtio": "^1.1.3"
   }
 }

@@ -20,8 +20,7 @@
     "baseUrl": ".",
     "paths": {
       "@ui-machines/core": ["../../packages/core/vanilla/src"],
-      "@ui-machines/react": ["../../packages/core/react/src"],
-      "@ui-machines/utils": ["../../packages/utilities/src"]
+      "@ui-machines/react": ["../../packages/core/react/src"]
     }
   },
   "exclude": ["node_modules"],

@@ -1,10 +1,10 @@
-import { isString } from "@ui-machines/utils/assertion"
-import { cast } from "@ui-machines/utils/function"
+import { is } from "@core-foundation/utils/is"
+import { cast } from "@core-foundation/utils/fn"
 
 import { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
-  const eventObject = isString(event) ? { type: event } : event
+  const eventObject = is.string(event) ? { type: event } : event
   return cast<T>(eventObject)
 }
 

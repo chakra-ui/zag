@@ -1,4 +1,3 @@
-import { runIfFn } from "@ui-machines/utils"
 import { onDestroy } from "svelte/internal"
 import { readable } from "svelte/store"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
@@ -16,8 +15,8 @@ export function useMachine<
   const { actions, state: hydratedState } = options ?? {}
 
   const resolvedMachine = (() => {
-    const _machine = runIfFn(machine)
-    return options ? _machine.withOptions(options) : _machine
+    const m = typeof machine === "function" ? machine() : machine
+    return options ? m.withOptions(options) : m
   })()
 
   const service = resolvedMachine.start(hydratedState)

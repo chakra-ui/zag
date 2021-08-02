@@ -1,5 +1,8 @@
-import { createMachine, preserve, guards } from "@ui-machines/core"
-import { isArray, ArrayCollection, focus } from "@ui-machines/utils"
+import { focus } from "@core-dom/event"
+import { ArrayList } from "@core-foundation/array-list"
+import { is } from "@core-foundation/utils"
+import { createMachine, guards, preserve } from "@ui-machines/core"
+
 import { WithDOM } from "../type-utils"
 import { dom } from "./accordion.dom"
 
@@ -87,7 +90,7 @@ export const accordionMachine = createMachine<
         return !!ctx.allowToggle || !!ctx.allowMultiple
       },
       isAccordionActive(ctx, evt) {
-        return isArray(ctx.activeId)
+        return is.array(ctx.activeId)
           ? ctx.activeId.includes(evt.id)
           : ctx.activeId === evt.id
       },
@@ -95,14 +98,14 @@ export const accordionMachine = createMachine<
     actions: {
       closeAccordion(ctx, evt) {
         if (ctx.allowMultiple) {
-          ctx.activeId = ArrayCollection.from(ctx.activeId).remove(evt.id).value
+          ctx.activeId = ArrayList.from(ctx.activeId).remove(evt.id).value
         } else {
           ctx.activeId = null
         }
       },
       openAccordion(ctx, evt) {
         if (ctx.allowMultiple) {
-          ctx.activeId = ArrayCollection.from(ctx.activeId).add(evt.id).value
+          ctx.activeId = ArrayList.from(ctx.activeId).add(evt.id).value
         } else {
           ctx.activeId = evt.id
         }

@@ -3,10 +3,10 @@ import {
   addDomEvent,
   dispatchInputEvent,
   EventListenerWithPointInfo as Listener,
-  isMouseEvent,
-} from "@ui-machines/utils/dom-event"
-import { nextTick, pipe } from "@ui-machines/utils/function"
-import { Range } from "@ui-machines/utils/range"
+} from "@core-dom/event"
+import { is } from "@core-foundation/utils/is"
+import { nextTick, pipe } from "@core-foundation/utils/fn"
+import { NumericRange } from "@core-foundation/numeric-range"
 import { WithDOM } from "../type-utils"
 import { getElements, pointToValue } from "./slider.dom"
 
@@ -132,7 +132,7 @@ export const sliderMachine = createMachine<
           }
 
           // Because Safari doesn't trigger mouseup events when it's above a `<select>`
-          if (isMouseEvent(event) && event.button === 0) {
+          if (is.mouseEvent(event) && event.button === 0) {
             send("POINTER_UP")
             return
           }
@@ -186,18 +186,26 @@ export const sliderMachine = createMachine<
         })
       },
       decrement(ctx, evt) {
-        const range = new Range(ctx).decrement(evt.step)
-        ctx.value = new Range(ctx).snapToStep(range).clamp().valueOf()
+        const range = new NumericRange(ctx).decrement(evt.step)
+        ctx.value = new NumericRange(ctx)
+          .setValue(+range)
+          .snapToStep()
+          .clamp()
+          .valueOf()
       },
       increment(ctx, evt) {
-        const range = new Range(ctx).increment(evt.step)
-        ctx.value = new Range(ctx).snapToStep(range).clamp().valueOf()
+        const range = new NumericRange(ctx).increment(evt.step)
+        ctx.value = new NumericRange(ctx)
+          .setValue(+range)
+          .snapToStep()
+          .clamp()
+          .valueOf()
       },
       setToMin(ctx) {
-        ctx.value = new Range(ctx).setToMin().valueOf()
+        ctx.value = new NumericRange(ctx).setToMin().valueOf()
       },
       setToMax(ctx) {
-        ctx.value = new Range(ctx).setToMax().valueOf()
+        ctx.value = new NumericRange(ctx).setToMax().valueOf()
       },
     },
   },
@@ -206,7 +214,5 @@ export const sliderMachine = createMachine<
 // dispatch change/input event to closest `form` element
 function dispatchChangeEvent(ctx: SliderMachineContext) {
   const { input } = getElements(ctx)
-  if (input) {
-    dispatchInputEvent(input, ctx.value)
-  }
+  if (input) dispatchInputEvent(input, ctx.value)
 }

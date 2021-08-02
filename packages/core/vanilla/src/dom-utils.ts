@@ -1,4 +1,4 @@
-import { trackPointerDown as onPointerDown } from "@ui-machines/utils"
+import { trackPointerDown as onPointerDown } from "@core-dom/event"
 import { ref } from "valtio"
 import { Dict } from "./types"
 
