@@ -1,4 +1,5 @@
-import { Point, Range } from "@core-foundation/utils"
+import { Point } from "@core-graphics/point"
+import { NumericRange } from "@core-foundation/numeric-range"
 import { SliderMachineContext } from "./slider.machine"
 
 export function getElementIds(uid: string) {
@@ -24,8 +25,9 @@ export function pointToValue(ctx: SliderMachineContext, info: Point) {
   const { root } = getElements(ctx)
   if (!root) return
 
-  const point = info.relativeToNode(root)
-  const percent = new Range({ min: 0, max: 1, value: point.xPercent }).clamp()
-  const range = new Range(ctx).fromPercent(percent)
-  return range.clone().snapToStep(range).valueOf()
+  const { progress } = info.relativeToNode(root)
+  const opts = { min: 0, max: 1, value: progress.x }
+  const percent = new NumericRange(opts).clamp().valueOf()
+  const range = NumericRange.fromPercent(percent, ctx)
+  return range.clone().snapToStep().valueOf()
 }

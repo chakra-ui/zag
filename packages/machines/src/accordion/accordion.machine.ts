@@ -1,6 +1,6 @@
 import { focus } from "@core-dom/event"
 import { ArrayList } from "@core-foundation/array-list"
-import { is } from "@core-foundation/utils"
+import { is } from "@core-foundation/utils/is"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 
 import { WithDOM } from "../type-utils"

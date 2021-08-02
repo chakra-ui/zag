@@ -29,8 +29,8 @@ export function getElements(ctx: RangeSliderMachineContext) {
 
 export function getRangeAtIndex(ctx: RangeSliderMachineContext) {
   const { activeIndex, step, value: values } = ctx
-  const thumbRanges = NumericRange.fromValues(ctx.value, ctx)
-  const range = thumbRanges[activeIndex]
+  const ranges = NumericRange.fromValues(ctx.value, ctx)
+  const range = ranges[activeIndex]
   return range.withOptions({ value: values[activeIndex], step })
 }
 

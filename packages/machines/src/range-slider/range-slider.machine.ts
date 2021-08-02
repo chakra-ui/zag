@@ -190,11 +190,12 @@ export const rangeSliderMachine = createMachine<
           // get the center point of all thumbs
           const points = thumbs
             .map((el) => Rect.fromElement(el))
-            .map((rect) => rect.centerPoint)
+            .map((rect) => rect.centerPoint.value)
 
           // get the closest center point from the event ("pointerdown") point
           const getClosest = Point.closest(...points)
-          index = getClosest(evt.point)
+          const closestPoint = getClosest(evt.point)
+          index = points.indexOf(closestPoint)
         }
 
         ctx.activeIndex = index

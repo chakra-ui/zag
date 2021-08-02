@@ -41,9 +41,9 @@ export function connectPopoverMachine(
         }
       },
       onBlur(event) {
-        const { trigger } = getElements(ctx)
+        const { trigger, content } = getElements(ctx)
         const isValidBlur = validateBlur(event, {
-          exclude: trigger,
+          exclude: [trigger, content],
           fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {

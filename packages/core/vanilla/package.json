@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@core-foundation/utils": "^0.1.4",
-    "@core-dom/event": "^0.1.3",
+    "@core-dom/event": "^0.1.4",
     "valtio": "^1.1.3"
   }
 }

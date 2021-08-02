@@ -120,11 +120,13 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
         nextTick(() => prev.focus())
       },
       setActiveTabRect(ctx) {
-        const tabs = dom(ctx)
-        ctx.indicatorRect = tabs.rectById(ctx.activeTabId)
-        if (ctx.measuredRect) return
-        setTimeout(() => {
-          ctx.measuredRect = true
+        nextTick(() => {
+          const tabs = dom(ctx)
+          ctx.indicatorRect = tabs.rectById(ctx.activeTabId)
+          if (ctx.measuredRect) return
+          nextTick(() => {
+            ctx.measuredRect = true
+          })
         })
       },
     },

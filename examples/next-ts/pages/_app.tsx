@@ -1,3 +1,4 @@
+import "regenerator-runtime/runtime"
 import { AppProps } from "next/app"
 import "../styles.css"
 

@@ -40,7 +40,12 @@ export const pinInputMachine = createMachine<
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument", "setInitialValue"],
+            actions: [
+              "setId",
+              "setOwnerDocument",
+              "setInitialValue",
+              "autoFocus",
+            ],
           },
         },
       },
@@ -119,17 +124,22 @@ export const pinInputMachine = createMachine<
       setInitialValue: (ctx) => {
         nextTick(() => {
           const inputs = dom(ctx)
-          const empty = ArrayList.fromLength(inputs.size, (v) => v.toString())
-          ctx.value = ctx.value.length === 0 ? preserve(empty.value) : ctx.value
+          const empty = ArrayList.fromLength(inputs.size, () => "")
+          ctx.value =
+            ctx.value.length === 0
+              ? preserve(empty.value as string[])
+              : ctx.value
         })
       },
       setOwnerDocument: (ctx, evt) => {
         ctx.doc = preserve(evt.doc)
       },
       focusInput: (ctx) => {
-        const inputs = dom(ctx)
-        const input = inputs.at(ctx.focusedIndex)
-        nextTick(() => input.focus())
+        nextTick(() => {
+          const inputs = dom(ctx)
+          const input = inputs.at(ctx.focusedIndex)
+          input.focus()
+        })
       },
       invokeComplete: (ctx) => {
         ctx.onComplete?.(ctx.value)
@@ -183,7 +193,7 @@ export const pinInputMachine = createMachine<
       },
       setPrevFocusIndex: (ctx) => {
         const inputs = dom(ctx)
-        ctx.focusedIndex = inputs.prevIndex(ctx.focusedIndex)
+        ctx.focusedIndex = inputs.prevIndex(ctx.focusedIndex, 1, false)
       },
     },
   },
