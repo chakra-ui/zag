@@ -1,7 +1,7 @@
 {
   "name": "ui-machines",
   "private": true,
-  "description": "Chakra UI Core mono repo root package",
+  "description": "UI machines monorepo root package",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chakra-ui/core.git"
@@ -13,7 +13,6 @@
     "clean": "yarn workspaces run clean",
     "fix:pkgs": "manypkg fix",
     "fix:preconstruct": "preconstruct fix",
-    "gen:pkg": "ts-node scripts/generate-package.ts",
     "gen:machine": "ts-node scripts/generate-machine.ts",
     "lint": "npm-run-all lint:**",
     "lint:code": "eslint . --ext .js,.jsx,.ts,.tsx -c .eslintrc",

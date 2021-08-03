@@ -1,4 +1,5 @@
 /* PLOP_INJECT_EXPORT */
+export * from "./combobox"
 export * from "./editable"
 export * from "./menu"
 export * from "./number-input"
