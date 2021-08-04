@@ -5,6 +5,7 @@ import type {
   InputHTMLAttributes,
   KeyboardEvent,
 } from "react"
+import { LabelHTMLAttributes } from "react"
 
 export type Dict<T = any> = Record<string, T>
 
@@ -39,8 +40,14 @@ type Style = {
   }
 }
 
-export type DOMHTMLProps = HTMLAttributes<HTMLElement> & Style
+export type DOMHTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>
 
-export type DOMButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & Style
-
-export type DOMInputProps = InputHTMLAttributes<HTMLInputElement> & Style
+export type DOMButtonProps = WithDataAttr<
+  ButtonHTMLAttributes<HTMLButtonElement> & Style
+>
+export type DOMInputProps = WithDataAttr<
+  InputHTMLAttributes<HTMLInputElement> & Style
+>
+export type DOMLabelProps = WithDataAttr<
+  LabelHTMLAttributes<HTMLLabelElement> & Style
+>
