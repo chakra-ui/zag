@@ -1,11 +1,11 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { cast } from "@core-foundation/utils/fn"
 import { env } from "@core-foundation/utils/env"
-import { determineEventKey } from "../dom-utils"
+import {
+  determineEventKey,
+  defaultPropNormalizer,
+  PropNormalizer,
+} from "../dom-utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,

@@ -1,10 +1,7 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
 import { DOMHTMLProps } from "../type-utils"
+import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 

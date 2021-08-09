@@ -1,10 +1,11 @@
 import { validateBlur } from "@core-dom/event"
+import { StateMachine as S } from "@ui-machines/core"
 import {
+  dataAttr,
+  determineEventKey,
   defaultPropNormalizer,
   PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { dataAttr, determineEventKey } from "../dom-utils"
+} from "../dom-utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,
@@ -55,13 +56,13 @@ export function connectComboboxMachine(
       id: ids.input,
       type: "text",
       "aria-autocomplete": "list",
-      "aria-controls": ids.listbox,
+      "aria-controls": expanded ? ids.listbox : undefined,
       autoComplete: "off",
       spellCheck: "false",
       role: "combobox",
       value: ctx.inputValue,
       "aria-expanded": expanded,
-      "aria-activedescendant": ctx.activeId ?? "",
+      "aria-activedescendant": ctx.activeId ?? undefined,
       onClick() {
         send("INPUT_CLICK")
       },
@@ -106,7 +107,8 @@ export function connectComboboxMachine(
       },
     }),
 
-    toggleButtonProps: normalize<DOMButtonProps>({
+    buttonProps: normalize<DOMButtonProps>({
+      id: ids.toggleBtn,
       "aria-haspopup": "listbox",
       type: "button",
       role: "button",
@@ -116,13 +118,8 @@ export function connectComboboxMachine(
       disabled: ctx.disabled,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
-      onPointerDown(event) {
-        event.preventDefault()
-        send("TOGGLE_POINTERDOWN")
-      },
-      onClick(event) {
-        event.preventDefault()
-        send("TOGGLE_CLICK")
+      onClick() {
+        send("BUTTON_CLICK")
       },
     }),
 

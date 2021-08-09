@@ -1,5 +1,7 @@
-import { nextTick } from "@core-foundation/utils"
+import { nextTick, noop } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
+import scrollIntoView from "scroll-into-view-if-needed"
+import { observeNodeAttr, trackPointerDown } from "../dom-utils"
 import { WithDOM } from "../type-utils"
 import { dom, getElements } from "./combobox.dom"
 
@@ -100,6 +102,11 @@ export type ComboboxMachineContext = WithDOM<{
    * The `id` of the highlighted option
    */
   activeId: string | null
+  /**
+   * The event source for triggers highlighted option change
+   */
+  eventSource: "pointer" | "keyboard" | null
+  optionCount: number
 }>
 
 export type ComboboxMachineState = {
@@ -123,6 +130,8 @@ export const comboboxMachine = createMachine<
       inputValue: "",
       selectedValue: "",
       navigationValue: "",
+      eventSource: null,
+      optionCount: 0,
     },
     states: {
       unknown: {
@@ -134,14 +143,17 @@ export const comboboxMachine = createMachine<
         },
       },
       open: {
-        entry: ["selectFirstIfAutoSelect"],
-        activities: ["scrollOptionIntoView", "observeOptionCount"],
+        activities: [
+          "scrollOptionIntoView",
+          "observeOptionCount",
+          "trackPointerDown",
+        ],
         on: {
           ARROW_DOWN: {
-            actions: "selectNextOptionId",
+            actions: ["selectNextOptionId", "setEventSourceToKeyboard"],
           },
           ARROW_UP: {
-            actions: "selectPrevOptionId",
+            actions: ["selectPrevOptionId", "setEventSourceToKeyboard"],
           },
           ESCAPE: {
             target: "closed",
@@ -158,10 +170,14 @@ export const comboboxMachine = createMachine<
             },
           ],
           TYPE: {
-            actions: ["setInputValue"],
+            actions: ["setInputValue", "selectFirstOptionId"],
           },
           OPTION_POINTEROVER: {
-            actions: ["setActiveId", "setNavigationValue"],
+            actions: [
+              "setActiveId",
+              "setNavigationValue",
+              "setEventSourceToPointer",
+            ],
           },
           OPTION_CLICK: [
             {
@@ -181,13 +197,12 @@ export const comboboxMachine = createMachine<
             {
               cond: "closeOnBlur",
               target: "closed",
-              // actions: ["clearInputValue"],
             },
-            // {
-            //   actions: ["clearInputValue"],
-            // },
           ],
-          TOGGLE_CLICK: "closed",
+          BUTTON_CLICK: {
+            target: "closed",
+            actions: "focusInput",
+          },
         },
       },
       focused: {
@@ -199,27 +214,27 @@ export const comboboxMachine = createMachine<
           ],
           ARROW_DOWN: {
             target: "open",
-            actions: ["selectFirstOptionId"],
+            actions: ["selectFirstOptionId", "setEventSourceToKeyboard"],
           },
           ARROW_UP: {
             target: "open",
-            actions: ["selectLastOptionId"],
+            actions: ["selectLastOptionId", "setEventSourceToKeyboard"],
           },
           TYPE: {
             target: "open",
-            actions: ["setInputValue"],
+            actions: ["setInputValue", "selectFirstOptionId"],
           },
-          TOGGLE_POINTERDOWN: {
+          BUTTON_CLICK: {
             target: "open",
             actions: "focusInput",
           },
         },
       },
       closed: {
-        entry: ["clearNavigationValue"],
+        entry: ["clearNavigationValue", "clearEventSource"],
         on: {
           INPUT_FOCUS: "focused",
-          TOGGLE_POINTERDOWN: {
+          BUTTON_CLICK: {
             target: "open",
             actions: "focusInput",
           },
@@ -234,11 +249,21 @@ export const comboboxMachine = createMachine<
       closeOnSelect: (ctx) => !!ctx.closeOnSelect,
     },
     activities: {
-      scrollOptionIntoView() {
-        return () => {}
+      trackPointerDown,
+      scrollOptionIntoView(ctx) {
+        const { input, listbox } = getElements(ctx)
+        return observeNodeAttr(input, ["aria-activedescendant"], () => {
+          const { activeOption: opt } = getElements(ctx)
+          if (!opt || ctx.eventSource !== "keyboard") return
+          scrollIntoView(opt, {
+            boundary: listbox,
+            block: "nearest",
+            scrollMode: "if-needed",
+          })
+        })
       },
       observeOptionCount() {
-        return () => {}
+        return noop
       },
     },
     actions: {
@@ -247,14 +272,6 @@ export const comboboxMachine = createMachine<
       },
       setOwnerDocument(ctx, evt) {
         ctx.doc = preserve(evt.doc)
-      },
-      selectFirstIfAutoSelect(ctx) {
-        if (ctx.autoSelect) {
-          const { first } = dom(ctx)
-          if (!first) return
-          ctx.activeId = first.id
-          ctx.navigationValue = first.getAttribute("data-label") ?? ""
-        }
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id
@@ -288,16 +305,20 @@ export const comboboxMachine = createMachine<
         ctx.onSelect?.(ctx.selectedValue)
       },
       selectFirstOptionId(ctx) {
-        const { first } = dom(ctx)
-        if (!first) return
-        ctx.activeId = first.id
-        ctx.navigationValue = first.getAttribute("data-label") ?? ""
+        nextTick(() => {
+          const { first } = dom(ctx)
+          if (!first) return
+          ctx.activeId = first.id
+          ctx.navigationValue = first.getAttribute("data-label") ?? ""
+        })
       },
       selectLastOptionId(ctx) {
-        const { last } = dom(ctx)
-        if (!last) return
-        ctx.activeId = last.id
-        ctx.navigationValue = last.getAttribute("data-label") ?? ""
+        nextTick(() => {
+          const { last } = dom(ctx)
+          if (!last) return
+          ctx.activeId = last.id
+          ctx.navigationValue = last.getAttribute("data-label") ?? ""
+        })
       },
       selectNextOptionId(ctx) {
         const { next } = dom(ctx)
@@ -315,6 +336,15 @@ export const comboboxMachine = createMachine<
       },
       clearNavigationValue(ctx) {
         ctx.navigationValue = ""
+      },
+      setEventSourceToKeyboard(ctx) {
+        ctx.eventSource = "keyboard"
+      },
+      setEventSourceToPointer(ctx) {
+        ctx.eventSource = "pointer"
+      },
+      clearEventSource(ctx) {
+        ctx.eventSource = null
       },
     },
   },

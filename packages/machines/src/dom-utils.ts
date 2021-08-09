@@ -1,4 +1,9 @@
+import { trackPointerDown as onPointerDown } from "@core-dom/event"
+import { noop } from "@core-foundation/utils"
 import type { KeyboardEvent } from "react"
+import { ref } from "valtio"
+
+type Dict = Record<string, any>
 
 const keyMap = {
   ArrowLeft: "ArrowRight",
@@ -51,3 +56,61 @@ export const dataAttr = (cond: boolean | undefined) => {
 export const ariaAttr = (cond: boolean | undefined) => {
   return cond ? true : undefined
 }
+
+export function observeNodeAttr(
+  node: HTMLElement | null,
+  attributes: string[],
+  fn: VoidFunction,
+) {
+  if (!node) return noop
+  const obs = new MutationObserver((changes) => {
+    for (const change of changes) {
+      if (
+        change.type === "attributes" &&
+        change.attributeName &&
+        attributes.includes(change.attributeName)
+      ) {
+        fn()
+      }
+    }
+  })
+  obs.observe(node, { attributes: true })
+  return () => obs.disconnect()
+}
+
+export function observeNodeChildren(
+  node: HTMLElement | null,
+  fn: VoidFunction,
+) {
+  if (!node) return noop
+  const obs = new MutationObserver((changes) => {
+    for (const change of changes) {
+      if (
+        change.type === "childList" &&
+        (change.addedNodes.length > 0 || change.removedNodes.length > 0)
+      ) {
+        fn()
+      }
+    }
+  })
+  obs.observe(node, { childList: true })
+  return () => obs.disconnect()
+}
+
+type TrackPointerDownOptions = {
+  doc?: Document
+  pointerdownNode?: HTMLElement | null
+}
+
+export function trackPointerDown(ctx: TrackPointerDownOptions) {
+  const doc = ctx.doc ?? document
+  return onPointerDown(doc, (el) => {
+    ctx.pointerdownNode = ref(el)
+  })
+}
+
+export interface PropNormalizer {
+  <T extends Dict = Dict>(props: T): Dict
+}
+
+export const defaultPropNormalizer: PropNormalizer = (props: Dict) => props

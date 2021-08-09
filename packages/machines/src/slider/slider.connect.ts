@@ -1,12 +1,14 @@
 import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
+import { StateMachine as S } from "@ui-machines/core"
 import {
+  dataAttr,
+  determineEventKey,
+  getStepMultipler,
   defaultPropNormalizer,
   PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { dataAttr, determineEventKey, getStepMultipler } from "../dom-utils"
+} from "../dom-utils"
 import {
   DOMHTMLProps,
   DOMInputProps,

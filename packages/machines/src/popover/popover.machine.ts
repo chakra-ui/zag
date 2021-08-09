@@ -1,11 +1,7 @@
-import {
-  createMachine,
-  guards,
-  preserve,
-  trackPointerDown,
-} from "@ui-machines/core"
-import { nextTick } from "@core-foundation/utils"
 import { DOMElement } from "@core-dom/element"
+import { nextTick } from "@core-foundation/utils"
+import { createMachine, guards, preserve } from "@ui-machines/core"
+import { trackPointerDown } from "../dom-utils"
 import { WithDOM } from "../type-utils"
 import { dom, getElements } from "./popover.dom"
 

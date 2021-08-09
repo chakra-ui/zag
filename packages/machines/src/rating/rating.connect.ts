@@ -1,11 +1,11 @@
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
+import { StateMachine as S } from "@ui-machines/core"
 import {
+  determineEventKey,
   defaultPropNormalizer,
   PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { determineEventKey } from "../dom-utils"
+} from "../dom-utils"
 import {
   DOMHTMLProps,
   DOMInputProps,

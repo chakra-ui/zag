@@ -30,6 +30,7 @@
     "@ui-machines/core": "0.0.0",
     "@core-foundation/utils": "^0.1.4",
     "@core-foundation/numeric-range": "^0.1.1",
+    "scroll-into-view-if-needed": "^2.2.28",
     "@core-graphics/rect": "^0.1.2",
     "@core-graphics/point": "^0.1.2",
     "@core-dom/event": "^0.1.4",

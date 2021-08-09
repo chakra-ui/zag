@@ -1,12 +1,14 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { cast } from "@core-foundation/utils/fn"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { Point } from "@core-graphics/point"
-import { dataAttr, determineEventKey, getStepMultipler } from "../dom-utils"
+import {
+  dataAttr,
+  determineEventKey,
+  getStepMultipler,
+  defaultPropNormalizer,
+  PropNormalizer,
+} from "../dom-utils"
 import {
   DOMHTMLProps,
   DOMInputProps,

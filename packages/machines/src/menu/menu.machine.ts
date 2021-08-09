@@ -1,6 +1,7 @@
-import { createMachine, preserve, trackPointerDown } from "@ui-machines/core"
+import { createMachine, preserve } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils/fn"
 import { WithDOM } from "../type-utils"
+import { trackPointerDown } from "../dom-utils"
 import { dom, getElements } from "./menu.dom"
 
 export type MenuMachineContext = WithDOM<{

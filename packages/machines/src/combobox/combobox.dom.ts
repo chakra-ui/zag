@@ -17,6 +17,7 @@ export function getElements(ctx: ComboboxMachineContext) {
   const ids = getElementIds(ctx.uid)
 
   return {
+    activeOption: ctx.activeId ? doc?.getElementById(ctx.activeId) : null,
     label: doc.getElementById(ids.label),
     container: doc.getElementById(ids.container),
     input: doc.getElementById(ids.input) as HTMLInputElement,

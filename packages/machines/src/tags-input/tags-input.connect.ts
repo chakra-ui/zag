@@ -1,10 +1,11 @@
+import { StateMachine as S } from "@ui-machines/core"
+import { validateBlur } from "@core-dom/event"
 import {
+  determineEventKey,
+  dataAttr,
   defaultPropNormalizer,
   PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { validateBlur } from "@core-dom/event"
-import { determineEventKey, dataAttr } from "../dom-utils"
+} from "../dom-utils"
 import {
   DOMButtonProps,
   DOMHTMLProps,

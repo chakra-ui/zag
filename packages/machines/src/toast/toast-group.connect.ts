@@ -1,10 +1,7 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { runIfFn } from "@core-foundation/utils/fn"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
+import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import {
   getToastsByPlacement,

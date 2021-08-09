@@ -1,9 +1,5 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { ariaAttr } from "../dom-utils"
+import { StateMachine as S } from "@ui-machines/core"
+import { ariaAttr, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import { validateBlur } from "@core-dom/event"
 import {
   DOMButtonProps,

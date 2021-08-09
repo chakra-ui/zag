@@ -1,9 +1,6 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
+import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import {
   ToastMachineContext,
   ToastMachineState,

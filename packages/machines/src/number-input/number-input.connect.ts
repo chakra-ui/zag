@@ -1,10 +1,10 @@
+import { StateMachine as S } from "@ui-machines/core"
+import { NumericRange } from "@core-foundation/numeric-range"
 import {
+  getStepMultipler,
   defaultPropNormalizer,
   PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { getStepMultipler } from "../dom-utils"
+} from "../dom-utils"
 import { DOMButtonProps, DOMInputProps, EventKeyMap } from "../type-utils"
 import { getElementIds } from "./number-input.dom"
 import {

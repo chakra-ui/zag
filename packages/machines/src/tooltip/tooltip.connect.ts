@@ -1,10 +1,7 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { snapshot } from "valtio"
 import { DOMButtonProps, DOMHTMLProps } from "../type-utils"
+import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import {
   TooltipMachineContext,
   TooltipMachineState,
