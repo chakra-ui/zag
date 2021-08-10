@@ -1,8 +1,9 @@
 import { cast, env, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
-import { observeNodeAttr, trackPointerDown } from "../__utils/dom"
+import { trackPointerDown } from "../__utils/dom"
 import { LiveRegion } from "../__utils/live-region"
+import { observeNodeAttr } from "../__utils/mutation-observer"
 import { WithDOM } from "../__utils/types"
 import { dom, getElements } from "./combobox.dom"
 
@@ -245,7 +246,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       trackPointerDown,
       scrollOptionIntoView(ctx) {
         const { input, listbox } = getElements(ctx)
-        return observeNodeAttr(input, ["aria-activedescendant"], () => {
+        return observeNodeAttr(input, "aria-activedescendant", () => {
           const { activeOption: opt } = getElements(ctx)
           if (!opt || ctx.eventSource !== "keyboard") return
           scrollIntoView(opt, {

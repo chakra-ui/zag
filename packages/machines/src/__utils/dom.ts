@@ -1,5 +1,4 @@
 import { trackPointerDown as onPointerDown } from "@core-dom/event"
-import { noop } from "@core-foundation/utils"
 import type { KeyboardEvent } from "react"
 import { ref } from "valtio"
 
@@ -54,24 +53,6 @@ export const dataAttr = (cond: boolean | undefined) => {
 
 export const ariaAttr = (cond: boolean | undefined) => {
   return cond ? true : undefined
-}
-
-export function observeNodeAttr(node: HTMLElement | null, attributes: string[], fn: VoidFunction) {
-  if (!node) return noop
-  const obs = new MutationObserver((changes) => {
-    for (const change of changes) {
-      if (change.type === "attributes" && change.attributeName && attributes.includes(change.attributeName)) {
-        fn()
-      }
-    }
-  })
-
-  obs.observe(node, {
-    attributes: true,
-    attributeFilter: attributes,
-  })
-
-  return () => obs.disconnect()
 }
 
 type TrackPointerDownOptions = {
