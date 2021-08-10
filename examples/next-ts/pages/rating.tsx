@@ -1,11 +1,11 @@
 import { useMachine } from "@ui-machines/react"
-import { connectRatingMachine, ratingMachine } from "@ui-machines/web"
+import { rating } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 function Page() {
   const [state, send] = useMachine(
-    ratingMachine.withContext({
+    rating.machine.withContext({
       uid: "rating-35",
       allowHalf: true,
     }),
@@ -13,10 +13,7 @@ function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputProps, getRatingProps, rootProps } = connectRatingMachine(
-    state,
-    send,
-  )
+  const { inputProps, getRatingProps, rootProps } = rating.connect(state, send)
 
   return (
     <>

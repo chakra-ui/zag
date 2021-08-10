@@ -1,11 +1,11 @@
 import { useMachine } from "@ui-machines/react"
-import { connectMenuMachine, menuMachine } from "@ui-machines/web"
+import { menu } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const [state, send] = useMachine(
-    menuMachine.withContext({
+    menu.machine.withContext({
       uid: "234",
       onSelect: console.log,
     }),
@@ -13,8 +13,10 @@ export default function Page() {
 
   const ref = useMount<HTMLButtonElement>(send)
 
-  const { menuListProps, getMenuItemProps, menuButtonProps } =
-    connectMenuMachine(state, send)
+  const { menuListProps, getMenuItemProps, menuButtonProps } = menu.connect(
+    state,
+    send,
+  )
 
   return (
     <div className="App">

@@ -1,11 +1,11 @@
 import { useMachine } from "@ui-machines/react"
-import { connectPinInputMachine, pinInputMachine } from "@ui-machines/web"
+import { pinInput } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const [state, send] = useMachine(
-    pinInputMachine.withContext({
+    pinInput.machine.withContext({
       autoFocus: true,
       onComplete(val) {
         console.log(val)
@@ -15,7 +15,7 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { getInputProps } = connectPinInputMachine(state, send)
+  const { getInputProps } = pinInput.connect(state, send)
 
   return (
     <div className="App">

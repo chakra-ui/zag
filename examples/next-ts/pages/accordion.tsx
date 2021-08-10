@@ -1,14 +1,14 @@
 import { useMachine } from "@ui-machines/react"
-import { connectAccordionMachine, accordionMachine } from "@ui-machines/web"
+import { accordion } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 function Page() {
-  const [state, send] = useMachine(accordionMachine)
+  const [state, send] = useMachine(accordion.machine)
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { rootProps, getAccordionProps } = connectAccordionMachine(state, send)
+  const { rootProps, getAccordionProps } = accordion.connect(state, send)
 
   const home = getAccordionProps({ uid: "home" })
   const about = getAccordionProps({ uid: "about" })

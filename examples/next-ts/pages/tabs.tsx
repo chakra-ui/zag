@@ -1,11 +1,11 @@
 import { useMachine } from "@ui-machines/react"
-import { connectTabsMachine, tabsMachine } from "@ui-machines/web"
+import { tabs } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 function Page() {
   const [state, send] = useMachine(
-    tabsMachine.withContext({
+    tabs.machine.withContext({
       activeTabId: "nils",
       activationMode: "manual",
     }),
@@ -14,7 +14,7 @@ function Page() {
   const ref = useMount<HTMLDivElement>(send)
 
   const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } =
-    connectTabsMachine(state, send)
+    tabs.connect(state, send)
 
   return (
     <div style={{ width: "100%" }}>

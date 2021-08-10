@@ -1,12 +1,12 @@
 import { useMachine } from "@ui-machines/react"
-import { connectSliderMachine, sliderMachine } from "@ui-machines/web"
+import { slider } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 
 function Page() {
   const [state, send] = useMachine(
-    sliderMachine.withContext({
+    slider.machine.withContext({
       uid: "slider-35",
       value: 40,
       name: "volume",
@@ -15,8 +15,10 @@ function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputProps, thumbProps, rootProps, innerTrackProps } =
-    connectSliderMachine(state, send)
+  const { inputProps, thumbProps, rootProps, innerTrackProps } = slider.connect(
+    state,
+    send,
+  )
 
   return (
     <>

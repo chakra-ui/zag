@@ -1,18 +1,18 @@
 import { useMachine } from "@ui-machines/react"
-import { connectPopoverMachine, popoverMachine } from "@ui-machines/web"
+import { popover } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const [state, send] = useMachine(
-    popoverMachine.withContext({
+    popover.machine.withContext({
       autoFocus: true,
     }),
   )
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { triggerProps, popoverProps } = connectPopoverMachine(state, send)
+  const { triggerProps, popoverProps } = popover.connect(state, send)
 
   return (
     <>

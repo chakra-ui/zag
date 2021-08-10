@@ -36,5 +36,6 @@ export function dom(ctx: ComboboxMachineContext) {
     last: collection.last,
     prev: collection.prevById,
     next: collection.nextById,
+    getOptions: () => {},
   }
 }

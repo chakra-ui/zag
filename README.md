@@ -51,15 +51,15 @@ the component state machines.
 ### React
 
 ```jsx
-import { toggleMachine, connectToggleMachine } from "@ui-machines/web"
+import { toggle } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
-function Tabs() {
+function Example() {
   // if you need access to `state` or `send` from machine
-  const [state, send] = useMachine(toggleMachine)
+  const [state, send] = useMachine(toggle.machine)
 
   // convert machine details into `DOM` props
-  const { buttonProps } = connectToggleMachine(state, send)
+  const { buttonProps } = toggle.connect(state, send)
 
   // consume into components
   return <button {...buttonProps}>Toggle me</button>

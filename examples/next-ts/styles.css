@@ -1,9 +1,10 @@
-:root{
-  --ring-color: blue
+:root {
+  --ring-color: blue;
 }
 
 * {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .tabs {
@@ -108,7 +109,7 @@
   margin-top: 1em;
 }
 
-.tabs__indicator{
+.tabs__indicator {
   height: 4px;
   background-color: red;
   z-index: 10;
@@ -164,3 +165,15 @@ button[aria-controls]:focus {
   box-shadow: 0 0 0 3px var(--ring-color);
 }
 
+[role="listbox"] {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid lightgray;
+  max-width: 300px;
+}
+
+[role="option"][aria-selected="true"] {
+  background-color: red;
+  color: white;
+}

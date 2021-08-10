@@ -1,12 +1,12 @@
 import { useMachine } from "@ui-machines/react"
-import { connectRangeSliderMachine, rangeSliderMachine } from "@ui-machines/web"
+import { rangeSlider } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 
 function Page() {
   const [state, send] = useMachine(
-    rangeSliderMachine.withContext({
+    rangeSlider.machine.withContext({
       uid: "slider-35",
       value: [10, 60],
     }),
@@ -15,7 +15,7 @@ function Page() {
   const ref = useMount<HTMLDivElement>(send)
 
   const { getThumbProps, rootProps, innerTrackProps, getInputProps } =
-    connectRangeSliderMachine(state, send)
+    rangeSlider.connect(state, send)
 
   return (
     <>

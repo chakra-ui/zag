@@ -25,7 +25,8 @@ export function StateVisualizer(props: {
     >
       {JSON.stringify(
         state,
-        (_, value) => {
+        (key, value) => {
+          if (key === "childNodes") return value.value.length
           return env.dom() && value instanceof HTMLElement
             ? value.tagName
             : value

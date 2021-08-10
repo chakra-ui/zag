@@ -1,5 +1,5 @@
 import { trackPointerDown as onPointerDown } from "@core-dom/event"
-import { noop } from "@core-foundation/utils"
+import { env, noop } from "@core-foundation/utils"
 import type { KeyboardEvent } from "react"
 import { ref } from "valtio"
 
@@ -74,26 +74,12 @@ export function observeNodeAttr(
       }
     }
   })
-  obs.observe(node, { attributes: true })
-  return () => obs.disconnect()
-}
 
-export function observeNodeChildren(
-  node: HTMLElement | null,
-  fn: VoidFunction,
-) {
-  if (!node) return noop
-  const obs = new MutationObserver((changes) => {
-    for (const change of changes) {
-      if (
-        change.type === "childList" &&
-        (change.addedNodes.length > 0 || change.removedNodes.length > 0)
-      ) {
-        fn()
-      }
-    }
+  obs.observe(node, {
+    attributes: true,
+    attributeFilter: attributes,
   })
-  obs.observe(node, { childList: true })
+
   return () => obs.disconnect()
 }
 
@@ -114,3 +100,71 @@ export interface PropNormalizer {
 }
 
 export const defaultPropNormalizer: PropNormalizer = (props: Dict) => props
+
+/* -----------------------------------------------------------------------------
+ * Live Region for screen reader technology
+ * -----------------------------------------------------------------------------*/
+
+type LiveRegionOptions = {
+  ariaLive: "polite" | "assertive"
+  role: "status" | "alert" | "log"
+  ariaRelevant: "additions" | "removals" | "text" | "all"
+  ariaAtomic: "true" | "false"
+  doc?: Document
+}
+
+export class LiveRegion {
+  region: HTMLElement | null = null
+  doc: Document | null
+
+  constructor(opts: Partial<LiveRegionOptions> = {}) {
+    const {
+      ariaLive = "polite",
+      role = "log",
+      ariaRelevant = "additions",
+      ariaAtomic = "false",
+      doc: _doc,
+    } = opts
+    this.doc = _doc ?? env.dom() ? document : null
+
+    if (!this.doc) return
+
+    const region = this.doc.createElement("live-region")
+
+    region.setAttribute("aria-live", ariaLive)
+    region.setAttribute("role", role)
+    region.setAttribute("aria-relevant", ariaRelevant)
+    region.setAttribute("aria-atomic", ariaAtomic)
+
+    region.style.position = "absolute"
+    region.style.width = "1px"
+    region.style.height = "1px"
+    region.style.marginTop = "-1px"
+    region.style.clip = "rect(1px, 1px, 1px, 1px)"
+    region.style.overflow = "hidden"
+
+    this.region = region
+    this.doc.body.appendChild(region)
+  }
+
+  announce = (msg: string, expire?: number) => {
+    if (!this.doc || !this.region) return
+
+    const announcement = this.doc.createElement("div")
+    announcement.innerHTML = msg
+
+    this.region.appendChild(announcement)
+    let region = this.region
+
+    if (expire || typeof expire === "undefined") {
+      setTimeout(() => {
+        region.removeChild(announcement)
+      }, expire || 7000)
+    }
+  }
+
+  destroy = () => {
+    if (!this.doc || !this.region) return
+    this.region.parentNode?.removeChild(this.region)
+  }
+}

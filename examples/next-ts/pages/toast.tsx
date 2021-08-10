@@ -1,9 +1,4 @@
-import {
-  connectToastGroupMachine,
-  connectToastMachine,
-  toastGroupMachine,
-  ToastMachine,
-} from "@ui-machines/web"
+import { toast, ToastMachine } from "@ui-machines/web"
 import { useActor, useMachine } from "@ui-machines/react"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
@@ -20,29 +15,29 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
   const [state, send] = useActor(actor)
   const ctx = state.context
 
-  const toast = connectToastMachine(state, send)
+  const t = toast.connect(state, send)
 
   return (
     <pre
-      hidden={!toast.isVisible}
+      hidden={!t.isVisible}
       style={{ padding: 10, background: backgrounds[ctx.type], maxWidth: 400 }}
-      onPointerEnter={toast.pause}
-      onPointerLeave={toast.resume}
+      onPointerEnter={t.pause}
+      onPointerLeave={t.resume}
     >
       <progress max={ctx.progress?.max} value={ctx.progress?.value} />
       <p>{ctx.title}</p>
       <p>{ctx.type === "loading" ? <BeatLoader /> : null}</p>
-      <button onClick={toast.dismiss}>Close</button>
+      <button onClick={t.dismiss}>Close</button>
     </pre>
   )
 }
 
 function Page() {
-  const [state, send] = useMachine(toastGroupMachine)
+  const [state, send] = useMachine(toast.group.machine)
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
-  const toasts = connectToastGroupMachine(state, send)
+  const toasts = toast.group.connect(state, send)
 
   const id = useRef<string>()
 

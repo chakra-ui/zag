@@ -1,11 +1,11 @@
 import { useMachine } from "@ui-machines/react"
-import { connectEditableMachine, editableMachine } from "@ui-machines/web"
+import { editable } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 const Page = () => {
   const [state, send] = useMachine(
-    editableMachine.withContext({
+    editable.machine.withContext({
       placeholder: "Edit me...",
       isPreviewFocusable: true,
     }),
@@ -21,7 +21,7 @@ const Page = () => {
     cancelButtonProps,
     submitButtonProps,
     editButtonProps,
-  } = connectEditableMachine(state, send)
+  } = editable.connect(state, send)
 
   return (
     <div>

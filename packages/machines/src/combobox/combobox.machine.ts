@@ -1,7 +1,7 @@
-import { nextTick, noop } from "@core-foundation/utils"
+import { cast, env, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
-import { observeNodeAttr, trackPointerDown } from "../dom-utils"
+import { LiveRegion, observeNodeAttr, trackPointerDown } from "../dom-utils"
 import { WithDOM } from "../type-utils"
 import { dom, getElements } from "./combobox.dom"
 
@@ -106,7 +106,14 @@ export type ComboboxMachineContext = WithDOM<{
    * The event source for triggers highlighted option change
    */
   eventSource: "pointer" | "keyboard" | null
-  optionCount: number
+  /**
+   * The live region for the combobox
+   */
+  liveRegion?: LiveRegion | null
+  /**
+   * The live collection of visible option nodes
+   */
+  childNodes?: { value: HTMLCollectionOf<HTMLElement> }
 }>
 
 export type ComboboxMachineState = {
@@ -131,29 +138,34 @@ export const comboboxMachine = createMachine<
       selectedValue: "",
       navigationValue: "",
       eventSource: null,
-      optionCount: 0,
+      liveRegion: null,
     },
     states: {
       unknown: {
         on: {
           SETUP: {
             target: "closed",
-            actions: ["setId", "setOwnerDocument"],
+            actions: ["setId", "setOwnerDocument", "setLiveRegion"],
           },
         },
       },
       open: {
-        activities: [
-          "scrollOptionIntoView",
-          "observeOptionCount",
-          "trackPointerDown",
-        ],
+        entry: ["setChildNodes"],
+        activities: ["scrollOptionIntoView", "trackPointerDown"],
         on: {
           ARROW_DOWN: {
-            actions: ["selectNextOptionId", "setEventSourceToKeyboard"],
+            actions: [
+              "selectNextOptionId",
+              "setEventSourceToKeyboard",
+              "announceActiveOption",
+            ],
           },
           ARROW_UP: {
-            actions: ["selectPrevOptionId", "setEventSourceToKeyboard"],
+            actions: [
+              "selectPrevOptionId",
+              "setEventSourceToKeyboard",
+              "announceActiveOption",
+            ],
           },
           ESCAPE: {
             target: "closed",
@@ -177,6 +189,7 @@ export const comboboxMachine = createMachine<
               "setActiveId",
               "setNavigationValue",
               "setEventSourceToPointer",
+              "announceActiveOption",
             ],
           },
           OPTION_CLICK: [
@@ -210,7 +223,7 @@ export const comboboxMachine = createMachine<
           INPUT_BLUR: "closed",
           INPUT_CLICK: [
             { cond: "openOnClick", target: "open", actions: ["focusInput"] },
-            { target: "focused", actions: ["focusInput"] },
+            { actions: ["focusInput"] },
           ],
           ARROW_DOWN: {
             target: "open",
@@ -247,6 +260,7 @@ export const comboboxMachine = createMachine<
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       closeOnSelect: (ctx) => !!ctx.closeOnSelect,
+      isAppleDevice: env.apple,
     },
     activities: {
       trackPointerDown,
@@ -262,9 +276,6 @@ export const comboboxMachine = createMachine<
           })
         })
       },
-      observeOptionCount() {
-        return noop
-      },
     },
     actions: {
       setId(ctx, evt) {
@@ -272,6 +283,20 @@ export const comboboxMachine = createMachine<
       },
       setOwnerDocument(ctx, evt) {
         ctx.doc = preserve(evt.doc)
+      },
+      setLiveRegion(ctx) {
+        const region = new LiveRegion({ ariaLive: "assertive", doc: ctx.doc })
+        ctx.liveRegion = preserve(region)
+      },
+      setChildNodes(ctx) {
+        // We're caching the live html collection in context.childNodes
+        if (ctx.childNodes) return
+        const { listbox } = getElements(ctx)
+        // this is a live collection of all options
+        const nodes = listbox?.getElementsByClassName("option")
+        ctx.childNodes = preserve({
+          value: cast<HTMLCollectionOf<HTMLElement>>(nodes),
+        })
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id
@@ -345,6 +370,12 @@ export const comboboxMachine = createMachine<
       },
       clearEventSource(ctx) {
         ctx.eventSource = null
+      },
+      announceActiveOption(ctx) {
+        const { activeOption } = getElements(ctx)
+        if (!activeOption) return
+        const { label } = activeOption.dataset
+        if (label) ctx.liveRegion?.announce(label)
       },
     },
   },

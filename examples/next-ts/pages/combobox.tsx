@@ -1,5 +1,5 @@
 import { useMachine } from "@ui-machines/react"
-import { comboboxMachine, connectComboboxMachine } from "@ui-machines/web"
+import { combobox } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
@@ -37,7 +37,7 @@ const data = [
 
 export default function Page() {
   const [state, send] = useMachine(
-    comboboxMachine.withContext({
+    combobox.machine.withContext({
       uid: "234",
       onSelect: console.log,
     }),
@@ -52,7 +52,7 @@ export default function Page() {
     comboboxProps,
     buttonProps,
     getOptionProps,
-  } = connectComboboxMachine(state, send)
+  } = combobox.connect(state, send)
 
   const filtered = data.filter((d) =>
     d.label.toLowerCase().startsWith(inputValue.toLowerCase()),
@@ -83,22 +83,6 @@ export default function Page() {
           </ul>
         )}
       </div>
-      <style jsx>
-        {`
-          [role="listbox"] {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            border: 1px solid lightgray;
-            max-width: 300px;
-          }
-
-          [role="option"][aria-selected="true"] {
-            background-color: red;
-            color: white;
-          }
-        `}
-      </style>
     </>
   )
 }

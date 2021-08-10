@@ -44,21 +44,25 @@ export function connectComboboxMachine(
       id: ids.container,
       role: "combobox",
       "aria-expanded": expanded,
-      "aria-owns": ids.listbox,
+      "aria-owns": expanded ? ids.listbox : undefined,
       "aria-haspopup": "listbox",
+      "aria-labelledby": ids.label,
     }),
 
     inputProps: normalize<DOMInputProps>({
       name: ctx.name,
       disabled: ctx.disabled,
       autoFocus: ctx.autoFocus,
+      autoComplete: "off",
+      autoCorrect: "off",
+      autoCapitalize: "off",
+      spellCheck: "false",
       readOnly: ctx.readonly,
+      placeholder: ctx.placeholder,
       id: ids.input,
       type: "text",
-      "aria-autocomplete": "list",
+      "aria-autocomplete": ctx.autoSelect === "inline" ? "both" : "list",
       "aria-controls": expanded ? ids.listbox : undefined,
-      autoComplete: "off",
-      spellCheck: "false",
       role: "combobox",
       value: ctx.inputValue,
       "aria-expanded": expanded,
@@ -89,6 +93,12 @@ export function connectComboboxMachine(
           ArrowUp() {
             send("ARROW_UP")
           },
+          Home() {
+            send("HOME")
+          },
+          End() {
+            send("END")
+          },
           Enter() {
             send("ENTER")
           },
@@ -109,17 +119,25 @@ export function connectComboboxMachine(
 
     buttonProps: normalize<DOMButtonProps>({
       id: ids.toggleBtn,
-      "aria-haspopup": "listbox",
+      "aria-haspopup": "true",
       type: "button",
       role: "button",
       tabIndex: -1,
-      "aria-label": "Show suggestions",
+      "aria-label": expanded ? "Hide suggestions" : "Show suggestions",
       "aria-expanded": expanded,
       disabled: ctx.disabled,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
       onClick() {
         send("BUTTON_CLICK")
+      },
+    }),
+
+    clearProps: normalize<DOMButtonProps>({
+      "aria-label": "Clear",
+      type: "reset",
+      onClick() {
+        send("CLEAR_BUTTON_CLICK")
       },
     }),
 
@@ -138,11 +156,12 @@ export function connectComboboxMachine(
       return normalize<WithDataAttr<DOMHTMLProps>>({
         id,
         role: "option",
+        className: "option",
         "aria-selected": selected,
         "aria-disabled": ctx.disabled,
         "data-value": value,
         "data-label": label,
-        onPointerOver() {
+        onPointerMove() {
           send({ type: "OPTION_POINTEROVER", id, value: label })
         },
         onPointerDown(event) {

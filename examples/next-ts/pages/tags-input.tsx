@@ -1,11 +1,11 @@
 import { useMachine } from "@ui-machines/react"
-import { connectTagsInputMachine, tagsInputMachine } from "@ui-machines/web"
+import { tagsInput } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 const Page = () => {
   const [state, send] = useMachine(
-    tagsInputMachine.withContext({
+    tagsInput.machine.withContext({
       uid: "welcome",
       value: ["React", "Vue"],
     }),
@@ -19,7 +19,7 @@ const Page = () => {
     getTagProps,
     getTagDeleteButtonProps,
     getTagInputProps,
-  } = connectTagsInputMachine(state, send)
+  } = tagsInput.connect(state, send)
 
   return (
     <div>

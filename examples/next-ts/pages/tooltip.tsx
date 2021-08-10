@@ -1,20 +1,15 @@
 import { useMachine, useSnapshot } from "@ui-machines/react"
-import {
-  connectTooltipMachine,
-  tooltipMachine,
-  tooltipStore,
-} from "@ui-machines/web"
+import { tooltip } from "@ui-machines/web"
 import { useMount } from "hooks/use-mount"
 
 const Tooltip = (props: { id?: string }) => {
-  const [state, send] = useMachine(tooltipMachine.withContext({ id: props.id }))
+  const [state, send] = useMachine(
+    tooltip.machine.withContext({ id: props.id }),
+  )
 
   const ref = useMount<HTMLButtonElement>(send)
 
-  const { isVisible, triggerProps, tooltipProps } = connectTooltipMachine(
-    state,
-    send,
-  )
+  const { isVisible, triggerProps, tooltipProps } = tooltip.connect(state, send)
 
   return (
     <div className="App">
@@ -31,7 +26,7 @@ const Tooltip = (props: { id?: string }) => {
 }
 
 function Page() {
-  const snap = useSnapshot(tooltipStore)
+  const snap = useSnapshot(tooltip.store)
   return (
     <>
       <h3>{JSON.stringify(snap)}</h3>
