@@ -1,11 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
 import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
-import {
-  ToastMachineContext,
-  ToastMachineState,
-  ToastPlacement,
-} from "./toast.machine"
+import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
 export function connectToastMachine(

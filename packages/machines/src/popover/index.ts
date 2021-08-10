@@ -6,7 +6,4 @@ export const popover = {
   connect: connectPopoverMachine,
 }
 
-export type {
-  PopoverMachineContext,
-  PopoverMachineState,
-} from "./popover.machine"
+export type { PopoverMachineContext, PopoverMachineState } from "./popover.machine"

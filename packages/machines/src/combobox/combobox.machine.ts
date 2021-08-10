@@ -31,7 +31,7 @@ export type ComboboxMachineContext = WithDOM<{
   /**
    * Whether to clear the input's value on escape
    */
-  clearInputOnEsc?: boolean
+  clearInputValueOnEsc?: boolean
   /**
    * Whether to close the menu when the input is blurred
    */
@@ -120,10 +120,7 @@ export type ComboboxMachineState = {
   value: "unknown" | "focused" | "open" | "closed"
 }
 
-export const comboboxMachine = createMachine<
-  ComboboxMachineContext,
-  ComboboxMachineState
->(
+export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMachineState>(
   {
     id: "combobox-machine",
     initial: "unknown",
@@ -150,56 +147,40 @@ export const comboboxMachine = createMachine<
         },
       },
       open: {
-        entry: ["setChildNodes"],
+        entry: ["setChildNodes", "announceNumberOfOptions"],
         activities: ["scrollOptionIntoView", "trackPointerDown"],
         on: {
           ARROW_DOWN: {
-            actions: [
-              "selectNextOptionId",
-              "setEventSourceToKeyboard",
-              "announceActiveOption",
-            ],
+            actions: ["selectNextOptionId", "setEventSourceToKeyboard", "announceActiveOption"],
           },
           ARROW_UP: {
-            actions: [
-              "selectPrevOptionId",
-              "setEventSourceToKeyboard",
-              "announceActiveOption",
-            ],
+            actions: ["selectPrevOptionId", "setEventSourceToKeyboard", "announceActiveOption"],
           },
-          ESCAPE: {
-            target: "closed",
-            actions: "clearInputValue",
-          },
+          ESCAPE: "closed",
           ENTER: [
             {
               cond: "closeOnSelect",
               target: "closed",
-              actions: ["setSelectedValue", "announceUpdate"],
+              actions: ["setSelectedValue", "announceSelectedOption"],
             },
             {
-              actions: ["setSelectedValue", "announceUpdate"],
+              actions: ["setSelectedValue", "announceSelectedOption"],
             },
           ],
           TYPE: {
-            actions: ["setInputValue", "selectFirstOptionId"],
+            actions: ["setInputValue", "selectFirstOptionId", "announceNumberOfOptions"],
           },
           OPTION_POINTEROVER: {
-            actions: [
-              "setActiveId",
-              "setNavigationValue",
-              "setEventSourceToPointer",
-              "announceActiveOption",
-            ],
+            actions: ["setActiveId", "setNavigationValue", "setEventSourceToPointer", "announceActiveOption"],
           },
           OPTION_CLICK: [
             {
               cond: "closeOnSelect",
               target: "closed",
-              actions: ["setSelectedValue", "announceUpdate", "focusInput"],
+              actions: ["setSelectedValue", "announceSelectedOption", "focusInput"],
             },
             {
-              actions: ["setSelectedValue", "announceUpdate", "focusInput"],
+              actions: ["setSelectedValue", "announceSelectedOption", "focusInput"],
             },
           ],
           INPUT_BLUR: [
@@ -221,10 +202,7 @@ export const comboboxMachine = createMachine<
       focused: {
         on: {
           INPUT_BLUR: "closed",
-          INPUT_CLICK: [
-            { cond: "openOnClick", target: "open", actions: ["focusInput"] },
-            { actions: ["focusInput"] },
-          ],
+          INPUT_CLICK: [{ cond: "openOnClick", target: "open", actions: ["focusInput"] }, { actions: ["focusInput"] }],
           ARROW_DOWN: {
             target: "open",
             actions: ["selectFirstOptionId", "setEventSourceToKeyboard"],
@@ -235,12 +213,13 @@ export const comboboxMachine = createMachine<
           },
           TYPE: {
             target: "open",
-            actions: ["setInputValue", "selectFirstOptionId"],
+            actions: ["setInputValue", "selectFirstOptionId", "announceNumberOfOptions"],
           },
           BUTTON_CLICK: {
             target: "open",
             actions: "focusInput",
           },
+          ESCAPE: { actions: ["clearInputValue"] },
         },
       },
       closed: {
@@ -260,7 +239,6 @@ export const comboboxMachine = createMachine<
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       closeOnSelect: (ctx) => !!ctx.closeOnSelect,
-      isAppleDevice: env.apple,
     },
     activities: {
       trackPointerDown,
@@ -317,11 +295,8 @@ export const comboboxMachine = createMachine<
       setInputValue(ctx, evt) {
         ctx.inputValue = evt.value
       },
-      clearInputValue(ctx) {
+      clearInputValueValue(ctx) {
         ctx.inputValue = ""
-      },
-      announceUpdate(ctx) {
-        console.log(ctx.navigationValue)
       },
       invokeOnInputChange(ctx) {
         ctx.onInputValueChange?.(ctx.inputValue)
@@ -371,12 +346,40 @@ export const comboboxMachine = createMachine<
       clearEventSource(ctx) {
         ctx.eventSource = null
       },
+      // VoiceOver doesn't announce `aria-activedescendant`. We'll use a live-region to make it happen!
       announceActiveOption(ctx) {
+        if (!env.apple()) return
         const { activeOption } = getElements(ctx)
         if (!activeOption) return
         const { label } = activeOption.dataset
         if (label) ctx.liveRegion?.announce(label)
       },
+      // Announce the number of available suggestions when it changes
+      announceNumberOfOptions(ctx) {
+        nextTick(() => {
+          const count = ctx.childNodes?.value.length
+          const msg = formatMessage(count)
+          ctx.liveRegion?.announce(msg)
+        })
+      },
+      announceSelectedOption(ctx) {
+        if (!env.apple()) return
+        const msg = `${ctx.selectedValue}, selected`
+        ctx.liveRegion?.announce(msg)
+      },
     },
   },
 )
+
+function formatMessage(count?: number) {
+  let msg: string
+  if (!count) {
+    msg = "No results are available."
+  } else {
+    msg = [
+      `${count} result${count === 1 ? " is" : "s are"}`,
+      "available, use up and down arrow keys to navigate. Press Enter key to select.",
+    ].join(" ")
+  }
+  return msg
+}

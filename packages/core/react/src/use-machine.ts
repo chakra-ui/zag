@@ -4,8 +4,7 @@ import { useSnapshot } from "valtio"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { useConstant } from "./use-constant"
 
-const useSafeLayoutEffect =
-  typeof document !== "undefined" ? useLayoutEffect : useEffect
+const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
 
 export function useMachine<
   TContext extends Record<string, any>,

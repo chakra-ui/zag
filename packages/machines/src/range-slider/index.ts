@@ -6,7 +6,4 @@ export const rangeSlider = {
   connect: connectRangeSliderMachine,
 }
 
-export type {
-  RangeSliderMachineContext,
-  RangeSliderMachineState,
-} from "./range-slider.machine"
+export type { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"

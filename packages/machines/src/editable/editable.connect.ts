@@ -1,17 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import { validateBlur } from "@core-dom/event"
-import {
-  DOMButtonProps,
-  DOMHTMLProps,
-  DOMInputProps,
-  EventKeyMap,
-} from "../type-utils"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap } from "../type-utils"
 import { getElementIds, getElements } from "./editable.dom"
-import {
-  EditableMachineContext,
-  EditableMachineState,
-} from "./editable.machine"
+import { EditableMachineContext, EditableMachineState } from "./editable.machine"
 
 export function connectEditableMachine(
   state: S.State<EditableMachineContext, EditableMachineState>,

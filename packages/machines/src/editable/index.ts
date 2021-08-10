@@ -6,7 +6,4 @@ export const editable = {
   connect: connectEditableMachine,
 }
 
-export type {
-  EditableMachineContext,
-  EditableMachineState,
-} from "./editable.machine"
+export type { EditableMachineContext, EditableMachineState } from "./editable.machine"

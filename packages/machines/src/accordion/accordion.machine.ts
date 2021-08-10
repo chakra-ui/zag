@@ -22,10 +22,7 @@ export type AccordionMachineState = {
   value: "mounted" | "idle" | "focused"
 }
 
-export const accordionMachine = createMachine<
-  AccordionMachineContext,
-  AccordionMachineState
->(
+export const accordionMachine = createMachine<AccordionMachineContext, AccordionMachineState>(
   {
     id: "accordion-machine",
     initial: "mounted",
@@ -90,9 +87,7 @@ export const accordionMachine = createMachine<
         return !!ctx.allowToggle || !!ctx.allowMultiple
       },
       isAccordionActive(ctx, evt) {
-        return is.array(ctx.activeId)
-          ? ctx.activeId.includes(evt.id)
-          : ctx.activeId === evt.id
+        return is.array(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id
       },
     },
     actions: {

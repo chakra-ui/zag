@@ -2,19 +2,8 @@ import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import {
-  dataAttr,
-  determineEventKey,
-  getStepMultipler,
-  defaultPropNormalizer,
-  PropNormalizer,
-} from "../dom-utils"
-import {
-  DOMHTMLProps,
-  DOMInputProps,
-  EventKeyMap,
-  WithDataAttr,
-} from "../type-utils"
+import { dataAttr, determineEventKey, getStepMultipler, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../type-utils"
 import { getElementIds } from "./slider.dom"
 import { SliderMachineContext, SliderMachineState } from "./slider.machine"
 

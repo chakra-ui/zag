@@ -42,10 +42,7 @@ export type TagsInputMachineState = {
   value: "mounted" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
 }
 
-export const tagsInputMachine = createMachine<
-  TagsInputMachineContext,
-  TagsInputMachineState
->(
+export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInputMachineState>(
   {
     id: "tags-input",
     initial: "mounted",
@@ -97,11 +94,7 @@ export const tagsInputMachine = createMachine<
         on: {
           ARROW_RIGHT: [
             {
-              cond: and(
-                "hasTags",
-                "isInputCaretAtStart",
-                not("isLastTagFocused"),
-              ),
+              cond: and("hasTags", "isInputCaretAtStart", not("isLastTagFocused")),
               actions: "focusNextTag",
             },
             { target: "focused:input" },
@@ -115,11 +108,7 @@ export const tagsInputMachine = createMachine<
           },
           ENTER: {
             target: "editing:tag",
-            actions: [
-              "setEditedId",
-              "initEditedTagValue",
-              "focusEditedTagInput",
-            ],
+            actions: ["setEditedId", "initEditedTagValue", "focusEditedTagInput"],
           },
           ARROW_DOWN: "focused:input",
           ESCAPE: "focused:input",

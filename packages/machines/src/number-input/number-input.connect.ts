@@ -1,16 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { NumericRange } from "@core-foundation/numeric-range"
-import {
-  getStepMultipler,
-  defaultPropNormalizer,
-  PropNormalizer,
-} from "../dom-utils"
+import { getStepMultipler, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import { DOMButtonProps, DOMInputProps, EventKeyMap } from "../type-utils"
 import { getElementIds } from "./number-input.dom"
-import {
-  NumberInputMachineContext,
-  NumberInputMachineState,
-} from "./number-input.machine"
+import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
 import { isValidNumericKeyboardEvent } from "./number-input.utils"
 
 export function connectNumberInputMachine(
@@ -28,8 +21,7 @@ export function connectNumberInputMachine(
   const valueAsNumber = Number(range)
 
   const MINUS_SIGN = "\u2212"
-  const valueText =
-    ctx.value === "" ? "Empty" : ctx.value.replace("-", MINUS_SIGN)
+  const valueText = ctx.value === "" ? "Empty" : ctx.value.replace("-", MINUS_SIGN)
 
   return {
     inputProps: normalize<DOMInputProps>({
@@ -60,10 +52,7 @@ export function connectNumberInputMachine(
         })
       },
       onKeyDown(event) {
-        if (
-          !isValidNumericKeyboardEvent(event) ||
-          (event.key === "." && ctx.value.includes("."))
-        ) {
+        if (!isValidNumericKeyboardEvent(event) || (event.key === "." && ctx.value.includes("."))) {
           event.preventDefault()
         }
 

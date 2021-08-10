@@ -1,21 +1,9 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
+import { defaultPropNormalizer, PropNormalizer, StateMachine as S } from "@ui-machines/core"
 import { is } from "@core-foundation/utils/is"
 import { dataAttr, determineEventKey } from "../dom-utils"
-import {
-  DOMButtonProps,
-  DOMHTMLProps,
-  EventKeyMap,
-  WithDataAttr,
-} from "../type-utils"
+import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../type-utils"
 import { getElementIds } from "./accordion.dom"
-import {
-  AccordionMachineContext,
-  AccordionMachineState,
-} from "./accordion.machine"
+import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
 export function connectAccordionMachine(
   state: S.State<AccordionMachineContext, AccordionMachineState>,
@@ -31,9 +19,7 @@ export function connectAccordionMachine(
     }),
 
     getAccordionProps({ uid, disabled }: { uid: string; disabled?: boolean }) {
-      const isVisible = is.array(ctx.activeId)
-        ? ctx.activeId.includes(uid)
-        : uid === ctx.activeId
+      const isVisible = is.array(ctx.activeId) ? ctx.activeId.includes(uid) : uid === ctx.activeId
 
       const isDisabled = disabled ?? ctx.disabled
       const isFocused = ctx.focusedId === uid

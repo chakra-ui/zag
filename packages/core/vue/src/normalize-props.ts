@@ -33,9 +33,7 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
       if (is.string(props[key])) {
         normalized["innerHTML"] = props[key]
       } else {
-        warn(
-          "[Vue Normalize Prop] : avoid passing non-primitive value as `children`",
-        )
+        warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
       }
     } else {
       normalized[toVueProp[key]] = props[key]

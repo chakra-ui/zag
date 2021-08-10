@@ -2,8 +2,7 @@ import { AnyMachine, StateMachine as S } from "@ui-machines/core"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useConstant } from "./use-constant"
 
-const useSafeLayoutEffect =
-  typeof document !== "undefined" ? useLayoutEffect : useEffect
+const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
 
 export function useActor<T extends AnyMachine>(service: T) {
   const ref = useRef(service)

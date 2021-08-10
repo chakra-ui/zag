@@ -2,24 +2,10 @@ import { StateMachine as S } from "@ui-machines/core"
 import { cast } from "@core-foundation/utils/fn"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { Point } from "@core-graphics/point"
-import {
-  dataAttr,
-  determineEventKey,
-  getStepMultipler,
-  defaultPropNormalizer,
-  PropNormalizer,
-} from "../dom-utils"
-import {
-  DOMHTMLProps,
-  DOMInputProps,
-  EventKeyMap,
-  WithDataAttr,
-} from "../type-utils"
+import { dataAttr, determineEventKey, getStepMultipler, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../type-utils"
 import { getElementIds } from "./range-slider.dom"
-import {
-  RangeSliderMachineContext,
-  RangeSliderMachineState,
-} from "./range-slider.machine"
+import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
 export function connectRangeSliderMachine(
   state: S.State<RangeSliderMachineContext, RangeSliderMachineState>,

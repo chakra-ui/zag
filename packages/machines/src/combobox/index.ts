@@ -6,7 +6,4 @@ export const combobox = {
   connect: connectComboboxMachine,
 }
 
-export type {
-  ComboboxMachineContext,
-  ComboboxMachineState,
-} from "./combobox.machine"
+export type { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"

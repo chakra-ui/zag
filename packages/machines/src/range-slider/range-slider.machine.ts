@@ -1,8 +1,4 @@
-import {
-  addDomEvent,
-  dispatchInputEvent,
-  EventListenerWithPointInfo as Listener,
-} from "@core-dom/event"
+import { addDomEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { is, nextTick, pipe } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
@@ -31,10 +27,7 @@ export type RangeSliderMachineState = {
   value: "mounted" | "idle" | "panning" | "focus"
 }
 
-export const rangeSliderMachine = createMachine<
-  RangeSliderMachineContext,
-  RangeSliderMachineState
->(
+export const rangeSliderMachine = createMachine<RangeSliderMachineContext, RangeSliderMachineState>(
   {
     id: "range-slider-machine",
     initial: "mounted",
@@ -188,9 +181,7 @@ export const rangeSliderMachine = createMachine<
           const { thumbs } = getElements(ctx)
 
           // get the center point of all thumbs
-          const points = thumbs
-            .map((el) => Rect.fromElement(el))
-            .map((rect) => rect.centerPoint.value)
+          const points = thumbs.map((el) => Rect.fromElement(el)).map((rect) => rect.centerPoint.value)
 
           // get the closest center point from the event ("pointerdown") point
           const getClosest = Point.closest(...points)
@@ -215,19 +206,11 @@ export const rangeSliderMachine = createMachine<
       },
       decrementAtIndex(ctx, evt) {
         const range = getRangeAtIndex(ctx).decrement(evt.step)
-        ctx.value[ctx.activeIndex] = range
-          .clone()
-          .snapToStep()
-          .clamp()
-          .valueOf()
+        ctx.value[ctx.activeIndex] = range.clone().snapToStep().clamp().valueOf()
       },
       incrementAtIndex(ctx, evt) {
         const range = getRangeAtIndex(ctx).increment(evt.step)
-        ctx.value[ctx.activeIndex] = range
-          .clone()
-          .snapToStep()
-          .clamp()
-          .valueOf()
+        ctx.value[ctx.activeIndex] = range.clone().snapToStep().clamp().valueOf()
       },
       setActiveThumbToMin(ctx) {
         const range = getRangeAtIndex(ctx)

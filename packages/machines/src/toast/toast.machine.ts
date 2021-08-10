@@ -8,13 +8,7 @@ const { or, not } = guards
 
 export type ToastType = "success" | "error" | "loading" | "blank" | "custom"
 
-export type ToastPlacement =
-  | "top-start"
-  | "top"
-  | "top-end"
-  | "bottom-start"
-  | "bottom"
-  | "bottom-end"
+export type ToastPlacement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
 export function getToastsByPlacement(toasts: ToastMachine[]) {
   const result: Partial<Record<ToastPlacement, ToastMachine[]>> = {}
@@ -49,13 +43,7 @@ export type ToastMachineState = {
 export type ToastMachine = Machine<ToastMachineContext, ToastMachineState>
 
 export function createToastMachine(options: Partial<ToastMachineContext>) {
-  const {
-    type = "blank",
-    role = "status",
-    duration,
-    id = "toast",
-    ...rest
-  } = options
+  const { type = "blank", role = "status", duration, id = "toast", ...rest } = options
 
   const timeout = getToastDuration(duration, type)
 

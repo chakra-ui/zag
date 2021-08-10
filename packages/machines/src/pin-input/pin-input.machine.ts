@@ -23,10 +23,7 @@ export type PinInputMachineState = {
   value: "mounted" | "idle" | "focused"
 }
 
-export const pinInputMachine = createMachine<
-  PinInputMachineContext,
-  PinInputMachineState
->(
+export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMachineState>(
   {
     id: "pin-input",
     initial: "mounted",
@@ -40,12 +37,7 @@ export const pinInputMachine = createMachine<
         on: {
           SETUP: {
             target: "idle",
-            actions: [
-              "setId",
-              "setOwnerDocument",
-              "setInitialValue",
-              "autoFocus",
-            ],
+            actions: ["setId", "setOwnerDocument", "setInitialValue", "autoFocus"],
           },
         },
       },
@@ -86,11 +78,7 @@ export const pinInputMachine = createMachine<
               actions: "clearValueAtFocusedIndex",
             },
             {
-              actions: [
-                "setPrevFocusIndex",
-                "clearValueAtFocusedIndex",
-                "focusInput",
-              ],
+              actions: ["setPrevFocusIndex", "clearValueAtFocusedIndex", "focusInput"],
             },
           ],
         },
@@ -125,10 +113,7 @@ export const pinInputMachine = createMachine<
         nextTick(() => {
           const inputs = dom(ctx)
           const empty = ArrayList.fromLength(inputs.size, () => "")
-          ctx.value =
-            ctx.value.length === 0
-              ? preserve(empty.value as string[])
-              : ctx.value
+          ctx.value = ctx.value.length === 0 ? preserve(empty.value as string[]) : ctx.value
         })
       },
       setOwnerDocument: (ctx, evt) => {
@@ -155,9 +140,7 @@ export const pinInputMachine = createMachine<
 
         // handles pasting scenarios
         if (event.value.length > 2) {
-          const clipboardData = eventValue
-            .split("")
-            .filter((_, index) => index < ctx.value.length)
+          const clipboardData = eventValue.split("").filter((_, index) => index < ctx.value.length)
 
           ctx.value = clipboardData
 
@@ -165,8 +148,7 @@ export const pinInputMachine = createMachine<
             ctx.onComplete?.(clipboardData)
           }
         } else {
-          ctx.value[ctx.focusedIndex] =
-            eventValue.length > 1 ? eventValue.charAt(1) : eventValue.charAt(0)
+          ctx.value[ctx.focusedIndex] = eventValue.length > 1 ? eventValue.charAt(1) : eventValue.charAt(0)
         }
       },
       clearValue: (ctx) => {

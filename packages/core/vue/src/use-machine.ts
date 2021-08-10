@@ -16,9 +16,7 @@ export function useMachine<
   const { actions, state: hydratedState } = options ?? {}
 
   const resolvedMachine = runIfFn(machine)
-  const service = options
-    ? resolvedMachine.withOptions(options)
-    : resolvedMachine
+  const service = options ? resolvedMachine.withOptions(options) : resolvedMachine
 
   /**
    * The `state` variable holds the internal

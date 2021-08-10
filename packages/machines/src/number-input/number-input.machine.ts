@@ -24,19 +24,10 @@ export type NumberInputMachineContext = {
 }
 
 export type NumberInputMachineState = {
-  value:
-    | "mounted"
-    | "idle"
-    | "increment:interval"
-    | "decrement:interval"
-    | "decrement"
-    | "increment"
+  value: "mounted" | "idle" | "increment:interval" | "decrement:interval" | "decrement" | "increment"
 }
 
-export const numberInputMachine = createMachine<
-  NumberInputMachineContext,
-  NumberInputMachineState
->(
+export const numberInputMachine = createMachine<NumberInputMachineContext, NumberInputMachineState>(
   {
     id: "number-input",
     initial: "mounted",

@@ -2,6 +2,7 @@ import { useMachine } from "@ui-machines/react"
 import { combobox } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
+import styled from "@emotion/styled"
 
 const data = [
   { label: "Zambia", code: "ZA" },
@@ -35,6 +36,20 @@ const data = [
   { label: "Tunisia", code: "TN" },
 ]
 
+const Styles = styled("div")({
+  '[role="listbox"]': {
+    listStyleType: "none",
+    padding: "0",
+    margin: "0",
+    border: "1px solid lightgray",
+    maxWidth: "300px",
+  },
+  '[role="option"][aria-selected="true"]': {
+    backgroundColor: "red",
+    color: "white",
+  },
+})
+
 export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
@@ -45,44 +60,32 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const {
-    inputProps,
-    inputValue,
-    listboxProps,
-    comboboxProps,
-    buttonProps,
-    getOptionProps,
-  } = combobox.connect(state, send)
-
-  const filtered = data.filter((d) =>
-    d.label.toLowerCase().startsWith(inputValue.toLowerCase()),
+  const { inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } = combobox.connect(
+    state,
+    send,
   )
 
+  const filtered = data.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))
+
   return (
-    <>
+    <Styles>
       <div ref={ref} className="App">
         <StateVisualizer state={state} />
-        <div {...comboboxProps}>
+        <div {...containerProps}>
           <input {...inputProps} />
           <button {...buttonProps}>▼</button>
         </div>
 
         {filtered.length > 0 && (
-          <ul
-            style={{ width: 300, maxHeight: 400, overflow: "auto" }}
-            {...listboxProps}
-          >
+          <ul style={{ width: 300, maxHeight: 400, overflow: "auto" }} {...listboxProps}>
             {filtered.map((item) => (
-              <li
-                key={item.code}
-                {...getOptionProps({ label: item.label, value: item.code })}
-              >
+              <li key={item.code} {...getOptionProps({ label: item.label, value: item.code })}>
                 {item.label}
               </li>
             ))}
           </ul>
         )}
       </div>
-    </>
+    </Styles>
   )
 }

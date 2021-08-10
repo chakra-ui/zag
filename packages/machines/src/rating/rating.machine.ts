@@ -18,10 +18,7 @@ export type RatingMachineState = {
   value: "mounted" | "idle" | "interacting"
 }
 
-export const ratingMachine = createMachine<
-  RatingMachineContext,
-  RatingMachineState
->(
+export const ratingMachine = createMachine<RatingMachineContext, RatingMachineState>(
   {
     initial: "mounted",
     context: {

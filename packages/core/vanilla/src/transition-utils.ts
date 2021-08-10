@@ -14,21 +14,13 @@ import { StateMachine as S } from "./types"
  * depending on the `cond` specified
  */
 
-export function toTarget<
-  TContext,
-  TState extends string,
-  TEvent extends S.EventObject,
->(
+export function toTarget<TContext, TState extends string, TEvent extends S.EventObject>(
   target: S.Transition<TContext, TState, TEvent>,
 ): S.TransitionDefinition<TContext, TState, TEvent> {
   return is.string(target) ? { target } : target
 }
 
-export function determineTransitionFn<
-  TContext,
-  TState extends string,
-  TEvent extends S.EventObject,
->(
+export function determineTransitionFn<TContext, TState extends string, TEvent extends S.EventObject>(
   transitions?: S.Transitions<TContext, TState, TEvent>,
   guardMap?: S.GuardMap<TContext, TEvent>,
 ) {
@@ -44,17 +36,11 @@ export function determineTransitionFn<
   }
 }
 
-export function toTransition<
-  TContext,
-  TState extends string,
-  TEvent extends S.EventObject,
->(
+export function toTransition<TContext, TState extends string, TEvent extends S.EventObject>(
   transition: S.Transitions<TContext, TState, TEvent> | undefined,
   current?: TState | null,
 ) {
-  const resolvedTransition = is.string(transition)
-    ? toTarget(transition)
-    : transition
+  const resolvedTransition = is.string(transition) ? toTarget(transition) : transition
 
   const callbackfn = (t: S.TransitionDefinition<TContext, TState, TEvent>) => {
     const isTargetless = t.actions && !t.target

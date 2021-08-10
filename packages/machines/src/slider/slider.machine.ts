@@ -1,9 +1,5 @@
 import { createMachine, preserve } from "@ui-machines/core"
-import {
-  addDomEvent,
-  dispatchInputEvent,
-  EventListenerWithPointInfo as Listener,
-} from "@core-dom/event"
+import { addDomEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
 import { is } from "@core-foundation/utils/is"
 import { nextTick, pipe } from "@core-foundation/utils/fn"
 import { NumericRange } from "@core-foundation/numeric-range"
@@ -31,10 +27,7 @@ export type SliderMachineState = {
   value: "mounted" | "idle" | "panning" | "focus"
 }
 
-export const sliderMachine = createMachine<
-  SliderMachineContext,
-  SliderMachineState
->(
+export const sliderMachine = createMachine<SliderMachineContext, SliderMachineState>(
   {
     id: "slider-machine",
     initial: "mounted",
@@ -78,12 +71,7 @@ export const sliderMachine = createMachine<
         on: {
           POINTER_DOWN: {
             target: "panning",
-            actions: [
-              "setValueForEvent",
-              "invokeOnChangeStart",
-              "invokeOnChange",
-              "focusThumb",
-            ],
+            actions: ["setValueForEvent", "invokeOnChangeStart", "invokeOnChange", "focusThumb"],
           },
           ARROW_LEFT: {
             actions: ["decrement", "invokeOnChange"],

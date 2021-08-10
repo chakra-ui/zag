@@ -2,11 +2,9 @@ import { cast } from "@core-foundation/utils/fn"
 import { proxyWithComputed as proxy } from "valtio/utils"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 
-export function createProxyState<
-  TContext,
-  TState extends S.StateSchema,
-  TEvent extends S.EventObject,
->(config: S.MachineConfig<TContext, TState, TEvent>) {
+export function createProxyState<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+  config: S.MachineConfig<TContext, TState, TEvent>,
+) {
   const defaultContext = cast<TContext>({})
   const state = proxy(
     {
@@ -28,9 +26,7 @@ export function createProxyState<
         const stateEvents = (config.states as Dict)?.[self.value]?.["on"] ?? {}
         const globalEvents = config?.on ?? {}
         Object.assign(stateEvents, globalEvents)
-        return Object.keys(stateEvents).filter(
-          (event) => event !== ActionTypes.Sync,
-        )
+        return Object.keys(stateEvents).filter((event) => event !== ActionTypes.Sync)
       },
       changed(self) {
         if (self.event === ActionTypes.Init || !self.previousValue) return false

@@ -1,10 +1,6 @@
 import { createMachine, Machine, preserve } from "@ui-machines/core"
 import { WithDOM } from "../type-utils"
-import {
-  createToastMachine,
-  ToastMachineContext,
-  ToastMachineState,
-} from "./toast.machine"
+import { createToastMachine, ToastMachineContext, ToastMachineState } from "./toast.machine"
 
 export type ToastGroupMachineContext = WithDOM<{
   toasts: Machine<ToastMachineContext, ToastMachineState>[]
@@ -56,17 +52,12 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
       ADD_TOAST: {
         cond: (ctx) => ctx.toasts.length < ctx.max,
         actions: (ctx, evt) => {
-          ctx.toasts.push(
-            toastGroupMachine.spawn(createToastMachine(evt.toast)),
-          )
+          ctx.toasts.push(toastGroupMachine.spawn(createToastMachine(evt.toast)))
         },
       },
       UPDATE_TOAST: {
         actions: (ctx, evt) => {
-          toastGroupMachine.sendChild(
-            { type: "UPDATE", toast: evt.toast },
-            evt.id,
-          )
+          toastGroupMachine.sendChild({ type: "UPDATE", toast: evt.toast }, evt.id)
         },
       },
       DISMISS_TOAST: {

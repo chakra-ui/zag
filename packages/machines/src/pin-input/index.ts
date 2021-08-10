@@ -6,7 +6,4 @@ export const pinInput = {
   connect: connectPinInputMachine,
 }
 
-export type {
-  PinInputMachineContext,
-  PinInputMachineState,
-} from "./pin-input.machine"
+export type { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"

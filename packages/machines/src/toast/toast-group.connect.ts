@@ -3,11 +3,7 @@ import { runIfFn } from "@core-foundation/utils/fn"
 import { DOMHTMLProps, WithDataAttr } from "../type-utils"
 import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
-import {
-  getToastsByPlacement,
-  ToastMachineContext,
-  ToastPlacement,
-} from "./toast.machine"
+import { getToastsByPlacement, ToastMachineContext, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
 type ToastOptions = Partial<ToastMachineContext>

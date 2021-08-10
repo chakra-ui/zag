@@ -21,10 +21,7 @@ export type PopoverMachineState = {
   value: "mounted" | "open" | "closed"
 }
 
-export const popoverMachine = createMachine<
-  PopoverMachineContext,
-  PopoverMachineState
->(
+export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachineState>(
   {
     id: "popover-machine",
     initial: "mounted",

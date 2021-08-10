@@ -13,10 +13,7 @@ export type TooltipMachineState = {
   value: "mounted" | "idle" | "opening" | "open" | "closing" | "closed"
 }
 
-export const tooltipMachine = createMachine<
-  TooltipMachineContext,
-  TooltipMachineState
->(
+export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
   {
     id: "tooltip",
     initial: "mounted",
@@ -31,10 +28,7 @@ export const tooltipMachine = createMachine<
       },
       idle: {
         on: {
-          POINTER_ENTER: [
-            { cond: "noVisibleTooltip", target: "opening" },
-            { target: "open" },
-          ],
+          POINTER_ENTER: [{ cond: "noVisibleTooltip", target: "opening" }, { target: "open" }],
         },
       },
       opening: {
@@ -49,10 +43,7 @@ export const tooltipMachine = createMachine<
         activities: ["attachEscapeKeyListener"],
         entry: "setGlobalId",
         on: {
-          POINTER_LEAVE: [
-            { cond: "isVisible", target: "closing" },
-            { target: "closed" },
-          ],
+          POINTER_LEAVE: [{ cond: "isVisible", target: "closing" }, { target: "closed" }],
           ESCAPE: "closed",
         },
       },
@@ -67,10 +58,7 @@ export const tooltipMachine = createMachine<
       closed: {
         entry: "resetGlobalId",
         on: {
-          POINTER_ENTER: [
-            { cond: "noVisibleTooltip", target: "opening" },
-            { target: "open" },
-          ],
+          POINTER_ENTER: [{ cond: "noVisibleTooltip", target: "opening" }, { target: "open" }],
         },
       },
     },

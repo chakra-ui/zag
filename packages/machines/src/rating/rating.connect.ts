@@ -1,17 +1,8 @@
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import {
-  determineEventKey,
-  defaultPropNormalizer,
-  PropNormalizer,
-} from "../dom-utils"
-import {
-  DOMHTMLProps,
-  DOMInputProps,
-  EventKeyMap,
-  WithDataAttr,
-} from "../type-utils"
+import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../type-utils"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
@@ -48,8 +39,7 @@ export function connectRatingMachine(
       const effectiveIndex = isHovering ? ctx.hoveredValue : ctx.value
       const isHighlighted = index <= effectiveIndex
 
-      const tabIndex =
-        ctx.value <= 0 && index === 1 ? 1 : index === ctx.value ? 0 : -1
+      const tabIndex = ctx.value <= 0 && index === 1 ? 1 : index === ctx.value ? 0 : -1
 
       return normalize<WithDataAttr<DOMHTMLProps>>({
         id: getRatingId(index),

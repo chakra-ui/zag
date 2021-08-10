@@ -78,18 +78,16 @@ it("should reveal the current state", () => {
 
 it("should reveal the current state after transition", async () => {
   let done = false
-  const machine = createMachine<{ foo: string }, { value: "test" | "success" }>(
-    {
-      initial: "test",
-      context: { foo: "bar" },
-      states: {
-        test: {
-          on: { CHANGE: "success" },
-        },
-        success: {},
+  const machine = createMachine<{ foo: string }, { value: "test" | "success" }>({
+    initial: "test",
+    context: { foo: "bar" },
+    states: {
+      test: {
+        on: { CHANGE: "success" },
       },
+      success: {},
     },
-  )
+  })
 
   machine.subscribe((state) => {
     if (state.value === "success") {
@@ -106,10 +104,7 @@ it("should reveal the current state after transition", async () => {
 })
 
 it("should rehydrate the state and the context if both are provided", () => {
-  const machine = createMachine<
-    { count: number },
-    { value: "foo" | "bar" | "baz"; tags: "on" | "off" }
-  >({
+  const machine = createMachine<{ count: number }, { value: "foo" | "bar" | "baz"; tags: "on" | "off" }>({
     initial: "foo",
     states: {
       foo: {

@@ -1,24 +1,9 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import {
-  dataAttr,
-  determineEventKey,
-  defaultPropNormalizer,
-  PropNormalizer,
-} from "../dom-utils"
-import {
-  DOMButtonProps,
-  DOMHTMLProps,
-  DOMInputProps,
-  DOMLabelProps,
-  EventKeyMap,
-  WithDataAttr,
-} from "../type-utils"
+import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, DOMLabelProps, EventKeyMap, WithDataAttr } from "../type-utils"
 import { getElementIds, getElements } from "./combobox.dom"
-import {
-  ComboboxMachineContext,
-  ComboboxMachineState,
-} from "./combobox.machine"
+import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
 export function connectComboboxMachine(
   state: S.State<ComboboxMachineContext, ComboboxMachineState>,
@@ -40,13 +25,9 @@ export function connectComboboxMachine(
       "data-disabled": dataAttr(ctx.disabled),
     }),
 
-    comboboxProps: normalize<DOMHTMLProps>({
+    containerProps: normalize<DOMHTMLProps>({
       id: ids.container,
-      role: "combobox",
-      "aria-expanded": expanded,
-      "aria-owns": expanded ? ids.listbox : undefined,
-      "aria-haspopup": "listbox",
-      "aria-labelledby": ids.label,
+      "data-expanded": expanded,
     }),
 
     inputProps: normalize<DOMInputProps>({
@@ -61,10 +42,10 @@ export function connectComboboxMachine(
       placeholder: ctx.placeholder,
       id: ids.input,
       type: "text",
-      "aria-autocomplete": ctx.autoSelect === "inline" ? "both" : "list",
-      "aria-controls": expanded ? ids.listbox : undefined,
       role: "combobox",
       value: ctx.inputValue,
+      "aria-autocomplete": ctx.autoSelect === "inline" ? "both" : "list",
+      "aria-controls": expanded ? ids.listbox : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
       onClick() {
@@ -125,6 +106,7 @@ export function connectComboboxMachine(
       tabIndex: -1,
       "aria-label": expanded ? "Hide suggestions" : "Show suggestions",
       "aria-expanded": expanded,
+      "aria-controls": expanded ? ids.listbox : undefined,
       disabled: ctx.disabled,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
@@ -157,11 +139,11 @@ export function connectComboboxMachine(
         id,
         role: "option",
         className: "option",
-        "aria-selected": selected,
+        "aria-selected": selected ? "true" : undefined,
         "aria-disabled": ctx.disabled,
         "data-value": value,
         "data-label": label,
-        onPointerMove() {
+        onPointerOver() {
           send({ type: "OPTION_POINTEROVER", id, value: label })
         },
         onPointerDown(event) {

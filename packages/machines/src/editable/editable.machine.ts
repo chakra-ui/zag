@@ -1,9 +1,4 @@
-import {
-  createMachine,
-  guards,
-  preserve,
-  trackPointerDown,
-} from "@ui-machines/core"
+import { createMachine, guards, preserve, trackPointerDown } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils/fn"
 import { WithDOM } from "../type-utils"
 import { getElements } from "./editable.dom"
@@ -31,10 +26,7 @@ export type EditableMachineState = {
   value: "mounted" | "preview" | "edit"
 }
 
-export const editableMachine = createMachine<
-  EditableMachineContext,
-  EditableMachineState
->(
+export const editableMachine = createMachine<EditableMachineContext, EditableMachineState>(
   {
     id: "editable-machine",
     initial: "mounted",
@@ -97,8 +89,7 @@ export const editableMachine = createMachine<
     guards: {
       canFocusPreview: (ctx) => !!ctx.isPreviewFocusable,
       shouldSubmitOnBlur: (ctx) => !!ctx.submitOnBlur,
-      isAtMaxLength: (ctx) =>
-        ctx.maxLength != null && ctx.value.length === ctx.maxLength,
+      isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
     },
     activities: {
       trackPointerDown,

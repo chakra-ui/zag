@@ -6,14 +6,7 @@ import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"
 import { determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
-import {
-  ActionTypes,
-  Dict,
-  MachineStatus,
-  MachineType,
-  StateMachine as S,
-  VoidFunction,
-} from "./types"
+import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction } from "./types"
 import { toEvent, uniqueId } from "./utils"
 
 /**
@@ -82,13 +75,9 @@ export class Machine<
   private get sync() {
     const { syncListeners } = this.config
 
-    const syncState = is.bool(syncListeners)
-      ? syncListeners
-      : syncListeners?.state
+    const syncState = is.bool(syncListeners) ? syncListeners : syncListeners?.state
 
-    const syncContext = is.bool(syncListeners)
-      ? syncListeners
-      : syncListeners?.context
+    const syncContext = is.bool(syncListeners) ? syncListeners : syncListeners?.context
 
     return { state: syncState, context: syncContext }
   }
@@ -104,9 +93,7 @@ export class Machine<
     const event = toEvent<TEvent>(ActionTypes.Init)
 
     if (init) {
-      const resolved = is.object(init)
-        ? init
-        : { context: this.config.context!, value: init }
+      const resolved = is.object(init) ? init : { context: this.config.context!, value: init }
 
       this.setState(resolved.value)
       this.setContext(resolved.context)
@@ -210,10 +197,7 @@ export class Machine<
   /**
    * Function to send event to spawned child machine or actor
    */
-  sendChild = (
-    evt: S.Event<S.AnyEventObject>,
-    to: string | ((ctx: TContext) => string),
-  ) => {
+  sendChild = (evt: S.Event<S.AnyEventObject>, to: string | ((ctx: TContext) => string)) => {
     const event = toEvent(evt)
     const id = runIfFn(to, this.contextSnapshot)
     const child = this.children.get(id)
@@ -267,10 +251,7 @@ export class Machine<
     return ref<any>(actor)
   }
 
-  private addActivityCleanup = (
-    state: TState["value"] | null,
-    cleanup: VoidFunction,
-  ) => {
+  private addActivityCleanup = (state: TState["value"] | null, cleanup: VoidFunction) => {
     if (!state) return
     if (!this.activityEvents.has(state)) {
       this.activityEvents.set(state, new Set([cleanup]))
@@ -310,15 +291,11 @@ export class Machine<
     return new Machine({ ...this.config, ...config }, this.options)
   }
 
-  withOptions = (
-    options: Partial<S.MachineOptions<TContext, TState, TEvent>>,
-  ) => {
+  withOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
     return new Machine(this.config, { ...this.options, ...options })
   }
 
-  updateActions = (
-    actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"],
-  ) => {
+  updateActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
     this.actionMap = { ...this.actionMap, ...actions }
   }
 
@@ -342,9 +319,7 @@ export class Machine<
     }
   }
 
-  private getActionFromDelayedTransition = (
-    transition: S.DelayedTransition<TContext, TState["value"], TEvent>,
-  ) => {
+  private getActionFromDelayedTransition = (transition: S.DelayedTransition<TContext, TState["value"], TEvent>) => {
     // get the computed delay
     const event = toEvent<TEvent>(ActionTypes.After)
 
@@ -396,11 +371,7 @@ export class Machine<
       //
       for (const delay in stateNode.after) {
         const transition = stateNode.after[delay]
-        let resolvedTransition: S.DelayedTransition<
-          TContext,
-          TState["value"],
-          TEvent
-        > = {}
+        let resolvedTransition: S.DelayedTransition<TContext, TState["value"], TEvent> = {}
 
         if (is.array(transition)) {
           //
@@ -427,17 +398,11 @@ export class Machine<
    * Function to executes defined actions. It can accept actions as string
    * (referencing `options.actions`) or actual functions.
    */
-  private executeActions = (
-    actions: S.Actions<TContext, TEvent> | undefined,
-    event: TEvent,
-  ) => {
+  private executeActions = (actions: S.Actions<TContext, TEvent> | undefined, event: TEvent) => {
     for (const action of toArray(actions)) {
       const fn = is.string(action) ? this.actionMap?.[action] : action
 
-      warn(
-        is.string(action) && !fn,
-        `[machine] No implementation found for action type ${action}`,
-      )
+      warn(is.string(action) && !fn, `[machine] No implementation found for action type ${action}`)
 
       const meta = {
         state: this.stateSnapshot,
@@ -452,10 +417,7 @@ export class Machine<
    * Function to execute running activities and registers
    * their cleanup function internally (to be called later on when we exit the state)
    */
-  private executeActivities = (
-    event: TEvent,
-    activities: Array<S.Activity<TContext, TState, TEvent>>,
-  ) => {
+  private executeActivities = (event: TEvent, activities: Array<S.Activity<TContext, TState, TEvent>>) => {
     for (const activity of activities) {
       const fn = is.string(activity) ? this.activityMap?.[activity] : activity
 
@@ -541,16 +503,10 @@ export class Machine<
 
   private setEvent = (event: TEvent) => {
     const eventType = toEvent(event).type
-    this.state.event =
-      eventType === ActionTypes.Sync
-        ? [this.state.event, ActionTypes.Sync].join(" > ")
-        : eventType
+    this.state.event = eventType === ActionTypes.Sync ? [this.state.event, ActionTypes.Sync].join(" > ") : eventType
   }
 
-  private performExitEffects = (
-    current: TState["value"] | undefined,
-    event: TEvent,
-  ) => {
+  private performExitEffects = (current: TState["value"] | undefined, event: TEvent) => {
     const currentState = this.state.value!
     const stateNode = current ? this.getStateNode(current) : undefined
 
@@ -676,13 +632,8 @@ export class Machine<
     this.transition(this.state.value, event)
   }
 
-  transition = (
-    state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null,
-    evt: S.Event<TEvent>,
-  ) => {
-    const stateNode = is.string(state)
-      ? this.getStateNode(state)
-      : state?.stateNode
+  transition = (state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null, evt: S.Event<TEvent>) => {
+    const stateNode = is.string(state) ? this.getStateNode(state) : state?.stateNode
 
     const event = toEvent(evt)
 
@@ -746,8 +697,6 @@ export type MachineSrc<
   TContext extends Dict,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
-> =
-  | Machine<TContext, TState, TEvent>
-  | (() => Machine<TContext, TState, TEvent>)
+> = Machine<TContext, TState, TEvent> | (() => Machine<TContext, TState, TEvent>)
 
 export type AnyMachine = Machine<any, any, any>

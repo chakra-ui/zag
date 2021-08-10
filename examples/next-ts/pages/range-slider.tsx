@@ -3,6 +3,50 @@ import { rangeSlider } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
+import styled from "@emotion/styled"
+
+const Styles = styled("div")`
+  .slider {
+    --slider-thumb-size: 24px;
+    --slider-track-height: 4px;
+    height: var(--slider-thumb-size);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 45px;
+    max-width: 400px;
+    position: relative;
+  }
+
+  .slider__thumb {
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    border-radius: 999px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: var(--slider-thumb-percent);
+    background: lime;
+  }
+
+  .slider__thumb:focus {
+    outline: 2px solid royalblue;
+  }
+
+  .slider__track {
+    height: var(--slider-track-height);
+    background: lightgray;
+    border-radius: 24px;
+  }
+
+  .slider__track-inner {
+    background: magenta;
+    height: 100%;
+    width: var(--slider-inner-track-width);
+    position: relative;
+    left: var(--slider-inner-track-start);
+  }
+`
 
 function Page() {
   const [state, send] = useMachine(
@@ -14,11 +58,10 @@ function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { getThumbProps, rootProps, innerTrackProps, getInputProps } =
-    rangeSlider.connect(state, send)
+  const { getThumbProps, rootProps, innerTrackProps, getInputProps } = rangeSlider.connect(state, send)
 
   return (
-    <>
+    <Styles>
       <form
         // ensure we can read the value within forms
         onChange={(e) => {
@@ -39,50 +82,7 @@ function Page() {
         </div>
         <StateVisualizer state={state} />
       </form>
-
-      <style jsx>{`
-        .slider {
-          --slider-thumb-size: 24px;
-          --slider-track-height: 4px;
-          height: var(--slider-thumb-size);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          margin: 45px;
-          max-width: 400px;
-          position: relative;
-        }
-
-        .slider__thumb {
-          width: var(--slider-thumb-size);
-          height: var(--slider-thumb-size);
-          border-radius: 999px;
-          position: absolute;
-          transform: translate(-50%, -50%);
-          top: 50%;
-          left: var(--slider-thumb-percent);
-          background: lime;
-        }
-
-        .slider__thumb:focus {
-          outline: 2px solid royalblue;
-        }
-
-        .slider__track {
-          height: var(--slider-track-height);
-          background: lightgray;
-          border-radius: 24px;
-        }
-
-        .slider__track-inner {
-          background: magenta;
-          height: 100%;
-          width: var(--slider-inner-track-width);
-          position: relative;
-          left: var(--slider-inner-track-start);
-        }
-      `}</style>
-    </>
+    </Styles>
   )
 }
 

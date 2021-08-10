@@ -42,8 +42,7 @@ const ARROW_KEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]
  */
 export function getStepMultipler(event: KeyboardEvent) {
   const isPageKey = PAGE_KEYS.includes(event.key)
-  const isSkipKey =
-    isPageKey || (event.shiftKey && ARROW_KEYS.includes(event.key))
+  const isSkipKey = isPageKey || (event.shiftKey && ARROW_KEYS.includes(event.key))
   return isSkipKey ? 10 : 1
 }
 
@@ -57,19 +56,11 @@ export const ariaAttr = (cond: boolean | undefined) => {
   return cond ? true : undefined
 }
 
-export function observeNodeAttr(
-  node: HTMLElement | null,
-  attributes: string[],
-  fn: VoidFunction,
-) {
+export function observeNodeAttr(node: HTMLElement | null, attributes: string[], fn: VoidFunction) {
   if (!node) return noop
   const obs = new MutationObserver((changes) => {
     for (const change of changes) {
-      if (
-        change.type === "attributes" &&
-        change.attributeName &&
-        attributes.includes(change.attributeName)
-      ) {
+      if (change.type === "attributes" && change.attributeName && attributes.includes(change.attributeName)) {
         fn()
       }
     }
@@ -118,49 +109,44 @@ export class LiveRegion {
   doc: Document | null
 
   constructor(opts: Partial<LiveRegionOptions> = {}) {
-    const {
-      ariaLive = "polite",
-      role = "log",
-      ariaRelevant = "additions",
-      ariaAtomic = "false",
-      doc: _doc,
-    } = opts
+    const { ariaLive = "polite", role = "log", ariaRelevant = "additions", doc: _doc } = opts
     this.doc = _doc ?? env.dom() ? document : null
+    const exists = this.doc?.getElementById("__machine-region")
 
-    if (!this.doc) return
+    if (!this.doc || exists) return
 
-    const region = this.doc.createElement("live-region")
-
+    const region = this.doc.createElement("machine-announcer")
+    region.id = "__machine-region"
     region.setAttribute("aria-live", ariaLive)
     region.setAttribute("role", role)
     region.setAttribute("aria-relevant", ariaRelevant)
-    region.setAttribute("aria-atomic", ariaAtomic)
 
-    region.style.position = "absolute"
-    region.style.width = "1px"
-    region.style.height = "1px"
-    region.style.marginTop = "-1px"
-    region.style.clip = "rect(1px, 1px, 1px, 1px)"
-    region.style.overflow = "hidden"
+    Object.assign(region.style, {
+      border: "0",
+      clip: "rect(0 0 0 0)",
+      height: "1px",
+      margin: "-1px",
+      overflow: "hidden",
+      padding: "0",
+      position: "absolute",
+      width: "1px",
+      whiteSpace: "nowrap",
+    })
 
     this.region = region
-    this.doc.body.appendChild(region)
+    this.doc.body.prepend(region)
   }
 
-  announce = (msg: string, expire?: number) => {
+  announce = (msg: string, expire = 7e3) => {
     if (!this.doc || !this.region) return
 
-    const announcement = this.doc.createElement("div")
-    announcement.innerHTML = msg
+    const div = this.doc.createElement("div")
+    div.innerHTML = msg
+    this.region.appendChild(div)
 
-    this.region.appendChild(announcement)
-    let region = this.region
-
-    if (expire || typeof expire === "undefined") {
-      setTimeout(() => {
-        region.removeChild(announcement)
-      }, expire || 7000)
-    }
+    setTimeout(() => {
+      this.region?.removeChild(div)
+    }, expire)
   }
 
   destroy = () => {
