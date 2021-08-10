@@ -1,7 +1,7 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, DOMLabelProps, EventKeyMap, WithDataAttr } from "../type-utils"
+import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, DOMLabelProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 

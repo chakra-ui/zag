@@ -1,8 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { cast } from "@core-foundation/utils/fn"
 import { env } from "@core-foundation/utils/env"
-import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../type-utils"
+import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 

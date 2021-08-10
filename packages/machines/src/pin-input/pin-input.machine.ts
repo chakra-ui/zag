@@ -1,7 +1,7 @@
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils/fn"
 import { ArrayList } from "@core-foundation/array-list"
-import { WithDOM } from "../type-utils"
+import { WithDOM } from "../__utils/types"
 import { dom } from "./pin-input.dom"
 
 const { not } = guards

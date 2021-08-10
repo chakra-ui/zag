@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { ariaAttr, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
 import { validateBlur } from "@core-dom/event"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap } from "../type-utils"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.machine"
 

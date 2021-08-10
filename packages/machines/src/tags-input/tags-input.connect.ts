@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
-import { determineEventKey, dataAttr, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../type-utils"
+import { determineEventKey, dataAttr, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds, getElements } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 

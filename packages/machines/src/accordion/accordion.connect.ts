@@ -1,7 +1,7 @@
 import { defaultPropNormalizer, PropNormalizer, StateMachine as S } from "@ui-machines/core"
 import { is } from "@core-foundation/utils/is"
-import { dataAttr, determineEventKey } from "../dom-utils"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../type-utils"
+import { dataAttr, determineEventKey } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 

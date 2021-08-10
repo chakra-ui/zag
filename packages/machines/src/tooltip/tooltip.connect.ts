@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { snapshot } from "valtio"
-import { DOMButtonProps, DOMHTMLProps } from "../type-utils"
-import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { DOMButtonProps, DOMHTMLProps } from "../__utils/types"
+import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 
 export function connectTooltipMachine(

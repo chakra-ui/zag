@@ -1,8 +1,8 @@
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../dom-utils"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../type-utils"
+import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 

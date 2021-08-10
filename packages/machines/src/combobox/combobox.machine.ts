@@ -1,8 +1,9 @@
 import { cast, env, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
-import { LiveRegion, observeNodeAttr, trackPointerDown } from "../dom-utils"
-import { WithDOM } from "../type-utils"
+import { observeNodeAttr, trackPointerDown } from "../__utils/dom"
+import { LiveRegion } from "../__utils/live-region"
+import { WithDOM } from "../__utils/types"
 import { dom, getElements } from "./combobox.dom"
 
 const { and } = guards

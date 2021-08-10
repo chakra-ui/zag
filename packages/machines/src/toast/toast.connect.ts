@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { DOMHTMLProps, WithDataAttr } from "../type-utils"
-import { defaultPropNormalizer, PropNormalizer } from "../dom-utils"
+import { DOMHTMLProps, WithDataAttr } from "../__utils/types"
+import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
 import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 

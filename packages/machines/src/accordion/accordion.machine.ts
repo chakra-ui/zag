@@ -3,7 +3,7 @@ import { ArrayList } from "@core-foundation/array-list"
 import { is } from "@core-foundation/utils/is"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 
-import { WithDOM } from "../type-utils"
+import { WithDOM } from "../__utils/types"
 import { dom } from "./accordion.dom"
 
 const { and, not } = guards
