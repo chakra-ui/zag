@@ -1,7 +1,7 @@
 import { is } from "@core-foundation/utils/is"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { ButtonProps, HTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
@@ -14,7 +14,7 @@ export function connectAccordionMachine(
   const ids = getElementIds(ctx.uid)
 
   return {
-    rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    rootProps: normalize<WithDataAttr<HTMLProps>>({
       id: ids.root,
     }),
 
@@ -25,12 +25,12 @@ export function connectAccordionMachine(
       const isFocused = ctx.focusedId === uid
 
       return {
-        groupProps: normalize<DOMHTMLProps>({
+        groupProps: normalize<HTMLProps>({
           id: ids.getGroupId(uid),
           "data-expanded": isVisible,
         }),
 
-        panelProps: normalize<DOMHTMLProps>({
+        panelProps: normalize<HTMLProps>({
           role: "region",
           id: ids.getPanelId(uid),
           "aria-labelledby": ids.getTriggerId(uid),
@@ -40,7 +40,7 @@ export function connectAccordionMachine(
           "data-expanded": dataAttr(isVisible),
         }),
 
-        triggerProps: normalize<DOMButtonProps>({
+        triggerProps: normalize<ButtonProps>({
           type: "button",
           id: ids.getTriggerId(uid),
           "aria-controls": ids.getPanelId(uid),

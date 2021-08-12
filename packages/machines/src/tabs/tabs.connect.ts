@@ -1,7 +1,7 @@
 import { env, cast } from "@core-foundation/utils"
 import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap } from "../__utils/types"
+import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
@@ -14,7 +14,7 @@ export function connectTabsMachine(
   const ids = getElementIds(ctx.uid)
 
   return {
-    tablistProps: normalize<DOMHTMLProps>({
+    tablistProps: normalize<HTMLProps>({
       id: ids.tablist,
       role: "tablist",
       "aria-orientation": ctx.orientation,
@@ -55,7 +55,7 @@ export function connectTabsMachine(
 
     getTabProps({ uid }: { uid: string }) {
       const selected = ctx.activeTabId === uid
-      return normalize<DOMButtonProps>({
+      return normalize<ButtonProps>({
         role: "tab",
         type: "button",
         "data-uid": uid,
@@ -85,7 +85,7 @@ export function connectTabsMachine(
 
     getTabPanelProps({ uid }: { uid: string }) {
       const selected = ctx.activeTabId === uid
-      return normalize<DOMHTMLProps>({
+      return normalize<HTMLProps>({
         id: ids.getPanelId(uid),
         tabIndex: 0,
         "aria-labelledby": ids.getTabId(uid),
@@ -95,7 +95,7 @@ export function connectTabsMachine(
       })
     },
 
-    tabIndicatorProps: normalize<DOMHTMLProps>({
+    tabIndicatorProps: normalize<HTMLProps>({
       style: {
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",

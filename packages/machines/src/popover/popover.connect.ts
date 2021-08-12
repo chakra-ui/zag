@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
-import { DOMHTMLProps } from "../__utils/types"
+import { HTMLProps } from "../__utils/types"
 import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
@@ -15,7 +15,7 @@ export function connectPopoverMachine(
   const isOpen = state.matches("open")
 
   return {
-    triggerProps: normalize<DOMHTMLProps>({
+    triggerProps: normalize<HTMLProps>({
       id: ids.trigger,
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
@@ -25,7 +25,7 @@ export function connectPopoverMachine(
       },
     }),
 
-    popoverProps: normalize<DOMHTMLProps>({
+    popoverProps: normalize<HTMLProps>({
       id: ids.content,
       tabIndex: -1,
       role: "dialog",
@@ -49,11 +49,11 @@ export function connectPopoverMachine(
       },
     }),
 
-    headerProps: normalize<DOMHTMLProps>({
+    headerProps: normalize<HTMLProps>({
       id: ids.header,
     }),
 
-    bodyProps: normalize<DOMHTMLProps>({
+    bodyProps: normalize<HTMLProps>({
       id: ids.body,
     }),
   }

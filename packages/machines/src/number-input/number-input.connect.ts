@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { getStepMultipler, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMInputProps, EventKeyMap } from "../__utils/types"
+import { ButtonProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./number-input.dom"
 import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
 import { isValidNumericKeyboardEvent } from "./number-input.utils"
@@ -24,7 +24,7 @@ export function connectNumberInputMachine(
   const valueText = ctx.value === "" ? "Empty" : ctx.value.replace("-", MINUS_SIGN)
 
   return {
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       id: inputId,
       role: "spinbutton",
       pattern: "[0-9]*(.[0-9]+)?",
@@ -81,7 +81,7 @@ export function connectNumberInputMachine(
       },
     }),
 
-    decrementButtonProps: normalize<DOMButtonProps>({
+    decrementButtonProps: normalize<ButtonProps>({
       id: decButtonId,
       "aria-disabled": !canDecrement,
       disabled: !canDecrement,
@@ -96,7 +96,7 @@ export function connectNumberInputMachine(
       },
     }),
 
-    incrementButtonProps: normalize<DOMButtonProps>({
+    incrementButtonProps: normalize<ButtonProps>({
       "aria-disabled": !canIncrement,
       disabled: !canIncrement,
       role: "button",

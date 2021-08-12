@@ -34,8 +34,7 @@ type Style = {
   }
 }
 
-export type DOMHTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>
-
-export type DOMButtonProps = WithDataAttr<ButtonHTMLAttributes<HTMLButtonElement> & Style>
-export type DOMInputProps = WithDataAttr<InputHTMLAttributes<HTMLInputElement> & Style>
-export type DOMLabelProps = WithDataAttr<LabelHTMLAttributes<HTMLLabelElement> & Style>
+export type HTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>
+export type ButtonProps = WithDataAttr<ButtonHTMLAttributes<HTMLButtonElement> & Style>
+export type InputProps = WithDataAttr<InputHTMLAttributes<HTMLInputElement> & Style>
+export type LabelProps = WithDataAttr<LabelHTMLAttributes<HTMLLabelElement> & Style>

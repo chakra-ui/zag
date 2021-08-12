@@ -3,7 +3,7 @@ import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler, PropNormalizer } from "../__utils/dom"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
+import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./slider.dom"
 import { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
@@ -23,7 +23,7 @@ export function connectSliderMachine(
   const isFocused = state.matches("focus")
 
   return {
-    thumbProps: normalize<DOMHTMLProps>({
+    thumbProps: normalize<HTMLProps>({
       id: ids.thumb,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -85,21 +85,21 @@ export function connectSliderMachine(
       },
     }),
 
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       type: "hidden",
       value: ctx.value,
       name: ctx.name,
       id: ids.input,
     }),
 
-    innerTrackProps: normalize<DOMHTMLProps>({
+    innerTrackProps: normalize<HTMLProps>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
       "data-value": ctx.value,
     }),
 
-    rootProps: normalize<DOMHTMLProps>({
+    rootProps: normalize<HTMLProps>({
       id: ids.root,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,

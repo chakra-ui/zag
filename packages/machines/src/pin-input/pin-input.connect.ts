@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMInputProps, EventKeyMap } from "../__utils/types"
+import { InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"
 
@@ -14,7 +14,7 @@ export function connectPinInputMachine(
 
   return {
     getInputProps({ index }: { index: number }) {
-      return normalize<DOMInputProps>({
+      return normalize<InputProps>({
         id: ids.getInputId(index),
         "data-ownedby": ids.root,
         "aria-label": "Please enter your pin code",

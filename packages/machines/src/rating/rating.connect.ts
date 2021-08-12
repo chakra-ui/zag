@@ -2,7 +2,7 @@ import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
+import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
@@ -17,14 +17,14 @@ export function connectRatingMachine(
   const { inputId, rootId, getRatingId } = getElementIds(ctx.uid)
 
   return {
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       name: ctx.name,
       type: "hidden",
       id: inputId,
       value: ctx.value,
     }),
 
-    rootProps: normalize<DOMHTMLProps>({
+    rootProps: normalize<HTMLProps>({
       id: rootId,
       role: "radiogroup",
       onPointerEnter() {
@@ -41,7 +41,7 @@ export function connectRatingMachine(
 
       const tabIndex = ctx.value <= 0 && index === 1 ? 1 : index === ctx.value ? 0 : -1
 
-      return normalize<DOMHTMLProps>({
+      return normalize<HTMLProps>({
         id: getRatingId(index),
         role: "radio",
         tabIndex,

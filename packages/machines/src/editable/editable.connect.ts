@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
 import { validateBlur } from "@core-dom/event"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
+import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.machine"
 
@@ -21,7 +21,7 @@ export function connectEditableMachine(
     isEditing,
     isValueEmpty: ctx.value === "",
 
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       id: ids.input,
       hidden: !isEditing,
       placeholder: ctx.placeholder,
@@ -62,7 +62,7 @@ export function connectEditableMachine(
       },
     }),
 
-    previewProps: normalize<DOMHTMLProps>({
+    previewProps: normalize<HTMLProps>({
       children: ctx.value === "" ? ctx.placeholder : ctx.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(ctx.disabled),
@@ -72,7 +72,7 @@ export function connectEditableMachine(
       },
     }),
 
-    editButtonProps: normalize<DOMButtonProps>({
+    editButtonProps: normalize<ButtonProps>({
       id: ids.editBtn,
       "aria-label": "Submit",
       type: "button",
@@ -81,7 +81,7 @@ export function connectEditableMachine(
       },
     }),
 
-    submitButtonProps: normalize<DOMButtonProps>({
+    submitButtonProps: normalize<ButtonProps>({
       id: ids.submitBtn,
       "aria-label": "Submit",
       type: "button",
@@ -90,7 +90,7 @@ export function connectEditableMachine(
       },
     }),
 
-    cancelButtonProps: normalize<DOMButtonProps>({
+    cancelButtonProps: normalize<ButtonProps>({
       "aria-label": "Cancel",
       id: ids.cancelBtn,
       type: "button",

@@ -3,7 +3,7 @@ import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler, PropNormalizer } from "../__utils/dom"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
+import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
@@ -34,7 +34,7 @@ export function connectRangeSliderMachine(
       const range = NumericRange.fromValues(ctx.value, ctx)[index]
       const ariaValueText = ctx.getAriaValueText?.(value, index)
 
-      return normalize<DOMHTMLProps>({
+      return normalize<HTMLProps>({
         id: ids.getThumbId(index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
@@ -101,14 +101,14 @@ export function connectRangeSliderMachine(
     },
 
     getInputProps(index: number) {
-      return normalize<DOMInputProps>({
+      return normalize<InputProps>({
         type: "hidden",
         value: ctx.value[index],
         id: ids.getInputId(index),
       })
     },
 
-    innerTrackProps: normalize<DOMHTMLProps>({
+    innerTrackProps: normalize<HTMLProps>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
@@ -118,7 +118,7 @@ export function connectRangeSliderMachine(
       },
     }),
 
-    rootProps: normalize<DOMHTMLProps>({
+    rootProps: normalize<HTMLProps>({
       id: ids.root,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,

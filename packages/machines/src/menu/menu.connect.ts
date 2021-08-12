@@ -1,7 +1,7 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap } from "../__utils/types"
+import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.machine"
 
@@ -15,7 +15,7 @@ export function connectMenuMachine(
   const ids = getElementIds(ctx.uid)
 
   return {
-    menuButtonProps: normalize<DOMButtonProps>({
+    menuButtonProps: normalize<ButtonProps>({
       type: "button",
       id: ids.button,
       "aria-haspopup": true,
@@ -48,7 +48,7 @@ export function connectMenuMachine(
       },
     }),
 
-    menuListProps: normalize<DOMHTMLProps>({
+    menuListProps: normalize<HTMLProps>({
       id: ids.menu,
       hidden: !isOpen,
       role: "menu",
@@ -101,7 +101,7 @@ export function connectMenuMachine(
     }),
 
     getMenuItemProps({ id }: { id?: string }) {
-      return normalize<DOMHTMLProps>({
+      return normalize<HTMLProps>({
         id,
         role: "menuitem",
         "data-ownedby": ids.menu,
