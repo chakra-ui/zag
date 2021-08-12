@@ -1,6 +1,6 @@
 import { env, cast } from "@core-foundation/utils"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer, determineEventKey } from "../__utils/dom"
 import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
@@ -8,7 +8,7 @@ import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 export function connectTabsMachine(
   state: S.State<TabsMachineContext, TabsMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

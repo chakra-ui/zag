@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { HTMLProps } from "../__utils/types"
 import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
@@ -7,7 +7,7 @@ import { getPlacementStyle } from "./toast.utils"
 export function connectToastMachine(
   state: S.State<ToastMachineContext, ToastMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
 

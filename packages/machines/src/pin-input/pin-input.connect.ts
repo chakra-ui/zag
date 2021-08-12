@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"
@@ -7,7 +7,7 @@ import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machin
 export function connectPinInputMachine(
   state: S.State<PinInputMachineContext, PinInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

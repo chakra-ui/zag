@@ -1,6 +1,6 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
 import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
@@ -13,7 +13,7 @@ type TagProps = {
 export function connectTagsInputMachine(
   state: S.State<TagsInputMachineContext, TagsInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

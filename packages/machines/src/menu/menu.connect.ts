@@ -1,6 +1,6 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.machine"
@@ -8,7 +8,7 @@ import { MenuMachineContext, MenuMachineState } from "./menu.machine"
 export function connectMenuMachine(
   state: S.State<MenuMachineContext, MenuMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const isOpen = state.matches("open")

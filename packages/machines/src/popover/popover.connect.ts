@@ -1,14 +1,14 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
 import { HTMLProps } from "../__utils/types"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 
 export function connectPopoverMachine(
   state: S.State<PopoverMachineContext, PopoverMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

@@ -1,6 +1,6 @@
 import { is } from "@core-foundation/utils/is"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { dataAttr, determineEventKey, defaultPropNormalizer } from "../__utils/dom"
 import { ButtonProps, HTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
@@ -8,7 +8,7 @@ import { AccordionMachineContext, AccordionMachineState } from "./accordion.mach
 export function connectAccordionMachine(
   state: S.State<AccordionMachineContext, AccordionMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

@@ -2,7 +2,7 @@ import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler, PropNormalizer } from "../__utils/dom"
+import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler } from "../__utils/dom"
 import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
@@ -10,7 +10,7 @@ import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slid
 export function connectRangeSliderMachine(
   state: S.State<RangeSliderMachineContext, RangeSliderMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const { min, max, value: values } = ctx

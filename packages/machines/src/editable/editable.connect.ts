@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { ariaAttr, defaultPropNormalizer } from "../__utils/dom"
 import { validateBlur } from "@core-dom/event"
 import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./editable.dom"
@@ -8,7 +8,7 @@ import { EditableMachineContext, EditableMachineState } from "./editable.machine
 export function connectEditableMachine(
   state: S.State<EditableMachineContext, EditableMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const isEditing = state.matches("edit")

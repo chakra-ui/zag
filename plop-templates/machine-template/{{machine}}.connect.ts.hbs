@@ -10,7 +10,7 @@ import { {{capitalize machine}}MachineContext, {{capitalize machine}}MachineStat
 export function connect{{capitalize machine}}Machine(
   state: S.State<{{capitalize machine}}MachineContext, {{capitalize machine}}MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

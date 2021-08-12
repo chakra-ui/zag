@@ -1,7 +1,7 @@
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer, determineEventKey } from "../__utils/dom"
 import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
@@ -9,7 +9,7 @@ import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 export function connectRatingMachine(
   state: S.State<RatingMachineContext, RatingMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const isHovering = ctx.hoveredValue !== -1

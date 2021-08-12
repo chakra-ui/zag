@@ -1,6 +1,6 @@
 import { runIfFn } from "@core-foundation/utils/fn"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { HTMLProps } from "../__utils/types"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import { getToastsByPlacement, ToastMachineContext, ToastPlacement } from "./toast.machine"
@@ -11,7 +11,7 @@ type ToastOptions = Partial<ToastMachineContext>
 export function connectToastGroupMachine(
   state: S.State<ToastGroupMachineContext>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
 

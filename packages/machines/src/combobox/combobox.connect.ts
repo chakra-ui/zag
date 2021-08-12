@@ -1,6 +1,6 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
 import { ButtonProps, HTMLProps, InputProps, LabelProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
@@ -8,7 +8,7 @@ import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine
 export function connectComboboxMachine(
   state: S.State<ComboboxMachineContext, ComboboxMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)

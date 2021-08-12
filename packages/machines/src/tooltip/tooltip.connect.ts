@@ -1,13 +1,13 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { snapshot } from "valtio"
 import { ButtonProps, HTMLProps } from "../__utils/types"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 
 export function connectTooltipMachine(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
 
