@@ -23,6 +23,7 @@ export default defineConfig({
       extensions: ["vue", "ts", "tsx"],
     }),
     Components({
+      extensions: ["tsx", "vue", "ts"],
       dirs: ["./src/components"],
     }),
   ],
