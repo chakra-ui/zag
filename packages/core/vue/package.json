@@ -28,8 +28,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@ui-machines/core": "0.0.0",
-    "@core-foundation/utils": "^0.1.4"
+    "@core-foundation/utils": "^0.1.4",
+    "@ui-machines/core": "0.0.0"
   },
   "devDependencies": {
     "vue": "^3.0.5"

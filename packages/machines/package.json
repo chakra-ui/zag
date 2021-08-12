@@ -26,18 +26,18 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "merge-anything": "^4.0.1",
-    "@types/react": "^17.0.15",
-    "@ui-machines/core": "0.0.0",
-    "@core-foundation/array-list": "^0.1.2",
-    "@core-foundation/utils": "^0.1.4",
-    "@core-foundation/numeric-range": "^0.1.1",
-    "scroll-into-view-if-needed": "^2.2.28",
-    "@core-graphics/rect": "^0.1.2",
-    "@core-graphics/point": "^0.1.2",
+    "@core-dom/element": "^0.1.2",
     "@core-dom/event": "^0.1.4",
     "@core-dom/node-list": "^0.1.2",
-    "@core-dom/element": "^0.1.2",
+    "@core-foundation/array-list": "^0.1.2",
+    "@core-foundation/numeric-range": "^0.1.1",
+    "@core-foundation/utils": "^0.1.4",
+    "@core-graphics/point": "^0.1.2",
+    "@core-graphics/rect": "^0.1.2",
+    "@types/react": "^17.0.15",
+    "@ui-machines/core": "0.0.0",
+    "merge-anything": "^4.0.1",
+    "scroll-into-view-if-needed": "^2.2.28",
     "valtio": "^1.1.3"
   }
 }
