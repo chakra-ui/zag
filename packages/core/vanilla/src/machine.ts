@@ -1,6 +1,4 @@
-import { cast, runIfFn, toArray } from "@core-foundation/utils/fn"
-import { warn } from "@core-foundation/utils/warn"
-import { is } from "@core-foundation/utils/is"
+import { cast, runIfFn, toArray, warn, is } from "@core-foundation/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"
@@ -647,7 +645,7 @@ export class Machine<
     }
 
     const transitionConfig: S.Transitions<TContext, TState["value"], TEvent> =
-      this.config.on?.[event.type] ?? stateNode?.on?.[event.type]
+      stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
     const transition = toTransition(transitionConfig, this.state.value)
 

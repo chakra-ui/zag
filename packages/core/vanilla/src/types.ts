@@ -187,10 +187,6 @@ export declare namespace StateMachine {
      */
     states?: Partial<Record<TState["value"], StateNode<TContext, TState, TEvent>>>
     /**
-     * The `id` of the parent machine for this
-     */
-    parent?: string
-    /**
      * Mapping events to transitions
      */
     on?: TransitionDefinitionMap<TContext, TState["value"], TEvent>

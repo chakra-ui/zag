@@ -1,5 +1,8 @@
 import { is, warn } from "@core-foundation/utils"
-import { PropNormalizer } from "@ui-machines/core"
+
+export interface PropNormalizer {
+  <T extends Dict = Dict>(props: T): Dict
+}
 
 type Dict = Record<string, string>
 
