@@ -1,4 +1,4 @@
-import { DOMElement } from "@core-dom/element"
+import { getFocusables } from "@core-dom/element"
 import { ArrayList } from "@core-foundation/array-list"
 import { PopoverMachineContext } from "./popover.machine"
 
@@ -27,7 +27,7 @@ export function dom(ctx: PopoverMachineContext) {
   const { content } = getElements(ctx)
   return {
     getFirstFocusable() {
-      const focusables = new DOMElement(content).getFocusables()
+      const focusables = getFocusables(content)
       const collection = new ArrayList(focusables)
       return !collection.isEmpty ? collection.first : content
     },
