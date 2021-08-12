@@ -56,7 +56,7 @@ console.log(toggleMachine.state.value) // => "inactive"
 **Usage (service):**
 
 ```js
-import { createMachine, interpret } from "@xstate/fsm"
+import { createMachine } from "@ui-machines/core"
 
 const toggleMachine = createMachine({...})
 toggleMachine.start()
