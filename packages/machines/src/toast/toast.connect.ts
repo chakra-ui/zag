@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { DOMHTMLProps, WithDataAttr } from "../__utils/types"
 import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { DOMHTMLProps } from "../__utils/types"
 import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
@@ -34,7 +34,7 @@ export function connectToastMachine(
     },
 
     getContainerProps(placement: ToastPlacement) {
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<DOMHTMLProps>({
         id: `toast-group-${placement}`,
         "data-placement": placement,
         style: getPlacementStyle(placement),

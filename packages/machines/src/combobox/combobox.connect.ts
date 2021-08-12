@@ -1,7 +1,7 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, DOMLabelProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { dataAttr, defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, DOMLabelProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
@@ -135,7 +135,7 @@ export function connectComboboxMachine(
       const id = ids.getOptionId(value)
       const selected = ctx.activeId === id
 
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<DOMHTMLProps>({
         id,
         role: "option",
         className: "option",

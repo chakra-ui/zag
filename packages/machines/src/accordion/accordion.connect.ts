@@ -25,12 +25,12 @@ export function connectAccordionMachine(
       const isFocused = ctx.focusedId === uid
 
       return {
-        groupProps: normalize<WithDataAttr<DOMHTMLProps>>({
+        groupProps: normalize<DOMHTMLProps>({
           id: ids.getGroupId(uid),
           "data-expanded": isVisible,
         }),
 
-        panelProps: normalize<WithDataAttr<DOMHTMLProps>>({
+        panelProps: normalize<DOMHTMLProps>({
           role: "region",
           id: ids.getPanelId(uid),
           "aria-labelledby": ids.getTriggerId(uid),
@@ -40,7 +40,7 @@ export function connectAccordionMachine(
           "data-expanded": dataAttr(isVisible),
         }),
 
-        triggerProps: normalize<WithDataAttr<DOMButtonProps>>({
+        triggerProps: normalize<DOMButtonProps>({
           type: "button",
           id: ids.getTriggerId(uid),
           "aria-controls": ids.getPanelId(uid),

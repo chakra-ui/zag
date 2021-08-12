@@ -1,8 +1,8 @@
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
@@ -41,7 +41,7 @@ export function connectRatingMachine(
 
       const tabIndex = ctx.value <= 0 && index === 1 ? 1 : index === ctx.value ? 0 : -1
 
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<DOMHTMLProps>({
         id: getRatingId(index),
         role: "radio",
         tabIndex,

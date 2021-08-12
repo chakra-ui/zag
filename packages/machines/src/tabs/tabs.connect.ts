@@ -1,8 +1,7 @@
+import { env, cast } from "@core-foundation/utils"
 import { StateMachine as S } from "@ui-machines/core"
-import { cast } from "@core-foundation/utils/fn"
-import { env } from "@core-foundation/utils/env"
-import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
@@ -56,7 +55,7 @@ export function connectTabsMachine(
 
     getTabProps({ uid }: { uid: string }) {
       const selected = ctx.activeTabId === uid
-      return normalize<WithDataAttr<DOMButtonProps>>({
+      return normalize<DOMButtonProps>({
         role: "tab",
         type: "button",
         "data-uid": uid,
@@ -86,7 +85,7 @@ export function connectTabsMachine(
 
     getTabPanelProps({ uid }: { uid: string }) {
       const selected = ctx.activeTabId === uid
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<DOMHTMLProps>({
         id: ids.getPanelId(uid),
         tabIndex: 0,
         "aria-labelledby": ids.getTabId(uid),

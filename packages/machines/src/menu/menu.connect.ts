@@ -1,7 +1,7 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.machine"
 
@@ -101,7 +101,7 @@ export function connectMenuMachine(
     }),
 
     getMenuItemProps({ id }: { id?: string }) {
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<DOMHTMLProps>({
         id,
         role: "menuitem",
         "data-ownedby": ids.menu,

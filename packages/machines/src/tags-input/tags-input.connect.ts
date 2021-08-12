@@ -1,7 +1,7 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
-import { determineEventKey, dataAttr, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, defaultPropNormalizer, determineEventKey, PropNormalizer } from "../__utils/dom"
+import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 
@@ -26,7 +26,7 @@ export function connectTagsInputMachine(
     value: ctx.value,
     valueAsString,
 
-    rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    rootProps: normalize<DOMHTMLProps>({
       "data-count": ctx.value.length,
       "data-disabled": dataAttr(ctx.disabled),
       "data-focus": dataAttr(isInputFocused),
@@ -108,7 +108,7 @@ export function connectTagsInputMachine(
 
     getTagProps({ index, value }: TagProps) {
       const id = ids.getTagId(index)
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<DOMHTMLProps>({
         id,
         hidden: isEditingTag ? ctx.editedId === id : false,
         "data-value": value,
