@@ -1,5 +1,5 @@
 import { is, warn } from "@core-foundation/utils"
-import { PropNormalizer } from "@ui-machines/core"
+import { PropNormalizer } from "@ui-machines/web"
 
 type Dict = Record<string, string>
 
@@ -36,7 +36,7 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
         warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
       }
     } else {
-      normalized[toVueProp[key]] = props[key]
+      normalized[toVueProp(key)] = props[key]
     }
   }
   return normalized

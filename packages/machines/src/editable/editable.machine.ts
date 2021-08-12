@@ -1,6 +1,7 @@
-import { createMachine, guards, preserve, trackPointerDown } from "@ui-machines/core"
+import { createMachine, guards, preserve } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils/fn"
 import { WithDOM } from "../__utils/types"
+import { trackPointerDown } from "../__utils/dom"
 import { getElements } from "./editable.dom"
 
 const { not } = guards

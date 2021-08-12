@@ -1365,7 +1365,7 @@
   dependencies:
     "@core-foundation/array-list" "0.1.2"
 
-"@core-foundation/array-list@0.1.2":
+"@core-foundation/array-list@0.1.2", "@core-foundation/array-list@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@core-foundation/array-list/-/array-list-0.1.2.tgz#b6f3b89c23fafdbbd3cb2f8437997144e2c10d58"
   integrity sha512-HOmy/xrkKp4g8SpM1OaCQO+v9brGUfBRliQ8e3HU8mbqXbruASjnfoxyd/8idP/eZbxwPgp7LU3ishjVc1+6mA==

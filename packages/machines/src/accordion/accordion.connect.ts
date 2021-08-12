@@ -1,4 +1,5 @@
-import { defaultPropNormalizer, PropNormalizer, StateMachine as S } from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
+import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
 import { is } from "@core-foundation/utils/is"
 import { dataAttr, determineEventKey } from "../__utils/dom"
 import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"

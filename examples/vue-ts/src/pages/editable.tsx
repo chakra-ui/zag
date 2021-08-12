@@ -1,15 +1,5 @@
-import {
-  defineComponent,
-  h,
-  Fragment,
-  ref,
-  computed,
-  onMounted,
-  unref,
-  watch,
-  watchEffect,
-} from "vue"
-import { connectEditableMachine, editableMachine } from "@ui-machines/web"
+import { defineComponent, h, Fragment, ref, computed, onMounted } from "vue"
+import { editable } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -20,7 +10,7 @@ export default defineComponent({
     const inputRef = ref<any>(null)
 
     const [state, send] = useMachine(
-      editableMachine.withContext({
+      editable.machine.withContext({
         placeholder: "Edit me...",
         isPreviewFocusable: true,
       }),
@@ -29,12 +19,14 @@ export default defineComponent({
     const id = computed(() => `editable-${count.value++}`)
 
     onMounted(() => {
-      send({ type: "MOUNT", doc: inputRef.value?.ownerDocument, id: id.value })
+      send({ type: "SETUP", doc: inputRef.value?.ownerDocument, id: id.value })
     })
 
-    const machineState = computed(() =>
-      connectEditableMachine(state.value, send, normalizeProps),
-    )
+    const machineState = computed(() => {
+      const machine = editable.connect(state.value, send, normalizeProps)
+      console.log(machine)
+      return machine
+    })
 
     return () => {
       const {
@@ -49,11 +41,7 @@ export default defineComponent({
 
       return (
         <div>
-          <input
-            ref={inputRef}
-            style={{ width: "auto", background: "transparent" }}
-            {...inputProps}
-          />
+          <input ref={inputRef} style={{ width: "auto", background: "transparent" }} {...inputProps} />
           <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
           {!isEditing && <button {...editButtonProps}>Edit</button>}
           {isEditing && (

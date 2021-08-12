@@ -29,6 +29,7 @@
     "merge-anything": "^4.0.1",
     "@types/react": "^17.0.15",
     "@ui-machines/core": "0.0.0",
+    "@core-foundation/array-list": "^0.1.2",
     "@core-foundation/utils": "^0.1.4",
     "@core-foundation/numeric-range": "^0.1.1",
     "scroll-into-view-if-needed": "^2.2.28",

@@ -1,7 +1,7 @@
 import { env } from "@core-foundation/utils/env"
-import { h } from "vue"
+import { h, SetupContext } from "vue"
 
-export function StateVisualizer(props: { state: Record<string, any> }) {
+export function StateVisualizer(props: { state: Record<string, any> }, { attrs }: SetupContext) {
   const { state } = props
   return (
     <pre
@@ -9,17 +9,18 @@ export function StateVisualizer(props: { state: Record<string, any> }) {
       style={{
         float: "right",
         position: "absolute",
-        top: 40,
-        right: 40,
-        minWidth: 400,
+        top: "40px",
+        right: "40px",
+        minWidth: "400px",
       }}
+      {...props}
+      {...attrs}
     >
       {JSON.stringify(
         state,
-        (_, value) => {
-          return env.dom() && value instanceof HTMLElement
-            ? value.tagName
-            : value
+        (key, value) => {
+          if (key === "childNodes") return value.value.length
+          return env.dom() && value instanceof HTMLElement ? value.tagName : value
         },
         4,
       )}
