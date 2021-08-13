@@ -13,4 +13,6 @@ export * from "./tags-input"
 export * from "./toast"
 export * from "./tooltip"
 export * from "./accordion"
-export * from "./__utils/dom"
+
+export { mergeProps } from "./__utils/merge-props"
+export * from "./__utils"

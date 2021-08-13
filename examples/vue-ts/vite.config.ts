@@ -12,18 +12,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@ui-machines/vue": `${path.resolve(
-        __dirname,
-        "../../packages/machine/src/vue/index.ts",
-      )}`,
-      "@chakra-ui/utilities": `${path.resolve(
-        __dirname,
-        "../../packages/utilities/src",
-      )}`,
-      "@ui-machines/core": `${path.resolve(
-        __dirname,
-        "../../packages/ui-machines/src",
-      )}`,
+      "@ui-machines/vue": `${path.resolve(__dirname, "../../packages/core/vue/src/index.ts")}`,
+      "@ui-machines/core": `${path.resolve(__dirname, "../../packages/core/vanilla")}`,
     },
   },
   plugins: [
@@ -32,6 +22,9 @@ export default defineConfig({
       pagesDir: "src/pages",
       extensions: ["vue", "ts", "tsx"],
     }),
-    Components(),
+    Components({
+      extensions: ["tsx", "vue", "ts"],
+      dirs: ["./src/components"],
+    }),
   ],
 })

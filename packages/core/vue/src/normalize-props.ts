@@ -39,7 +39,7 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
         warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
       }
     } else {
-      normalized[toVueProp[key]] = props[key]
+      normalized[toVueProp(key)] = props[key]
     }
   }
   return normalized
