@@ -1,7 +1,7 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { runIfFn } from "@core-foundation/utils/fn"
-import { DOMHTMLProps, WithDataAttr } from "../__utils/types"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { StateMachine as S } from "@ui-machines/core"
+import { defaultPropNormalizer } from "../__utils/dom"
+import { HTMLProps } from "../__utils/types"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import { getToastsByPlacement, ToastMachineContext, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
@@ -11,7 +11,7 @@ type ToastOptions = Partial<ToastMachineContext>
 export function connectToastGroupMachine(
   state: S.State<ToastGroupMachineContext>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
 
@@ -108,7 +108,7 @@ export function connectToastGroupMachine(
     },
 
     getContainerProps(placement: ToastPlacement) {
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<HTMLProps>({
         id: `toast-group-${placement}`,
         "data-placement": placement,
         style: getPlacementStyle(placement),

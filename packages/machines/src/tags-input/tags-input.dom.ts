@@ -1,5 +1,4 @@
 import { DOMNodeList } from "@core-dom/node-list"
-import { DOMElement } from "@core-dom/element"
 import { TagsInputMachineContext } from "./tags-input.machine"
 
 export function getElementIds(uid: string) {
@@ -28,7 +27,7 @@ export function dom(ctx: TagsInputMachineContext) {
   const collection = DOMNodeList.fromSelector(root, selector)
 
   return {
-    isInputFocused: new DOMElement(input).isActiveElement,
+    isInputFocused: input.ownerDocument.activeElement === input,
     first: collection.first,
     last: collection.last,
     indexOfId: collection.indexOfId,

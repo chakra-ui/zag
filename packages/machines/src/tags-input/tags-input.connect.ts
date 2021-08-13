@@ -1,7 +1,7 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
-import { determineEventKey, dataAttr, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
+import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 
@@ -13,7 +13,7 @@ type TagProps = {
 export function connectTagsInputMachine(
   state: S.State<TagsInputMachineContext, TagsInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)
@@ -26,7 +26,7 @@ export function connectTagsInputMachine(
     value: ctx.value,
     valueAsString,
 
-    rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    rootProps: normalize<HTMLProps>({
       "data-count": ctx.value.length,
       "data-disabled": dataAttr(ctx.disabled),
       "data-focus": dataAttr(isInputFocused),
@@ -36,7 +36,7 @@ export function connectTagsInputMachine(
       },
     }),
 
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       id: ids.input,
       value: ctx.inputValue,
       autoComplete: "off",
@@ -98,7 +98,7 @@ export function connectTagsInputMachine(
     }),
 
     hiddenInputProps() {
-      return normalize<DOMInputProps>({
+      return normalize<InputProps>({
         type: "hidden",
         name: ctx.name,
         id: ctx.uid,
@@ -108,7 +108,7 @@ export function connectTagsInputMachine(
 
     getTagProps({ index, value }: TagProps) {
       const id = ids.getTagId(index)
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<HTMLProps>({
         id,
         hidden: isEditingTag ? ctx.editedId === id : false,
         "data-value": value,
@@ -127,7 +127,7 @@ export function connectTagsInputMachine(
     getTagInputProps({ index }: { index: number }) {
       const uid = ids.getTagId(index)
       const active = ctx.editedId === uid
-      return normalize<DOMInputProps>({
+      return normalize<InputProps>({
         id: `${uid}-input`,
         type: "text",
         tabIndex: -1,
@@ -161,7 +161,7 @@ export function connectTagsInputMachine(
 
     getTagDeleteButtonProps({ index, value }: TagProps) {
       const uid = ids.getTagId(index)
-      return normalize<DOMButtonProps>({
+      return normalize<ButtonProps>({
         id: `${uid}-close`,
         type: "button",
         "aria-label": `Delete ${value}`,

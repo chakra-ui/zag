@@ -28,9 +28,9 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-foundation/utils": "^0.1.4",
+    "@core-foundation/utils": "^0.1.5",
     "@ui-machines/core": "0.0.0",
-    "valtio": "^1.1.3"
+    "valtio": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.15",

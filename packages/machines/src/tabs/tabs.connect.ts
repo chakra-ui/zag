@@ -1,21 +1,20 @@
+import { env, cast } from "@core-foundation/utils"
 import { StateMachine as S } from "@ui-machines/core"
-import { cast } from "@core-foundation/utils/fn"
-import { env } from "@core-foundation/utils/env"
-import { determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { defaultPropNormalizer, determineEventKey } from "../__utils/dom"
+import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
 export function connectTabsMachine(
   state: S.State<TabsMachineContext, TabsMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)
 
   return {
-    tablistProps: normalize<DOMHTMLProps>({
+    tablistProps: normalize<HTMLProps>({
       id: ids.tablist,
       role: "tablist",
       "aria-orientation": ctx.orientation,
@@ -56,7 +55,7 @@ export function connectTabsMachine(
 
     getTabProps({ uid }: { uid: string }) {
       const selected = ctx.activeTabId === uid
-      return normalize<WithDataAttr<DOMButtonProps>>({
+      return normalize<ButtonProps>({
         role: "tab",
         type: "button",
         "data-uid": uid,
@@ -86,7 +85,7 @@ export function connectTabsMachine(
 
     getTabPanelProps({ uid }: { uid: string }) {
       const selected = ctx.activeTabId === uid
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<HTMLProps>({
         id: ids.getPanelId(uid),
         tabIndex: 0,
         "aria-labelledby": ids.getTabId(uid),
@@ -96,7 +95,7 @@ export function connectTabsMachine(
       })
     },
 
-    tabIndicatorProps: normalize<DOMHTMLProps>({
+    tabIndicatorProps: normalize<HTMLProps>({
       style: {
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",

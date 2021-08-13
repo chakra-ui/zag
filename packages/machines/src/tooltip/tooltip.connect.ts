@@ -1,13 +1,13 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { snapshot } from "valtio"
-import { DOMButtonProps, DOMHTMLProps } from "../__utils/types"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { ButtonProps, HTMLProps } from "../__utils/types"
+import { defaultPropNormalizer } from "../__utils/dom"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 
 export function connectTooltipMachine(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
 
@@ -22,7 +22,7 @@ export function connectTooltipMachine(
   return {
     isVisible,
 
-    triggerProps: normalize<DOMButtonProps>({
+    triggerProps: normalize<ButtonProps>({
       "aria-describedby": isVisible ? `tooltip-${ctx.id}` : undefined,
       onFocus() {
         send("POINTER_ENTER")
@@ -41,7 +41,7 @@ export function connectTooltipMachine(
       },
     }),
 
-    tooltipProps: normalize<DOMHTMLProps>({
+    tooltipProps: normalize<HTMLProps>({
       role: "tooltip",
     }),
   }

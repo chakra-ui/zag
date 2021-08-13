@@ -1,4 +1,4 @@
-import { DOMElement } from "@core-dom/element"
+import { isTabbable } from "@core-dom/element"
 import { nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import { trackPointerDown } from "../__utils/dom"
@@ -83,8 +83,8 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
     guards: {
       shouldCloseOnEsc: (ctx) => !!ctx.closeOnEsc,
       isPointerdownFocusable: (ctx) => {
-        const el = new DOMElement(ctx.pointerdownNode)
-        return !!el.isTabbable
+        if (!ctx.pointerdownNode) return false
+        return isTabbable(ctx.pointerdownNode)
       },
       shouldCloseOnOutsideClick: (ctx) => !!ctx.closeOnOutsideClick,
     },

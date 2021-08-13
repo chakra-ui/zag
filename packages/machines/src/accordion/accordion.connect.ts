@@ -1,20 +1,20 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, PropNormalizer, dataAttr, determineEventKey } from "../__utils/dom"
 import { is } from "@core-foundation/utils/is"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, determineEventKey, defaultPropNormalizer } from "../__utils/dom"
+import { ButtonProps, HTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
 import { getElementIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
 export function connectAccordionMachine(
   state: S.State<AccordionMachineContext, AccordionMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)
 
   return {
-    rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    rootProps: normalize<WithDataAttr<HTMLProps>>({
       id: ids.root,
     }),
 
@@ -25,12 +25,12 @@ export function connectAccordionMachine(
       const isFocused = ctx.focusedId === uid
 
       return {
-        groupProps: normalize<WithDataAttr<DOMHTMLProps>>({
+        groupProps: normalize<HTMLProps>({
           id: ids.getGroupId(uid),
           "data-expanded": isVisible,
         }),
 
-        panelProps: normalize<WithDataAttr<DOMHTMLProps>>({
+        panelProps: normalize<HTMLProps>({
           role: "region",
           id: ids.getPanelId(uid),
           "aria-labelledby": ids.getTriggerId(uid),
@@ -40,7 +40,7 @@ export function connectAccordionMachine(
           "data-expanded": dataAttr(isVisible),
         }),
 
-        triggerProps: normalize<WithDataAttr<DOMButtonProps>>({
+        triggerProps: normalize<ButtonProps>({
           type: "button",
           id: ids.getTriggerId(uid),
           "aria-controls": ids.getPanelId(uid),

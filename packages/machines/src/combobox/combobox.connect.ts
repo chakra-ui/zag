@@ -1,14 +1,14 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, determineEventKey, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMButtonProps, DOMHTMLProps, DOMInputProps, DOMLabelProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
+import { ButtonProps, HTMLProps, InputProps, LabelProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
 export function connectComboboxMachine(
   state: S.State<ComboboxMachineContext, ComboboxMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const ids = getElementIds(ctx.uid)
@@ -18,19 +18,19 @@ export function connectComboboxMachine(
   return {
     inputValue: ctx.inputValue,
 
-    labelProps: normalize<DOMLabelProps>({
+    labelProps: normalize<LabelProps>({
       htmlFor: ids.input,
       id: ids.label,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
     }),
 
-    containerProps: normalize<DOMHTMLProps>({
+    containerProps: normalize<HTMLProps>({
       id: ids.container,
       "data-expanded": expanded,
     }),
 
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       name: ctx.name,
       disabled: ctx.disabled,
       autoFocus: ctx.autoFocus,
@@ -98,7 +98,7 @@ export function connectComboboxMachine(
       },
     }),
 
-    buttonProps: normalize<DOMButtonProps>({
+    buttonProps: normalize<ButtonProps>({
       id: ids.toggleBtn,
       "aria-haspopup": "true",
       type: "button",
@@ -115,7 +115,7 @@ export function connectComboboxMachine(
       },
     }),
 
-    clearProps: normalize<DOMButtonProps>({
+    clearProps: normalize<ButtonProps>({
       "aria-label": "Clear",
       type: "reset",
       onClick() {
@@ -123,7 +123,7 @@ export function connectComboboxMachine(
       },
     }),
 
-    listboxProps: normalize<DOMHTMLProps>({
+    listboxProps: normalize<HTMLProps>({
       id: ids.listbox,
       role: "listbox",
       hidden: !expanded,
@@ -135,7 +135,7 @@ export function connectComboboxMachine(
       const id = ids.getOptionId(value)
       const selected = ctx.activeId === id
 
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<HTMLProps>({
         id,
         role: "option",
         className: "option",

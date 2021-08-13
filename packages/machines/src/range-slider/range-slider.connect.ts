@@ -1,16 +1,16 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { cast } from "@core-foundation/utils/fn"
 import { NumericRange } from "@core-foundation/numeric-range"
+import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
-import { dataAttr, determineEventKey, getStepMultipler, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler } from "../__utils/dom"
+import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
 export function connectRangeSliderMachine(
   state: S.State<RangeSliderMachineContext, RangeSliderMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const { min, max, value: values } = ctx
@@ -34,7 +34,7 @@ export function connectRangeSliderMachine(
       const range = NumericRange.fromValues(ctx.value, ctx)[index]
       const ariaValueText = ctx.getAriaValueText?.(value, index)
 
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<HTMLProps>({
         id: ids.getThumbId(index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
@@ -101,14 +101,14 @@ export function connectRangeSliderMachine(
     },
 
     getInputProps(index: number) {
-      return normalize<DOMInputProps>({
+      return normalize<InputProps>({
         type: "hidden",
         value: ctx.value[index],
         id: ids.getInputId(index),
       })
     },
 
-    innerTrackProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    innerTrackProps: normalize<HTMLProps>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
@@ -118,7 +118,7 @@ export function connectRangeSliderMachine(
       },
     }),
 
-    rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    rootProps: normalize<HTMLProps>({
       id: ids.root,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,

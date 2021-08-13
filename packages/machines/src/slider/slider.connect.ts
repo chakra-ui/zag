@@ -2,15 +2,15 @@ import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, determineEventKey, getStepMultipler, defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
-import { DOMHTMLProps, DOMInputProps, EventKeyMap, WithDataAttr } from "../__utils/types"
+import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler } from "../__utils/dom"
+import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
 import { getElementIds } from "./slider.dom"
 import { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
 export function connectSliderMachine(
   state: S.State<SliderMachineContext, SliderMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const range = new NumericRange(ctx)
@@ -23,7 +23,7 @@ export function connectSliderMachine(
   const isFocused = state.matches("focus")
 
   return {
-    thumbProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    thumbProps: normalize<HTMLProps>({
       id: ids.thumb,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -85,21 +85,21 @@ export function connectSliderMachine(
       },
     }),
 
-    inputProps: normalize<DOMInputProps>({
+    inputProps: normalize<InputProps>({
       type: "hidden",
       value: ctx.value,
       name: ctx.name,
       id: ids.input,
     }),
 
-    innerTrackProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    innerTrackProps: normalize<HTMLProps>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
       "data-value": ctx.value,
     }),
 
-    rootProps: normalize<WithDataAttr<DOMHTMLProps>>({
+    rootProps: normalize<HTMLProps>({
       id: ids.root,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,

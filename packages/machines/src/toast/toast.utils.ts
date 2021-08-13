@@ -1,4 +1,4 @@
-import { DOMHTMLProps } from "../__utils/types"
+import { HTMLProps } from "../__utils/types"
 import { ToastMachineContext, ToastPlacement, ToastType } from "./toast.machine"
 
 export function getPositionStyle(position: ToastPlacement): React.CSSProperties {
@@ -42,7 +42,7 @@ const placementMap = {
   bottom: "calc(env(safe-area-inset-bottom) + 1rem)",
 }
 
-export function getPlacementStyle(placement: ToastPlacement): DOMHTMLProps["style"] {
+export function getPlacementStyle(placement: ToastPlacement): HTMLProps["style"] {
   const isTopOrBottom = placement === "top" || placement === "bottom"
 
   const styles = Object.fromEntries(Object.entries(placementMap).filter(([key]) => placement.includes(key)))

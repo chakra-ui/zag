@@ -1,21 +1,21 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { validateBlur } from "@core-dom/event"
-import { DOMButtonProps, DOMHTMLProps, EventKeyMap, WithDataAttr } from "../__utils/types"
-import { defaultPropNormalizer, PropNormalizer } from "../__utils/dom"
+import { StateMachine as S } from "@ui-machines/core"
+import { defaultPropNormalizer } from "../__utils/dom"
+import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
 import { getElementIds, getElements } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.machine"
 
 export function connectMenuMachine(
   state: S.State<MenuMachineContext, MenuMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize: PropNormalizer = defaultPropNormalizer,
+  normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
   const isOpen = state.matches("open")
   const ids = getElementIds(ctx.uid)
 
   return {
-    menuButtonProps: normalize<DOMButtonProps>({
+    menuButtonProps: normalize<ButtonProps>({
       type: "button",
       id: ids.button,
       "aria-haspopup": true,
@@ -48,7 +48,7 @@ export function connectMenuMachine(
       },
     }),
 
-    menuListProps: normalize<DOMHTMLProps>({
+    menuListProps: normalize<HTMLProps>({
       id: ids.menu,
       hidden: !isOpen,
       role: "menu",
@@ -101,7 +101,7 @@ export function connectMenuMachine(
     }),
 
     getMenuItemProps({ id }: { id?: string }) {
-      return normalize<WithDataAttr<DOMHTMLProps>>({
+      return normalize<HTMLProps>({
         id,
         role: "menuitem",
         "data-ownedby": ids.menu,

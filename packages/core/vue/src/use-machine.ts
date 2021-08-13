@@ -1,4 +1,4 @@
-import { runIfFn } from "@core-foundation/utils"
+import { runIfFn } from "@core-foundation/utils/fn"
 import { computed, onMounted, watch, onBeforeUnmount, shallowRef } from "vue"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 

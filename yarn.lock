@@ -1345,30 +1345,30 @@
   dependencies:
     chalk "^4.0.0"
 
-"@core-dom/element@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.2.tgz#f6c382fd2443f2f7d105d7319a3699cd4fc5604c"
-  integrity sha512-itR48NPXDASs4lWMq+ilvavdNUdIPaCFW6nFoMTH85Q3cS6tQBdToQQBjM1HBhP0fQf8h4c1OU/+dJNdc2hweQ==
+"@core-dom/element@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.3.tgz#abbecc1690b029804be869dbe52e4f8539990400"
+  integrity sha512-IrTqlEK9PvJl58JIfbBCqhwpsgqHamhfDdFGNMPPbB0PQ8dJkJNX2UoveOsPDBXGgmEwGxc2n5Ln241E2VHoUw==
 
-"@core-dom/event@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.4.tgz#b709acd98ec80df2f3e90a1c8c55502b78c76feb"
-  integrity sha512-AJ5Jt9JBXhysxtJs31FhG+2rpDmeen9jC/4C44iVtpA60rXi9yeOrGKQCzpixsNt2iRbmwZ+v1X2S6jJ9xZpYw==
+"@core-dom/event@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.5.tgz#ea44d02badfc6648ec63de9407cec8ab3a25a1f8"
+  integrity sha512-zLX5FKlD/JPLo8v6ZCj6hF8BmM/ZwWdOpuphF2+fvQx6NPF+TZGCKJ6K2LjBv7wPeqWckqaDT8HahRi7UGRS1w==
   dependencies:
-    "@core-foundation/utils" "0.1.4"
-    "@core-graphics/point" "0.1.2"
+    "@core-foundation/utils" "0.1.5"
+    "@core-graphics/point" "0.1.3"
 
-"@core-dom/node-list@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.2.tgz#d49cc620a5abb80df2942d5a43234c98a148f7f1"
-  integrity sha512-OaPxH7qhN0UriSSLDh4p1BlI3R7Y2vYFsiWMd60FbhJZ0BN8lBrRZbga8yHea6OQveX9OpiCruynVdwXqZf8Tw==
+"@core-dom/node-list@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.3.tgz#53821cf5631680c6fc01a23b419f4e31060ee1f7"
+  integrity sha512-Gv1DOl0bgwRTbqQl92g1ni3hbX1I1tfly8ZompfC0ciuXN5Nu2atBvyLoXqhRuvDSOxrjNj+NECSHMLHIXEeVA==
   dependencies:
-    "@core-foundation/array-list" "0.1.2"
+    "@core-foundation/array-list" "0.1.3"
 
-"@core-foundation/array-list@0.1.2", "@core-foundation/array-list@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@core-foundation/array-list/-/array-list-0.1.2.tgz#b6f3b89c23fafdbbd3cb2f8437997144e2c10d58"
-  integrity sha512-HOmy/xrkKp4g8SpM1OaCQO+v9brGUfBRliQ8e3HU8mbqXbruASjnfoxyd/8idP/eZbxwPgp7LU3ishjVc1+6mA==
+"@core-foundation/array-list@0.1.3", "@core-foundation/array-list@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-foundation/array-list/-/array-list-0.1.3.tgz#d7554a042ead53c378e01f17c35b6438809a60fa"
+  integrity sha512-BMFu945rweRxUJNuLPfUZ7cZ9f6QEaD9n9OFO7BDx4mFB6Zx6TsCB6kDWQJ9kwjr1UjyGBAD1uy/TXdDMVCkZw==
 
 "@core-foundation/numeral@0.1.0":
   version "0.1.0"
@@ -1382,30 +1382,30 @@
   dependencies:
     "@core-foundation/numeral" "0.1.0"
 
-"@core-foundation/utils@0.1.4", "@core-foundation/utils@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.4.tgz#d2357bb9f92f330438face8e1823d2f728c881c3"
-  integrity sha512-CbL5au/4jgMJgvXlR+fANI1jalIm1uVrKRMnKH6Ll+A+KMBESXoEbRIuJDje8NG5r1CNCArbzFyFZUwRd1mFJA==
+"@core-foundation/utils@0.1.5", "@core-foundation/utils@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.5.tgz#e36d6164f6bfead83a995c0e2d12edc097529ac6"
+  integrity sha512-Qz6eKTyed/vea3Oq/j0x7NbNupiT2NxE6xc9p62gEpz7aFnr0ikDln7TACvRxWaRMqcWkPO5p2gyD8cNoGz+dw==
 
-"@core-graphics/point@0.1.2", "@core-graphics/point@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.2.tgz#4ae72d71116ddfad0c021ce5fadab90a91690c85"
-  integrity sha512-GEsfg5h7JZHEg1rHVZ76x3AJljj31UTvxYRVybwxBZE267kYe/ALkueDkAqdKijTK6/m3X36fiL4HsVm6NIS0g==
+"@core-graphics/point@0.1.3", "@core-graphics/point@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.3.tgz#ab6838f78d9c394bb8a00405780f001c7f0d20cf"
+  integrity sha512-QIMlmwN1hUJFZ39gISI8815UKXJAdYLDELoQ0OXok0t/82FbUDEi960ScvtYqd+nWhmcQJacwey0BkPY8zqouA==
   dependencies:
     "@core-foundation/numeral" "0.1.0"
 
-"@core-graphics/rect@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.2.tgz#7b6663fcd218b0e6e7ebe9ec188bfc08de87d07e"
-  integrity sha512-kXvxvpx5C6OUu/I1MMcaN7NoJTAb/L1u5ukNZV6DyXcJxpESNXa3wp8VNx0mw9PWf20lAk5s1bbyX01b6ndNnQ==
+"@core-graphics/rect@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.3.tgz#aba677f8e3a6b86cc95d36cdaf3069c013e5de08"
+  integrity sha512-QUkybQ1iSb5VWps0Pyp+whBefisDXcQjyiYthOTHHLVWzDJInyMr0a9E3fDKMWG+JOczKeHk5eBbFS24IsoHew==
   dependencies:
-    "@core-graphics/point" "0.1.2"
-    "@core-graphics/size" "0.1.1"
+    "@core-graphics/point" "0.1.3"
+    "@core-graphics/size" "0.1.2"
 
-"@core-graphics/size@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@core-graphics/size/-/size-0.1.1.tgz#a148db02949986ad3b2023451f41e11fa9ad35f9"
-  integrity sha512-3kM7Nrf+6rFuen75GB0SDgigVn269XjOE6rE5nJIQnDPcEhinstvgGYL+yGL/fnw2TBvL+DEpRtS1hrhzO3TOA==
+"@core-graphics/size@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@core-graphics/size/-/size-0.1.2.tgz#a01cf15ff59383f1a7cbe057b276921b6b6a3bb3"
+  integrity sha512-6inGnuNEiIPF1CHi7gubVAL4T4Rb8X+L9nW9xiauabEkWdDlEbuq2sWCAUmdA5nq7EQ2VFZJHMrjaxlG4ezPGw==
 
 "@emotion/babel-plugin@^11.0.0", "@emotion/babel-plugin@^11.3.0":
   version "11.3.0"
@@ -9887,10 +9887,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valtio@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.1.3.tgz#e5a922769d64c511b5d9858f2a4156ffa50df7a0"
-  integrity sha512-51WE5jUcqfPcTh6zLB34wt1EtCJJPBGTxX30vP83I7OAyPG7C9fQ6AmDjqS6wBo+A1ulABTMbIImUaCnwf1A8A==
+valtio@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.2.0.tgz#cdd2c3a214bfe096a47ff2a85d0e5e37cc7a7cb7"
+  integrity sha512-pBQk9VwbDFcSpEcaBX5F/oAnY3nl/qbkrvswnWIIt2lt94SE5KhFdz5Jl0rTtP8BUoh1Lpckl7RnLYEQ7s4MKg==
   dependencies:
     proxy-compare "2.0.1"
 

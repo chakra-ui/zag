@@ -42,14 +42,12 @@ At this point, we need to ensure we use the proper ARIA attributes as described 
 ```jsx
 function connectCounterMachine(state, send) {
   return {
-    getIncProps() {
-      return {
-        type: "button",
-        "data-value": state.context.value,
-        onClick() {
-          send("INC_CLICK")
-        },
-      }
+    incrementProps: {
+      type: "button",
+      "data-value": state.context.value,
+      onClick() {
+        send("INC_CLICK")
+      },
     },
   }
 }
@@ -97,8 +95,8 @@ If needed, this file contains common js utilities that are needed for the machin
   })
 
   // 3. You can then use it to query the DOM
-  const inputNode = context.doc?.querySelector("input[id=uid]")
-  inputNode?.focus()
+  const input = context.doc?.querySelector("input[id=123]")
+  input?.focus()
   ```
 
 - Avoid using React `ref` in the machine because they're tied to React's paradigm and might not work well in Vue or
