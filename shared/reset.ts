@@ -1,3 +1,6 @@
+import { injectGlobal } from "@emotion/css"
+
+injectGlobal`
 :root {
   --ring-color: blue;
 }
@@ -122,3 +125,4 @@
   border-radius: 10px;
   font-family: monospace;
 }
+`
