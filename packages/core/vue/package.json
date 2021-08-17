@@ -28,7 +28,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-foundation/utils": "^0.1.5",
+    "@core-foundation/utils": "^0.1.6",
     "@ui-machines/core": "0.0.0"
   },
   "devDependencies": {

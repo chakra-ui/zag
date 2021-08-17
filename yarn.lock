@@ -1358,67 +1358,67 @@
   dependencies:
     chalk "^4.0.0"
 
-"@core-dom/element@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.3.tgz#abbecc1690b029804be869dbe52e4f8539990400"
-  integrity sha512-IrTqlEK9PvJl58JIfbBCqhwpsgqHamhfDdFGNMPPbB0PQ8dJkJNX2UoveOsPDBXGgmEwGxc2n5Ln241E2VHoUw==
+"@core-dom/element@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.4.tgz#8c5763ce28419f1b2bf264e5ee3896c657805e8e"
+  integrity sha512-4jAvix3kDWA+Hs3yIoOF+sU5FrdDpH5/ygw4n1JLrexRLNviWhBKxAO19aDZxD7MdtGmJ9Q3q5E/ZBXmPk/tEw==
 
-"@core-dom/event@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.5.tgz#ea44d02badfc6648ec63de9407cec8ab3a25a1f8"
-  integrity sha512-zLX5FKlD/JPLo8v6ZCj6hF8BmM/ZwWdOpuphF2+fvQx6NPF+TZGCKJ6K2LjBv7wPeqWckqaDT8HahRi7UGRS1w==
+"@core-dom/event@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.6.tgz#58208531bdc98a5f65e903985d90a5cffa01f481"
+  integrity sha512-8npSj9aBL/J/EbDDMpTAtjEqkaAkrRvwS/jyx3TywhYq7nyoPInCMpyNFhHyDSjkVKVpcgj3HPqL0HdyHDIGAA==
   dependencies:
-    "@core-foundation/utils" "0.1.5"
-    "@core-graphics/point" "0.1.3"
+    "@core-foundation/utils" "0.1.6"
+    "@core-graphics/point" "0.1.4"
 
-"@core-dom/node-list@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.3.tgz#53821cf5631680c6fc01a23b419f4e31060ee1f7"
-  integrity sha512-Gv1DOl0bgwRTbqQl92g1ni3hbX1I1tfly8ZompfC0ciuXN5Nu2atBvyLoXqhRuvDSOxrjNj+NECSHMLHIXEeVA==
+"@core-dom/node-list@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.4.tgz#dc587f8af25812845a0271b59fa34d76e547ae41"
+  integrity sha512-bo5LDSb08yafb7j8N9zDh8w6A6v72USMa7tKNJovhZclmcB1pqioWr3h8chLCSE7ju6zZ22p2Y7W5bqxBCy7mw==
   dependencies:
-    "@core-foundation/array-list" "0.1.3"
+    "@core-foundation/array-list" "0.1.4"
 
-"@core-foundation/array-list@0.1.3", "@core-foundation/array-list@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@core-foundation/array-list/-/array-list-0.1.3.tgz#d7554a042ead53c378e01f17c35b6438809a60fa"
-  integrity sha512-BMFu945rweRxUJNuLPfUZ7cZ9f6QEaD9n9OFO7BDx4mFB6Zx6TsCB6kDWQJ9kwjr1UjyGBAD1uy/TXdDMVCkZw==
+"@core-foundation/array-list@0.1.4", "@core-foundation/array-list@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@core-foundation/array-list/-/array-list-0.1.4.tgz#5db20b541e6d38813622c56229cdd38949ba2e37"
+  integrity sha512-bvxlf9Zl9o3FZL6P8LHY1MU3CLuzsVDEe4ujumGHlV3f3v6bgYgSn8+BFEFXyvFoNOBUZus02slWUJLyN0J4Cw==
 
-"@core-foundation/numeral@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@core-foundation/numeral/-/numeral-0.1.0.tgz#38c6b47185aa591ce1f11608d72d5e290e7d21c2"
-  integrity sha512-LjJzS7imnDdC4GpjYPS3g8oWKcyFO/lWORMcI55L6AdgmdDuOqyUAiunRvlde3HC4bZr5+zwmBojaQWtpO3c5g==
-
-"@core-foundation/numeric-range@^0.1.1":
+"@core-foundation/numeral@0.1.1":
   version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@core-foundation/numeric-range/-/numeric-range-0.1.1.tgz#53397436ad3e404b7a69d4034f0d430c8b9febd3"
-  integrity sha512-1zbskCquX3SzV0TkjHmQKB9iR//udE96PQD7mWPgNdaT6PzfMkyRvDl9NLxnPnrmm0tBsKtxg0+zetJZx2/bNw==
-  dependencies:
-    "@core-foundation/numeral" "0.1.0"
+  resolved "https://registry.yarnpkg.com/@core-foundation/numeral/-/numeral-0.1.1.tgz#f507072f21c7fbcb3fd2662d1d91a9dbe7f74db8"
+  integrity sha512-wgSX9XkeEMBgHzRvs/As6zaIF8Oa2GvmLdvWagbbYHPdoDURik+saI439Ia7XDJdrGSFhzbfHLQmx/fHl7yhlA==
 
-"@core-foundation/utils@0.1.5", "@core-foundation/utils@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.5.tgz#e36d6164f6bfead83a995c0e2d12edc097529ac6"
-  integrity sha512-Qz6eKTyed/vea3Oq/j0x7NbNupiT2NxE6xc9p62gEpz7aFnr0ikDln7TACvRxWaRMqcWkPO5p2gyD8cNoGz+dw==
-
-"@core-graphics/point@0.1.3", "@core-graphics/point@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.3.tgz#ab6838f78d9c394bb8a00405780f001c7f0d20cf"
-  integrity sha512-QIMlmwN1hUJFZ39gISI8815UKXJAdYLDELoQ0OXok0t/82FbUDEi960ScvtYqd+nWhmcQJacwey0BkPY8zqouA==
-  dependencies:
-    "@core-foundation/numeral" "0.1.0"
-
-"@core-graphics/rect@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.3.tgz#aba677f8e3a6b86cc95d36cdaf3069c013e5de08"
-  integrity sha512-QUkybQ1iSb5VWps0Pyp+whBefisDXcQjyiYthOTHHLVWzDJInyMr0a9E3fDKMWG+JOczKeHk5eBbFS24IsoHew==
-  dependencies:
-    "@core-graphics/point" "0.1.3"
-    "@core-graphics/size" "0.1.2"
-
-"@core-graphics/size@0.1.2":
+"@core-foundation/numeric-range@^0.1.2":
   version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@core-graphics/size/-/size-0.1.2.tgz#a01cf15ff59383f1a7cbe057b276921b6b6a3bb3"
-  integrity sha512-6inGnuNEiIPF1CHi7gubVAL4T4Rb8X+L9nW9xiauabEkWdDlEbuq2sWCAUmdA5nq7EQ2VFZJHMrjaxlG4ezPGw==
+  resolved "https://registry.yarnpkg.com/@core-foundation/numeric-range/-/numeric-range-0.1.2.tgz#159c75495572b2368baec478badbe1607502b2e3"
+  integrity sha512-a8QaD4b9LL/FLaTv/ujq2qZzMvFr0WvBGlUNPJgG4VhC4tQkMfOPq9ok+xu6YfgVHkQJcZQxRHy4M+vn0mafLw==
+  dependencies:
+    "@core-foundation/numeral" "0.1.1"
+
+"@core-foundation/utils@0.1.6", "@core-foundation/utils@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.6.tgz#514f836c50de8c0f785160441305cf21013f9ccb"
+  integrity sha512-dsntJpj2/txKYuP3QqvMJdQC0DISy+W8M7nvFZ+d4MuOZ4G3dumBTcOIDx6A2LRzNQAmoTsL00FKRTqRyOU37A==
+
+"@core-graphics/point@0.1.4", "@core-graphics/point@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.4.tgz#c6d19eb739ec058205f8fa2d00706dd87952a1e6"
+  integrity sha512-vSlFr2QYIgTAH0lE5xbVsasbJ+ld2YsIetyMvbWjpOzfsd98KsTZHUoAOE15S3LgJrj2COuTlOrPtx9sF+dbYw==
+  dependencies:
+    "@core-foundation/numeral" "0.1.1"
+
+"@core-graphics/rect@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.4.tgz#678525f86b0ff68a4538e2f4b321565f161ea62e"
+  integrity sha512-weNHE6p0gIl2cqwTmIIKzETjzPt2fACVQBZAWSN8XaOOHJhSeZl49EPrHhrXqP6Uyx23hSl8leTqIc9S1d1BqA==
+  dependencies:
+    "@core-graphics/point" "0.1.4"
+    "@core-graphics/size" "0.1.3"
+
+"@core-graphics/size@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@core-graphics/size/-/size-0.1.3.tgz#455352ea28d7aee0e698aa244a4b78c8edfcb7d7"
+  integrity sha512-VzBuWNdB0pj+JFcwdF/47tRiKzymA1qbGSRy3FLvK9e+kwaavmtjbEL3mv4hLIoKhPP/t84Nz85ktB32ic7Jqg==
 
 "@emotion/babel-plugin@^11.0.0", "@emotion/babel-plugin@^11.3.0":
   version "11.3.0"
@@ -2277,10 +2277,10 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17.0.15":
-  version "17.0.15"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.15.tgz#c7533dc38025677e312606502df7656a6ea626d0"
-  integrity sha512-uTKHDK9STXFHLaKv6IMnwp52fm0hwU+N89w/p9grdUqcFA6WuqDyPhaWopbNyE1k/VhgzmHl8pu1L4wITtmlLw==
+"@types/react@^17.0.18":
+  version "17.0.18"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.18.tgz#4109cbbd901be9582e5e39e3d77acd7b66bb7fbe"
+  integrity sha512-YTLgu7oS5zvSqq49X5Iue5oAbVGhgPc5Au29SJC4VeE17V6gASoOxVkUDy9pXFMRFxCWCD9fLeweNFizo3UzOg==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -8148,10 +8148,10 @@ prop-types@15.7.2, prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-proxy-compare@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/proxy-compare/-/proxy-compare-2.0.1.tgz#3ae19cf47f64e89bd60fe4f57afd124f733ef64f"
-  integrity sha512-uXj3TtWdR1S2SNwJKbgJB+1FJm9HM3sFzlVc8W6PZvU6ogt9mlkb1WwZQpuKFLkDS6LKY4+FBE18K6ZArphnHA==
+proxy-compare@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/proxy-compare/-/proxy-compare-2.0.2.tgz#343e624d0ec399dfbe575f1d365d4fa042c9fc69"
+  integrity sha512-3qUXJBariEj3eO90M3Rgqq3+/P5Efl0t/dl9g/1uVzIQmO3M+ql4hvNH3mYdu8H+1zcKv07YvL55tsY74jmH1A==
 
 pseudomap@^1.0.2:
   version "1.0.2"
@@ -9924,12 +9924,12 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valtio@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.2.0.tgz#cdd2c3a214bfe096a47ff2a85d0e5e37cc7a7cb7"
-  integrity sha512-pBQk9VwbDFcSpEcaBX5F/oAnY3nl/qbkrvswnWIIt2lt94SE5KhFdz5Jl0rTtP8BUoh1Lpckl7RnLYEQ7s4MKg==
+valtio@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.2.1.tgz#19d8514ff5c325ce1dc0ad9ef622d1240c6cbce5"
+  integrity sha512-DQayRId14Luiwh/24wJxgswEFeZJHSWpQLjuAgzuRcRS1ZIhq8F/Fh8h7VvJWLm7AGauyPGHhoEeEAlXUb+zsA==
   dependencies:
-    proxy-compare "2.0.1"
+    proxy-compare "2.0.2"
 
 vite-plugin-components@^0.10.4:
   version "0.10.4"

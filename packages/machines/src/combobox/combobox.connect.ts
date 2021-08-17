@@ -1,7 +1,8 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
-import { ButtonProps, HTMLProps, InputProps, LabelProps, EventKeyMap } from "../__utils/types"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { ButtonProps, HTMLProps, InputProps, LabelProps, EventKeyMap } from "../utils/types"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
@@ -55,6 +56,7 @@ export function connectComboboxMachine(
         const { listbox, toggleBtn } = getElements(ctx)
         const isValidBlur = validateBlur(event, {
           exclude: [listbox, toggleBtn],
+          fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
           send("INPUT_BLUR")
@@ -88,7 +90,7 @@ export function connectComboboxMachine(
           },
         }
 
-        const key = determineEventKey(event, ctx)
+        const key = getEventKey(event, ctx)
         const exec = keymap[key]
 
         if (exec) {

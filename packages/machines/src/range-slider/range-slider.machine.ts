@@ -4,7 +4,7 @@ import { is, nextTick, pipe } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { Rect } from "@core-graphics/rect"
 import { createMachine, preserve } from "@ui-machines/core"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { getElements, getRangeAtIndex, pointToValue } from "./range-slider.dom"
 
 export type RangeSliderMachineContext = WithDOM<{

@@ -1,8 +1,8 @@
 import { isTabbable } from "@core-dom/element"
 import { nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
-import { trackPointerDown } from "../__utils/dom"
-import { WithDOM } from "../__utils/types"
+import { trackPointerDown } from "../utils/pointer-down"
+import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./popover.dom"
 
 const { and } = guards

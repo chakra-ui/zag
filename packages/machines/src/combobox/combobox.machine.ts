@@ -1,10 +1,10 @@
 import { cast, env, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
-import { trackPointerDown } from "../__utils/dom"
-import { LiveRegion } from "../__utils/live-region"
-import { observeNodeAttr } from "../__utils/mutation-observer"
-import { WithDOM } from "../__utils/types"
+import { trackPointerDown } from "../utils/pointer-down"
+import { LiveRegion } from "../utils/live-region"
+import { observeNodeAttr } from "../utils/mutation-observer"
+import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./combobox.dom"
 
 const { and } = guards
@@ -138,6 +138,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       navigationValue: "",
       eventSource: null,
       liveRegion: null,
+      pointerdownNode: null,
     },
     states: {
       unknown: {
@@ -350,18 +351,18 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       // VoiceOver doesn't announce `aria-activedescendant`. We'll use a live-region to make it happen!
       announceActiveOption(ctx) {
-        if (!env.apple()) return
-        const { activeOption } = getElements(ctx)
-        if (!activeOption) return
-        const { label } = activeOption.dataset
-        if (label) ctx.liveRegion?.announce(label)
+        // if (!env.apple()) return
+        // const { activeOption } = getElements(ctx)
+        // if (!activeOption) return
+        // const { label } = activeOption.dataset
+        // if (label) ctx.liveRegion?.announce(label)
       },
       // Announce the number of available suggestions when it changes
       announceNumberOfOptions(ctx) {
-        nextTick(() => {
-          const count = ctx.childNodes?.value.length
-          const msg = formatMessage(count)
-          ctx.liveRegion?.announce(msg)
+        setTimeout(() => {
+          // const count = ctx.childNodes?.value.length
+          // const msg = formatMessage(count)
+          ctx.liveRegion?.announce("you typed")
         })
       },
       announceSelectedOption(ctx) {
@@ -379,7 +380,7 @@ function formatMessage(count?: number) {
     msg = "No results are available."
   } else {
     msg = [
-      `${count} result${count === 1 ? " is" : "s are"}`,
+      `${count} option${count === 1 ? " is" : "s are"}`,
       "available, use up and down arrow keys to navigate. Press Enter key to select.",
     ].join(" ")
   }

@@ -1,5 +1,11 @@
-import type { ButtonHTMLAttributes, CSSProperties, HTMLAttributes, InputHTMLAttributes, KeyboardEvent } from "react"
-import { LabelHTMLAttributes } from "react"
+import type {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  KeyboardEvent,
+  LabelHTMLAttributes,
+} from "react"
 
 export type Dict<T = any> = Record<string, T>
 

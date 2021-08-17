@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../__utils/dom"
-import { InputProps, EventKeyMap } from "../__utils/types"
+import { defaultPropNormalizer } from "../utils/dom-attr"
+import { InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"
 

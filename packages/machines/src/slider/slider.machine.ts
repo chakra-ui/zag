@@ -3,7 +3,7 @@ import { addDomEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener
 import { is } from "@core-foundation/utils/is"
 import { nextTick, pipe } from "@core-foundation/utils/fn"
 import { NumericRange } from "@core-foundation/numeric-range"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { getElements, pointToValue } from "./slider.dom"
 
 export type SliderMachineContext = WithDOM<{

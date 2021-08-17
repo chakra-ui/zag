@@ -1,5 +1,5 @@
 import { createMachine, Machine, preserve } from "@ui-machines/core"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { createToastMachine, ToastMachineContext, ToastMachineState } from "./toast.machine"
 
 export type ToastGroupMachineContext = WithDOM<{

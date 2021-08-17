@@ -1,7 +1,8 @@
 import { env, cast } from "@core-foundation/utils"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, determineEventKey } from "../__utils/dom"
-import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
+import { defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { ButtonProps, HTMLProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
@@ -43,7 +44,7 @@ export function connectTabsMachine(
           },
         }
 
-        let key = determineEventKey(event, ctx)
+        let key = getEventKey(event, ctx)
         const exec = keyMap[key]
 
         if (exec) {

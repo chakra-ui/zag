@@ -1,7 +1,7 @@
 import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../__utils/dom"
-import { ButtonProps, HTMLProps, EventKeyMap } from "../__utils/types"
+import { defaultPropNormalizer } from "../utils/dom-attr"
+import { ButtonProps, HTMLProps, EventKeyMap } from "../utils/types"
 import { getElementIds, getElements } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.machine"
 

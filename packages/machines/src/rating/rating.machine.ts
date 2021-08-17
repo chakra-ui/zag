@@ -1,6 +1,6 @@
 import { createMachine, preserve } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { getElements } from "./rating.dom"
 
 export type RatingMachineContext = WithDOM<{

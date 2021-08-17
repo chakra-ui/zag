@@ -1,6 +1,6 @@
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./tags-input.dom"
 
 const { and, not } = guards

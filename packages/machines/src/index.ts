@@ -14,5 +14,5 @@ export * from "./toast"
 export * from "./tooltip"
 export * from "./accordion"
 
-export { mergeProps } from "./__utils/merge-props"
-export * from "./__utils"
+export { mergeProps } from "./utils/merge-props"
+export * from "./utils"
