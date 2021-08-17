@@ -2,8 +2,13 @@
   <ul>
     <h2>Vue UI Machines</h2>
     <li>
-      <router-link to="/number-input">
-        To number input
+      <router-link to="/accordion">
+        To Accordion
+      </router-link>
+    </li>
+    <li>
+      <router-link to="/combobox">
+        To Combobox
       </router-link>
     </li>
     <li>
@@ -12,8 +17,8 @@
       </router-link>
     </li>
     <li>
-      <router-link to="/accordion">
-        To Accordion
+      <router-link to="/number-input">
+        To number input
       </router-link>
     </li>
   </ul>
