@@ -36,5 +36,10 @@
         To popover
       </router-link>
     </li>
+    <li>
+      <router-link to="/range-slider">
+        To range slider
+      </router-link>
+    </li>
   </ul>
 </template>
