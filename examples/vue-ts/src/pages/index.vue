@@ -41,5 +41,10 @@
         To range slider
       </router-link>
     </li>
+    <li>
+      <router-link to="/rating">
+        To rating
+      </router-link>
+    </li>
   </ul>
 </template>

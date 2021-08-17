@@ -20,6 +20,7 @@ export type RatingMachineState = {
 
 export const ratingMachine = createMachine<RatingMachineContext, RatingMachineState>(
   {
+    id: "rating-machine",
     initial: "mounted",
     context: {
       uid: "rating-input",
@@ -90,7 +91,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
     },
     actions: {
       setId(ctx, evt) {
-        ctx.uid = evt.uid
+        ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
         ctx.doc = preserve(evt.doc)
