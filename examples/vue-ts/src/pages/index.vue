@@ -17,6 +17,11 @@
       </router-link>
     </li>
     <li>
+      <router-link to="/menu">
+        To Menu
+      </router-link>
+    </li>
+    <li>
       <router-link to="/number-input">
         To number input
       </router-link>
