@@ -1,5 +1,5 @@
 import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment, watch } from "vue"
+import { computed, h, Fragment } from "vue"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { pinInput } from "@ui-machines/web"
 import { StateVisualizer } from "../components/state-visualizer"

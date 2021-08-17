@@ -12,6 +12,7 @@ export function StateVisualizer(props: { state: Record<string, any> }, { attrs }
         top: "40px",
         right: "40px",
         minWidth: "400px",
+        zIndex: -1,
       }}
       {...props}
       {...attrs}

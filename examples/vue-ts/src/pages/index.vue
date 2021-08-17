@@ -31,5 +31,10 @@
         To pin input
       </router-link>
     </li>
+    <li>
+      <router-link to="/popover">
+        To popover
+      </router-link>
+    </li>
   </ul>
 </template>
