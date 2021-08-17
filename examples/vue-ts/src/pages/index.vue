@@ -26,5 +26,10 @@
         To number input
       </router-link>
     </li>
+    <li>
+      <router-link to="/pin-input">
+        To pin input
+      </router-link>
+    </li>
   </ul>
 </template>
