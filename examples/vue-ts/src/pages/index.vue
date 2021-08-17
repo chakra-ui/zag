@@ -1,15 +1,20 @@
 <template>
-  <div>
-    Vue UI Machines
-    <div>
+  <ul>
+    <h2>Vue UI Machines</h2>
+    <li>
       <router-link to="/number-input">
         To number input
       </router-link>
-    </div>
-    <div>
+    </li>
+    <li>
       <router-link to="/editable">
         To Editable
       </router-link>
-    </div>
-  </div>
+    </li>
+    <li>
+      <router-link to="/accordion">
+        To Accordion
+      </router-link>
+    </li>
+  </ul>
 </template>

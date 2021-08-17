@@ -2,13 +2,12 @@ import { defineComponent, h, Fragment, ref, computed, onMounted } from "vue"
 import { editable } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useMount } from "../hooks/use-mount"
 
 const count = ref(0)
 
 export default defineComponent({
   setup(props, { slots }) {
-    const inputRef = ref<any>(null)
-
     const [state, send] = useMachine(
       editable.machine.withContext({
         placeholder: "Edit me...",
@@ -16,11 +15,7 @@ export default defineComponent({
       }),
     )
 
-    const id = computed(() => `editable-${count.value++}`)
-
-    onMounted(() => {
-      send({ type: "SETUP", doc: inputRef.value?.ownerDocument, id: id.value })
-    })
+    const inputRef = useMount(send)
 
     const machineState = computed(() => {
       const machine = editable.connect(state.value, send, normalizeProps)
