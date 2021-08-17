@@ -1,6 +1,6 @@
 import { Point } from "@core-graphics/point"
 import { NumericRange } from "@core-foundation/numeric-range"
-import { SliderMachineContext } from "./slider.machine"
+import type { SliderMachineContext } from "./slider.machine"
 
 export function getElementIds(uid: string) {
   return {

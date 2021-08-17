@@ -1,12 +1,13 @@
 import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
-import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, getStepMultipler } from "../utils/dom-attr"
+import type { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
-import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
+import { getEventStep } from "../utils/get-step"
+import type { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
 import { getElementIds } from "./slider.dom"
-import { SliderMachineContext, SliderMachineState } from "./slider.machine"
+import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
 export function connectSliderMachine(
   state: S.State<SliderMachineContext, SliderMachineState>,
@@ -47,7 +48,7 @@ export function connectSliderMachine(
         send("FOCUS")
       },
       onKeyDown(event) {
-        const step = getStepMultipler(event) * ctx.step
+        const step = getEventStep(event) * ctx.step
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })

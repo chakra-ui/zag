@@ -1,4 +1,4 @@
-import { addDomEvent } from "@core-dom/event"
+import { addPointerEvent } from "@core-dom/event/pointer"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { noop } from "@core-foundation/utils/fn"
 import { createMachine, guards, Machine } from "@ui-machines/core"
@@ -128,7 +128,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
       activities: {
         checkDocumentVisibility(ctx, evt, { send }) {
           if (!ctx.pauseOnPageIdle) return noop
-          return addDomEvent(document, "visibilitychange", () => {
+          return addPointerEvent(document, "visibilitychange", () => {
             const doc = document as any
             const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden
             send(isPageHidden ? "PAUSE" : "RESUME")

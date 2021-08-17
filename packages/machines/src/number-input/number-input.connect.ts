@@ -1,10 +1,11 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { NumericRange } from "@core-foundation/numeric-range"
-import { getStepMultipler, defaultPropNormalizer } from "../utils/dom-attr"
+import { defaultPropNormalizer } from "../utils/dom-attr"
 import { ButtonProps, InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./number-input.dom"
 import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
 import { isValidNumericKeyboardEvent } from "./number-input.utils"
+import { getEventStep } from "../utils/get-step"
 
 export function connectNumberInputMachine(
   state: S.State<NumberInputMachineContext, NumberInputMachineState>,
@@ -56,7 +57,7 @@ export function connectNumberInputMachine(
           event.preventDefault()
         }
 
-        const step = getStepMultipler(event) * ctx.step
+        const step = getEventStep(event) * ctx.step
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "INC", step })

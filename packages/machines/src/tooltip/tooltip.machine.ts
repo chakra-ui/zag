@@ -1,5 +1,5 @@
 import { createMachine, preserve } from "@ui-machines/core"
-import { addDomEvent } from "@core-dom/event"
+import { addPointerEvent } from "@core-dom/event/pointer"
 import { proxy } from "valtio"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
@@ -67,7 +67,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
     activities: {
       attachEscapeKeyListener: (ctx, evt, { send }) => {
         const doc = ctx.doc ?? document
-        return addDomEvent(doc, "keydown", (event) => {
+        return addPointerEvent(doc, "keydown", (event) => {
           if (event.key === "Escape") {
             send("ESCAPE")
           }

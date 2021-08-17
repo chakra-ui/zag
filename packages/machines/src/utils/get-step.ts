@@ -1,3 +1,5 @@
+import type { KeyboardEvent } from "react"
+
 const PAGE_KEYS = new Set(["PageUp", "PageDown"])
 const ARROW_KEYS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"])
 
