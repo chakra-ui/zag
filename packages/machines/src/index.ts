@@ -15,4 +15,3 @@ export * from "./tooltip"
 export * from "./accordion"
 
 export { mergeProps } from "./utils/merge-props"
-export * from "./utils"

@@ -17,6 +17,7 @@ export function getElements(ctx: ComboboxMachineContext) {
   const ids = getElementIds(ctx.uid)
 
   return {
+    doc,
     activeOption: ctx.activeId ? doc?.getElementById(ctx.activeId) : null,
     label: doc.getElementById(ids.label),
     container: doc.getElementById(ids.container),
@@ -27,7 +28,7 @@ export function getElements(ctx: ComboboxMachineContext) {
 }
 
 export function dom(ctx: ComboboxMachineContext) {
-  const { listbox } = getElements(ctx)
+  const { listbox, input, doc } = getElements(ctx)
   const selector = `[role=option]:not([disabled])`
   const collection = DOMNodeList.fromSelector(listbox, selector)
 
@@ -36,6 +37,6 @@ export function dom(ctx: ComboboxMachineContext) {
     last: collection.last,
     prev: collection.prevById,
     next: collection.nextById,
-    getOptions: () => {},
+    isFocused: doc.activeElement === input,
   }
 }

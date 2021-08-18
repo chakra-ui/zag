@@ -2,7 +2,7 @@ import { is } from "@core-foundation/utils/is"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
-import type { ButtonProps, EventKeyMap, HTMLProps, WithDataAttr } from "../utils/types"
+import type { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { getElementIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
@@ -15,7 +15,7 @@ export function connectAccordionMachine(
   const ids = getElementIds(ctx.uid)
 
   return {
-    rootProps: normalize<WithDataAttr<HTMLProps>>({
+    rootProps: normalize<HTMLProps>({
       id: ids.root,
     }),
 

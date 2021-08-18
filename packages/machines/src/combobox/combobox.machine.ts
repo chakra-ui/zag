@@ -1,9 +1,9 @@
-import { cast, env, nextTick } from "@core-foundation/utils"
+import { env, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
-import { trackPointerDown } from "../utils/pointer-down"
 import { LiveRegion } from "../utils/live-region"
 import { observeNodeAttr } from "../utils/mutation-observer"
+import { trackPointerDown } from "../utils/pointer-down"
 import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./combobox.dom"
 
@@ -113,9 +113,9 @@ export type ComboboxMachineContext = WithDOM<{
    */
   liveRegion?: LiveRegion | null
   /**
-   * The live collection of visible option nodes
+   * The number of options available
    */
-  childNodes?: { value: HTMLCollectionOf<HTMLElement> }
+  itemCount: number
 }>
 
 export type ComboboxMachineState = {
@@ -139,6 +139,12 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       eventSource: null,
       liveRegion: null,
       pointerdownNode: null,
+      itemCount: 0,
+    },
+    on: {
+      SET_COUNT: {
+        actions: "setCount",
+      },
     },
     states: {
       unknown: {
@@ -196,16 +202,20 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
               target: "closed",
             },
           ],
-          BUTTON_CLICK: {
-            target: "closed",
-            actions: "focusInput",
-          },
+          BUTTON_CLICK: { target: "closed", actions: "focusInput" },
         },
       },
       focused: {
         on: {
           INPUT_BLUR: "closed",
-          INPUT_CLICK: [{ cond: "openOnClick", target: "open", actions: ["focusInput"] }, { actions: ["focusInput"] }],
+          INPUT_CLICK: [
+            {
+              cond: "openOnClick",
+              target: "open",
+              actions: ["focusInput"],
+            },
+            { actions: ["focusInput"] },
+          ],
           ARROW_DOWN: {
             target: "open",
             actions: ["selectFirstOptionId", "setEventSourceToKeyboard"],
@@ -226,6 +236,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         },
       },
       closed: {
+        after: {
+          0: { cond: "isInputFocused", target: "focused" },
+        },
         entry: ["clearNavigationValue", "clearEventSource"],
         on: {
           INPUT_FOCUS: "focused",
@@ -242,6 +255,8 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       closeOnSelect: (ctx) => !!ctx.closeOnSelect,
+      isInputFocused: (ctx) => dom(ctx).isFocused,
+      shouldAutoFillInput: (ctx) => ctx.autoSelect === "inline",
     },
     activities: {
       trackPointerDown,
@@ -268,16 +283,6 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       setLiveRegion(ctx) {
         const region = new LiveRegion({ ariaLive: "assertive", doc: ctx.doc })
         ctx.liveRegion = preserve(region)
-      },
-      setChildNodes(ctx) {
-        // We're caching the live html collection in context.childNodes
-        if (ctx.childNodes) return
-        const { listbox } = getElements(ctx)
-        // this is a live collection of all options
-        const nodes = listbox?.getElementsByClassName("option")
-        ctx.childNodes = preserve({
-          value: cast<HTMLCollectionOf<HTMLElement>>(nodes),
-        })
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id
@@ -349,17 +354,12 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       clearEventSource(ctx) {
         ctx.eventSource = null
       },
-      // VoiceOver doesn't announce `aria-activedescendant`. We'll use a live-region to make it happen!
-      announceActiveOption(ctx) {
-        // if (!env.apple()) return
-        // const { activeOption } = getElements(ctx)
-        // if (!activeOption) return
-        // const { label } = activeOption.dataset
-        // if (label) ctx.liveRegion?.announce(label)
+      setCount(ctx, evt) {
+        ctx.itemCount = evt.value
       },
       // Announce the number of available suggestions when it changes
       announceNumberOfOptions(ctx) {
-        setTimeout(() => {
+        nextTick(() => {
           // const count = ctx.childNodes?.value.length
           // const msg = formatMessage(count)
           ctx.liveRegion?.announce("you typed")
@@ -373,16 +373,3 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     },
   },
 )
-
-function formatMessage(count?: number) {
-  let msg: string
-  if (!count) {
-    msg = "No results are available."
-  } else {
-    msg = [
-      `${count} option${count === 1 ? " is" : "s are"}`,
-      "available, use up and down arrow keys to navigate. Press Enter key to select.",
-    ].join(" ")
-  }
-  return msg
-}

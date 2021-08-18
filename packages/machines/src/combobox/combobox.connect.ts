@@ -132,8 +132,8 @@ export function connectComboboxMachine(
       "aria-labelledby": ids.label,
     }),
 
-    getOptionProps(opts: { value: string; label: string }) {
-      const { value, label } = opts
+    getOptionProps(opts: OptionProps) {
+      const { value, label, virtualized, index, noOfOptions } = opts
       const id = ids.getOptionId(value)
       const selected = ctx.activeId === id
 
@@ -143,6 +143,10 @@ export function connectComboboxMachine(
         className: "option",
         "aria-selected": selected ? "true" : undefined,
         "aria-disabled": ctx.disabled,
+        ...(virtualized && {
+          "aria-posinset": index,
+          "aria-setsize": noOfOptions,
+        }),
         "data-value": value,
         "data-label": label,
         onPointerOver() {
@@ -159,3 +163,7 @@ export function connectComboboxMachine(
     },
   }
 }
+
+type OptionProps =
+  | { value: string; label: string; virtualized?: never; index?: never; noOfOptions?: never }
+  | { virtualized: true; index: number; noOfOptions: number; value: string; label: string }
