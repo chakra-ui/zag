@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { ariaAttr, dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import type { ButtonProps, EventKeyMap, HTMLProps, InputProps, LabelProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
@@ -15,7 +15,8 @@ export function connectComboboxMachine(
   const ids = getElementIds(ctx.uid)
 
   const expanded = state.matches("open")
-  const useNavigationValue = false
+  const autocomplete =
+    expanded && ctx.activeId !== null && ctx.eventSource === "keyboard" && ctx.selectionMode === "autocomplete"
 
   return {
     inputValue: ctx.inputValue,
@@ -45,8 +46,8 @@ export function connectComboboxMachine(
       id: ids.input,
       type: "text",
       role: "combobox",
-      value: useNavigationValue ? ctx.navigationValue : ctx.inputValue,
-      "aria-autocomplete": ctx.autoComplete ? "both" : "list",
+      value: autocomplete ? ctx.navigationValue : ctx.inputValue,
+      "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
       "aria-controls": expanded ? ids.listbox : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
@@ -98,6 +99,7 @@ export function connectComboboxMachine(
 
         if (exec) {
           event.preventDefault()
+          event.stopPropagation()
           exec(event)
         }
       },
@@ -138,13 +140,14 @@ export function connectComboboxMachine(
     getOptionProps(opts: OptionProps) {
       const { value, label, virtualized, index, noOfOptions } = opts
       const id = ids.getOptionId(value)
-      const selected = ctx.activeId === id
+      const selected = ctx.activeId === id && ctx.eventSource === "keyboard"
 
       return normalize<HTMLProps>({
         id,
         role: "option",
         className: "option",
-        "aria-selected": selected ? "true" : undefined,
+        "data-highlighted": dataAttr(ctx.activeId === id),
+        "aria-selected": ariaAttr(selected),
         "aria-disabled": ctx.disabled,
         ...(virtualized && {
           "aria-posinset": index,

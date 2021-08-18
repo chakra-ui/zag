@@ -1,11 +1,11 @@
-import { env, nextTick } from "@core-foundation/utils"
+import { env, is, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
 import { LiveRegion } from "../utils/live-region"
 import { observeNodeAttr } from "../utils/mutation-observer"
 import { trackPointerDown } from "../utils/pointer-down"
 import { WithDOM } from "../utils/types"
-import { dom, getElements } from "./combobox.dom"
+import { dom, getElements, attrs } from "./combobox.dom"
 
 const { and } = guards
 
@@ -24,13 +24,6 @@ export type ComboboxMachineContext = WithDOM<{
    */
   disabled?: boolean
   /**
-   * Whether to allow custom value in the input.
-   *
-   * This prevents the input from being cleared when blurred
-   * and call `onSelect` with the input's value
-   */
-  allowCustomValue?: boolean
-  /**
    * Whether to close the menu when the input is blurred
    */
   closeOnBlur?: boolean
@@ -44,6 +37,10 @@ export type ComboboxMachineContext = WithDOM<{
    */
   closeOnSelect?: boolean | ((value: Option) => boolean)
   /**
+   * Whether to clear the input value when `Esc` key is pressed
+   */
+  clearOnEsc?: boolean
+  /**
    * Whether the popup should open on focus
    */
   openOnClick?: boolean
@@ -52,7 +49,7 @@ export type ComboboxMachineContext = WithDOM<{
    * on focus. This is useful if the user is likely
    * to delete the entire value in the input (e.g browser search bar)
    */
-  selectInputOnFocus?: boolean
+  selectOnFocus?: boolean
   /**
    * Whether the combobox is in read-only mode
    */
@@ -78,14 +75,15 @@ export type ComboboxMachineContext = WithDOM<{
    */
   placeholder?: string
   /**
-   * Whether to select the first option on input change
-   */
-  autoSelect?: boolean
-  /**
-   * Whether the value in the input changes as the user navigates
+   * This determines how the combobox behaves as the user navigates
    * with the keyboard.
+   *
+   * - `autocomplete`: The combobox will update the input value as user navigates
+   * - `autoselect`: The combobox will only select the first option, requiring the user to press enter to select
+   * - `manual`: The combobox will not select the first option, requiring the user to press manually
+   * navigate using the up and down keys
    */
-  autoComplete?: boolean
+  selectionMode?: "autocomplete" | "autoselect" | "manual"
   /**
    * Function called when the input value changes
    */
@@ -118,8 +116,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     initial: "unknown",
     context: {
       uid: "combobox",
-      autoSelect: true,
-      autoComplete: true,
+      selectionMode: "autoselect",
       closeOnSelect: true,
       closeOnBlur: true,
       openOnClick: false,
@@ -145,79 +142,28 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           },
         },
       },
-      open: {
-        entry: ["announceOptionCount"],
-        activities: ["scrollOptionIntoView", "trackPointerDown"],
+
+      closed: {
+        after: {
+          0: { cond: "isInputFocused", target: "focused" },
+        },
+        entry: ["clearFocusedOption", "clearEventSource"],
         on: {
-          ARROW_DOWN: [
+          INPUT_FOCUS: [
             {
-              cond: and("autoComplete", "isLastOptionFocused"),
-              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+              target: "focused",
+              cond: "selectOnFocus",
+              actions: "selectInput",
             },
-            {
-              actions: ["selectNextOptionId", "setEventSourceToKeyboard"],
-            },
+            { target: "focused" },
           ],
-          ARROW_UP: [
-            {
-              cond: and("autoComplete", "isFirstOptionFocused"),
-              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
-            },
-            {
-              actions: ["selectPrevOptionId", "setEventSourceToKeyboard"],
-            },
-          ],
-          ESCAPE: "closed",
-          ENTER: [
-            {
-              cond: "closeOnSelect",
-              target: "closed",
-              actions: ["setSelectedValue", "announceSelectedOption", "clearFocusedOption"],
-            },
-            {
-              actions: ["setSelectedValue", "announceSelectedOption"],
-            },
-          ],
-          TYPE: [
-            {
-              target: "open",
-              cond: "autoSelect",
-              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToKeyboard"],
-            },
-            {
-              target: "open",
-              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
-            },
-          ],
-          OPTION_POINTEROVER: {
-            actions: ["setActiveOption", "setEventSourceToPointer"],
+          BUTTON_CLICK: {
+            target: "open",
+            actions: "focusInput",
           },
-          OPTION_POINTEROUT: {
-            actions: ["clearFocusedOption"],
-          },
-          OPTION_CLICK: [
-            {
-              cond: "closeOnSelect",
-              target: "closed",
-              actions: ["setSelectedValue", "announceSelectedOption", "focusInput"],
-            },
-            {
-              actions: ["setSelectedValue", "announceSelectedOption", "focusInput"],
-            },
-          ],
-          INPUT_BLUR: [
-            {
-              cond: and("allowCustomValue", "closeOnBlur"),
-              target: "closed",
-            },
-            {
-              cond: "closeOnBlur",
-              target: "closed",
-            },
-          ],
-          BUTTON_CLICK: { target: "closed", actions: "focusInput" },
         },
       },
+
       focused: {
         on: {
           INPUT_BLUR: "closed",
@@ -231,13 +177,18 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           },
           ARROW_UP: {
             target: "open",
-            actions: ["selectLastOptionId", "setEventSourceToKeyboard"],
+            actions: ["focusLastOption", "setEventSourceToKeyboard"],
           },
           TYPE: [
             {
               target: "open",
+              cond: "autoComplete",
+              actions: "setInputValue",
+            },
+            {
+              target: "open",
               cond: "autoSelect",
-              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToKeyboard"],
+              actions: ["setInputValue", "focusFirstOption"],
             },
             {
               target: "open",
@@ -248,20 +199,97 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             target: "open",
             actions: "focusInput",
           },
-          ESCAPE: {
-            actions: "clearInputValue",
-          },
         },
       },
-      closed: {
-        after: {
-          0: { cond: "isInputFocused", target: "focused" },
-        },
-        entry: ["clearFocusedOption", "clearEventSource"],
+
+      open: {
+        entry: ["announceOptionCount"],
+        activities: ["scrollOptionIntoView", "trackPointerDown"],
         on: {
-          INPUT_FOCUS: "focused",
+          ARROW_DOWN: [
+            {
+              cond: and("autoComplete", "isLastOptionFocused"),
+              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+            },
+            {
+              actions: ["focusNextOption", "setEventSourceToKeyboard"],
+            },
+          ],
+          ARROW_UP: [
+            {
+              cond: and("autoComplete", "isFirstOptionFocused"),
+              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+            },
+            {
+              actions: ["focusPrevOption", "setEventSourceToKeyboard"],
+            },
+          ],
+          ESCAPE: [
+            {
+              target: "closed",
+              cond: "closeOnEsc",
+              actions: "clearInputValue",
+            },
+            {
+              target: "closed",
+            },
+          ],
+          ENTER: [
+            {
+              cond: "closeOnSelect",
+              target: "closed",
+              actions: ["selectOption", "announceSelectedOption", "clearFocusedOption"],
+            },
+            {
+              actions: ["selectOption", "announceSelectedOption"],
+            },
+          ],
+          TYPE: [
+            {
+              cond: "autoComplete",
+              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+            {
+              cond: "autoSelect",
+              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+            {
+              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+          ],
+          TAB: [
+            {
+              cond: "hasFocusedOption",
+              target: "closed",
+              actions: "selectOption",
+            },
+            { target: "closed" },
+          ],
+          DELETE: {
+            actions: ["clearInputValue", "clearFocusedOption"],
+          },
+          OPTION_POINTEROVER: {
+            actions: ["setActiveOption", "setEventSourceToPointer"],
+          },
+          OPTION_POINTEROUT: {
+            actions: "clearFocusedOption",
+          },
+          OPTION_CLICK: [
+            {
+              cond: "closeOnSelect",
+              target: "closed",
+              actions: ["selectOption", "announceSelectedOption", "focusInput"],
+            },
+            {
+              actions: ["selectOption", "announceSelectedOption", "focusInput"],
+            },
+          ],
+          INPUT_BLUR: {
+            cond: "closeOnBlur",
+            target: "closed",
+          },
           BUTTON_CLICK: {
-            target: "open",
+            target: "closed",
             actions: "focusInput",
           },
         },
@@ -272,12 +300,20 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     guards: {
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
-      closeOnSelect: (ctx) => !!ctx.closeOnSelect,
+      closeOnSelect: (ctx) => {
+        if (is.func(ctx.closeOnSelect)) {
+          const { focusedOption } = dom(ctx)
+          return ctx.closeOnSelect(attrs(focusedOption)!)
+        }
+        return !!ctx.closeOnSelect
+      },
       isInputFocused: (ctx) => dom(ctx).isFocused,
-      autoComplete: (ctx) => !!ctx.autoComplete,
-      autoSelect: (ctx) => !!ctx.autoSelect,
-      isFirstOptionFocused: (ctx) => dom(ctx).first.id === ctx.activeId,
-      isLastOptionFocused: (ctx) => dom(ctx).last.id === ctx.activeId,
+      autoComplete: (ctx) => ctx.selectionMode === "autocomplete",
+      autoSelect: (ctx) => ctx.selectionMode === "autoselect",
+      isFirstOptionFocused: (ctx) => dom(ctx).first?.id === ctx.activeId,
+      isLastOptionFocused: (ctx) => dom(ctx).last?.id === ctx.activeId,
+      hasFocusedOption: (ctx) => !!ctx.activeId,
+      selectOnFocus: (ctx) => !!ctx.selectOnFocus,
     },
     activities: {
       trackPointerDown,
@@ -313,7 +349,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.activeId = null
         ctx.navigationValue = ""
       },
-      setSelectedValue(ctx, evt) {
+      selectOption(ctx, evt) {
         ctx.selectedValue = ctx.navigationValue || evt.value
         ctx.inputValue = ctx.selectedValue
       },
@@ -323,8 +359,17 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           input?.focus()
         })
       },
+      selectInput(ctx) {
+        nextTick(() => {
+          const { input } = getElements(ctx)
+          input?.select()
+        })
+      },
       setInputValue(ctx, evt) {
         ctx.inputValue = evt.value
+      },
+      clearInputValue(ctx) {
+        ctx.inputValue = ""
       },
       invokeOnInputChange(ctx) {
         ctx.onInputValueChange?.(ctx.inputValue)
@@ -340,7 +385,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           ctx.navigationValue = first.getAttribute("data-label") ?? ""
         })
       },
-      selectLastOptionId(ctx) {
+      focusLastOption(ctx) {
         nextTick(() => {
           const { last } = dom(ctx)
           if (!last) return
@@ -348,7 +393,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           ctx.navigationValue = last.getAttribute("data-label") ?? ""
         })
       },
-      selectNextOptionId(ctx) {
+      focusNextOption(ctx) {
         const { next } = dom(ctx)
 
         let nextOption = next(ctx.activeId ?? "")
@@ -357,7 +402,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.activeId = nextOption.id
         ctx.navigationValue = nextOption.getAttribute("data-label") ?? ""
       },
-      selectPrevOptionId(ctx) {
+      focusPrevOption(ctx) {
         const options = dom(ctx)
         const prevOption = options.prev(ctx.activeId ?? "")
         if (!prevOption) return

@@ -29,14 +29,26 @@ export function getElements(ctx: ComboboxMachineContext) {
 
 export function dom(ctx: ComboboxMachineContext) {
   const { listbox, input, doc } = getElements(ctx)
+
   const selector = `[role=option]:not([disabled])`
-  const collection = DOMNodeList.fromSelector(listbox, selector)
+  const nodelist = DOMNodeList.fromSelector(listbox, selector)
+
+  const focusedSelector = `[role=option][id=${ctx.activeId}]`
+  const focusedOption = listbox?.querySelector<HTMLElement>(focusedSelector)
 
   return {
-    first: collection.first,
-    last: collection.last,
-    prev: collection.prevById,
-    next: collection.nextById,
+    first: nodelist.first,
+    last: nodelist.last,
+    prev: nodelist.prevById,
+    next: nodelist.nextById,
     isFocused: doc.activeElement === input,
+    focusedOption,
+  }
+}
+
+export function attrs(el: HTMLElement | null | undefined) {
+  return {
+    value: el?.getAttribute("data-value") ?? "",
+    label: el?.getAttribute("data-label") ?? "",
   }
 }

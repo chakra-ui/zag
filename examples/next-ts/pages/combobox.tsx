@@ -44,7 +44,7 @@ const Styles = styled("div")({
     border: "1px solid lightgray",
     maxWidth: "300px",
   },
-  '[role="option"][aria-selected="true"]': {
+  '[role="option"][aria-selected="true"], [role="option"][data-highlighted]': {
     backgroundColor: "red",
     color: "white",
   },
