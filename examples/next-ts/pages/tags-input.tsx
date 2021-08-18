@@ -13,13 +13,10 @@ const Page = () => {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const {
-    inputProps,
-    rootProps,
-    getTagProps,
-    getTagDeleteButtonProps,
-    getTagInputProps,
-  } = tagsInput.connect(state, send)
+  const { inputProps, rootProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = tagsInput.connect(
+    state,
+    send,
+  )
 
   return (
     <div>
@@ -28,10 +25,7 @@ const Page = () => {
           <span key={index}>
             <div className="tag" {...getTagProps({ index, value })}>
               <span>{value} </span>
-              <button
-                className="tag-close"
-                {...getTagDeleteButtonProps({ index, value })}
-              >
+              <button className="tag-close" {...getTagDeleteButtonProps({ index, value })}>
                 &#x2715;
               </button>
             </div>
@@ -73,7 +67,7 @@ const Page = () => {
           }
 
           .tag[hidden] {
-            display: none !importart;
+            display: none !important;
           }
 
           .tag[data-selected] {
