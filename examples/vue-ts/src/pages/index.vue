@@ -61,5 +61,10 @@
         To tags input
       </router-link>
     </li>
+    <li>
+      <router-link to="/toast">
+        To toast
+      </router-link>
+    </li>
   </ul>
 </template>
