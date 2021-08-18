@@ -34,6 +34,7 @@ const Toast = defineComponent({
       <pre
         hidden={!t.value.isVisible}
         style={{ padding: "10px", background: backgrounds[ctx.value.type], maxWidth: "400px" }}
+        // @ts-expect-error
         onPointerenter={t.value.pause}
         onPointerleave={t.value.resume}
       >
@@ -85,10 +86,10 @@ export default defineComponent({
           <button onClick={() => toasts.value.pause()}>Pause</button>
           <div>
             {state.value.context.toasts.map((actor) => (
+              // @ts-expect-error
               <Toast key={actor.id} actor={actor} />
             ))}
           </div>
-          {/* <StateVisualizer state={state.value} /> */}
         </div>
       )
     }
