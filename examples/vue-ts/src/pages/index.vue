@@ -46,5 +46,10 @@
         To rating
       </router-link>
     </li>
+    <li>
+      <router-link to="/slider">
+        To slider
+      </router-link>
+    </li>
   </ul>
 </template>
