@@ -2,9 +2,7 @@ import { computed, h, Fragment, defineComponent, ref, PropType } from "vue"
 import { useMachine, normalizeProps, useActor } from "@ui-machines/vue"
 import { toast, ToastMachine } from "@ui-machines/web"
 import { HollowDotsSpinner } from "epic-spinners"
-import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { env } from "shelljs"
 
 if (typeof global === "undefined" && typeof window !== "undefined") {
   window.global = window
