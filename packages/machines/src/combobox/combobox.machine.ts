@@ -31,10 +31,6 @@ export type ComboboxMachineContext = WithDOM<{
    */
   allowCustomValue?: boolean
   /**
-   * Whether to clear the input's value on escape
-   */
-  clearInputValueOnEsc?: boolean
-  /**
    * Whether to close the menu when the input is blurred
    */
   closeOnBlur?: boolean
@@ -82,16 +78,14 @@ export type ComboboxMachineContext = WithDOM<{
    */
   placeholder?: string
   /**
-   * Select the first option on input change
-   *
-   * `false` - This corresponds to a manual selection where the user
-   * needs to manually navigate the options using the `ArrowUp` and `ArrowDown` keys.
-   *
-   * `true` - The first option will be automatically highlighted when the menu is opened.
-   *
-   * `inline` - The inline completion string is visually highlighted and has a selected state.
+   * Whether to select the first option on input change
    */
-  autoSelect?: boolean | "inline"
+  autoSelect?: boolean
+  /**
+   * Whether the value in the input changes as the user navigates
+   * with the keyboard.
+   */
+  autoComplete?: boolean
   /**
    * Function called when the input value changes
    */
@@ -112,10 +106,6 @@ export type ComboboxMachineContext = WithDOM<{
    * The live region for the combobox
    */
   liveRegion?: LiveRegion | null
-  /**
-   * The number of options available
-   */
-  itemCount: number
 }>
 
 export type ComboboxMachineState = {
@@ -129,6 +119,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     context: {
       uid: "combobox",
       autoSelect: true,
+      autoComplete: true,
       closeOnSelect: true,
       closeOnBlur: true,
       openOnClick: false,
@@ -139,7 +130,6 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       eventSource: null,
       liveRegion: null,
       pointerdownNode: null,
-      itemCount: 0,
     },
     on: {
       SET_COUNT: {
@@ -156,31 +146,54 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         },
       },
       open: {
-        entry: ["setChildNodes", "announceNumberOfOptions"],
+        entry: ["announceOptionCount"],
         activities: ["scrollOptionIntoView", "trackPointerDown"],
         on: {
-          ARROW_DOWN: {
-            actions: ["selectNextOptionId", "setEventSourceToKeyboard", "announceActiveOption"],
-          },
-          ARROW_UP: {
-            actions: ["selectPrevOptionId", "setEventSourceToKeyboard", "announceActiveOption"],
-          },
+          ARROW_DOWN: [
+            {
+              cond: and("autoComplete", "isLastOptionFocused"),
+              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+            },
+            {
+              actions: ["selectNextOptionId", "setEventSourceToKeyboard"],
+            },
+          ],
+          ARROW_UP: [
+            {
+              cond: and("autoComplete", "isFirstOptionFocused"),
+              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+            },
+            {
+              actions: ["selectPrevOptionId", "setEventSourceToKeyboard"],
+            },
+          ],
           ESCAPE: "closed",
           ENTER: [
             {
               cond: "closeOnSelect",
               target: "closed",
-              actions: ["setSelectedValue", "announceSelectedOption"],
+              actions: ["setSelectedValue", "announceSelectedOption", "clearFocusedOption"],
             },
             {
               actions: ["setSelectedValue", "announceSelectedOption"],
             },
           ],
-          TYPE: {
-            actions: ["setInputValue", "selectFirstOptionId", "announceNumberOfOptions"],
-          },
+          TYPE: [
+            {
+              target: "open",
+              cond: "autoSelect",
+              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+            {
+              target: "open",
+              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+          ],
           OPTION_POINTEROVER: {
-            actions: ["setActiveId", "setNavigationValue", "setEventSourceToPointer", "announceActiveOption"],
+            actions: ["setActiveOption", "setEventSourceToPointer"],
+          },
+          OPTION_POINTEROUT: {
+            actions: ["clearFocusedOption"],
           },
           OPTION_CLICK: [
             {
@@ -208,38 +221,43 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       focused: {
         on: {
           INPUT_BLUR: "closed",
-          INPUT_CLICK: [
-            {
-              cond: "openOnClick",
-              target: "open",
-              actions: ["focusInput"],
-            },
-            { actions: ["focusInput"] },
-          ],
+          INPUT_CLICK: {
+            cond: "openOnClick",
+            target: "open",
+          },
           ARROW_DOWN: {
             target: "open",
-            actions: ["selectFirstOptionId", "setEventSourceToKeyboard"],
+            actions: ["focusFirstOption", "setEventSourceToKeyboard"],
           },
           ARROW_UP: {
             target: "open",
             actions: ["selectLastOptionId", "setEventSourceToKeyboard"],
           },
-          TYPE: {
-            target: "open",
-            actions: ["setInputValue", "selectFirstOptionId", "announceNumberOfOptions"],
-          },
+          TYPE: [
+            {
+              target: "open",
+              cond: "autoSelect",
+              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+            {
+              target: "open",
+              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
+            },
+          ],
           BUTTON_CLICK: {
             target: "open",
             actions: "focusInput",
           },
-          ESCAPE: { actions: ["clearInputValue"] },
+          ESCAPE: {
+            actions: "clearInputValue",
+          },
         },
       },
       closed: {
         after: {
           0: { cond: "isInputFocused", target: "focused" },
         },
-        entry: ["clearNavigationValue", "clearEventSource"],
+        entry: ["clearFocusedOption", "clearEventSource"],
         on: {
           INPUT_FOCUS: "focused",
           BUTTON_CLICK: {
@@ -256,7 +274,10 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       isInputFocused: (ctx) => dom(ctx).isFocused,
-      shouldAutoFillInput: (ctx) => ctx.autoSelect === "inline",
+      autoComplete: (ctx) => !!ctx.autoComplete,
+      autoSelect: (ctx) => !!ctx.autoSelect,
+      isFirstOptionFocused: (ctx) => dom(ctx).first.id === ctx.activeId,
+      isLastOptionFocused: (ctx) => dom(ctx).last.id === ctx.activeId,
     },
     activities: {
       trackPointerDown,
@@ -284,15 +305,17 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         const region = new LiveRegion({ ariaLive: "assertive", doc: ctx.doc })
         ctx.liveRegion = preserve(region)
       },
-      setActiveId(ctx, evt) {
+      setActiveOption(ctx, evt) {
         ctx.activeId = evt.id
+        ctx.navigationValue = evt.value
+      },
+      clearFocusedOption(ctx) {
+        ctx.activeId = null
+        ctx.navigationValue = ""
       },
       setSelectedValue(ctx, evt) {
         ctx.selectedValue = ctx.navigationValue || evt.value
         ctx.inputValue = ctx.selectedValue
-      },
-      setNavigationValue(ctx, evt) {
-        ctx.navigationValue = evt.value
       },
       focusInput(ctx) {
         nextTick(() => {
@@ -303,16 +326,13 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       setInputValue(ctx, evt) {
         ctx.inputValue = evt.value
       },
-      clearInputValueValue(ctx) {
-        ctx.inputValue = ""
-      },
       invokeOnInputChange(ctx) {
         ctx.onInputValueChange?.(ctx.inputValue)
       },
       invokeOnSelect(ctx) {
         ctx.onSelect?.(ctx.selectedValue)
       },
-      selectFirstOptionId(ctx) {
+      focusFirstOption(ctx) {
         nextTick(() => {
           const { first } = dom(ctx)
           if (!first) return
@@ -330,8 +350,10 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       selectNextOptionId(ctx) {
         const { next } = dom(ctx)
-        const nextOption = next(ctx.activeId ?? "")
+
+        let nextOption = next(ctx.activeId ?? "")
         if (!nextOption) return
+
         ctx.activeId = nextOption.id
         ctx.navigationValue = nextOption.getAttribute("data-label") ?? ""
       },
@@ -342,9 +364,6 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.activeId = prevOption.id
         ctx.navigationValue = prevOption.getAttribute("data-label") ?? ""
       },
-      clearNavigationValue(ctx) {
-        ctx.navigationValue = ""
-      },
       setEventSourceToKeyboard(ctx) {
         ctx.eventSource = "keyboard"
       },
@@ -354,11 +373,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       clearEventSource(ctx) {
         ctx.eventSource = null
       },
-      setCount(ctx, evt) {
-        ctx.itemCount = evt.value
-      },
       // Announce the number of available suggestions when it changes
-      announceNumberOfOptions(ctx) {
+      announceOptionCount(ctx) {
+        // First, check the `aria-setsize` of any option (if virtualized)
+        // Next, query the dom for the number of options in the list
+        // Announcing the number of options
         nextTick(() => {
           // const count = ctx.childNodes?.value.length
           // const msg = formatMessage(count)

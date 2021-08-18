@@ -15,6 +15,7 @@ export function connectComboboxMachine(
   const ids = getElementIds(ctx.uid)
 
   const expanded = state.matches("open")
+  const useNavigationValue = false
 
   return {
     inputValue: ctx.inputValue,
@@ -44,8 +45,8 @@ export function connectComboboxMachine(
       id: ids.input,
       type: "text",
       role: "combobox",
-      value: ctx.inputValue,
-      "aria-autocomplete": ctx.autoSelect === "inline" ? "both" : "list",
+      value: useNavigationValue ? ctx.navigationValue : ctx.inputValue,
+      "aria-autocomplete": ctx.autoComplete ? "both" : "list",
       "aria-controls": expanded ? ids.listbox : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
@@ -69,6 +70,8 @@ export function connectComboboxMachine(
         send({ type: "TYPE", value: event.target.value })
       },
       onKeyDown(event) {
+        if (event.ctrlKey || event.shiftKey) return
+
         const keymap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
@@ -151,6 +154,9 @@ export function connectComboboxMachine(
         "data-label": label,
         onPointerOver() {
           send({ type: "OPTION_POINTEROVER", id, value: label })
+        },
+        onPointerOut() {
+          send("OPTION_POINTEROUT")
         },
         onPointerDown(event) {
           event.preventDefault()
