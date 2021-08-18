@@ -56,5 +56,10 @@
         To tabs
       </router-link>
     </li>
+    <li>
+      <router-link to="/tags-input">
+        To tags input
+      </router-link>
+    </li>
   </ul>
 </template>

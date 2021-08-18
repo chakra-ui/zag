@@ -4,47 +4,6 @@ import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { tabs } from "@ui-machines/web"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { css } from "@emotion/css"
-
-const styles = css`
-  .slider {
-    --slider-thumb-size: 24px;
-    --slider-track-height: 4px;
-    height: var(--slider-thumb-size);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 45px;
-    max-width: 400px;
-    position: relative;
-  }
-
-  .slider__thumb {
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
-    border-radius: 999px;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: var(--slider-thumb-percent);
-    background: lime;
-  }
-
-  .slider__thumb:focus {
-    outline: 2px solid royalblue;
-  }
-
-  .slider__track {
-    height: var(--slider-track-height);
-    background: lightgray;
-    border-radius: 24px;
-  }
-
-  .slider__track-inner {
-    background: magenta;
-    height: 100%;
-  }
-`
 
 export default defineComponent({
   name: "Tabs",
