@@ -51,5 +51,10 @@
         To slider
       </router-link>
     </li>
+    <li>
+      <router-link to="/tabs">
+        To tabs
+      </router-link>
+    </li>
   </ul>
 </template>
