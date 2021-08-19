@@ -46,5 +46,30 @@
         To rating
       </router-link>
     </li>
+    <li>
+      <router-link to="/slider">
+        To slider
+      </router-link>
+    </li>
+    <li>
+      <router-link to="/tabs">
+        To tabs
+      </router-link>
+    </li>
+    <li>
+      <router-link to="/tags-input">
+        To tags input
+      </router-link>
+    </li>
+    <li>
+      <router-link to="/toast">
+        To toast
+      </router-link>
+    </li>
+    <li>
+      <router-link to="/tooltip">
+        To tooltip
+      </router-link>
+    </li>
   </ul>
 </template>
