@@ -79,9 +79,9 @@ export type ComboboxMachineContext = WithDOM<{
    * with the keyboard.
    *
    * - `autocomplete`: The combobox will update the input value as user navigates
-   * - `autoselect`: The combobox will only select the first option, requiring the user to press enter to select
-   * - `manual`: The combobox will not select the first option, requiring the user to press manually
-   * navigate using the up and down keys
+   * - `autoselect`: The combobox will highlight the first option, requiring the user to press enter to select
+   * - `manual`: The combobox will not highlihgt or select the first option, requiring the user to press manually
+   * navigate using the up and down keys, and pressing enter to select
    */
   selectionMode?: "autocomplete" | "autoselect" | "manual"
   /**

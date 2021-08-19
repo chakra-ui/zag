@@ -137,8 +137,8 @@ export function connectComboboxMachine(
       "aria-labelledby": ids.label,
     }),
 
-    getOptionProps(opts: OptionProps) {
-      const { value, label, virtualized, index, noOfOptions } = opts
+    getOptionProps(props: OptionProps) {
+      const { value, label, virtualized, index, noOfOptions } = props
       const id = ids.getOptionId(value)
       const selected = ctx.activeId === id && ctx.eventSource === "keyboard"
 
@@ -173,6 +173,11 @@ export function connectComboboxMachine(
   }
 }
 
-type OptionProps =
-  | { value: string; label: string; virtualized?: never; index?: never; noOfOptions?: never }
-  | { virtualized: true; index: number; noOfOptions: number; value: string; label: string }
+type OptionProps = {
+  virtualized?: true
+  index?: number
+  noOfOptions?: number
+  value: string
+  label: string
+  disabled?: boolean
+}
