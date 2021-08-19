@@ -467,7 +467,7 @@ export class Machine<
       const delay = determineDelay(this.contextSnapshot, event)
 
       const activity = () => {
-        const id = global.setInterval(() => {
+        const id = globalThis.setInterval(() => {
           this.executeActions(picked.actions, event)
         }, delay)
         return () => {

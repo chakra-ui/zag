@@ -66,5 +66,10 @@
         To toast
       </router-link>
     </li>
+    <li>
+      <router-link to="/tooltip">
+        To tooltip
+      </router-link>
+    </li>
   </ul>
 </template>

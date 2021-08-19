@@ -4,10 +4,6 @@ import { toast, ToastMachine } from "@ui-machines/web"
 import { HollowDotsSpinner } from "epic-spinners"
 import { useMount } from "../hooks/use-mount"
 
-if (typeof global === "undefined" && typeof window !== "undefined") {
-  window.global = window
-}
-
 const backgrounds = {
   error: "red",
   blank: "lightgray",
