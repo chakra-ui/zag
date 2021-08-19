@@ -42,14 +42,16 @@ const Tooltip = defineComponent({
 })
 
 export default defineComponent(() => {
-  const snap = ref()
+  const snap = ref(() => tooltip.store)
+  const state = ref({})
   const handleUpdateStore = (s: { id: string | null }) => {
-    snap.value = s
+    snap.value = () => tooltip.store
+    state.value = s
   }
 
   return () => (
     <>
-      <h3>{JSON.stringify({ id: snap.value?.context?.id || null })}</h3>
+      <h3>{JSON.stringify(snap.value?.())}</h3>
       <div style={{ display: "flex" }}>
         {/* @ts-expect-error */}
         <Tooltip onUpdateState={handleUpdateStore} id="tip-1" />
@@ -59,7 +61,7 @@ export default defineComponent(() => {
         </div>
       </div>
 
-      <StateVisualizer state={snap.value} />
+      <StateVisualizer state={state.value} />
     </>
   )
 })
