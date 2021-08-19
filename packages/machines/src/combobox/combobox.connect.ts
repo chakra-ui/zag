@@ -1,6 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr, dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
+import { srOnlyStyle } from "../utils/live-region"
 import type { ButtonProps, EventKeyMap, HTMLProps, InputProps, LabelProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./combobox.dom"
@@ -19,6 +20,14 @@ export function connectComboboxMachine(
     expanded && ctx.activeId !== null && ctx.eventSource === "keyboard" && ctx.selectionMode === "autocomplete"
 
   return {
+    setValue(value: string) {
+      send({ type: "SET_VALUE", value })
+    },
+
+    clearValue() {
+      send("CLEAR_VALUE")
+    },
+
     inputValue: ctx.inputValue,
 
     labelProps: normalize<LabelProps>({
@@ -47,6 +56,7 @@ export function connectComboboxMachine(
       type: "text",
       role: "combobox",
       value: autocomplete ? ctx.navigationValue : ctx.inputValue,
+      "aria-describedby": ids.srHint,
       "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
       "aria-controls": expanded ? ids.listbox : undefined,
       "aria-expanded": expanded,
@@ -135,6 +145,28 @@ export function connectComboboxMachine(
       role: "listbox",
       hidden: !expanded,
       "aria-labelledby": ids.label,
+    }),
+
+    clearButtonProps: normalize<ButtonProps>({
+      id: ids.clearBtn,
+      type: "button",
+      role: "button",
+      tabIndex: -1,
+      disabled: ctx.disabled,
+      "aria-label": "Clear value",
+      hidden: !ctx.inputValue.trim().length,
+      onClick() {
+        send("CLEAR_VALUE")
+      },
+    }),
+
+    assistiveHintProps: normalize<HTMLProps>({
+      id: ids.srHint,
+      children: [
+        "When autocomplete results are available use up and down arrows to review and enter to select.",
+        "Touch device users, explore by touch or with swipe gestures.",
+      ].join(""),
+      style: srOnlyStyle,
     }),
 
     getOptionProps(props: OptionProps) {

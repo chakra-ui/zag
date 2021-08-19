@@ -34,10 +34,12 @@ export type WithDOM<T> = T & {
 
 export type EventKeyMap = Dict<(event: KeyboardEvent) => void>
 
+export type CSSStyleProperties = CSSProperties & {
+  [customProperty: string]: string | number | undefined
+}
+
 type Style = {
-  style?: CSSProperties & {
-    [customProperty: string]: string | number | undefined
-  }
+  style?: CSSStyleProperties
 }
 
 export type HTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>

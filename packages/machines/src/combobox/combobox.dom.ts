@@ -8,6 +8,8 @@ export function getElementIds(uid: string) {
     input: `combobox-${uid}-input`,
     listbox: `combobox-${uid}-listbox`,
     toggleBtn: `combobox-${uid}-toggle-btn`,
+    clearBtn: `combobox-${uid}-clear-btn`,
+    srHint: `combobox-${uid}-sr-hint`,
     getOptionId: (index: number | string) => `combobox-${uid}-option-${index}`,
   }
 }
@@ -24,6 +26,7 @@ export function getElements(ctx: ComboboxMachineContext) {
     input: doc.getElementById(ids.input) as HTMLInputElement,
     listbox: doc.getElementById(ids.listbox),
     toggleBtn: doc.getElementById(ids.toggleBtn),
+    clearBtn: doc.getElementById(ids.clearBtn),
   }
 }
 

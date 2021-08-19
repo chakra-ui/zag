@@ -104,6 +104,14 @@ export type ComboboxMachineContext = WithDOM<{
    * The live region for the combobox
    */
   liveRegion?: LiveRegion | null
+  /**
+   * Whether the label of the selected option should be displayed in the input.
+   */
+  shouldInputRenderValue?: boolean
+  /**
+   * Whether to focus the input on clear button click
+   */
+  focusOnClear?: boolean
 }>
 
 export type ComboboxMachineState = {
@@ -129,9 +137,19 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       pointerdownNode: null,
     },
     on: {
-      SET_COUNT: {
-        actions: "setCount",
+      SET_VALUE: {
+        actions: "setInputValue",
       },
+      CLEAR_VALUE: [
+        {
+          cond: and("inputHasValue", "focusOnClear"),
+          actions: ["clearInputValue", "focusInput"],
+        },
+        {
+          cond: "inputHasValue",
+          actions: "clearInputValue",
+        },
+      ],
     },
     states: {
       unknown: {
@@ -147,7 +165,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         after: {
           0: { cond: "isInputFocused", target: "focused" },
         },
-        entry: ["clearFocusedOption", "clearEventSource"],
+        entry: ["clearFocusedOption", "clearEventSource", "resetScrollPosition"],
         on: {
           INPUT_FOCUS: [
             {
@@ -157,10 +175,17 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             },
             { target: "focused" },
           ],
-          BUTTON_CLICK: {
-            target: "open",
-            actions: "focusInput",
-          },
+          BUTTON_CLICK: [
+            {
+              cond: "autoSelect",
+              target: "open",
+              actions: ["focusInput", "focusFirstOption"],
+            },
+            {
+              target: "open",
+              actions: "focusInput",
+            },
+          ],
         },
       },
 
@@ -370,6 +395,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       clearInputValue(ctx) {
         ctx.inputValue = ""
+      },
+      resetScrollPosition(ctx) {
+        const { listbox } = getElements(ctx)
+        if (!listbox) return
+        listbox.scrollTop = 0
       },
       invokeOnInputChange(ctx) {
         ctx.onInputValueChange?.(ctx.inputValue)
