@@ -11,10 +11,7 @@ export function observeNodeAttr(node: HTMLElement | null, attributes: string | s
     }
   })
 
-  obs.observe(node, {
-    attributes: true,
-    attributeFilter: attrs,
-  })
+  obs.observe(node, { attributes: true, attributeFilter: attrs })
 
   return () => obs.disconnect()
 }

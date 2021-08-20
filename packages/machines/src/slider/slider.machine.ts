@@ -1,9 +1,9 @@
 import { createMachine, preserve } from "@ui-machines/core"
-import { addDomEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
+import { addPointerEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
 import { is } from "@core-foundation/utils/is"
 import { nextTick, pipe } from "@core-foundation/utils/fn"
 import { NumericRange } from "@core-foundation/numeric-range"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { getElements, pointToValue } from "./slider.dom"
 
 export type SliderMachineContext = WithDOM<{
@@ -138,10 +138,10 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         }
 
         return pipe(
-          addDomEvent(doc, "pointermove", onPointerMove, false),
-          addDomEvent(doc, "pointerup", onPointerUp, false),
-          addDomEvent(doc, "pointercancel", onPointerUp, false),
-          addDomEvent(doc, "contextmenu", onPointerUp, false),
+          addPointerEvent(doc, "pointermove", onPointerMove, false),
+          addPointerEvent(doc, "pointerup", onPointerUp, false),
+          addPointerEvent(doc, "pointercancel", onPointerUp, false),
+          addPointerEvent(doc, "contextmenu", onPointerUp, false),
         )
       },
     },

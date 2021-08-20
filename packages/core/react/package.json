@@ -28,12 +28,12 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-foundation/utils": "^0.1.5",
+    "@core-foundation/utils": "^0.1.6",
     "@ui-machines/core": "0.0.0",
-    "valtio": "^1.2.0"
+    "valtio": "^1.2.1"
   },
   "devDependencies": {
-    "@types/react": "^17.0.15",
+    "@types/react": "^17.0.18",
     "react": "^17.0.2"
   },
   "peerDependencies": {

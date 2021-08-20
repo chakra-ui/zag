@@ -1,10 +1,10 @@
-import { addDomEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
+import { addPointerEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { is, nextTick, pipe } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { Rect } from "@core-graphics/rect"
 import { createMachine, preserve } from "@ui-machines/core"
-import { WithDOM } from "../__utils/types"
+import { WithDOM } from "../utils/types"
 import { getElements, getRangeAtIndex, pointToValue } from "./range-slider.dom"
 
 export type RangeSliderMachineContext = WithDOM<{
@@ -147,10 +147,10 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         }
 
         return pipe(
-          addDomEvent(doc, "pointermove", onPointerMove, false),
-          addDomEvent(doc, "pointerup", onPointerUp, false),
-          addDomEvent(doc, "pointercancel", onPointerUp, false),
-          addDomEvent(doc, "contextmenu", onPointerUp, false),
+          addPointerEvent(doc, "pointermove", onPointerMove, false),
+          addPointerEvent(doc, "pointerup", onPointerUp, false),
+          addPointerEvent(doc, "pointercancel", onPointerUp, false),
+          addPointerEvent(doc, "contextmenu", onPointerUp, false),
         )
       },
     },

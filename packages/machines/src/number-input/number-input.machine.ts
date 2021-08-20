@@ -1,6 +1,6 @@
+import { addPointerEvent } from "@core-dom/event/pointer"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { nextTick, noop } from "@core-foundation/utils/fn"
-import { addDomEvent } from "@core-dom/event"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import { getElements } from "./number-input.dom"
 import { sanitize } from "./number-input.utils"
@@ -151,7 +151,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
             ctx.value = new NumericRange(ctx).decrement().clamp().toString()
           }
         }
-        return addDomEvent(input, "wheel", listener, { passive: false })
+        return addPointerEvent(input, "wheel", listener, { passive: false })
       },
     },
     actions: {

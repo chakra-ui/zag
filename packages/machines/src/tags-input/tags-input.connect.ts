@@ -1,7 +1,8 @@
-import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
-import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../utils/types"
+import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 
@@ -91,7 +92,7 @@ export function connectTagsInputMachine(
           },
         }
 
-        const key = determineEventKey(event, ctx)
+        const key = getEventKey(event, ctx)
         const exec = keyMap[key]
         exec?.(event)
       },

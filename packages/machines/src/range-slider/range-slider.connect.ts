@@ -2,8 +2,10 @@ import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey, getStepMultipler } from "../__utils/dom"
-import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { getEventStep } from "../utils/get-step"
+import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
@@ -60,7 +62,7 @@ export function connectRangeSliderMachine(
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
-          const step = getStepMultipler(event) * ctx.step
+          const step = getEventStep(event) * ctx.step
           const keyMap: EventKeyMap = {
             ArrowUp() {
               send({ type: "ARROW_UP", step })
@@ -88,7 +90,7 @@ export function connectRangeSliderMachine(
             },
           }
 
-          const key = determineEventKey(event, ctx)
+          const key = getEventKey(event, ctx)
           const exec = keyMap[key]
 
           if (exec) {

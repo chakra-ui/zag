@@ -1,7 +1,9 @@
-import { validateBlur } from "@core-dom/event"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, determineEventKey } from "../__utils/dom"
-import { ButtonProps, HTMLProps, InputProps, LabelProps, EventKeyMap } from "../__utils/types"
+import { ariaAttr, dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { srOnlyStyle } from "../utils/live-region"
+import type { ButtonProps, EventKeyMap, HTMLProps, InputProps, LabelProps } from "../utils/types"
+import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
@@ -14,8 +16,18 @@ export function connectComboboxMachine(
   const ids = getElementIds(ctx.uid)
 
   const expanded = state.matches("open")
+  const autocomplete =
+    expanded && ctx.activeId !== null && ctx.eventSource === "keyboard" && ctx.selectionMode === "autocomplete"
 
   return {
+    setValue(value: string) {
+      send({ type: "SET_VALUE", value })
+    },
+
+    clearValue() {
+      send("CLEAR_VALUE")
+    },
+
     inputValue: ctx.inputValue,
 
     labelProps: normalize<LabelProps>({
@@ -43,8 +55,9 @@ export function connectComboboxMachine(
       id: ids.input,
       type: "text",
       role: "combobox",
-      value: ctx.inputValue,
-      "aria-autocomplete": ctx.autoSelect === "inline" ? "both" : "list",
+      value: autocomplete ? ctx.navigationValue : ctx.inputValue,
+      "aria-describedby": ids.srHint,
+      "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
       "aria-controls": expanded ? ids.listbox : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
@@ -55,6 +68,7 @@ export function connectComboboxMachine(
         const { listbox, toggleBtn } = getElements(ctx)
         const isValidBlur = validateBlur(event, {
           exclude: [listbox, toggleBtn],
+          fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
           send("INPUT_BLUR")
@@ -67,6 +81,8 @@ export function connectComboboxMachine(
         send({ type: "TYPE", value: event.target.value })
       },
       onKeyDown(event) {
+        if (event.ctrlKey || event.shiftKey) return
+
         const keymap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
@@ -88,11 +104,12 @@ export function connectComboboxMachine(
           },
         }
 
-        const key = determineEventKey(event, ctx)
+        const key = getEventKey(event, ctx)
         const exec = keymap[key]
 
         if (exec) {
           event.preventDefault()
+          event.stopPropagation()
           exec(event)
         }
       },
@@ -130,21 +147,51 @@ export function connectComboboxMachine(
       "aria-labelledby": ids.label,
     }),
 
-    getOptionProps(opts: { value: string; label: string }) {
-      const { value, label } = opts
+    clearButtonProps: normalize<ButtonProps>({
+      id: ids.clearBtn,
+      type: "button",
+      role: "button",
+      tabIndex: -1,
+      disabled: ctx.disabled,
+      "aria-label": "Clear value",
+      hidden: !ctx.inputValue.trim().length,
+      onClick() {
+        send("CLEAR_VALUE")
+      },
+    }),
+
+    assistiveHintProps: normalize<HTMLProps>({
+      id: ids.srHint,
+      children: [
+        "When autocomplete results are available use up and down arrows to review and enter to select.",
+        "Touch device users, explore by touch or with swipe gestures.",
+      ].join(""),
+      style: srOnlyStyle,
+    }),
+
+    getOptionProps(props: OptionProps) {
+      const { value, label, virtualized, index, noOfOptions } = props
       const id = ids.getOptionId(value)
-      const selected = ctx.activeId === id
+      const selected = ctx.activeId === id && ctx.eventSource === "keyboard"
 
       return normalize<HTMLProps>({
         id,
         role: "option",
         className: "option",
-        "aria-selected": selected ? "true" : undefined,
+        "data-highlighted": dataAttr(ctx.activeId === id),
+        "aria-selected": ariaAttr(selected),
         "aria-disabled": ctx.disabled,
+        ...(virtualized && {
+          "aria-posinset": index,
+          "aria-setsize": noOfOptions,
+        }),
         "data-value": value,
         "data-label": label,
         onPointerOver() {
           send({ type: "OPTION_POINTEROVER", id, value: label })
+        },
+        onPointerOut() {
+          send("OPTION_POINTEROUT")
         },
         onPointerDown(event) {
           event.preventDefault()
@@ -156,4 +203,13 @@ export function connectComboboxMachine(
       })
     },
   }
+}
+
+type OptionProps = {
+  virtualized?: true
+  index?: number
+  noOfOptions?: number
+  value: string
+  label: string
+  disabled?: boolean
 }

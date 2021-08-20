@@ -1,4 +1,5 @@
 import { env } from "@core-foundation/utils"
+import { CSSStyleProperties } from "./types"
 
 /* -----------------------------------------------------------------------------
  * Live Region for screen reader technology
@@ -10,6 +11,18 @@ type LiveRegionOptions = {
   ariaRelevant: "additions" | "removals" | "text" | "all"
   ariaAtomic: "true" | "false"
   doc?: Document
+}
+
+export const srOnlyStyle: CSSStyleProperties = {
+  border: "0",
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  width: "1px",
+  whiteSpace: "nowrap",
 }
 
 export class LiveRegion {
@@ -29,17 +42,7 @@ export class LiveRegion {
     region.setAttribute("role", role)
     region.setAttribute("aria-relevant", ariaRelevant)
 
-    Object.assign(region.style, {
-      border: "0",
-      clip: "rect(0 0 0 0)",
-      height: "1px",
-      margin: "-1px",
-      overflow: "hidden",
-      padding: "0",
-      position: "absolute",
-      width: "1px",
-      whiteSpace: "nowrap",
-    })
+    Object.assign(region.style, srOnlyStyle)
 
     this.region = region
     this.doc.body.prepend(region)

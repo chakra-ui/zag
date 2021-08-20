@@ -1,4 +1,4 @@
-import { HTMLProps } from "../__utils/types"
+import { HTMLProps } from "../utils/types"
 import { ToastMachineContext, ToastPlacement, ToastType } from "./toast.machine"
 
 export function getPositionStyle(position: ToastPlacement): React.CSSProperties {

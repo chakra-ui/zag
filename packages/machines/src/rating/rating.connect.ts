@@ -1,8 +1,9 @@
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer, determineEventKey } from "../__utils/dom"
-import { HTMLProps, InputProps, EventKeyMap } from "../__utils/types"
+import { defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
@@ -74,7 +75,7 @@ export function connectRatingMachine(
             },
           }
 
-          const key = determineEventKey(event, ctx)
+          const key = getEventKey(event, ctx)
           const exec = keyMap[key]
 
           if (exec) {

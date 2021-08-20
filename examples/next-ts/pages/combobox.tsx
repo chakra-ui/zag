@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { useMachine } from "@ui-machines/react"
 import { combobox } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
@@ -44,7 +45,7 @@ const Styles = styled("div")({
     border: "1px solid lightgray",
     maxWidth: "300px",
   },
-  '[role="option"][aria-selected="true"]': {
+  '[role="option"][aria-selected="true"], [role="option"][data-highlighted]': {
     backgroundColor: "red",
     color: "white",
   },
@@ -55,15 +56,15 @@ export default function Page() {
     combobox.machine.withContext({
       uid: "234",
       onSelect: console.log,
+      selectionMode: "autoselect",
+      closeOnSelect: (opt) => opt.label !== "Angola",
     }),
   )
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } = combobox.connect(
-    state,
-    send,
-  )
+  const { labelProps, inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } =
+    combobox.connect(state, send)
 
   const filtered = data.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))
 
@@ -71,6 +72,7 @@ export default function Page() {
     <Styles>
       <div ref={ref} className="App">
         <StateVisualizer state={state} />
+        <label {...labelProps}>Select country</label>
         <div {...containerProps}>
           <input {...inputProps} />
           <button {...buttonProps}>▼</button>

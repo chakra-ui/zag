@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { validateBlur } from "@core-dom/event"
-import { HTMLProps } from "../__utils/types"
-import { defaultPropNormalizer } from "../__utils/dom"
+import { defaultPropNormalizer } from "../utils/dom-attr"
+import type { HTMLProps } from "../utils/types"
+import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 
