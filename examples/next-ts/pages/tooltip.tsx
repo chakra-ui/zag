@@ -28,7 +28,6 @@ const Tooltip = (props: { id?: string }) => {
 function Page() {
   return (
     <>
-      {/* <h3>{JSON.stringify(snap.id)}</h3> */}
       <div style={{ display: "flex" }}>
         <Tooltip id="tip-1" />
         <div style={{ marginLeft: "80px" }}>
