@@ -21,7 +21,9 @@ export function connectTooltipMachine(
 
   return {
     isVisible,
-
+    getIsVisible(globalId: string | null) {
+      return ctx.id === globalId && state.matches("open", "closing")
+    },
     triggerProps: normalize<ButtonProps>({
       "aria-describedby": isVisible ? `tooltip-${ctx.id}` : undefined,
       onFocus() {
@@ -33,7 +35,7 @@ export function connectTooltipMachine(
       onPointerDown() {
         send("POINTER_DOWN")
       },
-      onPointerEnter() {
+      onPointerMove() {
         send("POINTER_ENTER")
       },
       onPointerLeave() {
