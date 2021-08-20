@@ -3,6 +3,7 @@ import { addDomEvent } from "@core-dom/event"
 import { proxy } from "valtio"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
+// export const tooltipStore: { id: string | null } = { id: null }
 
 export type TooltipMachineContext = {
   doc?: Document

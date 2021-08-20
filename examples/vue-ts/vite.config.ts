@@ -14,6 +14,7 @@ export default defineConfig({
     alias: {
       "@ui-machines/vue": `${path.resolve(__dirname, "../../packages/core/vue/src/index.ts")}`,
       "@ui-machines/core": `${path.resolve(__dirname, "../../packages/core/vanilla")}`,
+      "@ui-machines/web": `${path.resolve(__dirname, "../../packages/machines/src/index.ts")}`,
     },
   },
   plugins: [
