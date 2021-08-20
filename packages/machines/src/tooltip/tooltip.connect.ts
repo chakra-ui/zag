@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { snapshot } from "valtio"
 import { ButtonProps, HTMLProps } from "../utils/types"
-import { defaultPropNormalizer } from "../utils/dom-attr"
+import { defaultPropNormalizer, dataAttr } from "../utils/dom-attr"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 
 export function connectTooltipMachine(
@@ -19,11 +19,16 @@ export function connectTooltipMachine(
     send("FORCE_CLOSE")
   }
 
+  const triggerId = `tooltip-${ctx.id}`
+  const tooltipId = `tooltip-${ctx.id}-content`
+
   return {
     isVisible,
 
     triggerProps: normalize<ButtonProps>({
-      "aria-describedby": isVisible ? `tooltip-${ctx.id}` : undefined,
+      id: triggerId,
+      "data-expanded": dataAttr(isVisible),
+      "aria-describedby": isVisible ? tooltipId : undefined,
       onFocus() {
         send("POINTER_ENTER")
       },
@@ -43,6 +48,7 @@ export function connectTooltipMachine(
 
     tooltipProps: normalize<HTMLProps>({
       role: "tooltip",
+      id: tooltipId,
     }),
   }
 }

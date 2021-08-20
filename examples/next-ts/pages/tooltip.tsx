@@ -3,9 +3,7 @@ import { tooltip } from "@ui-machines/web"
 import { useMount } from "hooks/use-mount"
 
 const Tooltip = (props: { id?: string }) => {
-  const [state, send] = useMachine(
-    tooltip.machine.withContext({ id: props.id }),
-  )
+  const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
 
   const ref = useMount<HTMLButtonElement>(send)
 
@@ -17,7 +15,7 @@ const Tooltip = (props: { id?: string }) => {
         Over me
       </button>
       {isVisible && (
-        <div {...tooltipProps} style={{ background: "red", padding: 10 }}>
+        <div data-tooltip="" {...tooltipProps}>
           Tooltip
         </div>
       )}
@@ -32,7 +30,7 @@ function Page() {
       <h3>{JSON.stringify(snap)}</h3>
       <div style={{ display: "flex" }}>
         <Tooltip id="tip-1" />
-        <div style={{ marginLeft: "80px" }}>
+        <div style={{ marginLeft: "20px" }}>
           <Tooltip id="tip-2" />
         </div>
       </div>
