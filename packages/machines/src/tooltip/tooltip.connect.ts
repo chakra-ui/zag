@@ -24,7 +24,9 @@ export function connectTooltipMachine(
 
   return {
     isVisible,
-
+    getIsVisible(globalId: string | null) {
+      return ctx.id === globalId && state.matches("open", "closing")
+    },
     triggerProps: normalize<ButtonProps>({
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
@@ -38,7 +40,7 @@ export function connectTooltipMachine(
       onPointerDown() {
         send("POINTER_DOWN")
       },
-      onPointerEnter() {
+      onPointerMove() {
         send("POINTER_ENTER")
       },
       onPointerLeave() {

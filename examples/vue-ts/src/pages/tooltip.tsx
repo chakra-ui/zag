@@ -1,9 +1,7 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment, PropType, ref, watch } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { defineComponent, computed, h, Fragment, PropType } from "vue"
+import { useMachine, normalizeProps, useSnapshot } from "@ui-machines/vue"
 import { tooltip } from "@ui-machines/web"
 import { useMount } from "../hooks/use-mount"
-import { StateVisualizer } from "../components/state-visualizer"
 
 const Tooltip = defineComponent({
   name: "Tooltip",
@@ -13,16 +11,13 @@ const Tooltip = defineComponent({
       required: true,
     },
   },
-  emits: ["updateState"],
-  setup(props, { emit }) {
+  setup(props) {
     const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
-
     const _ref = useMount(send)
     const mp = computed(() => tooltip.connect(state.value, send, normalizeProps))
 
-    watch(state, (newState) => emit("updateState", newState), {
-      immediate: true,
-    })
+    const _state = useSnapshot(tooltip.store)
+    const isVisible = computed(() => mp.value.getIsVisible(_state.value.id))
 
     return () => (
       <>
@@ -30,7 +25,7 @@ const Tooltip = defineComponent({
           <button ref={_ref} {...mp.value.triggerProps}>
             Over me
           </button>
-          {mp.value.isVisible && (
+          {isVisible.value && (
             <div {...mp.value.tooltipProps} style={{ background: "red", padding: "10px" }}>
               Tooltip
             </div>
@@ -42,26 +37,19 @@ const Tooltip = defineComponent({
 })
 
 export default defineComponent(() => {
-  const snap = ref(() => tooltip.store)
-  const state = ref({})
-  const handleUpdateStore = (s: { id: string | null }) => {
-    snap.value = () => tooltip.store
-    state.value = s
-  }
+  const _state = useSnapshot(tooltip.store)
 
   return () => (
     <>
-      <h3>{JSON.stringify(snap.value?.())}</h3>
+      <h3>{JSON.stringify({ id: _state.value.id })}</h3>
       <div style={{ display: "flex" }}>
         {/* @ts-expect-error */}
-        <Tooltip onUpdateState={handleUpdateStore} id="tip-1" />
+        <Tooltip id="tip-1" />
         <div style={{ marginLeft: "80px" }}>
           {/* @ts-expect-error */}
-          <Tooltip onUpdateState={handleUpdateStore} id="tip-2" />
+          <Tooltip id="tip-2" />
         </div>
       </div>
-
-      <StateVisualizer state={state.value} />
     </>
   )
 })

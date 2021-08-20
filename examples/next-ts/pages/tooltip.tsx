@@ -9,6 +9,8 @@ const Tooltip = (props: { id?: string }) => {
 
   const { isVisible, triggerProps, tooltipProps } = tooltip.connect(state, send)
 
+  useSnapshot(tooltip.store)
+
   return (
     <div className="App">
       <button ref={ref} {...triggerProps}>
@@ -24,10 +26,8 @@ const Tooltip = (props: { id?: string }) => {
 }
 
 function Page() {
-  const snap = useSnapshot(tooltip.store)
   return (
     <>
-      <h3>{JSON.stringify(snap)}</h3>
       <div style={{ display: "flex" }}>
         <Tooltip id="tip-1" />
         <div style={{ marginLeft: "20px" }}>

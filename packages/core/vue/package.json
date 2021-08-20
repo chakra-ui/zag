@@ -29,7 +29,8 @@
   },
   "dependencies": {
     "@core-foundation/utils": "^0.1.6",
-    "@ui-machines/core": "0.0.0"
+    "@ui-machines/core": "0.0.0",
+    "valtio": "^1.2.1"
   },
   "devDependencies": {
     "vue": "^3.0.5"
