@@ -24,8 +24,8 @@ type EventKeyOptions = {
 /**
  * Determine the event key based on text direction.
  */
-export function getEventKey(event: KeyboardEvent, options: EventKeyOptions) {
-  const { direction, orientation = "horizontal" } = options
+export function getEventKey(event: KeyboardEvent, options: EventKeyOptions = {}) {
+  const { direction = "ltr", orientation = "horizontal" } = options
 
   let { key } = event
   key = sameKeyMap[key] ?? key // normalize key

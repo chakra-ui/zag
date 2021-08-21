@@ -1,8 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { snapshot } from "valtio"
-import { ButtonProps, HTMLProps } from "../utils/types"
+import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { defaultPropNormalizer, dataAttr } from "../utils/dom-attr"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
+import { getEventKey } from "../utils/get-event-key"
 
 export function connectTooltipMachine(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
@@ -24,13 +25,16 @@ export function connectTooltipMachine(
 
   return {
     isVisible,
+
     getIsVisible(globalId: string | null) {
       return ctx.id === globalId && state.matches("open", "closing")
     },
+
     triggerProps: normalize<ButtonProps>({
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
       "aria-describedby": isVisible ? tooltipId : undefined,
+      "data-controls": "tooltip",
       onFocus() {
         send("POINTER_ENTER")
       },
@@ -45,6 +49,19 @@ export function connectTooltipMachine(
       },
       onPointerLeave() {
         send("POINTER_LEAVE")
+      },
+      onKeyDown(event) {
+        const keymap: EventKeyMap = {
+          Enter() {
+            send("PRESS_ENTER")
+          },
+          Space() {
+            send("PRESS_ENTER")
+          },
+        }
+        const key = getEventKey(event)
+        const exec = keymap[key]
+        if (exec) exec(event)
       },
     }),
 

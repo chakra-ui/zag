@@ -1,52 +1,72 @@
 import { createMachine, preserve } from "@ui-machines/core"
 import { addPointerEvent } from "@core-dom/event/pointer"
 import { proxy } from "valtio"
+import { env, is, noop } from "@core-foundation/utils"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
 
 export type TooltipMachineContext = {
   doc?: Document
   id: string
+  disabled?: boolean
 }
 
 export type TooltipMachineState = {
-  value: "mounted" | "idle" | "opening" | "open" | "closing" | "closed"
+  value: "unknown" | "idle" | "opening" | "open" | "closing" | "closed"
 }
 
 export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
   {
     id: "tooltip",
-    initial: "mounted",
+    initial: "unknown",
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
-            actions: "setOwnerDocument",
+            actions: ["setOwnerDocument", "setId"],
           },
         },
       },
       idle: {
         on: {
-          POINTER_ENTER: [{ cond: "noVisibleTooltip", target: "opening" }, { target: "open" }],
+          POINTER_ENTER: [
+            {
+              cond: "noVisibleTooltip",
+              target: "opening",
+            },
+            { target: "open" },
+          ],
         },
       },
+
       opening: {
         after: {
           OPEN_DELAY: "open",
         },
         on: {
           POINTER_LEAVE: "closed",
+          POINTER_DOWN: "closed",
         },
       },
+
       open: {
-        activities: ["attachEscapeKeyListener"],
+        activities: ["trackEscapeKeypress", "trackGlobalPointermoveForSafari"],
         entry: "setGlobalId",
         on: {
-          POINTER_LEAVE: [{ cond: "isVisible", target: "closing" }, { target: "closed" }],
+          POINTER_LEAVE: [
+            {
+              cond: "isVisible",
+              target: "closing",
+            },
+            { target: "closed" },
+          ],
           ESCAPE: "closed",
+          POINTER_DOWN: "closed",
+          PRESS_ENTER: "closed",
         },
       },
+
       closing: {
         after: {
           CLOSE_DELAY: "closed",
@@ -55,33 +75,53 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           FORCE_CLOSE: "closed",
         },
       },
+
       closed: {
-        entry: "resetGlobalId",
+        entry: "clearGlobalId",
         on: {
-          POINTER_ENTER: [{ cond: "noVisibleTooltip", target: "opening" }, { target: "open" }],
+          POINTER_ENTER: [
+            {
+              cond: "noVisibleTooltip",
+              target: "opening",
+            },
+            { target: "open" },
+          ],
         },
       },
     },
   },
   {
     activities: {
-      attachEscapeKeyListener: (ctx, evt, { send }) => {
+      trackGlobalPointermoveForSafari: (ctx, _evt, { send }) => {
+        if (!env.safari()) return noop
+        const doc = ctx.doc ?? document
+        return addPointerEvent(doc, "pointermove", (event) => {
+          if (is.domTarget(event) && event.target.closest("[data-controls=tooltip][data-expanded]")) {
+            return
+          }
+          send("POINTER_LEAVE")
+        })
+      },
+      trackEscapeKeypress: (ctx, _evt, { send }) => {
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "keydown", (event) => {
-          if (event.key === "Escape") {
+          if (event.key === "Escape" || event.key === "Esc") {
             send("ESCAPE")
           }
         })
       },
     },
     actions: {
+      setId(ctx, evt) {
+        ctx.id = evt.id
+      },
       setOwnerDocument: (ctx, evt) => {
         ctx.doc = preserve(evt.doc)
       },
       setGlobalId: (ctx) => {
         tooltipStore.id = ctx.id
       },
-      resetGlobalId: (ctx) => {
+      clearGlobalId: (ctx) => {
         if (ctx.id === tooltipStore.id) {
           tooltipStore.id = null
         }
@@ -90,6 +130,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
     guards: {
       noVisibleTooltip: () => tooltipStore.id === null,
       isVisible: (ctx) => ctx.id === tooltipStore.id,
+      isDisabled: (ctx) => !!ctx.disabled,
     },
     delays: {
       OPEN_DELAY: 250,
