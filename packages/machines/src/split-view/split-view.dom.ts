@@ -16,6 +16,7 @@ export function getElements(ctx: SplitViewMachineContext) {
   const ids = getElementIds(ctx.uid)
 
   return {
-    splitter: doc.getElementById(ids.splitter) as HTMLDivElement,
+    splitter: doc.getElementById(ids.splitter),
+    primaryPane: doc.getElementById(ids.primaryPane),
   }
 }

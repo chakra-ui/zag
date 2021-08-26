@@ -1,6 +1,9 @@
+import { focus } from "@core-dom/event"
+import { NumericRange } from "@core-foundation/numeric-range"
 import { createMachine, preserve, guards } from "@ui-machines/core"
 import { trackPointerMove } from "../utils/pointer-move"
 import { WithDOM } from "../utils/types"
+import { getElements } from "./split-view.dom"
 
 const { not } = guards
 
@@ -40,8 +43,9 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
     states: {
       idle: {
         on: {
-          HOVER: "hover:temp",
+          POINTER_OVER: "hover:temp",
           FOCUS: "focused",
+          POINTER_LEAVE: "idle",
         },
       },
 
@@ -49,6 +53,13 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         after: {
           500: "hover",
         },
+        on: {
+          POINTER_DOWN: "dragging",
+          POINTER_LEAVE: "idle",
+        },
+      },
+
+      hover: {
         on: {
           POINTER_DOWN: "dragging",
           POINTER_LEAVE: "idle",
@@ -89,6 +100,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       },
 
       dragging: {
+        entry: "focusSplitter",
         activities: "trackPointerMove",
         on: {
           POINTER_UP: "focused",
@@ -102,7 +114,16 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         return trackPointerMove({
           ctx,
           onPointerMove(event, info) {
-            console.log(info.point)
+            const { primaryPane } = getElements(ctx)
+            if (!primaryPane) return
+            const { point } = info.point.relativeToNode(primaryPane)
+            const range = new NumericRange({
+              min: ctx.min,
+              max: ctx.max,
+              step: ctx.step,
+              value: point.x,
+            })
+            ctx.value = range.clamp().snapToStep().valueOf()
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -133,6 +154,11 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       },
       decrement(ctx) {
         ctx.value = add(ctx.value, -ctx.step)
+      },
+      focusSplitter(ctx) {
+        const { splitter } = getElements(ctx)
+        if (!splitter) return
+        focus.nextTick(splitter)
       },
     },
   },

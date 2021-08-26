@@ -67,6 +67,7 @@ export function connectSplitviewMachine(
     }),
 
     splitterProps: normalize<HTMLProps>({
+      id: ids.splitter,
       role: "separator",
       tabIndex: 0,
       "aria-valuenow": ctx.value,
@@ -77,20 +78,33 @@ export function connectSplitviewMachine(
       "aria-controls": ids.primaryPane,
       style: {
         touchAction: "none",
-        msTouchAction: "none",
         userSelect: "none",
+        WebkitUserSelect: "none",
+        msUserSelect: "none",
         flex: "0 0 auto",
-        ...(isHorizontal
-          ? {
-              cursor: "row-resize",
-              width: "100%",
-              minWidth: "0px",
-            }
-          : {
-              cursor: "col-resize",
-              height: "100%",
-              minHeight: "0px",
-            }),
+        cursor: isHorizontal ? "col-resize" : "row-resize",
+        minHeight: isHorizontal ? "0px" : undefined,
+        minWidth: isHorizontal ? undefined : "0px",
+      },
+      onPointerDown(event) {
+        if (event.button !== 0) return
+
+        event.preventDefault()
+        event.stopPropagation()
+
+        send("POINTER_DOWN")
+      },
+      onPointerOver() {
+        send("POINTER_OVER")
+      },
+      onPointerLeave() {
+        send("POINTER_LEAVE")
+      },
+      onBlur() {
+        send("BLUR")
+      },
+      onFocus() {
+        send("FOCUS")
       },
     }),
   }
