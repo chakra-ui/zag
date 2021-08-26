@@ -102,16 +102,19 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       },
       panning: {
         entry: "focusThumb",
-        activities: "attachPointerTrackers",
+        activities: "trackPointerMove",
         on: {
-          POINTER_UP: { target: "focus", actions: "invokeOnChangeEnd" },
+          POINTER_UP: {
+            target: "focus",
+            actions: "invokeOnChangeEnd",
+          },
         },
       },
     },
   },
   {
     activities: {
-      attachPointerTrackers(ctx, _evt, { send }) {
+      trackPointerMove(ctx, _evt, { send }) {
         const doc = ctx.doc ?? document
 
         const onPointerMove: Listener = (event, info) => {

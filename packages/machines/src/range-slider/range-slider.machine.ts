@@ -111,7 +111,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       },
       panning: {
         entry: "focusActiveThumb",
-        activities: "attachPointerTrackers",
+        activities: "trackPointerMove",
         on: {
           POINTER_UP: { target: "focus", actions: "invokeOnChangeEnd" },
         },
@@ -120,7 +120,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
   },
   {
     activities: {
-      attachPointerTrackers(ctx, _evt, { send }) {
+      trackPointerMove(ctx, _evt, { send }) {
         const doc = ctx.doc ?? document
 
         const onPointerMove: Listener = (event, info) => {
@@ -135,7 +135,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
           }
 
           const value = pointToValue(ctx, info.point)
-          if (typeof value === "undefined") return
+          if (value == null) return
 
           ctx.value[ctx.activeIndex] = value
           ctx.onChange?.(ctx.value)
