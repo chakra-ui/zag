@@ -4,7 +4,7 @@ import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 function Page() {
-  const [state, send] = useMachine(splitView.machine)
+  const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
   const ref = useMount<HTMLDivElement>(send)
 
   const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps } = splitView.connect(state, send)
@@ -16,7 +16,9 @@ function Page() {
           <div className="pane" {...primaryPaneProps}>
             Primary Pane
           </div>
-          <div className="splitter" {...splitterProps} />
+          <div className="splitter" {...splitterProps}>
+            <div className="splitter-bar" />
+          </div>
           <div className="pane" {...secondaryPaneProps}>
             Secondary Pane
           </div>
@@ -34,11 +36,32 @@ function Page() {
           align-items: center;
           justify-content: center;
           border: 1px solid lightgray;
+          overflow: auto;
         }
 
         .splitter {
-          width: 10px;
-          background: pink;
+          width: 8px;
+          background: #ebebeb;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.2s ease-in-out;
+          outline: 0;
+        }
+
+        .splitter[data-focus] {
+          background: #b0baf1;
+        }
+
+        .splitter:active {
+          background: #3f51b5;
+          color: white;
+        }
+
+        .splitter-bar {
+          width: 2px;
+          height: 40px;
+          background-color: currentColor;
         }
       `}</style>
     </>

@@ -35,23 +35,34 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       value: 256,
     },
     on: {
-      SETUP: {
-        target: "idle",
-        actions: ["setId", "setOwnerDocument"],
+      COLLAPSE: {
+        actions: "setToMin",
+      },
+      EXPAND: {
+        actions: "setToMax",
       },
     },
     states: {
+      unknown: {
+        on: {
+          SETUP: {
+            target: "idle",
+            actions: ["setId", "setOwnerDocument"],
+          },
+        },
+      },
+
       idle: {
         on: {
           POINTER_OVER: "hover:temp",
-          FOCUS: "focused",
           POINTER_LEAVE: "idle",
+          FOCUS: "focused",
         },
       },
 
       "hover:temp": {
         after: {
-          500: "hover",
+          250: "hover",
         },
         on: {
           POINTER_DOWN: "dragging",
@@ -69,33 +80,43 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       focused: {
         on: {
           BLUR: "idle",
+          POINTER_DOWN: "dragging",
           ARROW_LEFT: {
             cond: "isHorizontal",
-            actions: ["decrement"],
+            actions: "decrement",
           },
           ARROW_RIGHT: {
             cond: "isHorizontal",
-            actions: ["increment"],
+            actions: "increment",
           },
           ARROW_UP: {
             cond: "isVertical",
-            actions: ["increment"],
+            actions: "increment",
           },
           ARROW_DOWN: {
             cond: "isVertical",
-            actions: ["decrement"],
+            actions: "decrement",
           },
           ENTER: [
-            { cond: "isCollapsed", actions: ["setToMin"] },
-            { cond: not("isCollapsed"), actions: ["setToMin"] },
+            { cond: "isCollapsed", actions: "setToMin" },
+            { cond: not("isCollapsed"), actions: "setToMin" },
           ],
           HOME: {
-            actions: ["setToMin"],
+            actions: "setToMin",
           },
           END: {
-            actions: ["setToMax"],
+            actions: "setToMax",
           },
-          POINTER_DOWN: "dragging",
+          DOUBLE_CLICK: [
+            {
+              cond: "isCollapsed",
+              actions: "setToMax",
+            },
+            {
+              cond: not("isCollapsed"),
+              actions: "setToMin",
+            },
+          ],
         },
       },
 
@@ -113,16 +134,14 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       trackPointerMove: (ctx, _evt, { send }) => {
         return trackPointerMove({
           ctx,
-          onPointerMove(event, info) {
+          onPointerMove(_evt, info) {
             const { primaryPane } = getElements(ctx)
             if (!primaryPane) return
+
             const { point } = info.point.relativeToNode(primaryPane)
-            const range = new NumericRange({
-              min: ctx.min,
-              max: ctx.max,
-              step: ctx.step,
-              value: point.x,
-            })
+            const { min, max, step } = ctx
+
+            const range = new NumericRange({ min, max, step, value: point.x })
             ctx.value = range.clamp().snapToStep().valueOf()
           },
           onPointerUp() {
@@ -149,11 +168,11 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       setToMax(ctx) {
         ctx.value = ctx.max
       },
-      increment(ctx) {
-        ctx.value = add(ctx.value, ctx.step)
+      increment(ctx, evt) {
+        ctx.value = new NumericRange(ctx).increment(evt.step).valueOf()
       },
-      decrement(ctx) {
-        ctx.value = add(ctx.value, -ctx.step)
+      decrement(ctx, evt) {
+        ctx.value = new NumericRange(ctx).decrement(evt.step).valueOf()
       },
       focusSplitter(ctx) {
         const { splitter } = getElements(ctx)
@@ -163,5 +182,3 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
     },
   },
 )
-
-const add = (a: number, b: number) => (a * 10 + b * 10) / 10

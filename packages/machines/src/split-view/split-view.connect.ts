@@ -1,10 +1,12 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils/dom-attr"
-import { HTMLProps } from "../utils/types"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
+import { getEventStep } from "../utils/get-step"
+import { EventKeyMap, HTMLProps } from "../utils/types"
 import { getElementIds } from "./split-view.dom"
 import { SplitViewMachineContext, SplitViewMachineState } from "./split-view.machine"
 
-export function connectSplitviewMachine(
+export function connectSplitViewMachine(
   state: S.State<SplitViewMachineContext, SplitViewMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
@@ -76,6 +78,7 @@ export function connectSplitviewMachine(
       "aria-orientation": ctx.orientation,
       "aria-labelledby": ids.splitterLabel,
       "aria-controls": ids.primaryPane,
+      "data-focus": dataAttr(state.matches("hover", "dragging", "focused")),
       style: {
         touchAction: "none",
         userSelect: "none",
@@ -105,6 +108,47 @@ export function connectSplitviewMachine(
       },
       onFocus() {
         send("FOCUS")
+      },
+      onDoubleClick() {
+        send("DOUBLE_CLICK")
+      },
+      onKeyDown(event) {
+        const step = getEventStep(event) * ctx.step
+        const keyMap: EventKeyMap = {
+          ArrowUp() {
+            send({ type: "ARROW_UP", step })
+          },
+          ArrowDown() {
+            send({ type: "ARROW_DOWN", step })
+          },
+          ArrowLeft() {
+            send({ type: "ARROW_LEFT", step })
+          },
+          ArrowRight() {
+            send({ type: "ARROW_RIGHT", step })
+          },
+          PageUp() {
+            send({ type: "PAGE_UP", step })
+          },
+          PageDown() {
+            send({ type: "PAGE_DOWN", step })
+          },
+          Home() {
+            send("HOME")
+          },
+          End() {
+            send("END")
+          },
+        }
+
+        const key = getEventKey(event, ctx)
+        const exec = keyMap[key]
+
+        if (exec) {
+          event.preventDefault()
+          event.stopPropagation()
+          exec(event)
+        }
       },
     }),
   }
