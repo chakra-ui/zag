@@ -8,13 +8,38 @@ import { getElements } from "./split-view.dom"
 const { not } = guards
 
 export type SplitViewMachineContext = WithDOM<{
+  /**
+   * Whether to allow the separator to be dragged.
+   */
   fixed?: boolean
+  /**
+   * The orientation of the split view.
+   */
   orientation: "horizontal" | "vertical"
+  /**
+   * The minimum size of the primary pane.
+   */
   min: number
+  /**
+   * The maximum size of the primary pane.
+   */
   max: number
+  /**
+   * The size of the primary pane.
+   */
   value: number
+  /**
+   * The step increments of the primary pane when it is dragged
+   * or resized with keyboard.
+   */
   step: number
+  /**
+   * Callback to be invoked when the primary pane is resized.
+   */
   onChange?: (size: number) => void
+  /**
+   * Whether the primary pane is disabled.
+   */
   disabled?: boolean
 }>
 
@@ -41,6 +66,16 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       EXPAND: {
         actions: "setToMax",
       },
+      TOGGLE: [
+        {
+          cond: "isCollapsed",
+          actions: "setToMax",
+        },
+        {
+          cond: not("isCollapsed"),
+          actions: "setToMin",
+        },
+      ],
     },
     states: {
       unknown: {
@@ -154,6 +189,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       isCollapsed: (ctx) => ctx.value === ctx.min,
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
+      isFixed: (ctx) => !!ctx.fixed,
     },
     actions: {
       setId(ctx, evt) {
@@ -169,10 +205,10 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         ctx.value = ctx.max
       },
       increment(ctx, evt) {
-        ctx.value = new NumericRange(ctx).increment(evt.step).valueOf()
+        ctx.value = new NumericRange(ctx).increment(evt.step).clamp().valueOf()
       },
       decrement(ctx, evt) {
-        ctx.value = new NumericRange(ctx).decrement(evt.step).valueOf()
+        ctx.value = new NumericRange(ctx).decrement(evt.step).clamp().valueOf()
       },
       focusSplitter(ctx) {
         const { splitter } = getElements(ctx)

@@ -5,7 +5,7 @@ export function getElementIds(uid: string) {
     root: `${uid}-root`,
     splitter: `${uid}-splitter`,
     toggleButton: `${uid}-toggle-button`,
-    splitterLabel: `${uid}-label`,
+    splitterLabel: `${uid}-splitter-label`,
     primaryPane: `${uid}-primary-pane`,
     secondaryPane: `${uid}-secondary-pane`,
   }

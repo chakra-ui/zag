@@ -7,14 +7,17 @@ function Page() {
   const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
   const ref = useMount<HTMLDivElement>(send)
 
-  const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps } = splitView.connect(state, send)
+  const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = splitView.connect(state, send)
 
   return (
     <>
       <div className="root">
         <div ref={ref} {...rootProps}>
           <div className="pane" {...primaryPaneProps}>
-            Primary Pane
+            <div>
+              <small {...labelProps}>Table of Contents</small>
+              <p>Primary Pane</p>
+            </div>
           </div>
           <div className="splitter" {...splitterProps}>
             <div className="splitter-bar" />

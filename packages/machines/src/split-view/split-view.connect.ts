@@ -15,15 +15,24 @@ export function connectSplitViewMachine(
   const ids = getElementIds(ctx.uid)
 
   const isHorizontal = ctx.orientation === "horizontal"
-  const isEmpty = ctx.value === 0
+
+  const isCollapsed = ctx.value === ctx.min
+  const isFocused = state.matches("hover", "dragging", "focused")
 
   return {
+    isCollapsed,
+    isFocused,
+
     collapse() {
       send("COLLAPSE")
     },
 
     expand() {
       send("EXPAND")
+    },
+
+    toggle() {
+      send("TOGGLE")
     },
 
     rootProps: normalize<HTMLProps>({
@@ -62,10 +71,14 @@ export function connectSplitViewMachine(
 
     toggleButtonProps: normalize<HTMLProps>({
       id: ids.toggleButton,
-      "aria-label": isEmpty ? "Expand Primary Pane" : "Collapse Primary Pane",
+      "aria-label": isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
-        send("TOGGLE_CLICK")
+        send("TOGGLE")
       },
+    }),
+
+    labelProps: normalize<HTMLProps>({
+      id: ids.splitterLabel,
     }),
 
     splitterProps: normalize<HTMLProps>({
@@ -126,12 +139,6 @@ export function connectSplitViewMachine(
           },
           ArrowRight() {
             send({ type: "ARROW_RIGHT", step })
-          },
-          PageUp() {
-            send({ type: "PAGE_UP", step })
-          },
-          PageDown() {
-            send({ type: "PAGE_DOWN", step })
           },
           Home() {
             send("HOME")
