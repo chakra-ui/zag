@@ -5,7 +5,7 @@ import { trackPointerDown } from "../utils/pointer-down"
 import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./menu.dom"
 
-const { not } = guards
+const { not, and } = guards
 
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
 
@@ -46,6 +46,9 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         target: "open",
         actions: "focusFirstItem",
       },
+      CLEAR_TIMER: {
+        actions: "clearOpenTimeout",
+      },
     },
     states: {
       unknown: {
@@ -59,15 +62,14 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
 
       idle: {
         on: {
-          TRIGGER_CLICK: {
+          BUTTON_CLICK: {
             target: "open",
             actions: "focusFirstItem",
           },
-          TRIGGER_FOCUS: "close",
-          TRIGGER_POINTEROVER: {
+          BUTTON_FOCUS: "close",
+          BUTTON_POINTEROVER: {
             cond: "isTriggerItem",
             target: "open:temp",
-            actions: "focusItem",
           },
         },
       },
@@ -77,25 +79,25 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           200: "open",
         },
         on: {
-          // TRIGGER_POINTERLEAVE: {
-          //   cond: "isTriggerItem",
-          //   target: "idle",
-          // },
+          BUTTON_POINTERLEAVE: {
+            cond: "isTriggerItem",
+            target: "idle",
+          },
         },
       },
 
       close: {
         entry: ["clearActiveId", "focusButton", "clearPointerDownNode"],
         on: {
-          TRIGGER_CLICK: {
+          BUTTON_CLICK: {
             target: "open",
             actions: "focusFirstItem",
           },
-          TRIGGER_POINTEROVER: {
+          BUTTON_POINTEROVER: {
             cond: "isTriggerItem",
             target: "open:temp",
           },
-          TRIGGER_BLUR: "idle",
+          BUTTON_BLUR: "idle",
           ARROW_DOWN: {
             target: "open",
             actions: "focusFirstItem",
@@ -106,12 +108,11 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           },
         },
       },
-
       open: {
         activities: "trackPointerDown",
         entry: "focusMenu",
         on: {
-          TRIGGER_CLICK: {
+          BUTTON_CLICK: {
             cond: not("isTriggerItem"),
             target: "close",
           },
@@ -122,7 +123,6 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             actions: "focusNextItem",
           },
           ARROW_LEFT: {
-            cond: "isNested",
             target: "close",
             actions: "focusParentMenu",
           },
@@ -144,38 +144,33 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             },
             {
               target: "close",
-              actions: ["invokeOnSelect", "closeParentRecursively"],
+              actions: ["invokeOnSelect", "closeParents"],
             },
           ],
           ESCAPE: [
             {
               cond: "isNested",
               target: "close",
-              actions: "closeParentRecursively",
+              actions: "closeParents",
             },
             { target: "close" },
           ],
-          ITEM_POINTERMOVE: [
+          ITEM_POINTEROVER: [
             {
-              cond: not("isTriggerItem"),
+              cond: and(not("isMenuFocused"), not("isTriggerItem")),
               actions: ["focusItem", "focusMenu", "closeChildren"],
-            },
-            {
-              cond: not("isMenuFocused"),
-              actions: ["focusItem", "focusMenu"],
             },
             {
               actions: "focusItem",
             },
           ],
           ITEM_POINTERLEAVE: {
-            cond: not("isTriggerActiveItem"),
             actions: "clearActiveId",
           },
           ITEM_CLICK: {
             cond: not("isTriggerActiveItem"),
             target: "close",
-            actions: ["invokeOnSelect", "closeParentRecursively"],
+            actions: ["invokeOnSelect", "closeParents"],
           },
           TYPEAHEAD: {
             actions: "focusMatchedItem",
@@ -196,8 +191,9 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         const { menu, activeElement } = getElements(ctx)
         return contains(menu, activeElement)
       },
-      isTriggerItem: (_ctx, evt) => {
-        const attr = attrs(evt.target)
+      isTriggerItem: (ctx) => {
+        const { trigger } = getElements(ctx)
+        const attr = attrs(trigger)
         return attr.get("role") === "menuitem" && !!attr.has("aria-controls")
       },
       isTriggerActiveItem: (ctx) => {
@@ -248,7 +244,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         ctx.onSelect?.(ctx.activeId ?? "")
       },
       focusItem(ctx, event) {
-        ctx.activeId = event.target.id
+        ctx.activeId = event.id
       },
       focusButton(ctx) {
         const { trigger } = getElements(ctx)
@@ -270,7 +266,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           child.send("FORCE_CLOSE")
         }
       },
-      closeParentRecursively(ctx) {
+      closeParents(ctx) {
         let parent = ctx.parent
         while (parent) {
           parent.send("FORCE_CLOSE")
