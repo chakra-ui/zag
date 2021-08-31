@@ -1,9 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils/dom-attr"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./menu.dom"
-import { MenuMachineContext, MenuMachineState } from "./menu.machine"
+import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
 
 export function connectMenuMachine(
   state: S.State<MenuMachineContext, MenuMachineState>,
@@ -15,20 +15,40 @@ export function connectMenuMachine(
   const ids = getElementIds(ctx.uid)
 
   return {
-    menuButtonProps: normalize<ButtonProps>({
+    isOpen,
+
+    setParent(parent: MenuMachine) {
+      send({ type: "SET_PARENT", value: parent, id: parent.state.context.uid })
+    },
+
+    setChild(child: MenuMachine) {
+      send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
+    },
+
+    triggerProps: normalize<ButtonProps>({
       type: "button",
-      id: ids.button,
-      "aria-haspopup": true,
+      id: ids.trigger,
+      "data-uid": ctx.uid,
+      "aria-haspopup": "menu",
       "aria-controls": ids.menu,
-      "aria-expanded": isOpen || undefined,
-      onClick() {
-        send("BUTTON_CLICK")
+      "aria-expanded": isOpen ? true : undefined,
+      onPointerMove(event) {
+        send({ type: "TRIGGER_POINTEROVER", target: event.currentTarget })
+      },
+      onPointerLeave(event) {
+        send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, relatedTarget: event.relatedTarget })
+      },
+      onClick(event) {
+        send({ type: "TRIGGER_CLICK", target: event.currentTarget })
+      },
+      onPointerDown(event) {
+        event.preventDefault()
       },
       onBlur() {
-        send("BUTTON_BLUR")
+        send("TRIGGER_BLUR")
       },
       onFocus() {
-        send("BUTTON_FOCUS")
+        send("TRIGGER_FOCUS")
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -48,21 +68,24 @@ export function connectMenuMachine(
       },
     }),
 
-    menuListProps: normalize<HTMLProps>({
+    menuProps: normalize<HTMLProps>({
       id: ids.menu,
       hidden: !isOpen,
       role: "menu",
-      tabIndex: 0,
-      "aria-activedescendant": ctx.activeDescendantId ?? "",
+      tabIndex: -1,
+      dir: ctx.direction,
+      "aria-labelledby": ids.trigger,
+      "aria-activedescendant": ctx.activeId ?? "",
+      "aria-orientation": ctx.orientation,
       onBlur(event) {
-        const { button } = getElements(ctx)
+        const { trigger } = getElements(ctx)
 
         const isValidBlur = validateBlur(event, {
-          exclude: button,
+          exclude: trigger,
           fallback: ctx.pointerdownNode,
         })
 
-        if (isValidBlur) {
+        if (isValidBlur && event.target.getAttribute("role") !== "menu") {
           send("BLUR")
         }
       },
@@ -73,6 +96,12 @@ export function connectMenuMachine(
           },
           ArrowUp() {
             send("ARROW_UP")
+          },
+          ArrowLeft() {
+            send("ARROW_LEFT")
+          },
+          ArrowRight() {
+            send("ARROW_RIGHT")
           },
           Escape() {
             send("ESCAPE")
@@ -100,25 +129,54 @@ export function connectMenuMachine(
       },
     }),
 
-    getMenuItemProps({ id }: { id?: string }) {
+    dividerProps: normalize<HTMLProps>({
+      role: "separator",
+      "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
+    }),
+
+    getRadioItemProps({ checked, disabled, id, onCheckedChange }: RadioItemProps) {
+      return normalize<HTMLProps>({
+        id,
+        role: "menuitemradio",
+        "aria-checked": !!checked,
+        "aria-disabled": disabled,
+        onClick(event) {
+          send({ type: "ITEM_CLICK", target: event.currentTarget })
+          onCheckedChange?.(!checked)
+        },
+      })
+    },
+
+    getItemProps({ id, disabled, value }: ItemProps) {
       return normalize<HTMLProps>({
         id,
         role: "menuitem",
+        "data-disabled": disabled,
         "data-ownedby": ids.menu,
-        "data-selected": ctx.activeDescendantId === id,
-        onClick() {
-          send("ITEM_CLICK")
+        "data-selected": dataAttr(ctx.activeId === id),
+        "data-value": value,
+        "data-orientation": ctx.orientation,
+        onClick(event) {
+          send({ type: "ITEM_CLICK", target: event.currentTarget })
         },
-        onPointerLeave() {
-          send("ITEM_POINTERLEAVE")
+        onPointerLeave(event) {
+          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget, relatedTarget: event.relatedTarget })
         },
-        onPointerEnter(event) {
-          send({
-            type: "ITEM_POINTEROVER",
-            id: event.target instanceof HTMLElement ? event.target.id : null,
-          })
+        onPointerMove(event) {
+          send({ type: "ITEM_POINTERMOVE", target: event.currentTarget })
         },
       })
     },
   }
+}
+
+type ItemProps = {
+  id?: string
+  disabled?: boolean
+  value?: string
+}
+
+type RadioItemProps = ItemProps & {
+  checked?: boolean
+  onCheckedChange?: (checked: boolean) => void
 }

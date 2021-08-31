@@ -1,35 +1,54 @@
-import { createMachine, preserve } from "@ui-machines/core"
+import { attrs, contains } from "@core-dom/element"
 import { nextTick } from "@core-foundation/utils/fn"
-import { WithDOM } from "../utils/types"
+import { createMachine, guards, Machine, preserve } from "@ui-machines/core"
 import { trackPointerDown } from "../utils/pointer-down"
+import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./menu.dom"
 
+const { not } = guards
+
+export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
+
 export type MenuMachineContext = WithDOM<{
-  activeDescendantId: string | null
-  onSelect?(value: string): void
+  disabled?: boolean
+  activeId: string | null
+  onSelect?: (value: string) => void
+  parent: MenuMachine | null
+  children: Record<string, MenuMachine>
+  orientation: "horizontal" | "vertical"
 }>
 
 export type MenuMachineState = {
-  value: "mounted" | "idle" | "open" | "close"
+  value: "unknown" | "idle" | "open" | "close" | "open:temp"
 }
-
-/**
- * State machine for the menu component
- *
- * @see Visualization https://xstate.js.org/viz/?gist=d00922675f3562f0d145367fa94b5080
- * @see Spec https://www.w3.org/TR/wai-aria-practices/examples/menu-button/menu-button-actions-active-descendant.html
- */
 
 export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
   {
     id: "menu-machine",
-    initial: "idle",
+    initial: "unknown",
     context: {
-      activeDescendantId: null,
+      pointerdownNode: null,
+      orientation: "vertical",
+      activeId: null,
       uid: "testing",
+      parent: null,
+      children: {},
+    },
+    on: {
+      SET_PARENT: {
+        actions: "setParent",
+      },
+      SET_CHILD: {
+        actions: "setChild",
+      },
+      FORCE_CLOSE: "close",
+      FORCE_OPEN: {
+        target: "open",
+        actions: "focusFirstItem",
+      },
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
@@ -37,23 +56,46 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           },
         },
       },
+
       idle: {
         on: {
-          BUTTON_CLICK: {
+          TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
           },
-          BUTTON_FOCUS: "close",
+          TRIGGER_FOCUS: "close",
+          TRIGGER_POINTEROVER: {
+            cond: "isTriggerItem",
+            target: "open:temp",
+            actions: "focusItem",
+          },
         },
       },
-      close: {
-        entry: ["resetId", "focusButton", "clearPointerDownNode"],
+
+      "open:temp": {
+        after: {
+          200: "open",
+        },
         on: {
-          BUTTON_CLICK: {
+          // TRIGGER_POINTERLEAVE: {
+          //   cond: "isTriggerItem",
+          //   target: "idle",
+          // },
+        },
+      },
+
+      close: {
+        entry: ["clearActiveId", "focusButton", "clearPointerDownNode"],
+        on: {
+          TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
           },
-          BUTTON_BLUR: "idle",
+          TRIGGER_POINTEROVER: {
+            cond: "isTriggerItem",
+            target: "open:temp",
+          },
+          TRIGGER_BLUR: "idle",
           ARROW_DOWN: {
             target: "open",
             actions: "focusFirstItem",
@@ -64,16 +106,25 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           },
         },
       },
+
       open: {
         activities: "trackPointerDown",
         entry: "focusMenu",
         on: {
-          BUTTON_CLICK: "close",
+          TRIGGER_CLICK: {
+            cond: not("isTriggerItem"),
+            target: "close",
+          },
           ARROW_UP: {
             actions: "focusPrevItem",
           },
           ARROW_DOWN: {
             actions: "focusNextItem",
+          },
+          ARROW_LEFT: {
+            cond: "isNested",
+            target: "close",
+            actions: "focusParentMenu",
           },
           HOME: {
             actions: "focusFirstItem",
@@ -82,31 +133,81 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             actions: "focusLastItem",
           },
           BLUR: "close",
-          ENTER: {
-            target: "close",
-            actions: "selectCurrentItem",
+          ARROW_RIGHT: {
+            cond: "isTriggerActiveItem",
+            actions: "openSubmenu",
           },
-          ESCAPE: "close",
-          ITEM_POINTEROVER: {
-            actions: "focusItem",
-          },
+          ENTER: [
+            {
+              cond: "isTriggerActiveItem",
+              actions: "openSubmenu",
+            },
+            {
+              target: "close",
+              actions: ["invokeOnSelect", "closeParentRecursively"],
+            },
+          ],
+          ESCAPE: [
+            {
+              cond: "isNested",
+              target: "close",
+              actions: "closeParentRecursively",
+            },
+            { target: "close" },
+          ],
+          ITEM_POINTERMOVE: [
+            {
+              cond: not("isTriggerItem"),
+              actions: ["focusItem", "focusMenu", "closeChildren"],
+            },
+            {
+              cond: not("isMenuFocused"),
+              actions: ["focusItem", "focusMenu"],
+            },
+            {
+              actions: "focusItem",
+            },
+          ],
           ITEM_POINTERLEAVE: {
-            actions: "resetId",
+            cond: not("isTriggerActiveItem"),
+            actions: "clearActiveId",
           },
           ITEM_CLICK: {
+            cond: not("isTriggerActiveItem"),
             target: "close",
-            actions: "selectCurrentItem",
+            actions: ["invokeOnSelect", "closeParentRecursively"],
           },
           TYPEAHEAD: {
             actions: "focusMatchedItem",
+          },
+          FOCUS_MENU: {
+            actions: "focusMenu",
           },
         },
       },
     },
   },
   {
+    guards: {
+      isRtl: (context) => context.direction === "rtl",
+      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isVertical: (ctx) => ctx.orientation === "vertical",
+      isMenuFocused: (ctx) => {
+        const { menu, activeElement } = getElements(ctx)
+        return contains(menu, activeElement)
+      },
+      isTriggerItem: (_ctx, evt) => {
+        const attr = attrs(evt.target)
+        return attr.get("role") === "menuitem" && !!attr.has("aria-controls")
+      },
+      isTriggerActiveItem: (ctx) => {
+        const { activeItem } = getElements(ctx)
+        return !!attrs(activeItem).has("aria-controls")
+      },
+      isNested: (ctx) => ctx.parent !== null,
+    },
     activities: {
-      trackPointerDown: trackPointerDown,
+      trackPointerDown,
     },
     actions: {
       setId: (ctx, evt) => {
@@ -115,8 +216,8 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       setOwnerDocument(ctx, evt) {
         ctx.doc = preserve(evt.doc)
       },
-      resetId(ctx) {
-        ctx.activeDescendantId = null
+      clearActiveId(ctx) {
+        ctx.activeId = null
       },
       clearPointerDownNode(ctx) {
         ctx.pointerdownNode = null
@@ -127,36 +228,64 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       focusFirstItem(ctx) {
         const menuitems = dom(ctx)
-        ctx.activeDescendantId = menuitems.first.id
+        ctx.activeId = menuitems.first.id
       },
       focusLastItem(ctx) {
         const menuitems = dom(ctx)
-        ctx.activeDescendantId = menuitems.last.id
+        ctx.activeId = menuitems.last.id
       },
       focusNextItem(ctx) {
         const menuitems = dom(ctx)
-        const next = menuitems.next(ctx.activeDescendantId ?? "")
-        ctx.activeDescendantId = next?.id ?? null
+        const next = menuitems.next(ctx.activeId ?? "")
+        ctx.activeId = next?.id ?? null
       },
       focusPrevItem(ctx) {
         const menuitems = dom(ctx)
-        const prev = menuitems.prev(ctx.activeDescendantId ?? "")
-        ctx.activeDescendantId = prev?.id ?? null
+        const prev = menuitems.prev(ctx.activeId ?? "")
+        ctx.activeId = prev?.id ?? null
       },
-      selectCurrentItem(ctx) {
-        ctx.onSelect?.(ctx.activeDescendantId ?? "")
+      invokeOnSelect(ctx) {
+        ctx.onSelect?.(ctx.activeId ?? "")
       },
       focusItem(ctx, event) {
-        ctx.activeDescendantId = event.id
+        ctx.activeId = event.target.id
       },
       focusButton(ctx) {
-        const { button } = getElements(ctx)
-        nextTick(() => button?.focus())
+        const { trigger } = getElements(ctx)
+        nextTick(() => trigger?.focus())
       },
       focusMatchedItem(ctx, evt) {
         const menuitems = dom(ctx)
         const node = menuitems.searchByKey(evt.key)
-        ctx.activeDescendantId = node?.id ?? ctx.activeDescendantId
+        ctx.activeId = node?.id ?? ctx.activeId
+      },
+      setParent(ctx, evt) {
+        ctx.parent = preserve(evt.value)
+      },
+      setChild(ctx, evt) {
+        ctx.children[evt.id] = preserve(evt.value)
+      },
+      closeChildren(ctx) {
+        for (const child of Object.values(ctx.children)) {
+          child.send("FORCE_CLOSE")
+        }
+      },
+      closeParentRecursively(ctx) {
+        let parent = ctx.parent
+        while (parent) {
+          parent.send("FORCE_CLOSE")
+          parent = parent.state.context.parent
+        }
+      },
+      openSubmenu(ctx) {
+        const { activeItem } = getElements(ctx)
+        const id = attrs(activeItem).get("data-uid")
+        const child = id ? ctx.children[id] : null
+        child?.send("FORCE_OPEN")
+      },
+      focusParentMenu(ctx) {
+        const { parent } = ctx
+        parent?.send("FOCUS_MENU")
       },
     },
   },

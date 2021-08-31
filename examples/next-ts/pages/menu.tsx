@@ -4,7 +4,7 @@ import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import styled from "@emotion/styled"
 
-const Styles = styled("div")({
+export const Styles = styled("div")({
   '[role="menu"]': {
     marginTop: "10px",
     listStyleType: "none",
@@ -25,16 +25,8 @@ const Styles = styled("div")({
     padding: "4px 8px",
     borderRadius: "4px",
   },
-  '[role="menuitem"][data-selected="true"]': {
+  '[role="menuitem"][data-selected]': {
     background: "rgba(196, 196, 196, 0.2)",
-  },
-  "button[aria-controls]": {
-    padding: "6px 12px",
-    borderRadius: "4px",
-    border: "0",
-    background: "wheat",
-    fontSize: "1rem",
-    fontWeight: 500,
   },
   "button[aria-controls]:focus": {
     outline: "2px solid transparent",
@@ -53,18 +45,18 @@ export default function Page() {
 
   const ref = useMount<HTMLButtonElement>(send)
 
-  const { menuListProps, getMenuItemProps, menuButtonProps } = menu.connect(state, send)
+  const { menuProps, getItemProps, triggerProps } = menu.connect(state, send)
 
   return (
     <Styles>
       <StateVisualizer state={state} />
-      <button ref={ref} {...menuButtonProps}>
+      <button ref={ref} {...triggerProps}>
         Click me
       </button>
-      <ul style={{ width: 300 }} {...menuListProps}>
-        <li {...getMenuItemProps({ id: "menuitem-1" })}>Edit</li>
-        <li {...getMenuItemProps({ id: "menuitem-2" })}>Duplicate</li>
-        <li {...getMenuItemProps({ id: "menuitem-3" })}>Delete</li>
+      <ul style={{ width: 300 }} {...menuProps}>
+        <li {...getItemProps({ id: "menuitem-1" })}>Edit</li>
+        <li {...getItemProps({ id: "menuitem-2" })}>Duplicate</li>
+        <li {...getItemProps({ id: "menuitem-3" })}>Delete</li>
       </ul>
     </Styles>
   )

@@ -3,7 +3,7 @@ import { MenuMachineContext } from "./menu.machine"
 
 export function getElementIds(uid: string) {
   return {
-    button: `menu-${uid}-button`,
+    trigger: `menu-${uid}-trigger`,
     menu: `menu-${uid}-menulist`,
   }
 }
@@ -12,8 +12,10 @@ export function getElements(ctx: MenuMachineContext) {
   const doc = ctx.doc ?? document
   const ids = getElementIds(ctx.uid)
   return {
+    activeElement: doc.activeElement as HTMLElement | null,
     menu: doc.getElementById(ids.menu),
-    button: doc.getElementById(ids.button),
+    trigger: doc.getElementById(ids.trigger),
+    activeItem: ctx.activeId ? doc.getElementById(ctx.activeId) : null,
   }
 }
 

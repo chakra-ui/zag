@@ -1,11 +1,15 @@
 import { env } from "@core-foundation/utils/env"
+import { Machine } from "@ui-machines/core"
 
-export function StateVisualizer(props: {
+type StateVisualizerProps = {
   state: Record<string, any>
   style?: Record<string, any>
   reset?: boolean
-}) {
-  const { state, style, reset } = props
+  label?: string
+}
+
+export function StateVisualizer(props: StateVisualizerProps) {
+  const { state, style, reset, label } = props
   return (
     <pre
       className="pre"
@@ -23,13 +27,12 @@ export function StateVisualizer(props: {
             }
       }
     >
+      {label && <div style={{ marginBottom: 24, fontFamily: "monospace", fontWeight: "bold" }}>{label}</div>}
       {JSON.stringify(
         state,
-        (key, value) => {
-          if (key === "childNodes") return value.value.length
-          return env.dom() && value instanceof HTMLElement
-            ? value.tagName
-            : value
+        (_k, v) => {
+          if (v instanceof Machine) return `Machine: ${v.state.context.uid}`
+          return env.dom() && v instanceof HTMLElement ? v.tagName : v
         },
         4,
       )}

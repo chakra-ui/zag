@@ -26,7 +26,7 @@ const styles = css({
     padding: "4px 8px",
     borderRadius: "4px",
   },
-  '[role="menuitem"][data-selected="true"]': {
+  '[role="menuitem"][data-selected]': {
     background: "rgba(196, 196, 196, 0.2)",
   },
   "button[aria-controls]": {
@@ -55,21 +55,18 @@ export default defineComponent({
     )
     const _ref = useMount(send)
 
-    const machineState = computed(() => {
-      const { menuListProps, getMenuItemProps, menuButtonProps } = menu.connect(state.value, send, normalizeProps)
-      return { menuListProps, getMenuItemProps, menuButtonProps }
-    })
+    const connect = computed(() => menu.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <button ref={_ref} {...machineState.value.menuButtonProps}>
+          <button ref={_ref} {...connect.value.triggerProps}>
             Click me
           </button>
-          <ul style={{ width: 300 }} {...machineState.value.menuListProps}>
-            <li {...machineState.value.getMenuItemProps({ id: "menuitem-1" })}>Edit</li>
-            <li {...machineState.value.getMenuItemProps({ id: "menuitem-2" })}>Duplicate</li>
-            <li {...machineState.value.getMenuItemProps({ id: "menuitem-3" })}>Delete</li>
+          <ul style={{ width: 300 }} {...connect.value.menuProps}>
+            <li {...connect.value.getItemProps({ id: "menuitem-1" })}>Edit</li>
+            <li {...connect.value.getItemProps({ id: "menuitem-2" })}>Duplicate</li>
+            <li {...connect.value.getItemProps({ id: "menuitem-3" })}>Delete</li>
           </ul>
 
           <StateVisualizer state={state.value} />
