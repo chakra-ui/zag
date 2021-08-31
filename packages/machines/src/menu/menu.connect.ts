@@ -1,5 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { getEventKey } from "../utils/get-event-key"
 import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./menu.dom"
@@ -38,11 +39,9 @@ export function connectMenuMachine(
       onPointerLeave() {
         send({ type: "TRIGGER_POINTERLEAVE" })
       },
-      onClick() {
-        send("TRIGGER_CLICK")
-      },
       onPointerDown(event) {
         event.preventDefault()
+        send("TRIGGER_CLICK")
       },
       onBlur() {
         send("TRIGGER_BLUR")
@@ -58,11 +57,19 @@ export function connectMenuMachine(
           ArrowUp() {
             send("ARROW_UP")
           },
+          Enter() {
+            send("TRIGGER_CLICK")
+          },
+          " "() {
+            send("TRIGGER_CLICK")
+          },
         }
 
-        if (event.key in keyMap) {
+        const key = getEventKey(event, ctx)
+
+        if (key in keyMap) {
           event.preventDefault()
-          const exec = keyMap[event.key]
+          const exec = keyMap[key]
           exec(event)
         }
       },
@@ -109,6 +116,9 @@ export function connectMenuMachine(
             send("ESCAPE")
           },
           Enter() {
+            send("ENTER")
+          },
+          " "() {
             send("ENTER")
           },
           Home() {
