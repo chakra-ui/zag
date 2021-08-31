@@ -9,12 +9,15 @@ import { Styles } from "./menu"
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine.withContext({}))
   const [subState, subSend, subMachine] = useMachine(menu.machine.withContext({}))
+  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine.withContext({}))
 
   const rootRef = useMount<HTMLButtonElement>(send)
   const subRef = useMount<HTMLLIElement>(subSend)
+  const sub2Ref = useMount<HTMLLIElement>(subSend)
 
   const root = menu.connect(state, send)
   const sub = menu.connect(subState, subSend)
+  const sub2 = menu.connect(sub2State, sub2Send)
 
   useEffect(() => {
     return nextTick(() => {
@@ -30,7 +33,22 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    return nextTick(() => {
+      sub.setChild(sub2Machine)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    return nextTick(() => {
+      sub2.setParent(subMachine)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const triggerItemProps = mergeProps(root.getItemProps({ id: sub.triggerProps.id }), sub.triggerProps)
+  const triggerItem2Props = mergeProps(sub.getItemProps({ id: sub2.triggerProps.id }), sub2.triggerProps)
 
   return (
     <Styles>
@@ -51,6 +69,12 @@ export default function Page() {
         <li {...sub.getItemProps({ id: "save-page" })}>Save Page As...</li>
         <li {...sub.getItemProps({ id: "shortcut" })}>Create Shortcuts</li>
         <li {...sub.getItemProps({ id: "name-win" })}>Name Window...</li>
+        <li ref={sub2Ref} {...triggerItem2Props}>{`Open nested >`}</li>
+      </ul>
+      <ul style={{ width: 300, left: 356, top: 170, position: "absolute" }} {...sub2.menuProps}>
+        <li {...sub2.getItemProps({ id: "welcome" })}>Welcome</li>
+        <li {...sub2.getItemProps({ id: "play" })}>Playground</li>
+        <li {...sub2.getItemProps({ id: "export" })}>Export</li>
       </ul>
     </Styles>
   )

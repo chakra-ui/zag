@@ -11,6 +11,7 @@ export function getElementIds(uid: string) {
 export function getElements(ctx: MenuMachineContext) {
   const doc = ctx.doc ?? document
   const ids = getElementIds(ctx.uid)
+
   return {
     activeElement: doc.activeElement as HTMLElement | null,
     menu: doc.getElementById(ids.menu),

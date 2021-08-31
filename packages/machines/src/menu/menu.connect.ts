@@ -1,4 +1,3 @@
-import { attrs } from "@core-dom/element"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
@@ -33,8 +32,8 @@ export function connectMenuMachine(
       "aria-haspopup": "menu",
       "aria-controls": ids.menu,
       "aria-expanded": isOpen ? true : undefined,
-      onPointerOver(event) {
-        send({ type: "TRIGGER_POINTEROVER", target: event.currentTarget })
+      onPointerMove(event) {
+        send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
       },
       onPointerLeave() {
         send({ type: "TRIGGER_POINTERLEAVE" })
@@ -75,18 +74,20 @@ export function connectMenuMachine(
       role: "menu",
       tabIndex: 0,
       dir: ctx.direction,
-      "aria-activedescendant": ctx.activeId ?? "",
+      "aria-activedescendant": ctx.activeId ?? undefined,
       "aria-orientation": ctx.orientation,
       "data-orientation": ctx.orientation,
       onBlur(event) {
         const { trigger } = getElements(ctx)
+        const childMenus = Object.values(ctx.children).map((child) => getElements(child.state.context).menu)
+        const parentMenu = ctx.parent ? getElements(ctx.parent.state.context).menu : null
 
         const isValidBlur = validateBlur(event, {
-          exclude: trigger,
+          exclude: [trigger, ...childMenus, parentMenu],
           fallback: ctx.pointerdownNode,
         })
 
-        if (isValidBlur && event.target.getAttribute("role") !== "menu") {
+        if (isValidBlur) {
           send("BLUR")
         }
       },
@@ -160,17 +161,10 @@ export function connectMenuMachine(
           send("ITEM_CLICK")
         },
         onPointerLeave(event) {
-          const attr = attrs(event.currentTarget)
-          const isTriggerItem = attr.has("aria-controls")
-          if (!isTriggerItem) {
-            send("ITEM_POINTERLEAVE")
-          }
+          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
         },
-        onPointerOver(event) {
-          send({
-            type: "ITEM_POINTEROVER",
-            id: event.currentTarget instanceof HTMLElement ? event.currentTarget.id : null,
-          })
+        onPointerMove() {
+          send({ type: "ITEM_POINTERMOVE", id })
         },
       })
     },

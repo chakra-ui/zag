@@ -19,7 +19,7 @@ export type MenuMachineContext = WithDOM<{
 }>
 
 export type MenuMachineState = {
-  value: "unknown" | "idle" | "open" | "close" | "open:temp"
+  value: "unknown" | "idle" | "open" | "close"
 }
 
 export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
@@ -46,9 +46,6 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         target: "open",
         actions: "focusFirstItem",
       },
-      CLEAR_TIMER: {
-        actions: "clearOpenTimeout",
-      },
     },
     states: {
       unknown: {
@@ -66,22 +63,13 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             target: "open",
             actions: "focusFirstItem",
           },
-          TRIGGER_FOCUS: "close",
-          TRIGGER_POINTEROVER: {
-            cond: "isTriggerItem",
-            target: "open:temp",
+          TRIGGER_FOCUS: {
+            cond: not("isSubmenu"),
+            target: "close",
           },
-        },
-      },
-
-      "open:temp": {
-        after: {
-          200: "open",
-        },
-        on: {
-          TRIGGER_POINTERLEAVE: {
+          TRIGGER_POINTERMOVE: {
             cond: "isTriggerItem",
-            target: "idle",
+            target: "open",
           },
         },
       },
@@ -93,9 +81,9 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             target: "open",
             actions: "focusFirstItem",
           },
-          TRIGGER_POINTEROVER: {
+          TRIGGER_POINTERMOVE: {
             cond: "isTriggerItem",
-            target: "open:temp",
+            target: "open",
           },
           TRIGGER_BLUR: "idle",
           ARROW_DOWN: {
@@ -108,6 +96,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           },
         },
       },
+
       open: {
         activities: "trackPointerDown",
         entry: "focusMenu",
@@ -132,7 +121,10 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           END: {
             actions: "focusLastItem",
           },
-          BLUR: "close",
+          BLUR: {
+            target: "close",
+            actions: ["closeChildren", "closeParents"],
+          },
           ARROW_RIGHT: {
             cond: "isTriggerActiveItem",
             actions: "openSubmenu",
@@ -149,15 +141,15 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           ],
           ESCAPE: [
             {
-              cond: "isNested",
+              cond: "isSubmenu",
               target: "close",
-              actions: "closeParents",
+              actions: ["closeParents", "closeChildren"],
             },
             { target: "close" },
           ],
-          ITEM_POINTEROVER: [
+          ITEM_POINTERMOVE: [
             {
-              cond: and(not("isMenuFocused"), not("isTriggerItem")),
+              cond: and(not("isMenuFocused"), not("isTriggerActiveItem")),
               actions: ["focusItem", "focusMenu", "closeChildren"],
             },
             {
@@ -165,6 +157,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             },
           ],
           ITEM_POINTERLEAVE: {
+            cond: not("isTriggerActiveItem"),
             actions: "clearActiveId",
           },
           ITEM_CLICK: {
@@ -191,16 +184,16 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         const { menu, activeElement } = getElements(ctx)
         return contains(menu, activeElement)
       },
-      isTriggerItem: (ctx) => {
-        const { trigger } = getElements(ctx)
-        const attr = attrs(trigger)
+      isTriggerItem: (ctx, evt) => {
+        const target = evt.target ?? getElements(ctx).trigger
+        const attr = attrs(target)
         return attr.get("role") === "menuitem" && !!attr.has("aria-controls")
       },
-      isTriggerActiveItem: (ctx) => {
-        const { activeItem } = getElements(ctx)
-        return !!attrs(activeItem).has("aria-controls")
+      isTriggerActiveItem: (ctx, evt) => {
+        const target = evt.target ?? getElements(ctx).activeItem
+        return !!attrs(target).has("aria-controls")
       },
-      isNested: (ctx) => ctx.parent !== null,
+      isSubmenu: (ctx) => ctx.parent !== null,
     },
     activities: {
       trackPointerDown,
