@@ -62,12 +62,12 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
 
       idle: {
         on: {
-          BUTTON_CLICK: {
+          TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
           },
-          BUTTON_FOCUS: "close",
-          BUTTON_POINTEROVER: {
+          TRIGGER_FOCUS: "close",
+          TRIGGER_POINTEROVER: {
             cond: "isTriggerItem",
             target: "open:temp",
           },
@@ -79,7 +79,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           200: "open",
         },
         on: {
-          BUTTON_POINTERLEAVE: {
+          TRIGGER_POINTERLEAVE: {
             cond: "isTriggerItem",
             target: "idle",
           },
@@ -89,15 +89,15 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       close: {
         entry: ["clearActiveId", "focusButton", "clearPointerDownNode"],
         on: {
-          BUTTON_CLICK: {
+          TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
           },
-          BUTTON_POINTEROVER: {
+          TRIGGER_POINTEROVER: {
             cond: "isTriggerItem",
             target: "open:temp",
           },
-          BUTTON_BLUR: "idle",
+          TRIGGER_BLUR: "idle",
           ARROW_DOWN: {
             target: "open",
             actions: "focusFirstItem",
@@ -112,7 +112,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         activities: "trackPointerDown",
         entry: "focusMenu",
         on: {
-          BUTTON_CLICK: {
+          TRIGGER_CLICK: {
             cond: not("isTriggerItem"),
             target: "close",
           },

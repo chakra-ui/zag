@@ -34,22 +34,22 @@ export function connectMenuMachine(
       "aria-controls": ids.menu,
       "aria-expanded": isOpen ? true : undefined,
       onPointerOver(event) {
-        send({ type: "BUTTON_POINTEROVER", target: event.currentTarget })
+        send({ type: "TRIGGER_POINTEROVER", target: event.currentTarget })
       },
       onPointerLeave() {
-        send({ type: "BUTTON_POINTERLEAVE" })
+        send({ type: "TRIGGER_POINTERLEAVE" })
       },
       onClick() {
-        send("BUTTON_CLICK")
+        send("TRIGGER_CLICK")
       },
       onPointerDown(event) {
         event.preventDefault()
       },
       onBlur() {
-        send("BUTTON_BLUR")
+        send("TRIGGER_BLUR")
       },
       onFocus() {
-        send("BUTTON_FOCUS")
+        send("TRIGGER_FOCUS")
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
