@@ -6,38 +6,50 @@ import styled from "@emotion/styled"
 
 export const Styles = styled("div")({
   '[role="menu"]': {
-    marginTop: "10px",
-    listStyleType: "none",
-    padding: "8px",
     maxWidth: "160px",
-    background: "#413c3c",
-    borderRadius: "4px",
-    color: "#fbf9f5",
+    backgroundColor: "white",
+    borderRadius: "6px",
+    padding: "5px",
+    boxShadow: "rgb(22 23 24 / 35%) 0px 10px 38px -10px, rgb(22 23 24 / 20%) 0px 10px 20px -15px",
   },
+
   '[role="menu"]:focus': {
-    outline: "2px solid transparent",
-    outlineOffset: "3px",
-    boxShadow: "0 0 0 3px var(--ring-color)",
+    outline: "2px dashed var(--ring-color)",
+    outlineOffset: "-3px",
   },
+
   '[role="menuitem"]': {
+    all: "unset",
+    fontSize: "14px",
+    lineHeight: 1,
+    color: "rgb(87, 70, 175)",
+    display: "flex",
+    alignItems: "center",
+    height: "25px",
+    position: "relative",
     userSelect: "none",
-    cursor: "default",
-    padding: "4px 8px",
-    borderRadius: "4px",
+    borderRadius: "3px",
+    padding: "0px 5px 0px 25px",
+
+    "&[data-selected]": {
+      backgroundColor: "rgb(110, 86, 207)",
+      color: "rgb(253, 252, 254)",
+    },
+
+    "&[data-disabled]": {
+      opacity: 0.4,
+    },
   },
-  '[role="menuitem"][data-selected]': {
-    background: "rgba(196, 196, 196, 0.2)",
-  },
+
   "button[aria-controls]:focus": {
-    outline: "2px solid transparent",
-    outlineOffset: "3px",
-    boxShadow: "0 0 0 3px var(--ring-color)",
+    outline: "2px dashed var(--ring-color)",
+    outlineOffset: "-3px",
   },
 })
 
 export default function Page() {
   const [state, send] = useMachine(
-    menu.machine.withContext({
+    menu.machine().withContext({
       uid: "234",
       onSelect: console.log,
     }),

@@ -34,14 +34,20 @@ export function connectMenuMachine(
       "aria-controls": ids.menu,
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
+        const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
+        if (disabled) return
         send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
       },
-      onPointerLeave() {
-        send({ type: "TRIGGER_POINTERLEAVE" })
+      onPointerLeave(event) {
+        const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
+        if (disabled) return
+        send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget })
       },
       onPointerDown(event) {
+        const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
+        if (event.button !== 0 || disabled) return
         event.preventDefault()
-        send("TRIGGER_CLICK")
+        send({ type: "TRIGGER_CLICK", target: event.currentTarget })
       },
       onBlur() {
         send("TRIGGER_BLUR")
@@ -69,6 +75,7 @@ export function connectMenuMachine(
 
         if (key in keyMap) {
           event.preventDefault()
+          event.stopPropagation()
           const exec = keyMap[key]
           exec(event)
         }
@@ -86,11 +93,16 @@ export function connectMenuMachine(
       "data-orientation": ctx.orientation,
       onBlur(event) {
         const { trigger } = getElements(ctx)
-        const childMenus = Object.values(ctx.children).map((child) => getElements(child.state.context).menu)
+
+        const childMenus = Object.values(ctx.children).map((child) => {
+          const { menu } = getElements(child.state.context)
+          return menu
+        })
+
         const parentMenu = ctx.parent ? getElements(ctx.parent.state.context).menu : null
 
         const isValidBlur = validateBlur(event, {
-          exclude: [trigger, ...childMenus, parentMenu],
+          exclude: childMenus.concat(trigger, parentMenu),
           fallback: ctx.pointerdownNode,
         })
 
@@ -152,8 +164,8 @@ export function connectMenuMachine(
         role: "menuitemradio",
         "aria-checked": !!checked,
         "aria-disabled": disabled,
-        onClick() {
-          send("ITEM_CLICK")
+        onClick(event) {
+          send({ type: "ITEM_CLICK", target: event.currentTarget })
           onCheckedChange?.(!checked)
         },
       })
@@ -163,18 +175,21 @@ export function connectMenuMachine(
       return normalize<HTMLProps>({
         id,
         role: "menuitem",
-        "data-disabled": disabled,
+        "data-disabled": dataAttr(disabled),
         "data-ownedby": ids.menu,
         "data-selected": dataAttr(ctx.activeId === id),
         "data-orientation": ctx.orientation,
-        onClick() {
-          send("ITEM_CLICK")
+        onClick(event) {
+          if (disabled) return
+          send({ type: "ITEM_CLICK", target: event.currentTarget })
         },
         onPointerLeave(event) {
+          if (disabled) return
           send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
         },
-        onPointerMove() {
-          send({ type: "ITEM_POINTERMOVE", id })
+        onPointerMove(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
         },
       })
     },

@@ -23,7 +23,7 @@ export function getElements(ctx: MenuMachineContext) {
 export function dom(ctx: MenuMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { menu } = getElements(ctx)
-  const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([disabled])`
+  const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([data-disabled])`
   const collection = DOMNodeList.fromSelector(menu, selector)
 
   return {

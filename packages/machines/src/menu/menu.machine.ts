@@ -10,7 +10,6 @@ const { not, and } = guards
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
 
 export type MenuMachineContext = WithDOM<{
-  disabled?: boolean
   activeId: string | null
   onSelect?: (value: string) => void
   parent: MenuMachine | null

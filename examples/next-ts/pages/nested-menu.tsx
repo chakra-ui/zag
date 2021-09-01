@@ -57,20 +57,23 @@ export default function Page() {
       <button ref={rootRef} {...root.triggerProps}>
         Click me
       </button>
+
       <ul style={{ width: 300 }} {...root.menuProps}>
         <li {...root.getItemProps({ id: "new-tab" })}>New Tab</li>
-        <li {...root.getItemProps({ id: "new-win" })}>New Window</li>
+        <li {...root.getItemProps({ id: "new-win", disabled: true })}>New Window</li>
         <li ref={subRef} {...triggerItemProps}>
           {`More Tools >`}{" "}
         </li>
         <li {...root.getItemProps({ id: "export" })}>Export</li>
       </ul>
+
       <ul style={{ width: 300, left: 180, top: 90, position: "absolute" }} {...sub.menuProps}>
         <li {...sub.getItemProps({ id: "save-page" })}>Save Page As...</li>
         <li {...sub.getItemProps({ id: "shortcut" })}>Create Shortcuts</li>
         <li {...sub.getItemProps({ id: "name-win" })}>Name Window...</li>
         <li ref={sub2Ref} {...triggerItem2Props}>{`Open nested >`}</li>
       </ul>
+
       <ul style={{ width: 300, left: 356, top: 170, position: "absolute" }} {...sub2.menuProps}>
         <li {...sub2.getItemProps({ id: "welcome" })}>Welcome</li>
         <li {...sub2.getItemProps({ id: "play" })}>Playground</li>
