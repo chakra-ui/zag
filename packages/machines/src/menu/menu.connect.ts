@@ -171,7 +171,7 @@ export function connectMenuMachine(
       })
     },
 
-    getItemProps({ id, disabled }: ItemProps) {
+    getItemProps({ id, disabled }: ItemProps = {}) {
       return normalize<HTMLProps>({
         id,
         role: "menuitem",
