@@ -1,4 +1,4 @@
-import { cast, runIfFn, toArray, warn, is } from "@core-foundation/utils"
+import { cast, is, runIfFn, toArray, warn } from "@core-foundation/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"
@@ -392,6 +392,14 @@ export class Machine<
     return { entries, exits }
   }
 
+  private get meta() {
+    return {
+      state: this.stateSnapshot,
+      guards: this.guardMap,
+      send: this.send.bind(this),
+    }
+  }
+
   /**
    * Function to executes defined actions. It can accept actions as string
    * (referencing `options.actions`) or actual functions.
@@ -400,14 +408,9 @@ export class Machine<
     for (const action of toArray(actions)) {
       const fn = is.string(action) ? this.actionMap?.[action] : action
 
-      warn(is.string(action) && !fn, `[machine] No implementation found for action type ${action}`)
+      warn(is.string(action) && !fn, `[machine] No implementation found for action: \`${action}\``)
 
-      const meta = {
-        state: this.stateSnapshot,
-        guards: this.guardMap,
-      }
-
-      fn?.(this.state.context, event, meta)
+      fn?.(this.state.context, event, this.meta)
     }
   }
 
@@ -420,17 +423,11 @@ export class Machine<
       const fn = is.string(activity) ? this.activityMap?.[activity] : activity
 
       if (!fn) {
-        warn(`[machine] No implementation found for activity type ${activity}`)
+        warn(`[machine] No implementation found for activity: \`${activity}\``)
         continue
       }
 
-      const meta = {
-        state: this.stateSnapshot,
-        guards: this.guardMap,
-        send: this.send.bind(this),
-      }
-
-      const cleanup = fn(this.state.context, event, meta)
+      const cleanup = fn(this.state.context, event, this.meta)
       this.addActivityCleanup(this.state.value, cleanup)
     }
   }
@@ -615,7 +612,7 @@ export class Machine<
    */
   sendParent = (evt: S.EventWithSrc) => {
     if (!this.parent) {
-      const msg = "[machine]: Cannot send event to an unknown parent"
+      const msg = "[machine] Cannot send event to an unknown parent"
       throw new Error(msg)
     }
     const event = toEvent<S.EventWithSrc>(evt)
@@ -640,7 +637,7 @@ export class Machine<
         this.status === MachineStatus.Stopped
           ? "[machine] Cannot transition a stopped machine"
           : "[machine] State does not have a definition"
-      warn(true, msg)
+      warn(msg)
       return
     }
 
@@ -697,4 +694,4 @@ export type MachineSrc<
   TEvent extends S.EventObject = S.AnyEventObject,
 > = Machine<TContext, TState, TEvent> | (() => Machine<TContext, TState, TEvent>)
 
-export type AnyMachine = Machine<any, any, any>
+export type AnyMachine = Machine<Dict, S.StateSchema, S.AnyEventObject>

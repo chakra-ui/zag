@@ -7,13 +7,13 @@ import { useEffect } from "react"
 import { Styles } from "./menu"
 
 export default function Page() {
-  const [state, send, machine] = useMachine(menu.machine.withContext({}))
-  const [subState, subSend, subMachine] = useMachine(menu.machine.withContext({}))
-  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine.withContext({}))
+  const [state, send, machine] = useMachine(menu.machine)
+  const [subState, subSend, subMachine] = useMachine(menu.machine)
+  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
 
   const rootRef = useMount<HTMLButtonElement>(send)
   const subRef = useMount<HTMLLIElement>(subSend)
-  const sub2Ref = useMount<HTMLLIElement>(subSend)
+  const sub2Ref = useMount<HTMLLIElement>(sub2Send)
 
   const root = menu.connect(state, send)
   const sub = menu.connect(subState, subSend)
