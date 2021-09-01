@@ -18,7 +18,7 @@ export type MenuMachineContext = WithDOM<{
 }>
 
 export type MenuMachineState = {
-  value: "unknown" | "idle" | "open" | "close"
+  value: "unknown" | "idle" | "open" | "close" | "opening"
 }
 
 export const menuMachine = () =>
@@ -69,8 +69,16 @@ export const menuMachine = () =>
             },
             TRIGGER_POINTERMOVE: {
               cond: "isTriggerItem",
-              target: "open",
+              target: "opening",
             },
+          },
+        },
+
+        opening: {
+          after: { 200: "open" },
+          on: {
+            BLUR: "close",
+            TRIGGER_POINTERLEAVE: "close",
           },
         },
 
@@ -83,7 +91,7 @@ export const menuMachine = () =>
             },
             TRIGGER_POINTERMOVE: {
               cond: "isTriggerItem",
-              target: "open",
+              target: "opening",
             },
             TRIGGER_BLUR: "idle",
             ARROW_DOWN: {

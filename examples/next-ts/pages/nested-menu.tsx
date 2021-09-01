@@ -47,8 +47,8 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const triggerItemProps = mergeProps(root.getItemProps(), sub.triggerProps)
-  const triggerItem2Props = mergeProps(sub.getItemProps(), sub2.triggerProps)
+  const triggerItemProps = mergeProps(root.getItemProps({ id: sub.triggerProps.id }), sub.triggerProps)
+  const triggerItem2Props = mergeProps(sub.getItemProps({ id: sub2.triggerProps.id }), sub2.triggerProps)
 
   return (
     <Styles>
@@ -60,7 +60,7 @@ export default function Page() {
 
       <ul style={{ width: 300 }} {...root.menuProps}>
         <li {...root.getItemProps({ id: "new-tab" })}>New Tab</li>
-        <li {...root.getItemProps({ id: "new-win", disabled: true })}>New Window</li>
+        <li {...root.getItemProps({ id: "new-win" })}>New Window</li>
         <li ref={subRef} {...triggerItemProps}>
           {`More Tools >`}{" "}
         </li>
