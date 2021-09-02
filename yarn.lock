@@ -1363,14 +1363,6 @@
   resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.4.tgz#8c5763ce28419f1b2bf264e5ee3896c657805e8e"
   integrity sha512-4jAvix3kDWA+Hs3yIoOF+sU5FrdDpH5/ygw4n1JLrexRLNviWhBKxAO19aDZxD7MdtGmJ9Q3q5E/ZBXmPk/tEw==
 
-"@core-dom/event@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.6.tgz#58208531bdc98a5f65e903985d90a5cffa01f481"
-  integrity sha512-8npSj9aBL/J/EbDDMpTAtjEqkaAkrRvwS/jyx3TywhYq7nyoPInCMpyNFhHyDSjkVKVpcgj3HPqL0HdyHDIGAA==
-  dependencies:
-    "@core-foundation/utils" "0.1.6"
-    "@core-graphics/point" "0.1.4"
-
 "@core-dom/event@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.7.tgz#95f839fc1c8948b6de076b1dcc1d617421ac03bf"
@@ -1403,22 +1395,10 @@
   dependencies:
     "@core-foundation/numeral" "0.1.1"
 
-"@core-foundation/utils@0.1.6", "@core-foundation/utils@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.6.tgz#514f836c50de8c0f785160441305cf21013f9ccb"
-  integrity sha512-dsntJpj2/txKYuP3QqvMJdQC0DISy+W8M7nvFZ+d4MuOZ4G3dumBTcOIDx6A2LRzNQAmoTsL00FKRTqRyOU37A==
-
 "@core-foundation/utils@0.1.7", "@core-foundation/utils@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.7.tgz#5e431e8ae33ea054dd8b07bb01a07b794c40312e"
   integrity sha512-hR4bnGl0pSHJOVmZR+2L/c72035MNWW30kkkxGpwbUE6ZJYpPE4svugdriz3qHGP4wWFyYSS/84DH9Zv5bsBnA==
-
-"@core-graphics/point@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.4.tgz#c6d19eb739ec058205f8fa2d00706dd87952a1e6"
-  integrity sha512-vSlFr2QYIgTAH0lE5xbVsasbJ+ld2YsIetyMvbWjpOzfsd98KsTZHUoAOE15S3LgJrj2COuTlOrPtx9sF+dbYw==
-  dependencies:
-    "@core-foundation/numeral" "0.1.1"
 
 "@core-graphics/point@0.1.5", "@core-graphics/point@^0.1.5":
   version "0.1.5"

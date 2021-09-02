@@ -123,7 +123,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         nextTick(() => {
           const inputs = dom(ctx)
           const input = inputs.at(ctx.focusedIndex)
-          input.focus()
+          input?.focus()
         })
       },
       invokeComplete: (ctx) => {

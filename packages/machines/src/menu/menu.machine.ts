@@ -232,10 +232,12 @@ export const menuMachine = () =>
         },
         focusFirstItem(ctx) {
           const menuitems = dom(ctx)
+          if (!menuitems.first) return
           ctx.activeId = menuitems.first.id
         },
         focusLastItem(ctx) {
           const menuitems = dom(ctx)
+          if (!menuitems.last) return
           ctx.activeId = menuitems.last.id
         },
         focusNextItem(ctx) {
