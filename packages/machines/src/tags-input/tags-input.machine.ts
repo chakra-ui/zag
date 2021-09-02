@@ -226,6 +226,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       },
       focusLastTag(ctx) {
         const tags = dom(ctx)
+        if (!tags.last) return
         ctx.focusedId = tags.last.id
       },
       focusPrevTag(ctx) {

@@ -183,6 +183,9 @@ export function connectMenuMachine(
           if (disabled) return
           send({ type: "ITEM_CLICK", target: event.currentTarget })
         },
+        onPointerUp(event) {
+          event.currentTarget.click()
+        },
         onPointerLeave(event) {
           if (disabled) return
           send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })

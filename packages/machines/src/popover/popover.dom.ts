@@ -1,5 +1,5 @@
 import { getFocusables } from "@core-dom/element"
-import { ArrayList } from "@core-foundation/array-list"
+import { List } from "@core-foundation/list"
 import { PopoverMachineContext } from "./popover.machine"
 
 export function getElementIds(uid: string) {
@@ -28,7 +28,7 @@ export function dom(ctx: PopoverMachineContext) {
   return {
     getFirstFocusable() {
       const focusables = getFocusables(content)
-      const collection = new ArrayList(focusables)
+      const collection = new List(focusables)
       return !collection.isEmpty ? collection.first : content
     },
   }

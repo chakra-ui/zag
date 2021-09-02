@@ -1,4 +1,4 @@
-import { DOMNodeList } from "@core-dom/node-list"
+import { NodeList } from "@core-dom/node-list"
 import { TagsInputMachineContext } from "./tags-input.machine"
 
 export function getElementIds(uid: string) {
@@ -24,7 +24,7 @@ export function dom(ctx: TagsInputMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { root, input } = getElements(ctx)
   const selector = `[data-ownedby=${ids.root}]`
-  const collection = DOMNodeList.fromSelector(root, selector)
+  const collection = NodeList.fromSelector(root, selector)
 
   return {
     isInputFocused: input.ownerDocument.activeElement === input,

@@ -1,8 +1,7 @@
 import { focus } from "@core-dom/event"
-import { ArrayList } from "@core-foundation/array-list"
+import { List } from "@core-foundation/list"
 import { is } from "@core-foundation/utils/is"
 import { createMachine, guards, preserve } from "@ui-machines/core"
-
 import { WithDOM } from "../utils/types"
 import { dom } from "./accordion.dom"
 
@@ -93,37 +92,41 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
     actions: {
       closeAccordion(ctx, evt) {
         if (ctx.allowMultiple) {
-          ctx.activeId = ArrayList.from(ctx.activeId).remove(evt.id).value
+          ctx.activeId = List.from(ctx.activeId).remove(evt.id).value
         } else {
           ctx.activeId = null
         }
       },
       openAccordion(ctx, evt) {
         if (ctx.allowMultiple) {
-          ctx.activeId = ArrayList.from(ctx.activeId).add(evt.id).value
+          ctx.activeId = List.from(ctx.activeId).add(evt.id).value
         } else {
           ctx.activeId = evt.id
         }
       },
       focusFirstAccordion(ctx) {
         const { first } = dom(ctx)
+        if (!first) return
         focus.nextTick(first)
       },
       focusLastAccordion(ctx) {
         const { last } = dom(ctx)
+        if (!last) return
         focus.nextTick(last)
       },
       focusNextAccordion(ctx) {
         const { next } = dom(ctx)
-        if (ctx.focusedId) {
-          focus.nextTick(next(ctx.focusedId))
-        }
+        if (!ctx.focusedId) return
+        const el = next(ctx.focusedId)
+        if (!el) return
+        focus.nextTick(el)
       },
       focusPrevAccordion(ctx) {
         const { prev } = dom(ctx)
-        if (ctx.focusedId) {
-          focus.nextTick(prev(ctx.focusedId))
-        }
+        if (!ctx.focusedId) return
+        const el = prev(ctx.focusedId)
+        if (!el) return
+        focus.nextTick(el)
       },
       setFocusedId(ctx, evt) {
         ctx.focusedId = evt.id

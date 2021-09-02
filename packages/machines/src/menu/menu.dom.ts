@@ -1,4 +1,4 @@
-import { DOMNodeList } from "@core-dom/node-list"
+import { NodeList } from "@core-dom/node-list"
 import { MenuMachineContext } from "./menu.machine"
 
 export function getElementIds(uid: string) {
@@ -24,7 +24,7 @@ export function dom(ctx: MenuMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { menu } = getElements(ctx)
   const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([data-disabled])`
-  const collection = DOMNodeList.fromSelector(menu, selector)
+  const collection = NodeList.fromSelector(menu, selector)
 
   return {
     first: collection.first,

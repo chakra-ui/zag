@@ -1,6 +1,6 @@
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { List } from "@core-foundation/list"
 import { nextTick } from "@core-foundation/utils/fn"
-import { ArrayList } from "@core-foundation/array-list"
+import { createMachine, guards, preserve } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { dom } from "./pin-input.dom"
 
@@ -112,7 +112,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       setInitialValue: (ctx) => {
         nextTick(() => {
           const inputs = dom(ctx)
-          const empty = ArrayList.fromLength(inputs.size, () => "")
+          const empty = List.fromLength(inputs.size, () => "")
           ctx.value = ctx.value.length === 0 ? preserve(empty.value as string[]) : ctx.value
         })
       },

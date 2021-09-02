@@ -1,4 +1,4 @@
-import { DOMNodeList } from "@core-dom/node-list"
+import { NodeList } from "@core-dom/node-list"
 import { ComboboxMachineContext } from "./combobox.machine"
 
 export function getElementIds(uid: string) {
@@ -34,7 +34,7 @@ export function dom(ctx: ComboboxMachineContext) {
   const { listbox, input, doc } = getElements(ctx)
 
   const selector = `[role=option]:not([disabled])`
-  const nodelist = DOMNodeList.fromSelector(listbox, selector)
+  const nodelist = NodeList.fromSelector(listbox, selector)
 
   const focusedSelector = `[role=option][id=${ctx.activeId}]`
   const focusedOption = listbox?.querySelector<HTMLElement>(focusedSelector)

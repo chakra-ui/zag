@@ -1,13 +1,5 @@
-import { AnyFunction } from "@core-foundation/utils"
+import { callAll } from "@core-foundation/utils"
 import { merge } from "merge-anything"
-
-const callAll =
-  <T extends AnyFunction>(...fns: (T | undefined)[]) =>
-  (...args: Parameters<T>) => {
-    for (const fn of fns) {
-      fn?.(...args)
-    }
-  }
 
 interface Props {
   [key: string]: any

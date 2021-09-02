@@ -5,6 +5,13 @@ import { trackPointerDown } from "../utils/pointer-down"
 import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./menu.dom"
 
+// Pointer behavior
+// On mouseleave a trigger-item, start a grace period before closing the menu.
+// Track the mouse movement to determine if the pointer in within the polygonal area of the sub-menu.
+// if movement is outside the polygonal area, do normal action.
+// if movement is within polygonal area and timeout is still counting, prevent normal action.
+// else do normal action.
+
 const { not, and } = guards
 
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>

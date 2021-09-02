@@ -1,4 +1,4 @@
-import { DOMNodeList } from "@core-dom/node-list"
+import { NodeList } from "@core-dom/node-list"
 import { TabsMachineContext } from "./tabs.machine"
 
 export function getElementIds(uid: string) {
@@ -15,7 +15,7 @@ export function dom(ctx: TabsMachineContext) {
   const tablist = doc.getElementById(ids.tablist)
 
   const selector = `[role=tab][data-ownedby='${ids.tablist}']`
-  const collection = DOMNodeList.fromSelector(tablist, selector)
+  const collection = NodeList.fromSelector(tablist, selector)
 
   return {
     first: collection.first,

@@ -2,7 +2,7 @@ import { addPointerEvent, dispatchInputEvent, EventListenerWithPointInfo as List
 import { NumericRange } from "@core-foundation/numeric-range"
 import { is, nextTick, pipe } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
-import { Rect } from "@core-graphics/rect"
+import { fromElement } from "@core-graphics/rect/create"
 import { createMachine, preserve } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { getElements, getRangeAtIndex, pointToValue } from "./range-slider.dom"
@@ -181,7 +181,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
           const { thumbs } = getElements(ctx)
 
           // get the center point of all thumbs
-          const points = thumbs.map((el) => Rect.fromElement(el)).map((rect) => rect.centerPoint.value)
+          const points = thumbs.map((el) => fromElement(el)).map((rect) => rect.centerPoint.value)
 
           // get the closest center point from the event ("pointerdown") point
           const getClosest = Point.closest(...points)

@@ -101,23 +101,23 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
       },
       focusFirstTab(ctx) {
         const tabs = dom(ctx)
-        nextTick(() => tabs.first.focus())
+        nextTick(() => tabs.first?.focus())
       },
       focusLastTab(ctx) {
         const tabs = dom(ctx)
-        nextTick(() => tabs.last.focus())
+        nextTick(() => tabs.last?.focus())
       },
       focusNextTab(ctx) {
         if (!ctx.focusedTabId) return
         const tabs = dom(ctx)
         const next = tabs.next(ctx.focusedTabId)
-        nextTick(() => next.focus())
+        nextTick(() => next?.focus())
       },
       focusPrevTab(ctx) {
         if (!ctx.focusedTabId) return
         const tabs = dom(ctx)
         const prev = tabs.prev(ctx.focusedTabId)
-        nextTick(() => prev.focus())
+        nextTick(() => prev?.focus())
       },
       setActiveTabRect(ctx) {
         nextTick(() => {
