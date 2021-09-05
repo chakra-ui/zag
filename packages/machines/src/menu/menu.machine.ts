@@ -91,7 +91,7 @@ export const menuMachine = () =>
         },
 
         opening: {
-          after: { 100: "open" },
+          after: { 150: "open" },
           on: {
             BLUR: "close",
             TRIGGER_POINTERLEAVE: "close",
@@ -189,14 +189,17 @@ export const menuMachine = () =>
             ],
             ITEM_POINTERMOVE: [
               {
-                cond: and(not("isMenuFocused"), not("isTriggerActiveItem"), not("shouldPause")),
+                cond: and(not("isMenuFocused"), not("isTriggerActiveItem"), not("shouldPause"), not("isActiveItem")),
                 actions: ["focusItem", "focusMenu", "closeChildren"],
               },
               {
-                cond: not("shouldPause"),
+                cond: and(not("shouldPause"), not("isActiveItem")),
                 actions: "focusItem",
               },
-              { actions: "setHoveredItem" },
+              {
+                cond: not("isActiveItem"),
+                actions: "setHoveredItem",
+              },
             ],
             ITEM_POINTERLEAVE: {
               cond: and(not("isTriggerItem"), not("shouldPause")),
@@ -229,6 +232,9 @@ export const menuMachine = () =>
         isMenuFocused: (ctx) => {
           const { menu, activeElement } = getElements(ctx)
           return contains(menu, activeElement)
+        },
+        isActiveItem: (ctx, evt) => {
+          return ctx.activeId === evt.target.id
         },
         isTriggerItem: (ctx, evt) => {
           const target = evt.target ?? getElements(ctx).trigger

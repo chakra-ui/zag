@@ -209,6 +209,10 @@ export function connectMenuMachine(
           if (disabled) return
           send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
         },
+        onPointerEnter(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+        },
         onPointerMove(event) {
           if (disabled) return
           send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
