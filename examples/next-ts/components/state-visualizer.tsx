@@ -17,13 +17,15 @@ export function StateVisualizer(props: StateVisualizerProps) {
         reset
           ? style
           : {
-              ...style,
               float: "right",
               position: "absolute",
+              overflow: "hidden",
               top: 40,
               right: 40,
-              minWidth: 400,
+              maxWidth: 240,
+              width: "100%",
               zIndex: -1,
+              ...style,
             }
       }
     >

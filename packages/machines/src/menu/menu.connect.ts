@@ -1,3 +1,4 @@
+import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
@@ -12,8 +13,9 @@ export function connectMenuMachine(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const isOpen = state.matches("open")
+  const isOpen = state.matches("open", "closing")
   const ids = getElementIds(ctx.uid)
+  const isSubmenu = ctx.parent != null
 
   return {
     isOpen,
@@ -35,13 +37,20 @@ export function connectMenuMachine(
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
         const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
-        if (disabled) return
-        send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
+        if (disabled || !isSubmenu) return
+        send({
+          type: "TRIGGER_POINTERMOVE",
+          target: event.currentTarget,
+        })
       },
       onPointerLeave(event) {
         const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
-        if (disabled) return
-        send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget })
+        if (disabled || !isSubmenu) return
+        send({
+          type: "TRIGGER_POINTERLEAVE",
+          target: event.currentTarget,
+          point: Point.fromPointerEvent(event as any),
+        })
       },
       onPointerDown(event) {
         const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
@@ -99,16 +108,26 @@ export function connectMenuMachine(
           return menu
         })
 
-        const parentMenu = ctx.parent ? getElements(ctx.parent.state.context).menu : null
+        const exclude = [...childMenus, trigger]
+
+        let parent = ctx.parent
+        while (parent) {
+          const el = getElements(parent.state.context).menu
+          exclude.push(el)
+          parent = parent.state.context.parent
+        }
 
         const isValidBlur = validateBlur(event, {
-          exclude: childMenus.concat(trigger, parentMenu),
+          exclude,
           fallback: ctx.pointerdownNode,
         })
 
         if (isValidBlur) {
           send("BLUR")
         }
+      },
+      onPointerEnter() {
+        send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {

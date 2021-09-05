@@ -53,7 +53,8 @@ export default function Page() {
   return (
     <Styles>
       <StateVisualizer state={state} label="Root Machine" />
-      <StateVisualizer state={subState} label="Sub Machine" style={{ left: 400, maxWidth: 320 }} />
+      <StateVisualizer state={subState} label="Sub Machine" style={{ right: 340 }} />
+      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ left: 500 }} />
       <button ref={rootRef} {...root.triggerProps}>
         Click me
       </button>
@@ -72,9 +73,11 @@ export default function Page() {
         <li {...sub.getItemProps({ id: "shortcut" })}>Create Shortcuts</li>
         <li {...sub.getItemProps({ id: "name-win" })}>Name Window...</li>
         <li ref={sub2Ref} {...triggerItem2Props}>{`Open nested >`}</li>
+        <li {...sub.getItemProps({ id: "switch-win" })}>Switch Window</li>
+        <li {...sub.getItemProps({ id: "new-term" })}>New Terminal</li>
       </ul>
 
-      <ul style={{ width: 300, left: 356, top: 170, position: "absolute" }} {...sub2.menuProps}>
+      <ul style={{ width: 300, left: 352, top: 170, position: "absolute" }} {...sub2.menuProps}>
         <li {...sub2.getItemProps({ id: "welcome" })}>Welcome</li>
         <li {...sub2.getItemProps({ id: "play" })}>Playground</li>
         <li {...sub2.getItemProps({ id: "export" })}>Export</li>

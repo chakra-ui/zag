@@ -33,6 +33,7 @@
     "@core-foundation/numeric-range": "^0.1.2",
     "@core-foundation/utils": "^0.1.7",
     "@core-graphics/point": "^0.1.5",
+    "@core-graphics/polygon": "^0.1.0",
     "@core-graphics/rect": "^0.1.5",
     "@types/react": "^17.0.18",
     "@ui-machines/core": "0.0.0",

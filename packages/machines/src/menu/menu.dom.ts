@@ -13,6 +13,7 @@ export function getElements(ctx: MenuMachineContext) {
   const ids = getElementIds(ctx.uid)
 
   return {
+    doc,
     activeElement: doc.activeElement as HTMLElement | null,
     menu: doc.getElementById(ids.menu),
     trigger: doc.getElementById(ids.trigger),

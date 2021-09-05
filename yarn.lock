@@ -1405,6 +1405,13 @@
   resolved "https://registry.yarnpkg.com/@core-graphics/point/-/point-0.1.5.tgz#c2186dd92c47db62d4eb27f3e88fcff437162c16"
   integrity sha512-biEO+CORBRICY6o/pdXt4DtaSLxatr9ruXagej+hUBqAK7g2CeV8SNWNEzsUHbn89tuFz/O2ufGnKP8AFdra/w==
 
+"@core-graphics/polygon@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@core-graphics/polygon/-/polygon-0.1.0.tgz#227fab43d05cdd44ed4e69e04c9552c195696e53"
+  integrity sha512-1LeIZ4tPwfTExbmC9xnT56jHa5xHurZc6d6da4NVJYdQyAcAGfnuh6VXhS4jhYEaQ8t/I0XN5FoP+vlt41icSA==
+  dependencies:
+    "@core-graphics/point" "^0.1.5"
+
 "@core-graphics/rect@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.5.tgz#2ab22900d4cc8af85a25f9f346bef81e75656486"
