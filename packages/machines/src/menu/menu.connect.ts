@@ -1,10 +1,11 @@
+import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getElementIds, getElements } from "./menu.dom"
+import { getElementIds, getFocusableElements, isTargetDisabled } from "./menu.dom"
 import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
 
 export function connectMenuMachine(
@@ -36,7 +37,7 @@ export function connectMenuMachine(
       "aria-controls": ids.menu,
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
-        const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
+        const disabled = isTargetDisabled(event)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
@@ -44,16 +45,16 @@ export function connectMenuMachine(
         })
       },
       onPointerLeave(event) {
-        const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
+        const disabled = isTargetDisabled(event)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERLEAVE",
           target: event.currentTarget,
-          point: Point.fromPointerEvent(event as any),
+          point: Point.fromPointerEvent(cast(event)),
         })
       },
       onPointerDown(event) {
-        const disabled = event.currentTarget.disabled || event.currentTarget.dataset.disabled === ""
+        const disabled = isTargetDisabled(event)
         if (event.button !== 0 || disabled) return
         event.preventDefault()
         send({ type: "TRIGGER_CLICK", target: event.currentTarget })
@@ -75,7 +76,7 @@ export function connectMenuMachine(
           Enter() {
             send("TRIGGER_CLICK")
           },
-          " "() {
+          Space() {
             send("TRIGGER_CLICK")
           },
         }
@@ -101,24 +102,8 @@ export function connectMenuMachine(
       "aria-orientation": ctx.orientation,
       "data-orientation": ctx.orientation,
       onBlur(event) {
-        const { trigger } = getElements(ctx)
-
-        const childMenus = Object.values(ctx.children).map((child) => {
-          const { menu } = getElements(child.state.context)
-          return menu
-        })
-
-        const exclude = [...childMenus, trigger]
-
-        let parent = ctx.parent
-        while (parent) {
-          const el = getElements(parent.state.context).menu
-          exclude.push(el)
-          parent = parent.state.context.parent
-        }
-
         const isValidBlur = validateBlur(event, {
-          exclude,
+          exclude: getFocusableElements(ctx),
           fallback: ctx.pointerdownNode,
         })
 
@@ -149,7 +134,7 @@ export function connectMenuMachine(
           Enter() {
             send("ENTER")
           },
-          " "() {
+          Space() {
             send("ENTER")
           },
           Home() {
@@ -160,7 +145,8 @@ export function connectMenuMachine(
           },
         }
 
-        const exec = keyMap[event.key]
+        const key = getEventKey(event, ctx)
+        const exec = keyMap[key]
 
         if (exec) {
           event.preventDefault()
@@ -177,7 +163,8 @@ export function connectMenuMachine(
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
 
-    getRadioItemProps({ checked, disabled, id, onCheckedChange }: RadioItemProps) {
+    getRadioItemProps(opts: RadioItemProps) {
+      const { checked, disabled, id, onCheckedChange } = opts
       return normalize<HTMLProps>({
         id,
         role: "menuitemradio",
@@ -190,7 +177,8 @@ export function connectMenuMachine(
       })
     },
 
-    getItemProps({ id, disabled }: ItemProps = {}) {
+    getItemProps(opts: ItemProps = {}) {
+      const { id, disabled } = opts
       return normalize<HTMLProps>({
         id,
         role: "menuitem",

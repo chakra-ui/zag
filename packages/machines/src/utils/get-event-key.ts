@@ -11,7 +11,7 @@ const sameKeyMap = {
   Up: "ArrowUp",
   Down: "ArrowDown",
   Esc: "Escape",
-  Space: " ",
+  " ": "Space",
   Left: "ArrowLeft",
   Right: "ArrowRight",
 }
@@ -31,7 +31,10 @@ export function getEventKey(event: KeyboardEvent, options: EventKeyOptions = {})
   key = sameKeyMap[key] ?? key // normalize key
 
   const isRtl = direction === "rtl" && orientation === "horizontal"
-  if (isRtl && key in rtlKeyMap) key = rtlKeyMap[key]
+
+  if (isRtl && key in rtlKeyMap) {
+    key = rtlKeyMap[key]
+  }
 
   return key
 }

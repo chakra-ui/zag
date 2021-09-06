@@ -1,4 +1,5 @@
 import { NodeList } from "@core-dom/node-list"
+import { is } from "@core-foundation/utils"
 import { MenuMachineContext } from "./menu.machine"
 
 export function getElementIds(uid: string) {
@@ -37,4 +38,32 @@ export function dom(ctx: MenuMachineContext) {
       return collection.findByText(key, activeId)
     },
   }
+}
+
+export function getFocusableElements(ctx: MenuMachineContext) {
+  const { trigger } = getElements(ctx)
+
+  const childMenus = Object.values(ctx.children).map((child) => {
+    const { menu } = getElements(child.state.context)
+    return menu
+  })
+
+  const elements = [...childMenus, trigger]
+
+  let parent = ctx.parent
+  while (parent) {
+    const el = getElements(parent.state.context).menu
+    elements.push(el)
+    parent = parent.state.context.parent
+  }
+
+  return elements
+}
+
+export function isMenuItem(target: EventTarget | null) {
+  return is.element(target) && !!target.getAttribute("role")?.startsWith("menuitem")
+}
+
+export function isTargetDisabled(event: { currentTarget: HTMLElement }): boolean {
+  return event.currentTarget.dataset.disabled === ""
 }
