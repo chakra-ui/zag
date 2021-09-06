@@ -163,22 +163,43 @@ export function connectMenuMachine(
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
 
-    getRadioItemProps(opts: RadioItemProps) {
-      const { checked, disabled, id, onCheckedChange } = opts
+    getItemOptionProps(opts: OptionItemProps) {
+      const { type, checked, disabled, id, onCheckedChange, valueText } = opts
       return normalize<HTMLProps>({
         id,
-        role: "menuitemradio",
+        role: `menuitem${type}`,
+        "data-disabled": dataAttr(disabled),
+        "data-ownedby": ids.menu,
         "aria-checked": !!checked,
         "aria-disabled": disabled,
+        "data-selected": dataAttr(ctx.activeId === id),
+        "data-orientation": ctx.orientation,
+        "data-valuetext": valueText,
         onClick(event) {
+          if (disabled) return
           send({ type: "ITEM_CLICK", target: event.currentTarget })
           onCheckedChange?.(!checked)
+        },
+        onPointerUp(event) {
+          event.currentTarget.click()
+        },
+        onPointerLeave(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
+        },
+        onPointerEnter(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+        },
+        onPointerMove(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
         },
       })
     },
 
     getItemProps(opts: ItemProps = {}) {
-      const { id, disabled } = opts
+      const { id, disabled, valueText } = opts
       return normalize<HTMLProps>({
         id,
         role: "menuitem",
@@ -186,6 +207,7 @@ export function connectMenuMachine(
         "data-ownedby": ids.menu,
         "data-selected": dataAttr(ctx.activeId === id),
         "data-orientation": ctx.orientation,
+        "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
           send({ type: "ITEM_CLICK", target: event.currentTarget })
@@ -213,9 +235,11 @@ export function connectMenuMachine(
 type ItemProps = {
   id?: string
   disabled?: boolean
+  valueText?: string
 }
 
-type RadioItemProps = ItemProps & {
+type OptionItemProps = ItemProps & {
+  type: "radio" | "checkbox"
   checked?: boolean
   onCheckedChange?: (checked: boolean) => void
 }

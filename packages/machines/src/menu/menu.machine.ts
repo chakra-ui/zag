@@ -84,7 +84,7 @@ export const menuMachine = () =>
               target: "close",
             },
             TRIGGER_POINTERMOVE: {
-              cond: "isTriggerItem",
+              cond: and("isTriggerItem", "isParentActiveItem"),
               target: "opening",
             },
           },
@@ -236,6 +236,9 @@ export const menuMachine = () =>
         isActiveItem: (ctx, evt) => {
           return ctx.activeId === evt.target.id
         },
+        isParentActiveItem: (ctx, evt) => {
+          return ctx.parent?.state.context.activeId === evt.target.id
+        },
         isTriggerItem: (ctx, evt) => {
           const target = evt.target ?? getElements(ctx).trigger
           const attr = attrs(target)
@@ -298,7 +301,9 @@ export const menuMachine = () =>
         clearPause(ctx) {
           if (!ctx.parent) return
           const { menu } = getElements(ctx.parent.state.context)
-          menu!.dataset.pause = "false"
+          if (menu) {
+            menu.dataset.pause = "false"
+          }
         },
         setId: (ctx, evt) => {
           ctx.uid = evt.id
