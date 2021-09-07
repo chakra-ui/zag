@@ -13,7 +13,6 @@ export type AccordionMachineContext = WithDOM<{
   focusedId: string | null
   disabled?: boolean
   activeId: string | string[] | null
-  defaultActiveId?: string | string[]
   onChange?: (activeId: string | string[]) => void
 }>
 
@@ -58,11 +57,11 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
           },
           CLICK: [
             {
-              cond: and("isAccordionActive", "canToggle"),
+              cond: and("isActive", "canToggle"),
               actions: "closeAccordion",
             },
             {
-              cond: not("isAccordionActive"),
+              cond: not("isActive"),
               actions: "openAccordion",
             },
           ],
@@ -85,7 +84,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       canToggle(ctx) {
         return !!ctx.allowToggle || !!ctx.allowMultiple
       },
-      isAccordionActive(ctx, evt) {
+      isActive(ctx, evt) {
         return is.array(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id
       },
     },

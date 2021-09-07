@@ -1,11 +1,11 @@
 ---
-"with-typescript": minor
-"with-typescript-on-vue": minor
-"@ui-machines/react": minor
-"@ui-machines/svelte": minor
-"@ui-machines/core": minor
-"@ui-machines/vue": minor
-"@ui-machines/web": minor
+"with-typescript": patch
+"with-typescript-on-vue": patch
+"@ui-machines/react": patch
+"@ui-machines/svelte": patch
+"@ui-machines/core": patch
+"@ui-machines/vue": patch
+"@ui-machines/web": patch
 ---
 
 Initial release of packages

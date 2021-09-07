@@ -20,32 +20,33 @@ export function connectAccordionMachine(
     }),
 
     getAccordionProps({ uid, disabled }: { uid: string; disabled?: boolean }) {
-      const isVisible = is.array(ctx.activeId) ? ctx.activeId.includes(uid) : uid === ctx.activeId
-
+      const isOpen = is.array(ctx.activeId) ? ctx.activeId.includes(uid) : uid === ctx.activeId
       const isDisabled = disabled ?? ctx.disabled
       const isFocused = ctx.focusedId === uid
 
       return {
+        isFocused,
+        isOpen,
         groupProps: normalize<HTMLProps>({
           id: ids.getGroupId(uid),
-          "data-expanded": isVisible,
+          "data-expanded": isOpen,
         }),
 
         panelProps: normalize<HTMLProps>({
           role: "region",
           id: ids.getPanelId(uid),
           "aria-labelledby": ids.getTriggerId(uid),
-          hidden: !isVisible,
+          hidden: !isOpen,
           "data-disabled": dataAttr(isDisabled),
           "data-focus": dataAttr(isFocused),
-          "data-expanded": dataAttr(isVisible),
+          "data-expanded": dataAttr(isOpen),
         }),
 
         triggerProps: normalize<ButtonProps>({
           type: "button",
           id: ids.getTriggerId(uid),
           "aria-controls": ids.getPanelId(uid),
-          "aria-expanded": isVisible,
+          "aria-expanded": isOpen,
           disabled: isDisabled,
           "data-ownedby": ids.root,
           onFocus() {
@@ -77,7 +78,7 @@ export function connectAccordionMachine(
             }
 
             const key = getEventKey(event, {
-              direction: "ltr",
+              direction: ctx.direction,
               orientation: "vertical",
             })
 
