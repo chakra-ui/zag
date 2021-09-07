@@ -8,11 +8,11 @@ function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { rootProps, getAccordionProps } = accordion.connect(state, send)
+  const { rootProps, getAccordionItem } = accordion.connect(state, send)
 
-  const home = getAccordionProps({ uid: "home" })
-  const about = getAccordionProps({ uid: "about" })
-  const contact = getAccordionProps({ uid: "contact" })
+  const home = getAccordionItem({ id: "home" })
+  const about = getAccordionItem({ id: "about" })
+  const contact = getAccordionItem({ id: "contact" })
 
   return (
     <div style={{ width: "100%" }}>
@@ -22,8 +22,8 @@ function Page() {
             <button {...home.triggerProps}>Home</button>
           </h3>
           <div {...home.panelProps}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
           </div>
         </div>
 
@@ -32,8 +32,8 @@ function Page() {
             <button {...about.triggerProps}>About</button>
           </h3>
           <div {...about.panelProps}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
           </div>
         </div>
 
@@ -42,8 +42,8 @@ function Page() {
             <button {...contact.triggerProps}>Contact</button>
           </h3>
           <div {...contact.panelProps}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
           </div>
         </div>
       </div>

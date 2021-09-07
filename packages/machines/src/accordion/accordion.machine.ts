@@ -17,13 +17,13 @@ export type AccordionMachineContext = WithDOM<{
 }>
 
 export type AccordionMachineState = {
-  value: "mounted" | "idle" | "focused"
+  value: "unknown" | "idle" | "focused"
 }
 
 export const accordionMachine = createMachine<AccordionMachineContext, AccordionMachineState>(
   {
     id: "accordion-machine",
-    initial: "mounted",
+    initial: "unknown",
     context: {
       focusedId: null,
       activeId: null,
@@ -31,7 +31,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       allowToggle: false,
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
@@ -57,12 +57,12 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
           },
           CLICK: [
             {
-              cond: and("isActive", "canToggle"),
-              actions: "closeAccordion",
+              cond: and("isExpanded", "canToggle"),
+              actions: "collapseAccordion",
             },
             {
-              cond: not("isActive"),
-              actions: "openAccordion",
+              cond: not("isExpanded"),
+              actions: "expandAccordion",
             },
           ],
           HOME: {
@@ -81,22 +81,21 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
   },
   {
     guards: {
-      canToggle(ctx) {
-        return !!ctx.allowToggle || !!ctx.allowMultiple
-      },
-      isActive(ctx, evt) {
-        return is.array(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id
+      canToggle: (ctx) => !!ctx.allowToggle || !!ctx.allowMultiple,
+      isExpanded: (ctx, evt) => {
+        const { activeId } = ctx
+        return is.array(activeId) ? activeId.includes(evt.id) : activeId === evt.id
       },
     },
     actions: {
-      closeAccordion(ctx, evt) {
+      collapseAccordion(ctx, evt) {
         if (ctx.allowMultiple) {
           ctx.activeId = List.from(ctx.activeId).remove(evt.id).value
         } else {
           ctx.activeId = null
         }
       },
-      openAccordion(ctx, evt) {
+      expandAccordion(ctx, evt) {
         if (ctx.allowMultiple) {
           ctx.activeId = List.from(ctx.activeId).add(evt.id).value
         } else {

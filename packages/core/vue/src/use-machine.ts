@@ -1,6 +1,5 @@
-import { runIfFn } from "@core-foundation/utils/fn"
-import { computed, onMounted, watch, onBeforeUnmount, shallowRef } from "vue"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from "vue"
 
 export function useMachine<
   TContext extends Record<string, any>,
@@ -15,7 +14,7 @@ export function useMachine<
   /** Machine options */
   const { actions, state: hydratedState } = options ?? {}
 
-  const resolvedMachine = runIfFn(machine)
+  const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
   const service = options ? resolvedMachine.withOptions(options) : resolvedMachine
 
   /**

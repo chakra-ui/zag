@@ -1,4 +1,5 @@
 import { cast, is, runIfFn, toArray, warn } from "@core-foundation/utils"
+import { klona } from "klona"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxyState } from "./create-proxy-state"
 import { determineDelayFn } from "./delay-utils"
@@ -295,6 +296,10 @@ export class Machine<
 
   updateActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
     this.actionMap = { ...this.actionMap, ...actions }
+  }
+
+  clone = () => {
+    return new Machine(klona(this.config), klona(this.options))
   }
 
   private getStateNode = (state: TState["value"] | null) => {

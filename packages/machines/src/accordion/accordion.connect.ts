@@ -6,7 +6,7 @@ import type { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { getElementIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
-export function connectAccordionMachine(
+export function accordionConnect(
   state: S.State<AccordionMachineContext, AccordionMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
@@ -19,23 +19,27 @@ export function connectAccordionMachine(
       id: ids.root,
     }),
 
-    getAccordionProps({ uid, disabled }: { uid: string; disabled?: boolean }) {
-      const isOpen = is.array(ctx.activeId) ? ctx.activeId.includes(uid) : uid === ctx.activeId
+    getAccordionItem(props: AccordionItemProps) {
+      const { id, disabled } = props
+
+      const isOpen = is.array(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId
+
       const isDisabled = disabled ?? ctx.disabled
-      const isFocused = ctx.focusedId === uid
+      const isFocused = ctx.focusedId === id
 
       return {
         isFocused,
         isOpen,
+
         groupProps: normalize<HTMLProps>({
-          id: ids.getGroupId(uid),
-          "data-expanded": isOpen,
+          id: ids.getGroupId(id),
+          "data-expanded": dataAttr(isOpen),
         }),
 
         panelProps: normalize<HTMLProps>({
           role: "region",
-          id: ids.getPanelId(uid),
-          "aria-labelledby": ids.getTriggerId(uid),
+          id: ids.getPanelId(id),
+          "aria-labelledby": ids.getTriggerId(id),
           hidden: !isOpen,
           "data-disabled": dataAttr(isDisabled),
           "data-focus": dataAttr(isFocused),
@@ -44,36 +48,42 @@ export function connectAccordionMachine(
 
         triggerProps: normalize<ButtonProps>({
           type: "button",
-          id: ids.getTriggerId(uid),
-          "aria-controls": ids.getPanelId(uid),
+          id: ids.getTriggerId(id),
+          "aria-controls": ids.getPanelId(id),
           "aria-expanded": isOpen,
           disabled: isDisabled,
+          "aria-disabled": isDisabled,
           "data-ownedby": ids.root,
           onFocus() {
-            send({ type: "FOCUS", id: uid })
+            if (disabled) return
+            send({ type: "FOCUS", id })
           },
           onBlur() {
+            if (disabled) return
             send("BLUR")
           },
           onClick() {
-            send({ type: "CLICK", id: uid })
+            if (disabled) return
+            send({ type: "CLICK", id })
           },
           onKeyDown(event) {
+            if (disabled) return
+
             const keyMap: EventKeyMap = {
               ArrowDown() {
-                send({ type: "ARROW_DOWN", id: uid })
+                send({ type: "ARROW_DOWN", id })
               },
               ArrowUp() {
-                send({ type: "ARROW_UP", id: uid })
+                send({ type: "ARROW_UP", id })
               },
               Enter() {
-                send({ type: "CLICK", id: uid })
+                send({ type: "CLICK", id })
               },
               Home() {
-                send({ type: "HOME", id: uid })
+                send({ type: "HOME", id })
               },
               End() {
-                send({ type: "END", id: uid })
+                send({ type: "END", id })
               },
             }
 
@@ -93,4 +103,9 @@ export function connectAccordionMachine(
       }
     },
   }
+}
+
+export type AccordionItemProps = {
+  id: string
+  disabled?: boolean
 }

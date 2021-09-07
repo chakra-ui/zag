@@ -15,7 +15,7 @@ export function useMachine<
   const { actions, state: hydratedState } = options ?? {}
 
   const resolvedMachine = (() => {
-    const m = typeof machine === "function" ? machine() : machine
+    const m = typeof machine === "function" ? machine() : machine.clone()
     return options ? m.withOptions(options) : m
   })()
 

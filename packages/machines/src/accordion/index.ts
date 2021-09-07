@@ -1,9 +1,9 @@
-import { connectAccordionMachine } from "./accordion.connect"
+import { accordionConnect } from "./accordion.connect"
 import { accordionMachine } from "./accordion.machine"
 
 export const accordion = {
   machine: accordionMachine,
-  connect: connectAccordionMachine,
+  connect: accordionConnect,
 }
 
 export type { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"

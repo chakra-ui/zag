@@ -1,7 +1,7 @@
-import { runIfFn, cast } from "@core-foundation/utils/fn"
+import { cast } from "@core-foundation/utils/fn"
+import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
-import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { useConstant } from "./use-constant"
 
 const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
@@ -18,7 +18,7 @@ export function useMachine<
 ) {
   const { actions, state: hydratedState } = options ?? {}
   const service = useConstant(() => {
-    const resolvedMachine = runIfFn(machine)
+    const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
     return options ? resolvedMachine.withOptions(options) : resolvedMachine
   })
 

@@ -9,49 +9,49 @@ export default defineComponent({
     const [state, send] = useMachine(accordion.machine)
     const _ref = useMount(send)
 
-    const machineState = computed(() => {
+    const connect = computed(() => {
       const machine = accordion.connect(state.value, send, normalizeProps)
       return {
         rootProps: machine.rootProps,
-        getAccordionProps: machine.getAccordionProps,
+        getAccordionItem: machine.getAccordionItem,
       }
     })
 
-    const accodionPartsProps = computed(() => ({
-      home: machineState.value.getAccordionProps({ uid: "home" }),
-      about: machineState.value.getAccordionProps({ uid: "about" }),
-      contact: machineState.value.getAccordionProps({ uid: "contact" }),
+    const parts = computed(() => ({
+      home: connect.value.getAccordionItem({ id: "home" }),
+      about: connect.value.getAccordionItem({ id: "about" }),
+      contact: connect.value.getAccordionItem({ id: "contact" }),
     }))
 
     return () => {
       return (
         <div style={{ width: "100%" }}>
-          <div ref={_ref} {...machineState.value.rootProps} style={{ maxWidth: "40ch" }}>
-            <div {...accodionPartsProps.value.home.groupProps}>
+          <div ref={_ref} {...connect.value.rootProps} style={{ maxWidth: "40ch" }}>
+            <div {...parts.value.home.groupProps}>
               <h3>
-                <button {...accodionPartsProps.value.home.triggerProps}>Home</button>
+                <button {...parts.value.home.triggerProps}>Home</button>
               </h3>
-              <div {...accodionPartsProps.value.home.panelProps}>
+              <div {...parts.value.home.panelProps}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
             </div>
 
-            <div {...accodionPartsProps.value.about.groupProps}>
+            <div {...parts.value.about.groupProps}>
               <h3>
-                <button {...accodionPartsProps.value.about.triggerProps}>About</button>
+                <button {...parts.value.about.triggerProps}>About</button>
               </h3>
-              <div {...accodionPartsProps.value.about.panelProps}>
+              <div {...parts.value.about.panelProps}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
             </div>
 
-            <div {...accodionPartsProps.value.contact.groupProps}>
+            <div {...parts.value.contact.groupProps}>
               <h3>
-                <button {...accodionPartsProps.value.contact.triggerProps}>Contact</button>
+                <button {...parts.value.contact.triggerProps}>Contact</button>
               </h3>
-              <div {...accodionPartsProps.value.contact.panelProps}>
+              <div {...parts.value.contact.panelProps}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>

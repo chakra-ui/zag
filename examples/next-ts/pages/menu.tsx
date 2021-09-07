@@ -49,7 +49,7 @@ export const Styles = styled("div")({
 
 export default function Page() {
   const [state, send] = useMachine(
-    menu.machine().withContext({
+    menu.machine.withContext({
       uid: "234",
       onSelect: console.log,
     }),
