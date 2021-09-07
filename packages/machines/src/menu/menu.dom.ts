@@ -40,30 +40,23 @@ export function dom(ctx: MenuMachineContext) {
   }
 }
 
-export function getFocusableElements(ctx: MenuMachineContext) {
-  const { trigger } = getElements(ctx)
+export function getChildMenus(ctx: MenuMachineContext) {
+  return Object.values(ctx.children)
+    .map((child) => getElements(child.state.context).menu)
+    .filter(is.element)
+}
 
-  const childMenus = Object.values(ctx.children).map((child) => {
-    const { menu } = getElements(child.state.context)
-    return menu
-  })
-
-  const elements = [...childMenus, trigger]
-
+export function getParentMenus(ctx: MenuMachineContext) {
+  const menus: HTMLElement[] = []
   let parent = ctx.parent
   while (parent) {
-    const el = getElements(parent.state.context).menu
-    elements.push(el)
+    const { menu } = getElements(parent.state.context)
+    if (menu) menus.push(menu)
     parent = parent.state.context.parent
   }
-
-  return elements
+  return menus
 }
 
-export function isMenuItem(target: EventTarget | null) {
-  return is.element(target) && !!target.getAttribute("role")?.startsWith("menuitem")
-}
-
-export function isTargetDisabled(event: { currentTarget: HTMLElement }): boolean {
-  return event.currentTarget.dataset.disabled === ""
+export function isTargetDisabled(target: EventTarget | null): boolean {
+  return is.element(target) && target.dataset.disabled === ""
 }

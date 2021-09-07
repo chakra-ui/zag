@@ -28,9 +28,9 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-foundation/utils": "^0.1.7",
+    "@core-foundation/utils": "^0.1.8",
     "@ui-machines/core": "0.0.0",
-    "valtio": "^1.2.1"
+    "valtio": "^1.2.2"
   },
   "devDependencies": {
     "vue": "^3.0.5"

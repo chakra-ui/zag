@@ -27,18 +27,18 @@
   },
   "dependencies": {
     "@core-dom/element": "^0.1.4",
-    "@core-dom/event": "^0.1.7",
-    "@core-dom/node-list": "^0.1.5",
-    "@core-foundation/list": "^0.1.0",
+    "@core-dom/event": "^0.1.8",
+    "@core-dom/node-list": "^0.1.6",
+    "@core-foundation/list": "^0.1.1",
     "@core-foundation/numeric-range": "^0.1.2",
-    "@core-foundation/utils": "^0.1.7",
+    "@core-foundation/utils": "^0.1.8",
     "@core-graphics/point": "^0.1.5",
     "@core-graphics/polygon": "^0.1.0",
-    "@core-graphics/rect": "^0.1.5",
-    "@types/react": "^17.0.18",
+    "@core-graphics/rect": "^0.1.6",
+    "@types/react": "^17.0.20",
     "@ui-machines/core": "0.0.0",
     "merge-anything": "^4.0.1",
     "scroll-into-view-if-needed": "^2.2.28",
-    "valtio": "^1.2.1"
+    "valtio": "^1.2.2"
   }
 }

@@ -64,7 +64,7 @@ export function connectRatingMachine(
             ArrowRight() {
               send("ARROW_RIGHT")
             },
-            " "() {
+            Space() {
               send("SPACE")
             },
             Home() {

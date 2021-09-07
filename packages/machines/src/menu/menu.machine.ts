@@ -1,4 +1,4 @@
-import { attrs, contains } from "@core-dom/element"
+import { attrs, contains, isFocusable } from "@core-dom/element"
 import { addPointerEvent } from "@core-dom/event/pointer"
 import { nextTick } from "@core-foundation/utils/fn"
 import { Point, PointValue } from "@core-graphics/point"
@@ -146,20 +146,20 @@ export const menuMachine = () =>
               target: "close",
             },
             ARROW_UP: {
-              actions: "focusPrevItem",
+              actions: ["focusPrevItem", "focusMenu"],
             },
             ARROW_DOWN: {
-              actions: "focusNextItem",
+              actions: ["focusNextItem", "focusMenu"],
             },
             ARROW_LEFT: {
               target: "close",
               actions: "focusParentMenu",
             },
             HOME: {
-              actions: "focusFirstItem",
+              actions: ["focusFirstItem", "focusMenu"],
             },
             END: {
-              actions: "focusLastItem",
+              actions: ["focusLastItem", "focusMenu"],
             },
             BLUR: {
               target: "close",
@@ -206,7 +206,7 @@ export const menuMachine = () =>
               actions: "clearActiveId",
             },
             ITEM_CLICK: {
-              cond: not("isTriggerActiveItem"),
+              cond: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
               target: "close",
               actions: ["invokeOnSelect", "closeParents"],
             },
@@ -252,6 +252,10 @@ export const menuMachine = () =>
         shouldPause: (ctx) => {
           const { menu } = getElements(ctx)
           return menu?.dataset.pause === "true"
+        },
+        isActiveItemFocusable: (ctx) => {
+          const { activeItem } = getElements(ctx)
+          return isFocusable(activeItem)
         },
         isWithinPolygon: (ctx, evt) => {
           const { pointerExitPoint } = ctx
@@ -318,8 +322,10 @@ export const menuMachine = () =>
           ctx.pointerdownNode = null
         },
         focusMenu(ctx) {
-          const { menu } = getElements(ctx)
-          nextTick(() => menu?.focus())
+          const { menu, doc } = getElements(ctx)
+          if (menu && doc.activeElement !== menu) {
+            nextTick(() => menu.focus())
+          }
         },
         focusFirstItem(ctx) {
           const menuitems = dom(ctx)

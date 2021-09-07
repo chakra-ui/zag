@@ -1,3 +1,4 @@
+import { contains } from "@core-dom/element"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
@@ -5,7 +6,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getElementIds, getFocusableElements, isTargetDisabled } from "./menu.dom"
+import { getChildMenus, getElementIds, getElements, getParentMenus, isTargetDisabled } from "./menu.dom"
 import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
 
 export function connectMenuMachine(
@@ -37,7 +38,7 @@ export function connectMenuMachine(
       "aria-controls": ids.menu,
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
-        const disabled = isTargetDisabled(event)
+        const disabled = isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
@@ -45,7 +46,7 @@ export function connectMenuMachine(
         })
       },
       onPointerLeave(event) {
-        const disabled = isTargetDisabled(event)
+        const disabled = isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERLEAVE",
@@ -54,9 +55,8 @@ export function connectMenuMachine(
         })
       },
       onPointerDown(event) {
-        const disabled = isTargetDisabled(event)
+        const disabled = isTargetDisabled(event.currentTarget)
         if (event.button !== 0 || disabled) return
-        event.preventDefault()
         send({ type: "TRIGGER_CLICK", target: event.currentTarget })
       },
       onBlur() {
@@ -102,12 +102,18 @@ export function connectMenuMachine(
       "aria-orientation": ctx.orientation,
       "data-orientation": ctx.orientation,
       onBlur(event) {
+        const { menu, trigger } = getElements(ctx)
+
+        const exclude = getChildMenus(ctx).concat(getParentMenus(ctx))
+        if (trigger && !isSubmenu) {
+          exclude.push(trigger)
+        }
         const isValidBlur = validateBlur(event, {
-          exclude: getFocusableElements(ctx),
+          exclude,
           fallback: ctx.pointerdownNode,
         })
 
-        if (isValidBlur) {
+        if (isValidBlur && !contains(menu, event.relatedTarget)) {
           send("BLUR")
         }
       },
@@ -115,6 +121,9 @@ export function connectMenuMachine(
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
+        const { activeItem } = getElements(ctx)
+        const isLink = !!activeItem?.matches("a[href]")
+
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
@@ -132,6 +141,7 @@ export function connectMenuMachine(
             send("ESCAPE")
           },
           Enter() {
+            if (isLink) activeItem?.click()
             send("ENTER")
           },
           Space() {
@@ -149,11 +159,17 @@ export function connectMenuMachine(
         const exec = keyMap[key]
 
         if (exec) {
-          event.preventDefault()
+          const allow = isLink && key === "Enter"
+          if (!allow) event.preventDefault()
           exec(event)
         } else if (event.key.length === 1) {
-          event.preventDefault()
-          send({ type: "TYPEAHEAD", key: event.key })
+          const selector = "input, textarea, [contenteditable], select"
+          const editable = activeItem?.matches(selector)
+
+          if (!editable) {
+            event.preventDefault()
+            send({ type: "TYPEAHEAD", key: event.key })
+          }
         }
       },
     }),

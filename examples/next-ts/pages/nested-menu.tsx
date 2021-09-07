@@ -60,12 +60,23 @@ export default function Page() {
       </button>
 
       <ul style={{ width: 300 }} {...root.menuProps}>
+        <div>
+          <input
+            data-valuetext="Command"
+            {...root.getItemProps({ id: "input" })}
+            placeholder="Command..."
+            style={{ color: "white", width: "100%", boxSizing: "border-box" }}
+          />
+        </div>
         <li {...root.getItemProps({ id: "new-tab" })}>New Tab</li>
         <li {...root.getItemProps({ id: "new-win" })}>New Window</li>
         <li ref={subRef} {...triggerItemProps}>
           {`More Tools >`}{" "}
         </li>
         <li {...root.getItemProps({ id: "export" })}>Export</li>
+        <a href="google.com" {...root.getItemProps({ id: "link" })}>
+          Go to Google...
+        </a>
       </ul>
 
       <ul style={{ width: 300, left: 180, top: 90, position: "absolute" }} {...sub.menuProps}>

@@ -28,8 +28,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-dom/event": "^0.1.7",
-    "@core-foundation/utils": "^0.1.7",
-    "valtio": "^1.2.1"
+    "@core-dom/event": "^0.1.8",
+    "@core-foundation/utils": "^0.1.8",
+    "valtio": "^1.2.2"
   }
 }

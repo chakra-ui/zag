@@ -1363,25 +1363,25 @@
   resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.4.tgz#8c5763ce28419f1b2bf264e5ee3896c657805e8e"
   integrity sha512-4jAvix3kDWA+Hs3yIoOF+sU5FrdDpH5/ygw4n1JLrexRLNviWhBKxAO19aDZxD7MdtGmJ9Q3q5E/ZBXmPk/tEw==
 
-"@core-dom/event@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.7.tgz#95f839fc1c8948b6de076b1dcc1d617421ac03bf"
-  integrity sha512-n5kLswFz9jg4Zfu3KTto7kKXy1XT2slAin9iWeSW2xLMyDFe9pBaIyOLBG4B1SDOoIz8lMDHvY8d25do81kh9A==
+"@core-dom/event@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.8.tgz#a075b562a0f5aad84b37dc64cbfa7b3fcaad930c"
+  integrity sha512-t+Chzd6oUV2yKFTboytVE1MmC4665Vc4UPUrLy0mCeeBUtQq7ug6cyEnQzA9XITKGXwXnP8bXQLfgdASh/FA4g==
   dependencies:
-    "@core-foundation/utils" "0.1.7"
+    "@core-foundation/utils" "0.1.8"
     "@core-graphics/point" "0.1.5"
 
-"@core-dom/node-list@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.5.tgz#843bea4ab315a2eb0ac52a6e9af8dd6380e7bf35"
-  integrity sha512-V1+SXmDbX/sIQ/LhoXOiu4FduQoHGdWzv+xwB4C7EgItMpiskIcdB2x0vevaHBLm3+nnVqJEOIvvzqLdRQedoA==
+"@core-dom/node-list@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@core-dom/node-list/-/node-list-0.1.6.tgz#bbd6c5c25c48379220464fc022a27d852ceb8878"
+  integrity sha512-hbDFexkqwNKSvyFfmQtSZI5Y4HzsU/NhcXDmyooNa9KerCOQ4dqfJV4w1X74ClzjPGvBdWyvn2/ZARuS/0QMhg==
   dependencies:
-    "@core-foundation/list" "0.1.0"
+    "@core-foundation/list" "0.1.1"
 
-"@core-foundation/list@0.1.0", "@core-foundation/list@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@core-foundation/list/-/list-0.1.0.tgz#332ad4a802f9e1e26f9284d81830b001d33a7dc9"
-  integrity sha512-Axc1vgTjSbaWRRp39UUVEakpOTjIovvlYzVWwh4Sy6crltxm25h2+dw6vlJ5F8crb/8DlzuE5m5b/McZBTmRdA==
+"@core-foundation/list@0.1.1", "@core-foundation/list@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@core-foundation/list/-/list-0.1.1.tgz#79040c82fa4c513c3ed751e331472092f9be98bf"
+  integrity sha512-t4eM6712esRW4N4BBM9gNDMToawktY6MbGCbeEPTfXKnHALog7u7HcOPLQ0ItSIxkT+NTtWZTrvpv/SQJFwmkg==
 
 "@core-foundation/numeral@0.1.1":
   version "0.1.1"
@@ -1395,10 +1395,10 @@
   dependencies:
     "@core-foundation/numeral" "0.1.1"
 
-"@core-foundation/utils@0.1.7", "@core-foundation/utils@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.7.tgz#5e431e8ae33ea054dd8b07bb01a07b794c40312e"
-  integrity sha512-hR4bnGl0pSHJOVmZR+2L/c72035MNWW30kkkxGpwbUE6ZJYpPE4svugdriz3qHGP4wWFyYSS/84DH9Zv5bsBnA==
+"@core-foundation/utils@0.1.8", "@core-foundation/utils@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.8.tgz#1c8accc51fbdac8b31cc9e89d04ba75b3566232f"
+  integrity sha512-P8RBUTr8GIks0u3jGpoN7SbNNW1OfHhzfzVp39JVoArZq1mRo5eZxOE9gDhCi9b0hS+7G845IvCs5XEPjAcEsA==
 
 "@core-graphics/point@0.1.5", "@core-graphics/point@^0.1.5":
   version "0.1.5"
@@ -1412,10 +1412,10 @@
   dependencies:
     "@core-graphics/point" "^0.1.5"
 
-"@core-graphics/rect@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.5.tgz#2ab22900d4cc8af85a25f9f346bef81e75656486"
-  integrity sha512-7W1C+TyBPAcEbOZxs9xTfcWZ2NQbVrtQ1Hh5QUrGymBAUdAyAQIdYrfdLpPd9JJg1cA1+A7OdVWZ+/WPv6j9vw==
+"@core-graphics/rect@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@core-graphics/rect/-/rect-0.1.6.tgz#32f546897be34883bd2a582ba783e9e6cfc66dd1"
+  integrity sha512-Hcl4ARLr+sObCxJvL4AGaGvbohLfoYzYDqMjNHlZEjO39eXxmWTjeMa1V845R1dYuRLaO/YyYvHoD0+jn4gqhA==
   dependencies:
     "@core-graphics/point" "0.1.5"
     "@core-graphics/size" "0.1.4"
@@ -2282,10 +2282,10 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17.0.18":
-  version "17.0.18"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.18.tgz#4109cbbd901be9582e5e39e3d77acd7b66bb7fbe"
-  integrity sha512-YTLgu7oS5zvSqq49X5Iue5oAbVGhgPc5Au29SJC4VeE17V6gASoOxVkUDy9pXFMRFxCWCD9fLeweNFizo3UzOg==
+"@types/react@^17.0.20":
+  version "17.0.20"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.20.tgz#a4284b184d47975c71658cd69e759b6bd37c3b8c"
+  integrity sha512-wWZrPlihslrPpcKyCSlmIlruakxr57/buQN1RjlIeaaTWDLtJkTtRW429MoQJergvVKc4IWBpRhWw7YNh/7GVA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -9934,10 +9934,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valtio@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.2.1.tgz#19d8514ff5c325ce1dc0ad9ef622d1240c6cbce5"
-  integrity sha512-DQayRId14Luiwh/24wJxgswEFeZJHSWpQLjuAgzuRcRS1ZIhq8F/Fh8h7VvJWLm7AGauyPGHhoEeEAlXUb+zsA==
+valtio@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.2.2.tgz#94965004f3a4ab673d56bbc05d458a9defe7d258"
+  integrity sha512-r0gJjtJanckdn1uFwJWedlMor5wj9kqzv7aajMQL4Im6ZVhcjZC4DwNoEAznZO9WF9cgiWlhotB2n3o1Z7ntog==
   dependencies:
     proxy-compare "2.0.2"
 
