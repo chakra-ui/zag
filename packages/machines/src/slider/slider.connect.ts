@@ -1,4 +1,3 @@
-import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import type { StateMachine as S } from "@ui-machines/core"
@@ -6,7 +5,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
 import type { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
-import { getElementIds } from "./slider.dom"
+import { getElementIds, getInnerTrackPlacementStyle, getThumbPlacementStyle } from "./slider.dom"
 import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
 export function sliderConnect(
@@ -15,27 +14,17 @@ export function sliderConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const range = new NumericRange(ctx)
   const ids = getElementIds(ctx.uid)
-  const isRtl = ctx.dir === "rtl"
 
   const ariaLabel = ctx["aria-label"]
   const ariaLabelledBy = ctx["aria-labelledby"]
   const ariaValueText = ctx.getAriaValueText?.(ctx.value)
 
   const isFocused = state.matches("focus")
-  const percent = range.toPercent()
-
-  const thumbSize = ctx.thumbSize ?? { width: 0, height: 0 }
-
-  const getValue = isRtl
-    ? NumericRange.transform([ctx.max, ctx.min], [-thumbSize.width * 1.5, -thumbSize.width / 2])
-    : NumericRange.transform([ctx.min, ctx.max], [-thumbSize.width / 2, thumbSize.width / 2])
-
-  let thumbAdjust = +getValue(ctx.value).toFixed(2)
-  thumbAdjust = isRtl ? -thumbAdjust : thumbAdjust
 
   return {
+    isFocused,
+    isDragging: state.matches("panning"),
     thumbProps: normalize<HTMLProps>({
       id: ids.thumb,
       "data-disabled": dataAttr(ctx.disabled),
@@ -96,11 +85,7 @@ export function sliderConnect(
           exec(event)
         }
       },
-      style: {
-        position: "absolute",
-        transform: "var(--slider-thumb-transform)",
-        [isRtl ? "right" : "left"]: `calc(${percent}% - ${thumbAdjust}px)`,
-      },
+      style: getThumbPlacementStyle(ctx),
     }),
 
     inputProps: normalize<InputProps>({
@@ -125,11 +110,7 @@ export function sliderConnect(
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-value": ctx.value,
-      style: {
-        position: "absolute",
-        [isRtl ? "right" : "left"]: "0%",
-        [isRtl ? "left" : "right"]: `${100 - percent}%`,
-      },
+      style: getInnerTrackPlacementStyle(ctx),
     }),
 
     rootProps: normalize<HTMLProps>({

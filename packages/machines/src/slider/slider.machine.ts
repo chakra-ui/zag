@@ -5,7 +5,7 @@ import { fromElement } from "@core-graphics/rect/create"
 import { createMachine, preserve } from "@ui-machines/core"
 import { trackPointerMove } from "../utils/pointer-move"
 import { WithDOM } from "../utils/types"
-import { getElements, pointToValue } from "./slider.dom"
+import { getElements, getValueFromPoint } from "./slider.dom"
 
 export type SliderMachineContext = WithDOM<{
   value: number
@@ -27,13 +27,13 @@ export type SliderMachineContext = WithDOM<{
 }>
 
 export type SliderMachineState = {
-  value: "mounted" | "idle" | "panning" | "focus"
+  value: "unknown" | "idle" | "panning" | "focus"
 }
 
 export const sliderMachine = createMachine<SliderMachineContext, SliderMachineState>(
   {
     id: "slider-machine",
-    initial: "mounted",
+    initial: "unknown",
     context: {
       thumbSize: null,
       uid: "slider",
@@ -51,7 +51,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       STOP: "focus",
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
@@ -127,7 +127,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         return trackPointerMove({
           ctx,
           onPointerMove(_event, info) {
-            const value = pointToValue(ctx, info.point)
+            const value = getValueFromPoint(ctx, info.point)
             if (value == null) return
 
             ctx.value = value
@@ -167,7 +167,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         })
       },
       setValueForEvent(ctx, evt) {
-        const value = pointToValue(ctx, evt.point)
+        const value = getValueFromPoint(ctx, evt.point)
         if (value != null) ctx.value = value
       },
       focusThumb(ctx) {

@@ -10,7 +10,7 @@ function Page() {
       uid: "slider-35",
       value: 40,
       name: "volume",
-      dir: "ltr",
+      dir: "rtl",
     }),
   )
 
