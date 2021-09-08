@@ -1,9 +1,9 @@
-import { connectComboboxMachine } from "./combobox.connect"
+import { comboboxConnect } from "./combobox.connect"
 import { comboboxMachine } from "./combobox.machine"
 
 export const combobox = {
   machine: comboboxMachine,
-  connect: connectComboboxMachine,
+  connect: comboboxConnect,
 }
 
 export type { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"

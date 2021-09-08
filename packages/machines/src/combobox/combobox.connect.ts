@@ -7,7 +7,7 @@ import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
-export function connectComboboxMachine(
+export function comboboxConnect(
   state: S.State<ComboboxMachineContext, ComboboxMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
@@ -39,7 +39,7 @@ export function connectComboboxMachine(
 
     containerProps: normalize<HTMLProps>({
       id: ids.container,
-      "data-expanded": expanded,
+      "data-expanded": dataAttr(expanded),
     }),
 
     inputProps: normalize<InputProps>({
@@ -160,7 +160,7 @@ export function connectComboboxMachine(
       },
     }),
 
-    assistiveHintProps: normalize<HTMLProps>({
+    srHintProps: normalize<HTMLProps>({
       id: ids.srHint,
       children: [
         "When autocomplete results are available use up and down arrows to review and enter to select.",
@@ -169,7 +169,7 @@ export function connectComboboxMachine(
       style: srOnlyStyle,
     }),
 
-    getOptionProps(props: OptionProps) {
+    getOptionProps(props: ComboboxOptionProps) {
       const { value, label, virtualized, index, noOfOptions } = props
       const id = ids.getOptionId(value)
       const selected = ctx.activeId === id && ctx.eventSource === "keyboard"
@@ -205,7 +205,7 @@ export function connectComboboxMachine(
   }
 }
 
-type OptionProps = {
+export type ComboboxOptionProps = {
   virtualized?: true
   index?: number
   noOfOptions?: number
