@@ -1,8 +1,9 @@
-import { createMachine, preserve } from "@ui-machines/core"
-import { addPointerEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
-import { is } from "@core-foundation/utils/is"
-import { nextTick, pipe } from "@core-foundation/utils/fn"
+import { dispatchInputEvent } from "@core-dom/event"
 import { NumericRange } from "@core-foundation/numeric-range"
+import { nextTick } from "@core-foundation/utils/fn"
+import { fromElement } from "@core-graphics/rect/create"
+import { createMachine, preserve } from "@ui-machines/core"
+import { trackPointerMove } from "../utils/pointer-move"
 import { WithDOM } from "../utils/types"
 import { getElements, pointToValue } from "./slider.dom"
 
@@ -17,10 +18,12 @@ export type SliderMachineContext = WithDOM<{
   orientation?: "vertical" | "horizontal"
   "aria-label"?: string
   "aria-labelledby"?: string
+  focusThumbOnChange?: boolean
   getAriaValueText?(value: number): string
   onChange?(value: number): void
   onChangeEnd?(value: number): void
   onChangeStart?(value: number): void
+  thumbSize: { width: number; height: number } | null
 }>
 
 export type SliderMachineState = {
@@ -32,6 +35,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
     id: "slider-machine",
     initial: "mounted",
     context: {
+      thumbSize: null,
       uid: "slider",
       disabled: false,
       threshold: 5,
@@ -41,6 +45,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       step: 1,
       min: 0,
       max: 100,
+      focusThumbOnChange: true,
     },
     on: {
       STOP: "focus",
@@ -50,7 +55,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument"],
+            actions: ["setId", "setOwnerDocument", "setThumbSize"],
           },
         },
       },
@@ -115,43 +120,26 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
   {
     guards: {
       isRtl: (ctx) => ctx.dir === "rtl",
+      focusThumbOnChange: (ctx) => !!ctx.focusThumbOnChange,
     },
     activities: {
       trackPointerMove(ctx, _evt, { send }) {
-        const doc = ctx.doc ?? document
+        return trackPointerMove({
+          ctx,
+          onPointerMove(_event, info) {
+            const value = pointToValue(ctx, info.point)
+            if (value == null) return
 
-        const onPointerMove: Listener = (event, info) => {
-          if (info.point.distance() < ctx.threshold) {
-            return
-          }
-
-          // Because Safari doesn't trigger mouseup events when it's above a `<select>`
-          if (is.mouseEvent(event) && event.button === 0) {
+            ctx.value = value
+            ctx.onChange?.(value)
+            dispatchChangeEvent(ctx)
+          },
+          onPointerUp() {
             send("POINTER_UP")
-            return
-          }
-
-          const value = pointToValue(ctx, info.point)
-          if (typeof value === "undefined") return
-
-          ctx.value = value
-          ctx.onChange?.(value)
-          dispatchChangeEvent(ctx)
-        }
-
-        const onPointerUp = () => {
-          send("POINTER_UP")
-        }
-
-        return pipe(
-          addPointerEvent(doc, "pointermove", onPointerMove, false),
-          addPointerEvent(doc, "pointerup", onPointerUp, false),
-          addPointerEvent(doc, "pointercancel", onPointerUp, false),
-          addPointerEvent(doc, "contextmenu", onPointerUp, false),
-        )
+          },
+        })
       },
     },
-
     actions: {
       setId(ctx, evt) {
         ctx.uid = evt.id
@@ -168,6 +156,15 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
         dispatchChangeEvent(ctx)
+      },
+      setThumbSize(ctx) {
+        nextTick(() => {
+          const { thumb } = getElements(ctx)
+          if (thumb) {
+            const { width, height } = fromElement(thumb)
+            ctx.thumbSize = { width, height }
+          }
+        })
       },
       setValueForEvent(ctx, evt) {
         const value = pointToValue(ctx, evt.point)

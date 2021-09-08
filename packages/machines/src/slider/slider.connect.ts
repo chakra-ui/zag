@@ -17,12 +17,23 @@ export function sliderConnect(
   const { context: ctx } = state
   const range = new NumericRange(ctx)
   const ids = getElementIds(ctx.uid)
+  const isRtl = ctx.dir === "rtl"
 
   const ariaLabel = ctx["aria-label"]
   const ariaLabelledBy = ctx["aria-labelledby"]
   const ariaValueText = ctx.getAriaValueText?.(ctx.value)
 
   const isFocused = state.matches("focus")
+  const percent = range.toPercent()
+
+  const thumbSize = ctx.thumbSize ?? { width: 0, height: 0 }
+
+  const getValue = isRtl
+    ? NumericRange.transform([ctx.max, ctx.min], [-thumbSize.width * 1.5, -thumbSize.width / 2])
+    : NumericRange.transform([ctx.min, ctx.max], [-thumbSize.width / 2, thumbSize.width / 2])
+
+  let thumbAdjust = +getValue(ctx.value).toFixed(2)
+  thumbAdjust = isRtl ? -thumbAdjust : thumbAdjust
 
   return {
     thumbProps: normalize<HTMLProps>({
@@ -85,6 +96,11 @@ export function sliderConnect(
           exec(event)
         }
       },
+      style: {
+        position: "absolute",
+        transform: "var(--slider-thumb-transform)",
+        [isRtl ? "right" : "left"]: `calc(${percent}% - ${thumbAdjust}px)`,
+      },
     }),
 
     inputProps: normalize<InputProps>({
@@ -94,11 +110,26 @@ export function sliderConnect(
       id: ids.input,
     }),
 
-    innerTrackProps: normalize<HTMLProps>({
+    trackProps: normalize<HTMLProps>({
+      id: ids.track,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-state": state,
+      "data-focused": dataAttr(isFocused),
+      style: {
+        position: "relative",
+      },
+    }),
+
+    innerTrackProps: normalize<HTMLProps>({
+      id: ids.innerTrack,
+      "data-disabled": dataAttr(ctx.disabled),
+      "data-orientation": ctx.orientation,
       "data-value": ctx.value,
+      style: {
+        position: "absolute",
+        [isRtl ? "right" : "left"]: "0%",
+        [isRtl ? "left" : "right"]: `${100 - percent}%`,
+      },
     }),
 
     rootProps: normalize<HTMLProps>({
@@ -106,6 +137,7 @@ export function sliderConnect(
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
+      "aria-disabled": ctx.disabled || undefined,
       tabIndex: -1,
       onPointerDown(event) {
         if (event.button !== 0) return
@@ -121,9 +153,8 @@ export function sliderConnect(
       style: {
         touchAction: "none",
         userSelect: "none",
-        WebkitUserSelect: "none",
-        msUserSelect: "none",
-        "--slider-thumb-percent": `${range.toPercent()}%`,
+        "--slider-thumb-transform": "translateX(-50%)",
+        position: "relative",
       },
     }),
   }
