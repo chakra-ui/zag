@@ -4,7 +4,7 @@ import { HTMLProps } from "../utils/types"
 import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
-export function connectToastMachine(
+export function toastConnect(
   state: S.State<ToastMachineContext, ToastMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

@@ -1,9 +1,9 @@
-import { connectTooltipMachine } from "./tooltip.connect"
+import { tooltipConnect } from "./tooltip.connect"
 import { tooltipMachine, tooltipStore } from "./tooltip.machine"
 
 export const tooltip = {
   machine: tooltipMachine,
-  connect: connectTooltipMachine,
+  connect: tooltipConnect,
   store: tooltipStore,
 }
 

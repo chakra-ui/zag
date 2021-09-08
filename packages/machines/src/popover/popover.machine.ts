@@ -26,7 +26,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
     id: "popover-machine",
     initial: "mounted",
     context: {
-      uid: "01",
+      uid: "popover",
       closeOnOutsideClick: true,
       closeOnEsc: true,
       restoreFocus: true,

@@ -27,7 +27,9 @@ export function pointToValue(ctx: SliderMachineContext, info: Point) {
 
   const { progress } = info.relativeToNode(root)
   const opts = { min: 0, max: 1, value: progress.x }
+
   const percent = new NumericRange(opts).clamp().valueOf()
   const range = NumericRange.fromPercent(percent, ctx)
+
   return range.clone().snapToStep().valueOf()
 }

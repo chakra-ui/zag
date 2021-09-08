@@ -22,14 +22,17 @@ export type WithDataAttr<T> = T & {
   "data-disabled"?: Booleanish
   "data-type"?: string
   "data-value"?: string | number
+  "data-valuetext"?: string
   [dataAttr: string]: any
 }
+
+export type Direction = "ltr" | "rtl"
 
 export type WithDOM<T> = T & {
   uid: string
   doc?: Document
   pointerdownNode?: HTMLElement | null
-  direction?: "ltr" | "rtl"
+  dir?: Direction
 }
 
 export type EventKeyMap = Dict<(event: KeyboardEvent) => void>
@@ -46,3 +49,5 @@ export type HTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>
 export type ButtonProps = WithDataAttr<ButtonHTMLAttributes<HTMLButtonElement> & Style>
 export type InputProps = WithDataAttr<InputHTMLAttributes<HTMLInputElement> & Style>
 export type LabelProps = WithDataAttr<LabelHTMLAttributes<HTMLLabelElement> & Style>
+
+export type GlobalThis = typeof globalThis

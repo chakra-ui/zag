@@ -1,14 +1,14 @@
-import { connectToastGroupMachine } from "./toast-group.connect"
+import { toastGroupConnect } from "./toast-group.connect"
 import { toastGroupMachine } from "./toast-group.machine"
-import { connectToastMachine } from "./toast.connect"
+import { toastConnect } from "./toast.connect"
 import { createToastMachine } from "./toast.machine"
 
 export const toast = {
   group: {
-    connect: connectToastGroupMachine,
+    connect: toastGroupConnect,
     machine: toastGroupMachine,
   },
-  connect: connectToastMachine,
+  connect: toastConnect,
   createMachine: createToastMachine,
 }
 

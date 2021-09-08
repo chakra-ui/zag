@@ -12,7 +12,7 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
     id: "toaster",
     initial: "active",
     context: {
-      direction: "ltr",
+      dir: "ltr",
       max: 20,
       uid: "toasts-machine",
       toasts: [],

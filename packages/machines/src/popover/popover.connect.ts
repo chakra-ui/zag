@@ -5,7 +5,7 @@ import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 
-export function connectPopoverMachine(
+export function popoverConnect(
   state: S.State<PopoverMachineContext, PopoverMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

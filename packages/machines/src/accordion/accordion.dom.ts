@@ -16,16 +16,16 @@ export function dom(ctx: AccordionMachineContext) {
   const root = doc.getElementById(ids.root)
 
   const selector = `[aria-controls][data-ownedby='${ids.root}']:not([disabled])`
-  const collection = NodeList.fromSelector(root, selector)
+  const list = NodeList.fromSelector(root, selector)
 
   return {
-    first: collection.first,
-    last: collection.last,
+    first: list.first,
+    last: list.last,
     next(id: string) {
-      return collection.nextById(ids.getTriggerId(id))
+      return list.nextById(ids.getTriggerId(id))
     },
     prev(id: string) {
-      return collection.prevById(ids.getTriggerId(id))
+      return list.prevById(ids.getTriggerId(id))
     },
   }
 }

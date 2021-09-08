@@ -1,9 +1,9 @@
-import { connectPopoverMachine } from "./popover.connect"
+import { popoverConnect } from "./popover.connect"
 import { popoverMachine } from "./popover.machine"
 
 export const popover = {
   machine: popoverMachine,
-  connect: connectPopoverMachine,
+  connect: popoverConnect,
 }
 
 export type { PopoverMachineContext, PopoverMachineState } from "./popover.machine"

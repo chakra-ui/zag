@@ -40,7 +40,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       step: 1,
       value: [0, 100],
       orientation: "horizontal",
-      direction: "ltr",
+      dir: "ltr",
     },
     states: {
       mounted: {

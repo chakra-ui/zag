@@ -70,7 +70,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       focusedId: null,
       editedId: null,
       value: [],
-      direction: "ltr",
+      dir: "ltr",
     },
     states: {
       mounted: {

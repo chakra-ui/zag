@@ -6,8 +6,8 @@ import { dom } from "./tabs.dom"
 const { not } = guards
 
 export type TabsMachineContext = WithDOM<{
-  focusedTabId?: string
-  activeTabId: string
+  focusedId?: string
+  activeId: string
   orientation?: "horizontal" | "vertical"
   activationMode?: "manual" | "automatic"
   indicatorRect?: Partial<DOMRect>
@@ -22,11 +22,11 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
   {
     initial: "mounted",
     context: {
-      direction: "ltr",
+      dir: "ltr",
       orientation: "horizontal",
       activationMode: "automatic",
-      activeTabId: "",
-      focusedTabId: "",
+      activeId: "",
+      focusedId: "",
       uid: "",
       indicatorRect: { left: 0, right: 0, width: 0, height: 0 },
       measuredRect: false,
@@ -82,6 +82,7 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
   {
     guards: {
       shouldSelectOnFocus: (ctx) => ctx.activationMode === "automatic",
+      isRtl: (ctx) => ctx.dir === "rtl",
     },
     actions: {
       setOwnerDocument(ctx, evt) {
@@ -91,13 +92,13 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
         ctx.uid = evt.id
       },
       setFocusedId(ctx, evt) {
-        ctx.focusedTabId = evt.uid
+        ctx.focusedId = evt.uid
       },
       resetFocusedId(ctx) {
-        ctx.focusedTabId = ""
+        ctx.focusedId = ""
       },
       setActiveId(ctx, evt) {
-        ctx.activeTabId = evt.uid
+        ctx.activeId = evt.uid
       },
       focusFirstTab(ctx) {
         const tabs = dom(ctx)
@@ -108,21 +109,21 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
         nextTick(() => tabs.last?.focus())
       },
       focusNextTab(ctx) {
-        if (!ctx.focusedTabId) return
+        if (!ctx.focusedId) return
         const tabs = dom(ctx)
-        const next = tabs.next(ctx.focusedTabId)
+        const next = tabs.next(ctx.focusedId)
         nextTick(() => next?.focus())
       },
       focusPrevTab(ctx) {
-        if (!ctx.focusedTabId) return
+        if (!ctx.focusedId) return
         const tabs = dom(ctx)
-        const prev = tabs.prev(ctx.focusedTabId)
+        const prev = tabs.prev(ctx.focusedId)
         nextTick(() => prev?.focus())
       },
       setActiveTabRect(ctx) {
         nextTick(() => {
           const tabs = dom(ctx)
-          ctx.indicatorRect = tabs.rectById(ctx.activeTabId)
+          ctx.indicatorRect = tabs.rectById(ctx.activeId)
           if (ctx.measuredRect) return
           nextTick(() => {
             ctx.measuredRect = true

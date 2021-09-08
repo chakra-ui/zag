@@ -7,7 +7,7 @@ import { NumberInputMachineContext, NumberInputMachineState } from "./number-inp
 import { isValidNumericKeyboardEvent } from "./number-input.utils"
 import { getEventStep } from "../utils/get-step"
 
-export function connectNumberInputMachine(
+export function numberInputConnect(
   state: S.State<NumberInputMachineContext, NumberInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

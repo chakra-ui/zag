@@ -35,7 +35,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       uid: "slider",
       disabled: false,
       threshold: 5,
-      direction: "ltr",
+      dir: "ltr",
       orientation: "horizontal",
       value: 0,
       step: 1,
@@ -113,6 +113,9 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
     },
   },
   {
+    guards: {
+      isRtl: (ctx) => ctx.dir === "rtl",
+    },
     activities: {
       trackPointerMove(ctx, _evt, { send }) {
         const doc = ctx.doc ?? document

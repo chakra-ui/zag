@@ -24,13 +24,13 @@ export type EditableMachineContext = WithDOM<{
 }>
 
 export type EditableMachineState = {
-  value: "mounted" | "preview" | "edit"
+  value: "unknown" | "preview" | "edit"
 }
 
 export const editableMachine = createMachine<EditableMachineContext, EditableMachineState>(
   {
     id: "editable-machine",
-    initial: "mounted",
+    initial: "unknown",
     context: {
       uid: "32",
       value: "",
@@ -40,7 +40,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       selectOnFocus: true,
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "preview",

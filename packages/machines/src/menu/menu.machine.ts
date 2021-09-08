@@ -225,7 +225,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
   },
   {
     guards: {
-      isRtl: (ctx) => ctx.direction === "rtl",
+      isRtl: (ctx) => ctx.dir === "rtl",
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
       isMenuFocused: (ctx) => {

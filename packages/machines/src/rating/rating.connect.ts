@@ -7,7 +7,7 @@ import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
-export function connectRatingMachine(
+export function ratingConnect(
   state: S.State<RatingMachineContext, RatingMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

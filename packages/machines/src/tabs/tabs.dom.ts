@@ -15,19 +15,19 @@ export function dom(ctx: TabsMachineContext) {
   const tablist = doc.getElementById(ids.tablist)
 
   const selector = `[role=tab][data-ownedby='${ids.tablist}']`
-  const collection = NodeList.fromSelector(tablist, selector)
+  const list = NodeList.fromSelector(tablist, selector)
 
   return {
-    first: collection.first,
-    last: collection.last,
+    first: list.first,
+    last: list.last,
     next(id: string) {
-      return collection.nextById(ids.getTabId(id))
+      return list.nextById(ids.getTabId(id))
     },
     prev(id: string) {
-      return collection.prevById(ids.getTabId(id))
+      return list.prevById(ids.getTabId(id))
     },
     rectById(id: string) {
-      const tab = collection.itemById(ids.getTabId(id))
+      const tab = list.itemById(ids.getTabId(id))
       return {
         left: tab?.offsetLeft,
         width: tab?.offsetWidth,

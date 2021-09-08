@@ -4,7 +4,7 @@ import { InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"
 
-export function connectPinInputMachine(
+export function pinInputConnect(
   state: S.State<PinInputMachineContext, PinInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

@@ -9,7 +9,7 @@ import type { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
 import { getElementIds } from "./slider.dom"
 import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
-export function connectSliderMachine(
+export function sliderConnect(
   state: S.State<SliderMachineContext, SliderMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

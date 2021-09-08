@@ -5,7 +5,7 @@ import { defaultPropNormalizer, dataAttr } from "../utils/dom-attr"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 import { getEventKey } from "../utils/get-event-key"
 
-export function connectTooltipMachine(
+export function tooltipConnect(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

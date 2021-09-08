@@ -5,7 +5,7 @@ import { validateBlur } from "../utils/validate-blur"
 import { getElementIds, getElements } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.machine"
 
-export function connectEditableMachine(
+export function editableConnect(
   state: S.State<EditableMachineContext, EditableMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,

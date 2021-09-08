@@ -1,4 +1,6 @@
+import { cast } from "@core-foundation/utils"
 import { ref } from "valtio"
+import { GlobalThis } from "./types"
 
 type TrackPointerDownOptions = {
   doc?: Document
@@ -8,7 +10,8 @@ type TrackPointerDownOptions = {
 export function trackPointerDown(ctx: TrackPointerDownOptions) {
   const doc = ctx.doc ?? document
   const fn = (event: PointerEvent) => {
-    if (event.target instanceof HTMLElement) {
+    const win = cast<GlobalThis>(event.view ?? window)
+    if (event.target instanceof win.HTMLElement) {
       ctx.pointerdownNode = ref(event.target)
     }
   }

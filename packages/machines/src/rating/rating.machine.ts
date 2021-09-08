@@ -84,7 +84,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
   },
   {
     guards: {
-      isRtl: (ctx) => ctx.direction === "rtl",
+      isRtl: (ctx) => ctx.dir === "rtl",
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
       isValueEmpty: (ctx) => ctx.value === -1,

@@ -1,9 +1,9 @@
-import { connectMenuMachine } from "./menu.connect"
+import { menuConnect } from "./menu.connect"
 import { menuMachine } from "./menu.machine"
 
 export const menu = {
   machine: menuMachine,
-  connect: connectMenuMachine,
+  connect: menuConnect,
 }
 
 export type { MenuMachineContext, MenuMachineState } from "./menu.machine"

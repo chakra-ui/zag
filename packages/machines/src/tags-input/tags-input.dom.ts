@@ -24,14 +24,14 @@ export function dom(ctx: TagsInputMachineContext) {
   const ids = getElementIds(ctx.uid)
   const { root, input } = getElements(ctx)
   const selector = `[data-ownedby=${ids.root}]`
-  const collection = NodeList.fromSelector(root, selector)
+  const list = NodeList.fromSelector(root, selector)
 
   return {
     isInputFocused: input.ownerDocument.activeElement === input,
-    first: collection.first,
-    last: collection.last,
-    indexOfId: collection.indexOfId,
-    prev: collection.prevById,
-    next: collection.nextById,
+    first: list.first,
+    last: list.last,
+    indexOfId: list.indexOfId,
+    prev: list.prevById,
+    next: list.nextById,
   }
 }

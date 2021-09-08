@@ -11,11 +11,8 @@ type TrackPointerMoveOptions = {
 }
 
 export function trackPointerMove(opts: TrackPointerMoveOptions) {
-  const {
-    onPointerMove,
-    onPointerUp,
-    ctx: { doc = document, threshold = 5 },
-  } = opts
+  const { onPointerMove, onPointerUp, ctx } = opts
+  const { doc = document, threshold = 5 } = ctx
 
   const handlePointerMove: Listener = (event, info) => {
     if (info.point.distance() < threshold) {

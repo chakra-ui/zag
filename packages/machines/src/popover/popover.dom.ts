@@ -16,6 +16,7 @@ export function getElements(ctx: PopoverMachineContext) {
   const ids = getElementIds(ctx.uid)
 
   return {
+    doc,
     trigger: doc.getElementById(ids.trigger),
     content: doc.getElementById(ids.content),
     header: doc.getElementById(ids.header),
@@ -28,8 +29,8 @@ export function dom(ctx: PopoverMachineContext) {
   return {
     getFirstFocusable() {
       const focusables = getFocusables(content)
-      const collection = new List(focusables)
-      return !collection.isEmpty ? collection.first : content
+      const list = new List(focusables)
+      return !list.isEmpty ? list.first : content
     },
   }
 }

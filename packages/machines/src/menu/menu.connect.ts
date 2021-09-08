@@ -9,7 +9,7 @@ import { validateBlur } from "../utils/validate-blur"
 import { getChildMenus, getElementIds, getElements, getParentMenus, isTargetDisabled } from "./menu.dom"
 import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
 
-export function connectMenuMachine(
+export function menuConnect(
   state: S.State<MenuMachineContext, MenuMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
@@ -97,7 +97,7 @@ export function connectMenuMachine(
       hidden: !isOpen,
       role: "menu",
       tabIndex: 0,
-      dir: ctx.direction,
+      dir: ctx.dir,
       "aria-activedescendant": ctx.activeId ?? undefined,
       "aria-orientation": ctx.orientation,
       "data-orientation": ctx.orientation,

@@ -12,12 +12,13 @@ const sameKeyMap = {
   Down: "ArrowDown",
   Esc: "Escape",
   " ": "Space",
+  ",": "Comma",
   Left: "ArrowLeft",
   Right: "ArrowRight",
 }
 
 type EventKeyOptions = {
-  direction?: "ltr" | "rtl"
+  dir?: "ltr" | "rtl"
   orientation?: "horizontal" | "vertical"
 }
 
@@ -25,12 +26,12 @@ type EventKeyOptions = {
  * Determine the event key based on text direction.
  */
 export function getEventKey(event: KeyboardEvent, options: EventKeyOptions = {}) {
-  const { direction = "ltr", orientation = "horizontal" } = options
+  const { dir = "ltr", orientation = "horizontal" } = options
 
   let { key } = event
   key = sameKeyMap[key] ?? key // normalize key
 
-  const isRtl = direction === "rtl" && orientation === "horizontal"
+  const isRtl = dir === "rtl" && orientation === "horizontal"
 
   if (isRtl && key in rtlKeyMap) {
     key = rtlKeyMap[key]

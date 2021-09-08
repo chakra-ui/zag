@@ -11,7 +11,7 @@ type TagProps = {
   value: string
 }
 
-export function connectTagsInputMachine(
+export function tagsInputConnect(
   state: S.State<TagsInputMachineContext, TagsInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
@@ -82,7 +82,7 @@ export function connectTagsInputMachine(
           Delete() {
             send("DELETE")
           },
-          ","(event) {
+          Comma(event) {
             event.preventDefault()
             send("COMMA")
           },
@@ -126,10 +126,10 @@ export function connectTagsInputMachine(
     },
 
     getTagInputProps({ index }: { index: number }) {
-      const uid = ids.getTagId(index)
-      const active = ctx.editedId === uid
+      const id = ids.getTagId(index)
+      const active = ctx.editedId === id
       return normalize<InputProps>({
-        id: `${uid}-input`,
+        id: `${id}-input`,
         type: "text",
         tabIndex: -1,
         hidden: isEditingTag ? !active : true,
@@ -161,17 +161,14 @@ export function connectTagsInputMachine(
     },
 
     getTagDeleteButtonProps({ index, value }: TagProps) {
-      const uid = ids.getTagId(index)
+      const id = ids.getTagId(index)
       return normalize<ButtonProps>({
-        id: `${uid}-close`,
+        id: `${id}-close`,
         type: "button",
         "aria-label": `Delete ${value}`,
         tabIndex: -1,
         onClick() {
-          send({
-            type: "CLICK_DELETE_BUTTON",
-            id: uid,
-          })
+          send({ type: "CLICK_DELETE_BUTTON", id })
         },
       })
     },

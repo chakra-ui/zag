@@ -3,9 +3,7 @@ import { RatingMachineContext } from "./rating.machine"
 export function getElementIds(uid: string) {
   return {
     inputId: `rating-${uid}-input`,
-    getRatingId(id: string | number) {
-      return `rating-${uid}--star-${id}`
-    },
+    getRatingId: (id: string | number) => `rating-${uid}--star-${id}`,
     rootId: `rating-${uid}`,
   }
 }

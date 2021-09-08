@@ -1,9 +1,9 @@
-import { connectEditableMachine } from "./editable.connect"
+import { editableConnect } from "./editable.connect"
 import { editableMachine } from "./editable.machine"
 
 export const editable = {
   machine: editableMachine,
-  connect: connectEditableMachine,
+  connect: editableConnect,
 }
 
 export type { EditableMachineContext, EditableMachineState } from "./editable.machine"

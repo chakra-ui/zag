@@ -6,7 +6,7 @@ import { ButtonProps, HTMLProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
-export function connectTabsMachine(
+export function tabsConnect(
   state: S.State<TabsMachineContext, TabsMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
@@ -40,7 +40,7 @@ export function connectTabsMachine(
             send("TABLIST_END")
           },
           Enter() {
-            send({ type: "TABLIST_ENTER", uid: ctx.focusedTabId })
+            send({ type: "TABLIST_ENTER", uid: ctx.focusedId })
           },
         }
 
@@ -55,7 +55,7 @@ export function connectTabsMachine(
     }),
 
     getTabProps({ uid }: { uid: string }) {
-      const selected = ctx.activeTabId === uid
+      const selected = ctx.activeId === uid
       return normalize<ButtonProps>({
         role: "tab",
         type: "button",
@@ -85,7 +85,7 @@ export function connectTabsMachine(
     },
 
     getTabPanelProps({ uid }: { uid: string }) {
-      const selected = ctx.activeTabId === uid
+      const selected = ctx.activeId === uid
       return normalize<HTMLProps>({
         id: ids.getPanelId(uid),
         tabIndex: 0,

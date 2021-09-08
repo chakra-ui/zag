@@ -88,7 +88,7 @@ export function accordionConnect(
             }
 
             const key = getEventKey(event, {
-              direction: ctx.direction,
+              dir: ctx.dir,
               orientation: "vertical",
             })
 

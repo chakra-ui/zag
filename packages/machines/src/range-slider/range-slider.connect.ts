@@ -9,7 +9,7 @@ import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
 import { getElementIds } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
-export function connectRangeSliderMachine(
+export function rangeSliderConnect(
   state: S.State<RangeSliderMachineContext, RangeSliderMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
