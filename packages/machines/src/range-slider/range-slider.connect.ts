@@ -17,7 +17,6 @@ export function rangeSliderConnect(
   const { context: ctx } = state
   const { min, max, value: values } = ctx
 
-  // const range = new Range(ctx)
   const ids = getElementIds(ctx.uid)
 
   const ariaLabel = ctx["aria-label"]
@@ -129,8 +128,6 @@ export function rangeSliderConnect(
       style: {
         touchAction: "none",
         userSelect: "none",
-        WebkitUserSelect: "none",
-        msUserSelect: "none",
       },
       onPointerDown(event) {
         if (event.button !== 0) return

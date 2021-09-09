@@ -1,6 +1,6 @@
 import { createMachine, preserve } from "@ui-machines/core"
 import { addPointerEvent } from "@core-dom/event/pointer"
-import { proxy } from "valtio"
+import { proxy, subscribe } from "valtio"
 import { env, is, noop } from "@core-foundation/utils"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
@@ -28,8 +28,10 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           },
         },
       },
+
       idle: {
         on: {
+          FOCUS: "open",
           POINTER_ENTER: [
             {
               cond: "noVisibleTooltip",
@@ -51,7 +53,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       },
 
       open: {
-        activities: ["trackEscapeKeypress", "trackGlobalPointermoveForSafari"],
+        activities: ["trackEscapeKey", "trackPointermoveForSafari"],
         entry: "setGlobalId",
         on: {
           POINTER_LEAVE: [
@@ -61,6 +63,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
             },
             { target: "closed" },
           ],
+          BLUR: "closing",
           ESCAPE: "closed",
           POINTER_DOWN: "closed",
           PRESS_ENTER: "closed",
@@ -68,6 +71,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       },
 
       closing: {
+        activities: "trackStore",
         after: {
           CLOSE_DELAY: "closed",
         },
@@ -92,7 +96,14 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
   },
   {
     activities: {
-      trackGlobalPointermoveForSafari: (ctx, _evt, { send }) => {
+      trackStore(ctx, _evt, { send }) {
+        return subscribe(tooltipStore, () => {
+          if (tooltipStore.id !== ctx.id) {
+            send("FORCE_CLOSE")
+          }
+        })
+      },
+      trackPointermoveForSafari: (ctx, _evt, { send }) => {
         if (!env.safari()) return noop
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "pointermove", (event) => {
@@ -102,7 +113,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           send("POINTER_LEAVE")
         })
       },
-      trackEscapeKeypress: (ctx, _evt, { send }) => {
+      trackEscapeKey: (ctx, _evt, { send }) => {
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "keydown", (event) => {
           if (event.key === "Escape" || event.key === "Esc") {

@@ -1,9 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { snapshot } from "valtio"
-import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
-import { defaultPropNormalizer, dataAttr } from "../utils/dom-attr"
-import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
+import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
+import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 
 export function tooltipConnect(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
@@ -12,13 +11,7 @@ export function tooltipConnect(
 ) {
   const { context: ctx } = state
 
-  const snap = snapshot(tooltipStore)
-
-  const isVisible = snap.id === ctx.id && state.matches("open", "closing")
-
-  if (state.matches("closing") && !isVisible) {
-    send("FORCE_CLOSE")
-  }
+  const isVisible = state.matches("open", "closing")
 
   const triggerId = `tooltip-${ctx.id}`
   const tooltipId = `tooltip-${ctx.id}-content`
@@ -36,13 +29,17 @@ export function tooltipConnect(
       "aria-describedby": isVisible ? tooltipId : undefined,
       "data-controls": "tooltip",
       onFocus() {
-        send("POINTER_ENTER")
+        send("FOCUS")
       },
       onBlur() {
-        send("POINTER_LEAVE")
+        if (ctx.id === tooltipStore.id) {
+          send("BLUR")
+        }
       },
       onPointerDown() {
-        send("POINTER_DOWN")
+        if (ctx.id === tooltipStore.id) {
+          send("POINTER_DOWN")
+        }
       },
       onPointerMove() {
         send("POINTER_ENTER")
