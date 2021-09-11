@@ -1,7 +1,7 @@
 import { NodeList } from "@core-dom/node-list"
 import { ComboboxMachineContext } from "./combobox.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     label: `combobox-${uid}-label`,
     container: `combobox-${uid}`,
@@ -16,7 +16,7 @@ export function getElementIds(uid: string) {
 
 export function getElements(ctx: ComboboxMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     doc,

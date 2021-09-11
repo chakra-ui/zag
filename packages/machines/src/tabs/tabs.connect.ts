@@ -3,7 +3,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { ButtonProps, HTMLProps, EventKeyMap } from "../utils/types"
-import { getElementIds } from "./tabs.dom"
+import { getIds } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
 export function tabsConnect(
@@ -12,7 +12,7 @@ export function tabsConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     tablistProps: normalize<HTMLProps>({

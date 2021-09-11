@@ -3,7 +3,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getElementIds, getElements } from "./tags-input.dom"
+import { getIds, getElements } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 
 type TagProps = {
@@ -17,7 +17,7 @@ export function tagsInputConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const isInputFocused = state.matches("focused:input", "navigating:tag")
   const isEditingTag = state.matches("editing:tag")

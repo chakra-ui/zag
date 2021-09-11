@@ -4,7 +4,7 @@ import { getEventKey } from "../utils/get-event-key"
 import { srOnlyStyle } from "../utils/live-region"
 import type { ButtonProps, EventKeyMap, HTMLProps, InputProps, LabelProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getElementIds, getElements } from "./combobox.dom"
+import { getIds, getElements } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
 export function comboboxConnect(
@@ -13,7 +13,7 @@ export function comboboxConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const expanded = state.matches("open")
   const autocomplete =

@@ -1,21 +1,21 @@
 import { NumericRange } from "@core-foundation/numeric-range"
-import { Point } from "@core-graphics/point"
-import { CSSStyleProperties } from "../utils/types"
+import type { Point } from "@core-graphics/point"
+import type { CSSStyleProperties } from "../utils/types"
 import type { SliderMachineContext } from "./slider.machine"
 
-export function getElementIds(id: string) {
+export function getIds(id: string) {
   return {
     thumb: `slider-${id}-thumb`,
     root: `slider-${id}-root`,
     input: `slider-${id}-input`,
     track: `slider-${id}-track`,
-    innerTrack: `slider-${id}-inner-track`,
+    range: `slider-${id}-range`,
   }
 }
 
 export function getElements(ctx: SliderMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
   return {
     doc,
     thumb: doc.getElementById(ids.thumb),
@@ -24,7 +24,7 @@ export function getElements(ctx: SliderMachineContext) {
   }
 }
 
-export function getValueFromPoint(ctx: SliderMachineContext, info: Point) {
+export function getValueFromPoint(ctx: SliderMachineContext, info: Point): number | undefined {
   const { root } = getElements(ctx)
   if (!root) return
 
@@ -35,7 +35,6 @@ export function getValueFromPoint(ctx: SliderMachineContext, info: Point) {
   const progressValue = isHorizontal ? progress.x : progress.y
 
   const opts = { min: 0, max: 1, value: progressValue }
-
   let percent = new NumericRange(opts).clamp().valueOf()
 
   if (isHorizontal && isRtl) {
@@ -47,7 +46,7 @@ export function getValueFromPoint(ctx: SliderMachineContext, info: Point) {
   return range.clone().snapToStep().valueOf()
 }
 
-export function getThumbPlacementStyle(ctx: SliderMachineContext) {
+function getThumbStyle(ctx: SliderMachineContext): CSSStyleProperties {
   const range = new NumericRange(ctx)
   const percent = range.toPercent()
 
@@ -81,7 +80,7 @@ export function getThumbPlacementStyle(ctx: SliderMachineContext) {
   }
 }
 
-export function getInnerTrackPlacementStyle(ctx: SliderMachineContext) {
+function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
   const range = new NumericRange(ctx)
   const percent = range.toPercent()
   const isRtl = ctx.dir === "rtl"
@@ -102,5 +101,25 @@ export function getInnerTrackPlacementStyle(ctx: SliderMachineContext) {
     ...style,
     [isRtl ? "right" : "left"]: "0%",
     [isRtl ? "left" : "right"]: `${100 - percent}%`,
+  }
+}
+
+export function getStyles(ctx: SliderMachineContext) {
+  const rootStyle: CSSStyleProperties = {
+    touchAction: "none",
+    userSelect: "none",
+    "--slider-thumb-transform": "translateX(-50%)",
+    position: "relative",
+  }
+
+  const trackStyle: CSSStyleProperties = {
+    position: "relative",
+  }
+
+  return {
+    root: rootStyle,
+    thumb: getThumbStyle(ctx),
+    range: getRangeStyle(ctx),
+    track: trackStyle,
   }
 }

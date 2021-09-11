@@ -2,7 +2,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { defaultPropNormalizer } from "../utils/dom-attr"
 import { ButtonProps, InputProps, EventKeyMap } from "../utils/types"
-import { getElementIds } from "./number-input.dom"
+import { getIds } from "./number-input.dom"
 import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
 import { isValidNumericKeyboardEvent } from "./number-input.utils"
 import { getEventStep } from "../utils/get-step"
@@ -14,7 +14,7 @@ export function numberInputConnect(
 ) {
   const { context: ctx } = state
 
-  const { inputId, incButtonId, decButtonId } = getElementIds(ctx.uid)
+  const { inputId, incButtonId, decButtonId } = getIds(ctx.uid)
   const range = new NumericRange(ctx)
   const canIncrement = !ctx.disabled && !range.isAtMax
   const canDecrement = !ctx.disabled && !range.isAtMin

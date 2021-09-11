@@ -3,7 +3,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import type { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
-import { getElementIds } from "./accordion.dom"
+import { getIds } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
 export function accordionConnect(
@@ -12,7 +12,7 @@ export function accordionConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     rootProps: normalize<HTMLProps>({

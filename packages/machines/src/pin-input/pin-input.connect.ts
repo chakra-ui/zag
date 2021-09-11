@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer } from "../utils/dom-attr"
 import { InputProps, EventKeyMap } from "../utils/types"
-import { getElementIds } from "./pin-input.dom"
+import { getIds } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"
 
 export function pinInputConnect(
@@ -10,7 +10,7 @@ export function pinInputConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     getInputProps({ index }: { index: number }) {

@@ -1,6 +1,6 @@
 import { NumberInputMachineContext } from "./number-input.machine"
 
-export function getElementIds(uid: string | number) {
+export function getIds(uid: string | number) {
   return {
     inputId: `input-${uid}`,
     incButtonId: `inc-btn-${uid}`,
@@ -10,7 +10,7 @@ export function getElementIds(uid: string | number) {
 
 export function getElements(ctx: NumberInputMachineContext) {
   const doc = ctx.doc ?? document
-  const { inputId, incButtonId, decButtonId } = getElementIds(ctx.uid)
+  const { inputId, incButtonId, decButtonId } = getIds(ctx.uid)
   return {
     input: doc.getElementById(inputId),
     incButton: doc.getElementById(incButtonId),

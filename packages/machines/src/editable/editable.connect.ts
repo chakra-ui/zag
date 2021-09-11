@@ -2,7 +2,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { ButtonProps, EventKeyMap, HTMLProps, InputProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getElementIds, getElements } from "./editable.dom"
+import { getIds, getElements } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.machine"
 
 export function editableConnect(
@@ -12,7 +12,7 @@ export function editableConnect(
 ) {
   const { context: ctx } = state
   const isEditing = state.matches("edit")
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const isInteractive = !(ctx.disabled || ctx.readonly)
   const tabIndex = isInteractive && ctx.isPreviewFocusable ? 0 : undefined

@@ -44,7 +44,7 @@ const styles = css`
     flex-grow: 1;
   }
 
-  .slider__track-inner {
+  .slider__range {
     background: magenta;
     border-radius: inherit;
     height: 100%;
@@ -66,7 +66,7 @@ export default defineComponent({
     const connect = computed(() => slider.connect(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, innerTrackProps, trackProps, inputProps, thumbProps } = connect.value
+      const { rootProps, rangeProps, trackProps, inputProps, thumbProps } = connect.value
       return (
         <form
           className={styles}
@@ -77,7 +77,7 @@ export default defineComponent({
         >
           <div className="slider" ref={_ref} {...rootProps}>
             <div className="slider__track" {...trackProps}>
-              <div className="slider__track-inner" {...innerTrackProps} />
+              <div className="slider__range" {...rangeProps} />
             </div>
             <div className="slider__thumb" {...thumbProps}>
               <input {...inputProps} />

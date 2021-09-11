@@ -2,7 +2,7 @@ import { Point } from "@core-graphics/point"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { RangeSliderMachineContext } from "./range-slider.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     getThumbId: (index: number) => `slider-${uid}-thumb-${index}`,
     getInputId: (index: number) => `slider-${uid}-input-${index}`,
@@ -13,7 +13,7 @@ export function getElementIds(uid: string) {
 
 export function getElements(ctx: RangeSliderMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const root = doc.getElementById(ids.root)
   const sliders = root?.querySelectorAll(`[role=slider]`)

@@ -1,6 +1,6 @@
 import { SplitViewMachineContext } from "./split-view.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     root: `${uid}-root`,
     splitter: `${uid}-splitter`,
@@ -13,7 +13,7 @@ export function getElementIds(uid: string) {
 
 export function getElements(ctx: SplitViewMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     splitter: doc.getElementById(ids.splitter),

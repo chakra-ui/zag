@@ -1,16 +1,4 @@
-import { {{capitalize machine}}MachineContext } from "./{{machine}}.machine"
-
-export function getElementIds(uid: string) {
-  return {
-    
-  }
-}
-
-export function getElements(ctx: {{capitalize machine}}MachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
-
-  return {
-    
-  }
-}
+import {
+{{capitalize machine}}MachineContext } from "./{{machine}}.machine" export function getIds(uid: string) { return { } }
+export function getElements(ctx:
+{{capitalize machine}}MachineContext) { const doc = ctx.doc ?? document const ids = getIds(ctx.uid) return { } }

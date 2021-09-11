@@ -2,7 +2,7 @@ import { getFocusables } from "@core-dom/element"
 import { List } from "@core-foundation/list"
 import { PopoverMachineContext } from "./popover.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     trigger: `popover-${uid}-trigger`,
     content: `popover-${uid}-content`,
@@ -13,7 +13,7 @@ export function getElementIds(uid: string) {
 
 export function getElements(ctx: PopoverMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     doc,

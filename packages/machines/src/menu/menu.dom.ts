@@ -2,7 +2,7 @@ import { NodeList } from "@core-dom/node-list"
 import { is } from "@core-foundation/utils"
 import { MenuMachineContext } from "./menu.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     trigger: `menu-${uid}-trigger`,
     menu: `menu-${uid}-menulist`,
@@ -11,7 +11,7 @@ export function getElementIds(uid: string) {
 
 export function getElements(ctx: MenuMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   return {
     doc,
@@ -23,7 +23,7 @@ export function getElements(ctx: MenuMachineContext) {
 }
 
 export function dom(ctx: MenuMachineContext) {
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
   const { menu } = getElements(ctx)
   const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([data-disabled])`
   const collection = NodeList.fromSelector(menu, selector)

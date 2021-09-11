@@ -2,7 +2,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer } from "../utils/dom-attr"
 import type { HTMLProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getElementIds, getElements } from "./popover.dom"
+import { getIds, getElements } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 
 export function popoverConnect(
@@ -11,7 +11,7 @@ export function popoverConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
   const isOpen = state.matches("open")
 
   return {

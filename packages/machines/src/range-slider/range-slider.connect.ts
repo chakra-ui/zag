@@ -6,7 +6,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
 import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
-import { getElementIds } from "./range-slider.dom"
+import { getIds } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
 export function rangeSliderConnect(
@@ -17,7 +17,7 @@ export function rangeSliderConnect(
   const { context: ctx } = state
   const { min, max, value: values } = ctx
 
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const ariaLabel = ctx["aria-label"]
   const ariaLabelledBy = ctx["aria-labelledby"]

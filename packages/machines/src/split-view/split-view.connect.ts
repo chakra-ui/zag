@@ -3,7 +3,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
 import { EventKeyMap, HTMLProps } from "../utils/types"
-import { getElementIds } from "./split-view.dom"
+import { getIds } from "./split-view.dom"
 import { SplitViewMachineContext, SplitViewMachineState } from "./split-view.machine"
 
 export function connectSplitViewMachine(
@@ -12,7 +12,7 @@ export function connectSplitViewMachine(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const isHorizontal = ctx.orientation === "horizontal"
 

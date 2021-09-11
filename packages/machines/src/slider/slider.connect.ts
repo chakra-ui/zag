@@ -5,7 +5,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
 import type { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
-import { getElementIds, getInnerTrackPlacementStyle, getThumbPlacementStyle } from "./slider.dom"
+import { getIds, getStyles } from "./slider.dom"
 import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
 export function sliderConnect(
@@ -14,23 +14,31 @@ export function sliderConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
   const ariaLabel = ctx["aria-label"]
   const ariaLabelledBy = ctx["aria-labelledby"]
   const ariaValueText = ctx.getAriaValueText?.(ctx.value)
 
   const isFocused = state.matches("focus")
+  const isDragging = state.matches("panning")
+
+  const styles = getStyles(ctx)
 
   return {
+    // State values
     isFocused,
-    isDragging: state.matches("panning"),
+    isDragging,
+
+    // Slider Thumb properties
     thumbProps: normalize<HTMLProps>({
       id: ids.thumb,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
       draggable: false,
+
+      // ARIA Attributes for accessibility
       "aria-disabled": ctx.disabled || undefined,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy,
@@ -41,6 +49,8 @@ export function sliderConnect(
       "aria-valuetext": ariaValueText,
       role: "slider",
       tabIndex: ctx.disabled ? -1 : 0,
+
+      // Event listeners
       onBlur() {
         send("BLUR")
       },
@@ -85,9 +95,10 @@ export function sliderConnect(
           exec(event)
         }
       },
-      style: getThumbPlacementStyle(ctx),
+      style: styles.thumb,
     }),
 
+    // Slider Hidden Input (useful for forms)
     inputProps: normalize<InputProps>({
       type: "hidden",
       value: ctx.value,
@@ -95,48 +106,42 @@ export function sliderConnect(
       id: ids.input,
     }),
 
+    // Slider Track Attributes
     trackProps: normalize<HTMLProps>({
       id: ids.track,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
-      style: {
-        position: "relative",
-      },
+      style: styles.track,
     }),
 
-    innerTrackProps: normalize<HTMLProps>({
-      id: ids.innerTrack,
+    // Slider Range Attributes
+    rangeProps: normalize<HTMLProps>({
+      id: ids.range,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-value": ctx.value,
-      style: getInnerTrackPlacementStyle(ctx),
+      style: styles.range,
     }),
 
+    // Slider Container or Root Attributes
     rootProps: normalize<HTMLProps>({
       id: ids.root,
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
       "aria-disabled": ctx.disabled || undefined,
-      tabIndex: -1,
       onPointerDown(event) {
+        // allow only primary pointer clicks
         if (event.button !== 0) return
-
         event.preventDefault()
         event.stopPropagation()
-
         send({
           type: "POINTER_DOWN",
           point: Point.fromPointerEvent(cast(event)),
         })
       },
-      style: {
-        touchAction: "none",
-        userSelect: "none",
-        "--slider-thumb-transform": "translateX(-50%)",
-        position: "relative",
-      },
+      style: styles.root,
     }),
   }
 }

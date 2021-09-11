@@ -1,7 +1,7 @@
 import { NodeList } from "@core-dom/node-list"
 import { TabsMachineContext } from "./tabs.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     tablist: `tabs-${uid}-tablist`,
     getPanelId: (id: string) => `tabs-${uid}-tabpanel-${id}`,
@@ -11,7 +11,7 @@ export function getElementIds(uid: string) {
 
 export function dom(ctx: TabsMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
   const tablist = doc.getElementById(ids.tablist)
 
   const selector = `[role=tab][data-ownedby='${ids.tablist}']`

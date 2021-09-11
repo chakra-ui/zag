@@ -1,7 +1,7 @@
 import { NodeList } from "@core-dom/node-list"
 import { AccordionMachineContext } from "./accordion.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     root: `accordion-${uid}`,
     getGroupId: (id: string) => `accordion-${uid}-item-${id}`,
@@ -12,7 +12,7 @@ export function getElementIds(uid: string) {
 
 export function dom(ctx: AccordionMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
   const root = doc.getElementById(ids.root)
 
   const selector = `[aria-controls][data-ownedby='${ids.root}']:not([disabled])`

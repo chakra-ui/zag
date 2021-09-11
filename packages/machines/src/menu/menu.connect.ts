@@ -6,7 +6,7 @@ import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getChildMenus, getElementIds, getElements, getParentMenus, isTargetDisabled } from "./menu.dom"
+import { getChildMenus, getIds, getElements, getParentMenus, isTargetDisabled } from "./menu.dom"
 import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
 
 export function menuConnect(
@@ -16,7 +16,7 @@ export function menuConnect(
 ) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
-  const ids = getElementIds(ctx.uid)
+  const ids = getIds(ctx.uid)
   const isSubmenu = ctx.parent != null
 
   return {

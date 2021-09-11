@@ -1,6 +1,6 @@
 import { EditableMachineContext } from "./editable.machine"
 
-export function getElementIds(uid: string) {
+export function getIds(uid: string) {
   return {
     label: `editable-${uid}-label`,
     input: `editable-${uid}-input`,
@@ -12,7 +12,7 @@ export function getElementIds(uid: string) {
 
 export function getElements(ctx: EditableMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getElementIds(ctx.uid ?? "")
+  const ids = getIds(ctx.uid ?? "")
 
   return {
     label: doc.getElementById(ids.label),

@@ -16,7 +16,7 @@ function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputProps, thumbProps, rootProps, trackProps, innerTrackProps } = slider.connect(state, send)
+  const { inputProps, thumbProps, rootProps, trackProps, rangeProps } = slider.connect(state, send)
 
   return (
     <>
@@ -28,7 +28,7 @@ function Page() {
       >
         <div className="slider" ref={ref} {...rootProps}>
           <div className="slider__track" {...trackProps}>
-            <div className="slider__track-inner" {...innerTrackProps} />
+            <div className="slider__range" {...rangeProps} />
           </div>
           <div className="slider__thumb" {...thumbProps}>
             <input {...inputProps} />
@@ -74,7 +74,7 @@ function Page() {
           flex-grow: 1;
         }
 
-        .slider__track-inner {
+        .slider__range {
           background: magenta;
           border-radius: inherit;
           height: 100%;

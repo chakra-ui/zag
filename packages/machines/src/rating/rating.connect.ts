@@ -4,7 +4,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
-import { getElementIds } from "./rating.dom"
+import { getIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
 export function ratingConnect(
@@ -15,7 +15,7 @@ export function ratingConnect(
   const { context: ctx } = state
   const isHovering = ctx.hoveredValue !== -1
 
-  const { inputId, rootId, getRatingId } = getElementIds(ctx.uid)
+  const { inputId, rootId, getRatingId } = getIds(ctx.uid)
 
   return {
     inputProps: normalize<InputProps>({
