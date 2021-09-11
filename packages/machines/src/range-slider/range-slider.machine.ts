@@ -1,14 +1,17 @@
-import { addPointerEvent, dispatchInputEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { is, nextTick, pipe } from "@core-foundation/utils"
+import { dispatchInputEvent } from "@core-dom/event"
+import { nextTick } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { fromElement } from "@core-graphics/rect/create"
 import { createMachine, preserve } from "@ui-machines/core"
+import { trackPointerMove } from "../utils/pointer-move"
 import { WithDOM } from "../utils/types"
-import { getElements, getRangeAtIndex, pointToValue } from "./range-slider.dom"
+import { getElements, getRangeAtIndex, getValueFromPoint } from "./range-slider.dom"
 
 export type RangeSliderMachineContext = WithDOM<{
-  name?: string
+  "aria-label"?: string[]
+  "aria-labelledby"?: string[]
+  thumbSize: Array<{ width: number; height: number }> | null
+  name?: string[]
   threshold: number
   activeIndex: number
   value: number[]
@@ -24,14 +27,15 @@ export type RangeSliderMachineContext = WithDOM<{
 }>
 
 export type RangeSliderMachineState = {
-  value: "mounted" | "idle" | "panning" | "focus"
+  value: "unknown" | "idle" | "dragging" | "focus"
 }
 
 export const rangeSliderMachine = createMachine<RangeSliderMachineContext, RangeSliderMachineState>(
   {
     id: "range-slider-machine",
-    initial: "mounted",
+    initial: "unknown",
     context: {
+      thumbSize: null,
       uid: "48",
       threshold: 5,
       activeIndex: -1,
@@ -43,18 +47,18 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       dir: "ltr",
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument"],
+            actions: ["setId", "setOwnerDocument", "setThumbSize"],
           },
         },
       },
       idle: {
         on: {
           POINTER_DOWN: {
-            target: "panning",
+            target: "dragging",
             actions: [
               "setActiveIndex",
               "setValueForEvent",
@@ -73,7 +77,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         entry: "focusActiveThumb",
         on: {
           POINTER_DOWN: {
-            target: "panning",
+            target: "dragging",
             actions: [
               "setActiveIndex",
               "setValueForEvent",
@@ -109,11 +113,14 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
           BLUR: "idle",
         },
       },
-      panning: {
+      dragging: {
         entry: "focusActiveThumb",
         activities: "trackPointerMove",
         on: {
-          POINTER_UP: { target: "focus", actions: "invokeOnChangeEnd" },
+          POINTER_UP: {
+            target: "focus",
+            actions: "invokeOnChangeEnd",
+          },
         },
       },
     },
@@ -121,37 +128,19 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
   {
     activities: {
       trackPointerMove(ctx, _evt, { send }) {
-        const doc = ctx.doc ?? document
-
-        const onPointerMove: Listener = (event, info) => {
-          if (info.point.distance() < ctx.threshold) {
-            return
-          }
-
-          // Because Safari doesn't trigger mouseup events when it's above a `<select>`
-          if (is.mouseEvent(event) && event.button === 0) {
+        return trackPointerMove({
+          ctx,
+          onPointerMove(_evt, info) {
+            const value = getValueFromPoint(ctx, info.point)
+            if (value == null) return
+            ctx.value[ctx.activeIndex] = value
+            ctx.onChange?.(ctx.value)
+            dispatchChangeEvent(ctx)
+          },
+          onPointerUp() {
             send("POINTER_UP")
-            return
-          }
-
-          const value = pointToValue(ctx, info.point)
-          if (value == null) return
-
-          ctx.value[ctx.activeIndex] = value
-          ctx.onChange?.(ctx.value)
-          dispatchChangeEvent(ctx)
-        }
-
-        const onPointerUp = () => {
-          send("POINTER_UP")
-        }
-
-        return pipe(
-          addPointerEvent(doc, "pointermove", onPointerMove, false),
-          addPointerEvent(doc, "pointerup", onPointerUp, false),
-          addPointerEvent(doc, "pointercancel", onPointerUp, false),
-          addPointerEvent(doc, "contextmenu", onPointerUp, false),
-        )
+          },
+        })
       },
     },
     actions: {
@@ -170,6 +159,12 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
         dispatchChangeEvent(ctx)
+      },
+      setThumbSize(ctx) {
+        nextTick(() => {
+          const { thumbs } = getElements(ctx)
+          ctx.thumbSize = thumbs.map((thumb) => fromElement(thumb).size)
+        })
       },
       setActiveIndex(ctx, evt) {
         // evt.index means this was passed on a keyboard event (`onKeyDown`)
@@ -192,7 +187,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         ctx.activeIndex = index
       },
       setValueForEvent(ctx, evt) {
-        const value = pointToValue(ctx, evt.point)
+        const value = getValueFromPoint(ctx, evt.point)
         if (typeof value === "number") {
           ctx.value[ctx.activeIndex] = value
         }
@@ -217,8 +212,8 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         ctx.value[ctx.activeIndex] = range.clone().setToMin().valueOf()
       },
       setActiveThumbToMax(ctx) {
-        const opts = getRangeAtIndex(ctx)
-        ctx.value[ctx.activeIndex] = new NumericRange(opts).setToMax().valueOf()
+        const range = getRangeAtIndex(ctx)
+        ctx.value[ctx.activeIndex] = range.clone().setToMax().valueOf()
       },
     },
   },

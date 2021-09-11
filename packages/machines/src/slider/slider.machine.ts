@@ -27,7 +27,7 @@ export type SliderMachineContext = WithDOM<{
 }>
 
 export type SliderMachineState = {
-  value: "unknown" | "idle" | "panning" | "focus"
+  value: "unknown" | "idle" | "dragging" | "focus"
 }
 
 export const sliderMachine = createMachine<SliderMachineContext, SliderMachineState>(
@@ -62,7 +62,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       idle: {
         on: {
           POINTER_DOWN: {
-            target: "panning",
+            target: "dragging",
             actions: ["setValueForEvent", "invokeOnChangeStart", "focusThumb"],
           },
           FOCUS: {
@@ -75,7 +75,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         entry: "focusThumb",
         on: {
           POINTER_DOWN: {
-            target: "panning",
+            target: "dragging",
             actions: ["setValueForEvent", "invokeOnChangeStart", "invokeOnChange", "focusThumb"],
           },
           ARROW_LEFT: {
@@ -105,7 +105,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
           BLUR: "idle",
         },
       },
-      panning: {
+      dragging: {
         entry: "focusThumb",
         activities: "trackPointerMove",
         on: {
@@ -160,10 +160,8 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       setThumbSize(ctx) {
         nextTick(() => {
           const { thumb } = getElements(ctx)
-          if (thumb) {
-            const { width, height } = fromElement(thumb)
-            ctx.thumbSize = { width, height }
-          }
+          if (!thumb) return
+          ctx.thumbSize = fromElement(thumb).size
         })
       },
       setValueForEvent(ctx, evt) {
@@ -178,19 +176,11 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       },
       decrement(ctx, evt) {
         const range = new NumericRange(ctx).decrement(evt.step)
-        ctx.value = new NumericRange(ctx)
-          .setValue(+range)
-          .snapToStep()
-          .clamp()
-          .valueOf()
+        ctx.value = range.clone().snapToStep().clamp().valueOf()
       },
       increment(ctx, evt) {
         const range = new NumericRange(ctx).increment(evt.step)
-        ctx.value = new NumericRange(ctx)
-          .setValue(+range)
-          .snapToStep()
-          .clamp()
-          .valueOf()
+        ctx.value = range.clone().snapToStep().clamp().valueOf()
       },
       setToMin(ctx) {
         ctx.value = new NumericRange(ctx).setToMin().valueOf()

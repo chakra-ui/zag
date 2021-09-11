@@ -5,8 +5,8 @@ import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
-import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
-import { getIds } from "./range-slider.dom"
+import { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
+import { getIds, getStyles } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
 export function rangeSliderConnect(
@@ -15,23 +15,29 @@ export function rangeSliderConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const { min, max, value: values } = ctx
+  const { value: values, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } = ctx
 
   const ids = getIds(ctx.uid)
 
-  const ariaLabel = ctx["aria-label"]
-  const ariaLabelledBy = ctx["aria-labelledby"]
-
   const isFocused = state.matches("focus")
-
-  const innerTrackStart = (values[0] / ctx.max) * 100
-  const innerTrackEnd = (values[values.length - 1] / ctx.max) * 100
-  const innerTrackWidth = innerTrackEnd - innerTrackStart
+  const isDragging = state.matches("dragging")
+  const styles = getStyles(ctx)
 
   return {
+    values: ctx.value,
+    isDragging,
+    isFocused,
+
+    trackProps: normalize<HTMLProps>({
+      id: ids.track,
+      "data-disabled": dataAttr(ctx.disabled),
+      "data-orientation": ctx.orientation,
+      "data-focused": dataAttr(isFocused),
+      style: styles.track,
+    }),
+
     getThumbProps(index: number) {
       const value = values[index]
-      const percent = new NumericRange({ min, max, value }).toPercent()
       const range = NumericRange.fromValues(ctx.value, ctx)[index]
       const ariaValueText = ctx.getAriaValueText?.(value, index)
 
@@ -42,18 +48,16 @@ export function rangeSliderConnect(
         "data-focused": dataAttr(isFocused),
         draggable: false,
         "aria-disabled": ctx.disabled || undefined,
-        "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy,
+        "aria-label": ariaLabel?.[index],
+        "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy?.[index],
         "aria-orientation": ctx.orientation,
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
         "aria-valuenow": values[index],
         "aria-valuetext": ariaValueText,
-        style: {
-          "--slider-thumb-percent": `${percent}%`,
-        },
         role: "slider",
         tabIndex: ctx.disabled ? -1 : 0,
+        style: styles.getThumb(index),
         onBlur() {
           send("BLUR")
         },
@@ -103,20 +107,18 @@ export function rangeSliderConnect(
 
     getInputProps(index: number) {
       return normalize<InputProps>({
+        name: ctx.name?.[index],
         type: "hidden",
         value: ctx.value[index],
         id: ids.getInputId(index),
       })
     },
 
-    innerTrackProps: normalize<HTMLProps>({
+    rangeProps: normalize<HTMLProps>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
-      style: {
-        "--slider-inner-track-start": `${innerTrackStart}%`,
-        "--slider-inner-track-width": `${innerTrackWidth}%`,
-      },
+      style: styles.range,
     }),
 
     rootProps: normalize<HTMLProps>({
@@ -124,11 +126,7 @@ export function rangeSliderConnect(
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
-      tabIndex: -1,
-      style: {
-        touchAction: "none",
-        userSelect: "none",
-      },
+      style: styles.root,
       onPointerDown(event) {
         if (event.button !== 0) return
 

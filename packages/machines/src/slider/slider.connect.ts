@@ -21,7 +21,7 @@ export function sliderConnect(
   const ariaValueText = ctx.getAriaValueText?.(ctx.value)
 
   const isFocused = state.matches("focus")
-  const isDragging = state.matches("panning")
+  const isDragging = state.matches("dragging")
 
   const styles = getStyles(ctx)
 

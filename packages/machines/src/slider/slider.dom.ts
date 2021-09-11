@@ -29,24 +29,24 @@ export function getValueFromPoint(ctx: SliderMachineContext, info: Point): numbe
   if (!root) return
 
   const isHorizontal = ctx.orientation === "horizontal"
-  const isRtl = ctx.dir === "rtl"
+  const isRtl = isHorizontal && ctx.dir === "rtl"
 
   const { progress } = info.relativeToNode(root)
-  const progressValue = isHorizontal ? progress.x : progress.y
+  let progressValue = isHorizontal ? progress.x : progress.y
+
+  if (isRtl) progressValue = 1 - progressValue
 
   const opts = { min: 0, max: 1, value: progressValue }
-  let percent = new NumericRange(opts).clamp().valueOf()
-
-  if (isHorizontal && isRtl) {
-    percent = 1 - percent
-  }
+  const percent = new NumericRange(opts).clamp().valueOf()
 
   const range = NumericRange.fromPercent(percent, ctx)
 
   return range.clone().snapToStep().valueOf()
 }
 
-function getThumbStyle(ctx: SliderMachineContext): CSSStyleProperties {
+type GetThumbStyleOptions = Pick<SliderMachineContext, "min" | "max" | "dir" | "thumbSize" | "value" | "orientation">
+
+export function getThumbStyle(ctx: GetThumbStyleOptions): CSSStyleProperties {
   const range = new NumericRange(ctx)
   const percent = range.toPercent()
 
@@ -80,7 +80,7 @@ function getThumbStyle(ctx: SliderMachineContext): CSSStyleProperties {
   }
 }
 
-function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
+export function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
   const range = new NumericRange(ctx)
   const percent = range.toPercent()
   const isRtl = ctx.dir === "rtl"
@@ -104,20 +104,23 @@ function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
   }
 }
 
-export function getStyles(ctx: SliderMachineContext) {
-  const rootStyle: CSSStyleProperties = {
+export function getRootStyle(opts: Pick<SliderMachineContext, "orientation">): CSSStyleProperties {
+  const isVertical = opts.orientation === "vertical"
+  return {
     touchAction: "none",
     userSelect: "none",
-    "--slider-thumb-transform": "translateX(-50%)",
+    "--slider-thumb-transform": isVertical ? "translateY(50%)" : "translateX(-50%)",
     position: "relative",
   }
+}
 
+export function getStyles(ctx: SliderMachineContext) {
   const trackStyle: CSSStyleProperties = {
     position: "relative",
   }
 
   return {
-    root: rootStyle,
+    root: getRootStyle(ctx),
     thumb: getThumbStyle(ctx),
     range: getRangeStyle(ctx),
     track: trackStyle,

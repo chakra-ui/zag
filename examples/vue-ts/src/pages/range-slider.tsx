@@ -9,44 +9,45 @@ import { css } from "@emotion/css"
 
 const styles = css`
   .slider {
-    --slider-thumb-size: 24px;
+    --slider-thumb-size: 20px;
     --slider-track-height: 4px;
     height: var(--slider-thumb-size);
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
     margin: 45px;
-    max-width: 400px;
+    max-width: 200px;
     position: relative;
   }
 
   .slider__thumb {
+    all: unset;
     width: var(--slider-thumb-size);
     height: var(--slider-thumb-size);
+    border-radius: 9999px;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 10px;
     border-radius: 999px;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: var(--slider-thumb-percent);
-    background: lime;
   }
 
-  .slider__thumb:focus {
-    outline: 2px solid royalblue;
+  .slider__thumb:focus-visible {
+    box-shadow: rgb(0 0 0 / 22%) 0px 0px 0px 5px;
+  }
+
+  .slider__thumb:hover {
+    background-color: rgb(245, 242, 255);
   }
 
   .slider__track {
     height: var(--slider-track-height);
-    background: lightgray;
-    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 9999px;
+    flex-grow: 1;
   }
 
-  .slider__track-inner {
+  .slider__range {
     background: magenta;
+    border-radius: inherit;
     height: 100%;
-    width: var(--slider-inner-track-width);
-    position: relative;
-    left: var(--slider-inner-track-start);
   }
 `
 
@@ -61,9 +62,10 @@ export default defineComponent({
     )
 
     const _ref = useMount(send)
-    const mp = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
+    const connect = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
 
     return () => {
+      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = connect.value
       return (
         <div className={styles}>
           <form
@@ -73,16 +75,15 @@ export default defineComponent({
               console.log(formData)
             }}
           >
-            <div className="slider" ref={_ref} {...mp.value.rootProps}>
-              <div className="slider__track">
-                <div className="slider__track-inner" {...mp.value.innerTrackProps} />
+            <div className="slider" ref={_ref} {...rootProps}>
+              <div className="slider__track" {...trackProps}>
+                <div className="slider__range" {...rangeProps} />
               </div>
-              <div className="slider__thumb" {...mp.value.getThumbProps(0)}>
-                <input name="min" {...mp.value.getInputProps(0)} />
-              </div>
-              <div className="slider__thumb" {...mp.value.getThumbProps(1)}>
-                <input name="max" {...mp.value.getInputProps(1)} />
-              </div>
+              {values.map((v, i) => (
+                <div key={i} className="slider__thumb" {...getThumbProps(i)}>
+                  <input name="min" {...getInputProps(i)} />
+                </div>
+              ))}
             </div>
             <StateVisualizer state={state.value} />
           </form>

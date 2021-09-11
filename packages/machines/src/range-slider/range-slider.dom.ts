@@ -1,13 +1,16 @@
-import { Point } from "@core-graphics/point"
 import { NumericRange } from "@core-foundation/numeric-range"
+import { Point } from "@core-graphics/point"
+import { getRootStyle, getThumbStyle } from "../slider/slider.dom"
+import { CSSStyleProperties } from "../utils/types"
 import { RangeSliderMachineContext } from "./range-slider.machine"
 
-export function getIds(uid: string) {
+export function getIds(id: string) {
   return {
-    getThumbId: (index: number) => `slider-${uid}-thumb-${index}`,
-    getInputId: (index: number) => `slider-${uid}-input-${index}`,
-    root: `slider-${uid}-root`,
-    innerTrack: `slider-${uid}-root`,
+    getThumbId: (index: number) => `slider-${id}-thumb-${index}`,
+    getInputId: (index: number) => `slider-${id}-input-${index}`,
+    root: `slider-${id}-root`,
+    track: `slider-${id}-track`,
+    range: `slider-${id}-range`,
   }
 }
 
@@ -23,7 +26,7 @@ export function getElements(ctx: RangeSliderMachineContext) {
     getInput: (index: number) => doc.getElementById(ids.getInputId(index)),
     root: doc.getElementById(ids.root),
     thumbs: Array.from(sliders ?? []) as HTMLElement[],
-    innerTrack: doc.getElementById(ids.innerTrack),
+    range: doc.getElementById(ids.range),
   }
 }
 
@@ -34,16 +37,23 @@ export function getRangeAtIndex(ctx: RangeSliderMachineContext) {
   return range.withOptions({ value: values[activeIndex], step })
 }
 
-export function pointToValue(ctx: RangeSliderMachineContext, info: Point) {
+export function getValueFromPoint(ctx: RangeSliderMachineContext, info: Point) {
   const { root } = getElements(ctx)
   if (!root) return
 
+  const isHorizontal = ctx.orientation === "horizontal"
+  const isRtl = ctx.dir === "rtl" && isHorizontal
+
   const range = getRangeAtIndex(ctx)
+
   const max = range.max / ctx.max
   const min = range.min / ctx.max
 
   const { progress } = info.relativeToNode(root)
-  const percent = new NumericRange({ min, max, value: progress.x }).clamp()
+  let progressValue = isHorizontal ? progress.x : progress.y
+
+  if (isRtl) progressValue = 1 - progressValue
+  let percent = new NumericRange({ min, max, value: progressValue }).clamp().valueOf()
 
   const opts = {
     min: ctx.min,
@@ -54,4 +64,47 @@ export function pointToValue(ctx: RangeSliderMachineContext, info: Point) {
 
   const value = NumericRange.fromPercent(+percent, opts).valueOf()
   return new NumericRange(opts).setValue(value).snapToStep().valueOf()
+}
+
+export function getRangeStyle(ctx: RangeSliderMachineContext): CSSStyleProperties {
+  const { orientation, dir, value: values, max } = ctx
+  const isRtl = dir === "rtl"
+
+  const startValue = (values[0] / max) * 100
+  const endValue = 100 - (values[values.length - 1] / max) * 100
+
+  const style: CSSStyleProperties = {
+    position: "absolute",
+  }
+
+  if (orientation === "vertical") {
+    return {
+      ...style,
+      bottom: `${startValue}%`,
+      top: `${endValue}%`,
+    }
+  }
+
+  return {
+    ...style,
+    [isRtl ? "right" : "left"]: `${startValue}%`,
+    [isRtl ? "left" : "right"]: `${endValue}%`,
+  }
+}
+
+export function getStyles(ctx: RangeSliderMachineContext) {
+  const trackStyle: CSSStyleProperties = {
+    position: "relative",
+  }
+
+  return {
+    root: getRootStyle(ctx),
+    getThumb(index: number) {
+      const value = ctx.value[index]
+      const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
+      return getThumbStyle({ ...ctx, value, thumbSize })
+    },
+    range: getRangeStyle(ctx),
+    track: trackStyle,
+  }
 }
