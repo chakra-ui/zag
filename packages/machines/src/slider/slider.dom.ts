@@ -5,11 +5,13 @@ import type { SliderMachineContext } from "./slider.machine"
 
 export function getIds(id: string) {
   return {
-    thumb: `slider-${id}-thumb`,
-    root: `slider-${id}-root`,
-    input: `slider-${id}-input`,
-    track: `slider-${id}-track`,
-    range: `slider-${id}-range`,
+    thumb: `slider-thumb-${id}`,
+    root: `slider-root-${id}`,
+    input: `slider-input-${id}`,
+    output: `slider-output-${id}`,
+    track: `slider-track-${id}`,
+    range: `slider-range-${id}`,
+    label: `slider-label-${id}`,
   }
 }
 
@@ -89,23 +91,32 @@ export function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
     position: "absolute",
   }
 
+  let startValue = "0%"
+  let endValue = `${100 - percent}%`
+
+  if (ctx.origin === "center") {
+    const isNegative = percent < 50
+    startValue = isNegative ? `${percent}%` : "50%"
+    endValue = isNegative ? "50%" : endValue
+  }
+
   if (ctx.orientation === "vertical") {
     return {
       ...style,
-      bottom: "0%",
-      top: `${100 - percent}%`,
+      bottom: startValue,
+      top: endValue,
     }
   }
 
   return {
     ...style,
-    [isRtl ? "right" : "left"]: "0%",
-    [isRtl ? "left" : "right"]: `${100 - percent}%`,
+    [isRtl ? "right" : "left"]: startValue,
+    [isRtl ? "left" : "right"]: endValue,
   }
 }
 
-export function getRootStyle(opts: Pick<SliderMachineContext, "orientation">): CSSStyleProperties {
-  const isVertical = opts.orientation === "vertical"
+export function getRootStyle(ctx: Pick<SliderMachineContext, "orientation">): CSSStyleProperties {
+  const isVertical = ctx.orientation === "vertical"
   return {
     touchAction: "none",
     userSelect: "none",

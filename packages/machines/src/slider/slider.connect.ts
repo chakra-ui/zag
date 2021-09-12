@@ -1,11 +1,12 @@
+import { NumericRange } from "@core-foundation/numeric-range"
 import { cast } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import type { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
-import type { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
-import { getIds, getStyles } from "./slider.dom"
+import type { EventKeyMap, HTMLProps, InputProps, LabelProps, OutputProps } from "../utils/types"
+import { getElements, getIds, getStyles } from "./slider.dom"
 import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
 export function sliderConnect(
@@ -29,6 +30,29 @@ export function sliderConnect(
     // State values
     isFocused,
     isDragging,
+    value: ctx.value,
+    percent: new NumericRange(ctx).toPercent(),
+
+    // Slider Label properties
+    labelProps: normalize<LabelProps>({
+      id: ids.label,
+      htmlFor: ids.input,
+      onClick(event) {
+        const { thumb } = getElements(ctx)
+        event.preventDefault()
+        thumb?.focus()
+      },
+      style: {
+        userSelect: "none",
+      },
+    }),
+
+    // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
+    outputProps: normalize<OutputProps>({
+      id: ids.output,
+      htmlFor: ids.input,
+      "aria-live": "off",
+    }),
 
     // Slider Thumb properties
     thumbProps: normalize<HTMLProps>({
@@ -41,7 +65,7 @@ export function sliderConnect(
       // ARIA Attributes for accessibility
       "aria-disabled": ctx.disabled || undefined,
       "aria-label": ariaLabel,
-      "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy,
+      "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy ?? ids.label,
       "aria-orientation": ctx.orientation,
       "aria-valuemax": ctx.max,
       "aria-valuemin": ctx.min,
@@ -133,7 +157,9 @@ export function sliderConnect(
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
         // allow only primary pointer clicks
-        if (event.button !== 0) return
+        if (event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey) {
+          return
+        }
         event.preventDefault()
         event.stopPropagation()
         send({

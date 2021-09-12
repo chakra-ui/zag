@@ -8,8 +8,8 @@ import { WithDOM } from "../utils/types"
 import { getElements, getRangeAtIndex, getValueFromPoint } from "./range-slider.dom"
 
 export type RangeSliderMachineContext = WithDOM<{
-  "aria-label"?: string[]
-  "aria-labelledby"?: string[]
+  "aria-label"?: string | string[]
+  "aria-labelledby"?: string | string[]
   thumbSize: Array<{ width: number; height: number }> | null
   name?: string[]
   threshold: number

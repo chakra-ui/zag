@@ -20,7 +20,7 @@ export type SliderMachineContext = WithDOM<{
    * - "start": Useful when the value represents an absolute value
    * - "center": Useful when the value represents an offset (relative)
    */
-  rangeOrigin?: "start" | "center"
+  origin?: "start" | "center"
   "aria-label"?: string
   "aria-labelledby"?: string
   focusThumbOnChange?: boolean
@@ -45,7 +45,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       disabled: false,
       threshold: 5,
       dir: "ltr",
-      rangeOrigin: "start",
+      origin: "start",
       orientation: "horizontal",
       value: 0,
       step: 1,

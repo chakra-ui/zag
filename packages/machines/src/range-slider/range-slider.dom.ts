@@ -6,11 +6,13 @@ import { RangeSliderMachineContext } from "./range-slider.machine"
 
 export function getIds(id: string) {
   return {
-    getThumbId: (index: number) => `slider-${id}-thumb-${index}`,
-    getInputId: (index: number) => `slider-${id}-input-${index}`,
-    root: `slider-${id}-root`,
-    track: `slider-${id}-track`,
-    range: `slider-${id}-range`,
+    getThumbId: (index: number) => `slider-thumb-${id}-${index}`,
+    getInputId: (index: number) => `slider-input-${id}-${index}`,
+    root: `slider-root-${id}`,
+    track: `slider-track-${id}`,
+    range: `slider-range-${id}`,
+    label: `slider-label-${id}`,
+    output: `slider-output-${id}`,
   }
 }
 

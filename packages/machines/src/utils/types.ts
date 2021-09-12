@@ -5,6 +5,7 @@ import type {
   InputHTMLAttributes,
   KeyboardEvent,
   LabelHTMLAttributes,
+  OutputHTMLAttributes,
 } from "react"
 
 export type Dict<T = any> = Record<string, T>
@@ -49,5 +50,6 @@ export type HTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>
 export type ButtonProps = WithDataAttr<ButtonHTMLAttributes<HTMLButtonElement> & Style>
 export type InputProps = WithDataAttr<InputHTMLAttributes<HTMLInputElement> & Style>
 export type LabelProps = WithDataAttr<LabelHTMLAttributes<HTMLLabelElement> & Style>
+export type OutputProps = WithDataAttr<OutputHTMLAttributes<HTMLOutputElement> & Style>
 
 export type GlobalThis = typeof globalThis

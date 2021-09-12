@@ -5,8 +5,8 @@ import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
-import { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
-import { getIds, getStyles } from "./range-slider.dom"
+import { EventKeyMap, HTMLProps, InputProps, LabelProps, OutputProps } from "../utils/types"
+import { getIds, getStyles, getElements } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
 export function rangeSliderConnect(
@@ -28,6 +28,27 @@ export function rangeSliderConnect(
     isDragging,
     isFocused,
 
+    labelProps: normalize<LabelProps>({
+      id: ids.label,
+      htmlFor: ids.getInputId(0),
+      onClick(event) {
+        const { thumbs } = getElements(ctx)
+        const [firstThumb] = thumbs
+        event.preventDefault()
+        firstThumb?.focus()
+      },
+      style: {
+        userSelect: "none",
+      },
+    }),
+
+    // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
+    outputProps: normalize<OutputProps>({
+      id: ids.output,
+      htmlFor: values.map((v, i) => ids.getInputId(i)).join(" "),
+      "aria-live": "off",
+    }),
+
     trackProps: normalize<HTMLProps>({
       id: ids.track,
       "data-disabled": dataAttr(ctx.disabled),
@@ -40,6 +61,8 @@ export function rangeSliderConnect(
       const value = values[index]
       const range = NumericRange.fromValues(ctx.value, ctx)[index]
       const ariaValueText = ctx.getAriaValueText?.(value, index)
+      const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
+      const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize<HTMLProps>({
         id: ids.getThumbId(index),
@@ -48,8 +71,8 @@ export function rangeSliderConnect(
         "data-focused": dataAttr(isFocused),
         draggable: false,
         "aria-disabled": ctx.disabled || undefined,
-        "aria-label": ariaLabel?.[index],
-        "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy?.[index],
+        "aria-label": _ariaLabel,
+        "aria-labelledby": _ariaLabelledBy ?? ids.label,
         "aria-orientation": ctx.orientation,
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
@@ -128,7 +151,10 @@ export function rangeSliderConnect(
       "data-focused": dataAttr(isFocused),
       style: styles.root,
       onPointerDown(event) {
-        if (event.button !== 0) return
+        // allow only primary pointer clicks
+        if (event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey) {
+          return
+        }
 
         event.preventDefault()
         event.stopPropagation()
