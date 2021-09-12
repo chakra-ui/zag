@@ -16,6 +16,11 @@ export type SliderMachineContext = WithDOM<{
   step: number
   threshold: number
   orientation?: "vertical" | "horizontal"
+  /**
+   * - "start": Useful when the value represents an absolute value
+   * - "center": Useful when the value represents an offset (relative)
+   */
+  rangeOrigin?: "start" | "center"
   "aria-label"?: string
   "aria-labelledby"?: string
   focusThumbOnChange?: boolean
@@ -40,6 +45,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       disabled: false,
       threshold: 5,
       dir: "ltr",
+      rangeOrigin: "start",
       orientation: "horizontal",
       value: 0,
       step: 1,
@@ -63,7 +69,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         on: {
           POINTER_DOWN: {
             target: "dragging",
-            actions: ["setValueForEvent", "invokeOnChangeStart", "focusThumb"],
+            actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
           },
           FOCUS: {
             target: "focus",
@@ -76,25 +82,25 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         on: {
           POINTER_DOWN: {
             target: "dragging",
-            actions: ["setValueForEvent", "invokeOnChangeStart", "invokeOnChange", "focusThumb"],
+            actions: ["setPointerValue", "invokeOnChangeStart", "invokeOnChange", "focusThumb"],
           },
           ARROW_LEFT: {
-            actions: ["decrement", "invokeOnChange"],
+            actions: ["decrementValue", "invokeOnChange"],
           },
           ARROW_RIGHT: {
-            actions: ["increment", "invokeOnChange"],
+            actions: ["incrementValue", "invokeOnChange"],
           },
           ARROW_UP: {
-            actions: ["increment", "invokeOnChange"],
+            actions: ["incrementValue", "invokeOnChange"],
           },
           ARROW_DOWN: {
-            actions: ["decrement", "invokeOnChange"],
+            actions: ["decrementValue", "invokeOnChange"],
           },
           PAGE_UP: {
-            actions: ["increment", "invokeOnChange"],
+            actions: ["incrementValue", "invokeOnChange"],
           },
           PAGE_DOWN: {
-            actions: ["decrement", "invokeOnChange"],
+            actions: ["decrementValue", "invokeOnChange"],
           },
           HOME: {
             actions: ["setToMin", "invokeOnChange"],
@@ -126,7 +132,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       trackPointerMove(ctx, _evt, { send }) {
         return trackPointerMove({
           ctx,
-          onPointerMove(_event, info) {
+          onPointerMove(_e, info) {
             const value = getValueFromPoint(ctx, info.point)
             if (value == null) return
 
@@ -164,7 +170,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
           ctx.thumbSize = fromElement(thumb).size
         })
       },
-      setValueForEvent(ctx, evt) {
+      setPointerValue(ctx, evt) {
         const value = getValueFromPoint(ctx, evt.point)
         if (value != null) ctx.value = value
       },
@@ -174,13 +180,13 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
           thumb?.focus()
         })
       },
-      decrement(ctx, evt) {
+      decrementValue(ctx, evt) {
         const range = new NumericRange(ctx).decrement(evt.step)
-        ctx.value = range.clone().snapToStep().clamp().valueOf()
+        ctx.value = range.snapToStep().clamp().valueOf()
       },
-      increment(ctx, evt) {
+      incrementValue(ctx, evt) {
         const range = new NumericRange(ctx).increment(evt.step)
-        ctx.value = range.clone().snapToStep().clamp().valueOf()
+        ctx.value = range.snapToStep().clamp().valueOf()
       },
       setToMin(ctx) {
         ctx.value = new NumericRange(ctx).setToMin().valueOf()
