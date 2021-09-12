@@ -13,23 +13,12 @@ const Page = () => {
 
   const ref = useMount<HTMLInputElement>(send)
 
-  const {
-    isEditing,
-    isValueEmpty,
-    inputProps,
-    previewProps,
-    cancelButtonProps,
-    submitButtonProps,
-    editButtonProps,
-  } = editable.connect(state, send)
+  const { isEditing, isValueEmpty, inputProps, previewProps, cancelButtonProps, submitButtonProps, editButtonProps } =
+    editable.connect(state, send)
 
   return (
     <div>
-      <input
-        ref={ref}
-        style={{ width: "auto", background: "transparent" }}
-        {...inputProps}
-      />
+      <input ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
       <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
       {!isEditing && <button {...editButtonProps}>Edit</button>}
       {isEditing && (

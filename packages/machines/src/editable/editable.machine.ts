@@ -1,12 +1,13 @@
 import { nextTick } from "@core-foundation/utils/fn"
 import { createMachine, guards, preserve } from "@ui-machines/core"
 import { trackPointerDown } from "../utils/pointer-down"
-import { WithDOM } from "../utils/types"
+import type { WithDOM } from "../utils/types"
 import { getElements } from "./editable.dom"
 
 const { not } = guards
 
 export type EditableMachineContext = WithDOM<{
+  activationMode: "focus" | "dblclick"
   value: string
   previousValue: string
   maxLength?: number
@@ -32,6 +33,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
     id: "editable-machine",
     initial: "unknown",
     context: {
+      activationMode: "focus",
       uid: "32",
       value: "",
       previousValue: "",
@@ -52,7 +54,14 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         entry: ["clearPointerdownNode"],
         on: {
           EDIT: "edit",
-          FOCUS: "edit",
+          DBLCLICK: {
+            cond: "shouldActivateOnDblClick",
+            target: "edit",
+          },
+          FOCUS: {
+            target: "edit",
+            cond: "shouldActivateOnFocus",
+          },
         },
       },
       edit: {
@@ -91,15 +100,17 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       canFocusPreview: (ctx) => !!ctx.isPreviewFocusable,
       shouldSubmitOnBlur: (ctx) => !!ctx.submitOnBlur,
       isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
+      shouldActivateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
+      shouldActivateOnFocus: (ctx) => ctx.activationMode === "focus",
     },
     activities: {
       trackPointerDown,
     },
     actions: {
-      setId: (ctx, evt) => {
+      setId(ctx, evt) {
         ctx.uid = evt.id
       },
-      setOwnerDocument: (ctx, evt) => {
+      setOwnerDocument(ctx, evt) {
         ctx.doc = preserve(evt.doc)
       },
       focusEditButton(ctx) {
@@ -109,8 +120,8 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         })
       },
       focusInput(ctx) {
-        const { input } = getElements(ctx)
         nextTick(() => {
+          const { input } = getElements(ctx)
           if (ctx.selectOnFocus) input?.select()
           else input?.focus()
         })

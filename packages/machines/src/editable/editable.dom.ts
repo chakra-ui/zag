@@ -1,18 +1,18 @@
 import { EditableMachineContext } from "./editable.machine"
 
-export function getIds(uid: string) {
+export function getIds(id: string) {
   return {
-    label: `editable-${uid}-label`,
-    input: `editable-${uid}-input`,
-    submitBtn: `editable-${uid}-submit-btn`,
-    cancelBtn: `editable-${uid}-cancel-btn`,
-    editBtn: `editable-${uid}-edit-btn`,
+    label: `editable-label-${id}`,
+    input: `editable-input-${id}`,
+    submitBtn: `editable-submit-btn-${id}`,
+    cancelBtn: `editable-cancel-btn-${id}`,
+    editBtn: `editable-edit-btn-${id}`,
   }
 }
 
 export function getElements(ctx: EditableMachineContext) {
   const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid ?? "")
+  const ids = getIds(ctx.uid)
 
   return {
     label: doc.getElementById(ids.label),

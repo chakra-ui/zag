@@ -70,6 +70,9 @@ export function editableConnect(
       onFocus() {
         send("FOCUS")
       },
+      onDoubleClick() {
+        send("DBLCLICK")
+      },
     }),
 
     editButtonProps: normalize<ButtonProps>({
