@@ -27,11 +27,11 @@
   },
   "dependencies": {
     "@core-dom/element": "^0.1.4",
-    "@core-dom/event": "^0.1.8",
+    "@core-dom/event": "^0.1.9",
     "@core-dom/node-list": "^0.1.6",
     "@core-foundation/list": "^0.1.1",
     "@core-foundation/numeric-range": "^0.1.3",
-    "@core-foundation/utils": "^0.1.8",
+    "@core-foundation/utils": "^0.1.9",
     "@core-graphics/point": "^0.1.5",
     "@core-graphics/polygon": "^0.1.0",
     "@core-graphics/rect": "^0.1.6",

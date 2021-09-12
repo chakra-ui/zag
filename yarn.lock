@@ -1363,12 +1363,12 @@
   resolved "https://registry.yarnpkg.com/@core-dom/element/-/element-0.1.4.tgz#8c5763ce28419f1b2bf264e5ee3896c657805e8e"
   integrity sha512-4jAvix3kDWA+Hs3yIoOF+sU5FrdDpH5/ygw4n1JLrexRLNviWhBKxAO19aDZxD7MdtGmJ9Q3q5E/ZBXmPk/tEw==
 
-"@core-dom/event@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.8.tgz#a075b562a0f5aad84b37dc64cbfa7b3fcaad930c"
-  integrity sha512-t+Chzd6oUV2yKFTboytVE1MmC4665Vc4UPUrLy0mCeeBUtQq7ug6cyEnQzA9XITKGXwXnP8bXQLfgdASh/FA4g==
+"@core-dom/event@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@core-dom/event/-/event-0.1.9.tgz#16e19805b8b5825169f4695f55412cb8c0545007"
+  integrity sha512-2KgIA0qhlRI0hg0j3QYvjKxgcLcJk3IQo9eHw9dmSaShdkvfnmHlgggOgZkI9VXjjY9c9rt8BTo+Z4uguqEQMA==
   dependencies:
-    "@core-foundation/utils" "0.1.8"
+    "@core-foundation/utils" "0.1.9"
     "@core-graphics/point" "0.1.5"
 
 "@core-dom/node-list@^0.1.6":
@@ -1395,10 +1395,10 @@
   dependencies:
     "@core-foundation/numeral" "0.1.1"
 
-"@core-foundation/utils@0.1.8", "@core-foundation/utils@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.8.tgz#1c8accc51fbdac8b31cc9e89d04ba75b3566232f"
-  integrity sha512-P8RBUTr8GIks0u3jGpoN7SbNNW1OfHhzfzVp39JVoArZq1mRo5eZxOE9gDhCi9b0hS+7G845IvCs5XEPjAcEsA==
+"@core-foundation/utils@0.1.9", "@core-foundation/utils@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@core-foundation/utils/-/utils-0.1.9.tgz#1c10e65f541967489318405b673e3a0c682b30a7"
+  integrity sha512-qpcJi09EwkNIuXUrbKglbdr4P0KRqtxL6m1cXvOmMhQ4jEwNh83kTL1vp2DYcWE6XmvTiiEyXx75+/fp0cV1hQ==
 
 "@core-graphics/point@0.1.5", "@core-graphics/point@^0.1.5":
   version "0.1.5"
