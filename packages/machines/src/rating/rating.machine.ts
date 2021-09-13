@@ -1,9 +1,11 @@
-import { createMachine, preserve } from "@ui-machines/core"
+import { dispatchInputEvent } from "@core-dom/event"
 import { nextTick } from "@core-foundation/utils"
+import { createMachine, preserve } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { getElements } from "./rating.dom"
 
 export type RatingMachineContext = WithDOM<{
+  max: number
   name?: string
   value: number
   hoveredValue: number
@@ -12,23 +14,28 @@ export type RatingMachineContext = WithDOM<{
   allowHalf?: boolean
   autofocus?: boolean
   getLabelText?(value: number): string
+  onChange?: (value: number) => void
 }>
 
 export type RatingMachineState = {
-  value: "mounted" | "idle" | "interacting"
+  value: "unknown" | "idle" | "hover" | "focus"
 }
 
 export const ratingMachine = createMachine<RatingMachineContext, RatingMachineState>(
   {
     id: "rating-machine",
-    initial: "mounted",
+    initial: "unknown",
     context: {
+      name: "rating",
+      max: 5,
       uid: "rating-input",
       value: -1,
       hoveredValue: -1,
+      disabled: false,
+      readonly: false,
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
@@ -36,47 +43,54 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
           },
         },
       },
+
       idle: {
         entry: "clearHoveredValue",
         on: {
-          GROUP_POINTER_OVER: "interacting",
-          FOCUS: [
-            {
-              target: "interacting",
-              actions: "setHoveredValue",
-              cond: "isHoveredValueEmpty",
-            },
-            { target: "interacting" },
-          ],
+          GROUP_POINTER_OVER: "hover",
+          FOCUS: "focus",
         },
       },
-      interacting: {
+
+      focus: {
         on: {
-          POINTER_OVER: {
-            actions: "setHoveredValue",
-          },
-          GROUP_POINTER_LEAVE: {
-            actions: "clearHoveredValue",
-          },
+          POINTER_OVER: { actions: "setHoveredValue" },
+          GROUP_POINTER_LEAVE: { actions: "clearHoveredValue" },
           BLUR: "idle",
-          CLICK: {
-            actions: ["setValue", "focusActiveRadio"],
-          },
           SPACE: {
             cond: "isValueEmpty",
-            actions: "setValue",
+            actions: ["setValue", "invokeOnChange"],
+          },
+          CLICK: {
+            actions: ["setValue", "invokeOnChange", "focusActiveRadio"],
           },
           ARROW_LEFT: {
-            actions: ["setPrevValue", "focusActiveRadio"],
+            actions: ["setPrevValue", "invokeOnChange", "focusActiveRadio"],
           },
           ARROW_RIGHT: {
-            actions: ["setNextValue", "focusActiveRadio"],
+            actions: ["setNextValue", "invokeOnChange", "focusActiveRadio"],
           },
-          GO_TO_MIN: {
-            actions: ["setValueToMin", "focusActiveRadio"],
+          HOME: {
+            actions: ["setValueToMin", "invokeOnChange", "focusActiveRadio"],
           },
-          GO_TO_MAX: {
-            actions: ["setValueToMax", "focusActiveRadio"],
+          END: {
+            actions: ["setValueToMax", "invokeOnChange", "focusActiveRadio"],
+          },
+        },
+      },
+
+      hover: {
+        on: {
+          POINTER_OVER: { actions: "setHoveredValue" },
+          GROUP_POINTER_LEAVE: [
+            {
+              cond: "isRadioFocused",
+              target: "focus",
+            },
+            { target: "idle" },
+          ],
+          CLICK: {
+            actions: ["setValue", "invokeOnChange", "focusActiveRadio"],
           },
         },
       },
@@ -84,10 +98,13 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
   },
   {
     guards: {
-      isRtl: (ctx) => ctx.dir === "rtl",
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
-      isValueEmpty: (ctx) => ctx.value === -1,
+      isValueEmpty: (ctx) => ctx.value <= 0,
+      isRadioFocused: (ctx) => {
+        const { root, activeElement } = getElements(ctx)
+        return !!root?.contains(activeElement)
+      },
     },
     actions: {
       setId(ctx, evt) {
@@ -105,25 +122,36 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
       },
       setPrevValue(ctx) {
         const factor = ctx.allowHalf ? 0.5 : 1
-        ctx.value = Math.max(factor, ctx.value - factor)
+        ctx.value = Math.max(0, ctx.value - factor)
       },
       setNextValue(ctx) {
         const factor = ctx.allowHalf ? 0.5 : 1
-        ctx.value = Math.min(5, ctx.value + factor)
+        const value = ctx.value === -1 ? 0 : ctx.value
+        ctx.value = Math.min(ctx.max, value + factor)
       },
       setValueToMin(ctx) {
         ctx.value = 1
       },
       setValueToMax(ctx) {
-        ctx.value = 5
+        ctx.value = ctx.max
       },
-      setValue(ctx) {
-        ctx.value = ctx.hoveredValue
+      setValue(ctx, evt) {
+        ctx.value = evt.value ?? ctx.hoveredValue
       },
       setHoveredValue(ctx, evt) {
         const factor = ctx.allowHalf && evt.isMidway ? 0.5 : 0
         ctx.hoveredValue = evt.index - factor
       },
+      invokeOnChange(ctx) {
+        ctx.onChange?.(ctx.value)
+        dispatchChangeEvent(ctx)
+      },
     },
   },
 )
+
+// dispatch change/input event to closest `form` element
+function dispatchChangeEvent(ctx: RatingMachineContext) {
+  const { input } = getElements(ctx)
+  if (input) dispatchInputEvent(input, ctx.value)
+}

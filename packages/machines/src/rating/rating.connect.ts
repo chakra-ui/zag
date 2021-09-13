@@ -1,9 +1,9 @@
-import { cast } from "@core-foundation/utils/fn"
+import { is } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils/dom-attr"
+import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
-import { HTMLProps, InputProps, EventKeyMap } from "../utils/types"
+import { EventKeyMap, HTMLProps, InputProps } from "../utils/types"
 import { getIds } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
@@ -13,50 +13,93 @@ export function ratingConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
+
+  const isInteractive = !(ctx.disabled || ctx.readonly)
   const isHovering = ctx.hoveredValue !== -1
 
-  const { inputId, rootId, getRatingId } = getIds(ctx.uid)
+  const ids = getIds(ctx.uid)
 
-  return {
+  const result = {
+    isHovering,
+    value: ctx.value,
+    hoveredValue: ctx.hoveredValue,
+    size: ctx.max,
+
+    getRatingState: (index: number) => {
+      const value = isHovering ? ctx.hoveredValue : ctx.value
+      const isEqual = Math.ceil(value) === index
+
+      const isHighlighted = index <= value || isEqual
+      const isHalf = isEqual && Math.abs(value - index) === 0.5
+
+      return {
+        isEqual,
+        isValueEmpty: ctx.value === -1,
+        isHighlighted,
+        isHalf,
+        isChecked: isEqual || (ctx.value === -1 && index === 1),
+      }
+    },
+
     inputProps: normalize<InputProps>({
       name: ctx.name,
       type: "hidden",
-      id: inputId,
+      id: ids.input,
       value: ctx.value,
     }),
 
+    labelProps: normalize<HTMLProps>({
+      id: ids.label,
+      "data-disabled": ctx.disabled,
+    }),
+
     rootProps: normalize<HTMLProps>({
-      id: rootId,
+      id: ids.root,
       role: "radiogroup",
-      onPointerEnter() {
+      "aria-orientation": "horizontal",
+      "aria-labelledby": ids.label,
+      tabIndex: ctx.readonly ? 0 : -1,
+      onPointerMove() {
+        if (!isInteractive) return
         send("GROUP_POINTER_OVER")
       },
       onPointerLeave() {
+        if (!isInteractive) return
         send("GROUP_POINTER_LEAVE")
       },
     }),
 
     getRatingProps({ index }: { index: number }) {
-      const effectiveIndex = isHovering ? ctx.hoveredValue : ctx.value
-      const isHighlighted = index <= effectiveIndex
-
-      const tabIndex = ctx.value <= 0 && index === 1 ? 1 : index === ctx.value ? 0 : -1
+      const { isHalf, isHighlighted, isChecked } = result.getRatingState(index)
+      const valueText = ctx.getLabelText?.(index) ?? `${index} stars`
 
       return normalize<HTMLProps>({
-        id: getRatingId(index),
+        id: ids.getRatingId(index),
         role: "radio",
-        tabIndex,
-        "aria-setsize": 5,
-        "aria-checked": index < ctx.value,
+        tabIndex: isChecked ? 0 : -1,
+        "aria-roledescription": "rating",
+        "aria-label": valueText,
+        "aria-disabled": ctx.disabled,
+        "aria-readonly": ctx.readonly,
+        "aria-setsize": ctx.max,
+        "aria-checked": isChecked,
         "aria-posinset": index,
-        "data-highlighted": isHighlighted || undefined,
+        "data-highlighted": dataAttr(isHighlighted),
+        "data-half": dataAttr(isHalf),
+        onPointerDown(event) {
+          if (is.leftClickEvent(event.nativeEvent)) {
+            event.preventDefault()
+          }
+        },
         onPointerMove(event) {
-          const point = Point.fromPointerEvent(cast(event))
+          if (!isInteractive) return
+          const point = Point.fromPointerEvent(event.nativeEvent)
           const { progress } = point.relativeToNode(event.currentTarget)
           const isMidway = progress.x < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {
+          if (!isInteractive) return
           const keyMap: EventKeyMap = {
             ArrowLeft() {
               send("ARROW_LEFT")
@@ -64,14 +107,20 @@ export function ratingConnect(
             ArrowRight() {
               send("ARROW_RIGHT")
             },
+            ArrowUp() {
+              send("ARROW_LEFT")
+            },
+            ArrowDown() {
+              send("ARROW_LEFT")
+            },
             Space() {
-              send("SPACE")
+              send({ type: "SPACE", value: index })
             },
             Home() {
-              send("GO_TO_MIN")
+              send("HOME")
             },
             End() {
-              send("GO_TO_MAX")
+              send("END")
             },
           }
 
@@ -84,15 +133,20 @@ export function ratingConnect(
           }
         },
         onClick() {
+          if (!isInteractive) return
           send("CLICK")
         },
         onFocus() {
-          send({ type: "FOCUS", index })
+          if (!isInteractive) return
+          send("FOCUS")
         },
         onBlur() {
+          if (!isInteractive) return
           send("BLUR")
         },
       })
     },
   }
+
+  return result
 }
