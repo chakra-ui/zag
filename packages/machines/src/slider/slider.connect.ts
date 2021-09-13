@@ -1,5 +1,5 @@
 import { NumericRange } from "@core-foundation/numeric-range"
-import { cast } from "@core-foundation/utils"
+import { is } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import type { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
@@ -157,14 +157,14 @@ export function sliderConnect(
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
         // allow only primary pointer clicks
-        if (event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey) {
+        if (!is.leftClickEvent(event.nativeEvent) || is.modifiedEvent(event.nativeEvent)) {
           return
         }
         event.preventDefault()
         event.stopPropagation()
         send({
           type: "POINTER_DOWN",
-          point: Point.fromPointerEvent(cast(event)),
+          point: Point.fromPointerEvent(event.nativeEvent),
         })
       },
       style: styles.root,

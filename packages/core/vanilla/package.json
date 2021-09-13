@@ -28,7 +28,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-foundation/utils": "^0.1.9",
+    "@core-foundation/utils": "^0.1.10",
     "klona": "^2.0.4",
     "valtio": "^1.2.2"
   }

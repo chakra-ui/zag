@@ -1,4 +1,5 @@
 import { NumericRange } from "@core-foundation/numeric-range"
+import { is } from "@core-foundation/utils"
 import { cast } from "@core-foundation/utils/fn"
 import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
@@ -152,7 +153,7 @@ export function rangeSliderConnect(
       style: styles.root,
       onPointerDown(event) {
         // allow only primary pointer clicks
-        if (event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey) {
+        if (!is.leftClickEvent(event.nativeEvent) || is.modifiedEvent(event.nativeEvent)) {
           return
         }
 
