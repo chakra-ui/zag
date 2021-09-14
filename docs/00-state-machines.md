@@ -1,0 +1,292 @@
+# State Machines
+
+A state machine is a model used to design the logic of a UI component. It consists of:
+
+- a finite number of states
+- an initial state
+- a number of transitions from one state to another
+- an extended data that can be modified as the machine moves from one state to another
+
+## State Machine Config
+
+- `id`: the unique `id` of the machine
+- `context`: an extended data that can be modified as the machine moves from one state to another
+- `states`: a finite number of states with define state configuration
+- `initial`: the initial state the machine should start in
+- `onStart`: actions to run when the machine starts
+- `onStop`: actions to run when the machine stops
+- `on`: an object that defines a list of global events the machine can respond to regardless of the state is it in.
+  These are helpful when you need to provide external functions that change state or modifies the context.
+
+### State Node Configuration
+
+In a given state, here are the list of properties you can use:
+
+`on`: This is used to describe the events that the machine can respond to, and the instruction to be executed when it
+receives that event (aka "transition config")
+
+`entry`: The actions or functions to execute when the machine enter the given state.
+
+`exit`: The actions or functions to execute when the machine exits/leaves the given state.
+
+`after`: A timer-based transition that instructs the machine to execute a transition config after a given time. It uses
+`setTimeout` under the hood.
+
+`every`: A timer-based action that the machine should execute at the specified interval. It uses `setInterval` under the
+hood.
+
+`tags`: Extra metadata that are used to describe the given state. They can useful in grouping different states. For
+example, assume we have two states `loadingUser` and `loadingFriend`, that can both share a `loading` tag.
+
+`type`: Usually used to mark a state as a final state by setting its value to `final`
+
+`activities`: an actions or functions that are continuous or long-running (think `setInterval`, `addEventListener`,
+`subscribe`) and can be cleaned up.
+
+```jsx
+const machine = createMachine({
+  // ...
+  states: {
+    // given this active state
+    active: {
+      // extra metadata attached to this state
+      tags: "on",
+      // execute `setValue` function/action every 200 ms
+      every: {
+        200: ["setValue"],
+      },
+      // execute `focusMenu` function/action when `active` state is entered
+      entry: ["focusMenu"],
+      // execute `clearValue` function/action when `active` state is exited
+      exit: ["clearValue"],
+      // after 1000ms, execute the transition config
+      after: {
+        1000: {
+          // I'll explain this later in this doc but this is the transition config
+          target: "inactive",
+        },
+      },
+      // the events that the machine can respond to
+      on: {
+        CLICK: {
+          // I'll explain this later in this doc but this is the transition config
+          target: "inactive",
+          actions: ["setValue"],
+        },
+      },
+      // execute `addEventListener` when the `active` state is entered
+      activities: ["addEventListener"],
+    },
+  },
+})
+```
+
+## State Context
+
+The machine's context is used to define any data that the machine can mutate as it transitions between states or/and
+execute actions. Its value will be passed to many event handler functions, such as `actions`, `entry` and `exit`, and
+may be mutated by these functions.
+
+```jsx
+const counter = createMachine({
+  context: { count: 0 },
+  on: {
+    INC: { actions: (ctx) => ctx.count++ },
+  },
+})
+
+counter.start()
+counter.context.count // 0
+counter.send("INC")
+counter.context.count // 0
+```
+
+### Computed Values
+
+Computed context can be used to calculate and display values based on a value. It can be useful to manipulate, and
+display data within your components in a readable and efficient manner.
+
+```jsx
+const counter = createMachine({
+  context: { count: 5 },
+  computed: {
+    text: (ctx) => `${ctx.count} out of 10`,
+  },
+  // ...
+})
+
+counter.context.text // 5 out of 10
+```
+
+When using TypeScript, computed property types are defined as `readonly` in the context type.
+
+```tsx
+type Context = {
+  count: number
+  // this is the computed part
+  readonly text: string
+}
+
+const counter = createMachine<Context>({
+  context: { count: 5 },
+  computed: {
+    text: (ctx) => `${ctx.count} out of 10`,
+  },
+  // ...
+})
+```
+
+## State Transitions
+
+When building a machine with multiple states, you need a way to transition between states. This is typically called a
+"state transition". A state transition typically includes
+
+- `target`: The state the machine should transition to
+- `actions`: The actions to execute during the transition
+- `cond`: The condition that determines when the transition is allowed.
+
+Transitions are typically used in the `on` key event object and the `after` time-based transition.
+
+```jsx
+const toggle = createMachine({
+  context: { count: 0 },
+  state: {
+    on: {
+      CLICK: {
+        target: "off",
+        actions: (ctx) => ctx.count++,
+        cond: (ctx) => ctx.count === 0,
+      },
+    },
+    off: {
+      on: {
+        CLICK: {
+          target: "on",
+          actions: (ctx) => ctx.count++,
+        },
+        // This is the same as { target: "on" }
+        FOCUS: "on",
+      },
+    },
+  },
+})
+```
+
+> Pro Tip: If the transition only includes a `target`, you can simply use a string value instead. `on: { CLICK: "off" }`
+
+### Conditions and Guards
+
+When defined transitions, you might to prevent/disallow the transition depending on a condition. We can this `guards` or
+`cond` in the state machine.
+
+Consider the transition definition for the `CLICK` event:
+
+```jsx
+const counter = createMachine({
+  context: { count: 5 },
+  computed: {
+    isEmpty: (ctx) => ctx.count === 0,
+  },
+  on: {
+    // CLICK event won't work if `ctx.isEmpty` returns true
+    CLICK: {
+      cond: (ctx) => !ctx.isEmpty,
+      target: "on",
+      actions: (ctx) => {
+        ctx.count++
+      },
+    },
+  },
+  // ...
+})
+```
+
+The defined condition can either be written inline or labelled with a string so you can provide its implementation later
+on. Let's see what a labelled version of the condition looks like.
+
+```jsx
+const counter = createMachine(
+  {
+    context: { count: 5 },
+    computed: {
+      isEmpty: (ctx) => ctx.count === 0,
+    },
+    on: {
+      // CLICK event won't work if `ctx.isEmpty` returns true
+      CLICK: {
+        // 1. here we label the condition or guard
+        cond: "isNotEmpty",
+        target: "on",
+        // yes, actions can be labelled as well
+        actions: "increment",
+      },
+    },
+    // ...
+  },
+  // The second argument of `createMachine` helps you provide the implementation
+  {
+    guards: {
+      // 2. here we provide the implementation
+      isNotEmpty: (ctx) => !ctx.isEmpty,
+    },
+    actions: {
+      increment: (ctx) => {
+        ctx.count++
+      },
+    },
+  },
+)
+```
+
+- Logic branches with guards
+- Using guard helpers
+
+## Actions
+
+### Entry and Exit actions
+
+Transitions that use `entry` and `exit` properties perform an action when the value for the field is set. These actions
+are executed by the user who changes the value of the field.
+
+### Timed transition and actions
+
+**`after` transition:**
+
+Transitions that use the after property perform an action after the specified time frame.
+
+- conditional after transition
+- serializing after timeout durations
+
+**`every` actions**
+
+Actions that are executed at interval upon state entry
+
+- conditional every action
+- serializing every timeout durations
+
+## Activities
+
+- define activities
+- serializing activitieis
+
+## Usage with TypeScript
+
+- defining machine state and context
+- defining machine events
+
+## Framework Usage
+
+### Usage with React
+
+### Usage with Vue
+
+## (Advanced) Parent - Child Relationship
+
+- spawning child machines via `spawn`
+- sending events to parent via `sendParent`
+- sending events to child via `sendChild`
+
+## Machine Config
+
+- onStart
+- onStop
