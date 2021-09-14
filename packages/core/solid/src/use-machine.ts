@@ -12,29 +12,27 @@ export function useMachine<
   },
 ) {
   const { actions, state: hydratedState } = options ?? {}
+  const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
 
-  const service = (() => {
-    const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
-    return options ? resolvedMachine.withOptions(options) : resolvedMachine
-  })()
+  const [service] = createSignal(options ? resolvedMachine.withOptions(options) : resolvedMachine)
 
-  const [state, setState] = createSignal({} as S.State<TContext, TState>)
+  const [state, setState] = createSignal(service().state)
 
   let unsubscribe: () => void
 
   onMount(() => {
-    service.start(hydratedState)
-    unsubscribe = service.subscribe(setState)
+    service().start(hydratedState)
+    unsubscribe = service().subscribe(setState)
   })
 
   onCleanup(() => {
-    service.stop()
+    service().stop()
     unsubscribe()
   })
 
   onMount(() => {
-    service.updateActions(actions)
+    service().updateActions(actions)
   })
 
-  return [state, service.send, service] as const
+  return [state, service().send, service] as const
 }

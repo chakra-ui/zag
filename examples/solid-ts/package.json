@@ -1,0 +1,20 @@
+{
+  "name": "solid-ts",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "echo 'clean'",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^2.5.1",
+    "vite-plugin-solid": "^2.0.3"
+  },
+  "dependencies": {
+    "solid-app-router": "^0.1.5",
+    "solid-js": "^1.1.1"
+  }
+}
