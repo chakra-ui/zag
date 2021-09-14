@@ -65,6 +65,11 @@ function Example() {
 - All machines should be light-weight, simple, and easy to understand.
 - Avoid using complex machine concepts like spawn, nested states, etc.
 
+## Inspirations
+
+- [Guillermo Rauch on Merging Design and Development](https://youtu.be/3hccXiXI0u8)
+- [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillerma Rauch
+
 ## Issues
 
 Looking to contribute? Look for the **Good First Issue** label.

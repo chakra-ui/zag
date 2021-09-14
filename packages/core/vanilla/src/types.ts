@@ -4,6 +4,16 @@ export type MaybeArray<T> = T | T[]
 
 export type VoidFunction = () => void
 
+type IfEquals<X, Y, A, B> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B
+
+type WritableKeysOf<T> = {
+  [P in keyof T]: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P, never>
+}[keyof T]
+
+type WritablePart<T> = Pick<T, WritableKeysOf<T>>
+
+type ReadonlyPart<T> = Omit<T, WritableKeysOf<T>>
+
 export declare namespace StateMachine {
   // event sent can be either a string or object
   export type EventObject = { type: string }
@@ -161,6 +171,10 @@ export declare namespace StateMachine {
     tags?: string
   }
 
+  export type TComputedContext<T> = {
+    [K in keyof ReadonlyPart<T>]: (ctx: WritablePart<T>) => T[K]
+  }
+
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
      * The actions to take when the machine has stopped
@@ -177,7 +191,11 @@ export declare namespace StateMachine {
     /**
      * The extended state used to store `data` for your machine
      */
-    context?: TContext
+    context?: WritablePart<TContext>
+    /**
+     * The computed properties based on the state
+     */
+    computed?: Partial<TComputedContext<TContext>>
     /**
      * The initial state to start with
      */
@@ -190,10 +208,6 @@ export declare namespace StateMachine {
      * Mapping events to transitions
      */
     on?: TransitionDefinitionMap<TContext, TState["value"], TEvent>
-    /**
-     * How to manage the internal batching used in `valtio`
-     */
-    syncListeners?: boolean | { state?: boolean; context?: boolean }
   }
 
   export interface State<TContext extends Dict, TState extends StateSchema = StateSchema> {
@@ -202,6 +216,7 @@ export declare namespace StateMachine {
     event: string | string[]
     context: TContext
     done: boolean
+    can(event: string): boolean
     matches(...value: TState["value"][]): boolean
     hasTag(value: TState["tags"]): boolean
     nextEvents: string[]

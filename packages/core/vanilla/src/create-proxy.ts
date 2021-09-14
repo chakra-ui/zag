@@ -2,16 +2,18 @@ import { cast } from "@core-foundation/utils/fn"
 import { proxyWithComputed as proxy } from "valtio/utils"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 
-export function createProxyState<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+export function createProxy<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   config: S.MachineConfig<TContext, TState, TEvent>,
 ) {
   const defaultContext = cast<TContext>({})
+  const context = proxy(config.context ?? defaultContext, config.computed ?? {})
+
   const state = proxy(
     {
       value: "",
       previousValue: "",
       event: "",
-      context: config.context ?? defaultContext,
+      context,
       done: false,
       tags: new Set<TState["tags"]>(),
       hasTag(tag: TState["tags"]): boolean {
@@ -19,6 +21,10 @@ export function createProxyState<TContext, TState extends S.StateSchema, TEvent 
       },
       matches(...value: string[]): boolean {
         return value.includes(this.value)
+      },
+      can(event: string): boolean {
+        //@ts-ignore
+        return this.nextEvents.includes(event)
       },
     },
     {

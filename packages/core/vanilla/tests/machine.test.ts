@@ -97,8 +97,10 @@ it("should reveal the current state after transition", async () => {
 
   machine.start()
 
+  machine.send("CHANGE")
+
   // wait for next tick due to batching
-  await machine.send("CHANGE")
+  await Promise.resolve()
 
   expect(done).toBeTruthy()
 })

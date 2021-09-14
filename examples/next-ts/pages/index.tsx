@@ -2,11 +2,24 @@ import { createMachine } from "@ui-machines/core"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 
-const timerMachine = createMachine(
+type Context = {
+  value: number
+  duration: number
+  readonly isDue: boolean
+  readonly isAbove: boolean
+  readonly text: string
+}
+
+const timerMachine = createMachine<Context>(
   {
     context: {
       duration: 3000,
       value: 3000,
+    },
+    computed: {
+      isDue: (ctx) => ctx.value <= 1000,
+      isAbove: (ctx) => ctx.value > 1000,
+      text: (ctx) => (ctx.value > 1000 ? "DUE" : "NOT DUE"),
     },
     initial: "idle",
     states: {
@@ -60,11 +73,13 @@ const IndexPage = () => {
   const [state, send] = useMachine(timerMachine)
   return (
     <div>
-      <button onClick={() => send("DISMISS")}>DISMISS</button>
-      <button onClick={() => send({ type: "SET_DURATION", value: 5000 })}>
-        Change duration (5000ms)
+      <button disabled={!state.can("DISMISS")} onClick={() => send("DISMISS")}>
+        DISMISS
       </button>
-      <div>{state.context.value}</div>
+      <button onClick={() => send({ type: "SET_DURATION", value: 5000 })}>Change duration (5000ms)</button>
+      <div>
+        {state.context.value} {state.context.text}
+      </div>
       <StateVisualizer state={state} />
     </div>
   )

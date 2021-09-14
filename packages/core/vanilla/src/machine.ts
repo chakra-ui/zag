@@ -1,7 +1,7 @@
 import { cast, is, runIfFn, toArray, warn } from "@core-foundation/utils"
 import { klona } from "klona"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
-import { createProxyState } from "./create-proxy-state"
+import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
@@ -18,7 +18,7 @@ export class Machine<
   TEvent extends S.EventObject = S.AnyEventObject,
 > {
   public status: MachineStatus = MachineStatus.NotStarted
-  public state: S.State<TContext, TState>
+  public readonly state: S.State<TContext, TState>
   public initialState: S.StateInfo<TContext, TState, TEvent> | undefined
 
   public id: string
@@ -52,7 +52,7 @@ export class Machine<
     public options?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
     this.id = config.id ?? `machine-${uniqueId()}`
-    this.state = createProxyState(config)
+    this.state = createProxy(config)
     this.guardMap = options?.guards
     this.actionMap = options?.actions
     this.delayMap = options?.delays
@@ -69,18 +69,6 @@ export class Machine<
     return this.stateSnapshot.context
   }
 
-  // how state updates should be batched in valtio state
-  // and context listeners
-  private get sync() {
-    const { syncListeners } = this.config
-
-    const syncState = is.bool(syncListeners) ? syncListeners : syncListeners?.state
-
-    const syncContext = is.bool(syncListeners) ? syncListeners : syncListeners?.context
-
-    return { state: syncState, context: syncContext }
-  }
-
   // Starts the interpreted machine.
   public start = (init?: S.StateInit<TContext, TState>) => {
     // Don't start if it's already running
@@ -95,7 +83,7 @@ export class Machine<
       const resolved = is.object(init) ? init : { context: this.config.context!, value: init }
 
       this.setState(resolved.value)
-      this.setContext(resolved.context)
+      this.setContext(resolved.context as Partial<TContext>)
     }
 
     // start transition definition
@@ -111,25 +99,17 @@ export class Machine<
       this.performStateChangeEffects(info.target, info, event)
     }
 
-    this.removeStateListener = subscribe(
-      this.state,
-      () => {
-        this.stateListeners.forEach((listener) => {
-          listener(this.stateSnapshot)
-        })
-      },
-      this.sync.state,
-    )
+    this.removeStateListener = subscribe(this.state, () => {
+      this.stateListeners.forEach((listener) => {
+        listener(this.stateSnapshot)
+      })
+    })
 
-    this.removeContextListener = subscribe(
-      this.state.context,
-      () => {
-        this.contextListeners.forEach((listener) => {
-          listener(this.contextSnapshot)
-        })
-      },
-      this.sync.context,
-    )
+    this.removeContextListener = subscribe(this.state.context, () => {
+      this.contextListeners.forEach((listener) => {
+        listener(this.contextSnapshot)
+      })
+    })
 
     this.executeActions(this.config.onStart, toEvent<TEvent>(ActionTypes.Start))
     return this
@@ -144,7 +124,7 @@ export class Machine<
     this.state.event = ActionTypes.Stop
 
     if (this.config.context) {
-      this.setContext(this.config.context)
+      this.setContext(this.config.context as Partial<TContext>)
     }
 
     // cleanups
@@ -627,7 +607,7 @@ export class Machine<
   /**
    * Function to send an event to current machine
    */
-  send = (evt: S.Event<TEvent>): void | Promise<void> => {
+  send = (evt: S.Event<TEvent>) => {
     const event = toEvent<TEvent>(evt)
     this.transition(this.state.value, event)
   }
