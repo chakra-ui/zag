@@ -214,7 +214,7 @@ export declare namespace StateMachine {
   export interface State<TContext extends Dict, TState extends StateSchema = StateSchema> {
     value: TState["value"] | null
     previousValue: TState["value"] | null
-    event: string | string[]
+    event: Dict
     context: TContext
     done: boolean
     can(event: string): boolean

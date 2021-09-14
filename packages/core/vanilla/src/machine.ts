@@ -121,7 +121,7 @@ export class Machine<
     if (this.status === MachineStatus.Stopped) return
 
     this.setState(null)
-    this.state.event = ActionTypes.Stop
+    this.state.event = toEvent(ActionTypes.Stop)
 
     if (this.config.context) {
       this.setContext(this.config.context as Partial<TContext>)
@@ -482,8 +482,7 @@ export class Machine<
   }
 
   private setEvent = (event: TEvent) => {
-    const eventType = toEvent(event).type
-    this.state.event = eventType === ActionTypes.Sync ? [this.state.event, ActionTypes.Sync].join(" > ") : eventType
+    this.state.event = toEvent(event)
   }
 
   private performExitEffects = (current: TState["value"] | undefined, event: TEvent) => {

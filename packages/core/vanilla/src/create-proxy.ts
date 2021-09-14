@@ -12,7 +12,7 @@ export function createProxy<TContext, TState extends S.StateSchema, TEvent exten
     {
       value: "",
       previousValue: "",
-      event: "",
+      event: {} as Dict,
       context,
       done: false,
       tags: new Set<TState["tags"]>(),
@@ -35,7 +35,7 @@ export function createProxy<TContext, TState extends S.StateSchema, TEvent exten
         return Object.keys(stateEvents).filter((event) => event !== ActionTypes.Sync)
       },
       changed(self) {
-        if (self.event === ActionTypes.Init || !self.previousValue) return false
+        if (self.event.type === ActionTypes.Init || !self.previousValue) return false
         return self.value !== self.previousValue
       },
     },

@@ -1,5 +1,6 @@
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { onCleanup } from "solid-js"
+import { createStore } from "solid-js/store"
 
 export function useMachine<
   TContext extends Record<string, any>,
@@ -11,28 +12,21 @@ export function useMachine<
     state?: S.StateInit<TContext, TState>
   },
 ) {
-  const { actions, state: hydratedState } = options ?? {}
-  const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
+  const { actions, state: _state } = options ?? {}
+  const _machine = typeof machine === "function" ? machine() : machine.clone()
 
-  const [service] = createSignal(options ? resolvedMachine.withOptions(options) : resolvedMachine)
+  const service = options ? _machine.withOptions(options) : _machine
+  service.updateActions(actions)
 
-  const [state, setState] = createSignal(service().state)
+  const [state, setState] = createStore(Object.assign({}, service.state))
 
-  let unsubscribe: () => void
-
-  onMount(() => {
-    service().start(hydratedState)
-    unsubscribe = service().subscribe(setState)
-  })
+  service.start(_state)
+  const unsubscribe = service.subscribe(setState)
 
   onCleanup(() => {
-    service().stop()
+    service.stop()
     unsubscribe()
   })
 
-  onMount(() => {
-    service().updateActions(actions)
-  })
-
-  return [state, service().send, service] as const
+  return [state, service.send, service] as const
 }
