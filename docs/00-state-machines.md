@@ -22,26 +22,19 @@ A state machine is a model used to design the logic of a UI component. It consis
 
 In a given state, here are the list of properties you can use:
 
-`on`: This is used to describe the events that the machine can respond to, and the instruction to be executed when it
-receives that event (aka "transition config")
-
-`entry`: The actions or functions to execute when the machine enter the given state.
-
-`exit`: The actions or functions to execute when the machine exits/leaves the given state.
-
-`after`: A timer-based transition that instructs the machine to execute a transition config after a given time. It uses
-`setTimeout` under the hood.
-
-`every`: A timer-based action that the machine should execute at the specified interval. It uses `setInterval` under the
-hood.
-
-`tags`: Extra metadata that are used to describe the given state. They can useful in grouping different states. For
-example, assume we have two states `loadingUser` and `loadingFriend`, that can both share a `loading` tag.
-
-`type`: Usually used to mark a state as a final state by setting its value to `final`
-
-`activities`: an actions or functions that are continuous or long-running (think `setInterval`, `addEventListener`,
-`subscribe`) and can be cleaned up.
+- `on`: This is used to describe the events that the machine can respond to, and the instruction to be executed when it
+  receives that event (aka "transition config")
+- `entry`: The actions or functions to execute when the machine enter the given state.
+- `exit`: The actions or functions to execute when the machine exits/leaves the given state.
+- `after`: A timer-based transition that instructs the machine to execute a transition config after a given time. It
+  uses `setTimeout` under the hood.
+- `every`: A timer-based action that the machine should execute at the specified interval. It uses `setInterval` under
+  the hood.
+- `tags`: Extra metadata that are used to describe the given state. They can useful in grouping different states. For
+  example, assume we have two states `loadingUser` and `loadingFriend`, that can both share a `loading` tag.
+- `type`: Usually used to mark a state as a final state by setting its value to `final`
+- `activities`: an actions or functions that are continuous or long-running (think `setInterval`, `addEventListener`,
+  `subscribe`) and can be cleaned up.
 
 ```jsx
 const machine = createMachine({
@@ -211,14 +204,18 @@ const counter = createMachine(
     computed: {
       isEmpty: (ctx) => ctx.count === 0,
     },
-    on: {
-      // CLICK event won't work if `ctx.isEmpty` returns true
-      CLICK: {
-        // 1. here we label the condition or guard
-        cond: "isNotEmpty",
-        target: "on",
-        // yes, actions can be labelled as well
-        actions: "increment",
+    states: {
+      active: {
+        on: {
+          // CLICK event won't work if `ctx.isEmpty` returns true
+          CLICK: {
+            // 1. here we label the condition or guard
+            cond: "isNotEmpty",
+            target: "active",
+            // yes, actions can be labelled as well
+            actions: "increment",
+          },
+        },
       },
     },
     // ...
@@ -238,8 +235,90 @@ const counter = createMachine(
 )
 ```
 
-- Logic branches with guards
-- Using guard helpers
+**Logic Branching**
+
+In some cases, you really want to express conditions in the `if-else` manner. To create a logic branch based on multiple
+conditions, you can use the array syntax:
+
+```jsx
+const counter = createMachine(
+  {
+    // ...
+    on: {
+      // here's the logic branch. When the `CLICK` event is sent:
+      CLICK: [
+        // take this transition if `isNotEmpty` evaluates to `true`
+        { cond: "isNotEmpty", target: "active", actions: "increment" },
+        // else, take this transition
+        { target: "inactive", actions: "increment" },
+      ],
+    },
+  },
+  // ...
+)
+```
+
+You can also use this logic branching in `every` and `after` actions as well.
+
+```jsx
+const counter = createMachine({
+  // ...
+  states: {
+    inactive: {
+      // an example of `every` action
+      every: [
+        // do `increment` every 500ms if `isNotEmpty` is `true`
+        { delay: 500, actions: ["increment"], cond: "isNotEmpty" },
+        // else do `increment` every 200ms
+        { delay: 200, actions: ["increment"] },
+      ],
+    },
+    active: {
+      // an example of `after` transition. You get the idea?
+      after: [
+        { target: "active", cond: "isNotEmpty", delay: 1000, actions: ["setValue"] },
+        { target: "inactive", actions: ["setValue"] },
+      ],
+    },
+  },
+})
+```
+
+**Using guard helpers**
+
+When expressing conditions or guards, you might find the need to combine multiple conditions in the classic `||`, `!`,
+or `&&` fashion. To help with this, you can import `guards` which ships with helpers for `or`, `and` and `not`.
+
+This helps to remove the need to write verbose logic like `isNotEmpty` or `isNotEmptyAndIsAtMax`. You can compose the
+functions together to express complex conditions declaratively.
+
+```jsx
+import { guards } from "@ui-machines/core"
+
+const { and, not } = guards
+
+const machine = createMachine(
+  {
+    context: {
+      list: [],
+      max: 4,
+    },
+    on: {
+      CLICK_ADD: {
+        // condition evaluates to: isListEmpty && !isAtMax
+        cond: and("isListEmpty", not("isAtMax")),
+      },
+    },
+  },
+  {
+    // the implementation of guards
+    guards: {
+      isListEmpty: (ctx) => ctx.list.length === 0,
+      isAtMax: (ctx) => ctx.list.length === max,
+    },
+  },
+)
+```
 
 ## Actions
 
@@ -267,26 +346,15 @@ Actions that are executed at interval upon state entry
 ## Activities
 
 - define activities
-- serializing activitieis
+- serializing activities
 
 ## Usage with TypeScript
 
 - defining machine state and context
 - defining machine events
 
-## Framework Usage
-
-### Usage with React
-
-### Usage with Vue
-
 ## (Advanced) Parent - Child Relationship
 
 - spawning child machines via `spawn`
 - sending events to parent via `sendParent`
 - sending events to child via `sendChild`
-
-## Machine Config
-
-- onStart
-- onStop

@@ -158,6 +158,7 @@ export declare namespace StateMachine {
   export type ConditionExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
 
   export type ConditionHelper<TContext extends Dict, TEvent extends EventObject> = {
+    toString: () => string
     exec: (guards: Dict) => ConditionExpression<TContext, TEvent>
   }
 

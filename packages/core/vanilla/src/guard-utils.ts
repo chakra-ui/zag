@@ -6,6 +6,7 @@ function or<TContext, TEvent extends S.EventObject>(
   ...conditions: Array<string | S.ConditionHelper<TContext, TEvent>>
 ): S.ConditionHelper<TContext, TEvent> {
   return {
+    toString: () => conditions.map((c) => c.toString()).join(" || "),
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
@@ -22,6 +23,7 @@ function and<TContext, TEvent extends S.EventObject>(
   ...conditions: Array<string | S.ConditionHelper<TContext, TEvent>>
 ): S.ConditionHelper<TContext, TEvent> {
   return {
+    toString: () => conditions.map((c) => c.toString()).join(" && "),
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
@@ -38,6 +40,7 @@ function not<TContext, TEvent extends S.EventObject>(
   condition: string | S.ConditionHelper<TContext, TEvent>,
 ): S.ConditionHelper<TContext, TEvent> {
   return {
+    toString: () => `!(${condition.toString()})`,
     exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) => {
       if (is.string(condition)) {
         return !guardMap[condition]?.(ctx, event)
