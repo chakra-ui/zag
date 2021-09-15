@@ -73,8 +73,8 @@ export function useMachine<
 
   // Cleanup
   onBeforeUnmount(() => {
-    service.stop()
     unsubscribe?.()
+    service.stop()
   })
 
   return [consumableState, service.send, service] as const

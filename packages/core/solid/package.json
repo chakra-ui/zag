@@ -30,6 +30,7 @@
   "dependencies": {
     "@core-foundation/utils": "^0.1.10",
     "@ui-machines/core": "0.0.0",
+    "hyphenate-style-name": "^1.0.4",
     "valtio": "^1.2.2"
   },
   "devDependencies": {

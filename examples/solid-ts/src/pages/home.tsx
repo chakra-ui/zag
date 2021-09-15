@@ -9,6 +9,9 @@ const counter = createMachine(
       value: 3,
       isReady: false,
     },
+    computed: {
+      isAbove: (ctx) => ctx.value > 10,
+    },
     initial: "idle",
     states: {
       idle: {
@@ -49,6 +52,7 @@ export default function Home() {
       <header class="App-header">
         <p>{state.context.value}</p>
         <button onClick={() => send("INC")}>Increment</button>
+        <button disabled={state.matches("running")}>Running</button>
         <pre>{JSON.stringify(state, null, 2)}</pre>
       </header>
     </div>

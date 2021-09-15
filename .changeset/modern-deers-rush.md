@@ -4,6 +4,7 @@
 "@ui-machines/react": patch
 "@ui-machines/svelte": patch
 "@ui-machines/core": patch
+"@ui-machines/solid": patch
 "@ui-machines/vue": patch
 "@ui-machines/web": patch
 ---
