@@ -15,6 +15,10 @@ type WritablePart<T> = Pick<T, WritableKeysOf<T>>
 type ReadonlyPart<T> = Omit<T, WritableKeysOf<T>>
 
 export declare namespace StateMachine {
+  export type Computed<T> = Readonly<T>
+
+  export type Context<V, C> = V & Computed<C>
+
   // event sent can be either a string or object
   export type EventObject = { type: string }
 
