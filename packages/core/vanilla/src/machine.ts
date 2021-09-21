@@ -8,10 +8,6 @@ import { determineTransitionFn, toTransition } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction } from "./types"
 import { toEvent, uniqueId } from "./utils"
 
-/**
- * Machine is used to create, interpret, and execute finite state machines.
- * It is inspired by XState, State Designer and Robot3.
- */
 export class Machine<
   TContext extends Dict,
   TState extends S.StateSchema,
@@ -121,7 +117,7 @@ export class Machine<
     if (this.status === MachineStatus.Stopped) return
 
     this.setState(null)
-    this.state.event = ActionTypes.Stop
+    this.setEvent(ActionTypes.Stop)
 
     if (this.config.context) {
       this.setContext(this.config.context as Partial<TContext>)
@@ -481,9 +477,8 @@ export class Machine<
     }
   }
 
-  private setEvent = (event: TEvent) => {
-    const eventType = toEvent(event).type
-    this.state.event = eventType === ActionTypes.Sync ? [this.state.event, ActionTypes.Sync].join(" > ") : eventType
+  private setEvent = (event: TEvent | TEvent["type"]) => {
+    this.state.event = ref(toEvent(event))
   }
 
   private performExitEffects = (current: TState["value"] | undefined, event: TEvent) => {

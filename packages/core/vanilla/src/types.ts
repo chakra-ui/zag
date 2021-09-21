@@ -215,10 +215,14 @@ export declare namespace StateMachine {
     on?: TransitionDefinitionMap<TContext, TState["value"], TEvent>
   }
 
-  export interface State<TContext extends Dict, TState extends StateSchema = StateSchema> {
+  export interface State<
+    TContext extends Dict,
+    TState extends StateSchema = StateSchema,
+    TEvent extends EventObject = EventObject,
+  > {
     value: TState["value"] | null
     previousValue: TState["value"] | null
-    event: string | string[]
+    event: TEvent
     context: TContext
     done: boolean
     can(event: string): boolean
@@ -229,9 +233,11 @@ export declare namespace StateMachine {
     tags: Set<TState["tags"]>
   }
 
-  export type StateListener<TContext extends Dict, TState extends StateSchema> = (
-    state: State<TContext, TState>,
-  ) => void
+  export type StateListener<
+    TContext extends Dict,
+    TState extends StateSchema,
+    TEvent extends EventObject = EventObject,
+  > = (state: State<TContext, TState, TEvent>) => void
 
   export type ContextListener<TContext extends Dict> = (context: TContext) => void
 
