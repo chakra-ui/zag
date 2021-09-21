@@ -1,6 +1,6 @@
 import { cast } from "@core-foundation/utils"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
-import { onCleanup } from "solid-js"
+import { onCleanup, onMount } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
 
 const toPOJO = (v: any) => JSON.parse(JSON.stringify(v))
@@ -25,22 +25,24 @@ export function useMachine<
   },
 ) {
   const { actions, state: hydratedState } = options ?? {}
-  const _machine = typeof machine === "function" ? machine() : machine.clone()
-
-  const service = options ? _machine.withOptions(options) : _machine
-  service.updateActions(actions)
+  const service = typeof machine === "function" ? machine() : machine.clone()
 
   const [state, setState] = createStore<any>(unwrap(service.state))
-
-  service.start(hydratedState)
 
   const unsubscribe = service.subscribe((s) => {
     setState(reconcile(s))
   })
 
+  service.start(hydratedState)
+
   onCleanup(() => {
+    service.stop()
     unsubscribe()
     service.stop()
+  })
+
+  onMount(() => {
+    service.updateActions(actions)
   })
 
   const _state = cast<S.State<TContext, TState>>(state)
