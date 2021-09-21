@@ -1,4 +1,4 @@
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils"
 import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./tags-input.dom"
@@ -214,7 +214,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       focusNextTag(ctx) {
         const tags = dom(ctx)

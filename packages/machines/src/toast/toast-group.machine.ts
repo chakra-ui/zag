@@ -1,4 +1,4 @@
-import { createMachine, Machine, preserve } from "@ui-machines/core"
+import { createMachine, Machine, ref } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { createToastMachine, ToastMachineContext, ToastMachineState } from "./toast.machine"
 
@@ -81,7 +81,7 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
         ctx.uid = evt.id
       },
       setOwnerDocument: (ctx, evt) => {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
     },
   },

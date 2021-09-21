@@ -1,4 +1,4 @@
-import { createMachine, preserve } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { addPointerEvent } from "@core-dom/event/pointer"
 import { proxy, subscribe } from "valtio"
 import { env, is, noop } from "@core-foundation/utils"
@@ -127,7 +127,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         ctx.id = evt.id
       },
       setOwnerDocument: (ctx, evt) => {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       setGlobalId: (ctx) => {
         tooltipStore.id = ctx.id

@@ -1,5 +1,5 @@
 import { nextTick } from "@core-foundation/utils/fn"
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { trackPointerDown } from "../utils/pointer-down"
 import type { WithDOM } from "../utils/types"
 import { getElements } from "./editable.dom"
@@ -111,7 +111,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       focusEditButton(ctx) {
         nextTick(() => {

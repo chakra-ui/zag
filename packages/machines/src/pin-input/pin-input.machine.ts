@@ -1,6 +1,6 @@
 import { List } from "@core-foundation/list"
 import { nextTick } from "@core-foundation/utils/fn"
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { dom } from "./pin-input.dom"
 
@@ -113,11 +113,11 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         nextTick(() => {
           const inputs = dom(ctx)
           const empty = List.fromLength(inputs.size, () => "")
-          ctx.value = ctx.value.length === 0 ? preserve(empty.value as string[]) : ctx.value
+          ctx.value = ctx.value.length === 0 ? ref(empty.value as string[]) : ctx.value
         })
       },
       setOwnerDocument: (ctx, evt) => {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       focusInput: (ctx) => {
         nextTick(() => {

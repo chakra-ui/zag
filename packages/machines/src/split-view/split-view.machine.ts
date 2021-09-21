@@ -1,6 +1,6 @@
 import { focus } from "@core-dom/event"
 import { NumericRange } from "@core-foundation/numeric-range"
-import { createMachine, preserve, guards } from "@ui-machines/core"
+import { createMachine, ref, guards } from "@ui-machines/core"
 import { trackPointerMove } from "../utils/pointer-move"
 import { WithDOM } from "../utils/types"
 import { getElements } from "./split-view.dom"
@@ -196,7 +196,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       setToMin(ctx) {
         ctx.value = ctx.min

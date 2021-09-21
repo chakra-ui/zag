@@ -1,7 +1,7 @@
 import { focus } from "@core-dom/event"
 import { List } from "@core-foundation/list"
 import { is } from "@core-foundation/utils/is"
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { dom } from "./accordion.dom"
 
@@ -136,7 +136,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
     },
   },

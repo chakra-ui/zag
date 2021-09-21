@@ -1,6 +1,6 @@
 import { dispatchInputEvent } from "@core-dom/event"
 import { nextTick } from "@core-foundation/utils"
-import { createMachine, preserve } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { WithDOM } from "../utils/types"
 import { getElements } from "./rating.dom"
 
@@ -111,7 +111,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       clearHoveredValue(ctx) {
         ctx.hoveredValue = -1

@@ -2,7 +2,7 @@ import { dispatchInputEvent } from "@core-dom/event"
 import { nextTick } from "@core-foundation/utils"
 import { Point } from "@core-graphics/point"
 import { fromElement } from "@core-graphics/rect/create"
-import { createMachine, preserve } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { trackPointerMove } from "../utils/pointer-move"
 import { WithDOM } from "../utils/types"
 import { getElements, getRangeAtIndex, getValueFromPoint } from "./range-slider.dom"
@@ -148,7 +148,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       invokeOnChangeStart(ctx) {
         ctx.onChangeStart?.(ctx.value)

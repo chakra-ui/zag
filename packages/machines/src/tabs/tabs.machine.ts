@@ -1,4 +1,4 @@
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@core-foundation/utils"
 import { WithDOM } from "../utils/types"
 import { dom } from "./tabs.dom"
@@ -86,7 +86,7 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
     },
     actions: {
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       setId(ctx, evt) {
         ctx.uid = evt.id

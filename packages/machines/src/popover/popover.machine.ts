@@ -1,6 +1,6 @@
 import { isTabbable } from "@core-dom/element"
 import { nextTick } from "@core-foundation/utils"
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { trackPointerDown } from "../utils/pointer-down"
 import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./popover.dom"
@@ -93,7 +93,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       clearPointerDown(ctx) {
         ctx.pointerdownNode = null

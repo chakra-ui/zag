@@ -1,5 +1,5 @@
 import { env, is, nextTick } from "@core-foundation/utils"
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
 import { LiveRegion } from "../utils/live-region"
 import { observeNodeAttr } from "../utils/mutation-observer"
@@ -360,11 +360,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       setLiveRegion(ctx) {
         const region = new LiveRegion({ ariaLive: "assertive", doc: ctx.doc })
-        ctx.liveRegion = preserve(region)
+        ctx.liveRegion = ref(region)
       },
       setActiveOption(ctx, evt) {
         ctx.activeId = evt.id

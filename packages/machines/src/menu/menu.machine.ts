@@ -5,7 +5,7 @@ import { Point, PointValue } from "@core-graphics/point"
 import { containsPoint } from "@core-graphics/polygon/contains"
 import { fromElement } from "@core-graphics/rect/create"
 import { inset } from "@core-graphics/rect/operations"
-import { createMachine, guards, Machine, preserve } from "@ui-machines/core"
+import { createMachine, guards, Machine, ref } from "@ui-machines/core"
 import { trackPointerDown } from "../utils/pointer-down"
 import { WithDOM } from "../utils/types"
 import { dom, getElements } from "./menu.dom"
@@ -312,7 +312,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       clearActiveId(ctx) {
         ctx.activeId = null
@@ -363,10 +363,10 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         ctx.activeId = node?.id ?? ctx.activeId
       },
       setParent(ctx, evt) {
-        ctx.parent = preserve(evt.value)
+        ctx.parent = ref(evt.value)
       },
       setChild(ctx, evt) {
-        ctx.children[evt.id] = preserve(evt.value)
+        ctx.children[evt.id] = ref(evt.value)
       },
       closeChildren(ctx) {
         for (const child of Object.values(ctx.children)) {

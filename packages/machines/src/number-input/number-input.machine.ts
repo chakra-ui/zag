@@ -1,7 +1,7 @@
 import { addPointerEvent } from "@core-dom/event/pointer"
 import { NumericRange } from "@core-foundation/numeric-range"
 import { nextTick, noop } from "@core-foundation/utils/fn"
-import { createMachine, guards, preserve } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { getElements } from "./number-input.dom"
 import { sanitize } from "./number-input.utils"
 
@@ -159,7 +159,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         ctx.uid = evt.id
       },
       setOwnerDocument(ctx, evt) {
-        ctx.doc = preserve(evt.doc)
+        ctx.doc = ref(evt.doc)
       },
       focusInput(ctx) {
         const { input } = getElements(ctx)
