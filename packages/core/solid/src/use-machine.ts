@@ -29,14 +29,13 @@ export function useMachine<
 
   const [state, setState] = createStore<any>(unwrap(service.state))
 
+  service.start(hydratedState)
+
   const unsubscribe = service.subscribe((s) => {
     setState(reconcile(s))
   })
 
-  service.start(hydratedState)
-
   onCleanup(() => {
-    service.stop()
     unsubscribe()
     service.stop()
   })

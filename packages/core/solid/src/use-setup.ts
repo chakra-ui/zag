@@ -1,5 +1,5 @@
 import { AnyFunction } from "@core-foundation/utils/fn"
-import { onMount } from "solid-js"
+import { createSignal, onMount } from "solid-js"
 
 export type UseSetupProps = {
   send: AnyFunction
@@ -8,12 +8,11 @@ export type UseSetupProps = {
 
 export function useSetup<T extends HTMLElement = HTMLElement>(props: UseSetupProps) {
   const { send, id } = props
-  let ref: T
+  const [el, setEl] = createSignal<T>()
 
   onMount(() => {
-    send({ type: "SETUP", doc: ref.ownerDocument, id })
+    send({ type: "SETUP", doc: el()?.ownerDocument, id })
   })
 
-  //@ts-ignore
-  return ref as T
+  return setEl
 }
