@@ -10,7 +10,7 @@ export type UseSetupProps = {
   send: AnyFunction
 }
 
-export function useMount(props: UseSetupProps) {
+export function useSetup(props: UseSetupProps) {
   const { id, send } = props
   const nodeRef = ref<null | MaybeElementRef>(null)
 
