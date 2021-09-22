@@ -20,20 +20,20 @@ export type PinInputMachineContext = WithDOM<{
 }>
 
 export type PinInputMachineState = {
-  value: "mounted" | "idle" | "focused"
+  value: "unknown" | "idle" | "focused"
 }
 
 export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMachineState>(
   {
     id: "pin-input",
-    initial: "mounted",
+    initial: "unknown",
     context: {
       uid: "pin-input",
       value: [],
       focusedIndex: -1,
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",

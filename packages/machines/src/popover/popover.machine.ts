@@ -18,13 +18,13 @@ export type PopoverMachineContext = WithDOM<{
 }>
 
 export type PopoverMachineState = {
-  value: "mounted" | "open" | "closed"
+  value: "unknown" | "open" | "closed"
 }
 
 export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachineState>(
   {
     id: "popover-machine",
-    initial: "mounted",
+    initial: "unknown",
     context: {
       uid: "popover",
       closeOnOutsideClick: true,
@@ -33,7 +33,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
       autoFocus: true,
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "closed",

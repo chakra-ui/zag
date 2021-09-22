@@ -24,13 +24,13 @@ export type NumberInputMachineContext = {
 }
 
 export type NumberInputMachineState = {
-  value: "mounted" | "idle" | "increment:interval" | "decrement:interval" | "decrement" | "increment"
+  value: "unknown" | "idle" | "increment:interval" | "decrement:interval" | "decrement" | "increment"
 }
 
 export const numberInputMachine = createMachine<NumberInputMachineContext, NumberInputMachineState>(
   {
     id: "number-input",
-    initial: "mounted",
+    initial: "unknown",
     context: {
       uid: "test-id",
       value: "",
@@ -40,7 +40,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       allowMouseWheel: true,
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",

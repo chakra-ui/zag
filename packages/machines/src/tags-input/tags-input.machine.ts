@@ -39,13 +39,13 @@ export type TagsInputMachineContext = WithDOM<{
 }>
 
 export type TagsInputMachineState = {
-  value: "mounted" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
 }
 
 export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInputMachineState>(
   {
     id: "tags-input",
-    initial: "mounted",
+    initial: "unknown",
     on: {
       DOUBLE_CLICK_TAG: {
         target: "editing:tag",
@@ -73,7 +73,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       dir: "ltr",
     },
     states: {
-      mounted: {
+      unknown: {
         on: {
           SETUP: {
             target: "idle",
