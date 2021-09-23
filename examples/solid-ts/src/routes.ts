@@ -13,6 +13,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/accordion")),
   },
   {
+    path: "/combobox",
+    component: lazy(() => import("./pages/combobox")),
+  },
+  {
     path: "**",
     component: lazy(() => import("./errors/404")),
   },
