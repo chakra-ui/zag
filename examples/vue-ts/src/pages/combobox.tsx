@@ -1,4 +1,4 @@
-import { defineComponent, computed } from "vue"
+import { defineComponent, h, Fragment, computed } from "vue"
 import { combobox } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { StateVisualizer } from "../components/state-visualizer"
