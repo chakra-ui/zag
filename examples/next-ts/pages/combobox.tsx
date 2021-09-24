@@ -4,52 +4,10 @@ import { combobox } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import styled from "@emotion/styled"
+import { comboboxData } from "../../data"
+import { comboboxStyle } from "../../style"
 
-const data = [
-  { label: "Zambia", code: "ZA" },
-  { label: "Benin", code: "BN" },
-  { label: "Canada", code: "CA" },
-  { label: "United States", code: "US" },
-  { label: "Japan", code: "JP" },
-  { label: "Nigeria", code: "NG" },
-  { label: "Albania", code: "AL" },
-  { label: "Algeria", code: "DZ" },
-  { label: "American Samoa", code: "AS" },
-  { label: "AndorrA", code: "AD" },
-  { label: "Angola", code: "AO" },
-  { label: "Anguilla", code: "AI" },
-  { label: "Antarctica", code: "AQ" },
-  { label: "Australia", code: "AU" },
-  { label: "Austria", code: "AT" },
-  { label: "Azerbaijan", code: "AZ" },
-  { label: "Bahamas", code: "BS" },
-  { label: "Bahrain", code: "BH" },
-  { label: "Madagascar", code: "MG" },
-  { label: "Malawi", code: "MW" },
-  { label: "Malaysia", code: "MY" },
-  { label: "Maldives", code: "MV" },
-  { label: "Mali", code: "ML" },
-  { label: "Malta", code: "MT" },
-  { label: "Togo", code: "TG" },
-  { label: "Tokelau", code: "TK" },
-  { label: "Tonga", code: "TO" },
-  { label: "Trinidad and Tobago", code: "TT" },
-  { label: "Tunisia", code: "TN" },
-]
-
-const Styles = styled("div")({
-  '[role="listbox"]': {
-    listStyleType: "none",
-    padding: "0",
-    margin: "0",
-    border: "1px solid lightgray",
-    maxWidth: "300px",
-  },
-  '[role="option"][aria-selected="true"], [role="option"][data-highlighted]': {
-    backgroundColor: "red",
-    color: "white",
-  },
-})
+const Styles = styled("div")(comboboxStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -66,7 +24,7 @@ export default function Page() {
   const { labelProps, inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } =
     combobox.connect(state, send)
 
-  const filtered = data.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))
+  const filtered = comboboxData.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))
 
   return (
     <Styles>
