@@ -4,8 +4,8 @@ import { combobox } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import styled from "@emotion/styled"
-import { comboboxData } from "../../data"
-import { comboboxStyle } from "../../style"
+import { comboboxData } from "../../../shared/data"
+import { comboboxStyle } from "../../../shared/style"
 
 const Styles = styled("div")(comboboxStyle)
 

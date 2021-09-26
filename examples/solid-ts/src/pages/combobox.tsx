@@ -3,8 +3,8 @@ import { combobox } from "@ui-machines/web"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { css } from "@emotion/css"
-import { comboboxStyle } from "../../../style"
-import { comboboxData } from "../../../data"
+import { comboboxStyle } from "../../../../shared/style"
+import { comboboxData } from "../../../../shared/data"
 
 const styles = css(comboboxStyle)
 

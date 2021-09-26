@@ -4,8 +4,8 @@ import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 import { css } from "@emotion/css"
-import { comboboxData } from "../../../data"
-import { comboboxStyle } from "../../../style"
+import { comboboxData } from "../../../../shared/data"
+import { comboboxStyle } from "../../../../shared/style"
 
 const styles = css(comboboxStyle)
 
