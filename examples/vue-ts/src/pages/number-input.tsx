@@ -1,7 +1,9 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, nextTick, onMounted, ref, h, Fragment, watch } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { numberInput } from "@ui-machines/web"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, nextTick, onMounted, ref, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
+
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default defineComponent({
@@ -15,20 +17,22 @@ export default defineComponent({
       }),
     )
 
-    const input = ref()
+    const inputRef = ref()
+
     const machineState = computed(() => numberInput.connect(state.value, send, normalizeProps))
 
     onMounted(async () => {
       await nextTick()
       send({
         type: "SETUP",
-        doc: input.value?.ownerDocument,
-        id: "number-input-1",
+        doc: inputRef.value?.ownerDocument,
+        id: "number-input",
       })
     })
 
     return () => {
       const { decrementButtonProps, incrementButtonProps, inputProps } = machineState.value
+
       return (
         <>
           <h3>
@@ -37,7 +41,7 @@ export default defineComponent({
           <div>
             <button {...decrementButtonProps}>DEC</button>
             {/* @ts-ignore */}
-            <input ref={input} {...inputProps} />
+            <input ref={inputRef} {...inputProps} />
             <button {...incrementButtonProps}>INC</button>
 
             <StateVisualizer state={state.value} />

@@ -2,7 +2,6 @@ import { menu } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
-
 import { css } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"

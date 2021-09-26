@@ -1,9 +1,10 @@
-import { useMachine } from "@ui-machines/react"
 import { numberInput } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-const AboutPage = () => {
+const Page = () => {
   const [state, send] = useMachine(
     numberInput.machine.withContext({
       min: 0,
@@ -11,10 +12,10 @@ const AboutPage = () => {
       clampValueOnBlur: true,
     }),
   )
+
   const ref = useMount<HTMLInputElement>(send)
 
-  const { inputProps, decrementButtonProps, incrementButtonProps } =
-    numberInput.connect(state, send)
+  const { inputProps, decrementButtonProps, incrementButtonProps } = numberInput.connect(state, send)
 
   return (
     <div>
@@ -26,9 +27,10 @@ const AboutPage = () => {
         <input ref={ref} {...inputProps} />
         <button {...incrementButtonProps}>INC</button>
       </div>
+
       <StateVisualizer state={state} />
     </div>
   )
 }
 
-export default AboutPage
+export default Page
