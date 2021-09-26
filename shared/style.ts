@@ -102,3 +102,41 @@ export const ratingStyle = {
   ".rating__rate:focus": { outline: "2px solid royalblue" },
   ".rating__rate[data-highlighted]": { background: "red" },
 }
+
+export const sliderStyle = {
+  form: { margin: "45px" },
+  ".slider": {
+    marginTop: "12px",
+    "--slider-thumb-size": "20px",
+    "--slider-track-height": "4px",
+    height: "var(--slider-thumb-size)",
+    display: "flex",
+    alignItems: "center",
+    maxWidth: "200px",
+    position: "relative",
+  },
+  ".slider__thumb": {
+    all: "unset",
+    width: "var(--slider-thumb-size)",
+    height: "var(--slider-thumb-size)",
+    borderRadius: ["9999px", "999px"],
+    background: "white",
+    boxShadow: "rgba(0, 0, 0, 0.14) 0px 2px 10px",
+  },
+  ".slider__thumb:focus-visible": {
+    boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
+  },
+  ".slider__thumb:hover": { backgroundColor: "rgb(245, 242, 255)" },
+  ".slider__track": {
+    height: "var(--slider-track-height)",
+    background: "rgba(0, 0, 0, 0.2)",
+    borderRadius: "9999px",
+    flexGrow: 1,
+  },
+  ".slider__range": {
+    background: "magenta",
+    borderRadius: "inherit",
+    height: "100%",
+  },
+  output: { marginInlineStart: "12px", color: "lightslategray" },
+}

@@ -45,6 +45,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/rating")),
   },
   {
+    path: "/slider",
+    component: lazy(() => import("./pages/slider")),
+  },
+  {
     path: "**",
     component: lazy(() => import("./errors/404")),
   },
