@@ -22,18 +22,18 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const connect = computed(() => menu.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => menu.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <button ref={ref} {...connect.value.triggerProps}>
+          <button ref={ref} {...machineState.value.triggerProps}>
             Click me
           </button>
-          <ul style={{ width: "300px" }} {...connect.value.menuProps}>
-            <li {...connect.value.getItemProps({ id: "menuitem-1" })}>Edit</li>
-            <li {...connect.value.getItemProps({ id: "menuitem-2" })}>Duplicate</li>
-            <li {...connect.value.getItemProps({ id: "menuitem-3" })}>Delete</li>
+          <ul style={{ width: "300px" }} {...machineState.value.menuProps}>
+            <li {...machineState.value.getItemProps({ id: "menuitem-1" })}>Edit</li>
+            <li {...machineState.value.getItemProps({ id: "menuitem-2" })}>Duplicate</li>
+            <li {...machineState.value.getItemProps({ id: "menuitem-3" })}>Delete</li>
           </ul>
 
           <StateVisualizer state={state.value} />

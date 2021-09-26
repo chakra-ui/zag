@@ -13,7 +13,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const connect = computed(() => {
+    const machineState = computed(() => {
       const machine = accordion.connect(state.value, send, normalizeProps)
       return {
         rootProps: machine.rootProps,
@@ -22,15 +22,15 @@ export default defineComponent({
     })
 
     const parts = computed(() => ({
-      home: connect.value.getAccordionItem({ id: "home" }),
-      about: connect.value.getAccordionItem({ id: "about" }),
-      contact: connect.value.getAccordionItem({ id: "contact" }),
+      home: machineState.value.getAccordionItem({ id: "home" }),
+      about: machineState.value.getAccordionItem({ id: "about" }),
+      contact: machineState.value.getAccordionItem({ id: "contact" }),
     }))
 
     return () => {
       return (
         <div style={{ width: "100%" }}>
-          <div ref={ref} {...connect.value.rootProps} style={{ maxWidth: "40ch" }}>
+          <div ref={ref} {...machineState.value.rootProps} style={{ maxWidth: "40ch" }}>
             <div {...parts.value.home.groupProps}>
               <h3>
                 <button {...parts.value.home.triggerProps}>Home</button>

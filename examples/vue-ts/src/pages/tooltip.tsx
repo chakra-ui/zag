@@ -16,20 +16,20 @@ const Tooltip = defineComponent({
 
     const ref = useMount(send)
 
-    const mp = computed(() => tooltip.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => tooltip.connect(state.value, send, normalizeProps))
 
     const _state = useSnapshot(tooltip.store)
 
-    const isVisible = computed(() => mp.value.getIsVisible(_state.value.id))
+    const isVisible = computed(() => machineState.value.getIsVisible(_state.value.id))
 
     return () => (
       <>
         <div>
-          <button ref={ref} {...mp.value.triggerProps}>
+          <button ref={ref} {...machineState.value.triggerProps}>
             Over me
           </button>
           {isVisible.value && (
-            <div {...mp.value.tooltipProps} style={{ background: "red", padding: "10px" }}>
+            <div {...machineState.value.tooltipProps} style={{ background: "red", padding: "10px" }}>
               Tooltip
             </div>
           )}

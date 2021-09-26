@@ -26,11 +26,11 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const connect = computed(() => slider.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => slider.connect(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } =
-        connect.value
+        machineState.value
 
       return (
         <div className={styles}>

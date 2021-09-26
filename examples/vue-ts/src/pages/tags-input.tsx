@@ -81,24 +81,24 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const mp = computed(() => tagsInput.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => tagsInput.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <div ref={ref} {...mp.value.rootProps} className="tags-input">
+          <div ref={ref} {...machineState.value.rootProps} className="tags-input">
             {state.value.context.value.map((value, index) => (
               <span key={index}>
-                <div className="tag" {...mp.value.getTagProps({ index, value })}>
+                <div className="tag" {...machineState.value.getTagProps({ index, value })}>
                   <span>{value} </span>
-                  <button className="tag-close" {...mp.value.getTagDeleteButtonProps({ index, value })}>
+                  <button className="tag-close" {...machineState.value.getTagDeleteButtonProps({ index, value })}>
                     &#x2715;
                   </button>
                 </div>
-                <input style={{ width: 40 }} {...mp.value.getTagInputProps({ index })} />
+                <input style={{ width: 40 }} {...machineState.value.getTagInputProps({ index })} />
               </span>
             ))}
-            <input placeholder="Add tag..." {...mp.value.inputProps} />
+            <input placeholder="Add tag..." {...machineState.value.inputProps} />
           </div>
         </div>
       )

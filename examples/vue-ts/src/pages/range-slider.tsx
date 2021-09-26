@@ -26,10 +26,10 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const connect = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = connect.value
+      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = machineState.value
 
       return (
         <div className={styles}>
