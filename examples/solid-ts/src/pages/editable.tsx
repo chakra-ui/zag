@@ -13,7 +13,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "editable" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => editable.connect(state, send, normalizeProps))
 

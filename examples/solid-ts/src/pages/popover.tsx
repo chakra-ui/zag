@@ -16,7 +16,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "popover" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => popover.connect(state, send, normalizeProps))
 

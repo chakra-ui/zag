@@ -8,7 +8,7 @@ import { StateVisualizer } from "../components/state-visualizer"
 export default function Page() {
   const [state, send] = useMachine(accordion.machine)
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "accordion" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const connect = createMemo(() => accordion.connect(state, send, normalizeProps))
 

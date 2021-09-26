@@ -14,15 +14,12 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "number-input" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => numberInput.connect(state, send, normalizeProps))
 
   return (
     <div>
-      <h3>
-        Solid NumberInput with <code>useMachine</code>
-      </h3>
       <div>
         <button {...machineState().decrementButtonProps}>DEC</button>
         <input ref={ref} {...machineState().inputProps} />

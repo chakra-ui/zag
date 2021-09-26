@@ -12,12 +12,12 @@ const styles = css(ratingStyle)
 export default function Page() {
   const [state, send] = useMachine(
     rating.machine.withContext({
-      uid: "solid-rating",
+      uid: "uid",
       allowHalf: true,
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "rating" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => rating.connect(state, send, normalizeProps))
 

@@ -15,7 +15,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "pin-input" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => pinInput.connect(state, send, normalizeProps))
 

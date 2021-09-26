@@ -16,7 +16,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       combobox.machine.withContext({
-        uid: "vue-combobox",
+        uid: "uid",
         onSelect: console.log,
         selectionMode: "autoselect",
         closeOnSelect: (opt) => opt.label !== "Angola",

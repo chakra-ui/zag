@@ -13,14 +13,14 @@ const styles = css(comboboxStyle)
 export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
-      uid: "solid-combobox",
+      uid: "uid",
       onSelect: console.log,
       selectionMode: "autoselect",
       closeOnSelect: (opt) => opt.label !== "Angola",
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "combobox" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => combobox.connect(state, send, normalizeProps))
 

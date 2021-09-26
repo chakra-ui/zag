@@ -19,9 +19,6 @@ export default function Page() {
 
   return (
     <div>
-      <h3>
-        React NumberInput with <code>useMachine</code>
-      </h3>
       <div>
         <button {...decrementButtonProps}>DEC</button>
         <input ref={ref} {...inputProps} />

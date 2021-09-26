@@ -15,12 +15,12 @@ export default function Page() {
     rangeSlider.machine.withContext({
       dir: "ltr",
       name: ["min", "max"],
-      uid: "solid-range-slider",
+      uid: "uid",
       value: [10, 60],
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "range-slider" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => rangeSlider.connect(state, send, normalizeProps))
 

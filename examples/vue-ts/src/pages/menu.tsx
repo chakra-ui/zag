@@ -15,7 +15,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       menu.machine.withContext({
-        uid: "vue-menu",
+        uid: "uid",
         onSelect: console.log,
       }),
     )

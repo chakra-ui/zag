@@ -35,9 +35,6 @@ export default defineComponent({
 
       return (
         <>
-          <h3>
-            Vue NumberInput with <code>useMachine</code>
-          </h3>
           <div>
             <button {...decrementButtonProps}>DEC</button>
             {/* @ts-ignore */}

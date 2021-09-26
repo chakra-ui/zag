@@ -6,7 +6,7 @@ import { useMount } from "hooks/use-mount"
 export default function Page() {
   const [state, send] = useMachine(
     tagsInput.machine.withContext({
-      uid: "welcome",
+      uid: "uid",
       value: ["React", "Vue"],
     }),
   )

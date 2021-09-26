@@ -74,7 +74,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       tagsInput.machine.withContext({
-        uid: "welcome",
+        uid: "uid",
         value: ["React", "Vue"],
       }),
     )

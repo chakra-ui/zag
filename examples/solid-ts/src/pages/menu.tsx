@@ -12,12 +12,12 @@ const styles = css(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine.withContext({
-      uid: "solid-menu",
+      uid: "uid",
       onSelect: console.log,
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "menu" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
 
   const machineState = createMemo(() => menu.connect(state, send, normalizeProps))
 

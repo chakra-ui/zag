@@ -12,7 +12,7 @@ export const Styles = styled("div")(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine.withContext({
-      uid: "next-menu",
+      uid: "uid",
       onSelect: console.log,
     }),
   )

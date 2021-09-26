@@ -19,7 +19,7 @@ export default defineComponent({
       rangeSlider.machine.withContext({
         dir: "ltr",
         name: ["min", "max"],
-        uid: "vue-range-slider",
+        uid: "uid",
         value: [10, 60],
       }),
     )
