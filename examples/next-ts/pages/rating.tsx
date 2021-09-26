@@ -33,7 +33,7 @@ const Star = ({ isHalf, ...rest }: any) => {
   )
 }
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     rating.machine.withContext({
       uid: "rating-35",
@@ -85,5 +85,3 @@ function Page() {
     </>
   )
 }
-
-export default Page

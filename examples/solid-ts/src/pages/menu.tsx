@@ -9,7 +9,7 @@ import { menuStyle } from "../../../../shared/style"
 
 const styles = css(menuStyle)
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     menu.machine.withContext({
       uid: "solid-menu",
@@ -36,5 +36,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

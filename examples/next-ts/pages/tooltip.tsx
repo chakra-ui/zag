@@ -25,7 +25,7 @@ const Tooltip = (props: { id?: string }) => {
   )
 }
 
-function Page() {
+export default function Page() {
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -37,5 +37,3 @@ function Page() {
     </>
   )
 }
-
-export default Page

@@ -10,7 +10,7 @@ import { comboboxStyle } from "../../../../shared/style"
 
 const styles = css(comboboxStyle)
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
       uid: "solid-combobox",
@@ -50,5 +50,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

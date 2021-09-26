@@ -3,7 +3,7 @@ import { splitView } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
   const ref = useMount<HTMLDivElement>(send)
 
@@ -70,5 +70,3 @@ function Page() {
     </>
   )
 }
-
-export default Page

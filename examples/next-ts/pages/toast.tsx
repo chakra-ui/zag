@@ -32,7 +32,7 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
   )
 }
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(toast.group.machine)
   const { context: ctx } = state
 
@@ -75,5 +75,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

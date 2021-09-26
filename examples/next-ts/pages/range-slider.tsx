@@ -4,7 +4,7 @@ import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     rangeSlider.machine.withContext({
       dir: "ltr",
@@ -85,5 +85,3 @@ function Page() {
     </>
   )
 }
-
-export default Page

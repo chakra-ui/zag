@@ -5,7 +5,7 @@ import { createMemo } from "solid-js"
 
 import { StateVisualizer } from "../components/state-visualizer"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(accordion.machine)
 
   const ref = useSetup<HTMLDivElement>({ send, id: "accordion" })
@@ -56,5 +56,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

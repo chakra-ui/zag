@@ -5,7 +5,7 @@ import { createMemo } from "solid-js"
 
 import { StateVisualizer } from "../components/state-visualizer"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     editable.machine.withContext({
       placeholder: "Edit me...",
@@ -33,5 +33,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

@@ -3,7 +3,7 @@ import { tagsInput } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-const Page = () => {
+export default function Page() {
   const [state, send] = useMachine(
     tagsInput.machine.withContext({
       uid: "welcome",
@@ -105,5 +105,3 @@ const Page = () => {
     </div>
   )
 }
-
-export default Page

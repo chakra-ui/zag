@@ -3,7 +3,7 @@ import { tabs } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     tabs.machine.withContext({
       activeTabId: "nils",
@@ -13,8 +13,7 @@ function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } =
-    tabs.connect(state, send)
+  const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } = tabs.connect(state, send)
 
   return (
     <div style={{ width: "100%" }}>
@@ -27,19 +26,16 @@ function Page() {
         </div>
         <div {...getTabPanelProps({ uid: "nils" })}>
           <p>
-            Nils Frahm is a German musician, composer and record producer based
-            in Berlin. He is known for combining classical and electronic music
-            and for an unconventional approach to the piano in which he mixes a
-            grand piano, upright piano, Roland Juno-60, Rhodes piano, drum
-            machine, and Moog Taurus.
+            Nils Frahm is a German musician, composer and record producer based in Berlin. He is known for combining
+            classical and electronic music and for an unconventional approach to the piano in which he mixes a grand
+            piano, upright piano, Roland Juno-60, Rhodes piano, drum machine, and Moog Taurus.
           </p>
         </div>
         <div {...getTabPanelProps({ uid: "agnes" })}>
           <p>
-            Agnes Caroline Thaarup Obel is a Danish singer/songwriter. Her first
-            album, Philharmonics, was released by PIAS Recordings on 4 October
-            2010 in Europe. Philharmonics was certified gold in June 2011 by the
-            Belgian Entertainment Association (BEA) for sales of 10,000 Copies.
+            Agnes Caroline Thaarup Obel is a Danish singer/songwriter. Her first album, Philharmonics, was released by
+            PIAS Recordings on 4 October 2010 in Europe. Philharmonics was certified gold in June 2011 by the Belgian
+            Entertainment Association (BEA) for sales of 10,000 Copies.
           </p>
         </div>
         <div {...getTabPanelProps({ uid: "complex" })}>
@@ -51,5 +47,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

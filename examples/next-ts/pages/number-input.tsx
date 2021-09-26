@@ -4,7 +4,7 @@ import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-const Page = () => {
+export default function Page() {
   const [state, send] = useMachine(
     numberInput.machine.withContext({
       min: 0,
@@ -32,5 +32,3 @@ const Page = () => {
     </div>
   )
 }
-
-export default Page

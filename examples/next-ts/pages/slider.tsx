@@ -5,7 +5,7 @@ import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     slider.machine.withContext({
       uid: "slider-35",
@@ -100,5 +100,3 @@ function Page() {
     </>
   )
 }
-
-export default Page
