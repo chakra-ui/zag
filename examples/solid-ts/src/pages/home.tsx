@@ -37,8 +37,8 @@ const counter = createMachine(
 export default function Home() {
   const [state, send] = useMachine(counter)
   return (
-    <div class="App">
-      <header class="App-header">
+    <div>
+      <header>
         <p>{state.context.value}</p>
         <button onClick={() => send("INC")}>Increment</button>
         <button disabled={state.matches("running")}>Running</button>

@@ -12,7 +12,7 @@ const Tooltip = (props: { id?: string }) => {
   useSnapshot(tooltip.store)
 
   return (
-    <div className="App">
+    <div>
       <button ref={ref} {...triggerProps}>
         Over me
       </button>

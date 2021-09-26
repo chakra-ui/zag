@@ -1,7 +1,9 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { pinInput } from "@ui-machines/web"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
+
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 
@@ -18,6 +20,7 @@ export default defineComponent({
     )
 
     const ref = useMount(send)
+
     const machineState = computed(() => pinInput.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -28,6 +31,7 @@ export default defineComponent({
             <input {...machineState.value.getInputProps({ index: 1 })} />
             <input {...machineState.value.getInputProps({ index: 2 })} />
           </div>
+
           <StateVisualizer state={state.value} />
         </div>
       )

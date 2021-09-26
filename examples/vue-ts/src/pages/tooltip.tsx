@@ -21,7 +21,7 @@ const Tooltip = defineComponent({
 
     return () => (
       <>
-        <div className="App">
+        <div>
           <button ref={ref} {...mp.value.triggerProps}>
             Over me
           </button>

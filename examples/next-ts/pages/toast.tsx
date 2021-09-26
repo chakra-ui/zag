@@ -42,7 +42,7 @@ export default function Page() {
   const id = useRef<string>()
 
   return (
-    <div className="App" ref={ref}>
+    <div ref={ref}>
       <button
         onClick={() => {
           id.current = toasts.create({
