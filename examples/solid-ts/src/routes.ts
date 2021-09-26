@@ -29,6 +29,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/number-input")),
   },
   {
+    path: "/pin-input",
+    component: lazy(() => import("./pages/pin-input")),
+  },
+  {
     path: "/popover",
     component: lazy(() => import("./pages/popover")),
   },
@@ -37,8 +41,8 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/range-slider")),
   },
   {
-    path: "/pin-input",
-    component: lazy(() => import("./pages/pin-input")),
+    path: "/rating",
+    component: lazy(() => import("./pages/rating")),
   },
   {
     path: "**",

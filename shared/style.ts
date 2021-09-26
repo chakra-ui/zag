@@ -95,3 +95,10 @@ export const rangeSliderStyle = {
     height: "100%",
   },
 }
+
+export const ratingStyle = {
+  ".rating": { display: "flex" },
+  ".rating__rate": { margin: "0 3px", background: "salmon" },
+  ".rating__rate:focus": { outline: "2px solid royalblue" },
+  ".rating__rate[data-highlighted]": { background: "red" },
+}

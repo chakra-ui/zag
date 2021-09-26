@@ -15,7 +15,7 @@ export default function Page() {
     rangeSlider.machine.withContext({
       dir: "ltr",
       name: ["min", "max"],
-      uid: "next-range-slider",
+      uid: "solid-range-slider",
       value: [10, 60],
     }),
   )
