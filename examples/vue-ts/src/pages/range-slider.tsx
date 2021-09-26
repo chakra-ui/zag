@@ -61,7 +61,7 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const connect = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -75,7 +75,7 @@ export default defineComponent({
               console.log(formData)
             }}
           >
-            <div className="slider" ref={_ref} {...rootProps}>
+            <div className="slider" ref={ref} {...rootProps}>
               <div className="slider__track" {...trackProps}>
                 <div className="slider__range" {...rangeProps} />
               </div>

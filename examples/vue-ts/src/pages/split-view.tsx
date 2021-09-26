@@ -50,13 +50,13 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const mp = computed(() => splitView.connect(state.value, send, normalizeProps))
 
     return () => (
       <div className={styles}>
         <div className="root">
-          <div ref={_ref} {...mp.value.rootProps}>
+          <div ref={ref} {...mp.value.rootProps}>
             <div className="pane" {...mp.value.primaryPaneProps}>
               <div>
                 <small {...mp.value.labelProps}>Table of Contents</small>

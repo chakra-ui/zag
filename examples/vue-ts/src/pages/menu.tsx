@@ -53,14 +53,14 @@ export default defineComponent({
         onSelect: console.log,
       }),
     )
-    const _ref = useMount(send)
+    const ref = useMount(send)
 
     const connect = computed(() => menu.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <button ref={_ref} {...connect.value.triggerProps}>
+          <button ref={ref} {...connect.value.triggerProps}>
             Click me
           </button>
           <ul style={{ width: 300 }} {...connect.value.menuProps}>

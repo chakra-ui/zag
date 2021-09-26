@@ -17,13 +17,13 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const machineState = computed(() => pinInput.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div>
-          <div style={{ width: "300px" }} ref={_ref}>
+          <div style={{ width: "300px" }} ref={ref}>
             <input {...machineState.value.getInputProps({ index: 0 })} />
             <input {...machineState.value.getInputProps({ index: 1 })} />
             <input {...machineState.value.getInputProps({ index: 2 })} />

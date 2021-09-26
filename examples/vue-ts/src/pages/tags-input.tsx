@@ -79,13 +79,13 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const mp = computed(() => tagsInput.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <div ref={_ref} {...mp.value.rootProps} className="tags-input">
+          <div ref={ref} {...mp.value.rootProps} className="tags-input">
             {state.value.context.value.map((value, index) => (
               <span key={index}>
                 <div className="tag" {...mp.value.getTagProps({ index, value })}>

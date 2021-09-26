@@ -32,14 +32,14 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const mp = computed(() => rating.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
           <div>
-            <div className="rating" ref={_ref} {...mp.value.rootProps}>
+            <div className="rating" ref={ref} {...mp.value.rootProps}>
               {Array.from({ length: 5 }).map((_, index) => (
                 <div
                   className="rating__rate"

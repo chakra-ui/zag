@@ -15,7 +15,7 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const mp = computed(() => tabs.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -23,7 +23,7 @@ export default defineComponent({
         <div style={{ width: "100%" }}>
           <div className="tabs">
             <div className="tabs__indicator" {...mp.value.tabIndicatorProps} />
-            <div ref={_ref} {...mp.value.tablistProps}>
+            <div ref={ref} {...mp.value.tablistProps}>
               <button {...mp.value.getTabProps({ uid: "nils" })}>Nils Frahm</button>
               <button {...mp.value.getTabProps({ uid: "agnes" })}>Agnes Obel</button>
               <button {...mp.value.getTabProps({ uid: "complex" })}>Joke</button>

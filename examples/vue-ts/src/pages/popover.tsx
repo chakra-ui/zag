@@ -25,13 +25,13 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const machineState = computed(() => popover.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <div style={{ width: "300px" }} ref={_ref}>
+          <div style={{ width: "300px" }} ref={ref}>
             <button {...machineState.value.triggerProps}>Click me</button>
             <div {...machineState.value.popoverProps}>
               <div>Popover content</div>

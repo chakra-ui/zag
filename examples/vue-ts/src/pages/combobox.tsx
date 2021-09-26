@@ -20,7 +20,7 @@ export default defineComponent({
         closeOnSelect: (opt) => opt.label !== "Angola",
       }),
     )
-    const _ref = useMount(send)
+    const ref = useMount(send)
 
     const machineState = computed(() => {
       const { inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } = combobox.connect(
@@ -45,7 +45,7 @@ export default defineComponent({
     return () => {
       return (
         <div className={styles}>
-          <div ref={_ref}>
+          <div ref={ref}>
             <div {...machineState.value.containerProps}>
               <input {...machineState.value.inputProps} />
               <button {...machineState.value.buttonProps}>▼</button>

@@ -47,13 +47,13 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(toast.group.machine)
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
     const toasts = computed(() => toast.group.connect(state.value, send, normalizeProps))
     const id = ref<string>()
 
     return () => {
       return (
-        <div ref={_ref}>
+        <div ref={ref}>
           <button
             onClick={() => {
               id.value = toasts.value.create({
