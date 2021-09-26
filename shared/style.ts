@@ -167,3 +167,48 @@ export const splitViewStyle = {
     backgroundColor: "currentColor",
   },
 }
+
+export const tagsInputStyle = {
+  ".tags-input": {
+    display: "inline-block",
+    padding: "0 2px",
+    background: "#fff",
+    border: "1px solid #ccc",
+    width: "40em",
+    borderRadius: "2px",
+    boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.1)",
+  },
+  ".tag": {
+    background: "#eee",
+    color: "#444",
+    padding: "0 4px",
+    margin: "2px",
+    border: "1px solid #ccc",
+    borderRadius: "2px",
+    font: "inherit",
+    userSelect: "none",
+    cursor: "pointer",
+    transition: "all 100ms ease",
+  },
+  ".tag:not([hidden])": { display: "inline-block" },
+  ".tag[hidden]": { display: "none !important" },
+  ".tag[data-selected]": {
+    backgroundColor: "#777",
+    borderColor: "#777",
+    color: "#eee",
+  },
+  input: {
+    appearance: "none !important",
+    padding: "3px",
+    margin: "0 !important",
+    background: "none !important",
+    border: "none !important",
+    boxShadow: "none !important",
+    font: "inherit !important",
+    fontSize: "100% !important",
+    outline: "none !important",
+  },
+  "input[hidden]": { display: "none !important" },
+  "input:not([hidden])": { display: "inline-block !important" },
+  ".tag-close": { border: "0", background: "inherit" },
+}

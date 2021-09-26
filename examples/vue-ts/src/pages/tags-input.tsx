@@ -1,73 +1,15 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { tagsInput } from "@ui-machines/web"
-import { useMount } from "../hooks/use-mount"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
 import { css } from "@emotion/css"
 
-const styles = css`
-  .tags-input {
-    display: inline-block;
-    padding: 0 2px;
-    background: #fff;
-    border: 1px solid #ccc;
-    width: 40em;
-    border-radius: 2px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
+import { useMount } from "../hooks/use-mount"
+import { tagsInputStyle } from "../../../../shared/style"
+import { StateVisualizer } from "with-typescript/components/state-visualizer"
 
-  .tag {
-    background: #eee;
-    color: #444;
-    padding: 0 4px;
-    margin: 2px;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    font: inherit;
-    user-select: none;
-    cursor: pointer;
-    transition: all 100ms ease;
-  }
-
-  .tag:not([hidden]) {
-    display: inline-block;
-  }
-
-  .tag[hidden] {
-    display: none !important;
-  }
-
-  .tag[data-selected] {
-    background-color: #777;
-    border-color: #777;
-    color: #eee;
-  }
-
-  input {
-    appearance: none !important;
-    padding: 3px;
-    margin: 0 !important;
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    font: inherit !important;
-    font-size: 100% !important;
-    outline: none !important;
-  }
-
-  input[hidden] {
-    display: none !important;
-  }
-
-  input:not([hidden]) {
-    display: inline-block !important;
-  }
-
-  .tag-close {
-    border: 0;
-    background: inherit;
-  }
-`
+const styles = css(tagsInputStyle)
 
 export default defineComponent({
   name: "TagsInput",
@@ -100,6 +42,8 @@ export default defineComponent({
             ))}
             <input placeholder="Add tag..." {...machineState.value.inputProps} />
           </div>
+
+          <StateVisualizer state={state.value} />
         </div>
       )
     }
