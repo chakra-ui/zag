@@ -46,7 +46,7 @@ const styles = css`
 `
 
 export default defineComponent({
-  name: "Split View",
+  name: "SplitView",
   setup() {
     const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
 

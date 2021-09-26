@@ -7,6 +7,7 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 
 export default defineComponent({
+  name: "Accordion",
   setup() {
     const [state, send] = useMachine(accordion.machine)
 

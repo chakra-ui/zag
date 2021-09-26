@@ -7,6 +7,7 @@ import { useMount } from "../hooks/use-mount"
 const count = ref(0)
 
 export default defineComponent({
+  name: "Editable",
   setup(props, { slots }) {
     const [state, send] = useMachine(
       editable.machine.withContext({

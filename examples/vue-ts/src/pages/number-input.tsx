@@ -5,6 +5,7 @@ import { numberInput } from "@ui-machines/web"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default defineComponent({
+  name: "NumberInput",
   setup() {
     const [state, send] = useMachine(
       numberInput.machine.withContext({
