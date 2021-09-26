@@ -1,4 +1,4 @@
-import { pinInput, popover } from "@ui-machines/web"
+import { popover } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
