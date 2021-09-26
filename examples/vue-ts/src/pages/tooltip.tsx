@@ -13,10 +13,13 @@ const Tooltip = defineComponent({
   },
   setup(props) {
     const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
+
     const ref = useMount(send)
+
     const mp = computed(() => tooltip.connect(state.value, send, normalizeProps))
 
     const _state = useSnapshot(tooltip.store)
+
     const isVisible = computed(() => mp.value.getIsVisible(_state.value.id))
 
     return () => (

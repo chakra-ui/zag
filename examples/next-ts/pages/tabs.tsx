@@ -43,6 +43,7 @@ export default function Page() {
           <p>A complex complex complex.</p>
         </div>
       </div>
+
       <StateVisualizer state={state} />
     </div>
   )

@@ -33,6 +33,7 @@ export default defineComponent({
     )
 
     const ref = useMount(send)
+
     const mp = computed(() => rating.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -51,6 +52,7 @@ export default defineComponent({
             </div>
             <input {...mp.value.inputProps} />
           </div>
+
           <StateVisualizer state={state.value} />
         </div>
       )

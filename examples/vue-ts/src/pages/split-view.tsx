@@ -51,6 +51,7 @@ export default defineComponent({
     const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
 
     const ref = useMount(send)
+
     const mp = computed(() => splitView.connect(state.value, send, normalizeProps))
 
     return () => (
@@ -71,6 +72,7 @@ export default defineComponent({
             </div>
           </div>
         </div>
+
         <StateVisualizer state={state.value} />
       </div>
     )

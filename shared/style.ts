@@ -55,3 +55,14 @@ export const menuStyle = {
     outlineOffset: "-3px",
   },
 }
+
+export const popoverStyle = {
+  '[role="dialog"]': {
+    background: "red",
+    padding: "20px",
+  },
+
+  '[role="dialog"]:focus': {
+    outline: "2px solid royalblue",
+  },
+}

@@ -80,6 +80,7 @@ const IndexPage = () => {
       <div>
         {state.context.value} {state.context.text}
       </div>
+
       <StateVisualizer state={state} />
     </div>
   )

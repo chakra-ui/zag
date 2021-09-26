@@ -16,6 +16,7 @@ export default defineComponent({
     )
 
     const ref = useMount(send)
+
     const mp = computed(() => tabs.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -47,6 +48,7 @@ export default defineComponent({
               <p>A complex complex complex.</p>
             </div>
           </div>
+
           <StateVisualizer state={state} />
         </div>
       )

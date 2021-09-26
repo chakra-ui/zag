@@ -30,7 +30,7 @@ export default defineComponent({
           <button ref={ref} {...connect.value.triggerProps}>
             Click me
           </button>
-          <ul style={{ width: 300 }} {...connect.value.menuProps}>
+          <ul style={{ width: "300px" }} {...connect.value.menuProps}>
             <li {...connect.value.getItemProps({ id: "menuitem-1" })}>Edit</li>
             <li {...connect.value.getItemProps({ id: "menuitem-2" })}>Duplicate</li>
             <li {...connect.value.getItemProps({ id: "menuitem-3" })}>Delete</li>

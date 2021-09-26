@@ -20,6 +20,7 @@ const Toast = defineComponent({
   },
   setup(props) {
     const [state, send] = useActor(props.actor)
+
     const ctx = computed(() => state.value.context)
 
     const t = computed(() => toast.connect(state.value, send))
@@ -48,7 +49,9 @@ export default defineComponent({
     const [state, send] = useMachine(toast.group.machine)
 
     const ref = useMount(send)
+
     const toasts = computed(() => toast.group.connect(state.value, send, normalizeProps))
+
     const id = ref<string>()
 
     return () => {

@@ -66,6 +66,7 @@ export default function Page() {
           </div>
           <input {...inputProps} />
         </div>
+
         <StateVisualizer state={state} />
       </div>
 

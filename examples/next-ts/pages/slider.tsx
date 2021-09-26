@@ -42,6 +42,7 @@ export default function Page() {
             <input {...inputProps} />
           </div>
         </div>
+
         <StateVisualizer state={state} />
       </form>
 

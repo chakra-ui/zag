@@ -5,6 +5,7 @@ import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
+
   const ref = useMount<HTMLDivElement>(send)
 
   const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = splitView.connect(state, send)
@@ -27,6 +28,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+
       <StateVisualizer state={state} />
 
       <style jsx>{`

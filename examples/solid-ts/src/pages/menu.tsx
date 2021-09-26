@@ -26,7 +26,7 @@ export default function Page() {
       <button ref={ref} {...machineState().triggerProps}>
         Click me
       </button>
-      <ul style={{ width: 300 }} {...machineState().menuProps}>
+      <ul style={{ width: "300px" }} {...machineState().menuProps}>
         <li {...machineState().getItemProps({ id: "menuitem-1" })}>Edit</li>
         <li {...machineState().getItemProps({ id: "menuitem-2" })}>Duplicate</li>
         <li {...machineState().getItemProps({ id: "menuitem-3" })}>Delete</li>

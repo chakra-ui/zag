@@ -29,6 +29,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/number-input")),
   },
   {
+    path: "/popover",
+    component: lazy(() => import("./pages/popover")),
+  },
+  {
     path: "/pin-input",
     component: lazy(() => import("./pages/pin-input")),
   },

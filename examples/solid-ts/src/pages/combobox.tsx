@@ -38,7 +38,7 @@ export default function Page() {
         </div>
 
         {filtered().length > 0 && (
-          <ul style={{ width: 300, maxHeight: 400, overflow: "auto" }} {...machineState().listboxProps}>
+          <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...machineState().listboxProps}>
             {filtered().map((item) => (
               <li {...machineState().getOptionProps({ label: item.label, value: item.code })}>{item.label}</li>
             ))}

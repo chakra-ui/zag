@@ -80,6 +80,7 @@ export default defineComponent({
     )
 
     const ref = useMount(send)
+
     const mp = computed(() => tagsInput.connect(state.value, send, normalizeProps))
 
     return () => {

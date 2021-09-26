@@ -62,6 +62,7 @@ export default defineComponent({
     )
 
     const ref = useMount(send)
+
     const connect = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -85,6 +86,7 @@ export default defineComponent({
                 </div>
               ))}
             </div>
+
             <StateVisualizer state={state.value} />
           </form>
         </div>

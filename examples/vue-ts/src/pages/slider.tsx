@@ -63,6 +63,7 @@ export default defineComponent({
     )
 
     const ref = useMount(send)
+
     const connect = computed(() => slider.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -83,6 +84,7 @@ export default defineComponent({
               <input {...inputProps} />
             </div>
           </div>
+
           <StateVisualizer state={state.value} />
         </form>
       )

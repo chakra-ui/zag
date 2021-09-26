@@ -20,7 +20,7 @@ export default function Page() {
 
   return (
     <div>
-      <div style={{ width: 300 }} ref={ref}>
+      <div style={{ width: "300px" }} ref={ref}>
         <input {...getInputProps({ index: 0 })} />
         <input {...getInputProps({ index: 1 })} />
         <input {...getInputProps({ index: 2 })} />

@@ -37,6 +37,7 @@ export default function Page() {
             </div>
           ))}
         </div>
+
         <StateVisualizer state={state} />
       </form>
       <style jsx>{`

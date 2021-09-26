@@ -13,6 +13,7 @@ const backgrounds = {
 
 const Toast = ({ actor }: { actor: ToastMachine }) => {
   const [state, send] = useActor(actor)
+
   const ctx = state.context
 
   const t = toast.connect(state, send)
@@ -34,9 +35,11 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 
 export default function Page() {
   const [state, send] = useMachine(toast.group.machine)
+
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
+
   const toasts = toast.group.connect(state, send)
 
   const id = useRef<string>()
