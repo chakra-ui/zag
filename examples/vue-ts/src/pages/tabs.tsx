@@ -1,7 +1,9 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { tabs } from "@ui-machines/web"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
+
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 
@@ -49,7 +51,7 @@ export default defineComponent({
             </div>
           </div>
 
-          <StateVisualizer state={state} />
+          <StateVisualizer state={state.value} />
         </div>
       )
     }
