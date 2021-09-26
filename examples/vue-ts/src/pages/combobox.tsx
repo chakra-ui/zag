@@ -1,9 +1,11 @@
-import { defineComponent, h, Fragment, computed } from "vue"
 import { combobox } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { defineComponent, h, Fragment, computed } from "vue"
+import { css } from "@emotion/css"
+
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { css } from "@emotion/css"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 
@@ -14,20 +16,18 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       combobox.machine.withContext({
-        uid: "234",
+        uid: "vue-combobox",
         onSelect: console.log,
         selectionMode: "autoselect",
         closeOnSelect: (opt) => opt.label !== "Angola",
       }),
     )
+
     const ref = useMount(send)
 
     const machineState = computed(() => {
-      const { inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } = combobox.connect(
-        state.value,
-        send,
-        normalizeProps,
-      )
+      const { inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps, labelProps } =
+        combobox.connect(state.value, send, normalizeProps)
       return {
         inputProps,
         inputValue,
@@ -35,6 +35,7 @@ export default defineComponent({
         containerProps,
         buttonProps,
         getOptionProps,
+        labelProps,
       }
     })
 
@@ -46,6 +47,7 @@ export default defineComponent({
       return (
         <div className={styles}>
           <div ref={ref}>
+            <label {...machineState.value.labelProps}>Select country</label>
             <div {...machineState.value.containerProps}>
               <input {...machineState.value.inputProps} />
               <button {...machineState.value.buttonProps}>▼</button>

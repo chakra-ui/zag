@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useMachine } from "@ui-machines/react"
 import { combobox } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
+import styled from "@emotion/styled"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
-import styled from "@emotion/styled"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
@@ -12,7 +14,7 @@ const Styles = styled("div")(comboboxStyle)
 export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
-      uid: "234",
+      uid: "next-combobox",
       onSelect: console.log,
       selectionMode: "autoselect",
       closeOnSelect: (opt) => opt.label !== "Angola",
@@ -28,8 +30,7 @@ export default function Page() {
 
   return (
     <Styles>
-      <div ref={ref} className="App">
-        <StateVisualizer state={state} />
+      <div ref={ref}>
         <label {...labelProps}>Select country</label>
         <div {...containerProps}>
           <input {...inputProps} />
@@ -46,6 +47,8 @@ export default function Page() {
           </ul>
         )}
       </div>
+
+      <StateVisualizer state={state} />
     </Styles>
   )
 }
