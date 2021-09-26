@@ -9,9 +9,11 @@ export function StateVisualizer(props: { state: Record<string, any> }, { attrs }
       style={{
         float: "right",
         position: "absolute",
+        overflow: "hidden",
         top: "40px",
         right: "40px",
-        minWidth: "400px",
+        maxWidth: "240px",
+        width: "100%",
         zIndex: -1,
       }}
       {...props}
