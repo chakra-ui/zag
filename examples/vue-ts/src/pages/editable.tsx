@@ -1,10 +1,10 @@
-import { defineComponent, h, Fragment, ref, computed, onMounted } from "vue"
 import { editable } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { defineComponent, h, Fragment, computed } from "vue"
+
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-
-const count = ref(0)
 
 export default defineComponent({
   name: "Editable",
@@ -16,7 +16,7 @@ export default defineComponent({
       }),
     )
 
-    const inputRef = useMount(send)
+    const ref = useMount(send)
 
     const machineState = computed(() => {
       const machine = editable.connect(state.value, send, normalizeProps)
@@ -37,7 +37,7 @@ export default defineComponent({
 
       return (
         <div>
-          <input ref={inputRef} style={{ width: "auto", background: "transparent" }} {...inputProps} />
+          <input ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
           <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
           {!isEditing && <button {...editButtonProps}>Edit</button>}
           {isEditing && (
