@@ -2,7 +2,6 @@ import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { tagsInput } from "@ui-machines/web"
-import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 import { css } from "@emotion/css"
 
