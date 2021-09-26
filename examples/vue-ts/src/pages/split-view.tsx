@@ -1,49 +1,15 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { splitView } from "@ui-machines/web"
-import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
 import { css } from "@emotion/css"
 
-const styles = css`
-  .root {
-    height: 300px;
-  }
+import { StateVisualizer } from "../components/state-visualizer"
+import { useMount } from "../hooks/use-mount"
+import { splitViewStyle } from "../../../../shared/style"
 
-  .pane {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid lightgray;
-    overflow: auto;
-  }
-
-  .splitter {
-    width: 8px;
-    background: #ebebeb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease-in-out;
-    outline: 0;
-  }
-
-  .splitter[data-focus] {
-    background: #b0baf1;
-  }
-
-  .splitter:active {
-    background: #3f51b5;
-    color: white;
-  }
-
-  .splitter-bar {
-    width: 2px;
-    height: 40px;
-    background-color: currentColor;
-  }
-`
+const styles = css(splitViewStyle)
 
 export default defineComponent({
   name: "SplitView",
@@ -52,22 +18,22 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const mp = computed(() => splitView.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => splitView.connect(state.value, send, normalizeProps))
 
     return () => (
       <div className={styles}>
         <div className="root">
-          <div ref={ref} {...mp.value.rootProps}>
-            <div className="pane" {...mp.value.primaryPaneProps}>
+          <div ref={ref} {...machineState.value.rootProps}>
+            <div className="pane" {...machineState.value.primaryPaneProps}>
               <div>
-                <small {...mp.value.labelProps}>Table of Contents</small>
+                <small {...machineState.value.labelProps}>Table of Contents</small>
                 <p>Primary Pane</p>
               </div>
             </div>
-            <div className="splitter" {...mp.value.splitterProps}>
+            <div className="splitter" {...machineState.value.splitterProps}>
               <div className="splitter-bar" />
             </div>
-            <div className="pane" {...mp.value.secondaryPaneProps}>
+            <div className="pane" {...machineState.value.secondaryPaneProps}>
               Secondary Pane
             </div>
           </div>

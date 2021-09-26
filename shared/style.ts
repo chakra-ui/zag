@@ -140,3 +140,30 @@ export const sliderStyle = {
   },
   output: { marginInlineStart: "12px", color: "lightslategray" },
 }
+
+export const splitViewStyle = {
+  ".root": { height: "300px" },
+  ".pane": {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "1px solid lightgray",
+    overflow: "auto",
+  },
+  ".splitter": {
+    width: "8px",
+    background: "#ebebeb",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "background-color 0.2s ease-in-out",
+    outline: "0",
+  },
+  ".splitter[data-focus]": { background: "#b0baf1" },
+  ".splitter:active": { background: "#3f51b5", color: "white" },
+  ".splitter-bar": {
+    width: "2px",
+    height: "40px",
+    backgroundColor: "currentColor",
+  },
+}
