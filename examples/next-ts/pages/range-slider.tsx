@@ -2,13 +2,13 @@ import { rangeSlider } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
 import serialize from "form-serialize"
-import styled from "@emotion/styled"
+import * as styled from "@emotion/styled"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { rangeSliderStyle } from "../../../shared/style"
 
-const Styles = styled(`div`)(rangeSliderStyle)
+const Styles = styled.default(`div`)(rangeSliderStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(

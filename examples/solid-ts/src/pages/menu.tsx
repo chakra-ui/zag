@@ -2,12 +2,12 @@ import { menu } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
-import { css } from "@emotion/css"
+import { css, CSSObject } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { menuStyle } from "../../../../shared/style"
 
-const styles = css(menuStyle)
+const styles = css(menuStyle as CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(

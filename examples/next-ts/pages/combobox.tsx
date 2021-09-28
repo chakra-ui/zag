@@ -2,14 +2,14 @@
 import { combobox } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
-import styled from "@emotion/styled"
+import * as styled from "@emotion/styled"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
-const Styles = styled("div")(comboboxStyle)
+const Styles = styled.default("div")(comboboxStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(

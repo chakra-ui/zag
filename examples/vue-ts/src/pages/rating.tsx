@@ -3,13 +3,13 @@ import { useMachine, normalizeProps } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
-import { css } from "@emotion/css"
+import { css, CSSObject } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 import { ratingStyle } from "../../../../shared/style"
 
-const styles = css(ratingStyle)
+const styles = css(ratingStyle as CSSObject)
 
 export default defineComponent({
   name: "Rating",

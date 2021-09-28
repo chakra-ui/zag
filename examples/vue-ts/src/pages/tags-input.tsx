@@ -3,13 +3,13 @@ import { useMachine, normalizeProps } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
-import { css } from "@emotion/css"
+import { css, CSSObject } from "@emotion/css"
 
 import { useMount } from "../hooks/use-mount"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "with-typescript/components/state-visualizer"
 
-const styles = css(tagsInputStyle)
+const styles = css(tagsInputStyle as CSSObject)
 
 export default defineComponent({
   name: "TagsInput",

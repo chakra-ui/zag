@@ -2,13 +2,13 @@ import { combobox } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
-import { css } from "@emotion/css"
+import { css, CSSObject } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 
-const styles = css(comboboxStyle)
+const styles = css(comboboxStyle as CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(

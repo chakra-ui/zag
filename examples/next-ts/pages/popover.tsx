@@ -1,13 +1,13 @@
 import { popover } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
-import styled from "@emotion/styled"
+import * as styled from "@emotion/styled"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { popoverStyle } from "../../../shared/style"
 
-const Styles = styled(`div`)(popoverStyle)
+const Styles = styled.default(`div`)(popoverStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(

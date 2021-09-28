@@ -1,13 +1,13 @@
 import { splitView } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
-import styled from "@emotion/styled"
+import * as styled from "@emotion/styled"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { splitViewStyle } from "../../../shared/style"
 
-const Styles = styled(`div`)(splitViewStyle)
+const Styles = styled.default(`div`)(splitViewStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))

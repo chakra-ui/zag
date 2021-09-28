@@ -3,13 +3,13 @@ import { slider } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
 
 import serialize from "form-serialize"
-import styled from "@emotion/styled"
+import * as styled from "@emotion/styled"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { sliderStyle } from "../../../shared/style"
 
-const Styles = styled(`div`)(sliderStyle)
+const Styles = styled.default(`div`)(sliderStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(
