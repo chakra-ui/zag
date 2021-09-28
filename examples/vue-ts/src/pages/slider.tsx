@@ -1,90 +1,61 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { slider } from "@ui-machines/web"
-import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
-import { css } from "@emotion/css"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
+import { css, CSSObject } from "@emotion/css"
 import serialize from "form-serialize"
 
-const styles = css`
-  .slider {
-    --slider-thumb-size: 20px;
-    --slider-track-height: 4px;
-    height: var(--slider-thumb-size);
-    display: flex;
-    align-items: center;
-    margin: 45px;
-    max-width: 200px;
-    position: relative;
-  }
+import { StateVisualizer } from "../components/state-visualizer"
+import { useMount } from "../hooks/use-mount"
+import { sliderStyle } from "../../../../shared/style"
 
-  .slider__thumb {
-    all: unset;
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
-    border-radius: 9999px;
-    background: white;
-    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 10px;
-    border-radius: 999px;
-  }
-
-  .slider__thumb:focus-visible {
-    box-shadow: rgb(0 0 0 / 22%) 0px 0px 0px 5px;
-  }
-
-  .slider__thumb:hover {
-    background-color: rgb(245, 242, 255);
-  }
-
-  .slider__track {
-    height: var(--slider-track-height);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 9999px;
-    flex-grow: 1;
-  }
-
-  .slider__range {
-    background: magenta;
-    border-radius: inherit;
-    height: 100%;
-  }
-`
+const styles = css(sliderStyle as CSSObject)
 
 export default defineComponent({
   name: "Slider",
   setup() {
     const [state, send] = useMachine(
       slider.machine.withContext({
-        uid: "slider-35",
+        uid: "123",
         value: 40,
         name: "volume",
+        dir: "ltr",
       }),
     )
 
-    const _ref = useMount(send)
-    const connect = computed(() => slider.connect(state.value, send, normalizeProps))
+    const ref = useMount(send)
+
+    const machineState = computed(() => slider.connect(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, inputProps, thumbProps } = connect.value
+      const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } =
+        machineState.value
+
       return (
-        <form
-          className={styles}
-          onChange={(e) => {
-            const formData = serialize(e.currentTarget, { hash: true })
-            console.log(formData)
-          }}
-        >
-          <div className="slider" ref={_ref} {...rootProps}>
-            <div className="slider__track" {...trackProps}>
-              <div className="slider__range" {...rangeProps} />
+        <div className={styles}>
+          <form // ensure we can read the value within forms
+            onChange={(e) => {
+              const formData = serialize(e.currentTarget, { hash: true })
+              console.log(formData)
+            }}
+          >
+            <div>
+              <label {...labelProps}>Slider Label</label>
+              <output {...outputProps}>{value}</output>
             </div>
-            <div className="slider__thumb" {...thumbProps}>
-              <input {...inputProps} />
+            <div className="slider" ref={ref} {...rootProps}>
+              <div className="slider__track" {...trackProps}>
+                <div className="slider__range" {...rangeProps} />
+              </div>
+              <div className="slider__thumb" {...thumbProps}>
+                <input {...inputProps} />
+              </div>
             </div>
-          </div>
-          <StateVisualizer state={state.value} />
-        </form>
+
+            <StateVisualizer state={state.value} />
+          </form>
+        </div>
       )
     }
   },

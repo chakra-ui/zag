@@ -1,32 +1,36 @@
-import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 import { combobox } from "@ui-machines/web"
+import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
+
 import { createMemo } from "solid-js"
+import { css, CSSObject } from "@emotion/css"
+
 import { StateVisualizer } from "../components/state-visualizer"
-import { css } from "@emotion/css"
-import { comboboxStyle } from "../../../../shared/style"
 import { comboboxData } from "../../../../shared/data"
+import { comboboxStyle } from "../../../../shared/style"
 
-const styles = css(comboboxStyle)
+const styles = css(comboboxStyle as CSSObject)
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
-      uid: "234",
+      uid: "123",
       onSelect: console.log,
       selectionMode: "autoselect",
       closeOnSelect: (opt) => opt.label !== "Angola",
     }),
   )
-  const ref = useSetup<HTMLDivElement>({ send, id: "32" })
+
+  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+
   const machineState = createMemo(() => combobox.connect(state, send, normalizeProps))
+
   const filtered = createMemo(() => {
     return comboboxData.filter((d) => d.label.toLowerCase().startsWith(machineState().inputValue.toLowerCase()))
   })
 
   return (
     <div className={styles}>
-      <div ref={ref} className="App">
-        <StateVisualizer state={state} />
+      <div ref={ref}>
         <label {...machineState().labelProps}>Select country</label>
         <div {...machineState().containerProps}>
           <input {...machineState().inputProps} />
@@ -34,15 +38,17 @@ function Page() {
         </div>
 
         {filtered().length > 0 && (
-          <ul style={{ width: 300, maxHeight: 400, overflow: "auto" }} {...machineState().listboxProps}>
+          <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...machineState().listboxProps}>
             {filtered().map((item) => (
-              <li {...machineState().getOptionProps({ label: item.label, value: item.code })}>{item.label}</li>
+              <li key={item.code} {...machineState().getOptionProps({ label: item.label, value: item.code })}>
+                {item.label}
+              </li>
             ))}
           </ul>
         )}
       </div>
+
+      <StateVisualizer state={state} />
     </div>
   )
 }
-
-export default Page

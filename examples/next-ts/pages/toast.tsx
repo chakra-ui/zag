@@ -13,6 +13,7 @@ const backgrounds = {
 
 const Toast = ({ actor }: { actor: ToastMachine }) => {
   const [state, send] = useActor(actor)
+
   const ctx = state.context
 
   const t = toast.connect(state, send)
@@ -32,17 +33,19 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
   )
 }
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(toast.group.machine)
+
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
+
   const toasts = toast.group.connect(state, send)
 
   const id = useRef<string>()
 
   return (
-    <div className="App" ref={ref}>
+    <div ref={ref}>
       <button
         onClick={() => {
           id.current = toasts.create({
@@ -75,5 +78,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

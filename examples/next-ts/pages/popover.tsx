@@ -1,19 +1,13 @@
-import { useMachine } from "@ui-machines/react"
 import { popover } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
+import * as styled from "@emotion/styled"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
-import styled from "@emotion/styled"
+import { popoverStyle } from "../../../shared/style"
 
-const Styles = styled(`div`)`
-  [role="dialog"] {
-    background: red;
-    padding: 20px;
-  }
-
-  [role="dialog"]:focus {
-    outline: 2px solid royalblue;
-  }
-`
+const Styles = styled.default(`div`)(popoverStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -28,7 +22,7 @@ export default function Page() {
 
   return (
     <Styles>
-      <div style={{ width: 300 }} ref={ref}>
+      <div style={{ width: "300px" }} ref={ref}>
         <button {...triggerProps}>Click me</button>
         <div {...popoverProps}>
           <div>Popover content</div>
@@ -37,6 +31,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+
       <StateVisualizer state={state} />
     </Styles>
   )

@@ -1,15 +1,19 @@
-import { defineComponent, h, Fragment, computed } from "vue"
 import { accordion } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { defineComponent, h, Fragment, computed } from "vue"
+
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 
 export default defineComponent({
+  name: "Accordion",
   setup() {
     const [state, send] = useMachine(accordion.machine)
-    const _ref = useMount(send)
 
-    const connect = computed(() => {
+    const ref = useMount(send)
+
+    const machineState = computed(() => {
       const machine = accordion.connect(state.value, send, normalizeProps)
       return {
         rootProps: machine.rootProps,
@@ -18,15 +22,15 @@ export default defineComponent({
     })
 
     const parts = computed(() => ({
-      home: connect.value.getAccordionItem({ id: "home" }),
-      about: connect.value.getAccordionItem({ id: "about" }),
-      contact: connect.value.getAccordionItem({ id: "contact" }),
+      home: machineState.value.getAccordionItem({ id: "home" }),
+      about: machineState.value.getAccordionItem({ id: "about" }),
+      contact: machineState.value.getAccordionItem({ id: "contact" }),
     }))
 
     return () => {
       return (
         <div style={{ width: "100%" }}>
-          <div ref={_ref} {...connect.value.rootProps} style={{ maxWidth: "40ch" }}>
+          <div ref={ref} {...machineState.value.rootProps} style={{ maxWidth: "40ch" }}>
             <div {...parts.value.home.groupProps}>
               <h3>
                 <button {...parts.value.home.triggerProps}>Home</button>

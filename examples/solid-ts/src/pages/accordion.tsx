@@ -1,12 +1,17 @@
-import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 import { accordion } from "@ui-machines/web"
+import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
+
 import { createMemo } from "solid-js"
+
 import { StateVisualizer } from "../components/state-visualizer"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(accordion.machine)
-  const ref = useSetup<HTMLDivElement>({ send, id: "32" })
+
+  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+
   const connect = createMemo(() => accordion.connect(state, send, normalizeProps))
+
   const parts = createMemo(() => ({
     home: connect().getAccordionItem({ id: "home" }),
     about: connect().getAccordionItem({ id: "about" }),
@@ -45,10 +50,9 @@ function Page() {
             dolore magna aliqua.
           </div>
         </div>
+
         <StateVisualizer state={state} />
       </div>
     </div>
   )
 }
-
-export default Page

@@ -1,9 +1,10 @@
-import { useMachine } from "@ui-machines/react"
 import { accordion } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(accordion.machine)
 
   const ref = useMount<HTMLDivElement>(send)
@@ -52,5 +53,3 @@ function Page() {
     </div>
   )
 }
-
-export default Page

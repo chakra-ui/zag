@@ -13,20 +13,23 @@ const Tooltip = defineComponent({
   },
   setup(props) {
     const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
-    const _ref = useMount(send)
-    const mp = computed(() => tooltip.connect(state.value, send, normalizeProps))
+
+    const ref = useMount(send)
+
+    const machineState = computed(() => tooltip.connect(state.value, send, normalizeProps))
 
     const _state = useSnapshot(tooltip.store)
-    const isVisible = computed(() => mp.value.getIsVisible(_state.value.id))
+
+    const isVisible = computed(() => machineState.value.getIsVisible(_state.value.id))
 
     return () => (
       <>
-        <div className="App">
-          <button ref={_ref} {...mp.value.triggerProps}>
+        <div>
+          <button ref={ref} {...machineState.value.triggerProps}>
             Over me
           </button>
           {isVisible.value && (
-            <div {...mp.value.tooltipProps} style={{ background: "red", padding: "10px" }}>
+            <div {...machineState.value.tooltipProps} style={{ background: "red", padding: "10px" }}>
               Tooltip
             </div>
           )}

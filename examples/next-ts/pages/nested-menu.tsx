@@ -52,14 +52,11 @@ export default function Page() {
 
   return (
     <Styles>
-      <StateVisualizer state={state} label="Root Machine" />
-      <StateVisualizer state={subState} label="Sub Machine" style={{ right: 340 }} />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ left: 500 }} />
       <button ref={rootRef} {...root.triggerProps}>
         Click me
       </button>
 
-      <ul style={{ width: 300 }} {...root.menuProps}>
+      <ul style={{ width: "300px" }} {...root.menuProps}>
         <div>
           <input
             data-valuetext="Command"
@@ -79,7 +76,7 @@ export default function Page() {
         </a>
       </ul>
 
-      <ul style={{ width: 300, left: 180, top: 90, position: "absolute" }} {...sub.menuProps}>
+      <ul style={{ width: "300px", left: "180px", top: "90px", position: "absolute" }} {...sub.menuProps}>
         <li {...sub.getItemProps({ id: "save-page" })}>Save Page As...</li>
         <li {...sub.getItemProps({ id: "shortcut" })}>Create Shortcuts</li>
         <li {...sub.getItemProps({ id: "name-win" })}>Name Window...</li>
@@ -88,11 +85,15 @@ export default function Page() {
         <li {...sub.getItemProps({ id: "new-term" })}>New Terminal</li>
       </ul>
 
-      <ul style={{ width: 300, left: 352, top: 170, position: "absolute" }} {...sub2.menuProps}>
+      <ul style={{ width: "300px", left: "352px", top: "170px", position: "absolute" }} {...sub2.menuProps}>
         <li {...sub2.getItemProps({ id: "welcome" })}>Welcome</li>
         <li {...sub2.getItemProps({ id: "play" })}>Playground</li>
         <li {...sub2.getItemProps({ id: "export" })}>Export</li>
       </ul>
+
+      <StateVisualizer state={state} label="Root Machine" />
+      <StateVisualizer state={subState} label="Sub Machine" style={{ right: 340 }} />
+      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ left: 500 }} />
     </Styles>
   )
 }

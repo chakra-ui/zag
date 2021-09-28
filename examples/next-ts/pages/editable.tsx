@@ -1,9 +1,10 @@
-import { useMachine } from "@ui-machines/react"
 import { editable } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
-const Page = () => {
+export default function Page() {
   const [state, send] = useMachine(
     editable.machine.withContext({
       placeholder: "Edit me...",
@@ -32,5 +33,3 @@ const Page = () => {
     </div>
   )
 }
-
-export default Page

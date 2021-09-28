@@ -1,18 +1,20 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useMachine } from "@ui-machines/react"
 import { combobox } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
+import * as styled from "@emotion/styled"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
-import styled from "@emotion/styled"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
-const Styles = styled("div")(comboboxStyle)
+const Styles = styled.default("div")(comboboxStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
-      uid: "234",
+      uid: "123",
       onSelect: console.log,
       selectionMode: "autoselect",
       closeOnSelect: (opt) => opt.label !== "Angola",
@@ -28,8 +30,7 @@ export default function Page() {
 
   return (
     <Styles>
-      <div ref={ref} className="App">
-        <StateVisualizer state={state} />
+      <div ref={ref}>
         <label {...labelProps}>Select country</label>
         <div {...containerProps}>
           <input {...inputProps} />
@@ -37,7 +38,7 @@ export default function Page() {
         </div>
 
         {filtered.length > 0 && (
-          <ul style={{ width: 300, maxHeight: 400, overflow: "auto" }} {...listboxProps}>
+          <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
             {filtered.map((item) => (
               <li key={item.code} {...getOptionProps({ label: item.label, value: item.code })}>
                 {item.label}
@@ -46,6 +47,8 @@ export default function Page() {
           </ul>
         )}
       </div>
+
+      <StateVisualizer state={state} />
     </Styles>
   )
 }

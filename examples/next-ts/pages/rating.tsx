@@ -1,5 +1,6 @@
-import { useMachine } from "@ui-machines/react"
 import { rating } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
@@ -33,11 +34,11 @@ const Star = ({ isHalf, ...rest }: any) => {
   )
 }
 
-function Page() {
+export default function Page() {
   const [state, send] = useMachine(
     rating.machine.withContext({
-      uid: "rating-35",
-      allowHalf: false,
+      uid: "123",
+      allowHalf: true,
     }),
   )
 
@@ -66,6 +67,7 @@ function Page() {
           </div>
           <input {...inputProps} />
         </div>
+
         <StateVisualizer state={state} />
       </div>
 
@@ -85,5 +87,3 @@ function Page() {
     </>
   )
 }
-
-export default Page

@@ -1,20 +1,15 @@
-import { defineComponent } from "@vue/runtime-core"
-import { computed, h, Fragment } from "vue"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
 import { popover } from "@ui-machines/web"
+import { useMachine, normalizeProps } from "@ui-machines/vue"
+
+import { computed, h, Fragment } from "vue"
+import { defineComponent } from "@vue/runtime-core"
+import { css, CSSObject } from "@emotion/css"
+
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { css } from "@emotion/css"
+import { popoverStyle } from "../../../../shared/style"
 
-const styles = css({
-  '[role="dialog"]': {
-    background: "red",
-    padding: "20px",
-  },
-  '[role="dialog"]:focus': {
-    outline: "2px solid royalblue",
-  },
-})
+const styles = css(popoverStyle as CSSObject)
 
 export default defineComponent({
   name: "Popover",
@@ -25,13 +20,14 @@ export default defineComponent({
       }),
     )
 
-    const _ref = useMount(send)
+    const ref = useMount(send)
+
     const machineState = computed(() => popover.connect(state.value, send, normalizeProps))
 
     return () => {
       return (
         <div className={styles}>
-          <div style={{ width: "300px" }} ref={_ref}>
+          <div style={{ width: "300px" }} ref={ref}>
             <button {...machineState.value.triggerProps}>Click me</button>
             <div {...machineState.value.popoverProps}>
               <div>Popover content</div>
@@ -40,6 +36,7 @@ export default defineComponent({
               </div>
             </div>
           </div>
+
           <StateVisualizer state={state.value} />
         </div>
       )

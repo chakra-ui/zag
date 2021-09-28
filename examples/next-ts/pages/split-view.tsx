@@ -1,16 +1,23 @@
-import { useMachine } from "@ui-machines/react"
 import { splitView } from "@ui-machines/web"
+import { useMachine } from "@ui-machines/react"
+
+import * as styled from "@emotion/styled"
+
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
+import { splitViewStyle } from "../../../shared/style"
 
-function Page() {
+const Styles = styled.default(`div`)(splitViewStyle as styled.CSSObject)
+
+export default function Page() {
   const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
+
   const ref = useMount<HTMLDivElement>(send)
 
   const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = splitView.connect(state, send)
 
   return (
-    <>
+    <Styles>
       <div className="root">
         <div ref={ref} {...rootProps}>
           <div className="pane" {...primaryPaneProps}>
@@ -27,48 +34,8 @@ function Page() {
           </div>
         </div>
       </div>
+
       <StateVisualizer state={state} />
-
-      <style jsx>{`
-        .root {
-          height: 300px;
-        }
-
-        .pane {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid lightgray;
-          overflow: auto;
-        }
-
-        .splitter {
-          width: 8px;
-          background: #ebebeb;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background-color 0.2s ease-in-out;
-          outline: 0;
-        }
-
-        .splitter[data-focus] {
-          background: #b0baf1;
-        }
-
-        .splitter:active {
-          background: #3f51b5;
-          color: white;
-        }
-
-        .splitter-bar {
-          width: 2px;
-          height: 40px;
-          background-color: currentColor;
-        }
-      `}</style>
-    </>
+    </Styles>
   )
 }
-
-export default Page
