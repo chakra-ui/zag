@@ -17,7 +17,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
   const machineState = createMemo(() => tagsInput.connect(state, send, normalizeProps))
 

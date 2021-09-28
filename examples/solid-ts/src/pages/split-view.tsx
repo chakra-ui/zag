@@ -12,7 +12,7 @@ const styles = css(splitViewStyle)
 export default function Page() {
   const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "id" })
+  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
   const machineState = createMemo(() => splitView.connect(state, send, normalizeProps))
 
