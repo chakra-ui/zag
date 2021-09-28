@@ -17,7 +17,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       slider.machine.withContext({
-        uid: "uid",
+        uid: "123",
         value: 40,
         name: "volume",
         dir: "ltr",

@@ -15,7 +15,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       menu.machine.withContext({
-        uid: "uid",
+        uid: "123",
         onSelect: console.log,
       }),
     )

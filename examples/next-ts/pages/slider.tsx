@@ -14,7 +14,7 @@ const Styles = styled(`div`)(sliderStyle)
 export default function Page() {
   const [state, send] = useMachine(
     slider.machine.withContext({
-      uid: "uid",
+      uid: "123",
       value: 40,
       name: "volume",
       dir: "ltr",

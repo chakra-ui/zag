@@ -19,7 +19,7 @@ export default defineComponent({
       rangeSlider.machine.withContext({
         dir: "ltr",
         name: ["min", "max"],
-        uid: "uid",
+        uid: "123",
         value: [10, 60],
       }),
     )

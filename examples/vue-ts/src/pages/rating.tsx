@@ -16,7 +16,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       rating.machine.withContext({
-        uid: "uid",
+        uid: "123",
         allowHalf: true,
       }),
     )

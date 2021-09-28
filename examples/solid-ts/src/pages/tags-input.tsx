@@ -12,7 +12,7 @@ const styles = css(tagsInputStyle)
 export default function Page() {
   const [state, send] = useMachine(
     tagsInput.machine.withContext({
-      uid: "uid",
+      uid: "123",
       value: ["React", "Vue"],
     }),
   )

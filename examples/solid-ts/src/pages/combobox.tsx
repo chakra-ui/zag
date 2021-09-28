@@ -13,7 +13,7 @@ const styles = css(comboboxStyle)
 export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
-      uid: "uid",
+      uid: "123",
       onSelect: console.log,
       selectionMode: "autoselect",
       closeOnSelect: (opt) => opt.label !== "Angola",
