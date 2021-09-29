@@ -9506,10 +9506,10 @@ tiny-point@0.0.1, tiny-point@^0.0.1:
   resolved "https://registry.yarnpkg.com/tiny-point/-/tiny-point-0.0.1.tgz#2870af708a4405b608c3939bf360567f1dafea4e"
   integrity sha512-+yroKoYL9c4PoS7RZKnPitdyi1iBLBSQ47YAbjrN35B4yKrYNttT9egV3xn4EzgCMKZOsz/e+7pIWYz9C87ocQ==
 
-tiny-rect@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-rect/-/tiny-rect-0.0.1.tgz#69f77aba3e7ab3160a6ee120aba8461ea5ec7ea3"
-  integrity sha512-ByU/vEtdFcq+GvH4cz03jCxSY7s9xlPi+Vu71KPJmp4OFNHQC8clzjp1pH8lZ1YsBv6A5jyogp/wGyQJPwoj5A==
+tiny-rect@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/tiny-rect/-/tiny-rect-0.0.2.tgz#e632bee6abfb2a3a611dfea200d19b55b66c5a4f"
+  integrity sha512-zYKhcTM22zbRLLl7+bY0GL0oM+oQGbL2UA/XKsP9rGoISZf2gRzqfch3JYXWZqcIbMbTJpBhsyiccw37f75x5A==
   dependencies:
     tiny-point "0.0.1"
 
