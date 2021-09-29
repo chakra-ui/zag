@@ -1,4 +1,4 @@
-import { noop } from "@core-foundation/utils"
+import { noop } from "tiny-fn"
 
 export function observeNodeAttr(node: HTMLElement | null, attributes: string | string[], fn: VoidFunction) {
   if (!node) return noop

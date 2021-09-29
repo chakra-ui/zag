@@ -1,6 +1,6 @@
-import { cast } from "@core-foundation/utils"
+import { cast } from "tiny-fn"
 import { ref } from "valtio"
-import { GlobalThis } from "./types"
+import { DOM } from "./types"
 
 type TrackPointerDownOptions = {
   doc?: Document
@@ -10,7 +10,7 @@ type TrackPointerDownOptions = {
 export function trackPointerDown(ctx: TrackPointerDownOptions) {
   const doc = ctx.doc ?? document
   const fn = (event: PointerEvent) => {
-    const win = cast<GlobalThis>(event.view ?? window)
+    const win = cast<DOM.This>(event.view ?? window)
     if (event.target instanceof win.HTMLElement) {
       ctx.pointerdownNode = ref(event.target)
     }

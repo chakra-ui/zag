@@ -1,11 +1,11 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@core-foundation/utils"
-import { WithDOM } from "../utils/types"
+import { nextTick } from "tiny-fn"
+import { DOM } from "../utils/types"
 import { dom } from "./tabs.dom"
 
 const { not } = guards
 
-export type TabsMachineContext = WithDOM<{
+export type TabsMachineContext = DOM.Context<{
   focusedId?: string
   activeId: string
   orientation?: "horizontal" | "vertical"
@@ -101,29 +101,24 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
         ctx.activeId = evt.uid
       },
       focusFirstTab(ctx) {
-        const tabs = dom(ctx)
-        nextTick(() => tabs.first?.focus())
+        nextTick(() => dom.getFirstEl(ctx)?.focus())
       },
       focusLastTab(ctx) {
-        const tabs = dom(ctx)
-        nextTick(() => tabs.last?.focus())
+        nextTick(() => dom.getLastEl(ctx)?.focus())
       },
       focusNextTab(ctx) {
         if (!ctx.focusedId) return
-        const tabs = dom(ctx)
-        const next = tabs.next(ctx.focusedId)
+        const next = dom.getNextEl(ctx, ctx.focusedId)
         nextTick(() => next?.focus())
       },
       focusPrevTab(ctx) {
         if (!ctx.focusedId) return
-        const tabs = dom(ctx)
-        const prev = tabs.prev(ctx.focusedId)
+        const prev = dom.getPrevEl(ctx, ctx.focusedId)
         nextTick(() => prev?.focus())
       },
       setActiveTabRect(ctx) {
         nextTick(() => {
-          const tabs = dom(ctx)
-          ctx.indicatorRect = tabs.rectById(ctx.activeId)
+          ctx.indicatorRect = dom.getRectById(ctx, ctx.activeId)
           if (ctx.measuredRect) return
           nextTick(() => {
             ctx.measuredRect = true

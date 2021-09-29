@@ -1,57 +1,37 @@
-import { NodeList } from "@core-dom/node-list"
-import { ComboboxMachineContext } from "./combobox.machine"
+import { queryElements, prevById, nextById } from "tiny-nodelist"
+import { first, last } from "tiny-array"
+import type { ComboboxMachineContext as Ctx } from "./combobox.machine"
 
-export function getIds(uid: string) {
-  return {
-    label: `combobox-${uid}-label`,
-    container: `combobox-${uid}`,
-    input: `combobox-${uid}-input`,
-    listbox: `combobox-${uid}-listbox`,
-    toggleBtn: `combobox-${uid}-toggle-btn`,
-    clearBtn: `combobox-${uid}-clear-btn`,
-    srHint: `combobox-${uid}-sr-hint`,
-    getOptionId: (index: number | string) => `combobox-${uid}-option-${index}`,
-  }
-}
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-export function getElements(ctx: ComboboxMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
+  getLabelId: (ctx: Ctx) => `combobox-${ctx.uid}-label`,
+  getContainerId: (ctx: Ctx) => `combobox-${ctx.uid}`,
+  getInputId: (ctx: Ctx) => `combobox-${ctx.uid}-input`,
+  getListboxId: (ctx: Ctx) => `combobox-${ctx.uid}-listbox`,
+  getToggleBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-toggle-btn`,
+  getClearBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-clear-btn`,
+  getSrHintId: (ctx: Ctx) => `combobox-${ctx.uid}-sr-hint`,
+  getOptionId: (ctx: Ctx, i: number | string) => `combobox-${ctx.uid}-option-${i}`,
 
-  return {
-    doc,
-    activeOption: ctx.activeId ? doc?.getElementById(ctx.activeId) : null,
-    label: doc.getElementById(ids.label),
-    container: doc.getElementById(ids.container),
-    input: doc.getElementById(ids.input) as HTMLInputElement,
-    listbox: doc.getElementById(ids.listbox),
-    toggleBtn: doc.getElementById(ids.toggleBtn),
-    clearBtn: doc.getElementById(ids.clearBtn),
-  }
-}
+  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
+  getListboxEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getListboxId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
+  getToggleBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getToggleBtnId(ctx)),
+  getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 
-export function dom(ctx: ComboboxMachineContext) {
-  const { listbox, input, doc } = getElements(ctx)
+  getElements: (ctx: Ctx) => queryElements(dom.getListboxEl(ctx), "[role=option]:not([disabled])"),
+  getFocusedOptionEl: (ctx: Ctx) =>
+    dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][id=${ctx.activeId}]`),
 
-  const selector = `[role=option]:not([disabled])`
-  const nodelist = NodeList.fromSelector(listbox, selector)
+  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
+  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id),
 
-  const focusedSelector = `[role=option][id=${ctx.activeId}]`
-  const focusedOption = listbox?.querySelector<HTMLElement>(focusedSelector)
-
-  return {
-    first: nodelist.first,
-    last: nodelist.last,
-    prev: nodelist.prevById,
-    next: nodelist.nextById,
-    isFocused: doc.activeElement === input,
-    focusedOption,
-  }
-}
-
-export function attrs(el: HTMLElement | null | undefined) {
-  return {
+  isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
+  getOptionData: (el: HTMLElement | null) => ({
     value: el?.getAttribute("data-value") ?? "",
     label: el?.getAttribute("data-label") ?? "",
-  }
+  }),
 }

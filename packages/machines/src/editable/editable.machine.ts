@@ -1,12 +1,12 @@
-import { nextTick } from "@core-foundation/utils/fn"
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { trackPointerDown } from "../utils/pointer-down"
-import type { WithDOM } from "../utils/types"
-import { getElements } from "./editable.dom"
+import { nextTick } from "tiny-fn"
+import type { DOM } from "../utils"
+import { trackPointerDown } from "../utils"
+import { dom } from "./editable.dom"
 
 const { not } = guards
 
-export type EditableMachineContext = WithDOM<{
+export type EditableMachineContext = DOM.Context<{
   activationMode: "focus" | "dblclick"
   value: string
   previousValue: string
@@ -55,12 +55,12 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         on: {
           EDIT: "edit",
           DBLCLICK: {
-            cond: "shouldActivateOnDblClick",
+            cond: "activateOnDblClick",
             target: "edit",
           },
           FOCUS: {
             target: "edit",
-            cond: "shouldActivateOnFocus",
+            cond: "activateOnFocus",
           },
         },
       },
@@ -74,7 +74,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
           },
           CLICK_OUTSIDE: [
             {
-              cond: "shouldSubmitOnBlur",
+              cond: "submitOnBlur",
               target: "preview",
               actions: ["focusEditButton", "invokeOnSubmit"],
             },
@@ -98,10 +98,10 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
   {
     guards: {
       canFocusPreview: (ctx) => !!ctx.isPreviewFocusable,
-      shouldSubmitOnBlur: (ctx) => !!ctx.submitOnBlur,
+      submitOnBlur: (ctx) => !!ctx.submitOnBlur,
       isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
-      shouldActivateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
-      shouldActivateOnFocus: (ctx) => ctx.activationMode === "focus",
+      activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
+      activateOnFocus: (ctx) => ctx.activationMode === "focus",
     },
     activities: {
       trackPointerDown,
@@ -115,13 +115,12 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       },
       focusEditButton(ctx) {
         nextTick(() => {
-          const { editBtn } = getElements(ctx)
-          editBtn?.focus()
+          dom.getEditBtnEl(ctx)?.focus()
         })
       },
       focusInput(ctx) {
         nextTick(() => {
-          const { input } = getElements(ctx)
+          const input = dom.getInputEl(ctx)
           if (ctx.selectOnFocus) input?.select()
           else input?.focus()
         })

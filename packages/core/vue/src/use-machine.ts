@@ -1,4 +1,4 @@
-import { MachineSrc, StateMachine as S } from "@ui-machines/core"
+import type { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from "vue"
 
 export function useMachine<

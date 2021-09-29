@@ -1,9 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
-import { ButtonProps, HTMLProps, InputProps, EventKeyMap } from "../utils/types"
+import { DOM, Props } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
-import { getIds, getElements } from "./tags-input.dom"
+import { dom } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 
 type TagProps = {
@@ -17,7 +17,6 @@ export function tagsInputConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
 
   const isInputFocused = state.matches("focused:input", "navigating:tag")
   const isEditingTag = state.matches("editing:tag")
@@ -27,18 +26,18 @@ export function tagsInputConnect(
     value: ctx.value,
     valueAsString,
 
-    rootProps: normalize<HTMLProps>({
+    rootProps: normalize<Props.Element>({
       "data-count": ctx.value.length,
       "data-disabled": dataAttr(ctx.disabled),
       "data-focus": dataAttr(isInputFocused),
-      id: ids.root,
+      id: dom.getRootId(ctx),
       onPointerDown() {
         send("POINTER_DOWN")
       },
     }),
 
-    inputProps: normalize<InputProps>({
-      id: ids.input,
+    inputProps: normalize<Props.Input>({
+      id: dom.getInputId(ctx),
       value: ctx.inputValue,
       autoComplete: "off",
       onChange(event) {
@@ -49,7 +48,7 @@ export function tagsInputConnect(
       },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
-          exclude: getElements(ctx).root,
+          exclude: dom.getRootEl(ctx),
         })
         if (isValidBlur) {
           send("BLUR")
@@ -59,7 +58,7 @@ export function tagsInputConnect(
         send("PASTE")
       },
       onKeyDown(event) {
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -99,7 +98,7 @@ export function tagsInputConnect(
     }),
 
     hiddenInputProps() {
-      return normalize<InputProps>({
+      return normalize<Props.Input>({
         type: "hidden",
         name: ctx.name,
         id: ctx.uid,
@@ -108,13 +107,13 @@ export function tagsInputConnect(
     },
 
     getTagProps({ index, value }: TagProps) {
-      const id = ids.getTagId(index)
-      return normalize<HTMLProps>({
+      const id = dom.getTagId(ctx, index)
+      return normalize<Props.Element>({
         id,
         hidden: isEditingTag ? ctx.editedId === id : false,
         "data-value": value,
         "data-selected": dataAttr(id === ctx.focusedId),
-        "data-ownedby": ids.root,
+        "data-ownedby": dom.getRootId(ctx),
         onPointerDown(event) {
           event.preventDefault()
           send({ type: "POINTER_DOWN_TAG", id })
@@ -126,9 +125,9 @@ export function tagsInputConnect(
     },
 
     getTagInputProps({ index }: { index: number }) {
-      const id = ids.getTagId(index)
+      const id = dom.getTagId(ctx, index)
       const active = ctx.editedId === id
-      return normalize<InputProps>({
+      return normalize<Props.Input>({
         id: `${id}-input`,
         type: "text",
         tabIndex: -1,
@@ -141,7 +140,7 @@ export function tagsInputConnect(
           send("TAG_INPUT_BLUR")
         },
         onKeyDown(event) {
-          const keyMap: EventKeyMap = {
+          const keyMap: DOM.EventKeyMap = {
             Enter() {
               send("TAG_INPUT_ENTER")
             },
@@ -161,14 +160,16 @@ export function tagsInputConnect(
     },
 
     getTagDeleteButtonProps({ index, value }: TagProps) {
-      const id = ids.getTagId(index)
-      return normalize<ButtonProps>({
-        id: `${id}-close`,
+      return normalize<Props.Button>({
+        id: dom.getTagDeleteBtnId(ctx, index),
         type: "button",
         "aria-label": `Delete ${value}`,
         tabIndex: -1,
         onClick() {
-          send({ type: "CLICK_DELETE_BUTTON", id })
+          send({
+            type: "CLICK_DELETE_BUTTON",
+            id: dom.getTagId(ctx, index),
+          })
         },
       })
     },

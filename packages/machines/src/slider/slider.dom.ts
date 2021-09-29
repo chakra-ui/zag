@@ -1,93 +1,55 @@
-import { NumericRange } from "@core-foundation/numeric-range"
-import type { Point } from "@core-graphics/point"
-import type { CSSStyleProperties } from "../utils/types"
-import type { SliderMachineContext } from "./slider.machine"
+import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "tiny-num"
+import type { Point } from "tiny-point"
+import { relativeToNode } from "tiny-point/dom"
+import type { DOM } from "../utils"
+import { dispatchInputEvent } from "../utils"
+import type { SliderMachineContext as Ctx } from "./slider.machine"
 
-export function getIds(id: string) {
-  return {
-    thumb: `slider-thumb-${id}`,
-    root: `slider-root-${id}`,
-    input: `slider-input-${id}`,
-    output: `slider-output-${id}`,
-    track: `slider-track-${id}`,
-    range: `slider-range-${id}`,
-    label: `slider-label-${id}`,
-  }
-}
-
-export function getElements(ctx: SliderMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
-  return {
-    doc,
-    thumb: doc.getElementById(ids.thumb),
-    root: doc.getElementById(ids.root),
-    input: doc.getElementById(ids.input),
-  }
-}
-
-export function getValueFromPoint(ctx: SliderMachineContext, info: Point): number | undefined {
-  const { root } = getElements(ctx)
+function getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
+  const root = dom.getRootEl(ctx)
   if (!root) return
-
-  const isHorizontal = ctx.orientation === "horizontal"
-  const isRtl = isHorizontal && ctx.dir === "rtl"
-
-  const { progress } = info.relativeToNode(root)
-  let progressValue = isHorizontal ? progress.x : progress.y
-
-  if (isRtl) progressValue = 1 - progressValue
-
-  const opts = { min: 0, max: 1, value: progressValue }
-  const percent = new NumericRange(opts).clamp().valueOf()
-
-  const range = NumericRange.fromPercent(percent, ctx)
-
-  return range.clone().snapToStep().valueOf()
+  const { progress } = relativeToNode(point, root)
+  let v = ctx.isHorizontal ? progress.x : progress.y
+  if (ctx.isRtl) v = 1 - v
+  const percent = clamp(v, { min: 0, max: 1 })
+  return parseFloat(snapToStep(percentToValue(percent, ctx), ctx.step))
 }
 
-type GetThumbStyleOptions = Pick<SliderMachineContext, "min" | "max" | "dir" | "thumbSize" | "value" | "orientation">
+type GetThumbStyleOptions = Pick<
+  Ctx,
+  "min" | "max" | "dir" | "thumbSize" | "value" | "orientation" | "isHorizontal" | "isVertical" | "step" | "isRtl"
+>
 
-export function getThumbStyle(ctx: GetThumbStyleOptions): CSSStyleProperties {
-  const range = new NumericRange(ctx)
-  const percent = range.toPercent()
+function getThumbStyle(ctx: GetThumbStyleOptions): DOM.Style {
+  const percent = valueToPercent(ctx.value, ctx)
+  const { width: w, height: h } = ctx.thumbSize
 
-  const isRtl = ctx.dir === "rtl"
-  const { width: w, height: h } = ctx.thumbSize ?? { width: 0, height: 0 }
-
-  const style: CSSStyleProperties = {
+  const style: DOM.Style = {
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
   }
 
-  if (ctx.orientation === "vertical") {
-    const getValue = NumericRange.transform([ctx.min, ctx.max], [-h / 2, h / 2])
-    const y = +getValue(ctx.value).toFixed(2)
-    return {
-      ...style,
-      bottom: `calc(${percent}% - ${y}px)`,
-    }
+  if (ctx.isVertical) {
+    const getValue = transform([ctx.min, ctx.max], [-h / 2, h / 2])
+    const y = parseFloat(getValue(ctx.value).toFixed(2))
+    style.bottom = `calc(${percent}% - ${y}px)`
+    return style
   }
 
-  const getValue = isRtl
-    ? NumericRange.transform([ctx.max, ctx.min], [-w * 1.5, -w / 2])
-    : NumericRange.transform([ctx.min, ctx.max], [-w / 2, w / 2])
+  const getValue = ctx.isRtl
+    ? transform([ctx.max, ctx.min], [-w * 1.5, -w / 2])
+    : transform([ctx.min, ctx.max], [-w / 2, w / 2])
 
-  let x = +getValue(ctx.value).toFixed(2)
-  x = isRtl ? -x : x
-
-  return {
-    ...style,
-    [isRtl ? "right" : "left"]: `calc(${percent}% - ${x}px)`,
-  }
+  let x = parseFloat(getValue(ctx.value).toFixed(2))
+  x = ctx.isRtl ? -x : x
+  style[ctx.isRtl ? "right" : "left"] = `calc(${percent}% - ${x}px)`
+  return style
 }
 
-export function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
-  const range = new NumericRange(ctx)
-  const percent = range.toPercent()
-  const isRtl = ctx.dir === "rtl"
+function getRangeStyle(ctx: Ctx): DOM.Style {
+  const percent = valueToPercent(ctx.value, ctx)
 
-  const style: CSSStyleProperties = {
+  const style: DOM.Style = {
     position: "absolute",
   }
 
@@ -100,7 +62,7 @@ export function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
     endValue = isNegative ? "50%" : endValue
   }
 
-  if (ctx.orientation === "vertical") {
+  if (ctx.isHorizontal) {
     return {
       ...style,
       bottom: startValue,
@@ -110,30 +72,44 @@ export function getRangeStyle(ctx: SliderMachineContext): CSSStyleProperties {
 
   return {
     ...style,
-    [isRtl ? "right" : "left"]: startValue,
-    [isRtl ? "left" : "right"]: endValue,
+    [ctx.isRtl ? "right" : "left"]: startValue,
+    [ctx.isRtl ? "left" : "right"]: endValue,
   }
 }
 
-export function getRootStyle(ctx: Pick<SliderMachineContext, "orientation">): CSSStyleProperties {
-  const isVertical = ctx.orientation === "vertical"
+function getRootStyle(ctx: Pick<Ctx, "isVertical">): DOM.Style {
   return {
     touchAction: "none",
     userSelect: "none",
-    "--slider-thumb-transform": isVertical ? "translateY(50%)" : "translateX(-50%)",
+    "--slider-thumb-transform": ctx.isVertical ? "translateY(50%)" : "translateX(-50%)",
     position: "relative",
   }
 }
 
-export function getStyles(ctx: SliderMachineContext) {
-  const trackStyle: CSSStyleProperties = {
-    position: "relative",
-  }
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getThumbId: (ctx: Ctx) => `slider-thumb-${ctx.uid}`,
+  getRootId: (ctx: Ctx) => `slider-root-${ctx.uid}`,
+  getInputId: (ctx: Ctx) => `slider-input-${ctx.uid}`,
+  getOutputId: (ctx: Ctx) => `slider-output-${ctx.uid}`,
+  getTrackId: (ctx: Ctx) => `slider-track-${ctx.uid}`,
+  getRangeId: (ctx: Ctx) => `slider-range-${ctx.uid}`,
+  getLabelId: (ctx: Ctx) => `slider-label-${ctx.uid}`,
 
-  return {
-    root: getRootStyle(ctx),
-    thumb: getThumbStyle(ctx),
-    range: getRangeStyle(ctx),
-    track: trackStyle,
-  }
+  getThumbEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)),
+
+  getRootStyle,
+  getThumbStyle,
+  getRangeStyle,
+  getTrackStyle: (): DOM.Style => ({
+    position: "relative",
+  }),
+
+  getValueFromPoint,
+  dispatchChangeEvent: (ctx: Ctx) => {
+    const input = dom.getInputEl(ctx)
+    if (input) dispatchInputEvent(input, ctx.value)
+  },
 }

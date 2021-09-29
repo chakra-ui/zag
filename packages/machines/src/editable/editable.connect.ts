@@ -1,8 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { ButtonProps, EventKeyMap, HTMLProps, InputProps } from "../utils/types"
-import { validateBlur } from "../utils/validate-blur"
-import { getIds, getElements } from "./editable.dom"
+import { ariaAttr, defaultPropNormalizer, validateBlur } from "../utils"
+import type { DOM, Props } from "../utils/types"
+import { dom } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.machine"
 
 export function editableConnect(
@@ -12,7 +11,6 @@ export function editableConnect(
 ) {
   const { context: ctx } = state
   const isEditing = state.matches("edit")
-  const ids = getIds(ctx.uid)
 
   const isInteractive = !(ctx.disabled || ctx.readonly)
   const tabIndex = isInteractive && ctx.isPreviewFocusable ? 0 : undefined
@@ -21,18 +19,17 @@ export function editableConnect(
     isEditing,
     isValueEmpty: ctx.value === "",
 
-    inputProps: normalize<InputProps>({
-      id: ids.input,
+    inputProps: normalize<Props.Input>({
+      id: dom.getInputId(ctx),
       hidden: !isEditing,
       placeholder: ctx.placeholder,
       disabled: ctx.disabled,
       "aria-disabled": ctx.disabled,
       value: ctx.value,
       onBlur(event) {
-        const { cancelBtn, submitBtn } = getElements(ctx)
         const isValidBlur = validateBlur(event, {
+          exclude: [dom.getCancelBtnEl(ctx), dom.getSubmitBtnEl(ctx)],
           fallback: ctx.pointerdownNode,
-          exclude: [cancelBtn, submitBtn],
         })
         if (isValidBlur) {
           send("CLICK_OUTSIDE")
@@ -42,7 +39,7 @@ export function editableConnect(
         send({ type: "TYPE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           Escape() {
             send("CANCEL")
           },
@@ -62,7 +59,7 @@ export function editableConnect(
       },
     }),
 
-    previewProps: normalize<HTMLProps>({
+    previewProps: normalize<Props.Element>({
       children: ctx.value === "" ? ctx.placeholder : ctx.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(ctx.disabled),
@@ -75,8 +72,8 @@ export function editableConnect(
       },
     }),
 
-    editButtonProps: normalize<ButtonProps>({
-      id: ids.editBtn,
+    editButtonProps: normalize<Props.Button>({
+      id: dom.getEditBtnId(ctx),
       "aria-label": "Submit",
       type: "button",
       onClick() {
@@ -84,8 +81,8 @@ export function editableConnect(
       },
     }),
 
-    submitButtonProps: normalize<ButtonProps>({
-      id: ids.submitBtn,
+    submitButtonProps: normalize<Props.Button>({
+      id: dom.getSubmitBtnId(ctx),
       "aria-label": "Submit",
       type: "button",
       onClick() {
@@ -93,9 +90,9 @@ export function editableConnect(
       },
     }),
 
-    cancelButtonProps: normalize<ButtonProps>({
+    cancelButtonProps: normalize<Props.Button>({
       "aria-label": "Cancel",
-      id: ids.cancelBtn,
+      id: dom.getCancelBtnId(ctx),
       type: "button",
       onClick() {
         send("CANCEL")

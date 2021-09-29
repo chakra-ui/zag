@@ -1,24 +1,20 @@
-import { EditableMachineContext } from "./editable.machine"
+import type { EditableMachineContext as Ctx } from "./editable.machine"
 
-export function getIds(id: string) {
-  return {
-    label: `editable-label-${id}`,
-    input: `editable-input-${id}`,
-    submitBtn: `editable-submit-btn-${id}`,
-    cancelBtn: `editable-cancel-btn-${id}`,
-    editBtn: `editable-edit-btn-${id}`,
-  }
-}
+type HTMLButtonEl = HTMLButtonElement | null
+type HTMLInputEl = HTMLInputElement | null
 
-export function getElements(ctx: EditableMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  return {
-    label: doc.getElementById(ids.label),
-    input: doc.getElementById(ids.input) as HTMLInputElement | null,
-    submitBtn: doc.getElementById(ids.submitBtn) as HTMLButtonElement | null,
-    cancelBtn: doc.getElementById(ids.cancelBtn) as HTMLButtonElement | null,
-    editBtn: doc.getElementById(ids.editBtn) as HTMLButtonElement | null,
-  }
+  getLabelId: (ctx: Ctx) => `editable-label-${ctx.uid}`,
+  getInputId: (ctx: Ctx) => `editable-input-${ctx.uid}`,
+  getSubmitBtnId: (ctx: Ctx) => `editable-submit-btn-${ctx.uid}`,
+  getCancelBtnId: (ctx: Ctx) => `editable-cancel-btn-${ctx.uid}`,
+  getEditBtnId: (ctx: Ctx) => `editable-edit-btn-${ctx.uid}`,
+
+  getLabelEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getLabelId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputEl,
+  getSubmitBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getSubmitBtnId(ctx)) as HTMLButtonEl,
+  getCancelBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCancelBtnId(ctx)) as HTMLButtonEl,
+  getEditBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditBtnId(ctx)) as HTMLButtonEl,
 }

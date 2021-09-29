@@ -1,8 +1,8 @@
-import { AnyFunction } from "@core-foundation/utils/fn"
+import type { StateMachine as S } from "@ui-machines/core"
 import { createSignal, onMount } from "solid-js"
 
 export type UseSetupProps = {
-  send: AnyFunction
+  send: (evt: S.Event<S.AnyEventObject>) => void
   id: string
 }
 
@@ -11,6 +11,7 @@ export function useSetup<T extends HTMLElement = HTMLElement>(props: UseSetupPro
   const [el, setEl] = createSignal<T>()
 
   onMount(() => {
+    if (el()) return
     send({ type: "SETUP", doc: el()?.ownerDocument, id })
   })
 

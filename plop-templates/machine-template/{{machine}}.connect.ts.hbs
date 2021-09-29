@@ -3,7 +3,7 @@ import {
   PropNormalizer,
   StateMachine as S,
 } from "@ui-machines/core"
-import { HTMLProps } from "../type-utils"
+import { Props } from "../type-utils"
 import { getIds, getElements } from "./{{machine}}.dom"
 import { {{capitalize machine}}MachineContext, {{capitalize machine}}MachineState } from "./{{machine}}.machine"
 
@@ -16,7 +16,7 @@ export function connect{{capitalize machine}}Machine(
   const ids = getIds(ctx.uid)
 
   return {
-    elProps: normalize<HTMLProps>({
+    elProps: normalize<Props.Element>({
     }),
   }
 }

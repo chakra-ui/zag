@@ -1,10 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import { srOnlyStyle } from "../utils/live-region"
-import type { ButtonProps, EventKeyMap, HTMLProps, InputProps, LabelProps } from "../utils/types"
-import { validateBlur } from "../utils/validate-blur"
-import { getIds, getElements } from "./combobox.dom"
+import type { DOM, Props } from "../utils"
+import { ariaAttr, dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
+import { dom } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
 
 export function comboboxConnect(
@@ -13,7 +10,6 @@ export function comboboxConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
 
   const expanded = state.matches("open")
   const autocomplete =
@@ -30,19 +26,19 @@ export function comboboxConnect(
 
     inputValue: ctx.inputValue,
 
-    labelProps: normalize<LabelProps>({
-      htmlFor: ids.input,
-      id: ids.label,
+    labelProps: normalize<Props.Label>({
+      htmlFor: dom.getInputId(ctx),
+      id: dom.getLabelId(ctx),
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
     }),
 
-    containerProps: normalize<HTMLProps>({
-      id: ids.container,
+    containerProps: normalize<Props.Element>({
+      id: dom.getContainerId(ctx),
       "data-expanded": dataAttr(expanded),
     }),
 
-    inputProps: normalize<InputProps>({
+    inputProps: normalize<Props.Input>({
       name: ctx.name,
       disabled: ctx.disabled,
       autoFocus: ctx.autoFocus,
@@ -52,22 +48,21 @@ export function comboboxConnect(
       spellCheck: "false",
       readOnly: ctx.readonly,
       placeholder: ctx.placeholder,
-      id: ids.input,
+      id: dom.getInputId(ctx),
       type: "text",
       role: "combobox",
       value: autocomplete ? ctx.navigationValue : ctx.inputValue,
-      "aria-describedby": ids.srHint,
+      "aria-describedby": dom.getSrHintId(ctx),
       "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
-      "aria-controls": expanded ? ids.listbox : undefined,
+      "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
       onClick() {
         send("INPUT_CLICK")
       },
       onBlur(event) {
-        const { listbox, toggleBtn } = getElements(ctx)
         const isValidBlur = validateBlur(event, {
-          exclude: [listbox, toggleBtn],
+          exclude: [dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)],
           fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
@@ -83,7 +78,7 @@ export function comboboxConnect(
       onKeyDown(event) {
         if (event.ctrlKey || event.shiftKey) return
 
-        const keymap: EventKeyMap = {
+        const keymap: DOM.EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -115,15 +110,15 @@ export function comboboxConnect(
       },
     }),
 
-    buttonProps: normalize<ButtonProps>({
-      id: ids.toggleBtn,
+    buttonProps: normalize<Props.Button>({
+      id: dom.getToggleBtnId(ctx),
       "aria-haspopup": "true",
       type: "button",
       role: "button",
       tabIndex: -1,
       "aria-label": expanded ? "Hide suggestions" : "Show suggestions",
       "aria-expanded": expanded,
-      "aria-controls": expanded ? ids.listbox : undefined,
+      "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
       disabled: ctx.disabled,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
@@ -132,7 +127,7 @@ export function comboboxConnect(
       },
     }),
 
-    clearProps: normalize<ButtonProps>({
+    clearProps: normalize<Props.Button>({
       "aria-label": "Clear",
       type: "reset",
       onClick() {
@@ -140,15 +135,15 @@ export function comboboxConnect(
       },
     }),
 
-    listboxProps: normalize<HTMLProps>({
-      id: ids.listbox,
+    listboxProps: normalize<Props.Element>({
+      id: dom.getListboxId(ctx),
       role: "listbox",
       hidden: !expanded,
-      "aria-labelledby": ids.label,
+      "aria-labelledby": dom.getLabelId(ctx),
     }),
 
-    clearButtonProps: normalize<ButtonProps>({
-      id: ids.clearBtn,
+    clearButtonProps: normalize<Props.Button>({
+      id: dom.getClearBtnId(ctx),
       type: "button",
       role: "button",
       tabIndex: -1,
@@ -160,8 +155,8 @@ export function comboboxConnect(
       },
     }),
 
-    srHintProps: normalize<HTMLProps>({
-      id: ids.srHint,
+    srHintProps: normalize<Props.Element>({
+      id: dom.getSrHintId(ctx),
       children: [
         "When autocomplete results are available use up and down arrows to review and enter to select.",
         "Touch device users, explore by touch or with swipe gestures.",
@@ -171,10 +166,10 @@ export function comboboxConnect(
 
     getOptionProps(props: ComboboxOptionProps) {
       const { value, label, virtualized, index, noOfOptions } = props
-      const id = ids.getOptionId(value)
+      const id = dom.getOptionId(ctx, value)
       const selected = ctx.activeId === id && ctx.eventSource === "keyboard"
 
-      return normalize<HTMLProps>({
+      return normalize<Props.Element>({
         id,
         role: "option",
         className: "option",

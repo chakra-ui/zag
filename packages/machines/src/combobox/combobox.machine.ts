@@ -1,11 +1,9 @@
-import { env, is, nextTick } from "@core-foundation/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
-import { LiveRegion } from "../utils/live-region"
-import { observeNodeAttr } from "../utils/mutation-observer"
-import { trackPointerDown } from "../utils/pointer-down"
-import { WithDOM } from "../utils/types"
-import { dom, getElements, attrs } from "./combobox.dom"
+import { nextTick } from "tiny-fn"
+import { is, isApple } from "tiny-guard"
+import { DOM, LiveRegion, observeNodeAttr, trackPointerDown, uuid } from "../utils"
+import { dom } from "./combobox.dom"
 
 const { and } = guards
 
@@ -14,7 +12,7 @@ type Option = {
   value: string
 }
 
-export type ComboboxMachineContext = WithDOM<{
+export type ComboboxMachineContext = DOM.Context<{
   /**
    * The name applied to the `input` element. Useful for form submissions.
    */
@@ -123,7 +121,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     id: "combobox-machine",
     initial: "unknown",
     context: {
-      uid: "combobox",
+      uid: uuid(),
       selectionMode: "autoselect",
       closeOnSelect: true,
       closeOnBlur: true,
@@ -327,25 +325,26 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       closeOnSelect: (ctx) => {
         if (is.func(ctx.closeOnSelect)) {
-          const { focusedOption } = dom(ctx)
-          return ctx.closeOnSelect(attrs(focusedOption)!)
+          const el = dom.getFocusedOptionEl(ctx)
+          return Boolean(el && ctx.closeOnSelect(dom.getOptionData(el)))
         }
         return !!ctx.closeOnSelect
       },
-      isInputFocused: (ctx) => dom(ctx).isFocused,
+      isInputFocused: (ctx) => dom.isInputFocused(ctx),
       autoComplete: (ctx) => ctx.selectionMode === "autocomplete",
       autoSelect: (ctx) => ctx.selectionMode === "autoselect",
-      isFirstOptionFocused: (ctx) => dom(ctx).first?.id === ctx.activeId,
-      isLastOptionFocused: (ctx) => dom(ctx).last?.id === ctx.activeId,
+      isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.activeId,
+      isLastOptionFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.activeId,
       hasFocusedOption: (ctx) => !!ctx.activeId,
       selectOnFocus: (ctx) => !!ctx.selectOnFocus,
     },
     activities: {
       trackPointerDown,
       scrollOptionIntoView(ctx) {
-        const { input, listbox } = getElements(ctx)
+        const input = dom.getInputEl(ctx)
+        const listbox = dom.getListboxEl(ctx)
         return observeNodeAttr(input, "aria-activedescendant", () => {
-          const { activeOption: opt } = getElements(ctx)
+          const opt = dom.getActiveOptionEl(ctx)
           if (!opt || ctx.eventSource !== "keyboard") return
           scrollIntoView(opt, {
             boundary: listbox,
@@ -375,20 +374,14 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.navigationValue = ""
       },
       selectOption(ctx, evt) {
-        ctx.selectedValue = ctx.navigationValue || evt.value
+        ctx.selectedValue = ctx.navigationValue ?? evt.value
         ctx.inputValue = ctx.selectedValue
       },
       focusInput(ctx) {
-        nextTick(() => {
-          const { input } = getElements(ctx)
-          input?.focus()
-        })
+        nextTick(() => dom.getInputEl(ctx)?.focus())
       },
       selectInput(ctx) {
-        nextTick(() => {
-          const { input } = getElements(ctx)
-          input?.select()
-        })
+        nextTick(() => dom.getInputEl(ctx)?.select())
       },
       setInputValue(ctx, evt) {
         ctx.inputValue = evt.value
@@ -397,7 +390,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.inputValue = ""
       },
       resetScrollPosition(ctx) {
-        const { listbox } = getElements(ctx)
+        const listbox = dom.getListboxEl(ctx)
         if (!listbox) return
         listbox.scrollTop = 0
       },
@@ -409,35 +402,31 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       focusFirstOption(ctx) {
         nextTick(() => {
-          const { first } = dom(ctx)
+          const first = dom.getFirstEl(ctx)
           if (!first) return
           ctx.activeId = first.id
-          ctx.navigationValue = first.getAttribute("data-label") ?? ""
+          ctx.navigationValue = dom.getOptionData(first).label
         })
       },
       focusLastOption(ctx) {
         nextTick(() => {
-          const { last } = dom(ctx)
+          const last = dom.getLastEl(ctx)
           if (!last) return
           ctx.activeId = last.id
-          ctx.navigationValue = last.getAttribute("data-label") ?? ""
+          ctx.navigationValue = dom.getOptionData(last).label
         })
       },
       focusNextOption(ctx) {
-        const { next } = dom(ctx)
-
-        let nextOption = next(ctx.activeId ?? "")
-        if (!nextOption) return
-
-        ctx.activeId = nextOption.id
-        ctx.navigationValue = nextOption.getAttribute("data-label") ?? ""
+        const next = dom.getNextEl(ctx, ctx.activeId ?? "")
+        if (!next) return
+        ctx.activeId = next.id
+        ctx.navigationValue = dom.getOptionData(next).label
       },
       focusPrevOption(ctx) {
-        const options = dom(ctx)
-        const prevOption = options.prev(ctx.activeId ?? "")
-        if (!prevOption) return
-        ctx.activeId = prevOption.id
-        ctx.navigationValue = prevOption.getAttribute("data-label") ?? ""
+        const prev = dom.getPrevEl(ctx, ctx.activeId ?? "")
+        if (!prev) return
+        ctx.activeId = prev.id
+        ctx.navigationValue = dom.getOptionData(prev).label
       },
       setEventSourceToKeyboard(ctx) {
         ctx.eventSource = "keyboard"
@@ -460,9 +449,8 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         })
       },
       announceSelectedOption(ctx) {
-        if (!env.apple()) return
-        const msg = `${ctx.selectedValue}, selected`
-        ctx.liveRegion?.announce(msg)
+        if (!isApple()) return
+        ctx.liveRegion?.announce(`${ctx.selectedValue}, selected`)
       },
     },
   },

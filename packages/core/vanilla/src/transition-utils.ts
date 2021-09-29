@@ -1,7 +1,7 @@
-import { toArray } from "@core-foundation/utils/fn"
-import { is } from "@core-foundation/utils/is"
+import { is } from "tiny-guard"
 import { determineGuardFn } from "./guard-utils"
-import { StateMachine as S } from "./types"
+import type { StateMachine as S } from "./types"
+import { toArray } from "./utils"
 
 /**
  * A transition is an object that describes the next state, or/and actions
@@ -17,7 +17,7 @@ import { StateMachine as S } from "./types"
 export function toTarget<TContext, TState extends string, TEvent extends S.EventObject>(
   target: S.Transition<TContext, TState, TEvent>,
 ): S.TransitionDefinition<TContext, TState, TEvent> {
-  return is.string(target) ? { target } : target
+  return is.str(target) ? { target } : target
 }
 
 export function determineTransitionFn<TContext, TState extends string, TEvent extends S.EventObject>(
@@ -40,7 +40,7 @@ export function toTransition<TContext, TState extends string, TEvent extends S.E
   transition: S.Transitions<TContext, TState, TEvent> | undefined,
   current?: TState | null,
 ) {
-  const resolvedTransition = is.string(transition) ? toTarget(transition) : transition
+  const resolvedTransition = is.str(transition) ? toTarget(transition) : transition
 
   const callbackfn = (t: S.TransitionDefinition<TContext, TState, TEvent>) => {
     const isTargetless = t.actions && !t.target
@@ -52,11 +52,11 @@ export function toTransition<TContext, TState extends string, TEvent extends S.E
     return t
   }
 
-  if (is.array(resolvedTransition)) {
+  if (is.arr(resolvedTransition)) {
     return resolvedTransition.map(callbackfn)
   }
 
-  if (is.object(resolvedTransition)) {
+  if (is.obj(resolvedTransition)) {
     return callbackfn(resolvedTransition)
   }
 }

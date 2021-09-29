@@ -1,9 +1,10 @@
-import { env, cast } from "@core-foundation/utils"
 import { StateMachine as S } from "@ui-machines/core"
+import { cast } from "tiny-fn"
+import { isSafari } from "tiny-guard"
 import { defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
-import { ButtonProps, HTMLProps, EventKeyMap } from "../utils/types"
-import { getIds } from "./tabs.dom"
+import { DOM, Props } from "../utils/types"
+import { dom } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
 export function tabsConnect(
@@ -12,15 +13,14 @@ export function tabsConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
 
   return {
-    tablistProps: normalize<HTMLProps>({
-      id: ids.tablist,
+    tablistProps: normalize<Props.Element>({
+      id: dom.getTablistId(ctx),
       role: "tablist",
       "aria-orientation": ctx.orientation,
       onKeyDown(event) {
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           ArrowDown() {
             send("TABLIST_ARROW_DOWN")
           },
@@ -56,14 +56,14 @@ export function tabsConnect(
 
     getTabProps({ uid }: { uid: string }) {
       const selected = ctx.activeId === uid
-      return normalize<ButtonProps>({
+      return normalize<Props.Button>({
         role: "tab",
         type: "button",
         "data-uid": uid,
         "aria-selected": selected,
-        "aria-controls": ids.getPanelId(uid),
-        "data-ownedby": ids.tablist,
-        id: ids.getTabId(uid),
+        "aria-controls": dom.getPanelId(ctx, uid),
+        "data-ownedby": dom.getTablistId(ctx),
+        id: dom.getTabId(ctx, uid),
         tabIndex: selected ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", uid })
@@ -77,7 +77,7 @@ export function tabsConnect(
         onClick(event) {
           send({ type: "TAB_CLICK", uid })
           // ensure browser focus for safari
-          if (env.safari()) {
+          if (isSafari()) {
             event.currentTarget.focus()
           }
         },
@@ -86,17 +86,17 @@ export function tabsConnect(
 
     getTabPanelProps({ uid }: { uid: string }) {
       const selected = ctx.activeId === uid
-      return normalize<HTMLProps>({
-        id: ids.getPanelId(uid),
+      return normalize<Props.Element>({
+        id: dom.getPanelId(ctx, uid),
         tabIndex: 0,
-        "aria-labelledby": ids.getTabId(uid),
+        "aria-labelledby": dom.getTabId(ctx, uid),
         role: "tabpanel",
-        "data-ownedby": ids.tablist,
+        "data-ownedby": dom.getTablistId(ctx),
         hidden: !selected,
       })
     },
 
-    tabIndicatorProps: normalize<HTMLProps>({
+    tabIndicatorProps: normalize<Props.Element>({
       style: {
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",

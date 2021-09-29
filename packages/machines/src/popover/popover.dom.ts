@@ -1,36 +1,16 @@
-import { getFocusables } from "@core-dom/element"
-import { List } from "@core-foundation/list"
-import { PopoverMachineContext } from "./popover.machine"
+import { getFocusables } from "tiny-dom-query/focusable"
+import { PopoverMachineContext as Ctx } from "./popover.machine"
 
-export function getIds(uid: string) {
-  return {
-    trigger: `popover-${uid}-trigger`,
-    content: `popover-${uid}-content`,
-    header: `popover-${uid}-header`,
-    body: `popover-${uid}-body`,
-  }
-}
-
-export function getElements(ctx: PopoverMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
-
-  return {
-    doc,
-    trigger: doc.getElementById(ids.trigger),
-    content: doc.getElementById(ids.content),
-    header: doc.getElementById(ids.header),
-    body: doc.getElementById(ids.body),
-  }
-}
-
-export function dom(ctx: PopoverMachineContext) {
-  const { content } = getElements(ctx)
-  return {
-    getFirstFocusable() {
-      const focusables = getFocusables(content)
-      const list = new List(focusables)
-      return !list.isEmpty ? list.first : content
-    },
-  }
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)),
+  getHeaderEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getHeaderId(ctx)),
+  getBodyEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getBodyId(ctx)),
+  getTriggerId: (ctx: Ctx) => `popover-${ctx.uid}-trigger`,
+  getContentId: (ctx: Ctx) => `popover-${ctx.uid}-content`,
+  getHeaderId: (ctx: Ctx) => `popover-${ctx.uid}-header`,
+  getBodyId: (ctx: Ctx) => `popover-${ctx.uid}-body`,
+  getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx), true),
+  getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
 }

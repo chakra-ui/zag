@@ -1,13 +1,12 @@
-import { dispatchInputEvent } from "@core-dom/event"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { nextTick } from "@core-foundation/utils/fn"
-import { fromElement } from "@core-graphics/rect/create"
-import { createMachine, ref } from "@ui-machines/core"
+import { createMachine, ref, StateMachine } from "@ui-machines/core"
+import { nextTick } from "tiny-fn"
+import { clamp, decrement, increment, snapToStep } from "tiny-num"
+import { fromElement } from "tiny-rect/from-element"
 import { trackPointerMove } from "../utils/pointer-move"
-import { WithDOM } from "../utils/types"
-import { getElements, getValueFromPoint } from "./slider.dom"
+import { DOM } from "../utils/types"
+import { dom } from "./slider.dom"
 
-export type SliderMachineContext = WithDOM<{
+export type SliderMachineContext = DOM.Context<{
   value: number
   name?: string
   disabled?: boolean
@@ -28,8 +27,13 @@ export type SliderMachineContext = WithDOM<{
   onChange?(value: number): void
   onChangeEnd?(value: number): void
   onChangeStart?(value: number): void
-  thumbSize: { width: number; height: number } | null
-}>
+  thumbSize: { width: number; height: number }
+}> &
+  StateMachine.Computed<{
+    isHorizontal: boolean
+    isVertical: boolean
+    isRtl: boolean
+  }>
 
 export type SliderMachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
@@ -40,7 +44,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
     id: "slider-machine",
     initial: "unknown",
     context: {
-      thumbSize: null,
+      thumbSize: { width: 0, height: 0 },
       uid: "slider",
       disabled: false,
       threshold: 5,
@@ -52,6 +56,11 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       min: 0,
       max: 100,
       focusThumbOnChange: true,
+    },
+    computed: {
+      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isVertical: (ctx) => ctx.orientation === "vertical",
+      isRtl: (ctx) => ctx.dir === "rtl",
     },
     on: {
       STOP: "focus",
@@ -85,22 +94,22 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
             actions: ["setPointerValue", "invokeOnChangeStart", "invokeOnChange", "focusThumb"],
           },
           ARROW_LEFT: {
-            actions: ["decrementValue", "invokeOnChange"],
+            actions: ["decrement", "invokeOnChange"],
           },
           ARROW_RIGHT: {
-            actions: ["incrementValue", "invokeOnChange"],
+            actions: ["increment", "invokeOnChange"],
           },
           ARROW_UP: {
-            actions: ["incrementValue", "invokeOnChange"],
+            actions: ["increment", "invokeOnChange"],
           },
           ARROW_DOWN: {
-            actions: ["decrementValue", "invokeOnChange"],
+            actions: ["decrement", "invokeOnChange"],
           },
           PAGE_UP: {
-            actions: ["incrementValue", "invokeOnChange"],
+            actions: ["increment", "invokeOnChange"],
           },
           PAGE_DOWN: {
-            actions: ["decrementValue", "invokeOnChange"],
+            actions: ["decrement", "invokeOnChange"],
           },
           HOME: {
             actions: ["setToMin", "invokeOnChange"],
@@ -133,12 +142,12 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         return trackPointerMove({
           ctx,
           onPointerMove(_e, info) {
-            const value = getValueFromPoint(ctx, info.point)
+            const value = dom.getValueFromPoint(ctx, info.point)
             if (value == null) return
 
             ctx.value = value
             ctx.onChange?.(value)
-            dispatchChangeEvent(ctx)
+            dom.dispatchChangeEvent(ctx)
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -161,45 +170,40 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
-        dispatchChangeEvent(ctx)
+        dom.dispatchChangeEvent(ctx)
       },
       setThumbSize(ctx) {
         nextTick(() => {
-          const { thumb } = getElements(ctx)
+          const thumb = dom.getThumbEl(ctx)
           if (!thumb) return
-          ctx.thumbSize = fromElement(thumb).size
+          const rect = fromElement(thumb)
+          ctx.thumbSize.width = rect.width
+          ctx.thumbSize.height = rect.height
         })
       },
       setPointerValue(ctx, evt) {
-        const value = getValueFromPoint(ctx, evt.point)
+        const value = dom.getValueFromPoint(ctx, evt.point)
         if (value != null) ctx.value = value
       },
       focusThumb(ctx) {
-        nextTick(() => {
-          const { thumb } = getElements(ctx)
-          thumb?.focus()
-        })
+        nextTick(() => dom.getThumbEl(ctx)?.focus())
       },
-      decrementValue(ctx, evt) {
-        const range = new NumericRange(ctx).decrement(evt.step)
-        ctx.value = range.snapToStep().clamp().valueOf()
+      decrement(ctx, evt) {
+        let value = decrement(ctx.value, evt.step ?? ctx.step)
+        value = parseFloat(snapToStep(value, ctx.step))
+        ctx.value = clamp(value, ctx)
       },
-      incrementValue(ctx, evt) {
-        const range = new NumericRange(ctx).increment(evt.step)
-        ctx.value = range.snapToStep().clamp().valueOf()
+      increment(ctx, evt) {
+        let value = increment(ctx.value, evt.step ?? ctx.step)
+        value = parseFloat(snapToStep(value, ctx.step))
+        ctx.value = clamp(value, ctx)
       },
       setToMin(ctx) {
-        ctx.value = new NumericRange(ctx).setToMin().valueOf()
+        ctx.value = ctx.min
       },
       setToMax(ctx) {
-        ctx.value = new NumericRange(ctx).setToMax().valueOf()
+        ctx.value = ctx.max
       },
     },
   },
 )
-
-// dispatch change/input event to closest `form` element
-function dispatchChangeEvent(ctx: SliderMachineContext) {
-  const { input } = getElements(ctx)
-  if (input) dispatchInputEvent(input, ctx.value)
-}

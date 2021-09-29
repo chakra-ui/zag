@@ -1,13 +1,13 @@
-import { isTabbable } from "@core-dom/element"
-import { nextTick } from "@core-foundation/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
+import { isTabbable } from "tiny-dom-query/tabbable"
+import { nextTick } from "tiny-fn"
 import { trackPointerDown } from "../utils/pointer-down"
-import { WithDOM } from "../utils/types"
-import { dom, getElements } from "./popover.dom"
+import { DOM } from "../utils/types"
+import { dom } from "./popover.dom"
 
 const { and } = guards
 
-export type PopoverMachineContext = WithDOM<{
+export type PopoverMachineContext = DOM.Context<{
   autoFocus?: boolean
   autoFocusNode?: HTMLElement
   restoreFocus?: boolean
@@ -65,11 +65,11 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
           },
           CLICK_OUTSIDE: [
             {
-              cond: and("shouldCloseOnOutsideClick", "isPointerdownFocusable"),
+              cond: and("closeOnOutsideClick", "isRelatedTargetFocusable"),
               target: "closed",
             },
             {
-              cond: "shouldCloseOnOutsideClick",
+              cond: "closeOnOutsideClick",
               target: "closed",
               actions: "restoreFocus",
             },
@@ -82,11 +82,11 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
     activities: { trackPointerDown },
     guards: {
       shouldCloseOnEsc: (ctx) => !!ctx.closeOnEsc,
-      isPointerdownFocusable: (ctx) => {
+      isRelatedTargetFocusable: (ctx) => {
         if (!ctx.pointerdownNode) return false
         return isTabbable(ctx.pointerdownNode)
       },
-      shouldCloseOnOutsideClick: (ctx) => !!ctx.closeOnOutsideClick,
+      closeOnOutsideClick: (ctx) => !!ctx.closeOnOutsideClick,
     },
     actions: {
       setId(ctx, evt) {
@@ -100,15 +100,12 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
       },
       autoFocus(ctx) {
         nextTick(() => {
-          const { getFirstFocusable } = dom(ctx)
-          const firstFocusable = getFirstFocusable()
-          firstFocusable?.focus()
+          dom.getFirstFocusableEl(ctx)?.focus()
         })
       },
       restoreFocus(ctx) {
         nextTick(() => {
-          const { trigger } = getElements(ctx)
-          trigger?.focus()
+          dom.getTriggerEl(ctx)?.focus()
         })
       },
     },

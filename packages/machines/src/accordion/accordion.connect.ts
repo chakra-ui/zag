@@ -1,9 +1,8 @@
-import { is } from "@core-foundation/utils/is"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import type { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
-import { getIds } from "./accordion.dom"
+import { is } from "tiny-guard"
+import type { DOM, Props } from "../utils"
+import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
+import { dom } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
 
 export function accordionConnect(
@@ -12,18 +11,16 @@ export function accordionConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
 
   return {
-    rootProps: normalize<HTMLProps>({
-      id: ids.root,
+    rootProps: normalize<Props.Element>({
+      id: dom.getRootId(ctx),
     }),
 
     getAccordionItem(props: AccordionItemProps) {
       const { id, disabled } = props
 
-      const isOpen = is.array(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId
-
+      const isOpen = is.arr(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId
       const isDisabled = disabled ?? ctx.disabled
       const isFocused = ctx.focusedId === id
 
@@ -31,29 +28,29 @@ export function accordionConnect(
         isFocused,
         isOpen,
 
-        groupProps: normalize<HTMLProps>({
-          id: ids.getGroupId(id),
+        groupProps: normalize<Props.Element>({
+          id: dom.getGroupId(ctx, id),
           "data-expanded": dataAttr(isOpen),
         }),
 
-        panelProps: normalize<HTMLProps>({
+        panelProps: normalize<Props.Element>({
           role: "region",
-          id: ids.getPanelId(id),
-          "aria-labelledby": ids.getTriggerId(id),
+          id: dom.getPanelId(ctx, id),
+          "aria-labelledby": dom.getTriggerId(ctx, id),
           hidden: !isOpen,
           "data-disabled": dataAttr(isDisabled),
           "data-focus": dataAttr(isFocused),
           "data-expanded": dataAttr(isOpen),
         }),
 
-        triggerProps: normalize<ButtonProps>({
+        triggerProps: normalize<Props.Button>({
           type: "button",
-          id: ids.getTriggerId(id),
-          "aria-controls": ids.getPanelId(id),
+          id: dom.getTriggerId(ctx, id),
+          "aria-controls": dom.getPanelId(ctx, id),
           "aria-expanded": isOpen,
           disabled: isDisabled,
           "aria-disabled": isDisabled,
-          "data-ownedby": ids.root,
+          "data-ownedby": dom.getRootId(ctx),
           onFocus() {
             if (disabled) return
             send({ type: "FOCUS", id })
@@ -69,7 +66,7 @@ export function accordionConnect(
           onKeyDown(event) {
             if (disabled) return
 
-            const keyMap: EventKeyMap = {
+            const keyMap: DOM.EventKeyMap = {
               ArrowDown() {
                 send({ type: "ARROW_DOWN", id })
               },

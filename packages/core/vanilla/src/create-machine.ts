@@ -1,11 +1,11 @@
 import { Machine } from "./machine"
-import { Dict, StateMachine } from "./types"
+import { Dict, StateMachine as S } from "./types"
 
 export const createMachine = <
   TContext extends Dict,
-  TState extends StateMachine.StateSchema = StateMachine.StateSchema,
-  TEvent extends StateMachine.EventObject = StateMachine.AnyEventObject,
+  TState extends S.StateSchema = S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
 >(
-  config: StateMachine.MachineConfig<TContext, TState, TEvent>,
-  options?: StateMachine.MachineOptions<TContext, TState, TEvent>,
+  config: S.MachineConfig<TContext, TState, TEvent>,
+  options?: S.MachineOptions<TContext, TState, TEvent>,
 ) => new Machine(config, options)

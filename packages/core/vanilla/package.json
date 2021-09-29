@@ -28,8 +28,9 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@core-foundation/utils": "^0.1.10",
     "klona": "^2.0.4",
+    "tiny-fn": "^0.0.2",
+    "tiny-guard": "^0.0.1",
     "valtio": "^1.2.2"
   }
 }

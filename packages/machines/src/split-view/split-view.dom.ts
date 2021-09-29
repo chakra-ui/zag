@@ -1,22 +1,14 @@
-import { SplitViewMachineContext } from "./split-view.machine"
+import { SplitViewMachineContext as Ctx } from "./split-view.machine"
 
-export function getIds(uid: string) {
-  return {
-    root: `${uid}-root`,
-    splitter: `${uid}-splitter`,
-    toggleButton: `${uid}-toggle-button`,
-    splitterLabel: `${uid}-splitter-label`,
-    primaryPane: `${uid}-primary-pane`,
-    secondaryPane: `${uid}-secondary-pane`,
-  }
-}
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootId: (ctx: Ctx) => `${ctx.uid}-root`,
+  getSplitterId: (ctx: Ctx) => `${ctx.uid}-splitter`,
+  getToggleButtonId: (ctx: Ctx) => `${ctx.uid}-toggle-button`,
+  getSplitterLabelId: (ctx: Ctx) => `${ctx.uid}-splitter-label`,
+  getPrimaryPaneId: (ctx: Ctx) => `${ctx.uid}-primary-pane`,
+  getSecondaryPaneId: (ctx: Ctx) => `${ctx.uid}-secondary-pane`,
 
-export function getElements(ctx: SplitViewMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
-
-  return {
-    splitter: doc.getElementById(ids.splitter),
-    primaryPane: doc.getElementById(ids.primaryPane),
-  }
+  getSplitterEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getSplitterId(ctx)),
+  getPrimaryPaneEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPrimaryPaneId(ctx)),
 }

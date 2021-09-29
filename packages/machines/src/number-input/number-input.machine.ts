@@ -1,9 +1,9 @@
-import { addPointerEvent } from "@core-dom/event/pointer"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { nextTick, noop } from "@core-foundation/utils/fn"
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { getElements } from "./number-input.dom"
-import { sanitize } from "./number-input.utils"
+import { addDomEvent } from "tiny-dom-event"
+import { nextTick, noop } from "tiny-fn"
+import { range as createRange } from "tiny-num"
+import { dom } from "./number-input.dom"
+import { utils } from "./number-input.utils"
 
 const { not, and } = guards
 
@@ -52,10 +52,10 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         activities: "attachWheelListener",
         on: {
           INC: {
-            actions: "incrementBy",
+            actions: "increment",
           },
           DEC: {
-            actions: "decrementBy",
+            actions: "decrement",
           },
           GO_TO_MAX: {
             actions: "setToMax",
@@ -127,14 +127,14 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
     },
     guards: {
       shouldClampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
-      isAtMin: (ctx) => new NumericRange(ctx).isAtMin,
-      isAtMax: (ctx) => new NumericRange(ctx).isAtMax,
-      isInRange: (ctx) => new NumericRange(ctx).isInRange,
+      isAtMin: (ctx) => createRange(ctx).isAtMin,
+      isAtMax: (ctx) => createRange(ctx).isAtMax,
+      isInRange: (ctx) => createRange(ctx).isInRange,
     },
     activities: {
       attachWheelListener(ctx) {
         const doc = ctx.doc ?? document
-        const { input } = getElements(ctx)
+        const input = dom.getInputEl(ctx)
 
         if (!input) return noop
 
@@ -144,14 +144,13 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           event.preventDefault()
 
           const dir = Math.sign(event.deltaY) * -1
-
           if (dir === 1) {
-            ctx.value = new NumericRange(ctx).increment().clamp().toString()
+            ctx.value = utils.increment(ctx)
           } else if (dir === -1) {
-            ctx.value = new NumericRange(ctx).decrement().clamp().toString()
+            ctx.value = utils.decrement(ctx)
           }
         }
-        return addPointerEvent(input, "wheel", listener, { passive: false })
+        return addDomEvent(input, "wheel", listener, { passive: false })
       },
     },
     actions: {
@@ -162,32 +161,26 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         ctx.doc = ref(evt.doc)
       },
       focusInput(ctx) {
-        const { input } = getElements(ctx)
+        const input = dom.getInputEl(ctx)
         nextTick(() => input?.focus())
       },
-      increment(ctx) {
-        ctx.value = new NumericRange(ctx).increment().clamp().toString()
+      increment(ctx, evt) {
+        ctx.value = utils.increment(ctx, evt.step)
       },
-      decrement(ctx) {
-        ctx.value = new NumericRange(ctx).decrement().clamp().toString()
+      decrement(ctx, evt) {
+        ctx.value = utils.decrement(ctx, evt.step)
       },
       clampValue(ctx) {
-        ctx.value = new NumericRange(ctx).clamp().toString()
+        ctx.value = utils.clamp(ctx)
       },
       setValue(ctx, event) {
-        ctx.value = sanitize(event.value)
+        ctx.value = utils.sanitize(event.value)
       },
       setToMax(ctx) {
         ctx.value = ctx.max.toString()
       },
       setToMin(ctx) {
         ctx.value = ctx.min.toString()
-      },
-      incrementBy(ctx, evt) {
-        ctx.value = new NumericRange(ctx).increment(evt.step).clamp().toString()
-      },
-      decrementBy(ctx, evt) {
-        ctx.value = new NumericRange(ctx).decrement(evt.step).clamp().toString()
       },
     },
   },

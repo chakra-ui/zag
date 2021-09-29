@@ -1,4 +1,4 @@
-import { AnyFunction } from "@core-foundation/utils"
+import { StateMachine as S } from "@ui-machines/core"
 import { ComputedRef, defineComponent, onMounted, ref, Ref } from "vue"
 
 type MaybeRef<T> = T | Ref<T> | ComputedRef<T>
@@ -7,7 +7,7 @@ type MaybeElementRef = MaybeRef<Element | ComponentInstance | null>
 
 export type UseSetupProps = {
   id: ComputedRef<string>
-  send: AnyFunction
+  send: (evt: S.Event<S.AnyEventObject>) => void
 }
 
 export function useSetup(props: UseSetupProps) {

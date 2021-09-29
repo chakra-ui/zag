@@ -1,13 +1,14 @@
-import { focus } from "@core-dom/event"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { createMachine, ref, guards } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
+import { nextTick } from "tiny-fn"
+import { clamp, decrement, increment, snapToStep } from "tiny-num"
+import { relativeToNode } from "tiny-point/dom"
 import { trackPointerMove } from "../utils/pointer-move"
-import { WithDOM } from "../utils/types"
-import { getElements } from "./split-view.dom"
+import { DOM } from "../utils/types"
+import { dom } from "./split-view.dom"
 
 const { not } = guards
 
-export type SplitViewMachineContext = WithDOM<{
+export type SplitViewMachineContext = DOM.Context<{
   /**
    * Whether to allow the separator to be dragged.
    */
@@ -170,14 +171,10 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         return trackPointerMove({
           ctx,
           onPointerMove(_evt, info) {
-            const { primaryPane } = getElements(ctx)
+            const primaryPane = dom.getPrimaryPaneEl(ctx)
             if (!primaryPane) return
-
-            const { point } = info.point.relativeToNode(primaryPane)
-            const { min, max, step } = ctx
-
-            const range = new NumericRange({ min, max, step, value: point.x })
-            ctx.value = range.clamp().snapToStep().valueOf()
+            const { point } = relativeToNode(info.point, primaryPane)
+            ctx.value = parseFloat(snapToStep(clamp(point.x, ctx), ctx.step))
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -205,15 +202,13 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         ctx.value = ctx.max
       },
       increment(ctx, evt) {
-        ctx.value = new NumericRange(ctx).increment(evt.step).clamp().valueOf()
+        ctx.value = clamp(increment(ctx.value, evt.step), ctx)
       },
       decrement(ctx, evt) {
-        ctx.value = new NumericRange(ctx).decrement(evt.step).clamp().valueOf()
+        ctx.value = clamp(decrement(ctx.value, evt.step), ctx)
       },
       focusSplitter(ctx) {
-        const { splitter } = getElements(ctx)
-        if (!splitter) return
-        focus.nextTick(splitter)
+        nextTick(() => dom.getSplitterEl(ctx)?.focus())
       },
     },
   },

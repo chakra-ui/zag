@@ -1,11 +1,10 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { defaultPropNormalizer } from "../utils/dom-attr"
-import { ButtonProps, InputProps, EventKeyMap } from "../utils/types"
-import { getIds } from "./number-input.dom"
+import { range as createRange } from "tiny-num"
+import type { DOM, Props } from "../utils"
+import { defaultPropNormalizer, getEventStep } from "../utils"
+import { dom } from "./number-input.dom"
 import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
-import { isValidNumericKeyboardEvent } from "./number-input.utils"
-import { getEventStep } from "../utils/get-step"
+import { utils } from "./number-input.utils"
 
 export function numberInputConnect(
   state: S.State<NumberInputMachineContext, NumberInputMachineState>,
@@ -14,19 +13,18 @@ export function numberInputConnect(
 ) {
   const { context: ctx } = state
 
-  const { inputId, incButtonId, decButtonId } = getIds(ctx.uid)
-  const range = new NumericRange(ctx)
+  const range = createRange(ctx)
   const canIncrement = !ctx.disabled && !range.isAtMax
   const canDecrement = !ctx.disabled && !range.isAtMin
 
-  const valueAsNumber = Number(range)
+  const valueAsNumber = range.value
 
   const MINUS_SIGN = "\u2212"
   const valueText = ctx.value === "" ? "Empty" : ctx.value.replace("-", MINUS_SIGN)
 
   return {
-    inputProps: normalize<InputProps>({
-      id: inputId,
+    inputProps: normalize<Props.Input>({
+      id: dom.getInputId(ctx),
       role: "spinbutton",
       pattern: "[0-9]*(.[0-9]+)?",
       inputMode: "decimal",
@@ -53,12 +51,12 @@ export function numberInputConnect(
         })
       },
       onKeyDown(event) {
-        if (!isValidNumericKeyboardEvent(event) || (event.key === "." && ctx.value.includes("."))) {
+        if (!utils.isValidNumericEvent(event) || (event.key === "." && ctx.value.includes("."))) {
           event.preventDefault()
         }
 
         const step = getEventStep(event) * ctx.step
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           ArrowUp() {
             send({ type: "INC", step })
           },
@@ -82,8 +80,8 @@ export function numberInputConnect(
       },
     }),
 
-    decrementButtonProps: normalize<ButtonProps>({
-      id: decButtonId,
+    decrementButtonProps: normalize<Props.Button>({
+      id: dom.getDecButtonId(ctx),
       "aria-disabled": !canDecrement,
       disabled: !canDecrement,
       role: "button",
@@ -97,12 +95,12 @@ export function numberInputConnect(
       },
     }),
 
-    incrementButtonProps: normalize<ButtonProps>({
+    incrementButtonProps: normalize<Props.Button>({
       "aria-disabled": !canIncrement,
       disabled: !canIncrement,
       role: "button",
       tabIndex: -1,
-      id: incButtonId,
+      id: dom.getIncButtonId(ctx),
       onPointerDown(event) {
         event.preventDefault()
         send("PRESS_DOWN_INC")

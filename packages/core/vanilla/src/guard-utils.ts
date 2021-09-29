@@ -1,5 +1,4 @@
-import { is } from "@core-foundation/utils/is"
-
+import { is } from "tiny-guard"
 import { Dict, StateMachine as S } from "./types"
 
 function or<TContext, TEvent extends S.EventObject>(
@@ -10,7 +9,7 @@ function or<TContext, TEvent extends S.EventObject>(
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
-          if (is.string(condition)) {
+          if (is.str(condition)) {
             return !!guards[condition]?.(ctx, event)
           }
           return condition.exec(guards)(ctx, event)
@@ -27,7 +26,7 @@ function and<TContext, TEvent extends S.EventObject>(
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
-          if (is.string(condition)) {
+          if (is.str(condition)) {
             return !!guards[condition]?.(ctx, event)
           }
           return condition.exec(guards)(ctx, event)
@@ -42,7 +41,7 @@ function not<TContext, TEvent extends S.EventObject>(
   return {
     toString: () => `!(${condition.toString()})`,
     exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) => {
-      if (is.string(condition)) {
+      if (is.str(condition)) {
         return !guardMap[condition]?.(ctx, event)
       }
       return !condition.exec(guardMap)(ctx, event)
@@ -53,7 +52,7 @@ function not<TContext, TEvent extends S.EventObject>(
 export const guards = { or, and, not }
 
 export function isGuardHelper(value: unknown): value is { exec: Function } {
-  return is.object(value) && value.exec != null
+  return is.obj(value) && value.exec != null
 }
 
 export const TruthyGuard = () => true
@@ -69,7 +68,7 @@ export function determineGuardFn<TContext, TEvent extends S.EventObject>(
 ) {
   cond = cond ?? TruthyGuard
   return (context: TContext, event: TEvent) => {
-    if (is.string(cond)) {
+    if (is.str(cond)) {
       const value = guardMap?.[cond]
       return is.func(value) ? value(context, event) : value
     }

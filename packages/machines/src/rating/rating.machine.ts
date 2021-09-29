@@ -1,10 +1,9 @@
-import { dispatchInputEvent } from "@core-dom/event"
-import { nextTick } from "@core-foundation/utils"
-import { createMachine, ref } from "@ui-machines/core"
-import { WithDOM } from "../utils/types"
-import { getElements } from "./rating.dom"
+import { createMachine, ref, StateMachine } from "@ui-machines/core"
+import { nextTick } from "tiny-fn"
+import { DOM } from "../utils/types"
+import { dom } from "./rating.dom"
 
-export type RatingMachineContext = WithDOM<{
+export type RatingMachineContext = DOM.Context<{
   max: number
   name?: string
   value: number
@@ -15,7 +14,11 @@ export type RatingMachineContext = WithDOM<{
   autofocus?: boolean
   getLabelText?(value: number): string
   onChange?: (value: number) => void
-}>
+}> &
+  StateMachine.Computed<{
+    isInteractive: boolean
+    isHovering: boolean
+  }>
 
 export type RatingMachineState = {
   value: "unknown" | "idle" | "hover" | "focus"
@@ -33,6 +36,10 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
       hoveredValue: -1,
       disabled: false,
       readonly: false,
+    },
+    computed: {
+      isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+      isHovering: (ctx) => ctx.hoveredValue > -1,
     },
     states: {
       unknown: {
@@ -101,10 +108,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
       isValueEmpty: (ctx) => ctx.value <= 0,
-      isRadioFocused: (ctx) => {
-        const { root, activeElement } = getElements(ctx)
-        return !!root?.contains(activeElement)
-      },
+      isRadioFocused: (ctx) => !!dom.getRootEl(ctx)?.contains(dom.getActiveEl(ctx)),
     },
     actions: {
       setId(ctx, evt) {
@@ -117,8 +121,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
         ctx.hoveredValue = -1
       },
       focusActiveRadio(ctx) {
-        const { radio } = getElements(ctx)
-        nextTick(() => radio?.focus())
+        nextTick(() => dom.getRadioEl(ctx)?.focus())
       },
       setPrevValue(ctx) {
         const factor = ctx.allowHalf ? 0.5 : 1
@@ -144,14 +147,8 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
       },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
-        dispatchChangeEvent(ctx)
+        dom.dispatchChangeEvent(ctx)
       },
     },
   },
 )
-
-// dispatch change/input event to closest `form` element
-function dispatchChangeEvent(ctx: RatingMachineContext) {
-  const { input } = getElements(ctx)
-  if (input) dispatchInputEvent(input, ctx.value)
-}

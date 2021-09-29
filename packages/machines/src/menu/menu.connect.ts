@@ -1,12 +1,10 @@
-import { contains } from "@core-dom/element"
-import { cast } from "@core-foundation/utils"
-import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
-import { validateBlur } from "../utils/validate-blur"
-import { getChildMenus, getIds, getElements, getParentMenus, isTargetDisabled } from "./menu.dom"
+import { contains } from "tiny-dom-query"
+import { cast } from "tiny-fn"
+import { fromPointerEvent } from "tiny-point/dom"
+import type { DOM, Props } from "../utils"
+import { dataAttr, defaultPropNormalizer, getEventKey, validateBlur } from "../utils"
+import { dom } from "./menu.dom"
 import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
 
 export function menuConnect(
@@ -16,7 +14,6 @@ export function menuConnect(
 ) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
-  const ids = getIds(ctx.uid)
   const isSubmenu = ctx.parent != null
 
   return {
@@ -30,15 +27,15 @@ export function menuConnect(
       send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
     },
 
-    triggerProps: normalize<ButtonProps>({
+    triggerProps: normalize<Props.Button>({
       type: "button",
-      id: ids.trigger,
+      id: dom.getTriggerId(ctx),
       "data-uid": ctx.uid,
       "aria-haspopup": "menu",
-      "aria-controls": ids.menu,
+      "aria-controls": dom.getMenuId(ctx),
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
-        const disabled = isTargetDisabled(event.currentTarget)
+        const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
@@ -46,16 +43,16 @@ export function menuConnect(
         })
       },
       onPointerLeave(event) {
-        const disabled = isTargetDisabled(event.currentTarget)
+        const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERLEAVE",
           target: event.currentTarget,
-          point: Point.fromPointerEvent(cast(event)),
+          point: fromPointerEvent(cast(event)),
         })
       },
       onPointerDown(event) {
-        const disabled = isTargetDisabled(event.currentTarget)
+        const disabled = dom.isTargetDisabled(event.currentTarget)
         if (event.button !== 0 || disabled) return
         send({ type: "TRIGGER_CLICK", target: event.currentTarget })
       },
@@ -66,7 +63,7 @@ export function menuConnect(
         send("TRIGGER_FOCUS")
       },
       onKeyDown(event) {
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -92,8 +89,8 @@ export function menuConnect(
       },
     }),
 
-    menuProps: normalize<HTMLProps>({
-      id: ids.menu,
+    menuProps: normalize<Props.Element>({
+      id: dom.getMenuId(ctx),
       hidden: !isOpen,
       role: "menu",
       tabIndex: 0,
@@ -102,9 +99,11 @@ export function menuConnect(
       "aria-orientation": ctx.orientation,
       "data-orientation": ctx.orientation,
       onBlur(event) {
-        const { menu, trigger } = getElements(ctx)
+        const menu = dom.getMenuEl(ctx)
+        const trigger = dom.getTriggerEl(ctx)
 
-        const exclude = getChildMenus(ctx).concat(getParentMenus(ctx))
+        const exclude = dom.getChildMenus(ctx).concat(dom.getParentMenus(ctx))
+
         if (trigger && !isSubmenu) {
           exclude.push(trigger)
         }
@@ -112,7 +111,6 @@ export function menuConnect(
           exclude,
           fallback: ctx.pointerdownNode,
         })
-
         if (isValidBlur && !contains(menu, event.relatedTarget)) {
           send("BLUR")
         }
@@ -121,10 +119,10 @@ export function menuConnect(
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
-        const { activeItem } = getElements(ctx)
+        const activeItem = dom.getActiveItemEl(ctx)
         const isLink = !!activeItem?.matches("a[href]")
 
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -174,18 +172,18 @@ export function menuConnect(
       },
     }),
 
-    dividerProps: normalize<HTMLProps>({
+    dividerProps: normalize<Props.Element>({
       role: "separator",
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
 
     getItemOptionProps(opts: OptionItemProps) {
       const { type, checked, disabled, id, onCheckedChange, valueText } = opts
-      return normalize<HTMLProps>({
+      return normalize<Props.Element>({
         id,
         role: `menuitem${type}`,
         "data-disabled": dataAttr(disabled),
-        "data-ownedby": ids.menu,
+        "data-ownedby": dom.getMenuId(ctx),
         "aria-checked": !!checked,
         "aria-disabled": disabled,
         "data-selected": dataAttr(ctx.activeId === id),
@@ -216,11 +214,11 @@ export function menuConnect(
 
     getItemProps(opts: ItemProps = {}) {
       const { id, disabled, valueText } = opts
-      return normalize<HTMLProps>({
+      return normalize<Props.Element>({
         id,
         role: "menuitem",
         "data-disabled": dataAttr(disabled),
-        "data-ownedby": ids.menu,
+        "data-ownedby": dom.getMenuId(ctx),
         "data-selected": dataAttr(ctx.activeId === id),
         "data-orientation": ctx.orientation,
         "data-valuetext": valueText,

@@ -1,4 +1,3 @@
-import { cast } from "@core-foundation/utils/fn"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
@@ -32,7 +31,7 @@ export function useMachine<
   }, [actions])
 
   const state = useSnapshot(service.state)
-  const _state = cast<S.State<TContext, TState>>(state)
+  const _state = <S.State<TContext, TState>>state
 
   return [_state, service.send, service] as const
 }

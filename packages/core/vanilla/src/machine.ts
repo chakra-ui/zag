@@ -1,12 +1,13 @@
-import { cast, is, runIfFn, toArray, warn } from "@core-foundation/utils"
 import { klona } from "klona"
+import { cast, runIfFn, warn, invariant } from "tiny-fn"
+import { is } from "tiny-guard"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction } from "./types"
-import { toEvent, uniqueId } from "./utils"
+import { toArray, toEvent, uniqueId } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -76,7 +77,7 @@ export class Machine<
     const event = toEvent<TEvent>(ActionTypes.Init)
 
     if (init) {
-      const resolved = is.object(init) ? init : { context: this.config.context!, value: init }
+      const resolved = is.obj(init) ? init : { context: this.config.context!, value: init }
 
       this.setState(resolved.value)
       this.setContext(resolved.context as Partial<TContext>)
@@ -177,10 +178,9 @@ export class Machine<
     const id = runIfFn(to, this.contextSnapshot)
     const child = this.children.get(id)
     if (!child) {
-      const msg = `[machine] Cannot send '${event.type}' event to unknown child`
-      throw new Error(msg)
+      invariant(`[machine] Cannot send '${event.type}' event to unknown child`)
     }
-    child.send(event)
+    child!.send(event)
   }
 
   /**
@@ -188,8 +188,7 @@ export class Machine<
    */
   stopChild = (id: string) => {
     if (!this.children.has(id)) {
-      const msg = "[machine] Cannot stop unknown child"
-      throw new Error(msg)
+      invariant("[machine] Cannot stop unknown child")
     }
     this.children.get(id)!.stop()
     this.children.delete(id)
@@ -210,10 +209,9 @@ export class Machine<
   }
 
   public spawn = (src: MachineSrc<any, any, any>, id?: string) => {
-    const actor = typeof src === "function" ? src() : src
+    const actor = runIfFn(src)
     if (id) actor.id = id
     actor.type = MachineType.Actor
-
     actor.setParent(this)
     this.children.set(actor.id, actor)
 
@@ -337,7 +335,7 @@ export class Machine<
     const entries: VoidFunction[] = []
     const exits: VoidFunction[] = []
 
-    if (is.array(stateNode.after)) {
+    if (is.arr(stateNode.after)) {
       //
       const transition = this.determineTransition(stateNode.after, event)
       if (!transition) return
@@ -346,18 +344,18 @@ export class Machine<
       entries.push(actions.entry)
       exits.push(actions.exit)
       //
-    } else if (is.object(stateNode.after)) {
+    } else if (is.obj(stateNode.after)) {
       //
       for (const delay in stateNode.after) {
         const transition = stateNode.after[delay]
         let resolvedTransition: S.DelayedTransition<TContext, TState["value"], TEvent> = {}
 
-        if (is.array(transition)) {
+        if (is.arr(transition)) {
           //
           const picked = this.determineTransition(transition, event)
           if (picked) resolvedTransition = picked
           //
-        } else if (is.string(transition)) {
+        } else if (is.str(transition)) {
           resolvedTransition = { target: transition, delay }
         } else {
           resolvedTransition = { ...transition, delay }
@@ -387,10 +385,8 @@ export class Machine<
    */
   private executeActions = (actions: S.Actions<TContext, TEvent> | undefined, event: TEvent) => {
     for (const action of toArray(actions)) {
-      const fn = is.string(action) ? this.actionMap?.[action] : action
-
-      warn(is.string(action) && !fn, `[machine] No implementation found for action: \`${action}\``)
-
+      const fn = is.str(action) ? this.actionMap?.[action] : action
+      warn(is.str(action) && !fn, `[machine] No implementation found for action: \`${action}\``)
       fn?.(this.state.context, event, this.meta)
     }
   }
@@ -401,7 +397,7 @@ export class Machine<
    */
   private executeActivities = (event: TEvent, activities: Array<S.Activity<TContext, TState, TEvent>>) => {
     for (const activity of activities) {
-      const fn = is.string(activity) ? this.activityMap?.[activity] : activity
+      const fn = is.str(activity) ? this.activityMap?.[activity] : activity
 
       if (!fn) {
         warn(`[machine] No implementation found for activity: \`${activity}\``)
@@ -426,7 +422,7 @@ export class Machine<
     const event = toEvent<TEvent>(ActionTypes.Every)
 
     // every: [{ interval: 2000, actions: [...], cond: "isValid" },  { interval: 1000, actions: [...] }]
-    if (is.array(every)) {
+    if (is.arr(every)) {
       // picked = { interval: string | number | <ref>, actions: [...], cond: ... }
       const picked = toArray(every).find((t) => {
         //
@@ -592,8 +588,7 @@ export class Machine<
    */
   sendParent = (evt: S.EventWithSrc) => {
     if (!this.parent) {
-      const msg = "[machine] Cannot send event to an unknown parent"
-      throw new Error(msg)
+      invariant("[machine] Cannot send event to an unknown parent")
     }
     const event = toEvent<S.EventWithSrc>(evt)
     this.parent?.send(event)
@@ -608,7 +603,7 @@ export class Machine<
   }
 
   transition = (state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null, evt: S.Event<TEvent>) => {
-    const stateNode = is.string(state) ? this.getStateNode(state) : state?.stateNode
+    const stateNode = is.str(state) ? this.getStateNode(state) : state?.stateNode
 
     const event = toEvent(evt)
 

@@ -1,16 +1,15 @@
-import { NodeList } from "@core-dom/node-list"
-import { PinInputMachineContext } from "./pin-input.machine"
+import { queryElements } from "tiny-nodelist"
+import { nextIndex, prevIndex } from "tiny-array"
+import { PinInputMachineContext as Ctx } from "./pin-input.machine"
 
-export function getIds(uid: string) {
-  return {
-    root: `pin-input-${uid}`,
-    getInputId: (id: string | number) => `pin-input-${uid}-${id}`,
-  }
-}
-
-export function dom(ctx: PinInputMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
-  const selector = `input[data-ownedby=${ids.root}]`
-  return NodeList.fromSelector<HTMLInputElement>(doc, selector)
+export const dom = {
+  getRootId: (ctx: Ctx) => `pin-input-${ctx.uid}`,
+  getInputId: (ctx: Ctx, id: string | number) => `pin-input-${ctx.uid}-${id}`,
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getElements: (ctx: Ctx) =>
+    queryElements<HTMLInputElement>(dom.getDoc(ctx), `input[data-ownedby=${dom.getRootId(ctx)}]`),
+  getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
+  getNextIndex: (ctx: Ctx) => nextIndex(dom.getElements(ctx), ctx.focusedIndex, { loop: false }),
+  getPrevIndex: (ctx: Ctx) => prevIndex(dom.getElements(ctx), ctx.focusedIndex, { loop: false }),
+  getFocusedEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
 }

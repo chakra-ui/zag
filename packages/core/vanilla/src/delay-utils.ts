@@ -1,5 +1,4 @@
-import { is } from "@core-foundation/utils/is"
-
+import { is } from "tiny-guard"
 import { StateMachine as S } from "./types"
 
 /**
@@ -15,13 +14,13 @@ export function determineDelayFn<TContext, TEvent extends S.EventObject>(
   delaysMap: S.DelayMap<TContext, TEvent> | undefined,
 ) {
   return (context: TContext, event: TEvent) => {
-    if (is.number(delay)) return delay
+    if (is.num(delay)) return delay
 
     if (is.func(delay)) {
       return delay(context, event)
     }
 
-    if (is.string(delay)) {
+    if (is.str(delay)) {
       const value = Number.parseFloat(delay)
 
       if (!Number.isNaN(value)) {

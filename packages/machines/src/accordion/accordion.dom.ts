@@ -1,31 +1,23 @@
-import { NodeList } from "@core-dom/node-list"
-import { AccordionMachineContext } from "./accordion.machine"
+import { queryElements, nextById, prevById } from "tiny-nodelist"
+import { first, last } from "tiny-array"
+import type { AccordionMachineContext as Ctx } from "./accordion.machine"
 
-export function getIds(uid: string) {
-  return {
-    root: `accordion-${uid}`,
-    getGroupId: (id: string) => `accordion-${uid}-item-${id}`,
-    getPanelId: (id: string) => `accordion-${uid}-panel-${id}`,
-    getTriggerId: (id: string) => `accordion-${uid}-trigger-${id}`,
-  }
-}
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-export function dom(ctx: AccordionMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
-  const root = doc.getElementById(ids.root)
+  getRootId: (ctx: Ctx) => `accordion-${ctx.uid}`,
+  getGroupId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-item-${id}`,
+  getPanelId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-panel-${id}`,
+  getTriggerId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-trigger-${id}`,
 
-  const selector = `[aria-controls][data-ownedby='${ids.root}']:not([disabled])`
-  const list = NodeList.fromSelector(root, selector)
+  getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
+  getElements: (ctx: Ctx) => {
+    const selector = `[aria-controls][data-ownedby='${dom.getRootId(ctx)}']:not([disabled])`
+    return queryElements(dom.getRootEl(ctx), selector)
+  },
 
-  return {
-    first: list.first,
-    last: list.last,
-    next(id: string) {
-      return list.nextById(ids.getTriggerId(id))
-    },
-    prev(id: string) {
-      return list.prevById(ids.getTriggerId(id))
-    },
-  }
+  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
+  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTriggerId(ctx, id)),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id)),
 }

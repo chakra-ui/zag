@@ -1,13 +1,14 @@
-import { dispatchInputEvent } from "@core-dom/event"
-import { nextTick } from "@core-foundation/utils"
-import { Point } from "@core-graphics/point"
-import { fromElement } from "@core-graphics/rect/create"
-import { createMachine, ref } from "@ui-machines/core"
+import { createMachine, ref, StateMachine } from "@ui-machines/core"
+import { nextTick } from "tiny-fn"
+import { decrement, increment, snapToStep } from "tiny-num"
+import { closest } from "tiny-point/distance"
+import { center } from "tiny-rect"
+import { fromElement } from "tiny-rect/from-element"
 import { trackPointerMove } from "../utils/pointer-move"
-import { WithDOM } from "../utils/types"
-import { getElements, getRangeAtIndex, getValueFromPoint } from "./range-slider.dom"
+import { DOM } from "../utils/types"
+import { dom, getRangeAtIndex } from "./range-slider.dom"
 
-export type RangeSliderMachineContext = WithDOM<{
+export type RangeSliderMachineContext = DOM.Context<{
   "aria-label"?: string | string[]
   "aria-labelledby"?: string | string[]
   thumbSize: Array<{ width: number; height: number }> | null
@@ -24,7 +25,12 @@ export type RangeSliderMachineContext = WithDOM<{
   min: number
   max: number
   step: number
-}>
+}> &
+  StateMachine.Computed<{
+    isVertical: boolean
+    isHorizontal: boolean
+    isRtl: boolean
+  }>
 
 export type RangeSliderMachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
@@ -45,6 +51,11 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       value: [0, 100],
       orientation: "horizontal",
       dir: "ltr",
+    },
+    computed: {
+      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isVertical: (ctx) => ctx.orientation === "vertical",
+      isRtl: (ctx) => ctx.dir === "rtl",
     },
     states: {
       unknown: {
@@ -131,11 +142,11 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         return trackPointerMove({
           ctx,
           onPointerMove(_evt, info) {
-            const value = getValueFromPoint(ctx, info.point)
+            const value = dom.getValueFromPoint(ctx, info.point)
             if (value == null) return
             ctx.value[ctx.activeIndex] = value
             ctx.onChange?.(ctx.value)
-            dispatchChangeEvent(ctx)
+            dom.dispatchChangeEvent(ctx)
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -158,12 +169,15 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
-        dispatchChangeEvent(ctx)
+        dom.dispatchChangeEvent(ctx)
       },
       setThumbSize(ctx) {
         nextTick(() => {
-          const { thumbs } = getElements(ctx)
-          ctx.thumbSize = thumbs.map((thumb) => fromElement(thumb).size)
+          const thumbs = dom.getElements(ctx)
+          ctx.thumbSize = thumbs.map((thumb) => {
+            const { width, height } = fromElement(thumb)
+            return { width, height }
+          })
         })
       },
       setActiveIndex(ctx, evt) {
@@ -173,13 +187,13 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         // if there's no index, we assume it's from a pointer down event (`onPointerDown`)
         // and we attempt to compute the closest index
         if (index == null) {
-          const { thumbs } = getElements(ctx)
+          const thumbs = dom.getElements(ctx)
 
           // get the center point of all thumbs
-          const points = thumbs.map((el) => fromElement(el)).map((rect) => rect.centerPoint.value)
+          const points = thumbs.map((el) => fromElement(el)).map((rect) => center(rect))
 
           // get the closest center point from the event ("pointerdown") point
-          const getClosest = Point.closest(...points)
+          const getClosest = closest(...points)
           const closestPoint = getClosest(evt.point)
           index = points.indexOf(closestPoint)
         }
@@ -187,43 +201,33 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         ctx.activeIndex = index
       },
       setValueForEvent(ctx, evt) {
-        const value = getValueFromPoint(ctx, evt.point)
+        const value = dom.getValueFromPoint(ctx, evt.point)
         if (typeof value === "number") {
           ctx.value[ctx.activeIndex] = value
         }
       },
       focusActiveThumb(ctx) {
         nextTick(() => {
-          const { getThumb } = getElements(ctx)
-          const thumb = getThumb(ctx.activeIndex)
+          const thumb = dom.getThumbEl(ctx, ctx.activeIndex)
           thumb?.focus()
         })
       },
       decrementAtIndex(ctx, evt) {
-        const range = getRangeAtIndex(ctx).decrement(evt.step)
-        ctx.value[ctx.activeIndex] = range.clone().snapToStep().clamp().valueOf()
+        const value = snapToStep(decrement(getRangeAtIndex(ctx).value, evt.step), ctx.step)
+        ctx.value[ctx.activeIndex] = parseFloat(value)
       },
       incrementAtIndex(ctx, evt) {
-        const range = getRangeAtIndex(ctx).increment(evt.step)
-        ctx.value[ctx.activeIndex] = range.clone().snapToStep().clamp().valueOf()
+        const value = snapToStep(increment(getRangeAtIndex(ctx).value, evt.step), ctx.step)
+        ctx.value[ctx.activeIndex] = parseFloat(value)
       },
       setActiveThumbToMin(ctx) {
-        const range = getRangeAtIndex(ctx)
-        ctx.value[ctx.activeIndex] = range.clone().setToMin().valueOf()
+        const { min } = getRangeAtIndex(ctx)
+        ctx.value[ctx.activeIndex] = min
       },
       setActiveThumbToMax(ctx) {
-        const range = getRangeAtIndex(ctx)
-        ctx.value[ctx.activeIndex] = range.clone().setToMax().valueOf()
+        const { max } = getRangeAtIndex(ctx)
+        ctx.value[ctx.activeIndex] = max
       },
     },
   },
 )
-
-// dispatch change/input event to closest `form` element
-function dispatchChangeEvent(ctx: RangeSliderMachineContext) {
-  const value = ctx.value[ctx.activeIndex]
-  const { getInput } = getElements(ctx)
-  const input = getInput(ctx.activeIndex)
-  if (!input) return
-  dispatchInputEvent(input, value)
-}

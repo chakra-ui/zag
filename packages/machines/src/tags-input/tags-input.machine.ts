@@ -1,11 +1,11 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@core-foundation/utils"
-import { WithDOM } from "../utils/types"
-import { dom, getElements } from "./tags-input.dom"
+import { nextTick } from "tiny-fn"
+import type { DOM } from "../utils"
+import { dom } from "./tags-input.dom"
 
 const { and, not } = guards
 
-export type TagsInputMachineContext = WithDOM<{
+export type TagsInputMachineContext = DOM.Context<{
   autofocus?: boolean
   disabled?: boolean
   readonly?: boolean
@@ -187,21 +187,14 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
     guards: {
       isAtMax: (ctx) => ctx.max != null && ctx.value.length === ctx.max,
       hasFocusedId: (ctx) => ctx.focusedId !== null,
-      isInputFocused: (ctx) => {
-        const { isInputFocused } = dom(ctx)
-        return isInputFocused
-      },
-      isTagFocused(ctx, evt) {
-        return ctx.focusedId === evt.id
-      },
-      isLastTagFocused(ctx) {
-        const { last } = dom(ctx)
-        return last?.id === ctx.focusedId
-      },
+      isInputFocused: (ctx) => dom.isInputFocused(ctx),
+      isTagFocused: (ctx, evt) => ctx.focusedId === evt.id,
+      isLastTagFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.focusedId,
       isInputValueEmpty: (ctx) => ctx.inputValue.trim().length === 0,
       hasTags: (ctx) => ctx.value.length > 0,
       isInputCaretAtStart(ctx) {
-        const { input } = getElements(ctx)
+        const input = dom.getInputEl(ctx)
+        if (!input) return false
         try {
           return input.selectionStart === 0 && input.selectionEnd === 0
         } catch (e) {
@@ -217,38 +210,29 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         ctx.doc = ref(evt.doc)
       },
       focusNextTag(ctx) {
-        const tags = dom(ctx)
         if (!ctx.focusedId) return
-        const nextTag = tags.next(ctx.focusedId)
-        if (nextTag) {
-          ctx.focusedId = nextTag.id
-        }
+        const next = dom.getNextEl(ctx, ctx.focusedId)
+        if (next) ctx.focusedId = next.id
       },
       focusLastTag(ctx) {
-        const tags = dom(ctx)
-        if (!tags.last) return
-        ctx.focusedId = tags.last.id
+        const last = dom.getLastEl(ctx)
+        if (last) ctx.focusedId = last.id
       },
       focusPrevTag(ctx) {
-        const tags = dom(ctx)
         if (!ctx.focusedId) return
-        const tag = tags.prev(ctx.focusedId, false)
-        if (tag) {
-          ctx.focusedId = tag.id
-        }
+        const prev = dom.getPrevEl(ctx, ctx.focusedId)
+        if (prev) ctx.focusedId = prev.id
       },
       focusTag(ctx, evt) {
         ctx.focusedId = evt.id
       },
       deleteTag(ctx, evt) {
-        const tags = dom(ctx)
-        const index = tags.indexOfId(evt.id)
+        const index = dom.getIndexOfId(ctx, evt.id)
         ctx.value.splice(index, 1)
       },
       deleteFocusedTag(ctx) {
-        const tags = dom(ctx)
         if (!ctx.focusedId) return
-        const index = tags.indexOfId(ctx.focusedId)
+        const index = dom.getIndexOfId(ctx, ctx.focusedId)
         ctx.value.splice(index, 1)
       },
       setEditedId(ctx, evt) {
@@ -264,23 +248,18 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         ctx.editedTagValue = evt.value
       },
       submitEditedTagValue(ctx) {
-        const tags = dom(ctx)
         if (!ctx.editedId) return
-        const index = tags.indexOfId(ctx.editedId)
+        const index = dom.getIndexOfId(ctx, ctx.editedId)
         ctx.value[index] = ctx.editedTagValue ?? ""
       },
       initEditedTagValue(ctx) {
-        const tags = dom(ctx)
         if (!ctx.editedId) return
-        const index = tags.indexOfId(ctx.editedId)
+        const index = dom.getIndexOfId(ctx, ctx.editedId)
         ctx.editedTagValue = ctx.value[index]
       },
       focusEditedTagInput(ctx) {
-        const inputId = `${ctx.editedId}-input`
-        const doc = ctx.doc ?? document
         nextTick(() => {
-          const input = doc.getElementById(inputId) as HTMLInputElement | null
-          input?.select()
+          dom.getEditInputEl(ctx)?.select()
         })
       },
       setInputValue(ctx, evt) {
@@ -291,8 +270,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       },
       focusInput(ctx) {
         nextTick(() => {
-          const { input } = getElements(ctx)
-          input?.focus()
+          dom.getInputEl(ctx)?.focus()
         })
       },
       clearInputValue(ctx) {

@@ -1,4 +1,4 @@
-import { env } from "@core-foundation/utils/env"
+import { isDom } from "tiny-guard"
 import { h, SetupContext } from "vue"
 
 export function StateVisualizer(props: { state: Record<string, any> }, { attrs }: SetupContext) {
@@ -23,7 +23,7 @@ export function StateVisualizer(props: { state: Record<string, any> }, { attrs }
         state,
         (key, value) => {
           if (key === "childNodes") return value.value.length
-          return env.dom() && value instanceof HTMLElement ? value.tagName : value
+          return isDom() && value instanceof HTMLElement ? value.tagName : value
         },
         4,
       )}

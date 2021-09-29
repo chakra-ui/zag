@@ -1,8 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils/dom-attr"
-import type { HTMLProps } from "../utils/types"
-import { validateBlur } from "../utils/validate-blur"
-import { getIds, getElements } from "./popover.dom"
+import type { Props } from "../utils"
+import { defaultPropNormalizer, validateBlur } from "../utils"
+import { dom } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 
 export function popoverConnect(
@@ -11,36 +10,34 @@ export function popoverConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
   const isOpen = state.matches("open")
 
   return {
-    triggerProps: normalize<HTMLProps>({
-      id: ids.trigger,
+    triggerProps: normalize<Props.Element>({
+      id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
-      "aria-controls": ids.content,
+      "aria-controls": dom.getContentId(ctx),
       onClick() {
         send("CLICK")
       },
     }),
 
-    popoverProps: normalize<HTMLProps>({
-      id: ids.content,
+    popoverProps: normalize<Props.Element>({
+      id: dom.getContentId(ctx),
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
-      "aria-labelledby": ids.header,
-      "aria-describedby": ids.body,
+      "aria-labelledby": dom.getHeaderId(ctx),
+      "aria-describedby": dom.getBodyId(ctx),
       onKeyDown(event) {
         if (event.key === "Escape") {
           send("ESCAPE")
         }
       },
       onBlur(event) {
-        const { trigger, content } = getElements(ctx)
         const isValidBlur = validateBlur(event, {
-          exclude: [trigger, content],
+          exclude: [dom.getTriggerEl(ctx), dom.getContentEl(ctx)],
           fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
@@ -49,12 +46,12 @@ export function popoverConnect(
       },
     }),
 
-    headerProps: normalize<HTMLProps>({
-      id: ids.header,
+    headerProps: normalize<Props.Element>({
+      id: dom.getHeaderId(ctx),
     }),
 
-    bodyProps: normalize<HTMLProps>({
-      id: ids.body,
+    bodyProps: normalize<Props.Element>({
+      id: dom.getBodyId(ctx),
     }),
   }
 }
