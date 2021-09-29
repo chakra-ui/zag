@@ -55,7 +55,6 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       OPEN: {
         target: "open",
-        actions: "focusFirstItem",
       },
       CLOSE: "close",
       SET_POINTER_EXIT: {
@@ -148,12 +147,24 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             cond: not("isTriggerItem"),
             target: "close",
           },
-          ARROW_UP: {
-            actions: ["focusPrevItem", "focusMenu"],
-          },
-          ARROW_DOWN: {
-            actions: ["focusNextItem", "focusMenu"],
-          },
+          ARROW_UP: [
+            {
+              cond: "hasActiveId",
+              actions: ["focusPrevItem", "focusMenu"],
+            },
+            {
+              actions: ["focusLastItem"],
+            },
+          ],
+          ARROW_DOWN: [
+            {
+              cond: "hasActiveId",
+              actions: ["focusNextItem", "focusMenu"],
+            },
+            {
+              actions: ["focusFirstItem"],
+            },
+          ],
           ARROW_LEFT: {
             target: "close",
             actions: "focusParentMenu",
@@ -229,6 +240,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
   },
   {
     guards: {
+      hasActiveId: (ctx) => ctx.activeId !== null,
       isRtl: (ctx) => ctx.dir === "rtl",
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",

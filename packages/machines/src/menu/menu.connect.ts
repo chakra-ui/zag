@@ -1,6 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { contains } from "tiny-dom-query"
 import { cast } from "tiny-fn"
+import { isLeftClick } from "tiny-guard"
 import { fromPointerEvent } from "tiny-point/dom"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey, validateBlur } from "../utils"
@@ -25,6 +26,10 @@ export function menuConnect(
 
     setChild(child: MenuMachine) {
       send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
+    },
+
+    open() {
+      send({ type: "OPEN" })
     },
 
     triggerProps: normalize<Props.Button>({
@@ -53,7 +58,7 @@ export function menuConnect(
       },
       onPointerDown(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (event.button !== 0 || disabled) return
+        if (!isLeftClick(cast(event)) || disabled) return
         send({ type: "TRIGGER_CLICK", target: event.currentTarget })
       },
       onBlur() {
@@ -195,6 +200,7 @@ export function menuConnect(
           onCheckedChange?.(!checked)
         },
         onPointerUp(event) {
+          if (!isLeftClick(cast(event)) || disabled) return
           event.currentTarget.click()
         },
         onPointerLeave(event) {
@@ -227,6 +233,7 @@ export function menuConnect(
           send({ type: "ITEM_CLICK", target: event.currentTarget })
         },
         onPointerUp(event) {
+          if (!isLeftClick(cast(event)) || disabled) return
           event.currentTarget.click()
         },
         onPointerLeave(event) {
