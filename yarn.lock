@@ -9481,11 +9481,6 @@ tiny-fn@^0.0.2:
   resolved "https://registry.yarnpkg.com/tiny-fn/-/tiny-fn-0.0.2.tgz#8949c09eddfd726c10b0208ac1bb83f9304f26c6"
   integrity sha512-b9LpDXVI6n89x/QPVXK6U/U+qqgm2wA9XXXbaOZvnKumid4gDRuHbD3Zd8RCalNjzm1JH6xy//TIqXAOfEnUgA==
 
-tiny-guard@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-guard/-/tiny-guard-0.0.1.tgz#cb369bf419e3c242a186eb2e6d64867127eac10b"
-  integrity sha512-PZUUXcqO7Z2OyrZQpcaORBL/Eyebpiwly3cN2etuuHCqfBjS4NGc4vFJR+tmXQmN247k7SzZ9qQnmdzzdLQ00w==
-
 tiny-guard@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/tiny-guard/-/tiny-guard-0.0.2.tgz#dcc06456d61d3b15e9159d21eb2541219dc6261f"
