@@ -93,6 +93,9 @@ export function numberInputConnect(
       onPointerUp() {
         send("PRESS_UP_DEC")
       },
+      onPointerLeave() {
+        send("PRESS_UP_DEC")
+      },
     }),
 
     incrementButtonProps: normalize<Props.Button>({
@@ -107,6 +110,9 @@ export function numberInputConnect(
       },
       onPointerUp(event) {
         event.preventDefault()
+        send("PRESS_UP_INC")
+      },
+      onPointerLeave() {
         send("PRESS_UP_INC")
       },
     }),

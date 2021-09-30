@@ -2,6 +2,7 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
 import { range as createRange } from "tiny-num"
+import { observeAttributes } from "../utils"
 import { dom } from "./number-input.dom"
 import { utils } from "./number-input.utils"
 
@@ -83,12 +84,14 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         },
       },
       "increment:interval": {
+        activities: "trackIncButtonDisabled",
         every: { CHANGE_INTERVAL: "increment" },
         on: {
           PRESS_UP_INC: "idle",
         },
       },
       "decrement:interval": {
+        activities: "trackDecButtonDisabled",
         every: { CHANGE_INTERVAL: "decrement" },
         on: {
           PRESS_UP_DEC: "idle",
@@ -132,25 +135,40 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       isInRange: (ctx) => createRange(ctx).isInRange,
     },
     activities: {
+      trackIncButtonDisabled(ctx, _evt, { send }) {
+        return observeAttributes(dom.getIncButtonEl(ctx), "disabled", () => {
+          send("PRESS_UP_INC")
+        })
+      },
+      trackDecButtonDisabled(ctx, _evt, { send }) {
+        return observeAttributes(dom.getDecButtonEl(ctx), "disabled", () => {
+          send("PRESS_UP_DEC")
+        })
+      },
       attachWheelListener(ctx) {
-        const doc = ctx.doc ?? document
-        const input = dom.getInputEl(ctx)
+        const cleanups: VoidFunction[] = []
+        cleanups.push(
+          nextTick(() => {
+            const input = dom.getInputEl(ctx)
+            if (!input) return noop
 
-        if (!input) return noop
+            const listener = (event: WheelEvent) => {
+              const isInputFocused = dom.getDoc(ctx).activeElement === input
+              if (!ctx.allowMouseWheel || !isInputFocused) return noop
+              event.preventDefault()
 
-        const listener = (event: WheelEvent) => {
-          const isInputFocused = doc.activeElement === input
-          if (!ctx.allowMouseWheel || !isInputFocused) return noop
-          event.preventDefault()
+              const dir = Math.sign(event.deltaY) * -1
+              if (dir === 1) {
+                ctx.value = utils.increment(ctx)
+              } else if (dir === -1) {
+                ctx.value = utils.decrement(ctx)
+              }
+            }
+            cleanups.push(addDomEvent(input, "wheel", listener, { passive: false }))
+          }),
+        )
 
-          const dir = Math.sign(event.deltaY) * -1
-          if (dir === 1) {
-            ctx.value = utils.increment(ctx)
-          } else if (dir === -1) {
-            ctx.value = utils.decrement(ctx)
-          }
-        }
-        return addDomEvent(input, "wheel", listener, { passive: false })
+        return () => cleanups.forEach((c) => c())
       },
     },
     actions: {

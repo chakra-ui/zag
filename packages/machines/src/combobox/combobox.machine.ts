@@ -2,7 +2,7 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
 import { nextTick } from "tiny-fn"
 import { is, isApple } from "tiny-guard"
-import { DOM, LiveRegion, observeNodeAttr, trackPointerDown, uuid } from "../utils"
+import { DOM, LiveRegion, observeAttributes, trackPointerDown, uuid } from "../utils"
 import { dom } from "./combobox.dom"
 
 const { and } = guards
@@ -343,7 +343,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       scrollOptionIntoView(ctx) {
         const input = dom.getInputEl(ctx)
         const listbox = dom.getListboxEl(ctx)
-        return observeNodeAttr(input, "aria-activedescendant", () => {
+        return observeAttributes(input, "aria-activedescendant", () => {
           const opt = dom.getActiveOptionEl(ctx)
           if (!opt || ctx.eventSource !== "keyboard") return
           scrollIntoView(opt, {
