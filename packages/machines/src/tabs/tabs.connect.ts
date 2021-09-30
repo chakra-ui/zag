@@ -1,9 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { cast } from "tiny-fn"
 import { isSafari } from "tiny-guard"
-import { defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import { DOM, Props } from "../utils/types"
+import type { DOM, Props } from "../utils"
+import { defaultPropNormalizer, getEventKey } from "../utils"
 import { dom } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 

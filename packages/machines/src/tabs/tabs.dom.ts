@@ -1,3 +1,4 @@
+import { first, last } from "tiny-array"
 import { itemById, nextById, prevById, queryElements } from "tiny-nodelist"
 import { TabsMachineContext as Ctx } from "./tabs.machine"
 
@@ -13,8 +14,8 @@ export const dom = {
   getElements: (ctx: Ctx) =>
     queryElements(dom.getTablistEl(ctx), `[role=tab][data-ownedby='${dom.getTablistId(ctx)}']`),
 
-  getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getLastEl: (ctx: Ctx) => dom.getElements(ctx)[dom.getElements(ctx).length - 1],
+  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
+  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
   getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTabId(ctx, id)),
   getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTabId(ctx, id)),
   getRectById: (ctx: Ctx, id: string) => {
