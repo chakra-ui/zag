@@ -1,7 +1,7 @@
 import { combobox } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 
-import { createMemo } from "solid-js"
+import { createMemo, For } from "solid-js"
 import { css, CSSObject } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
@@ -39,11 +39,11 @@ export default function Page() {
 
         {filtered().length > 0 && (
           <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...machineState().listboxProps}>
-            {filtered().map((item) => (
-              <li key={item.code} {...machineState().getOptionProps({ label: item.label, value: item.code })}>
-                {item.label}
-              </li>
-            ))}
+            <For each={filtered()}>
+              {(item) => (
+                <li {...machineState().getOptionProps({ label: item.label, value: item.code })}>{item.label}</li>
+              )}
+            </For>
           </ul>
         )}
       </div>
