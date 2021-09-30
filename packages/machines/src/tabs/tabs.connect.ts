@@ -22,25 +22,25 @@ export function tabsConnect(
       onKeyDown(event) {
         const keyMap: DOM.EventKeyMap = {
           ArrowDown() {
-            send("TABLIST_ARROW_DOWN")
+            send("ARROW_DOWN")
           },
           ArrowUp() {
-            send("TABLIST_ARROW_UP")
+            send("ARROW_UP")
           },
           ArrowLeft() {
-            send("TABLIST_ARROW_LEFT")
+            send("ARROW_LEFT")
           },
           ArrowRight() {
-            send("TABLIST_ARROW_RIGHT")
+            send("ARROW_RIGHT")
           },
           Home() {
-            send("TABLIST_HOME")
+            send("HOME")
           },
           End() {
-            send("TABLIST_END")
+            send("END")
           },
           Enter() {
-            send({ type: "TABLIST_ENTER", uid: ctx.focusedId })
+            send({ type: "ENTER", uid: ctx.focusedId })
           },
         }
 

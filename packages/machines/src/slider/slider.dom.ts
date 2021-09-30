@@ -62,7 +62,7 @@ function getRangeStyle(ctx: Ctx): DOM.Style {
     endValue = isNegative ? "50%" : endValue
   }
 
-  if (ctx.isHorizontal) {
+  if (ctx.isVertical) {
     return {
       ...style,
       bottom: startValue,

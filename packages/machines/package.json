@@ -37,7 +37,7 @@
     "tiny-fn": "^0.0.2",
     "tiny-guard": "^0.0.2",
     "tiny-nodelist": "^0.0.1",
-    "tiny-num": "^0.0.1",
+    "tiny-num": "^0.0.3",
     "tiny-point": "^0.0.1",
     "tiny-rect": "^0.0.2",
     "valtio": "^1.2.2"

@@ -1,6 +1,5 @@
 import { tabs } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
-
 import { createMemo } from "solid-js"
 
 import { StateVisualizer } from "../components/state-visualizer"
@@ -8,7 +7,7 @@ import { StateVisualizer } from "../components/state-visualizer"
 export default function Page() {
   const [state, send] = useMachine(
     tabs.machine.withContext({
-      activeTabId: "nils",
+      activeId: "nils",
       activationMode: "manual",
     }),
   )

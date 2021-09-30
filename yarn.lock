@@ -9491,10 +9491,10 @@ tiny-nodelist@^0.0.1:
   resolved "https://registry.yarnpkg.com/tiny-nodelist/-/tiny-nodelist-0.0.1.tgz#d331f8bbf32aed4507b910f0d44ffbee91a8230e"
   integrity sha512-5qVOq/AhRRVdfPy2mawqF2xA8QkzjDGrAaek0/MDuN4rSzDmJf137qLptGF5wTCU8XgnJQZmb8MGwsLLQPZsYg==
 
-tiny-num@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-num/-/tiny-num-0.0.1.tgz#de5a5f36ea24484d97933c4a67227899bdffb806"
-  integrity sha512-8purHQHJ0xLjllGiMjBLdQLSLX45kFtNC0QLPQz86zWDkib0umiw5YAtQvOiqArQ7luhK4V9MongNt9gBbQr2Q==
+tiny-num@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tiny-num/-/tiny-num-0.0.3.tgz#9fc226b6b5d5d4d4fec273d8a4caa7f281355a37"
+  integrity sha512-6hgYAl59RsJ/rWJPiTQ51yw407obvjK9pD9nsh/Xhsss9/3htlV5gZzOWS4dQ0Ds8Z8r2ggNYSWnXKIzIdjGtw==
 
 tiny-point@0.0.1, tiny-point@^0.0.1:
   version "0.0.1"

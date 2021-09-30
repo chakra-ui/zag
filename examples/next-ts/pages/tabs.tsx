@@ -1,13 +1,12 @@
 import { tabs } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
-
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const [state, send] = useMachine(
     tabs.machine.withContext({
-      activeTabId: "nils",
+      activeId: "nils",
       activationMode: "manual",
     }),
   )

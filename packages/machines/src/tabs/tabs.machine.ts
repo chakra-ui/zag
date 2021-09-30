@@ -56,11 +56,11 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
             target: "focused",
             actions: ["setFocusedId", "setActiveId", "setActiveTabRect"],
           },
-          TABLIST_ARROW_LEFT: { actions: "focusPrevTab" },
-          TABLIST_ARROW_RIGHT: { actions: "focusNextTab" },
-          TABLIST_HOME: { actions: "focusFirstTab" },
-          TABLIST_END: { actions: "focusLastTab" },
-          TABLIST_ENTER: {
+          ARROW_LEFT: { actions: "focusPrevTab" },
+          ARROW_RIGHT: { actions: "focusNextTab" },
+          HOME: { actions: "focusFirstTab" },
+          END: { actions: "focusLastTab" },
+          ENTER: {
             cond: not("shouldSelectOnFocus"),
             actions: ["setActiveId", "setActiveTabRect"],
           },
