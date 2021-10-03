@@ -51,7 +51,11 @@ export declare namespace StateMachine {
   // transitions can define `actions` which can be a string or function
   export type Action<TContext extends Dict, TEvent extends EventObject> = string | Expression<TContext, TEvent, void>
 
-  export type Actions<TContext extends Dict, TEvent extends EventObject> = MaybeArray<Action<TContext, TEvent>>
+  export type Actions<TContext extends Dict, TEvent extends EventObject> =
+    | ChooseHelper<TContext, TEvent>
+    | MaybeArray<Action<TContext, TEvent>>
+
+  export type PureActions<TContext extends Dict, TEvent extends EventObject> = MaybeArray<Action<TContext, TEvent>>
 
   export type TransitionDefinition<TContext extends Dict, TState extends string, TEvent extends EventObject> = {
     target?: TState
@@ -164,6 +168,10 @@ export declare namespace StateMachine {
   export type ConditionHelper<TContext extends Dict, TEvent extends EventObject> = {
     toString: () => string
     exec: (guards: Dict) => ConditionExpression<TContext, TEvent>
+  }
+
+  export type ChooseHelper<TContext extends Dict, TEvent extends EventObject> = {
+    exec: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TEvent> | undefined>
   }
 
   export type Condition<TContext extends Dict, TEvent extends EventObject> =

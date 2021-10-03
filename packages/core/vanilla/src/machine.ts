@@ -1,7 +1,8 @@
 import { klona } from "klona"
-import { cast, runIfFn, warn, invariant } from "tiny-fn"
+import { cast, invariant, runIfFn, warn } from "tiny-fn"
 import { is } from "tiny-guard"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
+import { determineActionsFn } from "./action-utils"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineGuardFn } from "./guard-utils"
@@ -384,7 +385,8 @@ export class Machine<
    * (referencing `options.actions`) or actual functions.
    */
   private executeActions = (actions: S.Actions<TContext, TEvent> | undefined, event: TEvent) => {
-    for (const action of toArray(actions)) {
+    const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event)
+    for (const action of toArray(_actions)) {
       const fn = is.str(action) ? this.actionMap?.[action] : action
       warn(is.str(action) && !fn, `[machine] No implementation found for action: \`${action}\``)
       fn?.(this.state.context, event, this.meta)
@@ -485,7 +487,8 @@ export class Machine<
     this.stopActivities(currentState)
 
     // get explicit exit and implicit "after.exit" actions for current state
-    const exitActions = toArray(stateNode?.exit)
+    const _exit = determineActionsFn(stateNode?.exit, this.guardMap)(this.contextSnapshot, event)
+    const exitActions = toArray(_exit)
 
     const afterExitActions = this.delayedEvents.get(currentState)
     if (afterExitActions) {
@@ -512,7 +515,8 @@ export class Machine<
     }
 
     // get all entry actions
-    const entryActions = toArray(stateNode?.entry)
+    const _entry = determineActionsFn(stateNode?.entry, this.guardMap)(this.contextSnapshot, event)
+    const entryActions = toArray(_entry)
     const afterActions = this.getDelayedEventActions(next)
 
     if (stateNode?.after && afterActions) {
