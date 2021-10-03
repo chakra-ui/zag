@@ -1,4 +1,4 @@
-import { is } from "tiny-guard"
+import { isObject, isString } from "tiny-guard"
 import { cssify } from "./cssify"
 
 export interface PropNormalizer {
@@ -24,13 +24,13 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
   for (const key in props) {
     const value = props[key]
 
-    if (key === "style" && is.obj(value)) {
+    if (key === "style" && isObject(value)) {
       normalized["style"] = cssify(value)
       continue
     }
 
     if (key === "children") {
-      if (is.str(value)) {
+      if (isString(value)) {
         normalized["textContent"] = value
       }
       continue

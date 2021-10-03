@@ -30,7 +30,7 @@
   "dependencies": {
     "klona": "^2.0.4",
     "tiny-fn": "^0.0.2",
-    "tiny-guard": "^0.0.2",
+    "tiny-guard": "^0.0.3",
     "valtio": "^1.2.2"
   }
 }

@@ -1,4 +1,4 @@
-import { is } from "tiny-guard"
+import { isObject, isString } from "tiny-guard"
 import { Dict, StateMachine as S } from "./types"
 
 export function choose<TContext, TEvent extends S.EventObject = S.AnyEventObject>(
@@ -8,7 +8,7 @@ export function choose<TContext, TEvent extends S.EventObject = S.AnyEventObject
     exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) =>
       actions.find((def) => {
         def.cond = def.cond || (() => true)
-        if (is.str(def.cond)) {
+        if (isString(def.cond)) {
           return !!guardMap[def.cond]?.(ctx, event)
         }
 
@@ -22,7 +22,7 @@ export function choose<TContext, TEvent extends S.EventObject = S.AnyEventObject
 }
 
 function isGuardHelper(value: any): value is { exec: Function } {
-  return is.obj(value) && value.exec != null
+  return isObject(value) && value.exec != null
 }
 
 export function determineActionsFn<TContext, TEvent extends S.EventObject>(

@@ -1,4 +1,4 @@
-import { is } from "tiny-guard"
+import { isString } from "tiny-guard"
 
 export interface PropNormalizer {
   <T extends Dict = Dict>(props: T): Dict
@@ -33,7 +33,7 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
     if (key === "children") {
-      if (is.str(props[key])) {
+      if (isString(props[key])) {
         normalized["innerHTML"] = props[key]
       } else if (process.env.NODE_ENV !== "production") {
         console.warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")

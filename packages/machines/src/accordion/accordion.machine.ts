@@ -1,6 +1,6 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { add, remove, toArray } from "tiny-array"
-import { is } from "tiny-guard"
+import { isArray } from "tiny-guard"
 import type { DOM } from "../utils"
 import { uuid } from "../utils"
 import { dom } from "./accordion.dom"
@@ -82,7 +82,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
   {
     guards: {
       canToggle: (ctx) => !!ctx.allowToggle || !!ctx.allowMultiple,
-      isExpanded: (ctx, evt) => (is.arr(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id),
+      isExpanded: (ctx, evt) => (isArray(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id),
     },
     actions: {
       collapse(ctx, evt) {

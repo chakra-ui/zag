@@ -1,14 +1,14 @@
-import { is } from "tiny-guard"
+import { isArray, isString } from "tiny-guard"
 import type { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
-  const obj = is.str(event) ? { type: event } : event
+  const obj = isString(event) ? { type: event } : event
   return obj as T
 }
 
 export function toArray<T>(value: T | T[] | undefined): T[] {
   if (!value) return []
-  return is.arr(value) ? value : [value]
+  return isArray(value) ? value : [value]
 }
 
 export const uniqueId = (() => {

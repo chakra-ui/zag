@@ -1,7 +1,7 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { addDomEvent, addPointerEvent } from "tiny-dom-event"
 import { noop } from "tiny-fn"
-import { is, isSafari } from "tiny-guard"
+import { isElement, isSafari } from "tiny-guard"
 import { proxy, subscribe } from "valtio"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
@@ -97,7 +97,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "pointermove", (event) => {
           const selector = "[data-controls=tooltip][data-expanded]"
-          if (is.elem(event.target) && event.target.closest(selector)) return
+          if (isElement(event.target) && event.target.closest(selector)) return
           send("POINTER_LEAVE")
         })
       },

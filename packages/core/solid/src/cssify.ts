@@ -1,5 +1,5 @@
-import { is } from "tiny-guard"
 import hyphenate from "hyphenate-style-name"
+import { isNumber, isString } from "tiny-guard"
 
 const format = (v: string) => (v.startsWith("--") ? v : hyphenate(v))
 
@@ -11,7 +11,7 @@ export function cssify(style: StyleObject): StyleObject {
   let css = {}
   for (const property in style) {
     const value = style[property]
-    if (!is.str(value) && !is.num(value)) continue
+    if (!isString(value) && !isNumber(value)) continue
     css[format(property)] = value
   }
 

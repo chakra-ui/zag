@@ -1,5 +1,5 @@
 import { first, last } from "tiny-array"
-import { is } from "tiny-guard"
+import { isElement } from "tiny-guard"
 import { findByText, nextById, prevById, queryElements } from "tiny-nodelist"
 import { MenuMachineContext as Ctx } from "./menu.machine"
 
@@ -32,7 +32,7 @@ export const dom = {
   getChildMenus: (ctx: Ctx) => {
     return Object.values(ctx.children)
       .map((child) => dom.getMenuEl(child.state.context))
-      .filter(is.elem)
+      .filter(isElement)
   },
   getParentMenus: (ctx: Ctx) => {
     const menus: HTMLElement[] = []
@@ -46,6 +46,6 @@ export const dom = {
   },
 
   isTargetDisabled: (v: EventTarget | null) => {
-    return is.elem(v) && v.dataset.disabled === ""
+    return isElement(v) && v.dataset.disabled === ""
   },
 }

@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
 import { nextTick } from "tiny-fn"
-import { is, isApple } from "tiny-guard"
+import { isApple, isFunction } from "tiny-guard"
 import { DOM, LiveRegion, observeAttributes, trackPointerDown, uuid } from "../utils"
 import { dom } from "./combobox.dom"
 
@@ -324,7 +324,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       closeOnSelect: (ctx) => {
-        if (is.func(ctx.closeOnSelect)) {
+        if (isFunction(ctx.closeOnSelect)) {
           const el = dom.getFocusedOptionEl(ctx)
           return Boolean(el && ctx.closeOnSelect(dom.getOptionData(el)))
         }

@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { is } from "tiny-guard"
+import { isArray } from "tiny-guard"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
 import { dom } from "./accordion.dom"
@@ -20,7 +20,7 @@ export function accordionConnect(
     getAccordionItem(props: AccordionItemProps) {
       const { id, disabled } = props
 
-      const isOpen = is.arr(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId
+      const isOpen = isArray(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId
       const isDisabled = disabled ?? ctx.disabled
       const isFocused = ctx.focusedId === id
 

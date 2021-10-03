@@ -30,7 +30,7 @@
   "dependencies": {
     "@ui-machines/core": "0.0.0",
     "hyphenate-style-name": "^1.0.4",
-    "tiny-guard": "^0.0.2",
+    "tiny-guard": "^0.0.3",
     "valtio": "^1.2.2"
   },
   "devDependencies": {
