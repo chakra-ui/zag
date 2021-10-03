@@ -1,9 +1,9 @@
-import { nextTick } from "@core-foundation/utils"
 import { useMachine } from "@ui-machines/react"
 import { menu, mergeProps } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useEffect } from "react"
+import { nextTick } from "tiny-fn"
 import { Styles } from "./menu"
 
 export default function Page() {

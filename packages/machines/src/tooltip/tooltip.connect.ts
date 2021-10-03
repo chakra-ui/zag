@@ -1,7 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import { ButtonProps, EventKeyMap, HTMLProps } from "../utils/types"
+import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
+import type { DOM, Props } from "../utils/types"
 import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
 
 export function tooltipConnect(
@@ -19,11 +18,7 @@ export function tooltipConnect(
   return {
     isVisible,
 
-    getIsVisible(globalId: string | null) {
-      return ctx.id === globalId && state.matches("open", "closing")
-    },
-
-    triggerProps: normalize<ButtonProps>({
+    triggerProps: normalize<Props.Button>({
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
       "aria-describedby": isVisible ? tooltipId : undefined,
@@ -48,7 +43,7 @@ export function tooltipConnect(
         send("POINTER_LEAVE")
       },
       onKeyDown(event) {
-        const keymap: EventKeyMap = {
+        const keymap: DOM.EventKeyMap = {
           Enter() {
             send("PRESS_ENTER")
           },
@@ -62,7 +57,7 @@ export function tooltipConnect(
       },
     }),
 
-    tooltipProps: normalize<HTMLProps>({
+    tooltipProps: normalize<Props.Element>({
       role: "tooltip",
       id: tooltipId,
     }),

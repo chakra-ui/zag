@@ -12,7 +12,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       tabs.machine.withContext({
-        activeTabId: "nils",
+        activeId: "nils",
         activationMode: "manual",
       }),
     )

@@ -1,5 +1,5 @@
-import { callAll } from "@core-foundation/utils"
 import { merge } from "merge-anything"
+import { callAll } from "tiny-fn"
 
 interface Props {
   [key: string]: any

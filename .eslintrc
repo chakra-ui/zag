@@ -8,11 +8,7 @@
     },
     "project": "tsconfig.json"
   },
-  "extends": [
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "prettier"
-  ],
+  "extends": ["plugin:import/recommended", "plugin:import/typescript", "prettier"],
   "plugins": ["jest", "@typescript-eslint/eslint-plugin", "testing-library"],
   "env": {
     "es6": true,
@@ -25,6 +21,7 @@
     "no-param-reassign": "off",
     "no-console": "off",
     "jsx-a11y/no-autofocus": "off",
+    "import/named": "off",
     "import/prefer-default-export": "off",
     "no-underscore-dangle": "off",
     "no-shadow": "off",

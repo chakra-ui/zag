@@ -1,4 +1,4 @@
-import { env } from "@core-foundation/utils/env"
+import { isDom } from "tiny-guard"
 import { Machine } from "@ui-machines/core"
 
 type StateVisualizerProps = {
@@ -34,7 +34,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
         state,
         (_k, v) => {
           if (v instanceof Machine) return `Machine: ${v.state.context.uid}`
-          return env.dom() && v instanceof HTMLElement ? v.tagName : v
+          return isDom() && v instanceof HTMLElement ? v.tagName : v
         },
         4,
       )}

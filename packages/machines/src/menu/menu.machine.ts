@@ -1,20 +1,24 @@
-import { attrs, contains, isFocusable } from "@core-dom/element"
-import { addPointerEvent } from "@core-dom/event/pointer"
-import { nextTick } from "@core-foundation/utils/fn"
-import { Point, PointValue } from "@core-graphics/point"
-import { containsPoint } from "@core-graphics/polygon/contains"
-import { fromElement } from "@core-graphics/rect/create"
-import { inset } from "@core-graphics/rect/operations"
 import { createMachine, guards, Machine, ref } from "@ui-machines/core"
-import { trackPointerDown } from "../utils/pointer-down"
-import { WithDOM } from "../utils/types"
-import { dom, getElements } from "./menu.dom"
+import { addPointerEvent } from "tiny-dom-event"
+import { contains } from "tiny-dom-query"
+import { attrs } from "tiny-dom-query/attributes"
+import { isFocusable } from "tiny-dom-query/focusable"
+import { nextTick } from "tiny-fn"
+import { PointValue } from "tiny-point"
+import { fromPointerEvent } from "tiny-point/dom"
+import { withinPolygon } from "tiny-point/within"
+import { corners } from "tiny-rect"
+import { fromElement } from "tiny-rect/from-element"
+import { inset } from "tiny-rect/operations"
+import type { DOM } from "../utils"
+import { trackPointerDown } from "../utils"
+import { dom } from "./menu.dom"
 
 const { not, and } = guards
 
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
 
-export type MenuMachineContext = WithDOM<{
+export type MenuMachineContext = DOM.Context<{
   activeId: string | null
   onSelect?: (value: string) => void
   parent: MenuMachine | null
@@ -51,7 +55,6 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       OPEN: {
         target: "open",
-        actions: "focusFirstItem",
       },
       CLOSE: "close",
       SET_POINTER_EXIT: {
@@ -144,12 +147,24 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             cond: not("isTriggerItem"),
             target: "close",
           },
-          ARROW_UP: {
-            actions: ["focusPrevItem", "focusMenu"],
-          },
-          ARROW_DOWN: {
-            actions: ["focusNextItem", "focusMenu"],
-          },
+          ARROW_UP: [
+            {
+              cond: "hasActiveId",
+              actions: ["focusPrevItem", "focusMenu"],
+            },
+            {
+              actions: ["focusLastItem"],
+            },
+          ],
+          ARROW_DOWN: [
+            {
+              cond: "hasActiveId",
+              actions: ["focusNextItem", "focusMenu"],
+            },
+            {
+              actions: ["focusFirstItem"],
+            },
+          ],
           ARROW_LEFT: {
             target: "close",
             actions: "focusParentMenu",
@@ -225,41 +240,38 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
   },
   {
     guards: {
+      hasActiveId: (ctx) => ctx.activeId !== null,
       isRtl: (ctx) => ctx.dir === "rtl",
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
       isMenuFocused: (ctx) => {
-        const { menu, activeElement } = getElements(ctx)
+        const menu = dom.getMenuEl(ctx)
+        const activeElement = dom.getActiveElement(ctx)
         return contains(menu, activeElement)
       },
-      isActiveItem: (ctx, evt) => {
-        return ctx.activeId === evt.target.id
-      },
-      isParentActiveItem: (ctx, evt) => {
-        return ctx.parent?.state.context.activeId === evt.target.id
-      },
+      isActiveItem: (ctx, evt) => ctx.activeId === evt.target.id,
+      isParentActiveItem: (ctx, evt) => ctx.parent?.state.context.activeId === evt.target.id,
       isTriggerItem: (ctx, evt) => {
-        const target = evt.target ?? getElements(ctx).trigger
+        const target = evt.target ?? dom.getTriggerEl(ctx)
         const attr = attrs(target)
         return !!attr.get("role")?.startsWith("menuitem") && !!attr.has("aria-controls")
       },
       isTriggerActiveItem: (ctx, evt) => {
-        const target = evt.target ?? getElements(ctx).activeItem
+        const target = evt.target ?? dom.getActiveItemEl(ctx)
         return !!attrs(target).has("aria-controls")
       },
       isSubmenu: (ctx) => ctx.parent !== null,
       shouldPause: (ctx) => {
-        const { menu } = getElements(ctx)
+        const menu = dom.getMenuEl(ctx)
         return menu?.dataset.pause === "true"
       },
       isActiveItemFocusable: (ctx) => {
-        const { activeItem } = getElements(ctx)
+        const activeItem = dom.getActiveItemEl(ctx)
         return isFocusable(activeItem)
       },
       isWithinPolygon: (ctx, evt) => {
         const { pointerExitPoint } = ctx
-        const { x, y } = evt.point
-        const { menu } = getElements(ctx)
+        const menu = dom.getMenuEl(ctx)
 
         if (!menu || !pointerExitPoint) return false
         let menuRect = fromElement(menu)
@@ -268,24 +280,24 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         // expand menu rect with some padding
         menuRect = inset(menuRect, { dx: -20, dy: -20 })
 
-        const poly = menuRect.cornerPoints.map((p) => p.value)
+        const poly = corners(menuRect).value
         poly.unshift(pointerExitPoint)
 
-        return containsPoint(poly, { x, y })
+        return withinPolygon(poly, evt.point)
       },
     },
     activities: {
       trackPointerDown,
       trackPointerMove(ctx, _evt, { guards = {}, send }) {
         const { isWithinPolygon } = guards
-        const { doc } = getElements(ctx)
+        const doc = dom.getDoc(ctx)
 
-        const { menu } = getElements(ctx!.parent!.state.context)
+        const menu = dom.getMenuEl(ctx!.parent!.state.context)
         menu!.dataset.pause = "true"
 
         return addPointerEvent(doc, "pointermove", (e) => {
           const isMovingToSubmenu = isWithinPolygon(ctx, {
-            point: Point.fromPointerEvent(e),
+            point: fromPointerEvent(e),
           })
           if (!isMovingToSubmenu) {
             send("CLOSE")
@@ -303,10 +315,8 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       clearPause(ctx) {
         if (!ctx.parent) return
-        const { menu } = getElements(ctx.parent.state.context)
-        if (menu) {
-          menu.dataset.pause = "false"
-        }
+        const menu = dom.getMenuEl(ctx.parent.state.context)
+        if (menu) menu.dataset.pause = "false"
       },
       setId: (ctx, evt) => {
         ctx.uid = evt.id
@@ -321,29 +331,30 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         ctx.pointerdownNode = null
       },
       focusMenu(ctx) {
-        const { menu, doc } = getElements(ctx)
+        const menu = dom.getMenuEl(ctx)
+        const doc = dom.getDoc(ctx)
         if (menu && doc.activeElement !== menu) {
           nextTick(() => menu.focus())
         }
       },
       focusFirstItem(ctx) {
-        const menuitems = dom(ctx)
-        if (!menuitems.first) return
-        ctx.activeId = menuitems.first.id
+        const first = dom.getFirstEl(ctx)
+        if (!first) return
+        ctx.activeId = first.id
       },
       focusLastItem(ctx) {
-        const menuitems = dom(ctx)
-        if (!menuitems.last) return
-        ctx.activeId = menuitems.last.id
+        const last = dom.getLastEl(ctx)
+        if (!last) return
+        ctx.activeId = last.id
       },
       focusNextItem(ctx) {
-        const menuitems = dom(ctx)
-        const next = menuitems.next(ctx.activeId ?? "")
+        if (!ctx.activeId) return
+        const next = dom.getNextEl(ctx, ctx.activeId)
         ctx.activeId = next?.id ?? null
       },
       focusPrevItem(ctx) {
-        const menuitems = dom(ctx)
-        const prev = menuitems.prev(ctx.activeId ?? "")
+        if (!ctx.activeId) return
+        const prev = dom.getPrevEl(ctx, ctx.activeId)
         ctx.activeId = prev?.id ?? null
       },
       invokeOnSelect(ctx) {
@@ -354,12 +365,11 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       focusButton(ctx) {
         if (ctx.parent) return
-        const { trigger } = getElements(ctx)
+        const trigger = dom.getTriggerEl(ctx)
         nextTick(() => trigger?.focus())
       },
       focusMatchedItem(ctx, evt) {
-        const menuitems = dom(ctx)
-        const node = menuitems.searchByKey(evt.key)
+        const node = dom.getElemByKey(ctx, evt.key)
         ctx.activeId = node?.id ?? ctx.activeId
       },
       setParent(ctx, evt) {
@@ -381,7 +391,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         }
       },
       openSubmenu(ctx) {
-        const { activeItem } = getElements(ctx)
+        const activeItem = dom.getActiveItemEl(ctx)
         const id = attrs(activeItem).get("data-uid")
         const child = id ? ctx.children[id] : null
         child?.send("OPEN")

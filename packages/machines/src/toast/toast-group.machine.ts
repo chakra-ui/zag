@@ -1,8 +1,8 @@
 import { createMachine, Machine, ref } from "@ui-machines/core"
-import { WithDOM } from "../utils/types"
+import { DOM } from "../utils/types"
 import { createToastMachine, ToastMachineContext, ToastMachineState } from "./toast.machine"
 
-export type ToastGroupMachineContext = WithDOM<{
+export type ToastGroupMachineContext = DOM.Context<{
   toasts: Machine<ToastMachineContext, ToastMachineState>[]
   max: number
 }>

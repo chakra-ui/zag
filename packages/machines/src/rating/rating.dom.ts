@@ -1,27 +1,19 @@
-import { RatingMachineContext } from "./rating.machine"
+import { dispatchInputEvent } from "../utils/dispatch-input"
+import { RatingMachineContext as Ctx } from "./rating.machine"
 
-export function getIds(uid: string) {
-  return {
-    label: `rating-label-${uid}`,
-    input: `rating-input-${uid}`,
-    getRatingId: (id: string | number) => `rating-star-${uid}-${id}`,
-    root: `rating-${uid}`,
-  }
-}
-
-export function getElements(ctx: RatingMachineContext) {
-  const doc = ctx?.doc ?? document
-
-  const ids = getIds(ctx.uid)
-  const root = doc.getElementById(ids.root)
-
-  const selector = `[role=radio][aria-posinset='${Math.ceil(ctx.value)}']`
-  const radio = root?.querySelector<HTMLElement>(selector)
-
-  return {
-    activeElement: doc.activeElement,
-    radio,
-    root,
-    input: doc.getElementById(ids.input),
-  }
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getLabelId: (ctx: Ctx) => `rating-label-${ctx.uid}`,
+  getInputId: (ctx: Ctx) => `rating-input-${ctx.uid}`,
+  getRatingId: (ctx: Ctx, id: string | number) => `rating-star-${ctx.uid}-${id}`,
+  getRootId: (ctx: Ctx) => `rating-${ctx.uid}`,
+  getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
+  getRadioEl: (ctx: Ctx) =>
+    dom.getRootEl(ctx)?.querySelector<HTMLElement>(`[role=radio][aria-posinset='${Math.ceil(ctx.value)}']`),
+  getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
+  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)),
+  dispatchChangeEvent: (ctx: Ctx) => {
+    const input = dom.getInputEl(ctx)
+    if (input) dispatchInputEvent(input, ctx.value)
+  },
 }

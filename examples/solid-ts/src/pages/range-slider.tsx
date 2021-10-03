@@ -1,7 +1,7 @@
 import { rangeSlider } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
 
-import { createMemo } from "solid-js"
+import { createMemo, For } from "solid-js"
 import { css, CSSObject } from "@emotion/css"
 import serialize from "form-serialize"
 
@@ -37,11 +37,13 @@ export default function Page() {
           <div className="slider__track" {...machineState().trackProps}>
             <div className="slider__range" {...machineState().rangeProps} />
           </div>
-          {machineState().values.map((_val, index) => (
-            <div key={index} className="slider__thumb" {...machineState().getThumbProps(index)}>
-              <input {...machineState().getInputProps(index)} />
-            </div>
-          ))}
+          <For each={machineState().values}>
+            {(val, index) => (
+              <div className="slider__thumb" {...machineState().getThumbProps(index())}>
+                <input {...machineState().getInputProps(index())} />
+              </div>
+            )}
+          </For>
         </div>
 
         <StateVisualizer state={state} />

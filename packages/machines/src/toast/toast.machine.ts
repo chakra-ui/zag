@@ -1,7 +1,7 @@
-import { addPointerEvent } from "@core-dom/event/pointer"
-import { NumericRange } from "@core-foundation/numeric-range"
-import { noop } from "@core-foundation/utils/fn"
+import { clamp, decrement } from "tiny-num"
 import { createMachine, guards, Machine } from "@ui-machines/core"
+import { addDomEvent } from "tiny-dom-event"
+import { noop } from "tiny-fn"
 import { getToastDuration } from "./toast.utils"
 
 const { or, not } = guards
@@ -128,7 +128,8 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
       activities: {
         checkDocumentVisibility(ctx, evt, { send }) {
           if (!ctx.pauseOnPageIdle) return noop
-          return addPointerEvent(document, "visibilitychange", () => {
+          //@ts-ignore
+          return addDomEvent(document, "visibilitychange", () => {
             const doc = document as any
             const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden
             send(isPageHidden ? "PAUSE" : "RESUME")
@@ -136,15 +137,9 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         },
       },
       guards: {
-        isLoadingType(ctx) {
-          return ctx.type === "loading"
-        },
-        hasTypeChanged(ctx, evt) {
-          return evt.type != null && evt.type !== ctx.type
-        },
-        hasDurationChanged(ctx, evt) {
-          return evt.duration != null && evt.duration !== ctx.duration
-        },
+        isLoadingType: (ctx) => ctx.type === "loading",
+        hasTypeChanged: (ctx, evt) => evt.type != null && evt.type !== ctx.type,
+        hasDurationChanged: (ctx, evt) => evt.duration != null && evt.duration !== ctx.duration,
       },
       delays: {
         VISIBLE_DURATION: (ctx) => ctx.duration!,
@@ -158,14 +153,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         setProgressValue(ctx) {
           if (!ctx.progress) return
           const { max, value } = ctx.progress
-          // adding `- 1` makes setInterval work consistently across browsers
-          const range = new NumericRange({
-            min: 0,
-            max,
-            step: 10,
-            value: value - 1,
-          })
-          ctx.progress.value = range.decrement().clamp().valueOf()
+          ctx.progress.value = clamp(decrement(value - 1, 10), { min: 0, max })
         },
         clearProgressValue(ctx) {
           if (!ctx.progress) return

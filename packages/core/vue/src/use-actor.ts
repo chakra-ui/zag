@@ -1,4 +1,4 @@
-import { AnyMachine, StateMachine as S } from "@ui-machines/core"
+import type { AnyMachine, StateMachine as S } from "@ui-machines/core"
 import { computed, onBeforeUnmount, onMounted, shallowRef } from "vue"
 
 /**

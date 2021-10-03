@@ -1,5 +1,7 @@
-import { addPointerEvent, EventListenerWithPointInfo as Listener } from "@core-dom/event"
-import { is, pipe } from "@core-foundation/utils"
+import { addPointerEvent, EventListenerWithPointInfo as Listener } from "tiny-dom-event"
+import { distance } from "tiny-point/distance"
+import { pipe } from "tiny-fn"
+import { isMouseEvent, isLeftClick } from "tiny-guard"
 
 type TrackPointerMoveOptions = {
   ctx: {
@@ -15,12 +17,10 @@ export function trackPointerMove(opts: TrackPointerMoveOptions) {
   const { doc = document, threshold = 5 } = ctx
 
   const handlePointerMove: Listener = (event, info) => {
-    if (info.point.distance() < threshold) {
-      return
-    }
+    if (distance(info.point) < threshold) return
 
     // Because Safari doesn't trigger mouseup events when it's above a `<select>`
-    if (is.mouseEvent(event) && event.button === 0) {
+    if (isMouseEvent(event) && isLeftClick(event)) {
       onPointerUp()
       return
     }

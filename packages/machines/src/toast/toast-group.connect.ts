@@ -1,7 +1,7 @@
-import { runIfFn } from "@core-foundation/utils/fn"
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils/dom-attr"
-import { HTMLProps } from "../utils/types"
+import { runIfFn } from "tiny-fn"
+import type { Props } from "../utils"
+import { defaultPropNormalizer } from "../utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import { getToastsByPlacement, ToastMachineContext, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
@@ -108,7 +108,7 @@ export function toastGroupConnect(
     },
 
     getContainerProps(placement: ToastPlacement) {
-      return normalize<HTMLProps>({
+      return normalize<Props.Element>({
         id: `toast-group-${placement}`,
         "data-placement": placement,
         style: getPlacementStyle(placement),

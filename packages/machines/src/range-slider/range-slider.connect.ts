@@ -1,13 +1,11 @@
-import { NumericRange } from "@core-foundation/numeric-range"
-import { is } from "@core-foundation/utils"
-import { cast } from "@core-foundation/utils/fn"
-import { Point } from "@core-graphics/point"
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import { getEventStep } from "../utils/get-step"
-import { EventKeyMap, HTMLProps, InputProps, LabelProps, OutputProps } from "../utils/types"
-import { getIds, getStyles, getElements } from "./range-slider.dom"
+import { cast } from "tiny-fn"
+import { isLeftClick, isModifiedEvent } from "tiny-guard"
+import { toRanges } from "tiny-num"
+import { fromPointerEvent } from "tiny-point/dom"
+import type { DOM, Props } from "../utils"
+import { dataAttr, defaultPropNormalizer, getEventKey, getEventStep } from "../utils"
+import { dom } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
 
 export function rangeSliderConnect(
@@ -18,25 +16,20 @@ export function rangeSliderConnect(
   const { context: ctx } = state
   const { value: values, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } = ctx
 
-  const ids = getIds(ctx.uid)
-
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
-  const styles = getStyles(ctx)
 
   return {
     values: ctx.value,
     isDragging,
     isFocused,
 
-    labelProps: normalize<LabelProps>({
-      id: ids.label,
-      htmlFor: ids.getInputId(0),
+    labelProps: normalize<Props.Label>({
+      id: dom.getLabelId(ctx),
+      htmlFor: dom.getInputId(ctx, 0),
       onClick(event) {
-        const { thumbs } = getElements(ctx)
-        const [firstThumb] = thumbs
         event.preventDefault()
-        firstThumb?.focus()
+        dom.getFirstEl(ctx)?.focus()
       },
       style: {
         userSelect: "none",
@@ -44,36 +37,36 @@ export function rangeSliderConnect(
     }),
 
     // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
-    outputProps: normalize<OutputProps>({
-      id: ids.output,
-      htmlFor: values.map((v, i) => ids.getInputId(i)).join(" "),
+    outputProps: normalize<Props.Output>({
+      id: dom.getOutputId(ctx),
+      htmlFor: values.map((v, i) => dom.getInputId(ctx, i)).join(" "),
       "aria-live": "off",
     }),
 
-    trackProps: normalize<HTMLProps>({
-      id: ids.track,
+    trackProps: normalize<Props.Element>({
+      id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
-      style: styles.track,
+      style: dom.getTrackStyle(),
     }),
 
     getThumbProps(index: number) {
       const value = values[index]
-      const range = NumericRange.fromValues(ctx.value, ctx)[index]
+      const range = toRanges(ctx)[index]
       const ariaValueText = ctx.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
-      return normalize<HTMLProps>({
-        id: ids.getThumbId(index),
+      return normalize<Props.Element>({
+        id: dom.getThumbId(ctx, index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
         "data-focused": dataAttr(isFocused),
         draggable: false,
         "aria-disabled": ctx.disabled || undefined,
         "aria-label": _ariaLabel,
-        "aria-labelledby": _ariaLabelledBy ?? ids.label,
+        "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(ctx),
         "aria-orientation": ctx.orientation,
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
@@ -81,7 +74,7 @@ export function rangeSliderConnect(
         "aria-valuetext": ariaValueText,
         role: "slider",
         tabIndex: ctx.disabled ? -1 : 0,
-        style: styles.getThumb(index),
+        style: dom.getThumbStyle(ctx, index),
         onBlur() {
           send("BLUR")
         },
@@ -90,7 +83,7 @@ export function rangeSliderConnect(
         },
         onKeyDown(event) {
           const step = getEventStep(event) * ctx.step
-          const keyMap: EventKeyMap = {
+          const keyMap: DOM.EventKeyMap = {
             ArrowUp() {
               send({ type: "ARROW_UP", step })
             },
@@ -130,39 +123,37 @@ export function rangeSliderConnect(
     },
 
     getInputProps(index: number) {
-      return normalize<InputProps>({
+      return normalize<Props.Input>({
         name: ctx.name?.[index],
         type: "hidden",
         value: ctx.value[index],
-        id: ids.getInputId(index),
+        id: dom.getInputId(ctx, index),
       })
     },
 
-    rangeProps: normalize<HTMLProps>({
+    rangeProps: normalize<Props.Element>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
-      style: styles.range,
+      style: dom.getRangeStyle(ctx),
     }),
 
-    rootProps: normalize<HTMLProps>({
-      id: ids.root,
+    rootProps: normalize<Props.Element>({
+      id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-focused": dataAttr(isFocused),
-      style: styles.root,
+      style: dom.getRootStyle(ctx),
       onPointerDown(event) {
         // allow only primary pointer clicks
-        if (!is.leftClickEvent(event.nativeEvent) || is.modifiedEvent(event.nativeEvent)) {
-          return
-        }
+        if (!isLeftClick(cast(event)) || isModifiedEvent(cast(event))) return
 
         event.preventDefault()
         event.stopPropagation()
 
         send({
           type: "POINTER_DOWN",
-          point: Point.fromPointerEvent(cast(event)),
+          point: fromPointerEvent(cast(event)),
         })
       },
     }),

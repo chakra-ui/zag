@@ -1,8 +1,8 @@
-import { AnyFunction } from "@core-foundation/utils/fn"
+import type { StateMachine as S } from "@ui-machines/core"
 import { createSignal, onMount } from "solid-js"
 
 export type UseSetupProps = {
-  send: AnyFunction
+  send: (evt: S.Event<S.AnyEventObject>) => void
   id: string
 }
 

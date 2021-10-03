@@ -18,7 +18,6 @@
     {
       "files": ["**/*.ts", "**/*.tsx"],
       "parser": "@typescript-eslint/parser",
-      "settings": { "react": { "version": "detect" } },
       "env": {
         "browser": true,
         "node": true,
@@ -27,21 +26,19 @@
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended",
         "plugin:import/errors",
         "plugin:import/warnings",
-        "plugin:react-hooks/recommended",
         "plugin:jsx-a11y/recommended"
       ],
       "rules": {
         "import/no-unresolved": "off",
-        "react/prop-types": "off",
-        "react/react-in-jsx-scope": "off",
         "jsx-a11y/anchor-is-valid": "off",
         "@typescript-eslint/no-unused-vars": ["error"],
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "import/named": "off"
+        "import/named": "off",
+        "jsx-a11y/accessible-emoji": "off",
+        "jsx-a11y/label-has-associated-control": "off"
       }
     }
   ]

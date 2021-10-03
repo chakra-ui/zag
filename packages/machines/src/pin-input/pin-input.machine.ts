@@ -1,12 +1,12 @@
-import { List } from "@core-foundation/list"
-import { nextTick } from "@core-foundation/utils/fn"
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { WithDOM } from "../utils/types"
+import { fromLength } from "tiny-array"
+import { nextTick } from "tiny-fn"
+import type { DOM } from "../utils"
 import { dom } from "./pin-input.dom"
 
 const { not } = guards
 
-export type PinInputMachineContext = WithDOM<{
+export type PinInputMachineContext = DOM.Context<{
   disabled?: boolean
   direction?: "ltr" | "rtl"
   placeholder?: string
@@ -97,33 +97,31 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         return ctx.value.every(Boolean)
       },
       isLastValueBeforeComplete: (ctx) => {
-        const inputs = dom(ctx)
-        return ctx.value.filter(Boolean).length === inputs.size - 1
+        const inputs = dom.getElements(ctx)
+        return ctx.value.filter(Boolean).length === inputs.length - 1
       },
       isLastInputFocused: (ctx) => {
-        const inputs = dom(ctx)
-        return ctx.focusedIndex === inputs.size - 1
+        const inputs = dom.getElements(ctx)
+        return ctx.focusedIndex === inputs.length - 1
       },
     },
     actions: {
       setId: (ctx, evt) => {
         ctx.uid = evt.id
       },
-      setInitialValue: (ctx) => {
-        nextTick(() => {
-          const inputs = dom(ctx)
-          const empty = List.fromLength(inputs.size, () => "")
-          ctx.value = ctx.value.length === 0 ? ref(empty.value as string[]) : ctx.value
-        })
-      },
       setOwnerDocument: (ctx, evt) => {
         ctx.doc = ref(evt.doc)
       },
+      setInitialValue: (ctx) => {
+        nextTick(() => {
+          const inputs = dom.getElements(ctx)
+          const empty = fromLength(inputs.length).map(() => "")
+          ctx.value = ctx.value.length === 0 ? ref(empty) : ctx.value
+        })
+      },
       focusInput: (ctx) => {
         nextTick(() => {
-          const inputs = dom(ctx)
-          const input = inputs.at(ctx.focusedIndex)
-          input?.focus()
+          dom.getFocusedEl(ctx)?.focus()
         })
       },
       invokeComplete: (ctx) => {
@@ -160,22 +158,20 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       setFocusIndexToFirst: (ctx) => {
         ctx.focusedIndex = 0
       },
+      // Stopped here
       autoFocus: (ctx) => {
         if (!ctx.autoFocus) return
         ctx.focusedIndex = 0
         nextTick(() => {
-          const inputs = dom(ctx)
-          inputs.first?.focus()
+          dom.getFirstEl(ctx)?.focus()
         })
       },
       setNextFocusedIndex: (ctx, evt, { guards }) => {
         if (guards?.isValueComplete(ctx, evt)) return
-        const inputs = dom(ctx)
-        ctx.focusedIndex = inputs.nextIndex(ctx.focusedIndex, 1, false)
+        ctx.focusedIndex = dom.getNextIndex(ctx)
       },
       setPrevFocusIndex: (ctx) => {
-        const inputs = dom(ctx)
-        ctx.focusedIndex = inputs.prevIndex(ctx.focusedIndex, 1, false)
+        ctx.focusedIndex = dom.getPrevIndex(ctx)
       },
     },
   },

@@ -1,18 +1,18 @@
-import { cast } from "@core-foundation/utils/fn"
-import { proxyWithComputed as proxy } from "valtio/utils"
+import { cast } from "tiny-fn"
+import { proxyWithComputed } from "valtio/utils"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 
 export function createProxy<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   config: S.MachineConfig<TContext, TState, TEvent>,
 ) {
   const defaultContext = cast<TContext>({})
-  const context = proxy(config.context ?? defaultContext, config.computed ?? {})
+  const context = proxyWithComputed(config.context ?? defaultContext, config.computed ?? {})
 
-  const state = proxy(
+  const state = proxyWithComputed(
     {
       value: "",
       previousValue: "",
-      event: {} as Dict,
+      event: cast<Dict>({}),
       context,
       done: false,
       tags: new Set<TState["tags"]>(),
@@ -23,8 +23,7 @@ export function createProxy<TContext, TState extends S.StateSchema, TEvent exten
         return value.includes(this.value)
       },
       can(event: string): boolean {
-        //@ts-ignore
-        return this.nextEvents.includes(event)
+        return cast<any>(this).nextEvents.includes(event)
       },
     },
     {

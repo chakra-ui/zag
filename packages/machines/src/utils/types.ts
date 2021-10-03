@@ -10,46 +10,45 @@ import type {
 
 export type Dict<T = any> = Record<string, T>
 
-export type Booleanish = boolean | "true" | "false"
+export namespace DOM {
+  export type EventKeyMap = Dict<(event: KeyboardEvent) => void>
+  export type Booleanish = boolean | "true" | "false"
+  export type Direction = "ltr" | "rtl"
 
-export type WithDataAttr<T> = T & {
-  "data-uid"?: string
-  "data-ownedby"?: string
-  "data-selected"?: Booleanish
-  "data-expanded"?: Booleanish
-  "data-highlighted"?: Booleanish
-  "data-focus"?: Booleanish
-  "data-hover"?: Booleanish
-  "data-disabled"?: Booleanish
-  "data-type"?: string
-  "data-value"?: string | number
-  "data-valuetext"?: string
-  [dataAttr: string]: any
+  export type DataAttr<T> = T & {
+    style?: Style
+    "data-uid"?: string
+    "data-ownedby"?: string
+    "data-selected"?: Booleanish
+    "data-expanded"?: Booleanish
+    "data-highlighted"?: Booleanish
+    "data-focus"?: Booleanish
+    "data-hover"?: Booleanish
+    "data-disabled"?: Booleanish
+    "data-type"?: string
+    "data-value"?: string | number
+    "data-valuetext"?: string
+    [dataAttr: string]: any
+  }
+
+  export type Context<T> = T & {
+    uid: string
+    doc?: Document
+    pointerdownNode?: HTMLElement | null
+    dir?: Direction
+  }
+
+  export type This = typeof globalThis
+
+  export type Style = CSSProperties & {
+    [prop: string]: string | number | undefined
+  }
 }
 
-export type Direction = "ltr" | "rtl"
-
-export type WithDOM<T> = T & {
-  uid: string
-  doc?: Document
-  pointerdownNode?: HTMLElement | null
-  dir?: Direction
+export namespace Props {
+  export type Element = DOM.DataAttr<HTMLAttributes<HTMLElement>>
+  export type Button = DOM.DataAttr<ButtonHTMLAttributes<HTMLButtonElement>>
+  export type Input = DOM.DataAttr<InputHTMLAttributes<HTMLInputElement>>
+  export type Label = DOM.DataAttr<LabelHTMLAttributes<HTMLLabelElement>>
+  export type Output = DOM.DataAttr<OutputHTMLAttributes<HTMLOutputElement>>
 }
-
-export type EventKeyMap = Dict<(event: KeyboardEvent) => void>
-
-export type CSSStyleProperties = CSSProperties & {
-  [customProperty: string]: string | number | undefined
-}
-
-type Style = {
-  style?: CSSStyleProperties
-}
-
-export type HTMLProps = WithDataAttr<HTMLAttributes<HTMLElement> & Style>
-export type ButtonProps = WithDataAttr<ButtonHTMLAttributes<HTMLButtonElement> & Style>
-export type InputProps = WithDataAttr<InputHTMLAttributes<HTMLInputElement> & Style>
-export type LabelProps = WithDataAttr<LabelHTMLAttributes<HTMLLabelElement> & Style>
-export type OutputProps = WithDataAttr<OutputHTMLAttributes<HTMLOutputElement> & Style>
-
-export type GlobalThis = typeof globalThis

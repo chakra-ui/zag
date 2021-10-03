@@ -1,4 +1,5 @@
-import { toArray, cast } from "@core-foundation/utils"
+import { toArray } from "tiny-array"
+import { cast } from "tiny-fn"
 
 /**
  * Determine if the blur event within an element is valid

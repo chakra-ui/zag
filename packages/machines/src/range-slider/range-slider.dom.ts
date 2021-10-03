@@ -1,112 +1,81 @@
-import { NumericRange } from "@core-foundation/numeric-range"
-import { Point } from "@core-graphics/point"
-import { getRootStyle, getThumbStyle } from "../slider/slider.dom"
-import { CSSStyleProperties } from "../utils/types"
-import { RangeSliderMachineContext } from "./range-slider.machine"
+import { queryElements } from "tiny-nodelist"
+import { clamp, percentToValue, snapToStep, toRanges } from "tiny-num"
+import type { Point } from "tiny-point"
+import { relativeToNode } from "tiny-point/dom"
+import { dom as sliderDom } from "../../src/slider/slider.dom"
+import { dispatchInputEvent } from "../utils/dispatch-input"
+import type { DOM } from "../utils/types"
+import type { RangeSliderMachineContext as Ctx } from "./range-slider.machine"
 
-export function getIds(id: string) {
-  return {
-    getThumbId: (index: number) => `slider-thumb-${id}-${index}`,
-    getInputId: (index: number) => `slider-input-${id}-${index}`,
-    root: `slider-root-${id}`,
-    track: `slider-track-${id}`,
-    range: `slider-range-${id}`,
-    label: `slider-label-${id}`,
-    output: `slider-output-${id}`,
-  }
-}
+export const getRangeAtIndex = (ctx: Ctx) => toRanges(ctx)[ctx.activeIndex]
 
-export function getElements(ctx: RangeSliderMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
-
-  const root = doc.getElementById(ids.root)
-  const sliders = root?.querySelectorAll(`[role=slider]`)
-
-  return {
-    getThumb: (index: number) => doc.getElementById(ids.getThumbId(index)),
-    getInput: (index: number) => doc.getElementById(ids.getInputId(index)),
-    root: doc.getElementById(ids.root),
-    thumbs: Array.from(sliders ?? []) as HTMLElement[],
-    range: doc.getElementById(ids.range),
-  }
-}
-
-export function getRangeAtIndex(ctx: RangeSliderMachineContext) {
-  const { activeIndex, step, value: values } = ctx
-  const ranges = NumericRange.fromValues(ctx.value, ctx)
-  const range = ranges[activeIndex]
-  return range.withOptions({ value: values[activeIndex], step })
-}
-
-export function getValueFromPoint(ctx: RangeSliderMachineContext, info: Point) {
-  const { root } = getElements(ctx)
+function getValueFromPoint(ctx: Ctx, point: Point) {
+  const root = dom.getRootEl(ctx)
   if (!root) return
-
-  const isHorizontal = ctx.orientation === "horizontal"
-  const isRtl = ctx.dir === "rtl" && isHorizontal
-
   const range = getRangeAtIndex(ctx)
-
   const max = range.max / ctx.max
   const min = range.min / ctx.max
 
-  const { progress } = info.relativeToNode(root)
-  let progressValue = isHorizontal ? progress.x : progress.y
+  const { progress } = relativeToNode(point, root)
+  let v = ctx.isHorizontal ? progress.x : progress.y
+  if (ctx.isRtl) v = 1 - v
 
-  if (isRtl) progressValue = 1 - progressValue
-  let percent = new NumericRange({ min, max, value: progressValue }).clamp().valueOf()
-
-  const opts = {
-    min: ctx.min,
-    max: ctx.max,
-    value: range.value,
-    step: ctx.step,
-  }
-
-  const value = NumericRange.fromPercent(+percent, opts).valueOf()
-  return new NumericRange(opts).setValue(value).snapToStep().valueOf()
+  let percent = clamp(v, { min, max })
+  const value = percentToValue(percent, ctx)
+  return parseFloat(snapToStep(value, ctx.step))
 }
 
-export function getRangeStyle(ctx: RangeSliderMachineContext): CSSStyleProperties {
-  const { orientation, dir, value: values, max } = ctx
-  const isRtl = dir === "rtl"
-
+export function getRangeStyle(ctx: Ctx): DOM.Style {
+  const { orientation, value: values, max } = ctx
   const startValue = (values[0] / max) * 100
   const endValue = 100 - (values[values.length - 1] / max) * 100
-
-  const style: CSSStyleProperties = {
+  const style: DOM.Style = {
     position: "absolute",
   }
-
   if (orientation === "vertical") {
-    return {
-      ...style,
-      bottom: `${startValue}%`,
-      top: `${endValue}%`,
-    }
+    return { ...style, bottom: `${startValue}%`, top: `${endValue}%` }
   }
-
   return {
     ...style,
-    [isRtl ? "right" : "left"]: `${startValue}%`,
-    [isRtl ? "left" : "right"]: `${endValue}%`,
+    [ctx.isRtl ? "right" : "left"]: `${startValue}%`,
+    [ctx.isRtl ? "left" : "right"]: `${endValue}%`,
   }
 }
 
-export function getStyles(ctx: RangeSliderMachineContext) {
-  const trackStyle: CSSStyleProperties = {
-    position: "relative",
-  }
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  return {
-    root: getRootStyle(ctx),
-    getThumb(index: number) {
-      const value = ctx.value[index]
-      const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
-      return getThumbStyle({ ...ctx, value, thumbSize })
-    },
-    range: getRangeStyle(ctx),
-    track: trackStyle,
-  }
+  getThumbId: (ctx: Ctx, index: number) => `slider-thumb-${ctx.uid}-${index}`,
+  getInputId: (ctx: Ctx, index: number) => `slider-input-${ctx.uid}-${index}`,
+  getRootId: (ctx: Ctx) => `slider-root-${ctx.uid}`,
+  getTrackId: (ctx: Ctx) => `slider-track-${ctx.uid}`,
+  getRangeId: (ctx: Ctx) => `slider-range-${ctx.uid}`,
+  getLabelId: (ctx: Ctx) => `slider-label-${ctx.uid}`,
+  getOutputId: (ctx: Ctx) => `slider-output-${ctx.uid}`,
+
+  getThumbEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx, index)),
+  getInputEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx, index)),
+  getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
+  getElements: (ctx: Ctx) => queryElements(dom.getRootEl(ctx), "[role=slider]"),
+  getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
+  getRangeEl: (ctx: Ctx) => dom.getDoc(ctx)?.getElementById(dom.getRangeId(ctx)),
+
+  getValueFromPoint,
+  dispatchChangeEvent: (ctx: Ctx) => {
+    const value = ctx.value[ctx.activeIndex]
+    const input = dom.getInputEl(ctx, ctx.activeIndex)
+    if (!input) return
+    dispatchInputEvent(input, value)
+  },
+
+  getRootStyle: sliderDom.getRootStyle,
+  getThumbStyle: (ctx: Ctx, index: number) => {
+    const value = ctx.value[index]
+    const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
+    return sliderDom.getThumbStyle({ ...ctx, value, thumbSize })
+  },
+  getRangeStyle,
+  getTrackStyle: (): DOM.Style => ({
+    position: "relative",
+  }),
 }

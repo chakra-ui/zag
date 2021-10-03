@@ -1,5 +1,5 @@
-import { env } from "@core-foundation/utils"
-import { CSSStyleProperties } from "./types"
+import { isDom } from "tiny-guard"
+import { DOM } from "./types"
 
 /* -----------------------------------------------------------------------------
  * Live Region for screen reader technology
@@ -13,7 +13,7 @@ type LiveRegionOptions = {
   doc?: Document
 }
 
-export const srOnlyStyle: CSSStyleProperties = {
+export const srOnlyStyle: DOM.Style = {
   border: "0",
   clip: "rect(0 0 0 0)",
   height: "1px",
@@ -31,7 +31,7 @@ export class LiveRegion {
 
   constructor(opts: Partial<LiveRegionOptions> = {}) {
     const { ariaLive = "polite", role = "log", ariaRelevant = "additions", doc: _doc } = opts
-    this.doc = _doc ?? env.dom() ? document : null
+    this.doc = _doc ?? isDom() ? document : null
     const exists = this.doc?.getElementById("__machine-region")
 
     if (!this.doc || exists) return

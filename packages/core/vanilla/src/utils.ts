@@ -1,18 +1,20 @@
-import { is } from "@core-foundation/utils/is"
-import { cast } from "@core-foundation/utils/fn"
-
-import { StateMachine as S } from "./types"
+import { is } from "tiny-guard"
+import type { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
-  const eventObject = is.string(event) ? { type: event } : event
-  return cast<T>(eventObject)
+  const obj = is.str(event) ? { type: event } : event
+  return obj as T
+}
+
+export function toArray<T>(value: T | T[] | undefined): T[] {
+  if (!value) return []
+  return is.arr(value) ? value : [value]
 }
 
 export const uniqueId = (() => {
-  let currentId = 0
-
+  let id = 0
   return () => {
-    currentId++
-    return currentId.toString(16)
+    id++
+    return id.toString(16)
   }
 })()

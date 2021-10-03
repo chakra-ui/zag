@@ -1,15 +1,10 @@
-import { useMachine, useSnapshot } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { tooltip } from "@ui-machines/web"
-import { useMount } from "hooks/use-mount"
 
 const Tooltip = (props: { id?: string }) => {
   const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
-
-  const ref = useMount<HTMLButtonElement>(send)
-
   const { isVisible, triggerProps, tooltipProps } = tooltip.connect(state, send)
-
-  useSnapshot(tooltip.store)
+  const ref = useSetup<HTMLButtonElement>({ send, id: "testing" })
 
   return (
     <div>

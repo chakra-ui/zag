@@ -1,7 +1,8 @@
 import { createMachine, ref } from "@ui-machines/core"
-import { addPointerEvent } from "@core-dom/event/pointer"
+import { addDomEvent, addPointerEvent } from "tiny-dom-event"
+import { noop } from "tiny-fn"
+import { is, isSafari } from "tiny-guard"
 import { proxy, subscribe } from "valtio"
-import { env, is, noop } from "@core-foundation/utils"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
 
@@ -12,7 +13,7 @@ export type TooltipMachineContext = {
 }
 
 export type TooltipMachineState = {
-  value: "unknown" | "idle" | "opening" | "open" | "closing" | "closed"
+  value: "unknown" | "opening" | "open" | "closing" | "closed"
 }
 
 export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
@@ -23,13 +24,14 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       unknown: {
         on: {
           SETUP: {
-            target: "idle",
+            target: "closed",
             actions: ["setOwnerDocument", "setId"],
           },
         },
       },
 
-      idle: {
+      closed: {
+        entry: "clearGlobalId",
         on: {
           FOCUS: "open",
           POINTER_ENTER: [
@@ -79,19 +81,6 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           FORCE_CLOSE: "closed",
         },
       },
-
-      closed: {
-        entry: "clearGlobalId",
-        on: {
-          POINTER_ENTER: [
-            {
-              cond: "noVisibleTooltip",
-              target: "opening",
-            },
-            { target: "open" },
-          ],
-        },
-      },
     },
   },
   {
@@ -104,18 +93,17 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         })
       },
       trackPointermoveForSafari: (ctx, _evt, { send }) => {
-        if (!env.safari()) return noop
+        if (!isSafari()) return noop
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "pointermove", (event) => {
-          if (is.domTarget(event) && event.target.closest("[data-controls=tooltip][data-expanded]")) {
-            return
-          }
+          const selector = "[data-controls=tooltip][data-expanded]"
+          if (is.elem(event.target) && event.target.closest(selector)) return
           send("POINTER_LEAVE")
         })
       },
       trackEscapeKey: (ctx, _evt, { send }) => {
         const doc = ctx.doc ?? document
-        return addPointerEvent(doc, "keydown", (event) => {
+        return addDomEvent(doc, "keydown", (event) => {
           if (event.key === "Escape" || event.key === "Esc") {
             send("ESCAPE")
           }

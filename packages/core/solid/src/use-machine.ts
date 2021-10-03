@@ -1,4 +1,3 @@
-import { cast } from "@core-foundation/utils"
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { onCleanup, onMount } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
@@ -44,7 +43,7 @@ export function useMachine<
     service.updateActions(actions)
   })
 
-  const _state = cast<S.State<TContext, TState>>(state)
+  const _state = <S.State<TContext, TState>>state
 
   return [_state, service.send, service] as const
 }

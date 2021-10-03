@@ -1,13 +1,13 @@
-import { focus } from "@core-dom/event"
-import { List } from "@core-foundation/list"
-import { is } from "@core-foundation/utils/is"
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { WithDOM } from "../utils/types"
+import { add, remove, toArray } from "tiny-array"
+import { is } from "tiny-guard"
+import type { DOM } from "../utils"
+import { uuid } from "../utils"
 import { dom } from "./accordion.dom"
 
 const { and, not } = guards
 
-export type AccordionMachineContext = WithDOM<{
+export type AccordionMachineContext = DOM.Context<{
   allowMultiple?: boolean
   allowToggle?: boolean
   focusedId: string | null
@@ -27,7 +27,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
     context: {
       focusedId: null,
       activeId: null,
-      uid: "testing",
+      uid: uuid(),
       allowToggle: false,
     },
     states: {
@@ -50,26 +50,26 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       focused: {
         on: {
           ARROW_DOWN: {
-            actions: "focusNextAccordion",
+            actions: "focusNext",
           },
           ARROW_UP: {
-            actions: "focusPrevAccordion",
+            actions: "focusPrev",
           },
           CLICK: [
             {
               cond: and("isExpanded", "canToggle"),
-              actions: "collapseAccordion",
+              actions: "collapse",
             },
             {
               cond: not("isExpanded"),
-              actions: "expandAccordion",
+              actions: "expand",
             },
           ],
           HOME: {
-            actions: "focusFirstAccordion",
+            actions: "focusFirst",
           },
           END: {
-            actions: "focusLastAccordion",
+            actions: "focusLast",
           },
           BLUR: {
             target: "idle",
@@ -82,49 +82,32 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
   {
     guards: {
       canToggle: (ctx) => !!ctx.allowToggle || !!ctx.allowMultiple,
-      isExpanded: (ctx, evt) => {
-        const { activeId } = ctx
-        return is.array(activeId) ? activeId.includes(evt.id) : activeId === evt.id
-      },
+      isExpanded: (ctx, evt) => (is.arr(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id),
     },
     actions: {
-      collapseAccordion(ctx, evt) {
-        if (ctx.allowMultiple) {
-          ctx.activeId = List.from(ctx.activeId).remove(evt.id).value
-        } else {
-          ctx.activeId = null
-        }
+      collapse(ctx, evt) {
+        ctx.activeId = ctx.allowMultiple ? remove(toArray(ctx.activeId), evt.id) : null
       },
-      expandAccordion(ctx, evt) {
-        if (ctx.allowMultiple) {
-          ctx.activeId = List.from(ctx.activeId).add(evt.id).value
-        } else {
-          ctx.activeId = evt.id
-        }
+      expand(ctx, evt) {
+        ctx.activeId = ctx.allowMultiple ? add(toArray(ctx.activeId), evt.id) : evt.id
       },
-      focusFirstAccordion(ctx) {
-        const { first } = dom(ctx)
-        if (!first) return
-        focus.nextTick(first)
+      focusFirst(ctx) {
+        const el = dom.getFirstEl(ctx)
+        el?.focus()
       },
-      focusLastAccordion(ctx) {
-        const { last } = dom(ctx)
-        if (!last) return
-        focus.nextTick(last)
+      focusLast(ctx) {
+        const el = dom.getLastEl(ctx)
+        el?.focus()
       },
-      focusNextAccordion(ctx) {
-        const { next } = dom(ctx)
+      focusNext(ctx) {
         if (!ctx.focusedId) return
-        const el = next(ctx.focusedId)
-        if (!el) return
-        focus.nextTick(el)
+        const el = dom.getNextEl(ctx, ctx.focusedId)
+        el?.focus()
       },
-      focusPrevAccordion(ctx) {
-        const { prev } = dom(ctx)
+      focusPrev(ctx) {
         if (!ctx.focusedId) return
-        const el = prev(ctx.focusedId)
-        if (!el) return
-        focus.nextTick(el)
+        const el = dom.getPrevEl(ctx, ctx.focusedId)
+        el?.focus()
       },
       setFocusedId(ctx, evt) {
         ctx.focusedId = evt.id

@@ -1,62 +1,51 @@
-import { NodeList } from "@core-dom/node-list"
-import { is } from "@core-foundation/utils"
-import { MenuMachineContext } from "./menu.machine"
+import { first, last } from "tiny-array"
+import { is } from "tiny-guard"
+import { findByText, nextById, prevById, queryElements } from "tiny-nodelist"
+import { MenuMachineContext as Ctx } from "./menu.machine"
 
-export function getIds(uid: string) {
-  return {
-    trigger: `menu-${uid}-trigger`,
-    menu: `menu-${uid}-menulist`,
-  }
-}
+type HTMLEl = HTMLElement | null
 
-export function getElements(ctx: MenuMachineContext) {
-  const doc = ctx.doc ?? document
-  const ids = getIds(ctx.uid)
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  return {
-    doc,
-    activeElement: doc.activeElement as HTMLElement | null,
-    menu: doc.getElementById(ids.menu),
-    trigger: doc.getElementById(ids.trigger),
-    activeItem: ctx.activeId ? doc.getElementById(ctx.activeId) : null,
-  }
-}
+  getTriggerId: (ctx: Ctx) => `menu-${ctx.uid}-trigger`,
+  getMenuId: (ctx: Ctx) => `menu-${ctx.uid}-menulist`,
 
-export function dom(ctx: MenuMachineContext) {
-  const ids = getIds(ctx.uid)
-  const { menu } = getElements(ctx)
-  const selector = `[role=menuitem][data-ownedby=${ids.menu}]:not([data-disabled])`
-  const collection = NodeList.fromSelector(menu, selector)
+  getMenuEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getMenuId(ctx)) as HTMLEl,
+  getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
+  getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
 
-  return {
-    first: collection.first,
-    last: collection.last,
-    prev: collection.prevById,
-    next: collection.nextById,
-    searchByKey(key: string) {
-      const activeId = menu?.getAttribute("aria-activedescendant")
-      return collection.findByText(key, activeId)
-    },
-  }
-}
+  getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
+  getElements: (ctx: Ctx) =>
+    queryElements(dom.getMenuEl(ctx), `[role=menuitem][data-ownedby=${dom.getMenuId(ctx)}]:not([data-disabled])`),
 
-export function getChildMenus(ctx: MenuMachineContext) {
-  return Object.values(ctx.children)
-    .map((child) => getElements(child.state.context).menu)
-    .filter(is.element)
-}
+  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
+  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id),
 
-export function getParentMenus(ctx: MenuMachineContext) {
-  const menus: HTMLElement[] = []
-  let parent = ctx.parent
-  while (parent) {
-    const { menu } = getElements(parent.state.context)
-    if (menu) menus.push(menu)
-    parent = parent.state.context.parent
-  }
-  return menus
-}
+  getElemByKey: (ctx: Ctx, key: string) => {
+    const activeId = dom.getMenuEl(ctx)?.getAttribute("aria-activedescendant")
+    return findByText(dom.getElements(ctx), key, activeId)
+  },
 
-export function isTargetDisabled(target: EventTarget | null): boolean {
-  return is.element(target) && target.dataset.disabled === ""
+  getChildMenus: (ctx: Ctx) => {
+    return Object.values(ctx.children)
+      .map((child) => dom.getMenuEl(child.state.context))
+      .filter(is.elem)
+  },
+  getParentMenus: (ctx: Ctx) => {
+    const menus: HTMLElement[] = []
+    let parent = ctx.parent
+    while (parent) {
+      const menu = dom.getMenuEl(parent.state.context)
+      if (menu) menus.push(menu)
+      parent = parent.state.context.parent
+    }
+    return menus
+  },
+
+  isTargetDisabled: (v: EventTarget | null) => {
+    return is.elem(v) && v.dataset.disabled === ""
+  },
 }

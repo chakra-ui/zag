@@ -7,7 +7,7 @@ import { css, CSSObject } from "@emotion/css"
 
 import { useMount } from "../hooks/use-mount"
 import { tagsInputStyle } from "../../../../shared/style"
-import { StateVisualizer } from "with-typescript/components/state-visualizer"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const styles = css(tagsInputStyle as CSSObject)
 

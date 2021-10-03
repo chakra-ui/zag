@@ -2,20 +2,18 @@ import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
 import { getEventKey } from "../utils/get-event-key"
 import { getEventStep } from "../utils/get-step"
-import { EventKeyMap, HTMLProps } from "../utils/types"
-import { getIds } from "./split-view.dom"
+import { DOM, Props } from "../utils/types"
+import { dom } from "./split-view.dom"
 import { SplitViewMachineContext, SplitViewMachineState } from "./split-view.machine"
 
-export function connectSplitViewMachine(
+export function splitViewConnect(
   state: S.State<SplitViewMachineContext, SplitViewMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
 
   const isHorizontal = ctx.orientation === "horizontal"
-
   const isCollapsed = ctx.value === ctx.min
   const isFocused = state.matches("hover", "dragging", "focused")
 
@@ -35,8 +33,8 @@ export function connectSplitViewMachine(
       send("TOGGLE")
     },
 
-    rootProps: normalize<HTMLProps>({
-      id: ids.root,
+    rootProps: normalize<Props.Element>({
+      id: dom.getRootId(ctx),
       style: {
         display: "flex",
         flex: "1 1 0%",
@@ -46,8 +44,8 @@ export function connectSplitViewMachine(
       },
     }),
 
-    secondaryPaneProps: normalize<HTMLProps>({
-      id: ids.secondaryPane,
+    secondaryPaneProps: normalize<Props.Element>({
+      id: dom.getSecondaryPaneId(ctx),
       style: {
         height: isHorizontal ? "100%" : "auto",
         width: isHorizontal ? "auto" : "100%",
@@ -56,8 +54,8 @@ export function connectSplitViewMachine(
       },
     }),
 
-    primaryPaneProps: normalize<HTMLProps>({
-      id: ids.primaryPane,
+    primaryPaneProps: normalize<Props.Element>({
+      id: dom.getPrimaryPaneId(ctx),
       style: {
         width: `${ctx.value}px`,
         minWidth: `${ctx.min}px`,
@@ -69,28 +67,28 @@ export function connectSplitViewMachine(
       },
     }),
 
-    toggleButtonProps: normalize<HTMLProps>({
-      id: ids.toggleButton,
+    toggleButtonProps: normalize<Props.Element>({
+      id: dom.getToggleButtonId(ctx),
       "aria-label": isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
         send("TOGGLE")
       },
     }),
 
-    labelProps: normalize<HTMLProps>({
-      id: ids.splitterLabel,
+    labelProps: normalize<Props.Element>({
+      id: dom.getSplitterLabelId(ctx),
     }),
 
-    splitterProps: normalize<HTMLProps>({
-      id: ids.splitter,
+    splitterProps: normalize<Props.Element>({
+      id: dom.getSplitterId(ctx),
       role: "separator",
       tabIndex: 0,
       "aria-valuenow": ctx.value,
       "aria-valuemin": ctx.min,
       "aria-valuemax": ctx.max,
       "aria-orientation": ctx.orientation,
-      "aria-labelledby": ids.splitterLabel,
-      "aria-controls": ids.primaryPane,
+      "aria-labelledby": dom.getSplitterLabelId(ctx),
+      "aria-controls": dom.getPrimaryPaneId(ctx),
       "data-focus": dataAttr(state.matches("hover", "dragging", "focused")),
       style: {
         touchAction: "none",
@@ -127,7 +125,7 @@ export function connectSplitViewMachine(
       },
       onKeyDown(event) {
         const step = getEventStep(event) * ctx.step
-        const keyMap: EventKeyMap = {
+        const keyMap: DOM.EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
           },
