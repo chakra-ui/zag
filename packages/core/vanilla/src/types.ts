@@ -206,6 +206,10 @@ export declare namespace StateMachine {
      */
     context?: WritablePart<TContext>
     /**
+     * A generic way to react to context value changes
+     */
+    watch?: { [K in keyof TContext]?: PureActions<TContext, AnyEventObject> }
+    /**
      * The computed properties based on the state
      */
     computed?: Partial<TComputedContext<TContext>>

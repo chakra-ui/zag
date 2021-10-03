@@ -1,6 +1,7 @@
 import { klona } from "klona"
 import { cast, invariant, runIfFn, warn } from "tiny-fn"
 import { isArray, isObject, isString } from "tiny-guard"
+import { subscribeKey } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"
 import { createProxy } from "./create-proxy"
@@ -33,6 +34,7 @@ export class Machine<
   private doneListeners = new Set<S.StateListener<TContext, TState>>()
   private removeStateListener: VoidFunction = () => void 0
   private removeContextListener: VoidFunction = () => void 0
+  private contextWatchers: Set<VoidFunction> = new Set()
 
   // For Parent <==> Spawned Actor relationship
   private parent?: AnyMachine
@@ -109,7 +111,16 @@ export class Machine<
       })
     })
 
+    for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
+      this.contextWatchers.add(
+        subscribeKey(this.state.context, key, () => {
+          this.executeActions(fn, cast({ type: "machine.watch" }))
+        }),
+      )
+    }
+
     this.executeActions(this.config.onStart, toEvent<TEvent>(ActionTypes.Start))
+
     return this
   }
 
@@ -131,6 +142,7 @@ export class Machine<
     this.stopChildren()
     this.stopActivities()
     this.stopDelayedEvents()
+    this.stopContextWatchers()
 
     this.status = MachineStatus.Stopped
     this.executeActions(this.config.onStop, toEvent<TEvent>(ActionTypes.Stop))
@@ -145,6 +157,11 @@ export class Machine<
   private stopContextListeners = () => {
     this.removeContextListener()
     this.contextListeners.clear()
+  }
+
+  private stopContextWatchers = () => {
+    for (const fn of this.contextWatchers) fn()
+    this.contextWatchers.clear()
   }
 
   private stopDelayedEvents = () => {
