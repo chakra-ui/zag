@@ -12,92 +12,100 @@ export function accordionConnect(
 ) {
   const { context: ctx } = state
 
+  function getItemState(props: AccordionItemProps) {
+    const { id, disabled } = props
+    return {
+      isOpen: isArray(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId,
+      isFocused: ctx.focusedId === id,
+      isDisabled: disabled ?? ctx.disabled,
+    }
+  }
+
   return {
     rootProps: normalize<Props.Element>({
       id: dom.getRootId(ctx),
     }),
 
-    getAccordionItem(props: AccordionItemProps) {
-      const { id, disabled } = props
+    getItemState,
 
-      const isOpen = isArray(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId
-      const isDisabled = disabled ?? ctx.disabled
-      const isFocused = ctx.focusedId === id
+    getItemProps(props: AccordionItemProps) {
+      const { isOpen } = getItemState(props)
+      return normalize<Props.Element>({
+        id: dom.getGroupId(ctx, props.id),
+        "data-expanded": dataAttr(isOpen),
+      })
+    },
 
-      return {
-        isFocused,
-        isOpen,
+    getPanelProps(props: AccordionItemProps) {
+      const { isOpen, isFocused, isDisabled } = getItemState(props)
+      return normalize<Props.Element>({
+        role: "region",
+        id: dom.getPanelId(ctx, props.id),
+        "aria-labelledby": dom.getTriggerId(ctx, props.id),
+        hidden: !isOpen,
+        "data-disabled": dataAttr(isDisabled),
+        "data-focus": dataAttr(isFocused),
+        "data-expanded": dataAttr(isOpen),
+      })
+    },
 
-        groupProps: normalize<Props.Element>({
-          id: dom.getGroupId(ctx, id),
-          "data-expanded": dataAttr(isOpen),
-        }),
+    getTriggerProps(props: AccordionItemProps) {
+      const { id } = props
+      const { isDisabled, isOpen } = getItemState(props)
+      return normalize<Props.Button>({
+        type: "button",
+        id: dom.getTriggerId(ctx, id),
+        "aria-controls": dom.getPanelId(ctx, id),
+        "aria-expanded": isOpen,
+        disabled: isDisabled,
+        "aria-disabled": isDisabled,
+        "data-ownedby": dom.getRootId(ctx),
+        onFocus() {
+          if (isDisabled) return
+          send({ type: "FOCUS", id })
+        },
+        onBlur() {
+          if (isDisabled) return
+          send("BLUR")
+        },
+        onClick() {
+          if (isDisabled) return
+          send({ type: "CLICK", id })
+        },
+        onKeyDown(event) {
+          if (isDisabled) return
 
-        panelProps: normalize<Props.Element>({
-          role: "region",
-          id: dom.getPanelId(ctx, id),
-          "aria-labelledby": dom.getTriggerId(ctx, id),
-          hidden: !isOpen,
-          "data-disabled": dataAttr(isDisabled),
-          "data-focus": dataAttr(isFocused),
-          "data-expanded": dataAttr(isOpen),
-        }),
+          const keyMap: DOM.EventKeyMap = {
+            ArrowDown() {
+              send({ type: "ARROW_DOWN", id })
+            },
+            ArrowUp() {
+              send({ type: "ARROW_UP", id })
+            },
+            Enter() {
+              send({ type: "CLICK", id })
+            },
+            Home() {
+              send({ type: "HOME", id })
+            },
+            End() {
+              send({ type: "END", id })
+            },
+          }
 
-        triggerProps: normalize<Props.Button>({
-          type: "button",
-          id: dom.getTriggerId(ctx, id),
-          "aria-controls": dom.getPanelId(ctx, id),
-          "aria-expanded": isOpen,
-          disabled: isDisabled,
-          "aria-disabled": isDisabled,
-          "data-ownedby": dom.getRootId(ctx),
-          onFocus() {
-            if (disabled) return
-            send({ type: "FOCUS", id })
-          },
-          onBlur() {
-            if (disabled) return
-            send("BLUR")
-          },
-          onClick() {
-            if (disabled) return
-            send({ type: "CLICK", id })
-          },
-          onKeyDown(event) {
-            if (disabled) return
+          const key = getEventKey(event, {
+            dir: ctx.dir,
+            orientation: "vertical",
+          })
 
-            const keyMap: DOM.EventKeyMap = {
-              ArrowDown() {
-                send({ type: "ARROW_DOWN", id })
-              },
-              ArrowUp() {
-                send({ type: "ARROW_UP", id })
-              },
-              Enter() {
-                send({ type: "CLICK", id })
-              },
-              Home() {
-                send({ type: "HOME", id })
-              },
-              End() {
-                send({ type: "END", id })
-              },
-            }
+          const exec = keyMap[key]
 
-            const key = getEventKey(event, {
-              dir: ctx.dir,
-              orientation: "vertical",
-            })
-
-            const exec = keyMap[key]
-
-            if (exec) {
-              event.preventDefault()
-              exec(event)
-            }
-          },
-        }),
-      }
+          if (exec) {
+            event.preventDefault()
+            exec(event)
+          }
+        },
+      })
     },
   }
 }

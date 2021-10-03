@@ -30,6 +30,10 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       uid: uuid(),
       allowToggle: false,
     },
+    watch: {
+      // when the `activeId` changes, we need to call the `onChange` callback
+      activeId: "invokeOnChange",
+    },
     states: {
       unknown: {
         on: {
@@ -85,6 +89,11 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       isExpanded: (ctx, evt) => (isArray(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id),
     },
     actions: {
+      invokeOnChange(ctx) {
+        if (ctx.activeId !== null) {
+          ctx.onChange?.(ctx.activeId)
+        }
+      },
       collapse(ctx, evt) {
         ctx.activeId = ctx.allowMultiple ? remove(toArray(ctx.activeId), evt.id) : null
       },
