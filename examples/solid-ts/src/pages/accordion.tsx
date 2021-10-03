@@ -7,52 +7,44 @@ import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
   const [state, send] = useMachine(accordion.machine)
-
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
-
   const connect = createMemo(() => accordion.connect(state, send, normalizeProps))
-
-  const parts = createMemo(() => ({
-    home: connect().getAccordionItem({ id: "home" }),
-    about: connect().getAccordionItem({ id: "about" }),
-    contact: connect().getAccordionItem({ id: "contact" }),
-  }))
 
   return (
     <div style={{ width: "100%" }}>
       <div ref={ref} {...connect().rootProps} style={{ maxWidth: "40ch" }}>
-        <div {...parts().home.groupProps}>
+        <div {...connect().getItemProps({ id: "home" })}>
           <h3>
-            <button {...parts().home.triggerProps}>Home</button>
+            <button {...connect().getTriggerProps({ id: "home" })}>Home</button>
           </h3>
-          <div {...parts().home.panelProps}>
+          <div {...connect().getPanelProps({ id: "home" })}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua.
           </div>
         </div>
 
-        <div {...parts().about.groupProps}>
+        <div {...connect().getItemProps({ id: "about" })}>
           <h3>
-            <button {...parts().about.triggerProps}>About</button>
+            <button {...connect().getTriggerProps({ id: "about" })}>About</button>
           </h3>
-          <div {...parts().about.panelProps}>
+          <div {...connect().getPanelProps({ id: "about" })}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua.
           </div>
         </div>
 
-        <div {...parts().contact.groupProps}>
+        <div {...connect().getItemProps({ id: "contact" })}>
           <h3>
-            <button {...parts().contact.triggerProps}>Contact</button>
+            <button {...connect().getTriggerProps({ id: "contact" })}>Contact</button>
           </h3>
-          <div {...parts().contact.panelProps}>
+          <div {...connect().getPanelProps({ id: "contact" })}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua.
           </div>
         </div>
-
-        <StateVisualizer state={state} />
       </div>
+
+      <StateVisualizer state={state} />
     </div>
   )
 }

@@ -8,45 +8,39 @@ export default defineComponent({
   name: "Accordion",
   setup() {
     const [state, send] = useMachine(accordion.machine)
-    const machineState = computed(() => accordion.connect(state.value, send, normalizeProps))
-
+    const connect = computed(() => accordion.connect(state.value, send, normalizeProps))
     const ref = useMount(send)
 
-    const parts = computed(() => ({
-      home: machineState.value.getAccordionItem({ id: "home" }),
-      about: machineState.value.getAccordionItem({ id: "about" }),
-      contact: machineState.value.getAccordionItem({ id: "contact" }),
-    }))
-
     return () => {
+      const { getItemProps, getTriggerProps, getPanelProps, rootProps } = connect.value
       return (
         <div style={{ width: "100%" }}>
-          <div ref={ref} {...machineState.value.rootProps} style={{ maxWidth: "40ch" }}>
-            <div {...parts.value.home.groupProps}>
+          <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
+            <div {...getItemProps({ id: "home" })}>
               <h3>
-                <button {...parts.value.home.triggerProps}>Home</button>
+                <button {...getTriggerProps({ id: "home" })}>Home</button>
               </h3>
-              <div {...parts.value.home.panelProps}>
+              <div {...getPanelProps({ id: "home" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
             </div>
 
-            <div {...parts.value.about.groupProps}>
+            <div {...getItemProps({ id: "about" })}>
               <h3>
-                <button {...parts.value.about.triggerProps}>About</button>
+                <button {...getTriggerProps({ id: "about" })}>About</button>
               </h3>
-              <div {...parts.value.about.panelProps}>
+              <div {...getPanelProps({ id: "about" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
             </div>
 
-            <div {...parts.value.contact.groupProps}>
+            <div {...getItemProps({ id: "contact" })}>
               <h3>
-                <button {...parts.value.contact.triggerProps}>Contact</button>
+                <button {...getTriggerProps({ id: "contact" })}>Contact</button>
               </h3>
-              <div {...parts.value.contact.panelProps}>
+              <div {...getPanelProps({ id: "contact" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
