@@ -13,14 +13,8 @@ const Tooltip = defineComponent({
   },
   setup(props) {
     const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
-
-    const ref = useMount(send)
-
     const machineState = computed(() => tooltip.connect(state.value, send, normalizeProps))
-
-    const _state = useSnapshot(tooltip.store)
-
-    const isVisible = computed(() => machineState.value.getIsVisible(_state.value.id))
+    const ref = useMount(send)
 
     return () => (
       <>
@@ -28,7 +22,7 @@ const Tooltip = defineComponent({
           <button ref={ref} {...machineState.value.triggerProps}>
             Over me
           </button>
-          {isVisible.value && (
+          {machineState.value.isVisible && (
             <div {...machineState.value.tooltipProps} style={{ background: "red", padding: "10px" }}>
               Tooltip
             </div>
@@ -44,11 +38,11 @@ export default defineComponent(() => {
 
   return () => (
     <>
-      <h3>{JSON.stringify({ id: _state.value.id })}</h3>
+      <h3>{JSON.stringify(_state.value, null, 2)}</h3>
       <div style={{ display: "flex" }}>
         {/* @ts-expect-error */}
         <Tooltip id="tip-1" />
-        <div style={{ marginLeft: "80px" }}>
+        <div style={{ marginLeft: "20px" }}>
           {/* @ts-expect-error */}
           <Tooltip id="tip-2" />
         </div>

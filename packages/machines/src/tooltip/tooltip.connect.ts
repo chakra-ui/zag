@@ -18,10 +18,6 @@ export function tooltipConnect(
   return {
     isVisible,
 
-    getIsVisible(globalId: string | null) {
-      return ctx.id === globalId && state.matches("open", "closing")
-    },
-
     triggerProps: normalize<Props.Button>({
       id: triggerId,
       "data-expanded": dataAttr(isVisible),

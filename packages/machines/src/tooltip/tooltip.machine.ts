@@ -13,7 +13,7 @@ export type TooltipMachineContext = {
 }
 
 export type TooltipMachineState = {
-  value: "unknown" | "idle" | "opening" | "open" | "closing" | "closed"
+  value: "unknown" | "opening" | "open" | "closing" | "closed"
 }
 
 export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
@@ -24,13 +24,14 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       unknown: {
         on: {
           SETUP: {
-            target: "idle",
+            target: "closed",
             actions: ["setOwnerDocument", "setId"],
           },
         },
       },
 
-      idle: {
+      closed: {
+        entry: "clearGlobalId",
         on: {
           FOCUS: "open",
           POINTER_ENTER: [
@@ -78,19 +79,6 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         },
         on: {
           FORCE_CLOSE: "closed",
-        },
-      },
-
-      closed: {
-        entry: "clearGlobalId",
-        on: {
-          POINTER_ENTER: [
-            {
-              cond: "noVisibleTooltip",
-              target: "opening",
-            },
-            { target: "open" },
-          ],
         },
       },
     },

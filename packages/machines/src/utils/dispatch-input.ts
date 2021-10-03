@@ -8,11 +8,11 @@ export function dispatchInputEvent(input: HTMLElement, value: string | number) {
   input.type = "text"
   input.hidden = true
 
-  const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set
+  const set = Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype, "value")?.set
 
   set?.call(input, value)
 
-  const evt = new Event("input", { bubbles: true })
+  const evt = new win.Event("input", { bubbles: true })
   input.dispatchEvent(evt)
 
   input.type = "hidden"
