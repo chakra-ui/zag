@@ -62,6 +62,9 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.dir === "rtl",
     },
+    watch: {
+      value: "invokeOnChange",
+    },
     on: {
       STOP: "focus",
     },
@@ -91,31 +94,31 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         on: {
           POINTER_DOWN: {
             target: "dragging",
-            actions: ["setPointerValue", "invokeOnChangeStart", "invokeOnChange", "focusThumb"],
+            actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
           },
           ARROW_LEFT: {
-            actions: ["decrement", "invokeOnChange"],
+            actions: ["decrement"],
           },
           ARROW_RIGHT: {
-            actions: ["increment", "invokeOnChange"],
+            actions: ["increment"],
           },
           ARROW_UP: {
-            actions: ["increment", "invokeOnChange"],
+            actions: ["increment"],
           },
           ARROW_DOWN: {
-            actions: ["decrement", "invokeOnChange"],
+            actions: ["decrement"],
           },
           PAGE_UP: {
-            actions: ["increment", "invokeOnChange"],
+            actions: ["increment"],
           },
           PAGE_DOWN: {
-            actions: ["decrement", "invokeOnChange"],
+            actions: ["decrement"],
           },
           HOME: {
-            actions: ["setToMin", "invokeOnChange"],
+            actions: ["setToMin"],
           },
           END: {
-            actions: ["setToMax", "invokeOnChange"],
+            actions: ["setToMax"],
           },
           BLUR: "idle",
         },
