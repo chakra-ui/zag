@@ -96,9 +96,8 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         if (!isSafari()) return noop
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "pointermove", (event) => {
-          if (is.elem(event.target) && event.target.closest("[data-controls=tooltip][data-expanded]")) {
-            return
-          }
+          const selector = "[data-controls=tooltip][data-expanded]"
+          if (is.elem(event.target) && event.target.closest(selector)) return
           send("POINTER_LEAVE")
         })
       },

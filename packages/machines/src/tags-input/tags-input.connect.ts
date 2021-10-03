@@ -20,11 +20,10 @@ export function tagsInputConnect(
 
   const isInputFocused = state.matches("focused:input", "navigating:tag")
   const isEditingTag = state.matches("editing:tag")
-  const valueAsString = ctx.value.join(",")
 
   return {
     value: ctx.value,
-    valueAsString,
+    valueAsString: ctx.valueAsString,
 
     rootProps: normalize<Props.Element>({
       "data-count": ctx.value.length,
@@ -102,7 +101,7 @@ export function tagsInputConnect(
         type: "hidden",
         name: ctx.name,
         id: ctx.uid,
-        value: valueAsString,
+        value: ctx.valueAsString,
       })
     },
 

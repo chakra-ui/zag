@@ -1,42 +1,45 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
+import { createMachine, guards, ref, StateMachine as S } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
 import type { DOM } from "../utils"
 import { dom } from "./tags-input.dom"
 
 const { and, not } = guards
 
-export type TagsInputMachineContext = DOM.Context<{
-  autofocus?: boolean
-  disabled?: boolean
-  readonly?: boolean
-  focusedId: string | null
-  editedId: string | null
-  editedTagValue?: string
-  inputValue: string
-  value: string[]
-  onChange?(value: string[]): void
-  onHighlight?(value: string): void
-  validate?(value: string, values: string[]): void
-  addOnBlur?: boolean
-  addOnPaste?: boolean
-  /**
-   * The max number of tags
-   */
-  max?: number
-  /**
-   * Whether to allow tags to exceed max. In this case,
-   * we'll attach `data-invalid` to the root
-   */
-  allowOutOfRange?: boolean
-  /**
-   * Whether to allow duplicate tags
-   */
-  allowDuplicate?: boolean
-  /**
-   * The name attribute for the input. Useful for form submissions
-   */
-  name?: string
-}>
+export type TagsInputMachineContext = S.Computed<{
+  valueAsString: string
+}> &
+  DOM.Context<{
+    autofocus?: boolean
+    disabled?: boolean
+    readonly?: boolean
+    focusedId: string | null
+    editedId: string | null
+    editedTagValue?: string
+    inputValue: string
+    value: string[]
+    onChange?(value: string[]): void
+    onHighlight?(value: string): void
+    validate?(value: string, values: string[]): void
+    addOnBlur?: boolean
+    addOnPaste?: boolean
+    /**
+     * The max number of tags
+     */
+    max?: number
+    /**
+     * Whether to allow tags to exceed max. In this case,
+     * we'll attach `data-invalid` to the root
+     */
+    allowOutOfRange?: boolean
+    /**
+     * Whether to allow duplicate tags
+     */
+    allowDuplicate?: boolean
+    /**
+     * The name attribute for the input. Useful for form submissions
+     */
+    name?: string
+  }>
 
 export type TagsInputMachineState = {
   value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
@@ -71,6 +74,9 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       editedId: null,
       value: [],
       dir: "ltr",
+    },
+    computed: {
+      valueAsString: (ctx) => ctx.value.join(", "),
     },
     states: {
       unknown: {
@@ -192,6 +198,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       isLastTagFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.focusedId,
       isInputValueEmpty: (ctx) => ctx.inputValue.trim().length === 0,
       hasTags: (ctx) => ctx.value.length > 0,
+      allowOutOfRange: (ctx) => !!ctx.allowOutOfRange,
       isInputCaretAtStart(ctx) {
         const input = dom.getInputEl(ctx)
         if (!input) return false

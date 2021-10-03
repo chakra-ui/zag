@@ -9,7 +9,7 @@ const { and } = guards
 
 export type PopoverMachineContext = DOM.Context<{
   autoFocus?: boolean
-  autoFocusNode?: HTMLElement
+  initialFocusEl?: HTMLElement
   restoreFocus?: boolean
   closeOnOutsideClick?: boolean
   closeOnEsc?: boolean
@@ -100,7 +100,8 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
       },
       autoFocus(ctx) {
         nextTick(() => {
-          dom.getFirstFocusableEl(ctx)?.focus()
+          const el = ctx.initialFocusEl || dom.getFirstFocusableEl(ctx)
+          el?.focus()
         })
       },
       restoreFocus(ctx) {

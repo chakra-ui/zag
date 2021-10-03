@@ -1,8 +1,6 @@
 import { accordion } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
-
 import { defineComponent, h, Fragment, computed } from "vue"
-
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 
@@ -10,16 +8,9 @@ export default defineComponent({
   name: "Accordion",
   setup() {
     const [state, send] = useMachine(accordion.machine)
+    const machineState = computed(() => accordion.connect(state.value, send, normalizeProps))
 
     const ref = useMount(send)
-
-    const machineState = computed(() => {
-      const machine = accordion.connect(state.value, send, normalizeProps)
-      return {
-        rootProps: machine.rootProps,
-        getAccordionItem: machine.getAccordionItem,
-      }
-    })
 
     const parts = computed(() => ({
       home: machineState.value.getAccordionItem({ id: "home" }),
