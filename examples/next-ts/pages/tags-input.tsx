@@ -14,6 +14,10 @@ export default function Page() {
     tagsInput.machine.withContext({
       uid: "123",
       value: ["React", "Vue"],
+      addOnBlur: true,
+      max: 4,
+      allowOutOfRange: true,
+      onHighlight: console.log,
     }),
   )
 

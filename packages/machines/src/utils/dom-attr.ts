@@ -11,7 +11,8 @@ export const ariaAttr = (cond: boolean | undefined) => {
 type Dict = Record<string, any>
 
 export interface PropNormalizer {
-  <T extends Dict = Dict>(props: T): Dict
+  <T extends Dict = Dict, R extends Dict = Dict>(props: T): R
 }
 
+//@ts-ignore
 export const defaultPropNormalizer: PropNormalizer = (props: Dict) => props

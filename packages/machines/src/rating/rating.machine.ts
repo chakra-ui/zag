@@ -11,7 +11,7 @@ export type RatingMachineContext = DOM.Context<{
   readonly?: boolean
   disabled?: boolean
   allowHalf?: boolean
-  autofocus?: boolean
+  autoFocus?: boolean
   getLabelText?(value: number): string
   onChange?: (value: number) => void
 }> &

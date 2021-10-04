@@ -39,6 +39,7 @@ export function tagsInputConnect(
       id: dom.getInputId(ctx),
       value: ctx.inputValue,
       autoComplete: "off",
+      disabled: ctx.disabled,
       onChange(event) {
         send({ type: "TYPE", value: event.target.value })
       },
@@ -96,14 +97,12 @@ export function tagsInputConnect(
       },
     }),
 
-    hiddenInputProps() {
-      return normalize<Props.Input>({
-        type: "hidden",
-        name: ctx.name,
-        id: ctx.uid,
-        value: ctx.valueAsString,
-      })
-    },
+    hiddenInputProps: normalize<Props.Input>({
+      type: "hidden",
+      name: ctx.name,
+      id: ctx.uid,
+      value: ctx.valueAsString,
+    }),
 
     getTagProps({ index, value }: TagProps) {
       const id = dom.getTagId(ctx, index)
@@ -111,6 +110,7 @@ export function tagsInputConnect(
         id,
         hidden: isEditingTag ? ctx.editedId === id : false,
         "data-value": value,
+        "data-disabled": dataAttr(ctx.disabled),
         "data-selected": dataAttr(id === ctx.focusedId),
         "data-ownedby": dom.getRootId(ctx),
         onPointerDown(event) {
@@ -166,7 +166,7 @@ export function tagsInputConnect(
         tabIndex: -1,
         onClick() {
           send({
-            type: "CLICK_DELETE_BUTTON",
+            type: "DELETE_TAG",
             id: dom.getTagId(ctx, index),
           })
         },

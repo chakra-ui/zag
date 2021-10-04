@@ -12,12 +12,9 @@ export function editableConnect(
   const { context: ctx } = state
   const isEditing = state.matches("edit")
 
-  const isInteractive = !(ctx.disabled || ctx.readonly)
-  const tabIndex = isInteractive && ctx.isPreviewFocusable ? 0 : undefined
-
   return {
     isEditing,
-    isValueEmpty: ctx.value === "",
+    isValueEmpty: ctx.isValueEmpty,
 
     inputProps: normalize<Props.Input>({
       id: dom.getInputId(ctx),
@@ -32,7 +29,7 @@ export function editableConnect(
           fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
-          send("CLICK_OUTSIDE")
+          send("BLUR")
         }
       },
       onChange(event) {
@@ -45,7 +42,7 @@ export function editableConnect(
           },
           Enter(event) {
             if (!event.shiftKey && !event.metaKey) {
-              send("SUBMIT")
+              send("ENTER")
             }
           },
         }
@@ -63,7 +60,7 @@ export function editableConnect(
       children: ctx.value === "" ? ctx.placeholder : ctx.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(ctx.disabled),
-      tabIndex,
+      tabIndex: ctx.isInteractive && ctx.isPreviewFocusable ? 0 : undefined,
       onFocus() {
         send("FOCUS")
       },

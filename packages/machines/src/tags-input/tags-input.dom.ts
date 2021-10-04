@@ -21,4 +21,11 @@ export const dom = {
   getLastEl: (ctx: Ctx) => dom.getElements(ctx)[dom.getElements(ctx).length - 1],
   getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id, false),
   getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id, false),
+
+  getFocusedTagValue: (ctx: Ctx) => {
+    if (!ctx.focusedId) return null
+    const idx = dom.getIndexOfId(ctx, ctx.focusedId)
+    if (idx === -1) return null
+    return dom.getElements(ctx)[idx].dataset.value ?? null
+  },
 }
