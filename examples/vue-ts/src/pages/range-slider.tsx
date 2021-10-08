@@ -26,6 +26,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
+    //@ts-ignore To do with normalizer props resolution types
     const machineState = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
 
     return () => {
