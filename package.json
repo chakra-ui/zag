@@ -95,5 +95,29 @@
     "packages/machines",
     "packages/core/*",
     "examples/*"
-  ]
+  ],
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "prettier --write"
+    ],
+    "**/*.{md,yml,json,babelrc,eslintrc,prettierrc}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "jsxSingleQuote": false,
+    "printWidth": 120,
+    "proseWrap": "always",
+    "semi": false,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "all"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
 }

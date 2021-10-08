@@ -1,32 +1,16 @@
-const BABEL_ENV = process.env.BABEL_ENV
-const isCommonJS = BABEL_ENV !== undefined && BABEL_ENV === "cjs"
-const isESM = BABEL_ENV !== undefined && BABEL_ENV === "esm"
-
-module.exports = function babelConfig(api) {
-  api.cache(true)
-
-  const presets = [
+module.exports = {
+  presets: [
     [
       "@babel/env",
       {
-        loose: true,
-        modules: isCommonJS ? "commonjs" : false,
+        bugfixes: true,
         targets: {
-          node: "current",
-          esmodules: isESM ? true : undefined,
+          browsers: "Chrome >= 74, Safari >= 13.1, iOS >= 13.3, Firefox >= 78, Edge >= 79",
+          node: 12,
         },
       },
     ],
     "@babel/preset-typescript",
-  ]
-
-  const plugins = [
-    ["@babel/plugin-proposal-private-methods", { loose: false }],
-    "@babel/plugin-proposal-class-properties",
-  ]
-
-  return {
-    presets,
-    plugins,
-  }
+  ],
+  plugins: [["@babel/plugin-proposal-private-methods", { loose: false }], "@babel/plugin-proposal-class-properties"],
 }
