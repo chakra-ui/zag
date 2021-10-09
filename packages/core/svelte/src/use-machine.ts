@@ -34,7 +34,7 @@ export function useMachine<
   })
 
   // update machine actives when `action` changes
-  $: service.updateActions(actions)
+  $: service.setActions(actions)
 
   onDestroy(() => {
     service.stop()

@@ -63,6 +63,12 @@
       }
     },
     {
+      "files": ["cypress/**/*.test.ts"],
+      "parserOptions": {
+        "project": "cypress/tsconfig.json"
+      }
+    },
+    {
       "files": ["*.test.*", "*.test.*"],
       "extends": ["plugin:jest/recommended", "plugin:jest/style"],
       "rules": {

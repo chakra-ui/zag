@@ -1,47 +1,55 @@
-import { accordion } from "@ui-machines/web"
 import { useMachine } from "@ui-machines/react"
+import { accordion } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
+import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"
 
+const data = [
+  {
+    id: "home",
+    label: "Home",
+  },
+  {
+    id: "about",
+    label: "About",
+  },
+  {
+    id: "contact",
+    label: "Contact",
+  },
+]
+
 export default function Page() {
-  const [state, send] = useMachine(accordion.machine.withContext({ onChange: console.log }))
+  const controls = useControls({
+    allowToggle: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
+    allowMultiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+  })
+
+  const [state, send] = useMachine(accordion.machine, {
+    context: controls.context,
+  })
+
   const { rootProps, getItemProps, getPanelProps, getTriggerProps } = accordion.connect(state, send)
   const ref = useMount<HTMLDivElement>(send)
 
   return (
-    <div style={{ width: "100%" }}>
+    <div className="root" style={{ width: "100%" }}>
+      <controls.ui />
       <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
-        <div {...getItemProps({ id: "home" })}>
-          <h3>
-            <button {...getTriggerProps({ id: "home" })}>Home</button>
-          </h3>
-          <div {...getPanelProps({ id: "home" })}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
+        {data.map((item) => (
+          <div key={item.id} {...getItemProps({ id: item.id })}>
+            <h3>
+              <button data-testid={`${item.id}:trigger`} {...getTriggerProps({ id: item.id })}>
+                {item.label}
+              </button>
+            </h3>
+            <div data-testid={`${item.id}:panel`} {...getPanelProps({ id: item.id })}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+              dolore magna aliqua.
+            </div>
           </div>
-        </div>
-
-        <div {...getItemProps({ id: "about" })}>
-          <h3>
-            <button {...getTriggerProps({ id: "about" })}>About</button>
-          </h3>
-          <div {...getPanelProps({ id: "about" })}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </div>
-        </div>
-
-        <div {...getItemProps({ id: "contact" })}>
-          <h3>
-            <button {...getTriggerProps({ id: "contact" })}>Contact</button>
-          </h3>
-          <div {...getPanelProps({ id: "contact" })}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </div>
-        </div>
+        ))}
       </div>
-
       <StateVisualizer state={state} />
     </div>
   )

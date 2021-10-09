@@ -5,14 +5,9 @@ export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
->(
-  machine: MachineSrc<TContext, TState, TEvent>,
-  options?: S.MachineOptions<TContext, TState, TEvent> & {
-    state?: S.StateInit<TContext, TState>
-  },
-) {
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   /** Machine options */
-  const { actions, state: hydratedState } = options ?? {}
+  const { actions, state: hydratedState, context } = options ?? {}
 
   const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
   const service = options ? resolvedMachine.withOptions(options) : resolvedMachine
@@ -45,15 +40,14 @@ export function useMachine<
     unsubscribe = service.subscribe(listener)
   })
 
+  watch(() => actions, service.setActions, { flush: "post", immediate: true })
+
   watch(
-    () => actions,
+    () => context,
     (newVal) => {
-      service.updateActions(newVal)
+      if (newVal) service.setContext(newVal)
     },
-    {
-      flush: "post",
-      immediate: true,
-    },
+    { flush: "post", immediate: true },
   )
 
   /**

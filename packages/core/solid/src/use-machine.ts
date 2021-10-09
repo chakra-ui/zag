@@ -17,12 +17,7 @@ export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
->(
-  machine: MachineSrc<TContext, TState, TEvent>,
-  options?: S.MachineOptions<TContext, TState, TEvent> & {
-    state?: S.StateInit<TContext, TState>
-  },
-) {
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const { actions, state: hydratedState } = options ?? {}
   const service = typeof machine === "function" ? machine() : machine.clone()
 
@@ -40,7 +35,7 @@ export function useMachine<
   })
 
   onMount(() => {
-    service.updateActions(actions)
+    service.setActions(actions)
   })
 
   const _state = <S.State<TContext, TState>>state

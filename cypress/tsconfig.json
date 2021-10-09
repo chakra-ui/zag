@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "@testing-library/cypress", "cypress-real-events"],
-    "isolatedModules": false
+    "lib": ["esnext", "dom"],
+    "types": ["cypress", "@testing-library/cypress", "cypress-real-events", "cypress-axe"]
   },
   "include": ["**/*.ts"]
 }

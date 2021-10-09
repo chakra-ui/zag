@@ -294,6 +294,12 @@ export declare namespace StateMachine {
   }
 
   export type StateInit<TContext, TState extends StateSchema> = TState["value"] | StateInitObject<TContext, TState>
+
+  export type HookOptions<TContext, TState extends StateSchema, TEvent extends EventObject> = {
+    actions?: ActionMap<TContext, TState, TEvent>
+    state?: StateInit<TContext, TState>
+    context?: Partial<TContext>
+  }
 }
 
 export enum MachineStatus {

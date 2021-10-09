@@ -286,7 +286,7 @@ export class Machine<
     return new Machine(this.config, { ...this.options, ...options })
   }
 
-  updateActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
+  setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
     this.actionMap = { ...this.actionMap, ...actions }
   }
 
