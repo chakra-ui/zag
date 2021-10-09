@@ -5,6 +5,7 @@ module.exports = {
   transform: {
     "^.+\\.(ts|tsx)?$": "ts-jest/dist",
   },
+  testPathIgnorePatterns: ["<rootDir>/cypress/"],
   transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"],
   setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
   globals: {
@@ -12,10 +13,7 @@ module.exports = {
       tsconfig: "tsconfig.json",
     },
   },
-  watchPlugins: [
-    "jest-watch-typeahead/filename",
-    "jest-watch-typeahead/testname",
-  ],
+  watchPlugins: ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
   collectCoverageFrom: ["**/src/**/*.(ts|tsx)"],
   modulePathIgnorePatterns: ["dist"],
 }
