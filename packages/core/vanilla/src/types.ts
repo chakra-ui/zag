@@ -309,10 +309,8 @@ export enum MachineStatus {
 }
 
 export enum ActionTypes {
-  Sync = "machine.sync",
   Start = "machine.start",
   Stop = "machine.stop",
-  Send = "machine.send",
   SendParent = "machine.send-parent",
   Cancel = "machine.cancel",
   NullEvent = "",

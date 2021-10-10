@@ -53,6 +53,7 @@ export class Machine<
   ) {
     this.id = config.id ?? `machine-${uniqueId()}`
     this.state = createProxy(config)
+    this.getComputed()
     this.guardMap = options?.guards
     this.actionMap = options?.actions
     this.delayMap = options?.delays
@@ -106,6 +107,7 @@ export class Machine<
     })
 
     this.removeContextListener = subscribe(this.state.context, () => {
+      this.getComputed()
       this.contextListeners.forEach((listener) => {
         listener(this.contextSnapshot)
       })
@@ -122,6 +124,15 @@ export class Machine<
     this.executeActions(this.config.onStart, toEvent<TEvent>(ActionTypes.Start))
 
     return this
+  }
+
+  private getComputed = () => {
+    const { computed = {} } = this.config
+    for (const key of Object.keys(computed)) {
+      const val = computed[key](this.contextSnapshot)
+      if (Object.is(val, this.state.context[key])) continue
+      this.state.context[key as keyof TContext] = val
+    }
   }
 
   // Stops the interpreted machine

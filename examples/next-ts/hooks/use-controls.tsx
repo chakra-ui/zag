@@ -1,37 +1,40 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import React, { useState } from "react"
 
-type ControlProp =
+type Prop =
   | { type: "boolean"; label: string; defaultValue: boolean }
   | { type: "string"; label: string; defaultValue: string; placeholder?: string }
-  | { type: "select"; options: string[]; defaultValue: string; label: string }
+  | { type: "select"; options: readonly string[]; defaultValue: string; label: string }
+  | { type: "multiselect"; options: readonly string[]; defaultValue: string[]; label: string }
   | { type: "number"; label: string; defaultValue: number; min?: number; max?: number }
 
-type ControlPropRecord = Record<string, ControlProp>
+type ControlRecord = Record<string, Prop>
 
-type ControlValue<T extends ControlPropRecord> = {
+type Value<T extends ControlRecord> = {
   [K in keyof T]: T[K] extends { type: "boolean" }
     ? boolean
     : T[K] extends { type: "string" }
     ? string
     : T[K] extends { type: "select" }
-    ? Array<T[K]["defaultValue"]>
+    ? T[K]["options"][number]
+    : T[K] extends { type: "multiselect" }
+    ? T[K]["options"][number][]
     : T[K] extends { type: "number" }
     ? number
     : never
 }
 
-function getDefaultValues<T extends ControlPropRecord>(obj: T) {
+function getDefaultValues<T extends ControlRecord>(obj: T) {
   return Object.keys(obj).reduce(
     (acc, key) => ({
       ...acc,
       [key]: obj[key].defaultValue,
     }),
-    {} as ControlValue<T>,
+    {} as Value<T>,
   )
 }
 
-export function useControls<T extends ControlPropRecord>(config: T) {
+export function useControls<T extends ControlRecord>(config: T) {
   const [state, setState] = useState(getDefaultValues(config))
 
   return {
@@ -59,7 +62,7 @@ export function useControls<T extends ControlPropRecord>(config: T) {
                     data-testid={key}
                     id={label}
                     type="checkbox"
-                    checked={state[key] as boolean}
+                    defaultChecked={state[key] as boolean}
                     onChange={(e) => {
                       setState((s) => ({ ...s, [key]: e.target.checked }))
                     }}
@@ -78,7 +81,7 @@ export function useControls<T extends ControlPropRecord>(config: T) {
                     defaultValue={state[key] as string}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setState((s) => ({ ...s, [key]: e.currentTarget.value }))
+                        setState((s) => ({ ...s, [key]: (e.target as HTMLInputElement).value }))
                       }
                     }}
                   />
@@ -93,12 +96,12 @@ export function useControls<T extends ControlPropRecord>(config: T) {
                   <select
                     data-testid={key}
                     id={label}
-                    value={state[key] as string}
+                    defaultValue={state[key] as string}
                     onChange={(e) => {
-                      setState((s) => ({ ...s, [key]: e.currentTarget.value }))
+                      setState((s) => ({ ...s, [key]: e.target.value }))
                     }}
                   >
-                    <option value="">Select</option>
+                    <option>-----</option>
                     {options.map((option) => (
                       <option key={option} value={option}>
                         {option}
@@ -120,7 +123,7 @@ export function useControls<T extends ControlPropRecord>(config: T) {
                     defaultValue={state[key] as number}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setState((s) => ({ ...s, [key]: e.currentTarget.valueAsNumber }))
+                        setState((s) => ({ ...s, [key]: e.currentTarget?.valueAsNumber }))
                       }
                     }}
                   />

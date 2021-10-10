@@ -1,43 +1,35 @@
 import { cast } from "tiny-fn"
-import { proxyWithComputed } from "valtio/utils"
+import { proxy } from "valtio"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 
 export function createProxy<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   config: S.MachineConfig<TContext, TState, TEvent>,
 ) {
-  const defaultContext = cast<TContext>({})
-  const context = proxyWithComputed(config.context ?? defaultContext, config.computed ?? {})
-
-  const state = proxyWithComputed(
-    {
-      value: "",
-      previousValue: "",
-      event: cast<Dict>({}),
-      context,
-      done: false,
-      tags: new Set<TState["tags"]>(),
-      hasTag(tag: TState["tags"]): boolean {
-        return this.tags.has(tag)
-      },
-      matches(...value: string[]): boolean {
-        return value.includes(this.value)
-      },
-      can(event: string): boolean {
-        return cast<any>(this).nextEvents.includes(event)
-      },
+  const state = proxy({
+    value: "",
+    previousValue: "",
+    event: cast<Dict>({}),
+    context: config.context ?? cast<TContext>({}),
+    done: false,
+    tags: new Set<TState["tags"]>(),
+    hasTag(tag: TState["tags"]): boolean {
+      return this.tags.has(tag)
     },
-    {
-      nextEvents(self) {
-        const stateEvents = (config.states as Dict)?.[self.value]?.["on"] ?? {}
-        const globalEvents = config?.on ?? {}
-        Object.assign(stateEvents, globalEvents)
-        return Object.keys(stateEvents).filter((event) => event !== ActionTypes.Sync)
-      },
-      changed(self) {
-        if (self.event.value === ActionTypes.Init || !self.previousValue) return false
-        return self.value !== self.previousValue
-      },
+    matches(...value: string[]): boolean {
+      return value.includes(this.value)
     },
-  )
+    can(event: string): boolean {
+      return cast<any>(this).nextEvents.includes(event)
+    },
+    get nextEvents() {
+      const stateEvents = (config.states as Dict)?.[this.value]?.["on"] ?? {}
+      const globalEvents = config?.on ?? {}
+      return Object.keys({ ...stateEvents, ...globalEvents })
+    },
+    get changed() {
+      if (this.event.value === ActionTypes.Init || !this.previousValue) return false
+      return this.value !== this.previousValue
+    },
+  })
   return cast<S.State<TContext, TState>>(state)
 }

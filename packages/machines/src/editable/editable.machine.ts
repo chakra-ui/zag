@@ -1,7 +1,6 @@
 import { choose, createMachine, guards, ref, StateMachine as S } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import type { DOM } from "../utils"
-import { trackPointerDown } from "../utils"
+import { DOM, trackPointerDown, uuid } from "../utils"
 import { dom } from "./editable.dom"
 
 const { not } = guards
@@ -38,7 +37,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
     initial: "unknown",
     context: {
       activationMode: "focus",
-      uid: "32",
+      uid: uuid(),
       value: "",
       previousValue: "",
       isPreviewFocusable: true,
