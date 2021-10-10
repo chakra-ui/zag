@@ -23,6 +23,7 @@ export default function Page() {
   const controls = useControls({
     allowToggle: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
     allowMultiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+    activeId: { type: "select", defaultValue: "", options: ["home", "contact", "about"], label: "Active Id" },
   })
 
   const [state, send] = useMachine(accordion.machine, {

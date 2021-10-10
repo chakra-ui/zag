@@ -1,5 +1,5 @@
 /* eslint-disable jest/expect-expect */
-describe("next-ts test", () => {
+describe("accordion", () => {
   beforeEach(() => {
     cy.visit("/accordion")
     cy.injectAxe()

@@ -11,13 +11,13 @@ export const dom = {
   getTriggerId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-trigger-${id}`,
 
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
-  getElements: (ctx: Ctx) => {
+  getTriggers: (ctx: Ctx) => {
     const selector = `[aria-controls][data-ownedby='${dom.getRootId(ctx)}']:not([disabled])`
     return queryElements(dom.getRootEl(ctx), selector)
   },
 
-  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
-  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTriggerId(ctx, id)),
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id)),
+  getFirstTriggerEl: (ctx: Ctx) => first(dom.getTriggers(ctx)),
+  getLastTriggerEl: (ctx: Ctx) => last(dom.getTriggers(ctx)),
+  getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
+  getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
 }

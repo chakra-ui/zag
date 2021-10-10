@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/no-onchange */
 import React, { useState } from "react"
 
 type ControlProp =
   | { type: "boolean"; label: string; defaultValue: boolean }
-  | { type: "string"; label: string; defaultValue: string; placeholder: string }
-  | { type: "select"; options: string[]; defaultValue: string }
-  | { type: "number"; label: string; defaultValue: number; min: number; max: number }
+  | { type: "string"; label: string; defaultValue: string; placeholder?: string }
+  | { type: "select"; options: string[]; defaultValue: string; label: string }
+  | { type: "number"; label: string; defaultValue: number; min?: number; max?: number }
 
 type ControlPropRecord = Record<string, ControlProp>
 
@@ -84,15 +85,18 @@ export function useControls<T extends ControlPropRecord>(config: T) {
             case "select":
               return (
                 <div key={key}>
-                  <label htmlFor={label}>{label}</label>
+                  <label htmlFor={label} style={{ marginRight: "10px" }}>
+                    {label}
+                  </label>
                   <select
                     data-testid={key}
                     id={label}
                     value={state[key] as string}
-                    onBlur={(e) => {
-                      setState((s) => ({ ...s, [key]: e.target.value }))
+                    onChange={(e) => {
+                      setState((s) => ({ ...s, [key]: e.currentTarget.value }))
                     }}
                   >
+                    <option value="">Select</option>
                     {options.map((option) => (
                       <option key={option} value={option}>
                         {option}
