@@ -49,6 +49,7 @@ export function useControls<T extends ControlRecord>(config: T) {
           borderRadius: "8px",
           border: "1px solid lightgray",
           background: "lightgray",
+          margin: "24px",
           ...props.style,
         }}
       >

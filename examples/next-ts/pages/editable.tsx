@@ -6,7 +6,7 @@ import { useControls } from "hooks/use-controls"
 export default function Page() {
   const controls = useControls({
     placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
-    isPreviewFocusable: { type: "boolean", label: "is preview focusable?", defaultValue: false },
+    isPreviewFocusable: { type: "boolean", label: "is preview focusable?", defaultValue: true },
     activationMode: {
       type: "select",
       options: ["focus", "dblclick"] as const,
@@ -27,14 +27,22 @@ export default function Page() {
   return (
     <div>
       <controls.ui />
-      <div>
-        <input ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
-        <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
-        {!isEditing && <button {...editButtonProps}>Edit</button>}
+      <div className="root">
+        <input data-testid="input" ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
+        <span data-testid="preview" style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
+        {!isEditing && (
+          <button data-testid="edit-button" {...editButtonProps}>
+            Edit
+          </button>
+        )}
         {isEditing && (
           <>
-            <button {...submitButtonProps}>Save</button>
-            <button {...cancelButtonProps}>Cancel</button>
+            <button data-testid="save-button" {...submitButtonProps}>
+              Save
+            </button>
+            <button data-testid="cancel-button" {...cancelButtonProps}>
+              Cancel
+            </button>
           </>
         )}
         <StateVisualizer state={state} />

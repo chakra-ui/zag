@@ -10,6 +10,10 @@ injectGlobal`
     "Helvetica Neue", sans-serif;
 }
 
+.root {
+  margin: 24px;
+}
+
 .tabs {
   max-width: 20em;
 }
