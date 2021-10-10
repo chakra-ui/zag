@@ -21,16 +21,16 @@ const data = [
 
 export default function Page() {
   const controls = useControls({
-    allowToggle: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
-    allowMultiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
-    activeId: { type: "select", defaultValue: "", options: ["home", "contact", "about"], label: "Active Id" },
+    collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
+    multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+    activeId: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
   })
 
   const [state, send] = useMachine(accordion.machine, {
     context: controls.context,
   })
 
-  const { rootProps, getItemProps, getPanelProps, getTriggerProps } = accordion.connect(state, send)
+  const { rootProps, getItemProps, getContentProps, getTriggerProps } = accordion.connect(state, send)
   const ref = useMount<HTMLDivElement>(send)
 
   return (
@@ -44,7 +44,7 @@ export default function Page() {
                 {item.label}
               </button>
             </h3>
-            <div data-testid={`${item.id}:panel`} {...getPanelProps({ id: item.id })}>
+            <div data-testid={`${item.id}:content`} {...getContentProps({ id: item.id })}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
               dolore magna aliqua.
             </div>

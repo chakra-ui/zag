@@ -36,7 +36,7 @@ export function accordionConnect(
       })
     },
 
-    getPanelProps(props: AccordionItemProps) {
+    getContentProps(props: AccordionItemProps) {
       const { isOpen, isFocused, isDisabled } = getItemState(props)
       return normalize<Props.Element>({
         role: "region",

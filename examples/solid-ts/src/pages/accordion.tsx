@@ -17,7 +17,7 @@ export default function Page() {
           <h3>
             <button {...connect().getTriggerProps({ id: "home" })}>Home</button>
           </h3>
-          <div {...connect().getPanelProps({ id: "home" })}>
+          <div {...connect().getContentProps({ id: "home" })}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua.
           </div>
@@ -27,7 +27,7 @@ export default function Page() {
           <h3>
             <button {...connect().getTriggerProps({ id: "about" })}>About</button>
           </h3>
-          <div {...connect().getPanelProps({ id: "about" })}>
+          <div {...connect().getContentProps({ id: "about" })}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua.
           </div>
@@ -37,7 +37,7 @@ export default function Page() {
           <h3>
             <button {...connect().getTriggerProps({ id: "contact" })}>Contact</button>
           </h3>
-          <div {...connect().getPanelProps({ id: "contact" })}>
+          <div {...connect().getContentProps({ id: "contact" })}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua.
           </div>

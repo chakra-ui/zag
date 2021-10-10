@@ -75,9 +75,11 @@ export function useControls<T extends ControlPropRecord>(config: T) {
                     data-testid={key}
                     type="text"
                     placeholder={placeholder}
-                    value={state[key] as string}
-                    onChange={(e) => {
-                      setState((s) => ({ ...s, [key]: e.target.value }))
+                    defaultValue={state[key] as string}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setState((s) => ({ ...s, [key]: e.currentTarget.value }))
+                      }
                     }}
                   />
                 </div>
@@ -115,9 +117,11 @@ export function useControls<T extends ControlPropRecord>(config: T) {
                     type="number"
                     min={min}
                     max={max}
-                    value={state[key] as number}
-                    onChange={(e) => {
-                      setState((s) => ({ ...s, [key]: parseFloat(e.target.value) }))
+                    defaultValue={state[key] as number}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setState((s) => ({ ...s, [key]: e.currentTarget.valueAsNumber }))
+                      }
                     }}
                   />
                 </div>

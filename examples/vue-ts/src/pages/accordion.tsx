@@ -12,7 +12,7 @@ export default defineComponent({
     const ref = useMount(send)
 
     return () => {
-      const { getItemProps, getTriggerProps, getPanelProps, rootProps } = connect.value
+      const { getItemProps, getTriggerProps, getContentProps, rootProps } = connect.value
       return (
         <div style={{ width: "100%" }}>
           <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
@@ -20,7 +20,7 @@ export default defineComponent({
               <h3>
                 <button {...getTriggerProps({ id: "home" })}>Home</button>
               </h3>
-              <div {...getPanelProps({ id: "home" })}>
+              <div {...getContentProps({ id: "home" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
@@ -30,7 +30,7 @@ export default defineComponent({
               <h3>
                 <button {...getTriggerProps({ id: "about" })}>About</button>
               </h3>
-              <div {...getPanelProps({ id: "about" })}>
+              <div {...getContentProps({ id: "about" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
@@ -40,7 +40,7 @@ export default defineComponent({
               <h3>
                 <button {...getTriggerProps({ id: "contact" })}>Contact</button>
               </h3>
-              <div {...getPanelProps({ id: "contact" })}>
+              <div {...getContentProps({ id: "contact" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
