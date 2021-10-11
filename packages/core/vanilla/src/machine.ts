@@ -113,13 +113,7 @@ export class Machine<
       })
     })
 
-    for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      this.contextWatchers.add(
-        subscribeKey(this.state.context, key, () => {
-          this.executeActions(fn, cast({ type: "machine.watch" }))
-        }),
-      )
-    }
+    this.setupContextWatchers()
 
     this.executeActions(this.config.onStart, toEvent<TEvent>(ActionTypes.Start))
 
@@ -132,6 +126,16 @@ export class Machine<
       const val = computed[key](this.contextSnapshot)
       if (Object.is(val, this.state.context[key])) continue
       this.state.context[key as keyof TContext] = val
+    }
+  }
+
+  private setupContextWatchers = () => {
+    for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
+      this.contextWatchers.add(
+        subscribeKey(this.state.context, key, () => {
+          this.executeActions(fn, toEvent<TEvent>(ActionTypes.Watch))
+        }),
+      )
     }
   }
 

@@ -311,6 +311,7 @@ export enum MachineStatus {
 }
 
 export enum ActionTypes {
+  Watch = "machine.watch",
   Start = "machine.start",
   Stop = "machine.stop",
   SendParent = "machine.send-parent",
