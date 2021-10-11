@@ -19,9 +19,7 @@ export default defineComponent({
     const ref = useMount(send)
 
     const machineState = computed(() => {
-      const machine = editable.connect(state.value, send, normalizeProps)
-      console.log(machine)
-      return machine
+      return editable.connect(state.value, send, normalizeProps)
     })
 
     return () => {
