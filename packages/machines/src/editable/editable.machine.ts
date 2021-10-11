@@ -1,35 +1,10 @@
-import { choose, createMachine, guards, ref, StateMachine as S } from "@ui-machines/core"
+import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import { DOM, trackPointerDown, uuid } from "../utils"
+import { trackPointerDown, uuid } from "../utils"
 import { dom } from "./editable.dom"
+import { EditableMachineContext, EditableMachineState } from "./editable.types"
 
 const { not } = guards
-
-export type EditableMachineContext = DOM.Context<{
-  activationMode: "focus" | "dblclick"
-  value: string
-  previousValue: string
-  maxLength?: number
-  disabled?: boolean
-  readonly?: boolean
-  isPreviewFocusable?: boolean
-  selectOnFocus?: boolean
-  submitOnBlur?: boolean
-  submitOnEnter?: boolean
-  onChange?: (value: string) => void
-  onCancel?: (value: string) => void
-  onSubmit?: (value: string) => void
-  onEdit?: () => void
-  placeholder?: string
-}> &
-  S.Computed<{
-    isInteractive: boolean
-    isValueEmpty: boolean
-  }>
-
-export type EditableMachineState = {
-  value: "unknown" | "preview" | "edit"
-}
 
 export const editableMachine = createMachine<EditableMachineContext, EditableMachineState>(
   {
@@ -37,17 +12,18 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
     initial: "unknown",
     context: {
       activationMode: "focus",
+      submitMode: "both",
       uid: uuid(),
       value: "",
       previousValue: "",
-      isPreviewFocusable: true,
-      submitOnBlur: true,
       selectOnFocus: true,
-      submitOnEnter: true,
     },
     computed: {
+      submitOnEnter: (ctx) => ["both", "enter"].includes(ctx.submitMode),
+      submitOnBlur: (ctx) => ["both", "blur"].includes(ctx.submitMode),
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       isValueEmpty: (ctx) => ctx.value === "",
+      isPreviewFocusable: (ctx) => ctx.activationMode === "focus",
     },
     states: {
       unknown: {
@@ -96,12 +72,12 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
             },
             {
               target: "preview",
-              actions: "focusEditButton",
+              actions: ["revertValue", "focusEditButton"],
             },
           ],
           CANCEL: {
             target: "preview",
-            actions: ["focusEditButton", "resetValue", "invokeOnCancel"],
+            actions: ["focusEditButton", "revertValue", "invokeOnCancel"],
           },
           ENTER: {
             cond: "submitOnEnter",
@@ -118,9 +94,9 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
   },
   {
     guards: {
-      canFocusPreview: (ctx) => !!ctx.isPreviewFocusable,
-      submitOnBlur: (ctx) => !!ctx.submitOnBlur,
-      submitOnEnter: (ctx) => !!ctx.submitOnEnter,
+      canFocusPreview: (ctx) => ctx.isPreviewFocusable,
+      submitOnBlur: (ctx) => ctx.submitOnBlur,
+      submitOnEnter: (ctx) => ctx.submitOnEnter,
       selectOnFocus: (ctx) => !!ctx.selectOnFocus,
       isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
       activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
@@ -154,7 +130,6 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       invokeOnCancel(ctx) {
         ctx.onCancel?.(ctx.previousValue)
       },
-
       invokeOnSubmit(ctx) {
         ctx.onSubmit?.(ctx.value)
       },
@@ -170,7 +145,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       setPreviousValue(ctx) {
         ctx.previousValue = ctx.value
       },
-      resetValue(ctx) {
+      revertValue(ctx) {
         ctx.value = ctx.previousValue
       },
       clearPointerdownNode(ctx) {

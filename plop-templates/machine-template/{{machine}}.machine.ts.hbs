@@ -1,7 +1,7 @@
 import { createMachine, preserve } from "@ui-machines/core"
-import { DOM } from "../type-utils"
+import { Context } from "../type-utils"
 
-export type {{capitalize machine}}MachineContext = DOM.Context<{}>
+export type {{capitalize machine}}MachineContext = Context<{}>
 
 export type {{capitalize machine}}MachineState = {
   value: "open" | "closed"

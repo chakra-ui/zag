@@ -1,11 +1,11 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import { DOM } from "../utils/types"
+import { Context } from "../utils/types"
 import { dom } from "./tabs.dom"
 
 const { not } = guards
 
-export type TabsMachineContext = DOM.Context<{
+export type TabsMachineContext = Context<{
   focusedId?: string
   activeId: string
   orientation?: "horizontal" | "vertical"

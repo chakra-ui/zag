@@ -1,6 +1,6 @@
 import { createMachine, guards, ref, StateMachine as S } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import type { DOM } from "../utils"
+import type { Context } from "../utils"
 import { dom } from "./tags-input.dom"
 
 const { and, not, or } = guards
@@ -11,7 +11,7 @@ export type TagsInputMachineContext = S.Computed<{
   isInteractive: boolean
   isAtMax: boolean
 }> &
-  DOM.Context<{
+  Context<{
     /**
      * Whether the input should be auto-focused
      */

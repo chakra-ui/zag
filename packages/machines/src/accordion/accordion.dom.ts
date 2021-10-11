@@ -1,6 +1,6 @@
 import { queryElements, nextById, prevById } from "tiny-nodelist"
 import { first, last } from "tiny-array"
-import type { AccordionMachineContext as Ctx } from "./accordion.machine"
+import type { AccordionMachineContext as Ctx } from "./accordion.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

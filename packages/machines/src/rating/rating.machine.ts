@@ -1,9 +1,9 @@
 import { createMachine, ref, StateMachine } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import { DOM } from "../utils/types"
+import { Context } from "../utils/types"
 import { dom } from "./rating.dom"
 
-export type RatingMachineContext = DOM.Context<{
+export type RatingMachineContext = Context<{
   max: number
   name?: string
   value: number

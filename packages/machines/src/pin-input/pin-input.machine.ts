@@ -1,12 +1,12 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { fromLength } from "tiny-array"
 import { nextTick } from "tiny-fn"
-import type { DOM } from "../utils"
+import type { Context } from "../utils"
 import { dom } from "./pin-input.dom"
 
 const { not } = guards
 
-export type PinInputMachineContext = DOM.Context<{
+export type PinInputMachineContext = Context<{
   disabled?: boolean
   direction?: "ltr" | "rtl"
   placeholder?: string

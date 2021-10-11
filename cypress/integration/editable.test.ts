@@ -36,6 +36,25 @@ describe("accordion", () => {
         cy.get("@preview").should("have.text", "Hello")
         cy.get("@input").should("not.be.visible")
       })
+
+      it("clicking submit: user can type and submit value", () => {
+        cy.get("@input").type("Naruto")
+        cy.findByTestId("save-button").click()
+        cy.get("@preview").should("have.text", "Naruto")
+      })
+
+      it("blur the input: user can type and submit value", () => {
+        cy.get("@input").type("Naruto")
+        cy.get("@input").blur()
+        cy.get("@preview").should("have.text", "Naruto")
+      })
+    })
+
+    describe("when in preview mode", () => {
+      it("clicking edit button should enter edit mode", () => {
+        cy.findByTestId("edit-button").click()
+        cy.get("@input").should("be.visible").and("have.focus")
+      })
     })
   })
 })

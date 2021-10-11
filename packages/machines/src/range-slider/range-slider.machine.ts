@@ -5,10 +5,10 @@ import { closest } from "tiny-point/distance"
 import { center } from "tiny-rect"
 import { fromElement } from "tiny-rect/from-element"
 import { trackPointerMove } from "../utils/pointer-move"
-import { DOM } from "../utils/types"
+import { Context } from "../utils/types"
 import { dom, getRangeAtIndex } from "./range-slider.dom"
 
-export type RangeSliderMachineContext = DOM.Context<{
+export type RangeSliderMachineContext = Context<{
   "aria-label"?: string | string[]
   "aria-labelledby"?: string | string[]
   thumbSize: Array<{ width: number; height: number }> | null

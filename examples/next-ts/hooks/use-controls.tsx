@@ -74,7 +74,7 @@ export function useControls<T extends ControlRecord>(config: T) {
             case "string":
               return (
                 <div key={key}>
-                  <label>{label}</label>
+                  <label style={{ marginRight: "10px" }}>{label}</label>
                   <input
                     data-testid={key}
                     type="text"
@@ -114,7 +114,9 @@ export function useControls<T extends ControlRecord>(config: T) {
             case "number":
               return (
                 <div key={key}>
-                  <label htmlFor={label}>{label}</label>
+                  <label htmlFor={label} style={{ marginRight: "10px" }}>
+                    {label}
+                  </label>
                   <input
                     data-testid={key}
                     id={label}

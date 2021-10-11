@@ -1,14 +1,9 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr, defaultPropNormalizer, validateBlur } from "../utils"
 import type { DOM, Props } from "../utils/types"
 import { dom } from "./editable.dom"
-import { EditableMachineContext, EditableMachineState } from "./editable.machine"
+import { EditableSend, EditableState } from "./editable.types"
 
-export function editableConnect(
-  state: S.State<EditableMachineContext, EditableMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function editableConnect(state: EditableState, send: EditableSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
   const isEditing = state.matches("edit")
 

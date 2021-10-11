@@ -3,5 +3,8 @@
   "extends": ["plugin:cypress/recommended"],
   "env": {
     "cypress/globals": true
+  },
+  "rules": {
+    "jest/expect-expect": "off"
   }
 }

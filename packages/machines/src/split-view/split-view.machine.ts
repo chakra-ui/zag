@@ -3,12 +3,12 @@ import { nextTick } from "tiny-fn"
 import { clamp, decrement, increment, snapToStep } from "tiny-num"
 import { relativeToNode } from "tiny-point/dom"
 import { trackPointerMove } from "../utils/pointer-move"
-import { DOM } from "../utils/types"
+import { Context } from "../utils/types"
 import { dom } from "./split-view.dom"
 
 const { not } = guards
 
-export type SplitViewMachineContext = DOM.Context<{
+export type SplitViewMachineContext = Context<{
   /**
    * Whether to allow the separator to be dragged.
    */

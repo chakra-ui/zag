@@ -1,4 +1,4 @@
-import type { EditableMachineContext as Ctx } from "./editable.machine"
+import type { EditableMachineContext as Ctx } from "./editable.types"
 
 type HTMLButtonEl = HTMLButtonElement | null
 type HTMLInputEl = HTMLInputElement | null

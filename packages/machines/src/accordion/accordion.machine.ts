@@ -1,51 +1,11 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { add, remove, toArray } from "tiny-array"
 import { isArray } from "tiny-guard"
-import type { DOM } from "../utils"
 import { uuid } from "../utils"
 import { dom } from "./accordion.dom"
+import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"
 
 const { and, not } = guards
-
-export type AccordionMachineContext = DOM.Context<{
-  /**
-   * Whether multple accordion items can be open at the same time.
-   * @default false
-   */
-  multiple?: boolean
-  /**
-   * Whether an accordion item can be collapsed after it has been opened.
-   * @default false
-   */
-  collapsible?: boolean
-  /**
-   * @internal - The `id` of the focused accordion item.
-   */
-  focusedId: string | null
-  /**
-   * Whether the accordion items are disabled
-   */
-  disabled?: boolean
-  /**
-   * The `id` of the accordion item that is currently being opened.
-   */
-  activeId: string | string[] | null
-  /**
-   * The callback fired when the state of opened/closed accordion items changes.
-   */
-  onChange?: (activeId: string | string[] | null) => void
-}>
-
-/**
- * The `Accordion` machine states:
- *
- * unknown: The state before the accordion machine is initialized.
- * idle: The state after the accordion machine is initialized and not interacted with.
- * focused: The state when an accordion item's trigger is focused (with keyboard or pointer down)
- */
-export type AccordionMachineState = {
-  value: "unknown" | "idle" | "focused"
-}
 
 export const accordionMachine = createMachine<AccordionMachineContext, AccordionMachineState>(
   {

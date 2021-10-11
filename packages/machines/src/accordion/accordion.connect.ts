@@ -1,15 +1,10 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { isArray } from "tiny-guard"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
 import { dom } from "./accordion.dom"
-import { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
+import { AccordionItemProps, AccordionSend, AccordionState } from "./accordion.types"
 
-export function accordionConnect(
-  state: S.State<AccordionMachineContext, AccordionMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function accordionConnect(state: AccordionState, send: AccordionSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
 
   function getItemState(props: AccordionItemProps) {
@@ -108,9 +103,4 @@ export function accordionConnect(
       })
     },
   }
-}
-
-export type AccordionItemProps = {
-  id: string
-  disabled?: boolean
 }

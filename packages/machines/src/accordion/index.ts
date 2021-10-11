@@ -6,4 +6,4 @@ export const accordion = {
   connect: accordionConnect,
 }
 
-export type { AccordionMachineContext, AccordionMachineState } from "./accordion.machine"
+export type { AccordionMachineContext, AccordionMachineState } from "./accordion.types"

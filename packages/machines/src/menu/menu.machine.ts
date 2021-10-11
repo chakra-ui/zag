@@ -10,7 +10,7 @@ import { withinPolygon } from "tiny-point/within"
 import { corners } from "tiny-rect"
 import { fromElement } from "tiny-rect/from-element"
 import { inset } from "tiny-rect/operations"
-import type { DOM } from "../utils"
+import type { Context } from "../utils"
 import { trackPointerDown } from "../utils"
 import { dom } from "./menu.dom"
 
@@ -18,7 +18,7 @@ const { not, and } = guards
 
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
 
-export type MenuMachineContext = DOM.Context<{
+export type MenuMachineContext = Context<{
   activeId: string | null
   onSelect?: (value: string) => void
   parent: MenuMachine | null

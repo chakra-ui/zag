@@ -3,10 +3,10 @@ import { nextTick } from "tiny-fn"
 import { clamp, decrement, increment, snapToStep } from "tiny-num"
 import { fromElement } from "tiny-rect/from-element"
 import { trackPointerMove } from "../utils/pointer-move"
-import { DOM } from "../utils/types"
+import { Context } from "../utils/types"
 import { dom } from "./slider.dom"
 
-export type SliderMachineContext = DOM.Context<{
+export type SliderMachineContext = Context<{
   value: number
   name?: string
   disabled?: boolean

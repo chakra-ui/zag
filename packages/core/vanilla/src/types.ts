@@ -36,10 +36,12 @@ export declare namespace StateMachine {
     event: TEvent,
   ) => TReturn
 
+  export type Send<TEvent extends EventObject = AnyEventObject> = (event: Event<TEvent>) => void
+
   type Meta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     state: State<TContext, TState>
     guards?: Dict
-    send: (event: Event<TEvent>) => void | Promise<void>
+    send: (event: Event<TEvent>) => void
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (

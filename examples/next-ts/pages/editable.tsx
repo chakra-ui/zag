@@ -6,10 +6,15 @@ import { useControls } from "hooks/use-controls"
 export default function Page() {
   const controls = useControls({
     placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
-    isPreviewFocusable: { type: "boolean", label: "is preview focusable?", defaultValue: true },
+    submitMode: {
+      type: "select",
+      label: "submit mode?",
+      options: ["enter", "blur", "both", "none"] as const,
+      defaultValue: "both",
+    },
     activationMode: {
       type: "select",
-      options: ["focus", "dblclick"] as const,
+      options: ["focus", "dblclick", "none"] as const,
       label: "activation mode",
       defaultValue: "focus",
     },

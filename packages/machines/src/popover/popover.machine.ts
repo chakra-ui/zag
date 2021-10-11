@@ -2,12 +2,12 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import { isTabbable } from "tiny-dom-query/tabbable"
 import { nextTick } from "tiny-fn"
 import { trackPointerDown } from "../utils/pointer-down"
-import { DOM } from "../utils/types"
+import { Context } from "../utils/types"
 import { dom } from "./popover.dom"
 
 const { and } = guards
 
-export type PopoverMachineContext = DOM.Context<{
+export type PopoverMachineContext = Context<{
   autoFocus?: boolean
   initialFocusEl?: HTMLElement
   restoreFocus?: boolean
