@@ -39,9 +39,8 @@ export function useControls<T extends ControlRecord>(config: T) {
 
   return {
     context: state,
-    ui: (props: React.ComponentProps<"div">) => (
+    ui: () => (
       <div
-        {...props}
         style={{
           display: "inline-flex",
           gap: "24px",
@@ -50,7 +49,6 @@ export function useControls<T extends ControlRecord>(config: T) {
           border: "1px solid lightgray",
           background: "lightgray",
           margin: "24px",
-          ...props.style,
         }}
       >
         {Object.keys(config).map((key) => {

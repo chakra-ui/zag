@@ -1,13 +1,27 @@
 import { accordion } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
-import { defineComponent, h, Fragment, computed } from "vue"
+import { defineComponent, h, Fragment, computed, watchEffect } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
+import { useControls } from "../hooks/use-controls"
 
 export default defineComponent({
   name: "Accordion",
   setup() {
-    const [state, send] = useMachine(accordion.machine)
+    const controls = useControls({
+      collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
+      multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+      activeId: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
+    })
+
+    watchEffect(() => {
+      console.log("watchEffect", controls.context.value)
+    })
+
+    const [state, send] = useMachine(accordion.machine, {
+      context: controls.context.value,
+    })
+
     const connect = computed(() => accordion.connect(state.value, send, normalizeProps))
     const ref = useMount(send)
 
@@ -15,6 +29,7 @@ export default defineComponent({
       const { getItemProps, getTriggerProps, getContentProps, rootProps } = connect.value
       return (
         <div style={{ width: "100%" }}>
+          <controls.ui />
           <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
             <div {...getItemProps({ id: "home" })}>
               <h3>
