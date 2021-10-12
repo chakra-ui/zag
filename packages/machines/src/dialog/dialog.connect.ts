@@ -37,13 +37,8 @@ export function dialogConnect(
       onClick(event) {
         event.preventDefault()
         event.stopPropagation()
-        if (ctx.pointerdownNode !== event.target) return
         if (!ctx.isTopMostDialog || !ctx.closeOnOverlayClick) return
         send("CLOSE")
-      },
-      onPointerDown(event) {
-        event.stopPropagation()
-        send({ type: "POINTER_DOWN", target: event.target })
       },
     }),
     contentProps: normalize<Props.Element>({

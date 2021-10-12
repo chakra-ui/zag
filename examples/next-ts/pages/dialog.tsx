@@ -53,16 +53,19 @@ export default function Page() {
 
                 {d2.isOpen && (
                   <Portal>
-                    <div className="dialog__overlay" {...d2.overlayProps}>
-                      <div className="dialog__content" {...d2.contentProps}>
-                        <h2 className="dialog__title" {...d2.titleProps}>
-                          Nested
-                        </h2>
-                        <button className="dialog__close-button" {...d2.closeButtonProps}>
-                          X
-                        </button>
-                        <button onClick={() => d1.close()}>Close Dialog 1</button>
-                      </div>
+                    <div className="dialog__overlay" {...d2.overlayProps} />
+                  </Portal>
+                )}
+                {d2.isOpen && (
+                  <Portal>
+                    <div className="dialog__content" {...d2.contentProps}>
+                      <h2 className="dialog__title" {...d2.titleProps}>
+                        Nested
+                      </h2>
+                      <button className="dialog__close-button" {...d2.closeButtonProps}>
+                        X
+                      </button>
+                      <button onClick={() => d1.close()}>Close Dialog 1</button>
                     </div>
                   </Portal>
                 )}
