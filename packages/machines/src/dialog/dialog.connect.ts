@@ -9,6 +9,8 @@ export function dialogConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
+  const { "aria-label": ariaLabel } = ctx
+
   const isOpen = state.matches("open")
 
   return {
@@ -35,16 +37,22 @@ export function dialogConnect(
       onClick(event) {
         event.preventDefault()
         event.stopPropagation()
-        if (!ctx.isTopMostDialog) return
+        if (ctx.pointerdownNode !== event.target) return
+        if (!ctx.isTopMostDialog || !ctx.closeOnOverlayClick) return
         send("CLOSE")
+      },
+      onPointerDown(event) {
+        event.stopPropagation()
+        send({ type: "POINTER_DOWN", target: event.target })
       },
     }),
     contentProps: normalize<Props.Element>({
-      role: "dialog",
+      role: ctx.role,
       id: dom.getContentId(ctx),
       tabIndex: -1,
       "aria-modal": ariaAttr(ctx.isTopMostDialog),
-      "aria-labelledby": ctx.hasTitle ? dom.getTitleId(ctx) : undefined,
+      "aria-label": ariaLabel || undefined,
+      "aria-labelledby": ariaLabel ? undefined : ctx.hasTitle ? dom.getTitleId(ctx) : undefined,
       "aria-describedby": ctx.hasDescription ? dom.getDescriptionId(ctx) : undefined,
       onClick(event) {
         event.stopPropagation()

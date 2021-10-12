@@ -47,8 +47,10 @@ export type DialogMachineContext = Context<{
   restoreFocus?: boolean
   onEsc?: () => void
   onClickOutside?: () => void
-  closeOnOutsideClick: boolean
+  closeOnOverlayClick: boolean
   closeOnEsc: boolean
+  "aria-label"?: string
+  role: "dialog" | "alertdialog"
 }>
 
 export type DialogMachineState = {
@@ -60,15 +62,17 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
     id: "dialog",
     initial: "unknown",
     context: {
+      role: "dialog",
       hasDescription: true,
       hasTitle: true,
       uid: "234",
       trapFocus: true,
       preventScroll: true,
       isTopMostDialog: true,
-      closeOnOutsideClick: true,
+      closeOnOverlayClick: true,
       closeOnEsc: true,
       restoreFocus: true,
+      pointerdownNode: null,
     },
     states: {
       unknown: {
@@ -88,9 +92,13 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
           STACK_CHANGE: {
             actions: [],
           },
+          POINTER_DOWN: {
+            actions: ["setPointerdownNode"],
+          },
         },
       },
       closed: {
+        entry: ["clearPointerdownNode"],
         on: {
           OPEN: "open",
         },
@@ -123,6 +131,7 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
             delayInitialFocus: true,
             document: dom.getDoc(ctx),
             escapeDeactivates: false,
+            fallbackFocus: dom.getContentEl(ctx),
             allowOutsideClick: true,
             returnFocusOnDeactivate: ctx.restoreFocus,
             initialFocus: ctx.initialFocusEl,
@@ -165,6 +174,12 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
           ctx.hasTitle = !!dom.getTitleEl(ctx)
           ctx.hasDescription = !!dom.getDescriptionEl(ctx)
         })
+      },
+      setPointerdownNode(ctx, evt) {
+        ctx.pointerdownNode = ref(evt.target)
+      },
+      clearPointerdownNode(ctx) {
+        ctx.pointerdownNode = null
       },
     },
   },
