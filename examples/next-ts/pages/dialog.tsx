@@ -1,46 +1,74 @@
+import { Portal } from "@reach/portal"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { dialog } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
-import { Portal } from "@reach/portal"
 import { useRef } from "react"
 
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Dialog 1
   const [state, send] = useMachine(
     dialog.machine.withContext({
       initialFocusEl: () => inputRef.current,
     }),
   )
-
   const ref = useSetup<HTMLButtonElement>({ send, id: "123" })
+  const d1 = dialog.connect(state, send)
 
-  const { isOpen, triggerProps, overlayProps, contentProps, titleProps, descriptionProps, closeButtonProps } =
-    dialog.connect(state, send)
+  // Dialog 2
+  const [state2, send2] = useMachine(dialog.machine)
+  const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "456" })
+  const d2 = dialog.connect(state2, send2)
 
   return (
     <>
-      <div>
+      <div ref={ref2}>
         <div className="root">
-          <button ref={ref} className="dialog__button" {...triggerProps}>
+          <button ref={ref} className="dialog__button" {...d1.triggerProps}>
             Open Dialog
           </button>
           <div style={{ minHeight: "1200px" }} />
-          {isOpen && (
+          {d1.isOpen && (
             <Portal>
-              <div className="dialog__overlay" {...overlayProps} />
+              <div className="dialog__overlay" {...d1.overlayProps} />
             </Portal>
           )}
-          {isOpen && (
+          {d1.isOpen && (
             <Portal>
-              <div className="dialog__content" {...contentProps}>
-                <h2 className="dialog__title" {...titleProps}>
+              <div className="dialog__content" {...d1.contentProps}>
+                <h2 className="dialog__title" {...d1.titleProps}>
                   Edit profile
                 </h2>
-                <p {...descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
-                <input type="text" ref={inputRef} style={{ padding: "10px" }} />
+                <p {...d1.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
+                <button className="dialog__close-button" {...d1.closeButtonProps}>
+                  X
+                </button>
+                <input type="text" ref={inputRef} placeholder="Enter name..." />
                 <button>Save Changes</button>
-                <button {...closeButtonProps}>X</button>
+
+                <button className="dialog__button" {...d2.triggerProps}>
+                  Open Nested
+                </button>
+
+                {d2.isOpen && (
+                  <Portal>
+                    <div className="dialog__overlay" {...d2.overlayProps} />
+                  </Portal>
+                )}
+                {d2.isOpen && (
+                  <Portal>
+                    <div className="dialog__content" {...d2.contentProps}>
+                      <h2 className="dialog__title" {...d2.titleProps}>
+                        Nested
+                      </h2>
+                      <button className="dialog__close-button" {...d2.closeButtonProps}>
+                        X
+                      </button>
+                      <button onClick={() => d1.close()}>Close Dialog 1</button>
+                    </div>
+                  </Portal>
+                )}
               </div>
             </Portal>
           )}
@@ -77,6 +105,20 @@ export default function Page() {
           max-width: 450px;
           max-height: 85vh;
           padding: 25px;
+        }
+
+        .dialog__close-button {
+          font-family: inherit;
+          height: 25px;
+          width: 25px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: rgb(87, 70, 175);
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          border-radius: 100%;
         }
       `}</style>
     </>

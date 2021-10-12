@@ -35,6 +35,7 @@ export function dialogConnect(
       onClick(event) {
         event.preventDefault()
         event.stopPropagation()
+        if (!ctx.isTopMostDialog) return
         send("CLOSE")
       },
     }),
@@ -42,7 +43,7 @@ export function dialogConnect(
       role: "dialog",
       id: dom.getContentId(ctx),
       tabIndex: -1,
-      "aria-modal": ctx.isTopMostDialog,
+      "aria-modal": ariaAttr(ctx.isTopMostDialog),
       "aria-labelledby": ctx.hasTitle ? dom.getTitleId(ctx) : undefined,
       "aria-describedby": ctx.hasDescription ? dom.getDescriptionId(ctx) : undefined,
       onClick(event) {

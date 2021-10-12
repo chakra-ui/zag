@@ -1,15 +1,40 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
-import { last, remove } from "tiny-array"
+import { last } from "tiny-array"
 import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
 import { proxy, subscribe } from "valtio"
-import { Context, trackPointerDown } from "../utils"
+import { Context } from "../utils"
 import { preventScroll } from "../utils/body-scroll-lock"
 import { dom } from "./dialog.dom"
 
-export const dialogStore = proxy<{ ids: string[] }>({ ids: [] })
+type StoreItem = { id: string; close: VoidFunction }
+
+type Store = {
+  value: StoreItem[]
+  add: (item: StoreItem) => void
+  remove: (id: string) => void
+  isTopMost: (id: string) => boolean
+}
+
+export const dialogStore = proxy<Store>({
+  value: [],
+  isTopMost(id) {
+    return last(this.value)?.id === id
+  },
+  add(item: StoreItem) {
+    this.value.push(item)
+  },
+  remove(id) {
+    const index = this.value.findIndex((item) => item.id === id)
+    if (index < this.value.length - 1) {
+      this.value.splice(index).forEach((item) => item.close())
+    } else {
+      this.value = this.value.filter((item) => item.id !== id)
+    }
+  },
+})
 
 export type DialogMachineContext = Context<{
   hasTitle: boolean
@@ -56,18 +81,12 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
       },
       open: {
         entry: ["checkElements"],
-        activities: [
-          "trapFocus",
-          "preventScroll",
-          "hideContentBelow",
-          "subscribeToStore",
-          "trackPointerDown",
-          "trackEscKey",
-        ],
+        activities: ["trapFocus", "preventScroll", "hideContentBelow", "subscribeToStore", "trackEscKey"],
         on: {
           CLOSE: "closed",
+          // TODO
           STACK_CHANGE: {
-            actions: ["setIsTopMostDialog"],
+            actions: [],
           },
         },
       },
@@ -82,13 +101,12 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
     activities: {
       trackEscKey(ctx, _evt, { send }) {
         return addDomEvent(dom.getWin(ctx), "keydown", (e) => {
-          if (ctx.closeOnEsc && e.key === "Escape") {
+          if (ctx.closeOnEsc && e.key === "Escape" && ctx.isTopMostDialog) {
             ctx.onEsc?.()
             send("CLOSE")
           }
         })
       },
-      trackPointerDown: trackPointerDown,
       preventScroll(ctx) {
         return preventScroll({
           allowPinZoom: true,
@@ -97,11 +115,13 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         })
       },
       trapFocus(ctx) {
-        if (!ctx.isTopMostDialog || !ctx.trapFocus) return noop
         let trap: FocusTrap
         nextTick(() => {
+          if (!ctx.isTopMostDialog || !ctx.trapFocus) return noop
           const el = dom.getContentEl(ctx)
           trap = createFocusTrap(el, {
+            delayInitialFocus: true,
+            document: dom.getDoc(ctx),
             escapeDeactivates: false,
             allowOutsideClick: true,
             returnFocusOnDeactivate: ctx.restoreFocus,
@@ -112,14 +132,16 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         })
         return () => trap?.deactivate()
       },
-      subscribeToStore(ctx) {
-        dialogStore.ids.push(ctx.uid)
+      subscribeToStore(ctx, _evt, { send }) {
+        const register = { id: ctx.uid, close: () => send("CLOSE") }
+        dialogStore.add(register)
+        ctx.isTopMostDialog = dialogStore.isTopMost(ctx.uid)
         const unsubscribe = subscribe(dialogStore, () => {
-          ctx.isTopMostDialog = last(dialogStore.ids) === ctx.uid
+          ctx.isTopMostDialog = dialogStore.isTopMost(ctx.uid)
         })
         return () => {
           unsubscribe()
-          dialogStore.ids = remove(dialogStore.ids, ctx.uid)
+          dialogStore.remove(ctx.uid)
         }
       },
       hideContentBelow(ctx) {
