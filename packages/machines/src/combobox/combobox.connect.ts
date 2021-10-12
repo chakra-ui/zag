@@ -1,14 +1,9 @@
-import { StateMachine as S } from "@ui-machines/core"
 import type { DOM, Props } from "../utils"
 import { ariaAttr, dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
 import { dom } from "./combobox.dom"
-import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
+import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 
-export function comboboxConnect(
-  state: S.State<ComboboxMachineContext, ComboboxMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
 
   const expanded = state.matches("open")
@@ -198,13 +193,4 @@ export function comboboxConnect(
       })
     },
   }
-}
-
-export type ComboboxOptionProps = {
-  virtualized?: true
-  index?: number
-  noOfOptions?: number
-  value: string
-  label: string
-  disabled?: boolean
 }
