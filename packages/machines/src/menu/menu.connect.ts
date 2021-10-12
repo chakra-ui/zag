@@ -1,4 +1,3 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { contains } from "tiny-dom-query"
 import { cast } from "tiny-fn"
 import { isLeftClick } from "tiny-guard"
@@ -6,13 +5,10 @@ import { fromPointerEvent } from "tiny-point/dom"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey, validateBlur } from "../utils"
 import { dom } from "./menu.dom"
-import { MenuMachine, MenuMachineContext, MenuMachineState } from "./menu.machine"
+import { MenuMachine } from "./menu.machine"
+import { MenuItemProps, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
 
-export function menuConnect(
-  state: S.State<MenuMachineContext, MenuMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function menuConnect(state: MenuState, send: MenuSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
   const isSubmenu = ctx.parent != null
@@ -84,11 +80,11 @@ export function menuConnect(
         }
 
         const key = getEventKey(event, ctx)
+        const exec = keyMap[key]
 
-        if (key in keyMap) {
+        if (exec) {
           event.preventDefault()
           event.stopPropagation()
-          const exec = keyMap[key]
           exec(event)
         }
       },
@@ -182,7 +178,7 @@ export function menuConnect(
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
 
-    getItemOptionProps(opts: OptionItemProps) {
+    getItemOptionProps(opts: MenuOptionItemProps) {
       const { type, checked, disabled, id, onCheckedChange, valueText } = opts
       return normalize<Props.Element>({
         id,
@@ -218,7 +214,7 @@ export function menuConnect(
       })
     },
 
-    getItemProps(opts: ItemProps = {}) {
+    getItemProps(opts: MenuItemProps = {}) {
       const { id, disabled, valueText } = opts
       return normalize<Props.Element>({
         id,
@@ -251,16 +247,4 @@ export function menuConnect(
       })
     },
   }
-}
-
-type ItemProps = {
-  id?: string
-  disabled?: boolean
-  valueText?: string
-}
-
-type OptionItemProps = ItemProps & {
-  type: "radio" | "checkbox"
-  checked?: boolean
-  onCheckedChange?: (checked: boolean) => void
 }

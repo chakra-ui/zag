@@ -1,36 +1,19 @@
-import { createMachine, guards, Machine, ref } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { addPointerEvent } from "tiny-dom-event"
 import { contains } from "tiny-dom-query"
 import { attrs } from "tiny-dom-query/attributes"
 import { isFocusable } from "tiny-dom-query/focusable"
 import { nextTick } from "tiny-fn"
-import { PointValue } from "tiny-point"
 import { fromPointerEvent } from "tiny-point/dom"
 import { withinPolygon } from "tiny-point/within"
 import { corners } from "tiny-rect"
 import { fromElement } from "tiny-rect/from-element"
 import { inset } from "tiny-rect/operations"
-import type { Context } from "../utils"
 import { trackPointerDown } from "../utils"
 import { dom } from "./menu.dom"
+import { MenuMachineContext, MenuMachineState } from "./menu.types"
 
 const { not, and } = guards
-
-export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
-
-export type MenuMachineContext = Context<{
-  activeId: string | null
-  onSelect?: (value: string) => void
-  parent: MenuMachine | null
-  children: Record<string, MenuMachine>
-  orientation: "horizontal" | "vertical"
-  pointerExitPoint: PointValue | null
-  hoverId: string | null
-}>
-
-export type MenuMachineState = {
-  value: "unknown" | "idle" | "open" | "close" | "opening" | "closing"
-}
 
 export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
   {
