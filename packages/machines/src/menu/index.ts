@@ -6,4 +6,4 @@ export const menu = {
   connect: menuConnect,
 }
 
-export type { MenuMachineContext, MenuMachineState } from "./menu.machine"
+export type { MenuMachineContext, MenuMachineState } from "./menu.types"

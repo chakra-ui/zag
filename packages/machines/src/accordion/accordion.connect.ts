@@ -8,10 +8,10 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
   const { context: ctx } = state
 
   function getItemState(props: AccordionItemProps) {
-    const { id, disabled } = props
+    const { value, disabled } = props
     return {
-      isOpen: isArray(ctx.activeId) ? ctx.activeId.includes(id) : id === ctx.activeId,
-      isFocused: ctx.focusedId === id,
+      isOpen: isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
+      isFocused: ctx.focusedValue === value,
       isDisabled: disabled ?? ctx.disabled,
     }
   }
@@ -26,7 +26,7 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
     getItemProps(props: AccordionItemProps) {
       const { isOpen } = getItemState(props)
       return normalize<Props.Element>({
-        id: dom.getGroupId(ctx, props.id),
+        id: dom.getGroupId(ctx, props.value),
         "data-expanded": dataAttr(isOpen),
       })
     },
@@ -35,8 +35,8 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
       const { isOpen, isFocused, isDisabled } = getItemState(props)
       return normalize<Props.Element>({
         role: "region",
-        id: dom.getPanelId(ctx, props.id),
-        "aria-labelledby": dom.getTriggerId(ctx, props.id),
+        id: dom.getPanelId(ctx, props.value),
+        "aria-labelledby": dom.getTriggerId(ctx, props.value),
         hidden: !isOpen,
         "data-disabled": dataAttr(isDisabled),
         "data-focus": dataAttr(isFocused),
@@ -45,19 +45,19 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
     },
 
     getTriggerProps(props: AccordionItemProps) {
-      const { id } = props
+      const { value } = props
       const { isDisabled, isOpen } = getItemState(props)
       return normalize<Props.Button>({
         type: "button",
-        id: dom.getTriggerId(ctx, id),
-        "aria-controls": dom.getPanelId(ctx, id),
+        id: dom.getTriggerId(ctx, value),
+        "aria-controls": dom.getPanelId(ctx, value),
         "aria-expanded": isOpen,
         disabled: isDisabled,
         "aria-disabled": isDisabled,
         "data-ownedby": dom.getRootId(ctx),
         onFocus() {
           if (isDisabled) return
-          send({ type: "FOCUS", id })
+          send({ type: "FOCUS", value })
         },
         onBlur() {
           if (isDisabled) return
@@ -65,26 +65,26 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
         },
         onClick() {
           if (isDisabled) return
-          send({ type: "CLICK", id })
+          send({ type: "CLICK", value })
         },
         onKeyDown(event) {
           if (isDisabled) return
 
           const keyMap: DOM.EventKeyMap = {
             ArrowDown() {
-              send({ type: "ARROW_DOWN", id })
+              send({ type: "ARROW_DOWN", value })
             },
             ArrowUp() {
-              send({ type: "ARROW_UP", id })
+              send({ type: "ARROW_UP", value })
             },
             Enter() {
-              send({ type: "CLICK", id })
+              send({ type: "CLICK", value })
             },
             Home() {
-              send({ type: "HOME", id })
+              send({ type: "HOME", value })
             },
             End() {
-              send({ type: "END", id })
+              send({ type: "END", value })
             },
           }
 
