@@ -16,8 +16,8 @@ export const dom = {
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTabId(ctx, id)),
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTabId(ctx, id)),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTabId(ctx, id), ctx.loop),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTabId(ctx, id), ctx.loop),
   getRectById: (ctx: Ctx, id: string) => {
     const tab = itemById(dom.getElements(ctx), dom.getTabId(ctx, id))
     return {
