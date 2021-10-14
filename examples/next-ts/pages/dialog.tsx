@@ -10,7 +10,7 @@ export default function Page() {
   // Dialog 1
   const [state, send] = useMachine(
     dialog.machine.withContext({
-      initialFocusEl: () => inputRef.current,
+      // initialFocusEl: () => inputRef.current,
     }),
   )
   const ref = useSetup<HTMLButtonElement>({ send, id: "123" })
@@ -25,13 +25,13 @@ export default function Page() {
     <>
       <div ref={ref2}>
         <div className="root">
-          <button ref={ref} className="dialog__button" {...d1.triggerProps}>
+          <button ref={ref} className="dialog__button" {...d1.triggerProps} data-testid="trigger-1">
             Open Dialog
           </button>
           <div style={{ minHeight: "1200px" }} />
           {d1.isOpen && (
             <Portal>
-              <div className="dialog__overlay" {...d1.overlayProps} />
+              <div className="dialog__overlay" {...d1.overlayProps} data-testid="overlay-1" />
             </Portal>
           )}
           {d1.isOpen && (
@@ -41,19 +41,19 @@ export default function Page() {
                   Edit profile
                 </h2>
                 <p {...d1.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
-                <button className="dialog__close-button" {...d1.closeButtonProps}>
+                <button className="dialog__close-button" {...d1.closeButtonProps} data-testid="close-1">
                   X
                 </button>
-                <input type="text" ref={inputRef} placeholder="Enter name..." />
-                <button>Save Changes</button>
+                <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
+                <button data-testid="save-button-1">Save Changes</button>
 
-                <button className="dialog__button" {...d2.triggerProps}>
+                <button className="dialog__button" {...d2.triggerProps} data-testid="trigger-2">
                   Open Nested
                 </button>
 
                 {d2.isOpen && (
                   <Portal>
-                    <div className="dialog__overlay" {...d2.overlayProps} />
+                    <div className="dialog__overlay" {...d2.overlayProps} data-testid="overlay-2" />
                   </Portal>
                 )}
                 {d2.isOpen && (
@@ -62,10 +62,12 @@ export default function Page() {
                       <h2 className="dialog__title" {...d2.titleProps}>
                         Nested
                       </h2>
-                      <button className="dialog__close-button" {...d2.closeButtonProps}>
+                      <button className="dialog__close-button" {...d2.closeButtonProps} data-testid="close-2">
                         X
                       </button>
-                      <button onClick={() => d1.close()}>Close Dialog 1</button>
+                      <button onClick={() => d1.close()} data-testid="special-close">
+                        Close Dialog 1
+                      </button>
                     </div>
                   </Portal>
                 )}
@@ -119,6 +121,11 @@ export default function Page() {
           top: 10px;
           right: 10px;
           border-radius: 100%;
+        }
+
+        .dialog__close-button:focus {
+          outline: 2px blue solid;
+          outline-offset: 2px;
         }
       `}</style>
     </>

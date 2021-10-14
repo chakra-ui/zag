@@ -25,7 +25,7 @@ export function dialogConnect(
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       type: "button",
-      "aria-expanded": ariaAttr(isOpen),
+      "aria-expanded": isOpen,
       "aria-controls": dom.getContentId(ctx),
       onClick() {
         send(isOpen ? "CLOSE" : "OPEN")

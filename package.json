@@ -62,6 +62,7 @@
     "commitlint": "^12.1.4",
     "cypress": "^8.5.0",
     "cypress-axe": "^0.13.0",
+    "cypress-plugin-tab": "^1.0.5",
     "cypress-real-events": "^1.5.1",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",

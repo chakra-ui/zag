@@ -132,7 +132,9 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
             initialFocus: ctx.initialFocusEl,
             setReturnFocus: ctx.finalFocusEl,
           })
-          trap.activate()
+          try {
+            trap.activate()
+          } catch {}
         })
         return () => trap?.deactivate()
       },
@@ -152,7 +154,9 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         let unhide: VoidFunction
         nextTick(() => {
           const el = dom.getContentEl(ctx)
-          unhide = hideOthers(el)
+          try {
+            unhide = hideOthers(el)
+          } catch {}
         })
         return () => unhide?.()
       },
