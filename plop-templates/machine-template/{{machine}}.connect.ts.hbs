@@ -1,20 +1,13 @@
-import {
-  defaultPropNormalizer,
-  PropNormalizer,
-  StateMachine as S,
-} from "@ui-machines/core"
-import { Props } from "../type-utils"
+import { defaultPropNormalizer, getEventKey } from "../utils"
+import type { DOM, Props } from "../utils"
 import { getIds, getElements } from "./{{machine}}.dom"
-import { {{capitalize machine}}MachineContext, {{capitalize machine}}MachineState } from "./{{machine}}.machine"
 
-export function connect{{capitalize machine}}Machine(
-  state: S.State<{{capitalize machine}}MachineContext, {{capitalize machine}}MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
+export function connect{{capitalize machine}}(
+  state: {{capitalize machine}}State,
+  send: {{capitalize machine}}Send,
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-  const ids = getIds(ctx.uid)
-
   return {
     elProps: normalize<Props.Element>({
     }),
