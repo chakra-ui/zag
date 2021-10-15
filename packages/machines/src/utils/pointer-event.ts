@@ -1,7 +1,28 @@
 import { addPointerEvent, EventListenerWithPointInfo as Listener } from "tiny-dom-event"
+import { cast, pipe } from "tiny-fn"
+import { isLeftClick, isMouseEvent } from "tiny-guard"
 import { distance } from "tiny-point/distance"
-import { pipe } from "tiny-fn"
-import { isMouseEvent, isLeftClick } from "tiny-guard"
+import { ref } from "valtio"
+import { DOM } from "./types"
+
+type TrackPointerDownOptions = {
+  doc?: Document
+  pointerdownNode?: HTMLElement | null
+}
+
+export function trackPointerDown(ctx: TrackPointerDownOptions) {
+  const doc = ctx.doc ?? document
+  const fn = (event: PointerEvent) => {
+    const win = cast<DOM.This>(event.view ?? window)
+    if (event.target instanceof win.HTMLElement) {
+      ctx.pointerdownNode = ref(event.target)
+    }
+  }
+  doc.addEventListener("pointerdown", fn)
+  return () => {
+    doc.removeEventListener("pointerdown", fn)
+  }
+}
 
 type TrackPointerMoveOptions = {
   ctx: {

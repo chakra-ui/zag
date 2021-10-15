@@ -13,7 +13,7 @@ interface PreventScrollOptions {
 // HTML input types that do not cause the software keyboard to appear.
 const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
 
-export function preventScroll(opts?: PreventScrollOptions) {
+export function preventBodyScroll(opts?: PreventScrollOptions) {
   const { environment: env, disabled = false, allowPinZoom } = opts ?? {}
   const win = cast<typeof globalThis>(env?.window ?? window)
   const doc = cast<Document>(env?.document ?? document)

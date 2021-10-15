@@ -6,7 +6,7 @@ import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
 import { proxy, subscribe } from "valtio"
 import { Context } from "../utils"
-import { preventScroll } from "../utils/body-scroll-lock"
+import { preventBodyScroll } from "../utils/body-scroll-lock"
 import { dom } from "./dialog.dom"
 
 type StoreItem = { id: string; close: VoidFunction }
@@ -111,7 +111,7 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         })
       },
       preventScroll(ctx) {
-        return preventScroll({
+        return preventBodyScroll({
           allowPinZoom: true,
           disabled: !ctx.preventScroll,
           environment: { document: dom.getDoc(ctx), window: dom.getWin(ctx) },

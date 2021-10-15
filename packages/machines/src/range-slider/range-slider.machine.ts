@@ -4,8 +4,7 @@ import { decrement, increment, snapToStep } from "tiny-num"
 import { closest } from "tiny-point/distance"
 import { center } from "tiny-rect"
 import { fromElement } from "tiny-rect/from-element"
-import { trackPointerMove } from "../utils/pointer-move"
-import { Context } from "../utils/types"
+import { Context, trackPointerMove } from "../utils"
 import { dom, getRangeAtIndex } from "./range-slider.dom"
 
 export type RangeSliderMachineContext = Context<{

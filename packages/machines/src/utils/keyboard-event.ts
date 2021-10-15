@@ -1,11 +1,19 @@
 import type { KeyboardEvent } from "react"
 
+/* -----------------------------------------------------------------------------
+ * RTL Keymap
+ * -----------------------------------------------------------------------------*/
+
 const rtlKeyMap = {
   ArrowLeft: "ArrowRight",
   ArrowRight: "ArrowLeft",
   Home: "End",
   End: "Home",
 }
+
+/* -----------------------------------------------------------------------------
+ * Same keymap but with shortcuts
+ * -----------------------------------------------------------------------------*/
 
 const sameKeyMap = {
   Up: "ArrowUp",
@@ -38,4 +46,16 @@ export function getEventKey(event: KeyboardEvent, options: EventKeyOptions = {})
   }
 
   return key
+}
+
+const PAGE_KEYS = new Set(["PageUp", "PageDown"])
+const ARROW_KEYS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"])
+
+/**
+ * Determine the step factor for keyboard events
+ */
+export function getEventStep(event: KeyboardEvent) {
+  const isPageKey = PAGE_KEYS.has(event.key)
+  const isSkipKey = isPageKey || (event.shiftKey && ARROW_KEYS.has(event.key))
+  return isSkipKey ? 10 : 1
 }

@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { isTabbable } from "tiny-dom-query/tabbable"
 import { nextTick } from "tiny-fn"
-import { trackPointerDown } from "../utils/pointer-down"
+import { trackPointerDown } from "../utils/pointer-event"
 import { Context } from "../utils/types"
 import { dom } from "./popover.dom"
 

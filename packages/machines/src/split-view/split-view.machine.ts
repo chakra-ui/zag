@@ -2,8 +2,7 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
 import { clamp, decrement, increment, snapToStep } from "tiny-num"
 import { relativeToNode } from "tiny-point/dom"
-import { trackPointerMove } from "../utils/pointer-move"
-import { Context } from "../utils/types"
+import { Context, trackPointerMove } from "../utils"
 import { dom } from "./split-view.dom"
 
 const { not } = guards

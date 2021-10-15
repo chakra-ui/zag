@@ -2,8 +2,7 @@ import { createMachine, ref, StateMachine } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
 import { clamp, decrement, increment, snapToStep } from "tiny-num"
 import { fromElement } from "tiny-rect/from-element"
-import { trackPointerMove } from "../utils/pointer-move"
-import { Context } from "../utils/types"
+import { Context, trackPointerMove } from "../utils"
 import { dom } from "./slider.dom"
 
 export type SliderMachineContext = Context<{

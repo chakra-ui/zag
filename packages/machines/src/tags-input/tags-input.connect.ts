@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
+import { getEventKey } from "../utils/keyboard-event"
 import { DOM, Props } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
 import { dom } from "./tags-input.dom"
