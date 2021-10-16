@@ -54,6 +54,10 @@ export type ComboboxMachineContext = Context<{
    */
   inputValue: string
   /**
+   * @computed The trimmed value of the input
+   */
+  readonly trimmedInputValue: string
+  /**
    * The selected value for the combobox
    */
   selectedValue: string
@@ -90,7 +94,7 @@ export type ComboboxMachineContext = Context<{
   /**
    * The event source for triggers highlighted option change
    */
-  eventSource: "pointer" | "keyboard" | null
+  eventSource: "pointer" | "keyboard" | "search" | null
   /**
    * The live region for the combobox
    */
@@ -103,6 +107,7 @@ export type ComboboxMachineContext = Context<{
    * Whether to focus the input on clear button click
    */
   focusOnClear?: boolean
+  firstOptionLabel?: string
 }>
 
 export type OptionData = {

@@ -1,5 +1,5 @@
 import type { DOM, Props } from "../utils"
-import { ariaAttr, dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
+import { dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
 import { dom } from "./combobox.dom"
 import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 
@@ -20,6 +20,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
     },
 
     inputValue: ctx.inputValue,
+    firstOptionLabel: ctx.firstOptionLabel,
 
     labelProps: normalize<Props.Label>({
       htmlFor: dom.getInputId(ctx),
@@ -68,10 +69,13 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
         send("INPUT_FOCUS")
       },
       onChange(event) {
-        send({ type: "TYPE", value: event.target.value })
+        const evt = (event.nativeEvent ?? event) as InputEvent
+        if (evt.isComposing) return
+        send({ type: "TYPE", value: event.currentTarget.value, inputType: evt.inputType })
       },
       onKeyDown(event) {
-        if (event.ctrlKey || event.shiftKey) return
+        const evt = (event.nativeEvent ?? event) as KeyboardEvent
+        if (event.ctrlKey || event.shiftKey || evt.isComposing) return
 
         const keymap: DOM.EventKeyMap = {
           ArrowDown() {
@@ -107,6 +111,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
 
     buttonProps: normalize<Props.Button>({
       id: dom.getToggleBtnId(ctx),
+      hidden: ctx.inputValue.trim() !== "",
       "aria-haspopup": "true",
       type: "button",
       role: "button",
@@ -124,8 +129,9 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
 
     clearProps: normalize<Props.Button>({
       "aria-label": "Clear",
+      hidden: ctx.inputValue.trim() === "" || ctx.readonly,
       type: "reset",
-      onClick() {
+      onPointerDown() {
         send("CLEAR_BUTTON_CLICK")
       },
     }),
@@ -167,9 +173,10 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
       return normalize<Props.Element>({
         id,
         role: "option",
+        tabIndex: -1,
         className: "option",
         "data-highlighted": dataAttr(ctx.activeId === id),
-        "aria-selected": ariaAttr(selected),
+        "aria-selected": selected,
         "aria-disabled": ctx.disabled,
         ...(virtualized && {
           "aria-posinset": index,

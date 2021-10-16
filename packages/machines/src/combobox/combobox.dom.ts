@@ -30,7 +30,7 @@ export const dom = {
   getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id),
 
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
-  getOptionData: (el: HTMLElement | null) => ({
+  getOptionData: (el: HTMLElement | null | undefined) => ({
     value: el?.getAttribute("data-value") ?? "",
     label: el?.getAttribute("data-label") ?? "",
   }),

@@ -6,7 +6,10 @@ import { LiveRegion, observeAttributes, trackPointerDown, uuid } from "../utils"
 import { dom } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.types"
 
-const { and } = guards
+const { and, or } = guards
+
+// https://a11y-guidelines.orange.com/en/articles/autocomplete-component/
+// https://alphagov.github.io/accessible-autocomplete/examples/
 
 export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMachineState>(
   {
@@ -25,6 +28,16 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       eventSource: null,
       liveRegion: null,
       pointerdownNode: null,
+      firstOptionLabel: "",
+    },
+    computed: {
+      trimmedInputValue(ctx) {
+        return ctx.inputValue.trim()
+      },
+    },
+    watch: {
+      inputValue: "setFirstOptionLabel",
+      navigationValue: "clearFirstOptionLabel",
     },
     on: {
       SET_VALUE: {
@@ -98,7 +111,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             {
               target: "open",
               cond: "autoComplete",
-              actions: "setInputValue",
+              actions: ["setInputValue"],
             },
             {
               target: "open",
@@ -153,23 +166,25 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             {
               cond: "closeOnSelect",
               target: "closed",
-              actions: ["selectOption", "announceSelectedOption", "clearFocusedOption"],
+              actions: ["selectOption", "announceSelectedOption", "clearFocusedOption", "clearFirstOptionLabel"],
             },
             {
-              actions: ["selectOption", "announceSelectedOption"],
+              actions: ["selectOption", "announceSelectedOption", "clearFirstOptionLabel"],
             },
           ],
+          HOME: {
+            actions: ["moveCaretToStart"],
+          },
+          END: {
+            actions: ["moveCaretToEnd"],
+          },
           TYPE: [
             {
-              cond: "autoComplete",
-              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
+              cond: or("autoSelect", "autoComplete"),
+              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToSearch"],
             },
             {
-              cond: "autoSelect",
-              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToKeyboard"],
-            },
-            {
-              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
+              actions: ["setInputValue", "announceOptionCount", "setEventSourceToSearch"],
             },
           ],
           TAB: [
@@ -218,7 +233,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       closeOnSelect: (ctx) => {
         if (isFunction(ctx.closeOnSelect)) {
           const el = dom.getFocusedOptionEl(ctx)
-          return Boolean(el && ctx.closeOnSelect(dom.getOptionData(el)))
+          return !!(el && ctx.closeOnSelect(dom.getOptionData(el)))
         }
         return !!ctx.closeOnSelect
       },
@@ -268,6 +283,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       selectOption(ctx, evt) {
         ctx.selectedValue = ctx.navigationValue ?? evt.value
         ctx.inputValue = ctx.selectedValue
+      },
+      clearSelectedValue(ctx) {
+        ctx.selectedValue = ""
       },
       focusInput(ctx) {
         nextTick(() => dom.getInputEl(ctx)?.focus())
@@ -326,6 +344,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       setEventSourceToPointer(ctx) {
         ctx.eventSource = "pointer"
       },
+      setEventSourceToSearch(ctx) {
+        ctx.eventSource = "search"
+      },
       clearEventSource(ctx) {
         ctx.eventSource = null
       },
@@ -343,6 +364,29 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       announceSelectedOption(ctx) {
         if (!isApple()) return
         ctx.liveRegion?.announce(`${ctx.selectedValue}, selected`)
+      },
+      moveCaretToStart(ctx) {
+        const input = dom.getInputEl(ctx)
+        if (!input) return
+        input?.setSelectionRange(0, 0)
+      },
+      moveCaretToEnd(ctx) {
+        const input = dom.getInputEl(ctx)
+        const len = ctx.inputValue.length
+        input?.setSelectionRange(len, len)
+      },
+      setFirstOptionLabel(ctx) {
+        if (ctx.navigationValue || !ctx.inputValue) {
+          ctx.firstOptionLabel = ""
+          return
+        }
+        nextTick(() => {
+          const { label } = dom.getOptionData(dom.getFirstEl(ctx))
+          ctx.firstOptionLabel = label
+        })
+      },
+      clearFirstOptionLabel(ctx) {
+        ctx.firstOptionLabel = ""
       },
     },
   },
