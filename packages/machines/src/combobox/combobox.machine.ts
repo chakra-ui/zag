@@ -17,7 +17,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     initial: "unknown",
     context: {
       uid: uuid(),
-      selectionMode: "autoselect",
+      autoComplete: true,
       closeOnSelect: true,
       closeOnBlur: true,
       openOnClick: false,
@@ -25,7 +25,6 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       inputValue: "",
       selectedValue: "",
       navigationValue: "",
-      eventSource: null,
       liveRegion: null,
       pointerdownNode: null,
       firstOptionLabel: "",
