@@ -6,10 +6,7 @@ import { LiveRegion, observeAttributes, trackPointerDown, uuid } from "../utils"
 import { dom } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.types"
 
-const { and, or } = guards
-
-// https://a11y-guidelines.orange.com/en/articles/autocomplete-component/
-// https://alphagov.github.io/accessible-autocomplete/examples/
+const { and, not } = guards
 
 export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMachineState>(
   {
@@ -28,15 +25,14 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       liveRegion: null,
       pointerdownNode: null,
       firstOptionLabel: "",
+      focusOnClear: true,
     },
     computed: {
-      trimmedInputValue(ctx) {
-        return ctx.inputValue.trim()
-      },
-    },
-    watch: {
-      inputValue: "setFirstOptionLabel",
-      navigationValue: "clearFirstOptionLabel",
+      trimmedInputValue: (ctx) => ctx.inputValue.trim(),
+      isInputValueEmpty: (ctx) => ctx.inputValue.trim().length === 0,
+      hintValue: (ctx) =>
+        ctx.navigationValue ? ctx.inputValue + ctx.navigationValue.substr(ctx.inputValue.length) : "",
+      isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
     },
     on: {
       SET_VALUE: {
@@ -44,11 +40,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       CLEAR_VALUE: [
         {
-          cond: and("inputHasValue", "focusOnClear"),
+          cond: and(not("isInputValueEmpty"), "focusOnClear"),
           actions: ["clearInputValue", "focusInput"],
         },
         {
-          cond: "inputHasValue",
+          cond: not("isInputValueEmpty"),
           actions: "clearInputValue",
         },
       ],
@@ -56,170 +52,124 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     states: {
       unknown: {
         on: {
-          SETUP: {
-            target: "closed",
-            actions: ["setId", "setOwnerDocument", "setLiveRegion"],
-          },
+          SETUP: [
+            { cond: "autoFocus", target: "focused", actions: "setup" },
+            { target: "idle", actions: "setup" },
+          ],
         },
       },
 
-      closed: {
-        after: {
-          0: { cond: "isInputFocused", target: "focused" },
-        },
-        entry: ["clearFocusedOption", "clearEventSource", "resetScrollPosition"],
+      idle: {
+        entry: ["resetScrollPosition", "clearFocusedOption"],
         on: {
-          INPUT_FOCUS: [
-            {
-              target: "focused",
-              cond: "selectOnFocus",
-              actions: "selectInput",
-            },
-            { target: "focused" },
-          ],
-          BUTTON_CLICK: [
-            {
-              cond: "autoSelect",
-              target: "open",
-              actions: ["focusInput", "focusFirstOption"],
-            },
-            {
-              target: "open",
-              actions: "focusInput",
-            },
-          ],
+          CLICK_BUTTON: "suggesting",
+          CLICK_INPUT: {
+            cond: "openOnClick",
+            target: "suggesting",
+          },
+          FOCUS: {
+            target: "focused",
+          },
         },
       },
 
       focused: {
+        entry: ["focusInput", "resetScrollPosition", "clearFocusedOption"],
         on: {
-          INPUT_BLUR: "closed",
-          INPUT_CLICK: {
-            cond: "openOnClick",
-            target: "open",
+          CHANGE: {
+            target: "suggesting",
+            actions: ["setInputValue", "focusFirstOption"],
           },
-          ARROW_DOWN: {
-            target: "open",
-            actions: ["focusFirstOption", "setEventSourceToKeyboard"],
+          BLUR: {
+            target: "idle",
           },
-          ARROW_UP: {
-            target: "open",
-            actions: ["focusLastOption", "setEventSourceToKeyboard"],
-          },
-          TYPE: [
-            {
-              target: "open",
-              cond: "autoComplete",
-              actions: ["setInputValue"],
-            },
-            {
-              target: "open",
-              cond: "autoSelect",
-              actions: ["setInputValue", "focusFirstOption"],
-            },
-            {
-              target: "open",
-              actions: ["setInputValue", "announceOptionCount", "setEventSourceToKeyboard"],
-            },
-          ],
-          BUTTON_CLICK: {
-            target: "open",
-            actions: "focusInput",
-          },
+          CLICK_BUTTON: "suggesting",
         },
       },
 
-      open: {
-        entry: ["announceOptionCount"],
+      suggesting: {
+        activities: ["trackPointerDown"],
+        entry: ["focusInput"],
+        on: {
+          ARROW_DOWN: {
+            target: "navigating",
+            actions: ["focusNextOption"],
+          },
+          ARROW_UP: {
+            target: "navigating",
+            actions: ["focusPrevOption"],
+          },
+          ENTER: {
+            target: "focused",
+            actions: ["selectOption"],
+          },
+          CHANGE: {
+            actions: ["setInputValue", "focusFirstOption"],
+          },
+          ESCAPE: {
+            target: "focused",
+          },
+          POINTEROVER_OPTION: {
+            actions: "setActiveId",
+            target: "interacting",
+          },
+          BLUR: "idle",
+        },
+      },
+
+      navigating: {
         activities: ["scrollOptionIntoView", "trackPointerDown"],
         on: {
           ARROW_DOWN: [
             {
-              cond: and("autoComplete", "isLastOptionFocused"),
-              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+              cond: "isLastOptionFocused",
+              actions: ["clearFocusedOption"],
             },
-            {
-              actions: ["focusNextOption", "setEventSourceToKeyboard"],
-            },
+            { actions: ["focusNextOption"] },
           ],
           ARROW_UP: [
             {
-              cond: and("autoComplete", "isFirstOptionFocused"),
-              actions: ["clearFocusedOption", "setEventSourceToKeyboard"],
+              cond: "isFirstOptionFocused",
+              actions: ["clearFocusedOption"],
             },
-            {
-              actions: ["focusPrevOption", "setEventSourceToKeyboard"],
-            },
+            { actions: ["focusPrevOption"] },
           ],
-          ESCAPE: [
-            {
-              target: "closed",
-              cond: "closeOnEsc",
-              actions: "clearInputValue",
-            },
-            {
-              target: "closed",
-            },
-          ],
-          ENTER: [
-            {
-              cond: "closeOnSelect",
-              target: "closed",
-              actions: ["selectOption", "announceSelectedOption", "clearFocusedOption", "clearFirstOptionLabel"],
-            },
-            {
-              actions: ["selectOption", "announceSelectedOption", "clearFirstOptionLabel"],
-            },
-          ],
-          HOME: {
-            actions: ["moveCaretToStart"],
+          ENTER: {
+            target: "focused",
+            actions: ["selectOption"],
           },
-          END: {
-            actions: ["moveCaretToEnd"],
+          CHANGE: {
+            target: "suggesting",
+            actions: ["setInputValue", "focusFirstOption"],
           },
-          TYPE: [
-            {
-              cond: or("autoSelect", "autoComplete"),
-              actions: ["setInputValue", "focusFirstOption", "announceOptionCount", "setEventSourceToSearch"],
-            },
-            {
-              actions: ["setInputValue", "announceOptionCount", "setEventSourceToSearch"],
-            },
-          ],
-          TAB: [
-            {
-              cond: "hasFocusedOption",
-              target: "closed",
-              actions: "selectOption",
-            },
-            { target: "closed" },
-          ],
-          DELETE: {
-            actions: ["clearInputValue", "clearFocusedOption"],
+          POINTEROVER_OPTION: {
+            actions: ["setActiveId"],
+            target: "interacting",
           },
-          OPTION_POINTEROVER: {
-            actions: ["setActiveOption", "setEventSourceToPointer"],
+          ESCAPE: "focused",
+          BLUR: {
+            target: "idle",
+            actions: ["selectOption"],
           },
-          OPTION_POINTEROUT: {
-            actions: "clearFocusedOption",
+        },
+      },
+
+      interacting: {
+        activities: ["trackPointerDown"],
+        on: {
+          CHANGE: {
+            actions: ["setInputValue", "focusFirstOption"],
           },
-          OPTION_CLICK: [
-            {
-              cond: "closeOnSelect",
-              target: "closed",
-              actions: ["selectOption", "announceSelectedOption", "focusInput"],
-            },
-            {
-              actions: ["selectOption", "announceSelectedOption", "focusInput"],
-            },
-          ],
-          INPUT_BLUR: {
-            cond: "closeOnBlur",
-            target: "closed",
+          POINTEROVER_OPTION: {
+            actions: ["setActiveId"],
           },
-          BUTTON_CLICK: {
-            target: "closed",
-            actions: "focusInput",
+          CLICK_OPTION: {
+            target: "focused",
+            actions: ["selectOption"],
+          },
+          BLUR: "idle",
+          POINTERLEAVE_LISTBOX: {
+            actions: "clearActiveId",
           },
         },
       },
@@ -229,6 +179,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     guards: {
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
+      isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
+      focusOnClear: (ctx) => !!ctx.focusOnClear,
+      autoFocus: (ctx) => !!ctx.autoFocus,
       closeOnSelect: (ctx) => {
         if (isFunction(ctx.closeOnSelect)) {
           const el = dom.getFocusedOptionEl(ctx)
@@ -237,8 +190,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         return !!ctx.closeOnSelect
       },
       isInputFocused: (ctx) => dom.isInputFocused(ctx),
-      autoComplete: (ctx) => ctx.selectionMode === "autocomplete",
-      autoSelect: (ctx) => ctx.selectionMode === "autoselect",
+      autoComplete: (ctx) => !!ctx.autoComplete,
       isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.activeId,
       isLastOptionFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.activeId,
       hasFocusedOption: (ctx) => !!ctx.activeId,
@@ -251,7 +203,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         const listbox = dom.getListboxEl(ctx)
         return observeAttributes(input, "aria-activedescendant", () => {
           const opt = dom.getActiveOptionEl(ctx)
-          if (!opt || ctx.eventSource !== "keyboard") return
+          if (!opt) return
           scrollIntoView(opt, {
             boundary: listbox,
             block: "nearest",
@@ -261,26 +213,24 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
     },
     actions: {
-      setId(ctx, evt) {
+      setup(ctx, evt) {
         ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
-      },
-      setLiveRegion(ctx) {
         const region = new LiveRegion({ ariaLive: "assertive", doc: ctx.doc })
         ctx.liveRegion = ref(region)
       },
-      setActiveOption(ctx, evt) {
+      setActiveId(ctx, evt) {
         ctx.activeId = evt.id
-        ctx.navigationValue = evt.value
+      },
+      clearActiveId(ctx) {
+        ctx.activeId = null
       },
       clearFocusedOption(ctx) {
         ctx.activeId = null
         ctx.navigationValue = ""
       },
       selectOption(ctx, evt) {
-        ctx.selectedValue = ctx.navigationValue ?? evt.value
+        ctx.selectedValue = ctx.navigationValue || evt.value
         ctx.inputValue = ctx.selectedValue
       },
       clearSelectedValue(ctx) {
@@ -332,47 +282,10 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.navigationValue = dom.getOptionData(next).label
       },
       focusPrevOption(ctx) {
-        const prev = dom.getPrevEl(ctx, ctx.activeId ?? "")
+        let prev = dom.getPrevEl(ctx, ctx.activeId ?? "")
         if (!prev) return
         ctx.activeId = prev.id
         ctx.navigationValue = dom.getOptionData(prev).label
-      },
-      setEventSourceToKeyboard(ctx) {
-        ctx.eventSource = "keyboard"
-      },
-      setEventSourceToPointer(ctx) {
-        ctx.eventSource = "pointer"
-      },
-      setEventSourceToSearch(ctx) {
-        ctx.eventSource = "search"
-      },
-      clearEventSource(ctx) {
-        ctx.eventSource = null
-      },
-      // Announce the number of available suggestions when it changes
-      announceOptionCount(ctx) {
-        // First, check the `aria-setsize` of any option (if virtualized)
-        // Next, query the dom for the number of options in the list
-        // Announcing the number of options
-        nextTick(() => {
-          // const count = ctx.childNodes?.value.length
-          // const msg = formatMessage(count)
-          ctx.liveRegion?.announce("you typed")
-        })
-      },
-      announceSelectedOption(ctx) {
-        if (!isApple()) return
-        ctx.liveRegion?.announce(`${ctx.selectedValue}, selected`)
-      },
-      moveCaretToStart(ctx) {
-        const input = dom.getInputEl(ctx)
-        if (!input) return
-        input?.setSelectionRange(0, 0)
-      },
-      moveCaretToEnd(ctx) {
-        const input = dom.getInputEl(ctx)
-        const len = ctx.inputValue.length
-        input?.setSelectionRange(len, len)
       },
       setFirstOptionLabel(ctx) {
         if (ctx.navigationValue || !ctx.inputValue) {
@@ -380,12 +293,17 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           return
         }
         nextTick(() => {
-          const { label } = dom.getOptionData(dom.getFirstEl(ctx))
-          ctx.firstOptionLabel = label
+          const option = dom.getOptionData(dom.getFirstEl(ctx))
+          ctx.firstOptionLabel = option.label
         })
       },
       clearFirstOptionLabel(ctx) {
         ctx.firstOptionLabel = ""
+      },
+      announceOptionCount() {},
+      announceSelectedOption() {
+        if (!isApple()) return
+        // ctx.liveRegion?.announce(`${ctx.selectedValue}, selected`)
       },
     },
   },

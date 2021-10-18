@@ -82,3 +82,8 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 
 Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
 what to work on.
+
+## Components ideas
+
+- https://component.kitchen/elix
+- https://vaadin.com/docs/latest/ds/components/accordion

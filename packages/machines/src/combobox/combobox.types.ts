@@ -6,28 +6,37 @@ export type ComboboxMachineState = {
 }
 
 export type ComboboxMachineContext = Context<{
-  name?: string
-  disabled?: boolean
-  closeOnBlur?: boolean
-  autoFocus?: boolean
-  closeOnSelect?: boolean | ((value: OptionData) => boolean)
-  clearOnEsc?: boolean
-  openOnClick?: boolean
-  selectOnFocus?: boolean
-  readonly?: boolean
-  required?: boolean
   inputValue: string
   readonly trimmedInputValue: string
+  readonly isInputValueEmpty: boolean
+
   selectedValue: string
   navigationValue: string
+  readonly hintValue: string
+
+  activeId: string | null
+
+  name?: string
+  disabled?: boolean
+  readonly?: boolean
+  readonly isInteractive: boolean
+  required?: boolean
   placeholder?: string
-  autoComplete?: true
+  autoComplete: boolean
+
+  autoFocus?: boolean
+  selectOnFocus?: boolean
+  focusOnClear?: boolean
+
+  closeOnBlur?: boolean
+  closeOnSelect?: boolean | ((value: OptionData) => boolean)
+
+  clearOnEsc?: boolean
+  openOnClick?: boolean
   onInputValueChange?: (value: string) => string
   onSelect?: (value: string) => void
-  activeId: string | null
   liveRegion?: LiveRegion | null
   shouldInputRenderValue?: boolean
-  focusOnClear?: boolean
   firstOptionLabel?: string
 }>
 
@@ -37,9 +46,8 @@ export type OptionData = {
 }
 
 export type ComboboxOptionProps = OptionData & {
-  virtualized?: true
   index?: number
-  noOfOptions?: number
+  optionCount?: number
   disabled?: boolean
 }
 

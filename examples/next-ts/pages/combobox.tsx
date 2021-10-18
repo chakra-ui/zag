@@ -16,22 +16,14 @@ export default function Page() {
     combobox.machine.withContext({
       uid: "123",
       onSelect: console.log,
-      selectionMode: "autocomplete",
+      autoComplete: false,
     }),
   )
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const {
-    labelProps,
-    inputProps,
-    firstOptionLabel,
-    inputValue,
-    listboxProps,
-    containerProps,
-    buttonProps,
-    getOptionProps,
-  } = combobox.connect(state, send)
+  const { labelProps, inputProps, inputValue, buttonProps, listboxProps, containerProps, getOptionProps } =
+    combobox.connect(state, send)
 
   const filtered = comboboxData.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))
 
@@ -39,23 +31,9 @@ export default function Page() {
     <Styles>
       <div ref={ref}>
         <label {...labelProps}>Select country</label>
-        <div {...containerProps} style={{ position: "relative" }}>
-          {firstOptionLabel && (
-            <span>
-              <input
-                style={{
-                  position: "absolute",
-                  color: "#b1b1b1",
-                  appearance: "none",
-                }}
-                readOnly
-                tabIndex={-1}
-                value={inputValue + firstOptionLabel.substr(inputValue.length)}
-              />
-            </span>
-          )}
-          <input {...inputProps} style={{ position: "relative", background: "transparent" }} />
-          {/* <button {...buttonProps}>▼</button> */}
+        <div {...containerProps}>
+          <input {...inputProps} />
+          <button {...buttonProps}>▼</button>
         </div>
 
         {filtered.length > 0 && (
