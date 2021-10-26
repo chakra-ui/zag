@@ -41,6 +41,8 @@ export function tagsInputConnect(
       autoComplete: "off",
       disabled: ctx.disabled,
       onChange(event) {
+        const evt = (event.nativeEvent || event) as InputEvent
+        if (evt.isComposing || evt.inputType === "insertFromPaste") return
         send({ type: "TYPE", value: event.target.value })
       },
       onFocus() {
@@ -54,10 +56,13 @@ export function tagsInputConnect(
           send("BLUR")
         }
       },
-      onPaste() {
-        send("PASTE")
+      onPaste(event) {
+        const value = event.clipboardData.getData("text/plain")
+        send({ type: "PASTE", value })
       },
       onKeyDown(event) {
+        const evt = event.nativeEvent || event
+        if (evt.isComposing) return
         const keyMap: DOM.EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")

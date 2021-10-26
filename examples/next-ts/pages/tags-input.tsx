@@ -6,19 +6,31 @@ import * as styled from "@emotion/styled"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { tagsInputStyle } from "../../../shared/style"
+import { useControls } from "hooks/use-controls"
 
 const Styles = styled.default(`div`)(tagsInputStyle as styled.CSSObject)
 
+function toDashCase(str: string) {
+  return str.replace(/\s+/g, "-").toLowerCase()
+}
+
 export default function Page() {
+  const controls = useControls({
+    autoFocus: { type: "boolean", defaultValue: true },
+    addOnPaste: { type: "boolean", defaultValue: false },
+    addOnBlur: { type: "boolean", defaultValue: false },
+    max: { type: "number", defaultValue: 4 },
+    allowOutOfRange: { type: "boolean", defaultValue: false },
+  })
+
   const [state, send] = useMachine(
     tagsInput.machine.withContext({
       uid: "123",
       value: ["React", "Vue"],
-      addOnBlur: true,
-      max: 4,
-      allowOutOfRange: true,
-      onHighlight: console.log,
     }),
+    {
+      context: controls.context,
+    },
   )
 
   const ref = useMount<HTMLDivElement>(send)
@@ -29,23 +41,34 @@ export default function Page() {
   )
 
   return (
-    <Styles>
-      <div ref={ref} {...rootProps} className="tags-input">
-        {state.context.value.map((value, index) => (
-          <span key={index}>
-            <div className="tag" {...getTagProps({ index, value })}>
-              <span>{value} </span>
-              <button className="tag-close" {...getTagDeleteButtonProps({ index, value })}>
-                &#x2715;
-              </button>
-            </div>
-            <input style={{ width: 40 }} {...getTagInputProps({ index })} />
-          </span>
-        ))}
-        <input placeholder="Add tag..." {...inputProps} />
-      </div>
+    <>
+      <controls.ui />
+      <Styles>
+        <div ref={ref} {...rootProps} className="tags-input">
+          {state.context.value.map((value, index) => (
+            <span key={index}>
+              <div className="tag" data-testid={`${toDashCase(value)}-tag`} {...getTagProps({ index, value })}>
+                <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                <button
+                  className="tag-close"
+                  data-testid={`${toDashCase(value)}-close-button`}
+                  {...getTagDeleteButtonProps({ index, value })}
+                >
+                  &#x2715;
+                </button>
+              </div>
+              <input
+                data-testid={`${toDashCase(value)}-input`}
+                style={{ width: 40 }}
+                {...getTagInputProps({ index })}
+              />
+            </span>
+          ))}
+          <input data-testid="input" placeholder="Add tag..." {...inputProps} />
+        </div>
 
-      <StateVisualizer state={state} />
-    </Styles>
+        <StateVisualizer state={state} />
+      </Styles>
+    </>
   )
 }

@@ -2,11 +2,11 @@
 import React, { useState } from "react"
 
 type Prop =
-  | { type: "boolean"; label: string; defaultValue: boolean }
-  | { type: "string"; label: string; defaultValue: string; placeholder?: string }
-  | { type: "select"; options: readonly string[]; defaultValue: string; label: string }
-  | { type: "multiselect"; options: readonly string[]; defaultValue: string[]; label: string }
-  | { type: "number"; label: string; defaultValue: number; min?: number; max?: number }
+  | { type: "boolean"; label?: string; defaultValue: boolean }
+  | { type: "string"; label?: string; defaultValue: string; placeholder?: string }
+  | { type: "select"; options: readonly string[]; defaultValue: string; label?: string }
+  | { type: "multiselect"; options: readonly string[]; defaultValue: string[]; label?: string }
+  | { type: "number"; label?: string; defaultValue: number; min?: number; max?: number }
 
 type ControlRecord = Record<string, Prop>
 
@@ -53,7 +53,7 @@ export function useControls<T extends ControlRecord>(config: T) {
         <p style={{ fontSize: "small", all: "unset", display: "block", marginBottom: "12px" }}>Property controls</p>
         <div style={{ display: "inline-flex", gap: "24px" }}>
           {Object.keys(config).map((key) => {
-            const { type, label, options, placeholder, min, max } = (config[key] ?? {}) as any
+            const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
             switch (type) {
               case "boolean":
                 return (
@@ -120,6 +120,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                       data-testid={key}
                       id={label}
                       type="number"
+                      style={{ maxWidth: "5ch" }}
                       min={min}
                       max={max}
                       defaultValue={state[key] as number}

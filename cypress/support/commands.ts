@@ -9,3 +9,17 @@ for (const cmd of ["click", "trigger", "type", "tab"]) {
     })
   })
 }
+
+Cypress.Commands.add("paste", { prevSubject: true }, (subject, text = "") => {
+  const clipboardData = new DataTransfer()
+  clipboardData.setData("text/plain", text)
+  const [el] = subject
+  const pasteEvent = new ClipboardEvent("paste", {
+    clipboardData,
+    bubbles: true,
+    cancelable: true,
+  })
+  el.focus()
+  el.dispatchEvent(pasteEvent)
+  return subject
+})
