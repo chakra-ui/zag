@@ -4,7 +4,6 @@ Finite state machines for accessible JavaScript components
 
 - ✅ **Framework Agnostic:** Reuse component logic in any JavaScript framework
 - ✅ **Accessible:** Components come with built-in accessibility considerations for DOM frameworks
-- ✅ **Test-Friendly:** With built-in helpers, you can test component interactions, roles and functionality
 
 ## The problem
 
