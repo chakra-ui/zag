@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { add, remove, toArray } from "tiny-array"
-import { isArray } from "tiny-guard"
 import { uuid } from "../utils"
+import { add, remove, toArray } from "../utils/array"
+import { isArray } from "../utils/guard"
 import { dom } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"
 

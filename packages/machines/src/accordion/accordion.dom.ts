@@ -1,5 +1,5 @@
-import { queryElements, nextById, prevById } from "tiny-nodelist"
-import { first, last } from "tiny-array"
+import { queryElements, nextById, prevById } from "../utils/nodelist"
+import { first, last } from "../utils/array"
 import type { AccordionMachineContext as Ctx } from "./accordion.types"
 
 export const dom = {

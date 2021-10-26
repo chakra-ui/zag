@@ -1,5 +1,5 @@
 import scrollIntoView from "scroll-into-view-if-needed"
-import { addDomEvent } from "tiny-dom-event"
+import { addDomEvent } from "../utils/dom-event"
 import { getScrollParent } from "tiny-dom-query/scrollable"
 import { cast, noop, pipe } from "tiny-fn"
 import { isDom, isIos } from "tiny-guard"

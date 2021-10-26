@@ -1,6 +1,3 @@
-/**
- * Dispatch change event for hidden input elements
- */
 export function dispatchInputEvent(input: HTMLElement, value: string | number) {
   const win = input.ownerDocument.defaultView ?? window
   if (!(input instanceof win.HTMLInputElement)) return

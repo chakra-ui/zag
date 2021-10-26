@@ -1,8 +1,8 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import scrollIntoView from "scroll-into-view-if-needed"
 import { nextTick } from "tiny-fn"
-import { isApple, isFunction } from "tiny-guard"
 import { LiveRegion, observeAttributes, trackPointerDown, uuid } from "../utils"
+import { isApple, isFunction } from "../utils/guard"
 import { dom } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.types"
 

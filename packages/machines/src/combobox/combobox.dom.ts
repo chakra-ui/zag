@@ -1,4 +1,4 @@
-import { first, last } from "tiny-array"
+import { first, last } from "../utils/array"
 import { nextById, prevById, queryElements } from "../utils/nodelist"
 import type { ComboboxMachineContext as Ctx } from "./combobox.types"
 
