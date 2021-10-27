@@ -38,8 +38,13 @@ export function snapToStep(value: number, step: number) {
   return round(v, p)
 }
 
-export function toRanges(o: Num<"min" | "max"> & { value: number[] }) {
-  return o.value.map((v, i) => ({ min: v[i - 1] ?? o.min, max: v[i + 1] ?? o.max, value: v }))
+export function toRanges(o: Num<"min" | "max"> & { value: number[]; spacing: number }) {
+  const spacing = o.spacing ?? 0
+  return o.value.map((v, i) => {
+    const min = i === 0 ? o.min : o.value[i - 1] + spacing
+    const max = i === o.value.length - 1 ? o.max : o.value[i + 1] - spacing
+    return { min, max, value: v }
+  })
 }
 
 export function valueOf(v: string | number) {

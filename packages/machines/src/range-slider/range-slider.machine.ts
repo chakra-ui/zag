@@ -1,39 +1,10 @@
-import { createMachine, ref, StateMachine } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import { decrement, increment, snapToStep } from "tiny-num"
-import { closest } from "tiny-point/distance"
-import { center } from "tiny-rect"
+import { decrement, increment, snapToStep } from "../utils/number"
 import { fromElement } from "tiny-rect/from-element"
-import { Context, trackPointerMove } from "../utils"
-import { dom, getRangeAtIndex } from "./range-slider.dom"
-
-export type RangeSliderMachineContext = Context<{
-  "aria-label"?: string | string[]
-  "aria-labelledby"?: string | string[]
-  thumbSize: Array<{ width: number; height: number }> | null
-  name?: string[]
-  threshold: number
-  activeIndex: number
-  value: number[]
-  disabled?: boolean
-  orientation?: "vertical" | "horizontal"
-  onChange?(value: number[]): void
-  onChangeStart?(value: number[]): void
-  onChangeEnd?(value: number[]): void
-  getAriaValueText?(value: number, index: number): string
-  min: number
-  max: number
-  step: number
-}> &
-  StateMachine.Computed<{
-    isVertical: boolean
-    isHorizontal: boolean
-    isRtl: boolean
-  }>
-
-export type RangeSliderMachineState = {
-  value: "unknown" | "idle" | "dragging" | "focus"
-}
+import { trackPointerMove } from "../utils"
+import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
+import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
 
 export const rangeSliderMachine = createMachine<RangeSliderMachineContext, RangeSliderMachineState>(
   {
@@ -50,11 +21,12 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       value: [0, 100],
       orientation: "horizontal",
       dir: "ltr",
+      minStepsBetweenThumbs: 0,
     },
     computed: {
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
-      isRtl: (ctx) => ctx.dir === "rtl",
+      isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
     },
     states: {
       unknown: {
@@ -120,7 +92,10 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
           END: {
             actions: ["setActiveThumbToMax", "invokeOnChange"],
           },
-          BLUR: "idle",
+          BLUR: {
+            target: "idle",
+            actions: ["resetActiveIndex"],
+          },
         },
       },
       dragging: {
@@ -180,30 +155,14 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         })
       },
       setActiveIndex(ctx, evt) {
-        // evt.index means this was passed on a keyboard event (`onKeyDown`)
-        let index = evt.index
-
-        // if there's no index, we assume it's from a pointer down event (`onPointerDown`)
-        // and we attempt to compute the closest index
-        if (index == null) {
-          const thumbs = dom.getElements(ctx)
-
-          // get the center point of all thumbs
-          const points = thumbs.map((el) => fromElement(el)).map((rect) => center(rect))
-
-          // get the closest center point from the event ("pointerdown") point
-          const getClosest = closest(...points)
-          const closestPoint = getClosest(evt.point)
-          index = points.indexOf(closestPoint)
-        }
-
-        ctx.activeIndex = index
+        ctx.activeIndex = getClosestIndex(ctx, evt)
+      },
+      resetActiveIndex(ctx) {
+        ctx.activeIndex = -1
       },
       setValueForEvent(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
-        if (typeof value === "number") {
-          ctx.value[ctx.activeIndex] = value
-        }
+        if (value != null) ctx.value[ctx.activeIndex] = value
       },
       focusActiveThumb(ctx) {
         nextTick(() => {
