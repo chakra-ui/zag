@@ -30,7 +30,7 @@
   "dependencies": {
     "@ui-machines/core": "0.0.0",
     "tiny-guard": "^0.0.3",
-    "valtio": "^1.2.2"
+    "valtio": "^1.2.5"
   },
   "devDependencies": {
     "@types/react": "^17.0.20",

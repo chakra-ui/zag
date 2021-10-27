@@ -3,6 +3,7 @@ import { addDomEvent, addPointerEvent } from "tiny-dom-event"
 import { noop } from "tiny-fn"
 import { isElement, isSafari } from "tiny-guard"
 import { proxy, subscribe } from "valtio"
+import { uuid } from "../utils"
 
 export const tooltipStore = proxy<{ id: string | null }>({ id: null })
 
@@ -10,6 +11,9 @@ export type TooltipMachineContext = {
   doc?: Document
   id: string
   disabled?: boolean
+  openDelay: number
+  closeDelay: number
+  closeOnPointerDown: boolean
 }
 
 export type TooltipMachineState = {
@@ -20,6 +24,12 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
   {
     id: "tooltip",
     initial: "unknown",
+    context: {
+      id: uuid(),
+      openDelay: 500,
+      closeDelay: 500,
+      closeOnPointerDown: true,
+    },
     states: {
       unknown: {
         on: {
@@ -50,7 +60,10 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         },
         on: {
           POINTER_LEAVE: "closed",
-          POINTER_DOWN: "closed",
+          POINTER_DOWN: {
+            cond: "closeOnPointerDown",
+            target: "closed",
+          },
         },
       },
 
@@ -67,7 +80,10 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           ],
           BLUR: "closing",
           ESCAPE: "closed",
-          POINTER_DOWN: "closed",
+          POINTER_DOWN: {
+            cond: "closeOnPointerDown",
+            target: "closed",
+          },
           PRESS_ENTER: "closed",
         },
       },
@@ -92,7 +108,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           }
         })
       },
-      trackPointermoveForSafari: (ctx, _evt, { send }) => {
+      trackPointermoveForSafari(ctx, _evt, { send }) {
         if (!isSafari()) return noop
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "pointermove", (event) => {
@@ -101,7 +117,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           send("POINTER_LEAVE")
         })
       },
-      trackEscapeKey: (ctx, _evt, { send }) => {
+      trackEscapeKey(ctx, _evt, { send }) {
         const doc = ctx.doc ?? document
         return addDomEvent(doc, "keydown", (event) => {
           if (event.key === "Escape" || event.key === "Esc") {
@@ -114,26 +130,27 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       setId(ctx, evt) {
         ctx.id = evt.id
       },
-      setOwnerDocument: (ctx, evt) => {
+      setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
       },
-      setGlobalId: (ctx) => {
+      setGlobalId(ctx) {
         tooltipStore.id = ctx.id
       },
-      clearGlobalId: (ctx) => {
+      clearGlobalId(ctx) {
         if (ctx.id === tooltipStore.id) {
           tooltipStore.id = null
         }
       },
     },
     guards: {
+      closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
       noVisibleTooltip: () => tooltipStore.id === null,
       isVisible: (ctx) => ctx.id === tooltipStore.id,
       isDisabled: (ctx) => !!ctx.disabled,
     },
     delays: {
-      OPEN_DELAY: 250,
-      CLOSE_DELAY: 500,
+      OPEN_DELAY: (ctx) => ctx.openDelay,
+      CLOSE_DELAY: (ctx) => ctx.closeDelay,
     },
   },
 )

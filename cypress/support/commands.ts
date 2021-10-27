@@ -2,7 +2,7 @@ import "cypress-axe"
 
 const COMMAND_DELAY = 500
 
-for (const cmd of ["click", "trigger", "type", "tab"]) {
+for (const cmd of ["click", "trigger", "type", "tab", "realHover"]) {
   Cypress.Commands.overwrite(cmd, (fn, ...args) => {
     return fn(...args).then((val) => {
       return Cypress.Promise.resolve(val).delay(COMMAND_DELAY)
