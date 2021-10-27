@@ -16,6 +16,13 @@ export function tooltipConnect(
   const tooltipId = `tooltip-${ctx.id}-content`
 
   return {
+    getAnimationState() {
+      return {
+        enter: tooltipStore.prevId === null && ctx.id === tooltipStore.id,
+        exit: tooltipStore.id === null,
+      }
+    },
+
     isVisible,
 
     triggerProps: normalize<Props.Button>({

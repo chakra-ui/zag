@@ -5,7 +5,22 @@ import { isElement, isSafari } from "tiny-guard"
 import { proxy, subscribe } from "valtio"
 import { uuid } from "../utils"
 
-export const tooltipStore = proxy<{ id: string | null }>({ id: null })
+type Id = string | null
+
+type Store = {
+  id: Id
+  prevId: Id
+  setId: (val: Id) => void
+}
+
+export const tooltipStore = proxy<Store>({
+  id: null,
+  prevId: null,
+  setId(val) {
+    this.prevId = this.id
+    this.id = val
+  },
+})
 
 export type TooltipMachineContext = {
   doc?: Document
@@ -134,11 +149,11 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         ctx.doc = ref(evt.doc)
       },
       setGlobalId(ctx) {
-        tooltipStore.id = ctx.id
+        tooltipStore.setId(ctx.id)
       },
       clearGlobalId(ctx) {
         if (ctx.id === tooltipStore.id) {
-          tooltipStore.id = null
+          tooltipStore.setId(null)
         }
       },
     },
