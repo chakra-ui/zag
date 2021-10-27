@@ -4,6 +4,8 @@ import { noop } from "tiny-fn"
 import { isElement, isSafari } from "tiny-guard"
 import { proxy, subscribe } from "valtio"
 import { uuid } from "../utils"
+import { dom } from "./tooltip.dom"
+import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
 
 type Id = string | null
 
@@ -22,26 +24,13 @@ export const tooltipStore = proxy<Store>({
   },
 })
 
-export type TooltipMachineContext = {
-  doc?: Document
-  id: string
-  disabled?: boolean
-  openDelay: number
-  closeDelay: number
-  closeOnPointerDown: boolean
-}
-
-export type TooltipMachineState = {
-  value: "unknown" | "opening" | "open" | "closing" | "closed"
-}
-
 export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
   {
     id: "tooltip",
     initial: "unknown",
     context: {
       id: uuid(),
-      openDelay: 500,
+      openDelay: 1500,
       closeDelay: 500,
       closeOnPointerDown: true,
     },
@@ -79,11 +68,12 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
             cond: "closeOnPointerDown",
             target: "closed",
           },
+          SCROLL: "closed",
         },
       },
 
       open: {
-        activities: ["trackEscapeKey", "trackPointermoveForSafari"],
+        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackWindowScroll"],
         entry: "setGlobalId",
         on: {
           POINTER_LEAVE: [
@@ -95,6 +85,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           ],
           BLUR: "closing",
           ESCAPE: "closed",
+          SCROLL: "closed",
           POINTER_DOWN: {
             cond: "closeOnPointerDown",
             target: "closed",
@@ -116,6 +107,17 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
   },
   {
     activities: {
+      trackWindowScroll(ctx, _evt, { send }) {
+        const win = dom.getWin(ctx)
+        return addDomEvent(
+          win,
+          "scroll",
+          function onScroll() {
+            send("SCROLL")
+          },
+          { passive: true, capture: true },
+        )
+      },
       trackStore(ctx, _evt, { send }) {
         return subscribe(tooltipStore, () => {
           if (tooltipStore.id !== ctx.id) {

@@ -1,7 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
 import type { DOM, Props } from "../utils/types"
-import { TooltipMachineContext, TooltipMachineState, tooltipStore } from "./tooltip.machine"
+import { dom } from "./tooltip.dom"
+import { tooltipStore } from "./tooltip.machine"
+import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
 
 export function tooltipConnect(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
@@ -12,8 +14,8 @@ export function tooltipConnect(
 
   const isVisible = state.matches("open", "closing")
 
-  const triggerId = `tooltip-${ctx.id}`
-  const tooltipId = `tooltip-${ctx.id}-content`
+  const triggerId = dom.getTriggerId(ctx)
+  const tooltipId = dom.getTooltipId(ctx)
 
   return {
     getAnimationState() {
