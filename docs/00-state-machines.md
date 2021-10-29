@@ -11,6 +11,8 @@ A state machine is a model used to design the logic of a UI component. It consis
 
 - `id`: the unique `id` of the machine
 - `context`: an extended data that can be modified as the machine moves from one state to another
+- `computed`: properties that re-evaluate when context value is changed. Their values are also stored in context and
+  readonly.
 - `states`: a finite number of states with define state configuration
 - `initial`: the initial state the machine should start in
 - `entry`: actions to run when the machine starts
