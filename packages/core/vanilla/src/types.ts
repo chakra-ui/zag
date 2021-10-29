@@ -28,7 +28,7 @@ export declare namespace StateMachine {
     [key: string]: any
   }
 
-  export type EventWithSrc = AnyEventObject & { src?: any; __type?: string }
+  export type EventWithSrc = AnyEventObject & { src?: any }
 
   // expression is a generic function that takes context + event
   type Expression<TContext extends Dict, TEvent extends EventObject, TReturn> = (
@@ -41,7 +41,7 @@ export declare namespace StateMachine {
   type Meta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     state: State<TContext, TState>
     guards?: Dict
-    send: (event: Event<TEvent>) => void
+    send: Send<TEvent>
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
