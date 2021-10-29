@@ -192,13 +192,13 @@ export declare namespace StateMachine {
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
-     * The actions to take when the machine has stopped
+     * The actions to run when the machine has started
      */
-    onStart?: Actions<TContext, TEvent>
+    entry?: Actions<TContext, TEvent>
     /**
-     * The actions to take when the machine has stopped
+     * The actions to run when the machine has stopped
      */
-    onStop?: Actions<TContext, TEvent>
+    exit?: Actions<TContext, TEvent>
     /**
      * The root level activities to run when the machine is started
      */

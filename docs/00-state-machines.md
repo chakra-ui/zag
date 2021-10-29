@@ -13,8 +13,10 @@ A state machine is a model used to design the logic of a UI component. It consis
 - `context`: an extended data that can be modified as the machine moves from one state to another
 - `states`: a finite number of states with define state configuration
 - `initial`: the initial state the machine should start in
-- `onStart`: actions to run when the machine starts
-- `onStop`: actions to run when the machine stops
+- `entry`: actions to run when the machine starts
+- `exit`: actions to run when the machine stops
+- `activities`: long-running activities to run when the machine starts
+- `watch`: a more generic way to react to context changes
 - `on`: an object that defines a list of global events the machine can respond to regardless of the state is it in.
   These are helpful when you need to provide external functions that change state or modifies the context.
 

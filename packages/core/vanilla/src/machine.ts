@@ -117,7 +117,7 @@ export class Machine<
 
     this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
 
-    this.executeActions(this.config.onStart, toEvent<TEvent>(ActionTypes.Start))
+    this.executeActions(this.config.entry, toEvent<TEvent>(ActionTypes.Start))
 
     return this
   }
@@ -162,7 +162,7 @@ export class Machine<
     this.stopContextWatchers()
 
     this.status = MachineStatus.Stopped
-    this.executeActions(this.config.onStop, toEvent<TEvent>(ActionTypes.Stop))
+    this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
     return this
   }
 
