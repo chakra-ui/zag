@@ -200,6 +200,10 @@ export declare namespace StateMachine {
      */
     onStop?: Actions<TContext, TEvent>
     /**
+     * The root level activities to run when the machine is started
+     */
+    activities?: Activities<TContext, TState, TEvent>
+    /**
      * The unique identifier for the invoked machine.
      */
     id?: string

@@ -115,6 +115,8 @@ export class Machine<
 
     this.setupContextWatchers()
 
+    this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
+
     this.executeActions(this.config.onStart, toEvent<TEvent>(ActionTypes.Start))
 
     return this
@@ -429,7 +431,11 @@ export class Machine<
    * Function to execute running activities and registers
    * their cleanup function internally (to be called later on when we exit the state)
    */
-  private executeActivities = (event: TEvent, activities: Array<S.Activity<TContext, TState, TEvent>>) => {
+  private executeActivities = (
+    event: TEvent,
+    activities: Array<S.Activity<TContext, TState, TEvent>>,
+    state?: TState["value"],
+  ) => {
     for (const activity of activities) {
       const fn = isString(activity) ? this.activityMap?.[activity] : activity
 
@@ -439,7 +445,7 @@ export class Machine<
       }
 
       const cleanup = fn(this.state.context, event, this.meta)
-      this.addActivityCleanup(this.state.value, cleanup)
+      this.addActivityCleanup(state ?? this.state.value, cleanup)
     }
   }
 
