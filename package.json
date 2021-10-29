@@ -4,7 +4,7 @@
   "description": "UI machines monorepo root package",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chakra-ui/core.git"
+    "url": "git+https://github.com/chakra-ui/ui-machines.git"
   },
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
@@ -92,15 +92,17 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/utilities",
+      "packages/utils",
+      "packages/core",
       "packages/machines",
-      "packages/core/*"
+      "packages/frameworks/*"
     ]
   },
   "workspaces": [
-    "packages/utilities",
+    "packages/utils",
+    "packages/core",
     "packages/machines",
-    "packages/core/*",
+    "packages/frameworks/*",
     "examples/*"
   ],
   "lint-staged": {

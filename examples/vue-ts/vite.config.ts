@@ -39,8 +39,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@ui-machines/vue": `${path.resolve(__dirname, "../../packages/core/vue/src/index.ts")}`,
-      "@ui-machines/core": `${path.resolve(__dirname, "../../packages/core/vanilla")}`,
+      "@ui-machines/vue": `${path.resolve(__dirname, "../../packages/frameworks/vue/src/index.ts")}`,
+      "@ui-machines/core": `${path.resolve(__dirname, "../../packages/core")}`,
       "@ui-machines/web": `${path.resolve(__dirname, "../../packages/machines/src/index.ts")}`,
     },
   },
