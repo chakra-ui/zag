@@ -13,7 +13,7 @@
   "license": "MIT",
   "main": "dist/ui-machines-solid.cjs.js",
   "module": "dist/ui-machines-solid.esm.js",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/solid",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/solid",
   "sideEffects": false,
   "files": [
     "dist"

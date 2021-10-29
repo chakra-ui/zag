@@ -13,7 +13,7 @@
   "license": "MIT",
   "main": "dist/ui-machines-react.cjs.js",
   "module": "dist/ui-machines-react.esm.js",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/react",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/react",
   "sideEffects": false,
   "files": [
     "dist"

@@ -13,7 +13,7 @@
   "license": "MIT",
   "main": "dist/ui-machines-vue.cjs.js",
   "module": "dist/ui-machines-vue.esm.js",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/vue",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/vue",
   "sideEffects": false,
   "files": [
     "dist"
