@@ -9,9 +9,7 @@ interface Answers {
 }
 
 async function createMachine() {
-  plop.setHelper("capitalize", (text) => {
-    return _.capitalize(_.camelCase(text))
-  })
+  plop.setHelper("capitalize", (text) => _.capitalize(_.camelCase(text)))
 
   plop.setGenerator("machine", {
     description: "Generates a new ui machine",
@@ -32,17 +30,10 @@ async function createMachine() {
       actions.push({
         type: "addMany",
         templateFiles: "machine-template/**",
-        destination: `../packages/machines/src/{{dashCase machine}}`,
+        destination: `../packages/machines/{{dashCase machine}}`,
         base: "machine-template/",
-        data: { machine },
+        data: { machine, packageName: machine },
         abortOnFail: true,
-      })
-
-      actions.push({
-        type: "append",
-        path: "../packages/machines/src/index.ts",
-        pattern: `/* PLOP_INJECT_EXPORT */`,
-        template: `export * from "./{{dashCase machine}}"`,
       })
 
       return actions
