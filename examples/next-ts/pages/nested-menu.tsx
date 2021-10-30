@@ -57,14 +57,7 @@ export default function Page() {
       </button>
 
       <ul style={{ width: "300px" }} {...root.menuProps}>
-        <div>
-          <input
-            data-valuetext="Command"
-            {...root.getItemProps({ id: "input" })}
-            placeholder="Command..."
-            style={{ color: "white", width: "100%", boxSizing: "border-box" }}
-          />
-        </div>
+        <li {...root.getItemProps({ id: "new-file" })}>New File</li>
         <li {...root.getItemProps({ id: "new-tab" })}>New Tab</li>
         <li {...root.getItemProps({ id: "new-win" })}>New Window</li>
         <li ref={subRef} {...triggerItemProps}>
@@ -91,9 +84,9 @@ export default function Page() {
         <li {...sub2.getItemProps({ id: "export" })}>Export</li>
       </ul>
 
-      <StateVisualizer state={state} label="Root Machine" />
-      <StateVisualizer state={subState} label="Sub Machine" style={{ right: 340 }} />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ left: 500 }} />
+      <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
+      <StateVisualizer state={subState} label="Sub Machine" style={{ maxWidth: 320, right: 420 }} />
+      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} />
     </Styles>
   )
 }
