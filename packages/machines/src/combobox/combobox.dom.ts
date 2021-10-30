@@ -1,6 +1,6 @@
-import { queryElements, prevById, nextById } from "tiny-nodelist"
-import { first, last } from "tiny-array"
-import type { ComboboxMachineContext as Ctx } from "./combobox.machine"
+import { first, last } from "../utils/array"
+import { nextById, prevById, queryElements } from "../utils/nodelist"
+import type { ComboboxMachineContext as Ctx } from "./combobox.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
@@ -12,7 +12,7 @@ export const dom = {
   getToggleBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-toggle-btn`,
   getClearBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-clear-btn`,
   getSrHintId: (ctx: Ctx) => `combobox-${ctx.uid}-sr-hint`,
-  getOptionId: (ctx: Ctx, i: number | string) => `combobox-${ctx.uid}-option-${i}`,
+  getOptionId: (ctx: Ctx, id: number | string) => `combobox-${ctx.uid}-option-${id}`,
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
   getListboxEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getListboxId(ctx)),
@@ -30,7 +30,7 @@ export const dom = {
   getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id),
 
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
-  getOptionData: (el: HTMLElement | null) => ({
+  getOptionData: (el: HTMLElement | null | undefined) => ({
     value: el?.getAttribute("data-value") ?? "",
     label: el?.getAttribute("data-label") ?? "",
   }),

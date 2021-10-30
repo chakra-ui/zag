@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/// <reference types="cypress" />
+
 // ***********************************************************
 // This example support/index.js is processed and
 // loaded automatically before your test files.
@@ -16,10 +19,13 @@
 // Import commands.js using ES2015 syntax:
 import "@testing-library/cypress/add-commands"
 import "cypress-real-events/support"
+import "cypress-plugin-tab"
 import "./commands"
 
-// Import commands.js using ES2015 syntax:
-// import './commands'
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      paste(text: string): Chainable<Element>
+    }
+  }
+}

@@ -1,9 +1,8 @@
 module.exports = {
-  preset: "ts-jest",
   testEnvironment: "jsdom",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   transform: {
-    "^.+\\.(ts|tsx)?$": "ts-jest/dist",
+    "^.+\\.(ts|tsx)?$": "@swc-node/jest",
   },
   testPathIgnorePatterns: ["<rootDir>/cypress/"],
   transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"],

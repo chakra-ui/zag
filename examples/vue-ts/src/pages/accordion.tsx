@@ -31,31 +31,31 @@ export default defineComponent({
         <div style={{ width: "100%" }}>
           <controls.ui />
           <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
-            <div {...getItemProps({ id: "home" })}>
+            <div {...getItemProps({ value: "home" })}>
               <h3>
-                <button {...getTriggerProps({ id: "home" })}>Home</button>
+                <button {...getTriggerProps({ value: "home" })}>Home</button>
               </h3>
-              <div {...getContentProps({ id: "home" })}>
+              <div {...getContentProps({ value: "home" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
             </div>
 
-            <div {...getItemProps({ id: "about" })}>
+            <div {...getItemProps({ value: "about" })}>
               <h3>
-                <button {...getTriggerProps({ id: "about" })}>About</button>
+                <button {...getTriggerProps({ value: "about" })}>About</button>
               </h3>
-              <div {...getContentProps({ id: "about" })}>
+              <div {...getContentProps({ value: "about" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>
             </div>
 
-            <div {...getItemProps({ id: "contact" })}>
+            <div {...getItemProps({ value: "contact" })}>
               <h3>
-                <button {...getTriggerProps({ id: "contact" })}>Contact</button>
+                <button {...getTriggerProps({ value: "contact" })}>Contact</button>
               </h3>
-              <div {...getContentProps({ id: "contact" })}>
+              <div {...getContentProps({ value: "contact" })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>

@@ -1,7 +1,7 @@
 import { first, last } from "tiny-array"
 import { isElement } from "tiny-guard"
 import { findByText, nextById, prevById, queryElements } from "tiny-nodelist"
-import { MenuMachineContext as Ctx } from "./menu.machine"
+import { MenuMachineContext as Ctx } from "./menu.types"
 
 type HTMLEl = HTMLElement | null
 

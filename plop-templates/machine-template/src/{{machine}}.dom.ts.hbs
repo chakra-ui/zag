@@ -1,0 +1,6 @@
+import type { {{capitalize machine}}MachineContext as Ctx } from "./{{machine}}.types"
+
+export const dom = {
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootId: (ctx: Ctx) => `{{machine}}-${ctx.uid}`,
+}

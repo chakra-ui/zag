@@ -5,74 +5,64 @@ let originalBodyPointerEvents: string
 
 type PointerEventOptions = {
   disabled: boolean
-  doc?: Document
+  document?: Document
 }
 
-export class BodyPointerEvent {
-  isTouchOrPenPressed = false
-  isLeftClickPressed = false
-  disabled = false
-  doc: Document
+export function preventBodyPointerEvents(opts: Partial<PointerEventOptions> = {}) {
+  const { disabled = false, document: docProp } = opts
+  const doc: Document = docProp || document
 
-  unlisten: VoidFunction = () => {}
-  unapply: VoidFunction = () => {}
+  let isTouchOrPenPressed = false
+  let isLeftClickPressed = false
 
-  constructor(opts: PointerEventOptions) {
-    this.disabled = opts.disabled
-    this.doc = opts.doc ?? document
-  }
-
-  setOptions = (opts: Partial<PointerEventOptions>) => {
-    if (opts.disabled != null) this.disabled = opts.disabled
-    if (opts.doc != null) this.doc = opts.doc
-  }
-
-  listen = () => {
+  function listen() {
     const onPointerDown = (event: PointerEvent) => {
       const isMouse = event.pointerType === "mouse"
-      this.isTouchOrPenPressed = !isMouse
-      this.isLeftClickPressed = isMouse && isLeftClick(event)
+      isTouchOrPenPressed = !isMouse
+      isLeftClickPressed = isMouse && isLeftClick(event)
     }
 
     const onPointerUp = () => {
-      this.isTouchOrPenPressed = false
-      this.isLeftClickPressed = false
+      isTouchOrPenPressed = false
+      isLeftClickPressed = false
     }
 
-    this.doc.addEventListener("pointerdown", onPointerDown)
-    this.doc.addEventListener("pointerup", onPointerUp)
+    doc.addEventListener("pointerdown", onPointerDown)
+    doc.addEventListener("pointerup", onPointerUp)
 
-    this.unlisten = () => {
-      this.doc.removeEventListener("pointerdown", onPointerDown)
-      this.doc.removeEventListener("pointerup", onPointerUp)
+    return function () {
+      doc.removeEventListener("pointerdown", onPointerDown)
+      doc.removeEventListener("pointerup", onPointerUp)
     }
   }
 
-  flush = () => {
+  function flush() {
     changeCount--
     if (changeCount === 0) {
-      this.doc.body.style.pointerEvents = originalBodyPointerEvents
+      doc.body.style.pointerEvents = originalBodyPointerEvents
     }
   }
 
-  apply = () => {
-    if (!this.disabled) return
+  function apply() {
+    if (!disabled) return
 
     if (changeCount === 0) {
-      originalBodyPointerEvents = this.doc.body.style.pointerEvents
+      originalBodyPointerEvents = doc.body.style.pointerEvents
     }
 
-    this.doc.body.style.pointerEvents = "none"
+    doc.body.style.pointerEvents = "none"
     changeCount++
 
-    this.unapply = () => {
-      if (this.isTouchOrPenPressed) {
-        this.doc.addEventListener("click", this.flush, { once: true })
-      } else if (this.isLeftClickPressed) {
-        this.doc.addEventListener("pointerup", this.flush, { once: true })
+    return function () {
+      if (isTouchOrPenPressed) {
+        doc.addEventListener("click", flush, { once: true })
+      } else if (isLeftClickPressed) {
+        doc.addEventListener("pointerup", flush, { once: true })
       } else {
-        this.flush()
+        flush()
       }
     }
   }
+
+  return { apply, listen }
 }

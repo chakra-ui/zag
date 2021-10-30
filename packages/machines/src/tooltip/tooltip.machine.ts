@@ -3,23 +3,37 @@ import { addDomEvent, addPointerEvent } from "tiny-dom-event"
 import { noop } from "tiny-fn"
 import { isElement, isSafari } from "tiny-guard"
 import { proxy, subscribe } from "valtio"
+import { uuid } from "../utils"
+import { dom } from "./tooltip.dom"
+import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
 
-export const tooltipStore = proxy<{ id: string | null }>({ id: null })
+type Id = string | null
 
-export type TooltipMachineContext = {
-  doc?: Document
-  id: string
-  disabled?: boolean
+type Store = {
+  id: Id
+  prevId: Id
+  setId: (val: Id) => void
 }
 
-export type TooltipMachineState = {
-  value: "unknown" | "opening" | "open" | "closing" | "closed"
-}
+export const tooltipStore = proxy<Store>({
+  id: null,
+  prevId: null,
+  setId(val) {
+    this.prevId = this.id
+    this.id = val
+  },
+})
 
 export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
   {
     id: "tooltip",
     initial: "unknown",
+    context: {
+      id: uuid(),
+      openDelay: 1500,
+      closeDelay: 500,
+      closeOnPointerDown: true,
+    },
     states: {
       unknown: {
         on: {
@@ -50,12 +64,16 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         },
         on: {
           POINTER_LEAVE: "closed",
-          POINTER_DOWN: "closed",
+          POINTER_DOWN: {
+            cond: "closeOnPointerDown",
+            target: "closed",
+          },
+          SCROLL: "closed",
         },
       },
 
       open: {
-        activities: ["trackEscapeKey", "trackPointermoveForSafari"],
+        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackWindowScroll"],
         entry: "setGlobalId",
         on: {
           POINTER_LEAVE: [
@@ -67,7 +85,11 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           ],
           BLUR: "closing",
           ESCAPE: "closed",
-          POINTER_DOWN: "closed",
+          SCROLL: "closed",
+          POINTER_DOWN: {
+            cond: "closeOnPointerDown",
+            target: "closed",
+          },
           PRESS_ENTER: "closed",
         },
       },
@@ -85,6 +107,17 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
   },
   {
     activities: {
+      trackWindowScroll(ctx, _evt, { send }) {
+        const win = dom.getWin(ctx)
+        return addDomEvent(
+          win,
+          "scroll",
+          function onScroll() {
+            send("SCROLL")
+          },
+          { passive: true, capture: true },
+        )
+      },
       trackStore(ctx, _evt, { send }) {
         return subscribe(tooltipStore, () => {
           if (tooltipStore.id !== ctx.id) {
@@ -92,7 +125,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           }
         })
       },
-      trackPointermoveForSafari: (ctx, _evt, { send }) => {
+      trackPointermoveForSafari(ctx, _evt, { send }) {
         if (!isSafari()) return noop
         const doc = ctx.doc ?? document
         return addPointerEvent(doc, "pointermove", (event) => {
@@ -101,7 +134,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           send("POINTER_LEAVE")
         })
       },
-      trackEscapeKey: (ctx, _evt, { send }) => {
+      trackEscapeKey(ctx, _evt, { send }) {
         const doc = ctx.doc ?? document
         return addDomEvent(doc, "keydown", (event) => {
           if (event.key === "Escape" || event.key === "Esc") {
@@ -114,26 +147,27 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       setId(ctx, evt) {
         ctx.id = evt.id
       },
-      setOwnerDocument: (ctx, evt) => {
+      setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
       },
-      setGlobalId: (ctx) => {
-        tooltipStore.id = ctx.id
+      setGlobalId(ctx) {
+        tooltipStore.setId(ctx.id)
       },
-      clearGlobalId: (ctx) => {
+      clearGlobalId(ctx) {
         if (ctx.id === tooltipStore.id) {
-          tooltipStore.id = null
+          tooltipStore.setId(null)
         }
       },
     },
     guards: {
+      closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
       noVisibleTooltip: () => tooltipStore.id === null,
       isVisible: (ctx) => ctx.id === tooltipStore.id,
       isDisabled: (ctx) => !!ctx.disabled,
     },
     delays: {
-      OPEN_DELAY: 250,
-      CLOSE_DELAY: 500,
+      OPEN_DELAY: (ctx) => ctx.openDelay,
+      CLOSE_DELAY: (ctx) => ctx.closeDelay,
     },
   },
 )

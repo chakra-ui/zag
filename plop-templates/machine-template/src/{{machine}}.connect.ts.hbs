@@ -1,0 +1,15 @@
+import { defaultPropNormalizer, getEventKey } from "../utils"
+import type { DOM, Props } from "../utils"
+import { getIds, getElements } from "./{{machine}}.dom"
+
+export function connect{{capitalize machine}}(
+  state: {{capitalize machine}}State,
+  send: {{capitalize machine}}Send,
+  normalize = defaultPropNormalizer,
+) {
+  const { context: ctx } = state
+  return {
+    elProps: normalize<Props.Element>({
+    }),
+  }
+}

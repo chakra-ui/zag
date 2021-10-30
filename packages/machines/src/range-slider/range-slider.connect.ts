@@ -1,4 +1,3 @@
-import { StateMachine as S } from "@ui-machines/core"
 import { cast } from "tiny-fn"
 import { isLeftClick, isModifiedEvent } from "tiny-guard"
 import { toRanges } from "tiny-num"
@@ -6,13 +5,9 @@ import { fromPointerEvent } from "tiny-point/dom"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey, getEventStep } from "../utils"
 import { dom } from "./range-slider.dom"
-import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.machine"
+import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
 
-export function rangeSliderConnect(
-  state: S.State<RangeSliderMachineContext, RangeSliderMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
   const { value: values, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } = ctx
 

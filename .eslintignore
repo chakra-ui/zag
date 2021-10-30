@@ -4,3 +4,4 @@ coverage
 .next
 build
 examples/vue-ts
+plop-templates

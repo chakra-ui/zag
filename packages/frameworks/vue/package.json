@@ -1,0 +1,41 @@
+{
+  "name": "@ui-machines/vue",
+  "version": "0.0.0",
+  "description": "The vue wrapper for ui-machines",
+  "keywords": [
+    "ui-machines",
+    "vue",
+    "use-machine",
+    "hook"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-vue.cjs.js",
+  "module": "dist/ui-machines-vue.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/vue",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@ui-machines/core": "0.0.0",
+    "tiny-guard": "^0.0.3",
+    "valtio": "^1.2.5"
+  },
+  "devDependencies": {
+    "vue": "^3.0.5"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.5"
+  }
+}

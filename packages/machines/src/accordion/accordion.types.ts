@@ -15,15 +15,15 @@ export type AccordionMachineContext = Context<{
   /**
    * @internal - The `id` of the focused accordion item.
    */
-  focusedId: string | null
+  focusedValue: string | null
+  /**
+   * The `id` of the accordion item that is currently being opened.
+   */
+  value: string | string[] | null
   /**
    * Whether the accordion items are disabled
    */
   disabled?: boolean
-  /**
-   * The `id` of the accordion item that is currently being opened.
-   */
-  activeId: string | string[] | null
   /**
    * The callback fired when the state of opened/closed accordion items changes.
    */
@@ -46,6 +46,6 @@ export type AccordionState = S.State<AccordionMachineContext, AccordionMachineSt
 export type AccordionSend = S.Send<S.AnyEventObject>
 
 export type AccordionItemProps = {
-  id: string
+  value: string
   disabled?: boolean
 }

@@ -1,17 +1,25 @@
+import { StateMachine } from "@ui-machines/core"
 import { queryElements } from "tiny-nodelist"
-import { clamp, percentToValue, snapToStep, toRanges } from "tiny-num"
 import type { Point } from "tiny-point"
+import { closest } from "tiny-point/distance"
 import { relativeToNode } from "tiny-point/dom"
+import { center } from "tiny-rect"
+import { fromElement } from "tiny-rect/from-element"
 import { dom as sliderDom } from "../../src/slider/slider.dom"
 import { dispatchInputEvent } from "../utils/dispatch-input"
+import { clamp, multiply, percentToValue, snapToStep, toRanges } from "../utils/number"
 import type { DOM } from "../utils/types"
-import type { RangeSliderMachineContext as Ctx } from "./range-slider.machine"
+import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
 
-export const getRangeAtIndex = (ctx: Ctx) => toRanges(ctx)[ctx.activeIndex]
+export const getRangeAtIndex = (ctx: Ctx) => {
+  const spacing = multiply(ctx.minStepsBetweenThumbs, ctx.step)
+  const range = toRanges({ ...ctx, spacing })
+  return range[ctx.activeIndex]
+}
 
 function getValueFromPoint(ctx: Ctx, point: Point) {
   const root = dom.getRootEl(ctx)
-  if (!root) return
+  if (!root || ctx.activeIndex === -1) return
   const range = getRangeAtIndex(ctx)
   const max = range.max / ctx.max
   const min = range.min / ctx.max
@@ -78,4 +86,43 @@ export const dom = {
   getTrackStyle: (): DOM.Style => ({
     position: "relative",
   }),
+}
+
+export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
+  // evt.index means this was passed on a keyboard event (`onKeyDown`)
+  let index = evt.index
+
+  if (index == null) {
+    const thumbs = dom.getElements(ctx)
+
+    // get the center point of all thumbs
+    const points = thumbs.map((el) => fromElement(el)).map((rect) => center(rect))
+
+    // get the closest center point from the event ("pointerdown") point
+    const getClosest = closest(...points)
+    const closestPoint = getClosest(evt.point)
+    index = points.indexOf(closestPoint)
+
+    // when two thumbs are stacked and the user clicks at a point larger than
+    // their values, pick the next closest thumb
+    const rootEl = dom.getRootEl(ctx)
+
+    if (!rootEl) return index
+
+    // in event two thumbs are stacked and the user clicks at a point on the track
+    // we need to pick the closest thumb
+    const { progress } = relativeToNode(evt.point, rootEl)
+    let percent = ctx.isHorizontal ? progress.x : progress.y
+    if (ctx.isRtl) percent = 1 - percent
+    const pointValue = percentToValue(percent, ctx)
+    const pts = ctx.isHorizontal ? points.map((p) => p.x) : points.map((p) => p.y)
+
+    const isThumbStacked = new Set(pts).size !== points.length
+
+    if (isThumbStacked && pointValue > ctx.value[index]) {
+      index++
+    }
+  }
+
+  return index
 }

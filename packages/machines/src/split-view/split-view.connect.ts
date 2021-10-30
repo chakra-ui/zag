@@ -1,8 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
-import { getEventKey } from "../utils/get-event-key"
-import { getEventStep } from "../utils/get-step"
-import { DOM, Props } from "../utils/types"
+import { dataAttr, defaultPropNormalizer, DOM, getEventKey, getEventStep, Props } from "../utils"
 import { dom } from "./split-view.dom"
 import { SplitViewMachineContext, SplitViewMachineState } from "./split-view.machine"
 

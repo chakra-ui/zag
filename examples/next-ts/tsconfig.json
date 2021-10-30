@@ -19,8 +19,8 @@
     "target": "esnext",
     "baseUrl": ".",
     "paths": {
-      "@ui-machines/core": ["../../packages/core/vanilla/src"],
-      "@ui-machines/react": ["../../packages/core/react/src"]
+      "@ui-machines/core": ["../../packages/core/src"],
+      "@ui-machines/react": ["../../packages/frameworks/react/src"]
     }
   },
   "exclude": ["node_modules"],

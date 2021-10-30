@@ -38,13 +38,13 @@ export default function Page() {
       <controls.ui />
       <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
         {data.map((item) => (
-          <div key={item.id} {...getItemProps({ id: item.id })}>
+          <div key={item.id} {...getItemProps({ value: item.id })}>
             <h3>
-              <button data-testid={`${item.id}:trigger`} {...getTriggerProps({ id: item.id })}>
+              <button data-testid={`${item.id}:trigger`} {...getTriggerProps({ value: item.id })}>
                 {item.label}
               </button>
             </h3>
-            <div data-testid={`${item.id}:content`} {...getContentProps({ id: item.id })}>
+            <div data-testid={`${item.id}:content`} {...getContentProps({ value: item.id })}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
               dolore magna aliqua.
             </div>

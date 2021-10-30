@@ -223,7 +223,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
           },
           PASTE: {
             cond: "addOnPaste",
-            actions: "addTagFromPaste",
+            actions: ["setInputValue", "addTagFromPaste"],
           },
         },
       },
@@ -358,7 +358,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       addTagFromPaste(ctx) {
         nextTick(() => {
           const cond = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
-          if (cond) ctx.value.push(ctx.trimmedInputValue)
+          if (cond) ctx.value.push(...ctx.trimmedInputValue.split(",").map((v) => v.trim()))
           ctx.inputValue = ""
         })
       },

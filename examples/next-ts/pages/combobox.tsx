@@ -16,14 +16,13 @@ export default function Page() {
     combobox.machine.withContext({
       uid: "123",
       onSelect: console.log,
-      selectionMode: "autoselect",
-      closeOnSelect: (opt) => opt.label !== "Angola",
+      autoComplete: false,
     }),
   )
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { labelProps, inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps } =
+  const { labelProps, inputProps, inputValue, buttonProps, listboxProps, containerProps, getOptionProps } =
     combobox.connect(state, send)
 
   const filtered = comboboxData.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))

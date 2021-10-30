@@ -1,0 +1,18 @@
+import type { StateMachine as S } from "@ui-machines/core"
+import type { Context } from "../utils"
+
+export type {{capitalize machine}}MachineContext = Context<{
+}>
+
+export type {{capitalize machine}}MachineState = {
+  value: "unknown" | "idle" | "focused"
+}
+
+export type {{capitalize machine}}State = S.State<{{capitalize machine}}MachineContext, {{capitalize machine}}MachineState>
+
+export type {{capitalize machine}}Send = S.Send<S.AnyEventObject>
+
+export type {{capitalize machine}}ItemProps = {
+  value: string
+  disabled?: boolean
+}

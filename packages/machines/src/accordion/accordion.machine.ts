@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { add, remove, toArray } from "tiny-array"
-import { isArray } from "tiny-guard"
 import { uuid } from "../utils"
+import { add, remove, toArray } from "../utils/array"
+import { isArray } from "../utils/guard"
 import { dom } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"
 
@@ -12,15 +12,14 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
     id: "accordion-machine",
     initial: "unknown",
     context: {
-      focusedId: null,
-      activeId: null,
+      focusedValue: null,
+      value: null,
       uid: uuid(),
       collapsible: false,
       multiple: false,
     },
     watch: {
-      // when the `activeId` changes, we need to call the `onChange` callback
-      activeId: "invokeOnChange",
+      value: "invokeOnChange",
     },
     states: {
       unknown: {
@@ -35,7 +34,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
         on: {
           FOCUS: {
             target: "focused",
-            actions: "setFocusedId",
+            actions: "setFocusedValue",
           },
         },
       },
@@ -65,7 +64,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
           },
           BLUR: {
             target: "idle",
-            actions: "clearFocusedId",
+            actions: "clearFocusedValue",
           },
         },
       },
@@ -74,17 +73,17 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
   {
     guards: {
       canToggle: (ctx) => !!ctx.collapsible || !!ctx.multiple,
-      isExpanded: (ctx, evt) => (isArray(ctx.activeId) ? ctx.activeId.includes(evt.id) : ctx.activeId === evt.id),
+      isExpanded: (ctx, evt) => (isArray(ctx.value) ? ctx.value.includes(evt.value) : ctx.value === evt.value),
     },
     actions: {
       invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.activeId)
+        ctx.onChange?.(ctx.value)
       },
       collapse(ctx, evt) {
-        ctx.activeId = ctx.multiple ? remove(toArray(ctx.activeId), evt.id) : null
+        ctx.value = ctx.multiple ? remove(toArray(ctx.value), evt.value) : null
       },
       expand(ctx, evt) {
-        ctx.activeId = ctx.multiple ? add(toArray(ctx.activeId), evt.id) : evt.id
+        ctx.value = ctx.multiple ? add(toArray(ctx.value), evt.value) : evt.value
       },
       focusFirst(ctx) {
         dom.getFirstTriggerEl(ctx)?.focus()
@@ -93,20 +92,20 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
         dom.getLastTriggerEl(ctx)?.focus()
       },
       focusNext(ctx) {
-        if (!ctx.focusedId) return
-        const el = dom.getNextTriggerEl(ctx, ctx.focusedId)
+        if (!ctx.focusedValue) return
+        const el = dom.getNextTriggerEl(ctx, ctx.focusedValue)
         el?.focus()
       },
       focusPrev(ctx) {
-        if (!ctx.focusedId) return
-        const el = dom.getPrevTriggerEl(ctx, ctx.focusedId)
+        if (!ctx.focusedValue) return
+        const el = dom.getPrevTriggerEl(ctx, ctx.focusedValue)
         el?.focus()
       },
-      setFocusedId(ctx, evt) {
-        ctx.focusedId = evt.id
+      setFocusedValue(ctx, evt) {
+        ctx.focusedValue = evt.value
       },
-      clearFocusedId(ctx) {
-        ctx.focusedId = null
+      clearFocusedValue(ctx) {
+        ctx.focusedValue = null
       },
       setId(ctx, evt) {
         ctx.uid = evt.id

@@ -1,19 +1,13 @@
-import { StateMachine as S } from "@ui-machines/core"
 import type { DOM, Props } from "../utils"
-import { ariaAttr, dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
+import { dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
 import { dom } from "./combobox.dom"
-import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.machine"
+import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 
-export function comboboxConnect(
-  state: S.State<ComboboxMachineContext, ComboboxMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
 
-  const expanded = state.matches("open")
-  const autocomplete =
-    expanded && ctx.activeId !== null && ctx.eventSource === "keyboard" && ctx.selectionMode === "autocomplete"
+  const expanded = state.matches("interacting", "navigating", "suggesting")
+  const autoFill = state.matches("navigating", "interacting") && ctx.navigationValue && ctx.autoComplete
 
   return {
     setValue(value: string) {
@@ -25,6 +19,7 @@ export function comboboxConnect(
     },
 
     inputValue: ctx.inputValue,
+    firstOptionLabel: ctx.firstOptionLabel,
 
     labelProps: normalize<Props.Label>({
       htmlFor: dom.getInputId(ctx),
@@ -51,9 +46,9 @@ export function comboboxConnect(
       id: dom.getInputId(ctx),
       type: "text",
       role: "combobox",
-      value: autocomplete ? ctx.navigationValue : ctx.inputValue,
+      value: autoFill ? ctx.navigationValue : ctx.inputValue,
       "aria-describedby": dom.getSrHintId(ctx),
-      "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
+      // "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
       "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
@@ -66,17 +61,20 @@ export function comboboxConnect(
           fallback: ctx.pointerdownNode,
         })
         if (isValidBlur) {
-          send("INPUT_BLUR")
+          send("BLUR")
         }
       },
       onFocus() {
-        send("INPUT_FOCUS")
+        send("FOCUS")
       },
       onChange(event) {
-        send({ type: "TYPE", value: event.target.value })
+        const evt = (event.nativeEvent ?? event) as InputEvent
+        if (evt.isComposing) return
+        send({ type: "CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
-        if (event.ctrlKey || event.shiftKey) return
+        const evt = (event.nativeEvent ?? event) as KeyboardEvent
+        if (event.ctrlKey || event.shiftKey || evt.isComposing) return
 
         const keymap: DOM.EventKeyMap = {
           ArrowDown() {
@@ -103,9 +101,9 @@ export function comboboxConnect(
         const exec = keymap[key]
 
         if (exec) {
+          exec(event)
           event.preventDefault()
           event.stopPropagation()
-          exec(event)
         }
       },
     }),
@@ -123,15 +121,7 @@ export function comboboxConnect(
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
       onClick() {
-        send("BUTTON_CLICK")
-      },
-    }),
-
-    clearProps: normalize<Props.Button>({
-      "aria-label": "Clear",
-      type: "reset",
-      onClick() {
-        send("CLEAR_BUTTON_CLICK")
+        send("CLICK_BUTTON")
       },
     }),
 
@@ -140,6 +130,9 @@ export function comboboxConnect(
       role: "listbox",
       hidden: !expanded,
       "aria-labelledby": dom.getLabelId(ctx),
+      onPointerLeave() {
+        send("POINTERLEAVE_LISTBOX")
+      },
     }),
 
     clearButtonProps: normalize<Props.Button>({
@@ -149,7 +142,7 @@ export function comboboxConnect(
       tabIndex: -1,
       disabled: ctx.disabled,
       "aria-label": "Clear value",
-      hidden: !ctx.inputValue.trim().length,
+      hidden: ctx.isInputValueEmpty,
       onClick() {
         send("CLEAR_VALUE")
       },
@@ -165,46 +158,32 @@ export function comboboxConnect(
     }),
 
     getOptionProps(props: ComboboxOptionProps) {
-      const { value, label, virtualized, index, noOfOptions } = props
+      const { value, label, index, optionCount } = props
       const id = dom.getOptionId(ctx, value)
-      const selected = ctx.activeId === id && ctx.eventSource === "keyboard"
+      const selected = ctx.activeId === id && state.matches("navigating")
 
       return normalize<Props.Element>({
         id,
         role: "option",
-        className: "option",
+        tabIndex: -1,
         "data-highlighted": dataAttr(ctx.activeId === id),
-        "aria-selected": ariaAttr(selected),
+        "aria-selected": selected,
         "aria-disabled": ctx.disabled,
-        ...(virtualized && {
-          "aria-posinset": index,
-          "aria-setsize": noOfOptions,
-        }),
+        "aria-posinset": index ? index + 1 : undefined,
+        "aria-setsize": optionCount,
         "data-value": value,
         "data-label": label,
         onPointerOver() {
-          send({ type: "OPTION_POINTEROVER", id, value: label })
-        },
-        onPointerOut() {
-          send("OPTION_POINTEROUT")
+          send({ type: "POINTEROVER_OPTION", id, value: label })
         },
         onPointerDown(event) {
           event.preventDefault()
         },
         onClick(event) {
           event.preventDefault()
-          send({ type: "OPTION_CLICK", id, value: label })
+          send({ type: "CLICK_OPTION", id, value: label })
         },
       })
     },
   }
-}
-
-export type ComboboxOptionProps = {
-  virtualized?: true
-  index?: number
-  noOfOptions?: number
-  value: string
-  label: string
-  disabled?: boolean
 }

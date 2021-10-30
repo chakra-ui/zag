@@ -1,18 +1,18 @@
 import { useMachine, useSetup } from "@ui-machines/react"
 import { tooltip } from "@ui-machines/web"
 
-const Tooltip = (props: { id?: string }) => {
-  const [state, send] = useMachine(tooltip.machine.withContext({ id: props.id }))
+function Tooltip(props: { id?: string }) {
+  const [state, send] = useMachine(tooltip.machine)
   const { isVisible, triggerProps, tooltipProps } = tooltip.connect(state, send)
-  const ref = useSetup<HTMLButtonElement>({ send, id: "testing" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
 
   return (
     <div>
-      <button ref={ref} {...triggerProps}>
+      <button data-testid={`${props.id}-trigger`} ref={ref} {...triggerProps}>
         Over me
       </button>
       {isVisible && (
-        <div data-tooltip="" {...tooltipProps}>
+        <div data-testid={`${props.id}-tooltip`} data-tooltip="" {...tooltipProps}>
           Tooltip
         </div>
       )}
@@ -22,13 +22,9 @@ const Tooltip = (props: { id?: string }) => {
 
 export default function Page() {
   return (
-    <>
-      <div style={{ display: "flex" }}>
-        <Tooltip id="tip-1" />
-        <div style={{ marginLeft: "20px" }}>
-          <Tooltip id="tip-2" />
-        </div>
-      </div>
-    </>
+    <div style={{ display: "flex", gap: "20px" }}>
+      <Tooltip id="tip-1" />
+      <Tooltip id="tip-2" />
+    </div>
   )
 }

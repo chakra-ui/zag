@@ -4,7 +4,6 @@ Finite state machines for accessible JavaScript components
 
 - ✅ **Framework Agnostic:** Reuse component logic in any JavaScript framework
 - ✅ **Accessible:** Components come with built-in accessibility considerations for DOM frameworks
-- ✅ **Test-Friendly:** With built-in helpers, you can test component interactions, roles and functionality
 
 ## The problem
 
@@ -34,8 +33,8 @@ For framework specific solutions, we provide simple wrappers to help you consume
 
 - ⚛️ `@ui-machines/react` - React hooks for consuming machines in React applications
 - 💚 `@ui-machines/vue` - Vue composition for consuming machines in Vue applications
-- 🎷 `@ui-machines/svelte` - Svelte utilities for consuming in Svelte applications
-- ✅ `@ui-machines/test` - Testing utilities for component logic, accessibility and interactions
+- 🎷 `@ui-machines/svelte` - Svelte utilities for consuming machines in Svelte applications
+- 🎷 `@ui-machines/solid` - Solid.js utilities for consuming machines in Solid.js applications
 
 ## Examples
 
@@ -82,3 +81,8 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 
 Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
 what to work on.
+
+## Components ideas
+
+- https://component.kitchen/elix
+- https://vaadin.com/docs/latest/ds/components/accordion

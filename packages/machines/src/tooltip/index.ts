@@ -7,4 +7,4 @@ export const tooltip = {
   store: tooltipStore,
 }
 
-export type { TooltipMachineContext, TooltipMachineState } from "./tooltip.machine"
+export type { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"

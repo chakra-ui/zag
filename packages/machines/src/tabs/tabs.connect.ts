@@ -14,6 +14,11 @@ export function tabsConnect(
   const { context: ctx } = state
 
   return {
+    value: ctx.value,
+    focusedValue: ctx.focusedValue,
+    setValue(value: string) {
+      send({ type: "SET_VALUE", value })
+    },
     tablistProps: normalize<Props.Element>({
       id: dom.getTablistId(ctx),
       role: "tablist",
@@ -39,7 +44,7 @@ export function tabsConnect(
             send("END")
           },
           Enter() {
-            send({ type: "ENTER", uid: ctx.focusedId })
+            send({ type: "ENTER", value: ctx.focusedValue })
           },
         }
 
@@ -53,19 +58,19 @@ export function tabsConnect(
       },
     }),
 
-    getTabProps({ uid }: { uid: string }) {
-      const selected = ctx.activeId === uid
+    getTabProps({ value }: { value: string }) {
+      const selected = ctx.value === value
       return normalize<Props.Button>({
         role: "tab",
         type: "button",
-        "data-uid": uid,
+        "data-value": value,
         "aria-selected": selected,
-        "aria-controls": dom.getPanelId(ctx, uid),
+        "aria-controls": dom.getPanelId(ctx, value),
         "data-ownedby": dom.getTablistId(ctx),
-        id: dom.getTabId(ctx, uid),
+        id: dom.getTabId(ctx, value),
         tabIndex: selected ? 0 : -1,
         onFocus() {
-          send({ type: "TAB_FOCUS", uid })
+          send({ type: "TAB_FOCUS", value })
         },
         onBlur(event) {
           const target = event.relatedTarget as HTMLElement | null
@@ -74,7 +79,7 @@ export function tabsConnect(
           }
         },
         onClick(event) {
-          send({ type: "TAB_CLICK", uid })
+          send({ type: "TAB_CLICK", value })
           // ensure browser focus for safari
           if (isSafari()) {
             event.currentTarget.focus()
@@ -83,12 +88,12 @@ export function tabsConnect(
       })
     },
 
-    getTabPanelProps({ uid }: { uid: string }) {
-      const selected = ctx.activeId === uid
+    getTabPanelProps({ value }: { value: string }) {
+      const selected = ctx.value === value
       return normalize<Props.Element>({
-        id: dom.getPanelId(ctx, uid),
+        id: dom.getPanelId(ctx, value),
         tabIndex: 0,
-        "aria-labelledby": dom.getTabId(ctx, uid),
+        "aria-labelledby": dom.getTabId(ctx, value),
         role: "tabpanel",
         "data-ownedby": dom.getTablistId(ctx),
         hidden: !selected,
