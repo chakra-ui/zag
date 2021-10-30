@@ -19,8 +19,13 @@ export type MenuMachineContext = Context<{
    * moving toward the submenu
    */
   intentPolygon: PointValue[] | null
+  suspendPointer: boolean
   hoverId: string | null
   loop: boolean
+  readonly isSubmenu: boolean
+  readonly isRtl: boolean
+  readonly isHorizontal: boolean
+  readonly isVertical: boolean
 }>
 
 export type MenuState = S.State<MenuMachineContext, MenuMachineState>

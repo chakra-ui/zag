@@ -5,7 +5,7 @@ import { fromPointerEvent } from "tiny-point/dom"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey, validateBlur } from "../utils"
 import { dom } from "./menu.dom"
-import { MenuItemProps, MenuOptionItemProps, MenuSend, MenuState, MenuMachine } from "./menu.types"
+import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
 
 export function menuConnect(state: MenuState, send: MenuSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state

@@ -28,6 +28,13 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       intentPolygon: null,
       hoverId: null,
       loop: false,
+      suspendPointer: false,
+    },
+    computed: {
+      isSubmenu: (ctx) => ctx.parent !== null,
+      isRtl: (ctx) => ctx.dir === "rtl",
+      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isVertical: (ctx) => ctx.orientation === "vertical",
     },
     on: {
       SET_PARENT: {
@@ -225,9 +232,9 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
   {
     guards: {
       hasActiveId: (ctx) => ctx.activeId !== null,
-      isRtl: (ctx) => ctx.dir === "rtl",
-      isHorizontal: (ctx) => ctx.orientation === "horizontal",
-      isVertical: (ctx) => ctx.orientation === "vertical",
+      isRtl: (ctx) => ctx.isRtl && ctx.isHorizontal,
+      isHorizontal: (ctx) => ctx.isHorizontal,
+      isVertical: (ctx) => ctx.isVertical,
       isMenuFocused: (ctx) => {
         const menu = dom.getMenuEl(ctx)
         const activeElement = dom.getActiveElement(ctx)
@@ -245,8 +252,8 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         const target = (evt.target ?? dom.getActiveItemEl(ctx)) as HTMLElement
         return !!target.hasAttribute("aria-controls")
       },
-      isSubmenu: (ctx) => ctx.parent !== null,
-      suspendPointer: (ctx) => dom.getMenuEl(ctx)?.dataset.pause === "true",
+      isSubmenu: (ctx) => ctx.isSubmenu,
+      suspendPointer: (ctx) => ctx.suspendPointer,
       isActiveItemFocusable: (ctx) => isFocusable(dom.getActiveItemEl(ctx)),
       isWithinPolygon: (ctx, evt) => {
         if (!ctx.intentPolygon) return false
@@ -257,8 +264,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       trackPointerDown,
       trackPointerMove(ctx, _evt, { guards = {}, send }) {
         const { isWithinPolygon } = guards
-        const menu = dom.getMenuEl(ctx!.parent!.state.context)
-        menu!.dataset.pause = "true"
+        ctx.parent!.state.context.suspendPointer = true
 
         const doc = dom.getDoc(ctx)
         return addPointerEvent(doc, "pointermove", (e) => {
@@ -267,7 +273,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           })
           if (!isMovingToSubmenu) {
             send("CLOSE")
-            menu!.dataset.pause = "false"
+            ctx.parent!.state.context.suspendPointer = false
           }
         })
       },
@@ -287,8 +293,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       resumePointer(ctx) {
         if (!ctx.parent) return
-        const menu = dom.getMenuEl(ctx.parent.state.context)
-        if (menu) menu.dataset.pause = "false"
+        ctx.parent.state.context.suspendPointer = false
       },
       setId: (ctx, evt) => {
         ctx.uid = evt.id
