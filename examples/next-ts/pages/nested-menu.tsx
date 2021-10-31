@@ -69,7 +69,7 @@ export default function Page() {
         <li data-testid="more-tools" ref={subRef} {...triggerItemProps}>
           {`More Tools >`}{" "}
         </li>
-        <li data-testid="export " {...root.getItemProps({ id: "export" })}>
+        <li data-testid="export " {...root.getItemProps({ id: "export", disabled: true })}>
           Export
         </li>
         <a href="google.com" data-testid="google" {...root.getItemProps({ id: "link" })}>
@@ -116,9 +116,9 @@ export default function Page() {
         </li>
       </ul>
 
-      <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
+      {/* <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
       <StateVisualizer state={subState} label="Sub Machine" style={{ maxWidth: 320, right: 420 }} />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} />
+      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} /> */}
     </Styles>
   )
 }
