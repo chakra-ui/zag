@@ -64,8 +64,16 @@
     },
     {
       "files": ["cypress/**/*.test.ts"],
+      "extends": ["plugin:cypress/recommended"],
+      "plugins": ["cypress"],
       "parserOptions": {
         "project": "cypress/tsconfig.json"
+      },
+      "env": {
+        "cypress/globals": true
+      },
+      "rules": {
+        "jest/expect-expect": "off"
       }
     },
     {

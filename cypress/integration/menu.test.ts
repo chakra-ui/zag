@@ -1,3 +1,5 @@
+/* eslint-disable jest/expect-expect */
+
 describe("dropdown menu", () => {
   beforeEach(() => {
     cy.visit("/nested-menu")

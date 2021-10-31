@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 describe("dialog", () => {
   beforeEach(() => {
     cy.visit("/dialog")
