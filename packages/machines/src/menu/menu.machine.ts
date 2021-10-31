@@ -244,13 +244,13 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       isParentActiveItem: (ctx, evt) => ctx.parent?.state.context.activeId === evt.target.id,
       // whether the trigger is also a menu item
       isTriggerItem: (ctx, evt) => {
-        const target = (evt.target ?? dom.getTriggerEl(ctx)) as HTMLElement
-        return !!target.getAttribute("role")?.startsWith("menuitem") && !!target.hasAttribute("aria-controls")
+        const target = (evt.target ?? dom.getTriggerEl(ctx)) as HTMLElement | null
+        return !!target?.getAttribute("role")?.startsWith("menuitem") && !!target?.hasAttribute("aria-controls")
       },
       // whether the trigger item is the active item
       isTriggerActiveItem: (ctx, evt) => {
-        const target = (evt.target ?? dom.getActiveItemEl(ctx)) as HTMLElement
-        return !!target.hasAttribute("aria-controls")
+        const target = (evt.target ?? dom.getActiveItemEl(ctx)) as HTMLElement | null
+        return !!target?.hasAttribute("aria-controls")
       },
       isSubmenu: (ctx) => ctx.isSubmenu,
       suspendPointer: (ctx) => ctx.suspendPointer,

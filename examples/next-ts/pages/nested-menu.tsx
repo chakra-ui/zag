@@ -1,6 +1,6 @@
 import { useMachine } from "@ui-machines/react"
 import { menu, mergeProps } from "@ui-machines/web"
-import { StateVisualizer } from "components/state-visualizer"
+// import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useEffect } from "react"
 import { nextTick } from "tiny-fn"
@@ -67,7 +67,7 @@ export default function Page() {
           New Window
         </li>
         <li data-testid="more-tools" ref={subRef} {...triggerItemProps}>
-          {`More Tools >`}{" "}
+          {`More Tools →`}
         </li>
         <li data-testid="export " {...root.getItemProps({ id: "export", disabled: true })}>
           Export
@@ -91,7 +91,7 @@ export default function Page() {
         <li data-testid="name-win" {...sub.getItemProps({ id: "name-win" })}>
           Name Window...
         </li>
-        <li data-testid="open-nested" ref={sub2Ref} {...triggerItem2Props}>{`Open nested >`}</li>
+        <li data-testid="open-nested" ref={sub2Ref} {...triggerItem2Props}>{`Open nested →`}</li>
         <li data-testid="switch-win" {...sub.getItemProps({ id: "switch-win" })}>
           Switch Window
         </li>
@@ -108,7 +108,7 @@ export default function Page() {
         <li data-testid="welcome" {...sub2.getItemProps({ id: "welcome" })}>
           Welcome
         </li>
-        <li data-testid="playground" {...sub2.getItemProps({ id: "play" })}>
+        <li data-testid="playground" {...sub2.getItemProps({ id: "playground" })}>
           Playground
         </li>
         <li data-testid="export" {...sub2.getItemProps({ id: "export" })}>
@@ -116,9 +116,9 @@ export default function Page() {
         </li>
       </ul>
 
-      <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
+      {/* <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
       <StateVisualizer state={subState} label="Sub Machine" style={{ maxWidth: 320, right: 420 }} />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} />
+      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} /> */}
     </Styles>
   )
 }
