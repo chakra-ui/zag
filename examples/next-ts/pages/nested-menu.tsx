@@ -52,36 +52,68 @@ export default function Page() {
 
   return (
     <Styles>
-      <button ref={rootRef} {...root.triggerProps}>
+      <button ref={rootRef} data-testid="trigger" {...root.triggerProps}>
         Click me
       </button>
 
-      <ul style={{ width: "300px" }} {...root.menuProps}>
-        <li {...root.getItemProps({ id: "new-file" })}>New File</li>
-        <li {...root.getItemProps({ id: "new-tab" })}>New Tab</li>
-        <li {...root.getItemProps({ id: "new-win" })}>New Window</li>
-        <li ref={subRef} {...triggerItemProps}>
+      <ul style={{ width: "300px" }} data-testid="menu" {...root.menuProps}>
+        <li data-testid="new-file" {...root.getItemProps({ id: "new-file" })}>
+          New File
+        </li>
+        <li data-testid="new-tab" {...root.getItemProps({ id: "new-tab" })}>
+          New Tab
+        </li>
+        <li data-testid="new-win" {...root.getItemProps({ id: "new-win" })}>
+          New Window
+        </li>
+        <li data-testid="more-tools" ref={subRef} {...triggerItemProps}>
           {`More Tools >`}{" "}
         </li>
-        <li {...root.getItemProps({ id: "export" })}>Export</li>
-        <a href="google.com" {...root.getItemProps({ id: "link" })}>
+        <li data-testid="export " {...root.getItemProps({ id: "export" })}>
+          Export
+        </li>
+        <a href="google.com" data-testid="google" {...root.getItemProps({ id: "link" })}>
           Go to Google...
         </a>
       </ul>
 
-      <ul style={{ width: "300px", left: "180px", top: "90px", position: "absolute" }} {...sub.menuProps}>
-        <li {...sub.getItemProps({ id: "save-page" })}>Save Page As...</li>
-        <li {...sub.getItemProps({ id: "shortcut" })}>Create Shortcuts</li>
-        <li {...sub.getItemProps({ id: "name-win" })}>Name Window...</li>
-        <li ref={sub2Ref} {...triggerItem2Props}>{`Open nested >`}</li>
-        <li {...sub.getItemProps({ id: "switch-win" })}>Switch Window</li>
-        <li {...sub.getItemProps({ id: "new-term" })}>New Terminal</li>
+      <ul
+        data-testid="more-tools-submenu"
+        style={{ width: "300px", left: "180px", top: "90px", position: "absolute" }}
+        {...sub.menuProps}
+      >
+        <li data-testid="save-page" {...sub.getItemProps({ id: "save-page" })}>
+          Save Page As...
+        </li>
+        <li data-testid="shortcut" {...sub.getItemProps({ id: "shortcut" })}>
+          Create Shortcuts
+        </li>
+        <li data-testid="name-win" {...sub.getItemProps({ id: "name-win" })}>
+          Name Window...
+        </li>
+        <li data-testid="open-nested" ref={sub2Ref} {...triggerItem2Props}>{`Open nested >`}</li>
+        <li data-testid="switch-win" {...sub.getItemProps({ id: "switch-win" })}>
+          Switch Window
+        </li>
+        <li data-testid="new-term" {...sub.getItemProps({ id: "new-term" })}>
+          New Terminal
+        </li>
       </ul>
 
-      <ul style={{ width: "300px", left: "352px", top: "170px", position: "absolute" }} {...sub2.menuProps}>
-        <li {...sub2.getItemProps({ id: "welcome" })}>Welcome</li>
-        <li {...sub2.getItemProps({ id: "play" })}>Playground</li>
-        <li {...sub2.getItemProps({ id: "export" })}>Export</li>
+      <ul
+        data-testid="open-nested-submenu"
+        style={{ width: "300px", left: "352px", top: "170px", position: "absolute" }}
+        {...sub2.menuProps}
+      >
+        <li data-testid="welcome" {...sub2.getItemProps({ id: "welcome" })}>
+          Welcome
+        </li>
+        <li data-testid="playground" {...sub2.getItemProps({ id: "play" })}>
+          Playground
+        </li>
+        <li data-testid="export" {...sub2.getItemProps({ id: "export" })}>
+          Export
+        </li>
       </ul>
 
       <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />

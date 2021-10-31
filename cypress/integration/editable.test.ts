@@ -1,4 +1,3 @@
-/* eslint-disable jest/expect-expect */
 describe("accordion", () => {
   beforeEach(() => {
     cy.visit("/editable")
