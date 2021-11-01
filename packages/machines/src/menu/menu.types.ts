@@ -14,8 +14,18 @@ export type MenuMachineContext = Context<{
   parent: MenuMachine | null
   children: Record<string, MenuMachine>
   orientation: "horizontal" | "vertical"
-  pointerExitPoint: PointValue | null
+  /**
+   * The polygon tells us if the pointer is
+   * moving toward the submenu
+   */
+  intentPolygon: PointValue[] | null
+  suspendPointer: boolean
   hoverId: string | null
+  loop: boolean
+  readonly isSubmenu: boolean
+  readonly isRtl: boolean
+  readonly isHorizontal: boolean
+  readonly isVertical: boolean
 }>
 
 export type MenuState = S.State<MenuMachineContext, MenuMachineState>
@@ -23,7 +33,7 @@ export type MenuState = S.State<MenuMachineContext, MenuMachineState>
 export type MenuSend = (event: S.Event<S.AnyEventObject>) => void
 
 export type MenuItemProps = {
-  id?: string
+  id: string
   disabled?: boolean
   valueText?: string
 }

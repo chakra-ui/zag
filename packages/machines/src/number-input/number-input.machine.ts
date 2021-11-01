@@ -1,8 +1,8 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
+import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
 import { range as createRange } from "tiny-num"
-import { observeAttributes } from "../utils"
+import { observeAttributes, uuid } from "../utils"
 import { dom } from "./number-input.dom"
 import { utils } from "./number-input.utils"
 
@@ -14,6 +14,7 @@ export type NumberInputMachineContext = {
   disabled?: boolean
   readonly?: boolean
   precision?: number
+  pattern: string
   value: string
   min: number
   max: number
@@ -22,10 +23,11 @@ export type NumberInputMachineContext = {
   keepWithinRange?: boolean
   clampValueOnBlur?: boolean
   focusInputOnChange?: boolean
+  hint: "increment" | "decrement" | "set" | null
 }
 
 export type NumberInputMachineState = {
-  value: "unknown" | "idle" | "increment:interval" | "decrement:interval" | "decrement" | "increment"
+  value: "unknown" | "idle" | "spinning" | "invoke" | "scrubbing"
 }
 
 export const numberInputMachine = createMachine<NumberInputMachineContext, NumberInputMachineState>(
@@ -33,13 +35,22 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
     id: "number-input",
     initial: "unknown",
     context: {
-      uid: "test-id",
+      pattern: "[0-9]*(.[0-9]+)?",
+      hint: null,
+      uid: uuid(),
       value: "",
       step: 1,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
       allowMouseWheel: true,
     },
+
+    on: {
+      SET_VALUE: {
+        actions: ["setValue", "setHintToSet"],
+      },
+    },
+
     states: {
       unknown: {
         on: {
@@ -49,76 +60,78 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           },
         },
       },
+
       idle: {
         activities: "attachWheelListener",
         on: {
-          INC: {
+          ARROW_UP: {
             actions: "increment",
           },
-          DEC: {
+          ARROW_DOWN: {
             actions: "decrement",
           },
-          GO_TO_MAX: {
+          HOME: {
             actions: "setToMax",
           },
-          GO_TO_MIN: {
+          END: {
             actions: "setToMin",
           },
-          PRESS_DOWN_INC: {
-            cond: not("isAtMax"),
-            target: "increment",
-            actions: "focusInput",
+          PRESS_DOWN: {
+            target: "invoke",
+            actions: ["focusInput", "setHint"],
           },
-          PRESS_DOWN_DEC: {
-            cond: not("isAtMin"),
-            target: "decrement",
-            actions: "focusInput",
+          PRESS_DOWN_SCRUB: {
+            target: "scrubbing",
+            actions: ["focusInput", "setHint", "setCursorPoint"],
           },
-          INPUT_CHANGE: {
-            actions: "setValue",
+          CHANGE: {
+            actions: ["setValue", "setHint"],
           },
-          INPUT_BLUR: {
-            cond: and("shouldClampOnBlur", not("isInRange")),
-            actions: "clampValue",
+          BLUR: {
+            cond: and("clampOnBlur", not("isInRange")),
+            actions: ["clampValue", "clearHint"],
           },
         },
       },
-      "increment:interval": {
-        activities: "trackIncButtonDisabled",
-        every: { CHANGE_INTERVAL: "increment" },
-        on: {
-          PRESS_UP_INC: "idle",
-        },
-      },
-      "decrement:interval": {
-        activities: "trackDecButtonDisabled",
-        every: { CHANGE_INTERVAL: "decrement" },
-        on: {
-          PRESS_UP_DEC: "idle",
-        },
-      },
-      increment: {
-        entry: "increment",
+
+      invoke: {
+        entry: choose([
+          { cond: "isIncrement", actions: "increment" },
+          { cond: "isDecrement", actions: "decrement" },
+        ]),
         after: {
           CHANGE_DELAY: {
-            target: "increment:interval",
+            target: "spinning",
             cond: "isInRange",
           },
         },
         on: {
-          PRESS_UP_INC: "idle",
-        },
-      },
-      decrement: {
-        entry: "decrement",
-        after: {
-          CHANGE_DELAY: {
-            target: "decrement:interval",
-            cond: "isInRange",
+          PRESS_UP: {
+            target: "idle",
+            actions: ["clearHint"],
           },
         },
+      },
+
+      spinning: {
+        activities: "trackButtonDisabled",
+        every: [
+          {
+            delay: "CHANGE_INTERVAL",
+            cond: and(not("isAtMin"), "isIncrement"),
+            actions: "increment",
+          },
+          {
+            delay: "CHANGE_INTERVAL",
+            cond: and(not("isAtMax"), "isDecrement"),
+            actions: "decrement",
+          },
+        ],
         on: {
-          PRESS_UP_DEC: "idle",
+          PRESS_UP: {
+            target: "idle",
+            actions: ["clearHint"],
+          },
         },
       },
     },
@@ -129,20 +142,20 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       CHANGE_DELAY: 300,
     },
     guards: {
-      shouldClampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
+      clampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
       isAtMin: (ctx) => createRange(ctx).isAtMin,
       isAtMax: (ctx) => createRange(ctx).isAtMax,
       isInRange: (ctx) => createRange(ctx).isInRange,
+      isDecrement: (ctx) => ctx.hint === "decrement",
+      isIncrement: (ctx) => ctx.hint === "increment",
     },
     activities: {
-      trackIncButtonDisabled(ctx, _evt, { send }) {
-        return observeAttributes(dom.getIncButtonEl(ctx), "disabled", () => {
-          send("PRESS_UP_INC")
-        })
-      },
-      trackDecButtonDisabled(ctx, _evt, { send }) {
-        return observeAttributes(dom.getDecButtonEl(ctx), "disabled", () => {
-          send("PRESS_UP_DEC")
+      trackButtonDisabled(ctx, _evt, { send }) {
+        let btnEl: HTMLButtonElement | null = null
+        if (ctx.hint === "increment") btnEl = dom.getIncButtonEl(ctx)
+        if (ctx.hint === "decrement") dom.getDecButtonEl(ctx)
+        return observeAttributes(btnEl, "disabled", () => {
+          send("PRESS_UP")
         })
       },
       attachWheelListener(ctx) {
@@ -191,14 +204,23 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       clampValue(ctx) {
         ctx.value = utils.clamp(ctx)
       },
-      setValue(ctx, event) {
-        ctx.value = utils.sanitize(event.value)
+      setValue(ctx, evt) {
+        ctx.value = utils.sanitize(evt.value)
       },
       setToMax(ctx) {
         ctx.value = ctx.max.toString()
       },
       setToMin(ctx) {
         ctx.value = ctx.min.toString()
+      },
+      setHint(ctx, evt) {
+        ctx.hint = evt.hint
+      },
+      clearHint(ctx) {
+        ctx.hint = null
+      },
+      setHintToSet(ctx) {
+        ctx.hint = "set"
       },
     },
   },

@@ -23,3 +23,7 @@ Cypress.Commands.add("paste", { prevSubject: true }, (subject, text = "") => {
   el.dispatchEvent(pasteEvent)
   return subject
 })
+
+Cypress.Commands.add("clickOutside", () => {
+  return cy.get("body").click(0, 0)
+})

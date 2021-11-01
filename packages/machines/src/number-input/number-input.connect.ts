@@ -1,5 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { range as createRange } from "tiny-num"
+import { fromPointerEvent } from "tiny-point/dom"
 import type { DOM, Props } from "../utils"
 import { defaultPropNormalizer, getEventStep } from "../utils"
 import { dom } from "./number-input.dom"
@@ -26,7 +27,7 @@ export function numberInputConnect(
     inputProps: normalize<Props.Input>({
       id: dom.getInputId(ctx),
       role: "spinbutton",
-      pattern: "[0-9]*(.[0-9]+)?",
+      pattern: ctx.pattern,
       inputMode: "decimal",
       autoComplete: "off",
       autoCorrect: "off",
@@ -39,18 +40,20 @@ export function numberInputConnect(
       "aria-readonly": ctx.readonly || undefined,
       value: ctx.value,
       onFocus() {
-        send("INPUT_FOCUS")
+        send("FOCUS")
       },
       onBlur() {
-        send("INPUT_BLUR")
+        send("BLUR")
       },
       onChange(event) {
-        send({
-          type: "INPUT_CHANGE",
-          value: event.target.value,
-        })
+        const evt = (event.nativeEvent ?? event) as InputEvent
+        if (evt.isComposing) return
+        send({ type: "CHANGE", value: event.target.value, hint: "set" })
       },
       onKeyDown(event) {
+        const evt = (event.nativeEvent ?? event) as KeyboardEvent
+        if (evt.isComposing) return
+
         if (!utils.isValidNumericEvent(event) || (event.key === "." && ctx.value.includes("."))) {
           event.preventDefault()
         }
@@ -58,16 +61,16 @@ export function numberInputConnect(
         const step = getEventStep(event) * ctx.step
         const keyMap: DOM.EventKeyMap = {
           ArrowUp() {
-            send({ type: "INC", step })
+            send({ type: "ARROW_UP", step })
           },
           ArrowDown() {
-            send({ type: "DEC", step })
+            send({ type: "ARROW_DOWN", step })
           },
           Home() {
-            send("GO_TO_MIN")
+            send("HOME")
           },
           End() {
-            send("GO_TO_MAX")
+            send("END")
           },
         }
 
@@ -88,13 +91,13 @@ export function numberInputConnect(
       tabIndex: -1,
       onPointerDown(event) {
         event.preventDefault()
-        send("PRESS_DOWN_DEC")
+        send({ type: "PRESS_DOWN", hint: "decrement" })
       },
       onPointerUp() {
-        send("PRESS_UP_DEC")
+        send({ type: "PRESS_UP", hint: "decrement" })
       },
       onPointerLeave() {
-        send("PRESS_UP_DEC")
+        send({ type: "PRESS_UP", hint: "decrement" })
       },
     }),
 
@@ -106,14 +109,24 @@ export function numberInputConnect(
       id: dom.getIncButtonId(ctx),
       onPointerDown(event) {
         event.preventDefault()
-        send("PRESS_DOWN_INC")
+        send({ type: "PRESS_DOWN", hint: "increment" })
       },
       onPointerUp(event) {
         event.preventDefault()
-        send("PRESS_UP_INC")
+        send({ type: "PRESS_UP", hint: "increment" })
       },
       onPointerLeave() {
-        send("PRESS_UP_INC")
+        send({ type: "PRESS_UP", hint: "increment" })
+      },
+    }),
+
+    scrubberProps: normalize<Props.Element>({
+      id: dom.getScrubberId(ctx),
+      role: "presentation",
+      onPointerDown(event) {
+        const evt = (event.nativeEvent ?? event) as PointerEvent
+        evt.preventDefault()
+        send({ type: "PRESS_DOWN_SCRUB", point: fromPointerEvent(evt) })
       },
     }),
   }

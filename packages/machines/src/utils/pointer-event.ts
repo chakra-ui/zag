@@ -1,4 +1,4 @@
-import { addPointerEvent, EventListenerWithPointInfo as Listener } from "tiny-dom-event"
+import { addPointerEvent, EventListenerWithPointInfo as Listener } from "../utils/dom-event"
 import { cast, pipe } from "tiny-fn"
 import { isLeftClick, isMouseEvent } from "tiny-guard"
 import { distance } from "tiny-point/distance"

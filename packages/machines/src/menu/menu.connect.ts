@@ -5,12 +5,50 @@ import { fromPointerEvent } from "tiny-point/dom"
 import type { DOM, Props } from "../utils"
 import { dataAttr, defaultPropNormalizer, getEventKey, validateBlur } from "../utils"
 import { dom } from "./menu.dom"
-import { MenuItemProps, MenuOptionItemProps, MenuSend, MenuState, MenuMachine } from "./menu.types"
+import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
 
 export function menuConnect(state: MenuState, send: MenuSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
   const isSubmenu = ctx.parent != null
+
+  function getItemProps(opts: MenuItemProps) {
+    const { id, disabled, valueText } = opts
+    return normalize<Props.Element>({
+      id,
+      role: "menuitem",
+      "aria-disabled": disabled,
+      "data-disabled": dataAttr(disabled),
+      "data-ownedby": dom.getMenuId(ctx),
+      "data-selected": dataAttr(ctx.activeId === id),
+      "data-orientation": ctx.orientation,
+      "data-valuetext": valueText,
+      onClick(event) {
+        if (disabled) return
+        send({ type: "ITEM_CLICK", target: event.currentTarget })
+      },
+      onPointerUp(event) {
+        if (!isLeftClick(cast(event)) || disabled) return
+        event.currentTarget.click()
+      },
+      onPointerLeave(event) {
+        if (disabled) return
+        send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
+      },
+      onPointerEnter(event) {
+        if (disabled) return
+        send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+      },
+      onPointerMove(event) {
+        if (disabled) return
+        send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+      },
+      onDragStart(event) {
+        const isLink = event.currentTarget.matches("a[href]")
+        if (isLink) event.preventDefault()
+      },
+    })
+  }
 
   return {
     isOpen,
@@ -96,6 +134,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
       tabIndex: 0,
       dir: ctx.dir,
       "aria-activedescendant": ctx.activeId ?? undefined,
+      "aria-labelledby": dom.getTriggerId(ctx),
       "aria-orientation": ctx.orientation,
       "data-orientation": ctx.orientation,
       onBlur(event) {
@@ -142,8 +181,8 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
             if (isLink) activeItem?.click()
             send("ENTER")
           },
-          Space() {
-            send("ENTER")
+          Space(event) {
+            keyMap.Enter(event)
           },
           Home() {
             send("HOME")
@@ -151,6 +190,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
           End() {
             send("END")
           },
+          Tab() {},
         }
 
         const key = getEventKey(event, ctx)
@@ -160,11 +200,13 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
           const allow = isLink && key === "Enter"
           if (!allow) event.preventDefault()
           exec(event)
-        } else if (event.key.length === 1) {
-          const selector = "input, textarea, [contenteditable], select"
-          const editable = activeItem?.matches(selector)
+        } else {
+          const editable = activeItem?.matches("input, textarea, [contenteditable], select")
+          const isKeyDownInside = event.currentTarget.contains(event.target as HTMLElement)
+          const isModifierKey = event.ctrlKey || event.altKey || event.metaKey
+          const isSingleKey = event.key.length === 1
 
-          if (!editable) {
+          if (isSingleKey && !isModifierKey && isKeyDownInside && !editable) {
             event.preventDefault()
             send({ type: "TYPEAHEAD", key: event.key })
           }
@@ -172,78 +214,27 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
       },
     }),
 
-    dividerProps: normalize<Props.Element>({
+    separatorProps: normalize<Props.Element>({
       role: "separator",
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
 
-    getItemOptionProps(opts: MenuOptionItemProps) {
-      const { type, checked, disabled, id, onCheckedChange, valueText } = opts
-      return normalize<Props.Element>({
-        id,
-        role: `menuitem${type}`,
-        "data-disabled": dataAttr(disabled),
-        "data-ownedby": dom.getMenuId(ctx),
-        "aria-checked": !!checked,
-        "aria-disabled": disabled,
-        "data-selected": dataAttr(ctx.activeId === id),
-        "data-orientation": ctx.orientation,
-        "data-valuetext": valueText,
-        onClick(event) {
-          if (disabled) return
-          send({ type: "ITEM_CLICK", target: event.currentTarget })
-          onCheckedChange?.(!checked)
-        },
-        onPointerUp(event) {
-          if (!isLeftClick(cast(event)) || disabled) return
-          event.currentTarget.click()
-        },
-        onPointerLeave(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
-        },
-        onPointerEnter(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
-        },
-        onPointerMove(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
-        },
-      })
-    },
+    getItemProps,
 
-    getItemProps(opts: MenuItemProps = {}) {
-      const { id, disabled, valueText } = opts
-      return normalize<Props.Element>({
-        id,
-        role: "menuitem",
-        "data-disabled": dataAttr(disabled),
-        "data-ownedby": dom.getMenuId(ctx),
-        "data-selected": dataAttr(ctx.activeId === id),
-        "data-orientation": ctx.orientation,
-        "data-valuetext": valueText,
-        onClick(event) {
-          if (disabled) return
-          send({ type: "ITEM_CLICK", target: event.currentTarget })
-        },
-        onPointerUp(event) {
-          if (!isLeftClick(cast(event)) || disabled) return
-          event.currentTarget.click()
-        },
-        onPointerLeave(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
-        },
-        onPointerEnter(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
-        },
-        onPointerMove(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
-        },
-      })
+    getItemOptionProps(opts: MenuOptionItemProps) {
+      const { type, checked, disabled, onCheckedChange } = opts
+      return Object.assign(
+        getItemProps(opts),
+        normalize<Props.Element>({
+          role: `menuitem${type}`,
+          "aria-checked": !!checked,
+          onClick(event) {
+            if (disabled) return
+            send({ type: "ITEM_CLICK", target: event.currentTarget })
+            onCheckedChange?.(!checked)
+          },
+        }),
+      )
     },
   }
 }

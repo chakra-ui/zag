@@ -26,6 +26,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       paste(text: string): Chainable<Element>
+      clickOutside(): Chainable<Element>
     }
   }
 }

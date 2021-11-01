@@ -27,21 +27,11 @@ export function prevById<T extends HTMLElement>(v: T[], id: string, loop = true)
 }
 
 export function findByText<T extends HTMLElement>(v: T[], text: string, currentId?: string | null) {
-  const fn = (item: T) => {
+  const filtered = v.filter((item) => {
     const str = item.dataset.valuetext ?? item.textContent
     return !!str?.toLowerCase().startsWith(text.toLowerCase())
-  }
-
-  const matched = v.find(fn)
-  const filtered = v.filter(fn)
-
-  if (matched && matched.id === currentId && filtered.length > 1) {
-    const index = filtered.indexOf(matched)
-    const idx = (index + 1) % filtered.length
-    return filtered[idx]
-  }
-
-  return matched
+  })
+  return currentId ? nextById(filtered, currentId) : null
 }
 
 export function sortByTreeOrder<T extends HTMLElement>(v: T[]) {
