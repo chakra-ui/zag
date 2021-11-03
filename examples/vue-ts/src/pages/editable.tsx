@@ -5,16 +5,30 @@ import { defineComponent, h, Fragment, computed } from "vue"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
+import { useControls } from "../hooks/use-controls"
 
 export default defineComponent({
   name: "Editable",
   setup(props, { slots }) {
-    const [state, send] = useMachine(
-      editable.machine.withContext({
-        placeholder: "Edit me...",
-        isPreviewFocusable: true,
-      }),
-    )
+    const { context, ui: PropertyControls } = useControls({
+      placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
+      submitMode: {
+        type: "select",
+        label: "submit mode?",
+        options: ["enter", "blur", "both", "none"] as const,
+        defaultValue: "both",
+      },
+      activationMode: {
+        type: "select",
+        options: ["focus", "dblclick", "none"] as const,
+        label: "activation mode",
+        defaultValue: "focus",
+      },
+    })
+
+    const [state, send] = useMachine(editable.machine, {
+      context: context.value,
+    })
 
     const ref = useMount(send)
 
@@ -35,6 +49,7 @@ export default defineComponent({
 
       return (
         <div>
+          <PropertyControls />
           <input ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
           <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
           {!isEditing && <button {...editButtonProps}>Edit</button>}

@@ -47,7 +47,7 @@ export function useMachine<
     (newVal) => {
       if (newVal) service.setContext(newVal)
     },
-    { flush: "post", immediate: true },
+    { immediate: true, deep: true },
   )
 
   /**
