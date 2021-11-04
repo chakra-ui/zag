@@ -1,18 +1,5 @@
-///<reference path="../../type.d.ts"/>
-import {
-  computed,
-  h,
-  Fragment,
-  ComputedRef,
-  ref,
-  reactive,
-  watch,
-  inject,
-  InjectionKey,
-  defineComponent,
-  provide,
-  PropType,
-} from "vue"
+///<reference path="../shims-vue.d.ts"/>
+import { computed, h, Fragment, Ref, ref, inject, provide } from "vue"
 
 type Prop =
   | { type: "boolean"; label: string; defaultValue: boolean }
@@ -53,34 +40,17 @@ export function useControls<T extends ControlRecord>(config: T) {
   const defaults = getDefaultValues(config)
   const state = ref(defaults)
 
-  function updateState(val: Value<T>) {
-    state.value = val
-  }
-
-  provide(PropertyControlsInjectionSymbol, () => computed(() => state.value))
+  provide(PropertyControlsInjectionSymbol, state)
 
   function useControlsState() {
-    const _state = inject<() => ComputedRef<Value<T>>>(PropertyControlsInjectionSymbol)
-    return {
-      state: _state?.()!,
-      updateState,
-    }
+    return inject<Ref<Value<T>>>(PropertyControlsInjectionSymbol)!
   }
 
   return {
     context: state,
     useControlsState,
     ui: () => {
-      const { updateState, state: __state } = useControlsState()
-      const state = computed({
-        get() {
-          return __state.value
-        },
-        set<U extends Value<T>>(val: U) {
-          updateState(val)
-        },
-      })
-
+      const state = useControlsState()
       return (
         <div
           style={{
@@ -93,7 +63,7 @@ export function useControls<T extends ControlRecord>(config: T) {
             margin: "24px",
           }}
         >
-          {Object.keys(config).map((key: keyof typeof config) => {
+          {Object.keys(config).map((key: keyof Value<T>) => {
             const { type, label, options, placeholder, min, max } = (config[key] ?? {}) as any
             switch (type) {
               case "boolean":
