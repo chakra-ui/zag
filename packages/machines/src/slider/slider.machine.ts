@@ -1,4 +1,4 @@
-import { createMachine, ref, StateMachine } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
 import { clamp, decrement, increment, snapToStep } from "tiny-num"
 import { fromElement } from "tiny-rect/from-element"
@@ -27,12 +27,10 @@ export type SliderMachineContext = Context<{
   onChangeEnd?(value: number): void
   onChangeStart?(value: number): void
   thumbSize: { width: number; height: number }
-}> &
-  StateMachine.Computed<{
-    isHorizontal: boolean
-    isVertical: boolean
-    isRtl: boolean
-  }>
+  readonly isHorizontal: boolean
+  readonly isVertical: boolean
+  readonly isRtl: boolean
+}>
 
 export type SliderMachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"

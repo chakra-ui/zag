@@ -1,4 +1,4 @@
-import { createMachine, ref, StateMachine } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
 import { Context } from "../utils/types"
 import { dom } from "./rating.dom"
@@ -14,11 +14,9 @@ export type RatingMachineContext = Context<{
   autoFocus?: boolean
   getLabelText?(value: number): string
   onChange?: (value: number) => void
-}> &
-  StateMachine.Computed<{
-    isInteractive: boolean
-    isHovering: boolean
-  }>
+  readonly isInteractive: boolean
+  readonly isHovering: boolean
+}>
 
 export type RatingMachineState = {
   value: "unknown" | "idle" | "hover" | "focus"
