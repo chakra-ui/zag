@@ -6,18 +6,16 @@ export type VoidFunction = () => void
 
 type IfEquals<X, Y, A, B> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B
 
-type WritableKeysOf<T> = {
+type WritableKey<T> = {
   [P in keyof T]: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P, never>
 }[keyof T]
 
-type WritablePart<T> = Pick<T, WritableKeysOf<T>>
+type Writable<T> = Pick<T, WritableKey<T>>
 
-type ReadonlyPart<T> = Omit<T, WritableKeysOf<T>>
+type Computed<T> = Omit<T, WritableKey<T>>
 
 export declare namespace StateMachine {
-  export type Computed<T> = Readonly<T>
-
-  export type Context<V, C> = V & Computed<C>
+  export type Context<V, C> = V & Readonly<C>
 
   // event sent can be either a string or object
   export type EventObject = { type: string }
@@ -187,7 +185,7 @@ export declare namespace StateMachine {
   }
 
   export type TComputedContext<T> = {
-    [K in keyof ReadonlyPart<T>]: (ctx: WritablePart<T>) => T[K]
+    [K in keyof Computed<T>]: (ctx: Writable<T>) => T[K]
   }
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
@@ -210,7 +208,7 @@ export declare namespace StateMachine {
     /**
      * The extended state used to store `data` for your machine
      */
-    context?: WritablePart<TContext>
+    context?: Writable<TContext>
     /**
      * A generic way to react to context value changes
      */

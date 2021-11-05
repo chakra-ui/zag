@@ -1,4 +1,3 @@
-import { cast } from "tiny-fn"
 import { isLeftClick, isModifiedEvent } from "tiny-guard"
 import { toRanges } from "tiny-num"
 import { fromPointerEvent } from "tiny-point/dom"
@@ -140,15 +139,16 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
       "data-focused": dataAttr(isFocused),
       style: dom.getRootStyle(ctx),
       onPointerDown(event) {
+        const evt = event.nativeEvent ?? event
         // allow only primary pointer clicks
-        if (!isLeftClick(cast(event)) || isModifiedEvent(cast(event))) return
+        if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
         event.preventDefault()
         event.stopPropagation()
 
         send({
           type: "POINTER_DOWN",
-          point: fromPointerEvent(cast(event)),
+          point: fromPointerEvent(evt),
         })
       },
     }),

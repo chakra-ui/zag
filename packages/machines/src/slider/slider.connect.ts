@@ -1,5 +1,4 @@
 import type { StateMachine as S } from "@ui-machines/core"
-import { cast } from "tiny-fn"
 import { isLeftClick, isModifiedEvent } from "tiny-guard"
 import { valueToPercent } from "tiny-num"
 import { fromPointerEvent } from "tiny-point/dom"
@@ -151,13 +150,14 @@ export function sliderConnect(
       "data-focused": dataAttr(isFocused),
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
+        const evt = event.nativeEvent ?? event
         // allow only primary pointer clicks
-        if (!isLeftClick(cast(event)) || isModifiedEvent(cast(event))) return
+        if (!isLeftClick(evt) || isModifiedEvent(evt)) return
         event.preventDefault()
         event.stopPropagation()
         send({
           type: "POINTER_DOWN",
-          point: fromPointerEvent(cast(event)),
+          point: fromPointerEvent(evt),
         })
       },
       style: dom.getRootStyle(ctx),

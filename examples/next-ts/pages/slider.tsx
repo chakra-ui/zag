@@ -17,7 +17,6 @@ export default function Page() {
       uid: "123",
       value: 40,
       name: "volume",
-      dir: "ltr",
     }),
   )
 

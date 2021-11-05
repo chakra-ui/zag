@@ -1,4 +1,9 @@
-import { addPointerEvent, EventListenerWithPointInfo as Listener } from "../utils/dom-event"
+import {
+  addPointerEvent,
+  AnyPointerEvent,
+  EventListenerWithPointInfo as Listener,
+  PointerEventInfo,
+} from "../utils/dom-event"
 import { cast, pipe } from "tiny-fn"
 import { isLeftClick, isMouseEvent } from "tiny-guard"
 import { distance } from "tiny-point/distance"
@@ -25,12 +30,9 @@ export function trackPointerDown(ctx: TrackPointerDownOptions) {
 }
 
 type TrackPointerMoveOptions = {
-  ctx: {
-    doc?: Document
-    threshold?: number
-  }
+  ctx: { doc?: Document; threshold?: number }
   onPointerUp: VoidFunction
-  onPointerMove: Listener
+  onPointerMove: (info: PointerEventInfo, event: AnyPointerEvent) => void
 }
 
 export function trackPointerMove(opts: TrackPointerMoveOptions) {
@@ -46,7 +48,7 @@ export function trackPointerMove(opts: TrackPointerMoveOptions) {
       return
     }
 
-    onPointerMove(event, info)
+    onPointerMove(info, event)
   }
 
   return pipe(

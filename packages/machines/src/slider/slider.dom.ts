@@ -5,44 +5,59 @@ import type { DOM } from "../utils"
 import { dispatchInputEvent } from "../utils"
 import type { SliderMachineContext as Ctx } from "./slider.machine"
 
-function getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
-  const root = dom.getRootEl(ctx)
-  if (!root) return
-  const { progress } = relativeToNode(point, root)
-  let v = ctx.isHorizontal ? progress.x : progress.y
-  if (ctx.isRtl) v = 1 - v
-  const percent = clamp(v, { min: 0, max: 1 })
-  return parseFloat(snapToStep(percentToValue(percent, ctx), ctx.step))
+type SharedContext = {
+  min: number
+  max: number
+  step: number
+  dir?: "ltr" | "rtl"
+  isRtl: boolean
+  isVertical: boolean
+  isHorizontal: boolean
+  value: number
+  thumbSize: { width: number; height: number }
+  orientation?: "horizontal" | "vertical"
 }
 
-type GetThumbStyleOptions = Pick<
-  Ctx,
-  "min" | "max" | "dir" | "thumbSize" | "value" | "orientation" | "isHorizontal" | "isVertical" | "step" | "isRtl"
->
+/**
+ * To ensure the slider thumb is always within the track (on the y-axis)
+ */
+function getVerticalThumbOffset(ctx: SharedContext) {
+  const { height } = ctx.thumbSize
+  const getValue = transform([ctx.min, ctx.max], [-height / 2, height / 2])
+  return parseFloat(getValue(ctx.value).toFixed(2))
+}
 
-function getThumbStyle(ctx: GetThumbStyleOptions): DOM.Style {
+/**
+ * To ensure the slider thumb is always within the track (on the x-axis)
+ */
+function getHorizontalThumbOffset(ctx: SharedContext) {
+  const { width } = ctx.thumbSize
+
+  if (ctx.isRtl) {
+    const getValue = transform([ctx.max, ctx.min], [-width * 1.5, -width / 2])
+    return -1 * parseFloat(getValue(ctx.value).toFixed(2))
+  }
+
+  const getValue = transform([ctx.min, ctx.max], [-width / 2, width / 2])
+  return parseFloat(getValue(ctx.value).toFixed(2))
+}
+
+function getThumbStyle(ctx: SharedContext): DOM.Style {
   const percent = valueToPercent(ctx.value, ctx)
-  const { width: w, height: h } = ctx.thumbSize
+  const offset = ctx.isVertical ? getVerticalThumbOffset(ctx) : getHorizontalThumbOffset(ctx)
 
   const style: DOM.Style = {
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
+    "--slider-thumb-placement": `calc(${percent}% - ${offset}px)`,
   }
 
   if (ctx.isVertical) {
-    const getValue = transform([ctx.min, ctx.max], [-h / 2, h / 2])
-    const y = parseFloat(getValue(ctx.value).toFixed(2))
-    style.bottom = `calc(${percent}% - ${y}px)`
-    return style
+    style.bottom = "var(--slider-thumb-placement)"
+  } else {
+    style[ctx.isRtl ? "right" : "left"] = "var(--slider-thumb-placement)"
   }
 
-  const getValue = ctx.isRtl
-    ? transform([ctx.max, ctx.min], [-w * 1.5, -w / 2])
-    : transform([ctx.min, ctx.max], [-w / 2, w / 2])
-
-  let x = parseFloat(getValue(ctx.value).toFixed(2))
-  x = ctx.isRtl ? -x : x
-  style[ctx.isRtl ? "right" : "left"] = `calc(${percent}% - ${x}px)`
   return style
 }
 
@@ -107,8 +122,26 @@ export const dom = {
     position: "relative",
   }),
 
-  getValueFromPoint,
-  dispatchChangeEvent: (ctx: Ctx) => {
+  getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
+    // get the slider root element
+    const root = dom.getRootEl(ctx)
+    if (!root) return
+
+    // get the position/progress % of the point relative to the root's width/height
+    const { progress } = relativeToNode(point, root)
+
+    // get the progress % depending on the orientation
+    let percent = ctx.isHorizontal ? progress.x : progress.y
+    // get the rtl equivalent of the progress
+    if (ctx.isRtl) percent = 1 - percent
+    // clamp the progress % between 0 and 1
+    percent = clamp(percent, { min: 0, max: 1 })
+
+    // get the computed value from the progress %
+    return parseFloat(snapToStep(percentToValue(percent, ctx), ctx.step))
+  },
+
+  dispatchChangeEvent(ctx: Ctx) {
     const input = dom.getInputEl(ctx)
     if (input) dispatchInputEvent(input, ctx.value)
   },

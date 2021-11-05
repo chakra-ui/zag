@@ -169,7 +169,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       trackPointerMove: (ctx, _evt, { send }) => {
         return trackPointerMove({
           ctx,
-          onPointerMove(_evt, info) {
+          onPointerMove(info) {
             const primaryPane = dom.getPrimaryPaneEl(ctx)
             if (!primaryPane) return
             const { point } = relativeToNode(info.point, primaryPane)

@@ -115,7 +115,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       trackPointerMove(ctx, _evt, { send }) {
         return trackPointerMove({
           ctx,
-          onPointerMove(_evt, info) {
+          onPointerMove(info) {
             const value = dom.getValueFromPoint(ctx, info.point)
             if (value == null) return
             ctx.value[ctx.activeIndex] = value

@@ -79,7 +79,7 @@ export type RangeOptions<T = string | number> = Num<"min" | "max"> & {
   value: T
 }
 
-export const numericRange = (o: RangeOptions) => {
+export function numericRange(o: RangeOptions) {
   const { min, max, step, precision, value } = o
   const valuePrecision = getMaxPrecision({ value, precision, step })
   const valueAsNumber = valueOf(value)
