@@ -11,24 +11,30 @@ import { clamp, multiply, percentToValue, snapToStep, toRanges } from "../utils/
 import type { DOM } from "../utils/types"
 import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
 
-export const getRangeAtIndex = (ctx: Ctx) => {
+export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
   const spacing = multiply(ctx.minStepsBetweenThumbs, ctx.step)
   const range = toRanges({ ...ctx, spacing })
-  return range[ctx.activeIndex]
+  return range[index]
+}
+
+function getPointProgress(ctx: Ctx, point: Point) {
+  const { progress } = relativeToNode(point, dom.getRootEl(ctx)!)
+  let percent = ctx.isHorizontal ? progress.x : progress.y
+  if (ctx.isRtl) percent = 1 - percent
+  return clamp(percent, { min: 0, max: 1 })
 }
 
 function getValueFromPoint(ctx: Ctx, point: Point) {
   const root = dom.getRootEl(ctx)
   if (!root || ctx.activeIndex === -1) return
+
   const range = getRangeAtIndex(ctx)
-  const max = range.max / ctx.max
-  const min = range.min / ctx.max
+  const maxPercent = range.max / ctx.max
+  const minPercent = range.min / ctx.max
 
-  const { progress } = relativeToNode(point, root)
-  let v = ctx.isHorizontal ? progress.x : progress.y
-  if (ctx.isRtl) v = 1 - v
+  let percent = getPointProgress(ctx, point)
+  percent = clamp(percent, { min: minPercent, max: maxPercent })
 
-  let percent = clamp(v, { min, max })
   const value = percentToValue(percent, ctx)
   return parseFloat(snapToStep(value, ctx.step))
 }
@@ -37,16 +43,25 @@ export function getRangeStyle(ctx: Ctx): DOM.Style {
   const { orientation, value: values, max } = ctx
   const startValue = (values[0] / max) * 100
   const endValue = 100 - (values[values.length - 1] / max) * 100
+
   const style: DOM.Style = {
     position: "absolute",
+    "--slider-range-start": `${startValue}%`,
+    "--slider-range-end": `${endValue}%`,
   }
+
   if (orientation === "vertical") {
-    return { ...style, bottom: `${startValue}%`, top: `${endValue}%` }
+    return {
+      ...style,
+      bottom: "var(--slider-range-start)",
+      top: "var(--slider-range-end)",
+    }
   }
+
   return {
     ...style,
-    [ctx.isRtl ? "right" : "left"]: `${startValue}%`,
-    [ctx.isRtl ? "left" : "right"]: `${endValue}%`,
+    [ctx.isRtl ? "right" : "left"]: "var(--slider-range-start)",
+    [ctx.isRtl ? "left" : "right"]: "var(--slider-range-end)",
   }
 }
 
@@ -69,7 +84,7 @@ export const dom = {
   getRangeEl: (ctx: Ctx) => dom.getDoc(ctx)?.getElementById(dom.getRangeId(ctx)),
 
   getValueFromPoint,
-  dispatchChangeEvent: (ctx: Ctx) => {
+  dispatchChangeEvent(ctx: Ctx) {
     const value = ctx.value[ctx.activeIndex]
     const input = dom.getInputEl(ctx, ctx.activeIndex)
     if (!input) return
@@ -77,7 +92,7 @@ export const dom = {
   },
 
   getRootStyle: sliderDom.getRootStyle,
-  getThumbStyle: (ctx: Ctx, index: number) => {
+  getThumbStyle(ctx: Ctx, index: number) {
     const value = ctx.value[index]
     const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
     return sliderDom.getThumbStyle({ ...ctx, value, thumbSize })
@@ -103,24 +118,19 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
     const closestPoint = getClosest(evt.point)
     index = points.indexOf(closestPoint)
 
-    // when two thumbs are stacked and the user clicks at a point larger than
-    // their values, pick the next closest thumb
     const rootEl = dom.getRootEl(ctx)
-
     if (!rootEl) return index
 
-    // in event two thumbs are stacked and the user clicks at a point on the track
-    // we need to pick the closest thumb
-    const { progress } = relativeToNode(evt.point, rootEl)
-    let percent = ctx.isHorizontal ? progress.x : progress.y
-    if (ctx.isRtl) percent = 1 - percent
+    // when two thumbs are stacked and the user clicks at a point larger than
+    // their values, pick the next closest thumb
+    const percent = getPointProgress(ctx, evt.point)
     const pointValue = percentToValue(percent, ctx)
-    const pts = ctx.isHorizontal ? points.map((p) => p.x) : points.map((p) => p.y)
 
-    const isThumbStacked = new Set(pts).size !== points.length
+    const axisPoints = ctx.isHorizontal ? points.map((p) => p.x) : points.map((p) => p.y)
+    const isThumbStacked = new Set(axisPoints).size !== points.length
 
     if (isThumbStacked && pointValue > ctx.value[index]) {
-      index++
+      index = clamp(index + 1, { min: 0, max: ctx.value.length - 1 })
     }
   }
 

@@ -1,8 +1,8 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import { decrement, increment, snapToStep } from "../utils/number"
 import { fromElement } from "tiny-rect/from-element"
 import { trackPointerMove } from "../utils"
+import { decrement, increment, snapToStep } from "../utils/number"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
 
@@ -28,6 +28,9 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
     },
+    watch: {
+      value: ["invokeOnChange", "dispatchChangeEvent"],
+    },
     states: {
       unknown: {
         on: {
@@ -41,17 +44,11 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         on: {
           POINTER_DOWN: {
             target: "dragging",
-            actions: [
-              "setActiveIndex",
-              "setValueForEvent",
-              "invokeOnChangeStart",
-              "invokeOnChange",
-              "focusActiveThumb",
-            ],
+            actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"],
           },
           FOCUS: {
             target: "focus",
-            actions: ["setActiveIndex", "focusActiveThumb"],
+            actions: "setActiveIndex",
           },
         },
       },
@@ -60,41 +57,35 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         on: {
           POINTER_DOWN: {
             target: "dragging",
-            actions: [
-              "setActiveIndex",
-              "setValueForEvent",
-              "invokeOnChangeStart",
-              "invokeOnChange",
-              "focusActiveThumb",
-            ],
+            actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"],
           },
           ARROW_LEFT: {
-            actions: ["decrementAtIndex", "invokeOnChange"],
+            actions: "decrementAtIndex",
           },
           ARROW_RIGHT: {
-            actions: ["incrementAtIndex", "invokeOnChange"],
+            actions: "incrementAtIndex",
           },
           ARROW_UP: {
-            actions: ["incrementAtIndex", "invokeOnChange"],
+            actions: "incrementAtIndex",
           },
           ARROW_DOWN: {
-            actions: ["decrementAtIndex", "invokeOnChange"],
+            actions: "decrementAtIndex",
           },
           PAGE_UP: {
-            actions: ["incrementAtIndex", "invokeOnChange"],
+            actions: "incrementAtIndex",
           },
           PAGE_DOWN: {
-            actions: ["decrementAtIndex", "invokeOnChange"],
+            actions: "decrementAtIndex",
           },
           HOME: {
-            actions: ["setActiveThumbToMin", "invokeOnChange"],
+            actions: "setActiveThumbToMin",
           },
           END: {
-            actions: ["setActiveThumbToMax", "invokeOnChange"],
+            actions: "setActiveThumbToMax",
           },
           BLUR: {
             target: "idle",
-            actions: ["resetActiveIndex"],
+            actions: "clearActiveIndex",
           },
         },
       },
@@ -106,6 +97,9 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
             target: "focus",
             actions: "invokeOnChangeEnd",
           },
+          POINTER_MOVE: {
+            actions: "setPointerValue",
+          },
         },
       },
     },
@@ -116,11 +110,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         return trackPointerMove({
           ctx,
           onPointerMove(info) {
-            const value = dom.getValueFromPoint(ctx, info.point)
-            if (value == null) return
-            ctx.value[ctx.activeIndex] = value
-            ctx.onChange?.(ctx.value)
-            dom.dispatchChangeEvent(ctx)
+            send({ type: "POINTER_MOVE", point: info.point })
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -143,6 +133,8 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
+      },
+      dispatchChangeEvent(ctx) {
         dom.dispatchChangeEvent(ctx)
       },
       setThumbSize(ctx) {
@@ -157,12 +149,13 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       setActiveIndex(ctx, evt) {
         ctx.activeIndex = getClosestIndex(ctx, evt)
       },
-      resetActiveIndex(ctx) {
+      clearActiveIndex(ctx) {
         ctx.activeIndex = -1
       },
-      setValueForEvent(ctx, evt) {
+      setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
-        if (value != null) ctx.value[ctx.activeIndex] = value
+        if (value == null) return
+        ctx.value[ctx.activeIndex] = value
       },
       focusActiveThumb(ctx) {
         nextTick(() => {

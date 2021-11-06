@@ -16,7 +16,16 @@ export default function Page() {
       dir: "ltr",
       name: ["min", "max"],
       uid: "123",
-      value: [10, 60],
+      value: [0, 0, 60],
+      onChangeStart() {
+        console.log("onChangeStart")
+      },
+      onChange() {
+        console.log("onChange")
+      },
+      onChangeEnd() {
+        console.log("onChangeEnd")
+      },
     }),
   )
 

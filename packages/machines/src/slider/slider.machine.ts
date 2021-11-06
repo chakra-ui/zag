@@ -72,7 +72,7 @@ export type SliderMachineContext = Context<{
    */
   onChangeStart?(value: number): void
   /**
-   * The slider thumbs dimensions
+   * The slider thumb dimensions
    */
   thumbSize: { width: number; height: number }
   /**
@@ -183,7 +183,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
             actions: "invokeOnChangeEnd",
           },
           POINTER_MOVE: {
-            actions: "setValue",
+            actions: "setPointerValue",
           },
         },
       },
@@ -198,9 +198,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         return trackPointerMove({
           ctx,
           onPointerMove(info) {
-            const value = dom.getValueFromPoint(ctx, info.point)
-            if (value == null) return
-            send({ type: "POINTER_MOVE", value })
+            send({ type: "POINTER_MOVE", point: info.point })
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -238,7 +236,8 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       },
       setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
-        if (value != null) ctx.value = value
+        if (value == null) return
+        ctx.value = value
       },
       focusThumb(ctx) {
         nextTick(() => dom.getThumbEl(ctx)?.focus())
