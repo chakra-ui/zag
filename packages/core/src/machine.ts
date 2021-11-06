@@ -1,7 +1,7 @@
 import { klona } from "klona"
 import { cast, invariant, runIfFn, warn } from "tiny-fn"
 import { isArray, isObject, isString } from "tiny-guard"
-import { subscribeKey } from "valtio/utils"
+import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"
 import { createProxy } from "./create-proxy"
@@ -53,7 +53,6 @@ export class Machine<
   ) {
     this.id = config.id ?? `machine-${uniqueId()}`
     this.state = createProxy(config)
-    this.getComputed()
     this.guardMap = options?.guards
     this.actionMap = options?.actions
     this.delayMap = options?.delays
@@ -107,11 +106,12 @@ export class Machine<
     })
 
     this.removeContextListener = subscribe(this.state.context, () => {
-      this.getComputed()
       this.contextListeners.forEach((listener) => {
         listener(this.contextSnapshot)
       })
     })
+
+    this.setupComputed()
 
     this.setupContextWatchers()
 
@@ -122,15 +122,6 @@ export class Machine<
     return this
   }
 
-  private getComputed = () => {
-    const { computed = {} } = this.config
-    for (const key of Object.keys(computed)) {
-      const val = computed[key](this.contextSnapshot)
-      if (Object.is(val, this.state.context[key])) continue
-      this.state.context[key as keyof TContext] = val
-    }
-  }
-
   private setupContextWatchers = () => {
     for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
       this.contextWatchers.add(
@@ -139,6 +130,17 @@ export class Machine<
         }),
       )
     }
+  }
+
+  private setupComputed = () => {
+    // convert computed properties to valtio getters format
+    const computed = cast<S.TComputedContext<TContext>>(this.config.computed ?? {})
+    const deriveFns = Object.fromEntries(
+      Object.entries(computed).map(([key, fn]: any) => [key, (get: any) => fn(get(this.state.context))]),
+    )
+
+    // attach computed properties to the state's context
+    derive(deriveFns, { proxy: this.state.context })
   }
 
   // Stops the interpreted machine
@@ -161,6 +163,9 @@ export class Machine<
     this.stopDelayedEvents()
     this.stopContextWatchers()
 
+    // cleanup `derive` subscriptions that was attached to the context
+    underive(this.state.context)
+
     this.status = MachineStatus.Stopped
     this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
     return this
@@ -177,7 +182,7 @@ export class Machine<
   }
 
   private stopContextWatchers = () => {
-    for (const fn of this.contextWatchers) fn()
+    this.contextWatchers.forEach((fn) => fn())
     this.contextWatchers.clear()
   }
 
@@ -712,3 +717,12 @@ export type MachineSrc<
 > = Machine<TContext, TState, TEvent> | (() => Machine<TContext, TState, TEvent>)
 
 export type AnyMachine = Machine<Dict, S.StateSchema, S.AnyEventObject>
+
+export const createMachine = <
+  TContext extends Dict,
+  TState extends S.StateSchema = S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(
+  config: S.MachineConfig<TContext, TState, TEvent>,
+  options?: S.MachineOptions<TContext, TState, TEvent>,
+) => new Machine(config, options)
