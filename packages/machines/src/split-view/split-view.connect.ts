@@ -9,13 +9,10 @@ export function splitViewConnect(
   normalize = defaultPropNormalizer,
 ) {
   const { context: ctx } = state
-
-  const isHorizontal = ctx.orientation === "horizontal"
-  const isCollapsed = ctx.value === ctx.min
   const isFocused = state.matches("hover", "dragging", "focused")
 
   return {
-    isCollapsed,
+    isCollapsed: ctx.isCollapsed,
     isFocused,
 
     collapse() {
@@ -35,17 +32,17 @@ export function splitViewConnect(
       style: {
         display: "flex",
         flex: "1 1 0%",
-        height: isHorizontal ? "100%" : "auto",
-        width: isHorizontal ? "auto" : "100%",
-        flexDirection: isHorizontal ? "row" : "column",
+        height: ctx.isHorizontal ? "100%" : "auto",
+        width: ctx.isHorizontal ? "auto" : "100%",
+        flexDirection: ctx.isHorizontal ? "row" : "column",
       },
     }),
 
     secondaryPaneProps: normalize<Props.Element>({
       id: dom.getSecondaryPaneId(ctx),
       style: {
-        height: isHorizontal ? "100%" : "auto",
-        width: isHorizontal ? "auto" : "100%",
+        height: ctx.isHorizontal ? "100%" : "auto",
+        width: ctx.isHorizontal ? "auto" : "100%",
         flex: "1 1 0%",
         position: "relative",
       },
@@ -66,7 +63,7 @@ export function splitViewConnect(
 
     toggleButtonProps: normalize<Props.Element>({
       id: dom.getToggleButtonId(ctx),
-      "aria-label": isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
+      "aria-label": ctx.isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
         send("TOGGLE")
       },
@@ -93,9 +90,9 @@ export function splitViewConnect(
         WebkitUserSelect: "none",
         msUserSelect: "none",
         flex: "0 0 auto",
-        cursor: isHorizontal ? "col-resize" : "row-resize",
-        minHeight: isHorizontal ? "0px" : undefined,
-        minWidth: isHorizontal ? undefined : "0px",
+        cursor: ctx.isHorizontal ? "col-resize" : "row-resize",
+        minHeight: ctx.isHorizontal ? "0px" : undefined,
+        minWidth: ctx.isHorizontal ? undefined : "0px",
       },
       onPointerDown(event) {
         if (event.button !== 0) return

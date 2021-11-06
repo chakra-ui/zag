@@ -1,11 +1,9 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
+import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
 import { clamp, decrement, increment, snapToStep } from "tiny-num"
 import { relativeToNode } from "tiny-point/dom"
 import { Context, trackPointerMove } from "../utils"
 import { dom } from "./split-view.dom"
-
-const { not } = guards
 
 export type SplitViewMachineContext = Context<{
   /**
@@ -41,6 +39,8 @@ export type SplitViewMachineContext = Context<{
    * Whether the primary pane is disabled.
    */
   disabled?: boolean
+  readonly isCollapsed: boolean
+  readonly isHorizontal: boolean
 }>
 
 export type SplitViewMachineState = {
@@ -59,6 +59,10 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       step: 1,
       value: 256,
     },
+    computed: {
+      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isCollapsed: (ctx) => ctx.value === ctx.min,
+    },
     on: {
       COLLAPSE: {
         actions: "setToMin",
@@ -72,7 +76,6 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
           actions: "setToMax",
         },
         {
-          cond: not("isCollapsed"),
           actions: "setToMin",
         },
       ],
@@ -97,7 +100,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
 
       "hover:temp": {
         after: {
-          250: "hover",
+          HOVER_DELAY: "hover",
         },
         on: {
           POINTER_DOWN: "dragging",
@@ -133,8 +136,11 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
             actions: "decrement",
           },
           ENTER: [
-            { cond: "isCollapsed", actions: "setToMin" },
-            { cond: not("isCollapsed"), actions: "setToMin" },
+            {
+              cond: "isCollapsed",
+              actions: "setToMin",
+            },
+            { actions: "setToMin" },
           ],
           HOME: {
             actions: "setToMin",
@@ -147,10 +153,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
               cond: "isCollapsed",
               actions: "setToMax",
             },
-            {
-              cond: not("isCollapsed"),
-              actions: "setToMin",
-            },
+            { actions: "setToMin" },
           ],
         },
       },
@@ -160,6 +163,9 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         activities: "trackPointerMove",
         on: {
           POINTER_UP: "focused",
+          POINTER_MOVE: {
+            actions: "setPointerValue",
+          },
         },
       },
     },
@@ -170,10 +176,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         return trackPointerMove({
           ctx,
           onPointerMove(info) {
-            const primaryPane = dom.getPrimaryPaneEl(ctx)
-            if (!primaryPane) return
-            const { point } = relativeToNode(info.point, primaryPane)
-            ctx.value = parseFloat(snapToStep(clamp(point.x, ctx), ctx.step))
+            send({ type: "POINTER_MOVE", point: info.point })
           },
           onPointerUp() {
             send("POINTER_UP")
@@ -186,6 +189,9 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
       isFixed: (ctx) => !!ctx.fixed,
+    },
+    delays: {
+      HOVER_DELAY: 250,
     },
     actions: {
       setId(ctx, evt) {
@@ -208,6 +214,12 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       },
       focusSplitter(ctx) {
         nextTick(() => dom.getSplitterEl(ctx)?.focus())
+      },
+      setPointerValue(ctx, evt) {
+        const primaryPane = dom.getPrimaryPaneEl(ctx)
+        if (!primaryPane) return
+        const { point } = relativeToNode(evt.point, primaryPane)
+        ctx.value = parseFloat(snapToStep(clamp(point.x, ctx), ctx.step))
       },
     },
   },
