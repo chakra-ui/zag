@@ -1,35 +1,36 @@
 import type { KeyboardEvent } from "react"
-import { range as createRange, clamp, increment, decrement } from "tiny-num"
-import { NumberInputMachineContext as Ctx } from "."
+import { numericRange } from "../utils/number"
+import { NumberInputMachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
-  isValidNumericEvent: (event: KeyboardEvent) => {
+  isValidNumericEvent: (ctx: Ctx, event: KeyboardEvent) => {
     if (event.key == null) return true
-
     const isModifierKey = event.ctrlKey || event.altKey || event.metaKey
-    if (isModifierKey) return true
-
     const isSingleCharacterKey = event.key.length === 1
-    if (!isSingleCharacterKey) return true
-
-    return utils.isFloatingPoint(event.key)
+    if (isModifierKey || !isSingleCharacterKey) return true
+    return ctx.validateCharacter?.(event.key) ?? utils.isFloatingPoint(event.key)
   },
-  isFloatingPoint: (v: string) => {
-    return /^[Ee0-9+\-.]$/.test(v)
-  },
-  sanitize: (value: string) => {
-    return value.split("").filter(utils.isFloatingPoint).join("")
+  isFloatingPoint: (v: string) => /^[Ee0-9+\-.]$/.test(v),
+  sanitize: (ctx: Ctx, value: string) => {
+    return value
+      .split("")
+      .filter(ctx.validateCharacter ?? utils.isFloatingPoint)
+      .join("")
   },
   increment: (ctx: Ctx, step?: number) => {
-    const range = createRange(ctx)
-    return clamp(increment(range.value, step ?? ctx.step), ctx).toString()
+    return numericRange(ctx).increment(step).clamp().getValue()
   },
   decrement: (ctx: Ctx, step?: number) => {
-    const range = createRange(ctx)
-    return clamp(decrement(range.value, step ?? ctx.step), ctx).toString()
+    return numericRange(ctx).decrement(step).clamp().getValue()
   },
   clamp: (ctx: Ctx) => {
-    const range = createRange(ctx)
-    return clamp(range.value, ctx).toString()
+    return numericRange(ctx).clamp().getValue()
+  },
+  parse: (ctx: Ctx, value: string) => {
+    return ctx.parse?.(value) ?? value
+  },
+  format: (ctx: Ctx, value: string | number) => {
+    const _val = value.toString()
+    return ctx.format?.(_val) ?? _val
   },
 }

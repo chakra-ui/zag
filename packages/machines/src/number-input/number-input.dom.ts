@@ -1,4 +1,4 @@
-import { NumberInputMachineContext as Ctx } from "./number-input.machine"
+import { NumberInputMachineContext as Ctx } from "./number-input.types"
 
 type InputEl = HTMLInputElement | null
 type ButtonEl = HTMLButtonElement | null

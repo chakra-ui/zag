@@ -75,32 +75,65 @@ export function toRangeArray(o: Num<"min" | "max" | "step">): number[] {
 
 export type RangeOptions<T = string | number> = Num<"min" | "max"> & {
   step: number
-  precision: number
+  precision?: number
   value: T
 }
 
-export function numericRange(o: RangeOptions) {
-  const { min, max, step, precision, value } = o
-  const valuePrecision = getMaxPrecision({ value, precision, step })
-  const valueAsNumber = valueOf(value)
-  const valueAsString = round(valueAsNumber, valuePrecision)
-  const percent = valueToPercent(valueAsNumber, { min, max, step })
+export function numericRange(options: RangeOptions) {
+  const { min, max, step, precision, value } = options
 
-  return {
-    isInRange: isWithinRange(valueAsNumber, { min, max }),
-    isAtMax: isAtMax(valueAsNumber, { max }),
-    isAtMin: isAtMin(valueAsNumber, { min }),
-    snapToStep: (v: number) => numericRange({ ...o, value: snapToStep(v, step) }),
-    increment: (v: number) => numericRange({ ...o, value: increment(v, step) }),
-    decrement: (v: number) => numericRange({ ...o, value: decrement(v, step) }),
-    toPrecision: () => numericRange({ ...o, value: valueAsString }),
-    toMax: () => numericRange({ ...o, value: max }),
-    toMin: () => numericRange({ ...o, value: min }),
-    fromPercent: (p: number) => numericRange({ ...o, value: percentToValue(p, { min, max }) }),
-    clamp: (v: number) => numericRange({ ...o, value: clamp(v, { min, max }) }),
-    percent,
-    value: valueAsNumber,
-    valueAsString,
-    precision: valuePrecision,
+  const utils = {
+    isInRange() {
+      return isWithinRange(utils.getValueAsNumber(), { min, max })
+    },
+    isAtMax() {
+      return isAtMax(utils.getValueAsNumber(), { max })
+    },
+    isAtMin() {
+      return isAtMin(utils.getValueAsNumber(), { min })
+    },
+    snapToStep() {
+      const value = snapToStep(utils.getValueAsNumber(), step)
+      return numericRange({ ...options, value })
+    },
+    increment(stepOverride?: number) {
+      const value = increment(utils.getValueAsNumber(), stepOverride ?? step)
+      return numericRange({ ...options, value })
+    },
+    decrement(stepOverride?: number) {
+      const value = decrement(utils.getValueAsNumber(), stepOverride ?? step)
+      return numericRange({ ...options, value })
+    },
+    toPrecision() {
+      return numericRange({ ...options, value: utils.getValue() })
+    },
+    toMax() {
+      return numericRange({ ...options, value: max })
+    },
+    toMin() {
+      return numericRange({ ...options, value: min })
+    },
+    fromPercent(percent: number) {
+      const value = percentToValue(percent, { min, max })
+      return numericRange({ ...options, value })
+    },
+    clamp() {
+      const value = clamp(utils.getValueAsNumber(), { min, max })
+      return numericRange({ ...options, value })
+    },
+    getPercent() {
+      return valueToPercent(utils.getValueAsNumber(), { min, max, step })
+    },
+    getValueAsNumber() {
+      return valueOf(value)
+    },
+    getValue() {
+      return round(utils.getValueAsNumber(), utils.getPrecision())
+    },
+    getPrecision() {
+      return getMaxPrecision({ value, precision, step })
+    },
   }
+
+  return utils
 }

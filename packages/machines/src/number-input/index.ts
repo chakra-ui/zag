@@ -6,4 +6,4 @@ export const numberInput = {
   connect: numberInputConnect,
 }
 
-export type { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
+export type { NumberInputMachineContext, NumberInputMachineState } from "./number-input.types"

@@ -32,6 +32,7 @@ export function mergeProps<T extends Props[]>(...args: T): UnionToIntersection<T
 
       if (key === "style") {
         result[key] = merge(result[key] ?? {}, props[key] ?? {})
+        continue
       }
 
       result[key] = props[key] !== undefined ? props[key] : result[key]

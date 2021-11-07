@@ -1,40 +1,26 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
-import { range as createRange } from "tiny-num"
+import { add } from "tiny-point"
 import { observeAttributes, uuid } from "../utils"
+import { pipe } from "../utils/fn"
+import { numericRange } from "../utils/number"
+import { requestPointerLock } from "../utils/pointerlock"
 import { dom } from "./number-input.dom"
+import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
 const { not, and } = guards
-
-export type NumberInputMachineContext = {
-  uid: string | number
-  doc?: Document
-  disabled?: boolean
-  readonly?: boolean
-  precision?: number
-  pattern: string
-  value: string
-  min: number
-  max: number
-  step: number
-  allowMouseWheel?: boolean
-  keepWithinRange?: boolean
-  clampValueOnBlur?: boolean
-  focusInputOnChange?: boolean
-  hint: "increment" | "decrement" | "set" | null
-}
-
-export type NumberInputMachineState = {
-  value: "unknown" | "idle" | "spinning" | "invoke" | "scrubbing"
-}
 
 export const numberInputMachine = createMachine<NumberInputMachineContext, NumberInputMachineState>(
   {
     id: "number-input",
     initial: "unknown",
     context: {
+      focusInputOnChange: true,
+      clampValueOnBlur: true,
+      keepWithinRange: true,
+      inputMode: "decimal",
       pattern: "[0-9]*(.[0-9]+)?",
       hint: null,
       uid: uuid(),
@@ -42,7 +28,27 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       step: 1,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
-      allowMouseWheel: true,
+      inputSelection: null,
+      scrubberPoint: null,
+    },
+
+    computed: {
+      valueAsNumber: (ctx) => numericRange(ctx).getValueAsNumber(),
+      isAtMin: (ctx) => numericRange(ctx).isAtMin(),
+      isAtMax: (ctx) => numericRange(ctx).isAtMax(),
+      isOutOfRange: (ctx) => !numericRange(ctx).isInRange(),
+      canIncrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !numericRange(ctx).isAtMax()),
+      canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !numericRange(ctx).isAtMin()),
+      ariaValueText: (ctx) => ctx.getAriaValueText?.(ctx.value) ?? ctx.value,
+      formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
+      showScrubber: (ctx) => ctx.scrubberPoint !== null,
+    },
+
+    entry: ["syncInputValue"],
+
+    watch: {
+      value: ["invokeOnChange"],
+      isOutOfRange: ["invokeOnInvalid"],
     },
 
     on: {
@@ -62,8 +68,30 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       },
 
       idle: {
+        on: {
+          PRESS_DOWN: {
+            target: "before:spin",
+            actions: ["focusInput", "setHint"],
+          },
+          PRESS_DOWN_SCRUBBER: {
+            target: "scrubbing",
+            actions: ["focusInput", "setHint", "setScrubberPoint"],
+          },
+          FOCUS: "focused",
+        },
+      },
+
+      focused: {
         activities: "attachWheelListener",
         on: {
+          PRESS_DOWN: {
+            target: "before:spin",
+            actions: ["focusInput", "setHint"],
+          },
+          PRESS_DOWN_SCRUBBER: {
+            target: "scrubbing",
+            actions: ["focusInput", "setHint", "setScrubberPoint"],
+          },
           ARROW_UP: {
             actions: "increment",
           },
@@ -76,25 +104,18 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           END: {
             actions: "setToMin",
           },
-          PRESS_DOWN: {
-            target: "invoke",
-            actions: ["focusInput", "setHint"],
-          },
-          PRESS_DOWN_SCRUB: {
-            target: "scrubbing",
-            actions: ["focusInput", "setHint", "setCursorPoint"],
-          },
           CHANGE: {
-            actions: ["setValue", "setHint"],
+            actions: ["setValue", "setSelectionRange", "setHint"],
           },
           BLUR: {
+            target: "idle",
             cond: and("clampOnBlur", not("isInRange")),
             actions: ["clampValue", "clearHint"],
           },
         },
       },
 
-      invoke: {
+      "before:spin": {
         entry: choose([
           { cond: "isIncrement", actions: "increment" },
           { cond: "isDecrement", actions: "decrement" },
@@ -107,8 +128,8 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         },
         on: {
           PRESS_UP: {
-            target: "idle",
-            actions: ["clearHint"],
+            target: "focused",
+            actions: ["clearHint", "restoreSelection"],
           },
         },
       },
@@ -130,8 +151,28 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         on: {
           PRESS_UP: {
             target: "idle",
-            actions: ["clearHint"],
+            actions: ["clearHint", "restoreSelection"],
           },
+        },
+      },
+
+      scrubbing: {
+        activities: ["activatePointerLock", "trackMousemove"],
+        on: {
+          POINTER_UP_SCRUBBER: {
+            target: "focused",
+            actions: ["clearScrubberPoint"],
+          },
+          POINTER_MOVE_SCRUBBER: [
+            {
+              cond: "isIncrement",
+              actions: ["increment", "setScrubberPoint"],
+            },
+            {
+              cond: "isDecrement",
+              actions: ["decrement", "setScrubberPoint"],
+            },
+          ],
         },
       },
     },
@@ -143,11 +184,11 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
     },
     guards: {
       clampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
-      isAtMin: (ctx) => createRange(ctx).isAtMin,
-      isAtMax: (ctx) => createRange(ctx).isAtMax,
-      isInRange: (ctx) => createRange(ctx).isInRange,
-      isDecrement: (ctx) => ctx.hint === "decrement",
-      isIncrement: (ctx) => ctx.hint === "increment",
+      isAtMin: (ctx) => ctx.isAtMin,
+      isAtMax: (ctx) => ctx.isAtMax,
+      isInRange: (ctx) => !ctx.isOutOfRange,
+      isDecrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
+      isIncrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
     },
     activities: {
       trackButtonDisabled(ctx, _evt, { send }) {
@@ -165,7 +206,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
             const input = dom.getInputEl(ctx)
             if (!input) return noop
 
-            const listener = (event: WheelEvent) => {
+            function onWheel(event: WheelEvent) {
               const isInputFocused = dom.getDoc(ctx).activeElement === input
               if (!ctx.allowMouseWheel || !isInputFocused) return noop
               event.preventDefault()
@@ -177,11 +218,43 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
                 ctx.value = utils.decrement(ctx)
               }
             }
-            cleanups.push(addDomEvent(input, "wheel", listener, { passive: false }))
+            cleanups.push(addDomEvent(input, "wheel", onWheel, { passive: false }))
           }),
         )
 
         return () => cleanups.forEach((c) => c())
+      },
+      activatePointerLock(ctx) {
+        const pointerlock = requestPointerLock(dom.getDoc(ctx))
+        pointerlock.setup()
+        return pointerlock.dispose
+      },
+      trackMousemove(ctx, _evt, { send }) {
+        return pipe(
+          addDomEvent(
+            dom.getDoc(ctx),
+            "mousemove",
+            function onMousemove(event) {
+              if (!ctx.scrubberPoint) return
+              const { movementX: x, movementY: y } = event
+              const hint = x > 0 ? "increment" : x < 0 ? "decrement" : null
+              const point = { ...add(ctx.scrubberPoint, { x, y }) }
+              const width = dom.getWin(ctx).innerWidth
+              point.x = (point.x + width) % width
+              if (!hint) return
+              send({ type: "POINTER_MOVE_SCRUBBER", hint, point })
+            },
+            false,
+          ),
+          addDomEvent(
+            dom.getDoc(ctx),
+            "mouseup",
+            function onMouseup() {
+              send("POINTER_UP_SCRUBBER")
+            },
+            false,
+          ),
+        )
       },
     },
     actions: {
@@ -192,6 +265,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         ctx.doc = ref(evt.doc)
       },
       focusInput(ctx) {
+        if (!ctx.focusInputOnChange) return
         const input = dom.getInputEl(ctx)
         nextTick(() => input?.focus())
       },
@@ -205,7 +279,8 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         ctx.value = utils.clamp(ctx)
       },
       setValue(ctx, evt) {
-        ctx.value = utils.sanitize(evt.value)
+        const value = evt.target?.value ?? evt.value
+        ctx.value = utils.sanitize(ctx, utils.parse(ctx, value))
       },
       setToMax(ctx) {
         ctx.value = ctx.max.toString()
@@ -221,6 +296,38 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       },
       setHintToSet(ctx) {
         ctx.hint = "set"
+      },
+      setSelectionRange(ctx, evt) {
+        ctx.inputSelection = {
+          start: evt.target.selectionStart,
+          end: evt.target.selectionEnd,
+        }
+      },
+      restoreSelection(ctx) {
+        const input = dom.getInputEl(ctx)
+        if (!input || !ctx.inputSelection) return
+        input.selectionStart = ctx.inputSelection.start ?? input.value?.length
+        input.selectionEnd = ctx.inputSelection.end ?? input.selectionStart
+      },
+      invokeOnChange(ctx) {
+        ctx.onChange?.(ctx.value, ctx.valueAsNumber)
+      },
+      invokeOnInvalid(ctx) {
+        if (!ctx.isOutOfRange) return
+        const type = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
+        ctx.onInvalid?.(type, ctx.formattedValue, ctx.valueAsNumber)
+      },
+      syncInputValue(ctx) {
+        const input = dom.getInputEl(ctx)
+        if (!input || input.value == ctx.value) return
+        const value = utils.parse(ctx, input.value)
+        ctx.value = utils.sanitize(ctx, value)
+      },
+      setScrubberPoint(ctx, evt) {
+        ctx.scrubberPoint = evt.point
+      },
+      clearScrubberPoint(ctx) {
+        ctx.scrubberPoint = null
       },
     },
   },

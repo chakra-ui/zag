@@ -1,41 +1,40 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { range as createRange } from "tiny-num"
 import { fromPointerEvent } from "tiny-point/dom"
-import type { DOM, Props } from "../utils"
-import { defaultPropNormalizer, getEventStep } from "../utils"
+import { defaultPropNormalizer, DOM, getEventStep, Props } from "../utils"
+import { cast } from "../utils/fn"
 import { dom } from "./number-input.dom"
-import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.machine"
+import { NumberInputSend, NumberInputState } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
-export function numberInputConnect(
-  state: S.State<NumberInputMachineContext, NumberInputMachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
-) {
+export function numberInputConnect(state: NumberInputState, send: NumberInputSend, normalize = defaultPropNormalizer) {
   const { context: ctx } = state
 
-  const range = createRange(ctx)
-  const canIncrement = !ctx.disabled && !range.isAtMax
-  const canDecrement = !ctx.disabled && !range.isAtMin
-
-  const valueAsNumber = range.value
-
-  const MINUS_SIGN = "\u2212"
-  const valueText = ctx.value === "" ? "Empty" : ctx.value.replace("-", MINUS_SIGN)
+  const isScrubbing = state.matches("scrubbing")
+  const isFocused = state.matches("focused", "before:spin", "scrubbing", "spinning")
 
   return {
+    valueAsNumber: ctx.valueAsNumber,
+    value: ctx.formattedValue,
+
+    isScrubbing,
+    isFocused,
+    isDisabled: ctx.disabled,
+
     inputProps: normalize<Props.Input>({
+      name: ctx.name,
       id: dom.getInputId(ctx),
       role: "spinbutton",
       pattern: ctx.pattern,
-      inputMode: "decimal",
+      inputMode: ctx.inputMode,
+      disabled: ctx.disabled,
+      readOnly: ctx.readonly,
       autoComplete: "off",
       autoCorrect: "off",
       type: "text",
       "aria-valuemin": ctx.min,
       "aria-valuemax": ctx.max,
-      "aria-valuetext": valueText,
-      "aria-valuenow": isNaN(valueAsNumber) ? undefined : valueAsNumber,
+      "aria-valuetext": ctx.ariaValueText,
+      "aria-valuenow": isNaN(ctx.valueAsNumber) ? undefined : ctx.valueAsNumber,
+      "aria-invalid": ctx.isOutOfRange || undefined,
       "aria-disabled": ctx.disabled || undefined,
       "aria-readonly": ctx.readonly || undefined,
       value: ctx.value,
@@ -48,13 +47,13 @@ export function numberInputConnect(
       onChange(event) {
         const evt = (event.nativeEvent ?? event) as InputEvent
         if (evt.isComposing) return
-        send({ type: "CHANGE", value: event.target.value, hint: "set" })
+        send({ type: "CHANGE", target: event.currentTarget, hint: "set" })
       },
       onKeyDown(event) {
         const evt = (event.nativeEvent ?? event) as KeyboardEvent
         if (evt.isComposing) return
 
-        if (!utils.isValidNumericEvent(event) || (event.key === "." && ctx.value.includes("."))) {
+        if (!utils.isValidNumericEvent(ctx, event)) {
           event.preventDefault()
         }
 
@@ -85,12 +84,13 @@ export function numberInputConnect(
 
     decrementButtonProps: normalize<Props.Button>({
       id: dom.getDecButtonId(ctx),
-      "aria-disabled": !canDecrement,
-      disabled: !canDecrement,
+      "aria-disabled": !ctx.canDecrement,
+      disabled: !ctx.canDecrement,
       role: "button",
       tabIndex: -1,
       onPointerDown(event) {
         event.preventDefault()
+        if (!ctx.canDecrement) return
         send({ type: "PRESS_DOWN", hint: "decrement" })
       },
       onPointerUp() {
@@ -102,17 +102,17 @@ export function numberInputConnect(
     }),
 
     incrementButtonProps: normalize<Props.Button>({
-      "aria-disabled": !canIncrement,
-      disabled: !canIncrement,
+      "aria-disabled": !ctx.canIncrement,
+      disabled: !ctx.canIncrement,
       role: "button",
       tabIndex: -1,
       id: dom.getIncButtonId(ctx),
       onPointerDown(event) {
         event.preventDefault()
+        if (!ctx.canIncrement) return
         send({ type: "PRESS_DOWN", hint: "increment" })
       },
-      onPointerUp(event) {
-        event.preventDefault()
+      onPointerUp() {
         send({ type: "PRESS_UP", hint: "increment" })
       },
       onPointerLeave() {
@@ -120,13 +120,30 @@ export function numberInputConnect(
       },
     }),
 
+    cursorProps: normalize<Props.Element>({
+      hidden: !ctx.showScrubber,
+      style: {
+        position: "fixed",
+        pointerEvents: "none",
+        left: "0px",
+        top: "0px",
+        zIndex: 99999,
+        transform: ctx.scrubberPoint
+          ? `translate3d(${ctx.scrubberPoint.x}px, ${ctx.scrubberPoint.y}px, 0px)`
+          : undefined,
+        willChange: "transform",
+      },
+    }),
+
     scrubberProps: normalize<Props.Element>({
       id: dom.getScrubberId(ctx),
       role: "presentation",
-      onPointerDown(event) {
-        const evt = (event.nativeEvent ?? event) as PointerEvent
-        evt.preventDefault()
-        send({ type: "PRESS_DOWN_SCRUB", point: fromPointerEvent(evt) })
+      onMouseDown(event) {
+        event.preventDefault()
+        send({ type: "PRESS_DOWN_SCRUBBER", point: fromPointerEvent(cast(event)) })
+      },
+      style: {
+        cursor: "ew-resize",
       },
     }),
   }

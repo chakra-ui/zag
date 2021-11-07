@@ -106,3 +106,14 @@ If needed, this file contains common js utilities that are needed for the machin
 
   > Most framework ensures the `ref` (React), `this.$refs` (Vue) or `bind:this` (Svelte) have the same identity as when
   > you do `getElementById` or `querySelector` so this should work just fine.
+
+- State name should active and not passive
+
+  - represent something happening, e.g. `searching`, `scrubbing`, etc.
+  - represent an identifiable situation, e.g. `focused`, `visited`, `logged-in`
+
+- State machines are a mathematical model of computation. It includes:
+  - finite number of states
+  - transition between states
+  - side-effects that run as a result of transitions
+  - only one state can be active at a time
