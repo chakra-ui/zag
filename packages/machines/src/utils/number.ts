@@ -1,11 +1,26 @@
 type Num<T extends string> = Record<T, number>
 
+export function wrap(num: number, max: number) {
+  return ((num % max) + max) % max
+}
+
+export function roundPx(num: number, dp?: number) {
+  if (dp != null) {
+    const dp = window.devicePixelRatio
+    return Math.floor(num * dp + 0.5) / dp
+  }
+  return Math.round(num)
+}
+
 const decimalFormat = new Intl.NumberFormat("en-US", { style: "decimal" })
 
-const parseIntl = (n: number) => parseFloat(decimalFormat.format(n))
+function formatter(n: number) {
+  return parseFloat(decimalFormat.format(n))
+}
 
-export const countDecimals = (v: number | undefined) =>
-  decimalFormat.formatToParts(v).find((p) => p.type === "fraction")?.value.length ?? 0
+export function countDecimals(v: number | undefined) {
+  return decimalFormat.formatToParts(v).find((p) => p.type === "fraction")?.value.length ?? 0
+}
 
 export const valueToPercent = (v: number, r: Num<"step" | "min" | "max">) => ((v - r.min) * 100) / (r.max - r.min)
 
@@ -22,9 +37,9 @@ export const transform = (a: [number, number], b: [number, number]) => {
 }
 
 export const clamp = (v: number, o: Num<"min" | "max">) => Math.min(Math.max(v, o.min), o.max)
-export const increment = (v: number, s: number) => parseIntl(v + s)
-export const decrement = (v: number, s: number) => parseIntl(v - s)
-export const multiply = (v: number, s: number) => parseIntl(v * s)
+export const increment = (v: number, s: number) => formatter(v + s)
+export const decrement = (v: number, s: number) => formatter(v - s)
+export const multiply = (v: number, s: number) => formatter(v * s)
 
 export function round(v: number, t?: number) {
   const p = 10 ** (t ?? 10)
@@ -79,7 +94,7 @@ export type RangeOptions<T = string | number> = Num<"min" | "max"> & {
   value: T
 }
 
-export function numericRange(options: RangeOptions) {
+export function rangy(options: RangeOptions) {
   const { min, max, step, precision, value } = options
 
   const utils = {
@@ -94,32 +109,32 @@ export function numericRange(options: RangeOptions) {
     },
     snapToStep() {
       const value = snapToStep(utils.getValueAsNumber(), step)
-      return numericRange({ ...options, value })
+      return rangy({ ...options, value })
     },
     increment(stepOverride?: number) {
       const value = increment(utils.getValueAsNumber(), stepOverride ?? step)
-      return numericRange({ ...options, value })
+      return rangy({ ...options, value })
     },
     decrement(stepOverride?: number) {
       const value = decrement(utils.getValueAsNumber(), stepOverride ?? step)
-      return numericRange({ ...options, value })
+      return rangy({ ...options, value })
     },
     toPrecision() {
-      return numericRange({ ...options, value: utils.getValue() })
+      return rangy({ ...options, value: utils.getValue() })
     },
     toMax() {
-      return numericRange({ ...options, value: max })
+      return rangy({ ...options, value: max })
     },
     toMin() {
-      return numericRange({ ...options, value: min })
+      return rangy({ ...options, value: min })
     },
     fromPercent(percent: number) {
       const value = percentToValue(percent, { min, max })
-      return numericRange({ ...options, value })
+      return rangy({ ...options, value })
     },
     clamp() {
       const value = clamp(utils.getValueAsNumber(), { min, max })
-      return numericRange({ ...options, value })
+      return rangy({ ...options, value })
     },
     getPercent() {
       return valueToPercent(utils.getValueAsNumber(), { min, max, step })

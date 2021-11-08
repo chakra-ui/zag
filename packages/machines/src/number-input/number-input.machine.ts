@@ -1,10 +1,11 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
-import { add } from "tiny-point"
+import { supportsPointerEvent } from "tiny-guard"
 import { observeAttributes, uuid } from "../utils"
 import { pipe } from "../utils/fn"
-import { numericRange } from "../utils/number"
+import { isSafari } from "../utils/guard"
+import { rangy } from "../utils/number"
 import { requestPointerLock } from "../utils/pointerlock"
 import { dom } from "./number-input.dom"
 import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.types"
@@ -17,28 +18,30 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
     id: "number-input",
     initial: "unknown",
     context: {
+      uid: uuid(),
       focusInputOnChange: true,
       clampValueOnBlur: true,
       keepWithinRange: true,
       inputMode: "decimal",
       pattern: "[0-9]*(.[0-9]+)?",
       hint: null,
-      uid: uuid(),
       value: "",
       step: 1,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
       inputSelection: null,
-      scrubberPoint: null,
+      cursorPoint: null,
+      dir: "ltr",
     },
 
     computed: {
-      valueAsNumber: (ctx) => numericRange(ctx).getValueAsNumber(),
-      isAtMin: (ctx) => numericRange(ctx).isAtMin(),
-      isAtMax: (ctx) => numericRange(ctx).isAtMax(),
-      isOutOfRange: (ctx) => !numericRange(ctx).isInRange(),
-      canIncrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !numericRange(ctx).isAtMax()),
-      canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !numericRange(ctx).isAtMin()),
+      isRtl: (ctx) => ctx.dir === "rtl",
+      valueAsNumber: (ctx) => rangy(ctx).getValueAsNumber(),
+      isAtMin: (ctx) => rangy(ctx).isAtMin(),
+      isAtMax: (ctx) => rangy(ctx).isAtMax(),
+      isOutOfRange: (ctx) => !rangy(ctx).isInRange(),
+      canIncrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !rangy(ctx).isAtMax()),
+      canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !rangy(ctx).isAtMin()),
       ariaValueText: (ctx) => ctx.getAriaValueText?.(ctx.value) ?? ctx.value,
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
     },
@@ -74,7 +77,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           },
           PRESS_DOWN_SCRUBBER: {
             target: "scrubbing",
-            actions: ["focusInput", "setHint", "setScrubberPoint"],
+            actions: ["focusInput", "setHint", "setCursorPoint"],
           },
           FOCUS: "focused",
         },
@@ -89,7 +92,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           },
           PRESS_DOWN_SCRUBBER: {
             target: "scrubbing",
-            actions: ["focusInput", "setHint", "setScrubberPoint"],
+            actions: ["focusInput", "setHint", "setCursorPoint"],
           },
           ARROW_UP: {
             actions: "increment",
@@ -156,20 +159,22 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       },
 
       scrubbing: {
+        entry: ["addCustomCursor", "disableTextSelection"],
+        exit: ["removeCustomCursor", "restoreTextSelection"],
         activities: ["activatePointerLock", "trackMousemove"],
         on: {
           POINTER_UP_SCRUBBER: {
             target: "focused",
-            actions: ["clearScrubberPoint"],
+            actions: ["clearCursorPoint"],
           },
           POINTER_MOVE_SCRUBBER: [
             {
               cond: "isIncrement",
-              actions: ["increment", "setScrubberPoint"],
+              actions: ["increment", "setCursorPoint", "updateCursor"],
             },
             {
               cond: "isDecrement",
-              actions: ["decrement", "setScrubberPoint"],
+              actions: ["decrement", "setCursorPoint", "updateCursor"],
             },
           ],
         },
@@ -224,9 +229,8 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         return () => cleanups.forEach((c) => c())
       },
       activatePointerLock(ctx) {
-        const pointerlock = requestPointerLock(dom.getDoc(ctx))
-        pointerlock.setup()
-        return pointerlock.dispose
+        if (isSafari() || !supportsPointerEvent()) return noop
+        return requestPointerLock(dom.getDoc(ctx))
       },
       trackMousemove(ctx, _evt, { send }) {
         return pipe(
@@ -234,14 +238,10 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
             dom.getDoc(ctx),
             "mousemove",
             function onMousemove(event) {
-              if (!ctx.scrubberPoint) return
-              const { movementX: x, movementY: y } = event
-              const hint = x > 0 ? "increment" : x < 0 ? "decrement" : null
-              const point = { ...add(ctx.scrubberPoint, { x, y }) }
-              const width = dom.getWin(ctx).innerWidth
-              point.x = (point.x + width) % width
-              if (!hint) return
-              send({ type: "POINTER_MOVE_SCRUBBER", hint, point })
+              if (!ctx.cursorPoint) return
+              const value = dom.getMousementValue(ctx, event)
+              if (!value.hint) return
+              send({ type: "POINTER_MOVE_SCRUBBER", hint: value.hint, point: value.point })
             },
             false,
           ),
@@ -322,11 +322,61 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         const value = utils.parse(ctx, input.value)
         ctx.value = utils.sanitize(ctx, value)
       },
-      setScrubberPoint(ctx, evt) {
-        ctx.scrubberPoint = evt.point
+      setCursorPoint(ctx, evt) {
+        ctx.cursorPoint = evt.point
       },
-      clearScrubberPoint(ctx) {
-        ctx.scrubberPoint = null
+      clearCursorPoint(ctx) {
+        ctx.cursorPoint = null
+      },
+      updateCursor(ctx) {
+        const cursor = dom.getCursorEl(ctx)
+        if (!cursor || !ctx.cursorPoint) return
+        cursor.style.transform = `translate3d(${ctx.cursorPoint.x}px, ${ctx.cursorPoint.y}px, 0px)`
+      },
+      addCustomCursor(ctx) {
+        if (isSafari() || !supportsPointerEvent()) return
+        const doc = dom.getDoc(ctx)
+        const el = doc.createElement("div")
+        el.className = "scrubber--cursor"
+        el.id = dom.getCursorId(ctx)
+        Object.assign(el.style, {
+          width: "15px",
+          height: "15px",
+          position: "fixed",
+          pointerEvents: "none",
+          left: "0px",
+          top: "0px",
+          zIndex: 99999,
+          transform: ctx.cursorPoint ? `translate3d(${ctx.cursorPoint.x}px, ${ctx.cursorPoint.y}px, 0px)` : undefined,
+          willChange: "transform",
+        })
+        el.innerHTML = `
+        <svg width="46" height="15" style="left: -15.5px; position: absolute; top: 0; filter: drop-shadow(rgba(0, 0, 0, 0.4) 0px 1px 1.1px);">
+          <g transform="translate(2 3)">
+            <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z" style="stroke-width: 2px; stroke: white;"></path>
+            <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z"></path>
+          </g>
+        </svg>`
+        doc.body.appendChild(el)
+      },
+      removeCustomCursor(ctx) {
+        if (isSafari() || !supportsPointerEvent()) return
+        const doc = dom.getDoc(ctx)
+        const el = doc.getElementById(dom.getCursorId(ctx))
+        if (!el) return
+        el.remove()
+      },
+      disableTextSelection(ctx) {
+        const doc = dom.getDoc(ctx)
+        doc.body.style.pointerEvents = "none"
+        doc.documentElement.style.userSelect = "none"
+        doc.documentElement.style.cursor = "ew-resize"
+      },
+      restoreTextSelection(ctx) {
+        const doc = dom.getDoc(ctx)
+        doc.body.style.pointerEvents = ""
+        doc.documentElement.style.userSelect = ""
+        doc.documentElement.style.cursor = ""
       },
     },
   },

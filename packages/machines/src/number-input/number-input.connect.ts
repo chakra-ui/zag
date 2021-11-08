@@ -19,6 +19,13 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
     isFocused,
     isDisabled: ctx.disabled,
 
+    labelProps: normalize<Props.Label>({
+      "data-disabled": ctx.disabled,
+      "data-readonly": ctx.readonly,
+      id: dom.getLabelId(ctx),
+      htmlFor: dom.getInputId(ctx),
+    }),
+
     inputProps: normalize<Props.Input>({
       name: ctx.name,
       id: dom.getInputId(ctx),
@@ -85,6 +92,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
     decrementButtonProps: normalize<Props.Button>({
       id: dom.getDecButtonId(ctx),
       "aria-disabled": !ctx.canDecrement,
+      "aria-label": "Decrement value",
       disabled: !ctx.canDecrement,
       role: "button",
       tabIndex: -1,
@@ -102,11 +110,12 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
     }),
 
     incrementButtonProps: normalize<Props.Button>({
+      id: dom.getIncButtonId(ctx),
       "aria-disabled": !ctx.canIncrement,
+      "aria-label": "Increment value",
       disabled: !ctx.canIncrement,
       role: "button",
       tabIndex: -1,
-      id: dom.getIncButtonId(ctx),
       onPointerDown(event) {
         event.preventDefault()
         if (!ctx.canIncrement) return
@@ -120,31 +129,30 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       },
     }),
 
-    cursorProps: normalize<Props.Element>({
-      hidden: !isScrubbing,
-      style: {
-        position: "fixed",
-        pointerEvents: "none",
-        left: "0px",
-        top: "0px",
-        zIndex: 99999,
-        transform: ctx.scrubberPoint
-          ? `translate3d(${ctx.scrubberPoint.x}px, ${ctx.scrubberPoint.y}px, 0px)`
-          : undefined,
-        willChange: "transform",
-      },
-    }),
-
     scrubberProps: normalize<Props.Element>({
       id: dom.getScrubberId(ctx),
       role: "presentation",
       onMouseDown(event) {
         event.preventDefault()
-        send({ type: "PRESS_DOWN_SCRUBBER", point: fromPointerEvent(cast(event)) })
+        const pt = fromPointerEvent(cast(event))
+        const win = cast<Window>(event.view ?? window)
+        const dp = win.devicePixelRatio
+        send({
+          type: "PRESS_DOWN_SCRUBBER",
+          point: {
+            x: pt.x - roundPx(7.5, dp),
+            y: pt.y - roundPx(7.5, dp),
+          },
+        })
       },
       style: {
         cursor: "ew-resize",
       },
     }),
   }
+}
+
+function roundPx(e: number, dp?: number) {
+  if (dp) return Math.floor(e * dp + 0.5) / dp
+  return Math.round(e)
 }

@@ -1,19 +1,12 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { PointValue } from "tiny-point"
+import { Context } from "../utils"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 type InputSelection = Record<"start" | "end", number | null>
 
-export type NumberInputMachineContext = {
-  /**
-   * The `id` to use for the number input field.
-   */
-  uid: string | number
-  /**
-   * The owner document of the number input.
-   */
-  doc?: Document
+export type NumberInputMachineContext = Context<{
   /**
    * The name attribute of the number input. Useful for form submission.
    */
@@ -107,7 +100,7 @@ export type NumberInputMachineContext = {
   /**
    * The scrubber cursor position
    */
-  scrubberPoint: PointValue | null
+  cursorPoint: PointValue | null
   /**
    * Function invoked when the value changes
    */
@@ -148,7 +141,11 @@ export type NumberInputMachineContext = {
    * @computed The formatted value of the input
    */
   readonly formattedValue: string
-}
+  /**
+   * @computed Whether the writing direction is RTL
+   */
+  readonly isRtl: boolean
+}>
 
 export type NumberInputMachineState = {
   value: "unknown" | "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"

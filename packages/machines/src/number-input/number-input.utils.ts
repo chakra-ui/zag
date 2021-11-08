@@ -1,5 +1,5 @@
 import type { KeyboardEvent } from "react"
-import { numericRange } from "../utils/number"
+import { rangy } from "../utils/number"
 import { NumberInputMachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
@@ -18,13 +18,13 @@ export const utils = {
       .join("")
   },
   increment: (ctx: Ctx, step?: number) => {
-    return numericRange(ctx).increment(step).clamp().getValue()
+    return rangy(ctx).increment(step).clamp().getValue()
   },
   decrement: (ctx: Ctx, step?: number) => {
-    return numericRange(ctx).decrement(step).clamp().getValue()
+    return rangy(ctx).decrement(step).clamp().getValue()
   },
   clamp: (ctx: Ctx) => {
-    return numericRange(ctx).clamp().getValue()
+    return rangy(ctx).clamp().getValue()
   },
   parse: (ctx: Ctx, value: string) => {
     return ctx.parse?.(value) ?? value

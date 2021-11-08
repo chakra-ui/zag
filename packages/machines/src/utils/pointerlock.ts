@@ -1,4 +1,7 @@
-type PointerLockHandlers = { onPointerLock?: () => void; onPointerUnlock?: () => void }
+type PointerLockHandlers = {
+  onPointerLock?: () => void
+  onPointerUnlock?: () => void
+}
 
 export function requestPointerLock(doc: Document, handlers: PointerLockHandlers = {}) {
   const { onPointerLock, onPointerUnlock } = handlers
@@ -57,9 +60,10 @@ export function requestPointerLock(doc: Document, handlers: PointerLockHandlers 
     addEventListeners()
   }
 
-  function getLockElement() {
-    return doc.pointerLockElement || (doc as any).mozPointerLockElement || (doc as any).webkitPointerLockElement
-  }
+  setup()
+  return dispose
+}
 
-  return { setup, dispose, getLockElement }
+export function getPointerLockElement(doc: Document) {
+  return doc.pointerLockElement || (doc as any).mozPointerLockElement || (doc as any).webkitPointerLockElement
 }
