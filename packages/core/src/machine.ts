@@ -673,7 +673,7 @@ export class Machine<
     const info = this.getNextStateInfo(transition, event)
 
     if (info) {
-      this.performStateChangeEffects(info.target, info, event)
+      this.performStateChangeEffects(this.state.value!, info, event)
     }
 
     return info.stateNode
