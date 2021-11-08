@@ -121,7 +121,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
     }),
 
     cursorProps: normalize<Props.Element>({
-      hidden: !ctx.showScrubber,
+      hidden: !isScrubbing,
       style: {
         position: "fixed",
         pointerEvents: "none",

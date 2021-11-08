@@ -41,7 +41,6 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !numericRange(ctx).isAtMin()),
       ariaValueText: (ctx) => ctx.getAriaValueText?.(ctx.value) ?? ctx.value,
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
-      showScrubber: (ctx) => ctx.scrubberPoint !== null,
     },
 
     entry: ["syncInputValue"],

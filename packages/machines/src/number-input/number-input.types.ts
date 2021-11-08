@@ -148,10 +148,6 @@ export type NumberInputMachineContext = {
    * @computed The formatted value of the input
    */
   readonly formattedValue: string
-  /**
-   * @computed Whether to show the scrubber cursor
-   */
-  readonly showScrubber: boolean
 }
 
 export type NumberInputMachineState = {
