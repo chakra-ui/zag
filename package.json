@@ -15,6 +15,7 @@
     "start:vue": "cd examples/vue-ts && yarn dev",
     "start:solid": "cd examples/solid-ts && yarn dev",
     "cypress:react": "start-server-and-test start:react http://localhost:3000 cypress:dev",
+    "cypress:vue": "start-server-and-test start:vue http://localhost:3000 cypress:dev",
     "cypress:run": "cypress run",
     "cypress:dev": "cypress open",
     "fix:pkgs": "manypkg fix",
