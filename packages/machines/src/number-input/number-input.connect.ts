@@ -1,6 +1,7 @@
 import { fromPointerEvent } from "tiny-point/dom"
-import { defaultPropNormalizer, DOM, getEventStep, Props } from "../utils"
+import { dataAttr, defaultPropNormalizer, DOM, getEventStep, Props } from "../utils"
 import { cast } from "../utils/fn"
+import { roundPx } from "../utils/number"
 import { dom } from "./number-input.dom"
 import { NumberInputSend, NumberInputState } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -10,6 +11,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
 
   const isScrubbing = state.matches("scrubbing")
   const isFocused = state.matches("focused", "before:spin", "scrubbing", "spinning")
+  const isInvalid = ctx.isOutOfRange || Boolean(ctx.invalid)
 
   return {
     valueAsNumber: ctx.valueAsNumber,
@@ -18,10 +20,12 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
     isScrubbing,
     isFocused,
     isDisabled: ctx.disabled,
+    isInvalid,
 
     labelProps: normalize<Props.Label>({
-      "data-disabled": ctx.disabled,
-      "data-readonly": ctx.readonly,
+      "data-disabled": dataAttr(ctx.disabled),
+      "data-readonly": dataAttr(ctx.readonly),
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx),
     }),
@@ -41,7 +45,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       "aria-valuemax": ctx.max,
       "aria-valuetext": ctx.ariaValueText || undefined,
       "aria-valuenow": isNaN(ctx.valueAsNumber) ? undefined : ctx.valueAsNumber,
-      "aria-invalid": ctx.isOutOfRange || undefined,
+      "aria-invalid": isInvalid || undefined,
       "aria-disabled": ctx.disabled || undefined,
       "aria-readonly": ctx.readonly || undefined,
       value: ctx.value,
@@ -139,10 +143,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
         const dp = win.devicePixelRatio
         send({
           type: "PRESS_DOWN_SCRUBBER",
-          point: {
-            x: pt.x - roundPx(7.5, dp),
-            y: pt.y - roundPx(7.5, dp),
-          },
+          point: { x: pt.x - roundPx(7.5, dp), y: pt.y - roundPx(7.5, dp) },
         })
       },
       style: {
@@ -150,9 +151,4 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       },
     }),
   }
-}
-
-function roundPx(e: number, dp?: number) {
-  if (dp) return Math.floor(e * dp + 0.5) / dp
-  return Math.round(e)
 }

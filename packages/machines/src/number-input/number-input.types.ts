@@ -20,6 +20,10 @@ export type NumberInputMachineContext = Context<{
    */
   readonly?: boolean
   /**
+   * Whether the number input value is invalid.
+   */
+  invalid?: boolean
+  /**
    * The number of decimal points used to round the value
    */
   precision?: number

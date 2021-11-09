@@ -32,6 +32,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       precision: 0,
       inputSelection: null,
       cursorPoint: null,
+      invalid: false,
       dir: "ltr",
     },
 
