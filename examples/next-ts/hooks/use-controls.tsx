@@ -126,7 +126,8 @@ export function useControls<T extends ControlRecord>(config: T) {
                       defaultValue={state[key] as number}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          setState((s) => ({ ...s, [key]: e.currentTarget?.valueAsNumber }))
+                          const val = parseFloat(e.currentTarget.value)
+                          setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
                         }
                       }}
                     />

@@ -126,7 +126,7 @@ export class Machine<
     for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
       this.contextWatchers.add(
         subscribeKey(this.state.context, key, () => {
-          this.executeActions(fn, toEvent<TEvent>(ActionTypes.Watch))
+          this.executeActions(fn, this.state.event as TEvent)
         }),
       )
     }

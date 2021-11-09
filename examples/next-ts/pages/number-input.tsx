@@ -4,9 +4,20 @@ import { useMachine } from "@ui-machines/react"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
+import { useControls } from "hooks/use-controls"
 
 export default function Page() {
-  const [state, send] = useMachine(numberInput.machine.withContext({ min: 0, max: 100 }))
+  const controls = useControls({
+    clampValueOnBlur: { type: "boolean", defaultValue: true },
+    step: { type: "number", defaultValue: 1 },
+    precision: { type: "number", defaultValue: 0 },
+    min: { type: "number", defaultValue: 0 },
+    max: { type: "number", defaultValue: 100 },
+  })
+
+  const [state, send] = useMachine(numberInput.machine, {
+    context: controls.context,
+  })
 
   const ref = useMount<HTMLInputElement>(send)
 
@@ -17,7 +28,8 @@ export default function Page() {
 
   return (
     <div>
-      <div>
+      <controls.ui />
+      <div className="root">
         <div
           data-testid="scrubber"
           {...mergeProps(scrubberProps, { style: { width: 32, height: 32, background: "red" } })}

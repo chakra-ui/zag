@@ -29,6 +29,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       step: 1,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
+      precision: 0,
       inputSelection: null,
       cursorPoint: null,
       dir: "ltr",
@@ -101,19 +102,26 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
             actions: "decrement",
           },
           HOME: {
-            actions: "setToMax",
+            actions: "setToMin",
           },
           END: {
-            actions: "setToMin",
+            actions: "setToMax",
           },
           CHANGE: {
             actions: ["setValue", "setSelectionRange", "setHint"],
           },
-          BLUR: {
-            target: "idle",
-            cond: and("clampOnBlur", not("isInRange")),
-            actions: ["clampValue", "clearHint"],
-          },
+          BLUR: [
+            {
+              cond: "isInvalidExponential",
+              target: "idle",
+              actions: ["clearValue", "clearHint"],
+            },
+            {
+              cond: and("clampOnBlur", not("isInRange")),
+              target: "idle",
+              actions: ["clampValue", "clearHint"],
+            },
+          ],
         },
       },
 
@@ -193,6 +201,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       isInRange: (ctx) => !ctx.isOutOfRange,
       isDecrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
       isIncrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
+      isInvalidExponential: (ctx) => ctx.value.startsWith("e"),
     },
     activities: {
       trackButtonDisabled(ctx, _evt, { send }) {
@@ -280,6 +289,9 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       setValue(ctx, evt) {
         const value = evt.target?.value ?? evt.value
         ctx.value = utils.sanitize(ctx, utils.parse(ctx, value))
+      },
+      clearValue(ctx) {
+        ctx.value = ""
       },
       setToMax(ctx) {
         ctx.value = ctx.max.toString()

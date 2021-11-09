@@ -39,7 +39,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       type: "text",
       "aria-valuemin": ctx.min,
       "aria-valuemax": ctx.max,
-      "aria-valuetext": ctx.ariaValueText,
+      "aria-valuetext": ctx.ariaValueText || undefined,
       "aria-valuenow": isNaN(ctx.valueAsNumber) ? undefined : ctx.valueAsNumber,
       "aria-invalid": ctx.isOutOfRange || undefined,
       "aria-disabled": ctx.disabled || undefined,
