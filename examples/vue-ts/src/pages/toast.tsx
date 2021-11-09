@@ -19,10 +19,12 @@ const Toast = defineComponent({
     },
   },
   setup(props) {
+    // @ts-expect-error
     const [state, send] = useActor(props.actor)
 
     const ctx = computed(() => state.value.context)
 
+    // @ts-expect-error
     const t = computed(() => toast.connect(state.value, send))
 
     return () => (
@@ -48,7 +50,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(toast.group.machine)
 
-    const ref = useMount(send)
+    const toastRef = useMount(send)
 
     const toasts = computed(() => toast.group.connect(state.value, send, normalizeProps))
 
@@ -56,7 +58,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div ref={ref}>
+        <div ref={toastRef}>
           <button
             onClick={() => {
               id.value = toasts.value.create({

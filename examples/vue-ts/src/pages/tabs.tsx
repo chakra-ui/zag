@@ -56,8 +56,8 @@ export default defineComponent({
       return (
         <div style={{ width: "100%" }}>
           <PropertyControls />
-          <div className="tabs">
-            <div className="tabs__indicator" {...machineState.value.tabIndicatorProps} />
+          <div class="tabs">
+            <div class="tabs__indicator" {...machineState.value.tabIndicatorProps} />
             <div ref={ref} {...machineState.value.tablistProps}>
               {tabsData.map((data) => (
                 <button

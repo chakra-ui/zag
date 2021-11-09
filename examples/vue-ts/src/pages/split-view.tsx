@@ -21,19 +21,19 @@ export default defineComponent({
     const machineState = computed(() => splitView.connect(state.value, send, normalizeProps))
 
     return () => (
-      <div className={styles}>
-        <div className="root">
+      <div class={styles}>
+        <div class="root">
           <div ref={ref} {...machineState.value.rootProps}>
-            <div className="pane" {...machineState.value.primaryPaneProps}>
+            <div class="pane" {...machineState.value.primaryPaneProps}>
               <div>
                 <small {...machineState.value.labelProps}>Table of Contents</small>
                 <p>Primary Pane</p>
               </div>
             </div>
-            <div className="splitter" {...machineState.value.splitterProps}>
-              <div className="splitter-bar" />
+            <div class="splitter" {...machineState.value.splitterProps}>
+              <div class="splitter-bar" />
             </div>
-            <div className="pane" {...machineState.value.secondaryPaneProps}>
+            <div class="pane" {...machineState.value.secondaryPaneProps}>
               Secondary Pane
             </div>
           </div>

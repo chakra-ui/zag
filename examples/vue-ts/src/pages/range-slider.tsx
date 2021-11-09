@@ -33,20 +33,20 @@ export default defineComponent({
       const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = machineState.value
 
       return (
-        <div className={styles}>
+        <div class={styles}>
           <form
             // ensure we can read the value within forms
             onChange={(e) => {
-              const formData = serialize(e.currentTarget, { hash: true })
+              const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
               console.log(formData)
             }}
           >
-            <div className="slider" ref={ref} {...rootProps}>
-              <div className="slider__track" {...trackProps}>
-                <div className="slider__range" {...rangeProps} />
+            <div class="slider" ref={ref} {...rootProps}>
+              <div class="slider__track" {...trackProps}>
+                <div class="slider__range" {...rangeProps} />
               </div>
               {values.map((_, index) => (
-                <div key={index} className="slider__thumb" {...getThumbProps(index)}>
+                <div key={index} class="slider__thumb" {...getThumbProps(index)}>
                   <input name="min" {...getInputProps(index)} />
                 </div>
               ))}

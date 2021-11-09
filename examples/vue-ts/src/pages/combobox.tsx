@@ -44,7 +44,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div className={styles}>
+        <div class={styles}>
           <div ref={ref}>
             <label {...machineState.value.labelProps}>Select country</label>
             <div {...machineState.value.containerProps}>

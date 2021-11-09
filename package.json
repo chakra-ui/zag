@@ -98,13 +98,21 @@
       "packages/frameworks/*"
     ]
   },
-  "workspaces": [
-    "packages/utils",
-    "packages/core",
-    "packages/machines",
-    "packages/frameworks/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/utils",
+      "packages/core",
+      "packages/machines",
+      "packages/frameworks/*",
+      "examples/*"
+    ],
+    "nohoist": [
+      "**/@types/react/**",
+      "**/@types/react",
+      "**/vue-tsx-support/**",
+      "**/vue-tsx-support"
+    ]
+  },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [
       "prettier --write"

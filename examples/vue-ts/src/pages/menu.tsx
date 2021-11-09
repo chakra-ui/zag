@@ -26,7 +26,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div className={styles}>
+        <div class={styles}>
           <button ref={ref} {...machineState.value.triggerProps}>
             Click me
           </button>

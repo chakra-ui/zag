@@ -5,11 +5,17 @@
     "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
-    "jsxFactory": "h",
+    "jsxFactory": "VueTsxSupport",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": [
+    "node_modules/vue-tsx-support/enable-check.d.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ]
 }

@@ -40,10 +40,8 @@ export default defineComponent(() => {
     <>
       <h3>{JSON.stringify(_state.value, null, 2)}</h3>
       <div style={{ display: "flex" }}>
-        {/* @ts-expect-error */}
         <Tooltip id="tip-1" />
         <div style={{ marginLeft: "20px" }}>
-          {/* @ts-expect-error */}
           <Tooltip id="tip-2" />
         </div>
       </div>

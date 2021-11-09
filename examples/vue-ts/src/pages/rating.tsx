@@ -27,12 +27,12 @@ export default defineComponent({
 
     return () => {
       return (
-        <div className={styles}>
+        <div class={styles}>
           <div>
-            <div className="rating" ref={ref} {...machineState.value.rootProps}>
+            <div class="rating" ref={ref} {...machineState.value.rootProps}>
               {Array.from({ length: machineState.value.size }).map((_, index) => (
                 <div
-                  className="rating__rate"
+                  class="rating__rate"
                   key={index}
                   {...machineState.value.getRatingProps({ index: index + 1 })}
                   style={{ width: "20px", height: "20px" }}

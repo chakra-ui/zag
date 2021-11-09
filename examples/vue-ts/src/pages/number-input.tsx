@@ -1,4 +1,4 @@
-import { numberInput } from "@ui-machines/web"
+import { mergeProps, numberInput } from "@ui-machines/web"
 import { useMachine, normalizeProps } from "@ui-machines/vue"
 
 import { computed, nextTick, onMounted, ref, h, Fragment } from "vue"
@@ -17,7 +17,7 @@ export default defineComponent({
       }),
     )
 
-    const inputRef = ref()
+    const inputRef = ref<HTMLInputElement>()
 
     const machineState = computed(() => numberInput.connect(state.value, send, normalizeProps))
 
@@ -31,16 +31,18 @@ export default defineComponent({
     })
 
     return () => {
-      const { decrementButtonProps, incrementButtonProps, inputProps } = machineState.value
+      const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps } = machineState.value
 
       return (
         <>
           <div>
-            <button {...decrementButtonProps}>DEC</button>
-            {/* @ts-ignore */}
-            <input ref={inputRef} {...inputProps} />
-            <button {...incrementButtonProps}>INC</button>
-
+            <label {...labelProps}>Enter number</label>
+            <div>
+              <div {...mergeProps(scrubberProps, { style: { width: "15px", height: "15px", background: "red" } })} />
+              <button {...decrementButtonProps}>DEC</button>
+              <input ref={inputRef} {...inputProps} />
+              <button {...incrementButtonProps}>INC</button>
+            </div>
             <StateVisualizer state={state.value} />
           </div>
         </>

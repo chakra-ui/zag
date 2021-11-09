@@ -41,13 +41,13 @@ export default defineComponent({
       return (
         <>
           <PropertyControls />
-          <div className={styles}>
-            <div ref={ref} {...machineState.value.rootProps} className="tags-input">
+          <div class={styles}>
+            <div ref={ref} {...machineState.value.rootProps} class="tags-input">
               {state.value.context.value.map((value, index) => (
                 <span key={index}>
-                  <div className="tag" {...machineState.value.getTagProps({ index, value })}>
+                  <div class="tag" {...machineState.value.getTagProps({ index, value })}>
                     <span>{value} </span>
-                    <button className="tag-close" {...machineState.value.getTagDeleteButtonProps({ index, value })}>
+                    <button class="tag-close" {...machineState.value.getTagDeleteButtonProps({ index, value })}>
                       &#x2715;
                     </button>
                   </div>

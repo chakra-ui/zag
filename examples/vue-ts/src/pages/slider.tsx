@@ -33,10 +33,11 @@ export default defineComponent({
         machineState.value
 
       return (
-        <div className={styles}>
+        <div class={styles}>
           <form // ensure we can read the value within forms
             onChange={(e) => {
-              const formData = serialize(e.currentTarget, { hash: true })
+              const target = e.currentTarget as HTMLFormElement
+              const formData = serialize(target, { hash: true })
               console.log(formData)
             }}
           >
@@ -44,11 +45,11 @@ export default defineComponent({
               <label {...labelProps}>Slider Label</label>
               <output {...outputProps}>{value}</output>
             </div>
-            <div className="slider" ref={ref} {...rootProps}>
-              <div className="slider__track" {...trackProps}>
-                <div className="slider__range" {...rangeProps} />
+            <div class="slider" ref={ref} {...rootProps}>
+              <div class="slider__track" {...trackProps}>
+                <div class="slider__range" {...rangeProps} />
               </div>
-              <div className="slider__thumb" {...thumbProps}>
+              <div class="slider__thumb" {...thumbProps}>
                 <input {...inputProps} />
               </div>
             </div>
