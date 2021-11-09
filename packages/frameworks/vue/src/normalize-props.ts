@@ -11,8 +11,6 @@ function toCase(txt: string) {
 }
 
 const eventMap = {
-  onFocus: "onFocusin",
-  onBlur: "onFocusout",
   className: "class",
   onDoubleClick: "onDblclick",
   onChange: "onInput",
