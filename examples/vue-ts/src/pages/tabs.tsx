@@ -1,5 +1,5 @@
 import { tabs } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -50,7 +50,7 @@ export default defineComponent({
     })
 
     const ref = useMount(send)
-    const machineState = computed(() => tabs.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => tabs.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       return (

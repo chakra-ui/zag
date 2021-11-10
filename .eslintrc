@@ -79,6 +79,7 @@
     {
       "files": ["*.test.*", "*.test.*"],
       "extends": ["plugin:jest/recommended", "plugin:jest/style"],
+      "excludedFiles": ["cypress/**/*.test.ts"],
       "rules": {
         "jsx-a11y/label-has-associated-control": "off",
         "global-require": "off",

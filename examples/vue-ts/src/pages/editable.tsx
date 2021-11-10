@@ -1,5 +1,5 @@
 import { editable } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"
 
@@ -9,7 +9,7 @@ import { useControls } from "../hooks/use-controls"
 
 export default defineComponent({
   name: "Editable",
-  setup(props, { slots }) {
+  setup() {
     const { context, ui: PropertyControls } = useControls({
       placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
       submitMode: {
@@ -32,9 +32,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => {
-      return editable.connect(state.value, send, normalizeProps)
-    })
+    const machineState = computed(() => editable.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const {

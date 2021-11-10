@@ -1,5 +1,5 @@
 import { menu } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"
 import { css, CSSObject } from "@emotion/css"
@@ -22,7 +22,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => menu.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       return (

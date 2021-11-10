@@ -1,5 +1,5 @@
 import { computed, h, Fragment, defineComponent, ref, PropType } from "vue"
-import { useMachine, normalizeProps, useActor } from "@ui-machines/vue"
+import { useMachine, normalizeProps, useActor, VuePropTypes } from "@ui-machines/vue"
 import { toast, ToastMachine } from "@ui-machines/web"
 import { HollowDotsSpinner } from "epic-spinners"
 import { useMount } from "../hooks/use-mount"
@@ -25,7 +25,7 @@ const Toast = defineComponent({
     const ctx = computed(() => state.value.context)
 
     // @ts-expect-error
-    const t = computed(() => toast.connect(state.value, send))
+    const t = computed(() => toast.connect<VuePropTypes>(state.value, send))
 
     return () => (
       <pre
@@ -52,7 +52,7 @@ export default defineComponent({
 
     const toastRef = useMount(send)
 
-    const toasts = computed(() => toast.group.connect(state.value, send, normalizeProps))
+    const toasts = computed(() => toast.group.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const id = ref<string>()
 

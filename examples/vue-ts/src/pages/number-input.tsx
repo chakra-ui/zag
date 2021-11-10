@@ -1,5 +1,5 @@
 import { mergeProps, numberInput } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, nextTick, onMounted, ref, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
@@ -19,7 +19,7 @@ export default defineComponent({
 
     const inputRef = ref<HTMLInputElement>()
 
-    const machineState = computed(() => numberInput.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => numberInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     onMounted(async () => {
       await nextTick()

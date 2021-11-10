@@ -1,5 +1,5 @@
 import { combobox } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"
 import { css, CSSObject } from "@emotion/css"
@@ -24,19 +24,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => {
-      const { inputProps, inputValue, listboxProps, containerProps, buttonProps, getOptionProps, labelProps } =
-        combobox.connect(state.value, send, normalizeProps)
-      return {
-        inputProps,
-        inputValue,
-        listboxProps,
-        containerProps,
-        buttonProps,
-        getOptionProps,
-        labelProps,
-      }
-    })
+    const machineState = computed(() => combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const filtered = computed(() => {
       return comboboxData.filter((d) => d.label.toLowerCase().startsWith(machineState.value.inputValue.toLowerCase()))

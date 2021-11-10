@@ -1,5 +1,5 @@
 import { rangeSlider } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
@@ -26,8 +26,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    //@ts-ignore To do with normalizer props resolution types
-    const machineState = computed(() => rangeSlider.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => rangeSlider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = machineState.value

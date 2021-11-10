@@ -1,5 +1,5 @@
 import { tagsInput } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
@@ -35,7 +35,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => tagsInput.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => tagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       return (

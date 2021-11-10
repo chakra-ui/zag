@@ -23,14 +23,17 @@ interface IntrinsicElementTypes {
 
 type Booleanish = boolean | "true" | "false"
 type Numberish = number | string
+type Capture = boolean | "user" | "environment"
 
 type ResolveProps<T extends object> = {
-  [K in keyof T]?: Booleanish extends T[K]
+  [K in Exclude<keyof T, "checked">]?: Booleanish extends T[K]
     ? Exclude<T[K], string>
     : Numberish extends T[K]
     ? Exclude<T[K], string>
+    : Capture extends T[K]
+    ? Exclude<T[K], string>
     : T[K]
-}
+} & { checked?: boolean }
 
 type ElementAttrs<E extends ElementType> = ResolveProps<E[1] & KnownAttrs>
 

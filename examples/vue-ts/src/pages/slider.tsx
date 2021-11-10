@@ -1,5 +1,5 @@
 import { slider } from "@ui-machines/web"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
@@ -26,7 +26,7 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => slider.connect(state.value, send, normalizeProps))
+    const machineState = computed(() => slider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } =
