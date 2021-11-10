@@ -1,40 +1,13 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
-import { last } from "tiny-array"
 import { addDomEvent } from "tiny-dom-event"
 import { nextTick, noop } from "tiny-fn"
-import { proxy, subscribe } from "valtio"
+import { subscribe } from "valtio"
 import { Context } from "../utils"
 import { preventBodyScroll } from "../utils/body-scroll-lock"
 import { dom } from "./dialog.dom"
-
-type StoreItem = { id: string; close: VoidFunction }
-
-type Store = {
-  value: StoreItem[]
-  add: (item: StoreItem) => void
-  remove: (id: string) => void
-  isTopMost: (id: string) => boolean
-}
-
-export const dialogStore = proxy<Store>({
-  value: [],
-  isTopMost(id) {
-    return last(this.value)?.id === id
-  },
-  add(item: StoreItem) {
-    this.value.push(item)
-  },
-  remove(id) {
-    const index = this.value.findIndex((item) => item.id === id)
-    if (index < this.value.length - 1) {
-      this.value.splice(index).forEach((item) => item.close())
-    } else {
-      this.value = this.value.filter((item) => item.id !== id)
-    }
-  },
-})
+import { dialogStore } from "./dialog.store"
 
 export type DialogMachineContext = Context<{
   hasTitle: boolean
@@ -114,7 +87,7 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         return preventBodyScroll({
           allowPinZoom: true,
           disabled: !ctx.preventScroll,
-          environment: { document: dom.getDoc(ctx), window: dom.getWin(ctx) },
+          document: dom.getDoc(ctx),
         })
       },
       trapFocus(ctx) {
