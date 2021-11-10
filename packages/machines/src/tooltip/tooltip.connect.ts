@@ -3,7 +3,7 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-type
 import { dataAttr, getEventKey } from "../utils"
 import type { EventKeyMap } from "../utils/types"
 import { dom } from "./tooltip.dom"
-import { tooltipStore } from "./tooltip.machine"
+import { tooltipStore } from "./tooltip.store"
 import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
 
 export function tooltipConnect<T extends PropTypes = ReactPropTypes>(

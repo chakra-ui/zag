@@ -1,5 +1,6 @@
 import { tooltipConnect } from "./tooltip.connect"
-import { tooltipMachine, tooltipStore } from "./tooltip.machine"
+import { tooltipMachine } from "./tooltip.machine"
+import { tooltipStore } from "./tooltip.store"
 
 export const tooltip = {
   machine: tooltipMachine,

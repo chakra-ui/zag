@@ -2,27 +2,12 @@ import { createMachine, ref } from "@ui-machines/core"
 import { addDomEvent, addPointerEvent } from "tiny-dom-event"
 import { noop } from "tiny-fn"
 import { isElement, isSafari } from "tiny-guard"
-import { proxy, subscribe } from "valtio"
+import { subscribe } from "valtio"
 import { uuid } from "../utils"
+import { addPointerlockChangeListener } from "../utils/pointerlock"
 import { dom } from "./tooltip.dom"
+import { tooltipStore } from "./tooltip.store"
 import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
-
-type Id = string | null
-
-type Store = {
-  id: Id
-  prevId: Id
-  setId: (val: Id) => void
-}
-
-export const tooltipStore = proxy<Store>({
-  id: null,
-  prevId: null,
-  setId(val) {
-    this.prevId = this.id
-    this.id = val
-  },
-})
 
 export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
   {
@@ -59,6 +44,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       },
 
       opening: {
+        activities: ["trackWindowScroll", "trackPointerlockChange"],
         after: {
           OPEN_DELAY: "open",
         },
@@ -69,11 +55,12 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
             target: "closed",
           },
           SCROLL: "closed",
+          POINTER_LOCK_CHANGE: "closed",
         },
       },
 
       open: {
-        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackWindowScroll"],
+        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackWindowScroll", "trackPointerlockChange"],
         entry: "setGlobalId",
         on: {
           POINTER_LEAVE: [
@@ -86,6 +73,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           BLUR: "closing",
           ESCAPE: "closed",
           SCROLL: "closed",
+          POINTER_LOCK_CHANGE: "closed",
           POINTER_DOWN: {
             cond: "closeOnPointerDown",
             target: "closed",
@@ -107,6 +95,11 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
   },
   {
     activities: {
+      trackPointerlockChange(ctx, _evt, { send }) {
+        return addPointerlockChangeListener(dom.getDoc(ctx), function onLockChange() {
+          send("POINTER_LOCK_CHANGE")
+        })
+      },
       trackWindowScroll(ctx, _evt, { send }) {
         const win = dom.getWin(ctx)
         return addDomEvent(
