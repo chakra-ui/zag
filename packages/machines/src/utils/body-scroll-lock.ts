@@ -7,16 +7,18 @@ import { isDom, isIos } from "tiny-guard"
 interface PreventScrollOptions {
   disabled?: boolean
   allowPinZoom?: boolean
-  environment?: { window: Window; document: Document }
+  document?: Document
 }
 
 // HTML input types that do not cause the software keyboard to appear.
 const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
 
 export function preventBodyScroll(opts?: PreventScrollOptions) {
-  const { environment: env, disabled = false, allowPinZoom } = opts ?? {}
-  const win = cast<typeof globalThis>(env?.window ?? window)
-  const doc = cast<Document>(env?.document ?? document)
+  const { document: docProp, disabled = false, allowPinZoom } = opts ?? {}
+
+  const doc = cast<Document>(docProp ?? document)
+  const win = cast<typeof globalThis>(doc?.defaultView ?? window)
+
   const viewport = isDom() ? win.visualViewport : null
   const docEl = doc.documentElement
 
