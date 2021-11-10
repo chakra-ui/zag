@@ -1,20 +1,19 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils/dom-attr"
-import { Props } from "../utils/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
-export function toastConnect(
+export function toastConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<ToastMachineContext, ToastMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
   return {
     isVisible: state.matches("active", "active:temp", "visible"),
 
-    progressProps: normalize<Props.Element>({
+    progressProps: normalize.element<T>({
       role: "progressbar",
       "aria-valuemin": 0,
       "aria-valuemax": ctx.progress?.max,
@@ -34,7 +33,7 @@ export function toastConnect(
     },
 
     getContainerProps(placement: ToastPlacement) {
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id: `toast-group-${placement}`,
         "data-placement": placement,
         style: getPlacementStyle(placement),

@@ -1,16 +1,17 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { cast } from "tiny-fn"
 import { isLeftClick } from "tiny-guard"
 import { fromPointerEvent, relativeToNode } from "tiny-point/dom"
-import type { DOM, Props } from "../utils"
-import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
+import type { EventKeyMap } from "../utils"
+import { dataAttr, getEventKey } from "../utils"
 import { dom } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 
-export function ratingConnect(
+export function ratingConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<RatingMachineContext, RatingMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
@@ -37,19 +38,19 @@ export function ratingConnect(
     size: ctx.max,
 
     getRatingState,
-    inputProps: normalize<Props.Input>({
+    inputProps: normalize.input<T>({
       name: ctx.name,
       type: "hidden",
       id: dom.getInputId(ctx),
       value: ctx.value,
     }),
 
-    labelProps: normalize<Props.Element>({
+    labelProps: normalize.element<T>({
       id: dom.getLabelId(ctx),
       "data-disabled": ctx.disabled,
     }),
 
-    rootProps: normalize<Props.Element>({
+    rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
       role: "radiogroup",
       "aria-orientation": "horizontal",
@@ -69,7 +70,7 @@ export function ratingConnect(
       const { isHalf, isHighlighted, isChecked } = getRatingState(index)
       const valueText = ctx.getLabelText?.(index) ?? `${index} stars`
 
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id: dom.getRatingId(ctx, index),
         role: "radio",
         tabIndex: isChecked ? 0 : -1,
@@ -96,7 +97,7 @@ export function ratingConnect(
         },
         onKeyDown(event) {
           if (!ctx.isInteractive) return
-          const keyMap: DOM.EventKeyMap = {
+          const keyMap: EventKeyMap = {
             ArrowLeft() {
               send("ARROW_LEFT")
             },

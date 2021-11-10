@@ -1,16 +1,17 @@
 import type { StateMachine as S } from "@ui-machines/core"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { isLeftClick, isModifiedEvent } from "tiny-guard"
 import { valueToPercent } from "tiny-num"
 import { fromPointerEvent } from "tiny-point/dom"
-import type { DOM, Props } from "../utils"
-import { dataAttr, defaultPropNormalizer, getEventKey, getEventStep } from "../utils"
+import type { EventKeyMap } from "../utils"
+import { dataAttr, getEventKey, getEventStep } from "../utils"
 import { dom } from "./slider.dom"
 import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
 
-export function sliderConnect(
+export function sliderConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<SliderMachineContext, SliderMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
@@ -29,7 +30,7 @@ export function sliderConnect(
     percent: valueToPercent(ctx.value, ctx),
 
     // Slider Label properties
-    labelProps: normalize<Props.Label>({
+    labelProps: normalize.label<T>({
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx),
       onClick(event) {
@@ -42,14 +43,14 @@ export function sliderConnect(
     }),
 
     // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
-    outputProps: normalize<Props.Output>({
+    outputProps: normalize.output<T>({
       id: dom.getOutputId(ctx),
       htmlFor: dom.getInputId(ctx),
       "aria-live": "off",
     }),
 
     // Slider Thumb properties
-    thumbProps: normalize<Props.Element>({
+    thumbProps: normalize.element<T>({
       id: dom.getThumbId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -77,7 +78,7 @@ export function sliderConnect(
       },
       onKeyDown(event) {
         const step = getEventStep(event) * ctx.step
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
           },
@@ -117,7 +118,7 @@ export function sliderConnect(
     }),
 
     // Slider Hidden Input (useful for forms)
-    inputProps: normalize<Props.Input>({
+    inputProps: normalize.input<T>({
       type: "hidden",
       value: ctx.value,
       name: ctx.name,
@@ -125,7 +126,7 @@ export function sliderConnect(
     }),
 
     // Slider Track Attributes
-    trackProps: normalize<Props.Element>({
+    trackProps: normalize.element<T>({
       id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -134,7 +135,7 @@ export function sliderConnect(
     }),
 
     // Slider Range Attributes
-    rangeProps: normalize<Props.Element>({
+    rangeProps: normalize.element<T>({
       id: dom.getRangeId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -143,7 +144,7 @@ export function sliderConnect(
     }),
 
     // Slider Container or Root Attributes
-    rootProps: normalize<Props.Element>({
+    rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,

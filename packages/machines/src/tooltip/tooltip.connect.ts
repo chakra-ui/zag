@@ -1,14 +1,15 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
-import type { DOM, Props } from "../utils/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { dataAttr, getEventKey } from "../utils"
+import type { EventKeyMap } from "../utils/types"
 import { dom } from "./tooltip.dom"
 import { tooltipStore } from "./tooltip.machine"
 import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
 
-export function tooltipConnect(
+export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<TooltipMachineContext, TooltipMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
@@ -27,7 +28,7 @@ export function tooltipConnect(
 
     isVisible,
 
-    triggerProps: normalize<Props.Button>({
+    triggerProps: normalize.button<T>({
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
       "aria-describedby": isVisible ? tooltipId : undefined,
@@ -52,7 +53,7 @@ export function tooltipConnect(
         send("POINTER_LEAVE")
       },
       onKeyDown(event) {
-        const keymap: DOM.EventKeyMap = {
+        const keymap: EventKeyMap = {
           Enter() {
             send("PRESS_ENTER")
           },
@@ -66,7 +67,7 @@ export function tooltipConnect(
       },
     }),
 
-    tooltipProps: normalize<Props.Element>({
+    tooltipProps: normalize.element<T>({
       role: "tooltip",
       id: tooltipId,
     }),

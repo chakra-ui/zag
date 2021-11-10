@@ -1,12 +1,17 @@
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { isLeftClick, isModifiedEvent } from "tiny-guard"
 import { toRanges } from "tiny-num"
 import { fromPointerEvent } from "tiny-point/dom"
-import type { DOM, Props } from "../utils"
-import { dataAttr, defaultPropNormalizer, getEventKey, getEventStep } from "../utils"
+import type { EventKeyMap } from "../utils"
+import { dataAttr, getEventKey, getEventStep } from "../utils"
 import { dom } from "./range-slider.dom"
 import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
 
-export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSend, normalize = defaultPropNormalizer) {
+export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
+  state: RangeSliderState,
+  send: RangeSliderSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
   const { value: values, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } = ctx
 
@@ -18,7 +23,7 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
     isDragging,
     isFocused,
 
-    labelProps: normalize<Props.Label>({
+    labelProps: normalize.label<T>({
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx, 0),
       onClick(event) {
@@ -31,13 +36,13 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
     }),
 
     // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
-    outputProps: normalize<Props.Output>({
+    outputProps: normalize.output<T>({
       id: dom.getOutputId(ctx),
       htmlFor: values.map((v, i) => dom.getInputId(ctx, i)).join(" "),
       "aria-live": "off",
     }),
 
-    trackProps: normalize<Props.Element>({
+    trackProps: normalize.element<T>({
       id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -52,7 +57,7 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id: dom.getThumbId(ctx, index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
@@ -77,7 +82,7 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
         },
         onKeyDown(event) {
           const step = getEventStep(event) * ctx.step
-          const keyMap: DOM.EventKeyMap = {
+          const keyMap: EventKeyMap = {
             ArrowUp() {
               send({ type: "ARROW_UP", step })
             },
@@ -117,7 +122,7 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
     },
 
     getInputProps(index: number) {
-      return normalize<Props.Input>({
+      return normalize.input<T>({
         name: ctx.name?.[index],
         type: "hidden",
         value: ctx.value[index],
@@ -125,14 +130,14 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
       })
     },
 
-    rangeProps: normalize<Props.Element>({
+    rangeProps: normalize.element<T>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state,
       style: dom.getRangeStyle(ctx),
     }),
 
-    rootProps: normalize<Props.Element>({
+    rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -140,7 +145,6 @@ export function rangeSliderConnect(state: RangeSliderState, send: RangeSliderSen
       style: dom.getRootStyle(ctx),
       onPointerDown(event) {
         const evt = event.nativeEvent ?? event
-        // allow only primary pointer clicks
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
         event.preventDefault()

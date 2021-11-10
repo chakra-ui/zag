@@ -1,12 +1,13 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { Props, defaultPropNormalizer, ariaAttr } from "../utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { ariaAttr } from "../utils"
 import { dom } from "./dialog.dom"
 import { DialogMachineContext, DialogMachineState } from "./dialog.machine"
 
-export function dialogConnect(
+export function dialogConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<DialogMachineContext, DialogMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
   const { "aria-label": ariaLabel } = ctx
@@ -21,7 +22,7 @@ export function dialogConnect(
     close() {
       send("CLOSE")
     },
-    triggerProps: normalize<Props.Button>({
+    triggerProps: normalize.button<T>({
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       type: "button",
@@ -31,7 +32,7 @@ export function dialogConnect(
         send(isOpen ? "CLOSE" : "OPEN")
       },
     }),
-    overlayProps: normalize<Props.Element>({
+    overlayProps: normalize.element<T>({
       "aria-hidden": true,
       id: dom.getOverlayId(ctx),
       onClick(event) {
@@ -41,7 +42,7 @@ export function dialogConnect(
         send("CLOSE")
       },
     }),
-    contentProps: normalize<Props.Element>({
+    contentProps: normalize.element<T>({
       role: ctx.role,
       id: dom.getContentId(ctx),
       tabIndex: -1,
@@ -53,13 +54,13 @@ export function dialogConnect(
         event.stopPropagation()
       },
     }),
-    titleProps: normalize<Props.Element>({
+    titleProps: normalize.element<T>({
       id: dom.getTitleId(ctx),
     }),
-    descriptionProps: normalize<Props.Element>({
+    descriptionProps: normalize.element<T>({
       id: dom.getDescriptionId(ctx),
     }),
-    closeButtonProps: normalize<Props.Button>({
+    closeButtonProps: normalize.button<T>({
       id: dom.getCloseButtonId(ctx),
       type: "button",
       onClick() {

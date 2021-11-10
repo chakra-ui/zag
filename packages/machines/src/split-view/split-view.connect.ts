@@ -1,12 +1,13 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer, DOM, getEventKey, getEventStep, Props } from "../utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { dataAttr, DOM, getEventKey, getEventStep } from "../utils"
 import { dom } from "./split-view.dom"
 import { SplitViewMachineContext, SplitViewMachineState } from "./split-view.machine"
 
-export function splitViewConnect(
+export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<SplitViewMachineContext, SplitViewMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
   const isFocused = state.matches("hover", "dragging", "focused")
@@ -27,7 +28,7 @@ export function splitViewConnect(
       send("TOGGLE")
     },
 
-    rootProps: normalize<Props.Element>({
+    rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
       style: {
         display: "flex",
@@ -38,7 +39,7 @@ export function splitViewConnect(
       },
     }),
 
-    secondaryPaneProps: normalize<Props.Element>({
+    secondaryPaneProps: normalize.element<T>({
       id: dom.getSecondaryPaneId(ctx),
       style: {
         height: ctx.isHorizontal ? "100%" : "auto",
@@ -48,7 +49,7 @@ export function splitViewConnect(
       },
     }),
 
-    primaryPaneProps: normalize<Props.Element>({
+    primaryPaneProps: normalize.element<T>({
       id: dom.getPrimaryPaneId(ctx),
       style: {
         width: `${ctx.value}px`,
@@ -61,7 +62,7 @@ export function splitViewConnect(
       },
     }),
 
-    toggleButtonProps: normalize<Props.Element>({
+    toggleButtonProps: normalize.element<T>({
       id: dom.getToggleButtonId(ctx),
       "aria-label": ctx.isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
@@ -69,11 +70,11 @@ export function splitViewConnect(
       },
     }),
 
-    labelProps: normalize<Props.Element>({
+    labelProps: normalize.element<T>({
       id: dom.getSplitterLabelId(ctx),
     }),
 
-    splitterProps: normalize<Props.Element>({
+    splitterProps: normalize.element<T>({
       id: dom.getSplitterId(ctx),
       role: "separator",
       tabIndex: 0,

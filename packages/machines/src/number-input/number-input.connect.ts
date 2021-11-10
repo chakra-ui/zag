@@ -1,12 +1,17 @@
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { fromPointerEvent } from "tiny-point/dom"
-import { dataAttr, defaultPropNormalizer, DOM, getEventStep, Props } from "../utils"
+import { dataAttr, DOM, getEventStep } from "../utils"
 import { cast } from "../utils/fn"
 import { roundPx } from "../utils/number"
 import { dom } from "./number-input.dom"
 import { NumberInputSend, NumberInputState } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
-export function numberInputConnect(state: NumberInputState, send: NumberInputSend, normalize = defaultPropNormalizer) {
+export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
+  state: NumberInputState,
+  send: NumberInputSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
 
   const isScrubbing = state.matches("scrubbing")
@@ -22,7 +27,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
     isDisabled: ctx.disabled,
     isInvalid,
 
-    labelProps: normalize<Props.Label>({
+    labelProps: normalize.label<T>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-readonly": dataAttr(ctx.readonly),
       "data-invalid": dataAttr(isInvalid),
@@ -30,7 +35,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       htmlFor: dom.getInputId(ctx),
     }),
 
-    inputProps: normalize<Props.Input>({
+    inputProps: normalize.input<T>({
       name: ctx.name,
       id: dom.getInputId(ctx),
       role: "spinbutton",
@@ -93,7 +98,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       },
     }),
 
-    decrementButtonProps: normalize<Props.Button>({
+    decrementButtonProps: normalize.button<T>({
       id: dom.getDecButtonId(ctx),
       "aria-disabled": !ctx.canDecrement,
       "aria-label": "Decrement value",
@@ -113,7 +118,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       },
     }),
 
-    incrementButtonProps: normalize<Props.Button>({
+    incrementButtonProps: normalize.button<T>({
       id: dom.getIncButtonId(ctx),
       "aria-disabled": !ctx.canIncrement,
       "aria-label": "Increment value",
@@ -133,7 +138,7 @@ export function numberInputConnect(state: NumberInputState, send: NumberInputSen
       },
     }),
 
-    scrubberProps: normalize<Props.Element>({
+    scrubberProps: normalize.element<T>({
       id: dom.getScrubberId(ctx),
       role: "presentation",
       onMouseDown(event) {

@@ -1,20 +1,25 @@
 import { contains } from "tiny-dom-query"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { cast } from "tiny-fn"
 import { isLeftClick } from "tiny-guard"
 import { fromPointerEvent } from "tiny-point/dom"
-import type { DOM, Props } from "../utils"
-import { dataAttr, defaultPropNormalizer, getEventKey, validateBlur } from "../utils"
+import type { EventKeyMap } from "../utils"
+import { dataAttr, getEventKey, validateBlur } from "../utils"
 import { dom } from "./menu.dom"
 import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
 
-export function menuConnect(state: MenuState, send: MenuSend, normalize = defaultPropNormalizer) {
+export function menuConnect<T extends PropTypes = ReactPropTypes>(
+  state: MenuState,
+  send: MenuSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
   const isSubmenu = ctx.parent != null
 
   function getItemProps(opts: MenuItemProps) {
     const { id, disabled, valueText } = opts
-    return normalize<Props.Element>({
+    return normalize.element<T>({
       id,
       role: "menuitem",
       "aria-disabled": disabled,
@@ -65,7 +70,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
       send({ type: "OPEN" })
     },
 
-    triggerProps: normalize<Props.Button>({
+    triggerProps: normalize.button<T>({
       type: "button",
       id: dom.getTriggerId(ctx),
       "data-uid": ctx.uid,
@@ -101,7 +106,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
         send("TRIGGER_FOCUS")
       },
       onKeyDown(event) {
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -127,7 +132,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
       },
     }),
 
-    menuProps: normalize<Props.Element>({
+    menuProps: normalize.element<T>({
       id: dom.getMenuId(ctx),
       hidden: !isOpen,
       role: "menu",
@@ -161,7 +166,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
         const activeItem = dom.getActiveItemEl(ctx)
         const isLink = !!activeItem?.matches("a[href]")
 
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -182,7 +187,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
             send("ENTER")
           },
           Space(event) {
-            keyMap.Enter(event)
+            keyMap.Enter?.(event)
           },
           Home() {
             send("HOME")
@@ -214,7 +219,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
       },
     }),
 
-    separatorProps: normalize<Props.Element>({
+    separatorProps: normalize.element<T>({
       role: "separator",
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
@@ -225,7 +230,7 @@ export function menuConnect(state: MenuState, send: MenuSend, normalize = defaul
       const { type, checked, disabled, onCheckedChange } = opts
       return Object.assign(
         getItemProps(opts),
-        normalize<Props.Element>({
+        normalize.element<T>({
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           onClick(event) {

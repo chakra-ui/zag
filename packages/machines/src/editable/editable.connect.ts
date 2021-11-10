@@ -1,9 +1,14 @@
-import { ariaAttr, defaultPropNormalizer, validateBlur } from "../utils"
-import type { DOM, Props } from "../utils/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { ariaAttr, validateBlur } from "../utils"
+import type { EventKeyMap } from "../utils/types"
 import { dom } from "./editable.dom"
 import { EditableSend, EditableState } from "./editable.types"
 
-export function editableConnect(state: EditableState, send: EditableSend, normalize = defaultPropNormalizer) {
+export function editableConnect<T extends PropTypes = ReactPropTypes>(
+  state: EditableState,
+  send: EditableSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
   const isEditing = state.matches("edit")
 
@@ -11,7 +16,7 @@ export function editableConnect(state: EditableState, send: EditableSend, normal
     isEditing,
     isValueEmpty: ctx.isValueEmpty,
 
-    inputProps: normalize<Props.Input>({
+    inputProps: normalize.input<T>({
       id: dom.getInputId(ctx),
       hidden: !isEditing,
       placeholder: ctx.placeholder,
@@ -31,7 +36,7 @@ export function editableConnect(state: EditableState, send: EditableSend, normal
         send({ type: "TYPE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           Escape() {
             send("CANCEL")
           },
@@ -51,7 +56,7 @@ export function editableConnect(state: EditableState, send: EditableSend, normal
       },
     }),
 
-    previewProps: normalize<Props.Element>({
+    previewProps: normalize.element<T>({
       children: ctx.value === "" ? ctx.placeholder : ctx.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(ctx.disabled),
@@ -64,7 +69,7 @@ export function editableConnect(state: EditableState, send: EditableSend, normal
       },
     }),
 
-    editButtonProps: normalize<Props.Button>({
+    editButtonProps: normalize.button<T>({
       id: dom.getEditBtnId(ctx),
       "aria-label": "Submit",
       type: "button",
@@ -73,7 +78,7 @@ export function editableConnect(state: EditableState, send: EditableSend, normal
       },
     }),
 
-    submitButtonProps: normalize<Props.Button>({
+    submitButtonProps: normalize.button<T>({
       id: dom.getSubmitBtnId(ctx),
       "aria-label": "Submit",
       type: "button",
@@ -82,7 +87,7 @@ export function editableConnect(state: EditableState, send: EditableSend, normal
       },
     }),
 
-    cancelButtonProps: normalize<Props.Button>({
+    cancelButtonProps: normalize.button<T>({
       "aria-label": "Cancel",
       id: dom.getCancelBtnId(ctx),
       type: "button",

@@ -1,23 +1,27 @@
-import { isArray } from "tiny-guard"
-import type { DOM, Props } from "../utils"
-import { dataAttr, defaultPropNormalizer, getEventKey } from "../utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import type { EventKeyMap } from "../utils"
+import { dataAttr, getEventKey } from "../utils"
 import { dom } from "./accordion.dom"
-import { AccordionItemProps, AccordionSend, AccordionState } from "./accordion.types"
+import type { AccordionItemProps, AccordionSend, AccordionState } from "./accordion.types"
 
-export function accordionConnect(state: AccordionState, send: AccordionSend, normalize = defaultPropNormalizer) {
+export function accordionConnect<T extends PropTypes = ReactPropTypes>(
+  state: AccordionState,
+  send: AccordionSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
 
   function getItemState(props: AccordionItemProps) {
     const { value, disabled } = props
     return {
-      isOpen: isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
+      isOpen: Array.isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
       isFocused: ctx.focusedValue === value,
       isDisabled: disabled ?? ctx.disabled,
     }
   }
 
   return {
-    rootProps: normalize<Props.Element>({
+    rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
     }),
 
@@ -25,7 +29,7 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
 
     getItemProps(props: AccordionItemProps) {
       const { isOpen } = getItemState(props)
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id: dom.getGroupId(ctx, props.value),
         "data-expanded": dataAttr(isOpen),
       })
@@ -33,7 +37,7 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
 
     getContentProps(props: AccordionItemProps) {
       const { isOpen, isFocused, isDisabled } = getItemState(props)
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         role: "region",
         id: dom.getPanelId(ctx, props.value),
         "aria-labelledby": dom.getTriggerId(ctx, props.value),
@@ -47,7 +51,7 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
     getTriggerProps(props: AccordionItemProps) {
       const { value } = props
       const { isDisabled, isOpen } = getItemState(props)
-      return normalize<Props.Button>({
+      return normalize.button<T>({
         type: "button",
         id: dom.getTriggerId(ctx, value),
         "aria-controls": dom.getPanelId(ctx, value),
@@ -70,7 +74,7 @@ export function accordionConnect(state: AccordionState, send: AccordionSend, nor
         onKeyDown(event) {
           if (isDisabled) return
 
-          const keyMap: DOM.EventKeyMap = {
+          const keyMap: EventKeyMap = {
             ArrowDown() {
               send({ type: "ARROW_DOWN", value })
             },

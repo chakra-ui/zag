@@ -1,17 +1,16 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { runIfFn } from "tiny-fn"
-import type { Props } from "../utils"
-import { defaultPropNormalizer } from "../utils"
 import { ToastGroupMachineContext } from "./toast-group.machine"
 import { getToastsByPlacement, ToastMachineContext, ToastPlacement } from "./toast.machine"
 import { getPlacementStyle } from "./toast.utils"
 
 type ToastOptions = Partial<ToastMachineContext>
 
-export function toastGroupConnect(
+export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<ToastGroupMachineContext>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
@@ -108,7 +107,7 @@ export function toastGroupConnect(
     },
 
     getContainerProps(placement: ToastPlacement) {
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id: `toast-group-${placement}`,
         "data-placement": placement,
         style: getPlacementStyle(placement),

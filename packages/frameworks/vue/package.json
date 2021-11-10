@@ -29,13 +29,12 @@
   },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
-    "tiny-guard": "^0.0.3",
     "valtio": "^1.2.5"
   },
   "devDependencies": {
     "vue": "^3.0.5"
   },
   "peerDependencies": {
-    "vue": "^3.0.5"
+    "vue": ">=3.0.5"
   }
 }

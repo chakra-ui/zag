@@ -1,15 +1,16 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { cast } from "tiny-fn"
 import { isSafari } from "tiny-guard"
-import type { DOM, Props } from "../utils"
-import { defaultPropNormalizer, getEventKey } from "../utils"
+import type { EventKeyMap } from "../utils"
+import { getEventKey } from "../utils"
 import { dom } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
-export function tabsConnect(
+export function tabsConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<TabsMachineContext, TabsMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
@@ -19,12 +20,12 @@ export function tabsConnect(
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
-    tablistProps: normalize<Props.Element>({
+    tablistProps: normalize.element<T>({
       id: dom.getTablistId(ctx),
       role: "tablist",
       "aria-orientation": ctx.orientation,
       onKeyDown(event) {
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -60,7 +61,7 @@ export function tabsConnect(
 
     getTabProps({ value }: { value: string }) {
       const selected = ctx.value === value
-      return normalize<Props.Button>({
+      return normalize.button<T>({
         role: "tab",
         type: "button",
         "data-value": value,
@@ -90,7 +91,7 @@ export function tabsConnect(
 
     getTabPanelProps({ value }: { value: string }) {
       const selected = ctx.value === value
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id: dom.getPanelId(ctx, value),
         tabIndex: 0,
         "aria-labelledby": dom.getTabId(ctx, value),
@@ -100,7 +101,7 @@ export function tabsConnect(
       })
     },
 
-    tabIndicatorProps: normalize<Props.Element>({
+    tabIndicatorProps: normalize.element<T>({
       style: {
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",

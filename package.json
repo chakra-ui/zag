@@ -93,7 +93,7 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/utils",
+      "packages/prop-types",
       "packages/core",
       "packages/machines",
       "packages/frameworks/*"
@@ -101,7 +101,7 @@
   },
   "workspaces": {
     "packages": [
-      "packages/utils",
+      "packages/prop-types",
       "packages/core",
       "packages/machines",
       "packages/frameworks/*",

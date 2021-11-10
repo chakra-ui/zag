@@ -1,19 +1,19 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { defaultPropNormalizer } from "../utils"
-import type { Props, DOM } from "../utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import type { EventKeyMap } from "../utils"
 import { dom } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.machine"
 
-export function pinInputConnect(
+export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<PinInputMachineContext, PinInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
   return {
     getInputProps({ index }: { index: number }) {
-      return normalize<Props.Input>({
+      return normalize.input<T>({
         id: dom.getInputId(ctx, index),
         "data-ownedby": dom.getRootId(ctx),
         "aria-label": "Please enter your pin code",
@@ -23,7 +23,7 @@ export function pinInputConnect(
           send({ type: "TYPE", value: event.target.value })
         },
         onKeyDown(event) {
-          const keyMap: DOM.EventKeyMap = {
+          const keyMap: EventKeyMap = {
             Backspace() {
               send("BACKSPACE")
             },

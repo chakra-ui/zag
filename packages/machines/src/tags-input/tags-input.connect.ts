@@ -1,7 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, defaultPropNormalizer } from "../utils/dom-attr"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { dataAttr } from "../utils/dom-attr"
 import { getEventKey } from "../utils/keyboard-event"
-import { DOM, Props } from "../utils/types"
+import { EventKeyMap } from "../utils/types"
 import { validateBlur } from "../utils/validate-blur"
 import { dom } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
@@ -11,10 +12,10 @@ type TagProps = {
   value: string
 }
 
-export function tagsInputConnect(
+export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<TagsInputMachineContext, TagsInputMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
 
@@ -25,7 +26,7 @@ export function tagsInputConnect(
     value: ctx.value,
     valueAsString: ctx.valueAsString,
 
-    rootProps: normalize<Props.Element>({
+    rootProps: normalize.element<T>({
       "data-count": ctx.value.length,
       "data-disabled": dataAttr(ctx.disabled),
       "data-focus": dataAttr(isInputFocused),
@@ -35,7 +36,7 @@ export function tagsInputConnect(
       },
     }),
 
-    inputProps: normalize<Props.Input>({
+    inputProps: normalize.input<T>({
       id: dom.getInputId(ctx),
       value: ctx.inputValue,
       autoComplete: "off",
@@ -63,7 +64,7 @@ export function tagsInputConnect(
       onKeyDown(event) {
         const evt = event.nativeEvent || event
         if (evt.isComposing) return
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -102,7 +103,7 @@ export function tagsInputConnect(
       },
     }),
 
-    hiddenInputProps: normalize<Props.Input>({
+    hiddenInputProps: normalize.input<T>({
       type: "hidden",
       name: ctx.name,
       id: ctx.uid,
@@ -111,7 +112,7 @@ export function tagsInputConnect(
 
     getTagProps({ index, value }: TagProps) {
       const id = dom.getTagId(ctx, index)
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id,
         hidden: isEditingTag ? ctx.editedId === id : false,
         "data-value": value,
@@ -131,7 +132,7 @@ export function tagsInputConnect(
     getTagInputProps({ index }: { index: number }) {
       const id = dom.getTagId(ctx, index)
       const active = ctx.editedId === id
-      return normalize<Props.Input>({
+      return normalize.input<T>({
         id: `${id}-input`,
         type: "text",
         tabIndex: -1,
@@ -144,7 +145,7 @@ export function tagsInputConnect(
           send("TAG_INPUT_BLUR")
         },
         onKeyDown(event) {
-          const keyMap: DOM.EventKeyMap = {
+          const keyMap: EventKeyMap = {
             Enter() {
               send("TAG_INPUT_ENTER")
             },
@@ -164,7 +165,7 @@ export function tagsInputConnect(
     },
 
     getTagDeleteButtonProps({ index, value }: TagProps) {
-      return normalize<Props.Button>({
+      return normalize.button<T>({
         id: dom.getTagDeleteBtnId(ctx, index),
         type: "button",
         "aria-label": `Delete ${value}`,

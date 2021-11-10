@@ -1,9 +1,14 @@
-import type { DOM, Props } from "../utils"
-import { dataAttr, defaultPropNormalizer, getEventKey, srOnlyStyle, validateBlur } from "../utils"
+import type { EventKeyMap } from "../utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { dataAttr, getEventKey, srOnlyStyle, validateBlur } from "../utils"
 import { dom } from "./combobox.dom"
 import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 
-export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normalize = defaultPropNormalizer) {
+export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
+  state: ComboboxState,
+  send: ComboboxSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
 
   const expanded = state.matches("interacting", "navigating", "suggesting")
@@ -21,19 +26,19 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
     inputValue: ctx.inputValue,
     firstOptionLabel: ctx.firstOptionLabel,
 
-    labelProps: normalize<Props.Label>({
+    labelProps: normalize.label<T>({
       htmlFor: dom.getInputId(ctx),
       id: dom.getLabelId(ctx),
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
     }),
 
-    containerProps: normalize<Props.Element>({
+    containerProps: normalize.element<T>({
       id: dom.getContainerId(ctx),
       "data-expanded": dataAttr(expanded),
     }),
 
-    inputProps: normalize<Props.Input>({
+    inputProps: normalize.input<T>({
       name: ctx.name,
       disabled: ctx.disabled,
       autoFocus: ctx.autoFocus,
@@ -76,7 +81,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
         const evt = (event.nativeEvent ?? event) as KeyboardEvent
         if (event.ctrlKey || event.shiftKey || evt.isComposing) return
 
-        const keymap: DOM.EventKeyMap = {
+        const keymap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
@@ -108,7 +113,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
       },
     }),
 
-    buttonProps: normalize<Props.Button>({
+    buttonProps: normalize.button<T>({
       id: dom.getToggleBtnId(ctx),
       "aria-haspopup": "true",
       type: "button",
@@ -125,7 +130,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
       },
     }),
 
-    listboxProps: normalize<Props.Element>({
+    listboxProps: normalize.element<T>({
       id: dom.getListboxId(ctx),
       role: "listbox",
       hidden: !expanded,
@@ -135,7 +140,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
       },
     }),
 
-    clearButtonProps: normalize<Props.Button>({
+    clearButtonProps: normalize.button<T>({
       id: dom.getClearBtnId(ctx),
       type: "button",
       role: "button",
@@ -148,7 +153,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
       },
     }),
 
-    srHintProps: normalize<Props.Element>({
+    srHintProps: normalize.element<T>({
       id: dom.getSrHintId(ctx),
       children: [
         "When autocomplete results are available use up and down arrows to review and enter to select.",
@@ -162,7 +167,7 @@ export function comboboxConnect(state: ComboboxState, send: ComboboxSend, normal
       const id = dom.getOptionId(ctx, value)
       const selected = ctx.activeId === id && state.matches("navigating")
 
-      return normalize<Props.Element>({
+      return normalize.element<T>({
         id,
         role: "option",
         tabIndex: -1,

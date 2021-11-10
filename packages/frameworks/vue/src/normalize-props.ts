@@ -1,8 +1,4 @@
-import { isString } from "tiny-guard"
-
-export interface PropNormalizer {
-  <T extends Dict = Dict>(props: T): Dict
-}
+import { createNormalizer } from "@ui-machines/prop-types"
 
 type Dict = Record<string, string>
 
@@ -27,11 +23,11 @@ function toVueProp(prop: string) {
   return prop.toLowerCase()
 }
 
-export const normalizeProps: PropNormalizer = (props: Dict) => {
+export const normalizeProps = createNormalizer((props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
     if (key === "children") {
-      if (isString(props[key])) {
+      if (typeof props[key] === "string") {
         normalized["innerHTML"] = props[key]
       } else if (process.env.NODE_ENV !== "production") {
         console.warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
@@ -41,4 +37,4 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
     }
   }
   return normalized
-}
+})

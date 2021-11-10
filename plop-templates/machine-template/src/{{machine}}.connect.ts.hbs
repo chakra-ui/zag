@@ -1,15 +1,16 @@
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { defaultPropNormalizer, getEventKey } from "../utils"
 import type { DOM, Props } from "../utils"
 import { getIds, getElements } from "./{{machine}}.dom"
 
-export function connect{{capitalize machine}}(
+export function connect{{capitalize machine}}<T extends PropTypes = ReactPropTypes>(
   state: {{capitalize machine}}State,
   send: {{capitalize machine}}Send,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
   return {
-    elProps: normalize<Props.Element>({
+    elProps: normalize.element<T>({
     }),
   }
 }

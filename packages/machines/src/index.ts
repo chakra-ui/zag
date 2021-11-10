@@ -15,5 +15,6 @@ export * from "./tabs"
 export * from "./tags-input"
 export * from "./toast"
 export * from "./tooltip"
-
+export { createNormalizer, normalizeProp } from "./utils/dom-attr"
+export type { PropTypes, ReactPropTypes } from "./utils/dom-attr"
 export { mergeProps } from "./utils/merge-props"

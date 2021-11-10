@@ -1,19 +1,19 @@
 import { StateMachine as S } from "@ui-machines/core"
-import type { Props } from "../utils"
-import { defaultPropNormalizer, validateBlur } from "../utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
+import { validateBlur } from "../utils"
 import { dom } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 
-export function popoverConnect(
+export function popoverConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<PopoverMachineContext, PopoverMachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = defaultPropNormalizer,
+  normalize = normalizeProp,
 ) {
   const { context: ctx } = state
   const isOpen = state.matches("open")
 
   return {
-    triggerProps: normalize<Props.Element>({
+    triggerProps: normalize.element<T>({
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
@@ -23,7 +23,7 @@ export function popoverConnect(
       },
     }),
 
-    popoverProps: normalize<Props.Element>({
+    popoverProps: normalize.element<T>({
       id: dom.getContentId(ctx),
       tabIndex: -1,
       role: "dialog",
@@ -46,11 +46,11 @@ export function popoverConnect(
       },
     }),
 
-    headerProps: normalize<Props.Element>({
+    headerProps: normalize.element<T>({
       id: dom.getHeaderId(ctx),
     }),
 
-    bodyProps: normalize<Props.Element>({
+    bodyProps: normalize.element<T>({
       id: dom.getBodyId(ctx),
     }),
   }
