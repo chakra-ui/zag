@@ -1,6 +1,39 @@
 type PointerLockHandlers = {
-  onPointerLock?: () => void
-  onPointerUnlock?: () => void
+  onPointerLock?: VoidFunction
+  onPointerUnlock?: VoidFunction
+}
+
+export function addPointerlockChangeListener(doc: Document, fn: VoidFunction) {
+  doc.addEventListener("webkitpointerlockchange", fn, false)
+  doc.addEventListener("mozpointerlockchange", fn, false)
+  doc.addEventListener("pointerlockchange", fn, false)
+  return function cleaup() {
+    doc.removeEventListener("mozpointerlockchange", fn, false)
+    doc.removeEventListener("pointerlockchange", fn, false)
+  }
+}
+
+export function addPointerlockErrorListener(doc: Document, fn: (e: Event) => void) {
+  doc.addEventListener("webkitpointerlockerror", fn, false)
+  doc.addEventListener("mozpointerlockerror", fn, false)
+  doc.addEventListener("pointerlockerror", fn, false)
+  return function cleanup() {
+    doc.removeEventListener("webkitpointerlockerror", fn, false)
+    doc.removeEventListener("mozpointerlockerror", fn, false)
+    doc.removeEventListener("pointerlockerror", fn, false)
+  }
+}
+
+function getPointerlockFunc(el: HTMLElement) {
+  return el.requestPointerLock || (el as any).mozRequestPointerLock || (el as any).webkitRequestPointerLock
+}
+
+function getRemovePointerlockFunc(doc: Document) {
+  return doc.exitPointerLock || (doc as any).mozExitPointerLock || (doc as any).webkitExitPointerLock
+}
+
+export function getPointerlockElement(doc: Document) {
+  return doc.pointerLockElement || (doc as any).mozPointerLockElement || (doc as any).webkitPointerLockElement
 }
 
 export function requestPointerLock(doc: Document, handlers: PointerLockHandlers = {}) {
@@ -28,42 +61,31 @@ export function requestPointerLock(doc: Document, handlers: PointerLockHandlers 
   }
 
   function exit() {
-    doc.exitPointerLock = doc.exitPointerLock || (doc as any).mozExitPointerLock || (doc as any).webkitExitPointerLock
+    doc.exitPointerLock = getRemovePointerlockFunc(doc)
     doc.exitPointerLock()
   }
 
+  const cleanups: Set<Function> = new Set()
+
   function addEventListeners() {
-    doc.addEventListener("webkitpointerlockchange", onPointerChange, false)
-    doc.addEventListener("mozpointerlockchange", onPointerChange, false)
-    doc.addEventListener("pointerlockchange", onPointerChange, false)
-    doc.addEventListener("webkitpointerlockerror", onPointerError, false)
-    doc.addEventListener("mozpointerlockerror", onPointerError, false)
-    doc.addEventListener("pointerlockerror", onPointerError, false)
+    cleanups.add(addPointerlockChangeListener(doc, onPointerChange))
+    cleanups.add(addPointerlockErrorListener(doc, onPointerError))
   }
 
   function dispose() {
     if (!isSupported()) return
-    doc.removeEventListener("mozpointerlockchange", onPointerChange, false)
-    doc.removeEventListener("pointerlockchange", onPointerChange, false)
-
-    doc.removeEventListener("webkitpointerlockerror", onPointerError, false)
-    doc.removeEventListener("mozpointerlockerror", onPointerError, false)
-    doc.removeEventListener("pointerlockerror", onPointerError, false)
+    cleanups.forEach((fn) => fn())
+    cleanups.clear()
     exit()
   }
 
   function setup() {
     if (!isSupported()) return
-    body.requestPointerLock =
-      body.requestPointerLock || (body as any).mozRequestPointerLock || (body as any).webkitRequestPointerLock
+    body.requestPointerLock = getPointerlockFunc(body)
     body.requestPointerLock()
     addEventListeners()
   }
 
   setup()
   return dispose
-}
-
-export function getPointerLockElement(doc: Document) {
-  return doc.pointerLockElement || (doc as any).mozPointerLockElement || (doc as any).webkitPointerLockElement
 }
