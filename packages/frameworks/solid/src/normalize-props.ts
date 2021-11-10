@@ -1,3 +1,4 @@
+import { createNormalizer } from "@ui-machines/prop-types"
 import { isObject, isString } from "tiny-guard"
 import { cssify } from "./cssify"
 
@@ -18,7 +19,7 @@ function toSolidProp(prop: string) {
   return prop in eventMap ? eventMap[prop] : prop
 }
 
-export const normalizeProps: PropNormalizer = (props: Dict) => {
+export const normalizeProps = createNormalizer((props: Dict) => {
   const normalized: Dict = {}
 
   for (const key in props) {
@@ -39,4 +40,4 @@ export const normalizeProps: PropNormalizer = (props: Dict) => {
     normalized[toSolidProp(key)] = value
   }
   return normalized
-}
+})

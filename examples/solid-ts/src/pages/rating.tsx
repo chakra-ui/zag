@@ -1,5 +1,5 @@
 import { rating } from "@ui-machines/web"
-import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
 import { css, CSSObject } from "@emotion/css"
@@ -19,7 +19,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => rating.connect(state, send, normalizeProps))
+  const machineState = createMemo(() => rating.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
@@ -28,7 +28,6 @@ export default function Page() {
           {Array.from({ length: machineState().size }).map((_, index) => (
             <div
               className="rating__rate"
-              key={index}
               {...machineState().getRatingProps({ index: index + 1 })}
               style={{ width: "20px", height: "20px" }}
             />

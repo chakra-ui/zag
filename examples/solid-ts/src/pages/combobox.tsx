@@ -1,5 +1,5 @@
 import { combobox } from "@ui-machines/web"
-import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo, For } from "solid-js"
 import { css, CSSObject } from "@emotion/css"
@@ -15,14 +15,13 @@ export default function Page() {
     combobox.machine.withContext({
       uid: "123",
       onSelect: console.log,
-      selectionMode: "autoselect",
       closeOnSelect: (opt) => opt.label !== "Angola",
     }),
   )
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => combobox.connect(state, send, normalizeProps))
+  const machineState = createMemo(() => combobox.connect<SolidPropTypes>(state, send, normalizeProps))
 
   const filtered = createMemo(() => {
     return comboboxData.filter((d) => d.label.toLowerCase().startsWith(machineState().inputValue.toLowerCase()))
@@ -32,10 +31,10 @@ export default function Page() {
     <div className={styles}>
       <div ref={ref}>
         <label {...machineState().labelProps}>Select country</label>
-        <div {...machineState().containerProps}>
+        <span {...machineState().containerProps}>
           <input {...machineState().inputProps} />
           <button {...machineState().buttonProps}>▼</button>
-        </div>
+        </span>
 
         {filtered().length > 0 && (
           <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...machineState().listboxProps}>

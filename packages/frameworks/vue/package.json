@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
+    "@ui-machines/prop-types": "0.0.0",
     "valtio": "^1.2.5"
   },
   "devDependencies": {

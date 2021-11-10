@@ -13,7 +13,7 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
   const isOpen = state.matches("open")
 
   return {
-    triggerProps: normalize.element<T>({
+    triggerProps: normalize.button<T>({
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,

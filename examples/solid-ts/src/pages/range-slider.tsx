@@ -1,5 +1,5 @@
 import { rangeSlider } from "@ui-machines/web"
-import { normalizeProps, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo, For } from "solid-js"
 import { css, CSSObject } from "@emotion/css"
@@ -22,7 +22,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => rangeSlider.connect(state, send, normalizeProps))
+  const machineState = createMemo(() => rangeSlider.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
