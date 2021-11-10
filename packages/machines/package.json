@@ -26,6 +26,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@types/react": "^17.0.20",
     "@ui-machines/core": "0.0.0",
     "@ui-machines/prop-types": "0.0.0",
     "aria-hidden": "^1.1.3",
