@@ -12,7 +12,7 @@ const backgrounds = {
 } as any
 
 const Toast = ({ actor }: { actor: ToastMachine }) => {
-  const [state, send] = useActor(actor as any)
+  const [state, send] = useActor(actor)
 
   const ctx = state.context
 

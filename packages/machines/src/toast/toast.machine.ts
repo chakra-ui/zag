@@ -1,4 +1,3 @@
-import { clamp, decrement } from "tiny-num"
 import { createMachine, guards, Machine } from "@ui-machines/core"
 import { addDomEvent } from "tiny-dom-event"
 import { noop } from "tiny-fn"
@@ -152,8 +151,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         },
         setProgressValue(ctx) {
           if (!ctx.progress) return
-          const { max, value } = ctx.progress
-          ctx.progress.value = clamp(decrement(value - 1, 10), { min: 0, max })
+          ctx.progress.value -= 10
         },
         clearProgressValue(ctx) {
           if (!ctx.progress) return
