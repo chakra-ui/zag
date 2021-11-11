@@ -85,7 +85,7 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
       },
       preventScroll(ctx) {
         return preventBodyScroll({
-          allowPinZoom: true,
+          allowPinchZoom: true,
           disabled: !ctx.preventScroll,
           document: dom.getDoc(ctx),
         })

@@ -6,7 +6,7 @@ import { isDom, isIos } from "tiny-guard"
 
 interface PreventScrollOptions {
   disabled?: boolean
-  allowPinZoom?: boolean
+  allowPinchZoom?: boolean
   document?: Document
 }
 
@@ -14,7 +14,7 @@ interface PreventScrollOptions {
 const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
 
 export function preventBodyScroll(opts?: PreventScrollOptions) {
-  const { document: docProp, disabled = false, allowPinZoom } = opts ?? {}
+  const { document: docProp, disabled = false, allowPinchZoom } = opts ?? {}
 
   const doc = cast<Document>(docProp ?? document)
   const win = cast<typeof globalThis>(doc?.defaultView ?? window)
@@ -44,7 +44,7 @@ export function preventBodyScroll(opts?: PreventScrollOptions) {
     }
 
     let onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length === 2 && allowPinZoom) return
+      if (e.touches.length === 2 && allowPinchZoom) return
 
       if (!scrollable || scrollable === docEl || scrollable === doc.body) {
         e.preventDefault()

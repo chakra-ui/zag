@@ -13,13 +13,20 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
   const isOpen = state.matches("open")
 
   return {
+    open() {
+      send("OPEN")
+    },
+    close() {
+      send("CLOSE")
+    },
+
     triggerProps: normalize.button<T>({
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
       "aria-controls": dom.getContentId(ctx),
       onClick() {
-        send("CLICK")
+        send("TRIGGER_CLICK")
       },
     }),
 
@@ -33,6 +40,14 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
       onKeyDown(event) {
         if (event.key === "Escape") {
           send("ESCAPE")
+        }
+        if (event.key === "Tab") {
+          send({
+            type: event.shiftKey ? "SHIFT_TAB" : "TAB",
+            preventDefault() {
+              event.preventDefault()
+            },
+          })
         }
       },
       onBlur(event) {
@@ -52,6 +67,15 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
 
     bodyProps: normalize.element<T>({
       id: dom.getBodyId(ctx),
+    }),
+
+    closeButtonProps: normalize.button<T>({
+      id: dom.getCloseButtonId(ctx),
+      type: "button",
+      "aria-label": "Close",
+      onClick() {
+        send("CLOSE")
+      },
     }),
   }
 }

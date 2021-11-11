@@ -1,4 +1,7 @@
+import { last, first } from "tiny-array"
 import { getFocusables } from "tiny-dom-query/focusable"
+import { getTabbables } from "tiny-dom-query/tabbable"
+import { cast, runIfFn } from "tiny-fn"
 import { PopoverMachineContext as Ctx } from "./popover.machine"
 
 export const dom = {
@@ -8,6 +11,7 @@ export const dom = {
   getContentId: (ctx: Ctx) => `popover-${ctx.uid}-content`,
   getHeaderId: (ctx: Ctx) => `popover-${ctx.uid}-header`,
   getBodyId: (ctx: Ctx) => `popover-${ctx.uid}-body`,
+  getCloseButtonId: (ctx: Ctx) => `popover-${ctx.uid}-close-button`,
 
   getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)),
@@ -16,4 +20,16 @@ export const dom = {
 
   getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx)),
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
+
+  getDocTabbableEls: (ctx: Ctx) => getTabbables(cast(dom.getDoc(ctx))),
+  getTabbableEls: (ctx: Ctx) => {
+    const el = dom.getContentEl(ctx)
+    return el ? getTabbables(el) : []
+  },
+  getFirstTabbableEl: (ctx: Ctx) => first(dom.getTabbableEls(ctx)),
+  getLastTabbableEl: (ctx: Ctx) => last(dom.getTabbableEls(ctx)),
+
+  getInitialFocusEl: (ctx: Ctx) => {
+    return runIfFn(ctx.initialFocusEl) ?? dom.getFirstFocusableEl(ctx)
+  },
 }

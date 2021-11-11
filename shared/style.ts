@@ -52,12 +52,45 @@ export const menuStyle = {
 }
 
 export const popoverStyle = {
-  '[role="dialog"]': {
-    background: "red",
-    padding: "20px",
+  "*:focus": {
+    outline: "2px dashed blue",
+    outlineOffset: "2px",
   },
-  '[role="dialog"]:focus': {
-    outline: "2px solid royalblue",
+  ".popover": {
+    display: "flex",
+    gap: "24px",
+  },
+  ".popover__content": {
+    background: "white",
+    padding: "20px",
+    borderRadius: "4px",
+    boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px",
+    width: "260px",
+    position: "absolute",
+    top: "40px",
+    left: "124px",
+  },
+  ".popover__content:focus": {
+    boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px, #c4b8f3 0 0 0 2px",
+  },
+  ".popover__title": {
+    fontSize: "15px",
+    lineHeight: "19px",
+    fontWeight: "bold",
+  },
+  ".popover__body": {
+    paddingTop: "12px",
+    display: "flex",
+    alignItems: "flex-start",
+    flexDirection: "column",
+    gap: "12px",
+    position: "relative",
+    fontSize: "14px",
+  },
+  ".popover__close-button": {
+    position: "absolute",
+    right: "0px",
+    top: "-20px",
   },
 }
 
