@@ -96,7 +96,6 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
           if (!ctx.isTopMostDialog || !ctx.trapFocus) return noop
           const el = dom.getContentEl(ctx)
           trap = createFocusTrap(el, {
-            delayInitialFocus: true,
             document: dom.getDoc(ctx),
             escapeDeactivates: false,
             fallbackFocus: dom.getContentEl(ctx),

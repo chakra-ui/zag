@@ -13,18 +13,15 @@ export default function Page() {
     modal: { type: "boolean", defaultValue: false },
     autoFocus: { type: "boolean", defaultValue: true },
     closeOnEsc: { type: "boolean", defaultValue: true },
-    portal: { type: "boolean", defaultValue: false },
   })
 
-  const { portal, ...context } = controls.context
-
-  const [state, send] = useMachine(popover.machine, { context })
+  const [state, send] = useMachine(popover.machine, { context: controls.context })
 
   const ref = useMount<HTMLDivElement>(send)
 
   const { triggerProps, popoverProps, closeButtonProps, headerProps } = popover.connect(state, send)
 
-  const Wrapper = portal ? Portal : React.Fragment
+  const Wrapper = controls.context.modal ? Portal : React.Fragment
 
   return (
     <>

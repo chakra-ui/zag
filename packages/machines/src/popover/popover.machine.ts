@@ -79,12 +79,12 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
             actions: "focusTrigger",
           },
           TAB: {
-            cond: "isLastTabbableElement",
+            cond: and("isLastTabbableElement", "closeOnBlur"),
             target: "closed",
             actions: "focusNextTabbableElementAfterTrigger",
           },
           SHIFT_TAB: {
-            cond: or("isFirstTabbableElement", "isContentFocused"),
+            cond: or("isFirstTabbableElement", "isContentFocused", "closeOnBlur"),
             target: "closed",
             actions: "focusTrigger",
           },
@@ -119,7 +119,6 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
           const el = dom.getContentEl(ctx)
           if (!ctx.modal || !el) return noop
           trap = createFocusTrap(el, {
-            delayInitialFocus: true,
             escapeDeactivates: false,
             allowOutsideClick: true,
             returnFocusOnDeactivate: true,
@@ -174,8 +173,6 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         })
       },
       focusTrigger(ctx) {
-        // let focus-trap handle focus
-        if (ctx.modal) return
         nextTick(() => {
           dom.getTriggerEl(ctx)?.focus()
         })
@@ -199,7 +196,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         }
 
         // if there's no next element, let the browser handle it
-        if (!nextEl) return
+        if (!nextEl || nextEl === button) return
 
         // else focus the next element
         evt.preventDefault()
