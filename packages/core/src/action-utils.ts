@@ -2,7 +2,7 @@ import { isObject, isString } from "tiny-guard"
 import { Dict, StateMachine as S } from "./types"
 
 export function choose<TContext, TEvent extends S.EventObject = S.AnyEventObject>(
-  actions: Array<{ guard?: S.Condition<TContext, TEvent>; actions: S.PureActions<TContext, TEvent> }>,
+  actions: Array<{ guard?: S.Guard<TContext, TEvent>; actions: S.PureActions<TContext, TEvent> }>,
 ): S.ChooseHelper<TContext, TEvent> {
   return {
     exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) =>
