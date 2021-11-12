@@ -23,7 +23,7 @@ const guardMap = {
 it("resolve choose action - false", () => {
   const actions = choose([
     {
-      cond: not("isEmpty"),
+      guard: not("isEmpty"),
       actions: ["log"],
     },
     {
@@ -37,7 +37,7 @@ it("resolve choose action - false", () => {
 it("resolve choose action - true", () => {
   const actions = choose([
     {
-      cond: "isEmpty",
+      guard: "isEmpty",
       actions: ["log"],
     },
     {

@@ -140,7 +140,7 @@ When building a machine with multiple states, you need a way to transition betwe
 
 - `target`: The state the machine should transition to
 - `actions`: The actions to execute during the transition
-- `cond`: The condition that determines when the transition is allowed.
+- `guard`: The condition that determines when the transition is allowed.
 
 Transitions are typically used in the `on` key event object and the `after` time-based transition.
 
@@ -152,7 +152,7 @@ const toggle = createMachine({
       CLICK: {
         target: "off",
         actions: (ctx) => ctx.count++,
-        cond: (ctx) => ctx.count === 0,
+        guard: (ctx) => ctx.count === 0,
       },
     },
     off: {
@@ -174,7 +174,7 @@ const toggle = createMachine({
 ### Conditions and Guards
 
 When defined transitions, you might to prevent/disallow the transition depending on a condition. We can this `guards` or
-`cond` in the state machine.
+`guard` in the state machine.
 
 Consider the transition definition for the `CLICK` event:
 
@@ -187,7 +187,7 @@ const counter = createMachine({
   on: {
     // CLICK event won't work if `ctx.isEmpty` returns true
     CLICK: {
-      cond: (ctx) => !ctx.isEmpty,
+      guard: (ctx) => !ctx.isEmpty,
       target: "on",
       actions: (ctx) => {
         ctx.count++
@@ -214,7 +214,7 @@ const counter = createMachine(
           // CLICK event won't work if `ctx.isEmpty` returns true
           CLICK: {
             // 1. here we label the condition or guard
-            cond: "isNotEmpty",
+            guard: "isNotEmpty",
             target: "active",
             // yes, actions can be labelled as well
             actions: "increment",
@@ -252,7 +252,7 @@ const counter = createMachine(
       // here's the logic branch. When the `CLICK` event is sent:
       CLICK: [
         // take this transition if `isNotEmpty` evaluates to `true`
-        { cond: "isNotEmpty", target: "active", actions: "increment" },
+        { guard: "isNotEmpty", target: "active", actions: "increment" },
         // else, take this transition
         { target: "inactive", actions: "increment" },
       ],
@@ -272,7 +272,7 @@ const counter = createMachine({
       // an example of `every` action
       every: [
         // do `increment` every 500ms if `isNotEmpty` is `true`
-        { delay: 500, actions: ["increment"], cond: "isNotEmpty" },
+        { delay: 500, actions: ["increment"], guard: "isNotEmpty" },
         // else do `increment` every 200ms
         { delay: 200, actions: ["increment"] },
       ],
@@ -280,7 +280,7 @@ const counter = createMachine({
     active: {
       // an example of `after` transition. You get the idea?
       after: [
-        { target: "active", cond: "isNotEmpty", delay: 1000, actions: ["setValue"] },
+        { target: "active", guard: "isNotEmpty", delay: 1000, actions: ["setValue"] },
         { target: "inactive", actions: ["setValue"] },
       ],
     },
@@ -310,7 +310,7 @@ const machine = createMachine(
     on: {
       CLICK_ADD: {
         // condition evaluates to: isListEmpty && !isAtMax
-        cond: and("isListEmpty", not("isAtMax")),
+        guard: and("isListEmpty", not("isAtMax")),
       },
     },
   },

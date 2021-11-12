@@ -72,7 +72,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       },
       TOGGLE: [
         {
-          cond: "isCollapsed",
+          guard: "isCollapsed",
           actions: "setToMax",
         },
         {
@@ -120,24 +120,24 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
           BLUR: "idle",
           POINTER_DOWN: "dragging",
           ARROW_LEFT: {
-            cond: "isHorizontal",
+            guard: "isHorizontal",
             actions: "decrement",
           },
           ARROW_RIGHT: {
-            cond: "isHorizontal",
+            guard: "isHorizontal",
             actions: "increment",
           },
           ARROW_UP: {
-            cond: "isVertical",
+            guard: "isVertical",
             actions: "increment",
           },
           ARROW_DOWN: {
-            cond: "isVertical",
+            guard: "isVertical",
             actions: "decrement",
           },
           ENTER: [
             {
-              cond: "isCollapsed",
+              guard: "isCollapsed",
               actions: "setToMin",
             },
             { actions: "setToMin" },
@@ -150,7 +150,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
           },
           DOUBLE_CLICK: [
             {
-              cond: "isCollapsed",
+              guard: "isCollapsed",
               actions: "setToMax",
             },
             { actions: "setToMin" },

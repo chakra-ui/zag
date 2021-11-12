@@ -132,12 +132,12 @@ Object syntax:
 
 - `target?` (string) - the state name to transition to.
 - `actions?` (Action | Action[]) - the [action(s)](#action-config) to execute when this transition is taken.
-- `cond?` (Guard) - the condition (predicate function) to test. If it returns `true`, the transition will be taken.
+- `guard?` (Guard) - the condition (predicate function) to test. If it returns `true`, the transition will be taken.
 
 ### Machine options
 
 - `actions?` (object) - a lookup object for your string actions.
-- `guards?` (object) - a lookup object for your string guards specified as `cond` in the machine.
+- `guards?` (object) - a lookup object for your string guards specified as `guard` in the machine.
 - `activities?` (object) - a lookup object for your string activities.
 - `delays?` (object) - a lookup object for your string delays used in `after` and `every` config.
 

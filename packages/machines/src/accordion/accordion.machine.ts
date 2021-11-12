@@ -48,11 +48,11 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
           },
           CLICK: [
             {
-              cond: and("isExpanded", "canToggle"),
+              guard: and("isExpanded", "canToggle"),
               actions: "collapse",
             },
             {
-              cond: not("isExpanded"),
+              guard: not("isExpanded"),
               actions: "expand",
             },
           ],

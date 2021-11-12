@@ -40,12 +40,12 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         on: {
           EDIT: "edit",
           DBLCLICK: {
-            cond: "activateOnDblClick",
+            guard: "activateOnDblClick",
             target: "edit",
           },
           FOCUS: {
             target: "edit",
-            cond: "activateOnFocus",
+            guard: "activateOnFocus",
           },
         },
       },
@@ -54,19 +54,19 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         activities: "trackPointerDown",
         entry: choose([
           {
-            cond: "selectOnFocus",
+            guard: "selectOnFocus",
             actions: ["selectInput", "invokeOnEdit"],
           },
           { actions: ["focusInput", "invokeOnEdit"] },
         ]),
         on: {
           TYPE: {
-            cond: not("isAtMaxLength"),
+            guard: not("isAtMaxLength"),
             actions: ["setValue", "invokeOnChange"],
           },
           BLUR: [
             {
-              cond: "submitOnBlur",
+              guard: "submitOnBlur",
               target: "preview",
               actions: ["focusEditButton", "invokeOnSubmit"],
             },
@@ -80,7 +80,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
             actions: ["focusEditButton", "revertValue", "invokeOnCancel"],
           },
           ENTER: {
-            cond: "submitOnEnter",
+            guard: "submitOnEnter",
             target: "preview",
             actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"],
           },

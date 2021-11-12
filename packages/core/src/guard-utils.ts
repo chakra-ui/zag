@@ -2,8 +2,8 @@ import { isFunction, isObject, isString } from "tiny-guard"
 import { Dict, StateMachine as S } from "./types"
 
 function or<TContext, TEvent extends S.EventObject>(
-  ...conditions: Array<string | S.ConditionHelper<TContext, TEvent>>
-): S.ConditionHelper<TContext, TEvent> {
+  ...conditions: Array<string | S.GuardHelper<TContext, TEvent> | S.GuardExpression<TContext, TEvent>>
+): S.GuardHelper<TContext, TEvent> {
   return {
     toString: () => conditions.map((c) => c.toString()).join(" || "),
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
@@ -12,6 +12,9 @@ function or<TContext, TEvent extends S.EventObject>(
           if (isString(condition)) {
             return !!guards[condition]?.(ctx, event)
           }
+          if (isFunction(condition)) {
+            return condition(ctx, event)
+          }
           return condition.exec(guards)(ctx, event)
         })
         .some(Boolean),
@@ -19,8 +22,8 @@ function or<TContext, TEvent extends S.EventObject>(
 }
 
 function and<TContext, TEvent extends S.EventObject>(
-  ...conditions: Array<string | S.ConditionHelper<TContext, TEvent>>
-): S.ConditionHelper<TContext, TEvent> {
+  ...conditions: Array<string | S.GuardHelper<TContext, TEvent> | S.GuardExpression<TContext, TEvent>>
+): S.GuardHelper<TContext, TEvent> {
   return {
     toString: () => conditions.map((c) => c.toString()).join(" && "),
     exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
@@ -29,6 +32,9 @@ function and<TContext, TEvent extends S.EventObject>(
           if (isString(condition)) {
             return !!guards[condition]?.(ctx, event)
           }
+          if (isFunction(condition)) {
+            return condition(ctx, event)
+          }
           return condition.exec(guards)(ctx, event)
         })
         .every(Boolean),
@@ -36,13 +42,16 @@ function and<TContext, TEvent extends S.EventObject>(
 }
 
 function not<TContext, TEvent extends S.EventObject>(
-  condition: string | S.ConditionHelper<TContext, TEvent>,
-): S.ConditionHelper<TContext, TEvent> {
+  condition: string | S.GuardHelper<TContext, TEvent> | S.GuardExpression<TContext, TEvent>,
+): S.GuardHelper<TContext, TEvent> {
   return {
     toString: () => `!(${condition.toString()})`,
     exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) => {
       if (isString(condition)) {
         return !guardMap[condition]?.(ctx, event)
+      }
+      if (isFunction(condition)) {
+        return !condition(ctx, event)
       }
       return !condition.exec(guardMap)(ctx, event)
     },
@@ -63,20 +72,20 @@ export const TruthyGuard = () => true
  * - a function that returns a number (in ms)
  */
 export function determineGuardFn<TContext, TEvent extends S.EventObject>(
-  cond: S.Condition<TContext, TEvent> | undefined,
+  guard: S.Guard<TContext, TEvent> | undefined,
   guardMap: S.GuardMap<TContext, TEvent> | undefined,
 ) {
-  cond = cond ?? TruthyGuard
+  guard = guard ?? TruthyGuard
   return (context: TContext, event: TEvent) => {
-    if (isString(cond)) {
-      const value = guardMap?.[cond]
+    if (isString(guard)) {
+      const value = guardMap?.[guard]
       return isFunction(value) ? value(context, event) : value
     }
 
-    if (isGuardHelper(cond)) {
-      return cond.exec(guardMap ?? {})(context, event)
+    if (isGuardHelper(guard)) {
+      return guard.exec(guardMap ?? {})(context, event)
     }
 
-    return cond?.(context, event)
+    return guard?.(context, event)
   }
 }

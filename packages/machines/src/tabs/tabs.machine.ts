@@ -105,30 +105,30 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
             actions: ["setFocusedValue", "setValue", "setIndicatorRect"],
           },
           ARROW_LEFT: {
-            cond: "isHorizontal",
+            guard: "isHorizontal",
             actions: "focusPrevTab",
           },
           ARROW_RIGHT: {
-            cond: "isHorizontal",
+            guard: "isHorizontal",
             actions: "focusNextTab",
           },
           ARROW_UP: {
-            cond: "isVertical",
+            guard: "isVertical",
             actions: "focusPrevTab",
           },
           ARROW_DOWN: {
-            cond: "isVertical",
+            guard: "isVertical",
             actions: "focusNextTab",
           },
           HOME: { actions: "focusFirstTab" },
           END: { actions: "focusLastTab" },
           ENTER: {
-            cond: not("selectOnFocus"),
+            guard: not("selectOnFocus"),
             actions: ["setValue", "setIndicatorRect"],
           },
           TAB_FOCUS: [
             {
-              cond: "selectOnFocus",
+              guard: "selectOnFocus",
               actions: ["setFocusedValue", "setValue", "setIndicatorRect"],
             },
             { actions: "setFocusedValue" },

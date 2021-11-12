@@ -60,7 +60,7 @@ export declare namespace StateMachine {
   export type TransitionDefinition<TContext extends Dict, TState extends string, TEvent extends EventObject> = {
     target?: TState
     actions?: Actions<TContext, TEvent>
-    cond?: Condition<TContext, TEvent>
+    guard?: Guard<TContext, TEvent>
   }
 
   export type DelayExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, number>
@@ -87,13 +87,13 @@ export declare namespace StateMachine {
     | Array<DelayedTransition<TContext, TState, TEvent>>
 
   // a transition can be a string (e.g "off") or a full definition object
-  // { target: "off", actions: [...], cond: "isEmpty" }
+  // { target: "off", actions: [...], guard: "isEmpty" }
   export type Transition<TContext extends Dict, TState extends string, TEvent extends EventObject> =
     | TState
     | TransitionDefinition<TContext, TState, TEvent>
 
   // a transition can be a simple transition as described above
-  // or an array of possible transitions with `cond` to determine
+  // or an array of possible transitions with `guard` to determine
   // the selected transition
   export type Transitions<TContext extends Dict, TState extends string, TEvent extends EventObject> =
     | Transition<TContext, TState, TEvent>
@@ -159,25 +159,25 @@ export declare namespace StateMachine {
       | Array<{
           delay?: number | string | Expression<TContext, TEvent, number>
           actions: Actions<TContext, TEvent>
-          cond?: Condition<TContext, TEvent>
+          guard?: Guard<TContext, TEvent>
         }>
   }
 
-  export type ConditionExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
+  export type GuardExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
 
-  export type ConditionHelper<TContext extends Dict, TEvent extends EventObject> = {
+  export type GuardHelper<TContext extends Dict, TEvent extends EventObject> = {
     toString: () => string
-    exec: (guards: Dict) => ConditionExpression<TContext, TEvent>
+    exec: (guards: Dict) => GuardExpression<TContext, TEvent>
   }
 
   export type ChooseHelper<TContext extends Dict, TEvent extends EventObject> = {
     exec: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TEvent> | undefined>
   }
 
-  export type Condition<TContext extends Dict, TEvent extends EventObject> =
+  export type Guard<TContext extends Dict, TEvent extends EventObject> =
     | string
-    | ConditionExpression<TContext, TEvent>
-    | ConditionHelper<TContext, TEvent>
+    | GuardExpression<TContext, TEvent>
+    | GuardHelper<TContext, TEvent>
 
   export type StateSchema = {
     value: string
@@ -274,7 +274,7 @@ export declare namespace StateMachine {
   }
 
   export type GuardMap<TContext extends Dict, TEvent extends EventObject> = {
-    [guard: string]: ConditionExpression<TContext, TEvent>
+    [guard: string]: GuardExpression<TContext, TEvent>
   }
 
   export type ActivityMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
@@ -313,12 +313,10 @@ export enum MachineStatus {
 }
 
 export enum ActionTypes {
-  Watch = "machine.watch",
   Start = "machine.start",
   Stop = "machine.stop",
   SendParent = "machine.send-parent",
   Cancel = "machine.cancel",
-  NullEvent = "",
   After = "machine.after",
   Every = "machine.every",
   Log = "machine.log",

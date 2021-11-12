@@ -56,15 +56,15 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         on: {
           TYPE: [
             {
-              cond: "isLastValueBeforeComplete",
+              guard: "isLastValueBeforeComplete",
               actions: ["setValue", "invokeComplete"],
             },
             {
-              cond: "isEventValueEmpty",
+              guard: "isEventValueEmpty",
               actions: "setValue",
             },
             {
-              cond: not("isLastInputFocused"),
+              guard: not("isLastInputFocused"),
               actions: ["setValue", "setNextFocusedIndex", "focusInput"],
             },
           ],
@@ -74,7 +74,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
           },
           BACKSPACE: [
             {
-              cond: "hasValue",
+              guard: "hasValue",
               actions: "clearValueAtFocusedIndex",
             },
             {

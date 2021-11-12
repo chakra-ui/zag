@@ -56,11 +56,11 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         activities: ["trackPointerDown", "trapFocus", "preventScroll"],
         entry: choose([
           {
-            cond: and("autoFocus", not("modal")),
+            guard: and("autoFocus", not("modal")),
             actions: "setInitialFocus",
           },
           {
-            cond: not("modal"),
+            guard: not("modal"),
             actions: "focusContent",
           },
         ]),
@@ -74,27 +74,27 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
             actions: "focusTrigger",
           },
           ESCAPE: {
-            cond: "closeOnEsc",
+            guard: "closeOnEsc",
             target: "closed",
             actions: "focusTrigger",
           },
           TAB: {
-            cond: and("isLastTabbableElement", "closeOnBlur"),
+            guard: and("isLastTabbableElement", "closeOnBlur"),
             target: "closed",
             actions: "focusNextTabbableElementAfterTrigger",
           },
           SHIFT_TAB: {
-            cond: or("isFirstTabbableElement", "isContentFocused", "closeOnBlur"),
+            guard: or("isFirstTabbableElement", "isContentFocused", "closeOnBlur"),
             target: "closed",
             actions: "focusTrigger",
           },
           CLICK_OUTSIDE: [
             {
-              cond: and("closeOnBlur", "isRelatedTargetFocusable"),
+              guard: and("closeOnBlur", "isRelatedTargetFocusable"),
               target: "closed",
             },
             {
-              cond: "closeOnBlur",
+              guard: "closeOnBlur",
               target: "closed",
               actions: "focusTrigger",
             },

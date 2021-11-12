@@ -9,9 +9,9 @@ import { toArray } from "./utils"
  *
  * Transitions can be specified as:
  * - A single string: "spinning"
- * - An object with `target`, `actions`, or `cond`: { target: "spinning", actions: [...], cond: isValid }
+ * - An object with `target`, `actions`, or `guard`: { target: "spinning", actions: [...], guard: isValid }
  * - An array of possible transitions. In this case, we'll pick the first matching transition
- * depending on the `cond` specified
+ * depending on the `guard` specified
  */
 
 export function toTarget<TContext, TState extends string, TEvent extends S.EventObject>(
@@ -29,9 +29,9 @@ export function determineTransitionFn<TContext, TState extends string, TEvent ex
       .map(toTarget)
       .find((transition) => {
         // get condition function
-        const determineGuard = determineGuardFn(transition.cond, guardMap)
-        const cond = determineGuard(context, event)
-        return cond ?? transition.target ?? transition.actions
+        const determineGuard = determineGuardFn(transition.guard, guardMap)
+        const guard = determineGuard(context, event)
+        return guard ?? transition.target ?? transition.actions
       })
   }
 }

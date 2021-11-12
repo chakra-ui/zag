@@ -63,7 +63,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
       on: {
         UPDATE: [
           {
-            cond: or("hasDurationChanged", "hasTypeChanged"),
+            guard: or("hasDurationChanged", "hasTypeChanged"),
             target: "active:temp",
             actions: "setContext",
           },
@@ -91,7 +91,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
           },
           every: [
             {
-              cond: not("isLoadingType"),
+              guard: not("isLoadingType"),
               actions: "setProgressValue",
               delay: "PROGRESS_INTERVAL",
             },

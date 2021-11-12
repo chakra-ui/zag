@@ -456,7 +456,7 @@ export class Machine<
 
   /**
    * Normalizes the `every` definition to transition. `every` can be:
-   * - An array of possible actions to run (we need to pick the first match based on cond)
+   * - An array of possible actions to run (we need to pick the first match based on guard)
    * - An object of intervals and actions
    */
   private createEveryActivities = (
@@ -466,18 +466,18 @@ export class Machine<
     if (!every) return
     const event = toEvent<TEvent>(ActionTypes.Every)
 
-    // every: [{ interval: 2000, actions: [...], cond: "isValid" },  { interval: 1000, actions: [...] }]
+    // every: [{ interval: 2000, actions: [...], guard: "isValid" },  { interval: 1000, actions: [...] }]
     if (isArray(every)) {
-      // picked = { interval: string | number | <ref>, actions: [...], cond: ... }
+      // picked = { interval: string | number | <ref>, actions: [...], guard: ... }
       const picked = toArray(every).find((t) => {
         //
         const determineDelay = determineDelayFn(t.delay, this.delayMap)
         t.delay = determineDelay(this.contextSnapshot, event)
 
-        const determineGuard = determineGuardFn(t.cond, this.guardMap)
-        const cond = determineGuard(this.contextSnapshot, event)
+        const determineGuard = determineGuardFn(t.guard, this.guardMap)
+        const guard = determineGuard(this.contextSnapshot, event)
 
-        return cond ?? t.delay
+        return guard ?? t.delay
       })
 
       if (!picked) return

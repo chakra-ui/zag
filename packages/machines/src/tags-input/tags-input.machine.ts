@@ -107,7 +107,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         actions: ["setEditedId", "initEditedTagValue"],
       },
       POINTER_DOWN_TAG: {
-        cond: not("isTagFocused"),
+        guard: not("isTagFocused"),
         target: "navigating:tag",
         actions: ["focusTag", "focusInput"],
       },
@@ -142,7 +142,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         on: {
           SETUP: [
             {
-              cond: "autoFocus",
+              guard: "autoFocus",
               target: "focused:input",
               actions: ["setId", "setDocument"],
             },
@@ -158,7 +158,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         on: {
           FOCUS: "focused:input",
           POINTER_DOWN: {
-            cond: not("hasFocusedId"),
+            guard: not("hasFocusedId"),
             target: "focused:input",
           },
         },
@@ -168,7 +168,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         on: {
           ARROW_RIGHT: [
             {
-              cond: and("hasTags", "isInputCaretAtStart", not("isLastTagFocused")),
+              guard: and("hasTags", "isInputCaretAtStart", not("isLastTagFocused")),
               actions: "focusNextTag",
             },
             { target: "focused:input" },
@@ -208,31 +208,31 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
           BLUR: [
             {
               target: "idle",
-              cond: and("addOnBlur", allowAddTag),
+              guard: and("addOnBlur", allowAddTag),
               actions: ["addTag", "clearInputValue"],
             },
             { target: "idle" },
           ],
           ENTER: {
-            cond: allowAddTag,
+            guard: allowAddTag,
             actions: ["addTag", "clearInputValue"],
           },
           COMMA: {
-            cond: allowAddTag,
+            guard: allowAddTag,
             actions: ["addTag", "clearInputValue"],
           },
           ARROW_LEFT: {
-            cond: and("hasTags", "isInputCaretAtStart"),
+            guard: and("hasTags", "isInputCaretAtStart"),
             target: "navigating:tag",
             actions: "focusLastTag",
           },
           BACKSPACE: {
             target: "navigating:tag",
-            cond: and("hasTags", "isInputCaretAtStart"),
+            guard: and("hasTags", "isInputCaretAtStart"),
             actions: "focusLastTag",
           },
           PASTE: {
-            cond: "addOnPaste",
+            guard: "addOnPaste",
             actions: ["setInputValue", "addTagFromPaste"],
           },
         },
@@ -362,13 +362,13 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         ctx.inputValue = ""
       },
       addTag(ctx) {
-        const cond = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
-        if (cond) ctx.value.push(ctx.trimmedInputValue)
+        const guard = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
+        if (guard) ctx.value.push(ctx.trimmedInputValue)
       },
       addTagFromPaste(ctx) {
         nextTick(() => {
-          const cond = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
-          if (cond) ctx.value.push(...ctx.trimmedInputValue.split(",").map((v) => v.trim()))
+          const guard = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
+          if (guard) ctx.value.push(...ctx.trimmedInputValue.split(",").map((v) => v.trim()))
           ctx.inputValue = ""
         })
       },

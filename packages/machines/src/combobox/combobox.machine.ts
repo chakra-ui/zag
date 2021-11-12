@@ -40,11 +40,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       CLEAR_VALUE: [
         {
-          cond: and(not("isInputValueEmpty"), "focusOnClear"),
+          guard: and(not("isInputValueEmpty"), "focusOnClear"),
           actions: ["clearInputValue", "focusInput"],
         },
         {
-          cond: not("isInputValueEmpty"),
+          guard: not("isInputValueEmpty"),
           actions: "clearInputValue",
         },
       ],
@@ -53,7 +53,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       unknown: {
         on: {
           SETUP: [
-            { cond: "autoFocus", target: "focused", actions: "setup" },
+            { guard: "autoFocus", target: "focused", actions: "setup" },
             { target: "idle", actions: "setup" },
           ],
         },
@@ -64,7 +64,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         on: {
           CLICK_BUTTON: "suggesting",
           CLICK_INPUT: {
-            cond: "openOnClick",
+            guard: "openOnClick",
             target: "suggesting",
           },
           FOCUS: {
@@ -122,14 +122,14 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         on: {
           ARROW_DOWN: [
             {
-              cond: "isLastOptionFocused",
+              guard: "isLastOptionFocused",
               actions: ["clearFocusedOption"],
             },
             { actions: ["focusNextOption"] },
           ],
           ARROW_UP: [
             {
-              cond: "isFirstOptionFocused",
+              guard: "isFirstOptionFocused",
               actions: ["clearFocusedOption"],
             },
             { actions: ["focusPrevOption"] },

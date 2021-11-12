@@ -63,7 +63,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
           GROUP_POINTER_LEAVE: { actions: "clearHoveredValue" },
           BLUR: "idle",
           SPACE: {
-            cond: "isValueEmpty",
+            guard: "isValueEmpty",
             actions: ["setValue", "invokeOnChange"],
           },
           CLICK: {
@@ -89,7 +89,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
           POINTER_OVER: { actions: "setHoveredValue" },
           GROUP_POINTER_LEAVE: [
             {
-              cond: "isRadioFocused",
+              guard: "isRadioFocused",
               target: "focus",
             },
             { target: "idle" },

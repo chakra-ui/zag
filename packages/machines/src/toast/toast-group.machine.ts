@@ -50,7 +50,7 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
         },
       },
       ADD_TOAST: {
-        cond: (ctx) => ctx.toasts.length < ctx.max,
+        guard: (ctx) => ctx.toasts.length < ctx.max,
         actions: (ctx, evt) => {
           ctx.toasts.push(toastGroupMachine.spawn(createToastMachine(evt.toast)))
         },

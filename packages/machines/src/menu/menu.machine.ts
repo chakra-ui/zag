@@ -49,7 +49,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       CLOSE: "close",
       SET_POINTER_EXIT: {
-        cond: "isTriggerItem",
+        guard: "isTriggerItem",
         actions: "setPointerExit",
       },
       RESTORE_FOCUS: {
@@ -73,11 +73,11 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             actions: "focusFirstItem",
           },
           TRIGGER_FOCUS: {
-            cond: not("isSubmenu"),
+            guard: not("isSubmenu"),
             target: "close",
           },
           TRIGGER_POINTERMOVE: {
-            cond: and("isTriggerItem", "isParentActiveItem"),
+            guard: and("isTriggerItem", "isParentActiveItem"),
             target: "opening",
           },
         },
@@ -115,7 +115,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             actions: "focusFirstItem",
           },
           TRIGGER_POINTERMOVE: {
-            cond: "isTriggerItem",
+            guard: "isTriggerItem",
             target: "opening",
           },
           TRIGGER_BLUR: "idle",
@@ -135,12 +135,12 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         entry: ["focusMenu", "resumePointer"],
         on: {
           TRIGGER_CLICK: {
-            cond: not("isTriggerItem"),
+            guard: not("isTriggerItem"),
             target: "close",
           },
           ARROW_UP: [
             {
-              cond: "hasActiveId",
+              guard: "hasActiveId",
               actions: ["focusPrevItem", "focusMenu"],
             },
             {
@@ -149,7 +149,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           ],
           ARROW_DOWN: [
             {
-              cond: "hasActiveId",
+              guard: "hasActiveId",
               actions: ["focusNextItem", "focusMenu"],
             },
             {
@@ -171,12 +171,12 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
             actions: "closeParents",
           },
           ARROW_RIGHT: {
-            cond: "isTriggerActiveItem",
+            guard: "isTriggerActiveItem",
             actions: "openSubmenu",
           },
           ENTER: [
             {
-              cond: "isTriggerActiveItem",
+              guard: "isTriggerActiveItem",
               actions: "openSubmenu",
             },
             {
@@ -186,7 +186,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           ],
           ESCAPE: [
             {
-              cond: "isSubmenu",
+              guard: "isSubmenu",
               target: "close",
               actions: "closeParents",
             },
@@ -194,24 +194,24 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           ],
           ITEM_POINTERMOVE: [
             {
-              cond: and(not("isMenuFocused"), not("isTriggerActiveItem"), not("suspendPointer"), not("isActiveItem")),
+              guard: and(not("isMenuFocused"), not("isTriggerActiveItem"), not("suspendPointer"), not("isActiveItem")),
               actions: ["focusItem", "focusMenu", "closeChildren"],
             },
             {
-              cond: and(not("suspendPointer"), not("isActiveItem")),
+              guard: and(not("suspendPointer"), not("isActiveItem")),
               actions: "focusItem",
             },
             {
-              cond: not("isActiveItem"),
+              guard: not("isActiveItem"),
               actions: "setHoveredItem",
             },
           ],
           ITEM_POINTERLEAVE: {
-            cond: and(not("isTriggerItem"), not("suspendPointer")),
+            guard: and(not("isTriggerItem"), not("suspendPointer")),
             actions: "clearActiveId",
           },
           ITEM_CLICK: {
-            cond: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
+            guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
             target: "close",
             actions: ["invokeOnSelect", "closeParents"],
           },

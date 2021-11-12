@@ -35,7 +35,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           FOCUS: "open",
           POINTER_ENTER: [
             {
-              cond: "noVisibleTooltip",
+              guard: "noVisibleTooltip",
               target: "opening",
             },
             { target: "open" },
@@ -51,7 +51,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         on: {
           POINTER_LEAVE: "closed",
           POINTER_DOWN: {
-            cond: "closeOnPointerDown",
+            guard: "closeOnPointerDown",
             target: "closed",
           },
           SCROLL: "closed",
@@ -65,7 +65,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         on: {
           POINTER_LEAVE: [
             {
-              cond: "isVisible",
+              guard: "isVisible",
               target: "closing",
             },
             { target: "closed" },
@@ -75,7 +75,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           SCROLL: "closed",
           POINTER_LOCK_CHANGE: "closed",
           POINTER_DOWN: {
-            cond: "closeOnPointerDown",
+            guard: "closeOnPointerDown",
             target: "closed",
           },
           PRESS_ENTER: "closed",

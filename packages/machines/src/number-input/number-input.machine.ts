@@ -113,12 +113,12 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           },
           BLUR: [
             {
-              cond: "isInvalidExponential",
+              guard: "isInvalidExponential",
               target: "idle",
               actions: ["clearValue", "clearHint"],
             },
             {
-              cond: and("clampOnBlur", not("isInRange")),
+              guard: and("clampOnBlur", not("isInRange")),
               target: "idle",
               actions: ["clampValue", "clearHint"],
             },
@@ -128,13 +128,13 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
 
       "before:spin": {
         entry: choose([
-          { cond: "isIncrement", actions: "increment" },
-          { cond: "isDecrement", actions: "decrement" },
+          { guard: "isIncrement", actions: "increment" },
+          { guard: "isDecrement", actions: "decrement" },
         ]),
         after: {
           CHANGE_DELAY: {
             target: "spinning",
-            cond: "isInRange",
+            guard: "isInRange",
           },
         },
         on: {
@@ -150,12 +150,12 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         every: [
           {
             delay: "CHANGE_INTERVAL",
-            cond: and(not("isAtMin"), "isIncrement"),
+            guard: and(not("isAtMin"), "isIncrement"),
             actions: "increment",
           },
           {
             delay: "CHANGE_INTERVAL",
-            cond: and(not("isAtMax"), "isDecrement"),
+            guard: and(not("isAtMax"), "isDecrement"),
             actions: "decrement",
           },
         ],
@@ -178,11 +178,11 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           },
           POINTER_MOVE_SCRUBBER: [
             {
-              cond: "isIncrement",
+              guard: "isIncrement",
               actions: ["increment", "setCursorPoint", "updateCursor"],
             },
             {
-              cond: "isDecrement",
+              guard: "isDecrement",
               actions: ["decrement", "setCursorPoint", "updateCursor"],
             },
           ],
