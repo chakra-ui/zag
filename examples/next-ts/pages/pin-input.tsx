@@ -3,13 +3,16 @@ import { useMachine } from "@ui-machines/react"
 
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
+import { useControls } from "hooks/use-controls"
 
 export default function Page() {
+  const controls = useControls({
+    type: { type: "select", options: ["number", "alphanumeric"] as const, defaultValue: "number" },
+    mask: { type: "boolean", defaultValue: false },
+  })
+
   const [state, send] = useMachine(
     pinInput.machine.withContext({
-      autoFocus: true,
-      type: "alphanumeric",
-      mask: true,
       onComplete(val) {
         console.log("onComplete", val)
       },
@@ -17,6 +20,9 @@ export default function Page() {
         console.log("onChange", val)
       },
     }),
+    {
+      context: controls.context,
+    },
   )
 
   const ref = useMount<HTMLDivElement>(send)
@@ -25,6 +31,7 @@ export default function Page() {
 
   return (
     <div>
+      <controls.ui />
       <div style={{ width: "300px" }} ref={ref}>
         <input {...getInputProps({ index: 0 })} />
         <input {...getInputProps({ index: 1 })} />
