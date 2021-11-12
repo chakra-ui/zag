@@ -185,7 +185,7 @@ export declare namespace StateMachine {
   }
 
   export type TComputedContext<T> = {
-    [K in keyof Computed<T>]: (ctx: Writable<T>) => T[K]
+    [K in keyof Computed<T>]: (ctx: Omit<T, K>) => T[K]
   }
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {

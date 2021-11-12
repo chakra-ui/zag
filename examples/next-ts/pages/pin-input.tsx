@@ -8,8 +8,13 @@ export default function Page() {
   const [state, send] = useMachine(
     pinInput.machine.withContext({
       autoFocus: true,
+      type: "alphanumeric",
+      mask: true,
       onComplete(val) {
-        console.log(val)
+        console.log("onComplete", val)
+      },
+      onChange(val) {
+        console.log("onChange", val)
       },
     }),
   )
