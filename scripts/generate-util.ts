@@ -4,23 +4,17 @@ import shell from "shelljs"
 const plop = nodePlop("plop-templates/plopfile.hbs")
 
 interface Answers {
-  name: string
-  description: string
+  util: string
 }
 
-async function createPackage() {
+async function createUtil() {
   plop.setGenerator("util", {
-    description: "Generates a utils package",
+    description: "Generates a new util package",
     prompts: [
       {
         type: "input",
-        name: "name",
-        message: "Enter package name:",
-      },
-      {
-        type: "input",
-        name: "description",
-        message: "The description of this package:",
+        name: "util",
+        message: "Enter util name (e.g. array, contains):",
       },
     ],
     actions(answers) {
@@ -28,14 +22,14 @@ async function createPackage() {
 
       if (!answers) return actions
 
-      const { name, description } = answers as Answers
+      const { util } = answers as Answers
 
       actions.push({
         type: "addMany",
         templateFiles: "util-template/**",
-        destination: `../packages/utils`,
+        destination: `../packages/utils/{{dashCase util}}`,
         base: "util-template/",
-        data: { description, packageName: name },
+        data: { util, packageName: util },
         abortOnFail: true,
       })
 
@@ -49,9 +43,9 @@ async function createPackage() {
   await runActions(answers)
 }
 
-async function main() {
-  await createPackage()
+async function run() {
+  await createUtil()
   shell.exec("yarn")
 }
 
-main()
+run()

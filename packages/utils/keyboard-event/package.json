@@ -1,0 +1,30 @@
+{
+  "name": "keyboard-event",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "keyboard-event"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/keyboard-event.cjs.js",
+  "module": "dist/keyboard-event.esm.js",
+  "types": "dist/keyboard-event.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/keyboard-event",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "uuid",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "uuid"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/uuid.cjs.js",
+  "module": "dist/uuid.esm.js",
+  "types": "dist/uuid.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/uuid",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "body-scroll-lock",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "body-scroll-lock"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/body-scroll-lock.cjs.js",
+  "module": "dist/body-scroll-lock.esm.js",
+  "types": "dist/body-scroll-lock.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/body-scroll-lock",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@ui-machines/rating",
+  "version": "0.0.0",
+  "description": "Core logic for the rating widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "rating"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-rating.cjs.js",
+  "types": "dist/ui-machines-rating.cjs.d.ts",
+  "module": "dist/ui-machines-rating.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/rating",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

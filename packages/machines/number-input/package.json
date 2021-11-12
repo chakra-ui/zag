@@ -1,0 +1,34 @@
+{
+  "name": "@ui-machines/number-input",
+  "version": "0.0.0",
+  "description": "Core logic for the number-input widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "number-input"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-number-input.cjs.js",
+  "types": "dist/ui-machines-number-input.cjs.d.ts",
+  "module": "dist/ui-machines-number-input.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/number-input",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

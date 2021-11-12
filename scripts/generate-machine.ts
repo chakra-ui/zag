@@ -1,6 +1,5 @@
 import nodePlop, { ActionType } from "node-plop"
 import shell from "shelljs"
-import _ from "lodash"
 
 const plop = nodePlop("plop-templates/plopfile.hbs")
 
@@ -9,8 +8,6 @@ interface Answers {
 }
 
 async function createMachine() {
-  plop.setHelper("capitalize", (text) => _.capitalize(_.camelCase(text)))
-
   plop.setGenerator("machine", {
     description: "Generates a new ui machine",
     prompts: [
@@ -20,7 +17,7 @@ async function createMachine() {
         message: "Enter machine name (e.g. menu, popover):",
       },
     ],
-    actions(answers: any) {
+    actions(answers) {
       const actions: ActionType[] = []
 
       if (!answers) return actions

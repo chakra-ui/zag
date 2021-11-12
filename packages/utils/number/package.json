@@ -1,0 +1,30 @@
+{
+  "name": "number",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "number"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/number.cjs.js",
+  "module": "dist/number.esm.js",
+  "types": "dist/number.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/number",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

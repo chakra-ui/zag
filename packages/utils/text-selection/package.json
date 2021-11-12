@@ -1,0 +1,30 @@
+{
+  "name": "text-selection",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "text-selection"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/text-selection.cjs.js",
+  "module": "dist/text-selection.esm.js",
+  "types": "dist/text-selection.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/text-selection",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

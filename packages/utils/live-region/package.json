@@ -1,0 +1,30 @@
+{
+  "name": "live-region",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "live-region"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/live-region.cjs.js",
+  "module": "dist/live-region.esm.js",
+  "types": "dist/live-region.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/live-region",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

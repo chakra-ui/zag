@@ -1,0 +1,30 @@
+{
+  "name": "guard",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "guard"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/guard.cjs.js",
+  "module": "dist/guard.esm.js",
+  "types": "dist/guard.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/guard",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

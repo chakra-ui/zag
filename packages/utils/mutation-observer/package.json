@@ -1,0 +1,30 @@
+{
+  "name": "mutation-observer",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "mutation-observer"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/mutation-observer.cjs.js",
+  "module": "dist/mutation-observer.esm.js",
+  "types": "dist/mutation-observer.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/mutation-observer",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

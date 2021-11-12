@@ -1,0 +1,30 @@
+{
+  "name": "fn",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "fn"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/fn.cjs.js",
+  "module": "dist/fn.esm.js",
+  "types": "dist/fn.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/fn",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

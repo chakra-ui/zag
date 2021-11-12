@@ -1,0 +1,30 @@
+{
+  "name": "number-scale",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "number-scale"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/number-scale.cjs.js",
+  "module": "dist/number-scale.esm.js",
+  "types": "dist/number-scale.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/number-scale",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

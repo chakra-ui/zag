@@ -1,0 +1,30 @@
+{
+  "name": "dom-env",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "dom-env"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/dom-env.cjs.js",
+  "module": "dist/dom-env.esm.js",
+  "types": "dist/dom-env.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/dom-env",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "merge-props",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "merge-props"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/merge-props.cjs.js",
+  "module": "dist/merge-props.esm.js",
+  "types": "dist/merge-props.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/merge-props",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

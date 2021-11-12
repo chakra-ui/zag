@@ -1,0 +1,30 @@
+{
+  "name": "validate-blur",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "validate-blur"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/segunadebayo/core-dom#readme",
+  "license": "MIT",
+  "main": "dist/validate-blur.cjs.js",
+  "module": "dist/validate-blur.esm.js",
+  "types": "dist/validate-blur.cjs.d.ts",
+  "repository": "https://github.com/segunadebayo/core-dom/tree/main/packages/validate-blur",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/segunadebayo/core-dom/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

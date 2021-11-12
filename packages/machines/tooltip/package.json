@@ -1,0 +1,34 @@
+{
+  "name": "@ui-machines/tooltip",
+  "version": "0.0.0",
+  "description": "Core logic for the tooltip widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "tooltip"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-tooltip.cjs.js",
+  "types": "dist/ui-machines-tooltip.cjs.d.ts",
+  "module": "dist/ui-machines-tooltip.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/tooltip",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}
