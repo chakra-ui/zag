@@ -9,7 +9,7 @@ import { pinInputStyle } from "../../../shared/style"
 
 export default function Page() {
   const controls = useControls({
-    type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "number" },
+    type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
     mask: { type: "boolean", defaultValue: false },
     otp: { type: "boolean", defaultValue: false },
   })
@@ -37,11 +37,11 @@ export default function Page() {
       <Global styles={pinInputStyle} />
       <controls.ui />
       <div className="pin-input" ref={ref}>
-        <input {...getInputProps({ index: 0 })} />
-        <input {...getInputProps({ index: 1 })} />
-        <input {...getInputProps({ index: 2 })} />
+        <input data-testid="input-1" {...getInputProps({ index: 0 })} />
+        <input data-testid="input-2" {...getInputProps({ index: 1 })} />
+        <input data-testid="input-3" {...getInputProps({ index: 2 })} />
       </div>
-      <button data-testid="clear" onClick={clearValue}>
+      <button data-testid="clear-button" onClick={clearValue}>
         Clear
       </button>
 

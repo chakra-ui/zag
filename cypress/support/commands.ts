@@ -27,3 +27,38 @@ Cypress.Commands.add("paste", { prevSubject: true }, (subject, text = "") => {
 Cypress.Commands.add("clickOutside", () => {
   return cy.get("body").click(0, 0)
 })
+
+Cypress.Commands.add("realInput", { prevSubject: "element" }, (subject, value, options = {}) => {
+  const { overwrite = true, prepend = false, inputType = "insertFromPaste" } = options
+  const element = subject[0]
+  const win = element.ownerDocument.defaultView ?? window
+
+  const inputEvent = new win.InputEvent("input", { bubbles: true, inputType })
+
+  let textValue = value
+
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype, "value")?.set
+  const nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(win.HTMLTextAreaElement.prototype, "value")?.set
+
+  if (!overwrite) {
+    textValue = prepend ? `${value}${element.value}` : `${element.value}${value}`
+  }
+  const nativeSetter = element.localName === "input" ? nativeInputValueSetter : nativeTextAreaValueSetter
+  nativeSetter?.call(element, textValue)
+  element.focus()
+  element.dispatchEvent(inputEvent)
+
+  Cypress.log({
+    name: "fill",
+    message: value,
+    $el: subject,
+    consoleProps: () => {
+      return {
+        value,
+        options,
+      }
+    },
+  })
+
+  cy.wrap(element)
+})

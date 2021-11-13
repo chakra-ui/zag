@@ -27,6 +27,14 @@ declare global {
     interface Chainable {
       paste(text: string): Chainable<Element>
       clickOutside(): Chainable<Element>
+      realInput(
+        value: string,
+        options?: {
+          overwrite?: boolean
+          prepend?: boolean
+          inputType?: "insertText" | "insertFromPaste"
+        },
+      ): Chainable<void>
     }
   }
 }

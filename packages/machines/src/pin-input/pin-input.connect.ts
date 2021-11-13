@@ -41,12 +41,10 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
           const evt = (event.nativeEvent ?? event) as InputEvent
           if (evt.isComposing) return
 
-          const value = event.currentTarget.value
-
+          const value = event.target.value
           if (evt.inputType === "insertFromPaste" || value.length > 2) {
             send({ type: "PASTE", value })
           }
-
           if (evt.inputType === "insertText") {
             send({ type: "INPUT", value })
           }

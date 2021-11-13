@@ -219,7 +219,7 @@ const REGEX = {
 
 function isValidType(value: string, type: PinInputMachineContext["type"]) {
   if (!type) return true
-  return REGEX[type].test(value)
+  return !!REGEX[type]?.test(value)
 }
 
 function assign(ctx: PinInputMachineContext, value: string | string[]) {
