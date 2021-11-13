@@ -16,7 +16,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       focusedIndex: -1,
       placeholder: "○",
       otp: false,
-      type: "number",
+      type: "numeric",
     },
 
     on: {
@@ -27,7 +27,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         },
         { actions: "setValue" },
       ],
-      CLEAR: {
+      CLEAR_VALUE: {
         actions: ["clearValue", "setFocusIndexToFirst"],
       },
     },
@@ -36,6 +36,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       valueLength: (ctx) => ctx.value.length,
       filledValueLength: (ctx) => ctx.value.filter((v) => v?.trim() !== "").length,
       isValueComplete: (ctx) => ctx.valueLength === ctx.filledValueLength,
+      valueAsString: (ctx) => ctx.value.join(""),
     },
 
     watch: {
@@ -86,11 +87,21 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
           ],
           PASTE: {
             guard: "isValidValue",
-            actions: ["pasteValue", "setLastValueFocusIndex"],
+            actions: ["setPastedValue", "setLastValueFocusIndex"],
           },
           BLUR: {
             target: "idle",
             actions: "clearFocusedIndex",
+          },
+          DELETE: {
+            guard: "hasValue",
+            actions: "clearFocusedValue",
+          },
+          ARROW_LEFT: {
+            actions: "setPrevFocusedIndex",
+          },
+          ARROW_RIGHT: {
+            actions: "setNextFocusedIndex",
           },
           BACKSPACE: [
             {
@@ -98,7 +109,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
               actions: "clearFocusedValue",
             },
             {
-              actions: ["setPrevFocusIndex", "clearFocusedValue"],
+              actions: ["setPrevFocusedIndex", "clearFocusedValue"],
             },
           ],
         },
@@ -132,7 +143,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         nextTick(() => {
           const inputs = dom.getElements(ctx)
           const empty = fromLength(inputs.length).map(() => "")
-          if (ctx.value.length === 0) ctx.value = empty
+          ctx.value = Object.assign(empty, ctx.value)
         })
       },
       focusInput: (ctx) => {
@@ -143,7 +154,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       },
       invokeComplete: (ctx) => {
         if (ctx.isValueComplete) {
-          ctx.onComplete?.(Array.from(ctx.value))
+          ctx.onComplete?.(Array.from(ctx.value), ctx.valueAsString)
         }
       },
       invokeOnChange: (ctx, evt) => {
@@ -167,7 +178,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
         const val = ctx.value[ctx.focusedIndex]
         ctx.value[ctx.focusedIndex] = evt.value.replace(val, "").charAt(0)
       },
-      pasteValue(ctx, evt) {
+      setPastedValue(ctx, evt) {
         nextTick(() => {
           const value = (evt.value as string).substr(0, ctx.valueLength)
           assign(ctx, value.split("").filter(Boolean))
@@ -188,7 +199,7 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       setNextFocusedIndex: (ctx) => {
         ctx.focusedIndex = Math.min(ctx.focusedIndex + 1, ctx.valueLength - 1)
       },
-      setPrevFocusIndex: (ctx) => {
+      setPrevFocusedIndex: (ctx) => {
         ctx.focusedIndex = Math.max(ctx.focusedIndex - 1, 0)
       },
       setLastValueFocusIndex: (ctx) => {
@@ -200,11 +211,15 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
   },
 )
 
+const REGEX = {
+  numeric: /^[0-9]+$/,
+  alphabetic: /^[A-Za-z]+$/,
+  alphanumeric: /^[a-zA-Z0-9]+$/i,
+}
+
 function isValidType(value: string, type: PinInputMachineContext["type"]) {
-  const NUMERIC_REGEX = /^[0-9]+$/
-  const ALPHA_NUMERIC_REGEX = /^[a-zA-Z0-9]+$/i
-  const regex = type === "alphanumeric" ? ALPHA_NUMERIC_REGEX : NUMERIC_REGEX
-  return regex.test(value)
+  if (!type) return true
+  return REGEX[type].test(value)
 }
 
 function assign(ctx: PinInputMachineContext, value: string | string[]) {

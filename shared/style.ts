@@ -1,4 +1,6 @@
-export const comboboxStyle = {
+import type { CSSObject } from "@emotion/react"
+
+export const comboboxStyle: CSSObject = {
   '[role="listbox"]': {
     listStyleType: "none",
     padding: "0",
@@ -13,7 +15,7 @@ export const comboboxStyle = {
   },
 }
 
-export const menuStyle = {
+export const menuStyle: CSSObject = {
   '[role="menu"]': {
     maxWidth: "160px",
     backgroundColor: "white",
@@ -51,7 +53,7 @@ export const menuStyle = {
   },
 }
 
-export const popoverStyle = {
+export const popoverStyle: CSSObject = {
   "*:focus": {
     outline: "2px dashed blue",
     outlineOffset: "2px",
@@ -94,7 +96,7 @@ export const popoverStyle = {
   },
 }
 
-export const rangeSliderStyle = {
+export const rangeSliderStyle: CSSObject = {
   ".slider": {
     "--slider-thumb-size": "20px",
     "--slider-track-height": "4px",
@@ -130,14 +132,14 @@ export const rangeSliderStyle = {
   },
 }
 
-export const ratingStyle = {
+export const ratingStyle: CSSObject = {
   ".rating": { display: "flex" },
   ".rating__rate": { margin: "0 3px", background: "salmon" },
   ".rating__rate:focus": { outline: "2px solid royalblue" },
   ".rating__rate[data-highlighted]": { background: "red" },
 }
 
-export const sliderStyle = {
+export const sliderStyle: CSSObject = {
   form: { margin: "45px" },
   ".slider": {
     marginTop: "12px",
@@ -175,7 +177,7 @@ export const sliderStyle = {
   output: { marginInlineStart: "12px", color: "lightslategray" },
 }
 
-export const splitViewStyle = {
+export const splitViewStyle: CSSObject = {
   ".root": { height: "300px" },
   ".pane": {
     display: "flex",
@@ -202,7 +204,7 @@ export const splitViewStyle = {
   },
 }
 
-export const tagsInputStyle = {
+export const tagsInputStyle: CSSObject = {
   ".tags-input": {
     display: "inline-block",
     padding: "0 2px",
@@ -232,17 +234,33 @@ export const tagsInputStyle = {
     color: "#eee",
   },
   input: {
-    appearance: "none !important",
+    appearance: "none",
     padding: "3px",
-    margin: "0 !important",
-    background: "none !important",
-    border: "none !important",
-    boxShadow: "none !important",
-    font: "inherit !important",
-    fontSize: "100% !important",
-    outline: "none !important",
+    margin: "0",
+    background: "none",
+    border: "none",
+    boxShadow: "none",
+    font: "inherit",
+    fontSize: "100%",
+    outline: "none",
   },
   "input[hidden]": { display: "none !important" },
   "input:not([hidden])": { display: "inline-block !important" },
   ".tag-close": { border: "0", background: "inherit" },
+}
+
+export const pinInputStyle: CSSObject = {
+  ".pin-input": {
+    width: "300px",
+    display: "flex",
+    marginBottom: "12px",
+    gap: "12px",
+
+    input: {
+      width: "48px",
+      height: "48px",
+      textAlign: "center",
+      fontSize: "24px",
+    },
+  },
 }

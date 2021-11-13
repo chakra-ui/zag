@@ -29,7 +29,7 @@ export type PinInputMachineContext = Context<{
   /**
    * The type of value the pin-input should allow
    */
-  type?: "alphanumeric" | "number"
+  type?: "alphanumeric" | "numeric" | "alphabetic"
   /**
    * The index of the input field that has focus
    */
@@ -37,11 +37,11 @@ export type PinInputMachineContext = Context<{
   /**
    * Function called when all inputs have valid values
    */
-  onComplete?(values: string[]): void
+  onComplete?(value: string[], valueAsString: string): void
   /**
    * Function called on input change
    */
-  onChange?: (values: string[]) => void
+  onChange?: (value: string[]) => void
   /**
    * If `true`, the input's value will be masked just like `type=password`
    */
@@ -58,6 +58,10 @@ export type PinInputMachineContext = Context<{
    * @computed Whether all input values are valid
    */
   readonly isValueComplete: boolean
+  /**
+   * @computed The string representation of the input values
+   */
+  readonly valueAsString: string
 }>
 
 export type PinInputMachineState = {
