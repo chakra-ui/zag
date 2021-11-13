@@ -1,27 +1,21 @@
-import type { AnyMachine, StateMachine as S } from "@ui-machines/core"
+import type { Machine, StateMachine as S } from "@ui-machines/core"
 import { computed, onBeforeUnmount, onMounted, shallowRef } from "vue"
 
-/**
- * The `useActor` hook is a composable used by a component to consume the
- * state and manage the events of an actor within a state machine context.
- *
- * `useActor` accepts a service as it's argument, and will update it's context
- * with state updates from the spawned actor.
- *
- * It can also be used to send events to the parent state machine.
- * See the `toast` page in the `vue-ts` example to see how it's used.
- */
-export function useActor<T extends AnyMachine>(service: T) {
+export function useActor<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(service: Machine<TContext, TState, TEvent>) {
   /**
    * See `useMachine()` to to see why we use a `shallowRef`
    * and `computed` together to preserve state.
    */
   const state = shallowRef(service.state)
-  const consumableState = computed<T["state"]>({
+  const consumableState = computed({
     get() {
-      return state.value
+      return state.value as S.State<TContext, TState, TEvent>
     },
-    set(value: S.State<any, any>) {
+    set(value: S.State<TContext, TState, TEvent>) {
       if (state.value !== value) {
         state.value = value
       }
@@ -34,7 +28,7 @@ export function useActor<T extends AnyMachine>(service: T) {
    * See `useMachine()` to to see why we use a `listener`
    * function to watch for state updates in actors
    */
-  function listener(nextState: S.State<any, any>) {
+  function listener(nextState: S.State<TContext, TState, TEvent>) {
     consumableState.value = nextState
   }
 

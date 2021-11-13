@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { toast, ToastMachine } from "@ui-machines/web"
 import { useActor, useMachine } from "@ui-machines/react"
 import { useMount } from "hooks/use-mount"
@@ -27,6 +28,7 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
     >
       <progress max={ctx.progress?.max} value={ctx.progress?.value} />
       <p>{ctx.title}</p>
+      {/* @ts-expect-error */}
       <p>{ctx.type === "loading" ? <BeatLoader /> : null}</p>
       <button onClick={t.dismiss}>Close</button>
     </pre>
@@ -35,13 +37,11 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 
 export default function Page() {
   const [state, send] = useMachine(toast.group.machine)
-
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
 
   const toasts = toast.group.connect(state, send)
-
   const id = useRef<string>()
 
   return (

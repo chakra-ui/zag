@@ -29,9 +29,9 @@ export class Machine<
   private delayedEvents = new Map<string, VoidFunction[]>()
 
   // state update listeners the user can opt-in for
-  private stateListeners = new Set<S.StateListener<TContext, TState>>()
+  private stateListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private contextListeners = new Set<S.ContextListener<TContext>>()
-  private doneListeners = new Set<S.StateListener<TContext, TState>>()
+  private doneListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private removeStateListener: VoidFunction = () => void 0
   private removeContextListener: VoidFunction = () => void 0
   private contextWatchers: Set<VoidFunction> = new Set()
@@ -60,7 +60,7 @@ export class Machine<
   }
 
   // immutable state value
-  private get stateSnapshot(): S.State<TContext, TState> {
+  private get stateSnapshot(): S.State<TContext, TState, TEvent> {
     return cast(snapshot(this.state))
   }
 
@@ -679,7 +679,7 @@ export class Machine<
     return info.stateNode
   }
 
-  subscribe = (listener: S.StateListener<TContext, TState>) => {
+  subscribe = (listener: S.StateListener<TContext, TState, TEvent>) => {
     this.stateListeners.add(listener)
 
     if (this.status === MachineStatus.Running) {
@@ -691,12 +691,12 @@ export class Machine<
     }
   }
 
-  public onDone = (listener: S.StateListener<TContext, TState>) => {
+  public onDone = (listener: S.StateListener<TContext, TState, TEvent>) => {
     this.doneListeners.add(listener)
     return this
   }
 
-  public onTransition = (listener: S.StateListener<TContext, TState>) => {
+  public onTransition = (listener: S.StateListener<TContext, TState, TEvent>) => {
     this.stateListeners.add(listener)
     if (this.status === MachineStatus.Running) {
       listener(this.stateSnapshot)

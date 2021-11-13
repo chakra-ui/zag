@@ -1,14 +1,18 @@
-import { AnyMachine, StateMachine as S } from "@ui-machines/core"
+import type { Machine, StateMachine as S } from "@ui-machines/core"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useConstant } from "./use-constant"
 
 const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
 
-export function useActor<T extends AnyMachine>(service: T) {
+export function useActor<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(service: Machine<TContext, TState, TEvent>) {
   const ref = useRef(service)
   const [current, setCurrent] = useState(() => service.state)
 
-  const send = useConstant(() => (event: S.Event<S.AnyEventObject>) => {
+  const send = useConstant(() => (event: TEvent) => {
     ref.current.send(event)
   })
 
@@ -19,5 +23,5 @@ export function useActor<T extends AnyMachine>(service: T) {
     })
   }, [service])
 
-  return [current as T["state"], send] as const
+  return [current, send] as const
 }

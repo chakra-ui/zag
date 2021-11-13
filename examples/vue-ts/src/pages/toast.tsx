@@ -19,21 +19,17 @@ const Toast = defineComponent({
     },
   },
   setup(props) {
-    // @ts-expect-error
     const [state, send] = useActor(props.actor)
 
     const ctx = computed(() => state.value.context)
-
-    // @ts-expect-error
     const t = computed(() => toast.connect<VuePropTypes>(state.value, send))
 
     return () => (
       <pre
         hidden={!t.value.isVisible}
         style={{ padding: "10px", background: backgrounds[ctx.value.type], maxWidth: "400px" }}
-        // @ts-expect-error
-        onPointerenter={t.value.pause}
-        onPointerleave={t.value.resume}
+        onMouseover={t.value.pause}
+        onMouseleave={t.value.resume}
       >
         <progress max={ctx.value.progress?.max} value={ctx.value.progress?.value} />
         <p>{ctx.value.title}</p>
