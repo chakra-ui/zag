@@ -81,7 +81,6 @@ export default defineComponent({
           <button onClick={() => toasts.value.pause()}>Pause</button>
           <div>
             {state.value.context.toasts.map((actor) => (
-              // @ts-expect-error
               <Toast key={actor.id} actor={actor} />
             ))}
           </div>
