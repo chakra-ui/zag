@@ -1,4 +1,4 @@
-import { numberInput } from "@ui-machines/web"
+import { mergeProps, numberInput } from "@ui-machines/web"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
@@ -16,14 +16,27 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => numberInput.connect<SolidPropTypes>(state, send, normalizeProps))
+  const connect = createMemo(() => numberInput.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div>
-      <div>
-        <button {...machineState().decrementButtonProps}>DEC</button>
-        <input ref={ref} {...machineState().inputProps} />
-        <button {...machineState().incrementButtonProps}>INC</button>
+      <div className="root">
+        <div
+          data-testid="scrubber"
+          {...mergeProps(connect().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
+        />
+        <label data-testid="label" {...connect().labelProps}>
+          Enter number:
+        </label>
+        <div>
+          <button data-testid="dec-button" {...connect().decrementButtonProps}>
+            DEC
+          </button>
+          <input data-testid="input" ref={ref} {...connect().inputProps} />
+          <button data-testid="inc-button" {...connect().incrementButtonProps}>
+            INC
+          </button>
+        </div>
       </div>
 
       <StateVisualizer state={state} />
