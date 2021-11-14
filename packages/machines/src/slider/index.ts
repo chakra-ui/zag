@@ -6,4 +6,4 @@ export const slider = {
   connect: sliderConnect,
 }
 
-export type { SliderMachineContext, SliderMachineState } from "./slider.machine"
+export type { SliderMachineContext, SliderMachineState } from "./slider.types"

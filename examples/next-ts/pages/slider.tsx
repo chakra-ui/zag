@@ -1,15 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { slider } from "@ui-machines/web"
-import { useMachine } from "@ui-machines/react"
-
-import serialize from "form-serialize"
 import * as styled from "@emotion/styled"
-
+import { useMachine } from "@ui-machines/react"
+import { slider } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
+import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 import { sliderStyle } from "../../../shared/style"
 
-const Styles = styled.default(`div`)(sliderStyle as styled.CSSObject)
+const Styles = styled.default("div")(sliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -35,15 +33,19 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div>
-          <label {...labelProps}>Slider Label</label>
-          <output {...outputProps}>{value}</output>
+        <div className="root">
+          <label data-testid="label" {...labelProps}>
+            Slider Label
+          </label>
+          <output data-testid="output" {...outputProps}>
+            {value}
+          </output>
         </div>
         <div className="slider" ref={ref} {...rootProps}>
-          <div className="slider__track" {...trackProps}>
+          <div data-testid="track" className="slider__track" {...trackProps}>
             <div className="slider__range" {...rangeProps} />
           </div>
-          <div className="slider__thumb" {...thumbProps}>
+          <div data-testid="thumb" className="slider__thumb" {...thumbProps}>
             <input {...inputProps} />
           </div>
         </div>

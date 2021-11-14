@@ -6,7 +6,7 @@ import { fromPointerEvent } from "tiny-point/dom"
 import type { EventKeyMap } from "../utils"
 import { dataAttr, getEventKey, getEventStep } from "../utils"
 import { dom } from "./slider.dom"
-import type { SliderMachineContext, SliderMachineState } from "./slider.machine"
+import type { SliderMachineContext, SliderMachineState } from "./slider.types"
 
 export function sliderConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<SliderMachineContext, SliderMachineState>,
@@ -163,5 +163,23 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       },
       style: dom.getRootStyle(ctx),
     }),
+
+    getMarkerProps({ value }: { value: number }) {
+      const isInRange = !(value < ctx.min || value > ctx.max)
+      const isHighlighted = value >= ctx.value
+      const percent = valueToPercent(value, ctx)
+      const style = dom.getMarkerStyle(ctx, percent)
+
+      return {
+        id: dom.getMarkerId(ctx, value),
+        role: "presentation",
+        "data-value": value,
+        "aria-hidden": true,
+        "data-disabled": dataAttr(ctx.disabled),
+        "data-invalid": dataAttr(!isInRange),
+        "data-highlighted": dataAttr(isHighlighted),
+        style,
+      }
+    },
   }
 }

@@ -3,7 +3,7 @@ import type { Point } from "tiny-point"
 import { relativeToNode } from "tiny-point/dom"
 import type { DOM } from "../utils"
 import { dispatchInputEvent } from "../utils"
-import type { SliderMachineContext as Ctx } from "./slider.machine"
+import type { SliderMachineContext as Ctx } from "./slider.types"
 
 type SharedContext = {
   min: number
@@ -110,6 +110,7 @@ export const dom = {
   getTrackId: (ctx: Ctx) => `slider-track-${ctx.uid}`,
   getRangeId: (ctx: Ctx) => `slider-range-${ctx.uid}`,
   getLabelId: (ctx: Ctx) => `slider-label-${ctx.uid}`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider-marker-${ctx.uid}-${value}`,
 
   getThumbEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx)),
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
@@ -144,5 +145,21 @@ export const dom = {
   dispatchChangeEvent(ctx: Ctx) {
     const input = dom.getInputEl(ctx)
     if (input) dispatchInputEvent(input, ctx.value)
+  },
+
+  getMarkerStyle(ctx: Ctx, percent: number): DOM.Style {
+    const style: DOM.Style = {
+      position: "absolute",
+      pointerEvents: "none",
+    }
+
+    if (ctx.isHorizontal) {
+      percent = ctx.isRtl ? 100 - percent : percent
+      style.left = `${percent}%`
+    } else {
+      style.bottom = `${percent}%`
+    }
+
+    return style
   },
 }

@@ -174,7 +174,7 @@ export const sliderStyle: CSSObject = {
     borderRadius: "inherit",
     height: "100%",
   },
-  output: { marginInlineStart: "12px", color: "lightslategray" },
+  output: { marginInlineStart: "12px" },
 }
 
 export const splitViewStyle: CSSObject = {
