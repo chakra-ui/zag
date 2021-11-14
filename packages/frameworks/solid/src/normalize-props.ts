@@ -2,12 +2,6 @@ import { createNormalizer } from "@ui-machines/prop-types"
 import { isObject, isString } from "tiny-guard"
 import { cssify } from "./cssify"
 
-export interface PropNormalizer {
-  <T extends Dict = Dict>(props: T): Dict
-}
-
-type Dict = Record<string, any>
-
 const eventMap = {
   onFocus: "onFocusIn",
   onBlur: "onFocusOut",
@@ -18,6 +12,8 @@ const eventMap = {
 function toSolidProp(prop: string) {
   return prop in eventMap ? eventMap[prop] : prop
 }
+
+type Dict = Record<string, any>
 
 export const normalizeProps = createNormalizer((props: Dict) => {
   const normalized: Dict = {}
