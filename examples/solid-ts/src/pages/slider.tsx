@@ -27,7 +27,7 @@ export default function Page() {
   return (
     <div className={styles}>
       <form // ensure we can read the value within forms
-        onChange={(e) => {
+        onInput={(e) => {
           const formData = serialize(e.currentTarget, { hash: true })
           console.log(formData)
         }}
