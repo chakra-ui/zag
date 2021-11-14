@@ -1,0 +1,25 @@
+diff --git a/node_modules/@vue/runtime-dom/dist/runtime-dom.d.ts b/node_modules/@vue/runtime-dom/dist/runtime-dom.d.ts
+index b73e04a..df308c8 100644
+--- a/node_modules/@vue/runtime-dom/dist/runtime-dom.d.ts
++++ b/node_modules/@vue/runtime-dom/dist/runtime-dom.d.ts
+@@ -1474,7 +1474,7 @@ type EventHandlers<E> = {
+ // named imports.
+ import * as RuntimeCore from '@vue/runtime-core'
+ 
+-type ReservedProps = {
++export type ReservedProps = {
+   key?: string | number | symbol
+   ref?:
+     | string
+@@ -1482,9 +1482,9 @@ type ReservedProps = {
+     | ((ref: Element | RuntimeCore.ComponentPublicInstance | null) => void)
+ }
+ 
+-type ElementAttrs<T> = T & ReservedProps
++export type ElementAttrs<T> = T & ReservedProps
+ 
+-type NativeElements = {
++export type NativeElements = {
+   [K in keyof IntrinsicElementAttributes]: ElementAttrs<
+     IntrinsicElementAttributes[K]
+   >

@@ -1,8 +1,10 @@
-import { defineConfig } from "vite"
-import path from "path"
 import Vue from "@vitejs/plugin-vue"
-import Pages from "vite-plugin-pages"
+import { resolve } from "path"
+import { defineConfig } from "vite"
 import Components from "vite-plugin-components"
+import OptimizationPersist from "vite-plugin-optimize-persist"
+import PkgConfig from "vite-plugin-package-config"
+import Pages from "vite-plugin-pages"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,38 +12,11 @@ export default defineConfig({
     jsxFactory: "h",
     jsxFragment: "Fragment",
   },
-  optimizeDeps: {
-    include: [
-      "tiny-guard",
-      "valtio",
-      "merge-anything",
-      "tiny-fn",
-      "tiny-dom-event",
-      "tiny-dom-query",
-      "tiny-dom-query/attributes",
-      "tiny-dom-query/focusable",
-      "tiny-point/dom",
-      "tiny-point/within",
-      "tiny-rect",
-      "tiny-rect/from-element",
-      "tiny-rect/operations",
-      "tiny-num",
-      "valtio/vanilla",
-      "klona",
-      "valtio/utils",
-      "scroll-into-view-if-needed",
-      "tiny-dom-query/tabbable",
-      "tiny-array",
-      "tiny-point/distance",
-      "tiny-nodelist",
-      "@vue/runtime-core",
-    ],
-  },
   resolve: {
     alias: {
-      "@ui-machines/vue": `${path.resolve(__dirname, "../../packages/frameworks/vue/src/index.ts")}`,
-      "@ui-machines/core": `${path.resolve(__dirname, "../../packages/core")}`,
-      "@ui-machines/web": `${path.resolve(__dirname, "../../packages/machines/src/index.ts")}`,
+      "@ui-machines/vue": `${resolve(__dirname, "../../packages/frameworks/vue/src")}`,
+      "@ui-machines/core": `${resolve(__dirname, "../../packages/core/src")}`,
+      "@ui-machines/web": `${resolve(__dirname, "../../packages/machines/src")}`,
     },
   },
   plugins: [
@@ -54,5 +29,7 @@ export default defineConfig({
       extensions: ["tsx", "vue", "ts"],
       dirs: ["./src/components"],
     }),
+    PkgConfig(),
+    OptimizationPersist(),
   ],
 })

@@ -24,9 +24,43 @@
     "eslint-plugin-vue": "^6.0.1",
     "typescript": "4.4.3",
     "vite-plugin-components": "^0.10.4",
-    "vite-plugin-pages": "^0.12.2",
-    "vue-tsc": "^0.0.24",
-    "vue-tsx-support": "^3.2.0"
+    "vite-plugin-optimize-persist": "^0.1.0",
+    "vite-plugin-package-config": "^0.0.3",
+    "vite-plugin-pages": "^0.18.2",
+    "vue-tsc": "^0.29.4"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "vite": {
+    "optimizeDeps": {
+      "include": [
+        "@emotion/css",
+        "aria-hidden",
+        "focus-trap",
+        "klona",
+        "merge-anything",
+        "scroll-into-view-if-needed",
+        "tiny-array",
+        "tiny-dom-event",
+        "tiny-dom-query",
+        "tiny-dom-query/focusable",
+        "tiny-dom-query/scrollable",
+        "tiny-dom-query/tabbable",
+        "tiny-fn",
+        "tiny-guard",
+        "tiny-nodelist",
+        "tiny-num",
+        "tiny-point/distance",
+        "tiny-point/dom",
+        "tiny-point/within",
+        "tiny-rect",
+        "tiny-rect/from-element",
+        "tiny-rect/operations",
+        "valtio",
+        "valtio/utils",
+        "valtio/vanilla",
+        "vue",
+        "vue-router"
+      ]
+    }
+  }
 }

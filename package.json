@@ -28,6 +28,7 @@
     "lint:types": "tsc --noEmit --incremental",
     "lint:validate": "preconstruct validate",
     "pkg": "manypkg run",
+    "postinstall": "patch-package",
     "prebuild": "yarn clean",
     "prepare": "npm-run-all -s prepare:**",
     "prepare:husky": "husky install",
@@ -84,6 +85,7 @@
     "lodash": "^4.17.21",
     "node-plop": "^0.26.2",
     "npm-run-all": "^4.1.5",
+    "patch-package": "^6.4.7",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.4",
@@ -106,12 +108,6 @@
       "packages/machines",
       "packages/frameworks/*",
       "examples/*"
-    ],
-    "nohoist": [
-      "**/@types/react/**",
-      "**/@types/react",
-      "**/vue-tsx-support/**",
-      "**/vue-tsx-support"
     ]
   },
   "lint-staged": {
