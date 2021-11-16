@@ -1,5 +1,5 @@
 import { createMachine, guards, Machine } from "@ui-machines/core"
-import { addDomEvent } from "tiny-dom-event"
+import { addDomEvent } from "../utils/dom-event"
 import { noop } from "tiny-fn"
 import { getToastDuration } from "./toast.utils"
 
@@ -127,7 +127,6 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
       activities: {
         checkDocumentVisibility(ctx, evt, { send }) {
           if (!ctx.pauseOnPageIdle) return noop
-          //@ts-ignore
           return addDomEvent(document, "visibilitychange", () => {
             const doc = document as any
             const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden

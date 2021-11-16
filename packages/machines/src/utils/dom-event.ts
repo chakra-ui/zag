@@ -1,3 +1,5 @@
+import { cast } from "./fn"
+
 export const t = (v: any) => Object.prototype.toString.call(v).slice(8, -1)
 
 export const isRef = (v: any): v is RefTarget => {
@@ -31,8 +33,8 @@ export function addDomEvent<K extends keyof EventMap>(
   options?: boolean | AddEventListenerOptions,
 ) {
   const node = isRef(target) ? target.current : runIfFn(target)
-  node?.addEventListener(event, listener, options)
-  return () => node?.removeEventListener(event, listener, options)
+  node?.addEventListener(event, cast(listener), options)
+  return () => node?.removeEventListener(event, cast(listener), options)
 }
 
 export function addPointerEvent<K extends keyof EventMap>(
@@ -80,7 +82,8 @@ export function getEventName(evt: keyof EventMap): keyof EventMap {
   return evt
 }
 
-export type EventMap = DocumentEventMap | WindowEventMap | HTMLElementEventMap
+export interface EventMap extends DocumentEventMap, WindowEventMap, HTMLElementEventMap {}
+
 export type DOMTarget = Document | HTMLElement | EventTarget | null
 export type AnyPointerEvent = MouseEvent | TouchEvent | PointerEvent
 export type RefTarget = { current: HTMLElement | null }
