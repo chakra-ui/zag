@@ -1,6 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
-import { ToastMachineContext, ToastMachineState, ToastPlacement } from "./toast.machine"
+import { dataAttr } from "../utils"
+import { ToastMachineContext, ToastMachineState } from "./toast.types"
+import { dom } from "./toast.dom"
 import { getPlacementStyle } from "./toast.utils"
 
 export function toastConnect<T extends PropTypes = ReactPropTypes>(
@@ -9,9 +11,12 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const { context: ctx } = state
+  const isVisible = state.matches("active", "active:temp", "visible")
 
   return {
-    isVisible: state.matches("active", "active:temp", "visible"),
+    type: ctx.type,
+    placement: ctx.placement,
+    isVisible,
 
     progressProps: normalize.element<T>({
       role: "progressbar",
@@ -32,12 +37,33 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
       send("DISMISS")
     },
 
-    getContainerProps(placement: ToastPlacement) {
-      return normalize.element<T>({
-        id: `toast-group-${placement}`,
-        "data-placement": placement,
-        style: getPlacementStyle(placement),
-      })
-    },
+    containerProps: normalize.element<T>({
+      id: dom.getToastContainerId(ctx),
+      "data-placement": ctx.placement,
+      "data-open": dataAttr(isVisible),
+      style: getPlacementStyle(ctx.placement),
+    }),
+
+    rootProps: normalize.element<T>({
+      id: dom.getRootId(ctx),
+      role: ctx.role,
+      "aria-live": ctx["aria-live"],
+      "data-open": dataAttr(isVisible),
+      "data-type": ctx.type,
+      onPointerEnter() {
+        if (ctx.pauseOnHover) {
+          send("PAUSE")
+        }
+      },
+      onPointerLeave() {
+        if (ctx.pauseOnHover) {
+          send("RESUME")
+        }
+      },
+    }),
+
+    titleProps: normalize.element<T>({
+      id: dom.getToastTitleId(ctx),
+    }),
   }
 }

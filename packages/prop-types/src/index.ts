@@ -4,6 +4,14 @@ type Booleanish = boolean | "true" | "false"
 
 type Dict = Record<string, any>
 
+type Omit<T, K extends keyof T> = { [P in Exclude<keyof T, K>]?: T[P] }
+
+type WithStyle<T extends { style?: any }> = Omit<T, "style"> & {
+  style?: T["style"] & {
+    [prop: string]: string | number | undefined
+  }
+}
+
 type DataAttr = {
   "data-uid"?: string
   "data-ownedby"?: string
@@ -16,7 +24,8 @@ type DataAttr = {
   "data-type"?: string
   "data-value"?: string | number
   "data-valuetext"?: string
-  [dataAttr: string]: any
+  "data-open"?: Booleanish
+  "data-placement"?: string
 }
 
 type JSXElementAttributes = DataAttr & React.HTMLAttributes<HTMLElement>
@@ -36,11 +45,11 @@ export type ReactPropTypes = {
 }
 
 export type NormalizeProps = {
-  button<T extends PropTypes>(props: JSXButtonAttributes): T["button"]
-  label<T extends PropTypes>(props: JSXLabelAttributes): T["label"]
-  input<T extends PropTypes>(props: JSXInputAttributes): T["input"]
-  output<T extends PropTypes>(props: JSXOutputAttributes): T["output"]
-  element<T extends PropTypes>(props: JSXElementAttributes): T["element"]
+  button<T extends PropTypes>(props: WithStyle<JSXButtonAttributes>): T["button"]
+  label<T extends PropTypes>(props: WithStyle<JSXLabelAttributes>): T["label"]
+  input<T extends PropTypes>(props: WithStyle<JSXInputAttributes>): T["input"]
+  output<T extends PropTypes>(props: WithStyle<JSXOutputAttributes>): T["output"]
+  element<T extends PropTypes>(props: WithStyle<JSXElementAttributes>): T["element"]
 }
 
 export function createNormalizer(fn: (props: Dict) => Dict): NormalizeProps {

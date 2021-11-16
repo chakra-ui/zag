@@ -1,54 +1,20 @@
-import { createMachine, guards, Machine } from "@ui-machines/core"
+import { createMachine, guards } from "@ui-machines/core"
 import { addDomEvent } from "../utils/dom-event"
-import { noop } from "tiny-fn"
+import { noop } from "../utils/fn"
+import { dom } from "./toast.dom"
+import { ToastMachineContext, ToastMachineState, ToastOptions } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
-const { or, not } = guards
+const { not, and, or } = guards
 
-export type ToastType = "success" | "error" | "loading" | "blank" | "custom"
-
-export type ToastPlacement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
-
-export function getToastsByPlacement(toasts: ToastMachine[]) {
-  const result: Partial<Record<ToastPlacement, ToastMachine[]>> = {}
-
-  for (const toast of toasts) {
-    const placement = toast.state.context.placement!
-    result[placement] ||= []
-    result[placement]!.push(toast)
-  }
-
-  return result
-}
-
-export type ToastMachineContext = {
-  id: string
-  type: ToastType
-  placement?: ToastPlacement
-  title?: string
-  description?: string
-  role: "status" | "alert"
-  "aria-live": "assertive" | "off" | "polite"
-  duration?: number
-  progress?: { max: number; value: number }
-  onClose?: VoidFunction
-  pauseOnPageIdle?: boolean
-}
-
-export type ToastMachineState = {
-  value: "active" | "active:temp" | "dismissing" | "inactive" | "visible"
-}
-
-export type ToastMachine = Machine<ToastMachineContext, ToastMachineState>
-
-export function createToastMachine(options: Partial<ToastMachineContext>) {
-  const { type = "blank", role = "status", duration, id = "toast", ...rest } = options
+export function createToastMachine(options: ToastOptions = {}) {
+  const { type = "info", role = "status", duration, id = "toast", placement = "top", ...rest } = options
 
   const timeout = getToastDuration(duration, type)
 
   const toast = createMachine<ToastMachineContext, ToastMachineState>(
     {
-      id: options.id,
+      id,
       initial: "active",
       context: {
         type,
@@ -58,34 +24,51 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         duration: timeout,
         progress: { max: timeout, value: timeout },
         pauseOnPageIdle: false,
+        pauseOnHover: false,
+        placement,
         ...rest,
       },
+
       on: {
         UPDATE: [
+          {
+            guard: and("hasTypeChanged", "isLoadingType"),
+            target: "visible",
+            actions: "setContext",
+          },
           {
             guard: or("hasDurationChanged", "hasTypeChanged"),
             target: "active:temp",
             actions: "setContext",
           },
-          { actions: "setContext" },
+          {
+            actions: "setContext",
+          },
         ],
       },
+
       states: {
         "active:temp": {
           after: {
-            // we use this to force a re-entry into the "active" state
-            0: "active",
+            // force a re-entry into the "active" state
+            NOW: "active",
           },
         },
+
         visible: {
-          activities: "checkDocumentVisibility",
+          activities: "trackDocumentVisibility",
           on: {
-            RESUME: "active",
+            RESUME: { guard: not("isLoadingType"), target: "active" },
             DISMISS: "dismissing",
+            REMOVE: {
+              target: "inactive",
+              actions: "notifyParentToRemove",
+            },
           },
         },
+
         active: {
-          activities: "checkDocumentVisibility",
+          activities: "trackDocumentVisibility",
           after: {
             VISIBLE_DURATION: "dismissing",
           },
@@ -102,12 +85,13 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
               target: "visible",
               actions: "setDurationToProgress",
             },
-            FORCE_DISMISS: {
+            REMOVE: {
               target: "inactive",
               actions: "notifyParentToRemove",
             },
           },
         },
+
         dismissing: {
           entry: "clearProgressValue",
           after: {
@@ -117,6 +101,7 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
             },
           },
         },
+
         inactive: {
           entry: "invokeOnClose",
           type: "final",
@@ -125,10 +110,10 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
     },
     {
       activities: {
-        checkDocumentVisibility(ctx, evt, { send }) {
+        trackDocumentVisibility(ctx, _evt, { send }) {
           if (!ctx.pauseOnPageIdle) return noop
-          return addDomEvent(document, "visibilitychange", () => {
-            const doc = document as any
+          const doc = dom.getDoc(ctx) as Document & { msHidden?: boolean; webkitHidden?: string }
+          return addDomEvent(doc, "visibilitychange", () => {
             const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden
             send(isPageHidden ? "PAUSE" : "RESUME")
           })
@@ -140,20 +125,19 @@ export function createToastMachine(options: Partial<ToastMachineContext>) {
         hasDurationChanged: (ctx, evt) => evt.duration != null && evt.duration !== ctx.duration,
       },
       delays: {
-        VISIBLE_DURATION: (ctx) => ctx.duration!,
+        VISIBLE_DURATION: (ctx) => ctx.duration,
         DISMISS_DURATION: 1000,
         PROGRESS_INTERVAL: 10,
+        NOW: 0,
       },
       actions: {
         setDurationToProgress(ctx) {
           ctx.duration = ctx.progress?.value
         },
         setProgressValue(ctx) {
-          if (!ctx.progress) return
           ctx.progress.value -= 10
         },
         clearProgressValue(ctx) {
-          if (!ctx.progress) return
           ctx.progress.value = 0
         },
         notifyParentToRemove() {

@@ -1,59 +1,73 @@
 import { DOM } from "../utils/types"
-import { ToastMachineContext, ToastPlacement, ToastType } from "./toast.machine"
+import { ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
 
-export function getPositionStyle(position: ToastPlacement): React.CSSProperties {
-  const top = position.includes("top")
+export function getToastsByPlacement(toasts: ToastMachine[]) {
+  const result: Partial<Record<ToastPlacement, ToastMachine[]>> = {}
 
-  const verticalStyle: React.CSSProperties = top ? { top: 0 } : { bottom: 0 }
-  const horizontalStyle: React.CSSProperties = position.includes("center")
-    ? { justifyContent: "center" }
-    : position.includes("right")
-    ? { justifyContent: "flex-end" }
-    : {}
-
-  return {
-    left: 0,
-    right: 0,
-    display: "flex",
-    position: "absolute",
-    transition: "all 230ms cubic-bezier(.21,1.02,.73,1)",
-    ...verticalStyle,
-    ...horizontalStyle,
+  for (const toast of toasts) {
+    const placement = toast.state.context.placement!
+    result[placement] ||= []
+    result[placement]!.push(toast)
   }
+
+  return result
 }
 
 export const defaultTimeouts: Record<ToastType, number> = {
-  blank: 4000,
-  error: 4000,
+  info: 5000,
+  error: 5000,
   success: 2000,
-  // https://stackoverflow.com/questions/3468607/why-does-settimeout-break-for-large-millisecond-delay-values
-  loading: 2147483647,
-  custom: 4000,
+  loading: Number.MAX_SAFE_INTEGER,
+  custom: 5000,
 }
 
 export function getToastDuration(duration: number | undefined, type: ToastMachineContext["type"]) {
   return duration ?? defaultTimeouts[type]
 }
 
-const placementMap = {
-  top: "calc(env(safe-area-inset-top) + 1rem)",
-  left: "calc(env(safe-area-inset-left) + 1rem)",
-  right: "calc(env(safe-area-inset-right) + 1rem)",
-  bottom: "calc(env(safe-area-inset-bottom) + 1rem)",
-}
-
 export function getPlacementStyle(placement: ToastPlacement): DOM.Style {
-  const isTopOrBottom = placement === "top" || placement === "bottom"
+  const isRighty = placement.includes("right")
+  const isLefty = placement.includes("left")
 
-  const styles = Object.fromEntries(Object.entries(placementMap).filter(([key]) => placement.includes(key)))
+  let alignItems = "center"
+  if (isRighty) alignItems = "flex-end"
+  if (isLefty) alignItems = "flex-start"
 
   return {
-    ...styles,
+    display: "flex",
+    flexDirection: "column",
+    alignItems,
+    pointerEvents: "auto",
+    maxWidth: "35rem",
+    minWidth: "18.75rem",
+    margin: "calc(var(--toast-gutter) / 2)",
+  }
+}
+
+const placementMap = {
+  top: "env(safe-area-inset-top, 0px)",
+  left: "env(safe-area-inset-left, 0px)",
+  right: "env(safe-area-inset-right, 0px)",
+  bottom: "env(safe-area-inset-bottom, 0px)",
+}
+
+export function getGroupPlacementStyle(placement: ToastPlacement): DOM.Style {
+  const isTopOrBottom = placement === "top" || placement === "bottom"
+  const margin = isTopOrBottom ? "0 auto" : undefined
+
+  const styles: DOM.Style = {
     position: "fixed",
-    zIndex: 9999,
     pointerEvents: "none",
     display: "flex",
     flexDirection: "column",
-    margin: isTopOrBottom ? "0 auto" : undefined,
+    margin,
   }
+
+  for (const key in placementMap) {
+    if (placement.includes(key)) {
+      styles[key] = placementMap[key]
+    }
+  }
+
+  return styles
 }

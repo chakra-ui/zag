@@ -1,11 +1,6 @@
-import { createMachine, Machine, ref } from "@ui-machines/core"
-import { Context } from "../utils/types"
-import { createToastMachine, ToastMachineContext, ToastMachineState } from "./toast.machine"
-
-export type ToastGroupMachineContext = Context<{
-  toasts: Machine<ToastMachineContext, ToastMachineState>[]
-  max: number
-}>
+import { createMachine, ref } from "@ui-machines/core"
+import { createToastMachine } from "./toast.machine"
+import { ToastGroupMachineContext } from "./toast.types"
 
 export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
   {
@@ -16,6 +11,13 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
       max: 20,
       uid: "toasts-machine",
       toasts: [],
+      spacing: "1rem",
+      zIndex: 9999,
+    },
+    computed: {
+      spacingValue: (ctx) => {
+        return typeof ctx.spacing === "number" ? `${ctx.spacing}px` : ctx.spacing
+      },
     },
     on: {
       MOUNT: {
@@ -52,7 +54,9 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>(
       ADD_TOAST: {
         guard: (ctx) => ctx.toasts.length < ctx.max,
         actions: (ctx, evt) => {
-          ctx.toasts.push(toastGroupMachine.spawn(createToastMachine(evt.toast)))
+          const toast = createToastMachine(evt.toast).withContext({ doc: ctx.doc })
+          const actor = toastGroupMachine.spawn(toast)
+          ctx.toasts.push(actor)
         },
       },
       UPDATE_TOAST: {

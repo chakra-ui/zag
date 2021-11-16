@@ -1,11 +1,15 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { runIfFn } from "tiny-fn"
-import { ToastGroupMachineContext } from "./toast-group.machine"
-import { getToastsByPlacement, ToastMachineContext, ToastPlacement } from "./toast.machine"
-import { getPlacementStyle } from "./toast.utils"
-
-type ToastOptions = Partial<ToastMachineContext>
+import { dom } from "./toast.dom"
+import {
+  ToastGroupMachineContext,
+  ToastOptions,
+  ToastPlacement,
+  ToastPromiseMessages,
+  ToastPromiseOptions,
+} from "./toast.types"
+import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<ToastGroupMachineContext>,
@@ -19,7 +23,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
 
     toasts: ctx.toasts,
 
-    toastsMap: getToastsByPlacement(ctx.toasts),
+    toastsByPlacement: getToastsByPlacement(ctx.toasts),
 
     isVisible(id: string) {
       if (!ctx.toasts.length) return false
@@ -54,8 +58,16 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       }
     },
 
+    remove(id?: string) {
+      if (id == null) {
+        send("REMOVE_ALL")
+      } else if (this.isVisible(id)) {
+        send({ type: "REMOVE_TOAST", id })
+      }
+    },
+
     dismissByPlacement(placement: ToastPlacement) {
-      const toasts = this.toastsMap[placement]
+      const toasts = this.toastsByPlacement[placement]
       if (toasts) {
         toasts.forEach((toast) => this.dismiss(toast.id))
       }
@@ -82,17 +94,17 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       return this.upsert(options)
     },
 
-    promise<T>(promise: Promise<T>, msgs: any, opts: ToastOptions) {
-      const id = this.loading({ ...opts, type: "loading", title: msgs.loading })
+    promise<T>(promise: Promise<T>, msgs: ToastPromiseMessages, opts: ToastPromiseOptions = {}) {
+      const id = this.loading({ ...opts, ...opts?.loading, type: "loading", title: msgs.loading })
 
       promise
         .then((response) => {
           const message = runIfFn(msgs.loading, response)
-          this.success({ ...opts, id, title: message })
+          this.success({ ...opts, ...opts?.success, id, title: message })
         })
         .catch((error) => {
           const message = runIfFn(msgs.error, error)
-          this.error({ ...opts, id, title: message })
+          this.error({ ...opts, ...opts?.error, id, title: message })
         })
 
       return promise
@@ -110,8 +122,21 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       return normalize.element<T>({
         id: `toast-group-${placement}`,
         "data-placement": placement,
-        style: getPlacementStyle(placement),
+        style: {
+          ...getGroupPlacementStyle(placement),
+          "--toast-gutter": ctx.spacingValue,
+          zIndex: ctx.zIndex,
+        },
       })
+    },
+
+    setupPortal() {
+      const doc = dom.getDoc(ctx)
+      const exist = dom.getPortalEl(ctx)
+      if (exist) return exist
+      const portal = dom.createPortalEl(ctx)
+      doc.body.appendChild(portal)
+      return portal
     },
   }
 }
