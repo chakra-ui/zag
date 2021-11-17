@@ -15,6 +15,7 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
     zIndex: 9999,
     pauseOnPageIdle: false,
     pauseOnHover: false,
+    offsets: { left: 0, right: 0, top: 0, bottom: 0 },
   },
   computed: {
     spacingValue: (ctx) => (isNumber(ctx.spacing) ? `${ctx.spacing}px` : ctx.spacing),

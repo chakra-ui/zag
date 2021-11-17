@@ -1,3 +1,4 @@
+import { ToastGroupMachineContext } from "."
 import { Style } from "../utils/types"
 import { ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
 
@@ -25,7 +26,7 @@ export function getToastDuration(duration: number | undefined, type: ToastMachin
   return duration ?? defaultTimeouts[type]
 }
 
-export function getGroupPlacementStyle(placement: ToastPlacement): Style {
+export function getGroupPlacementStyle(ctx: ToastGroupMachineContext, placement: ToastPlacement): Style {
   const isRighty = placement.includes("right")
   const isLefty = placement.includes("left")
 
@@ -34,6 +35,8 @@ export function getGroupPlacementStyle(placement: ToastPlacement): Style {
     pointerEvents: "none",
     display: "flex",
     flexDirection: "column",
+    "--toast-gutter": ctx.spacingValue,
+    zIndex: ctx.zIndex,
   }
 
   let alignItems: Style["alignItems"] = "center"
@@ -43,19 +46,23 @@ export function getGroupPlacementStyle(placement: ToastPlacement): Style {
   styles.alignItems = alignItems
 
   if (placement.includes("top")) {
-    styles.top = "env(safe-area-inset-top, 0px)"
+    const topOffset = ctx.offsets.top + "px"
+    styles.top = `calc(env(safe-area-inset-top, 0px) + ${topOffset})`
   }
 
   if (placement.includes("bottom")) {
-    styles.bottom = "env(safe-area-inset-bottom, 0px)"
+    const bottomOffset = ctx.offsets.bottom + "px"
+    styles.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${bottomOffset})`
   }
 
   if (!placement.includes("left")) {
-    styles.right = "env(safe-area-inset-right, 0px)"
+    const rightOffset = ctx.offsets.right + "px"
+    styles.right = `calc(env(safe-area-inset-right, 0px) + ${rightOffset})`
   }
 
   if (!placement.includes("right")) {
-    styles.left = "env(safe-area-inset-left, 0px)"
+    const leftOffset = ctx.offsets.left + "px"
+    styles.left = `calc(env(safe-area-inset-left, 0px) + ${leftOffset})`
   }
 
   return styles

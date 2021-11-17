@@ -42,7 +42,7 @@ export type ToastMachineContext = SharedContext & {
    */
   duration: number
   /**
-   * The duration for the toast to kept alive (in the DOM) before it is removed.
+   * The duration for the toast to kept alive before it is removed.
    * Useful for exit transitions.
    */
   removeDelay: number
@@ -51,9 +51,21 @@ export type ToastMachineContext = SharedContext & {
    */
   progress: { max: number; value: number }
   /**
-   * Function called when the toast is closed
+   * Function called when the toast has been closed and removed
    */
-  onClose?: VoidFunction
+  onExited?: VoidFunction
+  /**
+   * Function called when the toast is leaving
+   */
+  onExiting?: VoidFunction
+  /**
+   * Function called when the toast is shown
+   */
+  onEntered?: VoidFunction
+  /**
+   * Function called when the toast is updated
+   */
+  onUpdate?: VoidFunction
 }
 
 export type ToastOptions = Partial<Omit<ToastMachineContext, "progress">>
@@ -86,6 +98,10 @@ export type ToastGroupMachineContext = SharedContext &
      * The maximum number of toasts that can be shown at once
      */
     max: number
+    /**
+     * The offset from the safe environment edge of the viewport
+     */
+    offsets: Record<"left" | "right" | "bottom" | "top", number>
   }>
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)

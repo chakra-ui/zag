@@ -16,6 +16,7 @@ export function createToastMachine(options: ToastOptions = {}) {
     {
       id,
       initial: "active",
+      entry: ["invokeOnEntered"],
       context: {
         id,
         type,
@@ -31,15 +32,15 @@ export function createToastMachine(options: ToastOptions = {}) {
           {
             guard: and("hasTypeChanged", "isLoadingType"),
             target: "visible",
-            actions: "setContext",
+            actions: ["setContext", "invokeOnUpdate"],
           },
           {
             guard: or("hasDurationChanged", "hasTypeChanged"),
             target: "active:temp",
-            actions: "setContext",
+            actions: ["setContext", "invokeOnUpdate"],
           },
           {
-            actions: "setContext",
+            actions: ["setContext", "invokeOnUpdate"],
           },
         ],
       },
@@ -85,7 +86,7 @@ export function createToastMachine(options: ToastOptions = {}) {
         },
 
         dismissing: {
-          entry: "clearProgressValue",
+          entry: ["clearProgressValue", "invokeOnExiting"],
           after: {
             REMOVE_DELAY: {
               target: "inactive",
@@ -95,7 +96,7 @@ export function createToastMachine(options: ToastOptions = {}) {
         },
 
         inactive: {
-          entry: "invokeOnClose",
+          entry: "invokeOnExited",
           type: "final",
         },
       },
@@ -135,8 +136,17 @@ export function createToastMachine(options: ToastOptions = {}) {
         notifyParentToRemove() {
           toast.sendParent({ type: "REMOVE_TOAST", id: toast.id })
         },
-        invokeOnClose(ctx) {
-          ctx.onClose?.()
+        invokeOnExiting(ctx) {
+          ctx.onExiting?.()
+        },
+        invokeOnExited(ctx) {
+          ctx.onExited?.()
+        },
+        invokeOnEntered(ctx) {
+          ctx.onEntered?.()
+        },
+        invokeOnUpdate(ctx) {
+          ctx.onUpdate?.()
         },
         setContext(ctx, evt) {
           const { duration: newDuration, type: newType } = evt.toast

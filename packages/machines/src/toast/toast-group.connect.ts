@@ -134,11 +134,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
         "data-placement": placement,
         "aria-live": "polite",
         role: "region",
-        style: {
-          ...getGroupPlacementStyle(placement),
-          "--toast-gutter": ctx.spacingValue,
-          zIndex: ctx.zIndex,
-        },
+        style: getGroupPlacementStyle(ctx, placement),
       })
     },
 
