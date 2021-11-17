@@ -1,11 +1,9 @@
-import * as styled from "@emotion/styled"
+import { Global } from "@emotion/react"
 import { useMachine } from "@ui-machines/react"
 import { menu } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { menuStyle } from "../../../shared/style"
-
-export const Styles = styled.default("div")(menuStyle as styled.CSSObject)
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -16,11 +14,11 @@ export default function Page() {
   )
 
   const ref = useMount<HTMLButtonElement>(send)
-
   const { menuProps, getItemProps, triggerProps } = menu.connect(state, send)
 
   return (
-    <Styles>
+    <>
+      <Global styles={menuStyle} />
       <button ref={ref} {...triggerProps}>
         Click me
       </button>
@@ -29,8 +27,7 @@ export default function Page() {
         <li {...getItemProps({ id: "menuitem-2" })}>Duplicate</li>
         <li {...getItemProps({ id: "menuitem-3" })}>Delete</li>
       </ul>
-
       <StateVisualizer state={state} />
-    </Styles>
+    </>
   )
 }

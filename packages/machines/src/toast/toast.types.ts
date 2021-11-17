@@ -1,5 +1,5 @@
 import { Machine } from "@ui-machines/core"
-import { Context } from "../utils"
+import { Context, Direction } from "../utils"
 
 export type ToastType = "success" | "error" | "loading" | "info" | "custom"
 
@@ -21,6 +21,14 @@ export type ToastMachineContext = SharedContext & {
    * The unique id of the toast
    */
   id: string
+  /**
+   * The owner document of the toast
+   */
+  doc?: Document
+  /**
+   * The document's text/writing direction.
+   */
+  dir?: Direction
   /**
    * The type of the toast
    */

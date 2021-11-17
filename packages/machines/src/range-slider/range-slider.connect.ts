@@ -133,7 +133,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
     rangeProps: normalize.element<T>({
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-state": state,
+      "data-state": state.value,
       style: dom.getRangeStyle(ctx),
     }),
 

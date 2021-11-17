@@ -9,10 +9,8 @@ const { not, and, or } = guards
 
 export function createToastMachine(options: ToastOptions = {}) {
   const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 1000, ...rest } = options
-
   const timeout = getToastDuration(duration, type)
-
-  const toast = createMachine<ToastMachineContext, ToastMachineState>(
+  return createMachine<ToastMachineContext, ToastMachineState>(
     {
       id,
       initial: "active",
@@ -133,8 +131,8 @@ export function createToastMachine(options: ToastOptions = {}) {
         clearProgressValue(ctx) {
           ctx.progress.value = 0
         },
-        notifyParentToRemove() {
-          toast.sendParent({ type: "REMOVE_TOAST", id: toast.id })
+        notifyParentToRemove(_ctx, _evt, { self }) {
+          self.sendParent({ type: "REMOVE_TOAST", id: self.id })
         },
         invokeOnExiting(ctx) {
           ctx.onExiting?.()
@@ -164,6 +162,4 @@ export function createToastMachine(options: ToastOptions = {}) {
       },
     },
   )
-
-  return toast
 }

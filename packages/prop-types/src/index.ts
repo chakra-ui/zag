@@ -20,14 +20,23 @@ type DataAttr = {
   "data-highlighted"?: Booleanish
   "data-readonly"?: Booleanish
   "data-invalid"?: Booleanish
-  "data-focus"?: Booleanish
   "data-hover"?: Booleanish
+  "data-active"?: Booleanish
+  "data-focus"?: Booleanish
   "data-disabled"?: Booleanish
   "data-type"?: string
   "data-value"?: string | number
   "data-valuetext"?: string
   "data-open"?: Booleanish
   "data-placement"?: string
+  "data-orientation"?: "horizontal" | "vertical"
+  "data-label"?: string
+  "data-focused"?: Booleanish
+  "data-checked"?: Booleanish
+  "data-state"?: string | null
+  "data-half"?: Booleanish
+  "data-count"?: number
+  "data-controls"?: string
 }
 
 type JSXElementAttributes = DataAttr & React.HTMLAttributes<HTMLElement>

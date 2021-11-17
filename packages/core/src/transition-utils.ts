@@ -1,3 +1,4 @@
+import { cast } from "tiny-fn"
 import { isArray, isObject, isString } from "tiny-guard"
 import { determineGuardFn } from "./guard-utils"
 import type { StateMachine as S } from "./types"
@@ -14,13 +15,13 @@ import { toArray } from "./utils"
  * depending on the `guard` specified
  */
 
-export function toTarget<TContext, TState extends string, TEvent extends S.EventObject>(
+export function toTarget<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   target: S.Transition<TContext, TState, TEvent>,
 ): S.TransitionDefinition<TContext, TState, TEvent> {
   return isString(target) ? { target } : target
 }
 
-export function determineTransitionFn<TContext, TState extends string, TEvent extends S.EventObject>(
+export function determineTransitionFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   transitions?: S.Transitions<TContext, TState, TEvent>,
   guardMap?: S.GuardMap<TContext, TEvent>,
 ) {
@@ -36,9 +37,9 @@ export function determineTransitionFn<TContext, TState extends string, TEvent ex
   }
 }
 
-export function toTransition<TContext, TState extends string, TEvent extends S.EventObject>(
+export function toTransition<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   transition: S.Transitions<TContext, TState, TEvent> | undefined,
-  current?: TState | null,
+  current?: TState["value"] | null,
 ) {
   const _transition = isString(transition) ? toTarget(transition) : transition
 
@@ -53,6 +54,6 @@ export function toTransition<TContext, TState extends string, TEvent extends S.E
   }
 
   if (isObject(_transition)) {
-    return fn(_transition)
+    return fn(cast(_transition))
   }
 }

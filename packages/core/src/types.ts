@@ -26,8 +26,6 @@ export declare namespace StateMachine {
     [key: string]: any
   }
 
-  export type EventWithSrc = AnyEventObject & { src?: any }
-
   // expression is a generic function that takes context + event
   type Expression<TContext extends Dict, TEvent extends EventObject, TReturn> = (
     context: TContext,
@@ -36,10 +34,11 @@ export declare namespace StateMachine {
 
   export type Send<TEvent extends EventObject = AnyEventObject> = (event: Event<TEvent>) => void
 
-  type Meta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+  export type Meta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     state: State<TContext, TState>
-    guards?: Dict
+    guards: Dict
     send: Send<TEvent>
+    self: SelfReference<TContext, TEvent>
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
@@ -48,18 +47,21 @@ export declare namespace StateMachine {
     meta: Meta<TContext, TState, TEvent>,
   ) => TReturn
 
-  // transitions can define `actions` which can be a string or function
-  export type Action<TContext extends Dict, TEvent extends EventObject> = string | Expression<TContext, TEvent, void>
+  export type Action<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
+    | string
+    | ExpressionWithMeta<TContext, TState, TEvent, void>
 
-  export type Actions<TContext extends Dict, TEvent extends EventObject> =
-    | ChooseHelper<TContext, TEvent>
-    | MaybeArray<Action<TContext, TEvent>>
+  export type Actions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
+    | ChooseHelper<TContext, TState, TEvent>
+    | MaybeArray<Action<TContext, TState, TEvent>>
 
-  export type PureActions<TContext extends Dict, TEvent extends EventObject> = MaybeArray<Action<TContext, TEvent>>
+  export type PureActions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = MaybeArray<
+    Action<TContext, TState, TEvent>
+  >
 
-  export type TransitionDefinition<TContext extends Dict, TState extends string, TEvent extends EventObject> = {
-    target?: TState
-    actions?: Actions<TContext, TEvent>
+  export type TransitionDefinition<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    target?: TState["value"]
+    actions?: Actions<TContext, TState, TEvent>
     guard?: Guard<TContext, TEvent>
   }
 
@@ -73,7 +75,7 @@ export declare namespace StateMachine {
   // For transition definitions in `after` and `every`
   export type DelayedTransition<
     TContext extends Dict,
-    TState extends string,
+    TState extends StateSchema,
     TEvent extends EventObject,
   > = TransitionDefinition<TContext, TState, TEvent> & {
     /**
@@ -82,20 +84,20 @@ export declare namespace StateMachine {
     delay?: Delay<TContext, TEvent>
   }
 
-  export type DelayedTransitions<TContext, TState extends string, TEvent extends EventObject> =
-    | Record<string | number, TState | MaybeArray<TransitionDefinition<TContext, TState, TEvent>>>
+  export type DelayedTransitions<TContext, TState extends StateSchema, TEvent extends EventObject> =
+    | Record<string | number, TState["value"] | MaybeArray<TransitionDefinition<TContext, TState, TEvent>>>
     | Array<DelayedTransition<TContext, TState, TEvent>>
 
   // a transition can be a string (e.g "off") or a full definition object
   // { target: "off", actions: [...], guard: "isEmpty" }
-  export type Transition<TContext extends Dict, TState extends string, TEvent extends EventObject> =
-    | TState
+  export type Transition<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
+    | TState["value"]
     | TransitionDefinition<TContext, TState, TEvent>
 
   // a transition can be a simple transition as described above
   // or an array of possible transitions with `guard` to determine
   // the selected transition
-  export type Transitions<TContext extends Dict, TState extends string, TEvent extends EventObject> =
+  export type Transitions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | Transition<TContext, TState, TEvent>
     | Array<TransitionDefinition<TContext, TState, TEvent>>
 
@@ -111,8 +113,10 @@ export declare namespace StateMachine {
     ? Extract<TEvent, { type: K }>
     : EventObject
 
-  export type TransitionDefinitionMap<TContext, TState extends string, TEvent extends EventObject> = {
-    [K in TEvent["type"]]?: TState | MaybeArray<TransitionDefinition<TContext, TState, ExtractEvent<TEvent, K>>>
+  export type TransitionDefinitionMap<TContext, TState extends StateSchema, TEvent extends EventObject> = {
+    [K in TEvent["type"]]?:
+      | TState["value"]
+      | MaybeArray<TransitionDefinition<TContext, TState, ExtractEvent<TEvent, K>>>
   }
 
   export interface StateNode<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
@@ -132,15 +136,15 @@ export declare namespace StateMachine {
     /**
      * The mapping of event types to their potential transition(s).
      */
-    on?: TransitionDefinitionMap<TContext, TState["value"], TEvent>
+    on?: TransitionDefinitionMap<TContext, TState, TEvent>
     /**
      * The action(s) to be executed upon entering the state node.
      */
-    entry?: Actions<TContext, TEvent>
+    entry?: Actions<TContext, TState, TEvent>
     /**
      * The action(s) to be executed upon exiting the state node.
      */
-    exit?: Actions<TContext, TEvent>
+    exit?: Actions<TContext, TState, TEvent>
     /**
      * The meta data associated with this state node.
      */
@@ -149,16 +153,16 @@ export declare namespace StateMachine {
      * The mapping (or array) of delays (in `ms`) to their potential transition(s) to run after
      * the specified delay. Uses `setTimeout` under the hood.
      */
-    after?: DelayedTransitions<TContext, TState["value"], TEvent>
+    after?: DelayedTransitions<TContext, TState, TEvent>
     /**
      * The mapping (or array) of intervals (in `ms`) to their potential actions(s) to run at interval.
      *  Uses `setInterval` under the hood.
      */
     every?:
-      | Record<string | number, Actions<TContext, TEvent>>
+      | Record<string | number, Actions<TContext, TState, TEvent>>
       | Array<{
           delay?: number | string | Expression<TContext, TEvent, number>
-          actions: Actions<TContext, TEvent>
+          actions: Actions<TContext, TState, TEvent>
           guard?: Guard<TContext, TEvent>
         }>
   }
@@ -170,8 +174,8 @@ export declare namespace StateMachine {
     exec: (guards: Dict) => GuardExpression<TContext, TEvent>
   }
 
-  export type ChooseHelper<TContext extends Dict, TEvent extends EventObject> = {
-    exec: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TEvent> | undefined>
+  export type ChooseHelper<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    exec: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TState, TEvent> | undefined>
   }
 
   export type Guard<TContext extends Dict, TEvent extends EventObject> =
@@ -192,11 +196,11 @@ export declare namespace StateMachine {
     /**
      * The actions to run when the machine has started
      */
-    entry?: Actions<TContext, TEvent>
+    entry?: Actions<TContext, TState, TEvent>
     /**
      * The actions to run when the machine has stopped
      */
-    exit?: Actions<TContext, TEvent>
+    exit?: Actions<TContext, TState, TEvent>
     /**
      * The root level activities to run when the machine is started
      */
@@ -212,7 +216,7 @@ export declare namespace StateMachine {
     /**
      * A generic way to react to context value changes
      */
-    watch?: { [K in keyof TContext]?: PureActions<TContext, AnyEventObject> }
+    watch?: { [K in keyof TContext]?: PureActions<TContext, TState, TEvent> }
     /**
      * The computed properties based on the state
      */
@@ -228,7 +232,7 @@ export declare namespace StateMachine {
     /**
      * Mapping events to transitions
      */
-    on?: TransitionDefinitionMap<TContext, TState["value"], TEvent>
+    on?: TransitionDefinitionMap<TContext, TState, TEvent>
   }
 
   export interface State<
@@ -258,7 +262,7 @@ export declare namespace StateMachine {
   export type ContextListener<TContext extends Dict> = (context: TContext) => void
 
   export interface StateInfo<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
-    transition: TransitionDefinition<TContext, TState["value"], TEvent> | undefined
+    transition: TransitionDefinition<TContext, TState, TEvent> | undefined
     stateNode: StateNode<TContext, TState, TEvent> | undefined
     target: TState["value"]
   }
@@ -266,11 +270,7 @@ export declare namespace StateMachine {
   // Machine Options
 
   export type ActionMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    [action: string]: (
-      context: TContext,
-      event: TEvent,
-      actionMeta: { state: State<TContext, TState>; guards?: Dict },
-    ) => void
+    [action: string]: ExpressionWithMeta<TContext, TState, TEvent, void>
   }
 
   export type GuardMap<TContext extends Dict, TEvent extends EventObject> = {
@@ -304,6 +304,16 @@ export declare namespace StateMachine {
     state?: StateInit<TContext, TState>
     context?: Partial<TContext>
     preserve?: boolean
+  }
+
+  export type SelfReference<TContext, TEvent extends EventObject> = {
+    id: string
+    send: (event: Event<TEvent>) => void
+    sendParent: (evt: AnyEventObject) => void
+    sendChild: (evt: Event<TEvent>, to: string | ((ctx: TContext) => string)) => void
+    stop: VoidFunction
+    stopChild: (id: string) => void
+    spawn<T>(src: T | (() => T), id?: string): T
   }
 }
 

@@ -41,10 +41,10 @@ export class Machine<
   private children = new Map<string, AnyMachine>()
 
   // A map of guard, action, delay implementations
-  private guardMap?: S.GuardMap<TContext, TEvent>
-  private actionMap?: S.ActionMap<TContext, TState, TEvent>
-  private delayMap?: S.DelayMap<TContext, TEvent>
-  private activityMap?: S.ActivityMap<TContext, TState, TEvent>
+  private guardMap: S.GuardMap<TContext, TEvent>
+  private actionMap: S.ActionMap<TContext, TState, TEvent>
+  private delayMap: S.DelayMap<TContext, TEvent>
+  private activityMap: S.ActivityMap<TContext, TState, TEvent>
 
   // Let's get started!
   constructor(
@@ -53,10 +53,10 @@ export class Machine<
   ) {
     this.id = config.id ?? `machine-${uniqueId()}`
     this.state = createProxy(config)
-    this.guardMap = options?.guards
-    this.actionMap = options?.actions
-    this.delayMap = options?.delays
-    this.activityMap = options?.activities
+    this.guardMap = options?.guards ?? {}
+    this.actionMap = options?.actions ?? {}
+    this.delayMap = options?.delays ?? {}
+    this.activityMap = options?.activities ?? {}
   }
 
   // immutable state value
@@ -92,12 +92,9 @@ export class Machine<
     }
 
     const info = this.getNextStateInfo(transition, event)
-
-    if (info) {
-      info.target = cast(info.target || transition.target)
-      this.initialState = info
-      this.performStateChangeEffects(info.target, info, event)
-    }
+    info.target = cast(info.target || transition.target)
+    this.initialState = info
+    this.performStateChangeEffects(info.target, info, event)
 
     this.removeStateListener = subscribe(this.state, () => {
       this.stateListeners.forEach((listener) => {
@@ -112,11 +109,8 @@ export class Machine<
     })
 
     this.setupComputed()
-
     this.setupContextWatchers()
-
     this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
-
     this.executeActions(this.config.entry, toEvent<TEvent>(ActionTypes.Start))
 
     return this
@@ -325,7 +319,7 @@ export class Machine<
   }
 
   private getNextStateInfo = (
-    transitions: S.Transitions<TContext, TState["value"], TEvent>,
+    transitions: S.Transitions<TContext, TState, TEvent>,
     event: TEvent,
   ): S.StateInfo<TContext, TState, TEvent> => {
     const resolvedTransition = this.determineTransition(transitions, event)
@@ -339,7 +333,7 @@ export class Machine<
     }
   }
 
-  private getActionFromDelayedTransition = (transition: S.DelayedTransition<TContext, TState["value"], TEvent>) => {
+  private getActionFromDelayedTransition = (transition: S.DelayedTransition<TContext, TState, TEvent>) => {
     // get the computed delay
     const event = toEvent<TEvent>(ActionTypes.After)
 
@@ -391,7 +385,7 @@ export class Machine<
       //
       for (const delay in stateNode.after) {
         const transition = stateNode.after[delay]
-        let resolvedTransition: S.DelayedTransition<TContext, TState["value"], TEvent> = {}
+        let resolvedTransition: S.DelayedTransition<TContext, TState, TEvent> = {}
 
         if (isArray(transition)) {
           //
@@ -414,11 +408,28 @@ export class Machine<
     return { entries, exits }
   }
 
-  private get meta() {
+  /**
+   * A reference to the instance methods of the machine.
+   * Useful when spawning child machines and managing the communication between them.
+   */
+  private get self(): S.SelfReference<TContext, TEvent> {
+    return {
+      id: this.id,
+      send: this.send.bind(this),
+      sendParent: this.sendParent.bind(this),
+      sendChild: this.sendChild.bind(this),
+      stop: this.stop.bind(this),
+      stopChild: this.stopChild.bind(this),
+      spawn: this.spawn.bind(this) as any,
+    }
+  }
+
+  private get meta(): S.Meta<TContext, TState, TEvent> {
     return {
       state: this.stateSnapshot,
-      guards: this.guardMap,
+      guards: this.guardMap!,
       send: this.send.bind(this),
+      self: this.self,
     }
   }
 
@@ -426,7 +437,7 @@ export class Machine<
    * Function to executes defined actions. It can accept actions as string
    * (referencing `options.actions`) or actual functions.
    */
-  private executeActions = (actions: S.Actions<TContext, TEvent> | undefined, event: TEvent) => {
+  private executeActions = (actions: S.Actions<TContext, TState, TEvent> | undefined, event: TEvent) => {
     const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event)
     for (const action of toArray(_actions)) {
       const fn = isString(action) ? this.actionMap?.[action] : action
@@ -583,7 +594,7 @@ export class Machine<
   }
 
   private performTransitionEffects = (
-    transition: S.Transitions<TContext, TState["value"], TEvent> | undefined,
+    transition: S.Transitions<TContext, TState, TEvent> | undefined,
     event: TEvent,
   ) => {
     // execute transition actions
@@ -625,10 +636,7 @@ export class Machine<
     }
   }
 
-  private determineTransition = (
-    transition: S.Transitions<TContext, TState["value"], TEvent> | undefined,
-    event: TEvent,
-  ) => {
+  private determineTransition = (transition: S.Transitions<TContext, TState, TEvent> | undefined, event: TEvent) => {
     const fn = determineTransitionFn(transition, this.guardMap)
     return fn?.(this.contextSnapshot, event)
   }
@@ -636,11 +644,11 @@ export class Machine<
   /**
    * Function to send event to parent machine from spawned child
    */
-  sendParent = (evt: S.EventWithSrc) => {
+  sendParent = (evt: S.Event<S.AnyEventObject>) => {
     if (!this.parent) {
       invariant("[machine] Cannot send event to an unknown parent")
     }
-    const event = toEvent<S.EventWithSrc>(evt)
+    const event = toEvent<S.AnyEventObject>(evt)
     this.parent?.send(event)
   }
 
@@ -666,7 +674,7 @@ export class Machine<
       return
     }
 
-    const transitionConfig: S.Transitions<TContext, TState["value"], TEvent> =
+    const transitionConfig: S.Transitions<TContext, TState, TEvent> =
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
     const transition = toTransition(transitionConfig, this.state.value)
@@ -674,10 +682,7 @@ export class Machine<
     if (!transition) return
 
     const info = this.getNextStateInfo(transition, event)
-
-    if (info) {
-      this.performStateChangeEffects(this.state.value!, info, event)
-    }
+    this.performStateChangeEffects(this.state.value!, info, event)
 
     return info.stateNode
   }

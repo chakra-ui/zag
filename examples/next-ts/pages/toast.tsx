@@ -27,10 +27,7 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(toast.group.machine, {
-    preserve: true,
-    context: { pauseOnHover: true },
-  })
+  const [state, send] = useMachine(toast.group.machine)
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)

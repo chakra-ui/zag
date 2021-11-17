@@ -29,8 +29,8 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
     },
 
     PAUSE_TOAST: {
-      actions: (ctx, evt) => {
-        toastGroupMachine.sendChild("PAUSE", evt.id)
+      actions: (_ctx, evt, { self }) => {
+        self.sendChild("PAUSE", evt.id)
       },
     },
 
@@ -41,8 +41,8 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
     },
 
     RESUME_TOAST: {
-      actions: (ctx, evt) => {
-        toastGroupMachine.sendChild("RESUME", evt.id)
+      actions: (_ctx, evt, { self }) => {
+        self.sendChild("RESUME", evt.id)
       },
     },
 
@@ -54,7 +54,7 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
 
     ADD_TOAST: {
       guard: (ctx) => ctx.toasts.length < ctx.max,
-      actions: (ctx, evt) => {
+      actions: (ctx, evt, { self }) => {
         const options = {
           ...evt.toast,
           pauseOnPageIdle: ctx.pauseOnHover,
@@ -63,20 +63,20 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
           doc: ref(ctx.doc ?? document),
         }
         const toast = createToastMachine(options)
-        const actor = toastGroupMachine.spawn(toast)
+        const actor = self.spawn(toast)
         ctx.toasts.push(actor)
       },
     },
 
     UPDATE_TOAST: {
-      actions: (_ctx, evt) => {
-        toastGroupMachine.sendChild({ type: "UPDATE", toast: evt.toast }, evt.id)
+      actions: (_ctx, evt, { self }) => {
+        self.sendChild({ type: "UPDATE", toast: evt.toast }, evt.id)
       },
     },
 
     DISMISS_TOAST: {
-      actions: (_ctx, evt) => {
-        toastGroupMachine.sendChild("DISMISS", evt.id)
+      actions: (_ctx, evt, { self }) => {
+        self.sendChild("DISMISS", evt.id)
       },
     },
 
@@ -87,16 +87,16 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
     },
 
     REMOVE_TOAST: {
-      actions: (ctx, evt) => {
-        toastGroupMachine.stopChild(evt.id)
+      actions: (ctx, evt, { self }) => {
+        self.stopChild(evt.id)
         const index = ctx.toasts.findIndex((toast) => toast.id === evt.id)
         ctx.toasts.splice(index, 1)
       },
     },
 
     REMOVE_ALL: {
-      actions: (ctx) => {
-        ctx.toasts.forEach((toast) => toastGroupMachine.stopChild(toast.id))
+      actions: (ctx, _evt, { self }) => {
+        ctx.toasts.forEach((toast) => self.stopChild(toast.id))
         while (ctx.toasts.length) ctx.toasts.pop()
       },
     },
