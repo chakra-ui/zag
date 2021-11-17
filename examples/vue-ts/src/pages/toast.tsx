@@ -3,13 +3,10 @@ import { useMachine, normalizeProps, useActor, VuePropTypes } from "@ui-machines
 import { toast, ToastMachine } from "@ui-machines/web"
 import { HollowDotsSpinner } from "epic-spinners"
 import { useMount } from "../hooks/use-mount"
+import { injectGlobal } from "@emotion/css"
+import { toastStyle } from "../../../../shared/style"
 
-const backgrounds = {
-  error: "red",
-  blank: "lightgray",
-  warning: "orange",
-  loading: "pink",
-} as any
+injectGlobal(toastStyle)
 
 const Toast = defineComponent({
   props: {
@@ -25,12 +22,7 @@ const Toast = defineComponent({
     const t = computed(() => toast.connect<VuePropTypes>(state.value, send))
 
     return () => (
-      <pre
-        hidden={!t.value.isVisible}
-        style={{ padding: "10px", background: backgrounds[ctx.value.type], maxWidth: "400px" }}
-        onMouseover={t.value.pause}
-        onMouseleave={t.value.resume}
-      >
+      <pre hidden={!t.value.isVisible} {...t.value.containerProps}>
         <progress max={ctx.value.progress?.max} value={ctx.value.progress?.value} />
         <p>{ctx.value.title}</p>
         {/* @ts-expect-error */}
@@ -44,7 +36,7 @@ const Toast = defineComponent({
 export default defineComponent({
   name: "Toast",
   setup() {
-    const [state, send] = useMachine(toast.group.machine)
+    const [state, send] = useMachine(toast.group.machine, { preserve: true })
 
     const toastRef = useMount(send)
 
@@ -60,7 +52,7 @@ export default defineComponent({
               id.value = toasts.value.create({
                 title: "Welcome",
                 description: "Welcome",
-                type: "blank",
+                type: "info",
               })
             }}
           >
@@ -79,7 +71,7 @@ export default defineComponent({
           </button>
           <button onClick={() => toasts.value.dismiss()}>Close all</button>
           <button onClick={() => toasts.value.pause()}>Pause</button>
-          <div>
+          <div {...toasts.value.getContainerProps({ placement: "bottom" })}>
             {state.value.context.toasts.map((actor) => (
               <Toast key={actor.id} actor={actor} />
             ))}

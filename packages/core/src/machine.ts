@@ -248,12 +248,15 @@ export class Machine<
     this.parent = parent
   }
 
-  public spawn = (src: MachineSrc<any, any, any>, id?: string) => {
+  public spawn = <TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject = S.AnyEventObject>(
+    src: MachineSrc<TContext, TState, TEvent>,
+    id?: string,
+  ) => {
     const actor = runIfFn(src)
     if (id) actor.id = id
     actor.type = MachineType.Actor
     actor.setParent(this)
-    this.children.set(actor.id, actor)
+    this.children.set(actor.id, cast(actor))
 
     actor
       .onDone(() => {
@@ -261,7 +264,7 @@ export class Machine<
       })
       .start()
 
-    return ref<any>(actor)
+    return cast<typeof actor>(ref(actor))
   }
 
   private addActivityCleanup = (state: TState["value"] | null, cleanup: VoidFunction) => {

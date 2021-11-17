@@ -8,7 +8,7 @@ import { fromElement } from "tiny-rect/from-element"
 import { dom as sliderDom } from "../../src/slider/slider.dom"
 import { dispatchInputEvent } from "../utils/dispatch-input"
 import { clamp, multiply, percentToValue, snapToStep, toRanges } from "../utils/number"
-import type { DOM } from "../utils/types"
+import type { Style } from "../utils/types"
 import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
 
 export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
@@ -39,12 +39,12 @@ function getValueFromPoint(ctx: Ctx, point: Point) {
   return parseFloat(snapToStep(value, ctx.step))
 }
 
-export function getRangeStyle(ctx: Ctx): DOM.Style {
+export function getRangeStyle(ctx: Ctx): Style {
   const { orientation, value: values, max } = ctx
   const startValue = (values[0] / max) * 100
   const endValue = 100 - (values[values.length - 1] / max) * 100
 
-  const style: DOM.Style = {
+  const style: Style = {
     position: "absolute",
     "--slider-range-start": `${startValue}%`,
     "--slider-range-end": `${endValue}%`,
@@ -98,7 +98,7 @@ export const dom = {
     return sliderDom.getThumbStyle({ ...ctx, value, thumbSize })
   },
   getRangeStyle,
-  getTrackStyle: (): DOM.Style => ({
+  getTrackStyle: (): Style => ({
     position: "relative",
   }),
 }

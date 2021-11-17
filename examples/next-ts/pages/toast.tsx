@@ -1,17 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { toast, ToastMachine } from "@ui-machines/web"
+import { Global } from "@emotion/react"
 import { useActor, useMachine } from "@ui-machines/react"
+import { toast, ToastMachine } from "@ui-machines/web"
+import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
-import { StateVisualizer } from "components/state-visualizer"
-
-const backgrounds = {
-  error: "red",
-  blank: "lightgray",
-  warning: "orange",
-  loading: "pink",
-} as any
+import { toastStyle } from "../../../shared/style"
 
 const Toast = ({ actor }: { actor: ToastMachine }) => {
   const [state, send] = useActor(actor)
@@ -21,12 +16,7 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
   const t = toast.connect(state, send)
 
   return (
-    <pre
-      hidden={!t.isVisible}
-      style={{ padding: 10, background: backgrounds[ctx.type], maxWidth: 400 }}
-      onPointerEnter={t.pause}
-      onPointerLeave={t.resume}
-    >
+    <pre className="toast" {...t.containerProps}>
       <progress max={ctx.progress?.max} value={ctx.progress?.value} />
       <p>{ctx.title}</p>
       {/* @ts-expect-error */}
@@ -39,6 +29,7 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 export default function Page() {
   const [state, send] = useMachine(toast.group.machine, {
     preserve: true,
+    context: { pauseOnHover: true },
   })
   const { context: ctx } = state
 
@@ -49,38 +40,47 @@ export default function Page() {
 
   return (
     <div ref={ref}>
-      <button
-        onClick={() => {
-          id.current = toasts.create({
-            title: "Welcome",
-            description: "Welcome",
-            type: "info",
-          })
-        }}
-      >
-        Notify
-      </button>
-      <button
-        onClick={() => {
-          if (!id.current) return
-          toasts.update(id.current, {
-            title: "Testing",
-            type: "loading",
-          })
-        }}
-      >
-        Update Child
-      </button>
-      <button onClick={() => toasts.dismiss()}>Close all</button>
-      <button onClick={() => toasts.pause()}>Pause</button>
-      <button
-        onClick={() => {
-          console.log(toasts.count)
-        }}
-      >
-        Count
-      </button>
-      <div>
+      <Global styles={toastStyle} />
+
+      <div style={{ display: "flex", gap: "16px" }}>
+        <button
+          onClick={() => {
+            id.current = toasts.create({
+              title: "Welcome",
+              description: "Welcome",
+              type: "info",
+            })
+          }}
+        >
+          Notify (Info)
+        </button>
+        <button
+          onClick={() => {
+            toasts.create({
+              title: "Ooops! Something was wrong",
+              type: "error",
+            })
+          }}
+        >
+          Notify (Error)
+        </button>
+        <button
+          onClick={() => {
+            if (!id.current) return
+            toasts.update(id.current, {
+              title: "Testing",
+              type: "loading",
+            })
+          }}
+        >
+          Update Child (info)
+        </button>
+        <button onClick={() => toasts.dismiss()}>Close all</button>
+        <button onClick={() => toasts.pause()}>Pause all</button>
+        <button onClick={() => toasts.resume()}>Resume all</button>
+      </div>
+
+      <div {...toasts.getContainerProps({ placement: "bottom" })}>
         {ctx.toasts.map((actor) => (
           <Toast key={actor.id} actor={actor} />
         ))}

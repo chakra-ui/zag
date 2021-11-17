@@ -1,7 +1,7 @@
 import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "tiny-num"
 import type { Point } from "tiny-point"
 import { relativeToNode } from "tiny-point/dom"
-import type { DOM } from "../utils"
+import type { Style } from "../utils"
 import { dispatchInputEvent } from "../utils"
 import type { SliderMachineContext as Ctx } from "./slider.types"
 
@@ -42,11 +42,11 @@ function getHorizontalThumbOffset(ctx: SharedContext) {
   return parseFloat(getValue(ctx.value).toFixed(2))
 }
 
-function getThumbStyle(ctx: SharedContext): DOM.Style {
+function getThumbStyle(ctx: SharedContext): Style {
   const percent = valueToPercent(ctx.value, ctx)
   const offset = ctx.isVertical ? getVerticalThumbOffset(ctx) : getHorizontalThumbOffset(ctx)
 
-  const style: DOM.Style = {
+  const style: Style = {
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     "--slider-thumb-placement": `calc(${percent}% - ${offset}px)`,
@@ -61,10 +61,10 @@ function getThumbStyle(ctx: SharedContext): DOM.Style {
   return style
 }
 
-function getRangeStyle(ctx: Ctx): DOM.Style {
+function getRangeStyle(ctx: Ctx): Style {
   const percent = valueToPercent(ctx.value, ctx)
 
-  const style: DOM.Style = {
+  const style: Style = {
     position: "absolute",
   }
 
@@ -92,7 +92,7 @@ function getRangeStyle(ctx: Ctx): DOM.Style {
   }
 }
 
-function getRootStyle(ctx: Pick<Ctx, "isVertical">): DOM.Style {
+function getRootStyle(ctx: Pick<Ctx, "isVertical">): Style {
   return {
     touchAction: "none",
     userSelect: "none",
@@ -119,7 +119,7 @@ export const dom = {
   getRootStyle,
   getThumbStyle,
   getRangeStyle,
-  getTrackStyle: (): DOM.Style => ({
+  getTrackStyle: (): Style => ({
     position: "relative",
   }),
 
@@ -147,8 +147,8 @@ export const dom = {
     if (input) dispatchInputEvent(input, ctx.value)
   },
 
-  getMarkerStyle(ctx: Ctx, percent: number): DOM.Style {
-    const style: DOM.Style = {
+  getMarkerStyle(ctx: Ctx, percent: number): Style {
+    const style: Style = {
       position: "absolute",
       pointerEvents: "none",
     }

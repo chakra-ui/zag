@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
-import { dataAttr, DOM, getEventKey, getEventStep } from "../utils"
+import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "../utils"
 import { dom } from "./split-view.dom"
 import { SplitViewMachineContext, SplitViewMachineState } from "./split-view.machine"
 
@@ -120,7 +120,7 @@ export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
       },
       onKeyDown(event) {
         const step = getEventStep(event) * ctx.step
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
           },

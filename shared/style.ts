@@ -1,4 +1,5 @@
 import type { CSSObject } from "@emotion/react"
+import { keyframes } from "@emotion/css"
 
 export const comboboxStyle: CSSObject = {
   '[role="listbox"]': {
@@ -261,6 +262,45 @@ export const pinInputStyle: CSSObject = {
       height: "48px",
       textAlign: "center",
       fontSize: "24px",
+    },
+  },
+}
+
+const fadeIn = keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+})
+
+const fadeOut = keyframes({
+  from: { opacity: 1 },
+  to: { opacity: 0 },
+})
+
+export const toastStyle: CSSObject = {
+  ".toast": {
+    background: "rgb(116, 116, 116)",
+    borderRadius: "4px",
+    color: "white",
+    padding: "8px 8px 8px 16px",
+    width: "400px",
+    animation: `${fadeIn} 0.2s`,
+    "&:not([data-open])": {
+      animation: `${fadeOut} var(--toast-remove-delay)`,
+    },
+    "&[data-type=error]": {
+      background: "rgb(201, 37, 45)",
+    },
+    "&[data-type=info]": {
+      background: "rgb(13, 102, 208)",
+    },
+    "&[data-type=warning]": {
+      background: "orange",
+    },
+    "&[data-type=success]": {
+      background: "rgb(18, 128, 92)",
+    },
+    "&[data-type=loading]": {
+      background: "purple",
     },
   },
 }

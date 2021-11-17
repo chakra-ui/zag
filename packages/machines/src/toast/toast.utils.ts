@@ -1,4 +1,4 @@
-import { DOM } from "../utils/types"
+import { Style } from "../utils/types"
 import { ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
 
 export function getToastsByPlacement(toasts: ToastMachine[]) {
@@ -25,48 +25,37 @@ export function getToastDuration(duration: number | undefined, type: ToastMachin
   return duration ?? defaultTimeouts[type]
 }
 
-export function getPlacementStyle(placement: ToastPlacement): DOM.Style {
+export function getGroupPlacementStyle(placement: ToastPlacement): Style {
   const isRighty = placement.includes("right")
   const isLefty = placement.includes("left")
 
-  let alignItems = "center"
-  if (isRighty) alignItems = "flex-end"
-  if (isLefty) alignItems = "flex-start"
-
-  return {
-    display: "flex",
-    flexDirection: "column",
-    alignItems,
-    pointerEvents: "auto",
-    maxWidth: "35rem",
-    minWidth: "18.75rem",
-    margin: "calc(var(--toast-gutter) / 2)",
-  }
-}
-
-const placementMap = {
-  top: "env(safe-area-inset-top, 0px)",
-  left: "env(safe-area-inset-left, 0px)",
-  right: "env(safe-area-inset-right, 0px)",
-  bottom: "env(safe-area-inset-bottom, 0px)",
-}
-
-export function getGroupPlacementStyle(placement: ToastPlacement): DOM.Style {
-  const isTopOrBottom = placement === "top" || placement === "bottom"
-  const margin = isTopOrBottom ? "0 auto" : undefined
-
-  const styles: DOM.Style = {
+  const styles: Style = {
     position: "fixed",
     pointerEvents: "none",
     display: "flex",
     flexDirection: "column",
-    margin,
   }
 
-  for (const key in placementMap) {
-    if (placement.includes(key)) {
-      styles[key] = placementMap[key]
-    }
+  let alignItems: Style["alignItems"] = "center"
+  if (isRighty) alignItems = "flex-end"
+  if (isLefty) alignItems = "flex-start"
+
+  styles.alignItems = alignItems
+
+  if (placement.includes("top")) {
+    styles.top = "env(safe-area-inset-top, 0px)"
+  }
+
+  if (placement.includes("bottom")) {
+    styles.bottom = "env(safe-area-inset-bottom, 0px)"
+  }
+
+  if (!placement.includes("left")) {
+    styles.right = "env(safe-area-inset-right, 0px)"
+  }
+
+  if (!placement.includes("right")) {
+    styles.left = "env(safe-area-inset-left, 0px)"
   }
 
   return styles

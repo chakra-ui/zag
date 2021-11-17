@@ -45,37 +45,6 @@ export type Context<T> = T & {
   dir?: Direction
 }
 
-export namespace DOM {
-  export type EventKeyMap = Dict<(event: R.KeyboardEvent) => void>
-  export type Booleanish = boolean | "true" | "false"
-
-  export type DataAttr<T> = T & {
-    style?: Style
-    "data-uid"?: string
-    "data-ownedby"?: string
-    "data-selected"?: Booleanish
-    "data-expanded"?: Booleanish
-    "data-highlighted"?: Booleanish
-    "data-focus"?: Booleanish
-    "data-hover"?: Booleanish
-    "data-disabled"?: Booleanish
-    "data-type"?: string
-    "data-value"?: string | number
-    "data-valuetext"?: string
-    [dataAttr: string]: any
-  }
-
-  export type This = typeof globalThis
-
-  export type Style = R.CSSProperties & {
-    [prop: string]: string | number | undefined
-  }
-}
-
-export namespace Props {
-  export type Element = DOM.DataAttr<R.HTMLAttributes<HTMLElement>>
-  export type Button = DOM.DataAttr<R.ButtonHTMLAttributes<HTMLButtonElement>>
-  export type Input = DOM.DataAttr<R.InputHTMLAttributes<HTMLInputElement>>
-  export type Label = DOM.DataAttr<R.LabelHTMLAttributes<HTMLLabelElement>>
-  export type Output = DOM.DataAttr<R.OutputHTMLAttributes<HTMLOutputElement>>
+export type Style = R.CSSProperties & {
+  [prop: string]: string | number | undefined
 }

@@ -3,6 +3,7 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-type
 import { runIfFn } from "tiny-fn"
 import { dom } from "./toast.dom"
 import {
+  ToastGroupContainerProps,
   ToastGroupMachineContext,
   ToastOptions,
   ToastPlacement,
@@ -118,7 +119,16 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       }
     },
 
-    getContainerProps(placement: ToastPlacement) {
+    resume(id?: string) {
+      if (id == null) {
+        send("RESUME_ALL")
+      } else if (this.isVisible(id)) {
+        send({ type: "RESUME_TOAST", id })
+      }
+    },
+
+    getContainerProps(props: ToastGroupContainerProps) {
+      const { placement } = props
       return normalize.element<T>({
         id: dom.getGroupContainerId(ctx, placement),
         "data-placement": placement,

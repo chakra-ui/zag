@@ -1,5 +1,5 @@
 import { isDom } from "tiny-guard"
-import { DOM } from "./types"
+import { Style } from "./types"
 
 /* -----------------------------------------------------------------------------
  * Live Region for screen reader technology
@@ -13,7 +13,7 @@ type LiveRegionOptions = {
   doc?: Document
 }
 
-export const srOnlyStyle: DOM.Style = {
+export const srOnlyStyle: Style = {
   border: "0",
   clip: "rect(0 0 0 0)",
   height: "1px",

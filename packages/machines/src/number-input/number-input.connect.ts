@@ -1,6 +1,6 @@
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/prop-types"
 import { fromPointerEvent } from "tiny-point/dom"
-import { dataAttr, DOM, getEventStep } from "../utils"
+import { dataAttr, EventKeyMap, getEventStep } from "../utils"
 import { cast } from "../utils/fn"
 import { roundPx } from "../utils/number"
 import { dom } from "./number-input.dom"
@@ -74,7 +74,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
         }
 
         const step = getEventStep(event) * ctx.step
-        const keyMap: DOM.EventKeyMap = {
+        const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
           },

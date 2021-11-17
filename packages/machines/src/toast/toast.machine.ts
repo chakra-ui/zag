@@ -8,7 +8,7 @@ import { getToastDuration } from "./toast.utils"
 const { not, and, or } = guards
 
 export function createToastMachine(options: ToastOptions = {}) {
-  const { type = "info", duration, id = "toast", placement = "bottom", ...rest } = options
+  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 1000, ...rest } = options
 
   const timeout = getToastDuration(duration, type)
 
@@ -20,9 +20,8 @@ export function createToastMachine(options: ToastOptions = {}) {
         id,
         type,
         duration: timeout,
+        removeDelay,
         progress: { max: timeout, value: timeout },
-        pauseOnPageIdle: false,
-        pauseOnHover: false,
         placement,
         ...rest,
       },
@@ -88,7 +87,7 @@ export function createToastMachine(options: ToastOptions = {}) {
         dismissing: {
           entry: "clearProgressValue",
           after: {
-            DISMISS_DURATION: {
+            REMOVE_DELAY: {
               target: "inactive",
               actions: "notifyParentToRemove",
             },
@@ -119,7 +118,7 @@ export function createToastMachine(options: ToastOptions = {}) {
       },
       delays: {
         VISIBLE_DURATION: (ctx) => ctx.duration,
-        DISMISS_DURATION: 1000,
+        REMOVE_DELAY: (ctx) => ctx.removeDelay,
         PROGRESS_INTERVAL: 10,
         NOW: 0,
       },
