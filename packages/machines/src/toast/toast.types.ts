@@ -31,14 +31,6 @@ export type ToastMachineContext = {
    */
   description?: string
   /**
-   * The accessible role of the toast
-   */
-  role: "status" | "alert"
-  /**
-   * The live region mode of the toast
-   */
-  "aria-live": "assertive" | "off" | "polite"
-  /**
    * The duration the toast will be visible
    */
   duration: number
@@ -60,7 +52,7 @@ export type ToastMachineContext = {
   pauseOnHover: boolean
 }
 
-export type ToastOptions = Partial<Omit<ToastMachineContext, "progress" | "doc">>
+export type ToastOptions = Partial<Omit<ToastMachineContext, "progress">>
 
 export type ToastMachineState = {
   value: "active" | "active:temp" | "dismissing" | "inactive" | "visible"

@@ -4,6 +4,7 @@ import { useActor, useMachine } from "@ui-machines/react"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
+import { StateVisualizer } from "components/state-visualizer"
 
 const backgrounds = {
   error: "red",
@@ -36,7 +37,9 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(toast.group.machine)
+  const [state, send] = useMachine(toast.group.machine, {
+    preserve: true,
+  })
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
@@ -51,7 +54,7 @@ export default function Page() {
           id.current = toasts.create({
             title: "Welcome",
             description: "Welcome",
-            type: "blank",
+            type: "info",
           })
         }}
       >
@@ -70,11 +73,19 @@ export default function Page() {
       </button>
       <button onClick={() => toasts.dismiss()}>Close all</button>
       <button onClick={() => toasts.pause()}>Pause</button>
+      <button
+        onClick={() => {
+          console.log(toasts.count)
+        }}
+      >
+        Count
+      </button>
       <div>
         {ctx.toasts.map((actor) => (
           <Toast key={actor.id} actor={actor} />
         ))}
       </div>
+      <StateVisualizer state={state} />
     </div>
   )
 }

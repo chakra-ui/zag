@@ -46,8 +46,6 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
 
     rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
-      role: ctx.role,
-      "aria-live": ctx["aria-live"],
       "data-open": dataAttr(isVisible),
       "data-type": ctx.type,
       onPointerEnter() {

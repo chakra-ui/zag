@@ -1,8 +1,10 @@
+import { ToastPlacement } from "."
 import { ToastGroupMachineContext as GroupCtx, ToastMachineContext as Ctx } from "./toast.types"
 
 export const dom = {
   getDoc: (ctx: Ctx | GroupCtx) => ctx.doc ?? document,
   getGroupPortalId: (ctx: GroupCtx) => `toast-portal--${ctx.uid}`,
+  getGroupContainerId: (ctx: GroupCtx, placement: ToastPlacement) => `toast-group-container--${ctx.uid}--${placement}`,
 
   getToastTitleId: (ctx: Ctx) => `toast-title--${ctx.id}`,
   getRootId: (ctx: Ctx) => `toast--${ctx.id}`,

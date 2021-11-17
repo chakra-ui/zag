@@ -33,7 +33,10 @@ export function StateVisualizer(props: StateVisualizerProps) {
       {JSON.stringify(
         state,
         (_k, v) => {
-          if (v instanceof Machine) return `Machine: ${v.state.context.uid}`
+          if (v instanceof Machine) {
+            const id = v.state.context.uid ?? v.id
+            return `Machine: ${id}`
+          }
           return isDom() && v instanceof HTMLElement ? v.tagName : v
         },
         4,

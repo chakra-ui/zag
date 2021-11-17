@@ -10,10 +10,10 @@ export function useMachine<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, context } = options ?? {}
+  const { actions, state: hydratedState, context, preserve } = options ?? {}
 
   const service = useConstant(() => {
-    const resolvedMachine = typeof machine === "function" ? machine() : machine.clone()
+    const resolvedMachine = typeof machine === "function" ? machine() : preserve ? machine : machine.clone()
     return options ? resolvedMachine.withOptions(options) : resolvedMachine
   })
 

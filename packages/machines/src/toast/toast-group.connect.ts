@@ -120,8 +120,10 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
 
     getContainerProps(placement: ToastPlacement) {
       return normalize.element<T>({
-        id: `toast-group-${placement}`,
+        id: dom.getGroupContainerId(ctx, placement),
         "data-placement": placement,
+        "aria-live": "polite",
+        role: "region",
         style: {
           ...getGroupPlacementStyle(placement),
           "--toast-gutter": ctx.spacingValue,

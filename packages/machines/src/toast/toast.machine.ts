@@ -8,7 +8,7 @@ import { getToastDuration } from "./toast.utils"
 const { not, and, or } = guards
 
 export function createToastMachine(options: ToastOptions = {}) {
-  const { type = "info", role = "status", duration, id = "toast", placement = "top", ...rest } = options
+  const { type = "info", duration, id = "toast", placement = "bottom", ...rest } = options
 
   const timeout = getToastDuration(duration, type)
 
@@ -17,10 +17,8 @@ export function createToastMachine(options: ToastOptions = {}) {
       id,
       initial: "active",
       context: {
-        type,
-        role,
-        "aria-live": "polite",
         id,
+        type,
         duration: timeout,
         progress: { max: timeout, value: timeout },
         pauseOnPageIdle: false,
@@ -58,12 +56,11 @@ export function createToastMachine(options: ToastOptions = {}) {
         visible: {
           activities: "trackDocumentVisibility",
           on: {
-            RESUME: { guard: not("isLoadingType"), target: "active" },
-            DISMISS: "dismissing",
-            REMOVE: {
-              target: "inactive",
-              actions: "notifyParentToRemove",
+            RESUME: {
+              guard: not("isLoadingType"),
+              target: "active",
             },
+            DISMISS: "dismissing",
           },
         },
 
@@ -84,10 +81,6 @@ export function createToastMachine(options: ToastOptions = {}) {
             PAUSE: {
               target: "visible",
               actions: "setDurationToProgress",
-            },
-            REMOVE: {
-              target: "inactive",
-              actions: "notifyParentToRemove",
             },
           },
         },
@@ -120,9 +113,9 @@ export function createToastMachine(options: ToastOptions = {}) {
         },
       },
       guards: {
-        isLoadingType: (ctx) => ctx.type === "loading",
-        hasTypeChanged: (ctx, evt) => evt.type != null && evt.type !== ctx.type,
-        hasDurationChanged: (ctx, evt) => evt.duration != null && evt.duration !== ctx.duration,
+        isLoadingType: (ctx, evt) => evt.toast?.type === "loading" || ctx.type === "loading",
+        hasTypeChanged: (ctx, evt) => evt.toast?.type !== ctx.type,
+        hasDurationChanged: (ctx, evt) => evt.toast?.duration !== ctx.duration,
       },
       delays: {
         VISIBLE_DURATION: (ctx) => ctx.duration,

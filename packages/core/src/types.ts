@@ -303,6 +303,7 @@ export declare namespace StateMachine {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
     context?: Partial<TContext>
+    preserve?: boolean
   }
 }
 
