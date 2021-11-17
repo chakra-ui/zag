@@ -15,8 +15,8 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
     initial: "unknown",
     context: {
       id: uuid(),
-      openDelay: 1500,
-      closeDelay: 500,
+      openDelay: 700,
+      closeDelay: 300,
       closeOnPointerDown: true,
     },
     states: {
