@@ -70,6 +70,24 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
     tooltipProps: normalize.element<T>({
       role: "tooltip",
       id: tooltipId,
+      onPointerEnter() {
+        send("TOOLTIP_POINTER_ENTER")
+      },
+      onPointerLeave() {
+        send("TOOLTIP_POINTER_LEAVE")
+      },
+      style: {
+        pointerEvents: ctx.interactive ? "auto" : "none",
+      },
     }),
+
+    setupPortal() {
+      const doc = dom.getDoc(ctx)
+      const exist = dom.getPortalEl(ctx)
+      if (exist) return exist
+      const portal = dom.createPortalEl(ctx)
+      doc.body.appendChild(portal)
+      return portal
+    },
   }
 }

@@ -18,6 +18,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       openDelay: 700,
       closeDelay: 300,
       closeOnPointerDown: true,
+      interactive: true,
     },
     states: {
       unknown: {
@@ -30,7 +31,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       },
 
       closed: {
-        entry: "clearGlobalId",
+        entry: ["clearGlobalId", "invokeOnClose"],
         on: {
           FOCUS: "open",
           POINTER_ENTER: [
@@ -61,7 +62,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
 
       open: {
         activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackWindowScroll", "trackPointerlockChange"],
-        entry: "setGlobalId",
+        entry: ["setGlobalId", "invokeOnOpen"],
         on: {
           POINTER_LEAVE: [
             {
@@ -74,6 +75,10 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           ESCAPE: "closed",
           SCROLL: "closed",
           POINTER_LOCK_CHANGE: "closed",
+          TOOLTIP_POINTER_LEAVE: {
+            guard: "isInteractive",
+            target: "closing",
+          },
           POINTER_DOWN: {
             guard: "closeOnPointerDown",
             target: "closed",
@@ -89,6 +94,11 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         },
         on: {
           FORCE_CLOSE: "closed",
+          POINTER_ENTER: "open",
+          TOOLTIP_POINTER_ENTER: {
+            guard: "isInteractive",
+            target: "open",
+          },
         },
       },
     },
@@ -96,7 +106,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
   {
     activities: {
       trackPointerlockChange(ctx, _evt, { send }) {
-        return addPointerlockChangeListener(dom.getDoc(ctx), function onLockChange() {
+        return addPointerlockChangeListener(dom.getDoc(ctx), () => {
           send("POINTER_LOCK_CHANGE")
         })
       },
@@ -120,7 +130,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       },
       trackPointermoveForSafari(ctx, _evt, { send }) {
         if (!isSafari()) return noop
-        const doc = ctx.doc ?? document
+        const doc = dom.getDoc(ctx)
         return addPointerEvent(doc, "pointermove", (event) => {
           const selector = "[data-controls=tooltip][data-expanded]"
           if (isElement(event.target) && event.target.closest(selector)) return
@@ -128,7 +138,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         })
       },
       trackEscapeKey(ctx, _evt, { send }) {
-        const doc = ctx.doc ?? document
+        const doc = dom.getDoc(ctx)
         return addDomEvent(doc, "keydown", (event) => {
           if (event.key === "Escape" || event.key === "Esc") {
             send("ESCAPE")
@@ -151,12 +161,25 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
           tooltipStore.setId(null)
         }
       },
+      invokeOnOpen(ctx, evt) {
+        const omit = ["TOOLTIP_POINTER_ENTER", "POINTER_ENTER"]
+        if (!omit.includes(evt.type)) {
+          ctx.onOpen?.()
+        }
+      },
+      invokeOnClose(ctx, evt) {
+        const omit = ["SETUP"]
+        if (!omit.includes(evt.type)) {
+          ctx.onClose?.()
+        }
+      },
     },
     guards: {
       closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
       noVisibleTooltip: () => tooltipStore.id === null,
       isVisible: (ctx) => ctx.id === tooltipStore.id,
       isDisabled: (ctx) => !!ctx.disabled,
+      isInteractive: (ctx) => ctx.interactive,
     },
     delays: {
       OPEN_DELAY: (ctx) => ctx.openDelay,
