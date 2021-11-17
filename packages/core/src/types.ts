@@ -278,7 +278,7 @@ export declare namespace StateMachine {
   }
 
   export type ActivityMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    [activity: string]: ExpressionWithMeta<TContext, TState, TEvent, VoidFunction>
+    [activity: string]: ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | undefined>
   }
 
   export type DelayMap<TContext extends Dict, TEvent extends EventObject> = {
@@ -332,6 +332,7 @@ export enum ActionTypes {
   Every = "machine.every",
   Log = "machine.log",
   Init = "machine.init",
+  Error = "machine.error",
 }
 
 export enum MachineType {

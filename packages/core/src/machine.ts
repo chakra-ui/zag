@@ -1,5 +1,5 @@
 import { klona } from "klona"
-import { cast, invariant, runIfFn, warn } from "tiny-fn"
+import { cast, invariant, noop, runIfFn, warn } from "tiny-fn"
 import { isArray, isObject, isString } from "tiny-guard"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
@@ -463,7 +463,7 @@ export class Machine<
         continue
       }
 
-      const cleanup = fn(this.state.context, event, this.meta)
+      const cleanup = fn(this.state.context, event, this.meta) ?? noop
       this.addActivityCleanup(state ?? this.state.value, cleanup)
     }
   }
