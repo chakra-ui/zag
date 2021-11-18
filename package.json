@@ -97,7 +97,8 @@
     "packages": [
       "packages/prop-types",
       "packages/core",
-      "packages/machines",
+      "packages/machines/*",
+      "packages/utilities/*",
       "packages/frameworks/*"
     ]
   },
@@ -105,8 +106,9 @@
     "packages": [
       "packages/prop-types",
       "packages/core",
-      "packages/machines",
+      "packages/machines/*",
       "packages/frameworks/*",
+      "packages/utilities/*",
       "examples/*"
     ]
   },
@@ -117,17 +119,6 @@
     "**/*.{md,yml,json,babelrc,eslintrc,prettierrc}": [
       "prettier --write"
     ]
-  },
-  "prettier": {
-    "bracketSpacing": true,
-    "jsxBracketSameLine": false,
-    "jsxSingleQuote": false,
-    "printWidth": 120,
-    "proseWrap": "always",
-    "semi": false,
-    "singleQuote": false,
-    "tabWidth": 2,
-    "trailingComma": "all"
   },
   "commitlint": {
     "extends": [

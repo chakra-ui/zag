@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-dom-utils-live-region.cjs.js",
+  "module": "dist/ui-machines-dom-utils-live-region.esm.js"
+}

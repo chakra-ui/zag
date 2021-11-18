@@ -1,0 +1,36 @@
+{
+  "name": "@ui-machines/split-view",
+  "version": "0.0.0",
+  "description": "Core logic for the split-view widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "split-view"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-split-view.cjs.js",
+  "types": "dist/ui-machines-split-view.cjs.d.ts",
+  "module": "dist/ui-machines-split-view.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/split-view",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "dependencies": {
+    "@ui-machines/core": "^0.0.0",
+    "@ui-machines/dom-utils": "^0.0.0",
+    "@ui-machines/types": "^0.0.0"
+  }
+}

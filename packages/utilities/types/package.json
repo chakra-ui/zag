@@ -1,0 +1,27 @@
+{
+  "name": "@ui-machines/types",
+  "version": "0.0.0",
+  "description": "TypeScript type utilities for the machines",
+  "keywords": [
+    "js",
+    "utils",
+    "types"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-types.cjs.js",
+  "module": "dist/ui-machines-types.esm.js",
+  "types": "dist/ui-machines-types.cjs.d.ts",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/utilities/types",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  }
+}

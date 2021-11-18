@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-dom-utils-merge-props.cjs.js",
+  "module": "dist/ui-machines-dom-utils-merge-props.esm.js"
+}

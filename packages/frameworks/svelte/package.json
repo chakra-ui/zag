@@ -24,9 +24,6 @@
   "bugs": {
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
-  "scripts": {
-    "clean": "rimraf dist"
-  },
   "dependencies": {
     "@ui-machines/core": "0.0.0"
   },

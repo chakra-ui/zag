@@ -1,4 +1,4 @@
-import { createNormalizer } from "@ui-machines/prop-types"
+import { createNormalizer } from "@ui-machines/types"
 import { isObject, isString } from "tiny-guard"
 import { cssify } from "./cssify"
 

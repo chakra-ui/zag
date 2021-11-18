@@ -1,0 +1,36 @@
+{
+  "name": "@ui-machines/utils",
+  "version": "0.0.0",
+  "description": "Javascript data type utilities and helper functions",
+  "keywords": [
+    "js",
+    "utils",
+    "utils"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-utils.cjs.js",
+  "module": "dist/ui-machines-utils.esm.js",
+  "types": "dist/ui-machines-utils.cjs.d.ts",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/utilities/helpers",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "warning",
+    "guard"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "warning.ts",
+      "guard.ts"
+    ]
+  }
+}

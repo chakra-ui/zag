@@ -1,0 +1,36 @@
+{
+  "name": "@ui-machines/tabs",
+  "version": "0.0.0",
+  "description": "Core logic for the tabs widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "tabs"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-tabs.cjs.js",
+  "types": "dist/ui-machines-tabs.cjs.d.ts",
+  "module": "dist/ui-machines-tabs.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/tabs",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "dependencies": {
+    "@ui-machines/core": "^0.0.0",
+    "@ui-machines/dom-utils": "^0.0.0",
+    "@ui-machines/types": "^0.0.0"
+  }
+}

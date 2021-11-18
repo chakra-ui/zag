@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-dom-utils-mutation-observer.cjs.js",
+  "module": "dist/ui-machines-dom-utils-mutation-observer.esm.js"
+}

@@ -1,0 +1,63 @@
+{
+  "name": "@ui-machines/dom-utils",
+  "version": "0.0.0",
+  "description": "JavaScript DOM utilities for the machines",
+  "keywords": [
+    "js",
+    "utils",
+    "dom"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-dom-utils.cjs.js",
+  "module": "dist/ui-machines-dom-utils.esm.js",
+  "types": "dist/ui-machines-dom-utils.cjs.d.ts",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/utilities/dom-utils",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "body-pointer-event",
+    "body-scroll-lock",
+    "computed-style",
+    "dispatch-event",
+    "add-listener",
+    "live-region",
+    "merge-props",
+    "mutation-observer",
+    "nodelist",
+    "pointer-event",
+    "pointerlock",
+    "text-selection",
+    "scrollable",
+    "focus-event"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "body-pointer-event.ts",
+      "body-scroll-lock.ts",
+      "computed-style.ts",
+      "dispatch-event.ts",
+      "add-listener.ts",
+      "index.ts",
+      "live-region.ts",
+      "merge-props.ts",
+      "mutation-observer.ts",
+      "nodelist.ts",
+      "pointer-event.ts",
+      "pointerlock.ts",
+      "scrollable.ts",
+      "text-selection.ts",
+      "focus-event.ts"
+    ]
+  },
+  "dependencies": {
+    "scroll-into-view-if-needed": "^2.2.28"
+  }
+}

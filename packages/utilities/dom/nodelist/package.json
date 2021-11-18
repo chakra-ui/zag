@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-dom-utils-nodelist.cjs.js",
+  "module": "dist/ui-machines-dom-utils-nodelist.esm.js"
+}

@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-dom-utils-body-scroll-lock.cjs.js",
+  "module": "dist/ui-machines-dom-utils-body-scroll-lock.esm.js"
+}

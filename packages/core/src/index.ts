@@ -1,4 +1,4 @@
-export { ref, subscribe, snapshot } from "valtio/vanilla"
+export { ref, subscribe, snapshot, proxy } from "valtio/vanilla"
 export { guards } from "./guard-utils"
 export { choose } from "./action-utils"
 export * from "./machine"

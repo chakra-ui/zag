@@ -10784,26 +10784,6 @@ timers-browserify@2.0.12, timers-browserify@^2.0.4:
   dependencies:
     setimmediate "^1.0.4"
 
-tiny-array@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-array/-/tiny-array-0.0.1.tgz#f33d877651a84abd88806f7ba5f1ee4a502aeadd"
-  integrity sha512-A4qCN+n0i26+fqcbHHK0VcPzwhP6xuC57BdzsVvmymdwA48J1jjsOrM7YWY3bQOZ5LSRauLaFVOxiIY7SVPecg==
-
-tiny-dom-event@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/tiny-dom-event/-/tiny-dom-event-0.0.2.tgz#d6c3c16a48a8db8c44867bb7ce1e5b4c174181fb"
-  integrity sha512-YyF4e8cL2Tu1iy7QYUKlOa+A/6osc9238/lTryGl4VU3xyv0CCDA6KjHhRTkzpEWIc7GiPkU+NF36/xbfduThQ==
-
-tiny-dom-focus@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-dom-focus/-/tiny-dom-focus-0.0.1.tgz#501d0b12602dd58a357283f1e1c79b0f192fea7a"
-  integrity sha512-5Lm/aPP2qNo6T/NgskVTn/0pKOUMGpYSrt8B6tg0ezgfnwCjAKOuPiJEQkW5BTdIIcbfPZvwgtfFxcuJz5EhPA==
-
-tiny-dom-query@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/tiny-dom-query/-/tiny-dom-query-0.0.2.tgz#322cd5aa011d5f3fc32821f68bf73d5c042632ae"
-  integrity sha512-+nZXUKCtr5zExjlKs9gZO0EauHa1ewXMKUWRUKF03reDiO6fZZ0RQw3IKg+s9mwI9/Nwfh15WsitTQSx0VTaLg==
-
 tiny-fn@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/tiny-fn/-/tiny-fn-0.0.2.tgz#8949c09eddfd726c10b0208ac1bb83f9304f26c6"
@@ -10813,28 +10793,6 @@ tiny-guard@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tiny-guard/-/tiny-guard-0.0.3.tgz#7490084c7f43effa79f506c13d199bbea77e317a"
   integrity sha512-LmKSQOepslkqva8tNKume4zuSSgekTzSixkcjpNicj/j65+wgmJO7vGxdTC0QpPLqOJlE89qDIRu5FNvUlUdYA==
-
-tiny-nodelist@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-nodelist/-/tiny-nodelist-0.0.1.tgz#d331f8bbf32aed4507b910f0d44ffbee91a8230e"
-  integrity sha512-5qVOq/AhRRVdfPy2mawqF2xA8QkzjDGrAaek0/MDuN4rSzDmJf137qLptGF5wTCU8XgnJQZmb8MGwsLLQPZsYg==
-
-tiny-num@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/tiny-num/-/tiny-num-0.0.3.tgz#9fc226b6b5d5d4d4fec273d8a4caa7f281355a37"
-  integrity sha512-6hgYAl59RsJ/rWJPiTQ51yw407obvjK9pD9nsh/Xhsss9/3htlV5gZzOWS4dQ0Ds8Z8r2ggNYSWnXKIzIdjGtw==
-
-tiny-point@0.0.1, tiny-point@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-point/-/tiny-point-0.0.1.tgz#2870af708a4405b608c3939bf360567f1dafea4e"
-  integrity sha512-+yroKoYL9c4PoS7RZKnPitdyi1iBLBSQ47YAbjrN35B4yKrYNttT9egV3xn4EzgCMKZOsz/e+7pIWYz9C87ocQ==
-
-tiny-rect@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/tiny-rect/-/tiny-rect-0.0.2.tgz#e632bee6abfb2a3a611dfea200d19b55b66c5a4f"
-  integrity sha512-zYKhcTM22zbRLLl7+bY0GL0oM+oQGbL2UA/XKsP9rGoISZf2gRzqfch3JYXWZqcIbMbTJpBhsyiccw37f75x5A==
-  dependencies:
-    tiny-point "0.0.1"
 
 tiny-warning@^1.0.3:
   version "1.0.3"

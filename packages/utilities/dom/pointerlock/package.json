@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-dom-utils-pointerlock.cjs.js",
+  "module": "dist/ui-machines-dom-utils-pointerlock.esm.js"
+}
