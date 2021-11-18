@@ -1,5 +1,5 @@
 import { Machine } from "@ui-machines/core"
-import { Context, Direction } from "../utils"
+import { Context, Direction } from "@ui-machines/types"
 
 export type ToastType = "success" | "error" | "loading" | "info" | "custom"
 

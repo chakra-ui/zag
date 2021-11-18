@@ -1,4 +1,4 @@
-import { proxy } from "valtio"
+import { proxy } from "@ui-machines/core"
 
 type Id = string | null
 

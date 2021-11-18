@@ -1,5 +1,4 @@
 import { createMachine, ref } from "@ui-machines/core"
-import { isNumber } from "../../../utilities/guard/src/guard"
 import { createToastMachine } from "./toast.machine"
 import { ToastGroupMachineContext } from "./toast.types"
 
@@ -18,7 +17,9 @@ export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
     offsets: { left: 0, right: 0, top: 0, bottom: 0 },
   },
   computed: {
-    spacingValue: (ctx) => (isNumber(ctx.spacing) ? `${ctx.spacing}px` : ctx.spacing),
+    spacingValue: (ctx) => {
+      return typeof ctx.spacing === "number" ? `${ctx.spacing}px` : ctx.spacing
+    },
   },
   on: {
     SETUP: {

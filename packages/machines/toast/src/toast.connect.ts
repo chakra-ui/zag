@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { dataAttr } from "../utils"
+import { dataAttr } from "@ui-machines/dom-utils"
 import { dom } from "./toast.dom"
 import { ToastMachineContext, ToastMachineState } from "./toast.types"
 

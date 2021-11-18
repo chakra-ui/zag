@@ -1,6 +1,6 @@
 import { createMachine, guards } from "@ui-machines/core"
-import { addDomEvent } from "../../../utilities/dom/src/add-listener"
-import { noop } from "../../../utilities/helpers/src/fn"
+import { addDomEvent } from "@ui-machines/dom-utils/add-listener"
+
 import { dom } from "./toast.dom"
 import { ToastMachineContext, ToastMachineState, ToastOptions } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
@@ -102,7 +102,7 @@ export function createToastMachine(options: ToastOptions = {}) {
     {
       activities: {
         trackDocumentVisibility(ctx, _evt, { send }) {
-          if (!ctx.pauseOnPageIdle) return noop
+          if (!ctx.pauseOnPageIdle) return
           const doc = dom.getDoc(ctx) as Document & { msHidden?: boolean; webkitHidden?: string }
           return addDomEvent(doc, "visibilitychange", () => {
             const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden

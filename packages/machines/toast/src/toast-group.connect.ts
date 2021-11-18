@@ -1,8 +1,15 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { runIfFn } from "tiny-fn"
+import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
-import { ToastGroupContainerProps, ToastGroupMachineContext, ToastOptions, ToastPlacement, ToastPromiseMessages, ToastPromiseOptions } from "./toast.types"
+import {
+  ToastGroupContainerProps,
+  ToastGroupMachineContext,
+  ToastOptions,
+  ToastPlacement,
+  ToastPromiseMessages,
+  ToastPromiseOptions,
+} from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(

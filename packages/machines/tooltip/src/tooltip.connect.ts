@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { dataAttr, getEventKey } from "../utils"
-import type { EventKeyMap } from "../../../utilities/types/src/types"
+import { normalizeProp, PropTypes, ReactPropTypes, EventKeyMap } from "@ui-machines/types"
+import { dataAttr, getEventKey } from "@ui-machines/dom-utils"
+
 import { dom } from "./tooltip.dom"
 import { tooltipStore } from "./tooltip.store"
 import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"

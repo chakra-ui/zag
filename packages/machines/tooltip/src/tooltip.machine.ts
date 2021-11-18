@@ -1,10 +1,12 @@
-import { createMachine, ref } from "@ui-machines/core"
-import { addDomEvent, addPointerEvent } from "tiny-dom-event"
-import { noop } from "tiny-fn"
-import { isElement, isSafari } from "tiny-guard"
-import { subscribe } from "valtio"
-import { uuid } from "../utils"
-import { addPointerlockChangeListener } from "../../../utilities/dom/src/pointerlock"
+import { createMachine, ref, subscribe } from "@ui-machines/core"
+
+import { isHTMLElement } from "@ui-machines/dom-utils"
+import { addDomEvent, addPointerEvent } from "@ui-machines/dom-utils/add-listener"
+import { addPointerlockChangeListener } from "@ui-machines/dom-utils/pointerlock"
+
+import { noop, uuid } from "@ui-machines/utils"
+import { isSafari } from "@ui-machines/utils/guard"
+
 import { dom } from "./tooltip.dom"
 import { tooltipStore } from "./tooltip.store"
 import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
@@ -133,7 +135,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         const doc = dom.getDoc(ctx)
         return addPointerEvent(doc, "pointermove", (event) => {
           const selector = "[data-controls=tooltip][data-expanded]"
-          if (isElement(event.target) && event.target.closest(selector)) return
+          if (isHTMLElement(event.target) && event.target.closest(selector)) return
           send("POINTER_LEAVE")
         })
       },

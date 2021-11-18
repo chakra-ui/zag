@@ -1,6 +1,5 @@
-import { ToastGroupMachineContext } from "."
-import { Style } from "../../../utilities/types/src/types"
-import { ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
+import { Style } from "@ui-machines/types"
+import { ToastGroupMachineContext, ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
 
 export function getToastsByPlacement(toasts: ToastMachine[]) {
   const result: Partial<Record<ToastPlacement, ToastMachine[]>> = {}

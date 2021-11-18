@@ -12,4 +12,11 @@ export const toast = {
   createMachine: createToastMachine,
 }
 
-export type { ToastGroupMachineContext, ToastMachine, ToastMachineContext, ToastMachineState, ToastPlacement, ToastType } from "./toast.types"
+export type {
+  ToastGroupMachineContext,
+  ToastMachine,
+  ToastMachineContext,
+  ToastMachineState,
+  ToastPlacement,
+  ToastType,
+} from "./toast.types"
