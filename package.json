@@ -10,7 +10,6 @@
   "license": "MIT",
   "scripts": {
     "build": "preconstruct build",
-    "clean": "yarn workspaces run clean",
     "start:react": "cd examples/next-ts && yarn dev",
     "start:vue": "cd examples/vue-ts && yarn dev",
     "start:solid": "cd examples/solid-ts && yarn dev",
@@ -29,7 +28,6 @@
     "lint:validate": "preconstruct validate",
     "pkg": "manypkg run",
     "postinstall": "patch-package",
-    "prebuild": "yarn clean",
     "prepare": "npm-run-all -s prepare:**",
     "prepare:husky": "husky install",
     "prepare:preconstruct": "preconstruct dev",

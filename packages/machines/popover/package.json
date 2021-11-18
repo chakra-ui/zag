@@ -29,10 +29,10 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "focus-trap": "^6.7.1",
     "@ui-machines/array-utils": "^0.0.0",
     "@ui-machines/core": "^0.0.0",
     "@ui-machines/dom-utils": "^0.0.0",
-    "@ui-machines/types": "^0.0.0"
+    "@ui-machines/types": "^0.0.0",
+    "focus-trap": "^6.7.1"
   }
 }
