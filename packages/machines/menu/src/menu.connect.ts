@@ -1,12 +1,17 @@
-import { contains, dataAttr, getEventKey } from "@ui-machines/dom-utils"
+import { contains, dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
 import { validateBlur } from "@ui-machines/dom-utils/focus-event"
 import { isLeftClick } from "@ui-machines/utils/guard"
-import { EventKeyMap, getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { fromPointerEvent } from "tiny-point/dom"
+
 import { dom } from "./menu.dom"
 import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
 
-export function menuConnect<T extends PropTypes = ReactPropTypes>(state: MenuState, send: MenuSend, normalize = normalizeProp) {
+export function menuConnect<T extends PropTypes = ReactPropTypes>(
+  state: MenuState,
+  send: MenuSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
   const isSubmenu = ctx.parent != null

@@ -1,8 +1,8 @@
 import { createMachine, ref } from "@ui-machines/core"
+import { trackPointerMove } from "@ui-machines/dom-utils/pointer-event"
+import { decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { nextTick } from "tiny-fn"
 import { fromElement } from "tiny-rect/from-element"
-import { trackPointerMove } from "../utils"
-import { decrement, increment, snapToStep } from "../../../utilities/helpers/src/number"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
 

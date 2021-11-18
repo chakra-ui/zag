@@ -1,5 +1,5 @@
 import { isLeftClick } from "tiny-guard"
-import { nextTick } from "@ui-machines/utils"
+import { nextTick } from "./next-tick"
 
 let changeCount = 0
 let originalBodyPointerEvents: string

@@ -1,4 +1,4 @@
-import type { Context } from "../utils"
+import type { Context } from "@ui-machines/types"
 
 export type PinInputMachineContext = Context<{
   /**

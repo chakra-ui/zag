@@ -1,13 +1,16 @@
+import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
+import { toRanges } from "@ui-machines/number-utils/transform"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick, isModifiedEvent } from "tiny-guard"
-import { toRanges } from "tiny-num"
 import { fromPointerEvent } from "tiny-point/dom"
-import type { EventKeyMap } from "../utils"
-import { dataAttr, getEventKey, getEventStep } from "../utils"
 import { dom } from "./range-slider.dom"
 import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
 
-export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(state: RangeSliderState, send: RangeSliderSend, normalize = normalizeProp) {
+export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
+  state: RangeSliderState,
+  send: RangeSliderSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
   const { value: values, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } = ctx
 

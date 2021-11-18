@@ -1,10 +1,14 @@
-import { dataAttr, getEventKey, srOnlyStyle } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, srOnlyStyle } from "@ui-machines/dom-utils"
 import { validateBlur } from "@ui-machines/dom-utils/focus-event"
-import { EventKeyMap, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
 import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 
-export function comboboxConnect<T extends PropTypes = ReactPropTypes>(state: ComboboxState, send: ComboboxSend, normalize = normalizeProp) {
+export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
+  state: ComboboxState,
+  send: ComboboxSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
 
   const expanded = state.matches("interacting", "navigating", "suggesting")

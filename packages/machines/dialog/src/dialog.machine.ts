@@ -1,6 +1,6 @@
 import { createMachine, ref, subscribe } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
-import { addDomEvent } from "@ui-machines/dom-utils/add-listener"
+import { addDomEvent } from "@ui-machines/dom-utils/listener"
 import { preventBodyScroll } from "@ui-machines/dom-utils/body-scroll-lock"
 import { Context } from "@ui-machines/types"
 import { hideOthers } from "aria-hidden"

@@ -1,5 +1,5 @@
-import { first, last } from "tiny-array"
-import { itemById, nextById, prevById, queryElements } from "tiny-nodelist"
+import { first, last } from "@ui-machines/array-utils"
+import { itemById, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
 import { TabsMachineContext as Ctx } from "./tabs.machine"
 
 export const dom = {
@@ -11,7 +11,8 @@ export const dom = {
   getTablistEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTablistId(ctx)),
   getPanelEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getPanelId(ctx, id)),
   getTabEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTabId(ctx, id)),
-  getElements: (ctx: Ctx) => queryElements(dom.getTablistEl(ctx), `[role=tab][data-ownedby='${dom.getTablistId(ctx)}']`),
+  getElements: (ctx: Ctx) =>
+    queryElements(dom.getTablistEl(ctx), `[role=tab][data-ownedby='${dom.getTablistId(ctx)}']`),
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),

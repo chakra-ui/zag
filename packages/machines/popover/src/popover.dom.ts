@@ -1,7 +1,6 @@
-import { last, first } from "tiny-array"
-import { getFocusables } from "tiny-dom-query/focusable"
-import { getTabbables } from "tiny-dom-query/tabbable"
-import { cast, runIfFn } from "tiny-fn"
+import { first, last } from "@ui-machines/array-utils"
+import { getFocusables, getTabbables } from "@ui-machines/dom-utils/focusable"
+import { cast, runIfFn } from "@ui-machines/utils"
 import { PopoverMachineContext as Ctx } from "./popover.machine"
 
 export const dom = {

@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@ui-machines/core"
-import { addDomEvent } from "@ui-machines/dom-utils/add-listener"
+import { addDomEvent } from "@ui-machines/dom-utils/listener"
 
 import { dom } from "./toast.dom"
 import { ToastMachineContext, ToastMachineState, ToastOptions } from "./toast.types"

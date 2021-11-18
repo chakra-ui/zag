@@ -1,10 +1,9 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { cast } from "tiny-fn"
-import { isLeftClick } from "tiny-guard"
+import { cast } from "@ui-machines/utils"
+import { isLeftClick } from "@ui-machines/utils/guard"
 import { fromPointerEvent, relativeToNode } from "tiny-point/dom"
-import type { EventKeyMap } from "../utils"
-import { dataAttr, getEventKey } from "../utils"
 import { dom } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 

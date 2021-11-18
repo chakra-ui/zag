@@ -1,7 +1,7 @@
 import { pipe } from "tiny-fn"
 import { isLeftClick, isMouseEvent } from "tiny-guard"
 import { ref } from "valtio"
-import { addPointerEvent, AnyPointerEvent, EventListenerWithPointInfo as Listener, PointerEventInfo } from "./add-listener"
+import { addPointerEvent, AnyPointerEvent, EventListenerWithPointInfo as Listener, PointerEventInfo } from "./listener"
 
 type TrackPointerDownOptions = {
   doc?: Document

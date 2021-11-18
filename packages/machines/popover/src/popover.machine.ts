@@ -1,12 +1,11 @@
+import { next } from "@ui-machines/array-utils"
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
+import { contains, nextTick } from "@ui-machines/dom-utils"
+import { preventBodyScroll } from "@ui-machines/dom-utils/body-scroll-lock"
+import { isTabbable } from "@ui-machines/dom-utils/focusable"
+import { trackPointerDown } from "@ui-machines/dom-utils/pointer-event"
+import type { Context } from "@ui-machines/types"
 import { createFocusTrap, FocusTrap } from "focus-trap"
-import { contains } from "tiny-dom-query"
-import { isTabbable } from "tiny-dom-query/tabbable"
-import { nextTick, noop } from "tiny-fn"
-import { next } from "../../../utilities/helpers/src/array"
-import { preventBodyScroll } from "../../../utilities/dom/src/body-scroll-lock"
-import { trackPointerDown } from "../../../utilities/dom/src/pointer-event"
-import { Context } from "../../../utilities/types/src/types"
 import { dom } from "./popover.dom"
 
 const { and, or, not } = guards
@@ -117,7 +116,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         let trap: FocusTrap
         nextTick(() => {
           const el = dom.getContentEl(ctx)
-          if (!ctx.modal || !el) return noop
+          if (!ctx.modal || !el) return
           trap = createFocusTrap(el, {
             escapeDeactivates: false,
             allowOutsideClick: true,

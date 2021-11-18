@@ -1,6 +1,7 @@
-import { createMachine, ref, guards } from "@ui-machines/core"
-import { fromLength } from "tiny-array"
-import { nextTick } from "tiny-fn"
+import { fromLength } from "@ui-machines/array-utils"
+import { createMachine, guards, ref } from "@ui-machines/core"
+import { nextTick } from "@ui-machines/dom-utils"
+
 import { dom } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
 
@@ -124,7 +125,10 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       isValueComplete: (ctx) => ctx.isValueComplete,
       isValidValue: (ctx, evt) => isValidType(evt.value, ctx.type),
       isFinalValue: (ctx) => {
-        return ctx.filledValueLength + 1 === ctx.valueLength && ctx.value.findIndex((v) => v.trim() === "") === ctx.focusedIndex
+        return (
+          ctx.filledValueLength + 1 === ctx.valueLength &&
+          ctx.value.findIndex((v) => v.trim() === "") === ctx.focusedIndex
+        )
       },
       isLastInputFocused: (ctx) => ctx.focusedIndex === ctx.valueLength - 1,
       hasIndex: (_ctx, evt) => evt.index !== undefined,

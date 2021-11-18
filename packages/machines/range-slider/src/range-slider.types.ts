@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@ui-machines/core"
-import { Context } from "../utils"
+import { Context } from "@ui-machines/types"
 
 export type RangeSliderMachineContext = Context<{
   /**

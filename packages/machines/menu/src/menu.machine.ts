@@ -1,14 +1,15 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { addPointerEvent } from "tiny-dom-event"
-import { contains } from "tiny-dom-query"
-import { isFocusable } from "tiny-dom-query/focusable"
-import { nextTick } from "tiny-fn"
+import { contains, nextTick } from "@ui-machines/dom-utils"
+import { isFocusable } from "@ui-machines/dom-utils/focusable"
+import { addPointerEvent } from "@ui-machines/dom-utils/listener"
+import { trackPointerDown } from "@ui-machines/dom-utils/pointer-event"
+
 import { fromPointerEvent } from "tiny-point/dom"
 import { withinPolygon } from "tiny-point/within"
 import { corners } from "tiny-rect"
 import { fromElement } from "tiny-rect/from-element"
 import { inset } from "tiny-rect/operations"
-import { trackPointerDown, uuid } from "../utils"
+
 import { dom } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.types"
 
@@ -22,7 +23,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       pointerdownNode: null,
       orientation: "vertical",
       activeId: null,
-      uid: uuid(),
+      uid: "",
       parent: null,
       children: {},
       intentPolygon: null,

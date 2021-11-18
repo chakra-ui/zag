@@ -1,6 +1,7 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "tiny-fn"
-import type { Context } from "../utils"
+import { nextTick } from "@ui-machines/dom-utils"
+import type { Context } from "@ui-machines/types"
+
 import { dom } from "./tags-input.dom"
 
 const { and, not, or } = guards

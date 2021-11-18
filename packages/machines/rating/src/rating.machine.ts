@@ -1,6 +1,6 @@
 import { createMachine, ref } from "@ui-machines/core"
-import { nextTick } from "tiny-fn"
-import { Context } from "../../../utilities/types/src/types"
+import { nextTick } from "@ui-machines/dom-utils"
+import { Context } from "@ui-machines/types"
 import { dom } from "./rating.dom"
 
 export type RatingMachineContext = Context<{

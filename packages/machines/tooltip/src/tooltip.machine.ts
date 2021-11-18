@@ -1,7 +1,7 @@
 import { createMachine, ref, subscribe } from "@ui-machines/core"
 
 import { isHTMLElement } from "@ui-machines/dom-utils"
-import { addDomEvent, addPointerEvent } from "@ui-machines/dom-utils/add-listener"
+import { addDomEvent, addPointerEvent } from "@ui-machines/dom-utils/listener"
 import { addPointerlockChangeListener } from "@ui-machines/dom-utils/pointerlock"
 
 import { noop, uuid } from "@ui-machines/utils"

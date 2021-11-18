@@ -1,7 +1,7 @@
 import scrollIntoView from "scroll-into-view-if-needed"
 import { noop, pipe } from "tiny-fn"
 import { isDom, isIos } from "tiny-guard"
-import { addDomEvent } from "./add-listener"
+import { addDomEvent } from "./listener"
 import { getScrollParent } from "./scrollable"
 
 interface PreventScrollOptions {
@@ -23,7 +23,10 @@ export function preventBodyScroll(opts?: PreventScrollOptions) {
   const docEl = doc.documentElement
 
   function preventScrollStandard() {
-    const fn = pipe(setStyle(docEl, "paddingRight", `${win.innerWidth - docEl.clientWidth}px`), setStyle(docEl, "overflow", "hidden"))
+    const fn = pipe(
+      setStyle(docEl, "paddingRight", `${win.innerWidth - docEl.clientWidth}px`),
+      setStyle(docEl, "overflow", "hidden"),
+    )
     return () => fn?.()
   }
 

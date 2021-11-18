@@ -1,8 +1,24 @@
 import type { KeyboardEvent } from "react"
 
-/* -----------------------------------------------------------------------------
- * RTL Keymap
- * -----------------------------------------------------------------------------*/
+type EventKey =
+  | "ArrowDown"
+  | "ArrowUp"
+  | "ArrowLeft"
+  | "ArrowRight"
+  | "Space"
+  | "Enter"
+  | "Comma"
+  | "Escape"
+  | "Backspace"
+  | "Delete"
+  | "Home"
+  | "End"
+  | "Tab"
+  | "PageUp"
+  | "PageDown"
+  | (string & {})
+
+export type EventKeyMap = Partial<Record<EventKey, (event: React.KeyboardEvent) => void>>
 
 const rtlKeyMap = {
   ArrowLeft: "ArrowRight",
@@ -10,10 +26,6 @@ const rtlKeyMap = {
   Home: "End",
   End: "Home",
 }
-
-/* -----------------------------------------------------------------------------
- * Same keymap but with shortcuts
- * -----------------------------------------------------------------------------*/
 
 const sameKeyMap = {
   Up: "ArrowUp",

@@ -1,6 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { validateBlur } from "@ui-machines/dom-utils/focus-event"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { validateBlur } from "../utils"
+
 import { dom } from "./popover.dom"
 import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
 

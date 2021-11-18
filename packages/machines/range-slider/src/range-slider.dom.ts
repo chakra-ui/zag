@@ -1,14 +1,17 @@
 import { StateMachine } from "@ui-machines/core"
-import { queryElements } from "tiny-nodelist"
+import { dispatchInputEvent } from "@ui-machines/dom-utils/dispatch-event"
+import { queryElements } from "@ui-machines/dom-utils/nodelist"
+import { clamp, multiply, percentToValue, snapToStep } from "@ui-machines/number-utils"
+import { toRanges } from "@ui-machines/number-utils/transform"
+import { slider } from "@ui-machines/slider"
+import type { Style } from "@ui-machines/types"
+
 import type { Point } from "tiny-point"
 import { closest } from "tiny-point/distance"
 import { relativeToNode } from "tiny-point/dom"
 import { center } from "tiny-rect"
 import { fromElement } from "tiny-rect/from-element"
-import { dom as sliderDom } from "../../src/slider/slider.dom"
-import { dispatchInputEvent } from "../../../utilities/dom/src/dispatch-event"
-import { clamp, multiply, percentToValue, snapToStep, toRanges } from "../../../utilities/helpers/src/number"
-import type { Style } from "../../../utilities/types/src/types"
+
 import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
 
 export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
@@ -91,11 +94,11 @@ export const dom = {
     dispatchInputEvent(input, value)
   },
 
-  getRootStyle: sliderDom.getRootStyle,
+  getRootStyle: slider.dom.getRootStyle,
   getThumbStyle(ctx: Ctx, index: number) {
     const value = ctx.value[index]
     const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
-    return sliderDom.getThumbStyle({ ...ctx, value, thumbSize })
+    return slider.dom.getThumbStyle({ ...ctx, value, thumbSize })
   },
   getRangeStyle,
   getTrackStyle: (): Style => ({

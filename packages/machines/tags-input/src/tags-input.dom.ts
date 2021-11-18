@@ -1,4 +1,4 @@
-import { nextById, prevById, queryElements, indexOfId } from "tiny-nodelist"
+import { indexOfId, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
 import { TagsInputMachineContext as Ctx } from "./tags-input.machine"
 
 export const dom = {

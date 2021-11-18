@@ -1,9 +1,13 @@
-import { dataAttr, getEventKey } from "@ui-machines/dom-utils"
-import { EventKeyMap, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./accordion.dom"
 import type { AccordionItemProps, AccordionSend, AccordionState } from "./accordion.types"
 
-export function accordionConnect<T extends PropTypes = ReactPropTypes>(state: AccordionState, send: AccordionSend, normalize = normalizeProp) {
+export function accordionConnect<T extends PropTypes = ReactPropTypes>(
+  state: AccordionState,
+  send: AccordionSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
 
   function getItemState(props: AccordionItemProps) {

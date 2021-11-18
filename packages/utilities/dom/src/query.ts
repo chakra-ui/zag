@@ -16,13 +16,17 @@ export function getParent(el: HTMLElement): HTMLElement {
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
-export function isHTMLElement(v: any): v is HTMLElement {
-  return typeof v === "object" && v.nodeType === Node.ELEMENT_NODE && typeof v.nodeName === "string"
-}
-
 type Node = HTMLElement | EventTarget | null
 
 export function contains(parent: Node | undefined, child: Node) {
   if (!parent) return false
   return parent === child || (isHTMLElement(parent) && isHTMLElement(child) && parent.contains(child))
+}
+
+export function isHTMLElement(v: any): v is HTMLElement {
+  return typeof v === "object" && v.nodeType === Node.ELEMENT_NODE && typeof v.nodeName === "string"
+}
+
+export const isDisabled = (el: HTMLElement | null): boolean => {
+  return el?.getAttribute("disabled") != null || !!el?.getAttribute("aria-disabled") === true
 }

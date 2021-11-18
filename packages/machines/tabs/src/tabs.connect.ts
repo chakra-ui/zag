@@ -1,9 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { cast } from "tiny-fn"
-import { isSafari } from "tiny-guard"
-import type { EventKeyMap } from "../utils"
-import { getEventKey } from "../utils"
+import { isSafari } from "@ui-machines/utils/guard"
+
 import { dom } from "./tabs.dom"
 import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
 
@@ -107,7 +106,7 @@ export function tabsConnect<T extends PropTypes = ReactPropTypes>(
         willChange: "left, right, top, bottom, width, height",
         transitionProperty: "left, right, top, bottom, width, height",
         transitionDuration: ctx.measuredRect ? "200ms" : "0ms",
-        ...cast(ctx.indicatorRect),
+        ...(ctx.indicatorRect as any),
       },
     }),
   }

@@ -21,7 +21,7 @@
     "body-scroll-lock",
     "computed-style",
     "dispatch-event",
-    "add-listener",
+    "listener",
     "live-region",
     "merge-props",
     "mutation-observer",
@@ -30,6 +30,7 @@
     "pointerlock",
     "text-selection",
     "scrollable",
+    "focusable",
     "focus-event"
   ],
   "publishConfig": {
@@ -44,7 +45,7 @@
       "body-scroll-lock.ts",
       "computed-style.ts",
       "dispatch-event.ts",
-      "add-listener.ts",
+      "listener.ts",
       "index.ts",
       "live-region.ts",
       "merge-props.ts",
@@ -52,6 +53,7 @@
       "nodelist.ts",
       "pointer-event.ts",
       "pointerlock.ts",
+      "focusable.ts",
       "scrollable.ts",
       "text-selection.ts",
       "focus-event.ts"

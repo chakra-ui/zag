@@ -1,7 +1,7 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 
 import { nextTick } from "@ui-machines/dom-utils"
-import { addDomEvent } from "@ui-machines/dom-utils/add-listener"
+import { addDomEvent } from "@ui-machines/dom-utils/listener"
 import { observeAttributes } from "@ui-machines/dom-utils/mutation-observer"
 import { requestPointerLock } from "@ui-machines/dom-utils/pointerlock"
 

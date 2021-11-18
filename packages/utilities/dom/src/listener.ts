@@ -24,7 +24,12 @@ export function extractInfo<T extends AnyPointerEvent = AnyPointerEvent>(event: 
   }
 }
 
-export function addDomEvent<K extends keyof EventMap>(target: DOMEventTarget, event: K, listener: (event: EventMap[K]) => void, options?: boolean | AddEventListenerOptions) {
+export function addDomEvent<K extends keyof EventMap>(
+  target: DOMEventTarget,
+  event: K,
+  listener: (event: EventMap[K]) => void,
+  options?: boolean | AddEventListenerOptions,
+) {
   const node = isRef(target) ? target.current : runIfFn(target)
   node?.addEventListener(event, listener as any, options)
   return () => node?.removeEventListener(event, listener as any, options)
@@ -39,7 +44,10 @@ export function addPointerEvent<K extends keyof EventMap>(
   return addDomEvent(target, getEventName(event), wrapHandler(listener, event === "pointerdown"), options)
 }
 
-function wrapHandler<E extends EventMap[keyof EventMap]>(fn: (event: E, info: PointerEventInfo) => void, filter = false) {
+function wrapHandler<E extends EventMap[keyof EventMap]>(
+  fn: (event: E, info: PointerEventInfo) => void,
+  filter = false,
+) {
   const listener: EventListener = (event: any) => {
     fn(event, extractInfo(event))
   }
@@ -82,7 +90,10 @@ export type EventListenerOptions = boolean | AddEventListenerOptions
 export interface PointerEventInfo {
   point: { x: number; y: number }
 }
-export type EventListenerWithPointInfo<T extends AnyPointerEvent = AnyPointerEvent> = (event: T, info: PointerEventInfo) => void
+export type EventListenerWithPointInfo<T extends AnyPointerEvent = AnyPointerEvent> = (
+  event: T,
+  info: PointerEventInfo,
+) => void
 
 interface PointerNameMap {
   pointerdown: string

@@ -1,6 +1,6 @@
-import { first, last } from "tiny-array"
-import { isElement } from "tiny-guard"
-import { findByText, nextById, prevById, queryElements } from "../../../utilities/dom/src/nodelist"
+import { first, last } from "@ui-machines/array-utils"
+import { isHTMLElement } from "@ui-machines/dom-utils"
+import { findByText, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
 import { MenuMachineContext as Ctx } from "./menu.types"
 
 type HTMLEl = HTMLElement | null
@@ -16,7 +16,8 @@ export const dom = {
   getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
 
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
-  getElements: (ctx: Ctx) => queryElements(dom.getMenuEl(ctx), `[role=menuitem][data-ownedby=${dom.getMenuId(ctx)}]:not([data-disabled])`),
+  getElements: (ctx: Ctx) =>
+    queryElements(dom.getMenuEl(ctx), `[role=menuitem][data-ownedby=${dom.getMenuId(ctx)}]:not([data-disabled])`),
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
@@ -27,7 +28,7 @@ export const dom = {
   getChildMenus: (ctx: Ctx) => {
     return Object.values(ctx.children)
       .map((child) => dom.getMenuEl(child.state.context))
-      .filter(isElement)
+      .filter(isHTMLElement)
   },
   getParentMenus: (ctx: Ctx) => {
     const menus: HTMLElement[] = []
@@ -41,6 +42,6 @@ export const dom = {
   },
 
   isTargetDisabled: (v: EventTarget | null) => {
-    return isElement(v) && v.dataset.disabled === ""
+    return isHTMLElement(v) && v.dataset.disabled === ""
   },
 }

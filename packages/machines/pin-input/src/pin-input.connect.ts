@@ -1,6 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { ariaAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { ariaAttr, EventKeyMap, getEventKey } from "../utils"
+
 import { dom } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
 
