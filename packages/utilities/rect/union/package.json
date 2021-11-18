@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-rect-utils-union.cjs.js",
+  "module": "dist/ui-machines-rect-utils-union.esm.js"
+}

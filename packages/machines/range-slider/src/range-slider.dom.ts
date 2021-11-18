@@ -6,11 +6,11 @@ import { toRanges } from "@ui-machines/number-utils/transform"
 import { slider } from "@ui-machines/slider"
 import type { Style } from "@ui-machines/types"
 
-import type { Point } from "tiny-point"
-import { closest } from "tiny-point/distance"
-import { relativeToNode } from "tiny-point/dom"
-import { center } from "tiny-rect"
-import { fromElement } from "tiny-rect/from-element"
+import type { Point } from "@ui-machines/point-utils"
+import { closest } from "@ui-machines/point-utils/distance"
+import { relativeToNode } from "@ui-machines/point-utils/dom"
+import { center } from "@ui-machines/rect-utils"
+import { fromElement } from "@ui-machines/rect-utils/from-element"
 
 import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
 
@@ -127,12 +127,12 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
     // when two thumbs are stacked and the user clicks at a point larger than
     // their values, pick the next closest thumb
     const percent = getPointProgress(ctx, evt.point)
-    const pointValue = percentToValue(percent, ctx)
+    const Point = percentToValue(percent, ctx)
 
     const axisPoints = ctx.isHorizontal ? points.map((p) => p.x) : points.map((p) => p.y)
     const isThumbStacked = new Set(axisPoints).size !== points.length
 
-    if (isThumbStacked && pointValue > ctx.value[index]) {
+    if (isThumbStacked && Point > ctx.value[index]) {
       index = clamp(index + 1, { min: 0, max: ctx.value.length - 1 })
     }
   }

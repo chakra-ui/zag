@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-rect-utils-from-points.cjs.js",
+  "module": "dist/ui-machines-rect-utils-from-points.esm.js"
+}

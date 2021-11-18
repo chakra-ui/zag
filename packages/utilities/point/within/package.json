@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-point-utils-within.cjs.js",
+  "module": "dist/ui-machines-point-utils-within.esm.js"
+}

@@ -1,8 +1,9 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "tiny-fn"
-import { clamp, decrement, increment, snapToStep } from "tiny-num"
-import { relativeToNode } from "tiny-point/dom"
-import { Context, trackPointerMove } from "../utils"
+import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
+import { relativeToNode } from "@ui-machines/point-utils/dom"
+import { Context } from "@ui-machines/types"
+import { trackPointerMove } from "@ui-machines/dom-utils/pointer-event"
 import { dom } from "./split-view.dom"
 
 export type SplitViewMachineContext = Context<{

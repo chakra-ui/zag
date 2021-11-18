@@ -1,6 +1,6 @@
 import { Machine, StateMachine as S } from "@ui-machines/core"
 import type { Context } from "@ui-machines/types"
-import { PointValue } from "tiny-point"
+import { Point } from "@ui-machines/point-utils"
 
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
 
@@ -18,7 +18,7 @@ export type MenuMachineContext = Context<{
    * The polygon tells us if the pointer is
    * moving toward the submenu
    */
-  intentPolygon: PointValue[] | null
+  intentPolygon: Point[] | null
   suspendPointer: boolean
   hoverId: string | null
   loop: boolean

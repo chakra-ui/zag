@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-rect-utils-intersection.cjs.js",
+  "module": "dist/ui-machines-rect-utils-intersection.esm.js"
+}

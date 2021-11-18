@@ -3,7 +3,7 @@ import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { cast } from "@ui-machines/utils"
 import { isLeftClick } from "@ui-machines/utils/guard"
-import { fromPointerEvent, relativeToNode } from "tiny-point/dom"
+import { fromPointerEvent, relativeToNode } from "@ui-machines/point-utils/dom"
 import { dom } from "./rating.dom"
 import { RatingMachineContext, RatingMachineState } from "./rating.machine"
 

@@ -1,8 +1,9 @@
-import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "tiny-num"
-import type { Point } from "tiny-point"
-import { relativeToNode } from "tiny-point/dom"
-import type { Style } from "../utils"
-import { dispatchInputEvent } from "../utils"
+import { dispatchInputEvent } from "@ui-machines/dom-utils/dispatch-event"
+import { clamp, percentToValue, snapToStep, valueToPercent } from "@ui-machines/number-utils"
+import { transform } from "@ui-machines/number-utils/transform"
+import type { Point } from "@ui-machines/point-utils"
+import { relativeToNode } from "@ui-machines/point-utils/dom"
+import type { Style } from "@ui-machines/types"
 import type { SliderMachineContext as Ctx } from "./slider.types"
 
 type SharedContext = {

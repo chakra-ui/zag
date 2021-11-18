@@ -26,3 +26,32 @@ export function clear<T>(v: T[]): T[] {
   while (v.length > 0) v.pop()
   return v
 }
+
+export type IndexOptions = {
+  step?: number
+  loop?: boolean
+}
+
+export function nextIndex<T>(v: T[], idx: number, opts: IndexOptions = {}): number {
+  const { step = 1, loop = true } = opts
+  const next = idx + step
+  const len = v.length
+  const last = len - 1
+  if (idx === -1) return step > 0 ? 0 : last
+  if (next < 0) return loop ? last : 0
+  if (next >= len) return loop ? 0 : idx > len ? len : idx
+  return next
+}
+
+export function next<T>(v: T[], idx: number, opts: IndexOptions = {}): T | undefined {
+  return v[nextIndex(v, idx, opts)]
+}
+
+export function prevIndex<T>(v: T[], idx: number, opts: IndexOptions = {}): number {
+  const { step = 1, loop = true } = opts
+  return nextIndex(v, idx, { step: -step, loop })
+}
+
+export function prev<T>(v: T[], index: number, opts: IndexOptions = {}): T | undefined {
+  return v[prevIndex(v, index, opts)]
+}

@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-rect-utils-from-rotation.cjs.js",
+  "module": "dist/ui-machines-rect-utils-from-rotation.esm.js"
+}

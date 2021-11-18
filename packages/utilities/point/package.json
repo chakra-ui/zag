@@ -1,0 +1,48 @@
+{
+  "name": "@ui-machines/point-utils",
+  "version": "0.0.0",
+  "description": "JS utility to manage a point in a two-dimensional system",
+  "keywords": [
+    "js",
+    "utils",
+    "point",
+    "core graphics",
+    "foundations",
+    "dom",
+    "event",
+    "math",
+    "geometry"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/ui-machines-point-utils.cjs.js",
+  "module": "dist/ui-machines-point-utils.esm.js",
+  "repository": "https://github.com/chakra-ui/ui-machines/core/tree/main/packages/utilities/point-utils",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "dom",
+    "distance",
+    "angle",
+    "within"
+  ],
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "dom.ts",
+      "distance.ts",
+      "within.ts",
+      "angle.ts"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist"
+  }
+}

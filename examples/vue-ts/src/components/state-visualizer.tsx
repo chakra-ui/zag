@@ -5,7 +5,7 @@ export function StateVisualizer(props: { state: Record<string, any> }, { attrs }
   const { state } = props
   return (
     <pre
-      className="pre"
+      class="pre"
       style={{
         float: "right",
         position: "absolute",

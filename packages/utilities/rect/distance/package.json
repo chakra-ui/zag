@@ -1,0 +1,4 @@
+{
+  "main": "dist/ui-machines-rect-utils-distance.cjs.js",
+  "module": "dist/ui-machines-rect-utils-distance.esm.js"
+}

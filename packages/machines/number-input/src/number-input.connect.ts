@@ -1,13 +1,17 @@
-import { dataAttr, getEventStep } from "@ui-machines/dom-utils"
+import { dataAttr, getEventStep, EventKeyMap } from "@ui-machines/dom-utils"
 import { roundToPx } from "@ui-machines/number-utils"
-import { EventKeyMap, getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { fromPointerEvent } from "tiny-point/dom"
+import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { fromPointerEvent } from "@ui-machines/point-utils/dom"
 
 import { dom } from "./number-input.dom"
 import { NumberInputSend, NumberInputState } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
-export function numberInputConnect<T extends PropTypes = ReactPropTypes>(state: NumberInputState, send: NumberInputSend, normalize = normalizeProp) {
+export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
+  state: NumberInputState,
+  send: NumberInputSend,
+  normalize = normalizeProp,
+) {
   const { context: ctx } = state
 
   const isScrubbing = state.matches("scrubbing")

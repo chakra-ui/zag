@@ -2,7 +2,7 @@ import { contains, dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-u
 import { validateBlur } from "@ui-machines/dom-utils/focus-event"
 import { isLeftClick } from "@ui-machines/utils/guard"
 import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { fromPointerEvent } from "tiny-point/dom"
+import { fromPointerEvent } from "@ui-machines/point-utils/dom"
 
 import { dom } from "./menu.dom"
 import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"

@@ -1,8 +1,9 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
+import { multiply } from "@ui-machines/number-utils"
 import { toRanges } from "@ui-machines/number-utils/transform"
+import { fromPointerEvent } from "@ui-machines/point-utils/dom"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { isLeftClick, isModifiedEvent } from "tiny-guard"
-import { fromPointerEvent } from "tiny-point/dom"
+import { isLeftClick, isModifiedEvent } from "@ui-machines/utils/guard"
 import { dom } from "./range-slider.dom"
 import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
 
@@ -51,7 +52,8 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
 
     getThumbProps(index: number) {
       const value = values[index]
-      const range = toRanges(ctx)[index]
+      const spacing = multiply(ctx.minStepsBetweenThumbs, ctx.step)
+      const range = toRanges({ ...ctx, spacing })[index]
       const ariaValueText = ctx.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy

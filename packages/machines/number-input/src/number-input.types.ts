@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { Context } from "@ui-machines/types"
-import { PointValue } from "tiny-point"
+import { Point } from "@ui-machines/point-utils"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
@@ -104,7 +104,7 @@ export type NumberInputMachineContext = Context<{
   /**
    * The scrubber cursor position
    */
-  cursorPoint: PointValue | null
+  cursorPoint: Point | null
   /**
    * Function invoked when the value changes
    */

@@ -1,4 +1,4 @@
-import { Context } from "../utils"
+import { Context } from "@ui-machines/types"
 
 export type SliderMachineContext = Context<{
   /**
