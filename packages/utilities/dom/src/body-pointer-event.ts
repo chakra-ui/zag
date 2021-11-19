@@ -1,4 +1,4 @@
-import { isLeftClick } from "tiny-guard"
+import { isLeftClick } from "@ui-machines/utils/guard"
 import { nextTick } from "./next-tick"
 
 let changeCount = 0

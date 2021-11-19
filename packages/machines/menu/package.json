@@ -29,8 +29,12 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
+    "@ui-machines/array-utils": "^0.0.0",
     "@ui-machines/core": "^0.0.0",
     "@ui-machines/dom-utils": "^0.0.0",
-    "@ui-machines/types": "^0.0.0"
+    "@ui-machines/point-utils": "^0.0.0",
+    "@ui-machines/rect-utils": "^0.0.0",
+    "@ui-machines/types": "^0.0.0",
+    "@ui-machines/utils": "^0.0.0"
   }
 }

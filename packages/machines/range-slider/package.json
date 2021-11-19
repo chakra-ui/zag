@@ -31,7 +31,11 @@
   "dependencies": {
     "@ui-machines/core": "^0.0.0",
     "@ui-machines/dom-utils": "^0.0.0",
+    "@ui-machines/number-utils": "^0.0.0",
+    "@ui-machines/point-utils": "^0.0.0",
+    "@ui-machines/rect-utils": "^0.0.0",
     "@ui-machines/slider": "^0.0.0",
-    "@ui-machines/types": "^0.0.0"
+    "@ui-machines/types": "^0.0.0",
+    "@ui-machines/utils": "^0.0.0"
   }
 }

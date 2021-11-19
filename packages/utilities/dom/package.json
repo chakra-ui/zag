@@ -61,6 +61,8 @@
   },
   "dependencies": {
     "@types/react": "^17.0.20",
+    "@ui-machines/utils": "^0.0.0",
+    "merge-anything": "^4.0.1",
     "scroll-into-view-if-needed": "^2.2.28"
   }
 }

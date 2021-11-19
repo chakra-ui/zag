@@ -1,6 +1,6 @@
 import scrollIntoView from "scroll-into-view-if-needed"
-import { noop, pipe } from "tiny-fn"
-import { isDom, isIos } from "tiny-guard"
+import { noop, pipe } from "@ui-machines/utils"
+import { isDom, isIos } from "@ui-machines/utils/guard"
 import { addDomEvent } from "./listener"
 import { getScrollParent } from "./scrollable"
 

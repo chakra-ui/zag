@@ -103,7 +103,11 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       activateOnFocus: (ctx) => ctx.activationMode === "focus",
     },
     activities: {
-      trackPointerDown,
+      trackPointerDown(ctx) {
+        return trackPointerDown(dom.getDoc(ctx), (el) => {
+          ctx.pointerdownNode = ref(el)
+        })
+      },
     },
     actions: {
       setId(ctx, evt) {

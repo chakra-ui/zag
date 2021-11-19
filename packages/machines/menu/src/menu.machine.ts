@@ -262,7 +262,11 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
     },
     activities: {
-      trackPointerDown,
+      trackPointerDown(ctx) {
+        return trackPointerDown(dom.getDoc(ctx), (el) => {
+          ctx.pointerdownNode = ref(el)
+        })
+      },
       trackPointerMove(ctx, _evt, { guards = {}, send }) {
         const { isWithinPolygon } = guards
         ctx.parent!.state.context.suspendPointer = true

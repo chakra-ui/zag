@@ -1,8 +1,8 @@
 import { createMachine, ref } from "@ui-machines/core"
+import { nextTick } from "@ui-machines/dom-utils"
 import { trackPointerMove } from "@ui-machines/dom-utils/pointer-event"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { fromElement } from "@ui-machines/rect-utils/from-element"
-import { nextTick } from "tiny-fn"
 import { dom } from "./slider.dom"
 import { SliderMachineContext, SliderMachineState } from "./slider.types"
 

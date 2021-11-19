@@ -1,5 +1,5 @@
 import { merge } from "merge-anything"
-import { callAll } from "tiny-fn"
+import { callAll } from "@ui-machines/utils"
 
 interface Props {
   [key: string]: any

@@ -33,6 +33,7 @@
     "@ui-machines/core": "^0.0.0",
     "@ui-machines/dom-utils": "^0.0.0",
     "@ui-machines/types": "^0.0.0",
+    "@ui-machines/utils": "^0.0.0",
     "focus-trap": "^6.7.1"
   }
 }

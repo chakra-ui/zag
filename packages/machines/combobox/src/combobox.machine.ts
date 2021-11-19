@@ -32,7 +32,8 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     computed: {
       trimmedInputValue: (ctx) => ctx.inputValue.trim(),
       isInputValueEmpty: (ctx) => ctx.inputValue.trim().length === 0,
-      hintValue: (ctx) => (ctx.navigationValue ? ctx.inputValue + ctx.navigationValue.substr(ctx.inputValue.length) : ""),
+      hintValue: (ctx) =>
+        ctx.navigationValue ? ctx.inputValue + ctx.navigationValue.substr(ctx.inputValue.length) : "",
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
     },
     on: {
@@ -198,18 +199,18 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       selectOnFocus: (ctx) => !!ctx.selectOnFocus,
     },
     activities: {
-      trackPointerDown,
+      trackPointerDown(ctx) {
+        return trackPointerDown(dom.getDoc(ctx), (el) => {
+          ctx.pointerdownNode = ref(el)
+        })
+      },
       scrollOptionIntoView(ctx) {
         const input = dom.getInputEl(ctx)
         const listbox = dom.getListboxEl(ctx)
         return observeAttributes(input, "aria-activedescendant", () => {
           const opt = dom.getActiveOptionEl(ctx)
           if (!opt) return
-          scrollIntoView(opt, {
-            boundary: listbox,
-            block: "nearest",
-            scrollMode: "if-needed",
-          })
+          scrollIntoView(opt, { boundary: listbox, block: "nearest", scrollMode: "if-needed" })
         })
       },
     },

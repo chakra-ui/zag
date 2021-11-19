@@ -1,6 +1,10 @@
-import { noop } from "tiny-fn"
+import { noop } from "@ui-machines/utils"
 
-export function observeAttributes(node: HTMLElement | null, attributes: string | string[], fn: (v: MutationRecord) => void) {
+export function observeAttributes(
+  node: HTMLElement | null,
+  attributes: string | string[],
+  fn: (v: MutationRecord) => void,
+) {
   if (!node) return noop
   const attrs = Array.isArray(attributes) ? attributes : [attributes]
   const win = node.ownerDocument.defaultView || window

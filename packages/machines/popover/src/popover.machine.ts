@@ -104,7 +104,11 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
   },
   {
     activities: {
-      trackPointerDown,
+      trackPointerDown(ctx) {
+        return trackPointerDown(dom.getDoc(ctx), (el) => {
+          ctx.pointerdownNode = ref(el)
+        })
+      },
       preventScroll(ctx) {
         return preventBodyScroll({
           allowPinchZoom: true,
