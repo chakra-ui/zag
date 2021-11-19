@@ -1,6 +1,6 @@
 import { dataAttr, getEventStep, EventKeyMap } from "@ui-machines/dom-utils"
 import { roundToPx } from "@ui-machines/number-utils"
-import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
 import { fromPointerEvent } from "@ui-machines/point-utils/dom"
 
 import { dom } from "./number-input.dom"

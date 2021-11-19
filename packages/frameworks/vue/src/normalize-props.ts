@@ -1,4 +1,4 @@
-import { createNormalizer } from "@ui-machines/types"
+import { createNormalizer } from "@ui-machines/utils"
 
 type Dict = Record<string, string>
 

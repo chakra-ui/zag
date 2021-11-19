@@ -14,7 +14,7 @@
     "module": "esnext",
     "pretty": true,
     "moduleResolution": "node",
-    "incremental": true,
+    // "incremental": true,
     "noFallthroughCasesInSwitch": false,
     "noImplicitAny": true,
     "noImplicitThis": true,

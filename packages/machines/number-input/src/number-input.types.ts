@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { Context } from "@ui-machines/types"
+import { Context } from "@ui-machines/utils"
 import { Point } from "@ui-machines/point-utils"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"

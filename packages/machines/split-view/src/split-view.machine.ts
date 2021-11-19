@@ -3,7 +3,7 @@ import { nextTick } from "@ui-machines/dom-utils"
 import { trackPointerMove } from "@ui-machines/dom-utils/pointer-event"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { relativeToNode } from "@ui-machines/point-utils/dom"
-import { Context } from "@ui-machines/types"
+import { Context } from "@ui-machines/utils"
 import { dom } from "./split-view.dom"
 
 export type SplitViewMachineContext = Context<{

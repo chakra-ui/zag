@@ -1,5 +1,5 @@
 import { Machine, StateMachine as S } from "@ui-machines/core"
-import type { Context } from "@ui-machines/types"
+import type { Context } from "@ui-machines/utils"
 import { Point } from "@ui-machines/point-utils"
 
 export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>

@@ -1,5 +1,5 @@
-import { cast } from "tiny-fn"
-import { isArray, isObject, isString } from "tiny-guard"
+import { cast } from "../../utils/functions"
+import { isArray, isObject, isString } from "../../utils/guard"
 import { determineGuardFn } from "./guard-utils"
 import type { StateMachine as S } from "./types"
 import { toArray } from "./utils"

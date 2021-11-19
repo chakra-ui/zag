@@ -1,4 +1,0 @@
-{
-  "main": "dist/ui-machines-utils-guard.cjs.js",
-  "module": "dist/ui-machines-utils-guard.esm.js"
-}

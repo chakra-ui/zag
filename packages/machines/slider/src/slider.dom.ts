@@ -3,7 +3,7 @@ import { clamp, percentToValue, snapToStep, valueToPercent } from "@ui-machines/
 import { transform } from "@ui-machines/number-utils/transform"
 import type { Point } from "@ui-machines/point-utils"
 import { relativeToNode } from "@ui-machines/point-utils/dom"
-import type { Style } from "@ui-machines/types"
+import type { Style } from "@ui-machines/utils"
 import type { SliderMachineContext as Ctx } from "./slider.types"
 
 type SharedContext = {

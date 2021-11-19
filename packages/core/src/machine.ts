@@ -1,6 +1,6 @@
 import { klona } from "klona"
-import { cast, invariant, noop, runIfFn, warn } from "tiny-fn"
-import { isArray, isObject, isString } from "tiny-guard"
+import { cast, invariant, noop, runIfFn, warn } from "../../utils/functions"
+import { isArray, isObject, isString } from "../../utils/guard"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"

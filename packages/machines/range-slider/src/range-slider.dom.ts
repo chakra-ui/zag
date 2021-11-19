@@ -4,7 +4,7 @@ import { queryElements } from "@ui-machines/dom-utils/nodelist"
 import { clamp, multiply, percentToValue, snapToStep } from "@ui-machines/number-utils"
 import { toRanges } from "@ui-machines/number-utils/transform"
 import { slider } from "@ui-machines/slider"
-import type { Style } from "@ui-machines/types"
+import type { Style } from "@ui-machines/utils"
 
 import type { Point } from "@ui-machines/point-utils"
 import { closest } from "@ui-machines/point-utils/distance"

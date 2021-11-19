@@ -1,6 +1,6 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
-import type { Context } from "@ui-machines/types"
+import type { Context } from "@ui-machines/utils"
 
 import { dom } from "./tags-input.dom"
 

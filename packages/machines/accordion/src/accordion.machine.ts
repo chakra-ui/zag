@@ -1,4 +1,4 @@
-import { add, remove, toArray } from "@ui-machines/array-utils"
+import { add, remove, toArray } from "../../../utils/array/dist"
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { dom } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"

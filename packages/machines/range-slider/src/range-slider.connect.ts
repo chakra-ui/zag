@@ -2,7 +2,7 @@ import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/d
 import { multiply } from "@ui-machines/number-utils"
 import { toRanges } from "@ui-machines/number-utils/transform"
 import { fromPointerEvent } from "@ui-machines/point-utils/dom"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
 import { isLeftClick, isModifiedEvent } from "@ui-machines/utils/guard"
 import { dom } from "./range-slider.dom"
 import { RangeSliderSend, RangeSliderState } from "./range-slider.types"

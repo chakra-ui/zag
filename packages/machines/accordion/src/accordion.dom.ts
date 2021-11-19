@@ -1,5 +1,5 @@
 import { queryElements, nextById, prevById } from "@ui-machines/dom-utils/nodelist"
-import { first, last } from "@ui-machines/array-utils"
+import { first, last } from "../../../utils/array/dist"
 import type { AccordionMachineContext as Ctx } from "./accordion.types"
 
 export const dom = {

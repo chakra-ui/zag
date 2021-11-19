@@ -11,12 +11,13 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-svelte.cjs.js",
-  "module": "dist/ui-machines-svelte.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/svelte",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -32,5 +33,7 @@
   },
   "peerDependencies": {
     "svelte": "^3.38.2"
-  }
+  },
+  "types": "dist/index.d.ts",
+  "source": "src/index.ts"
 }

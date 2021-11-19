@@ -1,5 +1,5 @@
-import { cast } from "tiny-fn"
 import { proxy } from "valtio"
+import { cast } from "../../utils/functions"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 
 export function createProxy<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(

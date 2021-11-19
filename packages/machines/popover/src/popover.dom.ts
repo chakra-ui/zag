@@ -1,4 +1,4 @@
-import { first, last } from "@ui-machines/array-utils"
+import { first, last } from "../../../utils/array/dist"
 import { getFocusables, getTabbables } from "@ui-machines/dom-utils/focusable"
 import { cast, runIfFn } from "@ui-machines/utils"
 import { PopoverMachineContext as Ctx } from "./popover.machine"

@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
 import { cast } from "@ui-machines/utils"
 import { isLeftClick } from "@ui-machines/utils/guard"
 import { fromPointerEvent, relativeToNode } from "@ui-machines/point-utils/dom"

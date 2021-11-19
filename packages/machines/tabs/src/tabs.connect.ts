@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
 import { isSafari } from "@ui-machines/utils/guard"
 
 import { dom } from "./tabs.dom"

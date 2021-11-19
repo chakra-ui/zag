@@ -14,13 +14,14 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-range-slider.cjs.js",
-  "types": "dist/ui-machines-range-slider.cjs.d.ts",
-  "module": "dist/ui-machines-range-slider.esm.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/range-slider",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -30,12 +31,7 @@
   },
   "dependencies": {
     "@ui-machines/core": "^0.0.0",
-    "@ui-machines/dom-utils": "^0.0.0",
-    "@ui-machines/number-utils": "^0.0.0",
-    "@ui-machines/point-utils": "^0.0.0",
-    "@ui-machines/rect-utils": "^0.0.0",
-    "@ui-machines/slider": "^0.0.0",
-    "@ui-machines/types": "^0.0.0",
-    "@ui-machines/utils": "^0.0.0"
-  }
+    "@ui-machines/slider": "^0.0.0"
+  },
+  "source": "src/index.ts"
 }

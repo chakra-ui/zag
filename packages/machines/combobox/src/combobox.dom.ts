@@ -1,4 +1,4 @@
-import { first, last } from "@ui-machines/array-utils"
+import { first, last } from "../../../utils/array/dist"
 import { nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
 import type { ComboboxMachineContext as Ctx } from "./combobox.types"
 
@@ -21,7 +21,8 @@ export const dom = {
   getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 
   getElements: (ctx: Ctx) => queryElements(dom.getListboxEl(ctx), "[role=option]:not([disabled])"),
-  getFocusedOptionEl: (ctx: Ctx) => dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][id=${ctx.activeId}]`),
+  getFocusedOptionEl: (ctx: Ctx) =>
+    dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][id=${ctx.activeId}]`),
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),

@@ -1,4 +1,4 @@
-import { isArray, isString } from "tiny-guard"
+import { isArray, isString } from "../../utils/guard"
 import type { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {

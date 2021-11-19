@@ -1,7 +1,7 @@
 import { contains, dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
 import { validateBlur } from "@ui-machines/dom-utils/focus-event"
 import { isLeftClick } from "@ui-machines/utils/guard"
-import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
 import { fromPointerEvent } from "@ui-machines/point-utils/dom"
 
 import { dom } from "./menu.dom"

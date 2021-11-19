@@ -1,4 +1,0 @@
-{
-  "main": "dist/ui-machines-dom-utils-listener.cjs.js",
-  "module": "dist/ui-machines-dom-utils-listener.esm.js"
-}

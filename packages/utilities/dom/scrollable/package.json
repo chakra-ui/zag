@@ -1,4 +1,0 @@
-{
-  "main": "dist/ui-machines-dom-utils-scrollable.cjs.js",
-  "module": "dist/ui-machines-dom-utils-scrollable.esm.js"
-}

@@ -1,4 +1,4 @@
-import { first, last } from "@ui-machines/array-utils"
+import { first, last } from "../../../utils/array/dist"
 import { isHTMLElement } from "@ui-machines/dom-utils"
 import { findByText, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
 import { MenuMachineContext as Ctx } from "./menu.types"
