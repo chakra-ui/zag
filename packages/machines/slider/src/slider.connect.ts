@@ -1,9 +1,9 @@
 import type { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
 import { valueToPercent } from "@ui-machines/number-utils"
-import { fromPointerEvent } from "@ui-machines/point-utils/dom"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
-import { isLeftClick, isModifiedEvent } from "@ui-machines/utils/guard"
+import { getEventPoint } from "@ui-machines/rect-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
 import { dom } from "./slider.dom"
 import type { SliderMachineContext, SliderMachineState } from "./slider.types"
 
@@ -157,7 +157,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
         event.stopPropagation()
         send({
           type: "POINTER_DOWN",
-          point: fromPointerEvent(evt),
+          point: getEventPoint(evt),
         })
       },
       style: dom.getRootStyle(ctx),

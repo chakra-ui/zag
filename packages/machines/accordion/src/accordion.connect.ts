@@ -1,5 +1,5 @@
 import { dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./accordion.dom"
 import type { AccordionItemProps, AccordionSend, AccordionState } from "./accordion.types"
 

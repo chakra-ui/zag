@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { Context } from "@ui-machines/utils"
-import { Point } from "@ui-machines/point-utils"
+import { Context } from "@ui-machines/types"
+import { Point } from "@ui-machines/rect-utils"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 

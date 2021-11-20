@@ -1,8 +1,7 @@
-import { dataAttr, getEventStep, EventKeyMap } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
 import { roundToPx } from "@ui-machines/number-utils"
-import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
-import { fromPointerEvent } from "@ui-machines/point-utils/dom"
-
+import { getEventPoint } from "@ui-machines/rect-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./number-input.dom"
 import { NumberInputSend, NumberInputState } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -143,7 +142,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
       onMouseDown(event) {
         const evt = getNativeEvent(event)
         event.preventDefault()
-        const pt = fromPointerEvent(evt)
+        const pt = getEventPoint(evt)
         send({
           type: "PRESS_DOWN_SCRUBBER",
           point: { x: pt.x - roundToPx(7.5), y: pt.y - roundToPx(7.5) },

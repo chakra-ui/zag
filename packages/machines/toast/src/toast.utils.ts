@@ -1,4 +1,4 @@
-import { Style } from "@ui-machines/utils"
+import { Style } from "@ui-machines/types"
 import { ToastGroupMachineContext, ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
 
 export function getToastsByPlacement(toasts: ToastMachine[]) {

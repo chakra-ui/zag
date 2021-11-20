@@ -1,8 +1,7 @@
 import { createMachine, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
-import { trackPointerMove } from "@ui-machines/dom-utils/pointer-event"
+import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { decrement, increment, snapToStep } from "@ui-machines/number-utils"
-import { fromElement } from "@ui-machines/rect-utils/from-element"
+import { getElementRect } from "@ui-machines/rect-utils"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
 
@@ -141,7 +140,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         nextTick(() => {
           const thumbs = dom.getElements(ctx)
           ctx.thumbSize = thumbs.map((thumb) => {
-            const { width, height } = fromElement(thumb)
+            const { width, height } = getElementRect(thumb)
             return { width, height }
           })
         })

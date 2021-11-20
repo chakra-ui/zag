@@ -1,4 +1,4 @@
-import { dispatchInputEvent } from "@ui-machines/dom-utils/dispatch-event"
+import { dispatchInputEvent } from "@ui-machines/dom-utils"
 import { RatingMachineContext as Ctx } from "./rating.machine"
 
 export const dom = {

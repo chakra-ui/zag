@@ -1,4 +1,4 @@
-import { indexOfId, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
+import { indexOfId, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
 import { TagsInputMachineContext as Ctx } from "./tags-input.machine"
 
 export const dom = {

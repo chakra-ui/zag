@@ -1,6 +1,5 @@
 import { klona } from "klona"
-import { cast, invariant, noop, runIfFn, warn } from "../../utils/functions"
-import { isArray, isObject, isString } from "../../utils/guard"
+import { cast, invariant, noop, runIfFn, warn, isArray, isObject, isString, uuid } from "@ui-machines/utils"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"
@@ -9,7 +8,7 @@ import { determineDelayFn } from "./delay-utils"
 import { determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction } from "./types"
-import { toArray, toEvent, uniqueId } from "./utils"
+import { toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -51,7 +50,7 @@ export class Machine<
     public config: S.MachineConfig<TContext, TState, TEvent>,
     public options?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
-    this.id = config.id ?? `machine-${uniqueId()}`
+    this.id = config.id ?? `machine-${uuid()}`
     this.state = createProxy(config)
     this.guardMap = options?.guards ?? {}
     this.actionMap = options?.actions ?? {}

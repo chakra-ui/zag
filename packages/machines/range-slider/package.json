@@ -32,6 +32,5 @@
   "dependencies": {
     "@ui-machines/core": "^0.0.0",
     "@ui-machines/slider": "^0.0.0"
-  },
-  "source": "src/index.ts"
+  }
 }

@@ -1,6 +1,5 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
-import { trackPointerDown } from "@ui-machines/dom-utils/pointer-event"
+import { nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { dom } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.types"
 

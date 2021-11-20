@@ -1,4 +1,4 @@
-import { queryElements } from "@ui-machines/dom-utils/nodelist"
+import { queryElements } from "@ui-machines/dom-utils"
 import { PinInputMachineContext as Ctx } from "./pin-input.types"
 
 export const dom = {

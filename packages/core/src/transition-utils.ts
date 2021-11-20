@@ -1,5 +1,4 @@
-import { cast } from "../../utils/functions"
-import { isArray, isObject, isString } from "../../utils/guard"
+import { cast, isArray, isObject, isString } from "@ui-machines/utils"
 import { determineGuardFn } from "./guard-utils"
 import type { StateMachine as S } from "./types"
 import { toArray } from "./utils"

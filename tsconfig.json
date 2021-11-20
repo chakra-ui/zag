@@ -30,12 +30,5 @@
     "target": "es2018"
   },
   "exclude": ["node_modules"],
-  "include": ["packages", "scripts", "shared"],
-  "ts-node": {
-    "compilerOptions": {
-      "module": "CommonJS",
-      "resolveJsonModule": true,
-      "noImplicitAny": false
-    }
-  }
+  "include": ["packages", "scripts", "shared"]
 }

@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@ui-machines/core"
-import type { LiveRegion } from "@ui-machines/dom-utils/live-region"
-import type { Context } from "@ui-machines/utils"
+import type { LiveRegion } from "@ui-machines/dom-utils"
+import type { Context } from "@ui-machines/types"
 
 export type ComboboxMachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "navigating" | "interacting"

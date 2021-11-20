@@ -1,6 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, srOnlyStyle } from "@ui-machines/dom-utils"
-import { validateBlur } from "@ui-machines/dom-utils/focus-event"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
+import { dataAttr, EventKeyMap, getEventKey, srOnlyStyle, validateBlur } from "@ui-machines/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
 import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 

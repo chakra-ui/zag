@@ -1,4 +1,4 @@
-import { isDom } from "tiny-guard"
+import { isDom } from "@ui-machines/utils"
 import { Machine } from "@ui-machines/core"
 
 type StateVisualizerProps = {

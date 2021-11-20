@@ -1,9 +1,8 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
-import { multiply } from "@ui-machines/number-utils"
-import { toRanges } from "@ui-machines/number-utils/transform"
-import { fromPointerEvent } from "@ui-machines/point-utils/dom"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
-import { isLeftClick, isModifiedEvent } from "@ui-machines/utils/guard"
+import { multiply, toRanges } from "@ui-machines/number-utils"
+import { getEventPoint } from "@ui-machines/rect-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
 import { dom } from "./range-slider.dom"
 import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
 
@@ -153,7 +152,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
 
         send({
           type: "POINTER_DOWN",
-          point: fromPointerEvent(evt),
+          point: getEventPoint(evt),
         })
       },
     }),

@@ -1,14 +1,10 @@
 import { getPackages } from "@manypkg/get-packages"
-import { exec } from "child_process"
+import chalk from "chalk"
 import { BuildOptions, buildSync } from "esbuild"
 import fs from "fs"
 import gzipSize from "gzip-size"
 import path from "path"
 import pretty from "pretty-bytes"
-
-export function clean(dir: string) {
-  exec(`rm -rf dist`, { cwd: dir })
-}
 
 export function getJestPath(dir: string) {
   const p = path.relative(dir, path.dirname("jest.config.js"))
@@ -23,9 +19,25 @@ export function setupEntry(dir: string, pkg: Record<string, any>) {
   writePkgJson(dir, pkg)
 }
 
-export function reportSize(dir: string) {
-  process.chdir(dir)
-  console.log("Gzip size is:", pretty(gzipSize.fileSync("dist/index.mjs")))
+export function setupDevDist(dir: string) {
+  const distPath = path.join(dir, "dist")
+
+  if (fs.existsSync(distPath)) {
+    fs.rmSync(distPath, { recursive: true, force: true })
+  }
+
+  fs.mkdirSync(distPath, { recursive: true })
+
+  const files = ["index.js", "index.mjs", "index.d.ts"]
+  files.forEach((file) => {
+    fs.writeFileSync(path.join(distPath, file), 'export * from "../src"')
+  })
+}
+
+export function reportSize(dir: string, name: string) {
+  const output = [chalk.green(name), "gzip size", chalk.dim("→")]
+  output.push(pretty(gzipSize.fileSync(`${dir}/dist/index.mjs`)))
+  console.log(output.join(" "))
 }
 
 export function bundlePkg(dir: string, pkg: Record<string, any>) {
@@ -38,6 +50,7 @@ export function bundlePkg(dir: string, pkg: Record<string, any>) {
     sourcemap: true,
     target: "es2020",
     absWorkingDir: dir,
+    entryPoints: ["src/index.ts"],
     external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)),
   }
 
@@ -53,7 +66,7 @@ export function bundlePkg(dir: string, pkg: Record<string, any>) {
     outfile: "dist/index.mjs",
   })
 
-  reportSize(dir)
+  reportSize(dir, pkg.name)
 }
 
 export function writePkgJson(dir: string, pkg: Record<string, any>) {
@@ -61,6 +74,8 @@ export function writePkgJson(dir: string, pkg: Record<string, any>) {
 }
 
 export async function main() {
+  const dev = process.argv[2] === "--dev"
+
   const { packages } = await getPackages("packages")
 
   let pkgs = packages
@@ -68,10 +83,14 @@ export async function main() {
       const rel = path.relative(process.cwd(), t.dir)
       return { abs: t.dir, dir: rel, pkg: t.packageJson }
     })
-    .filter((t) => t.dir.includes("core"))
+    .filter((t) => !t.dir.includes("examples"))
 
   pkgs.forEach((t) => {
-    bundlePkg(t.abs, t.pkg)
+    if (dev) {
+      setupDevDist(t.abs)
+    } else {
+      bundlePkg(t.abs, t.pkg)
+    }
   })
 }
 

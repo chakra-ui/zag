@@ -1,10 +1,7 @@
-import { next } from "../../../utils/array/dist"
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
-import { contains, nextTick } from "@ui-machines/dom-utils"
-import { preventBodyScroll } from "@ui-machines/dom-utils/body-scroll-lock"
-import { isTabbable } from "@ui-machines/dom-utils/focusable"
-import { trackPointerDown } from "@ui-machines/dom-utils/pointer-event"
-import type { Context } from "@ui-machines/utils"
+import { contains, isTabbable, nextTick, preventBodyScroll, trackPointerDown } from "@ui-machines/dom-utils"
+import type { Context } from "@ui-machines/types"
+import { next } from "@ui-machines/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 

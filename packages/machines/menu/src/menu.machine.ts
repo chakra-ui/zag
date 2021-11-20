@@ -1,15 +1,6 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { contains, nextTick } from "@ui-machines/dom-utils"
-import { isFocusable } from "@ui-machines/dom-utils/focusable"
-import { addPointerEvent } from "@ui-machines/dom-utils/listener"
-import { trackPointerDown } from "@ui-machines/dom-utils/pointer-event"
-
-import { fromPointerEvent } from "@ui-machines/point-utils/dom"
-import { withinPolygon } from "@ui-machines/point-utils/within"
-import { corners } from "@ui-machines/rect-utils"
-import { fromElement } from "@ui-machines/rect-utils/from-element"
-import { inset } from "@ui-machines/rect-utils/operations"
-
+import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
+import { getEventPoint, withinPolygon, getElementRect, inset } from "@ui-machines/rect-utils"
 import { dom } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.types"
 
@@ -274,7 +265,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         const doc = dom.getDoc(ctx)
         return addPointerEvent(doc, "pointermove", (e) => {
           const isMovingToSubmenu = isWithinPolygon(ctx, {
-            point: fromPointerEvent(e),
+            point: getEventPoint(e),
           })
           if (!isMovingToSubmenu) {
             send("CLOSE")
@@ -287,10 +278,10 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       setIntentPolygon(ctx, evt) {
         const menu = dom.getMenuEl(ctx)
         if (!menu) return
-        let menuRect = fromElement(menu)
+        let menuRect = getElementRect(menu)
         const BUFFER = 20
         menuRect = inset(menuRect, { dx: -BUFFER, dy: -BUFFER })
-        const [top, right, left, bottom] = corners(menuRect).value
+        const { top, right, left, bottom } = menuRect.corners
         ctx.intentPolygon = [evt.point, top, right, bottom, left]
       },
       clearIntentPolygon(ctx) {

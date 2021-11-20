@@ -1,12 +1,6 @@
 import { createMachine, ref, subscribe } from "@ui-machines/core"
-
-import { isHTMLElement } from "@ui-machines/dom-utils"
-import { addDomEvent, addPointerEvent } from "@ui-machines/dom-utils/listener"
-import { addPointerlockChangeListener } from "@ui-machines/dom-utils/pointerlock"
-
-import { noop, uuid } from "@ui-machines/utils"
-import { isSafari } from "@ui-machines/utils/guard"
-
+import { addDomEvent, addPointerEvent, addPointerlockChangeListener, isHTMLElement } from "@ui-machines/dom-utils"
+import { isSafari, noop, uuid } from "@ui-machines/utils"
 import { dom } from "./tooltip.dom"
 import { tooltipStore } from "./tooltip.store"
 import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"

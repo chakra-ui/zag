@@ -1,6 +1,5 @@
-import { first, last } from "../../../utils/array/dist"
-import { isHTMLElement } from "@ui-machines/dom-utils"
-import { findByText, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
+import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { first, last } from "@ui-machines/utils"
 import { MenuMachineContext as Ctx } from "./menu.types"
 
 type HTMLEl = HTMLElement | null

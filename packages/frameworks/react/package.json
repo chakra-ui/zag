@@ -13,6 +13,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/react",
   "sideEffects": false,
   "files": [
@@ -35,7 +36,5 @@
   },
   "peerDependencies": {
     "react": ">=16.8.6"
-  },
-  "types": "dist/index.d.ts",
-  "source": "src/index.ts"
+  }
 }

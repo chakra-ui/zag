@@ -9,7 +9,7 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
   "scripts": {
-    "bundle": "esr scripts/build.ts --watch",
+    "bundle": "esr scripts/build.ts",
     "build": "parcel build",
     "start:react": "cd examples/next-ts && yarn dev",
     "start:vue": "cd examples/vue-ts && yarn dev",
@@ -59,6 +59,7 @@
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "axe-core": "^4.3.3",
+    "chalk": "^4.1.2",
     "commitlint": "^12.1.4",
     "cypress": "^8.5.0",
     "cypress-axe": "^0.13.0",
@@ -90,7 +91,6 @@
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.4",
     "start-server-and-test": "^1.14.0",
-    "ts-node": "^9.1.1",
     "typescript": "4.4.3"
   },
   "workspaces": {
@@ -98,7 +98,8 @@
       "packages/core",
       "packages/machines/*",
       "packages/frameworks/*",
-      "packages/utilities",
+      "packages/types",
+      "packages/utilities/*",
       "examples/*"
     ]
   },

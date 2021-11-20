@@ -1,8 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
-import { validateBlur } from "@ui-machines/dom-utils/focus-event"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
-
+import { dataAttr, EventKeyMap, getEventKey, validateBlur } from "@ui-machines/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
 

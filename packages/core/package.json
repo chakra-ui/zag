@@ -13,7 +13,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/core/tree/main/packages/machine",
   "sideEffects": false,
   "files": [

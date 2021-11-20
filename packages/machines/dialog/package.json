@@ -34,6 +34,5 @@
     "aria-hidden": "^1.1.3",
     "focus-trap": "^6.7.1",
     "scroll-into-view-if-needed": "^2.2.28"
-  },
-  "source": "src/index.ts"
+  }
 }

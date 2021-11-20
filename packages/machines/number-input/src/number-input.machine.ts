@@ -1,14 +1,7 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
-
-import { nextTick } from "@ui-machines/dom-utils"
-import { addDomEvent } from "@ui-machines/dom-utils/listener"
-import { observeAttributes } from "@ui-machines/dom-utils/mutation-observer"
-import { requestPointerLock } from "@ui-machines/dom-utils/pointerlock"
-
-import { pipe } from "@ui-machines/utils"
-import { isSafari, supportsPointerEvent } from "@ui-machines/utils/guard"
-import { rangy } from "@ui-machines/number-utils/rangy"
-
+import { addDomEvent, nextTick, observeAttributes, requestPointerLock } from "@ui-machines/dom-utils"
+import { rangy } from "@ui-machines/number-utils"
+import { isSafari, pipe, supportsPointerEvent } from "@ui-machines/utils"
 import { dom } from "./number-input.dom"
 import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.types"
 import { utils } from "./number-input.utils"

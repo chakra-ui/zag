@@ -13,6 +13,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/core/svelte",
   "sideEffects": false,
   "files": [
@@ -33,7 +34,5 @@
   },
   "peerDependencies": {
     "svelte": "^3.38.2"
-  },
-  "types": "dist/index.d.ts",
-  "source": "src/index.ts"
+  }
 }

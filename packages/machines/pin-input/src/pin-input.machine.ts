@@ -1,4 +1,4 @@
-import { fromLength } from "../../../utils/array/dist"
+import { fromLength } from "@ui-machines/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
 

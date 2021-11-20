@@ -1,5 +1,5 @@
-import { first, last } from "../../../utils/array/dist"
-import { nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
+import { nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { first, last } from "@ui-machines/utils"
 import type { ComboboxMachineContext as Ctx } from "./combobox.types"
 
 export const dom = {

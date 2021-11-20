@@ -1,4 +1,4 @@
-import { getScrollParent } from "@ui-machines/dom-utils/scrollable"
+import { getScrollParent } from "@ui-machines/dom-utils"
 import { TooltipMachineContext as Ctx } from "./tooltip.types"
 
 export const dom = {

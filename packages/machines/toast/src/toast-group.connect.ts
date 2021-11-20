@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
 import {

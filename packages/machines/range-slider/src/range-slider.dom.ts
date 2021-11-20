@@ -1,17 +1,10 @@
 import { StateMachine } from "@ui-machines/core"
-import { dispatchInputEvent } from "@ui-machines/dom-utils/dispatch-event"
-import { queryElements } from "@ui-machines/dom-utils/nodelist"
-import { clamp, multiply, percentToValue, snapToStep } from "@ui-machines/number-utils"
-import { toRanges } from "@ui-machines/number-utils/transform"
+import { dispatchInputEvent, queryElements } from "@ui-machines/dom-utils"
+import { clamp, multiply, percentToValue, snapToStep, toRanges } from "@ui-machines/number-utils"
+import type { Point } from "@ui-machines/rect-utils"
+import { closest, getElementRect, relativeToNode } from "@ui-machines/rect-utils"
 import { slider } from "@ui-machines/slider"
-import type { Style } from "@ui-machines/utils"
-
-import type { Point } from "@ui-machines/point-utils"
-import { closest } from "@ui-machines/point-utils/distance"
-import { relativeToNode } from "@ui-machines/point-utils/dom"
-import { center } from "@ui-machines/rect-utils"
-import { fromElement } from "@ui-machines/rect-utils/from-element"
-
+import type { Style } from "@ui-machines/types"
 import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
 
 export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
@@ -114,7 +107,7 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
     const thumbs = dom.getElements(ctx)
 
     // get the center point of all thumbs
-    const points = thumbs.map((el) => fromElement(el)).map((rect) => center(rect))
+    const points = thumbs.map((el) => getElementRect(el)).map((rect) => rect.center)
 
     // get the closest center point from the event ("pointerdown") point
     const getClosest = closest(...points)

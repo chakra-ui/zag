@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./dialog.dom"
 import { DialogMachineContext, DialogMachineState } from "./dialog.machine"
 

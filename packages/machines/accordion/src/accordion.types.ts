@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@ui-machines/core"
-import type { Context } from "@ui-machines/utils"
+import type { Context } from "@ui-machines/types"
 
 export type AccordionMachineContext = Context<{
   /**

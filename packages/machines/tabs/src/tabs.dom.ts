@@ -1,5 +1,5 @@
-import { first, last } from "../../../utils/array/dist"
-import { itemById, nextById, prevById, queryElements } from "@ui-machines/dom-utils/nodelist"
+import { first, last } from "@ui-machines/utils"
+import { itemById, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
 import { TabsMachineContext as Ctx } from "./tabs.machine"
 
 export const dom = {

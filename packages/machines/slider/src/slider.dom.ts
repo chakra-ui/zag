@@ -1,9 +1,8 @@
-import { dispatchInputEvent } from "@ui-machines/dom-utils/dispatch-event"
-import { clamp, percentToValue, snapToStep, valueToPercent } from "@ui-machines/number-utils"
-import { transform } from "@ui-machines/number-utils/transform"
-import type { Point } from "@ui-machines/point-utils"
-import { relativeToNode } from "@ui-machines/point-utils/dom"
-import type { Style } from "@ui-machines/utils"
+import { dispatchInputEvent } from "@ui-machines/dom-utils"
+import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "@ui-machines/number-utils"
+import type { Point } from "@ui-machines/rect-utils"
+import { relativeToNode } from "@ui-machines/rect-utils"
+import type { Style } from "@ui-machines/types"
 import type { SliderMachineContext as Ctx } from "./slider.types"
 
 type SharedContext = {

@@ -1,6 +1,5 @@
-import { ariaAttr, EventKeyMap } from "@ui-machines/dom-utils"
-import { validateBlur } from "@ui-machines/dom-utils/focus-event"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
+import { ariaAttr, EventKeyMap, validateBlur } from "@ui-machines/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./editable.dom"
 import { EditableSend, EditableState } from "./editable.types"
 

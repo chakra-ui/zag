@@ -1,9 +1,7 @@
-import { contains, dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
-import { validateBlur } from "@ui-machines/dom-utils/focus-event"
-import { isLeftClick } from "@ui-machines/utils/guard"
-import { getNativeEvent, normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/utils"
-import { fromPointerEvent } from "@ui-machines/point-utils/dom"
-
+import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
+import { getEventPoint } from "@ui-machines/rect-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { isLeftClick } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
 import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
 
@@ -92,7 +90,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
         send({
           type: "TRIGGER_POINTERLEAVE",
           target: event.currentTarget,
-          point: fromPointerEvent(evt),
+          point: getEventPoint(evt),
         })
       },
       onPointerDown(event) {

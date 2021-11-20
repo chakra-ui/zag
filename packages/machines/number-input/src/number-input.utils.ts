@@ -1,5 +1,5 @@
+import { rangy } from "@ui-machines/number-utils"
 import type { KeyboardEvent } from "react"
-import { rangy } from "@ui-machines/number-utils/rangy"
 import { NumberInputMachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
