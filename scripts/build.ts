@@ -79,17 +79,6 @@ export function reportBundleSize(dir: string, name: string) {
   console.log(output.join(" "))
 }
 
-const TSC_COMMAND = [
-  "tsc src/index.ts",
-  "--declaration",
-  "--emitDeclarationOnly",
-  "--target es2018",
-  "--outDir dist",
-  "--skipLibCheck",
-  "--moduleResolution node",
-  "--strict false",
-].join(" ")
-
 /* -----------------------------------------------------------------------------
  * ESM and CJS build scripts (Powered by esbuild)
  * -----------------------------------------------------------------------------*/
@@ -136,8 +125,6 @@ function buildPackages(pkgs: Packages, opts: BuildOptions) {
     if (dev) {
       generateDevTypings(abs)
     }
-    delete pkg.scripts
-    writePkgJson(abs, pkg)
   }
 
   if (dev) {
