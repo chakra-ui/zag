@@ -1,18 +1,13 @@
 import chalk from "chalk"
 import { watch } from "chokidar"
 import * as esbuild from "esbuild"
-import fs from "fs"
 import gzipSize from "gzip-size"
 import pretty from "pretty-bytes"
-import { generateDevTypings, getWorkspacePkgs } from "./build-utils"
+import { generateDevTypings, getWorkspacePkgs, writePkgJson } from "./build-utils"
 
 type Packages = Array<{ abs: string; dir: string; pkg: Record<string, any> }>
 type BuildOptions = {
   dev: boolean
-}
-
-function writePkgJson(dir: string, pkg: Record<string, any>) {
-  fs.writeFileSync(`${dir}/package.json`, JSON.stringify(pkg, null, 2))
 }
 
 /* -----------------------------------------------------------------------------

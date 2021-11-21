@@ -28,8 +28,5 @@
   "dependencies": {
     "valtio": "^1.2.5",
     "klona": "^2.0.4"
-  },
-  "devDependencies": {
-    "@ui-machines/utils": "^0.0.0"
   }
 }

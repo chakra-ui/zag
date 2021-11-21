@@ -37,3 +37,7 @@ export function generateDevTypings(dir: string) {
   const distPath = path.join(dir, "dist")
   fs.writeFileSync(path.join(distPath, "index.d.ts"), 'export * from "../src"')
 }
+
+export function writePkgJson(dir: string, pkg: Record<string, any>) {
+  fs.writeFileSync(`${dir}/package.json`, JSON.stringify(pkg, null, 2))
+}
