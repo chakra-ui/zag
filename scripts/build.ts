@@ -1,12 +1,10 @@
-import { getPackages } from "@manypkg/get-packages"
 import chalk from "chalk"
 import { watch } from "chokidar"
 import * as esbuild from "esbuild"
 import fs from "fs"
 import gzipSize from "gzip-size"
-import path from "path"
 import pretty from "pretty-bytes"
-import shell from "shelljs"
+import { generateDevTypings, getWorkspacePkgs } from "./build-utils"
 
 type Packages = Array<{ abs: string; dir: string; pkg: Record<string, any> }>
 type BuildOptions = {
@@ -15,30 +13,6 @@ type BuildOptions = {
 
 function writePkgJson(dir: string, pkg: Record<string, any>) {
   fs.writeFileSync(`${dir}/package.json`, JSON.stringify(pkg, null, 2))
-}
-
-let packagesCache: Packages
-
-async function getWorkspacePkgs() {
-  if (packagesCache) return packagesCache
-  const { packages } = await getPackages("packages")
-
-  packagesCache = packages
-    .map((pkg) => {
-      const rel = path.relative(process.cwd(), pkg.dir)
-      return { abs: pkg.dir, dir: rel, pkg: pkg.packageJson }
-    })
-    .filter((pkg) => !pkg.dir.includes("examples"))
-    .sort((pkg) => {
-      if (/(utilities|types|core)/.test(pkg.dir)) return -1
-      if (/(frameworks)/.test(pkg.dir)) return 0
-      return 1
-    })
-    .sort((a, b) => {
-      return a.dir.includes("utilities/core") ? -1 : b.dir.includes("utilities/core") ? 1 : 0
-    })
-
-  return packagesCache
 }
 
 /* -----------------------------------------------------------------------------
@@ -85,8 +59,6 @@ export function reportBundleSize(dir: string, name: string) {
 
 function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions) {
   const { dev } = opts
-
-  shell.rm("-rf", `${dir}/dist`)
 
   const common: esbuild.BuildOptions = {
     minify: true,
@@ -155,16 +127,6 @@ async function watchPackages(opts: BuildOptions) {
     buildPackage(abs, pkg, opts)
     logger.fileChangeBuilt(pkg.name)
   })
-}
-
-/* -----------------------------------------------------------------------------
- * Generate types for in dev mode. In prod, we use ultra for type generation, see the
-   package.json script
- * -----------------------------------------------------------------------------*/
-
-export function generateDevTypings(dir: string) {
-  const distPath = path.join(dir, "dist")
-  fs.writeFileSync(path.join(distPath, "index.d.ts"), 'export * from "../src"')
 }
 
 /* -----------------------------------------------------------------------------
