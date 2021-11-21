@@ -1,4 +1,4 @@
-import { accordion } from "@ui-machines/web"
+import { accordion } from "@ui-machines/accordion"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent, h, Fragment, computed, watch } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"

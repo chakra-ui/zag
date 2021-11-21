@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
 import { multiply, toRanges } from "@ui-machines/number-utils"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
@@ -144,7 +144,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
       "data-focused": dataAttr(isFocused),
       style: dom.getRootStyle(ctx),
       onPointerDown(event) {
-        const evt = event.nativeEvent ?? event
+        const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
         event.preventDefault()

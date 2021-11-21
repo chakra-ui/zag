@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
 import { valueToPercent } from "@ui-machines/number-utils"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
@@ -150,7 +150,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       "data-focused": dataAttr(isFocused),
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
-        const evt = event.nativeEvent ?? event
+        const evt = getNativeEvent(event)
         // allow only primary pointer clicks
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
         event.preventDefault()

@@ -1,4 +1,4 @@
-import { isTouchEvent } from "../../core/src/guard"
+import { isTouchEvent } from "@ui-machines/utils"
 
 export function distance(a: Point, b: Point = { x: 0, y: 0 }): number {
   return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))

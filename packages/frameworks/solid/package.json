@@ -17,8 +17,7 @@
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/solid",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -36,5 +35,8 @@
   },
   "peerDependencies": {
     "solid-js": ">=1.1.3"
+  },
+  "scripts": {
+    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }

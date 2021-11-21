@@ -20,8 +20,7 @@
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/combobox",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -32,5 +31,13 @@
   "dependencies": {
     "@ui-machines/core": "^0.0.0",
     "scroll-into-view-if-needed": "^2.2.28"
+  },
+  "devDependencies": {
+    "@ui-machines/utils": "^0.0.0",
+    "@ui-machines/dom-utils": "^0.0.0",
+    "@ui-machines/types": "^0.0.0"
+  },
+  "scripts": {
+    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }

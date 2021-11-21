@@ -162,4 +162,5 @@ temp/
 # End of https://www.toptal.com/developers/gitignore/api/node,yarn,jetbrains,visualstudiocode
 
 # System files
-.DS_Store 
+.DS_Store
+.ultra.cache.json

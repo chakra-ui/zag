@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
@@ -59,7 +59,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
         send({ type: "PASTE", value })
       },
       onKeyDown(event) {
-        const evt = event.nativeEvent || event
+        const evt = getNativeEvent(event)
         if (evt.isComposing) return
         const keyMap: EventKeyMap = {
           ArrowDown() {
