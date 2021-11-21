@@ -67,11 +67,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Build packages
-        run: yarn && yarn build:ci
-
       - name: compressed-size-action
         uses: preactjs/compressed-size-action@v2
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           pattern: "**/dist/**/*.mjs"
+          build-script: yarn build:ci
