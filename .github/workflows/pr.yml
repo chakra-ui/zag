@@ -72,4 +72,4 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           pattern: "**/dist/**/*.mjs"
-          build-script: yarn build:ci
+          build-script: build:ci
