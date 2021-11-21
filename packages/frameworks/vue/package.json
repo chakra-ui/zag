@@ -35,8 +35,5 @@
   "peerDependencies": {
     "vue": ">=3.0.0",
     "@vue/runtime-dom": ">=3.2.0"
-  },
-  "scripts": {
-    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }

@@ -136,8 +136,7 @@ function buildPackages(pkgs: Packages, opts: BuildOptions) {
     if (dev) {
       generateDevTypings(abs)
     }
-    pkg.scripts = pkg.scripts || {}
-    pkg.scripts.build = TSC_COMMAND
+    delete pkg.scripts
     writePkgJson(abs, pkg)
   }
 

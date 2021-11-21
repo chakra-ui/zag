@@ -22,8 +22,5 @@
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/ui-machines/issues"
-  },
-  "scripts": {
-    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }

@@ -31,8 +31,5 @@
   },
   "devDependencies": {
     "@ui-machines/utils": "^0.0.0"
-  },
-  "scripts": {
-    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }

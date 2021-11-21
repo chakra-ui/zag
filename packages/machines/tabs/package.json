@@ -37,8 +37,5 @@
     "@ui-machines/number-utils": "^0.0.0",
     "@ui-machines/rect-utils": "^0.0.0",
     "@ui-machines/types": "^0.0.0"
-  },
-  "scripts": {
-    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }

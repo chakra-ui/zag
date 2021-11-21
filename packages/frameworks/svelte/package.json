@@ -33,8 +33,5 @@
   },
   "peerDependencies": {
     "svelte": "^3.38.2"
-  },
-  "scripts": {
-    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }
