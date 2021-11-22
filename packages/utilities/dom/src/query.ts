@@ -31,6 +31,8 @@ export const isDisabled = (el: HTMLElement | null): boolean => {
   return el?.getAttribute("disabled") != null || !!el?.getAttribute("aria-disabled") === true
 }
 
-export function getNativeEvent<E>(event: E): E extends React.SyntheticEvent<any, infer T> ? T : never {
+export function getNativeEvent<E>(
+  event: E,
+): React.ChangeEvent<any> extends E ? InputEvent : E extends React.SyntheticEvent<any, infer T> ? T : never {
   return (event as any).nativeEvent ?? event
 }

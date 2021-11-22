@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, srOnlyStyle, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, srOnlyStyle, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
 import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
@@ -72,12 +72,12 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onChange(event) {
-        const evt = (event.nativeEvent ?? event) as InputEvent
+        const evt = getNativeEvent(event)
         if (evt.isComposing) return
         send({ type: "CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
-        const evt = (event.nativeEvent ?? event) as KeyboardEvent
+        const evt = getNativeEvent(event)
         if (event.ctrlKey || event.shiftKey || evt.isComposing) return
 
         const keymap: EventKeyMap = {

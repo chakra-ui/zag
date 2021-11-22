@@ -60,7 +60,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
         send("BLUR")
       },
       onChange(event) {
-        const evt = getNativeEvent(event) as InputEvent
+        const evt = getNativeEvent(event)
         if (evt.isComposing) return
         send({ type: "CHANGE", target: event.currentTarget, hint: "set" })
       },

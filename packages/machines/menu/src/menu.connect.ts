@@ -30,7 +30,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
         send({ type: "ITEM_CLICK", target: event.currentTarget })
       },
       onPointerUp(event) {
-        const evt = (event.nativeEvent ?? event) as PointerEvent
+        const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || disabled) return
         event.currentTarget.click()
       },

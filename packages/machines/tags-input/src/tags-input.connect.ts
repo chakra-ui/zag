@@ -39,7 +39,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
       autoComplete: "off",
       disabled: ctx.disabled,
       onChange(event) {
-        const evt = (event.nativeEvent || event) as InputEvent
+        const evt = getNativeEvent(event)
         if (evt.isComposing || evt.inputType === "insertFromPaste") return
         send({ type: "TYPE", value: event.target.value })
       },

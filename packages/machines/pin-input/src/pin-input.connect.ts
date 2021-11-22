@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
+import { ariaAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 
 import { dom } from "./pin-input.dom"
@@ -39,7 +39,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
         autoComplete: ctx.otp ? "one-time-code" : "off",
         placeholder: ctx.focusedIndex === index ? "" : ctx.placeholder,
         onChange(event) {
-          const evt = (event.nativeEvent ?? event) as InputEvent
+          const evt = getNativeEvent(event)
           if (evt.isComposing) return
 
           const value = event.target.value
@@ -51,7 +51,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
           }
         },
         onKeyDown(event) {
-          const evt = (event.nativeEvent ?? event) as KeyboardEvent
+          const evt = getNativeEvent(event)
           if (evt.isComposing) return
 
           const keyMap: EventKeyMap = {
