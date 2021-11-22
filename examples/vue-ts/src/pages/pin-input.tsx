@@ -1,4 +1,4 @@
-import { pinInput } from "@ui-machines/web"
+import { pinInput } from "@ui-machines/pin-input"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"

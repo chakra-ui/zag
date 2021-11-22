@@ -1,12 +1,10 @@
-import { tagsInput } from "@ui-machines/web"
-import { useMachine } from "@ui-machines/react"
-
 import * as styled from "@emotion/styled"
-
+import { useMachine } from "@ui-machines/react"
+import { tagsInput } from "@ui-machines/tags-input"
 import { StateVisualizer } from "components/state-visualizer"
+import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"
 import { tagsInputStyle } from "../../../shared/style"
-import { useControls } from "hooks/use-controls"
 
 const Styles = styled.default(`div`)(tagsInputStyle as styled.CSSObject)
 

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as styled from "@emotion/styled"
 import { useMachine } from "@ui-machines/react"
-import { slider } from "@ui-machines/web"
+import { slider } from "@ui-machines/slider"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"

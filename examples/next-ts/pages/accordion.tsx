@@ -1,5 +1,5 @@
+import { accordion } from "@ui-machines/accordion"
 import { useMachine } from "@ui-machines/react"
-import { accordion } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"

@@ -1,10 +1,9 @@
-import { pinInput } from "@ui-machines/web"
-import { useMachine } from "@ui-machines/react"
-
-import { StateVisualizer } from "components/state-visualizer"
-import { useMount } from "hooks/use-mount"
-import { useControls } from "hooks/use-controls"
 import { Global } from "@emotion/react"
+import { pinInput } from "@ui-machines/pin-input"
+import { useMachine } from "@ui-machines/react"
+import { StateVisualizer } from "components/state-visualizer"
+import { useControls } from "hooks/use-controls"
+import { useMount } from "hooks/use-mount"
 import { pinInputStyle } from "../../../shared/style"
 
 export default function Page() {

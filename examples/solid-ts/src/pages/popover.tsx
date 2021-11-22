@@ -1,4 +1,4 @@
-import { popover } from "@ui-machines/web"
+import { popover } from "@ui-machines/popover"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

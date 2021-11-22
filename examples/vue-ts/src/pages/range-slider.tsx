@@ -1,4 +1,4 @@
-import { rangeSlider } from "@ui-machines/web"
+import { rangeSlider } from "@ui-machines/range-slider"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"

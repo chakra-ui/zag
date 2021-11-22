@@ -1,4 +1,4 @@
-import { tagsInput } from "@ui-machines/web"
+import { tagsInput } from "@ui-machines/tags-input"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

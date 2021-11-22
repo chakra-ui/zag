@@ -1,6 +1,5 @@
-import { rating } from "@ui-machines/web"
+import { rating } from "@ui-machines/rating"
 import { useMachine } from "@ui-machines/react"
-
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 

@@ -1,5 +1,5 @@
 import { useMachine, useSetup } from "@ui-machines/react"
-import { tooltip } from "@ui-machines/web"
+import { tooltip } from "@ui-machines/tooltip"
 
 function Tooltip(props: { id?: string }) {
   const [state, send] = useMachine(tooltip.machine)

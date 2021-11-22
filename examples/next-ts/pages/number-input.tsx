@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { mergeProps, numberInput } from "@ui-machines/web"
+import { mergeProps } from "@ui-machines/core"
+import { numberInput } from "@ui-machines/number-input"
 import { useMachine } from "@ui-machines/react"
-
 import { StateVisualizer } from "components/state-visualizer"
-import { useMount } from "hooks/use-mount"
 import { useControls } from "hooks/use-controls"
+import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const controls = useControls({

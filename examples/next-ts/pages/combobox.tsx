@@ -1,9 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { combobox } from "@ui-machines/web"
-import { useMachine } from "@ui-machines/react"
-
 import * as styled from "@emotion/styled"
-
+import { combobox } from "@ui-machines/combobox"
+import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { comboboxData } from "../../../shared/data"

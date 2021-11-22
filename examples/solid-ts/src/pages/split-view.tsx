@@ -1,4 +1,4 @@
-import { splitView } from "@ui-machines/web"
+import { splitView } from "@ui-machines/split-view"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

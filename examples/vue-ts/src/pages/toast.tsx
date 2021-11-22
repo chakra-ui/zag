@@ -1,6 +1,6 @@
 import { computed, h, Fragment, defineComponent, ref, PropType } from "vue"
 import { useMachine, normalizeProps, useActor, VuePropTypes } from "@ui-machines/vue"
-import { toast, ToastMachine } from "@ui-machines/web"
+import { toast, ToastMachine } from "@ui-machines/toast"
 import { HollowDotsSpinner } from "epic-spinners"
 import { useMount } from "../hooks/use-mount"
 import { injectGlobal } from "@emotion/css"

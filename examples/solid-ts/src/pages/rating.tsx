@@ -1,4 +1,4 @@
-import { rating } from "@ui-machines/web"
+import { rating } from "@ui-machines/rating"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

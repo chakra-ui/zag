@@ -1,10 +1,12 @@
 import { useMachine } from "@ui-machines/react"
-import { menu, mergeProps } from "@ui-machines/web"
+import { menu } from "@ui-machines/menu"
+import { mergeProps } from "@ui-machines/core"
 // import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useEffect } from "react"
-import { nextTick } from "tiny-fn"
-import { Styles } from "./menu"
+import { nextTick } from "@ui-machines/dom-utils"
+import { menuStyle } from "../../../shared/style"
+import { Global } from "@emotion/react"
 
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine)
@@ -51,7 +53,8 @@ export default function Page() {
   const triggerItem2Props = mergeProps(sub.getItemProps({ id: sub2.triggerProps.id }), sub2.triggerProps)
 
   return (
-    <Styles>
+    <>
+      <Global styles={menuStyle} />
       <button ref={rootRef} data-testid="trigger" {...root.triggerProps}>
         Click me
       </button>
@@ -119,6 +122,6 @@ export default function Page() {
       {/* <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
       <StateVisualizer state={subState} label="Sub Machine" style={{ maxWidth: 320, right: 420 }} />
       <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} /> */}
-    </Styles>
+    </>
   )
 }

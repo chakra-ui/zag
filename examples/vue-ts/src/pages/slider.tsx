@@ -1,4 +1,4 @@
-import { slider } from "@ui-machines/web"
+import { slider } from "@ui-machines/slider"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"

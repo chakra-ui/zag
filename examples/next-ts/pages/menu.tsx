@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import { useMachine } from "@ui-machines/react"
-import { menu } from "@ui-machines/web"
+import { menu } from "@ui-machines/menu"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { menuStyle } from "../../../shared/style"

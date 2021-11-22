@@ -1,4 +1,4 @@
-import { editable } from "@ui-machines/web"
+import { editable } from "@ui-machines/editable"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"

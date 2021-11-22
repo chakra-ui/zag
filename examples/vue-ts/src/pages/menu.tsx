@@ -1,4 +1,4 @@
-import { menu } from "@ui-machines/web"
+import { menu } from "@ui-machines/menu"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"

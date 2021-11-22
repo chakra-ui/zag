@@ -1,4 +1,3 @@
-import { merge } from "merge-anything"
 import { callAll } from "@ui-machines/utils"
 
 interface Props {
@@ -31,7 +30,7 @@ export function mergeProps<T extends Props[]>(...args: T): UnionToIntersection<T
       }
 
       if (key === "style") {
-        result[key] = merge(result[key] ?? {}, props[key] ?? {})
+        result[key] = Object.assign({}, result[key] ?? {}, props[key] ?? {})
         continue
       }
 
