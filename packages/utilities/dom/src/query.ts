@@ -24,7 +24,7 @@ export function contains(parent: Node | undefined, child: Node) {
 }
 
 export function isHTMLElement(v: any): v is HTMLElement {
-  return typeof v === "object" && v.nodeType === Node.ELEMENT_NODE && typeof v.nodeName === "string"
+  return typeof v === "object" && v?.nodeType === Node.ELEMENT_NODE && typeof v?.nodeName === "string"
 }
 
 export const isDisabled = (el: HTMLElement | null): boolean => {

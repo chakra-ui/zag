@@ -59,7 +59,7 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
     minify: true,
     bundle: true,
     sourcemap: true,
-    target: "es2020",
+    target: "es6",
     absWorkingDir: dir,
     entryPoints: ["src/index.ts"],
     external: Object.keys(pkg.dependencies ?? {}).concat(Object.keys(pkg.peerDependencies ?? {})),
