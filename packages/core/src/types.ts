@@ -194,11 +194,18 @@ export declare namespace StateMachine {
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
-     * The actions to run when the machine has started
+     * Function called synchronously after the machine has been instantiated,
+     * before it is started.
+     */
+    created?: (context: TContext) => void
+    /**
+     * The actions to run when the machine has started. This is usually
+     * called in the `beforeMount`, `onMount` or `useLayoutEffect` lifecycle methods.
      */
     entry?: Actions<TContext, TState, TEvent>
     /**
-     * The actions to run when the machine has stopped
+     * The actions to run when the machine has stopped. This is usually
+     * called in the `onUnmount` or `useLayoutEffect` cleanup lifecycle methods.
      */
     exit?: Actions<TContext, TState, TEvent>
     /**

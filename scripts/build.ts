@@ -65,17 +65,25 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
     external: Object.keys(pkg.dependencies ?? {}).concat(Object.keys(pkg.peerDependencies ?? {})),
   }
 
-  esbuild.buildSync({
-    ...common,
-    format: "cjs",
-    outfile: "dist/index.js",
-  })
+  try {
+    esbuild.buildSync({
+      ...common,
+      format: "cjs",
+      outfile: "dist/index.js",
+    })
+  } catch (error) {
+    // noop
+  }
 
-  esbuild.buildSync({
-    ...common,
-    format: "esm",
-    outfile: "dist/index.mjs",
-  })
+  try {
+    esbuild.buildSync({
+      ...common,
+      format: "esm",
+      outfile: "dist/index.mjs",
+    })
+  } catch (error) {
+    // noop
+  }
 
   if (!dev) {
     reportBundleSize(dir, pkg.name)

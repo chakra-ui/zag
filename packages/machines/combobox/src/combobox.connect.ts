@@ -12,6 +12,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
 
   const expanded = state.matches("interacting", "navigating", "suggesting")
   const autoFill = state.matches("navigating", "interacting") && ctx.navigationValue && ctx.autoComplete
+  const showClearButton = (!state.matches("idle", "unknown") || ctx.isHoveringInput) && !ctx.isInputValueEmpty
 
   return {
     setValue(value: string) {
@@ -52,12 +53,18 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       role: "combobox",
       value: autoFill ? ctx.navigationValue : ctx.inputValue,
       "aria-describedby": dom.getSrHintId(ctx),
-      // "aria-autocomplete": ctx.selectionMode === "autocomplete" ? "both" : "list",
+      "aria-autocomplete": ctx.autoComplete ? "both" : "list",
       "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
       "aria-expanded": expanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
-      onClick() {
-        send("INPUT_CLICK")
+      onPointerDown() {
+        send("POINTER_DOWN")
+      },
+      onPointerOver() {
+        send({ type: "POINTER_OVER" })
+      },
+      onPointerLeave() {
+        send({ type: "POINTER_LEAVE" })
       },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
@@ -124,6 +131,9 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       disabled: ctx.disabled,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
+      onPointerDown(event) {
+        event.preventDefault()
+      },
       onClick() {
         send("CLICK_BUTTON")
       },
@@ -137,6 +147,9 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       onPointerLeave() {
         send("POINTERLEAVE_LISTBOX")
       },
+      onPointerDown(event) {
+        event.preventDefault()
+      },
     }),
 
     clearButtonProps: normalize.button<T>({
@@ -146,7 +159,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       tabIndex: -1,
       disabled: ctx.disabled,
       "aria-label": "Clear value",
-      hidden: ctx.isInputValueEmpty,
+      hidden: !showClearButton,
       onClick() {
         send("CLEAR_VALUE")
       },
@@ -154,16 +167,12 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
 
     srHintProps: normalize.element<T>({
       id: dom.getSrHintId(ctx),
-      children: [
-        "When autocomplete results are available use up and down arrows to review and enter to select.",
-        "Touch device users, explore by touch or with swipe gestures.",
-      ].join(""),
       style: srOnlyStyle,
     }),
 
     getOptionProps(props: ComboboxOptionProps) {
-      const { value, label, index, optionCount } = props
-      const id = dom.getOptionId(ctx, value)
+      const { value, label, index, optionCount, disabled } = props
+      const id = dom.getOptionId(ctx, value, index)
       const selected = ctx.activeId === id && state.matches("navigating")
 
       return normalize.element<T>({
@@ -172,16 +181,13 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         tabIndex: -1,
         "data-highlighted": dataAttr(ctx.activeId === id),
         "aria-selected": selected,
-        "aria-disabled": ctx.disabled,
+        "aria-disabled": disabled,
         "aria-posinset": index ? index + 1 : undefined,
         "aria-setsize": optionCount,
         "data-value": value,
         "data-label": label,
         onPointerOver() {
           send({ type: "POINTEROVER_OPTION", id, value: label })
-        },
-        onPointerDown(event) {
-          event.preventDefault()
         },
         onClick(event) {
           event.preventDefault()

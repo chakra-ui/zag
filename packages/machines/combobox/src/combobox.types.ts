@@ -28,17 +28,30 @@ export type ComboboxMachineContext = Context<{
   autoFocus?: boolean
   selectOnFocus?: boolean
   focusOnClear?: boolean
-
   closeOnBlur?: boolean
   closeOnSelect?: boolean | ((value: OptionData) => boolean)
-
   clearOnEsc?: boolean
   openOnClick?: boolean
-  onInputValueChange?: (value: string) => string
+  allowCustomValue?: boolean
+  loop?: boolean
+
+  // callbacks
+  onInputChange?: (value: string) => string
   onSelect?: (value: string) => void
+  onHighlight?: (value: string) => void
+  onOpen?: () => void
+  onClose?: () => void
+
   liveRegion?: LiveRegion | null
   shouldInputRenderValue?: boolean
   firstOptionLabel?: string
+  isHoveringInput: boolean
+
+  // ui messages
+  openText?: string
+  closeText?: string
+  clearText?: string
+  srHintText?: string
 }>
 
 export type OptionData = {

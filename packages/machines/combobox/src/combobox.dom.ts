@@ -12,7 +12,8 @@ export const dom = {
   getToggleBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-toggle-btn`,
   getClearBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-clear-btn`,
   getSrHintId: (ctx: Ctx) => `combobox-${ctx.uid}-sr-hint`,
-  getOptionId: (ctx: Ctx, id: number | string) => `combobox-${ctx.uid}-option-${id}`,
+  getOptionId: (ctx: Ctx, id: number | string, index?: number) =>
+    [`combobox-${ctx.uid}-option-${id}`, index].filter(Boolean).join("-"),
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
   getListboxEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getListboxId(ctx)),
@@ -34,4 +35,14 @@ export const dom = {
     value: el?.getAttribute("data-value") ?? "",
     label: el?.getAttribute("data-label") ?? "",
   }),
+  getOptionCount: (ctx: Ctx) => {
+    // if option has `aria-setsize`, announce the number of options
+    const listboxEl = dom.getListboxEl(ctx)
+    const setSize = listboxEl?.querySelector("[role-option]")?.getAttribute("aria-setsize")
+    if (setSize != null) {
+      return parseInt(setSize)
+    }
+    // else announce the number of options by querying the listbox
+    return listboxEl?.querySelectorAll("[role-option]").length ?? 0
+  },
 }

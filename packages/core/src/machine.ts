@@ -52,6 +52,7 @@ export class Machine<
   ) {
     this.id = config.id ?? `machine-${uuid()}`
     this.state = createProxy(config)
+    config.created?.(this.state.context)
     this.guardMap = options?.guards ?? {}
     this.actionMap = options?.actions ?? {}
     this.delayMap = options?.delays ?? {}
