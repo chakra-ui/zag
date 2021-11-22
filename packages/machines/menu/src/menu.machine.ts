@@ -258,7 +258,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
           ctx.pointerdownNode = ref(el)
         })
       },
-      trackPointerMove(ctx, _evt, { guards = {}, send }) {
+      trackPointerMove(ctx, _evt, { guards, send }) {
         const { isWithinPolygon } = guards
         ctx.parent!.state.context.suspendPointer = true
 
