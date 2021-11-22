@@ -1,4 +1,4 @@
-import { isFunction, isObject, isString } from "tiny-guard"
+import { isFunction, isObject, isString } from "@ui-machines/utils"
 import { Dict, StateMachine as S } from "./types"
 
 function or<TContext, TEvent extends S.EventObject>(

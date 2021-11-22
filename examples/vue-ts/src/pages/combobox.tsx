@@ -1,4 +1,4 @@
-import { combobox } from "@ui-machines/web"
+import { combobox } from "@ui-machines/combobox"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"

@@ -18,11 +18,8 @@
     "strict": false,
     "target": "esnext",
     "baseUrl": ".",
-    "paths": {
-      "@ui-machines/core": ["../../packages/core/src"],
-      "@ui-machines/react": ["../../packages/frameworks/react/src"]
-    }
+    "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", "next.config.js"]
 }

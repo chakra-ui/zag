@@ -1,4 +1,4 @@
-import { menu } from "@ui-machines/web"
+import { menu } from "@ui-machines/menu"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

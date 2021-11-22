@@ -1,4 +1,4 @@
-import { accordion } from "@ui-machines/web"
+import { accordion } from "@ui-machines/accordion"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"

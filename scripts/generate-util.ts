@@ -33,9 +33,12 @@ async function createPackage() {
       actions.push({
         type: "addMany",
         templateFiles: "util-template/**",
-        destination: `../packages/utils`,
+        destination: `../packages/utilities/${name}`,
         base: "util-template/",
-        data: { description, packageName: name },
+        data: {
+          description,
+          packageName: name,
+        },
         abortOnFail: true,
       })
 

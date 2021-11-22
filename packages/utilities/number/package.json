@@ -1,0 +1,27 @@
+{
+  "name": "@ui-machines/number-utils",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "number"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/utilities/number",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/ui-machines/issues"
+  }
+}

@@ -1,11 +1,11 @@
-import { isDom } from "tiny-guard"
+import { isDom } from "@ui-machines/utils"
 import { h, SetupContext } from "vue"
 
 export function StateVisualizer(props: { state: Record<string, any> }, { attrs }: SetupContext) {
   const { state } = props
   return (
     <pre
-      className="pre"
+      class="pre"
       style={{
         float: "right",
         position: "absolute",

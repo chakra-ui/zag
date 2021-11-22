@@ -11,8 +11,9 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-solid.cjs.js",
-  "module": "dist/ui-machines-solid.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/solid",
   "sideEffects": false,
   "files": [
@@ -24,14 +25,9 @@
   "bugs": {
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
-  "scripts": {
-    "clean": "rimraf dist"
-  },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
-    "@ui-machines/prop-types": "0.0.0",
     "hyphenate-style-name": "^1.0.4",
-    "tiny-guard": "^0.0.3",
     "valtio": "^1.2.5"
   },
   "devDependencies": {

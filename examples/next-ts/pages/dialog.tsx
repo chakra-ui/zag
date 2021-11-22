@@ -1,6 +1,6 @@
 import { Portal } from "@reach/portal"
+import { dialog } from "@ui-machines/dialog"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { dialog } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useRef } from "react"
 

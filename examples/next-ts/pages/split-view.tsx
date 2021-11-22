@@ -1,8 +1,6 @@
-import { splitView } from "@ui-machines/web"
-import { useMachine } from "@ui-machines/react"
-
 import * as styled from "@emotion/styled"
-
+import { useMachine } from "@ui-machines/react"
+import { splitView } from "@ui-machines/split-view"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { splitViewStyle } from "../../../shared/style"

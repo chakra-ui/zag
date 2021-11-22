@@ -45,6 +45,7 @@
     "import/no-named-as-default": "off",
     "prefer-object-spread": "off",
     "arrow-body-style": "off",
+    "import/namespace": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

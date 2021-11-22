@@ -1,4 +1,4 @@
-import { isArray, isString } from "tiny-guard"
+import { isArray, isString } from "@ui-machines/utils"
 import type { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
@@ -10,11 +10,3 @@ export function toArray<T>(value: T | T[] | undefined): T[] {
   if (!value) return []
   return isArray(value) ? value : [value]
 }
-
-export const uniqueId = (() => {
-  let id = 0
-  return () => {
-    id++
-    return id.toString(16)
-  }
-})()

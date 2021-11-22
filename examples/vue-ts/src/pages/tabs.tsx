@@ -1,4 +1,4 @@
-import { tabs } from "@ui-machines/web"
+import { tabs } from "@ui-machines/tabs"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"

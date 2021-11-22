@@ -1,4 +1,5 @@
-import { mergeProps, numberInput } from "@ui-machines/web"
+import { numberInput } from "@ui-machines/number-input"
+import { mergeProps } from "@ui-machines/core"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, nextTick, onMounted, ref, h, Fragment } from "vue"

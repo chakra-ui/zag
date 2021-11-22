@@ -1,4 +1,4 @@
-import { rangeSlider } from "@ui-machines/web"
+import { rangeSlider } from "@ui-machines/range-slider"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo, For } from "solid-js"

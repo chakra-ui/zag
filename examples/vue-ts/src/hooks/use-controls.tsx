@@ -75,6 +75,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                       type="checkbox"
                       checked={state.value[key] as boolean}
                       onInput={(e) => {
+                        //@ts-expect-error
                         state.value[key] = e.currentTarget.checked
                       }}
                     />
@@ -90,10 +91,10 @@ export function useControls<T extends ControlRecord>(config: T) {
                       type="text"
                       placeholder={placeholder}
                       value={state.value[key] as string}
-                      //@ts-expect-error
-                      onKeydown={(e) => {
-                        if (e.key === "Enter") {
-                          state.value[key] = (e.target as HTMLInputElement).value
+                      onKeydown={(event) => {
+                        if (event.key === "Enter") {
+                          //@ts-expect-error
+                          state.value[key] = (event.target as HTMLInputElement).value
                         }
                       }}
                     />
@@ -110,11 +111,12 @@ export function useControls<T extends ControlRecord>(config: T) {
                       id={label}
                       value={state.value[key] as string}
                       onChange={(e) => {
+                        //@ts-expect-error
                         state.value[key] = (e.target as HTMLSelectElement).value
                       }}
                     >
                       <option>-----</option>
-                      {options.map((option) => (
+                      {options.map((option: any) => (
                         <option key={option} value={option}>
                           {option}
                         </option>
@@ -137,6 +139,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                       value={state.value[key] as number}
                       onKeydown={(e) => {
                         if (e.key === "Enter") {
+                          //@ts-expect-error
                           state.value[key] = (e.target as HTMLInputElement).valueAsNumber
                         }
                       }}

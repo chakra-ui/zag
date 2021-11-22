@@ -1,8 +1,7 @@
-import { mergeProps, numberInput } from "@ui-machines/web"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
+import { mergeProps } from "@ui-machines/core"
+import { numberInput } from "@ui-machines/number-input"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo } from "solid-js"
-
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {

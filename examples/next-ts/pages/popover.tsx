@@ -1,7 +1,7 @@
 import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
+import { popover } from "@ui-machines/popover"
 import { useMachine } from "@ui-machines/react"
-import { popover } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"

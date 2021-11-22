@@ -1,4 +1,4 @@
-import { rating } from "@ui-machines/web"
+import { rating } from "@ui-machines/rating"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"

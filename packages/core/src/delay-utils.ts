@@ -1,4 +1,4 @@
-import { isFunction, isNumber, isString } from "tiny-guard"
+import { isFunction, isNumber, isString } from "@ui-machines/utils"
 import { StateMachine as S } from "./types"
 
 /**

@@ -1,4 +1,4 @@
-import { combobox } from "@ui-machines/web"
+import { combobox } from "@ui-machines/combobox"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo, For } from "solid-js"

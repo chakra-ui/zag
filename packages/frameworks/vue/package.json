@@ -11,8 +11,9 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-vue.cjs.js",
-  "module": "dist/ui-machines-vue.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/vue",
   "sideEffects": false,
   "files": [
@@ -24,18 +25,15 @@
   "bugs": {
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
-  "scripts": {
-    "clean": "rimraf dist"
-  },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
-    "@ui-machines/prop-types": "0.0.0",
     "valtio": "^1.2.5"
   },
   "devDependencies": {
     "vue": "^3.0.5"
   },
   "peerDependencies": {
-    "vue": ">=3.0.5"
+    "vue": ">=3.0.0",
+    "@vue/runtime-dom": ">=3.2.0"
   }
 }

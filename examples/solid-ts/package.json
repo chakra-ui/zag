@@ -2,6 +2,7 @@
   "name": "solid-ts",
   "version": "0.0.0",
   "description": "",
+  "private": true,
   "scripts": {
     "clean": "echo 'clean'",
     "dev": "vite",

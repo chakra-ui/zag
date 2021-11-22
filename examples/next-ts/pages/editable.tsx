@@ -1,5 +1,5 @@
+import { editable } from "@ui-machines/editable"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { editable } from "@ui-machines/web"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 

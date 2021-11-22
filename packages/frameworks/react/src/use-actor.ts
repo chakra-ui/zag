@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@ui-machines/core"
+import { Machine, StateMachine as S } from "@ui-machines/core"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useConstant } from "./use-constant"
 

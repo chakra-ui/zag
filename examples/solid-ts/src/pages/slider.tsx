@@ -1,4 +1,4 @@
-import { slider } from "@ui-machines/web"
+import { slider } from "@ui-machines/slider"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

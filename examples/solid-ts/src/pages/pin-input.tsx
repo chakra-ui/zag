@@ -1,4 +1,4 @@
-import { pinInput } from "@ui-machines/web"
+import { pinInput } from "@ui-machines/pin-input"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"

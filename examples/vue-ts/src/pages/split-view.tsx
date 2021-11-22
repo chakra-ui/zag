@@ -1,4 +1,4 @@
-import { splitView } from "@ui-machines/web"
+import { splitView } from "@ui-machines/split-view"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"

@@ -1,5 +1,5 @@
 import { Machine } from "@ui-machines/core"
-import { isDom } from "tiny-guard"
+import { isDom } from "@ui-machines/utils"
 
 type StateVisualizerProps = {
   state: Record<string, any>

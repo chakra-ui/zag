@@ -1,4 +1,4 @@
-import { tagsInput } from "@ui-machines/web"
+import { tagsInput } from "@ui-machines/tags-input"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Global } from "@emotion/react"
 import { useActor, useMachine } from "@ui-machines/react"
-import { toast, ToastMachine } from "@ui-machines/web"
+import { toast, ToastMachine } from "@ui-machines/toast"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
@@ -19,7 +19,6 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
     <pre className="toast" {...t.containerProps}>
       <progress max={ctx.progress?.max} value={ctx.progress?.value} />
       <p>{ctx.title}</p>
-      {/* @ts-expect-error */}
       <p>{ctx.type === "loading" ? <BeatLoader /> : null}</p>
       <button onClick={t.dismiss}>Close</button>
     </pre>

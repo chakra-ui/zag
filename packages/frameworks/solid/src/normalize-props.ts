@@ -1,5 +1,5 @@
-import { createNormalizer } from "@ui-machines/prop-types"
-import { isObject, isString } from "tiny-guard"
+import { createNormalizer } from "@ui-machines/types"
+import { isObject, isString } from "@ui-machines/utils"
 import { cssify } from "./cssify"
 
 const eventMap = {

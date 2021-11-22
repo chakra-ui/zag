@@ -11,8 +11,9 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-react.cjs.js",
-  "module": "dist/ui-machines-react.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/react",
   "sideEffects": false,
   "files": [
@@ -24,12 +25,8 @@
   "bugs": {
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
-  "scripts": {
-    "clean": "rimraf dist"
-  },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
-    "tiny-guard": "^0.0.3",
     "valtio": "^1.2.5"
   },
   "devDependencies": {

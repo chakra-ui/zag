@@ -1,4 +1,4 @@
-import { popover } from "@ui-machines/web"
+import { popover } from "@ui-machines/popover"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
