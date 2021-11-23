@@ -65,25 +65,17 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
     external: Object.keys(pkg.dependencies ?? {}).concat(Object.keys(pkg.peerDependencies ?? {})),
   }
 
-  try {
-    esbuild.buildSync({
-      ...common,
-      format: "cjs",
-      outfile: "dist/index.js",
-    })
-  } catch (error) {
-    // noop
-  }
+  esbuild.buildSync({
+    ...common,
+    format: "cjs",
+    outfile: "dist/index.js",
+  })
 
-  try {
-    esbuild.buildSync({
-      ...common,
-      format: "esm",
-      outfile: "dist/index.mjs",
-    })
-  } catch (error) {
-    // noop
-  }
+  esbuild.buildSync({
+    ...common,
+    format: "esm",
+    outfile: "dist/index.mjs",
+  })
 
   if (!dev) {
     reportBundleSize(dir, pkg.name)
@@ -112,7 +104,7 @@ function buildPackages(pkgs: Packages, opts: BuildOptions) {
 async function watchPackages(opts: BuildOptions) {
   logger.watching()
 
-  watch("packages/**/src/**/*.ts", { followSymlinks: true }).on("change", async (file) => {
+  watch("packages/**/src/**/*.ts").on("change", async (file) => {
     logger.changed(file)
 
     const buildAll = /(utilities|types)/.test(file)
@@ -130,6 +122,10 @@ async function watchPackages(opts: BuildOptions) {
     buildPackage(abs, pkg, opts)
     logger.fileChangeBuilt(pkg.name)
   })
+
+  // Persist watcher on error
+  // https://nodejs.org/api/process.html#event-uncaughtexception
+  process.on("uncaughtException", function () {})
 }
 
 /* -----------------------------------------------------------------------------
