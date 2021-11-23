@@ -4,27 +4,35 @@ import { combobox } from "@ui-machines/combobox"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
+import { useState } from "react"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
 const Styles = styled.default("div")(comboboxStyle as styled.CSSObject)
 
 export default function Page() {
+  const [options, setOptions] = useState(comboboxData)
   const [state, send] = useMachine(
     combobox.machine.withContext({
       uid: "123",
       onSelectionChange: console.log,
       autoComplete: false,
       selectOnFocus: true,
+      onOpen() {
+        setOptions(comboboxData)
+      },
+      onInputChange(value) {
+        setOptions(comboboxData.filter((o) => o.label.toLowerCase().includes(value.toLowerCase())))
+      },
     }),
   )
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputValue, labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps } =
-    combobox.connect(state, send)
-
-  const options = comboboxData.filter((o) => o.label.toLowerCase().includes(inputValue.toLowerCase()))
+  const { labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps } = combobox.connect(
+    state,
+    send,
+  )
 
   return (
     <Styles>

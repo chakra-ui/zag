@@ -1,7 +1,6 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { LiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
 import { isApple, isFunction } from "@ui-machines/utils"
-import scrollIntoView from "scroll-into-view-if-needed"
 import { dom } from "./combobox.dom"
 import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.types"
 
@@ -94,11 +93,12 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         on: {
           CLICK_BUTTON: {
             target: "suggesting",
-            actions: "announceOptionCount",
+            actions: ["announceOptionCount", "invokeOnOpen"],
           },
           POINTER_DOWN: {
             guard: "openOnClick",
             target: "suggesting",
+            actions: ["announceOptionCount", "invokeOnOpen"],
           },
           POINTER_OVER: {
             actions: "setIsHovering",
@@ -132,7 +132,10 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             },
             { target: "focused" },
           ],
-          CLICK_BUTTON: "suggesting",
+          CLICK_BUTTON: {
+            target: "suggesting",
+            actions: ["invokeOnOpen"],
+          },
           POINTER_OVER: {
             actions: "setIsHovering",
           },
@@ -146,22 +149,22 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             {
               target: "suggesting",
               guard: "hasMatchingOption",
-              actions: "focusMatchingOption",
+              actions: ["focusMatchingOption", "invokeOnOpen"],
             },
             {
               target: "suggesting",
-              actions: "focusLastOption",
+              actions: ["focusLastOption", "invokeOnOpen"],
             },
           ],
           ARROW_DOWN: [
             {
               target: "suggesting",
               guard: "hasMatchingOption",
-              actions: "focusMatchingOption",
+              actions: ["focusMatchingOption", "invokeOnOpen"],
             },
             {
               target: "suggesting",
-              actions: "focusFirstOption",
+              actions: ["focusFirstOption", "invokeOnOpen"],
             },
           ],
         },
@@ -322,21 +325,14 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       scrollOptionIntoView(ctx, _evt, { getState }) {
         const input = dom.getInputEl(ctx)
-        const listbox = dom.getListboxEl(ctx)
         return observeAttributes(input, "aria-activedescendant", () => {
           const event = getState().event.type
           // only scroll into view for keyboard events
           const valid = ["ARROW_UP", "ARROW_DOWN", "HOME", "END"].includes(event)
           if (!valid) return
-
           const opt = dom.getActiveOptionEl(ctx)
           if (!opt) return
-
-          scrollIntoView(opt, {
-            boundary: listbox,
-            block: "nearest",
-            scrollMode: "if-needed",
-          })
+          dom.scrollIntoView(ctx, opt)
         })
       },
     },
@@ -478,10 +474,13 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         input.selectionEnd = input.value.length
       },
       focusMatchingOption(ctx) {
-        const option = dom.getMatchingOptionEl(ctx)
-        if (!option) return
-        ctx.activeId = option.id
-        ctx.navigationValue = ctx.inputValue
+        nextTick(() => {
+          const el = dom.getMatchingOptionEl(ctx)
+          if (!el) return
+          ctx.activeId = el.id
+          ctx.navigationValue = ctx.inputValue
+          dom.scrollIntoView(ctx, el)
+        })
       },
     },
   },

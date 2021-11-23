@@ -1,5 +1,6 @@
 import { nextById, prevById, queryElements } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
+import scrollIntoViewIfNeeded from "scroll-into-view-if-needed"
 import type { ComboboxMachineContext as Ctx } from "./combobox.types"
 
 export const dom = {
@@ -45,6 +46,14 @@ export const dom = {
     return listboxEl?.querySelectorAll("[role=option]").length ?? 0
   },
   getMatchingOptionEl: (ctx: Ctx, value = ctx.trimmedInputValue) => {
-    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-label=${value}`)
+    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-label="${value}"`)
+  },
+
+  scrollIntoView: (ctx: Ctx, el: HTMLElement) => {
+    scrollIntoViewIfNeeded(el, {
+      boundary: dom.getListboxEl(ctx),
+      block: "nearest",
+      scrollMode: "if-needed",
+    })
   },
 }
