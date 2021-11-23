@@ -13,17 +13,18 @@ export default function Page() {
   const [state, send] = useMachine(
     combobox.machine.withContext({
       uid: "123",
-      onSelect: console.log,
+      onSelectionChange: console.log,
       autoComplete: false,
+      selectOnFocus: true,
     }),
   )
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { labelProps, inputProps, inputValue, buttonProps, listboxProps, containerProps, getOptionProps } =
+  const { inputValue, labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps } =
     combobox.connect(state, send)
 
-  const filtered = comboboxData.filter((d) => d.label.toLowerCase().startsWith(inputValue.toLowerCase()))
+  const options = comboboxData.filter((o) => o.label.toLowerCase().includes(inputValue.toLowerCase()))
 
   return (
     <Styles>
@@ -34,9 +35,9 @@ export default function Page() {
           <button {...buttonProps}>▼</button>
         </div>
 
-        {filtered.length > 0 && (
+        {options.length > 0 && (
           <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
-            {filtered.map((item) => (
+            {options.map((item) => (
               <li key={item.code} {...getOptionProps({ label: item.label, value: item.code })}>
                 {item.label}
               </li>

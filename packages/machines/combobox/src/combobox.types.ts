@@ -3,7 +3,7 @@ import type { LiveRegion } from "@ui-machines/dom-utils"
 import type { Context } from "@ui-machines/types"
 
 export type ComboboxMachineState = {
-  value: "unknown" | "idle" | "focused" | "suggesting" | "navigating" | "interacting"
+  value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
 }
 
 export type ComboboxMachineContext = Context<{
@@ -36,8 +36,8 @@ export type ComboboxMachineContext = Context<{
   loop?: boolean
 
   // callbacks
-  onInputChange?: (value: string) => string
-  onSelect?: (value: string) => void
+  onInputChange?: (value: string) => void
+  onSelectionChange?: (value: string) => void
   onHighlight?: (value: string) => void
   onOpen?: () => void
   onClose?: () => void
@@ -52,6 +52,7 @@ export type ComboboxMachineContext = Context<{
   closeText?: string
   clearText?: string
   srHintText?: string
+  getOptionCountText: (count: number) => string
 }>
 
 export type OptionData = {
@@ -63,6 +64,10 @@ export type ComboboxOptionProps = OptionData & {
   index?: number
   optionCount?: number
   disabled?: boolean
+}
+
+export type ComboboxOptionGroupProps = {
+  label: string
 }
 
 export type ComboboxState = S.State<ComboboxMachineContext, ComboboxMachineState>

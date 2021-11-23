@@ -6,3 +6,12 @@
 - https://ambientimpact.com/web/snippets/accessibility-issues-with-toasts-and-how-to-mitigate-them
 - https://github.com/elastic/eui/issues/715
 - https://github.com/elastic/eui/pull/2055
+
+# Select
+
+- https://www.24a11y.com/2019/select-your-poison/
+- https://jedwatson.github.io/react-select/
+- http://react-autosuggest.js.org/
+- https://harvesthq.github.io/chosen/
+- https://jqueryui.com/autocomplete/
+- http://easyautocomplete.com/

@@ -412,7 +412,8 @@ export class Machine<
    * A reference to the instance methods of the machine.
    * Useful when spawning child machines and managing the communication between them.
    */
-  private get self(): S.SelfReference<TContext, TEvent> {
+  private get self(): S.SelfReference<TContext, TState, TEvent> {
+    const _self = this
     return {
       id: this.id,
       send: this.send.bind(this),
@@ -421,6 +422,9 @@ export class Machine<
       stop: this.stop.bind(this),
       stopChild: this.stopChild.bind(this),
       spawn: this.spawn.bind(this) as any,
+      get state() {
+        return _self.stateSnapshot
+      },
     }
   }
 
@@ -430,6 +434,7 @@ export class Machine<
       guards: this.guardMap!,
       send: this.send.bind(this),
       self: this.self,
+      getState: () => this.stateSnapshot,
     }
   }
 

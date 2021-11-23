@@ -17,7 +17,7 @@ export default defineComponent({
     const [state, send] = useMachine(
       combobox.machine.withContext({
         uid: "123",
-        onSelect: console.log,
+        onSelectionChange: console.log,
         closeOnSelect: (opt) => opt.label !== "Angola",
       }),
     )

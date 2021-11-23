@@ -1,7 +1,7 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, srOnlyStyle, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
-import { ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
+import { ComboboxOptionGroupProps, ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
 
 export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
   state: ComboboxState,
@@ -10,8 +10,8 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
 ) {
   const { context: ctx } = state
 
-  const expanded = state.matches("interacting", "navigating", "suggesting")
-  const autoFill = state.matches("navigating", "interacting") && ctx.navigationValue && ctx.autoComplete
+  const expanded = state.matches("interacting", "suggesting")
+  const autoFill = state.matches("interacting") && ctx.navigationValue && ctx.autoComplete
   const showClearButton = (!state.matches("idle", "unknown") || ctx.isHoveringInput) && !ctx.isInputValueEmpty
 
   return {
@@ -52,7 +52,6 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       type: "text",
       role: "combobox",
       value: autoFill ? ctx.navigationValue : ctx.inputValue,
-      "aria-describedby": dom.getSrHintId(ctx),
       "aria-autocomplete": ctx.autoComplete ? "both" : "list",
       "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
       "aria-expanded": expanded,
@@ -61,10 +60,10 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         send("POINTER_DOWN")
       },
       onPointerOver() {
-        send({ type: "POINTER_OVER" })
+        send("POINTER_OVER")
       },
       onPointerLeave() {
-        send({ type: "POINTER_LEAVE" })
+        send("POINTER_LEAVE")
       },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
@@ -87,32 +86,56 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         const evt = getNativeEvent(event)
         if (event.ctrlKey || event.shiftKey || evt.isComposing) return
 
+        let preventDefault = false
+
         const keymap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
+            preventDefault = true
           },
           ArrowUp() {
             send("ARROW_UP")
+            preventDefault = true
+          },
+          ArrowLeft() {
+            send("CLEAR_FOCUS")
+          },
+          ArrowRight() {
+            send("CLEAR_FOCUS")
           },
           Home() {
             send("HOME")
+            console.log("sent")
+            preventDefault = true
           },
           End() {
             send("END")
+            preventDefault = true
           },
           Enter() {
             send("ENTER")
+            preventDefault = true
           },
           Escape() {
             send("ESCAPE")
+            preventDefault = true
+          },
+          Backspace() {
+            send("BACKSPACE")
+          },
+          Delete() {
+            send("DELETE_KEY")
+          },
+          Tab() {
+            send("TAB")
           },
         }
 
         const key = getEventKey(event, ctx)
         const exec = keymap[key]
 
-        if (exec) {
-          exec(event)
+        if (exec) exec(event)
+        if (preventDefault) {
           event.preventDefault()
           event.stopPropagation()
         }
@@ -125,7 +148,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       type: "button",
       role: "button",
       tabIndex: -1,
-      "aria-label": expanded ? "Hide suggestions" : "Show suggestions",
+      "aria-label": expanded ? ctx.openText : ctx.closeText,
       "aria-expanded": expanded,
       "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
       disabled: ctx.disabled,
@@ -133,8 +156,6 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       "data-disabled": dataAttr(ctx.disabled),
       onPointerDown(event) {
         event.preventDefault()
-      },
-      onClick() {
         send("CLICK_BUTTON")
       },
     }),
@@ -148,6 +169,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         send("POINTERLEAVE_LISTBOX")
       },
       onPointerDown(event) {
+        // prevent options from taking focus
         event.preventDefault()
       },
     }),
@@ -158,22 +180,18 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       role: "button",
       tabIndex: -1,
       disabled: ctx.disabled,
-      "aria-label": "Clear value",
+      "aria-label": ctx.clearText,
       hidden: !showClearButton,
-      onClick() {
+      onPointerDown(event) {
+        event.preventDefault()
         send("CLEAR_VALUE")
       },
-    }),
-
-    srHintProps: normalize.element<T>({
-      id: dom.getSrHintId(ctx),
-      style: srOnlyStyle,
     }),
 
     getOptionProps(props: ComboboxOptionProps) {
       const { value, label, index, optionCount, disabled } = props
       const id = dom.getOptionId(ctx, value, index)
-      const selected = ctx.activeId === id && state.matches("navigating")
+      const selected = ctx.activeId === id
 
       return normalize.element<T>({
         id,
@@ -182,17 +200,32 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         "data-highlighted": dataAttr(ctx.activeId === id),
         "aria-selected": selected,
         "aria-disabled": disabled,
-        "aria-posinset": index ? index + 1 : undefined,
+        "aria-posinset": index != null ? index + 1 : undefined,
         "aria-setsize": optionCount,
         "data-value": value,
         "data-label": label,
-        onPointerOver() {
+        // Prefer pointermove to pointerenter to avoid interrupting the keyboard navigation
+        onPointerMove() {
           send({ type: "POINTEROVER_OPTION", id, value: label })
+        },
+        onPointerUp(event) {
+          event.currentTarget.click()
         },
         onClick(event) {
           event.preventDefault()
           send({ type: "CLICK_OPTION", id, value: label })
         },
+        onAuxClick(event) {
+          event.currentTarget.click()
+        },
+      })
+    },
+
+    getOptionGroupProps(props: ComboboxOptionGroupProps) {
+      const { label } = props
+      return normalize.element<T>({
+        role: "group",
+        "aria-label": label,
       })
     },
   }

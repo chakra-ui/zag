@@ -1,4 +1,4 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
+import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { LiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
 import { isApple, isFunction } from "@ui-machines/utils"
 import scrollIntoView from "scroll-into-view-if-needed"
@@ -28,11 +28,20 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       clearOnEsc: false,
       selectOnFocus: true,
       isHoveringInput: false,
+      openText: "Show suggestions",
+      closeText: "Hide suggestions",
+      clearText: "Clear value",
+      getOptionCountText: (count) => {
+        return [
+          `${count} ${count === 1 ? "option" : "options"} available`,
+          "use the up and down keys to navigate. Press the enter key to select",
+        ].join(" ")
+      },
     },
 
     computed: {
       trimmedInputValue: (ctx) => ctx.inputValue.trim(),
-      isInputValueEmpty: (ctx) => ctx.inputValue.trim().length === 0,
+      isInputValueEmpty: (ctx) => ctx.trimmedInputValue.length === 0,
       hintValue: (ctx) =>
         ctx.navigationValue ? ctx.inputValue + ctx.navigationValue.substr(ctx.inputValue.length) : "",
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
@@ -41,6 +50,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
     watch: {
       inputValue: ["invokeOnInputChange"],
       navigationValue: ["invokeOnHighlight"],
+      selectedValue: ["invokeOnSelectionChange"],
     },
 
     on: {
@@ -49,8 +59,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       CLEAR_VALUE: [
         {
+          target: "focused",
           guard: and(not("isInputValueEmpty"), "focusOnClear"),
-          actions: ["clearInputValue", "focusInput"],
+          actions: ["clearInputValue"],
         },
         {
           guard: not("isInputValueEmpty"),
@@ -59,25 +70,39 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       ],
     },
 
+    exit: ["removeLiveRegion"],
+
     states: {
       unknown: {
         on: {
           SETUP: [
-            { guard: "autoFocus", target: "focused", actions: "setup" },
-            { target: "idle", actions: "setup" },
+            {
+              guard: "autoFocus",
+              target: "focused",
+              actions: "setup",
+            },
+            {
+              target: "idle",
+              actions: "setup",
+            },
           ],
         },
       },
 
       idle: {
-        entry: ["resetScrollPosition", "clearFocusedOption", "clearPointerdownNode"],
+        entry: ["resetScroll", "clearFocusedOption", "clearPointerdownNode"],
         on: {
-          CLICK_BUTTON: "suggesting",
+          CLICK_BUTTON: {
+            target: "suggesting",
+            actions: "announceOptionCount",
+          },
           POINTER_DOWN: {
             guard: "openOnClick",
             target: "suggesting",
           },
-          POINTER_OVER: { actions: "setIsHovering" },
+          POINTER_OVER: {
+            actions: "setIsHovering",
+          },
           POINTER_LEAVE: {
             actions: "clearIsHovering",
           },
@@ -87,15 +112,13 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
               target: "focused",
               actions: "selectInput",
             },
-            {
-              target: "focused",
-            },
+            { target: "focused" },
           ],
         },
       },
 
       focused: {
-        entry: ["focusInput", "resetScrollPosition", "clearFocusedOption", "clearPointerdownNode"],
+        entry: ["focusInput", "resetScroll", "clearFocusedOption", "clearPointerdownNode"],
         on: {
           CHANGE: {
             target: "suggesting",
@@ -105,63 +128,130 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           ESCAPE: [
             {
               guard: "clearOnEsc",
-              actions: ["clearInputValue"],
+              actions: "clearInputValue",
             },
-            {
-              target: "focused",
-            },
+            { target: "focused" },
           ],
           CLICK_BUTTON: "suggesting",
-          POINTER_OVER: { actions: "setIsHovering" },
+          POINTER_OVER: {
+            actions: "setIsHovering",
+          },
+          HOME: {
+            actions: "setCursorToStart",
+          },
+          END: {
+            actions: "setCursorToEnd",
+          },
+          ARROW_UP: [
+            {
+              target: "suggesting",
+              guard: "hasMatchingOption",
+              actions: "focusMatchingOption",
+            },
+            {
+              target: "suggesting",
+              actions: "focusLastOption",
+            },
+          ],
+          ARROW_DOWN: [
+            {
+              target: "suggesting",
+              guard: "hasMatchingOption",
+              actions: "focusMatchingOption",
+            },
+            {
+              target: "suggesting",
+              actions: "focusFirstOption",
+            },
+          ],
         },
       },
 
       suggesting: {
         activities: ["trackPointerDown"],
-        entry: ["focusInput"],
+        entry: choose([
+          {
+            guard: not("isInputValueEmpty"),
+            actions: ["focusInput", "focusMatchingOption"],
+          },
+          { actions: ["focusInput"] },
+        ]),
         on: {
           ARROW_DOWN: {
-            target: "navigating",
-            actions: ["focusNextOption"],
+            target: "interacting",
+            actions: "focusNextOption",
           },
           ARROW_UP: {
-            target: "navigating",
-            actions: ["focusPrevOption"],
+            target: "interacting",
+            actions: "focusPrevOption",
+          },
+          HOME: {
+            target: "interacting",
+            actions: "focusFirstOption",
+          },
+          END: {
+            target: "interacting",
+            actions: "focusLastOption",
           },
           ENTER: {
             target: "focused",
-            actions: ["selectOption"],
+            actions: "selectOption",
           },
           CHANGE: {
             actions: ["setInputValue", "focusFirstOption"],
           },
           ESCAPE: "focused",
-          POINTEROVER_OPTION: {
-            target: "interacting",
-            actions: ["setActiveId", "setNavigationValue"],
-          },
+          POINTEROVER_OPTION: [
+            {
+              target: "interacting",
+              guard: "autoComplete",
+              actions: ["setActiveId"],
+            },
+            {
+              target: "interacting",
+              actions: ["setActiveId", "setNavigationValue"],
+            },
+          ],
           BLUR: "idle",
           CLICK_BUTTON: "focused",
         },
       },
 
-      navigating: {
+      interacting: {
         activities: ["scrollOptionIntoView", "trackPointerDown"],
         on: {
           ARROW_DOWN: [
             {
-              guard: "isLastOptionFocused",
-              actions: ["clearFocusedOption"],
+              guard: and("autoComplete", "isLastOptionFocused"),
+              actions: ["clearFocusedOption", "resetScroll"],
             },
-            { actions: ["focusNextOption"] },
+            { actions: "focusNextOption" },
           ],
           ARROW_UP: [
             {
-              guard: "isFirstOptionFocused",
+              guard: and("autoComplete", "isFirstOptionFocused"),
               actions: ["clearFocusedOption"],
             },
-            { actions: ["focusPrevOption"] },
+            {
+              actions: ["focusPrevOption"],
+            },
           ],
+          CLEAR_FOCUS: {
+            actions: "clearActiveId",
+          },
+          DELETE_KEY: {
+            guard: not("isCursorAtEnd"),
+            actions: "clearActiveId",
+          },
+          TAB: {
+            actions: ["selectOption"],
+          },
+          HOME: {
+            actions: "focusFirstOption",
+          },
+          END: {
+            actions: "focusLastOption",
+          },
           ENTER: {
             target: "focused",
             actions: ["selectOption"],
@@ -170,9 +260,18 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             target: "suggesting",
             actions: ["setInputValue", "focusFirstOption"],
           },
-          POINTEROVER_OPTION: {
-            target: "interacting",
-            actions: ["setActiveId", "setNavigationValue"],
+          POINTEROVER_OPTION: [
+            {
+              guard: "autoComplete",
+              actions: ["setActiveId"],
+            },
+            {
+              actions: ["setActiveId", "setNavigationValue"],
+            },
+          ],
+          CLICK_OPTION: {
+            target: "focused",
+            actions: ["selectOption"],
           },
           ESCAPE: "focused",
           CLICK_BUTTON: "focused",
@@ -180,48 +279,6 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             target: "idle",
             actions: ["selectOption"],
           },
-        },
-      },
-
-      interacting: {
-        activities: ["trackPointerDown"],
-        on: {
-          ARROW_DOWN: [
-            {
-              target: "navigating",
-              guard: "isLastOptionFocused",
-              actions: ["clearFocusedOption"],
-            },
-            {
-              target: "navigating",
-              actions: ["focusNextOption"],
-            },
-          ],
-          ARROW_UP: [
-            {
-              target: "navigating",
-              guard: "isFirstOptionFocused",
-              actions: ["clearFocusedOption"],
-            },
-            { target: "navigating", actions: ["focusPrevOption"] },
-          ],
-          ENTER: {
-            target: "focused",
-            actions: ["selectOption"],
-          },
-          ESCAPE: "focused",
-          CLICK_BUTTON: "focused",
-          CHANGE: {
-            actions: ["setInputValue", "focusFirstOption"],
-          },
-          POINTEROVER_OPTION: {
-            actions: ["setActiveId", "setNavigationValue"],
-          },
-          CLICK_OPTION: {
-            target: "focused",
-            actions: ["selectOption"],
-          },
-          BLUR: "idle",
           POINTERLEAVE_LISTBOX: {
             actions: "clearActiveId",
           },
@@ -231,6 +288,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
   },
   {
     guards: {
+      isCursorAtEnd: (ctx) => {
+        const el = dom.getInputEl(ctx)
+        if (!el) return false
+        return el.selectionStart === el.selectionEnd && el.selectionEnd === el.value.length
+      },
       openOnClick: (ctx) => !!ctx.openOnClick,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
       isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
@@ -250,6 +312,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       hasFocusedOption: (ctx) => !!ctx.activeId,
       selectOnFocus: (ctx) => !!ctx.selectOnFocus,
       clearOnEsc: (ctx) => !!ctx.clearOnEsc,
+      hasMatchingOption: (ctx) => !!dom.getMatchingOptionEl(ctx),
     },
     activities: {
       trackPointerDown(ctx) {
@@ -257,13 +320,23 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           ctx.pointerdownNode = ref(el)
         })
       },
-      scrollOptionIntoView(ctx) {
+      scrollOptionIntoView(ctx, _evt, { getState }) {
         const input = dom.getInputEl(ctx)
         const listbox = dom.getListboxEl(ctx)
         return observeAttributes(input, "aria-activedescendant", () => {
+          const event = getState().event.type
+          // only scroll into view for keyboard events
+          const valid = ["ARROW_UP", "ARROW_DOWN", "HOME", "END"].includes(event)
+          if (!valid) return
+
           const opt = dom.getActiveOptionEl(ctx)
           if (!opt) return
-          scrollIntoView(opt, { boundary: listbox, block: "nearest", scrollMode: "if-needed" })
+
+          scrollIntoView(opt, {
+            boundary: listbox,
+            block: "nearest",
+            scrollMode: "if-needed",
+          })
         })
       },
     },
@@ -271,7 +344,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       setup(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
-        const region = new LiveRegion({ ariaLive: "assertive", doc: ctx.doc })
+        const region = new LiveRegion({
+          ariaLive: "assertive",
+          role: "status",
+          doc: ctx.doc,
+        })
         ctx.liveRegion = ref(region)
       },
       setActiveId(ctx, evt) {
@@ -306,7 +383,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       clearInputValue(ctx) {
         ctx.inputValue = ""
       },
-      resetScrollPosition(ctx) {
+      resetScroll(ctx) {
         const listbox = dom.getListboxEl(ctx)
         if (!listbox) return
         listbox.scrollTop = 0
@@ -317,8 +394,8 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       invokeOnHighlight(ctx) {
         ctx.onHighlight?.(ctx.navigationValue)
       },
-      invokeOnSelect(ctx) {
-        ctx.onSelect?.(ctx.selectedValue)
+      invokeOnSelectionChange(ctx) {
+        ctx.onSelectionChange?.(ctx.selectedValue)
       },
       invokeOnOpen(ctx) {
         ctx.onOpen?.()
@@ -365,10 +442,12 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.firstOptionLabel = ""
       },
       announceOptionCount(ctx) {
-        const count = dom.getOptionCount(ctx)
-        if (count > 0) {
-          ctx.liveRegion?.announce(`${count} ${count === 1 ? "option" : "options"} available`)
-        }
+        nextTick(() => {
+          const count = dom.getOptionCount(ctx)
+          if (count > 0) {
+            ctx.liveRegion?.announce(ctx.getOptionCountText(count))
+          }
+        })
       },
       announceSelectedOption() {
         if (!isApple()) return
@@ -382,6 +461,27 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       clearIsHovering(ctx) {
         ctx.isHoveringInput = false
+      },
+      removeLiveRegion(ctx) {
+        ctx.liveRegion?.destroy()
+      },
+      setCursorToStart(ctx) {
+        const input = dom.getInputEl(ctx)
+        if (!input) return
+        input.selectionStart = 0
+        input.selectionEnd = 0
+      },
+      setCursorToEnd(ctx) {
+        const input = dom.getInputEl(ctx)
+        if (!input) return
+        input.selectionStart = input.value.length
+        input.selectionEnd = input.value.length
+      },
+      focusMatchingOption(ctx) {
+        const option = dom.getMatchingOptionEl(ctx)
+        if (!option) return
+        ctx.activeId = option.id
+        ctx.navigationValue = ctx.inputValue
       },
     },
   },

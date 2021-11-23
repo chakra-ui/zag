@@ -11,7 +11,6 @@ export const dom = {
   getListboxId: (ctx: Ctx) => `combobox-${ctx.uid}-listbox`,
   getToggleBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-toggle-btn`,
   getClearBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-clear-btn`,
-  getSrHintId: (ctx: Ctx) => `combobox-${ctx.uid}-sr-hint`,
   getOptionId: (ctx: Ctx, id: number | string, index?: number) =>
     [`combobox-${ctx.uid}-option-${id}`, index].filter(Boolean).join("-"),
 
@@ -43,6 +42,9 @@ export const dom = {
       return parseInt(setSize)
     }
     // else announce the number of options by querying the listbox
-    return listboxEl?.querySelectorAll("[role-option]").length ?? 0
+    return listboxEl?.querySelectorAll("[role=option]").length ?? 0
+  },
+  getMatchingOptionEl: (ctx: Ctx, value = ctx.trimmedInputValue) => {
+    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-label=${value}`)
   },
 }
