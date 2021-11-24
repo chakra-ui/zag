@@ -1,5 +1,5 @@
 import { klona } from "klona"
-import { cast, invariant, noop, runIfFn, warn, isArray, isObject, isString, uuid } from "@ui-machines/utils"
+import { cast, invariant, noop, runIfFn, warn, isArray, isObject, isString, uuid, clear } from "@ui-machines/utils"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"
@@ -277,9 +277,12 @@ export class Machine<
     const stateNode = this.getStateNode(target)
 
     if (target == null) {
-      this.state.tags.clear()
+      // remove all tags
+      clear(this.state.tags)
     } else {
-      this.state.tags = new Set(toArray(stateNode?.tags))
+      clear(this.state.tags)
+      const tags = toArray(stateNode?.tags)
+      this.state.tags.push(...tags)
     }
   }
 

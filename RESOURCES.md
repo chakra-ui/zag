@@ -15,3 +15,9 @@
 - https://harvesthq.github.io/chosen/
 - https://jqueryui.com/autocomplete/
 - http://easyautocomplete.com/
+
+# Combobox
+
+- https://www.lightningdesignsystem.com/components/combobox/
+- https://react-spectrum.adobe.com/react-aria/useComboBox.html
+- https://w3c.github.io/aria-practices/#combobox

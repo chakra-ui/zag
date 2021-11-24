@@ -258,7 +258,7 @@ export declare namespace StateMachine {
     hasTag(value: TState["tags"]): boolean
     nextEvents: string[]
     changed: boolean
-    tags: Set<TState["tags"]>
+    tags: TState["tags"][]
   }
 
   export type StateListener<

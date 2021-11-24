@@ -37,7 +37,11 @@ export function StateVisualizer(props: StateVisualizerProps) {
             const id = v.state.context.uid ?? v.id
             return `Machine: ${id}`
           }
-          return isDom() && v instanceof HTMLElement ? v.tagName : v
+          if (isDom()) {
+            if (v instanceof Document) return "doc:loaded"
+            if (v instanceof HTMLElement) return v.tagName
+          }
+          return v
         },
         4,
       )}

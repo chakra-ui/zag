@@ -11,9 +11,9 @@ export function createProxy<TContext, TState extends S.StateSchema, TEvent exten
     event: cast<Dict>({}),
     context: config.context ?? cast<TContext>({}),
     done: false,
-    tags: new Set<TState["tags"]>(),
+    tags: [] as Array<TState["tags"]>,
     hasTag(tag: TState["tags"]): boolean {
-      return this.tags.has(tag)
+      return this.tags.includes(tag)
     },
     matches(...value: string[]): boolean {
       return value.includes(this.value)

@@ -18,7 +18,6 @@ export default defineComponent({
       combobox.machine.withContext({
         uid: "123",
         onSelectionChange: console.log,
-        closeOnSelect: (opt) => opt.label !== "Angola",
       }),
     )
 

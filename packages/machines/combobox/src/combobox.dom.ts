@@ -21,14 +21,14 @@ export const dom = {
   getToggleBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getToggleBtnId(ctx)),
   getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 
-  getElements: (ctx: Ctx) => queryElements(dom.getListboxEl(ctx), "[role=option]:not([disabled])"),
+  getElements: (ctx: Ctx) => queryElements(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) =>
     dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][id=${ctx.activeId}]`),
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id, ctx.loop),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id, ctx.loop),
 
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
   getOptionData: (el: HTMLElement | null | undefined) => ({

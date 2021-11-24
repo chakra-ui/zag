@@ -10,9 +10,10 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
 ) {
   const { context: ctx } = state
 
-  const expanded = state.matches("interacting", "suggesting")
-  const autoFill = state.matches("interacting") && ctx.navigationValue && ctx.autoComplete
+  const expanded = state.hasTag("expanded")
+  const autoFill = expanded && ctx.navigationValue && ctx.autoComplete
   const showClearButton = (!state.matches("idle", "unknown") || ctx.isHoveringInput) && !ctx.isInputValueEmpty
+  const isFocused = state.hasTag("focused")
 
   return {
     setValue(value: string) {
@@ -23,8 +24,17 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       send("CLEAR_VALUE")
     },
 
+    focus() {
+      send("FOCUS")
+    },
+
+    isFocused,
+
+    blur() {
+      dom.getInputEl(ctx)?.blur()
+    },
+
     inputValue: ctx.inputValue,
-    firstOptionLabel: ctx.firstOptionLabel,
 
     labelProps: normalize.label<T>({
       htmlFor: dom.getInputId(ctx),
@@ -36,6 +46,8 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     containerProps: normalize.element<T>({
       id: dom.getContainerId(ctx),
       "data-expanded": dataAttr(expanded),
+      "data-focus": dataAttr(isFocused),
+      "data-disabled": dataAttr(ctx.disabled),
     }),
 
     inputProps: normalize.input<T>({
@@ -103,14 +115,19 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
           ArrowRight() {
             send("CLEAR_FOCUS")
           },
-          Home() {
-            send("HOME")
-            console.log("sent")
-            preventDefault = true
+          Home(event) {
+            const isCtrlKey = event.ctrlKey || event.metaKey
+            if (!isCtrlKey) {
+              send("HOME")
+              preventDefault = true
+            }
           },
-          End() {
-            send("END")
-            preventDefault = true
+          End(event) {
+            const isCtrlKey = event.ctrlKey || event.metaKey
+            if (!isCtrlKey) {
+              send("END")
+              preventDefault = true
+            }
           },
           Enter() {
             send("ENTER")
@@ -134,7 +151,10 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         const key = getEventKey(event, ctx)
         const exec = keymap[key]
 
-        if (exec) exec(event)
+        if (exec) {
+          exec(event)
+        }
+
         if (preventDefault) {
           event.preventDefault()
           event.stopPropagation()
@@ -144,7 +164,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
 
     buttonProps: normalize.button<T>({
       id: dom.getToggleBtnId(ctx),
-      "aria-haspopup": "true",
+      "aria-haspopup": "listbox",
       type: "button",
       role: "button",
       tabIndex: -1,
@@ -155,8 +175,8 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
       onPointerDown(event) {
-        event.preventDefault()
         send("CLICK_BUTTON")
+        event.preventDefault()
       },
     }),
 
@@ -183,25 +203,28 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       "aria-label": ctx.clearText,
       hidden: !showClearButton,
       onPointerDown(event) {
-        event.preventDefault()
         send("CLEAR_VALUE")
+        event.preventDefault()
       },
     }),
 
     getOptionProps(props: ComboboxOptionProps) {
-      const { value, label, index, optionCount, disabled } = props
+      const { value, label, index, count, disabled } = props
       const id = dom.getOptionId(ctx, value, index)
-      const selected = ctx.activeId === id
+      const focused = ctx.activeId === id
+      const checked = ctx.selectedValue === value
 
       return normalize.element<T>({
         id,
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(ctx.activeId === id),
-        "aria-selected": selected,
+        "data-highlighted": dataAttr(focused),
+        "data-disabled": dataAttr(disabled),
+        "data-checked": dataAttr(checked),
+        "aria-selected": focused,
         "aria-disabled": disabled,
-        "aria-posinset": index != null ? index + 1 : undefined,
-        "aria-setsize": optionCount,
+        "aria-posinset": count && index != null ? index + 1 : undefined,
+        "aria-setsize": count,
         "data-value": value,
         "data-label": label,
         // Prefer pointermove to pointerenter to avoid interrupting the keyboard navigation
@@ -211,8 +234,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         onPointerUp(event) {
           event.currentTarget.click()
         },
-        onClick(event) {
-          event.preventDefault()
+        onClick() {
           send({ type: "CLICK_OPTION", id, value: label })
         },
         onAuxClick(event) {
