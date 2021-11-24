@@ -1,4 +1,4 @@
-import { add, remove, toArray } from "@ui-machines/utils"
+import { add, isString, remove, toArray } from "@ui-machines/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { dom } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"
@@ -18,6 +18,11 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
     },
     watch: {
       value: "invokeOnChange",
+    },
+    created(ctx) {
+      if (ctx.multiple && isString(ctx.value)) {
+        ctx.value = [ctx.value]
+      }
     },
     states: {
       unknown: {
