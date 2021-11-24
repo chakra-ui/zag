@@ -75,15 +75,8 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       unknown: {
         on: {
           SETUP: [
-            {
-              guard: "autoFocus",
-              target: "focused",
-              actions: "setup",
-            },
-            {
-              target: "idle",
-              actions: "setup",
-            },
+            { guard: "autoFocus", target: "focused", actions: "setup" },
+            { target: "idle", actions: "setup" },
           ],
         },
       },
@@ -106,14 +99,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           POINTER_LEAVE: {
             actions: "clearIsHovering",
           },
-          FOCUS: [
-            {
-              guard: "selectOnFocus",
-              target: "focused",
-              actions: "selectInput",
-            },
-            { target: "focused" },
-          ],
+          FOCUS: "focused",
         },
       },
 
@@ -125,13 +111,10 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             actions: ["setInputValue", "focusFirstOption"],
           },
           BLUR: "idle",
-          ESCAPE: [
-            {
-              guard: "clearOnEsc",
-              actions: "clearInputValue",
-            },
-            { target: "focused" },
-          ],
+          ESCAPE: {
+            guard: "clearOnEsc",
+            actions: "clearInputValue",
+          },
           CLICK_BUTTON: {
             target: "suggesting",
             actions: ["invokeOnOpen"],
@@ -198,12 +181,15 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           },
           ENTER: {
             target: "focused",
-            actions: "selectOption",
+            actions: ["selectOption", "invokeOnClose"],
           },
           CHANGE: {
             actions: ["setInputValue", "focusFirstOption"],
           },
-          ESCAPE: "focused",
+          ESCAPE: {
+            target: "focused",
+            actions: ["invokeOnClose"],
+          },
           POINTEROVER_OPTION: [
             {
               target: "interacting",
@@ -215,8 +201,14 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
               actions: ["setActiveId", "setNavigationValue"],
             },
           ],
-          BLUR: "idle",
-          CLICK_BUTTON: "focused",
+          BLUR: {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+          CLICK_BUTTON: {
+            target: "focused",
+            actions: ["invokeOnClose"],
+          },
         },
       },
 
@@ -257,7 +249,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           },
           ENTER: {
             target: "focused",
-            actions: ["selectOption"],
+            actions: ["selectOption", "invokeOnClose"],
           },
           CHANGE: {
             target: "suggesting",
@@ -274,13 +266,19 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           ],
           CLICK_OPTION: {
             target: "focused",
-            actions: ["selectOption"],
+            actions: ["selectOption", "invokeOnClose"],
           },
-          ESCAPE: "focused",
-          CLICK_BUTTON: "focused",
+          ESCAPE: {
+            target: "focused",
+            actions: ["invokeOnClose"],
+          },
+          CLICK_BUTTON: {
+            target: "focused",
+            actions: ["invokeOnClose"],
+          },
           BLUR: {
             target: "idle",
-            actions: ["selectOption"],
+            actions: ["selectOption", "invokeOnClose"],
           },
           POINTERLEAVE_LISTBOX: {
             actions: "clearActiveId",
@@ -313,7 +311,6 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.activeId,
       isLastOptionFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.activeId,
       hasFocusedOption: (ctx) => !!ctx.activeId,
-      selectOnFocus: (ctx) => !!ctx.selectOnFocus,
       clearOnEsc: (ctx) => !!ctx.clearOnEsc,
       hasMatchingOption: (ctx) => !!dom.getMatchingOptionEl(ctx),
     },
@@ -368,7 +365,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
         ctx.selectedValue = ""
       },
       focusInput(ctx) {
-        nextTick(() => dom.getInputEl(ctx)?.focus())
+        nextTick(() => {
+          const input = dom.getInputEl(ctx)
+          if (ctx.selectOnFocus) input?.select()
+          else input?.focus()
+        })
       },
       selectInput(ctx) {
         nextTick(() => dom.getInputEl(ctx)?.select())
@@ -395,6 +396,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
       invokeOnOpen(ctx) {
         ctx.onOpen?.()
+      },
+      invokeOnClose(ctx) {
+        ctx.onClose?.()
       },
       focusFirstOption(ctx) {
         nextTick(() => {
