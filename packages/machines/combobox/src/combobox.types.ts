@@ -29,11 +29,6 @@ export type ComboboxMachineContext = Context<{
    */
   navigationValue: string
   /**
-   * The diff between the input's value and the navigation value.
-   * Can be used to show hint text when the user is typing
-   */
-  readonly hintValue: string
-  /**
    * The active option's id. Used to set the `aria-activedescendant` attribute
    */
   activeId: string | null
@@ -51,10 +46,6 @@ export type ComboboxMachineContext = Context<{
    */
   readonly?: boolean
   /**
-   * @computed Whether the combobox is interactive.
-   */
-  readonly isInteractive: boolean
-  /**
    * Whether the combobox is required
    */
   required?: boolean
@@ -67,6 +58,10 @@ export type ComboboxMachineContext = Context<{
    */
   autoComplete: boolean
   /**
+   * Whether the combobox should automatically highlight the first option.
+   */
+  autoHighlight: boolean
+  /**
    * Whether to autofocus the input on mount
    */
   autoFocus?: boolean
@@ -78,10 +73,6 @@ export type ComboboxMachineContext = Context<{
    * Whether to return focus to the input on click the clear button
    */
   focusOnClear?: boolean
-  /**
-   * Whether to close the combobox popup on blur
-   */
-  closeOnBlur?: boolean
   /**
    * Whether to open the combobox popup on initial click on the input
    */
@@ -101,7 +92,7 @@ export type ComboboxMachineContext = Context<{
   /**
    * Function called when a new option is selected
    */
-  onSelectionChange?: (value: string) => void
+  onSelect?: (value: string) => void
   /**
    * Function called when an options is highlighted using the pointer
    * or keyboard navigation.

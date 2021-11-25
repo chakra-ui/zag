@@ -16,6 +16,8 @@ export default function Page() {
     autoComplete: { type: "boolean", defaultValue: true },
     selectOnFocus: { type: "boolean", defaultValue: false },
     allowCustomValue: { type: "boolean", defaultValue: false },
+    autoHighlight: { type: "boolean", defaultValue: false },
+    loop: { type: "boolean", defaultValue: true },
   })
 
   const [options, setOptions] = useState(comboboxData)

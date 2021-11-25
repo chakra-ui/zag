@@ -186,7 +186,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       hidden: !expanded,
       "aria-labelledby": dom.getLabelId(ctx),
       onPointerDown(event) {
-        // prevent options from taking focus
+        // prevent options or elements within listbox from taking focus
         event.preventDefault()
       },
     }),

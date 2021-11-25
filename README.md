@@ -86,3 +86,5 @@ what to work on.
 
 - https://component.kitchen/elix
 - https://vaadin.com/docs/latest/ds/components/accordion
+- https://develop.kde.org/hig/components/
+- https://ui.toast.com/
