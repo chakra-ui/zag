@@ -8,4 +8,5 @@ export const srOnlyStyle = {
   position: "absolute",
   width: "1px",
   whiteSpace: "nowrap",
+  wordWrap: "normal",
 } as const

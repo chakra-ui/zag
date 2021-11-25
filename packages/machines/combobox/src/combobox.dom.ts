@@ -46,6 +46,7 @@ export const dom = {
     return listboxEl?.querySelectorAll("[role=option]").length ?? 0
   },
   getMatchingOptionEl: (ctx: Ctx, value = ctx.trimmedInputValue) => {
+    if (!value) return null
     return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-label="${value}"`)
   },
 
@@ -55,5 +56,15 @@ export const dom = {
       block: "nearest",
       scrollMode: "if-needed",
     })
+  },
+
+  focusInput: (ctx: Ctx) => {
+    const input = dom.getInputEl(ctx)
+    if (dom.getDoc(ctx).activeElement !== input) {
+      input?.focus()
+    }
+    if (ctx.selectOnFocus) {
+      input?.select()
+    }
   },
 }

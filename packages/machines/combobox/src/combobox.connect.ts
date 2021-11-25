@@ -48,6 +48,12 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       "data-expanded": dataAttr(expanded),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(ctx.disabled),
+      onPointerOver() {
+        send("POINTER_OVER")
+      },
+      onPointerLeave() {
+        send("POINTER_LEAVE")
+      },
     }),
 
     inputProps: normalize.input<T>({
@@ -71,12 +77,6 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       onPointerDown() {
         send("POINTER_DOWN")
       },
-      onPointerOver() {
-        send("POINTER_OVER")
-      },
-      onPointerLeave() {
-        send("POINTER_LEAVE")
-      },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)],
@@ -96,17 +96,17 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       },
       onKeyDown(event) {
         const evt = getNativeEvent(event)
-        if (event.ctrlKey || event.shiftKey || evt.isComposing) return
+        if (evt.ctrlKey || evt.shiftKey || evt.isComposing) return
 
         let preventDefault = false
 
         const keymap: EventKeyMap = {
-          ArrowDown() {
-            send("ARROW_DOWN")
+          ArrowDown(event) {
+            send(event.altKey ? "ALT_DOWN" : "ARROW_DOWN")
             preventDefault = true
           },
-          ArrowUp() {
-            send("ARROW_UP")
+          ArrowUp(event) {
+            send(event.altKey ? "ALT_UP" : "ARROW_UP")
             preventDefault = true
           },
           ArrowLeft() {
@@ -141,7 +141,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
             send("BACKSPACE")
           },
           Delete() {
-            send("DELETE_KEY")
+            send("DELETE")
           },
           Tab() {
             send("TAB")
@@ -185,9 +185,6 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       role: "listbox",
       hidden: !expanded,
       "aria-labelledby": dom.getLabelId(ctx),
-      onPointerLeave() {
-        send("POINTERLEAVE_LISTBOX")
-      },
       onPointerDown(event) {
         // prevent options from taking focus
         event.preventDefault()
@@ -229,15 +226,19 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
         "data-label": label,
         // Prefer pointermove to pointerenter to avoid interrupting the keyboard navigation
         onPointerMove() {
+          if (disabled) return
           send({ type: "POINTEROVER_OPTION", id, value: label })
         },
         onPointerUp(event) {
+          if (disabled) return
           event.currentTarget.click()
         },
         onClick() {
+          if (disabled) return
           send({ type: "CLICK_OPTION", id, value: label })
         },
         onAuxClick(event) {
+          if (disabled) return
           event.currentTarget.click()
         },
       })

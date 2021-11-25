@@ -20,7 +20,7 @@ export class LiveRegion {
     if (!this.doc || exists) return
 
     const region = this.doc.createElement("machine-announcer")
-    region.id = "__machine-region"
+    region.id = "__live-region__"
     region.setAttribute("aria-live", ariaLive)
     region.setAttribute("role", role)
     region.setAttribute("aria-relevant", ariaRelevant)
@@ -28,13 +28,13 @@ export class LiveRegion {
     Object.assign(region.style, srOnlyStyle)
 
     this.region = region
-    this.doc.body.prepend(region)
+    this.doc.body.appendChild(region)
   }
 
   announce = (msg: string, expire = 7e3) => {
     if (!this.doc || !this.region) return
 
-    const div = this.doc.createElement("div")
+    const div = this.doc.createElement("p")
     div.innerHTML = msg
     this.region.appendChild(div)
 

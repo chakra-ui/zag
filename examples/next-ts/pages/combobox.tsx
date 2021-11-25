@@ -15,7 +15,7 @@ export default function Page() {
   const controls = useControls({
     autoComplete: { type: "boolean", defaultValue: true },
     selectOnFocus: { type: "boolean", defaultValue: false },
-    allowCustomValue: { type: "boolean", defaultValue: true },
+    allowCustomValue: { type: "boolean", defaultValue: false },
   })
 
   const [options, setOptions] = useState(comboboxData)
@@ -27,7 +27,8 @@ export default function Page() {
         setOptions(comboboxData)
       },
       onInputChange(value) {
-        setOptions(comboboxData.filter((o) => o.label.toLowerCase().includes(value.toLowerCase())))
+        const filtered = comboboxData.filter((o) => o.label.toLowerCase().includes(value.toLowerCase()))
+        setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
     { context: controls.context },
