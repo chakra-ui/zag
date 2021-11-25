@@ -13,10 +13,6 @@ export type ComboboxMachineContext = Context<{
    */
   inputValue: string
   /**
-   * @computed the value of the combobox's input, without the leading and trailing whitespace
-   */
-  readonly trimmedInputValue: string
-  /**
    * @computed Whether the input's value is empty
    */
   readonly isInputValueEmpty: boolean
@@ -81,6 +77,10 @@ export type ComboboxMachineContext = Context<{
    * Whether to allow custom values or free values in the input
    */
   allowCustomValue?: boolean
+  /**
+   * Function called to validate the input value
+   */
+  isCustomValue?: (opts: { inputValue: string; previousValue: string }) => boolean
   /**
    * Whether to loop the keyboard navigation through the options
    */

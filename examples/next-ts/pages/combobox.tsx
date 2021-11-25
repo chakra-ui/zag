@@ -38,14 +38,17 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps } = combobox.connect(
-    state,
-    send,
-  )
+  const { labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps, setValue } =
+    combobox.connect(state, send)
 
   return (
     <>
+      <div>
+        <button onClick={() => setValue("Togo")}>Set to Togo</button>
+      </div>
+
       <controls.ui />
+
       <Styles>
         <div ref={ref}>
           <label {...labelProps}>Select country</label>
