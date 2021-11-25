@@ -45,7 +45,7 @@ export const dom = {
     // else announce the number of options by querying the listbox
     return listboxEl?.querySelectorAll("[role=option]").length ?? 0
   },
-  getMatchingOptionEl: (ctx: Ctx, value = ctx.trimmedInputValue) => {
+  getMatchingOptionEl: (ctx: Ctx, value = ctx.inputValue) => {
     if (!value) return null
     return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-label="${value}"`)
   },

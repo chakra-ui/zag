@@ -188,7 +188,7 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           },
           {
             guard: and("autoHighlight", "isInputValueEmpty"),
-            actions: suggestEntry.concat(["focusFirstOption"]),
+            actions: suggestEntry.concat("focusFirstOption"),
           },
           {
             actions: suggestEntry,
@@ -379,7 +379,10 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
           if (!opt) return
 
           dom.scrollIntoView(ctx, opt)
-          dom.focusInput(ctx)
+
+          if (ctx.autoComplete) {
+            dom.focusInput(ctx)
+          }
         })
       },
     },
