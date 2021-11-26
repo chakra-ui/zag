@@ -57,6 +57,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
         "aria-expanded": isOpen,
         disabled: isDisabled,
         "aria-disabled": isDisabled,
+        "data-expanded": dataAttr(isOpen),
         "data-ownedby": dom.getRootId(ctx),
         onFocus() {
           if (isDisabled) return
@@ -99,8 +100,8 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
           const exec = keyMap[key]
 
           if (exec) {
-            event.preventDefault()
             exec(event)
+            event.preventDefault()
           }
         },
       })
