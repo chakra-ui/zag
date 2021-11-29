@@ -26,7 +26,7 @@ machines in your components is by leveraging the `useMachine` and `useActor` hoo
 Using the machines within React is fairly straight forward. You'll need to:
 
 - Install `@ui-machines/react`
-- Import `useMachine` from the packages
+- Import `useMachine` from the package
 
 The machines were developed with React-first mindset. Well, mostly because the creator (Segun Adebayo) is more of React
 freak, Lol.
@@ -58,12 +58,6 @@ While you can use the UI machines in Vue without JSX, we recommend using JSX as 
 - Import and use `normalizeProps` to convert the JSX attributes to a format compatible with Vue.
 - For TypeScript users, you can import and use `VuePropTypes` to get better TS experience for JSX attributes.
 
-### Why the need for `normalizeProps`?
-
-Most JSX framework use a different naming convention for their JSX attributes. For example, in React, the keydown
-listener property is`onKeyDown` while in vue the correct property is `onKeydown`. These little nuances between
-frameworks is handled for you automatically.
-
 ```jsx
 import { computed, defineComponent } from "vue"
 import * as Toggle from "@ui-machines/toggle"
@@ -82,6 +76,12 @@ export default defineComponent({
 })
 ```
 
+#### Why the need for `normalizeProps`?
+
+Most JSX framework use a different naming convention for their JSX attributes. For example, in React, the keydown
+listener property is`onKeyDown` while in vue the correct property is `onKeydown`. These little nuances between
+frameworks is handled for you automatically.
+
 ### **Usage with Solid.js**
 
 We love Solid.js and added support to use the machines in it. Here's what you need to do:
@@ -94,7 +94,7 @@ We love Solid.js and added support to use the machines in it. Here's what you ne
 ```jsx
 import { createMemo } from "solid-js"
 import * as Toggle from "@ui-machines/toggle"
-import { useMachine, normalizeProps } from "@ui-machines/vue"
+import { useMachine, normalizeProps } from "@ui-machines/solid"
 
 export default function Toggle() {
   const [state, send] = useMachine(Toggle.machine)
