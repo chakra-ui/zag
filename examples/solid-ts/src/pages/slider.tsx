@@ -2,13 +2,13 @@ import { slider } from "@ui-machines/slider"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { sliderStyle } from "../../../../shared/style"
 import serialize from "form-serialize"
 
-const styles = css(sliderStyle as CSSObject)
+const styles = css(sliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(

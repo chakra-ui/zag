@@ -2,12 +2,12 @@ import { tagsInput } from "@ui-machines/tags-input"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { tagsInputStyle } from "../../../../shared/style"
 
-const styles = css(tagsInputStyle as CSSObject)
+const styles = css(tagsInputStyle)
 
 export default function Page() {
   const [state, send] = useMachine(

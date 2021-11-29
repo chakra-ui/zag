@@ -3,13 +3,13 @@ import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 import { popoverStyle } from "../../../../shared/style"
 
-const styles = css(popoverStyle as CSSObject)
+const styles = css(popoverStyle)
 
 export default defineComponent({
   name: "Popover",

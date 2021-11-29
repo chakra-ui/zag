@@ -77,7 +77,8 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
     guards: {
       canToggle: (ctx) => !!ctx.collapsible || !!ctx.multiple,
       isExpanded: (ctx, evt) => {
-        return Array.isArray(ctx.value) ? ctx.value.includes(evt.value) : ctx.value === evt.value
+        if (ctx.multiple && Array.isArray(ctx.value)) return ctx.value.includes(evt.value)
+        return ctx.value === evt.value
       },
     },
     actions: {

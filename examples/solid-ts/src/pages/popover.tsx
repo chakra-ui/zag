@@ -2,12 +2,12 @@ import { popover } from "@ui-machines/popover"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo } from "solid-js"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { popoverStyle } from "../../../../shared/style"
 
-const styles = css(popoverStyle as CSSObject)
+const styles = css(popoverStyle)
 
 export default function Page() {
   const [state, send] = useMachine(

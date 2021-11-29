@@ -2,14 +2,14 @@ import { combobox } from "@ui-machines/combobox"
 import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { defineComponent, h, Fragment, computed } from "vue"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 
-const styles = css(comboboxStyle as CSSObject)
+const styles = css(comboboxStyle)
 
 export default defineComponent({
   name: "Combobox",

@@ -2,13 +2,13 @@ import { rangeSlider } from "@ui-machines/range-slider"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo, For } from "solid-js"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 import serialize from "form-serialize"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { rangeSliderStyle } from "../../../../shared/style"
 
-const styles = css(rangeSliderStyle as CSSObject)
+const styles = css(rangeSliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(

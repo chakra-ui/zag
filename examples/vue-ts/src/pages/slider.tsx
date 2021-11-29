@@ -3,14 +3,14 @@ import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
 
 import { computed, h, Fragment } from "vue"
 import { defineComponent } from "@vue/runtime-core"
-import { css, CSSObject } from "@emotion/css"
+import { css } from "@emotion/css"
 import serialize from "form-serialize"
 
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 import { sliderStyle } from "../../../../shared/style"
 
-const styles = css(sliderStyle as CSSObject)
+const styles = css(sliderStyle)
 
 export default defineComponent({
   name: "Slider",
