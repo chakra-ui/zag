@@ -34,3 +34,8 @@ ctx.doc = ref(document) // ✅ Works
 The Pointer event API is supported is most browsers by default [(See support)](https://caniuse.com/pointer). When
 checking for pointer down, consider using `onPointerDown` instead of `onMouseDown` or `onTouchStart` except you're
 designing for a specific pointer type.
+
+## Naming states
+
+State name should active and not passive. It should represents something happening, e.g. `searching`, `scrubbing` or an
+identifiable situation, e.g. `focused`, `visited`, `logged-in`
