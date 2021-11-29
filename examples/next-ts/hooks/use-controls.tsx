@@ -1,28 +1,6 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import React, { useState } from "react"
-
-type Prop =
-  | { type: "boolean"; label?: string; defaultValue: boolean }
-  | { type: "string"; label?: string; defaultValue: string; placeholder?: string }
-  | { type: "select"; options: readonly string[]; defaultValue: string; label?: string }
-  | { type: "multiselect"; options: readonly string[]; defaultValue: string[]; label?: string }
-  | { type: "number"; label?: string; defaultValue: number; min?: number; max?: number }
-
-type ControlRecord = Record<string, Prop>
-
-type Value<T extends ControlRecord> = {
-  [K in keyof T]: T[K] extends { type: "boolean" }
-    ? boolean
-    : T[K] extends { type: "string" }
-    ? string
-    : T[K] extends { type: "select" }
-    ? T[K]["options"][number]
-    : T[K] extends { type: "multiselect" }
-    ? T[K]["options"][number][]
-    : T[K] extends { type: "number" }
-    ? number
-    : never
-}
+import { ControlRecord, ControlValue } from "@ui-machines/types"
 
 function getDefaultValues<T extends ControlRecord>(obj: T) {
   return Object.keys(obj).reduce(
@@ -30,7 +8,7 @@ function getDefaultValues<T extends ControlRecord>(obj: T) {
       ...acc,
       [key]: obj[key].defaultValue,
     }),
-    {} as Value<T>,
+    {} as ControlValue<T>,
   )
 }
 
