@@ -29,3 +29,4 @@ export type Style = React.CSSProperties & {
 }
 
 export * from "./prop-types"
+export * from "./controls"

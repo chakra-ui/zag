@@ -23,7 +23,7 @@ export default function Page() {
   const controls = useControls({
     collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
     multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
-    activeId: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
+    value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
   })
 
   const [state, send] = useMachine(accordion.machine, {

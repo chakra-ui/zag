@@ -280,9 +280,7 @@ export class Machine<
       // remove all tags
       clear(this.state.tags)
     } else {
-      clear(this.state.tags)
-      const tags = toArray(stateNode?.tags)
-      this.state.tags.push(...tags)
+      this.state.tags = toArray(stateNode?.tags)
     }
   }
 
