@@ -76,12 +76,6 @@ export default defineComponent({
 })
 ```
 
-#### Why the need for `normalizeProps`?
-
-Most JSX framework use a different naming convention for their JSX attributes. For example, in React, the keydown
-listener property is`onKeyDown` while in vue the correct property is `onKeydown`. These little nuances between
-frameworks is handled for you automatically.
-
 ### **Usage with Solid.js**
 
 We love Solid.js and added support to use the machines in it. Here's what you need to do:
@@ -102,6 +96,12 @@ export default function Toggle() {
   return <button {...buttonProps}>{isActive ? "On" : "Off"}</button>
 }
 ```
+
+#### Why the need for `normalizeProps`?
+
+Most JSX framework use a different naming convention for their JSX attributes. For example, in React, the keydown
+listener property is`onKeyDown` while in vue the correct property is `onKeydown`. These little nuances between
+frameworks is handled for you automatically.
 
 The goal of UI machines is to help you abstract the interaction and accessible patterns into a statechart so you never
 have to write them over and again.
