@@ -1,11 +1,3 @@
-## Installation
-
-To use the accordion machine in your project, install the respective package
-
-```jsx
-import * as Accordion from "@ui-machines/accordion"
-```
-
 ### Features
 
 ✅ Full keyboard navigation.
@@ -14,42 +6,26 @@ import * as Accordion from "@ui-machines/accordion"
 
 ✅ Can be controlled or uncontrolled.
 
+## Installation
+
+To use the accordion machine in your project, install the respective package
+
+```jsx
+import * as Accordion from "@ui-machines/accordion"
+```
+
 If you're using React, you'll also need to install the `@ui-machines/react` binding
 
-<CodeSnippet paths={["react/accordion/installation.mdx", "vue/accordion/installation.mdx"]} />
+<CodeSnippet id="accordion/installation.mdx" />
 
-Bringing it all together. The accordion package exports two key artifacts:
+## Usage
+
+The accordion package exports two key artifacts:
 
 - `machine`: The state machine logic for the accordion widget as described in WAI-ARIA specification.
 - `connect`: The function that translates the machine's state to DOM attributes and event handlers.
 
-```jsx
-import * as Accordion from "@ui-machines/accordion"
-import { useMachine } from "@ui-machines/react"
-
-function Accordion() {
-  // invoke the machine within react
-  const [state, send] = useMachine(Accordion.machine)
-
-  // translate machine output to DOM attributes
-  const bind = useMemo(() => Accordion.connect(state, send), [state])
-
-  // render UI
-  return (
-    <div {...bind.rootProps}>
-      <h3>
-        <button {...bind.getTriggerProps({ value: "home" })}>Home Trigger</button>
-      </h3>
-      <div {...bind.getPanelProps({ value: "home" })}>Home Content</div>
-
-      <h3>
-        <button {...bind.getTriggerProps({ value: "about" })}>About Trigger</button>
-      </h3>
-      <div {...bind.getPanelProps({ value: "about" })}>About Content</div>
-    </div>
-  )
-}
-```
+<CodeSnippet id="accordion/usage.mdx" />
 
 ## Opening multiple accordions at once
 

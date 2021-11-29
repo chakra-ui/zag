@@ -1,0 +1,27 @@
+```jsx
+import * as Accordion from "@ui-machines/accordion"
+import { useMachine } from "@ui-machines/react"
+
+function Accordion() {
+  // invoke the machine within react
+  const [state, send] = useMachine(Accordion.machine)
+
+  // translate machine output to DOM attributes
+  const bind = useMemo(() => Accordion.connect(state, send), [state])
+
+  // render UI
+  return (
+    <div {...bind.rootProps}>
+      <h3>
+        <button {...bind.getTriggerProps({ value: "home" })}>Home Trigger</button>
+      </h3>
+      <div {...bind.getPanelProps({ value: "home" })}>Home Content</div>
+
+      <h3>
+        <button {...bind.getTriggerProps({ value: "about" })}>About Trigger</button>
+      </h3>
+      <div {...bind.getPanelProps({ value: "about" })}>About Content</div>
+    </div>
+  )
+}
+```

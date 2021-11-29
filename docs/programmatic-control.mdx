@@ -1,0 +1,54 @@
+# Programmatic Control
+
+In the react world we call this "controlled" and "uncontrolled" components or state. To achieve this, the machine
+provide three ways to define its initial context.
+
+### Using exposed methods
+
+The `connect` method of any component machine provide helpful methods to change the machine state or update its context.
+Prefer to use this approach instead of the "controlled" version.
+
+Let's say we'd like to change the expanded accordion item in an accordion group. Here's how to do that:
+
+```jsx
+// 1. Bind the machine in your framework
+const [state, send] = useMachine(Accordion.machine)
+
+// 2. Call the connect function
+const bind = Accordion.connect(state, send)
+
+// 3. Use exposed methods
+bind.setValue("item-1")
+```
+
+### Setting initial context
+
+`<machine>.withContext(...)`: This is used to set the **initial** context value of the machine. It can't be updated
+later on.
+
+For example, let's stay we want an accordion to start with a specific selected value but allow the user change it later
+on. Here's how to acheive that.
+
+```jsx
+const [state, send] = useMachine(
+  // set initial context value
+  Accordion.machine.withContext({
+    value: "item-1",
+  }),
+)
+```
+
+### Setting and controlling context programmatically
+
+In some cases you might want to control the component's context via props or in response to some external event. To
+achieve this, pass the `context` in the `useMachine`'s second argument.
+
+```jsx
+// external value (e.g. from props)
+const value = "item-1"
+
+// control context with external value
+const [state, send] = useMachine(Accordion.machine, {
+  context: { value },
+})
+```
