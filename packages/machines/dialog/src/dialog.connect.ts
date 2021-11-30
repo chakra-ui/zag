@@ -36,10 +36,11 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       "aria-hidden": true,
       id: dom.getOverlayId(ctx),
       onClick(event) {
-        event.preventDefault()
-        event.stopPropagation()
+        if (event.target !== event.currentTarget) return
         if (!ctx.isTopMostDialog || !ctx.closeOnOverlayClick) return
         send("CLOSE")
+        event.preventDefault()
+        event.stopPropagation()
       },
     }),
     contentProps: normalize.element<T>({

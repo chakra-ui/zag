@@ -53,7 +53,7 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         },
       },
       open: {
-        entry: ["checkTitleAndDescription"],
+        entry: ["checkTitleExists", "checkDescriptionExists"],
         activities: ["trapFocus", "preventScroll", "hideContentBelow", "subscribeToStore", "trackEscKey"],
         on: {
           CLOSE: "closed",
@@ -133,9 +133,13 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
       setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
       },
-      checkTitleAndDescription(ctx) {
+      checkTitleExists(ctx) {
         nextTick(() => {
           ctx.hasTitle = !!dom.getTitleEl(ctx)
+        })
+      },
+      checkDescriptionExists(ctx) {
+        nextTick(() => {
           ctx.hasDescription = !!dom.getDescriptionEl(ctx)
         })
       },
