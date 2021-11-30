@@ -1,4 +1,9 @@
-### Features
+# Accordion
+
+An accordion is a vertically stacked set of interactive headings that each contain a title, content snippet, or
+thumbnail representing a section of content.
+
+## Features
 
 ✅ Full keyboard navigation.
 
@@ -20,7 +25,10 @@ If you're using React, you'll also need to install the `@ui-machines/react` bind
 
 ## Usage
 
-The accordion package exports two key artifacts:
+By default, only one item may be expanded and each accordion item uses a unique value, defined in the `getTriggerProps`
+and `getPanelProps`.
+
+The accordion package exports two key functions:
 
 - `machine`: The state machine logic for the accordion widget as described in WAI-ARIA specification.
 - `connect`: The function that translates the machine's state to DOM attributes and event handlers.
@@ -60,29 +68,34 @@ const [state, send] = useMachine(
 )
 ```
 
-## Controlling accordion state via props
+## Toggle each accordion item
 
-The `useMachine` hook provides a way to pass **controlled** context into the machine, making it easier to
-programmatically control the machine's behavior or context.
+To allow an expanded accordion item to be collapsed again by clicking on it. Set the context's `collapsible` property to
+`true`.
+
+> Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
 
 ```jsx
-function Accordion({ multiple }) {
-  // controlled pattern
-  const [state, send] = useMachine(Accordion.machine, {
-    context: { multiple },
-  })
-
-  // uncontrolled pattern
-  const [state, send] = useMachine(Accordion.machine.withContext({ multiple }))
-}
-
-function Example() {
-  return <Accordion multiple />
-}
+const [state, send] = useMachine(
+  Accordion.machine.withContext({
+    collapsible: true,
+  }),
+)
 ```
 
-> If you only need to set the accordion's context initially you can use the `Accordion.machine.withContext({...})`
-> pattern. It won't respond to updates afterwards.
+## Methods and Properties
+
+The accordion's connect method exposes the following methods:
+
+- `setValue`: Used to set the value of the accordion that will be expanded.
+- `value`: The value of the currently selected accordion
+
+```jsx
+const accordion = connect(state, send)
+
+accordion.value // => "item-1"
+accordion.setValue("item-2")
+```
 
 ## Styling the expanded state
 

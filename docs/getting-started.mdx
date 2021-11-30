@@ -4,22 +4,18 @@ title: Getting Started
 
 # Getting Started
 
-Framework agnostic components using Statecharts.
+UI Machines can be used within most JSX frameworks like Vue, React and Solid. The easiest way to use UI machines in your
+components is by leveraging the `useMachine` hook we provide for each framework.
 
-Build accessible UI components for your design system in React, Solid and Vue without sweating over the logic.
+To get UI machines running, you'd need to first install the actual machine(s) and then your desired framework package.
 
-We believe that most widgets work and function the same way regardless of the framework they're built with. Don't
-re-invent the wheel, let the machines do the work 😊.
+## Install the machine
 
-- 🔥 Component machines come with pretty good accessibility baked in.
-- 🦄 Works with any JS framework  that supports JSX & hooks.
-- 🌳 Built using the latest ideas in Statecharts.
-- 🧪 Well-tested components using Cypress.
+There are 16 machine packages available for you. Install whichever you need for your project. For example, to install
+the `Accordion` machine, run: `npm install @ui/machines/accordion`
 
-## Integrating with Frameworks
-
-UI Machines can be used within most reactive frameworks like Vue, React, Svelte and Solid. The easiest way to use state
-machines in your components is by leveraging the `useMachine` and `useActor` hooks we provide for each framework.
+## Install the framework package
+UI machine is framework agnostic and supports React, Vue and Solid. Follow the steps below to use in your preferred framework.
 
 ### **Usage with React**
 

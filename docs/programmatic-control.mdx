@@ -6,7 +6,7 @@ provide three ways to define its initial context.
 ### Using exposed methods
 
 The `connect` method of any component machine provide helpful methods to change the machine state or update its context.
-Prefer to use this approach instead of the "controlled" version.
+This approach is recommended approach.
 
 Let's say we'd like to change the expanded accordion item in an accordion group. Here's how to do that:
 
@@ -15,10 +15,10 @@ Let's say we'd like to change the expanded accordion item in an accordion group.
 const [state, send] = useMachine(Accordion.machine)
 
 // 2. Call the connect function
-const bind = Accordion.connect(state, send)
+const accordion = Accordion.connect(state, send)
 
 // 3. Use exposed methods
-bind.setValue("item-1")
+accordion.setValue("item-1")
 ```
 
 ### Setting initial context
