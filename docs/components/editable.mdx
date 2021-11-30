@@ -1,0 +1,39 @@
+# Editable
+
+Editable Text is used for inline renaming of some text. It appears as normal UI text but transforms into a text input
+field when the user clicks on or focuses it.
+
+## Features
+
+- Use custom controls for the editable.
+- `Enter` commits the input value.
+- `Esc` reverts the value.
+- Edit value on double click or focus
+
+## Installation
+
+To use the editable machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/editable" />
+
+```jsx
+import * as Editable from "@ui-machines/editable"
+```
+
+If you're using React, you'll also need to install the `@ui-machines/react` binding
+
+<CodeSnippet id="editable/installation.mdx" />
+
+## Usage
+
+The editable machine exposes the `triggerProps`, `overlayProps`, `contentProps`, `titleProps`, `descriptionProps`, and
+`closeButtonProps` following properties to get it working correctly:
+
+<CodeSnippet id="editable/usage.mdx" />
+
+# Using custom controls
+
+In some cases, you might need to use custom controls to toggle the edit and read mode. We use the render prop pattern to
+provide access to the internal state of the component.
+
+<CodeSnippet id="editable/custom-controls.mdx" />

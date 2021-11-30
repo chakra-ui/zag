@@ -1,7 +1,6 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
 import type { Context } from "@ui-machines/types"
-
 import { dom } from "./tags-input.dom"
 
 const { and, not, or } = guards
@@ -116,7 +115,10 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         actions: "deleteTag",
       },
       CLEAR_ALL: {
-        actions: "resetValue",
+        actions: "clearValue",
+      },
+      ADD_TAG: {
+        actions: ["addTag", "clearInputValue"],
       },
     },
     context: {
@@ -165,41 +167,6 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         },
       },
 
-      "navigating:tag": {
-        on: {
-          ARROW_RIGHT: [
-            {
-              guard: and("hasTags", "isInputCaretAtStart", not("isLastTagFocused")),
-              actions: "focusNextTag",
-            },
-            { target: "focused:input" },
-          ],
-          ARROW_LEFT: {
-            actions: "focusPrevTag",
-          },
-          BLUR: {
-            target: "idle",
-            actions: "clearFocusedId",
-          },
-          ENTER: {
-            target: "editing:tag",
-            actions: ["setEditedId", "initEditedTagValue", "focusEditedTagInput"],
-          },
-          ARROW_DOWN: "focused:input",
-          ESCAPE: "focused:input",
-          TYPE: {
-            target: "focused:input",
-            actions: "setInputValue",
-          },
-          BACKSPACE: {
-            actions: ["deleteFocusedTag", "focusPrevTag"],
-          },
-          DELETE: {
-            actions: "deleteFocusedTag",
-          },
-        },
-      },
-
       "focused:input": {
         entry: ["focusInput", "clearFocusedId"],
         on: {
@@ -235,6 +202,41 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
           PASTE: {
             guard: "addOnPaste",
             actions: ["setInputValue", "addTagFromPaste"],
+          },
+        },
+      },
+
+      "navigating:tag": {
+        on: {
+          ARROW_RIGHT: [
+            {
+              guard: and("hasTags", "isInputCaretAtStart", not("isLastTagFocused")),
+              actions: "focusNextTag",
+            },
+            { target: "focused:input" },
+          ],
+          ARROW_LEFT: {
+            actions: "focusPrevTag",
+          },
+          BLUR: {
+            target: "idle",
+            actions: "clearFocusedId",
+          },
+          ENTER: {
+            target: "editing:tag",
+            actions: ["setEditedId", "initEditedTagValue", "focusEditedTagInput"],
+          },
+          ARROW_DOWN: "focused:input",
+          ESCAPE: "focused:input",
+          TYPE: {
+            target: "focused:input",
+            actions: "setInputValue",
+          },
+          BACKSPACE: {
+            actions: ["deleteFocusedTag", "focusPrevTag"],
+          },
+          DELETE: {
+            actions: "deleteFocusedTag",
           },
         },
       },
@@ -362,9 +364,12 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       clearInputValue(ctx) {
         ctx.inputValue = ""
       },
-      addTag(ctx) {
-        const guard = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
-        if (guard) ctx.value.push(ctx.trimmedInputValue)
+      addTag(ctx, evt) {
+        const value = evt.value ?? ctx.trimmedInputValue
+        const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value }) ?? true
+        if (guard) {
+          ctx.value.push(value)
+        }
       },
       addTagFromPaste(ctx) {
         nextTick(() => {
@@ -373,7 +378,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
           ctx.inputValue = ""
         })
       },
-      resetValue(ctx) {
+      clearValue(ctx) {
         ctx.value = []
       },
     },

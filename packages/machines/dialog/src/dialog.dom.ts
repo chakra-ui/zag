@@ -1,4 +1,4 @@
-import { DialogMachineContext as Ctx } from "./dialog.machine"
+import { DialogMachineContext as Ctx } from "./dialog.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

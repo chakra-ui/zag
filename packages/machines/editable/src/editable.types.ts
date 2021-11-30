@@ -28,6 +28,10 @@ export type EditableMachineContext = Context<{
    */
   submitMode: SubmitMode
   /**
+   * Whether to start with the edit mode active.
+   */
+  startWithEditView: boolean
+  /**
    * Whether to select the text in the input when it is focused.
    */
   selectOnFocus?: boolean
@@ -71,9 +75,6 @@ export type EditableMachineContext = Context<{
    * The placeholder value to show when the `value` is empty
    */
   placeholder?: string
-
-  // -------- Computed properties ---------- //
-
   /**
    * @computed Whether the editable can be interacted with
    */

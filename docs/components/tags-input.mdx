@@ -1,0 +1,39 @@
+# Tags Input
+
+Tag inputs render tags inside an input, followed by an actual text input.
+
+## Features
+
+- Typing in the input and pressing enter will add new items
+- Clear button to reset all tags values
+- Add tags by pasting into the input
+- Limit the number of tags
+- Navigate tags with keyboard
+- Custom validation to accept/reject tags
+
+## Installation
+
+To use the tags input machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/tags-input" />
+
+```jsx
+import * as TagsInput from "@ui-machines/tags-input"
+```
+
+Then you'll need to install the framework specific binding
+
+<CodeSnippet id="tags-input/installation.mdx" />
+
+## Usage
+
+<CodeSnippet id="tags-input/basic-usage.mdx" />
+
+## Removing all tags
+
+The tags input will remove all tags when the clear button is clicked. To remove all tags, use the `clearButtonProps` to
+a `button` element.
+
+<CodeSnippet id="tags-input/remove-tags-with-button.mdx" />
+
+To programmatically remove all tags, use the `clear` method that's available in the `connect`.

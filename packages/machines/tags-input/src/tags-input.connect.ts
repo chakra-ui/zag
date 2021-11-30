@@ -20,9 +20,22 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
   const isEditingTag = state.matches("editing:tag")
 
   return {
+    // state
     value: ctx.value,
     valueAsString: ctx.valueAsString,
 
+    // methods
+    clear() {
+      send("CLEAR_ALL")
+    },
+    add(value: string) {
+      send({ type: "ADD_TAG", value })
+    },
+    delete(id: string) {
+      send({ type: "DELETE_TAG", id })
+    },
+
+    // attributes
     rootProps: normalize.element<T>({
       "data-count": ctx.value.length,
       "data-disabled": dataAttr(ctx.disabled),
@@ -162,18 +175,29 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     getTagDeleteButtonProps({ index, value }: TagProps) {
+      const id = dom.getTagId(ctx, index)
       return normalize.button<T>({
         id: dom.getTagDeleteBtnId(ctx, index),
         type: "button",
         "aria-label": `Delete ${value}`,
         tabIndex: -1,
+        onPointerOver() {
+          send({ type: "HOVER_DELETE_TAG", id })
+        },
         onClick() {
-          send({
-            type: "DELETE_TAG",
-            id: dom.getTagId(ctx, index),
-          })
+          send({ type: "DELETE_TAG", id })
         },
       })
     },
+
+    clearButtonProps: normalize.button<T>({
+      id: dom.getClearButtonId(ctx),
+      type: "button",
+      "aria-label": "Clear all tags",
+      hidden: ctx.value.length === 0,
+      onClick() {
+        send("CLEAR_ALL")
+      },
+    }),
   }
 }

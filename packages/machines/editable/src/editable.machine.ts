@@ -1,4 +1,4 @@
-import { choose, createMachine, guards, ref } from "@ui-machines/core"
+import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { dom } from "./editable.dom"
 import { EditableMachineContext, EditableMachineState } from "./editable.types"
@@ -10,6 +10,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
     id: "editable-machine",
     initial: "unknown",
     context: {
+      startWithEditView: false,
       activationMode: "focus",
       submitMode: "both",
       uid: "",
@@ -17,6 +18,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       previousValue: "",
       selectOnFocus: true,
     },
+
     computed: {
       submitOnEnter: (ctx) => ["both", "enter"].includes(ctx.submitMode),
       submitOnBlur: (ctx) => ["both", "blur"].includes(ctx.submitMode),
@@ -24,13 +26,21 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       isValueEmpty: (ctx) => ctx.value === "",
       isPreviewFocusable: (ctx) => ctx.activationMode === "focus",
     },
+
     states: {
       unknown: {
         on: {
-          SETUP: {
-            target: "preview",
-            actions: ["setId", "setOwnerDocument"],
-          },
+          SETUP: [
+            {
+              guard: "startWithEditView",
+              target: "edit",
+              actions: ["setId", "setOwnerDocument"],
+            },
+            {
+              target: "preview",
+              actions: ["setId", "setOwnerDocument"],
+            },
+          ],
         },
       },
 
@@ -51,13 +61,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
 
       edit: {
         activities: "trackPointerDown",
-        entry: choose([
-          {
-            guard: "selectOnFocus",
-            actions: ["selectInput", "invokeOnEdit"],
-          },
-          { actions: ["focusInput", "invokeOnEdit"] },
-        ]),
+        entry: ["focusInput", "invokeOnEdit"],
         on: {
           TYPE: {
             guard: not("isAtMaxLength"),
@@ -100,7 +104,9 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
       activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
       activateOnFocus: (ctx) => ctx.activationMode === "focus",
+      startWithEditView: (ctx) => ctx.startWithEditView,
     },
+
     activities: {
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
@@ -108,6 +114,7 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
         })
       },
     },
+
     actions: {
       setId(ctx, evt) {
         ctx.uid = evt.id
@@ -122,7 +129,12 @@ export const editableMachine = createMachine<EditableMachineContext, EditableMac
       },
       focusInput(ctx) {
         nextTick(() => {
-          dom.getInputEl(ctx)?.focus()
+          const input = dom.getInputEl(ctx)
+          if (!input) return
+          input.focus()
+          if (ctx.selectOnFocus) {
+            input.select()
+          }
         })
       },
       selectInput(ctx) {

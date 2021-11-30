@@ -2,7 +2,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./dialog.dom"
-import { DialogMachineContext, DialogMachineState } from "./dialog.machine"
+import { DialogMachineContext, DialogMachineState } from "./dialog.types"
 
 export function dialogConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<DialogMachineContext, DialogMachineState>,
@@ -29,7 +29,7 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       "aria-expanded": isOpen,
       "aria-controls": dom.getContentId(ctx),
       onClick() {
-        send(isOpen ? "CLOSE" : "OPEN")
+        send("TRIGGER_CLICK")
       },
     }),
     overlayProps: normalize.element<T>({
@@ -37,8 +37,7 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getOverlayId(ctx),
       onClick(event) {
         if (event.target !== event.currentTarget) return
-        if (!ctx.isTopMostDialog || !ctx.closeOnOverlayClick) return
-        send("CLOSE")
+        send("OVERLAY_CLICK")
         event.preventDefault()
         event.stopPropagation()
       },

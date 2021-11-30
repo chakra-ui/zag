@@ -8,6 +8,7 @@ export const dom = {
   getEditInputId: (ctx: Ctx) => `${ctx.editedId}-input`,
   getTagId: (ctx: Ctx, id: string | number) => `tags-input-${ctx.uid}-tag-${id}`,
   getTagDeleteBtnId: (ctx: Ctx, id: string | number) => `tags-input-${ctx.uid}-tag-${id}-delete-btn`,
+  getClearButtonId: (ctx: Ctx) => `tags-input-${ctx.uid}-clear-btn`,
 
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,

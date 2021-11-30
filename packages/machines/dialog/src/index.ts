@@ -6,4 +6,4 @@ export const dialog = {
   machine: dialogMachine,
 }
 
-export type { DialogMachineContext, DialogMachineState } from "./dialog.machine"
+export type { DialogMachineContext, DialogMachineState } from "./dialog.types"

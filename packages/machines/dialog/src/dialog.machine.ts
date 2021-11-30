@@ -1,31 +1,12 @@
-import { createMachine, ref, subscribe } from "@ui-machines/core"
+import { createMachine, guards, ref, subscribe } from "@ui-machines/core"
 import { addDomEvent, nextTick, preventBodyScroll } from "@ui-machines/dom-utils"
-import { Context } from "@ui-machines/types"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
 import { dialogStore } from "./dialog.store"
+import { DialogMachineContext, DialogMachineState } from "./dialog.types"
 
-export type DialogMachineContext = Context<{
-  hasTitle: boolean
-  hasDescription: boolean
-  trapFocus: boolean
-  preventScroll: boolean
-  initialFocusEl?: HTMLElement | (() => HTMLElement)
-  finalFocusEl?: HTMLElement | (() => HTMLElement)
-  isTopMostDialog: boolean
-  restoreFocus?: boolean
-  onEsc?: () => void
-  onClickOutside?: () => void
-  closeOnOverlayClick: boolean
-  closeOnEsc: boolean
-  "aria-label"?: string
-  role: "dialog" | "alertdialog"
-}>
-
-export type DialogMachineState = {
-  value: "unknown" | "open" | "closed"
-}
+const { and } = guards
 
 export const dialogMachine = createMachine<DialogMachineContext, DialogMachineState>(
   {
@@ -57,16 +38,26 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         activities: ["trapFocus", "preventScroll", "hideContentBelow", "subscribeToStore", "trackEscKey"],
         on: {
           CLOSE: "closed",
+          TRIGGER_CLICK: "closed",
+          OVERLAY_CLICK: {
+            guard: and("isTopMostDialog", "closeOnOverlayClick"),
+            target: "closed",
+          },
         },
       },
       closed: {
         on: {
           OPEN: "open",
+          TRIGGER_CLICK: "open",
         },
       },
     },
   },
   {
+    guards: {
+      isTopMostDialog: (ctx) => ctx.isTopMostDialog,
+      closeOnOverlayClick: (ctx) => ctx.closeOnOverlayClick,
+    },
     activities: {
       trackEscKey(ctx, _evt, { send }) {
         return addDomEvent(dom.getWin(ctx), "keydown", (e) => {
