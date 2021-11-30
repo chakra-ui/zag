@@ -12,7 +12,6 @@
 "@ui-machines/number-input": patch
 "@ui-machines/pin-input": patch
 "@ui-machines/popover": patch
-"@ui-machines/pressable": patch
 "@ui-machines/range-slider": patch
 "@ui-machines/rating": patch
 "@ui-machines/slider": patch
