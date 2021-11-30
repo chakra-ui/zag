@@ -9,6 +9,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
   {
     id: "accordion-machine",
     initial: "unknown",
+
     context: {
       focusedValue: null,
       value: null,
@@ -16,14 +17,23 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       collapsible: false,
       multiple: false,
     },
+
     watch: {
       value: "invokeOnChange",
     },
+
     created(ctx) {
       if (ctx.multiple && isString(ctx.value)) {
         ctx.value = [ctx.value]
       }
     },
+
+    on: {
+      SET_VALUE: {
+        actions: "setValue",
+      },
+    },
+
     states: {
       unknown: {
         on: {
@@ -118,6 +128,9 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       },
       setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+      },
+      setValue(ctx, evt) {
+        ctx.value = evt.value
       },
     },
   },

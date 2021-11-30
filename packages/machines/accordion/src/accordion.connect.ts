@@ -20,6 +20,14 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
   }
 
   return {
+    value: ctx.value,
+    setValue(value: string | string[]) {
+      if (ctx.multiple && !Array.isArray(value)) {
+        value = [value]
+      }
+      send({ type: "SET_VALUE", value })
+    },
+
     rootProps: normalize.element<T>({
       id: dom.getRootId(ctx),
     }),
