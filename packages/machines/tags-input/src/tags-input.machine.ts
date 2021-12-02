@@ -13,6 +13,38 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
     id: "tags-input",
     initial: "unknown",
 
+    context: {
+      uid: "test",
+      inputValue: "",
+      editedTagValue: "",
+      focusedId: null,
+      editedId: null,
+      value: [],
+      dir: "ltr",
+      max: Infinity,
+      liveRegion: null,
+      addOnBlur: false,
+      addOnPaste: false,
+      validateTag: () => true,
+      separator: ",",
+    },
+
+    computed: {
+      count: (ctx) => ctx.value.length,
+      valueAsString: (ctx) => ctx.value.join(ctx.separator),
+      trimmedInputValue: (ctx) => ctx.inputValue.trim(),
+      isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
+      isAtMax: (ctx) => ctx.count === ctx.max,
+      outOfRange: (ctx) => ctx.count > ctx.max,
+    },
+
+    watch: {
+      focusedId: "invokeOnHighlight",
+      outOfRange: "invokeOnInvalid",
+    },
+
+    exit: ["removeLiveRegion"],
+
     on: {
       DOUBLE_CLICK_TAG: {
         target: "editing:tag",
@@ -33,36 +65,6 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         actions: ["addTag", "clearInputValue"],
       },
     },
-
-    context: {
-      uid: "test",
-      inputValue: "",
-      editedTagValue: "",
-      focusedId: null,
-      editedId: null,
-      value: [],
-      dir: "ltr",
-      max: Infinity,
-      liveRegion: null,
-      addOnBlur: false,
-      addOnPaste: false,
-    },
-
-    computed: {
-      count: (ctx) => ctx.value.length,
-      valueAsString: (ctx) => ctx.value.join(", "),
-      trimmedInputValue: (ctx) => ctx.inputValue.trim(),
-      isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
-      isAtMax: (ctx) => ctx.count === ctx.max,
-      outOfRange: (ctx) => ctx.count > ctx.max,
-    },
-
-    watch: {
-      focusedId: "invokeOnHighlight",
-      outOfRange: "invokeOnInvalid",
-    },
-
-    exit: ["removeLiveRegion"],
 
     states: {
       unknown: {
@@ -288,17 +290,20 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       },
       addTag(ctx, evt) {
         const value = evt.value ?? ctx.trimmedInputValue
-        const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value }) ?? true
+        const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value })
         if (guard) {
           ctx.value.push(value)
+        } else {
+          ctx.onInvalid?.("invalidTag")
         }
       },
       addTagFromPaste(ctx) {
         nextTick(() => {
           const value = ctx.trimmedInputValue
-          const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value }) ?? true
+          const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value })
           if (guard) {
-            ctx.value.push(...value.split(",").map((v) => v.trim()))
+            const trimmedValue = value.split(ctx.separator).map((v) => v.trim())
+            ctx.value.push(...trimmedValue)
           } else {
             ctx.onInvalid?.("invalidTag")
           }

@@ -8,6 +8,10 @@ export type ValidateTagOptions = {
 
 export type TagsInputMachineContext = Context<{
   /**
+   * The separator used to split/join the tag values.
+   */
+  separator: string
+  /**
    * Whether the input should be auto-focused
    */
   autoFocus?: boolean

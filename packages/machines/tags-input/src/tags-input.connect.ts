@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur, nextTick } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tags-input.dom"
 import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"
@@ -33,6 +33,14 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     },
     delete(id: string) {
       send({ type: "DELETE_TAG", id })
+    },
+    focus() {
+      nextTick(() => {
+        dom.getInputEl(ctx)?.focus()
+      })
+    },
+    blur() {
+      dom.getInputEl(ctx)?.blur()
     },
 
     // attributes
