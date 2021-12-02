@@ -44,17 +44,22 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       dir: "ltr",
       max: Infinity,
       liveRegion: null,
+      addOnBlur: false,
+      addOnPaste: false,
     },
 
     computed: {
+      count: (ctx) => ctx.value.length,
       valueAsString: (ctx) => ctx.value.join(", "),
       trimmedInputValue: (ctx) => ctx.inputValue.trim(),
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
-      isAtMax: (ctx) => ctx.max != null && ctx.value.length === ctx.max,
+      isAtMax: (ctx) => ctx.count === ctx.max,
+      outOfRange: (ctx) => ctx.count > ctx.max,
     },
 
     watch: {
       focusedId: "invokeOnHighlight",
+      outOfRange: "invokeOnInvalid",
     },
 
     exit: ["removeLiveRegion"],
@@ -290,8 +295,13 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       },
       addTagFromPaste(ctx) {
         nextTick(() => {
-          const guard = ctx.validateTag?.({ inputValue: ctx.trimmedInputValue, values: ctx.value }) ?? true
-          if (guard) ctx.value.push(...ctx.trimmedInputValue.split(",").map((v) => v.trim()))
+          const value = ctx.trimmedInputValue
+          const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value }) ?? true
+          if (guard) {
+            ctx.value.push(...value.split(",").map((v) => v.trim()))
+          } else {
+            ctx.onInvalid?.("invalidTag")
+          }
           ctx.inputValue = ""
         })
       },
@@ -300,6 +310,11 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       },
       removeLiveRegion(ctx) {
         ctx.liveRegion?.destroy()
+      },
+      invokeOnInvalid(ctx) {
+        if (ctx.outOfRange) {
+          ctx.onInvalid?.("outOfRange")
+        }
       },
     },
   },

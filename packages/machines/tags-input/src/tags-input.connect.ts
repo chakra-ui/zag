@@ -37,7 +37,8 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
 
     // attributes
     rootProps: normalize.element<T>({
-      "data-count": ctx.value.length,
+      "data-part": "root",
+      "data-invalid": dataAttr(ctx.outOfRange),
       "data-disabled": dataAttr(ctx.disabled),
       "data-focus": dataAttr(isInputFocused),
       id: dom.getRootId(ctx),
@@ -47,6 +48,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     inputProps: normalize.input<T>({
+      "data-part": "input",
       id: dom.getInputId(ctx),
       value: ctx.inputValue,
       autoComplete: "off",
@@ -114,6 +116,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     hiddenInputProps: normalize.input<T>({
+      "data-part": "hidden-input",
       type: "hidden",
       name: ctx.name,
       id: dom.getHiddenInputId(ctx),
@@ -123,6 +126,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     getTagProps({ index, value }: TagProps) {
       const id = dom.getTagId(ctx, index)
       return normalize.element<T>({
+        "data-part": "tag",
         id,
         hidden: isEditingTag ? ctx.editedId === id : false,
         "data-value": value,
@@ -143,6 +147,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
       const id = dom.getTagId(ctx, index)
       const active = ctx.editedId === id
       return normalize.input<T>({
+        "data-part": "tag--input",
         id: dom.getTagInputId(ctx, index),
         type: "text",
         tabIndex: -1,
@@ -177,6 +182,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     getTagDeleteButtonProps({ index, value }: TagProps) {
       const id = dom.getTagId(ctx, index)
       return normalize.button<T>({
+        "data-part": "tag--delete-button",
         id: dom.getTagDeleteBtnId(ctx, index),
         type: "button",
         "aria-label": `Delete ${value}`,
@@ -191,6 +197,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     clearButtonProps: normalize.button<T>({
+      "data-part": "clear-button",
       id: dom.getClearButtonId(ctx),
       type: "button",
       "aria-label": "Clear all tags",

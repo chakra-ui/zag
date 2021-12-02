@@ -18,6 +18,7 @@ export const dom = {
   getEditInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditInputId(ctx)) as HTMLInputElement | null,
   getTag: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTagId(ctx, id)),
   getElements: (ctx: Ctx) => queryElements(dom.getRootEl(ctx), `[data-ownedby=${dom.getRootId(ctx)}]`),
+  getClosestFormEl: (ctx: Ctx) => dom.getInputEl(ctx)?.closest("form"),
 
   getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getElements(ctx), id),
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),

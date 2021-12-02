@@ -52,6 +52,10 @@ export type TagsInputMachineContext = Context<{
    */
   onHighlight?(value: string | null): void
   /**
+   * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
+   */
+  onInvalid?: (error: InvalidReason) => void
+  /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
@@ -67,7 +71,7 @@ export type TagsInputMachineContext = Context<{
   /**
    * The max number of tags
    */
-  max?: number
+  max: number
   /**
    * Whether to allow tags to exceed max. In this case,
    * we'll attach `data-invalid` to the root
@@ -93,8 +97,12 @@ export type TagsInputMachineContext = Context<{
    * @computed whether the tags input is at the maximum allowed number of tags
    */
   readonly isAtMax: boolean
+  readonly count: number
+  readonly outOfRange: boolean
 }>
 
 export type TagsInputMachineState = {
   value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
 }
+
+export type InvalidReason = "outOfRange" | "invalidTag"

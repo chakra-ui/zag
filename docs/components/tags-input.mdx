@@ -7,6 +7,8 @@ Tag inputs render tags inside an input, followed by an actual text input.
 - Typing in the input and pressing enter will add new items
 - Clear button to reset all tags values
 - Add tags by pasting into the input
+- Delete tags on backspace
+- Edit tags after creation
 - Limit the number of tags
 - Navigate tags with keyboard
 - Custom validation to accept/reject tags
@@ -27,13 +29,179 @@ Then you'll need to install the framework specific binding
 
 ## Usage
 
+By default, tags are added when text is typed in the input field and the `Enter` or `Comma` key is pressed. Throughout
+the interaction, DOM focus remains on the input element.
+
 <CodeSnippet id="tags-input/basic-usage.mdx" />
+
+## Navigating and Editing tags
+
+When the input has an empty value or the caret is at the start position, user can navigate the tags by using the arrow
+left and arrow right keys. When "visual" focus in on any tag:
+
+- Pressing `Enter` or double clicking on the tag will put the it in edit mode, allowing the user change its value and
+  press `Enter` to commit the changes.
+- Pressing `Delete` or `Backspace` will delete the tag that has "visual" focus.
+
+## Setting the initial tags
+
+To set the initial tag values, pass the `value` option in the machine's context.
+
+<CodeSnippet id="tags-input/setting-initial-tags.mdx" />
+
+## Readonly tags
+
+You can make the tags input readonly by passing the `readonly` property. It'll make the input readonly and also disallow
+interations with the tag.
+
+<CodeSnippet id="tags-input/readonly.mdx" />
+
+## Updating tags programmatically
+
+If you need to programmatically (manually) set or change the list of selected tags from "outside", you can leverage the
+exposed methods in `connect` function.
+
+```js
+const { add, delete, clear } = connect(state, send)
+```
+
+<CodeSnippet id="tags-input/programmatic-update.mdx" />
 
 ## Removing all tags
 
 The tags input will remove all tags when the clear button is clicked. To remove all tags, use the `clearButtonProps` to
 a `button` element.
 
-<CodeSnippet id="tags-input/remove-tags-with-button.mdx" />
+<CodeSnippet id="tags-input/remove-all-tags.mdx" />
 
 To programmatically remove all tags, use the `clear` method that's available in the `connect`.
+
+## Usage within forms
+
+The tags input works when placed within a form and the form is submitted. We achieve this by:
+
+- ensuring we emit the change event via the DOM APIs
+- adding a `name` and `value` attribute to a hidden input so the tags can be accessed in the `FormData`
+
+To get this feature working you need to pass a `name` option to the context and render the `hiddenInput` element
+
+<CodeSnippet id="tags-input/form-usage.mdx" />
+
+## Using Custom components
+
+You won't always have to use the regular tags UI for the component. Here's an example of rendering a list of users for
+an email client.
+
+<CodeSnippet id="tags-input/custom-component.mdx" />
+
+## Styling
+
+When the input is focused or any tag is clicked, we attached specific `data-*` attributes to help you style the elements
+better.
+
+### `rootProps`
+
+- Gets a `data-disabled` attribute when `disabled:true` is passed to the context
+- Gets a `data-focus` attribute when the input is focused.
+- Gets a `data-invalid` attribute when the number of tags exceeds the max
+
+```css
+[data-part="root"][data-invalid] {
+  /* styles for invalid state */
+}
+
+[data-part="root"][data-disabled] {
+  /* styles for disabled state */
+}
+
+[data-part="root"][data-focus] {
+  /* styles for when "inner" input is focused */
+}
+```
+
+### `getTagProps`
+
+- Gets a `data-disabled` attribute when `disabled:true` is passed to the context
+- Gets a `data-selected` attribute when the tags has visual focus
+
+```css
+[data-part="tag"][data-disabled] {
+  /* styles for disabled tag */
+}
+
+[data-part="tag"][data-selected] {
+  /* styles for visual focus */
+}
+```
+
+## Limiting the number of tag
+
+To limit the number of tags within the component, you can set the `max` property to the limit you want.
+
+<CodeSnippet id="tags-input/limit-tags.mdx" />
+
+## Validating Tags
+
+Before a tag is added, we allow the user validate the tags via `validateTag` option. This function should return a
+`boolean` indicating whether a value should be added.
+
+A common use-case for validating tags is preventing duplicates. Here's how to achieve that:
+
+```jsx
+const [state, send] = useMachine(
+  TagsInput.machine.withContext({
+    validateTag(opts) {
+      return !opts.values.includes(opts.value)
+    },
+  }),
+)
+```
+
+## Blur behavior
+
+When the tags input is blurred and the input element is not empty, you can set the machine to add a new tag using the
+input's value. Pass the `addOnBlur` option.
+
+```jsx
+const [state, send] = useMachine(
+  TagsInput.machine.withContext({
+    addOnBlur: true,
+  }),
+)
+```
+
+## Paste behavior
+
+To add a tag when a arbritary value is pasted in the input element, pass the `addOnPaste` option.
+
+```jsx
+const [state, send] = useMachine(
+  TagsInput.machine.withContext({
+    addOnPaste: true,
+  }),
+)
+```
+
+## Events
+
+During the lifetime of the tags input interaction, here's a list of events we emit:
+
+- `onChange`: invoked when the tag value changes
+- `onHighlight`: invoked when a tag has visual focus
+- `onInvalid`: invoked when the max tag count is reached or the `validateTag` function returns `false`
+
+```jsx
+const [state, send] = useMachine(
+  TagsInput.machine.withContext({
+    onChange(tags) {
+      console.log("tags changed to:", tags)
+    },
+    onHighlight(tag) {
+      console.log("highlighted tag:", tag)
+    },
+    onInvalid(err) {
+      console.log("Invalid!", err)
+    },
+  }),
+)
+```
