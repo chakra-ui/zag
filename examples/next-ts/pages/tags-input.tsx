@@ -14,7 +14,7 @@ function toDashCase(str: string) {
 
 export default function Page() {
   const controls = useControls({
-    autoFocus: { type: "boolean", defaultValue: true },
+    autoFocus: { type: "boolean", defaultValue: false },
     addOnPaste: { type: "boolean", defaultValue: false },
     addOnBlur: { type: "boolean", defaultValue: false },
     max: { type: "number", defaultValue: 4 },

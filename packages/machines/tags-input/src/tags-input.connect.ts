@@ -2,7 +2,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tags-input.dom"
-import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
+import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"
 
 type TagProps = {
   index: string | number
@@ -116,7 +116,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
     hiddenInputProps: normalize.input<T>({
       type: "hidden",
       name: ctx.name,
-      id: ctx.uid,
+      id: dom.getHiddenInputId(ctx),
       value: ctx.valueAsString,
     }),
 
@@ -143,7 +143,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
       const id = dom.getTagId(ctx, index)
       const active = ctx.editedId === id
       return normalize.input<T>({
-        id: `${id}-input`,
+        id: dom.getTagInputId(ctx, index),
         type: "text",
         tabIndex: -1,
         hidden: isEditingTag ? !active : true,

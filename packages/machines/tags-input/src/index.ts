@@ -6,4 +6,4 @@ export const tagsInput = {
   connect: tagsInputConnect,
 }
 
-export type { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.machine"
+export type { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"

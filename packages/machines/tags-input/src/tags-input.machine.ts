@@ -1,106 +1,18 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
-import type { Context } from "@ui-machines/types"
+import { LiveRegion, nextTick } from "@ui-machines/dom-utils"
 import { dom } from "./tags-input.dom"
+import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"
 
 const { and, not, or } = guards
 
-export type TagsInputMachineContext = Context<{
-  /**
-   * Whether the input should be auto-focused
-   */
-  autoFocus?: boolean
-  /**
-   * Whether the tags input should be disabled
-   */
-  disabled?: boolean
-  /**
-   * Whether the tags input should be read-only
-   */
-  readonly?: boolean
-  /**
-   * The `id` of the currently focused tag
-   */
-  focusedId: string | null
-  /**
-   * The `id` of the currently edited tag
-   */
-  editedId: string | null
-  /**
-   * The value of the currently edited tag
-   */
-  editedTagValue?: string
-  /**
-   * The tag input's value
-   */
-  inputValue: string
-  /**
-   * The tag values
-   */
-  value: string[]
-  /**
-   * Callback fired when the tag values is updated
-   */
-  onChange?(values: string[]): void
-  /**
-   * Callback fired when a tag is focused by pointer or keyboard navigation
-   */
-  onHighlight?(value: string | null): void
-  /**
-   * Returns a boolean that determines whether a tag can be added.
-   * Useful for preventing duplicates or invalid tag values.
-   */
-  validateTag?(opt: { inputValue: string; values: string[] }): boolean
-  /**
-   * Whether to add a tag when the tag input is blurred
-   */
-  addOnBlur?: boolean
-  /**
-   * Whether to add a tag when you paste values into the tag input
-   */
-  addOnPaste?: boolean
-  /**
-   * The max number of tags
-   */
-  max?: number
-  /**
-   * Whether to allow tags to exceed max. In this case,
-   * we'll attach `data-invalid` to the root
-   */
-  allowOutOfRange?: boolean
-  /**
-   * The name attribute for the input. Useful for form submissions
-   */
-  name?: string
-  /**
-   * @computed the string value of the tags input
-   */
-  readonly valueAsString: string
-  /**
-   * @computed the trimmed value of the input
-   */
-  readonly trimmedInputValue: string
-  /**
-   * @computed whether the tags input is interactive
-   */
-  readonly isInteractive: boolean
-  /**
-   * @computed whether the tags input is at the maximum allowed number of tags
-   */
-  readonly isAtMax: boolean
-}>
-
-export type TagsInputMachineState = {
-  value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
-}
-
 // (!isAtMax || allowOutOfRange) && !inputValueIsEmpty
-const allowAddTag = and(or(not("isAtMax"), "allowOutOfRange"), not("isInputValueEmpty"))
+const canAddTag = and(or(not("isAtMax"), "allowOutOfRange"), not("isInputValueEmpty"))
 
 export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInputMachineState>(
   {
     id: "tags-input",
     initial: "unknown",
+
     on: {
       DOUBLE_CLICK_TAG: {
         target: "editing:tag",
@@ -121,6 +33,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         actions: ["addTag", "clearInputValue"],
       },
     },
+
     context: {
       uid: "test",
       inputValue: "",
@@ -130,29 +43,28 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       value: [],
       dir: "ltr",
       max: Infinity,
+      liveRegion: null,
     },
+
     computed: {
       valueAsString: (ctx) => ctx.value.join(", "),
       trimmedInputValue: (ctx) => ctx.inputValue.trim(),
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
       isAtMax: (ctx) => ctx.max != null && ctx.value.length === ctx.max,
     },
+
     watch: {
       focusedId: "invokeOnHighlight",
     },
+
+    exit: ["removeLiveRegion"],
+
     states: {
       unknown: {
         on: {
           SETUP: [
-            {
-              guard: "autoFocus",
-              target: "focused:input",
-              actions: ["setId", "setDocument"],
-            },
-            {
-              target: "idle",
-              actions: ["setId", "setOwnerDocument"],
-            },
+            { guard: "autoFocus", target: "focused:input", actions: "setup" },
+            { target: "idle", actions: "setup" },
           ],
         },
       },
@@ -176,17 +88,17 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
           BLUR: [
             {
               target: "idle",
-              guard: and("addOnBlur", allowAddTag),
+              guard: and("addOnBlur", canAddTag),
               actions: ["addTag", "clearInputValue"],
             },
             { target: "idle" },
           ],
           ENTER: {
-            guard: allowAddTag,
+            guard: canAddTag,
             actions: ["addTag", "clearInputValue"],
           },
           COMMA: {
-            guard: allowAddTag,
+            guard: canAddTag,
             actions: ["addTag", "clearInputValue"],
           },
           ARROW_LEFT: {
@@ -286,16 +198,21 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         }
       },
     },
+
     actions: {
       invokeOnHighlight(ctx) {
         const value = dom.getFocusedTagValue(ctx)
         ctx.onHighlight?.(value)
       },
-      setId(ctx, evt) {
+      setup(ctx, evt) {
         ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        const liveRegion = new LiveRegion({
+          name: "tags-announcer",
+          role: "alert",
+          ariaLive: "assertive",
+        })
+        ctx.liveRegion = ref(liveRegion)
       },
       focusNextTag(ctx) {
         if (!ctx.focusedId) return
@@ -380,6 +297,9 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       },
       clearValue(ctx) {
         ctx.value = []
+      },
+      removeLiveRegion(ctx) {
+        ctx.liveRegion?.destroy()
       },
     },
   },

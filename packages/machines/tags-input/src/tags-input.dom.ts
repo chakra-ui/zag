@@ -1,14 +1,17 @@
 import { indexOfId, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
-import { TagsInputMachineContext as Ctx } from "./tags-input.machine"
+import { TagsInputMachineContext as Ctx } from "./tags-input.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
   getRootId: (ctx: Ctx) => `tags-input-${ctx.uid}-root`,
   getInputId: (ctx: Ctx) => `tags-input-${ctx.uid}-input`,
   getEditInputId: (ctx: Ctx) => `${ctx.editedId}-input`,
-  getTagId: (ctx: Ctx, id: string | number) => `tags-input-${ctx.uid}-tag-${id}`,
-  getTagDeleteBtnId: (ctx: Ctx, id: string | number) => `tags-input-${ctx.uid}-tag-${id}-delete-btn`,
   getClearButtonId: (ctx: Ctx) => `tags-input-${ctx.uid}-clear-btn`,
+  getHiddenInputId: (ctx: Ctx) => `tags-input-${ctx.uid}-hidden-input`,
+
+  getTagId: (ctx: Ctx, id: string | number) => `tags-input-${ctx.uid}-tag-${id}`,
+  getTagDeleteBtnId: (ctx: Ctx, id: string | number) => `${dom.getTagId(ctx, id)}-delete-btn`,
+  getTagInputId: (ctx: Ctx, id: string | number) => `${dom.getTagId(ctx, id)}-input`,
 
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
