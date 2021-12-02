@@ -30,6 +30,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Label properties
     labelProps: normalize.label<T>({
+      "data-part": "label",
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx),
       onClick(event) {
@@ -43,6 +44,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
     outputProps: normalize.output<T>({
+      "data-part": "output",
       id: dom.getOutputId(ctx),
       htmlFor: dom.getInputId(ctx),
       "aria-live": "off",
@@ -50,6 +52,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Thumb properties
     thumbProps: normalize.element<T>({
+      "data-part": "thumb",
       id: dom.getThumbId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -118,6 +121,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Hidden Input (useful for forms)
     inputProps: normalize.input<T>({
+      "data-part": "input",
       type: "hidden",
       value: ctx.value,
       name: ctx.name,
@@ -126,6 +130,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Track Attributes
     trackProps: normalize.element<T>({
+      "data-part": "track",
       id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -135,6 +140,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Range Attributes
     rangeProps: normalize.element<T>({
+      "data-part": "range",
       id: dom.getRangeId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -144,6 +150,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Container or Root Attributes
     rootProps: normalize.element<T>({
+      "data-part": "root",
       id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -170,6 +177,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       const style = dom.getMarkerStyle(ctx, percent)
 
       return {
+        "data-part": "marker",
         id: dom.getMarkerId(ctx, value),
         role: "presentation",
         "data-value": value,

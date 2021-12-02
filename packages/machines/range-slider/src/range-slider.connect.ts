@@ -23,6 +23,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
     isFocused,
 
     labelProps: normalize.label<T>({
+      "data-part": "label",
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx, 0),
       onClick(event) {
@@ -36,12 +37,14 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
 
     // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
     outputProps: normalize.output<T>({
+      "data-part": "output",
       id: dom.getOutputId(ctx),
       htmlFor: values.map((v, i) => dom.getInputId(ctx, i)).join(" "),
       "aria-live": "off",
     }),
 
     trackProps: normalize.element<T>({
+      "data-part": "track",
       id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
@@ -58,6 +61,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize.element<T>({
+        "data-part": "thumb",
         id: dom.getThumbId(ctx, index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
@@ -123,6 +127,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
 
     getInputProps(index: number) {
       return normalize.input<T>({
+        "data-part": "input",
         name: ctx.name?.[index],
         type: "hidden",
         value: ctx.value[index],
@@ -131,6 +136,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     rangeProps: normalize.element<T>({
+      "data-part": "range",
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
       "data-state": state.value,
@@ -138,6 +144,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     rootProps: normalize.element<T>({
+      "data-part": "root",
       id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,

@@ -209,7 +209,7 @@ export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getClearButtonId(ctx),
       type: "button",
       "aria-label": "Clear all tags",
-      hidden: ctx.value.length === 0,
+      hidden: ctx.count === 0,
       onClick() {
         send("CLEAR_ALL")
       },

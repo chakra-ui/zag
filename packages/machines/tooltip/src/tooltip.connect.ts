@@ -29,6 +29,7 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
     isVisible,
 
     triggerProps: normalize.button<T>({
+      "data-part": "trigger",
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
       "aria-describedby": isVisible ? tooltipId : undefined,
@@ -68,6 +69,7 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     tooltipProps: normalize.element<T>({
+      "data-part": "tooltip",
       role: "tooltip",
       id: tooltipId,
       onPointerEnter() {

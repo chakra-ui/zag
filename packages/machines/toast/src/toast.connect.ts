@@ -30,6 +30,7 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     progressProps: normalize.element<T>({
+      "data-part": "progress",
       role: "progressbar",
       "aria-valuemin": 0,
       "aria-valuemax": ctx.progress?.max,
@@ -37,6 +38,7 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     containerProps: normalize.element<T>({
+      "data-part": "container",
       id: dom.getRootId(ctx),
       "data-open": dataAttr(isVisible),
       "data-type": ctx.type,

@@ -16,6 +16,7 @@ export function editableConnect<T extends PropTypes = ReactPropTypes>(
     isValueEmpty: ctx.isValueEmpty,
 
     inputProps: normalize.input<T>({
+      "data-part": "input",
       id: dom.getInputId(ctx),
       hidden: !isEditing,
       placeholder: ctx.placeholder,
@@ -56,6 +57,7 @@ export function editableConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     previewProps: normalize.element<T>({
+      "data-part": "preview",
       children: ctx.value === "" ? ctx.placeholder : ctx.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(ctx.disabled),
@@ -69,6 +71,7 @@ export function editableConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     editButtonProps: normalize.button<T>({
+      "data-part": "edit-button",
       id: dom.getEditBtnId(ctx),
       "aria-label": "Submit",
       type: "button",
@@ -78,6 +81,7 @@ export function editableConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     submitButtonProps: normalize.button<T>({
+      "data-part": "submit-button",
       id: dom.getSubmitBtnId(ctx),
       "aria-label": "Submit",
       type: "button",
@@ -87,6 +91,7 @@ export function editableConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     cancelButtonProps: normalize.button<T>({
+      "data-part": "cancel-button",
       "aria-label": "Cancel",
       id: dom.getCancelBtnId(ctx),
       type: "button",

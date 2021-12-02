@@ -20,6 +20,7 @@ export function tabsConnect<T extends PropTypes = ReactPropTypes>(
       send({ type: "SET_VALUE", value })
     },
     tablistProps: normalize.element<T>({
+      "data-part": "tablist",
       id: dom.getTablistId(ctx),
       role: "tablist",
       "aria-orientation": ctx.orientation,
@@ -61,6 +62,7 @@ export function tabsConnect<T extends PropTypes = ReactPropTypes>(
     getTabProps({ value }: { value: string }) {
       const selected = ctx.value === value
       return normalize.button<T>({
+        "data-part": "tab",
         role: "tab",
         type: "button",
         "data-value": value,
@@ -91,6 +93,7 @@ export function tabsConnect<T extends PropTypes = ReactPropTypes>(
     getTabPanelProps({ value }: { value: string }) {
       const selected = ctx.value === value
       return normalize.element<T>({
+        "data-part": "tabpanel",
         id: dom.getPanelId(ctx, value),
         tabIndex: 0,
         "aria-labelledby": dom.getTabId(ctx, value),
@@ -101,6 +104,7 @@ export function tabsConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     tabIndicatorProps: normalize.element<T>({
+      "data-part": "tab-indicator",
       style: {
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",

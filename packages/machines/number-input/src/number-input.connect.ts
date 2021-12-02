@@ -27,6 +27,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
     isInvalid,
 
     labelProps: normalize.label<T>({
+      "data-part": "label",
       "data-disabled": dataAttr(ctx.disabled),
       "data-readonly": dataAttr(ctx.readonly),
       "data-invalid": dataAttr(isInvalid),
@@ -35,6 +36,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     inputProps: normalize.input<T>({
+      "data-part": "input",
       name: ctx.name,
       id: dom.getInputId(ctx),
       role: "spinbutton",
@@ -97,6 +99,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     decrementButtonProps: normalize.button<T>({
+      "data-part": "decrement-button",
       id: dom.getDecButtonId(ctx),
       "aria-disabled": !ctx.canDecrement,
       "aria-label": "Decrement value",
@@ -117,6 +120,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     incrementButtonProps: normalize.button<T>({
+      "data-part": "increment-button",
       id: dom.getIncButtonId(ctx),
       "aria-disabled": !ctx.canIncrement,
       "aria-label": "Increment value",
@@ -137,6 +141,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     scrubberProps: normalize.element<T>({
+      "data-part": "scrubber",
       id: dom.getScrubberId(ctx),
       role: "presentation",
       onMouseDown(event) {

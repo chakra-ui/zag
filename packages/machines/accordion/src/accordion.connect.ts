@@ -29,6 +29,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     rootProps: normalize.element<T>({
+      "data-part": "root",
       id: dom.getRootId(ctx),
     }),
 
@@ -37,6 +38,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
     getItemProps(props: AccordionItemProps) {
       const { isOpen } = getItemState(props)
       return normalize.element<T>({
+        "data-part": "item",
         id: dom.getGroupId(ctx, props.value),
         "data-expanded": dataAttr(isOpen),
       })
@@ -45,6 +47,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
     getContentProps(props: AccordionItemProps) {
       const { isOpen, isFocused, isDisabled } = getItemState(props)
       return normalize.element<T>({
+        "data-part": "content",
         role: "region",
         id: dom.getPanelId(ctx, props.value),
         "aria-labelledby": dom.getTriggerId(ctx, props.value),
@@ -59,6 +62,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
       const { value } = props
       const { isDisabled, isOpen } = getItemState(props)
       return normalize.button<T>({
+        "data-part": "trigger",
         type: "button",
         id: dom.getTriggerId(ctx, value),
         "aria-controls": dom.getPanelId(ctx, value),

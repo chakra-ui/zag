@@ -23,6 +23,7 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       send("CLOSE")
     },
     triggerProps: normalize.button<T>({
+      "data-part": "trigger",
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       type: "button",
@@ -33,6 +34,7 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
     overlayProps: normalize.element<T>({
+      "data-part": "overlay",
       "aria-hidden": true,
       id: dom.getOverlayId(ctx),
       onClick(event) {
@@ -43,6 +45,7 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
     contentProps: normalize.element<T>({
+      "data-part": "content",
       role: ctx.role,
       id: dom.getContentId(ctx),
       tabIndex: -1,
@@ -55,12 +58,15 @@ export function dialogConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
     titleProps: normalize.element<T>({
+      "data-part": "title",
       id: dom.getTitleId(ctx),
     }),
     descriptionProps: normalize.element<T>({
+      "data-part": "description",
       id: dom.getDescriptionId(ctx),
     }),
     closeButtonProps: normalize.button<T>({
+      "data-part": "close-button",
       id: dom.getCloseButtonId(ctx),
       type: "button",
       onClick() {

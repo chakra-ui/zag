@@ -17,6 +17,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
   function getItemProps(opts: MenuItemProps) {
     const { id, disabled, valueText } = opts
     return normalize.element<T>({
+      "data-part": "menuitem",
       id,
       role: "menuitem",
       "aria-disabled": disabled,
@@ -69,6 +70,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     triggerProps: normalize.button<T>({
+      "data-part": "trigger",
       type: "button",
       id: dom.getTriggerId(ctx),
       "data-uid": ctx.uid,
@@ -133,6 +135,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     menuProps: normalize.element<T>({
+      "data-part": "menu",
       id: dom.getMenuId(ctx),
       hidden: !isOpen,
       role: "menu",
@@ -220,6 +223,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     separatorProps: normalize.element<T>({
+      "data-part": "separator",
       role: "separator",
       "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
     }),
@@ -231,6 +235,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
       return Object.assign(
         getItemProps(opts),
         normalize.element<T>({
+          "data-part": "menu-option",
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           onClick(event) {

@@ -22,6 +22,7 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     triggerProps: normalize.button<T>({
+      "data-part": "trigger",
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
@@ -32,6 +33,7 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     popoverProps: normalize.element<T>({
+      "data-part": "popover",
       id: dom.getContentId(ctx),
       tabIndex: -1,
       role: "dialog",
@@ -63,14 +65,17 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     headerProps: normalize.element<T>({
+      "data-part": "header",
       id: dom.getHeaderId(ctx),
     }),
 
     bodyProps: normalize.element<T>({
+      "data-part": "body",
       id: dom.getBodyId(ctx),
     }),
 
     closeButtonProps: normalize.button<T>({
+      "data-part": "close-button",
       id: dom.getCloseButtonId(ctx),
       type: "button",
       "aria-label": "Close",

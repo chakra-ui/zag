@@ -37,6 +37,7 @@ export function ratingConnect<T extends PropTypes = ReactPropTypes>(
 
     getRatingState,
     inputProps: normalize.input<T>({
+      "data-part": "input",
       name: ctx.name,
       type: "hidden",
       id: dom.getInputId(ctx),
@@ -44,11 +45,13 @@ export function ratingConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     labelProps: normalize.element<T>({
+      "data-part": "label",
       id: dom.getLabelId(ctx),
       "data-disabled": ctx.disabled,
     }),
 
     rootProps: normalize.element<T>({
+      "data-part": "root",
       id: dom.getRootId(ctx),
       role: "radiogroup",
       "aria-orientation": "horizontal",
@@ -69,6 +72,7 @@ export function ratingConnect<T extends PropTypes = ReactPropTypes>(
       const valueText = ctx.getLabelText?.(index) ?? `${index} stars`
 
       return normalize.element<T>({
+        "data-part": "rating",
         id: dom.getRatingId(ctx, index),
         role: "radio",
         tabIndex: isChecked ? 0 : -1,

@@ -16,27 +16,26 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
   const isFocused = state.hasTag("focused")
 
   return {
+    // methods
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
-
     clearValue() {
       send("CLEAR_VALUE")
     },
-
     focus() {
       send("FOCUS")
     },
-
-    isFocused,
-
     blur() {
       dom.getInputEl(ctx)?.blur()
     },
 
+    isFocused,
+
     inputValue: ctx.inputValue,
 
     labelProps: normalize.label<T>({
+      "data-part": "label",
       htmlFor: dom.getInputId(ctx),
       id: dom.getLabelId(ctx),
       "data-readonly": dataAttr(ctx.readonly),
@@ -44,6 +43,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     containerProps: normalize.element<T>({
+      "data-part": "container",
       id: dom.getContainerId(ctx),
       "data-expanded": dataAttr(expanded),
       "data-focus": dataAttr(isFocused),
@@ -57,6 +57,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     inputProps: normalize.input<T>({
+      "data-part": "input",
       name: ctx.name,
       disabled: ctx.disabled,
       autoFocus: ctx.autoFocus,
@@ -163,6 +164,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     buttonProps: normalize.button<T>({
+      "data-part": "button",
       id: dom.getToggleBtnId(ctx),
       "aria-haspopup": "listbox",
       type: "button",
@@ -181,6 +183,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     listboxProps: normalize.element<T>({
+      "data-part": "listbox",
       id: dom.getListboxId(ctx),
       role: "listbox",
       hidden: !expanded,
@@ -192,6 +195,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     clearButtonProps: normalize.button<T>({
+      "data-part": "clear-button",
       id: dom.getClearBtnId(ctx),
       type: "button",
       role: "button",
@@ -212,6 +216,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       const checked = ctx.selectedValue === value
 
       return normalize.element<T>({
+        "data-part": "option",
         id,
         role: "option",
         tabIndex: -1,
@@ -247,6 +252,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
     getOptionGroupProps(props: ComboboxOptionGroupProps) {
       const { label } = props
       return normalize.element<T>({
+        "data-part": "option-group",
         role: "group",
         "aria-label": label,
       })

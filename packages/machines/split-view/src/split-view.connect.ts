@@ -29,6 +29,7 @@ export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     rootProps: normalize.element<T>({
+      "data-part": "root",
       id: dom.getRootId(ctx),
       style: {
         display: "flex",
@@ -40,6 +41,7 @@ export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     secondaryPaneProps: normalize.element<T>({
+      "data-part": "secondary-pane",
       id: dom.getSecondaryPaneId(ctx),
       style: {
         height: ctx.isHorizontal ? "100%" : "auto",
@@ -50,6 +52,7 @@ export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     primaryPaneProps: normalize.element<T>({
+      "data-part": "primary-pane",
       id: dom.getPrimaryPaneId(ctx),
       style: {
         width: `${ctx.value}px`,
@@ -63,6 +66,7 @@ export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     toggleButtonProps: normalize.element<T>({
+      "data-part": "toggle-button",
       id: dom.getToggleButtonId(ctx),
       "aria-label": ctx.isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
@@ -71,10 +75,12 @@ export function splitViewConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     labelProps: normalize.element<T>({
+      "data-part": "label",
       id: dom.getSplitterLabelId(ctx),
     }),
 
     splitterProps: normalize.element<T>({
+      "data-part": "splitter",
       id: dom.getSplitterId(ctx),
       role: "separator",
       tabIndex: 0,

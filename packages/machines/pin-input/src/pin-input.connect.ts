@@ -29,6 +29,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
     getInputProps({ index }: { index: number }) {
       const inputType = ctx.type === "numeric" ? "tel" : "text"
       return normalize.input<T>({
+        "data-part": "input",
         id: dom.getInputId(ctx, index),
         "data-ownedby": dom.getRootId(ctx),
         "aria-label": "Please enter your pin code",
