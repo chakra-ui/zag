@@ -25,7 +25,7 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
     },
     on: {
       SET_VALUE: {
-        actions: ["setValue"],
+        actions: "setValue",
       },
     },
     states: {
@@ -33,14 +33,17 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setupDocument", "checkPanelContent"],
+            actions: "setupDocument",
           },
         },
       },
       idle: {
         entry: "setIndicatorRect",
         on: {
-          TAB_FOCUS: { target: "focused", actions: "setFocusedValue" },
+          TAB_FOCUS: {
+            target: "focused",
+            actions: "setFocusedValue",
+          },
           TAB_CLICK: {
             target: "focused",
             actions: ["setFocusedValue", "setValue", "setIndicatorRect"],
