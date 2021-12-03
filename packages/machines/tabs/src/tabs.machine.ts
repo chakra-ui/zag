@@ -87,7 +87,7 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
           ],
           TAB_BLUR: {
             target: "idle",
-            actions: "resetFocusedValue",
+            actions: "clearFocusedValue",
           },
         },
       },
@@ -107,7 +107,7 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
       setFocusedValue(ctx, evt) {
         ctx.focusedValue = evt.value
       },
-      resetFocusedValue(ctx) {
+      clearFocusedValue(ctx) {
         ctx.focusedValue = null
       },
       setValue(ctx, evt) {
