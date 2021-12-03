@@ -11,11 +11,16 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
     initial: "unknown",
     context: {
       id: uuid(),
-      openDelay: 700,
-      closeDelay: 300,
+      openDelay: 1000,
+      closeDelay: 500,
       closeOnPointerDown: true,
       interactive: true,
     },
+
+    computed: {
+      hasAriaLabel: (ctx) => !!ctx["aria-label"],
+    },
+
     states: {
       unknown: {
         on: {

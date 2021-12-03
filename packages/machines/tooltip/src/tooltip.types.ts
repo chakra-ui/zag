@@ -37,6 +37,11 @@ export type TooltipMachineContext = {
    * Function called when the tooltip is closed.
    */
   onClose?: VoidFunction
+  /**
+   * Custom label for the tooltip.
+   */
+  "aria-label"?: string
+  readonly hasAriaLabel: boolean
 }
 
 export type TooltipMachineState = {

@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
+import { dataAttr, getEventKey, EventKeyMap, srOnlyStyle } from "@ui-machines/dom-utils"
 
 import { dom } from "./tooltip.dom"
 import { tooltipStore } from "./tooltip.store"
@@ -19,14 +19,15 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
   const tooltipId = dom.getTooltipId(ctx)
 
   return {
+    isVisible,
+    hasAriaLabel: ctx.hasAriaLabel,
+
     getAnimationState() {
       return {
         enter: tooltipStore.prevId === null && ctx.id === tooltipStore.id,
         exit: tooltipStore.id === null,
       }
     },
-
-    isVisible,
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
@@ -64,14 +65,16 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
         }
         const key = getEventKey(event)
         const exec = keymap[key]
-        if (exec) exec(event)
+        if (exec) {
+          exec(event)
+        }
       },
     }),
 
     tooltipProps: normalize.element<T>({
       "data-part": "tooltip",
-      role: "tooltip",
-      id: tooltipId,
+      role: ctx.hasAriaLabel ? undefined : "tooltip",
+      id: ctx.hasAriaLabel ? undefined : tooltipId,
       onPointerEnter() {
         send("TOOLTIP_POINTER_ENTER")
       },
@@ -81,6 +84,13 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
       style: {
         pointerEvents: ctx.interactive ? "auto" : "none",
       },
+    }),
+
+    labelProps: normalize.element<T>({
+      "data-part": "label",
+      id: tooltipId,
+      role: "tooltip",
+      style: srOnlyStyle,
     }),
 
     createPortal() {
