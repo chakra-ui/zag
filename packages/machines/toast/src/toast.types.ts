@@ -132,6 +132,9 @@ export type ToastGlobalConnect = {
   count: number
   isVisible(id: string): boolean
   upsert(options: ToastOptions): string | undefined
+  success(options: ToastOptions): string | undefined
+  error(options: ToastOptions): string | undefined
+  loading(options: ToastOptions): string | undefined
   dismiss(id?: string | undefined): void
   remove(id?: string | undefined): void
   promise<T>(promise: Promise<T>, msgs: ToastPromiseMessages, opts?: ToastPromiseOptions): Promise<T>

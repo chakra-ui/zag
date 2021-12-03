@@ -155,6 +155,9 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       isVisible: group.isVisible,
       upsert: group.upsert,
       dismiss: group.dismiss,
+      success: group.success,
+      error: group.error,
+      loading: group.loading,
       remove: group.remove,
       promise: group.promise,
     }
