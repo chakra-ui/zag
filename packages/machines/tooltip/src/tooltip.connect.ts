@@ -83,7 +83,7 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    setupPortal() {
+    createPortal() {
       const doc = dom.getDoc(ctx)
       const exist = dom.getPortalEl(ctx)
       if (exist) return exist
