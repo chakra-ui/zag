@@ -3,6 +3,7 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
 import {
+  ToastGlobalConnect,
   ToastGroupContainerProps,
   ToastGroupMachineContext,
   ToastOptions,
@@ -12,6 +13,8 @@ import {
 } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
+export let toastGlobalConnect: ToastGlobalConnect
+
 export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<ToastGroupMachineContext>,
   send: (event: S.Event<S.AnyEventObject>) => void,
@@ -19,11 +22,9 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
 ) {
   const { context: ctx } = state
 
-  return {
+  const group = {
     count: ctx.toasts.length,
-
     toasts: ctx.toasts,
-
     toastsByPlacement: getToastsByPlacement(ctx.toasts),
 
     isVisible(id: string) {
@@ -35,7 +36,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       const uid = "toast-" + Math.random().toString(36).substr(2, 9)
       const id = options.id ? options.id : uid
 
-      if (this.isVisible(id)) return
+      if (group.isVisible(id)) return
       send({ type: "ADD_TOAST", toast: { ...options, id } })
 
       return id
@@ -43,18 +44,18 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
 
     upsert(options: ToastOptions) {
       const { id } = options
-      const isVisible = id ? this.isVisible(id) : false
+      const isVisible = id ? group.isVisible(id) : false
       if (isVisible && id != null) {
-        return this.update(id, options)
+        return group.update(id, options)
       } else {
-        return this.create(options)
+        return group.create(options)
       }
     },
 
     dismiss(id?: string) {
       if (id == null) {
         send("DISMISS_ALL")
-      } else if (this.isVisible(id)) {
+      } else if (group.isVisible(id)) {
         send({ type: "DISMISS_TOAST", id })
       }
     },
@@ -62,50 +63,50 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
     remove(id?: string) {
       if (id == null) {
         send("REMOVE_ALL")
-      } else if (this.isVisible(id)) {
+      } else if (group.isVisible(id)) {
         send({ type: "REMOVE_TOAST", id })
       }
     },
 
     dismissByPlacement(placement: ToastPlacement) {
-      const toasts = this.toastsByPlacement[placement]
+      const toasts = group.toastsByPlacement[placement]
       if (toasts) {
-        toasts.forEach((toast) => this.dismiss(toast.id))
+        toasts.forEach((toast) => group.dismiss(toast.id))
       }
     },
 
     update(id: string, options: ToastOptions) {
-      if (!this.isVisible(id)) return
+      if (!group.isVisible(id)) return
       send({ type: "UPDATE_TOAST", id, toast: options })
       return id
     },
 
     loading(options: ToastOptions) {
       options.type = "loading"
-      return this.upsert(options)
+      return group.upsert(options)
     },
 
     success(options: ToastOptions) {
       options.type = "success"
-      return this.upsert(options)
+      return group.upsert(options)
     },
 
     error(options: ToastOptions) {
       options.type = "error"
-      return this.upsert(options)
+      return group.upsert(options)
     },
 
     promise<T>(promise: Promise<T>, msgs: ToastPromiseMessages, opts: ToastPromiseOptions = {}) {
-      const id = this.loading({ ...opts, ...opts?.loading, type: "loading", title: msgs.loading })
+      const id = group.loading({ ...opts, ...opts?.loading, type: "loading", title: msgs.loading })
 
       promise
         .then((response) => {
           const message = runIfFn(msgs.loading, response)
-          this.success({ ...opts, ...opts?.success, id, title: message })
+          group.success({ ...opts, ...opts?.success, id, title: message })
         })
         .catch((error) => {
           const message = runIfFn(msgs.error, error)
-          this.error({ ...opts, ...opts?.error, id, title: message })
+          group.error({ ...opts, ...opts?.error, id, title: message })
         })
 
       return promise
@@ -114,7 +115,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
     pause(id?: string) {
       if (id == null) {
         send("PAUSE_ALL")
-      } else if (this.isVisible(id)) {
+      } else if (group.isVisible(id)) {
         send({ type: "PAUSE_TOAST", id })
       }
     },
@@ -122,7 +123,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
     resume(id?: string) {
       if (id == null) {
         send("RESUME_ALL")
-      } else if (this.isVisible(id)) {
+      } else if (group.isVisible(id)) {
         send({ type: "RESUME_TOAST", id })
       }
     },
@@ -138,7 +139,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    setupPortal() {
+    createPortal() {
       const doc = dom.getDoc(ctx)
       const exist = dom.getPortalEl(ctx)
       if (exist) return exist
@@ -147,4 +148,17 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       return portal
     },
   }
+
+  if (!state.matches("unknown")) {
+    toastGlobalConnect = {
+      count: group.count,
+      isVisible: group.isVisible,
+      upsert: group.upsert,
+      dismiss: group.dismiss,
+      remove: group.remove,
+      promise: group.promise,
+    }
+  }
+
+  return group
 }
