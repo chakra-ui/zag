@@ -7,11 +7,9 @@ The toast component is used to give feedback to users after an action has taken 
 - Support for screen readers
 - Limit the number of visible toasts
 - Manage promises within toast
-- Pause on hover
-- Can remove toast programmatically
-- Pause toast when the window loses focus
+- Pause on hover or page idle
+- Can remove or update toast programmatically
 - Support for progress bars
-- Update toast values and options
 
 ## Installation
 
@@ -72,8 +70,6 @@ The toast machine allows you render a linear progress bar to visualize the time 
 
 <CodeSnippet id="toast/progress-bars.mdx" />
 
-## Pausing the toast(s) when window loses focus
-
 ## Pausing the toasts
 
 There are 3 scenarios we provide to pause a toast from timing out:
@@ -100,7 +96,45 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
+When the number of toasts on screen changes, the toast group's connect function exposes a `subscribe` method you can
+use. When called, a function to unsubscribe is returned for cleanup purposes.
+
+<CodeSnippet id="toast/subscribe-function.mdx" />
+
 ## Styling guide
+
+### Toast styling
+
+- When the toast is visible, we attach a `data-open` attribute to the toast's container.
+- `data-type` attribute is added based on the `type` property passed.
+- The CSS variable `--toast-remove-delay` that matched the specified remove delay is added to the toast's container.
+  This is useful when defining the exit animations in CSS.
+
+```css
+["data-part"="container"] {
+  /* The default or base styles */
+}
+
+["data-part"="container"]:not([data-open]) {
+  /* Styles for when the toast is closed */
+}
+
+[data-part="container"][data-type="loading"] {
+  /* Styles for the specific toast type */
+}
+```
+
+### Progress bar
+
+- The CSS variable `--toast-progress-percent` is added to the progress bar element. This is useful when defining the
+  style of the progress bar.
+
+```css
+[data-part="progress"] {
+  /* Styles for the progress bar */
+  width: var(--toast-progress-percent);
+}
+```
 
 ## Using toast outside component
 
@@ -123,3 +157,16 @@ create a toast.
 | `success` | `2000`     |
 | `custom`  | `5000`     |
 | `loading` | `Infinity` |
+
+## Changing the space between toasts
+
+When multiple toasts are rendered, a gutter of `1rem` is applied between each toast. To change this value, pass the
+`spacing` context property.
+
+```jsx
+const [state, send] = useMachine(
+  Toast.group.machine.withContext({
+    spacing: "50px",
+  }),
+)
+```

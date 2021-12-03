@@ -8,6 +8,7 @@ export const dom = {
   getToastTitleId: (ctx: Ctx) => `toast-title--${ctx.id}`,
   getRootId: (ctx: Ctx) => `toast--${ctx.id}`,
   getToastContainerId: (ctx: Ctx) => `toast-container--${ctx.id}`,
+  getCloseButtonId: (ctx: Ctx) => `toast-close-button--${ctx.id}`,
 
   getPortalId: (ctx: GroupCtx) => `toast-portal--${ctx.uid}`,
   getPortalEl: (ctx: GroupCtx) => dom.getDoc(ctx).getElementById(dom.getPortalId(ctx)),

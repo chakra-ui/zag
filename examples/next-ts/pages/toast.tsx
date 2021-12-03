@@ -15,6 +15,8 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 
   const t = toast.connect(state, send)
 
+  // call `t.render()` if provided, else use default ui below
+
   return (
     <pre className="toast" {...t.containerProps}>
       <progress max={ctx.progress?.max} value={ctx.progress?.value} />

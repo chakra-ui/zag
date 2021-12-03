@@ -36,6 +36,9 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
       "aria-valuemin": 0,
       "aria-valuemax": ctx.progress?.max,
       "aria-valuenow": ctx.progress?.value,
+      style: {
+        "--toast-progress-percent": `${ctx.progress?.value / ctx.progress?.max}%`,
+      },
     }),
 
     containerProps: normalize.element<T>({
@@ -63,5 +66,25 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
     titleProps: normalize.element<T>({
       id: dom.getToastTitleId(ctx),
     }),
+
+    closeButtonProps: normalize.button<T>({
+      id: dom.getCloseButtonId(ctx),
+      "data-part": "close-button",
+      type: "button",
+      "aria-label": "Dismiss notification",
+      onClick() {
+        send("DISMISS")
+      },
+    }),
+
+    render() {
+      return ctx.render?.({
+        id: ctx.id,
+        type: ctx.type,
+        dismiss() {
+          send("DISMISS")
+        },
+      })
+    },
   }
 }

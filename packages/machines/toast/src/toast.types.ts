@@ -74,6 +74,16 @@ export type ToastMachineContext = SharedContext & {
    * Function called when the toast is updated
    */
   onUpdate?: VoidFunction
+  /**
+   * Custom function to render the toast element.
+   */
+  render?: (options: ToastRenderOptions) => any
+}
+
+export type ToastRenderOptions = {
+  id: string
+  type: ToastType
+  dismiss(): void
 }
 
 export type ToastOptions = Partial<Omit<ToastMachineContext, "progress">>
