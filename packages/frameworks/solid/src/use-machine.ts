@@ -1,17 +1,7 @@
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
 import { createEffect, onCleanup, onMount } from "solid-js"
 import { createStore, reconcile, Store } from "solid-js/store"
-
-const toPOJO = (v: any) => JSON.parse(JSON.stringify(v))
-
-const unwrap = (state: any) => ({
-  value: String(state.value),
-  previousValue: String(state.previousValue),
-  context: toPOJO(state.context),
-  event: toPOJO(state.event),
-  done: Boolean(state.done),
-  tags: Array.from(state.tags),
-})
+import { unwrap } from "./unwrap"
 
 type HookOptions<
   TContext extends Record<string, any>,
