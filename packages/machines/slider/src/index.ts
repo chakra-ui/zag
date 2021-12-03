@@ -5,7 +5,7 @@ import { dom } from "./slider.dom"
 export const slider = {
   machine: sliderMachine,
   connect: sliderConnect,
-  dom,
+  unstable__dom: dom,
 }
 
 export type { SliderMachineContext, SliderMachineState } from "./slider.types"

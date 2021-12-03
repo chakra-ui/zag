@@ -87,11 +87,11 @@ export const dom = {
     dispatchInputEvent(input, value)
   },
 
-  getRootStyle: slider.dom.getRootStyle,
+  getRootStyle: slider["unstable__dom"].getRootStyle,
   getThumbStyle(ctx: Ctx, index: number) {
     const value = ctx.value[index]
     const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
-    return slider.dom.getThumbStyle({ ...ctx, value, thumbSize })
+    return slider["unstable__dom"].getThumbStyle({ ...ctx, value, thumbSize })
   },
   getRangeStyle,
   getTrackStyle: (): Style => ({
