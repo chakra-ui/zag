@@ -92,11 +92,11 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
             {
               guard: "autoFocus",
               target: "focused",
-              actions: ["setId", "setOwnerDocument", "createLiveRegion"],
+              actions: "setupDocument",
             },
             {
               target: "idle",
-              actions: ["setId", "setOwnerDocument", "createLiveRegion"],
+              actions: "setupDocument",
             },
           ],
         },
@@ -387,13 +387,9 @@ export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMac
       },
     },
     actions: {
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
-      },
-      createLiveRegion(ctx) {
+        ctx.uid = evt.id
         const region = new LiveRegion({
           ariaLive: "assertive",
           role: "status",

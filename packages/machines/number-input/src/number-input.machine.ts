@@ -61,7 +61,7 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument"],
+            actions: "setupDocument",
           },
         },
       },
@@ -262,11 +262,9 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       },
     },
     actions: {
-      setId: (ctx, evt) => {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument: (ctx, evt) => {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       focusInput(ctx) {
         if (!ctx.focusInputOnChange) return

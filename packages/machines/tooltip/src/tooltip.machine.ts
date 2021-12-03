@@ -21,7 +21,7 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         on: {
           SETUP: {
             target: "closed",
-            actions: ["setOwnerDocument", "setId"],
+            actions: "setupDocument",
           },
         },
       },
@@ -143,10 +143,8 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
       },
     },
     actions: {
-      setId(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.id = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
       },
       setGlobalId(ctx) {

@@ -39,7 +39,7 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument"],
+            actions: "setupDocument",
           },
         },
       },
@@ -123,11 +123,9 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
       clearFocusedValue(ctx) {
         ctx.focusedValue = null
       },
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       setValue(ctx, evt) {
         ctx.value = evt.value

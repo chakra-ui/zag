@@ -11,8 +11,3 @@ export type {{capitalize machine}}MachineState = {
 export type {{capitalize machine}}State = S.State<{{capitalize machine}}MachineContext, {{capitalize machine}}MachineState>
 
 export type {{capitalize machine}}Send = S.Send<S.AnyEventObject>
-
-export type {{capitalize machine}}ItemProps = {
-  value: string
-  disabled?: boolean
-}

@@ -44,7 +44,7 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setOwnerDocument", "setId"],
+            actions: "setupDocument",
           },
         },
       },
@@ -109,11 +109,9 @@ export const ratingMachine = createMachine<RatingMachineContext, RatingMachineSt
       isRadioFocused: (ctx) => !!dom.getRootEl(ctx)?.contains(dom.getActiveEl(ctx)),
     },
     actions: {
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       clearHoveredValue(ctx) {
         ctx.hoveredValue = -1

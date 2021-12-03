@@ -70,8 +70,8 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
       unknown: {
         on: {
           SETUP: [
-            { guard: "autoFocus", target: "focused:input", actions: "setup" },
-            { target: "idle", actions: "setup" },
+            { guard: "autoFocus", target: "focused:input", actions: "setupDocument" },
+            { target: "idle", actions: "setupDocument" },
           ],
         },
       },
@@ -211,7 +211,7 @@ export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInput
         const value = dom.getFocusedTagValue(ctx)
         ctx.onHighlight?.(value)
       },
-      setup(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
         const liveRegion = new LiveRegion({

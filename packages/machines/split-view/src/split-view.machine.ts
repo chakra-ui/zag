@@ -85,7 +85,7 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument"],
+            actions: "setupDocument",
           },
         },
       },
@@ -194,11 +194,9 @@ export const splitViewMachine = createMachine<SplitViewMachineContext, SplitView
       HOVER_DELAY: 250,
     },
     actions: {
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       setToMin(ctx) {
         ctx.value = ctx.min

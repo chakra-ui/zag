@@ -53,7 +53,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument"],
+            actions: "setupDocument",
           },
         },
       },
@@ -291,10 +291,8 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         if (!ctx.parent) return
         ctx.parent.state.context.suspendPointer = false
       },
-      setId: (ctx, evt) => {
+      setupDocument: (ctx, evt) => {
         ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
       },
       clearActiveId(ctx) {

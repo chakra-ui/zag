@@ -22,18 +22,17 @@ methodology.
 ## Installation
 
 ```sh
-npm i --save @ui-machines/web
+npm i --save @ui-machines/<component>
 
 # or
 
-yarn add @ui-machines/web
+yarn add @ui-machines/<component>
 ```
 
 For framework specific solutions, we provide simple wrappers to help you consume the component state machines.
 
 - ⚛️ `@ui-machines/react` - React hooks for consuming machines in React applications
 - 💚 `@ui-machines/vue` - Vue composition for consuming machines in Vue applications
-- 🎷 `@ui-machines/svelte` - Svelte utilities for consuming machines in Svelte applications
 - 🎷 `@ui-machines/solid` - Solid.js utilities for consuming machines in Solid.js applications
 
 ## Examples
@@ -41,15 +40,15 @@ For framework specific solutions, we provide simple wrappers to help you consume
 ### React
 
 ```jsx
-import { toggle } from "@ui-machines/web"
-import { useMachine } from "@ui-machines/react"
+import { toggle } from "@ui-machines/toggle"
+import { useMachine, useMemo } from "@ui-machines/react"
 
 function Example() {
   // if you need access to `state` or `send` from machine
   const [state, send] = useMachine(toggle.machine)
 
   // convert machine details into `DOM` props
-  const { buttonProps } = toggle.connect(state, send)
+  const { buttonProps } = useMemo(() => toggle.connect(state, send), [state])
 
   // consume into components
   return <button {...buttonProps}>Toggle me</button>

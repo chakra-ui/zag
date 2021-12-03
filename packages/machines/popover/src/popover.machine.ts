@@ -37,7 +37,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         on: {
           SETUP: {
             target: "closed",
-            actions: ["setId", "setOwnerDocument"],
+            actions: "setupDocument",
           },
         },
       },
@@ -153,11 +153,9 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
       },
     },
     actions: {
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       clearPointerDown(ctx) {
         ctx.pointerdownNode = null

@@ -29,7 +29,7 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
         on: {
           SETUP: {
             target: "closed",
-            actions: ["setId", "setOwnerDocument"],
+            actions: "setupDocument",
           },
         },
       },
@@ -118,11 +118,9 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
       },
     },
     actions: {
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       checkTitleExists(ctx) {
         nextTick(() => {

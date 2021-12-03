@@ -39,7 +39,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setId", "setOwnerDocument", "setThumbSize"],
+            actions: ["setupDocument", "setThumbSize"],
           },
         },
       },
@@ -119,11 +119,9 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       },
     },
     actions: {
-      setId(ctx, evt) {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       invokeOnChangeStart(ctx) {
         ctx.onChangeStart?.(ctx.value)

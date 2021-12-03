@@ -53,11 +53,11 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
             {
               guard: "autoFocus",
               target: "focused",
-              actions: ["setId", "setOwnerDocument", "setupValue", "setFocusIndexToFirst"],
+              actions: ["setupDocument", "setupValue", "setFocusIndexToFirst"],
             },
             {
               target: "idle",
-              actions: ["setId", "setOwnerDocument", "setupValue"],
+              actions: ["setupDocument", "setupValue"],
             },
           ],
         },
@@ -134,11 +134,9 @@ export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMac
       hasIndex: (_ctx, evt) => evt.index !== undefined,
     },
     actions: {
-      setId: (ctx, evt) => {
-        ctx.uid = evt.id
-      },
-      setOwnerDocument: (ctx, evt) => {
+      setupDocument: (ctx, evt) => {
         ctx.doc = ref(evt.doc)
+        ctx.uid = evt.id
       },
       setupValue: (ctx) => {
         nextTick(() => {

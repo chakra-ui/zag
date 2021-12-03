@@ -97,7 +97,7 @@ export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
       selectOnFocus: (ctx) => ctx.activationMode === "automatic",
     },
     actions: {
-      setOwnerDocument(ctx, evt) {
+      setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
       },
