@@ -16,6 +16,7 @@ export function toastConnect<T extends PropTypes = ReactPropTypes>(
     type: ctx.type,
     placement: ctx.placement,
     isVisible,
+    progress: ctx.progress,
 
     pause() {
       send("PAUSE")

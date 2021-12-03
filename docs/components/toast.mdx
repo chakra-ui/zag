@@ -1,0 +1,125 @@
+# Toast
+
+The toast component is used to give feedback to users after an action has taken place.
+
+## Features
+
+- Support for screen readers
+- Limit the number of visible toasts
+- Manage promises within toast
+- Pause on hover
+- Can remove toast programmatically
+- Pause toast when the window loses focus
+- Support for progress bars
+- Update toast values and options
+
+## Installation
+
+To use the toast machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/toast" />
+
+```jsx
+import * as TagsInput from "@ui-machines/toast"
+```
+
+Then you'll need to install the framework specific binding
+
+<CodeSnippet id="toast/installation.mdx" />
+
+## Usage
+
+The toast consists of two machines, `toast.machine` and `toast.group.machine`. The toast group machines is the main
+machine as it spawns a new toast machine every time to create a toast.
+
+The toast group's `connect` function gives you access to methods you can use to add, update, and remove a toast. You
+should setup the toast at the root of your project.
+
+<CodeSnippet id="toast/basic-usage.mdx" />
+
+## Using Portals
+
+You can also use the `createPortal` method in the `toast.group.connect` to create a portal specifically for the toasts.
+Using a portal is helpful to ensure that the toast is rendered outside the DOM hierarchy of the parent component.
+
+When dispatching a toast, you can use the framework specific `Portal` implementation.
+
+<CodeSnippet id="toast/using-portals.mdx" />
+
+## Positioning toast
+
+To position a toast when created, you can pass the `placement` property when you call the `.create(...)` methods
+provided by the toast group's connect funtion.
+
+<CodeSnippet id="toast/position-toast.mdx" />
+
+## Updating or removing toast programmatically
+
+When a toast is created using the `.create(...)` method, it returns the `id` of the toast, you can use that to update,
+remove or prevent duplicate toast.
+
+<CodeSnippet id="toast/programmatic-control.mdx" />
+
+## Handling promises
+
+The toast group machine exposes a `.promise(...)` function. Supply a promise or a function that return a promise and the
+notification will be updated if it resolves or fails. When the promise is pending a spinner is displayed.
+
+## Using progress bars
+
+The toast machine allows you render a linear progress bar to visualize the time left before the toast closes. The
+`toast.connect(...)` exposes a `progress` object that has `value` and `max` properties.
+
+<CodeSnippet id="toast/progress-bars.mdx" />
+
+## Pausing the toast(s) when window loses focus
+
+## Pausing the toasts
+
+There are 3 scenarios we provide to pause a toast from timing out:
+
+- When the document loses focus or the page is idle (e.g. switching to a new browser tab), controlled via the
+  `pauseOnPageIdle` context property.
+- When the toast is hovered, controlled by the `pauseOnHover` context property.
+- An explicity `pause(id)` call, provided by the `toast.group.connect(...)`
+
+<CodeSnippet id="toast/pausing-toast.mdx" />
+
+## Limiting the number of toasts
+
+Toasts are great but displaying too many of them can sometimes hamper the user experience. To limit the number of
+visible toasts, pass the `max` property to the group machine's context.
+
+```jsx
+const [state, send] = useMachine(
+  Toast.group.machine.withContext({
+    max: 10,
+  }),
+)
+```
+
+## Listening for changes
+
+## Styling guide
+
+## Using toast outside component
+
+The toast exposes a `global` function you can invoke to get access to specific methods from the `toast.group.connect`.
+The methods available are `count`, `isVisible`, `upsert`, `dismiss`, `remove`, `promise`.
+
+> For toast to work outside component, ensure you've setup the toast group as defined in the [usage guide](#usage)
+
+<CodeSnippet id="toast/global-function.mdx" />
+
+## Default toast durations
+
+Every toast type has a default visible duration. You can override them by passing the `duration` property when you
+create a toast.
+
+| type      | duration   |
+| --------- | ---------- |
+| `info`    | `5000`     |
+| `error`   | `5000`     |
+| `success` | `2000`     |
+| `custom`  | `5000`     |
+| `loading` | `Infinity` |

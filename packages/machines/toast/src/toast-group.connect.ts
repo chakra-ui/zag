@@ -1,4 +1,4 @@
-import { StateMachine as S } from "@ui-machines/core"
+import { StateMachine as S, subscribe } from "@ui-machines/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
@@ -146,6 +146,10 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       const portal = dom.createPortalEl(ctx)
       doc.body.appendChild(portal)
       return portal
+    },
+
+    subscribe(fn: (toasts: ToastGroupMachineContext["toasts"]) => void) {
+      return subscribe(ctx.toasts, () => fn(ctx.toasts))
     },
   }
 
