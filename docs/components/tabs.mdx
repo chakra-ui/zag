@@ -1,0 +1,122 @@
+# Tabs
+
+An accessible tabs component that provides keyboard interactions and ARIA attributes described in the WAI-ARIA Tabs
+Design Pattern.
+
+## Features
+
+- Support for mouse, touch, and keyboard interactions on tabs
+- Support for LTR and RTL keyboard navigation
+- Support for disabled tabs
+- Follows the tabs ARIA pattern, semantically linking tabs and their associated tab panels
+
+## Installation
+
+To use the editable machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/tabs" />
+
+```jsx
+import * as Tabs from "@ui-machines/tabs"
+```
+
+Next, you'll need to install the binding for your framework
+
+<CodeSnippet id="tabs/installation.mdx" />
+
+## Basic usage
+
+Tabs consist of a tab list with one or more visually separated tabs. Each tab has associated content, and only the
+selected tab's content is shown.
+
+Tabs are built using the `tablistProps`, `getTabProps`, `getTabPanelProps` property and getter.
+
+<CodeSnippet id="tabs/basic-usage.mdx" />
+
+## Showing an indicator
+
+To show an active indicator when a tab is selected, you add the `tabIndicatorProps` object provided by the `connect`
+function.
+
+<CodeSnippet id="tabs/with-indicator.mdx" />
+
+## Styling the selected tab
+
+When a tab button is selected, a `data-selected` attribute is added to it. You can use this to style the selected state.
+
+```css
+[data-part="tab"][data-selected] {
+  /* Styles for selected tab */
+}
+```
+
+## Disabling a tab
+
+When a Tab is `disabled`, it is skipped during keyboard navigation and it is not clickable. To disable a tab, set the
+`disabled` property in the `getTabProps` to `true`.
+
+<CodeSnippet id="tabs/disabling-tab.mdx" />
+
+## Events
+
+When the selected tab is changed, an `onChange` callback gets invoked with the `value` of the selected tab.
+
+```jsx
+const [state, send] = useMachine(
+  Tabs.machine.withContext({
+    onChange(value) {
+      console.log("selected tab:", value)
+    },
+  }),
+)
+```
+
+## Setting the initial selected tab
+
+To set the tab to be selected initially, pass the `value` prop to the machine's context.
+
+```jsx
+const [state, send] = useMachine(
+  Tabs.machine.withContext({
+    value: "tab-one",
+  }),
+)
+```
+
+## Manual tab activation
+
+By default, `Tabs` are activated automatically. This means when you use the arrow keys to change tabs, the tab is
+activated and focused.
+
+In this scenario, you should use a manually activated tab, it moves focus without activating the tabs. With focus on a
+specific tab, users can activate a tab by pressing Space or Enter.
+
+```jsx
+const [state, send] = useMachine(
+  Tabs.machine.withContext({
+    activationMode: "manual",
+  }),
+)
+```
+
+## Selecting a Tab Programmatically
+
+To set the value of the selected tab programmatically, you can use the `setValue` function provided by the connect
+function.
+
+<CodeSnippet id="tabs/programmatic-control.mdx" />
+
+## Vertical tab
+
+To use vertical tabs, pass the `orientation` property to the context and set it to `vertical`. This will ensure the up
+and down keys are used for keyboard interactions.
+
+> Ensure you style your tabs to appear vertically
+
+```jsx
+const [state, send] = useMachine(
+  Tabs.machine.withContext({
+    orientation: "vertical",
+  }),
+)
+```

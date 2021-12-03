@@ -1,6 +1,6 @@
-import { first, last } from "@ui-machines/utils"
 import { itemById, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
-import { TabsMachineContext as Ctx } from "./tabs.machine"
+import { first, last } from "@ui-machines/utils"
+import { TabsMachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

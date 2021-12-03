@@ -4,7 +4,7 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isSafari } from "@ui-machines/utils"
 
 import { dom } from "./tabs.dom"
-import { TabsMachineContext, TabsMachineState } from "./tabs.machine"
+import { TabsMachineContext, TabsMachineState } from "./tabs.types"
 
 export function tabsConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<TabsMachineContext, TabsMachineState>,
@@ -19,6 +19,7 @@ export function tabsConnect<T extends PropTypes = ReactPropTypes>(
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
+
     tablistProps: normalize.element<T>({
       "data-part": "tablist",
       id: dom.getTablistId(ctx),

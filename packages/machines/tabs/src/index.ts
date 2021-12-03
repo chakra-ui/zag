@@ -6,4 +6,4 @@ export const tabs = {
   connect: tabsConnect,
 }
 
-export type { TabsMachineContext, TabsMachineState } from "./tabs.machine"
+export type { TabsMachineContext, TabsMachineState } from "./tabs.types"
