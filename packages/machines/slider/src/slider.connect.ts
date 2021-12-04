@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
-import { valueToPercent } from "@ui-machines/number-utils"
+import { multiply, percentToValue, valueToPercent } from "@ui-machines/number-utils"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
@@ -22,15 +22,35 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
   const isDragging = state.matches("dragging")
 
   return {
-    // State values
+    // state
     isFocused,
     isDragging,
     value: ctx.value,
     percent: valueToPercent(ctx.value, ctx),
 
-    // Slider Label properties
+    // methods
+    setValue(value: number) {
+      send({ type: "SET_VALUE", value })
+    },
+    getPercentValue(percent: number) {
+      return percentToValue(percent, ctx)
+    },
+    blur() {
+      send("BLUR")
+    },
+    focus() {
+      send("FOCUS")
+    },
+    increment() {
+      send("INCREMENT")
+    },
+    decrement() {
+      send("DECREMENT")
+    },
+
     labelProps: normalize.label<T>({
       "data-part": "label",
+      "data-disabled": dataAttr(ctx.disabled),
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx),
       onClick(event) {
@@ -42,7 +62,6 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
     outputProps: normalize.output<T>({
       "data-part": "output",
       id: dom.getOutputId(ctx),
@@ -50,16 +69,13 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       "aria-live": "off",
     }),
 
-    // Slider Thumb properties
     thumbProps: normalize.element<T>({
       "data-part": "thumb",
       id: dom.getThumbId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-focused": dataAttr(isFocused),
+      "data-focus": dataAttr(isFocused),
       draggable: false,
-
-      // ARIA Attributes for accessibility
       "aria-disabled": ctx.disabled || undefined,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy ?? dom.getLabelId(ctx),
@@ -70,8 +86,6 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       "aria-valuetext": ariaValueText,
       role: "slider",
       tabIndex: ctx.disabled ? -1 : 0,
-
-      // Event listeners
       onBlur() {
         send("BLUR")
       },
@@ -79,7 +93,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onKeyDown(event) {
-        const step = getEventStep(event) * ctx.step
+        const step = multiply(getEventStep(event), ctx.step)
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
@@ -111,9 +125,9 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
         const exec = keyMap[key]
 
         if (exec) {
+          exec(event)
           event.preventDefault()
           event.stopPropagation()
-          exec(event)
         }
       },
       style: dom.getThumbStyle(ctx),
@@ -134,7 +148,7 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-focused": dataAttr(isFocused),
+      "data-focus": dataAttr(isFocused),
       style: dom.getTrackStyle(),
     }),
 
@@ -154,11 +168,10 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-focused": dataAttr(isFocused),
+      "data-focus": dataAttr(isFocused),
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        // allow only primary pointer clicks
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
         event.preventDefault()
         event.stopPropagation()
@@ -171,7 +184,6 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const isInRange = !(value < ctx.min || value > ctx.max)
       const isHighlighted = value >= ctx.value
       const percent = valueToPercent(value, ctx)
       const style = dom.getMarkerStyle(ctx, percent)
@@ -183,7 +195,6 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
         "data-value": value,
         "aria-hidden": true,
         "data-disabled": dataAttr(ctx.disabled),
-        "data-invalid": dataAttr(!isInRange),
         "data-highlighted": dataAttr(isHighlighted),
         style,
       }

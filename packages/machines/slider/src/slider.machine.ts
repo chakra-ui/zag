@@ -23,14 +23,24 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       max: 100,
       focusThumbOnChange: true,
     },
+
     computed: {
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
     },
+
+    created(ctx) {
+      // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#value
+      if (ctx.value == null) {
+        ctx.value = ctx.max < ctx.min ? ctx.min : ctx.min + (ctx.max - ctx.min) / 2
+      }
+    },
+
     watch: {
       value: ["invokeOnChange", "dispatchChangeEvent"],
     },
+
     on: {
       STOP: "focus",
     },

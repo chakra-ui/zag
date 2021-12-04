@@ -48,7 +48,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getTrackId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-focused": dataAttr(isFocused),
+      "data-focus": dataAttr(isFocused),
       style: dom.getTrackStyle(),
     }),
 
@@ -65,7 +65,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
         id: dom.getThumbId(ctx, index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
-        "data-focused": dataAttr(isFocused),
+        "data-focus": dataAttr(isFocused),
         draggable: false,
         "aria-disabled": ctx.disabled || undefined,
         "aria-label": _ariaLabel,
@@ -148,7 +148,7 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getRootId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-focused": dataAttr(isFocused),
+      "data-focus": dataAttr(isFocused),
       style: dom.getRootStyle(ctx),
       onPointerDown(event) {
         const evt = getNativeEvent(event)
