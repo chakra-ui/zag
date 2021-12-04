@@ -9,7 +9,7 @@ type PointerEventOptions = {
   document?: Document
 }
 
-export function preventBodyPointerEvents(opts: Partial<PointerEventOptions> = {}) {
+export function preventBodyPointerEvents(el: HTMLElement | null, opts: Partial<PointerEventOptions> = {}) {
   const { disabled = false, document: docProp } = opts
   const doc: Document = docProp || document
 
@@ -42,16 +42,23 @@ export function preventBodyPointerEvents(opts: Partial<PointerEventOptions> = {}
     if (changeCount === 0) {
       doc.body.style.pointerEvents = originalBodyPointerEvents
     }
+    if (el) {
+      el.style.pointerEvents = ""
+    }
   }
 
   function apply() {
-    if (!disabled) return
+    if (disabled) return
 
     if (changeCount === 0) {
       originalBodyPointerEvents = doc.body.style.pointerEvents
     }
 
     doc.body.style.pointerEvents = "none"
+    if (el) {
+      el.style.pointerEvents = "auto"
+    }
+
     changeCount++
 
     return function () {
