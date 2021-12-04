@@ -1,25 +1,18 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
-import { contains, isTabbable, nextTick, preventBodyScroll, trackPointerDown } from "@ui-machines/dom-utils"
-import type { Context } from "@ui-machines/types"
+import {
+  contains,
+  nextTick,
+  preventBodyPointerEvents,
+  preventBodyScroll,
+  trackPointerDown,
+} from "@ui-machines/dom-utils"
 import { next } from "@ui-machines/utils"
+import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
+import { PopoverMachineContext, PopoverMachineState } from "./popover.types"
 
-const { and, or, not } = guards
-
-export type PopoverMachineContext = Context<{
-  modal?: boolean
-  autoFocus?: boolean
-  initialFocusEl?: HTMLElement | (() => HTMLElement)
-  closeOnBlur?: boolean
-  closeOnEsc?: boolean
-  onOpen?: () => void
-  onClose?: () => void
-}>
-
-export type PopoverMachineState = {
-  value: "unknown" | "open" | "closed"
-}
+const { and, not, or } = guards
 
 export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachineState>(
   {
@@ -32,6 +25,11 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
       autoFocus: true,
       modal: false,
     },
+
+    computed: {
+      __portalled: (ctx) => !!ctx.modal || !!ctx.portalled,
+    },
+
     states: {
       unknown: {
         on: {
@@ -41,23 +39,31 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
           },
         },
       },
+
       closed: {
-        entry: "clearPointerDown",
+        entry: ["clearPointerDown", "invokeOnClose"],
         on: {
           TRIGGER_CLICK: "open",
           OPEN: "open",
         },
       },
+
       open: {
-        activities: ["trackPointerDown", "trapFocus", "preventScroll"],
+        activities: [
+          "trackPointerDown",
+          "trapFocus",
+          "preventScroll",
+          "hideContentBelow",
+          "disableOutsidePointerEvents",
+        ],
         entry: choose([
           {
             guard: and("autoFocus", not("modal")),
-            actions: "setInitialFocus",
+            actions: ["setInitialFocus", "invokeOnOpen"],
           },
           {
             guard: not("modal"),
-            actions: "focusContent",
+            actions: ["focusContent", "invokeOnOpen"],
           },
         ]),
         on: {
@@ -75,16 +81,16 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
             actions: "focusTrigger",
           },
           TAB: {
-            guard: and("isLastTabbableElement", "closeOnBlur"),
+            guard: and("isLastTabbableElement", "closeOnBlur", "portalled"),
             target: "closed",
             actions: "focusNextTabbableElementAfterTrigger",
           },
           SHIFT_TAB: {
-            guard: or("isFirstTabbableElement", "isContentFocused", "closeOnBlur"),
+            guard: and(or("isFirstTabbableElement", "isContentFocused"), "closeOnBlur", "portalled"),
             target: "closed",
             actions: "focusTrigger",
           },
-          CLICK_OUTSIDE: [
+          INTERACT_OUTSIDE: [
             {
               guard: and("closeOnBlur", "isRelatedTargetFocusable"),
               target: "closed",
@@ -106,6 +112,25 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
           ctx.pointerdownNode = ref(el)
         })
       },
+      disableOutsidePointerEvents(ctx) {
+        const el = dom.getContentEl(ctx)
+        return preventBodyPointerEvents(el, {
+          document: dom.getDoc(ctx),
+          disabled: !ctx.modal,
+        })
+      },
+      hideContentBelow(ctx) {
+        if (!ctx.modal) return
+        let unhide: VoidFunction
+        nextTick(() => {
+          const el = dom.getContentEl(ctx)
+          if (!el) return
+          try {
+            unhide = hideOthers(el)
+          } catch {}
+        })
+        return () => unhide?.()
+      },
       preventScroll(ctx) {
         return preventBodyScroll({
           allowPinchZoom: true,
@@ -114,10 +139,11 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         })
       },
       trapFocus(ctx) {
+        if (!ctx.modal) return
         let trap: FocusTrap
         nextTick(() => {
           const el = dom.getContentEl(ctx)
-          if (!ctx.modal || !el) return
+          if (!el) return
           trap = createFocusTrap(el, {
             escapeDeactivates: false,
             allowOutsideClick: true,
@@ -137,20 +163,12 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
       closeOnEsc: (ctx) => !!ctx.closeOnEsc,
       autoFocus: (ctx) => !!ctx.autoFocus,
       modal: (ctx) => !!ctx.modal,
-      isRelatedTargetFocusable: (ctx) => {
-        if (!ctx.pointerdownNode) return false
-        return isTabbable(ctx.pointerdownNode)
-      },
+      portalled: (ctx) => !!ctx.portalled,
+      isRelatedTargetFocusable: (_ctx, evt) => evt.focusable,
       closeOnBlur: (ctx) => !!ctx.closeOnBlur,
-      isContentFocused: (ctx) => dom.getContentEl(ctx) === dom.getDoc(ctx).activeElement,
-      isFirstTabbableElement: (ctx) => {
-        const first = dom.getFirstTabbableEl(ctx)
-        return first === dom.getDoc(ctx).activeElement
-      },
-      isLastTabbableElement: (ctx) => {
-        const lastEl = dom.getLastTabbableEl(ctx)
-        return lastEl === dom.getDoc(ctx).activeElement
-      },
+      isContentFocused: (ctx) => dom.getContentEl(ctx) === dom.getActiveEl(ctx),
+      isFirstTabbableElement: (ctx) => dom.getFirstTabbableEl(ctx) === dom.getActiveEl(ctx),
+      isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
     },
     actions: {
       setupDocument(ctx, evt) {
@@ -175,6 +193,16 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
           dom.getTriggerEl(ctx)?.focus()
         })
       },
+      invokeOnOpen(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          ctx.onOpen?.()
+        }
+      },
+      invokeOnClose(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          ctx.onClose?.()
+        }
+      },
       focusNextTabbableElementAfterTrigger(ctx, evt) {
         const content = dom.getContentEl(ctx)
         const doc = dom.getDoc(ctx)
@@ -185,20 +213,20 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
         if (lastTabbable !== doc.activeElement) return
 
         let tabbables = dom.getDocTabbableEls(ctx)
-        let nextEl = next(tabbables, tabbables.indexOf(button), { loop: false })
+        let elementAfterTrigger = next(tabbables, tabbables.indexOf(button), { loop: false })
 
-        // content is just after button (in dom order)
-        if (nextEl === content) {
+        // content is just after button (in dom order) ???
+        if (elementAfterTrigger === content) {
           tabbables = tabbables.filter((el) => !contains(content, el))
-          nextEl = next(tabbables, tabbables.indexOf(button), { loop: false })
+          elementAfterTrigger = next(tabbables, tabbables.indexOf(button), { loop: false })
         }
 
         // if there's no next element, let the browser handle it
-        if (!nextEl || nextEl === button) return
+        if (!elementAfterTrigger || elementAfterTrigger === button) return
 
         // else focus the next element
         evt.preventDefault()
-        nextTick(() => nextEl?.focus())
+        nextTick(() => elementAfterTrigger?.focus())
       },
     },
   },

@@ -1,9 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { validateBlur } from "@ui-machines/dom-utils"
+import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-
 import { dom } from "./popover.dom"
-import { PopoverMachineContext, PopoverMachineState } from "./popover.machine"
+import { PopoverMachineContext, PopoverMachineState } from "./popover.types"
 
 export function popoverConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<PopoverMachineContext, PopoverMachineState>,
@@ -14,6 +13,9 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
   const isOpen = state.matches("open")
 
   return {
+    isOpen,
+    portalled: ctx.__portalled,
+
     open() {
       send("OPEN")
     },
@@ -32,7 +34,7 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    popoverProps: normalize.element<T>({
+    contentProps: normalize.element<T>({
       "data-part": "popover",
       id: dom.getContentId(ctx),
       tabIndex: -1,
@@ -41,25 +43,36 @@ export function popoverConnect<T extends PropTypes = ReactPropTypes>(
       "aria-labelledby": dom.getHeaderId(ctx),
       "aria-describedby": dom.getBodyId(ctx),
       onKeyDown(event) {
-        if (event.key === "Escape") {
-          send("ESCAPE")
+        const keyMap: EventKeyMap = {
+          Escape(event) {
+            send("ESCAPE")
+            event.stopPropagation()
+          },
+          Tab(event) {
+            const type = event.shiftKey ? "SHIFT_TAB" : "TAB"
+            send({
+              type,
+              preventDefault() {
+                event.preventDefault()
+              },
+            })
+          },
         }
-        if (event.key === "Tab") {
-          send({
-            type: event.shiftKey ? "SHIFT_TAB" : "TAB",
-            preventDefault() {
-              event.preventDefault()
-            },
-          })
-        }
+
+        const exec = keyMap[event.key]
+        exec?.(event)
       },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getTriggerEl(ctx), dom.getContentEl(ctx)],
           fallback: ctx.pointerdownNode,
         })
+
+        const el = (event.relatedTarget ?? ctx.pointerdownNode) as HTMLElement
+        const focusable = isTabbable(el) || isFocusable(el)
+
         if (isValidBlur) {
-          send("CLICK_OUTSIDE")
+          send({ type: "INTERACT_OUTSIDE", focusable })
         }
       },
     }),
