@@ -29,7 +29,7 @@ export default defineComponent({
         <div class={styles}>
           <div style={{ width: "300px" }} ref={ref}>
             <button {...machineState.value.triggerProps}>Click me</button>
-            <div {...machineState.value.popoverProps}>
+            <div {...machineState.value.contentProps}>
               <div>Popover content</div>
               <div>
                 <input placeholder="hello" />

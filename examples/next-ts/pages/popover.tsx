@@ -11,6 +11,7 @@ import { popoverStyle } from "../../../shared/style"
 export default function Page() {
   const controls = useControls({
     modal: { type: "boolean", defaultValue: false },
+    portalled: { type: "boolean", defaultValue: true },
     autoFocus: { type: "boolean", defaultValue: true },
     closeOnEsc: { type: "boolean", defaultValue: true },
   })
@@ -19,9 +20,10 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { triggerProps, popoverProps, closeButtonProps, headerProps } = popover.connect(state, send)
+  const { triggerProps, contentProps, closeButtonProps, headerProps } = popover.connect(state, send)
+  const __portalled = controls.context.modal || controls.context.portalled
 
-  const Wrapper = controls.context.modal ? Portal : React.Fragment
+  const Wrapper = __portalled ? Portal : React.Fragment
 
   return (
     <>
@@ -33,7 +35,7 @@ export default function Page() {
           Click me
         </button>
         <Wrapper>
-          <div className="popover__content" data-testid="popover-content" {...popoverProps}>
+          <div className="popover__content" data-testid="popover-content" {...contentProps}>
             <div className="popover__title" data-testid="popover-title" {...headerProps}>
               Popover Title
             </div>

@@ -24,7 +24,7 @@ export default function Page() {
     <div className={styles}>
       <div style={{ width: "300px" }} ref={ref}>
         <button {...machineState().triggerProps}>Click me</button>
-        <div {...machineState().popoverProps}>
+        <div {...machineState().contentProps}>
           <div>Popover content</div>
           <div>
             <input placeholder="hello" />
