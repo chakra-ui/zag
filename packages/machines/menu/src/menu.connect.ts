@@ -12,7 +12,6 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
 ) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
-  const isSubmenu = ctx.parent != null
 
   function getItemProps(opts: MenuItemProps) {
     const { id, disabled, valueText } = opts
@@ -69,6 +68,38 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
       send({ type: "OPEN" })
     },
 
+    contextTriggerProps: normalize.element<T>({
+      "data-part": "trigger",
+      onPointerDown(event) {
+        if (event.pointerType !== "mouse") {
+          send("CONTEXT_MENU_START")
+        }
+      },
+      onPointerCancel(event) {
+        if (event.pointerType !== "mouse") {
+          send("CONTEXT_MENU_CANCEL")
+        }
+      },
+      onPointerMove(event) {
+        if (event.pointerType !== "mouse") {
+          send("CONTEXT_MENU_CANCEL")
+        }
+      },
+      onPointerUp(event) {
+        if (event.pointerType !== "mouse") {
+          send("CONTEXT_MENU_CANCEL")
+        }
+      },
+      onContextMenu(event) {
+        const evt = getNativeEvent(event)
+        send({ type: "CONTEXT_MENU", point: getEventPoint(evt) })
+        event.preventDefault()
+      },
+      style: {
+        WebkitTouchCallout: "none",
+      },
+    }),
+
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
       type: "button",
@@ -79,7 +110,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !isSubmenu) return
+        if (disabled || !ctx.isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
           target: event.currentTarget,
@@ -88,7 +119,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
       onPointerLeave(event) {
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !isSubmenu) return
+        if (disabled || !ctx.isSubmenu) return
         send({
           type: "TRIGGER_POINTERLEAVE",
           target: event.currentTarget,
@@ -151,7 +182,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
 
         const exclude = dom.getChildMenus(ctx).concat(dom.getParentMenus(ctx))
 
-        if (trigger && !isSubmenu) {
+        if (trigger && !ctx.isSubmenu) {
           exclude.push(trigger)
         }
         const isValidBlur = validateBlur(event, {

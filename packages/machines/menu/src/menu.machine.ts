@@ -1,6 +1,6 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
-import { getEventPoint, withinPolygon, getElementRect, inset } from "@ui-machines/rect-utils"
+import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
 import { dom } from "./menu.dom"
 import { MenuMachineContext, MenuMachineState } from "./menu.types"
 
@@ -21,13 +21,16 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       hoverId: null,
       loop: false,
       suspendPointer: false,
+      contextMenuPoint: null,
     },
+
     computed: {
       isSubmenu: (ctx) => ctx.parent !== null,
-      isRtl: (ctx) => ctx.dir === "rtl",
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isRtl: (ctx) => ctx.isHorizontal && ctx.dir === "rtl",
       isVertical: (ctx) => ctx.orientation === "vertical",
     },
+
     on: {
       SET_PARENT: {
         actions: "setParent",
@@ -48,6 +51,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         actions: "restoreFocus",
       },
     },
+
     states: {
       unknown: {
         on: {
@@ -60,6 +64,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
 
       idle: {
         on: {
+          CONTEXT_MENU_START: "opening:contextmenu",
           TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
@@ -75,8 +80,23 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         },
       },
 
+      "opening:contextmenu": {
+        after: {
+          LONG_PRESS_DELAY: "open",
+        },
+        on: {
+          CONTEXT_MENU_CANCEL: "close",
+          CONTEXT_MENU: {
+            target: "open",
+            actions: "setContextMenuPoint",
+          },
+        },
+      },
+
       opening: {
-        after: { 100: "open" },
+        after: {
+          SUBMENU_OPEN_DELAY: "open",
+        },
         on: {
           BLUR: "close",
           TRIGGER_POINTERLEAVE: "close",
@@ -86,7 +106,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       closing: {
         activities: "trackPointerMove",
         after: {
-          150: {
+          SUBMENU_CLOSE_DELAY: {
             target: "close",
             actions: ["resumePointer", "focusParentMenu", "sendRestoreFocus"],
           },
@@ -100,7 +120,14 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
 
       close: {
-        entry: ["clearActiveId", "focusButton", "clearPointerDownNode", "resumePointer", "closeChildren"],
+        entry: [
+          "clearActiveId",
+          "focusButton",
+          "clearPointerDownNode",
+          "resumePointer",
+          "closeChildren",
+          "clearContextMenuPoint",
+        ],
         on: {
           TRIGGER_CLICK: {
             target: "open",
@@ -222,6 +249,11 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
     },
   },
   {
+    delays: {
+      LONG_PRESS_DELAY: 700,
+      SUBMENU_OPEN_DELAY: 100,
+      SUBMENU_CLOSE_DELAY: 150,
+    },
     guards: {
       hasActiveId: (ctx) => ctx.activeId !== null,
       isRtl: (ctx) => ctx.isRtl && ctx.isHorizontal,
@@ -291,7 +323,7 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
         if (!ctx.parent) return
         ctx.parent.state.context.suspendPointer = false
       },
-      setupDocument: (ctx, evt) => {
+      setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
       },
@@ -381,6 +413,12 @@ export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
       },
       sendRestoreFocus(ctx) {
         ctx.parent?.send("RESTORE_FOCUS")
+      },
+      setContextMenuPoint(ctx, evt) {
+        ctx.contextMenuPoint = evt.point
+      },
+      clearContextMenuPoint(ctx) {
+        ctx.contextMenuPoint = null
       },
     },
   },

@@ -1,12 +1,12 @@
-import { useMachine } from "@ui-machines/react"
-import { menu } from "@ui-machines/menu"
+import { Global } from "@emotion/react"
 import { mergeProps } from "@ui-machines/core"
+import { nextTick } from "@ui-machines/dom-utils"
+import { menu } from "@ui-machines/menu"
+import { useMachine } from "@ui-machines/react"
 // import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useEffect } from "react"
-import { nextTick } from "@ui-machines/dom-utils"
 import { menuStyle } from "../../../shared/style"
-import { Global } from "@emotion/react"
 
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine)
@@ -24,12 +24,6 @@ export default function Page() {
   useEffect(() => {
     return nextTick(() => {
       root.setChild(subMachine)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    return nextTick(() => {
       sub.setParent(machine)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,12 +32,6 @@ export default function Page() {
   useEffect(() => {
     return nextTick(() => {
       sub.setChild(sub2Machine)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    return nextTick(() => {
       sub2.setParent(subMachine)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
