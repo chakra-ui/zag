@@ -65,6 +65,7 @@ export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachin
             guard: not("modal"),
             actions: ["focusContent", "invokeOnOpen"],
           },
+          { actions: ["invokeOnOpen"] },
         ]),
         on: {
           CLOSE: {
