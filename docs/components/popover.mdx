@@ -1,0 +1,88 @@
+# Popover
+
+Popover is a non-modal dialog that floats around a trigger. It is used to display contextual information to the user,
+and should be paired with a clickable trigger element.
+
+## Features
+
+- Focus is fully managed and customizable
+- Supports modal and non-modal modes
+- Ensures correct DOM order after tabbing out of the popover, whether it's portalled or not.
+
+## Installation
+
+To use the editable machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/popover" />
+
+```jsx
+import * as Popover from "@ui-machines/popover"
+```
+
+Next, you'll need to install the binding for your framework
+
+<CodeSnippet id="popover/installation.mdx" />
+
+## Basic usage
+
+To set up the popover, use the `triggerProps` and `popoverProps`
+
+<CodeSnippet id="popover/basic-usage.mdx" />
+
+## Rendering the popover in a portal
+
+By default, the Popover isn't rendered in a portal. This means we assume that your popover is rendered after the trigger
+in the same DOM hierarchy.
+
+To enable the portal behavior, pass the `portalled` property to the machine's context. When `modal` is set to `false`,
+this ensures that we manage focus properly in a manner that users will expect.
+
+> Note: This requires that you render the component within a `Portal` based on the framework you use.
+
+<CodeSnippet id="popover/render-in-portal.mdx" />
+
+## Managing focus within popover
+
+When the popover open, focus is set to the first focusable element within the popover. To control the element that
+should get focus when the popoven opens, set the `initialFocusEl` property in the machine's context.
+
+<CodeSnippet id="popover/initial-focus.mdx" />
+
+## Changing the modality of the popover
+
+In some cases, you might want the popover to be modal. This means that it'll:
+
+- trap focus within it's content,
+- block scrolling on the `body`,
+- disable pointer interactions outside the popover
+- hide content behind the popover from screen readers
+
+To make the popover modal, set the `modal` property in the machine's context.
+
+<CodeSnippet id="popover/modal-mode.mdx" />
+
+## Close behavior
+
+The popover is designed to close on blur and when the `esc` key is pressed.
+
+To prevent it from closing on blur (clicking or focusing outside), pass the `closeOnBlur` property and set it to
+`false`.
+
+<CodeSnippet id="popover/close-on-blur.mdx" />
+
+To prevent it from closing when the `esc` key is pressed, pass the `closeOnEsc` property and set it to `false`.
+
+<CodeSnippet id="popover/close-on-esc.mdx" />
+
+## Closing and Opening programmatically
+
+The popover's connect function exposes the `open` and `close` methods you can use to programmatically control the
+visibility of popover.
+
+<CodeSnippet id="popover/programmatic-control.mdx" />
+
+## Callbacks
+
+When the popover is opened or closed, we exposed the `onOpen` and `onClose` callbacks you can use.
+
+<CodeSnippet id="popover/callbacks.mdx" />
