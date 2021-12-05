@@ -16,13 +16,17 @@ export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
 function getPointProgress(ctx: Ctx, point: Point) {
   const { progress } = relativeToNode(point, dom.getRootEl(ctx)!)
   let percent = ctx.isHorizontal ? progress.x : progress.y
-  if (ctx.isRtl) percent = 1 - percent
+  if (ctx.isRtl) {
+    percent = 1 - percent
+  }
   return clamp(percent, { min: 0, max: 1 })
 }
 
 function getValueFromPoint(ctx: Ctx, point: Point) {
   const root = dom.getRootEl(ctx)
-  if (!root || ctx.activeIndex === -1) return
+  if (!root || ctx.activeIndex === -1) {
+    return
+  }
 
   const range = getRangeAtIndex(ctx)
   const maxPercent = range.max / ctx.max
@@ -115,17 +119,19 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
     index = points.indexOf(closestPoint)
 
     const rootEl = dom.getRootEl(ctx)
-    if (!rootEl) return index
+    if (!rootEl) {
+      return index
+    }
 
     // when two thumbs are stacked and the user clicks at a point larger than
     // their values, pick the next closest thumb
     const percent = getPointProgress(ctx, evt.point)
-    const Point = percentToValue(percent, ctx)
+    const point = percentToValue(percent, ctx)
 
     const axisPoints = ctx.isHorizontal ? points.map((p) => p.x) : points.map((p) => p.y)
     const isThumbStacked = new Set(axisPoints).size !== points.length
 
-    if (isThumbStacked && Point > ctx.value[index]) {
+    if (isThumbStacked && point > ctx.value[index]) {
       index = clamp(index + 1, { min: 0, max: ctx.value.length - 1 })
     }
   }

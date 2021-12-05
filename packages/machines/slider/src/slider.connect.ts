@@ -191,20 +191,20 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const isHighlighted = value >= ctx.value
       const percent = valueToPercent(value, ctx)
       const style = dom.getMarkerStyle(ctx, percent)
+      const state = value > ctx.value ? "over-value" : value < ctx.value ? "under-value" : "at-value"
 
-      return {
+      return normalize.element<T>({
         "data-part": "marker",
         id: dom.getMarkerId(ctx, value),
         role: "presentation",
         "data-value": value,
         "aria-hidden": true,
         "data-disabled": dataAttr(ctx.disabled),
-        "data-highlighted": dataAttr(isHighlighted),
+        "data-state": state,
         style,
-      }
+      })
     },
   }
 }

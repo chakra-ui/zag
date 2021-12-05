@@ -37,6 +37,7 @@ type DataAttr = {
   "data-count"?: number
   "data-controls"?: string
   "data-part"?: string
+  "data-index"?: number
 }
 
 type JSXElementAttributes = DataAttr & React.HTMLAttributes<HTMLElement>

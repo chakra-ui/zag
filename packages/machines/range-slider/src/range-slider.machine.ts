@@ -2,6 +2,7 @@ import { createMachine, ref } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { getElementRect } from "@ui-machines/rect-utils"
+import { isNumber } from "@ui-machines/utils"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
 import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
 
@@ -9,6 +10,7 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
   {
     id: "range-slider-machine",
     initial: "unknown",
+
     context: {
       thumbSize: null,
       uid: "48",
@@ -22,14 +24,23 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       dir: "ltr",
       minStepsBetweenThumbs: 0,
     },
+
     computed: {
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
     },
+
     watch: {
       value: ["invokeOnChange", "dispatchChangeEvent"],
     },
+
+    on: {
+      SET_VALUE: { actions: "setValue" },
+      INCREMENT: { actions: "increment" },
+      DECREMENT: { actions: "decrement" },
+    },
+
     states: {
       unknown: {
         on: {
@@ -59,15 +70,19 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
             actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"],
           },
           ARROW_LEFT: {
+            guard: "isHorizontal",
             actions: "decrementAtIndex",
           },
           ARROW_RIGHT: {
+            guard: "isHorizontal",
             actions: "incrementAtIndex",
           },
           ARROW_UP: {
+            guard: "isVertical",
             actions: "incrementAtIndex",
           },
           ARROW_DOWN: {
+            guard: "isVertical",
             actions: "decrementAtIndex",
           },
           PAGE_UP: {
@@ -104,6 +119,10 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
     },
   },
   {
+    guards: {
+      isHorizontal: (ctx) => ctx.isHorizontal,
+      isVertical: (ctx) => ctx.isVertical,
+    },
     activities: {
       trackPointerMove(ctx, _evt, { send }) {
         return trackPointerMove({
@@ -161,11 +180,15 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
         })
       },
       decrementAtIndex(ctx, evt) {
-        const value = snapToStep(decrement(getRangeAtIndex(ctx).value, evt.step), ctx.step)
+        const index = evt.index ?? ctx.activeIndex
+        const range = getRangeAtIndex(ctx, index)
+        const value = snapToStep(decrement(range.value, evt.step), ctx.step)
         ctx.value[ctx.activeIndex] = parseFloat(value)
       },
       incrementAtIndex(ctx, evt) {
-        const value = snapToStep(increment(getRangeAtIndex(ctx).value, evt.step), ctx.step)
+        const index = evt.index ?? ctx.activeIndex
+        const range = getRangeAtIndex(ctx, index)
+        const value = snapToStep(increment(range.value, evt.step), ctx.step)
         ctx.value[ctx.activeIndex] = parseFloat(value)
       },
       setActiveThumbToMin(ctx) {
@@ -175,6 +198,17 @@ export const rangeSliderMachine = createMachine<RangeSliderMachineContext, Range
       setActiveThumbToMax(ctx) {
         const { max } = getRangeAtIndex(ctx)
         ctx.value[ctx.activeIndex] = max
+      },
+      setValue(ctx, evt) {
+        // set value at specified index
+        if (isNumber(evt.index) && isNumber(evt.value)) {
+          ctx.value[evt.index] = evt.value
+          return
+        }
+        // set values
+        if (Array.isArray(evt.value)) {
+          ctx.value = evt.value
+        }
       },
     },
   },

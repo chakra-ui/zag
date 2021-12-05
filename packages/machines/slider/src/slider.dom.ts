@@ -3,20 +3,7 @@ import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "@u
 import type { Point } from "@ui-machines/rect-utils"
 import { relativeToNode } from "@ui-machines/rect-utils"
 import type { Style } from "@ui-machines/types"
-import type { SliderMachineContext as Ctx } from "./slider.types"
-
-type SharedContext = {
-  min: number
-  max: number
-  step: number
-  dir?: "ltr" | "rtl"
-  isRtl: boolean
-  isVertical: boolean
-  isHorizontal: boolean
-  value: number
-  thumbSize: { width: number; height: number }
-  orientation?: "horizontal" | "vertical"
-}
+import type { SharedContext, SliderMachineContext as Ctx } from "./slider.types"
 
 /**
  * To ensure the slider thumb is always within the track (on the y-axis)
@@ -134,7 +121,9 @@ export const dom = {
     // get the progress % depending on the orientation
     let percent = ctx.isHorizontal ? progress.x : progress.y
     // get the rtl equivalent of the progress
-    if (ctx.isRtl) percent = 1 - percent
+    if (ctx.isRtl) {
+      percent = 1 - percent
+    }
     // clamp the progress % between 0 and 1
     percent = clamp(percent, { min: 0, max: 1 })
 

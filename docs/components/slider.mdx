@@ -6,7 +6,7 @@ The Slider is used to allow users to make selections from a range of values. Thi
 ## Features
 
 - Supports centered origin (slider starting at center, instead of start position)
-- Fully managed keyboard navigations
+- Fully managed keyboard navigation
 - Supports touch or click on track to update value
 - Supports Right-to-Left directionality
 - Support for horizontal and vertical orientations
@@ -179,7 +179,7 @@ In some cases you might need to define a series of mark along the slider track. 
   /* base styles for marker */
 }
 
-[data-part="marker"][data-highlighted] {
+[data-part="marker"][data-state="(at|under|over)-value"] {
   /* styles for when the value exceeds the marker's value */
 }
 ```

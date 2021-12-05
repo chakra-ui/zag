@@ -1,9 +1,9 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
-import { multiply, toRanges } from "@ui-machines/number-utils"
+import { multiply, percentToValue, toRanges, valueToPercent } from "@ui-machines/number-utils"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
-import { dom } from "./range-slider.dom"
+import { dom, getRangeAtIndex } from "./range-slider.dom"
 import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
 
 export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
@@ -18,10 +18,51 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
   const isDragging = state.matches("dragging")
 
   return {
+    // state
     values: ctx.value,
     isDragging,
     isFocused,
 
+    // methods
+    setValue(values: number[]) {
+      send({ type: "SET_VALUE", value: values })
+    },
+    getThumbValue(index: number) {
+      return values[index]
+    },
+    setThumbValue(index: number, value: number) {
+      send({ type: "SET_VALUE", index, value })
+    },
+    getThumbPercent(index: number) {
+      return valueToPercent(values[index], ctx)
+    },
+    setThumbPercent(index: number, percent: number) {
+      const value = percentToValue(percent, ctx)
+      send({ type: "SET_VALUE", index, value })
+    },
+    getPercentValue(percent: number) {
+      return percentToValue(percent, ctx)
+    },
+    getThumbMin(index: number) {
+      return getRangeAtIndex(ctx, index).min
+    },
+    getThumbMax(index: number) {
+      return getRangeAtIndex(ctx, index).max
+    },
+    increment(index: number) {
+      send({ type: "INCREMENT", index })
+    },
+    decrement(index: number) {
+      send({ type: "DECREMENT", index })
+    },
+    focus(index = 0) {
+      send({ type: "FOCUS", index })
+    },
+    blur() {
+      send({ type: "BLUR" })
+    },
+
+    // dom attributes
     labelProps: normalize.label<T>({
       "data-part": "label",
       id: dom.getLabelId(ctx),
@@ -35,7 +76,6 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    // Slider Output Display properties. Usually formatted using `Intl.NumberFormat`
     outputProps: normalize.output<T>({
       "data-part": "output",
       id: dom.getOutputId(ctx),
@@ -56,12 +96,14 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
       const value = values[index]
       const spacing = multiply(ctx.minStepsBetweenThumbs, ctx.step)
       const range = toRanges({ ...ctx, spacing })[index]
+
       const ariaValueText = ctx.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize.element<T>({
         "data-part": "thumb",
+        "data-index": index,
         id: dom.getThumbId(ctx, index),
         "data-disabled": dataAttr(ctx.disabled),
         "data-orientation": ctx.orientation,
@@ -85,19 +127,24 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
-          const step = getEventStep(event) * ctx.step
+          const step = multiply(getEventStep(event), ctx.step)
+          let prevent = true
           const keyMap: EventKeyMap = {
             ArrowUp() {
               send({ type: "ARROW_UP", step })
+              prevent = ctx.isVertical
             },
             ArrowDown() {
               send({ type: "ARROW_DOWN", step })
+              prevent = ctx.isVertical
             },
             ArrowLeft() {
               send({ type: "ARROW_LEFT", step })
+              prevent = ctx.isHorizontal
             },
             ArrowRight() {
               send({ type: "ARROW_RIGHT", step })
+              prevent = ctx.isHorizontal
             },
             PageUp() {
               send({ type: "PAGE_UP", step })
@@ -116,10 +163,12 @@ export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
           const key = getEventKey(event, ctx)
           const exec = keyMap[key]
 
-          if (exec) {
+          if (!exec) return
+          exec(event)
+
+          if (prevent) {
             event.preventDefault()
             event.stopPropagation()
-            exec(event)
           }
         },
       })

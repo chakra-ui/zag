@@ -1,0 +1,187 @@
+# Range Slider
+
+The `RangeSlider` is a multi-thumb slider used to select a range of related values.
+
+## Features
+
+- Fully managed keyboard navigation
+- Supports touch or click on track to update value
+- Supports Right-to-Left directionality
+- Support for horizontal and vertical orientations
+- Prevents text selection while dragging
+
+## Installation
+
+To use the editable machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/range-slider" />
+
+```jsx
+import * as RangeSlider from "@ui-machines/range-slider"
+```
+
+Then you'll need to install the binding for your framework of choice
+
+<CodeSnippet id="range-slider/installation.mdx" />
+
+## Usage
+
+The slider's connect function exposes the `labelProps`, `outputProps`, `getThumbProps`, `rangeProps` and `rootProps` you
+can compose the range slider UI.
+
+<CodeSnippet id="range-slider/basic-usage.mdx" />
+
+## Changing the orientation of the slider
+
+By default, the slider is assumed to be horizontal. To change the orientation to vertical, set the `orientation`
+property in the machine's context to `vertical`.
+
+In this mode, the slider will use the arrow up and down keys to increment/decrement its value.
+
+> Don't forget to change the styles of the vertical slider by specifying its height
+
+```jsx
+const [state, send] = useMachine(
+  RangeSlider.machine.withContext({
+    orientation: "vertical",
+  }),
+)
+```
+
+<CodeSnippet id="range-slider/vertical-slider.mdx" />
+
+## Specifying the minimum and maximum
+
+By default, the minimum is `0` and the maximum is `100`. If that's not what you want, you can easily specify different
+bounds by changing the values of the min and/or max attributes.
+
+For example, to ask the user for a value between `-10` and `10`, you can use:
+
+<CodeSnippet id="range-slider/setting-min-max.mdx" />
+
+## Setting the value's granularity
+
+By default, the granularity, is `1`, meaning that the value is always an integer. You can change the step attribute to
+control the granularity.
+
+For example, If you need a value between `5` and `10`, accurate to two decimal places, you should set the value of step
+to `0.01`:
+
+<CodeSnippet id="range-slider/setting-step.mdx" />
+
+## Listening for changes
+
+When the slider value changes, the `onChange` and `onChangeEnd` callbacks are invoked. You can use this to setup custom
+behaviors in your app.
+
+```jsx
+const [state, send] = useMachine(
+  RangeSlider.machine.withContext({
+    onChange(values) {
+      console.log("value changing to:", values)
+    },
+    onChangeEnd(values) {
+      console.log("value has changed to:", values)
+    },
+  }),
+)
+```
+
+## Preventing thumb overlap
+
+By default, the range slider thumbs are allowed to overlap when their values are equal. To prevent this, use the
+`minStepsBetweenThumbs` to avoid thumbs with equal values.
+
+<CodeSnippet id="range-slider/prevent-overlap.mdx" />
+
+## Usage within forms
+
+To use slider within forms, use the exposed `getInputProps` from the `connect` function and ensure you pass `name` value
+to the machine's context. It will render a hidden input for each value and ensure the value changes get propagated to
+the form correctly.
+
+<CodeSnippet id="range-slider/form-usage.mdx" />
+
+## Labelling the range slider
+
+To ensure the range slider has an accessible label, there are 3 options:
+
+**(Recommended) Use `labelProps` from the `connect` methods**
+
+<CodeSnippet id="range-slider/labeling-with-label.mdx" />
+
+**Use the `aria-label` context property**
+
+<CodeSnippet id="range-slider/labeling-with-aria-label.mdx" />
+
+**Use the `aria-labelledby` context property**
+
+<CodeSnippet id="range-slider/labeling-with-aria-labelledby.mdx" />
+
+## Styling guide
+
+**Range Slider Thumb**
+
+```css
+[data-part="thumb"] {
+  /* base styles for the thumb */
+}
+
+[data-part="thumb"][data-disabled] {
+  /* styles for disabled state */
+}
+
+[data-part="thumb"][data-focus] {
+  /* styles for the focused state */
+}
+
+[data-part="thumb"][data-orientation="(horizontal|vertical)"] {
+  /* styles for horizontal or vertical  */
+}
+```
+
+**Range Slider Track**
+
+```css
+[data-part="track"] {
+  /* base styles for the track */
+}
+
+[data-part="track"][data-disabled] {
+  /* styles for disabled state */
+}
+
+[data-part="track"][data-focus] {
+  /* styles for when the slider is focused */
+}
+
+[data-part="track"][data-orientation="(horizontal|vertical)"] {
+  /* styles for slider orientation */
+}
+```
+
+## Getting and setting the slider values
+
+The slider's connect function provides properties and methods you can use to programmatically read and set the slider's
+value.
+
+### Properties
+
+- `values`: The current value of the range slider (as an array)
+- `isDragging`: Whether a range-slider thumb is currently being dragged
+- `isFocused`: Whether a range-slider thumb is currently focused (and not dragged)
+
+### Methods
+
+- `setValue`: Used to set the array value of the range slider
+- `getThumbValue`: Returns the value of the thumb at the specified index
+- `setThumbValue`: Used to set the value of a thumb at the specified index
+- `getThumbPercent`:Returns the percent value of the thumb at the specified index
+- `getThumbMin`: Returns the minimum value of the thumb at the specified index
+- `getThumbMax`: Returns the maximum value of the thumb at the specified index
+- `increment`: Used to increment the value of the thumb at the specified index
+- `decrement`: Used to decrement the value of the thumb at the specified index
+- `focus`: Used to focus the thumb at the specified index
+- `blur`: Used to blur the currently focused thumb
+
+<CodeSnippet id="range-slider/programmatic-control.mdx" />

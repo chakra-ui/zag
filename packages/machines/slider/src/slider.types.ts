@@ -84,6 +84,19 @@ export type SliderMachineContext = Context<{
   readonly isRtl: boolean
 }>
 
+export type SharedContext = {
+  min: number
+  max: number
+  step: number
+  dir?: "ltr" | "rtl"
+  isRtl: boolean
+  isVertical: boolean
+  isHorizontal: boolean
+  value: number
+  thumbSize: { width: number; height: number }
+  orientation?: "horizontal" | "vertical"
+}
+
 export type SliderMachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
 }
