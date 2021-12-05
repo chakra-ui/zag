@@ -1,4 +1,4 @@
-import { add, isString, remove, toArray } from "@ui-machines/utils"
+import { add, isString, remove, toArray, warn } from "@ui-machines/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { dom } from "./accordion.dom"
 import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"
@@ -24,6 +24,9 @@ export const accordionMachine = createMachine<AccordionMachineContext, Accordion
 
     created(ctx) {
       if (ctx.multiple && isString(ctx.value)) {
+        warn(
+          `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`,
+        )
         ctx.value = [ctx.value]
       }
     },
