@@ -94,18 +94,23 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       },
       onKeyDown(event) {
         const step = multiply(getEventStep(event), ctx.step)
+        let prevent = true
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
+            prevent = ctx.isVertical
           },
           ArrowDown() {
             send({ type: "ARROW_DOWN", step })
+            prevent = ctx.isVertical
           },
           ArrowLeft() {
             send({ type: "ARROW_LEFT", step })
+            prevent = ctx.isHorizontal
           },
           ArrowRight() {
             send({ type: "ARROW_RIGHT", step })
+            prevent = ctx.isHorizontal
           },
           PageUp() {
             send({ type: "PAGE_UP", step })
@@ -124,8 +129,10 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
         const key = getEventKey(event, ctx)
         const exec = keyMap[key]
 
-        if (exec) {
-          exec(event)
+        if (!exec) return
+        exec(event)
+
+        if (prevent) {
           event.preventDefault()
           event.stopPropagation()
         }
@@ -172,13 +179,13 @@ export function sliderConnect<T extends PropTypes = ReactPropTypes>(
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+        if (!isLeftClick(evt) || isModifiedEvent(evt)) {
+          return
+        }
+        const point = getEventPoint(evt)
+        send({ type: "POINTER_DOWN", point })
         event.preventDefault()
         event.stopPropagation()
-        send({
-          type: "POINTER_DOWN",
-          point: getEventPoint(evt),
-        })
       },
       style: dom.getRootStyle(ctx),
     }),

@@ -21,7 +21,6 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
       step: 1,
       min: 0,
       max: 100,
-      focusThumbOnChange: true,
     },
 
     computed: {
@@ -44,6 +43,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
     on: {
       STOP: "focus",
     },
+
     states: {
       unknown: {
         on: {
@@ -53,6 +53,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
           },
         },
       },
+
       idle: {
         on: {
           POINTER_DOWN: {
@@ -62,6 +63,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
           FOCUS: "focus",
         },
       },
+
       focus: {
         entry: "focusThumb",
         on: {
@@ -70,15 +72,19 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
             actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
           },
           ARROW_LEFT: {
+            guard: "isHorizontal",
             actions: ["decrement"],
           },
           ARROW_RIGHT: {
+            guard: "isHorizontal",
             actions: ["increment"],
           },
           ARROW_UP: {
+            guard: "isVertical",
             actions: ["increment"],
           },
           ARROW_DOWN: {
+            guard: "isVertical",
             actions: ["decrement"],
           },
           PAGE_UP: {
@@ -96,6 +102,7 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
           BLUR: "idle",
         },
       },
+
       dragging: {
         entry: "focusThumb",
         activities: "trackPointerMove",
@@ -113,7 +120,8 @@ export const sliderMachine = createMachine<SliderMachineContext, SliderMachineSt
   },
   {
     guards: {
-      focusThumbOnChange: (ctx) => !!ctx.focusThumbOnChange,
+      isHorizontal: (ctx) => ctx.isHorizontal,
+      isVertical: (ctx) => ctx.isVertical,
     },
     activities: {
       trackPointerMove(ctx, _evt, { send }) {
