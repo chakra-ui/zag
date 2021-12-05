@@ -123,8 +123,8 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
 
       "before:spin": {
         entry: choose([
-          { guard: "isIncrement", actions: "increment" },
-          { guard: "isDecrement", actions: "decrement" },
+          { guard: "canIncrement", actions: "increment" },
+          { guard: "canDecrement", actions: "decrement" },
         ]),
         after: {
           CHANGE_DELAY: {
@@ -145,12 +145,12 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
         every: [
           {
             delay: "CHANGE_INTERVAL",
-            guard: and(not("isAtMin"), "isIncrement"),
+            guard: and(not("isAtMin"), "canIncrement"),
             actions: "increment",
           },
           {
             delay: "CHANGE_INTERVAL",
-            guard: and(not("isAtMax"), "isDecrement"),
+            guard: and(not("isAtMax"), "canDecrement"),
             actions: "decrement",
           },
         ],
@@ -173,11 +173,11 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
           },
           POINTER_MOVE_SCRUBBER: [
             {
-              guard: "isIncrement",
+              guard: "canIncrement",
               actions: ["increment", "setCursorPoint", "updateCursor"],
             },
             {
-              guard: "isDecrement",
+              guard: "canDecrement",
               actions: ["decrement", "setCursorPoint", "updateCursor"],
             },
           ],
@@ -195,8 +195,8 @@ export const numberInputMachine = createMachine<NumberInputMachineContext, Numbe
       isAtMin: (ctx) => ctx.isAtMin,
       isAtMax: (ctx) => ctx.isAtMax,
       isInRange: (ctx) => !ctx.isOutOfRange,
-      isDecrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
-      isIncrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
+      canDecrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
+      canIncrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
       isInvalidExponential: (ctx) => ctx.value.startsWith("e"),
     },
     activities: {

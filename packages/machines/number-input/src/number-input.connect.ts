@@ -1,5 +1,5 @@
 import { dataAttr, EventKeyMap, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
-import { roundToPx } from "@ui-machines/number-utils"
+import { multiply, roundToPx } from "@ui-machines/number-utils"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./number-input.dom"
@@ -18,14 +18,43 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
   const isInvalid = ctx.isOutOfRange || Boolean(ctx.invalid)
 
   return {
+    // properties
     valueAsNumber: ctx.valueAsNumber,
     value: ctx.formattedValue,
-
+    canIncrement: ctx.canIncrement,
+    canDecrement: ctx.canDecrement,
     isScrubbing,
     isFocused,
     isDisabled: ctx.disabled,
     isInvalid,
 
+    // methods
+    setValue(value: string | number) {
+      send({ type: "SET_VALUE", value: value.toString() })
+    },
+    clear() {
+      send("CLEAR_VALUE")
+    },
+    increment() {
+      send("INCREMENT")
+    },
+    decrement() {
+      send("DECREMENT")
+    },
+    setToMax() {
+      send("SET_TO_MAX")
+    },
+    setToMin() {
+      send("SET_TO_MIN")
+    },
+    blur() {
+      dom.getInputEl(ctx)?.blur()
+    },
+    focus() {
+      dom.getInputEl(ctx)?.focus()
+    },
+
+    // properties
     labelProps: normalize.label<T>({
       "data-part": "label",
       "data-disabled": dataAttr(ctx.disabled),
@@ -52,7 +81,9 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
       "aria-valuetext": ctx.ariaValueText || undefined,
       "aria-valuenow": isNaN(ctx.valueAsNumber) ? undefined : ctx.valueAsNumber,
       "aria-invalid": isInvalid || undefined,
+      "data-invalid": dataAttr(isInvalid),
       "aria-disabled": ctx.disabled || undefined,
+      "data-disabled": dataAttr(ctx.disabled),
       "aria-readonly": ctx.readonly || undefined,
       value: ctx.value,
       onFocus() {
@@ -73,7 +104,7 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
           event.preventDefault()
         }
 
-        const step = getEventStep(event) * ctx.step
+        const step = multiply(getEventStep(event), ctx.step)
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
@@ -92,24 +123,25 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
         const exec = keyMap[event.key]
 
         if (exec) {
-          event.preventDefault()
           exec(event)
+          event.preventDefault()
         }
       },
     }),
 
     decrementButtonProps: normalize.button<T>({
-      "data-part": "decrement-button",
+      "data-part": "spinner-button",
       id: dom.getDecButtonId(ctx),
       "aria-disabled": !ctx.canDecrement,
+      "data-disabled": dataAttr(!ctx.canDecrement),
       "aria-label": "Decrement value",
       disabled: !ctx.canDecrement,
       role: "button",
       tabIndex: -1,
       onPointerDown(event) {
-        event.preventDefault()
         if (!ctx.canDecrement) return
         send({ type: "PRESS_DOWN", hint: "decrement" })
+        event.preventDefault()
       },
       onPointerUp() {
         send({ type: "PRESS_UP", hint: "decrement" })
@@ -120,9 +152,10 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
     }),
 
     incrementButtonProps: normalize.button<T>({
-      "data-part": "increment-button",
+      "data-part": "spinner-button",
       id: dom.getIncButtonId(ctx),
       "aria-disabled": !ctx.canIncrement,
+      "data-disabled": dataAttr(!ctx.canIncrement),
       "aria-label": "Increment value",
       disabled: !ctx.canIncrement,
       role: "button",
@@ -147,11 +180,12 @@ export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
       onMouseDown(event) {
         const evt = getNativeEvent(event)
         event.preventDefault()
-        const pt = getEventPoint(evt)
-        send({
-          type: "PRESS_DOWN_SCRUBBER",
-          point: { x: pt.x - roundToPx(7.5), y: pt.y - roundToPx(7.5) },
-        })
+        const point = getEventPoint(evt)
+
+        point.x = point.x - roundToPx(7.5)
+        point.y = point.y - roundToPx(7.5)
+
+        send({ type: "PRESS_DOWN_SCRUBBER", point })
       },
       style: {
         cursor: "ew-resize",

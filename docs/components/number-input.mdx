@@ -1,0 +1,109 @@
+# Number Input
+
+## Features
+
+- Based on the spinbutton ARIA pattern
+- Supports using the scroll wheel to increment and decrement the value
+- Handles floating point rounding errors when incrementing, decrementing, and snapping to step
+- Supports pressing and holding the stepper buttons to continuously increment or decrement
+- Support for stepper buttons and arrow keys to increment and decrement the value according to the step value
+- Supports rounding to a configurable number of fraction digits
+- Support for scrubbing interaction
+
+## Installation
+
+To use the editable machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/number-input" />
+
+```jsx
+import * as NumberInput from "@ui-machines/number-input"
+```
+
+Then you'll need to install the binding for your framework of choice
+
+<CodeSnippet id="number-input/installation.mdx" />
+
+## Usage
+
+The number input's connect exposes `inputProps`, `labelProps`, `incrementButtonProps` and `decrementButtonProps`. Add
+these attributes to their respective elements.
+
+<CodeSnippet id="number-input/basic-usage.mdx" />
+
+## Setting a minimum and maximum value
+
+Pass the `min` prop or `max` prop to set an upper and lower limit for the input. By default, the input will restrict the
+value to stay within the specified range.
+
+<CodeSnippet id="number-input/setting-range.mdx" />
+
+## Adjusting the precision of the value
+
+In some cases, you might need the value to be rounded to specific decimal points. Simply pass the precision prop and set
+it to the number of decimal points.
+
+<CodeSnippet id="number-input/setting-precision.mdx" />
+
+## Scrubbing the input value
+
+The number input machine supports the scrubber interaction pattern. The values can changed by scrubbing on an arbitrary
+element with the `scrubberProps` spread on it.
+
+It uses the Pointer lock API and tracks the pointer movement. It also renders a virtual cursor which mimicks the real
+cursor's pointer.
+
+<CodeSnippet id="number-input/scrubber.mdx" />
+
+## Using the mousewheel to change value
+
+The number-input machine exposes a way to increment/decrement the value using the mouse wheel event. To activate this,
+pass the `allowMouseWheel` property to the machine's context.
+
+<CodeSnippet id="number-input/mouse-wheel.mdx" />
+
+## Clamp value when user blurs the input
+
+In most cases, users can type custom values in the input field. If the typed value is greater than the max, the value is
+reset to max when the user blur out of the input.
+
+To disable this behavior, pass `clampValueOnBlur` and set to `false`.
+
+<CodeSnippet id="number-input/clamp-on-blur.mdx" />
+
+## Format and parse value
+
+To apply custom formatting to the input's value, use the exposed `format` and `parse` functions. For example, to format
+the input's value to currency, here's how to achieve it:
+
+<CodeSnippet id="number-input/format-and-parse.mdx" />
+
+## Styling guide
+
+**Input**
+
+```css
+[data-part="input"] {
+  /* base styles for input */
+}
+
+[data-part="input"][data-invalid] {
+  /* styles for when value is invalid */
+}
+
+[data-part="input"][data-disabled] {
+  /* styles for when input is disabled */
+}
+```
+
+**Decrement/Increment Button**
+
+```css
+[data-part="spinner-button"] {
+  /* base styles for spinner  */
+}
+
+[data-part="spinner-button"][data-disabled] {
+  /* styles for spinner button when is disabled */
+}
+```
