@@ -11,23 +11,23 @@
   },
   "dependencies": {
     "@emotion/core": "^11.0.0",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/styled": "^11.6.0",
     "@reach/auto-id": "^0.16.0",
     "@reach/portal": "^0.16.2",
     "@ui-machines/core": "0.0.0",
     "@ui-machines/react": "0.0.0",
-    "next": "^12.0.4",
+    "next": "^12.0.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-spinners": "^0.11.0"
   },
   "devDependencies": {
-    "@types/node": "16.9.1",
-    "@types/react": "^17.0.20",
-    "@types/react-dom": "^17.0.1",
-    "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "typescript": "4.4.3"
+    "@types/node": "16.11.11",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "typescript": "4.5.2"
   },
   "license": "MIT"
 }

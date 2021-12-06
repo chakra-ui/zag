@@ -26,7 +26,7 @@
     "url": "https://github.com/chakra-ui/core/issues"
   },
   "dependencies": {
-    "valtio": "^1.2.5",
-    "klona": "^2.0.4"
+    "klona": "^2.0.4",
+    "valtio": "^1.2.5"
   }
 }
