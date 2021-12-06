@@ -4,10 +4,13 @@ title: Getting Started
 
 # Getting Started
 
-UI Machines can be used within most JSX frameworks like Vue, React and Solid. The easiest way to use UI machines in your
-components is by leveraging the `useMachine` hook we provide for each framework.
+UI Machines can be used within most JSX frameworks like Vue, React and Solid.
 
-To get UI machines running, you'd need to first install the actual machine(s) and then your desired framework package.
+To get UI machines running, you'll need to:
+
+- Install the specific machine(s). e.g accordion, pin-input
+- install your framework binding. e.g. react, vue, svelte
+- Connect the machine to the framework binding by using the `useMachine` hook
 
 ## Install the machine
 
@@ -15,7 +18,9 @@ There are 16 machine packages available for you. Install whichever you need for 
 the `Accordion` machine, run: `npm install @ui/machines/accordion`
 
 ## Install the framework package
-UI machine is framework agnostic and supports React, Vue and Solid. Follow the steps below to use in your preferred framework.
+
+UI machine is framework agnostic and supports React, Vue and Solid. Follow the steps below to use in your preferred
+framework.
 
 ### **Usage with React**
 
@@ -74,7 +79,7 @@ export default defineComponent({
 
 ### **Usage with Solid.js**
 
-We love Solid.js and added support to use the machines in it. Here's what you need to do:
+We love Solid.js and we've added support for it. Here's what you need to do:
 
 - Install `@ui-machines/solid`
 - Import `useMachine` from the package
