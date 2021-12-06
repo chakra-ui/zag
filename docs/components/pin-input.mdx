@@ -1,0 +1,115 @@
+# Pin Input
+
+## Features
+
+- Automatically focuses the next field on typing and focuses previous field on deletion
+- Supports numeric and alphanumeric values
+- Support for masking value (for sensitive data)
+- Support for copy/paste to autofill all fields
+- OTP-code pasting from clipboard
+
+## Installation
+
+To use the pin input machine in your project, install the respective package
+
+<InstallSnippet package="@ui-machines/pin-input" />
+
+```jsx
+import * as PinInput from "@ui-machines/pin-input"
+```
+
+Then you'll need to install the binding for your framework of choice
+
+<CodeSnippet id="pin-input/installation.mdx" />
+
+## Usage
+
+The input fields allow one digit/letter at a time. When a digit/letter is entered, focus transfers to the next input in
+the sequence, until every input is filled in.
+
+The pin-input's connect function exposes `containerProps` and `getInputProps` you can use to compose the UI.
+
+<CodeSnippet id="pin-input/basic-usage.mdx" />
+
+## Setting a default value
+
+To set the initial value of the pin input, y
+
+## Changing the placeholder
+
+## Allowing alphanumeric values
+
+By default, the pin input accepts only number values. To add support for alphanumeric values, pass the `type` context
+property and set its value to `alphanumeric`.
+
+```jsx
+const [state, send] = useMachine(
+  PinInput.machine.withContext({
+    value: ["1", "2", ""],
+  }),
+)
+```
+
+<CodeSnippet id="pin-input/alphanumeric-usage.mdx" />
+
+## Using OTP mode
+
+To trigger smartphone OTC auto-suggestion, it's usually recommended to apply `autocomplete="one-time-code"` to the input
+field. The pin-input machine provides support for this. To enable this, set the `otp` context property to `true`.
+
+<CodeSnippet id="pin-input/otp.mdx" />
+
+## Securing the text input
+
+When collecting private or sensitive information using the pin input, you might need to mask the value entered, similar
+to `<input type="password"/>`. Pass the `mask` context property and set it to `true`.
+
+## Copy and paste
+
+Try copying & pasting `3000` into any of the inputs in the example above.
+
+By default, you can only change one input at a time, but if one of the input field receives a longer string by pasting
+into it, PinInput attempts to validate the string and fill the other inputs.
+
+<CodeSnippet id="pin-input/copy-paste.mdx" />
+
+## Listening for changes
+
+- When the pin-input's value is changed, the `onChange` listener is invoked with the current value
+- When all fields have been completed (by typing or pasting), the `onComplete` callback is invoked with the final value
+  of the input
+
+```jsx
+const [state, send] = useMachine(
+  PinInput.machine.withContext({
+    onChange(values) {
+      console.log("value changed to:", values)
+    },
+    onComplete(values) {
+      console.log("completed value:", values)
+    },
+  }),
+)
+```
+
+<CodeSnippet id="pin-input/listening-for-changes.mdx" />
+
+## Styling guide
+
+```css
+[data-part="input"] {
+  /* base styles for the input  */
+}
+
+[data-part="input"]:focus {
+  /* styles for when the input is focused */
+}
+
+[data-part="input"][data-invalid] {
+  /* styles for when the input is invalid */
+}
+
+[data-part="input"][data-disabled] {
+  /* styles for when the input is disabled */
+}
+```
