@@ -2,7 +2,7 @@
 
 ## Features
 
-- Automatically focuses the next field on typing and focuses previous field on deletion
+- Automatically focuses the next field on typing and focuses the previous field on deletion
 - Supports numeric and alphanumeric values
 - Support for masking value (for sensitive data)
 - Support for copy/paste to autofill all fields
@@ -27,7 +27,7 @@ Then you'll need to install the binding for your framework of choice
 The input fields allow one digit/letter at a time. When a digit/letter is entered, focus transfers to the next input in
 the sequence, until every input is filled in.
 
-The pin-input's connect function exposes `containerProps` and `getInputProps` you can use to compose the UI.
+The pin inputs connect function exposes `containerProps` and `getInputProps` you can use to compose the UI.
 
 <CodeSnippet id="pin-input/basic-usage.mdx" />
 
@@ -54,8 +54,8 @@ const [state, send] = useMachine(
 
 ## Using OTP mode
 
-To trigger smartphone OTC auto-suggestion, it's usually recommended to apply `autocomplete="one-time-code"` to the input
-field. The pin-input machine provides support for this. To enable this, set the `otp` context property to `true`.
+To trigger smartphone OTC auto-suggestion, it is recommended to apply `autocomplete="one-time-code"` to the input field.
+The pin-input machine provides support for this. To enable this, set the `otp` context property to `true`.
 
 <CodeSnippet id="pin-input/otp.mdx" />
 
@@ -69,7 +69,7 @@ to `<input type="password"/>`. Pass the `mask` context property and set it to `t
 Try copying & pasting `3000` into any of the inputs in the example above.
 
 By default, you can only change one input at a time, but if one of the input field receives a longer string by pasting
-into it, PinInput attempts to validate the string and fill the other inputs.
+into it, pin-input attempts to validate the string and fill the other inputs.
 
 <CodeSnippet id="pin-input/copy-paste.mdx" />
 
@@ -77,7 +77,7 @@ into it, PinInput attempts to validate the string and fill the other inputs.
 
 - When the pin-input's value is changed, the `onChange` listener is invoked with the current value
 - When all fields have been completed (by typing or pasting), the `onComplete` callback is invoked with the final value
-  of the input
+  of the input.
 
 ```jsx
 const [state, send] = useMachine(
@@ -96,6 +96,20 @@ const [state, send] = useMachine(
 
 ## Styling guide
 
+**Container**
+
+```css
+[data-part="container"] {
+  /* base styles for the container */
+}
+
+[data-part="container"][data-complete] {
+  /* styles for when all value has been filled */
+}
+```
+
+**Input**
+
 ```css
 [data-part="input"] {
   /* base styles for the input  */
@@ -111,5 +125,9 @@ const [state, send] = useMachine(
 
 [data-part="input"][data-disabled] {
   /* styles for when the input is disabled */
+}
+
+[data-part="input"][data-complete] {
+  /* styles for when all value has been filled */
 }
 ```

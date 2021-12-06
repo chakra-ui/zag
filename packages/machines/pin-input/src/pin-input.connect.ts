@@ -1,6 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { isModifiedEvent } from "@ui-machines/utils"
 import { dom } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
 
@@ -37,6 +38,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
       id: dom.getRootId(ctx),
       "data-invalid": dataAttr(ctx.invalid),
       "data-disabled": dataAttr(ctx.disabled),
+      "data-complete": dataAttr(ctx.isValueComplete),
     }),
 
     getInputProps({ index }: { index: number }) {
@@ -45,6 +47,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
         "data-part": "input",
         disabled: ctx.disabled,
         "data-disabled": dataAttr(ctx.disabled),
+        "data-complete": dataAttr(ctx.isValueComplete),
         id: dom.getInputId(ctx, index),
         "data-ownedby": dom.getRootId(ctx),
         "aria-label": "Please enter your pin code",
@@ -53,6 +56,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
         "data-invalid": dataAttr(ctx.invalid),
         type: ctx.mask ? "password" : inputType,
         value: ctx.value[index] || "",
+        autoCapitalize: "off",
         autoComplete: ctx.otp ? "one-time-code" : "off",
         placeholder: ctx.focusedIndex === index ? "" : ctx.placeholder,
         onChange(event) {
@@ -73,7 +77,7 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
         },
         onKeyDown(event) {
           const evt = getNativeEvent(event)
-          if (evt.isComposing) return
+          if (evt.isComposing || isModifiedEvent(evt)) return
 
           const keyMap: EventKeyMap = {
             Backspace() {

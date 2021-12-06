@@ -38,6 +38,7 @@ type DataAttr = {
   "data-controls"?: string
   "data-part"?: string
   "data-index"?: number
+  "data-complete"?: Booleanish
 }
 
 type JSXElementAttributes = DataAttr & React.HTMLAttributes<HTMLElement>
