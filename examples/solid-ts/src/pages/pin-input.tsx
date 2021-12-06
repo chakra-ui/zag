@@ -21,7 +21,7 @@ export default function Page() {
 
   return (
     <div>
-      <div style={{ width: "300px" }} ref={ref}>
+      <div style={{ width: "300px" }} ref={ref} {...machineState().containerProps}>
         <input {...machineState().getInputProps({ index: 0 })} />
         <input {...machineState().getInputProps({ index: 1 })} />
         <input {...machineState().getInputProps({ index: 2 })} />

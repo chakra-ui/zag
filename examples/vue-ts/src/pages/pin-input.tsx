@@ -26,7 +26,7 @@ export default defineComponent({
     return () => {
       return (
         <div>
-          <div style={{ width: "300px" }} ref={ref}>
+          <div style={{ width: "300px" }} ref={ref} {...machineState.value.containerProps}>
             <input {...machineState.value.getInputProps({ index: 0 })} />
             <input {...machineState.value.getInputProps({ index: 1 })} />
             <input {...machineState.value.getInputProps({ index: 2 })} />

@@ -29,13 +29,13 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { getInputProps, clearValue } = pinInput.connect(state, send)
+  const { containerProps, getInputProps, clearValue } = pinInput.connect(state, send)
 
   return (
     <div>
       <Global styles={pinInputStyle} />
       <controls.ui />
-      <div className="pin-input" ref={ref}>
+      <div className="pin-input" ref={ref} {...containerProps}>
         <input data-testid="input-1" {...getInputProps({ index: 0 })} />
         <input data-testid="input-2" {...getInputProps({ index: 1 })} />
         <input data-testid="input-3" {...getInputProps({ index: 2 })} />

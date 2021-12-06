@@ -1,7 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-
 import { dom } from "./pin-input.dom"
 import { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
 
@@ -25,16 +24,33 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
     setValueAtIndex(value: string, index: number) {
       send({ type: "SET_VALUE", value, index })
     },
+    focus() {
+      dom.getFirstInputEl(ctx)?.focus()
+    },
+    blur() {
+      if (ctx.focusedIndex === -1) return
+      dom.getFirstInputEl(ctx)?.blur()
+    },
+
+    containerProps: normalize.element<T>({
+      "data-part": "container",
+      id: dom.getRootId(ctx),
+      "data-invalid": dataAttr(ctx.invalid),
+      "data-disabled": dataAttr(ctx.disabled),
+    }),
 
     getInputProps({ index }: { index: number }) {
       const inputType = ctx.type === "numeric" ? "tel" : "text"
       return normalize.input<T>({
         "data-part": "input",
+        disabled: ctx.disabled,
+        "data-disabled": dataAttr(ctx.disabled),
         id: dom.getInputId(ctx, index),
         "data-ownedby": dom.getRootId(ctx),
         "aria-label": "Please enter your pin code",
         inputMode: ctx.otp || ctx.type === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(ctx.invalid),
+        "data-invalid": dataAttr(ctx.invalid),
         type: ctx.mask ? "password" : inputType,
         value: ctx.value[index] || "",
         autoComplete: ctx.otp ? "one-time-code" : "off",
@@ -44,9 +60,13 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
           if (evt.isComposing) return
 
           const value = event.target.value
+
           if (evt.inputType === "insertFromPaste" || value.length > 2) {
             send({ type: "PASTE", value })
+            event.preventDefault()
+            return
           }
+
           if (evt.inputType === "insertText") {
             send({ type: "INPUT", value })
           }
@@ -70,12 +90,12 @@ export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
             },
           }
 
-          const key = getEventKey(event, { orientation: "horizontal", dir: ctx.dir })
+          const key = getEventKey(event, { dir: ctx.dir })
           const exec = keyMap[key]
 
           if (exec) {
-            event.preventDefault()
             exec?.(event)
+            event.preventDefault()
           }
         },
         onFocus() {
