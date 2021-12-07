@@ -1,6 +1,8 @@
-import { FC, useState } from "react"
-import { useMDXComponent } from "next-contentlayer/hooks"
 import { allSnippets } from ".contentlayer/data"
+import { FRAMEWORKS, useFramework } from "lib/framework"
+import { useMDXComponent } from "next-contentlayer/hooks"
+import Link from "next/link"
+import { FC, useEffect, useState } from "react"
 
 function SnippetItem({ code, hidden }) {
   const content = useMDX(code)
@@ -21,13 +23,20 @@ const components: Record<string, FC<Record<string, any>>> = {
     )
   },
   CodeSnippet(props) {
-    const { id, ...rest } = props
-    const [framework, setFramework] = useState("react")
-    const snippets = allSnippets.filter((p) => p._id.endsWith(id))
+    const userFramework = useFramework()
+    const [framework, setFramework] = useState(userFramework ?? "react")
+
+    useEffect(() => {
+      if (userFramework && typeof userFramework === "string") {
+        setFramework(userFramework)
+      }
+    }, [userFramework])
+
+    const snippets = allSnippets.filter((p) => p._id.endsWith(props.id))
     return (
       <div>
         <div>
-          {["react", "vue", "solid"].map((f) => (
+          {FRAMEWORKS.map((f) => (
             <button onClick={() => setFramework(f)} key={f}>
               {f} {f === framework ? "x" : null}
             </button>
@@ -38,6 +47,20 @@ const components: Record<string, FC<Record<string, any>>> = {
         ))}
       </div>
     )
+  },
+  a(props) {
+    const href = props.href
+    const isInternalLink = href && (href.startsWith("/") || href.startsWith("#"))
+
+    if (isInternalLink) {
+      return (
+        <Link href={href}>
+          <a {...props}>{props.children}</a>
+        </Link>
+      )
+    }
+
+    return <a target="_blank" rel="noopener noreferrer" {...props} />
   },
 }
 

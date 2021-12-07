@@ -22,6 +22,10 @@ const computedFields: ComputedFields = {
     type: "string",
     resolve: (doc) => `${siteConfig.repo.editUrl}/${doc._id}`,
   },
+  params: {
+    type: "list",
+    resolve: (doc) => doc._raw.flattenedPath.split("/"),
+  },
   frontmatter: {
     type: "json",
     resolve: (doc) => ({
