@@ -101,8 +101,7 @@
       "packages/frameworks/*",
       "packages/types",
       "packages/utilities/*",
-      "examples/*",
-      "website"
+      "examples/*"
     ]
   },
   "lint-staged": {

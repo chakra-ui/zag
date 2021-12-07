@@ -15,7 +15,7 @@ export async function getWorkspacePkgs() {
       const rel = path.relative(process.cwd(), pkg.dir)
       return { abs: pkg.dir, dir: rel, pkg: pkg.packageJson }
     })
-    .filter((pkg) => !pkg.dir.includes("examples") && !pkg.dir.includes("website"))
+    .filter((pkg) => !pkg.dir.includes("examples"))
     .sort((pkg) => {
       if (/(utilities|types|core)/.test(pkg.dir)) return -1
       if (/(frameworks)/.test(pkg.dir)) return 0
