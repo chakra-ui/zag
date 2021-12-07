@@ -19,6 +19,10 @@ const components: Record<string, FC<Record<string, any>>> = {
     return (
       <pre {...rest}>{`
       npm install ${pkg}
+      # or
+      yarn add ${pkg}
+      # or
+      pnpm install ${pkg}
     `}</pre>
     )
   },
