@@ -1,7 +1,7 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { LiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
 import { dom } from "./combobox.dom"
-import { ComboboxMachineContext, ComboboxMachineState } from "./combobox.types"
+import { MachineContext, MachineState } from "./combobox.types"
 
 const { and, not } = guards
 
@@ -17,7 +17,7 @@ function withAutoHighlight(actions: string[], action: string) {
 
 const suggestEntry = ["focusInput", "focusMatchingOption", "invokeOnOpen"]
 
-export const comboboxMachine = createMachine<ComboboxMachineContext, ComboboxMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "combobox-machine",
     initial: "unknown",

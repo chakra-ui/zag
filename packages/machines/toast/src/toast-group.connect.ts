@@ -3,20 +3,20 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
 import {
-  ToastGlobalConnect,
-  ToastGroupContainerProps,
-  ToastGroupMachineContext,
-  ToastOptions,
-  ToastPlacement,
-  ToastPromiseMessages,
-  ToastPromiseOptions,
+  GlobalConnect,
+  GroupContainerProps,
+  GroupMachineContext,
+  Options,
+  Placement,
+  PromiseMessages,
+  PromiseOptions,
 } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
-export let toastGlobalConnect: ToastGlobalConnect
+export let toastGlobalConnect: GlobalConnect
 
-export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<ToastGroupMachineContext>,
+export function groupConnect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<GroupMachineContext>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
@@ -32,7 +32,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       return !!ctx.toasts.find((toast) => toast.id == id)
     },
 
-    create(options: ToastOptions) {
+    create(options: Options) {
       const uid = "toast-" + Math.random().toString(36).substr(2, 9)
       const id = options.id ? options.id : uid
 
@@ -42,7 +42,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       return id
     },
 
-    upsert(options: ToastOptions) {
+    upsert(options: Options) {
       const { id } = options
       const isVisible = id ? group.isVisible(id) : false
       if (isVisible && id != null) {
@@ -68,35 +68,35 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       }
     },
 
-    dismissByPlacement(placement: ToastPlacement) {
+    dismissByPlacement(placement: Placement) {
       const toasts = group.toastsByPlacement[placement]
       if (toasts) {
         toasts.forEach((toast) => group.dismiss(toast.id))
       }
     },
 
-    update(id: string, options: ToastOptions) {
+    update(id: string, options: Options) {
       if (!group.isVisible(id)) return
       send({ type: "UPDATE_TOAST", id, toast: options })
       return id
     },
 
-    loading(options: ToastOptions) {
+    loading(options: Options) {
       options.type = "loading"
       return group.upsert(options)
     },
 
-    success(options: ToastOptions) {
+    success(options: Options) {
       options.type = "success"
       return group.upsert(options)
     },
 
-    error(options: ToastOptions) {
+    error(options: Options) {
       options.type = "error"
       return group.upsert(options)
     },
 
-    promise<T>(promise: Promise<T>, msgs: ToastPromiseMessages, opts: ToastPromiseOptions = {}) {
+    promise<T>(promise: Promise<T>, msgs: PromiseMessages, opts: PromiseOptions = {}) {
       const id = group.loading({ ...opts, ...opts?.loading, type: "loading", title: msgs.loading })
 
       promise
@@ -128,7 +128,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       }
     },
 
-    getContainerProps(props: ToastGroupContainerProps) {
+    getContainerProps(props: GroupContainerProps) {
       const { placement } = props
       return normalize.element<T>({
         id: dom.getGroupContainerId(ctx, placement),
@@ -148,7 +148,7 @@ export function toastGroupConnect<T extends PropTypes = ReactPropTypes>(
       return portal
     },
 
-    subscribe(fn: (toasts: ToastGroupMachineContext["toasts"]) => void) {
+    subscribe(fn: (toasts: GroupMachineContext["toasts"]) => void) {
       return subscribe(ctx.toasts, () => fn(ctx.toasts))
     },
   }

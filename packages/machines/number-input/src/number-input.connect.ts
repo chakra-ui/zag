@@ -3,14 +3,10 @@ import { multiply, roundToPx } from "@ui-machines/number-utils"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./number-input.dom"
-import { NumberInputSend, NumberInputState } from "./number-input.types"
+import { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
-export function numberInputConnect<T extends PropTypes = ReactPropTypes>(
-  state: NumberInputState,
-  send: NumberInputSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
 
   const isScrubbing = state.matches("scrubbing")

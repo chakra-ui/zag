@@ -1,5 +1,5 @@
 import { queryElements } from "@ui-machines/dom-utils"
-import { PinInputMachineContext as Ctx } from "./pin-input.types"
+import { MachineContext as Ctx } from "./pin-input.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

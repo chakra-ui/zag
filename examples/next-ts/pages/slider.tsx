@@ -1,17 +1,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import * as styled from "@emotion/styled"
+import styled from "@emotion/styled"
 import { useMachine } from "@ui-machines/react"
-import { slider } from "@ui-machines/slider"
+import * as Slider from "@ui-machines/slider"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 import { sliderStyle } from "../../../shared/style"
 
-const Styles = styled.default("div")(sliderStyle)
+const Styles = styled.div(sliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    slider.machine.withContext({
+    Slider.machine.withContext({
       uid: "123",
       value: 40,
       name: "volume",
@@ -20,7 +20,7 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputProps, thumbProps, rootProps, trackProps, rangeProps, labelProps, outputProps, value } = slider.connect(
+  const { inputProps, thumbProps, rootProps, trackProps, rangeProps, labelProps, outputProps, value } = Slider.connect(
     state,
     send,
   )

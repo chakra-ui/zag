@@ -1,16 +1,16 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur, nextTick } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tags-input.dom"
-import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"
+import { MachineContext, MachineState } from "./tags-input.types"
 
 type TagProps = {
   index: string | number
   value: string
 }
 
-export function tagsInputConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<TagsInputMachineContext, TagsInputMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

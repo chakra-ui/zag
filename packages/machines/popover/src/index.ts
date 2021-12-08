@@ -1,9 +1,3 @@
-import { popoverConnect } from "./popover.connect"
-import { popoverMachine } from "./popover.machine"
-
-export const popover = {
-  machine: popoverMachine,
-  connect: popoverConnect,
-}
-
-export type { PopoverMachineContext, PopoverMachineState } from "./popover.types"
+export { connect } from "./popover.connect"
+export { machine } from "./popover.machine"
+export type { MachineContext, MachineState } from "./popover.types"

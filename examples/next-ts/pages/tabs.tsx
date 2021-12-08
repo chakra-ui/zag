@@ -1,5 +1,5 @@
 import { useMachine } from "@ui-machines/react"
-import { tabs } from "@ui-machines/tabs"
+import * as Tabs from "@ui-machines/tabs"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"
@@ -37,7 +37,7 @@ export default function Page() {
     manual: { type: "boolean", defaultValue: false, label: "manual?" },
     loop: { type: "boolean", defaultValue: true, label: "loop?" },
   })
-  const [state, send] = useMachine(tabs.machine.withContext({ value: "nils" }), {
+  const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
     context: {
       activationMode: controls.context.manual ? "manual" : "automatic",
       loop: controls.context.loop,
@@ -46,7 +46,7 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } = tabs.connect(state, send)
+  const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } = Tabs.connect(state, send)
 
   return (
     <div style={{ width: "100%" }}>

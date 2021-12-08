@@ -2,10 +2,10 @@ import { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./dialog.dom"
-import { DialogMachineContext, DialogMachineState } from "./dialog.types"
+import { MachineContext, MachineState } from "./dialog.types"
 
-export function dialogConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<DialogMachineContext, DialogMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

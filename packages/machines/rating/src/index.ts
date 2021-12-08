@@ -1,9 +1,3 @@
-import { ratingConnect } from "./rating.connect"
-import { ratingMachine } from "./rating.machine"
-
-export const rating = {
-  machine: ratingMachine,
-  connect: ratingConnect,
-}
-
-export type { RatingMachineContext, RatingMachineState } from "./rating.machine"
+export { connect } from "./rating.connect"
+export { machine } from "./rating.machine"
+export type { MachineContext, MachineState } from "./rating.types"

@@ -1,6 +1,6 @@
 import type { Context } from "@ui-machines/types"
 
-export type PopoverMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
@@ -43,6 +43,6 @@ export type PopoverMachineContext = Context<{
   onClose?: () => void
 }>
 
-export type PopoverMachineState = {
+export type MachineState = {
   value: "unknown" | "open" | "closed"
 }

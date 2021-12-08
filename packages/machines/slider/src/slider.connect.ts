@@ -5,10 +5,10 @@ import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
 import { dom } from "./slider.dom"
-import type { SliderMachineContext, SliderMachineState } from "./slider.types"
+import type { MachineContext, MachineState } from "./slider.types"
 
-export function sliderConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<SliderMachineContext, SliderMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

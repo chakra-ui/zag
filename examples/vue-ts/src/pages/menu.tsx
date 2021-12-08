@@ -1,12 +1,10 @@
-import { menu } from "@ui-machines/menu"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { defineComponent, h, Fragment, computed } from "vue"
 import { css } from "@emotion/css"
-
+import * as Menu from "@ui-machines/menu"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { computed, defineComponent, h } from "vue"
+import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { menuStyle } from "../../../../shared/style"
 
 const styles = css(menuStyle)
 
@@ -14,7 +12,7 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const [state, send] = useMachine(
-      menu.machine.withContext({
+      Menu.machine.withContext({
         uid: "123",
         onSelect: console.log,
       }),
@@ -22,18 +20,19 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => menu.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const menuRef = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
+      const { triggerProps, menuProps, getItemProps } = menuRef.value
       return (
         <div class={styles}>
-          <button ref={ref} {...machineState.value.triggerProps}>
+          <button ref={ref} {...triggerProps}>
             Click me
           </button>
-          <ul style={{ width: "300px" }} {...machineState.value.menuProps}>
-            <li {...machineState.value.getItemProps({ id: "menuitem-1" })}>Edit</li>
-            <li {...machineState.value.getItemProps({ id: "menuitem-2" })}>Duplicate</li>
-            <li {...machineState.value.getItemProps({ id: "menuitem-3" })}>Delete</li>
+          <ul style={{ width: "300px" }} {...menuProps}>
+            <li {...getItemProps({ id: "menuitem-1" })}>Edit</li>
+            <li {...getItemProps({ id: "menuitem-2" })}>Duplicate</li>
+            <li {...getItemProps({ id: "menuitem-3" })}>Delete</li>
           </ul>
 
           <StateVisualizer state={state.value} />

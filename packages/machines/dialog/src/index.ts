@@ -1,9 +1,3 @@
-import { dialogConnect } from "./dialog.connect"
-import { dialogMachine } from "./dialog.machine"
-
-export const dialog = {
-  connect: dialogConnect,
-  machine: dialogMachine,
-}
-
-export type { DialogMachineContext, DialogMachineState } from "./dialog.types"
+export { connect } from "./dialog.connect"
+export { machine } from "./dialog.machine"
+export type { MachineContext, MachineState } from "./dialog.types"

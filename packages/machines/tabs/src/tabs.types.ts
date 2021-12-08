@@ -1,6 +1,6 @@
 import { Context } from "@ui-machines/types"
 
-export type TabsMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
@@ -47,6 +47,6 @@ export type TabsMachineContext = Context<{
   onFocus?: (id: string | null) => void
 }>
 
-export type TabsMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "focused"
 }

@@ -1,17 +1,15 @@
-import { numberInput } from "@ui-machines/number-input"
 import { mergeProps } from "@ui-machines/core"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { computed, nextTick, onMounted, ref, h, Fragment } from "vue"
+import * as NumberInput from "@ui-machines/number-input"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
-
+import { computed, h, nextTick, onMounted, ref } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default defineComponent({
   name: "NumberInput",
   setup() {
     const [state, send] = useMachine(
-      numberInput.machine.withContext({
+      NumberInput.machine.withContext({
         min: 0,
         max: 10,
         clampValueOnBlur: true,
@@ -20,7 +18,7 @@ export default defineComponent({
 
     const inputRef = ref<HTMLInputElement>()
 
-    const machineState = computed(() => numberInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const numberInputRef = computed(() => NumberInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     onMounted(async () => {
       await nextTick()
@@ -32,7 +30,7 @@ export default defineComponent({
     })
 
     return () => {
-      const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps } = machineState.value
+      const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps } = numberInputRef.value
 
       return (
         <>

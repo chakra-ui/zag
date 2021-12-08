@@ -1,13 +1,12 @@
 import { StateMachine as S } from "@ui-machines/core"
+import { dataAttr, EventKeyMap, getEventKey, srOnlyStyle } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { dataAttr, getEventKey, EventKeyMap, srOnlyStyle } from "@ui-machines/dom-utils"
-
 import { dom } from "./tooltip.dom"
-import { tooltipStore } from "./tooltip.store"
-import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
+import { store } from "./tooltip.store"
+import { MachineContext, MachineState } from "./tooltip.types"
 
-export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<TooltipMachineContext, TooltipMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
@@ -24,8 +23,8 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
 
     getAnimationState() {
       return {
-        enter: tooltipStore.prevId === null && ctx.id === tooltipStore.id,
-        exit: tooltipStore.id === null,
+        enter: store.prevId === null && ctx.id === store.id,
+        exit: store.id === null,
       }
     },
 
@@ -39,12 +38,12 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onBlur() {
-        if (ctx.id === tooltipStore.id) {
+        if (ctx.id === store.id) {
           send("BLUR")
         }
       },
       onPointerDown() {
-        if (ctx.id === tooltipStore.id) {
+        if (ctx.id === store.id) {
           send("POINTER_DOWN")
         }
       },
@@ -71,8 +70,8 @@ export function tooltipConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    tooltipProps: normalize.element<T>({
-      "data-part": "tooltip",
+    contentProps: normalize.element<T>({
+      "data-part": "content",
       role: ctx.hasAriaLabel ? undefined : "tooltip",
       id: ctx.hasAriaLabel ? undefined : tooltipId,
       onPointerEnter() {

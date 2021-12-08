@@ -1,28 +1,9 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
-import { Context } from "@ui-machines/types"
+import { MachineContext, MachineState } from "./rating.types"
 import { dom } from "./rating.dom"
 
-export type RatingMachineContext = Context<{
-  max: number
-  name?: string
-  value: number
-  hoveredValue: number
-  readonly?: boolean
-  disabled?: boolean
-  allowHalf?: boolean
-  autoFocus?: boolean
-  getLabelText?(value: number): string
-  onChange?: (value: number) => void
-  readonly isInteractive: boolean
-  readonly isHovering: boolean
-}>
-
-export type RatingMachineState = {
-  value: "unknown" | "idle" | "hover" | "focus"
-}
-
-export const ratingMachine = createMachine<RatingMachineContext, RatingMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "rating-machine",
     initial: "unknown",

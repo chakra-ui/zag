@@ -1,5 +1,5 @@
 import { indexOfId, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
-import { TagsInputMachineContext as Ctx } from "./tags-input.types"
+import { MachineContext as Ctx } from "./tags-input.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

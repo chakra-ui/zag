@@ -3,9 +3,9 @@ import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { getElementRect } from "@ui-machines/rect-utils"
 import { dom } from "./slider.dom"
-import { SliderMachineContext, SliderMachineState } from "./slider.types"
+import { MachineContext, MachineState } from "./slider.types"
 
-export const sliderMachine = createMachine<SliderMachineContext, SliderMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "slider-machine",
     initial: "unknown",

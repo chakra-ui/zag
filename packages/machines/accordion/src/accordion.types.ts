@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@ui-machines/core"
 import type { Context } from "@ui-machines/types"
 
-export type AccordionMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * Whether multple accordion items can be open at the same time.
    * @default false
@@ -30,15 +30,15 @@ export type AccordionMachineContext = Context<{
   onChange?: (activeId: string | string[] | null) => void
 }>
 
-export type AccordionMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "focused"
 }
 
-export type AccordionState = S.State<AccordionMachineContext, AccordionMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type AccordionSend = S.Send<S.AnyEventObject>
+export type Send = S.Send<S.AnyEventObject>
 
-export type AccordionItemProps = {
+export type ItemProps = {
   value: string
   disabled?: boolean
 }

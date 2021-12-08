@@ -2,52 +2,10 @@ import { createMachine, ref } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { relativeToNode } from "@ui-machines/rect-utils"
-import { Context } from "@ui-machines/types"
 import { dom } from "./split-view.dom"
+import { MachineContext, MachineState } from "./split-view.types"
 
-export type SplitViewMachineContext = Context<{
-  /**
-   * Whether to allow the separator to be dragged.
-   */
-  fixed?: boolean
-  /**
-   * The orientation of the split view.
-   */
-  orientation: "horizontal" | "vertical"
-  /**
-   * The minimum size of the primary pane.
-   */
-  min: number
-  /**
-   * The maximum size of the primary pane.
-   */
-  max: number
-  /**
-   * The size of the primary pane.
-   */
-  value: number
-  /**
-   * The step increments of the primary pane when it is dragged
-   * or resized with keyboard.
-   */
-  step: number
-  /**
-   * Callback to be invoked when the primary pane is resized.
-   */
-  onChange?: (size: number) => void
-  /**
-   * Whether the primary pane is disabled.
-   */
-  disabled?: boolean
-  readonly isCollapsed: boolean
-  readonly isHorizontal: boolean
-}>
-
-export type SplitViewMachineState = {
-  value: "unknown" | "idle" | "hover:temp" | "hover" | "dragging" | "focused"
-}
-
-export const splitViewMachine = createMachine<SplitViewMachineContext, SplitViewMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "split-view-machine",
     initial: "unknown",

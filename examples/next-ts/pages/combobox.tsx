@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import * as styled from "@emotion/styled"
-import { combobox } from "@ui-machines/combobox"
+import styled from "@emotion/styled"
+import * as Combobox from "@ui-machines/combobox"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
-const Styles = styled.default("div")(comboboxStyle as styled.CSSObject)
+const Styles = styled.div(comboboxStyle)
 
 export default function Page() {
   const controls = useControls({
@@ -23,7 +23,7 @@ export default function Page() {
   const [options, setOptions] = useState(comboboxData)
 
   const [state, send] = useMachine(
-    combobox.machine.withContext({
+    Combobox.machine.withContext({
       uid: "123",
       onOpen() {
         setOptions(comboboxData)
@@ -38,29 +38,31 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps, setValue } =
-    combobox.connect(state, send)
+  const combobox = useMemo(() => Combobox.connect(state, send), [state, send])
 
   return (
     <>
       <div>
-        <button onClick={() => setValue("Togo")}>Set to Togo</button>
+        <button onClick={() => combobox.setValue("Togo")}>Set to Togo</button>
       </div>
 
       <controls.ui />
 
       <Styles>
         <div ref={ref}>
-          <label {...labelProps}>Select country</label>
-          <div {...containerProps}>
-            <input {...inputProps} />
-            <button {...buttonProps}>▼</button>
+          <label {...combobox.labelProps}>Select country</label>
+          <div {...combobox.containerProps}>
+            <input {...combobox.inputProps} />
+            <button {...combobox.buttonProps}>▼</button>
           </div>
 
           {options.length > 0 && (
-            <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
+            <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...combobox.listboxProps}>
               {options.map((item, index) => (
-                <li key={`${item.code}:${index}`} {...getOptionProps({ label: item.label, value: item.code, index })}>
+                <li
+                  key={`${item.code}:${index}`}
+                  {...combobox.getOptionProps({ label: item.label, value: item.code, index })}
+                >
                   {item.label}
                 </li>
               ))}

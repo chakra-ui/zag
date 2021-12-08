@@ -1,9 +1,9 @@
 import { Machine } from "@ui-machines/core"
 import { Context, Direction } from "@ui-machines/types"
 
-export type ToastType = "success" | "error" | "loading" | "info" | "custom"
+export type Type = "success" | "error" | "loading" | "info" | "custom"
 
-export type ToastPlacement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
+export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
 type SharedContext = {
   /**
@@ -16,7 +16,7 @@ type SharedContext = {
   pauseOnHover?: boolean
 }
 
-export type ToastMachineContext = SharedContext & {
+export type MachineContext = SharedContext & {
   /**
    * The unique id of the toast
    */
@@ -32,11 +32,11 @@ export type ToastMachineContext = SharedContext & {
   /**
    * The type of the toast
    */
-  type: ToastType
+  type: Type
   /**
    * The placement of the toast
    */
-  placement: ToastPlacement
+  placement: Placement
   /**
    * The message of the toast
    */
@@ -77,29 +77,29 @@ export type ToastMachineContext = SharedContext & {
   /**
    * Custom function to render the toast element.
    */
-  render?: (options: ToastRenderOptions) => any
+  render?: (options: RenderOptions) => any
 }
 
-export type ToastRenderOptions = {
+export type RenderOptions = {
   id: string
-  type: ToastType
+  type: Type
   dismiss(): void
 }
 
-export type ToastOptions = Partial<Omit<ToastMachineContext, "progress">>
+export type Options = Partial<Omit<MachineContext, "progress">>
 
-export type ToastMachineState = {
+export type MachineState = {
   value: "active" | "active:temp" | "dismissing" | "inactive" | "visible"
 }
 
-export type ToastMachine = Machine<ToastMachineContext, ToastMachineState>
+export type Service = Machine<MachineContext, MachineState>
 
-export type ToastGroupMachineContext = SharedContext &
+export type GroupMachineContext = SharedContext &
   Context<{
     /**
      * The child toast machines (spawned by the toast group)
      */
-    toasts: Machine<ToastMachineContext, ToastMachineState>[]
+    toasts: Service[]
     /**
      * The gutter or spacing between toasts
      */
@@ -124,28 +124,28 @@ export type ToastGroupMachineContext = SharedContext &
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
-export type ToastPromiseMessages<Value = any> = {
+export type PromiseMessages<Value = any> = {
   loading: Value
-  success: MaybeFunction<Value, ToastOptions>
-  error: MaybeFunction<Value, ToastOptions>
+  success: MaybeFunction<Value, Options>
+  error: MaybeFunction<Value, Options>
 }
 
-export type ToastPromiseOptions = ToastOptions & {
-  [key in "success" | "loading" | "error"]?: ToastOptions
+export type PromiseOptions = Options & {
+  [key in "success" | "loading" | "error"]?: Options
 }
 
-export type ToastGroupContainerProps = {
-  placement: ToastPlacement
+export type GroupContainerProps = {
+  placement: Placement
 }
 
-export type ToastGlobalConnect = {
+export type GlobalConnect = {
   count: number
   isVisible(id: string): boolean
-  upsert(options: ToastOptions): string | undefined
-  success(options: ToastOptions): string | undefined
-  error(options: ToastOptions): string | undefined
-  loading(options: ToastOptions): string | undefined
+  upsert(options: Options): string | undefined
+  success(options: Options): string | undefined
+  error(options: Options): string | undefined
+  loading(options: Options): string | undefined
   dismiss(id?: string | undefined): void
   remove(id?: string | undefined): void
-  promise<T>(promise: Promise<T>, msgs: ToastPromiseMessages, opts?: ToastPromiseOptions): Promise<T>
+  promise<T>(promise: Promise<T>, msgs: PromiseMessages, opts?: PromiseOptions): Promise<T>
 }

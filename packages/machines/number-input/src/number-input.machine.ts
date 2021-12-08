@@ -3,12 +3,12 @@ import { addDomEvent, nextTick, observeAttributes, requestPointerLock } from "@u
 import { rangy } from "@ui-machines/number-utils"
 import { isSafari, pipe, supportsPointerEvent } from "@ui-machines/utils"
 import { dom } from "./number-input.dom"
-import { NumberInputMachineContext, NumberInputMachineState } from "./number-input.types"
+import { MachineContext, MachineState } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
 const { not, and } = guards
 
-export const numberInputMachine = createMachine<NumberInputMachineContext, NumberInputMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "number-input",
     initial: "unknown",

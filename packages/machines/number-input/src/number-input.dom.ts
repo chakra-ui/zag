@@ -1,5 +1,5 @@
 import { roundToPx, wrap } from "@ui-machines/number-utils"
-import { NumberInputMachineContext as Ctx } from "./number-input.types"
+import { MachineContext as Ctx } from "./number-input.types"
 
 type InputEl = HTMLInputElement | null
 type ButtonEl = HTMLButtonElement | null

@@ -1,18 +1,16 @@
-import { slider } from "@ui-machines/slider"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
-import { createMemo } from "solid-js"
 import { css } from "@emotion/css"
-
-import { StateVisualizer } from "../components/state-visualizer"
-import { sliderStyle } from "../../../../shared/style"
+import * as Slider from "@ui-machines/slider"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
+import { createMemo } from "solid-js"
+import { sliderStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const styles = css(sliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    slider.machine.withContext({
+    Slider.machine.withContext({
       uid: "123",
       value: 40,
       name: "volume",
@@ -22,7 +20,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => slider.connect<SolidPropTypes>(state, send, normalizeProps))
+  const slider = createMemo(() => Slider.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
@@ -33,15 +31,15 @@ export default function Page() {
         }}
       >
         <div>
-          <label {...machineState().labelProps}>Slider Label</label>
-          <output {...machineState().outputProps}>{machineState().value}</output>
+          <label {...slider().labelProps}>Slider Label</label>
+          <output {...slider().outputProps}>{slider().value}</output>
         </div>
-        <div className="slider" ref={ref} {...machineState().rootProps}>
-          <div className="slider__track" {...machineState().trackProps}>
-            <div className="slider__range" {...machineState().rangeProps} />
+        <div className="slider" ref={ref} {...slider().rootProps}>
+          <div className="slider__track" {...slider().trackProps}>
+            <div className="slider__range" {...slider().rangeProps} />
           </div>
-          <div className="slider__thumb" {...machineState().thumbProps}>
-            <input {...machineState().inputProps} />
+          <div className="slider__thumb" {...slider().thumbProps}>
+            <input {...slider().inputProps} />
           </div>
         </div>
 

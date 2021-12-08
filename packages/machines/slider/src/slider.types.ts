@@ -1,6 +1,6 @@
 import { Context } from "@ui-machines/types"
 
-export type SliderMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The value of the slider
    */
@@ -97,6 +97,6 @@ export type SharedContext = {
   orientation?: "horizontal" | "vertical"
 }
 
-export type SliderMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
 }

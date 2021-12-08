@@ -2,11 +2,11 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
 import { dom } from "./menu.dom"
-import { MenuMachineContext, MenuMachineState } from "./menu.types"
+import { MachineContext, MachineState } from "./menu.types"
 
 const { not, and } = guards
 
-export const menuMachine = createMachine<MenuMachineContext, MenuMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "menu-machine",
     initial: "unknown",

@@ -1,13 +1,9 @@
 import { ariaAttr, EventKeyMap, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./editable.dom"
-import { EditableSend, EditableState } from "./editable.types"
+import { Send, State } from "./editable.types"
 
-export function editableConnect<T extends PropTypes = ReactPropTypes>(
-  state: EditableState,
-  send: EditableSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
   const isEditing = state.matches("edit")
 

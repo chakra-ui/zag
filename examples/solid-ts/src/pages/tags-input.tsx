@@ -1,17 +1,15 @@
-import { tagsInput } from "@ui-machines/tags-input"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
-import { createMemo } from "solid-js"
 import { css } from "@emotion/css"
-
-import { StateVisualizer } from "../components/state-visualizer"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as TagsInput from "@ui-machines/tags-input"
+import { createMemo } from "solid-js"
 import { tagsInputStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const styles = css(tagsInputStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    tagsInput.machine.withContext({
+    TagsInput.machine.withContext({
       uid: "123",
       value: ["React", "Vue"],
     }),
@@ -19,23 +17,23 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => tagsInput.connect<SolidPropTypes>(state, send, normalizeProps))
+  const tagsInput = createMemo(() => TagsInput.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
-      <div ref={ref} {...machineState().rootProps} className="tags-input">
+      <div ref={ref} {...tagsInput().rootProps} className="tags-input">
         {state.context.value.map((value, index) => (
           <span>
-            <div className="tag" {...machineState().getTagProps({ index, value })}>
+            <div className="tag" {...tagsInput().getTagProps({ index, value })}>
               <span>{value} </span>
-              <button className="tag-close" {...machineState().getTagDeleteButtonProps({ index, value })}>
+              <button className="tag-close" {...tagsInput().getTagDeleteButtonProps({ index, value })}>
                 &#x2715;
               </button>
             </div>
-            <input style={{ width: 40 }} {...machineState().getTagInputProps({ index })} />
+            <input style={{ width: 40 }} {...tagsInput().getTagInputProps({ index })} />
           </span>
         ))}
-        <input placeholder="Add tag..." {...machineState().inputProps} />
+        <input placeholder="Add tag..." {...tagsInput().inputProps} />
       </div>
 
       <StateVisualizer state={state} />

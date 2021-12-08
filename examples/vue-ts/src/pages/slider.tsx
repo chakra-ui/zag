@@ -1,14 +1,12 @@
-import { slider } from "@ui-machines/slider"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { computed, h, Fragment } from "vue"
-import { defineComponent } from "@vue/runtime-core"
 import { css } from "@emotion/css"
+import * as Slider from "@ui-machines/slider"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
-
+import { computed, h } from "vue"
+import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { sliderStyle } from "../../../../shared/style"
 
 const styles = css(sliderStyle)
 
@@ -16,7 +14,7 @@ export default defineComponent({
   name: "Slider",
   setup() {
     const [state, send] = useMachine(
-      slider.machine.withContext({
+      Slider.machine.withContext({
         uid: "123",
         value: 40,
         name: "volume",
@@ -26,11 +24,11 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => slider.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const sliderRef = computed(() => Slider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } =
-        machineState.value
+        sliderRef.value
 
       return (
         <div class={styles}>

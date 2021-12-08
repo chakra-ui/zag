@@ -1,4 +1,4 @@
-import { editable } from "@ui-machines/editable"
+import * as Editable from "@ui-machines/editable"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -20,32 +20,36 @@ export default function Page() {
     },
   })
 
-  const [state, send] = useMachine(editable.machine, {
+  const [state, send] = useMachine(Editable.machine, {
     context: controls.context,
   })
 
   const ref = useSetup<HTMLInputElement>({ send, id: "123" })
 
-  const { isEditing, isValueEmpty, inputProps, previewProps, cancelButtonProps, submitButtonProps, editButtonProps } =
-    editable.connect(state, send)
+  const editable = Editable.connect(state, send)
 
   return (
     <div>
       <controls.ui />
       <div className="root">
-        <input data-testid="input" ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
-        <span data-testid="preview" style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
-        {!isEditing && (
-          <button data-testid="edit-button" {...editButtonProps}>
+        <input
+          data-testid="input"
+          ref={ref}
+          style={{ width: "auto", background: "transparent" }}
+          {...editable.inputProps}
+        />
+        <span data-testid="preview" style={{ opacity: editable.isValueEmpty ? 0.7 : 1 }} {...editable.previewProps} />
+        {!editable.isEditing && (
+          <button data-testid="edit-button" {...editable.editButtonProps}>
             Edit
           </button>
         )}
-        {isEditing && (
+        {editable.isEditing && (
           <>
-            <button data-testid="save-button" {...submitButtonProps}>
+            <button data-testid="save-button" {...editable.submitButtonProps}>
               Save
             </button>
-            <button data-testid="cancel-button" {...cancelButtonProps}>
+            <button data-testid="cancel-button" {...editable.cancelButtonProps}>
               Cancel
             </button>
           </>

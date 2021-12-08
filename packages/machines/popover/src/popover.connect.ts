@@ -2,10 +2,10 @@ import { StateMachine as S } from "@ui-machines/core"
 import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
-import { PopoverMachineContext, PopoverMachineState } from "./popover.types"
+import { MachineContext, MachineState } from "./popover.types"
 
-export function popoverConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<PopoverMachineContext, PopoverMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

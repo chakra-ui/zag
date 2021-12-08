@@ -1,17 +1,17 @@
-import { computed, h, Fragment, defineComponent, ref, PropType } from "vue"
-import { useMachine, normalizeProps, useActor, VuePropTypes } from "@ui-machines/vue"
-import { toast, ToastMachine } from "@ui-machines/toast"
-import { HollowDotsSpinner } from "epic-spinners"
-import { useMount } from "../hooks/use-mount"
 import { injectGlobal } from "@emotion/css"
+import * as Toast from "@ui-machines/toast"
+import { normalizeProps, useActor, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { HollowDotsSpinner } from "epic-spinners"
+import { computed, defineComponent, h, PropType, ref } from "vue"
 import { toastStyle } from "../../../../shared/style"
+import { useMount } from "../hooks/use-mount"
 
 injectGlobal(toastStyle)
 
-const Toast = defineComponent({
+const ToastComponent = defineComponent({
   props: {
     actor: {
-      type: Object as PropType<ToastMachine>,
+      type: Object as PropType<Toast.Service>,
       required: true,
     },
   },
@@ -19,7 +19,7 @@ const Toast = defineComponent({
     const [state, send] = useActor(props.actor)
 
     const ctx = computed(() => state.value.context)
-    const t = computed(() => toast.connect<VuePropTypes>(state.value, send))
+    const t = computed(() => Toast.connect<VuePropTypes>(state.value, send))
 
     return () => (
       <pre hidden={!t.value.isVisible} {...t.value.containerProps}>
@@ -36,11 +36,11 @@ const Toast = defineComponent({
 export default defineComponent({
   name: "Toast",
   setup() {
-    const [state, send] = useMachine(toast.group.machine, { preserve: true })
+    const [state, send] = useMachine(Toast.group.machine, { preserve: true })
 
     const toastRef = useMount(send)
 
-    const toasts = computed(() => toast.group.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const toasts = computed(() => Toast.group.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const id = ref<string>()
 
@@ -73,7 +73,7 @@ export default defineComponent({
           <button onClick={() => toasts.value.pause()}>Pause</button>
           <div {...toasts.value.getContainerProps({ placement: "bottom" })}>
             {state.value.context.toasts.map((actor) => (
-              <Toast key={actor.id} actor={actor} />
+              <ToastComponent key={actor.id} actor={actor} />
             ))}
           </div>
         </div>

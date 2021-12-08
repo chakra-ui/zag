@@ -1,14 +1,12 @@
-import { rangeSlider } from "@ui-machines/range-slider"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { computed, h, Fragment } from "vue"
+import { css } from "@emotion/css"
+import * as RangeSlider from "@ui-machines/range-slider"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
-import { css } from "@emotion/css"
-
+import { computed, h } from "vue"
+import { rangeSliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { rangeSliderStyle } from "../../../../shared/style"
 
 const styles = css(rangeSliderStyle)
 
@@ -16,7 +14,7 @@ export default defineComponent({
   name: "RangeSlider",
   setup() {
     const [state, send] = useMachine(
-      rangeSlider.machine.withContext({
+      RangeSlider.machine.withContext({
         dir: "ltr",
         name: ["min", "max"],
         uid: "123",
@@ -26,10 +24,10 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => rangeSlider.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const sliderRef = computed(() => RangeSlider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = machineState.value
+      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = sliderRef.value
 
       return (
         <div class={styles}>

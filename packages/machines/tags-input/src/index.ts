@@ -1,9 +1,3 @@
-import { tagsInputConnect } from "./tags-input.connect"
-import { tagsInputMachine } from "./tags-input.machine"
-
-export const tagsInput = {
-  machine: tagsInputMachine,
-  connect: tagsInputConnect,
-}
-
-export type { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"
+export { connect } from "./tags-input.connect"
+export { machine } from "./tags-input.machine"
+export type { MachineContext, MachineState } from "./tags-input.types"

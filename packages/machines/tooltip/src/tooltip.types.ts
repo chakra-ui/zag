@@ -1,4 +1,4 @@
-export type TooltipMachineContext = {
+export type MachineContext = {
   /**
    * The owner document of the tooltip.
    */
@@ -44,6 +44,6 @@ export type TooltipMachineContext = {
   readonly hasAriaLabel: boolean
 }
 
-export type TooltipMachineState = {
+export type MachineState = {
   value: "unknown" | "opening" | "open" | "closing" | "closed"
 }

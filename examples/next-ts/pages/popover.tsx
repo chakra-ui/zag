@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
-import { popover } from "@ui-machines/popover"
+import * as Popover from "@ui-machines/popover"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -16,11 +16,11 @@ export default function Page() {
     closeOnEsc: { type: "boolean", defaultValue: true },
   })
 
-  const [state, send] = useMachine(popover.machine, { context: controls.context })
+  const [state, send] = useMachine(Popover.machine, { context: controls.context })
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { triggerProps, contentProps, closeButtonProps, headerProps } = popover.connect(state, send)
+  const { triggerProps, contentProps, closeButtonProps, headerProps } = Popover.connect(state, send)
   const __portalled = controls.context.modal || controls.context.portalled
 
   const Wrapper = __portalled ? Portal : React.Fragment

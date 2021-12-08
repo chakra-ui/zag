@@ -1,13 +1,11 @@
-import { combobox } from "@ui-machines/combobox"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { defineComponent, h, Fragment, computed } from "vue"
 import { css } from "@emotion/css"
-
-import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
+import * as Combobox from "@ui-machines/combobox"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { computed, defineComponent, h } from "vue"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useMount } from "../hooks/use-mount"
 
 const styles = css(comboboxStyle)
 
@@ -15,34 +13,35 @@ export default defineComponent({
   name: "Combobox",
   setup() {
     const [state, send] = useMachine(
-      combobox.machine.withContext({
+      Combobox.machine.withContext({
         uid: "123",
-        onSelectionChange: console.log,
+        onSelect: console.log,
       }),
     )
 
     const ref = useMount(send)
 
-    const machineState = computed(() => combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const comboboxRef = computed(() => Combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const filtered = computed(() => {
-      return comboboxData.filter((d) => d.label.toLowerCase().startsWith(machineState.value.inputValue.toLowerCase()))
+      return comboboxData.filter((d) => d.label.toLowerCase().startsWith(comboboxRef.value.inputValue.toLowerCase()))
     })
 
     return () => {
+      const { labelProps, containerProps, inputProps, buttonProps, listboxProps, getOptionProps } = comboboxRef.value
       return (
         <div class={styles}>
           <div ref={ref}>
-            <label {...machineState.value.labelProps}>Select country</label>
-            <div {...machineState.value.containerProps}>
-              <input {...machineState.value.inputProps} />
-              <button {...machineState.value.buttonProps}>▼</button>
+            <label {...labelProps}>Select country</label>
+            <div {...containerProps}>
+              <input {...inputProps} />
+              <button {...buttonProps}>▼</button>
             </div>
 
             {filtered.value.length > 0 && (
-              <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...machineState.value.listboxProps}>
+              <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
                 {filtered.value.map((item) => (
-                  <li key={item.code} {...machineState.value.getOptionProps({ label: item.label, value: item.code })}>
+                  <li key={item.code} {...getOptionProps({ label: item.label, value: item.code })}>
                     {item.label}
                   </li>
                 ))}

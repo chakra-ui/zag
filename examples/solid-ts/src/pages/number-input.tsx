@@ -1,12 +1,12 @@
 import { mergeProps } from "@ui-machines/core"
-import { numberInput } from "@ui-machines/number-input"
+import * as NumberInput from "@ui-machines/number-input"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
   const [state, send] = useMachine(
-    numberInput.machine.withContext({
+    NumberInput.machine.withContext({
       min: 0,
       max: 10,
       clampValueOnBlur: true,
@@ -15,24 +15,24 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const connect = createMemo(() => numberInput.connect<SolidPropTypes>(state, send, normalizeProps))
+  const number = createMemo(() => NumberInput.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div>
       <div className="root">
         <div
           data-testid="scrubber"
-          {...mergeProps(connect().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
+          {...mergeProps(number().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
         />
-        <label data-testid="label" {...connect().labelProps}>
+        <label data-testid="label" {...number().labelProps}>
           Enter number:
         </label>
         <div>
-          <button data-testid="dec-button" {...connect().decrementButtonProps}>
+          <button data-testid="dec-button" {...number().decrementButtonProps}>
             DEC
           </button>
-          <input data-testid="input" ref={ref} {...connect().inputProps} />
-          <button data-testid="inc-button" {...connect().incrementButtonProps}>
+          <input data-testid="input" ref={ref} {...number().inputProps} />
+          <button data-testid="inc-button" {...number().incrementButtonProps}>
             INC
           </button>
         </div>

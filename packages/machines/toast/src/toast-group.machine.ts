@@ -1,8 +1,8 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { createToastMachine } from "./toast.machine"
-import { ToastGroupMachineContext } from "./toast.types"
+import { GroupMachineContext } from "./toast.types"
 
-export const toastGroupMachine = createMachine<ToastGroupMachineContext>({
+export const groupMachine = createMachine<GroupMachineContext>({
   id: "toaster",
   initial: "active",
   context: {

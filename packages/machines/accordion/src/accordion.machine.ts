@@ -1,11 +1,11 @@
-import { add, isString, remove, toArray, warn } from "@ui-machines/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
+import { add, isString, remove, toArray, warn } from "@ui-machines/utils"
 import { dom } from "./accordion.dom"
-import { AccordionMachineContext, AccordionMachineState } from "./accordion.types"
+import { MachineContext, MachineState } from "./accordion.types"
 
 const { and, not } = guards
 
-export const accordionMachine = createMachine<AccordionMachineContext, AccordionMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "accordion-machine",
     initial: "unknown",

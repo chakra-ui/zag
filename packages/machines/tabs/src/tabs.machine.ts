@@ -1,11 +1,11 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
 import { dom } from "./tabs.dom"
-import { TabsMachineContext, TabsMachineState } from "./tabs.types"
+import { MachineContext, MachineState } from "./tabs.types"
 
 const { not } = guards
 
-export const tabsMachine = createMachine<TabsMachineContext, TabsMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     initial: "unknown",
     context: {

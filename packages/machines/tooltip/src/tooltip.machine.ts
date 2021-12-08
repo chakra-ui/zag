@@ -1,16 +1,16 @@
 import { createMachine, ref, subscribe } from "@ui-machines/core"
 import { addDomEvent, addPointerEvent, addPointerlockChangeListener, isHTMLElement } from "@ui-machines/dom-utils"
-import { isSafari, noop, uuid } from "@ui-machines/utils"
+import { isSafari, noop } from "@ui-machines/utils"
 import { dom } from "./tooltip.dom"
-import { tooltipStore } from "./tooltip.store"
-import { TooltipMachineContext, TooltipMachineState } from "./tooltip.types"
+import { store } from "./tooltip.store"
+import { MachineContext, MachineState } from "./tooltip.types"
 
-export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "tooltip",
     initial: "unknown",
     context: {
-      id: uuid(),
+      id: "",
       openDelay: 1000,
       closeDelay: 500,
       closeOnPointerDown: true,
@@ -123,8 +123,8 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         )
       },
       trackStore(ctx, _evt, { send }) {
-        return subscribe(tooltipStore, () => {
-          if (tooltipStore.id !== ctx.id) {
+        return subscribe(store, () => {
+          if (store.id !== ctx.id) {
             send("FORCE_CLOSE")
           }
         })
@@ -153,11 +153,11 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
         ctx.doc = ref(evt.doc)
       },
       setGlobalId(ctx) {
-        tooltipStore.setId(ctx.id)
+        store.setId(ctx.id)
       },
       clearGlobalId(ctx) {
-        if (ctx.id === tooltipStore.id) {
-          tooltipStore.setId(null)
+        if (ctx.id === store.id) {
+          store.setId(null)
         }
       },
       invokeOnOpen(ctx, evt) {
@@ -175,8 +175,8 @@ export const tooltipMachine = createMachine<TooltipMachineContext, TooltipMachin
     },
     guards: {
       closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
-      noVisibleTooltip: () => tooltipStore.id === null,
-      isVisible: (ctx) => ctx.id === tooltipStore.id,
+      noVisibleTooltip: () => store.id === null,
+      isVisible: (ctx) => ctx.id === store.id,
       isDisabled: (ctx) => !!ctx.disabled,
       isInteractive: (ctx) => ctx.interactive,
     },

@@ -1,11 +1,6 @@
-import { sliderConnect } from "./slider.connect"
-import { sliderMachine } from "./slider.machine"
-import { dom } from "./slider.dom"
+import { dom as unstable__dom } from "./slider.dom"
 
-export const slider = {
-  machine: sliderMachine,
-  connect: sliderConnect,
-  unstable__dom: dom,
-}
-
-export type { SliderMachineContext, SliderMachineState } from "./slider.types"
+export { connect } from "./slider.connect"
+export { machine } from "./slider.machine"
+export type { MachineContext, MachineState } from "./slider.types"
+export { unstable__dom }

@@ -1,9 +1,3 @@
-import { numberInputConnect } from "./number-input.connect"
-import { numberInputMachine } from "./number-input.machine"
-
-export const numberInput = {
-  machine: numberInputMachine,
-  connect: numberInputConnect,
-}
-
-export type { NumberInputMachineContext, NumberInputMachineState } from "./number-input.types"
+export { connect } from "./number-input.connect"
+export { machine } from "./number-input.machine"
+export type { MachineContext, MachineState } from "./number-input.types"

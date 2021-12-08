@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { pinInput } from "@ui-machines/pin-input"
+import * as PinInput from "@ui-machines/pin-input"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -14,7 +14,7 @@ export default function Page() {
   })
 
   const [state, send] = useMachine(
-    pinInput.machine.withContext({
+    PinInput.machine.withContext({
       onComplete(val) {
         console.log("onComplete", val)
       },
@@ -29,7 +29,7 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { containerProps, getInputProps, clearValue } = pinInput.connect(state, send)
+  const { containerProps, getInputProps, clearValue } = PinInput.connect(state, send)
 
   return (
     <div>

@@ -1,6 +1,9 @@
 import { proxy } from "@ui-machines/core"
 
-type StoreItem = { id: string; close: VoidFunction }
+type StoreItem = {
+  id: string
+  close: VoidFunction
+}
 
 type Store = {
   value: StoreItem[]
@@ -9,7 +12,7 @@ type Store = {
   isTopMost: (id: string) => boolean
 }
 
-export const dialogStore = proxy<Store>({
+export const store = proxy<Store>({
   value: [],
   isTopMost(id) {
     const lastModal = this.value[this.value.length - 1]

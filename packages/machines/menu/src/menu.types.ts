@@ -2,13 +2,13 @@ import { Machine, StateMachine as S } from "@ui-machines/core"
 import { Point } from "@ui-machines/rect-utils"
 import type { Context } from "@ui-machines/types"
 
-export type MenuMachine = Machine<MenuMachineContext, MenuMachineState>
+export type Service = Machine<MachineContext, MachineState>
 
-export type MenuMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "open" | "close" | "opening" | "closing" | "opening:contextmenu"
 }
 
-export type MenuMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The `id` of the active menu item.
    */
@@ -20,11 +20,11 @@ export type MenuMachineContext = Context<{
   /**
    * The menu's parent. Used for submenus.
    */
-  parent: MenuMachine | null
+  parent: Service | null
   /**
    * The child menus. Used for submenus.
    */
-  children: Record<string, MenuMachine>
+  children: Record<string, Service>
   /**
    * The orientation of the menu.
    */
@@ -57,17 +57,17 @@ export type MenuMachineContext = Context<{
   readonly isVertical: boolean
 }>
 
-export type MenuState = S.State<MenuMachineContext, MenuMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type MenuSend = (event: S.Event<S.AnyEventObject>) => void
+export type Send = (event: S.Event<S.AnyEventObject>) => void
 
-export type MenuItemProps = {
+export type ItemProps = {
   id: string
   disabled?: boolean
   valueText?: string
 }
 
-export type MenuOptionItemProps = MenuItemProps & {
+export type OptionItemProps = ItemProps & {
   type: "radio" | "checkbox"
   checked?: boolean
   onCheckedChange?: (checked: boolean) => void

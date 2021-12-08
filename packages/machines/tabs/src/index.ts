@@ -1,9 +1,3 @@
-import { tabsConnect } from "./tabs.connect"
-import { tabsMachine } from "./tabs.machine"
-
-export const tabs = {
-  machine: tabsMachine,
-  connect: tabsConnect,
-}
-
-export type { TabsMachineContext, TabsMachineState } from "./tabs.types"
+export { connect } from "./tabs.connect"
+export { machine } from "./tabs.machine"
+export type { MachineContext, MachineState } from "./tabs.types"

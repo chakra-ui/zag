@@ -1,5 +1,5 @@
 import { getScrollParent } from "@ui-machines/dom-utils"
-import { TooltipMachineContext as Ctx } from "./tooltip.types"
+import { MachineContext as Ctx } from "./tooltip.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc || document,

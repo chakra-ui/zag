@@ -1,20 +1,20 @@
 import { Global } from "@emotion/react"
 import { useMachine } from "@ui-machines/react"
-import { menu } from "@ui-machines/menu"
+import * as Menu from "@ui-machines/menu"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { menuStyle } from "../../../shared/style"
 
 export default function Page() {
   const [state, send] = useMachine(
-    menu.machine.withContext({
+    Menu.machine.withContext({
       uid: "123",
       onSelect: console.log,
     }),
   )
 
   const ref = useMount<HTMLButtonElement>(send)
-  const { menuProps, getItemProps, triggerProps } = menu.connect(state, send)
+  const { menuProps, getItemProps, triggerProps } = Menu.connect(state, send)
 
   return (
     <>
