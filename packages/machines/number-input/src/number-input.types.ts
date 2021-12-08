@@ -6,7 +6,7 @@ type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 type InputSelection = Record<"start" | "end", number | null>
 
-export type NumberInputMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The name attribute of the number input. Useful for form submission.
    */
@@ -151,10 +151,10 @@ export type NumberInputMachineContext = Context<{
   readonly isRtl: boolean
 }>
 
-export type NumberInputMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
 }
 
-export type NumberInputState = S.State<NumberInputMachineContext, NumberInputMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type NumberInputSend = (event: S.Event<S.AnyEventObject>) => void
+export type Send = (event: S.Event<S.AnyEventObject>) => void

@@ -1,6 +1,6 @@
 import { getFocusables, getTabbables } from "@ui-machines/dom-utils"
 import { cast, first, last, runIfFn } from "@ui-machines/utils"
-import { PopoverMachineContext as Ctx } from "./popover.types"
+import { MachineContext as Ctx } from "./popover.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

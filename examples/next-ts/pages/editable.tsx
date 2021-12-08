@@ -1,4 +1,4 @@
-import { editable } from "@ui-machines/editable"
+import * as Editable from "@ui-machines/editable"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -20,14 +20,14 @@ export default function Page() {
     },
   })
 
-  const [state, send] = useMachine(editable.machine, {
+  const [state, send] = useMachine(Editable.machine, {
     context: controls.context,
   })
 
   const ref = useSetup<HTMLInputElement>({ send, id: "123" })
 
-  const { isEditing, isValueEmpty, inputProps, previewProps, cancelButtonProps, submitButtonProps, editButtonProps } =
-    editable.connect(state, send)
+  const { inputProps, isEditing, previewProps, editButtonProps, isValueEmpty, submitButtonProps, cancelButtonProps } =
+    Editable.connect(state, send)
 
   return (
     <div>

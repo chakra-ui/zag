@@ -1,4 +1,4 @@
-import { SplitViewMachineContext as Ctx } from "./split-view.machine"
+import { MachineContext as Ctx } from "./split-view.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

@@ -1,5 +1,5 @@
 import { dispatchInputEvent } from "@ui-machines/dom-utils"
-import { RatingMachineContext as Ctx } from "./rating.machine"
+import { MachineContext as Ctx } from "./rating.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

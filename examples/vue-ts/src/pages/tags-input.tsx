@@ -1,21 +1,19 @@
-import { tagsInput } from "@ui-machines/tags-input"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { computed, h, Fragment } from "vue"
-import { defineComponent } from "@vue/runtime-core"
 import { css } from "@emotion/css"
-
-import { useMount } from "../hooks/use-mount"
+import * as TagsInput from "@ui-machines/tags-input"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { defineComponent } from "@vue/runtime-core"
+import { computed, h } from "vue"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useMount } from "../hooks/use-mount"
 
 const styles = css(tagsInputStyle)
 
 export default defineComponent({
   name: "TagsInput",
   setup() {
-    const { context, ui: PropertyControls } = useControls({
+    const controls = useControls({
       autoFocus: { type: "boolean", defaultValue: true, label: "autoFocus" },
       addOnPaste: { type: "boolean", defaultValue: false, label: "addOnPaste" },
       addOnBlur: { type: "boolean", defaultValue: false, label: "addOnBlur" },
@@ -24,37 +22,40 @@ export default defineComponent({
     })
 
     const [state, send] = useMachine(
-      tagsInput.machine.withContext({
+      TagsInput.machine.withContext({
         uid: "123",
         value: ["React", "Vue"],
       }),
       {
-        context: context.value,
+        context: controls.context.value,
       },
     )
 
     const ref = useMount(send)
 
-    const machineState = computed(() => tagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const tabsInputRef = computed(() => TagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
+      const { value, rootProps, inputProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } =
+        tabsInputRef.value
+
       return (
         <>
-          <PropertyControls />
+          <controls.ui />
           <div class={styles}>
-            <div ref={ref} {...machineState.value.rootProps} class="tags-input">
-              {state.value.context.value.map((value, index) => (
+            <div ref={ref} {...rootProps} class="tags-input">
+              {value.map((value, index) => (
                 <span key={index}>
-                  <div class="tag" {...machineState.value.getTagProps({ index, value })}>
+                  <div class="tag" {...getTagProps({ index, value })}>
                     <span>{value} </span>
-                    <button class="tag-close" {...machineState.value.getTagDeleteButtonProps({ index, value })}>
+                    <button class="tag-close" {...getTagDeleteButtonProps({ index, value })}>
                       &#x2715;
                     </button>
                   </div>
-                  <input style={{ width: 40 }} {...machineState.value.getTagInputProps({ index })} />
+                  <input style={{ width: 40 }} {...getTagInputProps({ index })} />
                 </span>
               ))}
-              <input placeholder="Add tag..." {...machineState.value.inputProps} />
+              <input placeholder="Add tag..." {...inputProps} />
             </div>
 
             <StateVisualizer state={state.value} />

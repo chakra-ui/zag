@@ -3,12 +3,12 @@ import { addDomEvent, nextTick, preventBodyScroll } from "@ui-machines/dom-utils
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
-import { dialogStore } from "./dialog.store"
-import { DialogMachineContext, DialogMachineState } from "./dialog.types"
+import { store } from "./dialog.store"
+import { MachineContext, MachineState } from "./dialog.types"
 
 const { and } = guards
 
-export const dialogMachine = createMachine<DialogMachineContext, DialogMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "dialog",
     initial: "unknown",
@@ -96,14 +96,14 @@ export const dialogMachine = createMachine<DialogMachineContext, DialogMachineSt
       },
       subscribeToStore(ctx, _evt, { send }) {
         const register = { id: ctx.uid, close: () => send("CLOSE") }
-        dialogStore.add(register)
-        ctx.isTopMostDialog = dialogStore.isTopMost(ctx.uid)
-        const unsubscribe = subscribe(dialogStore, () => {
-          ctx.isTopMostDialog = dialogStore.isTopMost(ctx.uid)
+        store.add(register)
+        ctx.isTopMostDialog = store.isTopMost(ctx.uid)
+        const unsubscribe = subscribe(store, () => {
+          ctx.isTopMostDialog = store.isTopMost(ctx.uid)
         })
         return () => {
           unsubscribe()
-          dialogStore.remove(ctx.uid)
+          store.remove(ctx.uid)
         }
       },
       hideContentBelow(ctx) {

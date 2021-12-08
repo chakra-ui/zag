@@ -1,12 +1,12 @@
-import * as styled from "@emotion/styled"
+import styled from "@emotion/styled"
 import { useMachine } from "@ui-machines/react"
-import { tagsInput } from "@ui-machines/tags-input"
+import * as TagsInput from "@ui-machines/tags-input"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"
 import { tagsInputStyle } from "../../../shared/style"
 
-const Styles = styled.default(`div`)(tagsInputStyle as styled.CSSObject)
+const Styles = styled.div(tagsInputStyle)
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
@@ -22,7 +22,7 @@ export default function Page() {
   })
 
   const [state, send] = useMachine(
-    tagsInput.machine.withContext({
+    TagsInput.machine.withContext({
       uid: "123",
       value: ["React", "Vue"],
     }),
@@ -33,7 +33,7 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { inputProps, rootProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = tagsInput.connect(
+  const { inputProps, rootProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = TagsInput.connect(
     state,
     send,
   )

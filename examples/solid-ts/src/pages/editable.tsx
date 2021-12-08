@@ -1,11 +1,11 @@
-import { editable } from "@ui-machines/editable"
+import * as Editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
   const [state, send] = useMachine(
-    editable.machine.withContext({
+    Editable.machine.withContext({
       placeholder: "Edit me...",
       isPreviewFocusable: true,
     }),
@@ -13,17 +13,17 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => editable.connect<SolidPropTypes>(state, send, normalizeProps))
+  const editable = createMemo(() => Editable.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div>
-      <input ref={ref} style={{ width: "auto", background: "transparent" }} {...machineState().inputProps} />
-      <span style={{ opacity: machineState().isValueEmpty ? 0.7 : 1 }} {...machineState().previewProps} />
-      {!machineState().isEditing && <button {...machineState().editButtonProps}>Edit</button>}
-      {machineState().isEditing && (
+      <input ref={ref} style={{ width: "auto", background: "transparent" }} {...editable().inputProps} />
+      <span style={{ opacity: editable().isValueEmpty ? 0.7 : 1 }} {...editable().previewProps} />
+      {!editable().isEditing && <button {...editable().editButtonProps}>Edit</button>}
+      {editable().isEditing && (
         <>
-          <button {...machineState().submitButtonProps}>Save</button>
-          <button {...machineState().cancelButtonProps}>Cancel</button>
+          <button {...editable().submitButtonProps}>Save</button>
+          <button {...editable().cancelButtonProps}>Cancel</button>
         </>
       )}
 

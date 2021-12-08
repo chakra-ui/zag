@@ -1,7 +1,7 @@
 import { nextById, prevById, queryElements } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
 import scrollIntoViewIfNeeded from "scroll-into-view-if-needed"
-import type { ComboboxMachineContext as Ctx } from "./combobox.types"
+import type { MachineContext as Ctx } from "./combobox.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

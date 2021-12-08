@@ -3,7 +3,7 @@ import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "@u
 import type { Point } from "@ui-machines/rect-utils"
 import { relativeToNode } from "@ui-machines/rect-utils"
 import type { Style } from "@ui-machines/types"
-import type { SharedContext, SliderMachineContext as Ctx } from "./slider.types"
+import type { SharedContext, MachineContext as Ctx } from "./slider.types"
 
 /**
  * To ensure the slider thumb is always within the track (on the y-axis)

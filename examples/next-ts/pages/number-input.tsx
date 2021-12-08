@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { mergeProps } from "@ui-machines/core"
-import { numberInput } from "@ui-machines/number-input"
+import * as NumberInput from "@ui-machines/number-input"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -15,13 +15,13 @@ export default function Page() {
     max: { type: "number", defaultValue: 100 },
   })
 
-  const [state, send] = useMachine(numberInput.machine, {
+  const [state, send] = useMachine(NumberInput.machine, {
     context: controls.context,
   })
 
   const ref = useMount<HTMLInputElement>(send)
 
-  const { inputProps, decrementButtonProps, incrementButtonProps, scrubberProps, labelProps } = numberInput.connect(
+  const { inputProps, decrementButtonProps, incrementButtonProps, scrubberProps, labelProps } = NumberInput.connect(
     state,
     send,
   )

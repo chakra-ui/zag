@@ -1,17 +1,15 @@
-import { menu } from "@ui-machines/menu"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
-import { createMemo } from "solid-js"
 import { css } from "@emotion/css"
-
-import { StateVisualizer } from "../components/state-visualizer"
+import * as Menu from "@ui-machines/menu"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { createMemo } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const styles = css(menuStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    menu.machine.withContext({
+    Menu.machine.withContext({
       uid: "123",
       onSelect: console.log,
     }),
@@ -19,17 +17,17 @@ export default function Page() {
 
   const ref = useSetup<HTMLButtonElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => menu.connect<SolidPropTypes>(state, send, normalizeProps))
+  const menu = createMemo(() => Menu.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
-      <button ref={ref} {...machineState().triggerProps}>
+      <button ref={ref} {...menu().triggerProps}>
         Click me
       </button>
-      <ul style={{ width: "300px" }} {...machineState().menuProps}>
-        <li {...machineState().getItemProps({ id: "menuitem-1" })}>Edit</li>
-        <li {...machineState().getItemProps({ id: "menuitem-2" })}>Duplicate</li>
-        <li {...machineState().getItemProps({ id: "menuitem-3" })}>Delete</li>
+      <ul style={{ width: "300px" }} {...menu().menuProps}>
+        <li {...menu().getItemProps({ id: "menuitem-1" })}>Edit</li>
+        <li {...menu().getItemProps({ id: "menuitem-2" })}>Duplicate</li>
+        <li {...menu().getItemProps({ id: "menuitem-3" })}>Delete</li>
       </ul>
 
       <StateVisualizer state={state} />

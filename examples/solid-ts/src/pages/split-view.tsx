@@ -1,35 +1,33 @@
-import { splitView } from "@ui-machines/split-view"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
-import { createMemo } from "solid-js"
 import { css } from "@emotion/css"
-
-import { StateVisualizer } from "../components/state-visualizer"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as SplitView from "@ui-machines/split-view"
+import { createMemo } from "solid-js"
 import { splitViewStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const styles = css(splitViewStyle)
 
 export default function Page() {
-  const [state, send] = useMachine(splitView.machine.withContext({ min: 0 }))
+  const [state, send] = useMachine(SplitView.machine.withContext({ min: 0 }))
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => splitView.connect<SolidPropTypes>(state, send, normalizeProps))
+  const splitter = createMemo(() => SplitView.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
       <div className="root">
-        <div ref={ref} {...machineState().rootProps}>
-          <div className="pane" {...machineState().primaryPaneProps}>
+        <div ref={ref} {...splitter().rootProps}>
+          <div className="pane" {...splitter().primaryPaneProps}>
             <div>
-              <small {...machineState().labelProps}>Table of Contents</small>
+              <small {...splitter().labelProps}>Table of Contents</small>
               <p>Primary Pane</p>
             </div>
           </div>
-          <div className="splitter" {...machineState().splitterProps}>
+          <div className="splitter" {...splitter().splitterProps}>
             <div className="splitter-bar" />
           </div>
-          <div className="pane" {...machineState().secondaryPaneProps}>
+          <div className="pane" {...splitter().secondaryPaneProps}>
             Secondary Pane
           </div>
         </div>

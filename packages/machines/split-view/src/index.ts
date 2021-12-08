@@ -1,7 +1,3 @@
-import { splitViewConnect } from "./split-view.connect"
-import { splitViewMachine } from "./split-view.machine"
-
-export const splitView = {
-  machine: splitViewMachine,
-  connect: splitViewConnect,
-}
+export { connect } from "./split-view.connect"
+export { machine } from "./split-view.machine"
+export type { MachineContext, MachineState } from "./split-view.types"

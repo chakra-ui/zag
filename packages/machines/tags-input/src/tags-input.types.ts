@@ -6,7 +6,7 @@ export type ValidateTagOptions = {
   values: string[]
 }
 
-export type TagsInputMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The separator used to split/join the tag values.
    */
@@ -105,7 +105,7 @@ export type TagsInputMachineContext = Context<{
   readonly outOfRange: boolean
 }>
 
-export type TagsInputMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
 }
 

@@ -4,13 +4,9 @@ import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
 import { dom, getRangeAtIndex } from "./range-slider.dom"
-import { RangeSliderSend, RangeSliderState } from "./range-slider.types"
+import { Send, State } from "./range-slider.types"
 
-export function rangeSliderConnect<T extends PropTypes = ReactPropTypes>(
-  state: RangeSliderState,
-  send: RangeSliderSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
   const { value: values, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } = ctx
 

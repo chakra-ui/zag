@@ -1,16 +1,16 @@
 import { createMachine, guards } from "@ui-machines/core"
 import { addDomEvent } from "@ui-machines/dom-utils"
-
 import { dom } from "./toast.dom"
-import { ToastMachineContext, ToastMachineState, ToastOptions } from "./toast.types"
+import { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
 const { not, and, or } = guards
 
-export function createToastMachine(options: ToastOptions = {}) {
+export function createToastMachine(options: Options = {}) {
   const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 1000, ...rest } = options
   const timeout = getToastDuration(duration, type)
-  return createMachine<ToastMachineContext, ToastMachineState>(
+
+  return createMachine<MachineContext, MachineState>(
     {
       id,
       initial: "active",

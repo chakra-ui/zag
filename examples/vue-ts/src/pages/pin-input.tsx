@@ -1,9 +1,7 @@
-import { pinInput } from "@ui-machines/pin-input"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { computed, h, Fragment } from "vue"
+import * as PinInput from "@ui-machines/pin-input"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
-
+import { computed, h } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 
@@ -11,7 +9,7 @@ export default defineComponent({
   name: "PinInput",
   setup() {
     const [state, send] = useMachine(
-      pinInput.machine.withContext({
+      PinInput.machine.withContext({
         autoFocus: true,
         onComplete(val) {
           console.log(val)
@@ -21,15 +19,16 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => pinInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const pinInputRef = computed(() => PinInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
+      const { containerProps, getInputProps } = pinInputRef.value
       return (
         <div>
-          <div style={{ width: "300px" }} ref={ref} {...machineState.value.containerProps}>
-            <input {...machineState.value.getInputProps({ index: 0 })} />
-            <input {...machineState.value.getInputProps({ index: 1 })} />
-            <input {...machineState.value.getInputProps({ index: 2 })} />
+          <div style={{ width: "300px" }} ref={ref} {...containerProps}>
+            <input {...getInputProps({ index: 0 })} />
+            <input {...getInputProps({ index: 1 })} />
+            <input {...getInputProps({ index: 2 })} />
           </div>
 
           <StateVisualizer state={state.value} />

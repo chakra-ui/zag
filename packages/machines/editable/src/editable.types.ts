@@ -5,7 +5,7 @@ export type ActivationMode = "focus" | "dblclick" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
-export type EditableMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The activation mode for the preview element.
    *
@@ -97,10 +97,10 @@ export type EditableMachineContext = Context<{
   readonly submitOnBlur: boolean
 }>
 
-export type EditableMachineState = {
+export type MachineState = {
   value: "unknown" | "preview" | "edit"
 }
 
-export type EditableState = S.State<EditableMachineContext, EditableMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type EditableSend = S.Send<S.AnyEventObject>
+export type Send = S.Send<S.AnyEventObject>

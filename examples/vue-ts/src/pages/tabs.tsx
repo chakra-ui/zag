@@ -1,10 +1,10 @@
-import { tabs } from "@ui-machines/tabs"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-import { computed, h, Fragment } from "vue"
+import * as Tabs from "@ui-machines/tabs"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
+import { computed, h } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 import { useControls } from "../hooks/use-controls"
+import { useMount } from "../hooks/use-mount"
 
 const tabsData = [
   {
@@ -37,44 +37,37 @@ const tabsData = [
 export default defineComponent({
   name: "Tabs",
   setup() {
-    const { context, ui: PropertyControls } = useControls({
+    const controls = useControls({
       manual: { type: "boolean", defaultValue: false, label: "manual?" },
       loop: { type: "boolean", defaultValue: true, label: "loop?" },
     })
 
-    const [state, send] = useMachine(tabs.machine.withContext({ value: "nils" }), {
+    const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
       context: {
-        activationMode: context.value.manual ? "manual" : "automatic",
-        loop: context.value.loop,
+        activationMode: controls.context.value.manual ? "manual" : "automatic",
+        loop: controls.context.value.loop,
       },
     })
 
     const ref = useMount(send)
-    const machineState = computed(() => tabs.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const tabsRef = computed(() => Tabs.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
+      const { tabIndicatorProps, tablistProps, getTabProps, getTabPanelProps } = tabsRef.value
       return (
         <div style={{ width: "100%" }}>
-          <PropertyControls />
+          <controls.ui />
           <div class="tabs">
-            <div class="tabs__indicator" {...machineState.value.tabIndicatorProps} />
-            <div ref={ref} {...machineState.value.tablistProps}>
+            <div class="tabs__indicator" {...tabIndicatorProps} />
+            <div ref={ref} {...tablistProps}>
               {tabsData.map((data) => (
-                <button
-                  {...machineState.value.getTabProps({ value: data.id })}
-                  key={data.id}
-                  data-testid={`${data.id}-tab`}
-                >
+                <button {...getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                   {data.label}
                 </button>
               ))}
             </div>
             {tabsData.map((data) => (
-              <div
-                {...machineState.value.getTabPanelProps({ value: data.id })}
-                key={data.id}
-                data-testid={`${data.id}-tab-panel`}
-              >
+              <div {...getTabPanelProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
                 <p>{data.content}</p>
               </div>
             ))}

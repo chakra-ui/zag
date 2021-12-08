@@ -1,13 +1,9 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
-import { ComboboxOptionGroupProps, ComboboxOptionProps, ComboboxSend, ComboboxState } from "./combobox.types"
+import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
-export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
-  state: ComboboxState,
-  send: ComboboxSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
 
   const expanded = state.hasTag("expanded")
@@ -209,7 +205,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    getOptionProps(props: ComboboxOptionProps) {
+    getOptionProps(props: OptionProps) {
       const { value, label, index, count, disabled } = props
       const id = dom.getOptionId(ctx, value, index)
       const focused = ctx.activeId === id
@@ -249,7 +245,7 @@ export function comboboxConnect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getOptionGroupProps(props: ComboboxOptionGroupProps) {
+    getOptionGroupProps(props: OptionGroupProps) {
       const { label } = props
       return normalize.element<T>({
         "data-part": "option-group",

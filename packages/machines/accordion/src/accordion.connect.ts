@@ -1,16 +1,12 @@
 import { dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./accordion.dom"
-import type { AccordionItemProps, AccordionSend, AccordionState } from "./accordion.types"
+import type { ItemProps, Send, State } from "./accordion.types"
 
-export function accordionConnect<T extends PropTypes = ReactPropTypes>(
-  state: AccordionState,
-  send: AccordionSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
 
-  function getItemState(props: AccordionItemProps) {
+  function getItemState(props: ItemProps) {
     const { value, disabled } = props
     return {
       isOpen: Array.isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
@@ -35,7 +31,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
 
     getItemState,
 
-    getItemProps(props: AccordionItemProps) {
+    getItemProps(props: ItemProps) {
       const { isOpen } = getItemState(props)
       return normalize.element<T>({
         "data-part": "item",
@@ -44,7 +40,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getContentProps(props: AccordionItemProps) {
+    getContentProps(props: ItemProps) {
       const { isOpen, isFocused, isDisabled } = getItemState(props)
       return normalize.element<T>({
         "data-part": "content",
@@ -58,7 +54,7 @@ export function accordionConnect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getTriggerProps(props: AccordionItemProps) {
+    getTriggerProps(props: ItemProps) {
       const { value } = props
       const { isDisabled, isOpen } = getItemState(props)
       return normalize.button<T>({

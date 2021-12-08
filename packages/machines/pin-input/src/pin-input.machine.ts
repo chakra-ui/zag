@@ -1,13 +1,12 @@
-import { fromLength } from "@ui-machines/utils"
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
-
+import { fromLength } from "@ui-machines/utils"
 import { dom } from "./pin-input.dom"
-import { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
+import { MachineContext, MachineState } from "./pin-input.types"
 
 const { and } = guards
 
-export const pinInputMachine = createMachine<PinInputMachineContext, PinInputMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "pin-input",
     initial: "unknown",
@@ -216,12 +215,12 @@ const REGEX = {
   alphanumeric: /^[a-zA-Z0-9]+$/i,
 }
 
-function isValidType(value: string, type: PinInputMachineContext["type"]) {
+function isValidType(value: string, type: MachineContext["type"]) {
   if (!type) return true
   return !!REGEX[type]?.test(value)
 }
 
-function assign(ctx: PinInputMachineContext, value: string | string[]) {
+function assign(ctx: MachineContext, value: string | string[]) {
   for (let i = 0; i < ctx.value.length; i++) {
     if (Array.isArray(value)) {
       if (!value[i]) continue

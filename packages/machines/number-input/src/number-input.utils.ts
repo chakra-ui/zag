@@ -1,6 +1,6 @@
 import { rangy } from "@ui-machines/number-utils"
 import type { KeyboardEvent } from "react"
-import { NumberInputMachineContext as Ctx } from "./number-input.types"
+import { MachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
   isValidNumericEvent: (ctx: Ctx, event: KeyboardEvent) => {

@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Global } from "@emotion/react"
 import { useActor, useMachine } from "@ui-machines/react"
-import { toast, ToastMachine } from "@ui-machines/toast"
+import * as Toast from "@ui-machines/toast"
 import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
 import { toastStyle } from "../../../shared/style"
 
-const Toast = ({ actor }: { actor: ToastMachine }) => {
+const ToastComponent = ({ actor }: { actor: Toast.Service }) => {
   const [state, send] = useActor(actor)
 
   const ctx = state.context
 
-  const t = toast.connect(state, send)
+  const t = Toast.connect(state, send)
 
   // call `t.render()` if provided, else use default ui below
 
@@ -28,12 +28,12 @@ const Toast = ({ actor }: { actor: ToastMachine }) => {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(toast.group.machine)
+  const [state, send] = useMachine(Toast.group.machine)
   const { context: ctx } = state
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const toasts = toast.group.connect(state, send)
+  const toasts = Toast.group.connect(state, send)
   const id = useRef<string>()
 
   return (
@@ -80,7 +80,7 @@ export default function Page() {
 
       <div {...toasts.getContainerProps({ placement: "bottom" })}>
         {ctx.toasts.map((actor) => (
-          <Toast key={actor.id} actor={actor} />
+          <ToastComponent key={actor.id} actor={actor} />
         ))}
       </div>
       <StateVisualizer state={state} />

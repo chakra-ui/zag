@@ -4,10 +4,10 @@ import { getEventPoint, relativeToNode } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { cast, isLeftClick } from "@ui-machines/utils"
 import { dom } from "./rating.dom"
-import { RatingMachineContext, RatingMachineState } from "./rating.machine"
+import { MachineContext, MachineState } from "./rating.types"
 
-export function ratingConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<RatingMachineContext, RatingMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

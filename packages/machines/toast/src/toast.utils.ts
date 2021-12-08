@@ -1,8 +1,8 @@
 import { Style } from "@ui-machines/types"
-import { ToastGroupMachineContext, ToastMachine, ToastMachineContext, ToastPlacement, ToastType } from "./toast.types"
+import { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
 
-export function getToastsByPlacement(toasts: ToastMachine[]) {
-  const result: Partial<Record<ToastPlacement, ToastMachine[]>> = {}
+export function getToastsByPlacement(toasts: Service[]) {
+  const result: Partial<Record<Placement, Service[]>> = {}
 
   for (const toast of toasts) {
     const placement = toast.state.context.placement!
@@ -13,7 +13,7 @@ export function getToastsByPlacement(toasts: ToastMachine[]) {
   return result
 }
 
-export const defaultTimeouts: Record<ToastType, number> = {
+export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
   error: 5000,
   success: 2000,
@@ -21,11 +21,11 @@ export const defaultTimeouts: Record<ToastType, number> = {
   custom: 5000,
 }
 
-export function getToastDuration(duration: number | undefined, type: ToastMachineContext["type"]) {
+export function getToastDuration(duration: number | undefined, type: MachineContext["type"]) {
   return duration ?? defaultTimeouts[type]
 }
 
-export function getGroupPlacementStyle(ctx: ToastGroupMachineContext, placement: ToastPlacement): Style {
+export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Placement): Style {
   const isRighty = placement.includes("right")
   const isLefty = placement.includes("left")
 

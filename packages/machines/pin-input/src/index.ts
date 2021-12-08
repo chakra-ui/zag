@@ -1,9 +1,3 @@
-import { pinInputConnect } from "./pin-input.connect"
-import { pinInputMachine } from "./pin-input.machine"
-
-export const pinInput = {
-  machine: pinInputMachine,
-  connect: pinInputConnect,
-}
-
-export type { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
+export { connect } from "./pin-input.connect"
+export { machine } from "./pin-input.machine"
+export type { MachineContext, MachineState } from "./pin-input.types"

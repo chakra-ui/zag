@@ -1,13 +1,11 @@
-import { rating } from "@ui-machines/rating"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-
-import { computed, h, Fragment } from "vue"
-import { defineComponent } from "@vue/runtime-core"
 import { css } from "@emotion/css"
-
+import * as Rating from "@ui-machines/rating"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { defineComponent } from "@vue/runtime-core"
+import { computed, h } from "vue"
+import { ratingStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
-import { ratingStyle } from "../../../../shared/style"
 
 const styles = css(ratingStyle)
 
@@ -15,7 +13,7 @@ export default defineComponent({
   name: "Rating",
   setup() {
     const [state, send] = useMachine(
-      rating.machine.withContext({
+      Rating.machine.withContext({
         uid: "123",
         allowHalf: true,
       }),
@@ -23,23 +21,24 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const machineState = computed(() => rating.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const ratingRef = computed(() => Rating.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
+      const { size, rootProps, getRatingProps, inputProps } = ratingRef.value
       return (
         <div class={styles}>
           <div>
-            <div class="rating" ref={ref} {...machineState.value.rootProps}>
-              {Array.from({ length: machineState.value.size }).map((_, index) => (
+            <div class="rating" ref={ref} {...rootProps}>
+              {Array.from({ length: size }).map((_, index) => (
                 <div
                   class="rating__rate"
                   key={index}
-                  {...machineState.value.getRatingProps({ index: index + 1 })}
+                  {...getRatingProps({ index: index + 1 })}
                   style={{ width: "20px", height: "20px" }}
                 />
               ))}
             </div>
-            <input {...machineState.value.inputProps} />
+            <input {...inputProps} />
           </div>
 
           <StateVisualizer state={state.value} />

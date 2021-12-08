@@ -3,9 +3,9 @@ import { dispatchInputEvent, queryElements } from "@ui-machines/dom-utils"
 import { clamp, multiply, percentToValue, snapToStep, toRanges } from "@ui-machines/number-utils"
 import type { Point } from "@ui-machines/rect-utils"
 import { closest, getElementRect, relativeToNode } from "@ui-machines/rect-utils"
-import { slider } from "@ui-machines/slider"
+import { unstable__dom } from "@ui-machines/slider"
 import type { Style } from "@ui-machines/types"
-import type { RangeSliderMachineContext as Ctx } from "./range-slider.types"
+import type { MachineContext as Ctx } from "./range-slider.types"
 
 export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
   const spacing = multiply(ctx.minStepsBetweenThumbs, ctx.step)
@@ -91,11 +91,11 @@ export const dom = {
     dispatchInputEvent(input, value)
   },
 
-  getRootStyle: slider["unstable__dom"].getRootStyle,
+  getRootStyle: unstable__dom.getRootStyle,
   getThumbStyle(ctx: Ctx, index: number) {
     const value = ctx.value[index]
     const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
-    return slider["unstable__dom"].getThumbStyle({ ...ctx, value, thumbSize })
+    return unstable__dom.getThumbStyle({ ...ctx, value, thumbSize })
   },
   getRangeStyle,
   getTrackStyle: (): Style => ({

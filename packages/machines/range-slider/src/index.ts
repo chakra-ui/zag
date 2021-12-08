@@ -1,9 +1,3 @@
-import { rangeSliderConnect } from "./range-slider.connect"
-import { rangeSliderMachine } from "./range-slider.machine"
-
-export const rangeSlider = {
-  machine: rangeSliderMachine,
-  connect: rangeSliderConnect,
-}
-
-export type { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
+export { connect } from "./range-slider.connect"
+export { machine } from "./range-slider.machine"
+export type { MachineContext, MachineState } from "./range-slider.types"

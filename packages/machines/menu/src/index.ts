@@ -1,9 +1,3 @@
-import { menuConnect } from "./menu.connect"
-import { menuMachine } from "./menu.machine"
-
-export const menu = {
-  machine: menuMachine,
-  connect: menuConnect,
-}
-
-export type { MenuMachineContext, MenuMachineState } from "./menu.types"
+export { connect } from "./menu.connect"
+export { machine } from "./menu.machine"
+export type { MachineContext, MachineState } from "./menu.types"

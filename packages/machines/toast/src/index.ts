@@ -1,30 +1,21 @@
 import { isDom, warn } from "@ui-machines/utils"
-import { toastGlobalConnect, toastGroupConnect } from "./toast-group.connect"
-import { toastGroupMachine } from "./toast-group.machine"
-import { toastConnect } from "./toast.connect"
-import { createToastMachine } from "./toast.machine"
+import { groupConnect, toastGlobalConnect } from "./toast-group.connect"
+import { groupMachine } from "./toast-group.machine"
+import { createToastMachine as createMachine } from "./toast.machine"
 
-export const toast = {
-  group: {
-    connect: toastGroupConnect,
-    machine: toastGroupMachine,
-  },
-  connect: toastConnect,
-  createMachine: createToastMachine,
-  global: () => {
-    if (!isDom()) {
-      warn("Toast.global() is only available in the browser")
-    } else {
-      return toastGlobalConnect
-    }
-  },
+export { connect } from "./toast.connect"
+export type { GroupMachineContext, MachineContext, MachineState, Placement, Service, Type } from "./toast.types"
+export { createMachine }
+
+export const group = {
+  connect: groupConnect,
+  machine: groupMachine,
 }
 
-export type {
-  ToastGroupMachineContext,
-  ToastMachine,
-  ToastMachineContext,
-  ToastMachineState,
-  ToastPlacement,
-  ToastType,
-} from "./toast.types"
+export function global() {
+  if (!isDom()) {
+    warn("Toast.global() is only available in the browser")
+  } else {
+    return toastGlobalConnect
+  }
+}

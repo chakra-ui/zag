@@ -1,9 +1,3 @@
-import { editableConnect } from "./editable.connect"
-import { editableMachine } from "./editable.machine"
-
-export const editable = {
-  machine: editableMachine,
-  connect: editableConnect,
-}
-
-export type { EditableMachineContext, EditableMachineState } from "./editable.types"
+export { connect } from "./editable.connect"
+export { machine } from "./editable.machine"
+export type { MachineContext, MachineState } from "./editable.types"

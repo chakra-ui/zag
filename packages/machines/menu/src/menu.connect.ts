@@ -3,17 +3,13 @@ import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
-import { MenuItemProps, MenuMachine, MenuOptionItemProps, MenuSend, MenuState } from "./menu.types"
+import { ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
-export function menuConnect<T extends PropTypes = ReactPropTypes>(
-  state: MenuState,
-  send: MenuSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
 
-  function getItemProps(opts: MenuItemProps) {
+  function getItemProps(opts: ItemProps) {
     const { id, disabled, valueText } = opts
     return normalize.element<T>({
       "data-part": "menuitem",
@@ -56,11 +52,11 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
   return {
     isOpen,
 
-    setParent(parent: MenuMachine) {
+    setParent(parent: Service) {
       send({ type: "SET_PARENT", value: parent, id: parent.state.context.uid })
     },
 
-    setChild(child: MenuMachine) {
+    setChild(child: Service) {
       send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
     },
 
@@ -261,7 +257,7 @@ export function menuConnect<T extends PropTypes = ReactPropTypes>(
 
     getItemProps,
 
-    getItemOptionProps(opts: MenuOptionItemProps) {
+    getItemOptionProps(opts: OptionItemProps) {
       const { type, checked, disabled, onCheckedChange } = opts
       return Object.assign(
         getItemProps(opts),

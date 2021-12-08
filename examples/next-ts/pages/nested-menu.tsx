@@ -1,7 +1,7 @@
 import { Global } from "@emotion/react"
 import { mergeProps } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
-import { menu } from "@ui-machines/menu"
+import * as Menu from "@ui-machines/menu"
 import { useMachine } from "@ui-machines/react"
 // import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
@@ -9,17 +9,17 @@ import { useEffect } from "react"
 import { menuStyle } from "../../../shared/style"
 
 export default function Page() {
-  const [state, send, machine] = useMachine(menu.machine)
-  const [subState, subSend, subMachine] = useMachine(menu.machine)
-  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
+  const [state, send, machine] = useMachine(Menu.machine)
+  const [subState, subSend, subMachine] = useMachine(Menu.machine)
+  const [sub2State, sub2Send, sub2Machine] = useMachine(Menu.machine)
 
   const rootRef = useMount<HTMLButtonElement>(send)
   const subRef = useMount<HTMLLIElement>(subSend)
   const sub2Ref = useMount<HTMLLIElement>(sub2Send)
 
-  const root = menu.connect(state, send)
-  const sub = menu.connect(subState, subSend)
-  const sub2 = menu.connect(sub2State, sub2Send)
+  const root = Menu.connect(state, send)
+  const sub = Menu.connect(subState, subSend)
+  const sub2 = Menu.connect(sub2State, sub2Send)
 
   useEffect(() => {
     return nextTick(() => {

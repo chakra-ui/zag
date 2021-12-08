@@ -1,11 +1,11 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dataAttr } from "@ui-machines/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./toast.dom"
-import { ToastMachineContext, ToastMachineState } from "./toast.types"
+import { MachineContext, MachineState } from "./toast.types"
 
-export function toastConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<ToastMachineContext, ToastMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

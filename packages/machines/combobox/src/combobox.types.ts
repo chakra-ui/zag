@@ -2,12 +2,12 @@ import type { StateMachine as S } from "@ui-machines/core"
 import type { LiveRegion } from "@ui-machines/dom-utils"
 import type { Context } from "@ui-machines/types"
 
-export type ComboboxMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
   tags: "expanded" | "focused"
 }
 
-export type ComboboxMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The current value of the combobox's input
    */
@@ -143,7 +143,7 @@ export type OptionData = {
   value: string
 }
 
-export type ComboboxOptionProps = OptionData & {
+export type OptionProps = OptionData & {
   /**
    * The index of the option. Used to set the `aria-posinset` attribute
    * and allow options with same value
@@ -159,13 +159,13 @@ export type ComboboxOptionProps = OptionData & {
   disabled?: boolean
 }
 
-export type ComboboxOptionGroupProps = {
+export type OptionGroupProps = {
   /**
    * The accessible label that describes the group
    */
   label: string
 }
 
-export type ComboboxState = S.State<ComboboxMachineContext, ComboboxMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type ComboboxSend = S.Send<S.AnyEventObject>
+export type Send = S.Send<S.AnyEventObject>

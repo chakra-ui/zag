@@ -1,13 +1,12 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
+import { EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isSafari } from "@ui-machines/utils"
-
 import { dom } from "./tabs.dom"
-import { TabsMachineContext, TabsMachineState } from "./tabs.types"
+import { MachineContext, MachineState } from "./tabs.types"
 
-export function tabsConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<TabsMachineContext, TabsMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

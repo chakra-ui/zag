@@ -10,11 +10,11 @@ import { next } from "@ui-machines/utils"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
-import { PopoverMachineContext, PopoverMachineState } from "./popover.types"
+import { MachineContext, MachineState } from "./popover.types"
 
 const { and, not, or } = guards
 
-export const popoverMachine = createMachine<PopoverMachineContext, PopoverMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "popover-machine",
     initial: "unknown",

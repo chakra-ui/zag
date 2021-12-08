@@ -1,14 +1,14 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { LiveRegion, nextTick } from "@ui-machines/dom-utils"
 import { dom } from "./tags-input.dom"
-import { TagsInputMachineContext, TagsInputMachineState } from "./tags-input.types"
+import { MachineContext, MachineState } from "./tags-input.types"
 
 const { and, not, or } = guards
 
 // (!isAtMax || allowOutOfRange) && !inputValueIsEmpty
 const canAddTag = and(or(not("isAtMax"), "allowOutOfRange"), not("isInputValueEmpty"))
 
-export const tagsInputMachine = createMachine<TagsInputMachineContext, TagsInputMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "tags-input",
     initial: "unknown",

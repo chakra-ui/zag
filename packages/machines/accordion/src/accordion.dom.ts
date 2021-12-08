@@ -1,6 +1,6 @@
 import { nextById, prevById, queryElements } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
-import type { AccordionMachineContext as Ctx } from "./accordion.types"
+import type { MachineContext as Ctx } from "./accordion.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

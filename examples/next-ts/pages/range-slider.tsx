@@ -1,16 +1,16 @@
-import * as styled from "@emotion/styled"
-import { rangeSlider } from "@ui-machines/range-slider"
+import styled from "@emotion/styled"
+import * as RangeSlider from "@ui-machines/range-slider"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
 import { useMount } from "hooks/use-mount"
 import { rangeSliderStyle } from "../../../shared/style"
 
-const Styles = styled.default(`div`)(rangeSliderStyle)
+const Styles = styled.div(rangeSliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    rangeSlider.machine.withContext({
+    RangeSlider.machine.withContext({
       dir: "ltr",
       name: ["min", "max"],
       uid: "123",
@@ -29,7 +29,7 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { getThumbProps, rootProps, rangeProps, trackProps, getInputProps, values } = rangeSlider.connect(state, send)
+  const { getThumbProps, rootProps, rangeProps, trackProps, getInputProps, values } = RangeSlider.connect(state, send)
 
   return (
     <Styles>

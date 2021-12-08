@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@ui-machines/core"
 import { Context } from "@ui-machines/types"
 
-export type RangeSliderMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */
@@ -85,10 +85,10 @@ export type RangeSliderMachineContext = Context<{
   readonly isRtl: boolean
 }>
 
-export type RangeSliderMachineState = {
+export type MachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
 }
 
-export type RangeSliderState = S.State<RangeSliderMachineContext, RangeSliderMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type RangeSliderSend = S.Send<S.AnyEventObject>
+export type Send = S.Send<S.AnyEventObject>

@@ -1,31 +1,31 @@
-import { accordion } from "@ui-machines/accordion"
-import { useMachine, normalizeProps, VuePropTypes } from "@ui-machines/vue"
-import { defineComponent, h, Fragment, computed, watch } from "vue"
+import * as Accordion from "@ui-machines/accordion"
+import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { computed, defineComponent, h } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 import { useControls } from "../hooks/use-controls"
+import { useMount } from "../hooks/use-mount"
 
 export default defineComponent({
   name: "Accordion",
   setup() {
-    const { context, ui: ControlsUI } = useControls({
+    const controls = useControls({
       collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
       multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
       activeId: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
     })
 
-    const [state, send] = useMachine(accordion.machine, {
-      context: context.value,
+    const [state, send] = useMachine(Accordion.machine, {
+      context: controls.context.value,
     })
 
-    const accordionState = computed(() => accordion.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const accordionRef = computed(() => Accordion.connect<VuePropTypes>(state.value, send, normalizeProps))
     const ref = useMount(send)
 
     return () => {
-      const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordionState.value
+      const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordionRef.value
       return (
         <div style={{ width: "100%" }}>
-          <ControlsUI />
+          <controls.ui />
           <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
             <div {...getItemProps({ value: "home" })}>
               <h3>

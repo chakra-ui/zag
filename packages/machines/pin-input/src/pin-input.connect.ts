@@ -3,10 +3,10 @@ import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@u
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isModifiedEvent } from "@ui-machines/utils"
 import { dom } from "./pin-input.dom"
-import { PinInputMachineContext, PinInputMachineState } from "./pin-input.types"
+import { MachineContext, MachineState } from "./pin-input.types"
 
-export function pinInputConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<PinInputMachineContext, PinInputMachineState>,
+export function connect<T extends PropTypes = ReactPropTypes>(
+  state: S.State<MachineContext, MachineState>,
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {

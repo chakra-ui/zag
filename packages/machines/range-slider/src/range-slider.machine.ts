@@ -4,9 +4,9 @@ import { decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { getElementRect } from "@ui-machines/rect-utils"
 import { isNumber } from "@ui-machines/utils"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
-import { RangeSliderMachineContext, RangeSliderMachineState } from "./range-slider.types"
+import { MachineContext, MachineState } from "./range-slider.types"
 
-export const rangeSliderMachine = createMachine<RangeSliderMachineContext, RangeSliderMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "range-slider-machine",
     initial: "unknown",

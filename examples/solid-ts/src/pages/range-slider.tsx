@@ -1,4 +1,4 @@
-import { rangeSlider } from "@ui-machines/range-slider"
+import * as RangeSlider from "@ui-machines/range-slider"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 
 import { createMemo, For } from "solid-js"
@@ -12,7 +12,7 @@ const styles = css(rangeSliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    rangeSlider.machine.withContext({
+    RangeSlider.machine.withContext({
       dir: "ltr",
       name: ["min", "max"],
       uid: "123",
@@ -22,7 +22,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const machineState = createMemo(() => rangeSlider.connect<SolidPropTypes>(state, send, normalizeProps))
+  const slider = createMemo(() => RangeSlider.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div className={styles}>
@@ -33,14 +33,14 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div className="slider" ref={ref} {...machineState().rootProps}>
-          <div className="slider__track" {...machineState().trackProps}>
-            <div className="slider__range" {...machineState().rangeProps} />
+        <div className="slider" ref={ref} {...slider().rootProps}>
+          <div className="slider__track" {...slider().trackProps}>
+            <div className="slider__range" {...slider().rangeProps} />
           </div>
-          <For each={machineState().values}>
+          <For each={slider().values}>
             {(val, index) => (
-              <div className="slider__thumb" {...machineState().getThumbProps(index())}>
-                <input {...machineState().getInputProps(index())} />
+              <div className="slider__thumb" {...slider().getThumbProps(index())}>
+                <input {...slider().getInputProps(index())} />
               </div>
             )}
           </For>

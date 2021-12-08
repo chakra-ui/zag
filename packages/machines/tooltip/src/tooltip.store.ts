@@ -8,7 +8,7 @@ type Store = {
   setId: (val: Id) => void
 }
 
-export const tooltipStore = proxy<Store>({
+export const store = proxy<Store>({
   id: null,
   prevId: null,
   setId(val) {

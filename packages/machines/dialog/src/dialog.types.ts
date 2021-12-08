@@ -1,6 +1,6 @@
 import { Context } from "@ui-machines/types"
 
-export type DialogMachineContext = Context<{
+export type MachineContext = Context<{
   hasTitle: boolean
   hasDescription: boolean
   trapFocus: boolean
@@ -17,6 +17,6 @@ export type DialogMachineContext = Context<{
   role: "dialog" | "alertdialog"
 }>
 
-export type DialogMachineState = {
+export type MachineState = {
   value: "unknown" | "open" | "closed"
 }

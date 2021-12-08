@@ -1,4 +1,4 @@
-import { accordion } from "@ui-machines/accordion"
+import * as Accordion from "@ui-machines/accordion"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -26,11 +26,11 @@ export default function Page() {
     value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
   })
 
-  const [state, send] = useMachine(accordion.machine, {
+  const [state, send] = useMachine(Accordion.machine, {
     context: controls.context,
   })
 
-  const { rootProps, getItemProps, getContentProps, getTriggerProps } = accordion.connect(state, send)
+  const { rootProps, getItemProps, getContentProps, getTriggerProps } = Accordion.connect(state, send)
   const ref = useMount<HTMLDivElement>(send)
 
   return (

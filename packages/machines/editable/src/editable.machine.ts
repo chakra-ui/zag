@@ -1,11 +1,11 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
 import { nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { dom } from "./editable.dom"
-import { EditableMachineContext, EditableMachineState } from "./editable.types"
+import { MachineContext, MachineState } from "./editable.types"
 
 const { not } = guards
 
-export const editableMachine = createMachine<EditableMachineContext, EditableMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "editable-machine",
     initial: "unknown",

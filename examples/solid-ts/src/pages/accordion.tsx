@@ -1,4 +1,4 @@
-import { accordion } from "@ui-machines/accordion"
+import * as Accordion from "@ui-machines/accordion"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -11,13 +11,13 @@ export default function Page() {
     value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
   })
 
-  const [state, send] = useMachine(accordion.machine, {
+  const [state, send] = useMachine(Accordion.machine, {
     context: controls.context,
   })
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
-  const connect = createMemo(() => accordion.connect<SolidPropTypes>(state, send, normalizeProps))
+  const connect = createMemo(() => Accordion.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
     <div style={{ width: "100%" }}>

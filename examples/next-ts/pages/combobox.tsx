@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import * as styled from "@emotion/styled"
-import { combobox } from "@ui-machines/combobox"
+import styled from "@emotion/styled"
+import * as Combobox from "@ui-machines/combobox"
 import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
@@ -9,7 +9,7 @@ import { useState } from "react"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
-const Styles = styled.default("div")(comboboxStyle as styled.CSSObject)
+const Styles = styled.div(comboboxStyle)
 
 export default function Page() {
   const controls = useControls({
@@ -23,7 +23,7 @@ export default function Page() {
   const [options, setOptions] = useState(comboboxData)
 
   const [state, send] = useMachine(
-    combobox.machine.withContext({
+    Combobox.machine.withContext({
       uid: "123",
       onOpen() {
         setOptions(comboboxData)
@@ -38,8 +38,8 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { labelProps, inputProps, buttonProps, listboxProps, containerProps, getOptionProps, setValue } =
-    combobox.connect(state, send)
+  const { setValue, labelProps, containerProps, buttonProps, inputProps, listboxProps, getOptionProps } =
+    Combobox.connect(state, send)
 
   return (
     <>
