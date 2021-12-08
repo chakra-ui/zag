@@ -26,30 +26,26 @@ export default function Page() {
 
   const ref = useSetup<HTMLInputElement>({ send, id: "123" })
 
-  const editable = Editable.connect(state, send)
+  const { inputProps, isEditing, previewProps, editButtonProps, isValueEmpty, submitButtonProps, cancelButtonProps } =
+    Editable.connect(state, send)
 
   return (
     <div>
       <controls.ui />
       <div className="root">
-        <input
-          data-testid="input"
-          ref={ref}
-          style={{ width: "auto", background: "transparent" }}
-          {...editable.inputProps}
-        />
-        <span data-testid="preview" style={{ opacity: editable.isValueEmpty ? 0.7 : 1 }} {...editable.previewProps} />
-        {!editable.isEditing && (
-          <button data-testid="edit-button" {...editable.editButtonProps}>
+        <input data-testid="input" ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
+        <span data-testid="preview" style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
+        {!isEditing && (
+          <button data-testid="edit-button" {...editButtonProps}>
             Edit
           </button>
         )}
-        {editable.isEditing && (
+        {isEditing && (
           <>
-            <button data-testid="save-button" {...editable.submitButtonProps}>
+            <button data-testid="save-button" {...submitButtonProps}>
               Save
             </button>
-            <button data-testid="cancel-button" {...editable.cancelButtonProps}>
+            <button data-testid="cancel-button" {...cancelButtonProps}>
               Cancel
             </button>
           </>
