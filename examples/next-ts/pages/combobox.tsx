@@ -38,31 +38,29 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const combobox = useMemo(() => Combobox.connect(state, send), [state, send])
+  const { setValue, labelProps, containerProps, buttonProps, inputProps, listboxProps, getOptionProps } =
+    Combobox.connect(state, send)
 
   return (
     <>
       <div>
-        <button onClick={() => combobox.setValue("Togo")}>Set to Togo</button>
+        <button onClick={() => setValue("Togo")}>Set to Togo</button>
       </div>
 
       <controls.ui />
 
       <Styles>
         <div ref={ref}>
-          <label {...combobox.labelProps}>Select country</label>
-          <div {...combobox.containerProps}>
-            <input {...combobox.inputProps} />
-            <button {...combobox.buttonProps}>▼</button>
+          <label {...labelProps}>Select country</label>
+          <div {...containerProps}>
+            <input {...inputProps} />
+            <button {...buttonProps}>▼</button>
           </div>
 
           {options.length > 0 && (
-            <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...combobox.listboxProps}>
+            <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
               {options.map((item, index) => (
-                <li
-                  key={`${item.code}:${index}`}
-                  {...combobox.getOptionProps({ label: item.label, value: item.code, index })}
-                >
+                <li key={`${item.code}:${index}`} {...getOptionProps({ label: item.label, value: item.code, index })}>
                   {item.label}
                 </li>
               ))}
