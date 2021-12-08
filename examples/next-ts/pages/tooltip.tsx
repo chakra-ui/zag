@@ -3,16 +3,16 @@ import * as Tooltip from "@ui-machines/tooltip"
 
 function TooltipComponent(props: { id?: string }) {
   const [state, send] = useMachine(Tooltip.machine)
-  const tooltip = Tooltip.connect(state, send)
+  const { triggerProps, isVisible, contentProps } = Tooltip.connect(state, send)
   const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
 
   return (
     <div>
-      <button data-testid={`${props.id}-trigger`} ref={ref} {...tooltip.triggerProps}>
+      <button data-testid={`${props.id}-trigger`} ref={ref} {...triggerProps}>
         Over me
       </button>
-      {tooltip.isVisible && (
-        <div data-testid={`${props.id}-tooltip`} data-tooltip="" {...tooltip.contentProps}>
+      {isVisible && (
+        <div data-testid={`${props.id}-tooltip`} data-tooltip="" {...contentProps}>
           Tooltip
         </div>
       )}
