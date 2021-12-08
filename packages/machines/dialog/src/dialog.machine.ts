@@ -40,7 +40,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           CLOSE: "closed",
           TRIGGER_CLICK: "closed",
           OVERLAY_CLICK: {
-            guard: and("isTopMost", "closeOnOverlayClick"),
+            guard: and("isTopMostDialog", "closeOnOverlayClick"),
             target: "closed",
           },
         },
@@ -55,7 +55,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
-      isTopMost: (ctx) => ctx.isTopMostDialog,
+      isTopMostDialog: (ctx) => ctx.isTopMostDialog,
       closeOnOverlayClick: (ctx) => ctx.closeOnOverlayClick,
     },
     activities: {

@@ -20,10 +20,10 @@ export default defineComponent({
 
     const ref = useMount(send)
 
-    const popover = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const popoverRef = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, contentProps } = popover.value
+      const { triggerProps, contentProps } = popoverRef.value
       return (
         <div class={styles}>
           <div style={{ width: "300px" }} ref={ref}>

@@ -37,15 +37,15 @@ const tabsData = [
 export default defineComponent({
   name: "Tabs",
   setup() {
-    const { context, ui: PropertyControls } = useControls({
+    const controls = useControls({
       manual: { type: "boolean", defaultValue: false, label: "manual?" },
       loop: { type: "boolean", defaultValue: true, label: "loop?" },
     })
 
     const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
       context: {
-        activationMode: context.value.manual ? "manual" : "automatic",
-        loop: context.value.loop,
+        activationMode: controls.context.value.manual ? "manual" : "automatic",
+        loop: controls.context.value.loop,
       },
     })
 
@@ -56,7 +56,7 @@ export default defineComponent({
       const { tabIndicatorProps, tablistProps, getTabProps, getTabPanelProps } = tabsRef.value
       return (
         <div style={{ width: "100%" }}>
-          <PropertyControls />
+          <controls.ui />
           <div class="tabs">
             <div class="tabs__indicator" {...tabIndicatorProps} />
             <div ref={ref} {...tablistProps}>
