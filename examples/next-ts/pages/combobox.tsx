@@ -5,7 +5,7 @@ import { useMachine } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
 import { useMount } from "hooks/use-mount"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 
