@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime"
 import { AppProps } from "next/app"
 import "../../../shared/reset"
 
