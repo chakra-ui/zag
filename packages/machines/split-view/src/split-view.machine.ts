@@ -16,10 +16,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       max: 340,
       step: 1,
       value: 256,
+      snapOffset: 0,
     },
     computed: {
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
-      isCollapsed: (ctx) => ctx.value === ctx.min,
+      isAtMin: (ctx) => ctx.value === ctx.min,
+      isAtMax: (ctx) => ctx.value === ctx.max,
     },
     on: {
       COLLAPSE: {
@@ -131,21 +133,24 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     activities: {
       trackPointerMove: (ctx, _evt, { send }) => {
+        const el = dom.getDoc(ctx).documentElement
         return trackPointerMove({
           ctx,
           onPointerMove(info) {
             send({ type: "POINTER_MOVE", point: info.point })
+            el.style.cursor = dom.getCursor(ctx)
           },
           onPointerUp() {
             send("POINTER_UP")
+            el.style.cursor = ""
           },
         })
       },
     },
     guards: {
-      isCollapsed: (ctx) => ctx.value === ctx.min,
-      isHorizontal: (ctx) => ctx.orientation === "horizontal",
-      isVertical: (ctx) => ctx.orientation === "vertical",
+      isCollapsed: (ctx) => ctx.isAtMin,
+      isHorizontal: (ctx) => ctx.isHorizontal,
+      isVertical: (ctx) => !ctx.isHorizontal,
       isFixed: (ctx) => !!ctx.fixed,
     },
     delays: {
@@ -174,8 +179,17 @@ export const machine = createMachine<MachineContext, MachineState>(
       setPointerValue(ctx, evt) {
         const primaryPane = dom.getPrimaryPaneEl(ctx)
         if (!primaryPane) return
+
         const { point } = relativeToNode(evt.point, primaryPane)
-        ctx.value = parseFloat(snapToStep(clamp(point.x, ctx), ctx.step))
+        let value = parseFloat(snapToStep(clamp(point.x, ctx), ctx.step))
+
+        if (Math.abs(value - ctx.min) <= ctx.snapOffset) {
+          value = ctx.min
+        } else if (Math.abs(value - ctx.max) <= ctx.snapOffset) {
+          value = ctx.max
+        }
+
+        ctx.value = value
       },
     },
   },

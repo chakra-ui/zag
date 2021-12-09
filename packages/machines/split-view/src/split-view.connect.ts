@@ -10,26 +10,33 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const { context: ctx } = state
+
   const isFocused = state.matches("hover", "dragging", "focused")
+  const isDragging = state.matches("dragging")
 
   return {
-    isCollapsed: ctx.isCollapsed,
+    isCollapsed: ctx.isAtMin,
+    isExpanded: ctx.isAtMax,
     isFocused,
+    isDragging,
 
     collapse() {
       send("COLLAPSE")
     },
-
     expand() {
       send("EXPAND")
     },
-
     toggle() {
       send("TOGGLE")
+    },
+    setSize(size: number) {
+      send({ type: "SET_SIZE", size })
     },
 
     rootProps: normalize.element<T>({
       "data-part": "root",
+      "data-orientation": ctx.orientation,
+      "data-disabled": ctx.disabled,
       id: dom.getRootId(ctx),
       style: {
         display: "flex",
@@ -42,11 +49,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     secondaryPaneProps: normalize.element<T>({
       "data-part": "secondary-pane",
+      "data-disabled": ctx.disabled,
       id: dom.getSecondaryPaneId(ctx),
       style: {
         height: ctx.isHorizontal ? "100%" : "auto",
         width: ctx.isHorizontal ? "auto" : "100%",
-        flex: "1 1 0%",
+        flex: "1 1 auto",
         position: "relative",
       },
     }),
@@ -54,12 +62,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     primaryPaneProps: normalize.element<T>({
       "data-part": "primary-pane",
       id: dom.getPrimaryPaneId(ctx),
+      "data-disabled": ctx.disabled,
+      "data-state": ctx.isAtMax ? "at-max" : ctx.isAtMin ? "at-min" : "between",
       style: {
-        width: `${ctx.value}px`,
         minWidth: `${ctx.min}px`,
         maxWidth: `${ctx.max}px`,
         visibility: "visible",
-        flex: "0 0 auto",
+        flex: `0 0 ${ctx.value}px`,
         position: "relative",
         userSelect: state.matches("dragging") ? "none" : "auto",
       },
@@ -68,7 +77,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     toggleButtonProps: normalize.element<T>({
       "data-part": "toggle-button",
       id: dom.getToggleButtonId(ctx),
-      "aria-label": ctx.isCollapsed ? "Expand Primary Pane" : "Collapse Primary Pane",
+      "aria-label": ctx.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
         send("TOGGLE")
       },
@@ -90,24 +99,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-orientation": ctx.orientation,
       "aria-labelledby": dom.getSplitterLabelId(ctx),
       "aria-controls": dom.getPrimaryPaneId(ctx),
+      "data-orientation": ctx.orientation,
       "data-focus": dataAttr(state.matches("hover", "dragging", "focused")),
+      "data-disabled": dataAttr(ctx.disabled),
       style: {
         touchAction: "none",
         userSelect: "none",
         WebkitUserSelect: "none",
         msUserSelect: "none",
         flex: "0 0 auto",
-        cursor: ctx.isHorizontal ? "col-resize" : "row-resize",
+        cursor: dom.getCursor(ctx),
         minHeight: ctx.isHorizontal ? "0px" : undefined,
         minWidth: ctx.isHorizontal ? undefined : "0px",
       },
       onPointerDown(event) {
-        if (event.button !== 0) return
-
+        send("POINTER_DOWN")
         event.preventDefault()
         event.stopPropagation()
-
-        send("POINTER_DOWN")
       },
       onPointerOver() {
         send("POINTER_OVER")

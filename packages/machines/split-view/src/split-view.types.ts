@@ -29,12 +29,25 @@ export type MachineContext = Context<{
   /**
    * Callback to be invoked when the primary pane is resized.
    */
-  onChange?: (size: number) => void
+  onResize?: (size: number) => void
+  /**
+   * Callback to be invoked when the primary pane's resize session starts
+   */
+  onResizeStart?: () => void
+  /**
+   * Callback to be invoked when the primary pane's resize session ends
+   */
+  onResizeEnd?: () => void
   /**
    * Whether the primary pane is disabled.
    */
   disabled?: boolean
-  readonly isCollapsed: boolean
+  /**
+   * The minimum offset needed to snap the primary pane to its minimum or maximum size.
+   */
+  snapOffset: number
+  readonly isAtMin: boolean
+  readonly isAtMax: boolean
   readonly isHorizontal: boolean
 }>
 

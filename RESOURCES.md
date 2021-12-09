@@ -23,3 +23,9 @@
 - https://www.lightningdesignsystem.com/components/combobox/
 - https://react-spectrum.adobe.com/react-aria/useComboBox.html
 - https://w3c.github.io/aria-practices/#combobox
+
+# Split view
+
+- https://github.com/milahu/svelte-layout-resizable/issues/1
+- https://angular-split.github.io
+- https://split.js.org

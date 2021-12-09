@@ -1,3 +1,4 @@
+import { Style } from "@ui-machines/types"
 import { MachineContext as Ctx } from "./split-view.types"
 
 export const dom = {
@@ -11,4 +12,12 @@ export const dom = {
 
   getSplitterEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getSplitterId(ctx)),
   getPrimaryPaneEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPrimaryPaneId(ctx)),
+
+  getCursor(ctx: Ctx) {
+    const x = ctx.isHorizontal
+    let cursor: Style["cursor"] = x ? "col-resize" : "row-resize"
+    if (ctx.isAtMin) cursor = x ? "e-resize" : "s-resize"
+    if (ctx.isAtMax) cursor = x ? "w-resize" : "n-resize"
+    return cursor
+  },
 }
