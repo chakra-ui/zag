@@ -1,5 +1,5 @@
+import { cast, clear, invariant, isArray, isObject, isString, runIfFn, uuid, warn } from "@ui-machines/utils"
 import { klona } from "klona"
-import { cast, invariant, noop, runIfFn, warn, isArray, isObject, isString, uuid, clear } from "@ui-machines/utils"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"
@@ -469,8 +469,10 @@ export class Machine<
         continue
       }
 
-      const cleanup = fn(this.state.context, event, this.meta) ?? noop
-      this.addActivityCleanup(state ?? this.state.value, cleanup)
+      const cleanup = fn(this.state.context, event, this.meta)
+      if (cleanup) {
+        this.addActivityCleanup(state ?? this.state.value, cleanup)
+      }
     }
   }
 

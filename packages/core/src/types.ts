@@ -286,7 +286,7 @@ export declare namespace StateMachine {
   }
 
   export type ActivityMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    [activity: string]: ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | undefined>
+    [activity: string]: ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | void | undefined>
   }
 
   export type DelayMap<TContext extends Dict, TEvent extends EventObject> = {
