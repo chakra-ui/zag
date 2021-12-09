@@ -51,11 +51,21 @@ export function valueOf(v: string | number) {
   return !isNaN(num) ? num : 0
 }
 
-export function getMaxPrecision(o: { value: string | number; precision?: number; step: number }) {
+type PrecisionOptions = {
+  value: string | number
+  precision?: number
+  step: number
+}
+
+export function getMaxPrecision(o: PrecisionOptions) {
   const stepPrecision = countDecimals(o.step)
   const val = valueOf(o.value)
   const valuePrecision = isNaN(val) ? stepPrecision : Math.max(countDecimals(val), stepPrecision)
   return Math.max(valuePrecision, o.precision ?? 0)
+}
+
+export function roundToPrecision(o: PrecisionOptions) {
+  return round(o.value, getMaxPrecision(o))
 }
 
 export function isAtMax(v: number | string, o: Num<"max">) {

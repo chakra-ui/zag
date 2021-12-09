@@ -1,4 +1,5 @@
 import {
+  clamp,
   decrement,
   getMaxPrecision,
   increment,
@@ -6,10 +7,9 @@ import {
   isAtMin,
   isWithinRange,
   Num,
-  snapToStep,
-  round,
   percentToValue,
-  clamp,
+  roundToPrecision,
+  snapToStep,
   valueOf,
   valueToPercent,
 } from "./number"
@@ -28,7 +28,7 @@ export function rangy(o: RangeOptions) {
     isAtMin: isAtMin(o.value, o),
     percent: valueToPercent(o.value, o),
     valueAsNumber: valueOf(o.value),
-    value: round(o.value, getMaxPrecision(o)),
+    value: roundToPrecision(o),
     precision: getMaxPrecision(o),
     snapToStep: () => wrap(snapToStep(o.value, o.step)),
     increment: (s?: number) => wrap(increment(o.value, s || o.step)),
