@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import * as Combobox from "@ui-machines/combobox"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import { createMemo, For } from "solid-js"
+import { createMemo, createSignal, For } from "solid-js"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -9,20 +9,24 @@ import { StateVisualizer } from "../components/state-visualizer"
 const styles = css(comboboxStyle)
 
 export default function Page() {
+  const [options, setOptions] = createSignal(comboboxData)
+
   const [state, send] = useMachine(
     Combobox.machine.withContext({
       uid: "123",
-      onSelect: console.log,
+      onOpen() {
+        setOptions(comboboxData)
+      },
+      onInputChange(value) {
+        const filtered = comboboxData.filter((o) => o.label.toLowerCase().includes(value.toLowerCase()))
+        setOptions(filtered.length > 0 ? filtered : comboboxData)
+      },
     }),
   )
 
   const ref = useSetup<HTMLDivElement>({ send, id: "123" })
 
   const combobox = createMemo(() => Combobox.connect<SolidPropTypes>(state, send, normalizeProps))
-
-  const filtered = createMemo(() => {
-    return comboboxData.filter((d) => d.label.toLowerCase().startsWith(combobox().inputValue.toLowerCase()))
-  })
 
   return (
     <div className={styles}>
@@ -33,10 +37,14 @@ export default function Page() {
           <button {...combobox().buttonProps}>▼</button>
         </span>
 
-        {filtered().length > 0 && (
-          <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...combobox().listboxProps}>
-            <For each={filtered()}>
-              {(item) => <li {...combobox().getOptionProps({ label: item.label, value: item.code })}>{item.label}</li>}
+        {options().length > 0 && (
+          <ul style={{ width: "300px", "max-height": "400px", overflow: "auto" }} {...combobox().listboxProps}>
+            <For each={options()}>
+              {(item, index) => (
+                <li {...combobox().getOptionProps({ label: item.label, value: item.code, index: index() })}>
+                  {item.label}
+                </li>
+              )}
             </For>
           </ul>
         )}
