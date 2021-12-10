@@ -171,7 +171,6 @@ export declare namespace StateMachine {
   export type GuardExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
 
   export type GuardHelper<TContext extends Dict, TEvent extends EventObject> = {
-    toString: () => string
     exec: (guards: Dict) => GuardExpression<TContext, TEvent>
   }
 
