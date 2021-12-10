@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, srOnlyStyle } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -89,7 +89,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "label",
       id: tooltipId,
       role: "tooltip",
-      style: srOnlyStyle,
+      style: visuallyHiddenStyle,
     }),
 
     createPortal() {

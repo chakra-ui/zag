@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { LiveRegion, nextTick } from "@ui-machines/dom-utils"
+import { createLiveRegion, nextTick } from "@ui-machines/dom-utils"
 import { dom } from "./tags-input.dom"
 import { MachineContext, MachineState } from "./tags-input.types"
 
@@ -214,12 +214,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
-        const liveRegion = new LiveRegion({
+        ctx.liveRegion = createLiveRegion({
           name: "tags-announcer",
           role: "alert",
           ariaLive: "assertive",
         })
-        ctx.liveRegion = ref(liveRegion)
       },
       focusNextTag(ctx) {
         if (!ctx.focusedId) return

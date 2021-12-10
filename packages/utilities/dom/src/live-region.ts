@@ -1,4 +1,4 @@
-import { srOnlyStyle } from "./sr-only"
+import { setVisuallyHidden } from "./visually-hidden"
 
 export type LiveRegionOptions = {
   /**
@@ -32,52 +32,51 @@ export type LiveRegionOptions = {
   root?: HTMLElement | null
 }
 
-export class LiveRegion {
-  region: HTMLElement | null = null
-  doc: Document | null
+export type LiveRegion = ReturnType<typeof createLiveRegion>
 
-  constructor(opts: Partial<LiveRegionOptions> = {}) {
-    const {
-      ariaLive = "polite",
-      role = "log",
-      ariaRelevant = "additions",
-      doc: _doc,
-      root,
-      name = "machine-announcer",
-    } = opts
+export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
+  const {
+    ariaLive = "polite",
+    role = "log",
+    ariaRelevant = "additions",
+    doc: ownerDocument,
+    root,
+    name = "machine-announcer",
+  } = opts
 
-    this.doc = _doc || document
-    const exists = this.doc?.getElementById("__live-region__")
+  let region: HTMLElement | null = null
+  const doc = ownerDocument || document
+  const win = doc.defaultView || window
 
-    if (!this.doc || exists) return
+  const exists = doc.getElementById("__live-region__")
+  if (exists) return null
 
-    const region = this.doc.createElement(name)
-    region.id = "__live-region__"
-    region.setAttribute("aria-live", ariaLive)
-    region.setAttribute("role", role)
-    region.setAttribute("aria-relevant", ariaRelevant)
+  region = doc.createElement(name)
+  region.id = "__live-region__"
+  region.setAttribute("aria-live", ariaLive)
+  region.setAttribute("role", role)
+  region.setAttribute("aria-relevant", ariaRelevant)
+  setVisuallyHidden(region)
 
-    Object.assign(region.style, srOnlyStyle)
+  const body = root ?? doc.body
+  body.appendChild(region)
 
-    this.region = region
-    const body = root ?? this.doc.body
-    body.appendChild(region)
-  }
+  function announce(msg: string, expire = 7e3) {
+    if (!region) return
 
-  announce = (msg: string, expire = 7e3) => {
-    if (!this.doc || !this.region) return
-
-    const div = this.doc.createElement("p")
+    const div = doc.createElement("p")
     div.innerHTML = msg
-    this.region.appendChild(div)
+    region.appendChild(div)
 
-    setTimeout(() => {
-      this.region?.removeChild(div)
+    win.setTimeout(() => {
+      region?.removeChild(div)
     }, expire)
   }
 
-  destroy = () => {
-    if (!this.doc || !this.region) return
-    this.region.parentNode?.removeChild(this.region)
+  function destroy() {
+    if (!region) return
+    region.parentNode?.removeChild(region)
   }
+
+  return { announce, destroy }
 }

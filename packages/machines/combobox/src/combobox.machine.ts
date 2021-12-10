@@ -1,5 +1,5 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
-import { LiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
+import { createLiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
 import { dom } from "./combobox.dom"
 import { MachineContext, MachineState } from "./combobox.types"
 
@@ -390,12 +390,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
-        const region = new LiveRegion({
+        ctx.liveRegion = createLiveRegion({
           ariaLive: "assertive",
           role: "status",
           doc: ctx.doc,
         })
-        ctx.liveRegion = ref(region)
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id

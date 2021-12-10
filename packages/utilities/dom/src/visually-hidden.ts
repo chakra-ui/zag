@@ -1,4 +1,4 @@
-export const srOnlyStyle = {
+export const visuallyHiddenStyle = {
   border: "0",
   clip: "rect(0 0 0 0)",
   height: "1px",
@@ -10,3 +10,7 @@ export const srOnlyStyle = {
   whiteSpace: "nowrap",
   wordWrap: "normal",
 } as const
+
+export function setVisuallyHidden(el: HTMLElement) {
+  Object.assign(el.style, visuallyHiddenStyle)
+}

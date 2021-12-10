@@ -11,7 +11,7 @@ export const ariaAttr = (guard: boolean | undefined) => {
 export * from "./keyboard-event"
 export * from "./next-tick"
 export * from "./query"
-export * from "./sr-only"
+export * from "./visually-hidden"
 export * from "./body-pointer-event"
 export * from "./body-scroll-lock"
 export * from "./computed-style"
