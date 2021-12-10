@@ -1,4 +1,4 @@
-import { rangy } from "@ui-machines/number-utils"
+import { clamp, decrement, increment, roundToPrecision } from "@ui-machines/number-utils"
 import type { KeyboardEvent } from "react"
 import { MachineContext as Ctx } from "./number-input.types"
 
@@ -18,13 +18,18 @@ export const utils = {
       .join("")
   },
   increment: (ctx: Ctx, step?: number) => {
-    return rangy(ctx).increment(step).clamp().value
+    let value: string | number = increment(ctx.value, step ?? ctx.step)
+    value = clamp(value, ctx)
+    return roundToPrecision(value, ctx)
   },
   decrement: (ctx: Ctx, step?: number) => {
-    return rangy(ctx).decrement(step).clamp().value
+    let value: string | number = decrement(ctx.value, step ?? ctx.step)
+    value = clamp(value, ctx)
+    return roundToPrecision(value, ctx)
   },
   clamp: (ctx: Ctx) => {
-    return rangy(ctx).clamp().value
+    let value: string | number = clamp(ctx.value, ctx)
+    return roundToPrecision(value, ctx)
   },
   parse: (ctx: Ctx, value: string) => {
     return ctx.parse?.(value) ?? value

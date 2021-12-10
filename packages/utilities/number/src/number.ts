@@ -64,8 +64,8 @@ export function getMaxPrecision(o: PrecisionOptions) {
   return Math.max(valuePrecision, o.precision ?? 0)
 }
 
-export function roundToPrecision(o: PrecisionOptions) {
-  return round(o.value, getMaxPrecision(o))
+export function roundToPrecision(v: number | string, o: Omit<PrecisionOptions, "value">) {
+  return round(v, getMaxPrecision({ ...o, value: v }))
 }
 
 export function isAtMax(v: number | string, o: Num<"max">) {

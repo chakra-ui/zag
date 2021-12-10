@@ -1,6 +1,6 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { addDomEvent, nextTick, observeAttributes, requestPointerLock } from "@ui-machines/dom-utils"
-import { rangy } from "@ui-machines/number-utils"
+import { isAtMax, isAtMin, isWithinRange, valueOf } from "@ui-machines/number-utils"
 import { isSafari, pipe, supportsPointerEvent } from "@ui-machines/utils"
 import { dom } from "./number-input.dom"
 import { MachineContext, MachineState } from "./number-input.types"
@@ -33,12 +33,12 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     computed: {
       isRtl: (ctx) => ctx.dir === "rtl",
-      valueAsNumber: (ctx) => rangy(ctx).valueAsNumber,
-      isAtMin: (ctx) => rangy(ctx).isAtMin,
-      isAtMax: (ctx) => rangy(ctx).isAtMax,
-      isOutOfRange: (ctx) => !rangy(ctx).isInRange,
-      canIncrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !rangy(ctx).isAtMax),
-      canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !rangy(ctx).isAtMin),
+      valueAsNumber: (ctx) => valueOf(ctx.value),
+      isAtMin: (ctx) => isAtMin(ctx.value, ctx),
+      isAtMax: (ctx) => isAtMax(ctx.value, ctx),
+      isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
+      canIncrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !ctx.isAtMax),
+      canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !ctx.isAtMin),
       ariaValueText: (ctx) => ctx.getAriaValueText?.(ctx.value) ?? ctx.value,
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
     },

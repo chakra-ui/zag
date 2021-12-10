@@ -28,7 +28,7 @@ export function rangy(o: RangeOptions) {
     isAtMin: isAtMin(o.value, o),
     percent: valueToPercent(o.value, o),
     valueAsNumber: valueOf(o.value),
-    value: roundToPrecision(o),
+    value: roundToPrecision(o.value, o),
     precision: getMaxPrecision(o),
     snapToStep: () => wrap(snapToStep(o.value, o.step)),
     increment: (s?: number) => wrap(increment(o.value, s || o.step)),
