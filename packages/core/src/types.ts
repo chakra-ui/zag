@@ -297,6 +297,7 @@ export declare namespace StateMachine {
     actions?: ActionMap<TContext, TState, TEvent>
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
+    sync?: boolean
   }
 
   export type StateInitObject<TContext, TState extends StateSchema> = {

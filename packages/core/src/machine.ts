@@ -44,6 +44,7 @@ export class Machine<
   private actionMap: S.ActionMap<TContext, TState, TEvent>
   private delayMap: S.DelayMap<TContext, TEvent>
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
+  private sync: boolean
 
   // Let's get started!
   constructor(
@@ -57,6 +58,7 @@ export class Machine<
     this.actionMap = options?.actions ?? {}
     this.delayMap = options?.delays ?? {}
     this.activityMap = options?.activities ?? {}
+    this.sync = options?.sync ?? false
   }
 
   // immutable state value
@@ -96,17 +98,25 @@ export class Machine<
     this.initialState = info
     this.performStateChangeEffects(info.target, info, event)
 
-    this.removeStateListener = subscribe(this.state, () => {
-      this.stateListeners.forEach((listener) => {
-        listener(this.stateSnapshot)
-      })
-    })
+    this.removeStateListener = subscribe(
+      this.state,
+      () => {
+        this.stateListeners.forEach((listener) => {
+          listener(this.stateSnapshot)
+        })
+      },
+      this.sync,
+    )
 
-    this.removeContextListener = subscribe(this.state.context, () => {
-      this.contextListeners.forEach((listener) => {
-        listener(this.contextSnapshot)
-      })
-    })
+    this.removeContextListener = subscribe(
+      this.state.context,
+      () => {
+        this.contextListeners.forEach((listener) => {
+          listener(this.contextSnapshot)
+        })
+      },
+      this.sync,
+    )
 
     this.setupComputed()
     this.setupContextWatchers()
