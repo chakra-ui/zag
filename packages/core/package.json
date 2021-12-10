@@ -27,6 +27,6 @@
   },
   "dependencies": {
     "klona": "^2.0.4",
-    "valtio": "^1.2.5"
+    "valtio": "^1.2.7"
   }
 }

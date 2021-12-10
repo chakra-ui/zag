@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@ui-machines/core": "0.0.0",
-    "valtio": "^1.2.5"
+    "valtio": "^1.2.7"
   },
   "devDependencies": {
     "@vue/runtime-dom": "^3.2.21",
