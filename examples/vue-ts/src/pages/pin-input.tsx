@@ -1,7 +1,7 @@
 import * as PinInput from "@ui-machines/pin-input"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
-import { computed, h } from "vue"
+import { computed, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
 

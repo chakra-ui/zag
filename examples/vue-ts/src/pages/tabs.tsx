@@ -1,7 +1,7 @@
 import * as Tabs from "@ui-machines/tabs"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
-import { computed, h } from "vue"
+import { computed, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 import { useMount } from "../hooks/use-mount"

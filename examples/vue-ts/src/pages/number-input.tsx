@@ -2,7 +2,7 @@ import { mergeProps } from "@ui-machines/core"
 import * as NumberInput from "@ui-machines/number-input"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
-import { computed, h, nextTick, onMounted, ref } from "vue"
+import { computed, h, nextTick, onMounted, ref, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default defineComponent({

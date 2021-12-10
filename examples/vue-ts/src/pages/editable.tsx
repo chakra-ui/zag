@@ -1,6 +1,6 @@
 import * as Editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
-import { computed, defineComponent, h } from "vue"
+import { computed, defineComponent, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 import { useMount } from "../hooks/use-mount"

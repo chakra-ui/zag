@@ -1,6 +1,6 @@
 import * as Tooltip from "@ui-machines/tooltip"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
-import { computed, defineComponent, h, PropType } from "vue"
+import { computed, defineComponent, h, PropType, Fragment } from "vue"
 import { useMount } from "../hooks/use-mount"
 
 const TooltipComponent = defineComponent({

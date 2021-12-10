@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import * as Menu from "@ui-machines/menu"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
-import { computed, defineComponent, h } from "vue"
+import { computed, defineComponent, h, Fragment } from "vue"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useMount } from "../hooks/use-mount"
