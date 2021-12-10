@@ -17,6 +17,7 @@ export default function Page() {
 
   const [state, send] = useMachine(NumberInput.machine, {
     context: controls.context,
+    sync: true,
   })
 
   const ref = useMount<HTMLInputElement>(send)

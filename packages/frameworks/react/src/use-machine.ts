@@ -5,7 +5,13 @@ import { useConstant } from "./use-constant"
 
 const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
 
-export function useMachine<
+/**
+ * Useful for `React.Context` consumers who need to start the machine at the root level
+ * and propagate the `service` down to children.
+ *
+ * It returns a stable instance of the machine
+ */
+export function useService<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
@@ -19,7 +25,9 @@ export function useMachine<
 
   useSafeLayoutEffect(() => {
     service.start(hydratedState)
-    return () => void service.stop()
+    return () => {
+      service.stop()
+    }
   }, [service])
 
   useSafeLayoutEffect(() => {
@@ -31,8 +39,34 @@ export function useMachine<
     service.setContext(context)
   }, [context])
 
-  const state = useSnapshot(service.state)
-  const _state = <S.State<TContext, TState>>state
+  return service
+}
 
-  return [_state, service.send, service] as const
+type SyncOption = {
+  /**
+   * Whether to execute state update synchronously within `valtio`
+   * @see Valtio https://github.com/pmndrs/valtio#update-synchronously
+   */
+  sync?: boolean
+}
+
+/**
+ * General purpose hook for consuming UI machines within react.
+ *
+ * It returns a tuple that contains:
+ * - `state`: the current state of the machine
+ * - `send`: function to send events to the machine
+ * - `service`: the machine instance or service
+ *
+ * **NOTE**: For context usage, we recommend using `useService` and `useActor` hooks instead.
+ */
+export function useMachine<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent> & SyncOption) {
+  const { sync, ...hookOptions } = options ?? {}
+  const service = useService(machine, hookOptions)
+  const state = useSnapshot(service.state, { sync }) as S.State<TContext, TState, TEvent>
+  return [state, service.send, service] as const
 }
