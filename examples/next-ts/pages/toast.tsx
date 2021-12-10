@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Global } from "@emotion/react"
 import { useActor, useMachine } from "@ui-machines/react"
 import * as Toast from "@ui-machines/toast"
