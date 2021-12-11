@@ -1,6 +1,6 @@
 import * as Editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
@@ -11,7 +11,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const editable = createMemo(() => Editable.connect<SolidPropTypes>(state, send, normalizeProps))
 

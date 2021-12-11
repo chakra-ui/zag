@@ -1,8 +1,6 @@
 import * as PinInput from "@ui-machines/pin-input"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
-import { createMemo } from "solid-js"
-
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
@@ -15,7 +13,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const pinInput = createMemo(() => PinInput.connect<SolidPropTypes>(state, send, normalizeProps))
 

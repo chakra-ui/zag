@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as TagsInput from "@ui-machines/tags-input"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -15,7 +15,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const tagsInput = createMemo(() => TagsInput.connect<SolidPropTypes>(state, send, normalizeProps))
 

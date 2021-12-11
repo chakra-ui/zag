@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as SplitView from "@ui-machines/split-view"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { splitViewStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -10,7 +10,7 @@ const styles = css(splitViewStyle)
 export default function Page() {
   const [state, send] = useMachine(SplitView.machine.withContext({ min: 0 }))
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const splitter = createMemo(() => SplitView.connect<SolidPropTypes>(state, send, normalizeProps))
 

@@ -2,7 +2,7 @@ import { css } from "@emotion/css"
 import * as Slider from "@ui-machines/slider"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -18,7 +18,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const slider = createMemo(() => Slider.connect<SolidPropTypes>(state, send, normalizeProps))
 

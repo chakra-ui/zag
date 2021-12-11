@@ -1,6 +1,6 @@
 import * as Accordion from "@ui-machines/accordion"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
@@ -15,7 +15,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const connect = createMemo(() => Accordion.connect<SolidPropTypes>(state, send, normalizeProps))
 

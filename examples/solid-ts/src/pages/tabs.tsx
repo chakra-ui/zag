@@ -1,6 +1,6 @@
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Tabs from "@ui-machines/tabs"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
@@ -11,7 +11,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const tabs = createMemo(() => Tabs.connect<SolidPropTypes>(state, send, normalizeProps))
 

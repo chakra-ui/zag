@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import * as Combobox from "@ui-machines/combobox"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import { createMemo, createSignal, For } from "solid-js"
+import { createMemo, createSignal, For, createUniqueId } from "solid-js"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -24,7 +24,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const combobox = createMemo(() => Combobox.connect<SolidPropTypes>(state, send, normalizeProps))
 

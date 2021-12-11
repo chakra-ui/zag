@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import * as Rating from "@ui-machines/rating"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { ratingStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -15,7 +15,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const rating = createMemo(() => Rating.connect<SolidPropTypes>(state, send, normalizeProps))
 

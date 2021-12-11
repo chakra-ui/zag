@@ -1,12 +1,10 @@
-import * as RangeSlider from "@ui-machines/range-slider"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
-
-import { createMemo, For } from "solid-js"
 import { css } from "@emotion/css"
+import * as RangeSlider from "@ui-machines/range-slider"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
-
-import { StateVisualizer } from "../components/state-visualizer"
+import { createMemo, For, createUniqueId } from "solid-js"
 import { rangeSliderStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const styles = css(rangeSliderStyle)
 
@@ -20,7 +18,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "123" })
+  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const slider = createMemo(() => RangeSlider.connect<SolidPropTypes>(state, send, normalizeProps))
 

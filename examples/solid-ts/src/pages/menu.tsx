@@ -1,7 +1,7 @@
 import { css } from "@emotion/css"
 import * as Menu from "@ui-machines/menu"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -10,12 +10,11 @@ const styles = css(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(
     Menu.machine.withContext({
-      uid: "123",
       onSelect: console.log,
     }),
   )
 
-  const ref = useSetup<HTMLButtonElement>({ send, id: "123" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
 
   const menu = createMemo(() => Menu.connect<SolidPropTypes>(state, send, normalizeProps))
 
