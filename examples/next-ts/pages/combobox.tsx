@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import styled from "@emotion/styled"
 import * as Combobox from "@ui-machines/combobox"
 import { useMachine } from "@ui-machines/react"

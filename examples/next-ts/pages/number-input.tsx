@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { mergeProps } from "@ui-machines/core"
 import * as NumberInput from "@ui-machines/number-input"
 import { useMachine } from "@ui-machines/react"
