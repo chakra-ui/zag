@@ -1,4 +1,4 @@
-import { cast, clear, invariant, isArray, isObject, isString, runIfFn, uuid, warn } from "@ui-machines/utils"
+import { cast, clear, invariant, isArray, isObject, isString, noop, runIfFn, uuid, warn } from "@ui-machines/utils"
 import { klona } from "klona"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
@@ -16,7 +16,7 @@ export class Machine<
   TEvent extends S.EventObject = S.AnyEventObject,
 > {
   public status: MachineStatus = MachineStatus.NotStarted
-  public readonly state: S.State<TContext, TState>
+  public readonly state: S.State<TContext, TState, TEvent>
   public initialState: S.StateInfo<TContext, TState, TEvent> | undefined
 
   public id: string
@@ -29,11 +29,15 @@ export class Machine<
 
   // state update listeners the user can opt-in for
   private stateListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
+  private eventListeners = new Set<S.EventListener<TEvent>>()
   private contextListeners = new Set<S.ContextListener<TContext>>()
   private doneListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
-  private removeStateListener: VoidFunction = () => void 0
-  private removeContextListener: VoidFunction = () => void 0
-  private contextWatchers: Set<VoidFunction> = new Set()
+  private contextWatchers = new Set<VoidFunction>()
+
+  // Cleanup functions (for `subscribe`)
+  private removeStateListener: VoidFunction = noop
+  private removeContextListener: VoidFunction = noop
+  private removeEventListener: VoidFunction = noop
 
   // For Parent <==> Spawned Actor relationship
   private parent?: AnyMachine
@@ -83,7 +87,6 @@ export class Machine<
 
     if (init) {
       const resolved = isObject(init) ? init : { context: this.config.context!, value: init }
-
       this.setState(resolved.value)
       this.setContext(resolved.context as Partial<TContext>)
     }
@@ -117,6 +120,13 @@ export class Machine<
       },
       this.sync,
     )
+
+    // For some reason `subscribe(this.state.event)` doesn't work, so we use `subscribeKey`
+    this.removeEventListener = subscribeKey(this.state, "event", (value) => {
+      for (const listener of this.eventListeners) {
+        listener(value)
+      }
+    })
 
     this.setupComputed()
     this.setupContextWatchers()
@@ -166,6 +176,7 @@ export class Machine<
     this.stopActivities()
     this.stopDelayedEvents()
     this.stopContextWatchers()
+    this.stopEventListeners()
 
     // cleanup `derive` subscriptions that was attached to the context
     underive(this.state.context)
@@ -173,6 +184,11 @@ export class Machine<
     this.status = MachineStatus.Stopped
     this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
     return this
+  }
+
+  private stopEventListeners = () => {
+    this.eventListeners.clear()
+    this.removeEventListener()
   }
 
   private stopStateListeners = () => {
@@ -442,8 +458,9 @@ export class Machine<
   private get meta(): S.Meta<TContext, TState, TEvent> {
     return {
       state: this.stateSnapshot,
-      guards: this.guardMap!,
+      guards: this.guardMap,
       send: this.send.bind(this),
+      listen: this.addEventListener.bind(this),
       self: this.self,
       getState: () => this.stateSnapshot,
     }
@@ -572,6 +589,9 @@ export class Machine<
 
     // call all exit actions for current state
     this.executeActions(exitActions, event)
+
+    // remove all registered listeners
+    this.eventListeners.clear()
   }
 
   private performEntryEffects = (next: TState["value"], event: TEvent) => {
@@ -732,6 +752,12 @@ export class Machine<
 
   public onChange = (listener: S.ContextListener<TContext>) => {
     this.contextListeners.add(listener)
+    return this
+  }
+
+  public addEventListener = (listener: S.EventListener<TEvent>) => {
+    listener(this.state.event)
+    this.eventListeners.add(listener)
     return this
   }
 }

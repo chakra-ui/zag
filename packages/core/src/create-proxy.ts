@@ -31,5 +31,5 @@ export function createProxy<TContext, TState extends S.StateSchema, TEvent exten
       return this.value !== this.previousValue
     },
   })
-  return cast<S.State<TContext, TState>>(state)
+  return cast<S.State<TContext, TState, TEvent>>(state)
 }

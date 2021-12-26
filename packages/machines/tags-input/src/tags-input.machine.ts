@@ -70,7 +70,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       unknown: {
         on: {
           SETUP: [
-            { guard: "autoFocus", target: "focused:input", actions: "setupDocument" },
+            {
+              guard: "autoFocus",
+              target: "focused:input",
+              actions: "setupDocument",
+            },
             { target: "idle", actions: "setupDocument" },
           ],
         },
@@ -289,7 +293,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       addTag(ctx, evt) {
         const value = evt.value ?? ctx.trimmedInputValue
-        const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value })
+        const guard = ctx.validateTag?.({
+          inputValue: value,
+          values: ctx.value,
+        })
         if (guard) {
           ctx.value.push(value)
         } else {
@@ -299,7 +306,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       addTagFromPaste(ctx) {
         nextTick(() => {
           const value = ctx.trimmedInputValue
-          const guard = ctx.validateTag?.({ inputValue: value, values: ctx.value })
+          const guard = ctx.validateTag?.({
+            inputValue: value,
+            values: ctx.value,
+          })
           if (guard) {
             const trimmedValue = value.split(ctx.separator).map((v) => v.trim())
             ctx.value.push(...trimmedValue)

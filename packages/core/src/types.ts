@@ -34,12 +34,15 @@ export declare namespace StateMachine {
 
   export type Send<TEvent extends EventObject = AnyEventObject> = (event: Event<TEvent>) => void
 
+  export type EventListener<TEvent extends EventObject = AnyEventObject> = (event: TEvent) => void
+
   export type Meta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     state: State<TContext, TState>
     guards: Dict
     send: Send<TEvent>
     self: SelfReference<TContext, TState, TEvent>
     getState: () => State<TContext, TState, TEvent>
+    listen: (fn: EventListener<TEvent>) => void
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
@@ -104,7 +107,7 @@ export declare namespace StateMachine {
 
   export type Activity<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | string
-    | ExpressionWithMeta<TContext, TState, TEvent, VoidFunction>
+    | ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | void | undefined>
 
   export type Activities<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = MaybeArray<
     Activity<TContext, TState, TEvent>

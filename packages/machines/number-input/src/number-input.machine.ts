@@ -145,12 +145,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         every: [
           {
             delay: "CHANGE_INTERVAL",
-            guard: and(not("isAtMin"), "canIncrement"),
+            guard: and([not("isAtMin"), "canIncrement"]),
             actions: "increment",
           },
           {
             delay: "CHANGE_INTERVAL",
-            guard: and(not("isAtMax"), "canDecrement"),
+            guard: and([not("isAtMax"), "canDecrement"]),
             actions: "decrement",
           },
         ],
