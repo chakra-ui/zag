@@ -1,5 +1,4 @@
 import { createMachine } from "../src"
-import { includes } from "lodash"
 
 const initialMachine = {
   context: { value: 0 },
@@ -15,89 +14,93 @@ const initialMachine = {
 }
 jest.useFakeTimers()
 
-it("triggers action in a specified delay every time", () => {
-  const counter = createMachine(
-    {
-      ...initialMachine,
-      states: {
-        ...initialMachine.states,
-        running: {
-          every: [{ delay: 100, actions: "increment" }],
-        },
-      },
-    },
-    {
-      actions: {
-        increment(ctx) {
-          ctx.value++
-        },
-      },
-    },
-  )
-  counter.start()
-  counter.send("START")
-  expect(counter.state.context.value).toBe(0)
-  jest.advanceTimersByTime(1000)
-  expect(counter.state.context.value).toBe(10)
-  counter.stop()
-})
-
-it("triggers action in a specified delay every time", () => {
-  const counter = createMachine(
-    {
-      ...initialMachine,
-      states: {
-        ...initialMachine.states,
-        running: {
-          every: {
-            100: { actions: "increment" },
+describe("should trigger every actions", () => {
+  it("with array notation", () => {
+    const counter = createMachine(
+      {
+        ...initialMachine,
+        states: {
+          ...initialMachine.states,
+          running: {
+            every: [{ delay: 100, actions: "increment" }],
           },
         },
       },
-    },
-    {
-      actions: {
-        increment(ctx) {
-          ctx.value++
-        },
-      },
-    },
-  )
-  counter.start()
-  counter.send("START")
-  expect(counter.state.context.value).toBe(0)
-  jest.advanceTimersByTime(1000)
-  expect(counter.state.context.value).toBe(10)
-  counter.stop()
-})
-
-it("transitions into state after options defined timer delay has passed", () => {
-  const counter = createMachine(
-    {
-      ...initialMachine,
-      states: {
-        ...initialMachine.states,
-        running: {
-          after: {
-            TIMER_DELAY: { target: "initial" },
+      {
+        actions: {
+          increment(ctx) {
+            ctx.value++
           },
         },
-        stopped: {},
       },
-    },
-    {
-      delays: {
-        TIMER_DELAY: 200,
+    )
+    counter.start()
+    counter.send("START")
+    expect(counter.state.context.value).toBe(0)
+    jest.advanceTimersByTime(1000)
+    expect(counter.state.context.value).toBe(10)
+    counter.stop()
+  })
+
+  it("with object notation", () => {
+    const counter = createMachine(
+      {
+        ...initialMachine,
+        states: {
+          ...initialMachine.states,
+          running: {
+            every: {
+              100: ["increment"],
+            },
+          },
+        },
       },
-    },
-  )
-  counter.start()
-  counter.send("START")
-  expect(counter.state.context.value).toBe(0)
-  jest.advanceTimersByTime(199)
-  expect(counter.state.value).toBe("running")
-  jest.advanceTimersByTime(1)
-  expect(counter.state.value).toBe("initial")
+      {
+        actions: {
+          increment(ctx) {
+            ctx.value++
+          },
+        },
+      },
+    )
+    counter.start()
+    counter.send("START")
+    expect(counter.state.context.value).toBe(0)
+    jest.advanceTimersByTime(1000)
+    expect(counter.state.context.value).toBe(10)
+    counter.stop()
+  })
+})
+
+describe("after transition", () => {
+  it("with named delay", () => {
+    const counter = createMachine(
+      {
+        ...initialMachine,
+        states: {
+          ...initialMachine.states,
+          running: {
+            after: {
+              TIMER_DELAY: { target: "initial" },
+            },
+          },
+          stopped: {},
+        },
+      },
+      {
+        delays: {
+          TIMER_DELAY: 200,
+        },
+      },
+    )
+    counter.start()
+    counter.send("START")
+    expect(counter.state.context.value).toBe(0)
+    jest.advanceTimersByTime(199)
+    expect(counter.state.value).toBe("running")
+    jest.advanceTimersByTime(1)
+    expect(counter.state.value).toBe("initial")
+  })
 })
 
 it("does not transition into state after options defined timer delay has passed and guard is false", () => {
