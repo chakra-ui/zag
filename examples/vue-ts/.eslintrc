@@ -14,12 +14,7 @@
     "browser": true,
     "node": true
   },
-  "extends": [
-    "plugin:vue/base",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:vue/essential",
-    "standard"
-  ],
+  "extends": ["plugin:vue/base", "plugin:@typescript-eslint/recommended", "plugin:vue/essential", "standard"],
   "rules": {
     // default eslint rules
     "one-var": 0,
