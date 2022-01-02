@@ -10,6 +10,7 @@ type Store = {
   add: (item: StoreItem) => void
   remove: (id: string) => void
   isTopMost: (id: string) => boolean
+  closeAll: () => void
 }
 
 export const store = proxy<Store>({
@@ -28,5 +29,11 @@ export const store = proxy<Store>({
     } else {
       this.value = this.value.filter((item) => item.id !== id)
     }
+  },
+  closeAll() {
+    this.value.forEach((item) => {
+      item.close()
+      this.remove(item.id)
+    })
   },
 })
