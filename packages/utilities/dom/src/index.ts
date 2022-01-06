@@ -1,29 +1,20 @@
-type Booleanish = boolean | "true" | "false"
-
-export const dataAttr = (guard: boolean | undefined) => {
-  return (guard ? "" : undefined) as Booleanish
-}
-
-export const ariaAttr = (guard: boolean | undefined) => {
-  return guard ? true : undefined
-}
-
-export * from "./keyboard-event"
-export * from "./next-tick"
-export * from "./query"
-export * from "./visually-hidden"
+export * from "./attrs"
 export * from "./body-pointer-event"
 export * from "./body-scroll-lock"
 export * from "./computed-style"
+export * from "./dispatch-event"
 export * from "./focus-event"
 export * from "./focusable"
+export * from "./keyboard-event"
 export * from "./listener"
 export * from "./live-region"
-export * from "@ui-machines/core/src/merge-props"
 export * from "./mutation-observer"
+export * from "./next-tick"
+export * from "./nodelist"
 export * from "./pointer-event"
 export * from "./pointerlock"
-export * from "./text-selection"
-export * from "./nodelist"
-export * from "./dispatch-event"
+export * from "./popper"
+export * from "./query"
 export * from "./scrollable"
+export * from "./text-selection"
+export * from "./visually-hidden"

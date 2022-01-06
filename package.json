@@ -48,6 +48,7 @@
     "@changesets/cli": "^2.16.0",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
+    "@floating-ui/dom": "^0.1.10",
     "@manypkg/cli": "^0.17.0",
     "@swc-node/jest": "^1.3.3",
     "@testing-library/cypress": "^8.0.1",
