@@ -1,4 +1,6 @@
 import { arrow, computePosition, flip, Middleware, offset, Placement, shift, size } from "@floating-ui/dom"
+import { noop } from "@ui-machines/utils"
+import { observeElementRect } from "./rect-observer"
 
 const transforms = {
   top: "bottom center",
@@ -19,7 +21,7 @@ const transformOrigin: Middleware = {
   name: "transformOrigin",
   fn({ placement, elements }) {
     const { floating } = elements
-    floating.style.setPropety("--transform-origin", transforms[placement])
+    floating.style.setProperty("--transform-origin", transforms[placement])
     return {
       data: { origin: transforms[placement] },
     }
@@ -50,7 +52,15 @@ const defaultOpts: PlacementOptions = {
   direction: "ltr",
 }
 
-export function getPlacementData(reference: HTMLElement, floating: HTMLElement, opts: PlacementOptions) {
+export function getPlacementData(
+  reference: HTMLElement | null,
+  floating: HTMLElement | null,
+  opts: PlacementOptions = {},
+) {
+  if (reference == null || floating == null) {
+    return { addListeners: noop, compute: noop }
+  }
+
   opts = Object.assign({}, defaultOpts, opts)
   const win = reference.ownerDocument.defaultView || window
 
@@ -81,7 +91,8 @@ export function getPlacementData(reference: HTMLElement, floating: HTMLElement, 
     )
   }
 
-  function update() {
+  function compute() {
+    if (reference == null || floating == null) return
     computePosition(reference, floating, {
       placement: opts.placement,
       middleware,
@@ -93,17 +104,21 @@ export function getPlacementData(reference: HTMLElement, floating: HTMLElement, 
   function addResizeListeners() {
     const enabled = typeof opts.eventListeners === "boolean" ? opts.eventListeners : opts.eventListeners?.resize
     if (!enabled) return
-    const listener = () => update()
-    win.addEventListener("resize", listener)
-    return () => win.removeEventListener("resize", listener)
+
+    const unobserve = observeElementRect(reference!, compute)
+    win.addEventListener("resize", compute)
+
+    return () => {
+      win.removeEventListener("resize", compute)
+      unobserve()
+    }
   }
 
   function addScrollListeners() {
     const enabled = typeof opts.eventListeners === "boolean" ? opts.eventListeners : opts.eventListeners?.scroll
     if (!enabled) return
-    const listener = () => update()
-    win.addEventListener("scroll", listener)
-    return () => win.removeEventListener("scroll", listener)
+    win.addEventListener("scroll", compute)
+    return () => win.removeEventListener("scroll", compute)
   }
 
   return {
@@ -111,11 +126,12 @@ export function getPlacementData(reference: HTMLElement, floating: HTMLElement, 
       const cleanups = [addResizeListeners(), addScrollListeners()]
       return () => cleanups.forEach((cleanup) => cleanup?.())
     },
-    compute: update,
-    floatingStyle: {
-      position: "absolute",
-      minWidth: "max-content",
-      inset: "0 auto auto 0",
-    },
+    compute: compute,
   }
 }
+
+export const DEFAULT_FLOATING_STYLE = {
+  position: "absolute",
+  minWidth: "max-content",
+  inset: "0 auto auto 0",
+} as const
