@@ -1,4 +1,14 @@
-import { arrow, computePosition, flip, Middleware, offset, Placement, shift, size } from "@floating-ui/dom"
+import {
+  arrow,
+  computePosition,
+  flip,
+  getScrollParents,
+  Middleware,
+  offset,
+  Placement,
+  shift,
+  size,
+} from "@floating-ui/dom"
 import { noop } from "@ui-machines/utils"
 import { observeElementRect } from "./rect-observer"
 
@@ -78,14 +88,22 @@ export function getPlacementData(
   middleware.push(shift())
 
   if (opts.arrow?.element) {
-    middleware.push(arrow({ element: opts.arrow.element, padding: opts.arrow.padding ?? 8 }))
+    middleware.push(
+      arrow({
+        element: opts.arrow.element,
+        padding: opts.arrow.padding ?? 8,
+      }),
+    )
   }
 
   if (opts.matchWidth) {
     middleware.push(
       size({
         apply({ reference }) {
-          Object.assign(floating.style, { width: reference.width })
+          Object.assign(floating.style, {
+            width: reference.width + "px",
+            minWidth: "unset",
+          })
         },
       }),
     )
@@ -96,8 +114,16 @@ export function getPlacementData(
     computePosition(reference, floating, {
       placement: opts.placement,
       middleware,
-    }).then(({ x, y }) => {
+    }).then(({ x, y, middlewareData }) => {
       Object.assign(floating.style, { left: `${x}px`, top: `${y}px` })
+
+      const arrowData = middlewareData.arrow
+      if (opts.arrow?.element) {
+        Object.assign(opts.arrow.element.style, {
+          left: arrowData?.x != null ? `${arrowData.x}px` : "",
+          top: arrowData?.y != null ? `${arrowData.y}px` : "",
+        })
+      }
     })
   }
 
@@ -116,9 +142,16 @@ export function getPlacementData(
 
   function addScrollListeners() {
     const enabled = typeof opts.eventListeners === "boolean" ? opts.eventListeners : opts.eventListeners?.scroll
-    if (!enabled) return
-    win.addEventListener("scroll", compute)
-    return () => win.removeEventListener("scroll", compute)
+    if (!enabled || reference == null) return
+    const fns = getScrollParents(reference).map((el) => {
+      el.addEventListener("scroll", compute)
+      return () => {
+        el.removeEventListener("scroll", compute)
+      }
+    })
+    return () => {
+      fns.forEach((fn) => fn())
+    }
   }
 
   return {

@@ -9,7 +9,9 @@ export default function App() {
 
   useSafeEffect(() => {
     if (!referenceRef.current || !floatingRef.current) return
-    const utils = getPlacementData(referenceRef.current, floatingRef.current, { placement: "right-start" })
+    const utils = getPlacementData(referenceRef.current, floatingRef.current, {
+      placement: "right-start",
+    })
     utils.compute()
     return utils.addListeners()
   }, [])
