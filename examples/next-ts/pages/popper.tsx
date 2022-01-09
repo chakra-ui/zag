@@ -1,4 +1,4 @@
-import { DEFAULT_FLOATING_STYLE, getPlacementData } from "@ui-machines/dom-utils"
+import { DEFAULT_FLOATING_STYLE, getPlacement } from "@ui-machines/dom-utils"
 import React, { useEffect, useLayoutEffect } from "react"
 
 const useSafeEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
@@ -9,7 +9,7 @@ export default function App() {
 
   useSafeEffect(() => {
     if (!referenceRef.current || !floatingRef.current) return
-    const utils = getPlacementData(referenceRef.current, floatingRef.current, {
+    const utils = getPlacement(referenceRef.current, floatingRef.current, {
       placement: "right-start",
     })
     utils.compute()

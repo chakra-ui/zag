@@ -1,5 +1,13 @@
 import { createMachine, ref, subscribe } from "@ui-machines/core"
-import { addDomEvent, addPointerEvent, addPointerlockChangeListener, isHTMLElement } from "@ui-machines/dom-utils"
+import {
+  addDomEvent,
+  addPointerEvent,
+  addPointerlockChangeListener,
+  getPlacement,
+  isHTMLElement,
+  raf,
+  getScrollingParents,
+} from "@ui-machines/dom-utils"
 import { isSafari, noop } from "@ui-machines/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -9,6 +17,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "tooltip",
     initial: "unknown",
+
     context: {
       id: "",
       openDelay: 1000,
@@ -46,7 +55,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       opening: {
-        activities: ["trackWindowScroll", "trackPointerlockChange"],
+        activities: ["trackScroll", "trackPointerlockChange"],
         after: {
           OPEN_DELAY: "open",
         },
@@ -62,8 +71,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
-        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackWindowScroll", "trackPointerlockChange"],
-        entry: ["setGlobalId", "invokeOnOpen"],
+        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackScroll", "trackPointerlockChange"],
+        entry: ["setGlobalId", "invokeOnOpen", "setPlacement"],
         on: {
           POINTER_LEAVE: [
             {
@@ -111,16 +120,14 @@ export const machine = createMachine<MachineContext, MachineState>(
           send("POINTER_LOCK_CHANGE")
         })
       },
-      trackWindowScroll(ctx, _evt, { send }) {
-        const win = dom.getWin(ctx)
-        return addDomEvent(
-          win,
-          "scroll",
-          function onScroll() {
-            send("SCROLL")
-          },
-          { passive: true, capture: true },
-        )
+      trackScroll(ctx, _evt, { send }) {
+        const cleanups = getScrollingParents(dom.getTriggerEl(ctx)!).map((el) => {
+          const opts = { passive: true, capture: true } as const
+          return addDomEvent(el, "scroll", () => send("SCROLL"), opts)
+        })
+        return () => {
+          cleanups.forEach((fn) => fn?.())
+        }
       },
       trackStore(ctx, _evt, { send }) {
         return subscribe(store, () => {
@@ -171,6 +178,14 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!omit.includes(evt.type)) {
           ctx.onClose?.()
         }
+      },
+      setPlacement(ctx) {
+        raf(() => {
+          const utils = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
+            placement: "bottom",
+          })
+          utils.compute()
+        })
       },
     },
     guards: {

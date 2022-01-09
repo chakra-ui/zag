@@ -22,7 +22,7 @@ function TooltipComponent(props: { id?: string }) {
 
 export default function Page() {
   return (
-    <div style={{ display: "flex", gap: "20px" }}>
+    <div style={{ display: "flex", gap: "20px", minHeight: "200vh" }}>
       <TooltipComponent id="tip-1" />
       <TooltipComponent id="tip-2" />
     </div>

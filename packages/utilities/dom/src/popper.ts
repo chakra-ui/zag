@@ -12,6 +12,8 @@ import {
 import { noop } from "@ui-machines/utils"
 import { observeElementRect } from "./rect-observer"
 
+export const getScrollingParents = getScrollParents
+
 const transforms = {
   top: "bottom center",
   "top-start": "bottom left",
@@ -62,11 +64,7 @@ const defaultOpts: PlacementOptions = {
   direction: "ltr",
 }
 
-export function getPlacementData(
-  reference: HTMLElement | null,
-  floating: HTMLElement | null,
-  opts: PlacementOptions = {},
-) {
+export function getPlacement(reference: HTMLElement | null, floating: HTMLElement | null, opts: PlacementOptions = {}) {
   if (reference == null || floating == null) {
     return { addListeners: noop, compute: noop }
   }
@@ -116,9 +114,8 @@ export function getPlacementData(
       middleware,
     }).then(({ x, y, middlewareData }) => {
       Object.assign(floating.style, { left: `${x}px`, top: `${y}px` })
-
-      const arrowData = middlewareData.arrow
       if (opts.arrow?.element) {
+        const arrowData = middlewareData.arrow
         Object.assign(opts.arrow.element.style, {
           left: arrowData?.x != null ? `${arrowData.x}px` : "",
           top: arrowData?.y != null ? `${arrowData.y}px` : "",
@@ -159,7 +156,7 @@ export function getPlacementData(
       const cleanups = [addResizeListeners(), addScrollListeners()]
       return () => cleanups.forEach((cleanup) => cleanup?.())
     },
-    compute: compute,
+    compute,
   }
 }
 
