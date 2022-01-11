@@ -46,7 +46,7 @@ export type MachineContext = Context<{
    * Whether the reference element is rendered to be used as the
    * positioning reference
    */
-  referenceExists: boolean
+  isAnchorRendered: boolean
   /**
    * The options used to position the popover content
    */

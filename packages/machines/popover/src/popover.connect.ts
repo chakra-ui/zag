@@ -34,9 +34,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       style: RECOMMENDED_STYLE.innerArrow,
     }),
 
-    referenceProps: normalize.element<T>({
-      "data-part": "reference",
-      id: dom.getReferenceId(ctx),
+    anchorProps: normalize.element<T>({
+      "data-part": "anchor",
+      id: dom.getAnchorId(ctx),
     }),
 
     triggerProps: normalize.button<T>({

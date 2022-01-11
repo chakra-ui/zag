@@ -21,7 +21,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "popover-machine",
     initial: "unknown",
     context: {
-      referenceExists: false,
+      isAnchorRendered: false,
       uid: "popover",
       closeOnBlur: true,
       closeOnEsc: true,
@@ -118,7 +118,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       positionContent(ctx) {
         let cleanup = () => {}
         raf(() => {
-          const ref = ctx.referenceExists ? dom.getReferenceEl(ctx) : dom.getTriggerEl(ctx)
+          const ref = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
           const arrow = dom.getArrowEl(ctx)
           const utils = getPlacement(ref, dom.getContentEl(ctx), {
             ...ctx.placementOptions,
@@ -193,10 +193,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
     },
     actions: {
-      checkIfReferenceExists(ctx) {
+      checkIfAnchorIsRendered(ctx) {
         raf(() => {
-          const el = dom.getReferenceEl(ctx)
-          ctx.referenceExists = !!el
+          const el = dom.getAnchorEl(ctx)
+          ctx.isAnchorRendered = !!el
         })
       },
       setupDocument(ctx, evt) {
