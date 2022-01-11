@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
+import { EventKeyMap, isFocusable, isTabbable, RECOMMENDED_STYLE, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
 import { MachineContext, MachineState } from "./popover.types"
@@ -26,6 +26,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(ctx),
       "data-part": "arrow",
+      style: RECOMMENDED_STYLE.arrow,
     }),
 
     referenceProps: normalize.element<T>({
@@ -52,6 +53,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       hidden: !isOpen,
       "aria-labelledby": dom.getHeaderId(ctx),
       "aria-describedby": dom.getBodyId(ctx),
+      style: RECOMMENDED_STYLE.floating,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           Escape(event) {
