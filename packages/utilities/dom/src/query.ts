@@ -11,6 +11,10 @@ export function getDocumentElement(el: HTMLElement | Window): HTMLElement {
   return getOwnerDocument(el).documentElement
 }
 
+export function getNodeName(node: HTMLElement | Window): string {
+  return isWindow(node) ? "" : node ? node.localName || "" : ""
+}
+
 export function getEventWindow(event: UIEvent) {
   if (event.view) return event.view
   let target = event.currentTarget
@@ -20,7 +24,7 @@ export function getEventWindow(event: UIEvent) {
 
 export function getParent(el: HTMLElement): HTMLElement {
   const doc = getOwnerDocument(el)
-  if (el.localName === "html") return el
+  if (getNodeName(el) === "html") return el
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
