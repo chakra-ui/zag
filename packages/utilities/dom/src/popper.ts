@@ -10,35 +10,10 @@ import {
   size,
 } from "@floating-ui/dom"
 import { noop } from "@ui-machines/utils"
+import { cssVars, positionArrow, transformOrigin } from "./popper.middleware"
 import { observeElementRect } from "./rect-observer"
 
-const transforms = {
-  top: "bottom center",
-  "top-start": "bottom left",
-  "top-end": "bottom right",
-  bottom: "top center",
-  "bottom-start": "top left",
-  "bottom-end": "top right",
-  left: "right center",
-  "left-start": "right top",
-  "left-end": "right bottom",
-  right: "left center",
-  "right-start": "left top",
-  "right-end": "left bottom",
-}
-
-const transformOrigin: Middleware = {
-  name: "transformOrigin",
-  fn({ placement, elements }) {
-    const { floating } = elements
-    floating.style.setProperty("--transform-origin", transforms[placement])
-    return {
-      data: { origin: transforms[placement] },
-    }
-  },
-}
-
-type PlacementOptions = {
+export type PlacementOptions = {
   arrow?: { padding?: number; element?: HTMLElement }
   strategy?: "absolute" | "fixed"
   placement?: Placement
@@ -89,6 +64,7 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
         element: opts.arrow.element,
         padding: opts.arrow.padding ?? 8,
       }),
+      positionArrow({ element: opts.arrow?.element }),
     )
   }
 
@@ -110,15 +86,9 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
     computePosition(reference, floating, {
       placement: opts.placement,
       middleware,
-    }).then(({ x, y, middlewareData }) => {
+      strategy: opts.strategy,
+    }).then(({ x, y }) => {
       Object.assign(floating.style, { left: `${x}px`, top: `${y}px` })
-      if (opts.arrow?.element) {
-        const arrowData = middlewareData.arrow
-        Object.assign(opts.arrow.element.style, {
-          left: arrowData?.x != null ? `${arrowData.x}px` : "",
-          top: arrowData?.y != null ? `${arrowData.y}px` : "",
-        })
-      }
     })
   }
 
@@ -158,8 +128,39 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   }
 }
 
-export const DEFAULT_FLOATING_STYLE = {
-  position: "absolute",
-  minWidth: "max-content",
-  inset: "0 auto auto 0",
-} as const
+type ArrowStyleOptions = {
+  size?: number
+  background?: string
+  shadowColor?: string
+}
+
+export const RECOMMENDED_STYLE = {
+  getArrow(opts: ArrowStyleOptions = {}) {
+    const { size = 8, background, shadowColor } = opts
+    return {
+      position: "absolute",
+      [cssVars.arrowSize.variable]: `${size}px`,
+      width: cssVars.arrowSize.reference,
+      height: cssVars.arrowSize.reference,
+      [cssVars.arrowSizeHalf.variable]: `calc(${cssVars.arrowSize.reference} / 2)`,
+      [cssVars.arrowOffset.variable]: `calc(${cssVars.arrowSizeHalf.reference} * -1)`,
+      [cssVars.arrowBg.variable]: background,
+      [cssVars.arrowShadowColor.variable]: shadowColor,
+    } as const
+  },
+  innerArrow: {
+    transform: "rotate(45deg)",
+    background: cssVars.arrowBg.reference,
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    zIndex: "inherit",
+  } as const,
+  floating: {
+    position: "absolute",
+    minWidth: "max-content",
+    inset: "0 auto auto 0",
+  } as const,
+}
