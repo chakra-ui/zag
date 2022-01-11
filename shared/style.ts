@@ -95,6 +95,9 @@ export const popoverStyle: CSSObject = {
     right: "0px",
     top: "-20px",
   },
+  ".popover__arrow": {
+    background: "red",
+  },
 }
 
 export const rangeSliderStyle: CSSObject = {
