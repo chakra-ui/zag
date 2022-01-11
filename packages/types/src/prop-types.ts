@@ -32,6 +32,7 @@ type DataAttr = {
   "data-orientation"?: "horizontal" | "vertical"
   "data-label"?: string
   "data-checked"?: Booleanish
+  "data-pressed"?: Booleanish
   "data-state"?: string | null
   "data-half"?: Booleanish
   "data-count"?: number
