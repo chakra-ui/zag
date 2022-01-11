@@ -7,7 +7,7 @@ import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
-import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction } from "./types"
+import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
 import { toArray, toEvent } from "./utils"
 
 export class Machine<
@@ -313,13 +313,13 @@ export class Machine<
   /**
    * To used within side effects for React or Vue to update context
    */
-  setContext = (context: Partial<TContext>) => {
+  setContext = (context: Partial<Writable<TContext>>) => {
     for (const key in context) {
-      this.state.context[key] = context[key]!
+      this.state.context[<keyof TContext>key] = context[key]!
     }
   }
 
-  withContext = (context: Partial<TContext>) => {
+  withContext = (context: Partial<Writable<TContext>>) => {
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }

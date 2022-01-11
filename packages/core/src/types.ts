@@ -10,7 +10,7 @@ type WritableKey<T> = {
   [P in keyof T]: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P, never>
 }[keyof T]
 
-type Writable<T> = Pick<T, WritableKey<T>>
+export type Writable<T> = Pick<T, WritableKey<T>>
 
 type Computed<T> = Omit<T, WritableKey<T>>
 
@@ -313,7 +313,7 @@ export declare namespace StateMachine {
   export type HookOptions<TContext, TState extends StateSchema, TEvent extends EventObject> = {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
-    context?: Partial<TContext>
+    context?: Partial<Writable<TContext>>
     preserve?: boolean
   }
 
