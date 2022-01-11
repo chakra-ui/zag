@@ -12,8 +12,6 @@ import {
 import { noop } from "@ui-machines/utils"
 import { observeElementRect } from "./rect-observer"
 
-export const getScrollingParents = getScrollParents
-
 const transforms = {
   top: "bottom center",
   "top-start": "bottom left",
