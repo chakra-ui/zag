@@ -11,18 +11,14 @@ export const {{machine}}Machine = createMachine<
     initial: "unknown",
     context: {
     },
-    on: {
-      SETUP: {
-        actions:"setupDocument",
-      },
-    },
     states: {
       unknown: {
         on: {
           SETUP: {
-            actions: "setupDocument",
+            actions: ["setupDocument"],
           },
       }
+     },
     },
   },
   {
@@ -32,7 +28,7 @@ export const {{machine}}Machine = createMachine<
     actions: {
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
-        ctx.doc = ref(evt.doc)
+        ctx.doc = preserve(evt.doc)
       },
     },
   },
