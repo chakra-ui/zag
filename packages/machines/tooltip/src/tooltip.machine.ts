@@ -4,9 +4,9 @@ import {
   addPointerEvent,
   addPointerlockChangeListener,
   getPlacement,
+  getScrollParents,
   isHTMLElement,
   raf,
-  getScrollingParents,
 } from "@ui-machines/dom-utils"
 import { isSafari, noop } from "@ui-machines/utils"
 import { dom } from "./tooltip.dom"
@@ -121,7 +121,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
       trackScroll(ctx, _evt, { send }) {
-        const cleanups = getScrollingParents(dom.getTriggerEl(ctx)!).map((el) => {
+        const cleanups = getScrollParents(dom.getTriggerEl(ctx)!).map((el) => {
           const opts = { passive: true, capture: true } as const
           return addDomEvent(el, "scroll", () => send("SCROLL"), opts)
         })
