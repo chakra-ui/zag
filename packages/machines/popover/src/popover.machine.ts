@@ -27,18 +27,21 @@ export const machine = createMachine<MachineContext, MachineState>(
       closeOnEsc: true,
       autoFocus: true,
       modal: false,
+      placementOptions: { placement: "bottom" },
     },
 
     computed: {
       __portalled: (ctx) => !!ctx.modal || !!ctx.portalled,
     },
 
+    entry: ["checkIfReferenceExists"],
+
     states: {
       unknown: {
         on: {
           SETUP: {
             target: "closed",
-            actions: ["setupDocument", "checkIfReferenceExists"],
+            actions: ["setupDocument"],
           },
         },
       },
@@ -116,8 +119,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         let cleanup = () => {}
         raf(() => {
           const ref = ctx.referenceExists ? dom.getReferenceEl(ctx) : dom.getTriggerEl(ctx)
+          const arrow = dom.getArrowEl(ctx)
           const utils = getPlacement(ref, dom.getContentEl(ctx), {
-            placement: "bottom",
+            ...ctx.placementOptions,
+            arrow: arrow ? { element: arrow } : undefined,
           })
           utils.compute()
           cleanup = utils.addListeners()
