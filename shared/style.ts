@@ -95,8 +95,10 @@ export const popoverStyle: CSSObject = {
     right: "0px",
     top: "-20px",
   },
-  ".popover__arrow": {
-    background: "red",
+  ".popover__arrow [data-part=arrow--inner]": {
+    "--arrow-background": "white",
+    "--arrow-shadow-color": "#ebebeb",
+    boxShadow: "var(--box-shadow)",
   },
 }
 

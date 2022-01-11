@@ -26,7 +26,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(ctx),
       "data-part": "arrow",
-      style: RECOMMENDED_STYLE.arrow,
+      style: RECOMMENDED_STYLE.getArrow(),
+    }),
+
+    innerArrowProps: normalize.element<T>({
+      "data-part": "arrow--inner",
+      style: RECOMMENDED_STYLE.innerArrow,
     }),
 
     referenceProps: normalize.element<T>({

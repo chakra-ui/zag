@@ -22,10 +22,8 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, arrowProps } = Popover.connect(
-    state,
-    send,
-  )
+  const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, arrowProps, innerArrowProps } =
+    Popover.connect(state, send)
 
   const Wrapper = portalled ? Portal : React.Fragment
 
@@ -40,7 +38,9 @@ export default function Page() {
         </button>
         <Wrapper>
           <div className="popover__content" data-testid="popover-content" {...contentProps}>
-            <div className="popover__arrow" {...arrowProps} />
+            <div className="popover__arrow" {...arrowProps}>
+              <div {...innerArrowProps} />
+            </div>
             <div className="popover__title" data-testid="popover-title" {...headerProps}>
               Popover Title
             </div>
