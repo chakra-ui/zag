@@ -16,11 +16,13 @@ export default function Page() {
     closeOnEsc: { type: "boolean", defaultValue: true },
   })
 
-  const [state, send] = useMachine(Popover.machine, { context: controls.context })
+  const [state, send] = useMachine(Popover.machine, {
+    context: controls.context,
+  })
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, referenceProps } = Popover.connect(
+  const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, arrowProps } = Popover.connect(
     state,
     send,
   )
@@ -29,7 +31,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={popoverStyle as any} />
+      <Global styles={popoverStyle} />
       <div className="popover" ref={ref}>
         <button data-testid="button-before">Button :before</button>
 
@@ -38,6 +40,7 @@ export default function Page() {
         </button>
         <Wrapper>
           <div className="popover__content" data-testid="popover-content" {...contentProps}>
+            <div className="popover__arrow" {...arrowProps} />
             <div className="popover__title" data-testid="popover-title" {...headerProps}>
               Popover Title
             </div>
@@ -56,7 +59,6 @@ export default function Page() {
 
         <span data-testid="plain-text">I am just text</span>
         <button data-testid="button-after">Button :after</button>
-        <button {...referenceProps}>Reference</button>
       </div>
 
       <controls.ui />
