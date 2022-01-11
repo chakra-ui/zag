@@ -23,6 +23,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       send("CLOSE")
     },
 
+    arrowProps: normalize.element<T>({
+      id: dom.getArrowId(ctx),
+      "data-part": "arrow",
+    }),
+
+    referenceProps: normalize.element<T>({
+      "data-part": "reference",
+      id: dom.getReferenceId(ctx),
+    }),
+
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
       id: dom.getTriggerId(ctx),

@@ -41,6 +41,11 @@ export type MachineContext = Context<{
    * Function invoked when the popover is closed.
    */
   onClose?: () => void
+  /**
+   * Whether the reference element is rendered to be used as the
+   * positioning reference
+   */
+  referenceExists: boolean
 }>
 
 export type MachineState = {

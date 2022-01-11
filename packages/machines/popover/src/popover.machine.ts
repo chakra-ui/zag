@@ -1,9 +1,11 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import {
   contains,
+  getPlacement,
   nextTick,
   preventBodyPointerEvents,
   preventBodyScroll,
+  raf,
   trackPointerDown,
 } from "@ui-machines/dom-utils"
 import { next } from "@ui-machines/utils"
@@ -19,6 +21,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "popover-machine",
     initial: "unknown",
     context: {
+      referenceExists: false,
       uid: "popover",
       closeOnBlur: true,
       closeOnEsc: true,
@@ -35,7 +38,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "closed",
-            actions: "setupDocument",
+            actions: ["setupDocument", "checkIfReferenceExists"],
           },
         },
       },
@@ -55,6 +58,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           "preventScroll",
           "hideContentBelow",
           "disableOutsidePointerEvents",
+          "positionContent",
         ],
         entry: choose([
           {
@@ -108,6 +112,18 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     activities: {
+      positionContent(ctx) {
+        let cleanup = () => {}
+        raf(() => {
+          const ref = ctx.referenceExists ? dom.getReferenceEl(ctx) : dom.getTriggerEl(ctx)
+          const utils = getPlacement(ref, dom.getContentEl(ctx), {
+            placement: "bottom",
+          })
+          utils.compute()
+          cleanup = utils.addListeners()
+        })
+        return cleanup
+      },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
           ctx.pointerdownNode = ref(el)
@@ -172,6 +188,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
     },
     actions: {
+      checkIfReferenceExists(ctx) {
+        raf(() => {
+          const el = dom.getReferenceEl(ctx)
+          ctx.referenceExists = !!el
+        })
+      },
       setupDocument(ctx, evt) {
         ctx.doc = ref(evt.doc)
         ctx.uid = evt.id

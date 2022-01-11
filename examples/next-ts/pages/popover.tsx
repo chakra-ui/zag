@@ -20,10 +20,12 @@ export default function Page() {
 
   const ref = useMount<HTMLDivElement>(send)
 
-  const { triggerProps, contentProps, closeButtonProps, headerProps } = Popover.connect(state, send)
-  const __portalled = controls.context.modal || controls.context.portalled
+  const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, referenceProps } = Popover.connect(
+    state,
+    send,
+  )
 
-  const Wrapper = __portalled ? Portal : React.Fragment
+  const Wrapper = portalled ? Portal : React.Fragment
 
   return (
     <>
@@ -54,6 +56,7 @@ export default function Page() {
 
         <span data-testid="plain-text">I am just text</span>
         <button data-testid="button-after">Button :after</button>
+        <button {...referenceProps}>Reference</button>
       </div>
 
       <controls.ui />
