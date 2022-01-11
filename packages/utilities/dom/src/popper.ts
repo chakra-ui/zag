@@ -66,7 +66,7 @@ const defaultOpts: PlacementOptions = {
 
 export function getPlacement(reference: HTMLElement | null, floating: HTMLElement | null, opts: PlacementOptions = {}) {
   if (reference == null || floating == null) {
-    return { addListeners: noop, compute: noop }
+    return { addListeners: () => noop, compute: () => noop }
   }
 
   opts = Object.assign({}, defaultOpts, opts)
@@ -83,7 +83,7 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
     middleware.push(offset(data))
   }
 
-  middleware.push(shift())
+  middleware.push(shift({ boundary: opts.boundary }))
 
   if (opts.arrow?.element) {
     middleware.push(
@@ -154,7 +154,7 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   return {
     addListeners() {
       const cleanups = [addResizeListeners(), addScrollListeners()]
-      return () => cleanups.forEach((cleanup) => cleanup?.())
+      return () => cleanups.forEach((fn) => fn?.())
     },
     compute,
   }

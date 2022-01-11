@@ -1,4 +1,4 @@
-export const nextTick = (fn: VoidFunction) => {
+export function nextTick(fn: VoidFunction) {
   const set = new Set<VoidFunction>()
   function raf(fn: VoidFunction) {
     const id = globalThis.requestAnimationFrame(fn)
@@ -12,9 +12,13 @@ export const nextTick = (fn: VoidFunction) => {
   }
 }
 
-export const raf = (fn: VoidFunction) => {
+export function raf(fn: VoidFunction) {
   const id = globalThis.requestAnimationFrame(fn)
   return function cleanup() {
     globalThis.cancelAnimationFrame(id)
   }
+}
+
+export function forceReflow() {
+  return document.body.offsetHeight
 }

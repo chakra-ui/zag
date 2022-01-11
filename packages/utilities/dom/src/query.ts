@@ -1,4 +1,5 @@
-export function getOwnerDocument(el: HTMLElement) {
+export function getOwnerDocument(el: HTMLElement | Window) {
+  if (isWindow(el)) return el.document
   return el?.ownerDocument ?? document
 }
 
@@ -6,8 +7,15 @@ export function getOwnerWindow(el: HTMLElement) {
   return el?.ownerDocument.defaultView ?? window
 }
 
+export function getDocumentElement(el: HTMLElement | Window): HTMLElement {
+  return getOwnerDocument(el).documentElement
+}
+
 export function getEventWindow(event: UIEvent) {
-  return (event.view ?? window) as typeof window
+  if (event.view) return event.view
+  let target = event.currentTarget
+  if (target != null) return getOwnerWindow(target as HTMLElement)
+  return window
 }
 
 export function getParent(el: HTMLElement): HTMLElement {
@@ -25,6 +33,10 @@ export function contains(parent: Node | undefined, child: Node) {
 
 export function isHTMLElement(v: any): v is HTMLElement {
   return typeof v === "object" && v?.nodeType === Node.ELEMENT_NODE && typeof v?.nodeName === "string"
+}
+
+export function isWindow(value: any): value is Window {
+  return value?.toString() === "[object Window]"
 }
 
 export const isDisabled = (el: HTMLElement | null): boolean => {
