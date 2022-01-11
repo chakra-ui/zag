@@ -1,3 +1,4 @@
+import { PlacementOptions } from "@ui-machines/dom-utils"
 import type { Context } from "@ui-machines/types"
 
 export type MachineContext = Context<{
@@ -46,6 +47,10 @@ export type MachineContext = Context<{
    * positioning reference
    */
   referenceExists: boolean
+  /**
+   * The options used to position the popover content
+   */
+  placementOptions: PlacementOptions
 }>
 
 export type MachineState = {
