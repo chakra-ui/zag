@@ -22,7 +22,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       loop: false,
       suspendPointer: false,
       contextMenuPoint: null,
-      placementOptions: { placement: "bottom" },
+      placementOptions: { placement: "bottom", gutter: 8 },
     },
 
     computed: {
@@ -36,6 +36,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isSubmenu(ctx) {
         if (ctx.isSubmenu) {
           ctx.placementOptions.placement = ctx.isRtl ? "left-start" : "right-start"
+          ctx.placementOptions.gutter = 0
         }
       },
     },
