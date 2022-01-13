@@ -48,7 +48,7 @@ export function snapToStep(value: number | string, step: number) {
 export function valueOf(v: string | number) {
   if (typeof v === "number") return v
   const num = parseFloat(v.toString().replace(/[^\w.-]+/g, ""))
-  return !isNaN(num) ? num : 0
+  return !Number.isNaN(num) ? num : 0
 }
 
 type PrecisionOptions = {
@@ -60,7 +60,7 @@ type PrecisionOptions = {
 export function getMaxPrecision(o: PrecisionOptions) {
   const stepPrecision = countDecimals(o.step)
   const val = valueOf(o.value)
-  const valuePrecision = isNaN(val) ? stepPrecision : Math.max(countDecimals(val), stepPrecision)
+  const valuePrecision = Number.isNaN(val) ? stepPrecision : Math.max(countDecimals(val), stepPrecision)
   return Math.max(valuePrecision, o.precision ?? 0)
 }
 
