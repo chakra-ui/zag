@@ -5,7 +5,7 @@ export function choose<TContext, TState extends S.StateSchema, TEvent extends S.
   actions: Array<{ guard?: S.Guard<TContext, TEvent>; actions: S.PureActions<TContext, TState, TEvent> }>,
 ): S.ChooseHelper<TContext, TState, TEvent> {
   return {
-    exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) =>
+    predicate: (guardMap: Dict) => (ctx: TContext, event: TEvent) =>
       actions.find((def) => {
         def.guard = def.guard || (() => true)
         if (isString(def.guard)) {
@@ -13,7 +13,7 @@ export function choose<TContext, TState extends S.StateSchema, TEvent extends S.
         }
 
         if (isGuardHelper(def.guard)) {
-          return def.guard.exec(guardMap ?? {})(ctx, event)
+          return def.guard.predicate(guardMap ?? {})(ctx, event)
         }
 
         return def.guard(ctx, event)
@@ -21,8 +21,8 @@ export function choose<TContext, TState extends S.StateSchema, TEvent extends S.
   }
 }
 
-function isGuardHelper(value: any): value is { exec: Function } {
-  return isObject(value) && value.exec != null
+function isGuardHelper(value: any): value is { predicate: Function } {
+  return isObject(value) && value.predicate != null
 }
 
 export function determineActionsFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
@@ -30,7 +30,7 @@ export function determineActionsFn<TContext, TState extends S.StateSchema, TEven
   guardMap: S.GuardMap<TContext, TEvent> | undefined,
 ) {
   return (context: TContext, event: TEvent) => {
-    if (isGuardHelper(values)) return values.exec(guardMap ?? {})(context, event)
+    if (isGuardHelper(values)) return values.predicate(guardMap ?? {})(context, event)
     return values
   }
 }

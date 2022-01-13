@@ -174,11 +174,11 @@ export declare namespace StateMachine {
   export type GuardExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
 
   export type GuardHelper<TContext extends Dict, TEvent extends EventObject> = {
-    exec: (guards: Dict) => GuardExpression<TContext, TEvent>
+    predicate: (guards: Dict) => GuardExpression<TContext, TEvent>
   }
 
   export type ChooseHelper<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    exec: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TState, TEvent> | undefined>
+    predicate: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TState, TEvent> | undefined>
   }
 
   export type Guard<TContext extends Dict, TEvent extends EventObject> =

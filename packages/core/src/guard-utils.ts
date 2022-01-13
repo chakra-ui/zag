@@ -5,7 +5,7 @@ function or<TContext, TEvent extends S.EventObject>(
   ...conditions: Array<string | S.GuardHelper<TContext, TEvent> | S.GuardExpression<TContext, TEvent>>
 ): S.GuardHelper<TContext, TEvent> {
   return {
-    exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
+    predicate: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
           if (isString(condition)) {
@@ -14,7 +14,7 @@ function or<TContext, TEvent extends S.EventObject>(
           if (isFunction(condition)) {
             return condition(ctx, event)
           }
-          return condition.exec(guards)(ctx, event)
+          return condition.predicate(guards)(ctx, event)
         })
         .some(Boolean),
   }
@@ -24,7 +24,7 @@ function and<TContext, TEvent extends S.EventObject>(
   ...conditions: Array<string | S.GuardHelper<TContext, TEvent> | S.GuardExpression<TContext, TEvent>>
 ): S.GuardHelper<TContext, TEvent> {
   return {
-    exec: (guards: Dict) => (ctx: TContext, event: TEvent) =>
+    predicate: (guards: Dict) => (ctx: TContext, event: TEvent) =>
       conditions
         .map((condition) => {
           if (isString(condition)) {
@@ -33,7 +33,7 @@ function and<TContext, TEvent extends S.EventObject>(
           if (isFunction(condition)) {
             return condition(ctx, event)
           }
-          return condition.exec(guards)(ctx, event)
+          return condition.predicate(guards)(ctx, event)
         })
         .every(Boolean),
   }
@@ -43,22 +43,22 @@ function not<TContext, TEvent extends S.EventObject>(
   condition: string | S.GuardHelper<TContext, TEvent> | S.GuardExpression<TContext, TEvent>,
 ): S.GuardHelper<TContext, TEvent> {
   return {
-    exec: (guardMap: Dict) => (ctx: TContext, event: TEvent) => {
+    predicate: (guardMap: Dict) => (ctx: TContext, event: TEvent) => {
       if (isString(condition)) {
         return !guardMap[condition]?.(ctx, event)
       }
       if (isFunction(condition)) {
         return !condition(ctx, event)
       }
-      return !condition.exec(guardMap)(ctx, event)
+      return !condition.predicate(guardMap)(ctx, event)
     },
   }
 }
 
 export const guards = { or, and, not }
 
-export function isGuardHelper(value: unknown): value is { exec: Function } {
-  return isObject(value) && value.exec != null
+export function isGuardHelper(value: unknown): value is { predicate: Function } {
+  return isObject(value) && value.predicate != null
 }
 
 export const TruthyGuard = () => true
@@ -80,7 +80,7 @@ export function determineGuardFn<TContext, TEvent extends S.EventObject>(
     }
 
     if (isGuardHelper(guard)) {
-      return guard.exec(guardMap ?? {})(context, event)
+      return guard.predicate(guardMap ?? {})(context, event)
     }
 
     return guard?.(context, event)
