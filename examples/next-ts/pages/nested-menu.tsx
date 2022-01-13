@@ -3,7 +3,7 @@ import { mergeProps } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
 import * as Menu from "@ui-machines/menu"
 import { useMachine } from "@ui-machines/react"
-// import { StateVisualizer } from "components/state-visualizer"
+import { StateVisualizer } from "components/state-visualizer"
 import { useMount } from "hooks/use-mount"
 import { useEffect } from "react"
 import { menuStyle } from "../../../shared/style"
@@ -107,9 +107,9 @@ export default function Page() {
         </li>
       </ul>
 
-      {/* <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
+      <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
       <StateVisualizer state={subState} label="Sub Machine" style={{ maxWidth: 320, right: 420 }} />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} /> */}
+      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, right: 800 }} />
     </>
   )
 }

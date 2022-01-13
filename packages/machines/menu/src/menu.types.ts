@@ -1,5 +1,6 @@
-import { Machine, StateMachine as S } from "@ui-machines/core"
-import { Point } from "@ui-machines/rect-utils"
+import type { Machine, StateMachine as S } from "@ui-machines/core"
+import type { PlacementOptions } from "@ui-machines/dom-utils"
+import type { Point } from "@ui-machines/rect-utils"
 import type { Context } from "@ui-machines/types"
 
 export type Service = Machine<MachineContext, MachineState>
@@ -51,10 +52,30 @@ export type MachineContext = Context<{
    * For context menu, the point where the context menu is opened.
    */
   contextMenuPoint: Point | null
+  /**
+   * @computed Whether the menu is a submenu (has a parent menu)
+   */
   readonly isSubmenu: boolean
+  /**
+   * @computed Whether the writing direction is rtl
+   */
   readonly isRtl: boolean
+  /**
+   * @computed Whether the orientation is horizontal
+   */
   readonly isHorizontal: boolean
+  /**
+   * @computed Whether the orientation is vertical
+   */
   readonly isVertical: boolean
+  /**
+   * The options used to dynamically position the menu
+   */
+  placementOptions: PlacementOptions
+  /**
+   * Whether to disable dynamic placement
+   */
+  disablePlacement?: boolean
 }>
 
 export type State = S.State<MachineContext, MachineState>
