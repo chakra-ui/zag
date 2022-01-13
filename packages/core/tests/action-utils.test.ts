@@ -30,7 +30,7 @@ it("resolve choose action - false", () => {
       actions: ["test"],
     },
   ])
-  const getResult = actions.exec(guardMap)
+  const getResult = actions.predicate(guardMap)
   expect(getResult(context, event)).toMatchObject(["test"])
 })
 
@@ -44,6 +44,6 @@ it("resolve choose action - true", () => {
       actions: ["test"],
     },
   ])
-  const getResult = actions.exec(guardMap)
+  const getResult = actions.predicate(guardMap)
   expect(getResult(context, event)).toMatchObject(["log"])
 })
