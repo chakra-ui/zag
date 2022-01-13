@@ -80,11 +80,3 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 
 Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
 what to work on.
-
-## Components ideas
-
-- https://component.kitchen/elix
-- https://vaadin.com/docs/latest/ds/components/accordion
-- https://develop.kde.org/hig/components/
-- https://ui.toast.com/
-- https://github.com/microsoft/vscode/tree/10ee2d658517dae516ee9ac4af31dd5f883fe778/src/vs/base/browser/ui

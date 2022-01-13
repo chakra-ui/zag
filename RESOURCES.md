@@ -29,3 +29,11 @@
 - https://github.com/milahu/svelte-layout-resizable/issues/1
 - https://angular-split.github.io
 - https://split.js.org
+
+## Components ideas
+
+- https://component.kitchen/elix
+- https://vaadin.com/docs/latest/ds/components/accordion
+- https://develop.kde.org/hig/components/
+- https://ui.toast.com/
+- https://github.com/microsoft/vscode/tree/10ee2d658517dae516ee9ac4af31dd5f883fe778/src/vs/base/browser/ui
