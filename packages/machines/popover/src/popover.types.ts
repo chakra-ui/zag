@@ -1,4 +1,4 @@
-import { PlacementOptions } from "@ui-machines/dom-utils"
+import type { PlacementOptions } from "@ui-machines/dom-utils"
 import type { Context } from "@ui-machines/types"
 
 export type MachineContext = Context<{

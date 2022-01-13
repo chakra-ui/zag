@@ -61,7 +61,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           "preventScroll",
           "hideContentBelow",
           "disableOutsidePointerEvents",
-          "positionContent",
+          "computePlacement",
         ],
         entry: choose([
           {
@@ -115,7 +115,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     activities: {
-      positionContent(ctx) {
+      computePlacement(ctx) {
         let cleanup = () => {}
         raf(() => {
           const ref = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)

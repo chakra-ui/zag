@@ -22,7 +22,6 @@ export type PlacementOptions = {
   flip?: boolean
   matchWidth?: boolean
   boundary?: "clippingParents" | Element | Element[]
-  direction?: "ltr" | "rtl"
   eventListeners?: boolean | { scroll?: boolean; resize?: boolean }
 }
 
@@ -34,7 +33,6 @@ const defaultOpts: PlacementOptions = {
   flip: true,
   boundary: "clippingParents",
   matchWidth: false,
-  direction: "ltr",
 }
 
 export function getPlacement(reference: HTMLElement | null, floating: HTMLElement | null, opts: PlacementOptions = {}) {
@@ -128,27 +126,32 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   }
 }
 
+/* -----------------------------------------------------------------------------
+ * Recommended Style (Floating, Arrow, Inner Arrow)
+ * -----------------------------------------------------------------------------*/
+
 type ArrowStyleOptions = {
   size?: number
   background?: string
   shadowColor?: string
 }
 
-export const RECOMMENDED_STYLE = {
-  getArrow(opts: ArrowStyleOptions = {}) {
-    const { size = 8, background, shadowColor } = opts
-    return {
-      position: "absolute",
-      [cssVars.arrowSize.variable]: `${size}px`,
-      width: cssVars.arrowSize.reference,
-      height: cssVars.arrowSize.reference,
-      [cssVars.arrowSizeHalf.variable]: `calc(${cssVars.arrowSize.reference} / 2)`,
-      [cssVars.arrowOffset.variable]: `calc(${cssVars.arrowSizeHalf.reference} * -1)`,
-      [cssVars.arrowBg.variable]: background,
-      [cssVars.arrowShadowColor.variable]: shadowColor,
-    } as const
-  },
-  innerArrow: {
+function getArrowStyle(opts: ArrowStyleOptions = {}) {
+  const { size = 8, background, shadowColor } = opts
+  return {
+    position: "absolute",
+    [cssVars.arrowSize.variable]: `${size}px`,
+    width: cssVars.arrowSize.reference,
+    height: cssVars.arrowSize.reference,
+    [cssVars.arrowSizeHalf.variable]: `calc(${cssVars.arrowSize.reference} / 2)`,
+    [cssVars.arrowOffset.variable]: `calc(${cssVars.arrowSizeHalf.reference} * -1)`,
+    [cssVars.arrowBg.variable]: background,
+    [cssVars.arrowShadowColor.variable]: shadowColor,
+  } as const
+}
+
+function getInnerArrowStyle() {
+  return {
     transform: "rotate(45deg)",
     background: cssVars.arrowBg.reference,
     top: 0,
@@ -157,10 +160,19 @@ export const RECOMMENDED_STYLE = {
     height: "100%",
     position: "absolute",
     zIndex: "inherit",
-  } as const,
-  floating: {
+  } as const
+}
+
+function getFloatingStyle() {
+  return {
     position: "absolute",
     minWidth: "max-content",
     inset: "0 auto auto 0",
-  } as const,
+  } as const
+}
+
+export const PLACEMENT_STYLE = {
+  arrow: getArrowStyle,
+  innerArrow: getInnerArrowStyle,
+  floating: getFloatingStyle,
 }
