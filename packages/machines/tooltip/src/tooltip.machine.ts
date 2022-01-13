@@ -72,7 +72,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       open: {
         activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackScroll", "trackPointerlockChange"],
-        entry: ["setGlobalId", "invokeOnOpen", "setPlacement"],
+        entry: ["setGlobalId", "invokeOnOpen", "computePlacement"],
         on: {
           POINTER_LEAVE: [
             {
@@ -179,7 +179,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ctx.onClose?.()
         }
       },
-      setPlacement(ctx) {
+      computePlacement(ctx) {
         raf(() => {
           const utils = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
             placement: "bottom",
