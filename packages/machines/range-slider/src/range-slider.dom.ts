@@ -88,7 +88,7 @@ export const dom = {
     const value = ctx.value[ctx.activeIndex]
     const input = dom.getInputEl(ctx, ctx.activeIndex)
     if (!input) return
-    dispatchInputEvent(input, value)
+    dispatchInputEvent(input, { value })
   },
 
   getRootStyle: unstable__dom.getRootStyle,

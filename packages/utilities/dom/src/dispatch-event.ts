@@ -1,7 +1,7 @@
 import { getOwnerWindow } from "./query"
 
 type DispatchEventOptions = {
-  type: "input" | "checked"
+  type?: "input" | "checked"
   key?: string
   value: string | number | boolean
   hidden?: boolean

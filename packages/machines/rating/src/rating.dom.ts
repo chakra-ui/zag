@@ -14,6 +14,6 @@ export const dom = {
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)),
   dispatchChangeEvent: (ctx: Ctx) => {
     const input = dom.getInputEl(ctx)
-    if (input) dispatchInputEvent(input, ctx.value)
+    if (input) dispatchInputEvent(input, { value: ctx.value })
   },
 }

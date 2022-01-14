@@ -133,7 +133,7 @@ export const dom = {
 
   dispatchChangeEvent(ctx: Ctx) {
     const input = dom.getInputEl(ctx)
-    if (input) dispatchInputEvent(input, ctx.value)
+    if (input) dispatchInputEvent(input, { value: ctx.value })
   },
 
   getMarkerStyle(ctx: Ctx, percent: number): Style {
