@@ -19,6 +19,7 @@
 "@ui-machines/tabs": patch
 "@ui-machines/tags-input": patch
 "@ui-machines/toast": patch
+"@ui-machines/toggle": patch
 "@ui-machines/tooltip": patch
 "@ui-machines/types": patch
 "@ui-machines/utils": patch
