@@ -1,19 +1,32 @@
 import { getOwnerWindow } from "./query"
 
-export function dispatchInputEvent(input: HTMLElement, value: string | number) {
-  const win = getOwnerWindow(input)
-  if (!(input instanceof win.HTMLInputElement)) return
+type DispatchEventOptions = {
+  type: "input" | "checked"
+  key?: string
+  value: string | number | boolean
+  hidden?: boolean
+}
 
-  input.type = "text"
-  input.hidden = true
+export function dispatchInputEvent(el: HTMLElement, opts: DispatchEventOptions) {
+  const { key = "value", value, type = "input", hidden = true } = opts
+  const win = getOwnerWindow(el)
+  if (!(el instanceof win.HTMLInputElement)) return
 
-  const set = Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype, "value")?.set
+  if (hidden) {
+    el.type = "text"
+    el.hidden = true
+  }
 
-  set?.call(input, value)
+  const proto = win.HTMLInputElement.prototype
+  const set = Object.getOwnPropertyDescriptor(proto, key)?.set
 
-  const evt = new win.Event("input", { bubbles: true })
-  input.dispatchEvent(evt)
+  set?.call(el, value)
 
-  input.type = "hidden"
-  input.hidden = false
+  const evt = new win.Event(type, { bubbles: true })
+  el.dispatchEvent(evt)
+
+  if (hidden) {
+    el.type = "hidden"
+    el.hidden = false
+  }
 }
