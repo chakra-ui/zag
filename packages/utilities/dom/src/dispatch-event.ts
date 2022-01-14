@@ -1,5 +1,7 @@
+import { getOwnerWindow } from "./query"
+
 export function dispatchInputEvent(input: HTMLElement, value: string | number) {
-  const win = input.ownerDocument.defaultView ?? window
+  const win = getOwnerWindow(input)
   if (!(input instanceof win.HTMLInputElement)) return
 
   input.type = "text"
