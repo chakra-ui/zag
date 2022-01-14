@@ -13,34 +13,41 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout branch
         uses: actions/checkout@v2
         with:
-          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
 
-      - name: Setup Node.js 14.x
-        uses: actions/setup-node@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 16.x
 
-      - uses: actions/cache@v2
-        name: Load Yarn cache
+      - name: Load Yarn cache
+        uses: actions/cache@v2
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ env.NODE_VERSION }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            nodeModules-
+            ${{ runner.os }}-yarn-
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
         env:
           CI: true
 
       - name: Setup CI Git User
         run: |
           git config --global user.email "joseshegs@gmail.com"
-          git config --global user.name "Sage"
+          git config --global user.name "Segun Adebayo"
+
+      - name: Configure npm
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build packages
         run: yarn build
@@ -49,10 +56,21 @@ jobs:
         run: yarn test
 
       - name: Publish packages
-        uses: changesets/action@master
+        id: changesets
+        uses: changesets/action@v1
         with:
           publish: yarn release
-          commit: "chore(release): version packages"
+          commit: "ci(changesets): version packages"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Release to dev tag
+        if: steps.changesets.outputs.published != 'true'
+        run: |
+          git checkout main
+          yarn changeset version --snapshot dev
+          yarn changeset publish --tag dev
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
