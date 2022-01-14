@@ -13,6 +13,10 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
+      - name: Get Yarn cache path
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - name: Checkout branch
         uses: actions/checkout@v2
         with:
