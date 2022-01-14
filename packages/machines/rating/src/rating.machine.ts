@@ -40,8 +40,12 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       focus: {
         on: {
-          POINTER_OVER: { actions: "setHoveredValue" },
-          GROUP_POINTER_LEAVE: { actions: "clearHoveredValue" },
+          POINTER_OVER: {
+            actions: "setHoveredValue",
+          },
+          GROUP_POINTER_LEAVE: {
+            actions: "clearHoveredValue",
+          },
           BLUR: "idle",
           SPACE: {
             guard: "isValueEmpty",
@@ -67,7 +71,9 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       hover: {
         on: {
-          POINTER_OVER: { actions: "setHoveredValue" },
+          POINTER_OVER: {
+            actions: "setHoveredValue",
+          },
           GROUP_POINTER_LEAVE: [
             {
               guard: "isRadioFocused",
