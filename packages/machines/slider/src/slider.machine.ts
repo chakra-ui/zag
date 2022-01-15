@@ -1,7 +1,6 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
-import { getElementRect } from "@ui-machines/rect-utils"
 import { dom } from "./slider.dom"
 import { MachineContext, MachineState } from "./slider.types"
 
@@ -157,9 +156,8 @@ export const machine = createMachine<MachineContext, MachineState>(
         nextTick(() => {
           const thumb = dom.getThumbEl(ctx)
           if (!thumb) return
-          const { width, height } = getElementRect(thumb)
-          ctx.thumbSize.width = width
-          ctx.thumbSize.height = height
+          ctx.thumbSize.width = thumb.offsetWidth
+          ctx.thumbSize.height = thumb.offsetHeight
         })
       },
       setPointerValue(ctx, evt) {
