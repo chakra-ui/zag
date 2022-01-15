@@ -62,7 +62,7 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
     target: "es6",
     absWorkingDir: dir,
     entryPoints: ["src/index.ts"],
-    external: Object.keys(pkg.peerDependencies ?? {}).concat("valtio"),
+    external: Object.keys(pkg.peerDependencies ?? {}),
   }
 
   esbuild.buildSync({
