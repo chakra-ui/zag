@@ -2,28 +2,47 @@ import { getPackages } from "@manypkg/get-packages"
 import fs from "fs"
 import path from "path"
 
+type PkgNode = {
+  name: string
+  externalDependencies: Map<string, any>
+  localDependencies: Map<string, any>
+  localDependents: Map<string, PkgNode>
+}
+
+type PkgGraph = Map<string, PkgNode>
+
 type Packages = Array<{ abs: string; dir: string; pkg: Record<string, any> }>
 
 let packagesCache: Packages
 
 export async function getWorkspacePkgs() {
-  if (packagesCache) return packagesCache
-  const { packages } = await getPackages("packages")
+  if (packagesCache) {
+    return packagesCache
+  }
 
-  packagesCache = packages
+  const { packages } = await getPackages("packages")
+  const { PackageGraph } = require("@lerna/package-graph")
+
+  const pkgs = packages
     .map((pkg) => {
       const rel = path.relative(process.cwd(), pkg.dir)
       return { abs: pkg.dir, dir: rel, pkg: pkg.packageJson }
     })
     .filter((pkg) => !pkg.dir.includes("examples"))
-    .sort((pkg) => {
-      if (/(utilities|types|core)/.test(pkg.dir)) return -1
-      if (/(frameworks)/.test(pkg.dir)) return 0
-      return 1
+
+  const detailsMap = new Map([...pkgs].map((pkg) => [pkg.pkg.name, pkg]))
+
+  const sortedPackages: PkgGraph = new PackageGraph(
+    pkgs.map(({ pkg }) => pkg),
+    "dependencies",
+  )
+
+  packagesCache = Array.from(sortedPackages.values())
+    .sort((pkgA, pkgB) => {
+      if (pkgA.localDependencies.has(pkgB.name)) return 1
+      return -1
     })
-    .sort((a, b) => {
-      return a.dir.includes("utilities/core") ? -1 : b.dir.includes("utilities/core") ? 1 : 0
-    })
+    .map((pkg) => detailsMap.get(pkg.name)!)
 
   return packagesCache
 }

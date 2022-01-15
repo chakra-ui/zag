@@ -23,5 +23,8 @@
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/ui-machines/issues"
+  },
+  "dependencies": {
+    "@ui-machines/utils": "^0.0.0"
   }
 }
