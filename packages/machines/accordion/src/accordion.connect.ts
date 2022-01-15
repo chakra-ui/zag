@@ -1,5 +1,6 @@
-import { dataAttr, getEventKey, EventKeyMap } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { isArray } from "@ui-machines/utils"
 import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 
@@ -9,7 +10,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   function getItemState(props: ItemProps) {
     const { value, disabled } = props
     return {
-      isOpen: Array.isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
+      isOpen: isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
       isFocused: ctx.focusedValue === value,
       isDisabled: disabled ?? ctx.disabled,
     }
