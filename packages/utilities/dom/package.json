@@ -27,7 +27,6 @@
   "dependencies": {
     "@types/react": "^17.0.38",
     "@ui-machines/utils": "^0.0.0",
-    "@ui-machines/popper": "^0.0.0",
     "scroll-into-view-if-needed": "^2.2.28"
   }
 }
