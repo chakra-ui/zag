@@ -1,13 +1,13 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import {
   contains,
-  getPlacement,
   nextTick,
   preventBodyPointerEvents,
   preventBodyScroll,
   raf,
   trackPointerDown,
 } from "@ui-machines/dom-utils"
+import { getPlacement } from "@ui-machines/popper"
 import { next } from "@ui-machines/utils"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"

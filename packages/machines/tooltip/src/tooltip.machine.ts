@@ -3,11 +3,11 @@ import {
   addDomEvent,
   addPointerEvent,
   addPointerlockChangeListener,
-  getPlacement,
   getScrollParents,
   isHTMLElement,
   raf,
 } from "@ui-machines/dom-utils"
+import { getPlacement } from "@ui-machines/popper"
 import { isSafari, noop } from "@ui-machines/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"

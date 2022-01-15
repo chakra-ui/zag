@@ -77,7 +77,7 @@
     "jest-watch-typeahead": "^0.6.3",
     "lint-staged": "^11.0.0",
     "lodash": "^4.17.21",
-    "node-plop": "^0.30.0",
+    "node-plop": "^0.26.2",
     "patch-package": "^6.4.7",
     "prettier": "^2.5.1",
     "pretty-bytes": "^5.6.0",

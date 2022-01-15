@@ -25,9 +25,9 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "@floating-ui/dom": "^0.1.10",
     "@types/react": "^17.0.38",
     "@ui-machines/utils": "^0.0.0",
+    "@ui-machines/popper": "^0.0.0",
     "scroll-into-view-if-needed": "^2.2.28"
   }
 }

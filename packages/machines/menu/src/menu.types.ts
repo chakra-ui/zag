@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@ui-machines/core"
-import type { PlacementOptions } from "@ui-machines/dom-utils"
+import type { PlacementOptions } from "@ui-machines/popper"
 import type { Point } from "@ui-machines/rect-utils"
 import type { Context } from "@ui-machines/types"
 

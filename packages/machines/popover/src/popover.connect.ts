@@ -1,5 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { EventKeyMap, isFocusable, isTabbable, PLACEMENT_STYLE, validateBlur } from "@ui-machines/dom-utils"
+import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
+import { PLACEMENT_STYLE } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState } from "./popover.types"

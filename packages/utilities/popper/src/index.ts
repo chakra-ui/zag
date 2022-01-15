@@ -9,9 +9,9 @@ import {
   shift,
   size,
 } from "@floating-ui/dom"
+import { observeElementRect } from "@ui-machines/dom-utils"
 import { noop } from "@ui-machines/utils"
-import { cssVars, positionArrow, transformOrigin } from "./popper.middleware"
-import { observeElementRect } from "./rect-observer"
+import { cssVars, positionArrow, transformOrigin } from "./middleware"
 
 export type PlacementOptions = {
   arrow?: { padding?: number; element?: HTMLElement }

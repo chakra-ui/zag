@@ -1,5 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, PLACEMENT_STYLE, visuallyHiddenStyle } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
+import { PLACEMENT_STYLE } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"

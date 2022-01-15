@@ -9,6 +9,7 @@
 "@ui-machines/combobox": patch
 "@ui-machines/dialog": patch
 "@ui-machines/editable": patch
+"@ui-machines/popper": patch
 "@ui-machines/number-input": patch
 "@ui-machines/pin-input": patch
 "@ui-machines/popover": patch
