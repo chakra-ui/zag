@@ -66,7 +66,7 @@ describe("tabs", () => {
 
   describe("in manual mode", () => {
     beforeEach(() => {
-      cy.findByTestId("manual").check()
+      cy.findByTestId("activationMode").select("manual")
     })
 
     it("should have no accessibility violation", () => {

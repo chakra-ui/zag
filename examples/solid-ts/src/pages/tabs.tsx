@@ -1,15 +1,18 @@
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Tabs from "@ui-machines/tabs"
 import { createMemo, createUniqueId } from "solid-js"
+import { useControls } from "../hooks/use-controls"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    Tabs.machine.withContext({
-      value: "nils",
-      activationMode: "manual",
-    }),
-  )
+  const controls = useControls({
+    activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
+    loop: { type: "boolean", defaultValue: true, label: "loop?" },
+  })
+
+  const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
+    context: controls.context,
+  })
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
@@ -17,6 +20,7 @@ export default function Page() {
 
   return (
     <div style={{ width: "100%" }}>
+      <controls.ui />
       <div className="tabs">
         <div className="tabs__indicator" {...tabs().tabIndicatorProps} />
         <div ref={ref} {...tabs().tablistProps}>

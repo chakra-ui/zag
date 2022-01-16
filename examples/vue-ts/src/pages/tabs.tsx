@@ -11,15 +11,12 @@ export default defineComponent({
   name: "Tabs",
   setup() {
     const controls = useControls({
-      manual: { type: "boolean", defaultValue: false, label: "manual?" },
+      activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
       loop: { type: "boolean", defaultValue: true, label: "loop?" },
     })
 
     const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
-      context: {
-        activationMode: controls.context.value.manual ? "manual" : "automatic",
-        loop: controls.context.value.loop,
-      },
+      context: controls.context,
     })
 
     const ref = useMount(send)

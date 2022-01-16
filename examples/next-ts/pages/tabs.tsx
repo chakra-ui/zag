@@ -7,14 +7,12 @@ import { tabsData } from "../../../shared/data"
 
 export default function Page() {
   const controls = useControls({
-    manual: { type: "boolean", defaultValue: false, label: "manual?" },
+    activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
     loop: { type: "boolean", defaultValue: true, label: "loop?" },
   })
+
   const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
-    context: {
-      activationMode: controls.context.manual ? "manual" : "automatic",
-      loop: controls.context.loop,
-    },
+    context: controls.context,
   })
 
   const ref = useMount<HTMLDivElement>(send)
