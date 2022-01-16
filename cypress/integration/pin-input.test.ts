@@ -8,13 +8,13 @@ describe("pin input", () => {
   })
 
   it("on type: should moves focus to the next input", () => {
-    cy.get("@first").focus().realType("1")
+    cy.get("@first").trigger("focusin").realType("1")
     cy.get("@second").should("have.focus").realType("2")
     cy.get("@third").should("have.focus").realType("3")
   })
 
   it("on backspace: should clear value and move focus to prev input", () => {
-    cy.get("@first").focus().realType("1")
+    cy.get("@first").trigger("focusin").realType("1")
     cy.get("@second").should("have.focus").realType("2")
     cy.get("@third").realType("{backspace}")
     cy.get("@second").should("have.focus").and("have.value", "")
@@ -22,7 +22,7 @@ describe("pin input", () => {
 
   it("on arrow: should change focus between inputs", () => {
     // fill out all fields
-    cy.get("@first").focus().realType("1")
+    cy.get("@first").trigger("focusin").realType("1")
     cy.get("@second").should("have.focus").realType("2")
     cy.get("@third").should("have.focus").realType("3")
 
@@ -35,7 +35,7 @@ describe("pin input", () => {
 
   it("on clear: should clear values and focus first", () => {
     // fill out all fields
-    cy.get("@first").focus().realType("1")
+    cy.get("@first").trigger("focusin").realType("1")
     cy.get("@second").should("have.focus").realType("2")
     cy.get("@third").should("have.focus").realType("3")
 
@@ -54,7 +54,7 @@ describe("pin input", () => {
   })
 
   it("on delete: should clear value but keep input focused", () => {
-    cy.get("@first").focus().realType("1")
+    cy.get("@first").trigger("focusin").realType("1")
     cy.get("@second").should("have.focus").realType("2")
     cy.get("@third").should("have.focus").realType("3")
 
@@ -64,7 +64,7 @@ describe("pin input", () => {
   })
 
   it("on input: override previous value", () => {
-    cy.get("@first").focus().realType("1")
+    cy.get("@first").trigger("focusin").realType("1")
     cy.get("@second").should("have.focus").realType("2")
     cy.get("@third").realType("{leftarrow}")
     cy.get("@second").should("have.focus").realType("5")
@@ -73,7 +73,7 @@ describe("pin input", () => {
 
   it("should disallow invalid values", () => {
     // it's currently in numeric mode
-    cy.get("@first").focus().realType("f")
+    cy.get("@first").trigger("focusin").realType("f")
     // `f` is not a numeric character
     cy.get("@first").should("have.value", "")
   })
