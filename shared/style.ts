@@ -309,3 +309,53 @@ export const toastStyle: CSSObject = {
     },
   },
 }
+
+export const dialogStyle: CSSObject = {
+  ".dialog__overlay": {
+    backgroundColor: "rgba(0, 0, 0, 0.44)",
+    position: "fixed",
+    inset: "0px",
+  },
+  ".dialog__title": {
+    margin: "0px",
+    fontWeight: 500,
+    color: "rgb(26, 21, 35)",
+    fontSize: "17px",
+  },
+  ".dialog__description": {
+    margin: "10px 0px 20px",
+    color: "rgb(111, 110, 119)",
+    fontSize: "15px",
+    lineHeight: 1.5,
+  },
+  ".dialog__content": {
+    backgroundColor: "white",
+    borderRadius: "6px",
+    boxShadow: "rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px",
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "90vw",
+    maxWidth: "450px",
+    maxHeight: "85vh",
+    padding: "25px",
+  },
+  ".dialog__close-button": {
+    fontFamily: "inherit",
+    height: "25px",
+    width: "25px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "rgb(87, 70, 175)",
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    borderRadius: "100%",
+  },
+  ".dialog__close-button:focus": {
+    outline: "2px blue solid",
+    outlineOffset: "2px",
+  },
+}

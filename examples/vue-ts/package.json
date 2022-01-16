@@ -35,6 +35,8 @@
       "include": [
         "@emotion/css",
         "@vue/runtime-core",
+        "aria-hidden",
+        "focus-trap",
         "klona",
         "merge-anything",
         "react",

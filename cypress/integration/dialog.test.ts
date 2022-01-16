@@ -2,11 +2,11 @@
 describe("dialog", () => {
   beforeEach(() => {
     cy.visit("/dialog")
-    cy.injectAxe()
     cy.findByTestId("trigger-1").realClick()
   })
 
   it("should have no accessibility violation", () => {
+    cy.injectAxe()
     cy.checkA11y(".dialog__content")
   })
 
@@ -26,8 +26,8 @@ describe("dialog", () => {
   })
 
   // potentially flaky test
-  it("should close modal on overlay click", () => {
-    cy.findByTestId("overlay-1").click(400, 400, { force: true })
+  it.skip("should close modal on overlay click", () => {
+    cy.findByTestId("overlay-1").realClick({ x: 10, y: 10 })
     cy.findByTestId("trigger-1").should("have.focus")
   })
 
