@@ -7,7 +7,6 @@ export default function Page() {
   const [state, send] = useMachine(
     Editable.machine.withContext({
       placeholder: "Edit me...",
-      isPreviewFocusable: true,
     }),
   )
 
