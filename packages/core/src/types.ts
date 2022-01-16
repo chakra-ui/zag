@@ -310,10 +310,12 @@ export declare namespace StateMachine {
 
   export type StateInit<TContext, TState extends StateSchema> = TState["value"] | StateInitObject<TContext, TState>
 
+  export type UserContext<TContext> = Partial<Writable<TContext>>
+
   export type HookOptions<TContext, TState extends StateSchema, TEvent extends EventObject> = {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
-    context?: Partial<Writable<TContext>>
+    context?: UserContext<TContext>
     preserve?: boolean
   }
 
