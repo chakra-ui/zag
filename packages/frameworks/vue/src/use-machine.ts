@@ -1,11 +1,16 @@
 import type { MachineSrc, StateMachine as S } from "@ui-machines/core"
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from "vue"
+import { computed, ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch } from "vue"
 
 export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
->(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
+>(
+  machine: MachineSrc<TContext, TState, TEvent>,
+  options?: Omit<S.HookOptions<TContext, TState, TEvent>, "context"> & {
+    context?: Ref<S.UserContext<TContext>> | ComputedRef<S.UserContext<TContext>>
+  },
+) {
   /** Machine options */
   const { actions, state: hydratedState, context, preserve } = options ?? {}
 
@@ -42,13 +47,15 @@ export function useMachine<
 
   watch(() => actions, service.setActions, { flush: "post", immediate: true })
 
-  watch(
-    () => context,
-    (newVal) => {
-      if (newVal) service.setContext(newVal)
-    },
-    { immediate: true, deep: true },
-  )
+  if (context) {
+    watch(
+      context,
+      (ctx) => {
+        service.setContext(ctx)
+      },
+      { immediate: true, deep: true },
+    )
+  }
 
   /**
    * Here we use this listener to write the updated
