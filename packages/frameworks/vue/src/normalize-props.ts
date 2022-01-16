@@ -10,6 +10,8 @@ const eventMap = {
   className: "class",
   onDoubleClick: "onDblclick",
   onChange: "onInput",
+  onFocus: "onFocusin",
+  onBlur: "onFocusout",
 }
 
 function toVueProp(prop: string) {
