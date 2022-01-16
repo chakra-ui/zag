@@ -46,17 +46,27 @@ export default defineComponent({
       return (
         <div>
           <controls.ui />
-          <input ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
-          <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
-          {!isEditing && <button {...editButtonProps}>Edit</button>}
-          {isEditing && (
-            <>
-              <button {...submitButtonProps}>Save</button>
-              <button {...cancelButtonProps}>Cancel</button>
-            </>
-          )}
+          <div class="root">
+            <input data-testid="input" ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
+            <span data-testid="preview" style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
+            {!isEditing && (
+              <button data-testid="edit-button" {...editButtonProps}>
+                Edit
+              </button>
+            )}
+            {isEditing && (
+              <>
+                <button data-testid="save-button" {...submitButtonProps}>
+                  Save
+                </button>
+                <button data-testid="cancel-button" {...cancelButtonProps}>
+                  Cancel
+                </button>
+              </>
+            )}
 
-          <StateVisualizer state={state.value} />
+            <StateVisualizer state={state.value} />
+          </div>
         </div>
       )
     }
