@@ -15,7 +15,7 @@ export default defineComponent({
     })
 
     const [state, send] = useMachine(Accordion.machine, {
-      context: controls.context.value,
+      context: controls.context,
     })
 
     const accordionRef = computed(() => Accordion.connect<VuePropTypes>(state.value, send, normalizeProps))

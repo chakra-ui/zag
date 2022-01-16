@@ -27,17 +27,16 @@ export default defineComponent({
         value: ["React", "Vue"],
       }),
       {
-        context: controls.context.value,
+        context: controls.context,
       },
     )
 
     const ref = useMount(send)
 
-    const tabsInputRef = computed(() => TagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const tags = computed(() => TagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { value, rootProps, inputProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } =
-        tabsInputRef.value
+      const { value, rootProps, inputProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = tags.value
 
       return (
         <>

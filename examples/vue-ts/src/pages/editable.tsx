@@ -8,7 +8,7 @@ import { useMount } from "../hooks/use-mount"
 export default defineComponent({
   name: "Editable",
   setup() {
-    const { context, ui: PropertyControls } = useControls({
+    const controls = useControls({
       placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
       submitMode: {
         type: "select",
@@ -25,7 +25,7 @@ export default defineComponent({
     })
 
     const [state, send] = useMachine(Editable.machine, {
-      context: context.value,
+      context: controls.context,
     })
 
     const ref = useMount(send)
@@ -45,7 +45,7 @@ export default defineComponent({
 
       return (
         <div>
-          <PropertyControls />
+          <controls.ui />
           <input ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
           <span style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
           {!isEditing && <button {...editButtonProps}>Edit</button>}
