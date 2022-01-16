@@ -34,6 +34,7 @@
     "optimizeDeps": {
       "include": [
         "@emotion/css",
+        "@floating-ui/dom",
         "@vue/runtime-core",
         "aria-hidden",
         "focus-trap",
