@@ -59,14 +59,17 @@ function Example() {
 
 - All component machine and tests are modelled according to the
   [WAI-ARIA authoring practices](https://www.w3.org/TR/wai-aria-practices/)
-- Write test helpers for every component based on the WAI-ARIA spec.
-- All machines should be light-weight, simple, and easy to understand.
-- Avoid using complex machine concepts like spawn, nested states, etc.
+- Write cypress tests for every component based on the WAI-ARIA spec. **Regardless of the framework, users expect
+  component patterns to work the same way!**
+- All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
+  nested states, etc.
 
 ## Inspirations
 
-- [Guillermo Rauch on Merging Design and Development](https://youtu.be/3hccXiXI0u8)
-- [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillerma Rauch
+- [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
+- [Merging Design and Development](https://youtu.be/3hccXiXI0u8) - Guillermo Rauch
+- [Component modelling in Stencil](https://stenciljs.com/)
+- Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
 
 ## Issues
 
