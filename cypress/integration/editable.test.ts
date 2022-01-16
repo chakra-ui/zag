@@ -1,5 +1,5 @@
 /* eslint-disable jest/expect-expect */
-describe("accordion", () => {
+describe("editable", () => {
   beforeEach(() => {
     cy.visit("/editable")
     cy.injectAxe()
