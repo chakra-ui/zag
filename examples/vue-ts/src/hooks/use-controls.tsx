@@ -1,4 +1,4 @@
-import { computed, h, Fragment, Ref, ref, inject, provide } from "vue"
+import { computed, h, Fragment, Ref, ref, inject, provide, watchEffect } from "vue"
 import { ControlRecord, ControlValue } from "@ui-machines/types"
 
 const ControlsSymbol = Symbol("use-controls")
@@ -41,7 +41,7 @@ export function useControls<T extends ControlRecord>(config: T) {
           }}
         >
           {Object.keys(config).map((key: keyof ControlValue<T>) => {
-            const { type, label, options, placeholder, min, max } = (config[key] ?? {}) as any
+            const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
             switch (type) {
               case "boolean":
                 return (
