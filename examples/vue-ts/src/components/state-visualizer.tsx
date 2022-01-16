@@ -22,7 +22,7 @@ export function StateVisualizer(props: { state: Record<string, any> }, { attrs }
       {JSON.stringify(
         state,
         (key, value) => {
-          if (key === "childNodes") return value.value.length
+          if (value instanceof Document) return "doc:loaded"
           return isDom() && value instanceof HTMLElement ? value.tagName : value
         },
         4,
