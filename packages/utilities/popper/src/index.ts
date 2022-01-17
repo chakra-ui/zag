@@ -13,6 +13,8 @@ import { observeElementRect } from "@ui-machines/dom-utils"
 import { noop } from "@ui-machines/utils"
 import { cssVars, positionArrow, transformOrigin } from "./middleware"
 
+export type { Placement }
+
 export type PlacementOptions = {
   arrow?: { padding?: number; element?: HTMLElement }
   strategy?: "absolute" | "fixed"
@@ -23,6 +25,7 @@ export type PlacementOptions = {
   matchWidth?: boolean
   boundary?: "clippingParents" | Element | Element[]
   eventListeners?: boolean | { scroll?: boolean; resize?: boolean }
+  onPlacementComplete?(placement: Placement): void
 }
 
 const defaultOpts: PlacementOptions = {
@@ -85,8 +88,9 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
       placement: opts.placement,
       middleware,
       strategy: opts.strategy,
-    }).then(({ x, y }) => {
+    }).then(({ x, y, placement }) => {
       Object.assign(floating.style, { left: `${x}px`, top: `${y}px` })
+      opts.onPlacementComplete?.(placement)
     })
   }
 

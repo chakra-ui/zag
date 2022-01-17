@@ -66,14 +66,14 @@ export const positionArrow = (opts: ArrowOptions): Middleware => ({
       right: "left",
       bottom: "top",
       left: "right",
-    }[placement.split("-")[0]]
+    }[placement.split("-")[0]]!
 
     Object.assign(arrow.style, {
       left: x != null ? `${x}px` : "",
       top: y != null ? `${y}px` : "",
       right: "",
       bottom: "",
-      [<string>staticSide]: cssVars.arrowOffset.reference,
+      [staticSide]: cssVars.arrowOffset.reference,
       [cssVars.boxShadow.variable]: getBoxShadow(placement)!,
     })
 
