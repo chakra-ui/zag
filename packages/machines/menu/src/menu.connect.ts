@@ -135,6 +135,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         })
       },
       onPointerDown(event) {
+        if (dom.isTriggerItem(event.currentTarget)) {
+          event.preventDefault()
+          return
+        }
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (!isLeftClick(evt) || disabled) return

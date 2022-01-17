@@ -74,6 +74,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           CONTEXT_MENU_START: "opening:contextmenu",
           TRIGGER_CLICK: {
+            guard: not("isSubmenu"),
             target: "open",
             actions: "focusFirstItem",
           },
@@ -276,7 +277,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       // whether the trigger is also a menu item
       isTriggerItem: (ctx, evt) => {
         const target = (evt.target ?? dom.getTriggerEl(ctx)) as HTMLElement | null
-        return !!target?.getAttribute("role")?.startsWith("menuitem") && !!target?.hasAttribute("aria-controls")
+        return dom.isTriggerItem(target)
       },
       // whether the trigger item is the active item
       isTriggerActiveItem: (ctx, evt) => {

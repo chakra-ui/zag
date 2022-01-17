@@ -45,4 +45,7 @@ export const dom = {
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && v.dataset.disabled === ""
   },
+  isTriggerItem: (el: HTMLElement | null) => {
+    return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
+  },
 }
