@@ -47,7 +47,7 @@ export default function Page() {
         Click me
       </button>
 
-      <ul style={{ width: "300px" }} data-testid="menu" {...root.menuProps}>
+      <ul style={{ width: "300px" }} data-testid="menu" {...root.contentProps}>
         <li data-testid="new-file" {...root.getItemProps({ id: "new-file" })}>
           New File
         </li>
@@ -71,7 +71,7 @@ export default function Page() {
       <ul
         data-testid="more-tools-submenu"
         style={{ width: "300px", left: "180px", top: "90px", position: "absolute" }}
-        {...sub.menuProps}
+        {...sub.contentProps}
       >
         <li data-testid="save-page" {...sub.getItemProps({ id: "save-page" })}>
           Save Page As...
@@ -94,7 +94,7 @@ export default function Page() {
       <ul
         data-testid="open-nested-submenu"
         style={{ width: "300px", left: "352px", top: "170px", position: "absolute" }}
-        {...sub2.menuProps}
+        {...sub2.contentProps}
       >
         <li data-testid="welcome" {...sub2.getItemProps({ id: "welcome" })}>
           Welcome

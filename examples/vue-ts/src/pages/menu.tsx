@@ -23,13 +23,13 @@ export default defineComponent({
     const menuRef = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, menuProps, getItemProps } = menuRef.value
+      const { triggerProps, contentProps, getItemProps } = menuRef.value
       return (
         <div class={styles}>
           <button ref={ref} {...triggerProps}>
             Click me
           </button>
-          <ul style={{ width: "300px" }} {...menuProps}>
+          <ul style={{ width: "300px" }} {...contentProps}>
             <li {...getItemProps({ id: "menuitem-1" })}>Edit</li>
             <li {...getItemProps({ id: "menuitem-2" })}>Duplicate</li>
             <li {...getItemProps({ id: "menuitem-3" })}>Delete</li>

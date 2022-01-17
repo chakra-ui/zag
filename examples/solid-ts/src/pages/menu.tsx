@@ -23,7 +23,7 @@ export default function Page() {
       <button ref={ref} {...menu().triggerProps}>
         Click me
       </button>
-      <ul style={{ width: "300px" }} {...menu().menuProps}>
+      <ul style={{ width: "300px" }} {...menu().contentProps}>
         <li {...menu().getItemProps({ id: "menuitem-1" })}>Edit</li>
         <li {...menu().getItemProps({ id: "menuitem-2" })}>Duplicate</li>
         <li {...menu().getItemProps({ id: "menuitem-3" })}>Delete</li>
