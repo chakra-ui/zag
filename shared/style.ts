@@ -18,7 +18,8 @@ export const comboboxStyle: CSSObject = {
 
 export const menuStyle: CSSObject = {
   '[role="menu"]': {
-    maxWidth: "160px",
+    margin: "0",
+    width: "160px",
     backgroundColor: "white",
     borderRadius: "6px",
     padding: "5px",
