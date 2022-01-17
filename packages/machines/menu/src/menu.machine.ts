@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { addPointerEvent, contains, isFocusable, nextTick, raf, trackPointerDown } from "@ui-machines/dom-utils"
+import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { getPlacement } from "@ui-machines/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
 import { dom } from "./menu.dom"
@@ -161,7 +161,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
-        activities: "trackPointerDown",
+        activities: ["trackPointerDown", "computePlacement"],
         entry: ["focusMenu", "resumePointer"],
         on: {
           TRIGGER_CLICK: {
@@ -187,6 +187,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
           ],
           ARROW_LEFT: {
+            guard: "isSubmenu",
             target: "close",
             actions: "focusParentMenu",
           },
@@ -263,7 +264,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     delays: {
       LONG_PRESS_DELAY: 700,
       SUBMENU_OPEN_DELAY: 100,
-      SUBMENU_CLOSE_DELAY: 150,
+      SUBMENU_CLOSE_DELAY: 200,
     },
     guards: {
       hasActiveId: (ctx) => ctx.activeId !== null,
@@ -298,19 +299,17 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         if (ctx.disablePlacement) return
-        let cleanup = () => {}
-        raf(() => {
-          const arrow = dom.getArrowEl(ctx)
-          const utils = getPlacement(dom.getTriggerEl(ctx), dom.getMenuEl(ctx), {
-            ...ctx.placementOptions,
-            arrow: arrow ? { element: arrow } : undefined,
-            onPlacementComplete(placement) {
-              ctx.__placement = placement
-            },
-          })
-          utils.compute()
-          cleanup = utils.addListeners()
+        const arrow = dom.getArrowEl(ctx)
+        const utils = getPlacement(dom.getTriggerEl(ctx), dom.getMenuEl(ctx), {
+          ...ctx.placementOptions,
+          arrow: arrow ? { element: arrow } : undefined,
+          onPlacementComplete(placement) {
+            ctx.__placement = placement
+          },
         })
+        utils.compute()
+        const cleanup = utils.addListeners()
+
         return () => {
           cleanup()
           ctx.__placement = undefined
