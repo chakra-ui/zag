@@ -123,11 +123,17 @@ export const machine = createMachine<MachineContext, MachineState>(
           const utils = getPlacement(ref, dom.getContentEl(ctx), {
             ...ctx.placementOptions,
             arrow: arrow ? { element: arrow } : undefined,
+            onPlacementComplete(placement) {
+              ctx.__placement = placement
+            },
           })
           utils.compute()
           cleanup = utils.addListeners()
         })
-        return cleanup
+        return () => {
+          cleanup()
+          ctx.__placement = undefined
+        }
       },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {

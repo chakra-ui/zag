@@ -1,4 +1,4 @@
-import type { PlacementOptions } from "@ui-machines/popper"
+import type { PlacementOptions, Placement } from "@ui-machines/popper"
 import type { Context } from "@ui-machines/types"
 
 export type MachineContext = Context<{
@@ -48,9 +48,13 @@ export type MachineContext = Context<{
    */
   isAnchorRendered: boolean
   /**
-   * The options used to position the popover content
+   * The user provided options used to position the popover content
    */
   placementOptions: PlacementOptions
+  /**
+   * The computed placement (maybe different from initial placement)
+   */
+  __placement?: Placement
 }>
 
 export type MachineState = {

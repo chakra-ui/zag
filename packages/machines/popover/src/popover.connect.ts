@@ -42,6 +42,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
+      "data-placement": ctx.__placement,
       id: dom.getTriggerId(ctx),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
@@ -60,6 +61,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-labelledby": dom.getHeaderId(ctx),
       "aria-describedby": dom.getBodyId(ctx),
       style: PLACEMENT_STYLE.floating(),
+      "data-placement": ctx.__placement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           Escape(event) {
