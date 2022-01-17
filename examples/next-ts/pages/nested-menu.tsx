@@ -47,7 +47,7 @@ export default function Page() {
         Click me
       </button>
 
-      <ul style={{ width: "300px" }} data-testid="menu" {...root.contentProps}>
+      <ul data-testid="menu" {...root.contentProps}>
         <li data-testid="new-file" {...root.getItemProps({ id: "new-file" })}>
           New File
         </li>
@@ -60,7 +60,7 @@ export default function Page() {
         <li data-testid="more-tools" ref={subRef} {...triggerItemProps}>
           {`More Tools →`}
         </li>
-        <li data-testid="export " {...root.getItemProps({ id: "export", disabled: true })}>
+        <li data-testid="export" {...root.getItemProps({ id: "export", disabled: true })}>
           Export
         </li>
         <a href="google.com" data-testid="google" {...root.getItemProps({ id: "link" })}>
@@ -68,11 +68,7 @@ export default function Page() {
         </a>
       </ul>
 
-      <ul
-        data-testid="more-tools-submenu"
-        style={{ width: "300px", left: "180px", top: "90px", position: "absolute" }}
-        {...sub.contentProps}
-      >
+      <ul data-testid="more-tools-submenu" {...sub.contentProps}>
         <li data-testid="save-page" {...sub.getItemProps({ id: "save-page" })}>
           Save Page As...
         </li>
@@ -91,11 +87,7 @@ export default function Page() {
         </li>
       </ul>
 
-      <ul
-        data-testid="open-nested-submenu"
-        style={{ width: "300px", left: "352px", top: "170px", position: "absolute" }}
-        {...sub2.contentProps}
-      >
+      <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
         <li data-testid="welcome" {...sub2.getItemProps({ id: "welcome" })}>
           Welcome
         </li>
