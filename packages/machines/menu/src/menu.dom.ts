@@ -9,10 +9,12 @@ export const dom = {
 
   getTriggerId: (ctx: Ctx) => `menu-${ctx.uid}-trigger`,
   getMenuId: (ctx: Ctx) => `menu-${ctx.uid}-menulist`,
+  getArrowId: (ctx: Ctx) => `popover-${ctx.uid}--arrow`,
 
   getMenuEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getMenuId(ctx)) as HTMLEl,
   getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
   getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
+  getArrowEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getArrowId(ctx)),
 
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
   getElements: (ctx: Ctx) =>

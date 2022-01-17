@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@ui-machines/core"
-import type { PlacementOptions } from "@ui-machines/popper"
+import type { PlacementOptions, Placement } from "@ui-machines/popper"
 import type { Point } from "@ui-machines/rect-utils"
 import type { Context } from "@ui-machines/types"
 
@@ -76,6 +76,10 @@ export type MachineContext = Context<{
    * Whether to disable dynamic placement
    */
   disablePlacement?: boolean
+  /**
+   * The computed placement (maybe different from initial placement)
+   */
+  __placement?: Placement
 }>
 
 export type State = S.State<MachineContext, MachineState>
