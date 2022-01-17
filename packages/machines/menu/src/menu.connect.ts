@@ -20,7 +20,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-disabled": dataAttr(disabled),
       "data-ownedby": dom.getMenuId(ctx),
       "data-selected": dataAttr(ctx.activeId === id),
-      "data-orientation": ctx.orientation,
       "data-valuetext": valueText,
       onClick(event) {
         if (disabled) return
@@ -183,8 +182,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dir: ctx.dir,
       "aria-activedescendant": ctx.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(ctx),
-      "aria-orientation": ctx.orientation,
-      "data-orientation": ctx.orientation,
       "data-placement": ctx.__placement,
       style: PLACEMENT_STYLE.floating(),
       onBlur(event) {
@@ -267,7 +264,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     separatorProps: normalize.element<T>({
       "data-part": "separator",
       role: "separator",
-      "aria-orientation": ctx.orientation === "horizontal" ? "vertical" : "horizontal",
+      "aria-orientation": "horizontal",
     }),
 
     getItemProps,

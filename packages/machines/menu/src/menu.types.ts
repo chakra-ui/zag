@@ -27,10 +27,6 @@ export type MachineContext = Context<{
    */
   children: Record<string, Service>
   /**
-   * The orientation of the menu.
-   */
-  orientation: "horizontal" | "vertical"
-  /**
    * The polygon tells us if the pointer is
    * moving toward the submenu
    */
@@ -60,14 +56,6 @@ export type MachineContext = Context<{
    * @computed Whether the writing direction is rtl
    */
   readonly isRtl: boolean
-  /**
-   * @computed Whether the orientation is horizontal
-   */
-  readonly isHorizontal: boolean
-  /**
-   * @computed Whether the orientation is vertical
-   */
-  readonly isVertical: boolean
   /**
    * The options used to dynamically position the menu
    */

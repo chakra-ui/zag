@@ -12,14 +12,13 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "menu-machine",
     initial: "unknown",
     context: {
-      pointerdownNode: null,
-      orientation: "vertical",
-      activeId: null,
       uid: "",
+      pointerdownNode: null,
+      activeId: null,
+      hoverId: null,
       parent: null,
       children: {},
       intentPolygon: null,
-      hoverId: null,
       loop: false,
       suspendPointer: false,
       contextMenuPoint: null,
@@ -28,9 +27,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     computed: {
       isSubmenu: (ctx) => ctx.parent !== null,
-      isHorizontal: (ctx) => ctx.orientation === "horizontal",
-      isRtl: (ctx) => ctx.isHorizontal && ctx.dir === "rtl",
-      isVertical: (ctx) => ctx.orientation === "vertical",
+      isRtl: (ctx) => ctx.dir === "rtl",
     },
 
     watch: {
@@ -133,7 +130,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       close: {
         entry: [
           "clearActiveId",
-          "focusButton",
+          "focusTrigger",
           "clearPointerDownNode",
           "resumePointer",
           "closeChildren",
@@ -268,9 +265,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
     guards: {
       hasActiveId: (ctx) => ctx.activeId !== null,
-      isRtl: (ctx) => ctx.isRtl && ctx.isHorizontal,
-      isHorizontal: (ctx) => ctx.isHorizontal,
-      isVertical: (ctx) => ctx.isVertical,
+      isRtl: (ctx) => ctx.isRtl,
       isMenuFocused: (ctx) => {
         const menu = dom.getMenuEl(ctx)
         const activeElement = dom.getActiveElement(ctx)
@@ -396,7 +391,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       focusItem(ctx, event) {
         ctx.activeId = event.id
       },
-      focusButton(ctx) {
+      focusTrigger(ctx) {
         if (ctx.parent) return
         const trigger = dom.getTriggerEl(ctx)
         nextTick(() => trigger?.focus())
