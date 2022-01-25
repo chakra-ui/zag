@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, raf, visuallyHiddenStyle } from "@ui-machines/dom-utils"
 import { PLACEMENT_STYLE } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
@@ -87,10 +87,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       role: ctx.hasAriaLabel ? undefined : "tooltip",
       id: ctx.hasAriaLabel ? undefined : tooltipId,
       onPointerEnter() {
-        send("TOOLTIP_POINTER_ENTER")
+        raf(() => {
+          send("TOOLTIP_POINTER_ENTER")
+        })
       },
       onPointerLeave() {
-        send("TOOLTIP_POINTER_LEAVE")
+        raf(() => {
+          send("TOOLTIP_POINTER_LEAVE")
+        })
       },
       style: {
         ...PLACEMENT_STYLE.floating(),
