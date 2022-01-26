@@ -10,7 +10,7 @@ export default function Page() {
     step: { type: "number", defaultValue: 1 },
     precision: { type: "number", defaultValue: 0 },
     min: { type: "number", defaultValue: 0 },
-    max: { type: "number", defaultValue: 100 },
+    max: { type: "number", defaultValue: 10 },
   })
 
   const [state, send] = useMachine(NumberInput.machine, {

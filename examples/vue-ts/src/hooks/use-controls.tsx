@@ -112,6 +112,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                         data-testid={key}
                         id={label}
                         type="number"
+                        style={{ maxWidth: "5ch" }}
                         min={min}
                         max={max}
                         value={state.value[key] as number}
