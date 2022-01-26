@@ -23,7 +23,7 @@ export function StateVisualizer(props: StateVisualizerProps, { attrs }: SetupCon
         overflow: "hidden",
         top: "40px",
         [placement]: offset,
-        maxWidth: "240px",
+        maxWidth: "320px",
         width: "100%",
         zIndex: -1,
         ...style,

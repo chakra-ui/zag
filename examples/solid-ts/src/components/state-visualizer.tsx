@@ -25,7 +25,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
               overflow: "hidden",
               top: "40px",
               [placement]: offset,
-              "max-width": "240px",
+              "max-width": "320px",
               width: "100%",
               "z-index": -1,
               ...style,
