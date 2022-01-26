@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as Popover from "@ui-machines/popover"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"
 import { popoverStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
 injectGlobal(popoverStyle)
 
@@ -24,7 +23,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const popoverRef = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
 

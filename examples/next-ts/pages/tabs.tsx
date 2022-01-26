@@ -1,8 +1,7 @@
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import * as Tabs from "@ui-machines/tabs"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
-import { useMount } from "hooks/use-mount"
 import { tabsData } from "../../../shared/data"
 
 export default function Page() {
@@ -15,7 +14,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } = Tabs.connect(state, send)
 

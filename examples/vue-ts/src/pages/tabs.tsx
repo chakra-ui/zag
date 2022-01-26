@@ -1,11 +1,10 @@
 import * as Tabs from "@ui-machines/tabs"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { tabsData } from "../../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
-import { useMount } from "../hooks/use-mount"
 
 export default defineComponent({
   name: "Tabs",
@@ -19,7 +18,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
     const tabsRef = computed(() => Tabs.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {

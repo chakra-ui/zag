@@ -1,7 +1,6 @@
 import * as Rating from "@ui-machines/rating"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
-import { useMount } from "hooks/use-mount"
 
 const Star = ({ isHalf, ...rest }: any) => {
   if (isHalf) {
@@ -34,14 +33,9 @@ const Star = ({ isHalf, ...rest }: any) => {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(
-    Rating.machine.withContext({
-      uid: "123",
-      allowHalf: true,
-    }),
-  )
+  const [state, send] = useMachine(Rating.machine.withContext({ allowHalf: true }))
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { inputProps, getRatingProps, rootProps, getRatingState, size } = Rating.connect(state, send)
 

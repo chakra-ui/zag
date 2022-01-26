@@ -1,9 +1,8 @@
 import * as Editable from "@ui-machines/editable"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
-import { useMount } from "../hooks/use-mount"
 
 export default defineComponent({
   name: "Editable",
@@ -28,7 +27,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const editableRef = computed(() => Editable.connect<VuePropTypes>(state.value, send, normalizeProps))
 

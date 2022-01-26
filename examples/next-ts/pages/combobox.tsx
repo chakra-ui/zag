@@ -1,9 +1,8 @@
 import styled from "@emotion/styled"
 import * as Combobox from "@ui-machines/combobox"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
-import { useMount } from "hooks/use-mount"
 import { useState } from "react"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
@@ -35,7 +34,7 @@ export default function Page() {
     { context: controls.context },
   )
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { setValue, labelProps, containerProps, buttonProps, inputProps, listboxProps, getOptionProps } =
     Combobox.connect(state, send)

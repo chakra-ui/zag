@@ -1,24 +1,19 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import styled from "@emotion/styled"
-import { useMachine } from "@ui-machines/react"
+import { Global } from "@emotion/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import * as Slider from "@ui-machines/slider"
 import { StateVisualizer } from "components/state-visualizer"
 import serialize from "form-serialize"
-import { useMount } from "hooks/use-mount"
 import { sliderStyle } from "../../../shared/style"
-
-const Styles = styled.div(sliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
     Slider.machine.withContext({
-      uid: "123",
       value: 40,
       name: "volume",
     }),
   )
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { inputProps, thumbProps, rootProps, trackProps, rangeProps, labelProps, outputProps, value } = Slider.connect(
     state,
@@ -26,7 +21,8 @@ export default function Page() {
   )
 
   return (
-    <Styles>
+    <>
+      <Global styles={sliderStyle} />
       <form // ensure we can read the value within forms
         onChange={(e) => {
           const formData = serialize(e.currentTarget, { hash: true })
@@ -52,6 +48,6 @@ export default function Page() {
 
         <StateVisualizer state={state} />
       </form>
-    </Styles>
+    </>
   )
 }

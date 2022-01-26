@@ -1,8 +1,7 @@
 import * as Accordion from "@ui-machines/accordion"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
-import { useMount } from "hooks/use-mount"
 
 const data = [
   {
@@ -31,7 +30,7 @@ export default function Page() {
   })
 
   const { rootProps, getItemProps, getContentProps, getTriggerProps } = Accordion.connect(state, send)
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "12" })
 
   return (
     <div className="root" style={{ width: "100%" }}>

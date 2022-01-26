@@ -1,11 +1,10 @@
 import { css } from "@emotion/css"
 import * as Combobox from "@ui-machines/combobox"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
 const styles = css(comboboxStyle)
 
@@ -19,7 +18,7 @@ export default defineComponent({
       }),
     )
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const comboboxRef = computed(() => Combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
 

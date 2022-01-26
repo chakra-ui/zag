@@ -1,11 +1,10 @@
 import { css } from "@emotion/css"
 import * as Rating from "@ui-machines/rating"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { ratingStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
 const styles = css(ratingStyle)
 
@@ -14,12 +13,11 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       Rating.machine.withContext({
-        uid: "123",
         allowHalf: true,
       }),
     )
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const ratingRef = computed(() => Rating.connect<VuePropTypes>(state.value, send, normalizeProps))
 

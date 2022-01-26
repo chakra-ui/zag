@@ -1,7 +1,6 @@
 import * as Tooltip from "@ui-machines/tooltip"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, PropType, Fragment } from "vue"
-import { useMount } from "../hooks/use-mount"
 
 const TooltipComponent = defineComponent({
   name: "Tooltip",
@@ -14,7 +13,7 @@ const TooltipComponent = defineComponent({
   setup(props) {
     const [state, send] = useMachine(Tooltip.machine.withContext({ id: props.id }))
     const tooltipRef = computed(() => Tooltip.connect<VuePropTypes>(state.value, send, normalizeProps))
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: props.id })
 
     return () => {
       const { triggerProps, isVisible, contentProps } = tooltipRef.value

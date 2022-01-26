@@ -1,10 +1,9 @@
 import { injectGlobal } from "@emotion/css"
 import * as Dialog from "@ui-machines/dialog"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment, ref as vueRef, Teleport } from "vue"
 import { dialogStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
 injectGlobal(dialogStyle)
 
@@ -15,12 +14,12 @@ export default defineComponent({
 
     // Dialog 1
     const [state, send] = useMachine(Dialog.machine)
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
     const parentDialogRef = computed(() => Dialog.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     // Dialog 2
     const [state2, send2] = useMachine(Dialog.machine)
-    const ref2 = useMount(send2)
+    const ref2 = useSetup({ send: send2, id: "2" })
     const childDialogRef = computed(() => Dialog.connect<VuePropTypes>(state2.value, send2, normalizeProps))
 
     return () => {

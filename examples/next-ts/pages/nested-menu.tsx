@@ -3,9 +3,8 @@ import { Portal } from "@reach/portal"
 import { mergeProps } from "@ui-machines/core"
 import { nextTick } from "@ui-machines/dom-utils"
 import * as Menu from "@ui-machines/menu"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
-import { useMount } from "hooks/use-mount"
 import { useEffect } from "react"
 import { menuStyle } from "../../../shared/style"
 
@@ -14,9 +13,9 @@ export default function Page() {
   const [subState, subSend, subMachine] = useMachine(Menu.machine)
   const [sub2State, sub2Send, sub2Machine] = useMachine(Menu.machine)
 
-  const rootRef = useMount<HTMLButtonElement>(send)
-  const subRef = useMount<HTMLLIElement>(subSend)
-  const sub2Ref = useMount<HTMLLIElement>(sub2Send)
+  const rootRef = useSetup<HTMLButtonElement>({ send, id: "1" })
+  const subRef = useSetup<HTMLLIElement>({ send: subSend, id: "2" })
+  const sub2Ref = useSetup<HTMLLIElement>({ send: sub2Send, id: "3" })
 
   const root = Menu.connect(state, send)
   const sub = Menu.connect(subState, subSend)

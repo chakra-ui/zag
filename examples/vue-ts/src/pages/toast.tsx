@@ -1,10 +1,9 @@
 import { injectGlobal } from "@emotion/css"
 import * as Toast from "@ui-machines/toast"
-import { normalizeProps, useActor, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useActor, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
 import { toastStyle } from "../../../../shared/style"
-import { useMount } from "../hooks/use-mount"
 
 injectGlobal(toastStyle)
 
@@ -38,7 +37,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(Toast.group.machine, { preserve: true })
 
-    const toastRef = useMount(send)
+    const toastRef = useSetup({ send, id: "1" })
 
     const toasts = computed(() => Toast.group.connect<VuePropTypes>(state.value, send, normalizeProps))
 

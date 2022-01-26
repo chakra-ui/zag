@@ -1,8 +1,7 @@
 import { Global } from "@emotion/react"
-import { useMachine } from "@ui-machines/react"
 import * as Menu from "@ui-machines/menu"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
-import { useMount } from "hooks/use-mount"
 import { menuStyle } from "../../../shared/style"
 
 export default function Page() {
@@ -13,7 +12,7 @@ export default function Page() {
     }),
   )
 
-  const ref = useMount<HTMLButtonElement>(send)
+  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
   const { contentProps, getItemProps, triggerProps } = Menu.connect(state, send)
 
   return (

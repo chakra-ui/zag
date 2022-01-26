@@ -1,4 +1,4 @@
-import { computed, h, Fragment, Ref, ref, inject, provide, watchEffect } from "vue"
+import { h, Fragment, Ref, ref, inject, provide } from "vue"
 import { ControlRecord, ControlValue } from "@ui-machines/types"
 
 const ControlsSymbol = Symbol("use-controls")

@@ -1,14 +1,13 @@
-import { css } from "@emotion/css"
+import { injectGlobal } from "@emotion/css"
 import * as Slider from "@ui-machines/slider"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { computed, h, Fragment } from "vue"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
-const styles = css(sliderStyle)
+injectGlobal(sliderStyle)
 
 export default defineComponent({
   name: "Slider",
@@ -22,7 +21,7 @@ export default defineComponent({
       }),
     )
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const sliderRef = computed(() => Slider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
@@ -31,7 +30,7 @@ export default defineComponent({
         sliderRef.value
 
       return (
-        <div class={styles}>
+        <div>
           <form // ensure we can read the value within forms
             onChange={(e) => {
               const target = e.currentTarget as HTMLFormElement

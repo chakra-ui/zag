@@ -1,9 +1,8 @@
 import { Global } from "@emotion/react"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import * as TagsInput from "@ui-machines/tags-input"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
-import { useMount } from "hooks/use-mount"
 import { tagsInputStyle } from "../../../shared/style"
 
 function toDashCase(str: string) {
@@ -29,7 +28,7 @@ export default function Page() {
     },
   )
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { inputProps, rootProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = TagsInput.connect(
     state,

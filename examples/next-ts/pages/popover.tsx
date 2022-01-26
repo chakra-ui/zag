@@ -1,10 +1,9 @@
 import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
 import * as Popover from "@ui-machines/popover"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
-import { useMount } from "hooks/use-mount"
 import * as React from "react"
 import { popoverStyle } from "../../../shared/style"
 
@@ -20,7 +19,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, arrowProps, innerArrowProps } =
     Popover.connect(state, send)

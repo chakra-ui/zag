@@ -1,27 +1,26 @@
-import { css } from "@emotion/css"
+import { injectGlobal } from "@emotion/css"
 import * as SplitView from "@ui-machines/split-view"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { splitViewStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
-const styles = css(splitViewStyle)
+injectGlobal(splitViewStyle)
 
 export default defineComponent({
   name: "SplitView",
   setup() {
     const [state, send] = useMachine(SplitView.machine.withContext({ min: 0 }))
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const splitterRef = computed(() => SplitView.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, primaryPaneProps, labelProps, splitterProps, secondaryPaneProps } = splitterRef.value
       return (
-        <div class={styles}>
+        <div>
           <div class="root">
             <div ref={ref} {...rootProps}>
               <div class="pane" {...primaryPaneProps}>

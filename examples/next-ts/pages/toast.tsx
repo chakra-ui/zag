@@ -1,8 +1,7 @@
 import { Global } from "@emotion/react"
-import { useActor, useMachine } from "@ui-machines/react"
+import { useActor, useMachine, useSetup } from "@ui-machines/react"
 import * as Toast from "@ui-machines/toast"
 import { StateVisualizer } from "components/state-visualizer"
-import { useMount } from "hooks/use-mount"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
 import { toastStyle } from "../../../shared/style"
@@ -30,7 +29,7 @@ export default function Page() {
   const [state, send] = useMachine(Toast.group.machine)
   const { context: ctx } = state
 
-  const ref = useMount<HTMLDivElement>(send)
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const toasts = Toast.group.connect(state, send)
   const id = useRef<string>()

@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as TagsInput from "@ui-machines/tags-input"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
-import { useMount } from "../hooks/use-mount"
 
 injectGlobal(tagsInputStyle)
 
@@ -35,7 +34,7 @@ export default defineComponent({
       },
     )
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const tags = computed(() => TagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 

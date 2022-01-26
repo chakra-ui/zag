@@ -1,9 +1,8 @@
 import { mergeProps } from "@ui-machines/core"
 import * as NumberInput from "@ui-machines/number-input"
-import { useMachine } from "@ui-machines/react"
+import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "components/state-visualizer"
 import { useControls } from "hooks/use-controls"
-import { useMount } from "hooks/use-mount"
 
 export default function Page() {
   const controls = useControls({
@@ -19,7 +18,7 @@ export default function Page() {
     sync: true,
   })
 
-  const ref = useMount<HTMLInputElement>(send)
+  const ref = useSetup<HTMLInputElement>({ send, id: "1" })
 
   const { inputProps, decrementButtonProps, incrementButtonProps, scrubberProps, labelProps } = NumberInput.connect(
     state,

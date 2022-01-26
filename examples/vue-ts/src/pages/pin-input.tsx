@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as PinInput from "@ui-machines/pin-input"
-import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { pinInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useMount } from "../hooks/use-mount"
 
 injectGlobal(pinInputStyle)
 
@@ -23,7 +22,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useMount(send)
+    const ref = useSetup({ send, id: "1" })
 
     const pin = computed(() => PinInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
