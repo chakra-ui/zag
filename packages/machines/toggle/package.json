@@ -14,9 +14,9 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
   "license": "MIT",
-  "main": "dist/ui-machines-toggle.cjs.js",
-  "types": "dist/ui-machines-toggle.cjs.d.ts",
-  "module": "dist/ui-machines-toggle.esm.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
   "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/toggle",
   "sideEffects": false,
   "files": [

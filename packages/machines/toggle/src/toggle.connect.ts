@@ -16,6 +16,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     buttonProps: normalize.button<T>({
       id: dom.getButtonId(ctx),
       type: "button",
+      "aria-label": ctx.label,
       "aria-pressed": isPressed,
       "data-disabled": dataAttr(ctx.disabled),
       "data-pressed": dataAttr(isPressed),

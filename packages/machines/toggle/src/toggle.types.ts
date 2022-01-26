@@ -2,6 +2,7 @@ import type { StateMachine as S } from "@ui-machines/core"
 import { Context } from "@ui-machines/types"
 
 export type ToggleMachineContext = Context<{
+  label: string
   disabled?: boolean
   onChange?: (pressed: boolean) => void
 }>

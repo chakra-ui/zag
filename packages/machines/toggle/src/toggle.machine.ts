@@ -8,6 +8,7 @@ export const machine = createMachine<ToggleMachineContext, ToggleMachineState>(
     context: {
       uid: "",
       disabled: false,
+      label: "Toggle",
     },
     states: {
       unknown: {
@@ -28,6 +29,9 @@ export const machine = createMachine<ToggleMachineContext, ToggleMachineState>(
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
+      },
+      invokeOnChange(ctx, evt) {
+        ctx.onChange?.(evt.pressed)
       },
     },
   },
