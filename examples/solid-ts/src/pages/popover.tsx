@@ -2,17 +2,23 @@ import { injectGlobal } from "@emotion/css"
 import * as Popover from "@ui-machines/popover"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
+import { useControls } from "../hooks/use-controls"
 import { popoverStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
 injectGlobal(popoverStyle)
 
 export default function Page() {
-  const [state, send] = useMachine(
-    Popover.machine.withContext({
-      autoFocus: true,
-    }),
-  )
+  const controls = useControls({
+    modal: { type: "boolean", defaultValue: false },
+    portalled: { type: "boolean", defaultValue: true },
+    autoFocus: { type: "boolean", defaultValue: true },
+    closeOnEsc: { type: "boolean", defaultValue: true },
+  })
+
+  const [state, send] = useMachine(Popover.machine, {
+    context: controls.context,
+  })
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
@@ -50,6 +56,8 @@ export default function Page() {
         <span data-testid="plain-text">I am just text</span>
         <button data-testid="button-after">Button :after</button>
       </div>
+
+      <controls.ui />
 
       <StateVisualizer state={state} />
     </>
