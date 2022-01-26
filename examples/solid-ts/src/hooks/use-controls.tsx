@@ -23,12 +23,14 @@ export function useControls<T extends ControlRecord>(config: T) {
           display: "inline-block",
           background: "lightgray",
           padding: "12px",
-          borderRadius: "8px",
+          "border-radius": "8px",
           border: "1px solid lightgray",
           margin: "24px 0",
         }}
       >
-        <p style={{ fontSize: "small", all: "unset", display: "block", marginBottom: "12px" }}>Property controls</p>
+        <p style={{ "font-size": "small", all: "unset", display: "block", "margin-bottom": "12px" }}>
+          Property controls
+        </p>
         <div style={{ display: "inline-flex", gap: "24px" }}>
           <For each={Object.keys(config)}>
             {(key) => {
@@ -52,7 +54,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                 case "string":
                   return (
                     <div>
-                      <label style={{ marginRight: "10px" }}>{label}</label>
+                      <label style={{ "margin-right": "10px" }}>{label}</label>
                       <input
                         data-testid={key}
                         type="text"
@@ -69,7 +71,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                 case "select":
                   return (
                     <div>
-                      <label htmlFor={label} style={{ marginRight: "10px" }}>
+                      <label htmlFor={label} style={{ "margin-right": "10px" }}>
                         {label}
                       </label>
                       <select
@@ -88,14 +90,14 @@ export function useControls<T extends ControlRecord>(config: T) {
                 case "number":
                   return (
                     <div>
-                      <label htmlFor={label} style={{ marginRight: "10px" }}>
+                      <label htmlFor={label} style={{ "margin-right": "10px" }}>
                         {label}
                       </label>
                       <input
                         data-testid={key}
                         id={label}
                         type="number"
-                        style={{ maxWidth: "5ch" }}
+                        style={{ "max-width": "5ch" }}
                         min={min}
                         max={max}
                         value={state[key] as number}
