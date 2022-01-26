@@ -1,30 +1,35 @@
-import { css } from "@emotion/css"
+import { injectGlobal } from "@emotion/css"
 import * as Slider from "@ui-machines/slider"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
+import { useControls } from "../hooks/use-controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
-const styles = css(sliderStyle)
+injectGlobal(sliderStyle)
 
 export default function Page() {
-  const [state, send] = useMachine(
-    Slider.machine.withContext({
-      uid: "123",
-      value: 40,
-      name: "volume",
-      dir: "ltr",
-    }),
-  )
+  const controls = useControls({
+    disabled: { type: "boolean", defaultValue: false },
+    value: { type: "number", defaultValue: 40 },
+    dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+    origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },
+  })
+
+  const [state, send] = useMachine(Slider.machine, {
+    context: controls.context,
+  })
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
   const slider = createMemo(() => Slider.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
-    <div className={styles}>
-      <form // ensure we can read the value within forms
+    <>
+      <controls.ui />
+      <form
+        // ensure we can read the value within forms
         onInput={(e) => {
           const formData = serialize(e.currentTarget, { hash: true })
           console.log(formData)
@@ -45,6 +50,6 @@ export default function Page() {
 
         <StateVisualizer state={state} />
       </form>
-    </div>
+    </>
   )
 }

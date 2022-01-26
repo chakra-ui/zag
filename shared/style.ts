@@ -165,11 +165,16 @@ export const sliderStyle: CSSObject = {
     borderRadius: ["9999px", "999px"],
     background: "white",
     boxShadow: "rgba(0, 0, 0, 0.14) 0px 2px 10px",
+    "&:focus-visible": {
+      boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
+    },
+    "&:hover:not([data-disabled])": {
+      backgroundColor: "rgb(245, 242, 255)",
+    },
+    "&[data-disabled]": {
+      background: "lightgray",
+    },
   },
-  ".slider__thumb:focus-visible": {
-    boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
-  },
-  ".slider__thumb:hover": { backgroundColor: "rgb(245, 242, 255)" },
   ".slider__track": {
     height: "var(--slider-track-height)",
     background: "rgba(0, 0, 0, 0.2)",
@@ -180,6 +185,9 @@ export const sliderStyle: CSSObject = {
     background: "magenta",
     borderRadius: "inherit",
     height: "100%",
+    "&[data-disabled]": {
+      background: "rgba(0, 0, 0, 0.4)",
+    },
   },
   output: { marginInlineStart: "12px" },
 }

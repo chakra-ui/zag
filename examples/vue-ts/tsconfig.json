@@ -10,12 +10,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "baseUrl": ".",
-    "paths": {
-      "@ui-machines/vue": ["../../packages/frameworks/vue/src"],
-      "@ui-machines/core": ["../../packages/core/src"],
-      "@ui-machines/web": ["../../packages/machines/src"]
-    },
+    // "baseUrl": ".",
     "types": ["vite-plugin-pages/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]

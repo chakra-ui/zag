@@ -36,15 +36,19 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       return percentToValue(percent, ctx)
     },
     blur() {
+      if (ctx.disabled) return
       send("BLUR")
     },
     focus() {
+      if (ctx.disabled) return
       send("FOCUS")
     },
     increment() {
+      if (ctx.disabled) return
       send("INCREMENT")
     },
     decrement() {
+      if (ctx.disabled) return
       send("DECREMENT")
     },
 
@@ -54,6 +58,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx),
       onClick(event) {
+        if (ctx.disabled) return
         event.preventDefault()
         dom.getThumbEl(ctx)?.focus()
       },
@@ -64,6 +69,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     outputProps: normalize.output<T>({
       "data-part": "output",
+      "data-disabled": dataAttr(ctx.disabled),
       id: dom.getOutputId(ctx),
       htmlFor: dom.getInputId(ctx),
       "aria-live": "off",
@@ -87,12 +93,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       role: "slider",
       tabIndex: ctx.disabled ? -1 : 0,
       onBlur() {
+        if (ctx.disabled) return
         send("BLUR")
       },
       onFocus() {
+        if (ctx.disabled) return
         send("FOCUS")
       },
       onKeyDown(event) {
+        if (ctx.disabled) return
         const step = multiply(getEventStep(event), ctx.step)
         let prevent = true
         const keyMap: EventKeyMap = {
@@ -178,6 +187,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-focus": dataAttr(isFocused),
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
+        if (ctx.disabled) return
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) {
           return
