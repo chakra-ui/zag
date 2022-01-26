@@ -11,20 +11,11 @@ export function useMachine<
     context?: Ref<S.UserContext<TContext>> | ComputedRef<S.UserContext<TContext>>
   },
 ) {
-  /** Machine options */
   const { actions, state: hydratedState, context, preserve } = options ?? {}
 
   const resolvedMachine = typeof machine === "function" ? machine() : preserve ? machine : machine.clone()
   const service = options ? resolvedMachine.withOptions(options) : resolvedMachine
 
-  /**
-   * The `state` variable holds the internal
-   * state for this machine instance.
-   *
-   * The `consumableState` computed variable will
-   * compare new values in it's setter before writing
-   * to the `state` ref.
-   */
   const state = shallowRef<S.State<TContext, TState>>(service.state)
   const consumableState = computed({
     get() {
@@ -37,12 +28,19 @@ export function useMachine<
     },
   })
 
-  /** Initialize machine service */
   service.start(hydratedState)
-  let unsubscribe: () => void
+
+  let unsubscribe: VoidFunction
 
   onMounted(() => {
-    unsubscribe = service.subscribe(listener)
+    unsubscribe = service.subscribe((nextState) => {
+      consumableState.value = nextState
+    })
+  })
+
+  onBeforeUnmount(() => {
+    unsubscribe?.()
+    service.stop()
   })
 
   watch(() => actions, service.setActions, { flush: "post", immediate: true })
@@ -56,27 +54,6 @@ export function useMachine<
       { immediate: true, deep: true },
     )
   }
-
-  /**
-   * Here we use this listener to write the updated
-   * state from the state machine to a writable computed ref.
-   *
-   * The reason for this that Vue will only re-initialize
-   * this hook once during setup unlike her react counterpart which uses snapshots.
-   *
-   * So in order to keep track of the update state, we use a shallowRef
-   * to write and compare the current and only push updates when the state
-   * has changed.
-   */
-  function listener(nextState: S.State<TContext, TState>) {
-    consumableState.value = nextState
-  }
-
-  // Cleanup
-  onBeforeUnmount(() => {
-    unsubscribe?.()
-    service.stop()
-  })
 
   return [consumableState, service.send, service] as const
 }
