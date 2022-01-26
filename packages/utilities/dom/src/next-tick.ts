@@ -22,17 +22,3 @@ export function raf(fn: VoidFunction) {
 export function forceReflow() {
   return document.body.offsetHeight
 }
-
-export const microtask: (v: VoidFunction) => void =
-  typeof globalThis.queueMicrotask === "function"
-    ? globalThis.queueMicrotask
-    : typeof globalThis.Promise !== "undefined"
-    ? (fn) =>
-        globalThis.Promise.resolve()
-          .then(fn)
-          .catch((error) => {
-            setTimeout(function () {
-              throw error
-            })
-          })
-    : globalThis.setTimeout
