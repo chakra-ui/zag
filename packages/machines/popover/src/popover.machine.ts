@@ -117,6 +117,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         let cleanup = () => {}
+        ctx.__placement = ctx.placementOptions.placement
         raf(() => {
           const ref = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
           const arrow = dom.getArrowEl(ctx)
