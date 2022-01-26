@@ -21,6 +21,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/editable")),
   },
   {
+    path: "/dialog",
+    component: lazy(() => import("./pages/dialog")),
+  },
+  {
     path: "/menu",
     component: lazy(() => import("./pages/menu")),
   },
