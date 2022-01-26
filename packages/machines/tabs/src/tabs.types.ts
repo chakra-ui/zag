@@ -32,7 +32,7 @@ export type MachineContext = Context<{
   /**
    * @internal The active tab indicator's dom rect
    */
-  indicatorRect?: Partial<DOMRect>
+  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
   /**
    * @internal Whether the active tab indicator's rect has been measured
    */

@@ -15,7 +15,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: null,
       focusedValue: null,
       uid: "",
-      indicatorRect: { left: 0, right: 0, width: 0, height: 0 },
+      indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
       measuredRect: false,
       loop: true,
     },

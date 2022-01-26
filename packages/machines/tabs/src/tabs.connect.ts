@@ -110,7 +110,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         willChange: "left, right, top, bottom, width, height",
         transitionProperty: "left, right, top, bottom, width, height",
         transitionDuration: ctx.measuredRect ? "200ms" : "0ms",
-        ...(ctx.indicatorRect as any),
+        ...ctx.indicatorRect,
       },
     }),
   }

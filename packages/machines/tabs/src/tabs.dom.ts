@@ -21,10 +21,11 @@ export const dom = {
   getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTabId(ctx, id), ctx.loop),
   getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTabId(ctx, id), ctx.loop),
   getRectById: (ctx: Ctx, id: string) => {
-    const tab = itemById(dom.getElements(ctx), dom.getTabId(ctx, id))
-    return {
-      left: tab?.offsetLeft ?? 0,
-      width: tab?.offsetWidth ?? 0,
+    const empty = { offsetLeft: 0, offsetTop: 0, offsetWidth: 0, offsetHeight: 0 }
+    const tab = itemById(dom.getElements(ctx), dom.getTabId(ctx, id)) ?? empty
+    if (ctx.orientation === "vertical") {
+      return { top: `${tab.offsetTop}px`, height: `${tab.offsetHeight}px` }
     }
+    return { left: `${tab.offsetLeft}px`, width: `${tab.offsetWidth}px` }
   },
 }
