@@ -12,6 +12,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
   const { state, style, reset, label } = props
   return (
     <pre
+      dir="ltr"
       className="pre"
       style={
         reset
@@ -21,7 +22,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
               position: "absolute",
               overflow: "hidden",
               top: 40,
-              right: 40,
+              left: 40,
               maxWidth: 400,
               width: "100%",
               zIndex: -1,

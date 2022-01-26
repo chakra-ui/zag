@@ -1,25 +1,21 @@
-import { css } from "@emotion/css"
+import { injectGlobal } from "@emotion/css"
 import * as Menu from "@ui-machines/menu"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
-const styles = css(menuStyle)
+injectGlobal(menuStyle)
 
 export default function Page() {
-  const [state, send] = useMachine(
-    Menu.machine.withContext({
-      onSelect: console.log,
-    }),
-  )
+  const [state, send] = useMachine(Menu.machine)
 
-  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
+  const ref = useSetup<HTMLButtonElement>({ send, id: "12" })
 
   const menu = createMemo(() => Menu.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
-    <div className={styles}>
+    <>
       <button ref={ref} {...menu().triggerProps}>
         Click me
       </button>
@@ -30,6 +26,6 @@ export default function Page() {
       </ul>
 
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

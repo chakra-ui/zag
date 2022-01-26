@@ -13,6 +13,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
   return (
     <pre
       className="pre"
+      dir="ltr"
       style={
         reset
           ? style
@@ -21,7 +22,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
               position: "absolute",
               overflow: "hidden",
               top: "40px",
-              right: "40px",
+              left: "40px",
               "max-width": "240px",
               width: "100%",
               "z-index": -1,
@@ -34,6 +35,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
         state,
         (_k, v) => {
           if (v instanceof Machine) return `Machine: ${v.state.context.uid}`
+          if (v instanceof Document) return "doc:loaded"
           return isDom() && v instanceof HTMLElement ? v.tagName : v
         },
         4,
