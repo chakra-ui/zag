@@ -97,7 +97,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         })
       },
       style: {
-        ...PLACEMENT_STYLE.floating(),
+        ...(ctx.__placement ? undefined : PLACEMENT_STYLE.floating()),
         pointerEvents: ctx.interactive ? "auto" : "none",
       },
     }),

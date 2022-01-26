@@ -71,8 +71,14 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
-        activities: ["trackEscapeKey", "trackPointermoveForSafari", "trackScroll", "trackPointerlockChange"],
-        entry: ["setGlobalId", "invokeOnOpen", "computePlacement"],
+        activities: [
+          "trackEscapeKey",
+          "trackPointermoveForSafari",
+          "trackScroll",
+          "trackPointerlockChange",
+          "computePlacement",
+        ],
+        entry: ["setGlobalId", "invokeOnOpen"],
         on: {
           POINTER_LEAVE: [
             {
@@ -98,7 +104,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closing: {
-        activities: "trackStore",
+        activities: ["trackStore", "computePlacement"],
         after: {
           CLOSE_DELAY: "closed",
         },
@@ -115,6 +121,26 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     activities: {
+      computePlacement(ctx) {
+        // pre-populate the placement with the current value
+        // for correct positioning on initial render
+        ctx.__placement = "bottom"
+        let cleanup: VoidFunction
+        raf(() => {
+          const utils = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
+            placement: "bottom",
+            onPlacementComplete(placement) {
+              ctx.__placement = placement
+            },
+          })
+          utils.compute()
+          cleanup = utils.addListeners()
+        })
+        return () => {
+          cleanup?.()
+          ctx.__placement = undefined
+        }
+      },
       trackPointerlockChange(ctx, _evt, { send }) {
         return addPointerlockChangeListener(dom.getDoc(ctx), () => {
           send("POINTER_LOCK_CHANGE")
@@ -178,14 +204,6 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!omit.includes(evt.type)) {
           ctx.onClose?.()
         }
-      },
-      computePlacement(ctx) {
-        raf(() => {
-          const utils = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
-            placement: "bottom",
-          })
-          utils.compute()
-        })
       },
     },
     guards: {

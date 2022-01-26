@@ -1,3 +1,5 @@
+import { Placement } from "@ui-machines/popper"
+
 export type MachineContext = {
   /**
    * The owner document of the tooltip.
@@ -42,6 +44,7 @@ export type MachineContext = {
    */
   "aria-label"?: string
   readonly hasAriaLabel: boolean
+  __placement?: Placement
 }
 
 export type MachineState = {
