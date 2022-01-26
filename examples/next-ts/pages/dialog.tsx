@@ -31,10 +31,6 @@ export default function Page() {
           {parentDialog.isOpen && (
             <Portal>
               <div className="dialog__overlay" {...parentDialog.overlayProps} data-testid="overlay-1" />
-            </Portal>
-          )}
-          {parentDialog.isOpen && (
-            <Portal>
               <div className="dialog__content" {...parentDialog.contentProps}>
                 <h2 className="dialog__title" {...parentDialog.titleProps}>
                   Edit profile
@@ -55,10 +51,6 @@ export default function Page() {
                 {childDialog.isOpen && (
                   <Portal>
                     <div className="dialog__overlay" {...childDialog.overlayProps} data-testid="overlay-2" />
-                  </Portal>
-                )}
-                {childDialog.isOpen && (
-                  <Portal>
                     <div className="dialog__content" {...childDialog.contentProps}>
                       <h2 className="dialog__title" {...childDialog.titleProps}>
                         Nested
