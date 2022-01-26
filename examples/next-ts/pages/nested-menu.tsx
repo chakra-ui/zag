@@ -106,9 +106,9 @@ export default function Page() {
         </ul>
       </Portal>
 
-      <StateVisualizer state={state} label="Root Machine" style={{ maxWidth: 320 }} />
-      <StateVisualizer state={subState} label="Sub Machine" style={{ maxWidth: 320, left: 420 }} />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" style={{ maxWidth: 320, left: 800 }} />
+      <StateVisualizer state={state} label="Root Machine" placement="left" />
+      <StateVisualizer state={subState} label="Sub Machine" placement="left" offset="420px" />
+      <StateVisualizer state={sub2State} label="Sub2 Machine" placement="left" offset="800px" />
     </>
   )
 }

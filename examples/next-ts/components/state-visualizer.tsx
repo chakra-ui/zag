@@ -2,6 +2,8 @@ import { Machine } from "@ui-machines/core"
 import { isDom } from "@ui-machines/utils"
 
 type StateVisualizerProps = {
+  offset?: string
+  placement?: "right" | "left"
   state: Record<string, any>
   style?: Record<string, any>
   reset?: boolean
@@ -9,7 +11,7 @@ type StateVisualizerProps = {
 }
 
 export function StateVisualizer(props: StateVisualizerProps) {
-  const { state, style, reset, label } = props
+  const { state, style, reset, label, placement = "right", offset = "40px" } = props
   return (
     <pre
       dir="ltr"
@@ -22,7 +24,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
               position: "absolute",
               overflow: "hidden",
               top: 40,
-              left: 40,
+              [placement]: offset,
               maxWidth: 400,
               width: "100%",
               zIndex: -1,

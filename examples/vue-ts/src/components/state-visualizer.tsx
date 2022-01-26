@@ -1,23 +1,32 @@
 import { isDom } from "@ui-machines/utils"
 import { h, SetupContext } from "vue"
 
-export function StateVisualizer(props: { state: Record<string, any> }, { attrs }: SetupContext) {
-  const { state } = props
+type StateVisualizerProps = {
+  offset?: string
+  placement?: "right" | "left"
+  state: Record<string, any>
+  style?: Record<string, any>
+  reset?: boolean
+  label?: string
+}
+
+export function StateVisualizer(props: StateVisualizerProps, { attrs }: SetupContext) {
+  const { state, placement = "right", offset = "40px", style } = props
   return (
     <pre
       class="pre"
+      {...attrs}
       style={{
         float: "right",
         position: "absolute",
         overflow: "hidden",
         top: "40px",
-        right: "40px",
+        [placement]: offset,
         maxWidth: "240px",
         width: "100%",
         zIndex: -1,
+        ...style,
       }}
-      {...props}
-      {...attrs}
     >
       {JSON.stringify(
         state,
