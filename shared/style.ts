@@ -360,3 +360,22 @@ export const dialogStyle: CSSObject = {
     outlineOffset: "2px",
   },
 }
+
+export const toggleStyle: CSSObject = {
+  ".toggle": {
+    backgroundColor: "white",
+    color: "rgb(111, 110, 119)",
+    height: "40px",
+    width: "40px",
+    fontSize: "16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "4px",
+    "&[data-pressed]": {
+      fontWeight: "bold",
+      backgroundColor: "rgb(215, 207, 249)",
+      color: "rgb(32, 19, 75)",
+    },
+  },
+}
