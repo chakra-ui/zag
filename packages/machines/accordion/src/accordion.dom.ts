@@ -12,7 +12,8 @@ export const dom = {
 
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
   getTriggers: (ctx: Ctx) => {
-    const selector = `[aria-controls][data-ownedby='${dom.getRootId(ctx)}']:not([disabled])`
+    const ownerId = CSS.escape(dom.getRootId(ctx))
+    const selector = `[aria-controls][data-ownedby='${ownerId}']:not([disabled])`
     return queryElements(dom.getRootEl(ctx), selector)
   },
 

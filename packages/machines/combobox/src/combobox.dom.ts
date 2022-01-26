@@ -22,8 +22,11 @@ export const dom = {
   getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 
   getElements: (ctx: Ctx) => queryElements(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
-  getFocusedOptionEl: (ctx: Ctx) =>
-    dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][id=${ctx.activeId}]`),
+  getFocusedOptionEl: (ctx: Ctx) => {
+    if (!ctx.activeId) return null
+    const selector = `[role=option][id=${CSS.escape(ctx.activeId)}]`
+    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(selector)
+  },
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
@@ -47,7 +50,8 @@ export const dom = {
   },
   getMatchingOptionEl: (ctx: Ctx, value = ctx.inputValue) => {
     if (!value) return null
-    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-label="${value}"`)
+    const selector = `[role=option][data-label="${CSS.escape(value)}"`
+    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(selector)
   },
 
   scrollIntoView: (ctx: Ctx, el: HTMLElement) => {

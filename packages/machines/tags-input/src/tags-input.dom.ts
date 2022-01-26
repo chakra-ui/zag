@@ -17,7 +17,11 @@ export const dom = {
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
   getEditInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditInputId(ctx)) as HTMLInputElement | null,
   getTag: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTagId(ctx, id)),
-  getElements: (ctx: Ctx) => queryElements(dom.getRootEl(ctx), `[data-ownedby=${dom.getRootId(ctx)}]`),
+  getElements: (ctx: Ctx) => {
+    const ownerId = CSS.escape(dom.getRootId(ctx))
+    const selector = `[data-ownedby=${ownerId}]`
+    return queryElements(dom.getRootEl(ctx), selector)
+  },
   getClosestFormEl: (ctx: Ctx) => dom.getInputEl(ctx)?.closest("form"),
 
   getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getElements(ctx), id),

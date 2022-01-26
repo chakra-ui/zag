@@ -17,9 +17,11 @@ export const dom = {
   getArrowEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getArrowId(ctx)),
 
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
-  getElements: (ctx: Ctx) =>
-    queryElements(dom.getMenuEl(ctx), `[role=menuitem][data-ownedby=${dom.getMenuId(ctx)}]:not([data-disabled])`),
-
+  getElements: (ctx: Ctx) => {
+    const ownerId = CSS.escape(dom.getMenuId(ctx))
+    const selector = `[role=menuitem][data-ownedby=${ownerId}]:not([data-disabled])`
+    return queryElements(dom.getMenuEl(ctx), selector)
+  },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
   getNextEl: (ctx: Ctx) => nextById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
