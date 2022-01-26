@@ -137,6 +137,7 @@ injectGlobal`
 
 [data-tooltip] {
   z-index: 1;
+  width: 100px;
   position: absolute;
   padding: 0.25em 0.5em;
   box-shadow: 2px 2px 10px hsla(0, 0%, 0%, 0.1);
