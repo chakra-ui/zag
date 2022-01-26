@@ -2,6 +2,7 @@ import { injectGlobal } from "@emotion/css"
 import * as PinInput from "@ui-machines/pin-input"
 import { normalizeProps, useMachine, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
+import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { pinInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,24 +13,26 @@ injectGlobal(pinInputStyle)
 export default defineComponent({
   name: "PinInput",
   setup() {
-    const [state, send] = useMachine(
-      PinInput.machine.withContext({
-        autoFocus: true,
-        onComplete(val) {
-          console.log(val)
-        },
-      }),
-    )
+    const controls = useControls({
+      type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
+      mask: { type: "boolean", defaultValue: false },
+      otp: { type: "boolean", defaultValue: false },
+    })
+
+    const [state, send] = useMachine(PinInput.machine, {
+      context: controls.context,
+    })
 
     const ref = useMount(send)
 
-    const pinInputRef = computed(() => PinInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const pin = computed(() => PinInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { containerProps, getInputProps, clearValue } = pinInputRef.value
+      const { containerProps, getInputProps, clearValue } = pin.value
       return (
         <div>
-          <div class="pin-input" style={{ width: "300px" }} ref={ref} {...containerProps}>
+          <controls.ui />
+          <div class="pin-input" ref={ref} {...containerProps}>
             <input data-testid="input-1" {...getInputProps({ index: 0 })} />
             <input data-testid="input-2" {...getInputProps({ index: 1 })} />
             <input data-testid="input-3" {...getInputProps({ index: 2 })} />

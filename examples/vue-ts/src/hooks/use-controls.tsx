@@ -31,100 +31,102 @@ export function useControls<T extends ControlRecord>(config: T) {
       return (
         <div
           style={{
-            display: "inline-flex",
-            gap: "24px",
+            display: "inline-block",
+            background: "lightgray",
             padding: "12px",
             borderRadius: "8px",
             border: "1px solid lightgray",
-            background: "lightgray",
-            margin: "24px",
+            margin: "24px 0",
           }}
         >
-          {Object.keys(config).map((key: keyof ControlValue<T>) => {
-            const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
-            switch (type) {
-              case "boolean":
-                return (
-                  <div key={key}>
-                    <input
-                      data-testid={key}
-                      id={label}
-                      type="checkbox"
-                      checked={state.value[key] as boolean}
-                      onInput={(e) => {
-                        //@ts-expect-error
-                        state.value[key] = e.currentTarget.checked
-                      }}
-                    />
-                    <label for={label}>{label}</label>
-                  </div>
-                )
-              case "string":
-                return (
-                  <div key={key}>
-                    <label style={{ marginRight: "10px" }}>{label}</label>
-                    <input
-                      data-testid={key}
-                      type="text"
-                      placeholder={placeholder}
-                      value={state.value[key] as string}
-                      onKeydown={(event) => {
-                        if (event.key === "Enter") {
+          <p style={{ fontSize: "small", all: "unset", display: "block", marginBottom: "12px" }}>Property controls</p>
+          <div style={{ display: "inline-flex", gap: "24px" }}>
+            {Object.keys(config).map((key: keyof ControlValue<T>) => {
+              const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+              switch (type) {
+                case "boolean":
+                  return (
+                    <div key={key}>
+                      <input
+                        data-testid={key}
+                        id={label}
+                        type="checkbox"
+                        checked={state.value[key] as boolean}
+                        onInput={(e) => {
                           //@ts-expect-error
-                          state.value[key] = (event.target as HTMLInputElement).value
-                        }
-                      }}
-                    />
-                  </div>
-                )
-              case "select":
-                return (
-                  <div key={key}>
-                    <label for={label} style={{ marginRight: "10px" }}>
-                      {label}
-                    </label>
-                    <select
-                      data-testid={key}
-                      id={label}
-                      value={state.value[key] as string}
-                      onChange={(e) => {
-                        //@ts-expect-error
-                        state.value[key] = (e.target as HTMLSelectElement).value
-                      }}
-                    >
-                      <option>-----</option>
-                      {options.map((option: any) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )
-              case "number":
-                return (
-                  <div key={key}>
-                    <label for={label} style={{ marginRight: "10px" }}>
-                      {label}
-                    </label>
-                    <input
-                      data-testid={key}
-                      id={label}
-                      type="number"
-                      min={min}
-                      max={max}
-                      value={state.value[key] as number}
-                      onKeydown={(e) => {
-                        if (e.key === "Enter") {
+                          state.value[key] = e.currentTarget.checked
+                        }}
+                      />
+                      <label for={label}>{label}</label>
+                    </div>
+                  )
+                case "string":
+                  return (
+                    <div key={key}>
+                      <label style={{ marginRight: "10px" }}>{label}</label>
+                      <input
+                        data-testid={key}
+                        type="text"
+                        placeholder={placeholder}
+                        value={state.value[key] as string}
+                        onKeydown={(event) => {
+                          if (event.key === "Enter") {
+                            //@ts-expect-error
+                            state.value[key] = (event.target as HTMLInputElement).value
+                          }
+                        }}
+                      />
+                    </div>
+                  )
+                case "select":
+                  return (
+                    <div key={key}>
+                      <label for={label} style={{ marginRight: "10px" }}>
+                        {label}
+                      </label>
+                      <select
+                        data-testid={key}
+                        id={label}
+                        value={state.value[key] as string}
+                        onChange={(e) => {
                           //@ts-expect-error
-                          state.value[key] = (e.target as HTMLInputElement).valueAsNumber
-                        }
-                      }}
-                    />
-                  </div>
-                )
-            }
-          })}
+                          state.value[key] = (e.target as HTMLSelectElement).value
+                        }}
+                      >
+                        <option>-----</option>
+                        {options.map((option: any) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )
+                case "number":
+                  return (
+                    <div key={key}>
+                      <label for={label} style={{ marginRight: "10px" }}>
+                        {label}
+                      </label>
+                      <input
+                        data-testid={key}
+                        id={label}
+                        type="number"
+                        min={min}
+                        max={max}
+                        value={state.value[key] as number}
+                        onKeydown={(e) => {
+                          if (e.key === "Enter") {
+                            //@ts-expect-error
+                            state.value[key] = (e.target as HTMLInputElement).valueAsNumber
+                          }
+                        }}
+                      />
+                    </div>
+                  )
+              }
+            })}
+          </div>
         </div>
       )
     },
