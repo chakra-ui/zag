@@ -11,6 +11,7 @@ injectGlobal(sliderStyle)
 
 export default function Page() {
   const controls = useControls({
+    readonly: { type: "boolean", defaultValue: false },
     disabled: { type: "boolean", defaultValue: false },
     value: { type: "number", defaultValue: 40 },
     dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },

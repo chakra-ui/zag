@@ -9,6 +9,7 @@ import { sliderStyle } from "../../../shared/style"
 export default function Page() {
   const controls = useControls({
     disabled: { type: "boolean", defaultValue: false },
+    readonly: { type: "boolean", defaultValue: false },
     value: { type: "number", defaultValue: 40 },
     dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
     origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },

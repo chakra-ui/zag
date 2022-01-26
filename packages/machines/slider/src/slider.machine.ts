@@ -26,6 +26,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
+      isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
     },
 
     created(ctx) {

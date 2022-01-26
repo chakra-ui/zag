@@ -14,6 +14,11 @@ export type MachineContext = Context<{
    */
   disabled?: boolean
   /**
+   * Whether the slider is read-only
+   */
+  readonly?: boolean
+  readonly isInteractive: boolean
+  /**
    * The minimum value of the slider
    */
   min: number

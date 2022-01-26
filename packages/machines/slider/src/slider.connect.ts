@@ -44,11 +44,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       send("FOCUS")
     },
     increment() {
-      if (ctx.disabled) return
       send("INCREMENT")
     },
     decrement() {
-      if (ctx.disabled) return
       send("DECREMENT")
     },
 
@@ -58,7 +56,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx),
       onClick(event) {
-        if (ctx.disabled) return
+        if (!ctx.isInteractive) return
         event.preventDefault()
         dom.getThumbEl(ctx)?.focus()
       },
@@ -101,7 +99,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onKeyDown(event) {
-        if (ctx.disabled) return
+        if (!ctx.isInteractive) return
         const step = multiply(getEventStep(event), ctx.step)
         let prevent = true
         const keyMap: EventKeyMap = {
@@ -187,11 +185,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-focus": dataAttr(isFocused),
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
-        if (ctx.disabled) return
+        if (!ctx.isInteractive) return
         const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || isModifiedEvent(evt)) {
-          return
-        }
+        if (!isLeftClick(evt) || isModifiedEvent(evt)) return
         const point = getEventPoint(evt)
         send({ type: "POINTER_DOWN", point })
         event.preventDefault()
