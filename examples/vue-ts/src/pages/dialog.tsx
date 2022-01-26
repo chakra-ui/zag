@@ -34,7 +34,7 @@ export default defineComponent({
               <button ref={ref} class="dialog__button" {...parentDialog.triggerProps} data-testid="trigger-1">
                 Open Dialog
               </button>
-              <div style={{ minHeight: "1200px" }} />
+              <div style={{ minHeight: "1200px", pointerEvents: "none" }} />
               {parentDialog.isOpen && (
                 <>
                   <Teleport to="body">
