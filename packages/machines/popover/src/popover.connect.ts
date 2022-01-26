@@ -60,7 +60,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       hidden: !isOpen,
       "aria-labelledby": dom.getHeaderId(ctx),
       "aria-describedby": dom.getBodyId(ctx),
-      style: PLACEMENT_STYLE.floating(),
+      style: ctx.__placement ? undefined : PLACEMENT_STYLE.floating(),
       "data-placement": ctx.__placement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
