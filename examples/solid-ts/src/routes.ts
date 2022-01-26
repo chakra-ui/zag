@@ -69,6 +69,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/tags-input")),
   },
   {
+    path: "/toggle",
+    component: lazy(() => import("./pages/toggle")),
+  },
+  {
     path: "/tooltip",
     component: lazy(() => import("./pages/tooltip")),
   },

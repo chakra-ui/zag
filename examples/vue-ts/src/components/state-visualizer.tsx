@@ -1,5 +1,5 @@
 import { isDom } from "@ui-machines/utils"
-import { h, SetupContext } from "vue"
+import { h, isRef, SetupContext } from "vue"
 
 type StateVisualizerProps = {
   offset?: string
@@ -11,7 +11,8 @@ type StateVisualizerProps = {
 }
 
 export function StateVisualizer(props: StateVisualizerProps, { attrs }: SetupContext) {
-  const { state, placement = "right", offset = "40px", style } = props
+  const { state: _state, placement = "right", offset = "40px", style } = props
+  const state = isRef(_state) ? _state.value : _state
   return (
     <pre
       class="pre"
