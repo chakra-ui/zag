@@ -10,6 +10,11 @@ injectGlobal`
     "Helvetica Neue", sans-serif;
 }
 
+*:focus {
+    outline: 2px dashed var(--ring-color);
+    outline-offset: 2px;
+}
+
 .root {
   margin: 24px;
 }
