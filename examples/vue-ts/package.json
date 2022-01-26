@@ -38,6 +38,7 @@
         "@vue/runtime-core",
         "aria-hidden",
         "focus-trap",
+        "form-serialize",
         "klona",
         "merge-anything",
         "react",
