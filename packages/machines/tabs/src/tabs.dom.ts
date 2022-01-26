@@ -4,6 +4,7 @@ import { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
   getTablistId: (ctx: Ctx) => `tabs-${ctx.uid}-tablist`,
   getPanelId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tabpanel-${id}`,
   getTabId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tab-${id}`,
@@ -23,7 +24,7 @@ export const dom = {
   getRectById: (ctx: Ctx, id: string) => {
     const empty = { offsetLeft: 0, offsetTop: 0, offsetWidth: 0, offsetHeight: 0 }
     const tab = itemById(dom.getElements(ctx), dom.getTabId(ctx, id)) ?? empty
-    if (ctx.orientation === "vertical") {
+    if (ctx.isVertical) {
       return { top: `${tab.offsetTop}px`, height: `${tab.offsetHeight}px` }
     }
     return { left: `${tab.offsetLeft}px`, width: `${tab.offsetWidth}px` }

@@ -8,6 +8,7 @@ const { not } = guards
 export const machine = createMachine<MachineContext, MachineState>(
   {
     initial: "unknown",
+
     context: {
       dir: "ltr",
       orientation: "horizontal",
@@ -19,15 +20,23 @@ export const machine = createMachine<MachineContext, MachineState>(
       measuredRect: false,
       loop: true,
     },
+
+    computed: {
+      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isVertical: (ctx) => ctx.orientation === "vertical",
+    },
+
     watch: {
       focusedValue: "invokeOnFocus",
       value: "invokeOnChange",
     },
+
     on: {
       SET_VALUE: {
         actions: "setValue",
       },
     },
+
     states: {
       unknown: {
         on: {
@@ -95,8 +104,8 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
-      isVertical: (ctx) => ctx.orientation === "vertical",
-      isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      isVertical: (ctx) => ctx.isVertical,
+      isHorizontal: (ctx) => ctx.isHorizontal,
       selectOnFocus: (ctx) => ctx.activationMode === "automatic",
     },
     actions: {

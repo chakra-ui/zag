@@ -22,6 +22,8 @@ export type MachineContext = Context<{
    * @default "horizontal"
    */
   orientation?: "horizontal" | "vertical"
+  readonly isHorizontal: boolean
+  readonly isVertical: boolean
   /**
    * The activation mode of the tabs. Can be `manual` or `automatic`
    * - `manual`: Tabs are activated when clicked or press `enter` key.
