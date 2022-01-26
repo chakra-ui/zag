@@ -25,7 +25,7 @@ const TooltipComponent = defineComponent({
               Over me
             </button>
             {isVisible && (
-              <div {...contentProps} style={{ background: "red", padding: "10px" }}>
+              <div data-testid={`${props.id}-tooltip`} {...contentProps} data-tooltip="">
                 Tooltip
               </div>
             )}
