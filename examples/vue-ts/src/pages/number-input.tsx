@@ -32,9 +32,9 @@ export default defineComponent({
         <>
           <controls.ui />
           <div>
+            <div {...mergeProps(scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })} />
             <label {...labelProps}>Enter number</label>
             <div>
-              <div {...mergeProps(scrubberProps, { style: { width: "15px", height: "15px", background: "red" } })} />
               <button {...decrementButtonProps}>DEC</button>
               <input ref={ref} {...inputProps} />
               <button {...incrementButtonProps}>INC</button>
