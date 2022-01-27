@@ -1,18 +1,28 @@
 import type { CSSObject } from "@emotion/react"
 import { keyframes } from "@emotion/css"
 
+export const accordionStyle: CSSObject = {
+  ".accordion": {
+    width: "100%",
+    maxWidth: "40ch",
+  },
+}
+
 export const comboboxStyle: CSSObject = {
-  '[role="listbox"]': {
+  ".combobox__listbox": {
     listStyleType: "none",
     padding: "0",
     margin: "0",
     border: "1px solid lightgray",
-    maxWidth: "300px",
+    width: "300px",
+    maxHeight: "400px",
+    overflow: "auto",
   },
-
-  '[role="option"][aria-selected="true"], [role="option"][data-highlighted]': {
-    backgroundColor: "red",
-    color: "white",
+  ".combobox__option": {
+    '&[aria-selected="true"], &[data-highlighted]': {
+      backgroundColor: "red",
+      color: "white",
+    },
   },
 }
 
@@ -24,10 +34,10 @@ export const menuStyle: CSSObject = {
     borderRadius: "6px",
     padding: "5px",
     boxShadow: "rgb(22 23 24 / 35%) 0px 10px 38px -10px, rgb(22 23 24 / 20%) 0px 10px 20px -15px",
-  },
-  '[role="menu"]:focus': {
-    outline: "2px dashed var(--ring-color)",
-    outlineOffset: "-3px",
+    "&:focus": {
+      outline: "2px dashed var(--ring-color)",
+      outlineOffset: "-3px",
+    },
   },
   '[role="menuitem"]': {
     all: "unset",
@@ -73,9 +83,9 @@ export const popoverStyle: CSSObject = {
     position: "absolute",
     top: "40px",
     left: "124px",
-  },
-  ".popover__content:focus": {
-    boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px, #c4b8f3 0 0 0 2px",
+    "&:focus": {
+      boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px, #c4b8f3 0 0 0 2px",
+    },
   },
   ".popover__title": {
     fontSize: "15px",
@@ -121,11 +131,13 @@ export const rangeSliderStyle: CSSObject = {
     borderRadius: ["9999px", "999px"],
     background: "white",
     boxShadow: "rgba(0, 0, 0, 0.14) 0px 2px 10px",
+    "&:focus-visible": {
+      boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
+    },
+    "&:hover": {
+      backgroundColor: "rgb(245, 242, 255)",
+    },
   },
-  ".slider__thumb:focus-visible": {
-    boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
-  },
-  ".slider__thumb:hover": { backgroundColor: "rgb(245, 242, 255)" },
   ".slider__track": {
     height: "var(--slider-track-height)",
     background: "rgba(0, 0, 0, 0.2)",
@@ -149,17 +161,19 @@ export const ratingStyle: CSSObject = {
     width: "20px",
     height: "20px",
     padding: "1px",
-  },
-  ".rating__rate:focus": {
-    outline: "2px solid royalblue",
-  },
-  ".rating__rate[data-highlighted]": {
-    background: "red",
+    "&:focus": {
+      outline: "2px solid royalblue",
+    },
+    "&[data-highlighted]": {
+      background: "red",
+    },
   },
 }
 
 export const sliderStyle: CSSObject = {
-  form: { margin: "45px" },
+  form: {
+    margin: "45px",
+  },
   ".slider": {
     marginTop: "12px",
     "--slider-thumb-size": "20px",
@@ -201,11 +215,15 @@ export const sliderStyle: CSSObject = {
       background: "rgba(0, 0, 0, 0.4)",
     },
   },
-  output: { marginInlineStart: "12px" },
+  output: {
+    marginInlineStart: "12px",
+  },
 }
 
 export const splitViewStyle: CSSObject = {
-  ".root": { height: "300px" },
+  ".root": {
+    height: "300px",
+  },
   ".pane": {
     display: "flex",
     alignItems: "center",
@@ -221,9 +239,14 @@ export const splitViewStyle: CSSObject = {
     justifyContent: "center",
     transition: "background-color 0.2s ease-in-out",
     outline: "0",
+    "&[data-focus]": {
+      background: "#b0baf1",
+    },
+    "&:active": {
+      background: "#3f51b5",
+      color: "white",
+    },
   },
-  ".splitter[data-focus]": { background: "#b0baf1" },
-  ".splitter:active": { background: "#3f51b5", color: "white" },
   ".splitter-bar": {
     width: "2px",
     height: "40px",
@@ -253,8 +276,12 @@ export const tagsInputStyle: CSSObject = {
     cursor: "pointer",
     transition: "all 100ms ease",
   },
-  ".tag:not([hidden])": { display: "inline-block" },
-  ".tag[hidden]": { display: "none !important" },
+  ".tag:not([hidden])": {
+    display: "inline-block",
+  },
+  ".tag[hidden]": {
+    display: "none !important",
+  },
   ".tag[data-selected]": {
     backgroundColor: "#777",
     borderColor: "#777",
@@ -271,9 +298,16 @@ export const tagsInputStyle: CSSObject = {
     fontSize: "100%",
     outline: "none",
   },
-  "input[hidden]": { display: "none !important" },
-  "input:not([hidden])": { display: "inline-block !important" },
-  ".tag-close": { border: "0", background: "inherit" },
+  "input[hidden]": {
+    display: "none !important",
+  },
+  "input:not([hidden])": {
+    display: "inline-block !important",
+  },
+  ".tag-close": {
+    border: "0",
+    background: "inherit",
+  },
 }
 
 export const pinInputStyle: CSSObject = {
@@ -374,10 +408,10 @@ export const dialogStyle: CSSObject = {
     top: "10px",
     right: "10px",
     borderRadius: "100%",
-  },
-  ".dialog__close-button:focus": {
-    outline: "2px blue solid",
-    outlineOffset: "2px",
+    "&:focus": {
+      outline: "2px blue solid",
+      outlineOffset: "2px",
+    },
   },
 }
 
@@ -401,8 +435,13 @@ export const toggleStyle: CSSObject = {
 }
 
 export const tabsStyle: CSSObject = {
-  ".tabs": { maxWidth: "20em" },
-  '[role="tablist"]': { margin: "0 0 -0.1em", overflow: "visible" },
+  ".tabs": {
+    maxWidth: "20em",
+  },
+  '[role="tablist"]': {
+    margin: "0 0 -0.1em",
+    overflow: "visible",
+  },
   '[role="tab"]': {
     position: "relative",
     margin: "0",
@@ -414,7 +453,7 @@ export const tabsStyle: CSSObject = {
     fontSize: "inherit",
     background: "hsl(220, 20%, 94%)",
   },
-  '[role="tab"]:hover::before,\n[role="tab"]:focus::before,\n[role="tab"][aria-selected="true"]::before': {
+  '[role="tab"]:hover::before, [role="tab"]:focus::before, [role="tab"][aria-selected="true"]::before': {
     position: "absolute",
     bottom: "100%",
     right: "-1px",
@@ -442,12 +481,12 @@ export const tabsStyle: CSSObject = {
     boxShadow: "none",
     content: '""',
   },
-  '[role="tab"]:hover,\n[role="tab"]:focus,\n[role="tab"]:active': {
+  '[role="tab"]:hover, [role="tab"]:focus, [role="tab"]:active': {
     outline: "0",
     borderRadius: "0",
     color: "inherit",
   },
-  '[role="tab"]:hover::before,\n[role="tab"]:focus::before': {
+  '[role="tab"]:hover::before, [role="tab"]:focus::before': {
     borderColor: "hsl(20, 96%, 48%)",
   },
   '[role="tabpanel"]': {
@@ -473,9 +512,17 @@ export const tabsStyle: CSSObject = {
     borderRadius: "0 0 0.2em 0.2em",
     content: '""',
   },
-  '[role="tabpanel"] p': { margin: "0" },
-  '[role="tabpanel"] * + p': { marginTop: "1em" },
-  ".tabs__indicator": { height: "4px", backgroundColor: "red", zIndex: 10 },
+  '[role="tabpanel"] p': {
+    margin: "0",
+  },
+  '[role="tabpanel"] * + p': {
+    marginTop: "1em",
+  },
+  ".tabs__indicator": {
+    height: "4px",
+    backgroundColor: "red",
+    zIndex: 10,
+  },
 }
 
 export const tooltipStyles: CSSObject = {

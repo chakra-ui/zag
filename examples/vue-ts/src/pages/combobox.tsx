@@ -31,26 +31,36 @@ export default defineComponent({
     })
 
     return () => {
-      const { labelProps, containerProps, inputProps, buttonProps, listboxProps, getOptionProps } = combobox.value
+      const { labelProps, containerProps, inputProps, buttonProps, listboxProps, getOptionProps, setValue } =
+        combobox.value
+
       return (
         <>
-          <div ref={ref}>
-            <label {...labelProps}>Select country</label>
-            <div {...containerProps}>
-              <input {...inputProps} />
-              <button {...buttonProps}>▼</button>
-            </div>
+          <controls.ui />
 
-            {filtered.value.length > 0 && (
-              <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
-                {filtered.value.map((item) => (
-                  <li key={item.code} {...getOptionProps({ label: item.label, value: item.code })}>
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
-            )}
+          <button onClick={() => setValue("Togo")}>Set to Togo</button>
+
+          <label class="combobox__label" {...labelProps}>
+            Select country
+          </label>
+          <div class="combobox__container" ref={ref} {...containerProps}>
+            <input {...inputProps} />
+            <button {...buttonProps}>▼</button>
           </div>
+
+          {filtered.value.length > 0 && (
+            <ul class="combobox__listbox" {...listboxProps}>
+              {filtered.value.map((item) => (
+                <li
+                  class="combobox__option"
+                  key={item.code}
+                  {...getOptionProps({ label: item.label, value: item.code })}
+                >
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          )}
 
           <StateVisualizer state={state} />
         </>

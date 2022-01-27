@@ -34,29 +34,31 @@ export default function Page() {
   return (
     <>
       <Global styles={comboboxStyle} />
-      <div>
-        <button onClick={() => setValue("Togo")}>Set to Togo</button>
-      </div>
-
       <controls.ui />
 
-      <div ref={ref}>
-        <label {...labelProps}>Select country</label>
-        <div {...containerProps}>
-          <input {...inputProps} />
-          <button {...buttonProps}>▼</button>
-        </div>
+      <button onClick={() => setValue("Togo")}>Set to Togo</button>
 
-        {options.length > 0 && (
-          <ul style={{ width: "300px", maxHeight: "400px", overflow: "auto" }} {...listboxProps}>
-            {options.map((item, index) => (
-              <li key={`${item.code}:${index}`} {...getOptionProps({ label: item.label, value: item.code, index })}>
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        )}
+      <label className="combobox__label" {...labelProps}>
+        Select country
+      </label>
+      <div className="combobox__container" ref={ref} {...containerProps}>
+        <input {...inputProps} />
+        <button {...buttonProps}>▼</button>
       </div>
+
+      {options.length > 0 && (
+        <ul className="combobox__listbox" {...listboxProps}>
+          {options.map((item, index) => (
+            <li
+              className="combobox__option"
+              key={`${item.code}:${index}`}
+              {...getOptionProps({ label: item.label, value: item.code, index })}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <StateVisualizer state={state} />
     </>

@@ -34,25 +34,32 @@ export default function Page() {
 
   return (
     <>
-      <div ref={ref}>
-        <label {...combobox().labelProps}>Select country</label>
-        <span {...combobox().containerProps}>
-          <input {...combobox().inputProps} />
-          <button {...combobox().buttonProps}>▼</button>
-        </span>
+      <controls.ui />
 
-        {options().length > 0 && (
-          <ul style={{ width: "300px", "max-height": "400px", overflow: "auto" }} {...combobox().listboxProps}>
-            <For each={options()}>
-              {(item, index) => (
-                <li {...combobox().getOptionProps({ label: item.label, value: item.code, index: index() })}>
-                  {item.label}
-                </li>
-              )}
-            </For>
-          </ul>
-        )}
+      <button onClick={() => combobox().setValue("Togo")}>Set to Togo</button>
+
+      <label className="combobox__label" {...combobox().labelProps}>
+        Select country
+      </label>
+      <div className="combobox__container" ref={ref} {...combobox().containerProps}>
+        <input {...combobox().inputProps} />
+        <button {...combobox().buttonProps}>▼</button>
       </div>
+
+      {options().length > 0 && (
+        <ul className="combobox__listbox" {...combobox().listboxProps}>
+          <For each={options()}>
+            {(item, index) => (
+              <li
+                className="combobox__option"
+                {...combobox().getOptionProps({ label: item.label, value: item.code, index: index() })}
+              >
+                {item.label}
+              </li>
+            )}
+          </For>
+        </ul>
+      )}
 
       <StateVisualizer state={state} />
     </>
