@@ -172,7 +172,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getRangeId(ctx),
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-value": ctx.value,
       style: dom.getRangeStyle(ctx),
     }),
 
@@ -186,10 +185,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-disabled": ctx.disabled || undefined,
       onPointerDown(event) {
         if (!ctx.isInteractive) return
+
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+
         const point = getEventPoint(evt)
         send({ type: "POINTER_DOWN", point })
+
         event.preventDefault()
         event.stopPropagation()
       },

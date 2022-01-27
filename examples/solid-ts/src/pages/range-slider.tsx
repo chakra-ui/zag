@@ -3,18 +3,22 @@ import * as RangeSlider from "@ui-machines/range-slider"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
 import { createMemo, For, createUniqueId } from "solid-js"
+import { rangeSliderControls } from "../../../../shared/controls"
 import { rangeSliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(rangeSliderStyle)
 
 export default function Page() {
+  const controls = useControls(rangeSliderControls)
+
   const [state, send] = useMachine(
     RangeSlider.machine.withContext({
-      dir: "ltr",
       name: ["min", "max"],
       value: [10, 60],
     }),
+    { context: controls.context as any },
   )
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
@@ -23,6 +27,8 @@ export default function Page() {
 
   return (
     <>
+      <controls.ui />
+
       <form
         // ensure we can read the value within forms
         onInput={(e) => {

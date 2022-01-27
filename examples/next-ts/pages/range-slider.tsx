@@ -4,22 +4,18 @@ import { useMachine, useSetup } from "@ui-machines/react"
 import { StateVisualizer } from "../components/state-visualizer"
 import serialize from "form-serialize"
 import { rangeSliderStyle } from "../../../shared/style"
+import { useControls } from "../hooks/use-controls"
+import { rangeSliderControls } from "../../../shared/controls"
 
 export default function Page() {
+  const controls = useControls(rangeSliderControls)
+
   const [state, send] = useMachine(
     RangeSlider.machine.withContext({
       name: ["min", "max"],
-      value: [0, 0, 60],
-      onChangeStart() {
-        console.log("onChangeStart")
-      },
-      onChange() {
-        console.log("onChange")
-      },
-      onChangeEnd() {
-        console.log("onChangeEnd")
-      },
+      value: [10, 60],
     }),
+    { context: controls.context },
   )
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
@@ -29,6 +25,8 @@ export default function Page() {
   return (
     <>
       <Global styles={rangeSliderStyle} />
+      <controls.ui />
+
       <form
         // ensure we can read the value within forms
         onChange={(e) => {

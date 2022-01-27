@@ -75,6 +75,7 @@ export const dom = {
   getRangeId: (ctx: Ctx) => `slider-range-${ctx.uid}`,
   getLabelId: (ctx: Ctx) => `slider-label-${ctx.uid}`,
   getOutputId: (ctx: Ctx) => `slider-output-${ctx.uid}`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider-marker-${ctx.uid}-${value}`,
 
   getThumbEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx, index)),
   getInputEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx, index)),
@@ -101,6 +102,21 @@ export const dom = {
   getTrackStyle: (): Style => ({
     position: "relative",
   }),
+  getMarkerStyle(ctx: Ctx, percent: number): Style {
+    const style: Style = {
+      position: "absolute",
+      pointerEvents: "none",
+    }
+
+    if (ctx.isHorizontal) {
+      percent = ctx.isRtl ? 100 - percent : percent
+      style.left = `${percent}%`
+    } else {
+      style.bottom = `${percent}%`
+    }
+
+    return style
+  },
 }
 
 export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {

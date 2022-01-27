@@ -154,8 +154,11 @@ export const rangeSliderStyle: CSSObject = {
     "&:focus-visible": {
       boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
     },
-    "&:hover": {
+    "&:hover:not([data-disabled])": {
       backgroundColor: "rgb(245, 242, 255)",
+    },
+    "&[data-disabled]": {
+      background: "lightgray",
     },
   },
   ".slider__track": {
@@ -168,6 +171,9 @@ export const rangeSliderStyle: CSSObject = {
     background: "magenta",
     borderRadius: "inherit",
     height: "100%",
+    "&[data-disabled]": {
+      background: "rgba(0, 0, 0, 0.4)",
+    },
   },
 }
 

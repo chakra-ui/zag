@@ -52,9 +52,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "DECREMENT", index })
     },
     focus(index = 0) {
+      if (ctx.disabled) return
       send({ type: "FOCUS", index })
     },
     blur() {
+      if (ctx.disabled) return
       send({ type: "BLUR" })
     },
 
@@ -64,6 +66,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getLabelId(ctx),
       htmlFor: dom.getInputId(ctx, 0),
       onClick(event) {
+        if (!ctx.isInteractive) return
         event.preventDefault()
         dom.getFirstEl(ctx)?.focus()
       },
@@ -117,12 +120,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         tabIndex: ctx.disabled ? -1 : 0,
         style: dom.getThumbStyle(ctx, index),
         onBlur() {
+          if (ctx.disabled) return
           send("BLUR")
         },
         onFocus() {
+          if (ctx.disabled) return
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
+          if (!ctx.isInteractive) return
           const step = multiply(getEventStep(event), ctx.step)
           let prevent = true
           const keyMap: EventKeyMap = {
@@ -181,10 +187,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     rangeProps: normalize.element<T>({
+      id: dom.getRangeId(ctx),
       "data-part": "range",
       "data-disabled": dataAttr(ctx.disabled),
       "data-orientation": ctx.orientation,
-      "data-state": state.value,
       style: dom.getRangeStyle(ctx),
     }),
 
@@ -196,17 +202,41 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-focus": dataAttr(isFocused),
       style: dom.getRootStyle(ctx),
       onPointerDown(event) {
+        if (!ctx.isInteractive) return
+
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
+        send({ type: "POINTER_DOWN", point: getEventPoint(evt) })
+
         event.preventDefault()
         event.stopPropagation()
-
-        send({
-          type: "POINTER_DOWN",
-          point: getEventPoint(evt),
-        })
       },
     }),
+
+    getMarkerProps({ value }: { value: number }) {
+      const percent = valueToPercent(value, ctx)
+      const style = dom.getMarkerStyle(ctx, percent)
+      let state: "over-value" | "under-value" | "at-value"
+
+      if (Math.max(...ctx.value) < value) {
+        state = "over-value"
+      } else if (Math.min(...ctx.value) > value) {
+        state = "under-value"
+      } else {
+        state = "at-value"
+      }
+
+      return normalize.element<T>({
+        "data-part": "marker",
+        id: dom.getMarkerId(ctx, value),
+        role: "presentation",
+        "data-value": value,
+        "aria-hidden": true,
+        "data-disabled": dataAttr(ctx.disabled),
+        "data-state": state,
+        style,
+      })
+    },
   }
 }

@@ -4,19 +4,24 @@ import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { computed, h, Fragment } from "vue"
+import { rangeSliderControls } from "../../../../shared/controls"
 import { rangeSliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(rangeSliderStyle)
 
 export default defineComponent({
   name: "RangeSlider",
   setup() {
+    const controls = useControls(rangeSliderControls)
+
     const [state, send] = useMachine(
       RangeSlider.machine.withContext({
         name: ["min", "max"],
         value: [10, 60],
       }),
+      { context: controls.context },
     )
 
     const ref = useSetup({ send, id: "1" })
@@ -27,7 +32,9 @@ export default defineComponent({
       const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = slider.value
 
       return (
-        <div>
+        <>
+          <controls.ui />
+
           <form
             // ensure we can read the value within forms
             onChange={(e) => {
@@ -48,7 +55,7 @@ export default defineComponent({
 
             <StateVisualizer state={state} />
           </form>
-        </div>
+        </>
       )
     }
   },

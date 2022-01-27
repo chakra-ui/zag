@@ -36,6 +36,11 @@ export type MachineContext = Context<{
    */
   disabled?: boolean
   /**
+   * Whether the slider is read-only
+   */
+  readonly?: boolean
+  readonly isInteractive: boolean
+  /**
    * Function invoked when the value of the slider changes
    */
   onChange?(value: number[]): void
