@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as TagsInput from "@ui-machines/tags-input"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { tagsInputControls } from "../../../../shared/controls"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -28,17 +28,19 @@ export default function Page() {
       <controls.ui />
 
       <div ref={ref} {...tagsInput().rootProps} className="tags-input">
-        {state.context.value.map((value, index) => (
-          <span>
-            <div className="tag" {...tagsInput().getTagProps({ index, value })}>
-              <span>{value} </span>
-              <button className="tag-close" {...tagsInput().getTagDeleteButtonProps({ index, value })}>
-                &#x2715;
-              </button>
-            </div>
-            <input className="tag-input" {...tagsInput().getTagInputProps({ index })} />
-          </span>
-        ))}
+        <For each={tagsInput().value}>
+          {(value, index) => (
+            <span>
+              <div className="tag" {...tagsInput().getTagProps({ index: index(), value })}>
+                <span>{value} </span>
+                <button className="tag-close" {...tagsInput().getTagDeleteButtonProps({ index: index(), value })}>
+                  &#x2715;
+                </button>
+              </div>
+              <input className="tag-input" {...tagsInput().getTagInputProps({ index: index() })} />
+            </span>
+          )}
+        </For>
         <input className="tag-input" placeholder="Add tag..." {...tagsInput().inputProps} />
       </div>
 

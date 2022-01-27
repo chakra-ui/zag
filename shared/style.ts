@@ -282,13 +282,15 @@ export const splitViewStyle: CSSObject = {
 
 export const tagsInputStyle: CSSObject = {
   ".tags-input": {
-    display: "inline-block",
     padding: "0 2px",
     background: "#fff",
     border: "1px solid #ccc",
     width: "40em",
     borderRadius: "2px",
     boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.1)",
+    "&[data-disabled]": {
+      background: "#f9f9f9",
+    },
   },
   ".tag": {
     background: "#eee",
