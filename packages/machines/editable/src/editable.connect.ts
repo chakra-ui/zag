@@ -54,6 +54,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     previewProps: normalize.element<T>({
       "data-part": "preview",
+      "data-empty": ctx.isValueEmpty,
       children: ctx.value === "" ? ctx.placeholder : ctx.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(ctx.disabled),

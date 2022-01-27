@@ -1,9 +1,13 @@
+import { injectGlobal } from "@emotion/css"
 import * as Editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { editableControls } from "../../../../shared/controls"
+import { editableStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+
+injectGlobal(editableStyle)
 
 export default defineComponent({
   name: "Editable",
@@ -19,41 +23,37 @@ export default defineComponent({
     const editableRef = computed(() => Editable.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const {
-        isEditing,
-        isValueEmpty,
-        inputProps,
-        previewProps,
-        cancelButtonProps,
-        submitButtonProps,
-        editButtonProps,
-      } = editableRef.value
+      const { isEditing, inputProps, previewProps, cancelButtonProps, submitButtonProps, editButtonProps } =
+        editableRef.value
 
       return (
-        <div>
+        <>
           <controls.ui />
+
           <div class="root">
-            <input data-testid="input" ref={ref} style={{ width: "auto", background: "transparent" }} {...inputProps} />
-            <span data-testid="preview" style={{ opacity: isValueEmpty ? 0.7 : 1 }} {...previewProps} />
+            <div class="editable__area">
+              <input class="editable__input" data-testid="input" ref={ref} {...inputProps} />
+              <span class="editable__preview" data-testid="preview" {...previewProps} />
+            </div>
             {!isEditing && (
-              <button data-testid="edit-button" {...editButtonProps}>
+              <button class="editable__edit" data-testid="edit-button" {...editButtonProps}>
                 Edit
               </button>
             )}
             {isEditing && (
-              <>
+              <div class="editable__controls">
                 <button data-testid="save-button" {...submitButtonProps}>
                   Save
                 </button>
                 <button data-testid="cancel-button" {...cancelButtonProps}>
                   Cancel
                 </button>
-              </>
+              </div>
             )}
-
-            <StateVisualizer state={state} />
           </div>
-        </div>
+
+          <StateVisualizer state={state} />
+        </>
       )
     }
   },

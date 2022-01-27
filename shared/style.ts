@@ -26,6 +26,26 @@ export const comboboxStyle: CSSObject = {
   },
 }
 
+export const editableStyle: CSSObject = {
+  ".editable__area": {
+    display: "inline-block",
+    marginRight: "0.5em",
+  },
+  ".editable__input": {
+    width: "auto",
+    background: "transparent",
+  },
+  ".editable__preview": {
+    "&[data-empty]": {
+      opacity: 0.7,
+    },
+  },
+  ".editable__controls": {
+    display: "inline-flex",
+    gap: "0.5em",
+  },
+}
+
 export const menuStyle: CSSObject = {
   '[role="menu"]': {
     margin: "0",
