@@ -17,20 +17,33 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { triggerProps, contentProps, closeButtonProps, headerProps, portalled, arrowProps, innerArrowProps } =
-    Popover.connect(state, send)
+  const {
+    triggerProps,
+    contentProps,
+    closeButtonProps,
+    headerProps,
+    portalled,
+    arrowProps,
+    innerArrowProps,
+    anchorProps,
+  } = Popover.connect(state, send)
 
   const Wrapper = portalled ? Portal : React.Fragment
 
   return (
     <>
+      <controls.ui />
       <Global styles={popoverStyle} />
+
       <div className="popover" ref={ref}>
         <button data-testid="button-before">Button :before</button>
 
         <button className="popover__trigger" data-testid="popover-trigger" {...triggerProps}>
           Click me
         </button>
+
+        <div {...anchorProps}>testing</div>
+
         <Wrapper>
           <div className="popover__content" data-testid="popover-content" {...contentProps}>
             <div className="popover__arrow" {...arrowProps}>
@@ -55,8 +68,6 @@ export default function Page() {
         <span data-testid="plain-text">I am just text</span>
         <button data-testid="button-after">Button :after</button>
       </div>
-
-      <controls.ui />
 
       <StateVisualizer state={state} />
     </>

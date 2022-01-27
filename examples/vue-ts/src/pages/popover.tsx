@@ -31,6 +31,8 @@ export default defineComponent({
 
       return (
         <>
+          <controls.ui />
+
           <div class="popover" ref={ref}>
             <button data-testid="button-before">Button :before</button>
 
@@ -62,8 +64,6 @@ export default defineComponent({
             <span data-testid="plain-text">I am just text</span>
             <button data-testid="button-after">Button :after</button>
           </div>
-
-          <controls.ui />
 
           <StateVisualizer state={state} />
         </>

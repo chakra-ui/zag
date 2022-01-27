@@ -34,7 +34,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       __portalled: (ctx) => !!ctx.modal || !!ctx.portalled,
     },
 
-    entry: ["checkIfReferenceExists"],
+    entry: ["checkIfAnchorIsRendered"],
 
     states: {
       unknown: {
