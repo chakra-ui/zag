@@ -1,4 +1,4 @@
-import { css } from "@emotion/css"
+import { injectGlobal } from "@emotion/css"
 import * as RangeSlider from "@ui-machines/range-slider"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
@@ -6,14 +6,13 @@ import { createMemo, For, createUniqueId } from "solid-js"
 import { rangeSliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
-const styles = css(rangeSliderStyle)
+injectGlobal(rangeSliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
     RangeSlider.machine.withContext({
       dir: "ltr",
       name: ["min", "max"],
-      uid: "123",
       value: [10, 60],
     }),
   )
@@ -23,7 +22,7 @@ export default function Page() {
   const slider = createMemo(() => RangeSlider.connect<SolidPropTypes>(state, send, normalizeProps))
 
   return (
-    <div className={styles}>
+    <>
       <form
         // ensure we can read the value within forms
         onInput={(e) => {
@@ -46,6 +45,6 @@ export default function Page() {
 
         <StateVisualizer state={state} />
       </form>
-    </div>
+    </>
   )
 }

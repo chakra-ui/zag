@@ -33,7 +33,7 @@ export default defineComponent({
             <li {...getItemProps({ id: "menuitem-3" })}>Delete</li>
           </ul>
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </div>
       )
     }

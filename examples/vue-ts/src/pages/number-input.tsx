@@ -16,9 +16,9 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const numberInputRef = computed(() => NumberInput.connect<VuePropTypes>(state.value, send, normalizeProps))
-
     const ref = useSetup({ send, id: "1" })
+
+    const numberInputRef = computed(() => NumberInput.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps } = numberInputRef.value
@@ -34,7 +34,7 @@ export default defineComponent({
               <input ref={ref} {...inputProps} />
               <button {...incrementButtonProps}>INC</button>
             </div>
-            <StateVisualizer state={state.value} />
+            <StateVisualizer state={state} />
           </div>
         </>
       )

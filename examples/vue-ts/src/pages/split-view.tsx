@@ -15,10 +15,10 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const splitterRef = computed(() => SplitView.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const splitter = computed(() => SplitView.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, primaryPaneProps, labelProps, splitterProps, secondaryPaneProps } = splitterRef.value
+      const { rootProps, primaryPaneProps, labelProps, splitterProps, secondaryPaneProps } = splitter.value
       return (
         <div>
           <div class="root">
@@ -38,7 +38,7 @@ export default defineComponent({
             </div>
           </div>
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </div>
       )
     }

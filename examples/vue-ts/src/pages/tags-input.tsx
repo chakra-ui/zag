@@ -62,7 +62,7 @@ export default defineComponent({
             <input data-testid="input" placeholder="Add tag..." {...inputProps} />
           </div>
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </>
       )
     }

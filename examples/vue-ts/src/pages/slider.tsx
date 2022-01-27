@@ -22,11 +22,10 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const sliderRef = computed(() => Slider.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const slider = computed(() => Slider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } =
-        sliderRef.value
+      const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } = slider.value
 
       return (
         <>
@@ -34,9 +33,11 @@ export default defineComponent({
           <form
             // ensure we can read the value within forms
             onChange={(e) => {
-              const target = e.currentTarget as HTMLFormElement
-              const formData = serialize(target, { hash: true })
-              console.log(formData)
+              const target = e.currentTarget
+              if (target instanceof HTMLFormElement) {
+                const formData = serialize(target, { hash: true })
+                console.log(formData)
+              }
             }}
           >
             <div>
@@ -52,7 +53,7 @@ export default defineComponent({
               </div>
             </div>
 
-            <StateVisualizer state={state.value} />
+            <StateVisualizer state={state} />
           </form>
         </>
       )

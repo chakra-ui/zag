@@ -19,7 +19,7 @@ export default function Page() {
   const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } = Tabs.connect(state, send)
 
   return (
-    <div style={{ width: "100%" }}>
+    <>
       <Global styles={tabsStyle} />
       <controls.ui />
       <div className="tabs">
@@ -39,6 +39,6 @@ export default function Page() {
       </div>
 
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

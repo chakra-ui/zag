@@ -8,9 +8,7 @@ import { rangeSliderStyle } from "../../../shared/style"
 export default function Page() {
   const [state, send] = useMachine(
     RangeSlider.machine.withContext({
-      dir: "ltr",
       name: ["min", "max"],
-      uid: "123",
       value: [0, 0, 60],
       onChangeStart() {
         console.log("onChangeStart")

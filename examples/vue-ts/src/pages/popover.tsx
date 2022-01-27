@@ -21,11 +21,11 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const popoverRef = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const popover = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { triggerProps, headerProps, closeButtonProps, contentProps, arrowProps, innerArrowProps, portalled } =
-        popoverRef.value
+        popover.value
 
       const Wrapper = portalled ? Teleport : Fragment
 
@@ -65,7 +65,7 @@ export default defineComponent({
 
           <controls.ui />
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </>
       )
     }

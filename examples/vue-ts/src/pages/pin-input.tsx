@@ -38,7 +38,7 @@ export default defineComponent({
             Clear
           </button>
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </div>
       )
     }

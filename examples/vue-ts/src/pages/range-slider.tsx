@@ -14,19 +14,17 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       RangeSlider.machine.withContext({
-        dir: "ltr",
         name: ["min", "max"],
-        uid: "123",
         value: [10, 60],
       }),
     )
 
     const ref = useSetup({ send, id: "1" })
 
-    const sliderRef = computed(() => RangeSlider.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const slider = computed(() => RangeSlider.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = sliderRef.value
+      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = slider.value
 
       return (
         <div>
@@ -48,7 +46,7 @@ export default defineComponent({
               ))}
             </div>
 
-            <StateVisualizer state={state.value} />
+            <StateVisualizer state={state} />
           </form>
         </div>
       )

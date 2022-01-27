@@ -15,7 +15,6 @@ export default function Page() {
 
   const [state, send] = useMachine(
     TagsInput.machine.withContext({
-      uid: "123",
       value: ["React", "Vue"],
     }),
     {

@@ -44,7 +44,7 @@ export default defineComponent({
             ))}
           </div>
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </div>
       )
     }

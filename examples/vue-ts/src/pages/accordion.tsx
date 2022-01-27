@@ -21,8 +21,9 @@ export default defineComponent({
 
     return () => {
       const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordion.value
+
       return (
-        <div style={{ width: "100%" }}>
+        <>
           <controls.ui />
           <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
             {accordionData.map((item) => (
@@ -41,7 +42,7 @@ export default defineComponent({
           </div>
 
           <StateVisualizer state={state} />
-        </div>
+        </>
       )
     }
   },

@@ -11,6 +11,7 @@ injectGlobal(tagsInputStyle)
 
 export default function Page() {
   const controls = useControls(tagsInputControls)
+
   const [state, send] = useMachine(
     TagsInput.machine.withContext({
       value: ["React", "Vue"],
@@ -33,7 +34,7 @@ export default function Page() {
                 &#x2715;
               </button>
             </div>
-            <input style={{ width: 40 }} {...tagsInput().getTagInputProps({ index })} />
+            <input style={{ width: "40px" }} {...tagsInput().getTagInputProps({ index })} />
           </span>
         ))}
         <input placeholder="Add tag..." {...tagsInput().inputProps} />

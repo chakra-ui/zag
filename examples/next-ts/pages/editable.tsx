@@ -11,7 +11,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLInputElement>({ send, id: "123" })
+  const ref = useSetup<HTMLInputElement>({ send, id: "1" })
 
   const { inputProps, isEditing, previewProps, editButtonProps, isValueEmpty, submitButtonProps, cancelButtonProps } =
     Editable.connect(state, send)
