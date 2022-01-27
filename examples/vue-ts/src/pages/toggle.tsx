@@ -12,7 +12,7 @@ export default defineComponent({
   name: "Toggle",
   setup() {
     const [state, send] = useMachine(Toggle.machine.withContext({ label: "Toggle italic" }))
-    const ref = useSetup({ send, id: "12" })
+    const ref = useSetup({ send, id: "1" })
     const toggle = computed(() => Toggle.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {

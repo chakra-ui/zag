@@ -1,22 +1,17 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@ui-machines/react"
 import * as TagsInput from "@ui-machines/tags-input"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
+import { tagsInputControls } from "../../../shared/controls"
 import { tagsInputStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
 }
 
 export default function Page() {
-  const controls = useControls({
-    autoFocus: { type: "boolean", defaultValue: false },
-    addOnPaste: { type: "boolean", defaultValue: false },
-    addOnBlur: { type: "boolean", defaultValue: false },
-    max: { type: "number", defaultValue: 4 },
-    allowOutOfRange: { type: "boolean", defaultValue: false },
-  })
+  const controls = useControls(tagsInputControls)
 
   const [state, send] = useMachine(
     TagsInput.machine.withContext({

@@ -1,10 +1,10 @@
 import { Global } from "@emotion/react"
 import { useActor, useMachine, useSetup } from "@ui-machines/react"
 import * as Toast from "@ui-machines/toast"
-import { StateVisualizer } from "components/state-visualizer"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
 import { toastStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const ToastComponent = ({ actor }: { actor: Toast.Service }) => {
   const [state, send] = useActor(actor)

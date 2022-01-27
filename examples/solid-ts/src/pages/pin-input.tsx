@@ -2,18 +2,15 @@ import { injectGlobal } from "@emotion/css"
 import * as PinInput from "@ui-machines/pin-input"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { StateVisualizer } from "../components/state-visualizer"
+import { pinInputControls } from "../../../../shared/controls"
 import { pinInputStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(pinInputStyle)
 
 export default function Page() {
-  const controls = useControls({
-    type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
-    mask: { type: "boolean", defaultValue: false },
-    otp: { type: "boolean", defaultValue: false },
-  })
+  const controls = useControls(pinInputControls)
 
   const [state, send] = useMachine(PinInput.machine, {
     context: controls.context,

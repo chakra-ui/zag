@@ -1,24 +1,11 @@
 import * as Editable from "@ui-machines/editable"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
+import { editableControls } from "../../../shared/controls"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({
-    placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
-    submitMode: {
-      type: "select",
-      label: "submit mode?",
-      options: ["enter", "blur", "both", "none"] as const,
-      defaultValue: "both",
-    },
-    activationMode: {
-      type: "select",
-      options: ["focus", "dblclick", "none"] as const,
-      label: "activation mode",
-      defaultValue: "focus",
-    },
-  })
+  const controls = useControls(editableControls)
 
   const [state, send] = useMachine(Editable.machine, {
     context: controls.context,

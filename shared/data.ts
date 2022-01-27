@@ -1,3 +1,9 @@
+export const accordionData = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "contact", label: "Contact" },
+]
+
 export const comboboxData = [
   { label: "Zambia", code: "ZA" },
   { label: "Benin", code: "BN" },
@@ -57,4 +63,28 @@ export const tabsData = [
     Fear of complicated buildings: A complex complex complex.
     `,
   },
+]
+
+export const menuData = [
+  [
+    { label: "New File", id: "new-file" },
+    { label: "New Tab", id: "new-tab" },
+    { label: "New Window", id: "new-win" },
+    { label: "More Tools →", id: "more-tools", trigger: true },
+    { label: "Export", id: "export" },
+    { label: "Go to Google...", id: "google" },
+  ],
+  [
+    { label: "Save Page As...", id: "save-page" },
+    { label: "Create Shortcuts", id: "shortcut" },
+    { label: "Name Window...", id: "name-win" },
+    { label: "Open nested →", id: "open-nested", trigger: true },
+    { label: "Switch Window", id: "switch-win" },
+    { label: "New Terminal", id: "new-term" },
+  ],
+  [
+    { label: "Welcome", id: "welcome" },
+    { label: "Playground", id: "playground" },
+    { label: "Export", id: "export" },
+  ],
 ]

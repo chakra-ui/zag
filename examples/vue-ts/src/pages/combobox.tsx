@@ -1,35 +1,39 @@
-import { css } from "@emotion/css"
+import { injectGlobal } from "@emotion/css"
 import * as Combobox from "@ui-machines/combobox"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
+import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
-const styles = css(comboboxStyle)
+injectGlobal(comboboxStyle)
 
 export default defineComponent({
   name: "Combobox",
   setup() {
+    const controls = useControls(comboboxControls)
+
     const [state, send] = useMachine(
       Combobox.machine.withContext({
-        uid: "123",
         onSelect: console.log,
       }),
+      { context: controls.context },
     )
 
     const ref = useSetup({ send, id: "1" })
 
-    const comboboxRef = computed(() => Combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const combobox = computed(() => Combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const filtered = computed(() => {
-      return comboboxData.filter((d) => d.label.toLowerCase().startsWith(comboboxRef.value.inputValue.toLowerCase()))
+      return comboboxData.filter((item) => item.label.toLowerCase().startsWith(combobox.value.inputValue.toLowerCase()))
     })
 
     return () => {
-      const { labelProps, containerProps, inputProps, buttonProps, listboxProps, getOptionProps } = comboboxRef.value
+      const { labelProps, containerProps, inputProps, buttonProps, listboxProps, getOptionProps } = combobox.value
       return (
-        <div class={styles}>
+        <>
           <div ref={ref}>
             <label {...labelProps}>Select country</label>
             <div {...containerProps}>
@@ -49,7 +53,7 @@ export default defineComponent({
           </div>
 
           <StateVisualizer state={state.value} />
-        </div>
+        </>
       )
     }
   },

@@ -1,6 +1,10 @@
-import { useMachine, useSetup, normalizeProps, SolidPropTypes } from "@ui-machines/solid"
+import { injectGlobal } from "@emotion/css"
+import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Tooltip from "@ui-machines/tooltip"
 import { createMemo } from "solid-js"
+import { tooltipStyles } from "../../../../shared/style"
+
+injectGlobal(tooltipStyles)
 
 function TooltipComponent(props: { id?: string }) {
   const [state, send] = useMachine(Tooltip.machine)

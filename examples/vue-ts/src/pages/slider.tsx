@@ -5,6 +5,7 @@ import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
+import { sliderControls } from "../../../../shared/controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -13,13 +14,7 @@ injectGlobal(sliderStyle)
 export default defineComponent({
   name: "Slider",
   setup() {
-    const controls = useControls({
-      readonly: { type: "boolean", defaultValue: false },
-      disabled: { type: "boolean", defaultValue: false },
-      value: { type: "number", defaultValue: 40 },
-      dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
-      origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },
-    })
+    const controls = useControls(sliderControls)
 
     const [state, send] = useMachine(Slider.machine, {
       context: controls.context,

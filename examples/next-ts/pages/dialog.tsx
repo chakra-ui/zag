@@ -2,21 +2,21 @@ import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
 import * as Dialog from "@ui-machines/dialog"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
 import { useRef } from "react"
 import { dialogStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Dialog 1
   const [state, send] = useMachine(Dialog.machine)
-  const ref = useSetup<HTMLButtonElement>({ send, id: "123" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
   const parentDialog = Dialog.connect(state, send)
 
   // Dialog 2
   const [state2, send2] = useMachine(Dialog.machine)
-  const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "456" })
+  const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "2" })
   const childDialog = Dialog.connect(state2, send2)
 
   return (

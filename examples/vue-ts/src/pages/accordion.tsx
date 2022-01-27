@@ -1,63 +1,46 @@
 import * as Accordion from "@ui-machines/accordion"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
+import { accordionControls } from "../../../../shared/controls"
+import { accordionData } from "../../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 export default defineComponent({
   name: "Accordion",
   setup() {
-    const controls = useControls({
-      collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
-      multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
-      activeId: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
-    })
+    const controls = useControls(accordionControls)
 
     const [state, send] = useMachine(Accordion.machine, {
       context: controls.context,
     })
 
-    const accordionRef = computed(() => Accordion.connect<VuePropTypes>(state.value, send, normalizeProps))
     const ref = useSetup({ send, id: "1" })
 
+    const accordion = computed(() => Accordion.connect<VuePropTypes>(state.value, send, normalizeProps))
+
     return () => {
-      const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordionRef.value
+      const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordion.value
       return (
         <div style={{ width: "100%" }}>
           <controls.ui />
           <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
-            <div {...getItemProps({ value: "home" })}>
-              <h3>
-                <button {...getTriggerProps({ value: "home" })}>Home</button>
-              </h3>
-              <div {...getContentProps({ value: "home" })}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
+            {accordionData.map((item) => (
+              <div {...getItemProps({ value: item.id })}>
+                <h3>
+                  <button data-testid={`${item.id}:trigger`} {...getTriggerProps({ value: item.id })}>
+                    {item.label}
+                  </button>
+                </h3>
+                <div data-testid={`${item.id}:content`} {...getContentProps({ value: item.id })}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua.
+                </div>
               </div>
-            </div>
-
-            <div {...getItemProps({ value: "about" })}>
-              <h3>
-                <button {...getTriggerProps({ value: "about" })}>About</button>
-              </h3>
-              <div {...getContentProps({ value: "about" })}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
-              </div>
-            </div>
-
-            <div {...getItemProps({ value: "contact" })}>
-              <h3>
-                <button {...getTriggerProps({ value: "contact" })}>Contact</button>
-              </h3>
-              <div {...getContentProps({ value: "contact" })}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
-              </div>
-            </div>
+            ))}
           </div>
 
-          <StateVisualizer state={state.value} />
+          <StateVisualizer state={state} />
         </div>
       )
     }

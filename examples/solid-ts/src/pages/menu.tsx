@@ -10,7 +10,7 @@ injectGlobal(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(Menu.machine)
 
-  const ref = useSetup<HTMLButtonElement>({ send, id: "12" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
 
   const menu = createMemo(() => Menu.connect<SolidPropTypes>(state, send, normalizeProps))
 

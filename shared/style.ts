@@ -140,10 +140,22 @@ export const rangeSliderStyle: CSSObject = {
 }
 
 export const ratingStyle: CSSObject = {
-  ".rating": { display: "flex" },
-  ".rating__rate": { margin: "0 3px", background: "salmon" },
-  ".rating__rate:focus": { outline: "2px solid royalblue" },
-  ".rating__rate[data-highlighted]": { background: "red" },
+  ".rating": {
+    display: "flex",
+  },
+  ".rating__rate": {
+    margin: "0 3px",
+    background: "salmon",
+    width: "20px",
+    height: "20px",
+    padding: "1px",
+  },
+  ".rating__rate:focus": {
+    outline: "2px solid royalblue",
+  },
+  ".rating__rate[data-highlighted]": {
+    background: "red",
+  },
 }
 
 export const sliderStyle: CSSObject = {
@@ -385,5 +397,98 @@ export const toggleStyle: CSSObject = {
       backgroundColor: "rgb(215, 207, 249)",
       color: "rgb(32, 19, 75)",
     },
+  },
+}
+
+export const tabsStyle: CSSObject = {
+  ".tabs": { maxWidth: "20em" },
+  '[role="tablist"]': { margin: "0 0 -0.1em", overflow: "visible" },
+  '[role="tab"]': {
+    position: "relative",
+    margin: "0",
+    padding: "0.3em 0.5em 0.4em",
+    border: "1px solid hsl(219, 1%, 72%)",
+    borderRadius: "0.2em 0.2em 0 0",
+    boxShadow: "0 0 0.2em hsl(219, 1%, 72%)",
+    overflow: "visible",
+    fontSize: "inherit",
+    background: "hsl(220, 20%, 94%)",
+  },
+  '[role="tab"]:hover::before,\n[role="tab"]:focus::before,\n[role="tab"][aria-selected="true"]::before': {
+    position: "absolute",
+    bottom: "100%",
+    right: "-1px",
+    left: "-1px",
+    borderRadius: "0.2em 0.2em 0 0",
+    borderTop: "3px solid hsl(20, 96%, 48%)",
+    content: '""',
+  },
+  '[role="tab"][aria-selected="true"]': {
+    borderRadius: "0",
+    background: "hsl(220, 43%, 99%)",
+    outline: "0",
+  },
+  '[role="tab"][aria-selected="true"]:not(:focus):not(:hover)::before': {
+    borderTop: "5px solid hsl(218, 96%, 48%)",
+  },
+  '[role="tab"][aria-selected="true"]::after': {
+    position: "absolute",
+    zIndex: 3,
+    bottom: "-1px",
+    right: "0",
+    left: "0",
+    height: "0.3em",
+    background: "hsl(220, 43%, 99%)",
+    boxShadow: "none",
+    content: '""',
+  },
+  '[role="tab"]:hover,\n[role="tab"]:focus,\n[role="tab"]:active': {
+    outline: "0",
+    borderRadius: "0",
+    color: "inherit",
+  },
+  '[role="tab"]:hover::before,\n[role="tab"]:focus::before': {
+    borderColor: "hsl(20, 96%, 48%)",
+  },
+  '[role="tabpanel"]': {
+    position: "relative",
+    zIndex: 2,
+    padding: "0.5em 0.5em 0.7em",
+    border: "1px solid hsl(219, 1%, 72%)",
+    borderRadius: "0 0.2em 0.2em 0.2em",
+    boxShadow: "0 0 0.2em hsl(219, 1%, 72%)",
+    background: "hsl(220, 43%, 99%)",
+  },
+  '[role="tabpanel"]:focus': {
+    borderColor: "hsl(20, 96%, 48%)",
+    boxShadow: "0 0 0.2em hsl(20, 96%, 48%)",
+    outline: "0",
+  },
+  '[role="tabpanel"]:focus::after': {
+    position: "absolute",
+    bottom: "0",
+    right: "-1px",
+    left: "-1px",
+    borderBottom: "3px solid hsl(20, 96%, 48%)",
+    borderRadius: "0 0 0.2em 0.2em",
+    content: '""',
+  },
+  '[role="tabpanel"] p': { margin: "0" },
+  '[role="tabpanel"] * + p': { marginTop: "1em" },
+  ".tabs__indicator": { height: "4px", backgroundColor: "red", zIndex: 10 },
+}
+
+export const tooltipStyles: CSSObject = {
+  "[data-tooltip]": {
+    zIndex: 1,
+    width: "100px",
+    position: "absolute",
+    padding: "0.25em 0.5em",
+    boxShadow: "2px 2px 10px hsla(0, 0%, 0%, 0.1)",
+    whiteSpace: "nowrap",
+    fontSize: "85%",
+    background: "#f0f0f0",
+    color: "#444",
+    border: "solid 1px #ccc",
   },
 }

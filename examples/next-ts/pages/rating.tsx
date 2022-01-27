@@ -1,6 +1,8 @@
+import { Global } from "@emotion/react"
 import * as Rating from "@ui-machines/rating"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
+import { ratingStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const Star = ({ isHalf, ...rest }: any) => {
   if (isHalf) {
@@ -41,42 +43,28 @@ export default function Page() {
 
   return (
     <>
-      <div>
-        <div>
-          <div className="rating" ref={ref} {...rootProps}>
-            {Array.from({ length: size }).map((_, index) => {
-              const { isHalf, isHighlighted } = getRatingState(index + 1)
-              return (
-                <span className="rating__rate" key={index} {...getRatingProps({ index: index + 1 })}>
-                  <Star
-                    className="rating__star"
-                    focusable="false"
-                    isHalf={isHalf}
-                    color={isHighlighted ? "#ffb400" : "#bdbdbd"}
-                  />
-                </span>
-              )
-            })}
-          </div>
-          <input {...inputProps} />
-        </div>
+      <Global styles={ratingStyle} />
 
-        <StateVisualizer state={state} />
+      <div>
+        <div className="rating" ref={ref} {...rootProps}>
+          {Array.from({ length: size }).map((_, index) => {
+            const { isHalf, isHighlighted } = getRatingState(index + 1)
+            return (
+              <span className="rating__rate" key={index} {...getRatingProps({ index: index + 1 })}>
+                <Star
+                  className="rating__star"
+                  focusable="false"
+                  isHalf={isHalf}
+                  color={isHighlighted ? "#ffb400" : "#bdbdbd"}
+                />
+              </span>
+            )
+          })}
+        </div>
+        <input {...inputProps} />
       </div>
 
-      <style jsx>{`
-        .rating {
-          display: inline-flex;
-        }
-        .rating__rate {
-          width: 20px;
-          height: 20px;
-          padding: 1px;
-        }
-        .rating__rate:focus {
-          outline: 2px solid royalblue;
-        }
-      `}</style>
+      <StateVisualizer state={state} />
     </>
   )
 }

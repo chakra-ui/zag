@@ -2,19 +2,15 @@ import { injectGlobal } from "@emotion/css"
 import * as Popover from "@ui-machines/popover"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { useControls } from "../hooks/use-controls"
+import { popoverControls } from "../../../../shared/controls"
 import { popoverStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(popoverStyle)
 
 export default function Page() {
-  const controls = useControls({
-    modal: { type: "boolean", defaultValue: false },
-    portalled: { type: "boolean", defaultValue: true },
-    autoFocus: { type: "boolean", defaultValue: true },
-    closeOnEsc: { type: "boolean", defaultValue: true },
-  })
+  const controls = useControls(popoverControls)
 
   const [state, send] = useMachine(Popover.machine, {
     context: controls.context,

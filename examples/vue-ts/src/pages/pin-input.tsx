@@ -6,17 +6,14 @@ import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { pinInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { pinInputControls } from "../../../../shared/controls"
 
 injectGlobal(pinInputStyle)
 
 export default defineComponent({
   name: "PinInput",
   setup() {
-    const controls = useControls({
-      type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
-      mask: { type: "boolean", defaultValue: false },
-      otp: { type: "boolean", defaultValue: false },
-    })
+    const controls = useControls(pinInputControls)
 
     const [state, send] = useMachine(PinInput.machine, {
       context: controls.context,

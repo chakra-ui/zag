@@ -1,8 +1,8 @@
 import styled from "@emotion/styled"
 import { useMachine, useSetup } from "@ui-machines/react"
 import * as SplitView from "@ui-machines/split-view"
-import { StateVisualizer } from "components/state-visualizer"
 import { splitViewStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 const Styles = styled.div(splitViewStyle)
 

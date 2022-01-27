@@ -1,6 +1,6 @@
 import { createMachine } from "@ui-machines/core"
 import { useMachine } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
+import { StateVisualizer } from "../components/state-visualizer"
 
 type Context = {
   value: number

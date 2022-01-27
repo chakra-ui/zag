@@ -3,6 +3,7 @@ import * as TagsInput from "@ui-machines/tags-input"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
+import { tagsInputControls } from "../../../../shared/controls"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
@@ -16,17 +17,10 @@ function toDashCase(str: string) {
 export default defineComponent({
   name: "TagsInput",
   setup() {
-    const controls = useControls({
-      autoFocus: { type: "boolean", defaultValue: true, label: "autoFocus" },
-      addOnPaste: { type: "boolean", defaultValue: false, label: "addOnPaste" },
-      addOnBlur: { type: "boolean", defaultValue: false, label: "addOnBlur" },
-      max: { type: "number", defaultValue: 4, label: "max" },
-      allowOutOfRange: { type: "boolean", defaultValue: false, label: "allowOutOfRange" },
-    })
+    const controls = useControls(tagsInputControls)
 
     const [state, send] = useMachine(
       TagsInput.machine.withContext({
-        uid: "123",
         value: ["React", "Vue"],
       }),
       {

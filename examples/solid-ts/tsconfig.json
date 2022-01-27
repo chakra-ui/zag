@@ -7,12 +7,6 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client"],
-    "baseUrl": ".",
-    "paths": {
-      "@ui-machines/solid": ["../../packages/frameworks/solid/src"],
-      "@ui-machines/core": ["../../packages/core/src"],
-      "@ui-machines/web": ["../../packages/machines/src"]
-    }
+    "types": ["vite/client"]
   }
 }

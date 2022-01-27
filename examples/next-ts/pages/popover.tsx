@@ -2,18 +2,14 @@ import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
 import * as Popover from "@ui-machines/popover"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
 import * as React from "react"
+import { popoverControls } from "../../../shared/controls"
 import { popoverStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({
-    modal: { type: "boolean", defaultValue: false },
-    portalled: { type: "boolean", defaultValue: true },
-    autoFocus: { type: "boolean", defaultValue: true },
-    closeOnEsc: { type: "boolean", defaultValue: true },
-  })
+  const controls = useControls(popoverControls)
 
   const [state, send] = useMachine(Popover.machine, {
     context: controls.context,

@@ -3,20 +3,15 @@ import * as Slider from "@ui-machines/slider"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
-import { useControls } from "../hooks/use-controls"
+import { sliderControls } from "../../../../shared/controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(sliderStyle)
 
 export default function Page() {
-  const controls = useControls({
-    readonly: { type: "boolean", defaultValue: false },
-    disabled: { type: "boolean", defaultValue: false },
-    value: { type: "number", defaultValue: 40 },
-    dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
-    origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },
-  })
+  const controls = useControls(sliderControls)
 
   const [state, send] = useMachine(Slider.machine, {
     context: controls.context,

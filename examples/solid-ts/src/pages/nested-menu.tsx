@@ -44,10 +44,6 @@ export default function Page() {
     mergeProps(sub().getItemProps({ id: sub2().triggerProps.id }), sub2().triggerProps),
   )
 
-  onMount(() => {
-    document.documentElement.dir = "rtl"
-  })
-
   return (
     <>
       <button ref={rootRef} data-testid="trigger" {...root().triggerProps}>

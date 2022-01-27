@@ -1,16 +1,13 @@
 import { Global } from "@emotion/react"
 import * as PinInput from "@ui-machines/pin-input"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
+import { pinInputControls } from "../../../shared/controls"
 import { pinInputStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({
-    type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
-    mask: { type: "boolean", defaultValue: false },
-    otp: { type: "boolean", defaultValue: false },
-  })
+  const controls = useControls(pinInputControls)
 
   const [state, send] = useMachine(
     PinInput.machine.withContext({
@@ -31,7 +28,7 @@ export default function Page() {
   const { containerProps, getInputProps, clearValue } = PinInput.connect(state, send)
 
   return (
-    <div>
+    <>
       <Global styles={pinInputStyle} />
       <controls.ui />
       <div className="pin-input" ref={ref} {...containerProps}>
@@ -44,6 +41,6 @@ export default function Page() {
       </button>
 
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

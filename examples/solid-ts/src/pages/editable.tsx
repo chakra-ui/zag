@@ -1,13 +1,18 @@
 import * as Editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
+import { editableControls } from "../../../../shared/controls"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
+  const controls = useControls(editableControls)
+
   const [state, send] = useMachine(
     Editable.machine.withContext({
       placeholder: "Edit me...",
     }),
+    { context: controls.context },
   )
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })

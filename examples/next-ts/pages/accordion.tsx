@@ -1,42 +1,26 @@
 import * as Accordion from "@ui-machines/accordion"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
-
-const data = [
-  {
-    id: "home",
-    label: "Home",
-  },
-  {
-    id: "about",
-    label: "About",
-  },
-  {
-    id: "contact",
-    label: "Contact",
-  },
-]
+import { accordionControls } from "../../../shared/controls"
+import { accordionData } from "../../../shared/data"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({
-    collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
-    multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
-    value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
-  })
+  const controls = useControls(accordionControls)
 
   const [state, send] = useMachine(Accordion.machine, {
     context: controls.context,
   })
 
+  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+
   const { rootProps, getItemProps, getContentProps, getTriggerProps } = Accordion.connect(state, send)
-  const ref = useSetup<HTMLDivElement>({ send, id: "12" })
 
   return (
     <div className="root" style={{ width: "100%" }}>
       <controls.ui />
       <div ref={ref} {...rootProps} style={{ maxWidth: "40ch" }}>
-        {data.map((item) => (
+        {accordionData.map((item) => (
           <div key={item.id} {...getItemProps({ value: item.id })}>
             <h3>
               <button data-testid={`${item.id}:trigger`} {...getTriggerProps({ value: item.id })}>
@@ -50,6 +34,7 @@ export default function Page() {
           </div>
         ))}
       </div>
+
       <StateVisualizer state={state} />
     </div>
   )

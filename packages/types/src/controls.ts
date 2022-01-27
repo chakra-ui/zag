@@ -20,3 +20,7 @@ export type ControlValue<T extends ControlRecord> = {
     ? number
     : never
 }
+
+export function defineControls<T extends ControlRecord>(config: T) {
+  return config
+}

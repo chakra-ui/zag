@@ -5,17 +5,12 @@ import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
+import { numberInputControls } from "../../../../shared/controls"
 
 export default defineComponent({
   name: "NumberInput",
   setup() {
-    const controls = useControls({
-      clampValueOnBlur: { type: "boolean", defaultValue: true },
-      step: { type: "number", defaultValue: 1 },
-      precision: { type: "number", defaultValue: 0 },
-      min: { type: "number", defaultValue: 0 },
-      max: { type: "number", defaultValue: 10 },
-    })
+    const controls = useControls(numberInputControls)
 
     const [state, send] = useMachine(NumberInput.machine, {
       context: controls.context,

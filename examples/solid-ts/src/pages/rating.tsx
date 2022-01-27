@@ -10,7 +10,6 @@ const styles = css(ratingStyle)
 export default function Page() {
   const [state, send] = useMachine(
     Rating.machine.withContext({
-      uid: "123",
       allowHalf: true,
     }),
   )

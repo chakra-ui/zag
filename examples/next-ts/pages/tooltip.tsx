@@ -1,10 +1,13 @@
+import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@ui-machines/react"
 import * as Tooltip from "@ui-machines/tooltip"
+import { tooltipStyles } from "../../../shared/style"
 
 function TooltipComponent(props: { id?: string }) {
   const [state, send] = useMachine(Tooltip.machine)
-  const { triggerProps, isVisible, contentProps } = Tooltip.connect(state, send)
   const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
+
+  const { triggerProps, isVisible, contentProps } = Tooltip.connect(state, send)
 
   return (
     <div>
@@ -22,9 +25,12 @@ function TooltipComponent(props: { id?: string }) {
 
 export default function Page() {
   return (
-    <div style={{ display: "flex", gap: "20px", minHeight: "200vh" }}>
-      <TooltipComponent id="tip-1" />
-      <TooltipComponent id="tip-2" />
-    </div>
+    <>
+      <Global styles={tooltipStyles} />
+      <div style={{ display: "flex", gap: "20px", minHeight: "200vh" }}>
+        <TooltipComponent id="tip-1" />
+        <TooltipComponent id="tip-2" />
+      </div>
+    </>
   )
 }

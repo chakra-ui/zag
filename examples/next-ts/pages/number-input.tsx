@@ -1,17 +1,12 @@
 import { mergeProps } from "@ui-machines/core"
 import * as NumberInput from "@ui-machines/number-input"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
+import { numberInputControls } from "../../../shared/controls"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({
-    clampValueOnBlur: { type: "boolean", defaultValue: true },
-    step: { type: "number", defaultValue: 1 },
-    precision: { type: "number", defaultValue: 0 },
-    min: { type: "number", defaultValue: 0 },
-    max: { type: "number", defaultValue: 10 },
-  })
+  const controls = useControls(numberInputControls)
 
   const [state, send] = useMachine(NumberInput.machine, {
     context: controls.context,

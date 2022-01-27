@@ -1,27 +1,14 @@
 import * as Editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
+import { editableControls } from "../../../../shared/controls"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 export default defineComponent({
   name: "Editable",
   setup() {
-    const controls = useControls({
-      placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
-      submitMode: {
-        type: "select",
-        label: "submit mode?",
-        options: ["enter", "blur", "both", "none"] as const,
-        defaultValue: "both",
-      },
-      activationMode: {
-        type: "select",
-        options: ["focus", "dblclick", "none"] as const,
-        label: "activation mode",
-        defaultValue: "focus",
-      },
-    })
+    const controls = useControls(editableControls)
 
     const [state, send] = useMachine(Editable.machine, {
       context: controls.context,

@@ -11,12 +11,12 @@ injectGlobal(dialogStyle)
 export default function Page() {
   // Dialog 1
   const [state, send] = useMachine(Dialog.machine)
-  const ref = useSetup<HTMLButtonElement>({ send, id: "123" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
   const parentDialog = createMemo(() => Dialog.connect<SolidPropTypes>(state, send, normalizeProps))
 
   // Dialog 2
   const [state2, send2] = useMachine(Dialog.machine)
-  const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "456" })
+  const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "2" })
   const childDialog = createMemo(() => Dialog.connect<SolidPropTypes>(state2, send2, normalizeProps))
 
   return (
@@ -26,7 +26,7 @@ export default function Page() {
           <button ref={ref} className="dialog__button" {...parentDialog().triggerProps} data-testid="trigger-1">
             Open Dialog
           </button>
-          <div style={{ minHeight: "1200px" }} />
+          <div style={{ "min-height": "1200px" }} />
           {parentDialog().isOpen && (
             <Portal>
               <div className="dialog__overlay" {...parentDialog().overlayProps} data-testid="overlay-1" />

@@ -1,14 +1,17 @@
+import { injectGlobal } from "@emotion/css"
 import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Tabs from "@ui-machines/tabs"
-import { createMemo, createUniqueId } from "solid-js"
-import { useControls } from "../hooks/use-controls"
+import { createMemo, createUniqueId, For } from "solid-js"
+import { tabsControls } from "../../../../shared/controls"
+import { tabsData } from "../../../../shared/data"
+import { tabsStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
+
+injectGlobal(tabsStyle)
 
 export default function Page() {
-  const controls = useControls({
-    activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
-    loop: { type: "boolean", defaultValue: true, label: "loop?" },
-  })
+  const controls = useControls(tabsControls)
 
   const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
     context: controls.context,
@@ -24,28 +27,21 @@ export default function Page() {
       <div className="tabs">
         <div className="tabs__indicator" {...tabs().tabIndicatorProps} />
         <div ref={ref} {...tabs().tablistProps}>
-          <button {...tabs().getTabProps({ value: "nils" })}>Nils Frahm</button>
-          <button {...tabs().getTabProps({ value: "agnes" })}>Agnes Obel</button>
-          <button {...tabs().getTabProps({ value: "complex" })}>Joke</button>
+          <For each={tabsData}>
+            {(item) => (
+              <button data-testid={`${item.id}-tab`} {...tabs().getTabProps({ value: item.id })}>
+                {item.label}
+              </button>
+            )}
+          </For>
         </div>
-        <div {...tabs().getTabPanelProps({ value: "nils" })}>
-          <p>
-            Nils Frahm is a German musician, composer and record producer based in Berlin. He is known for combining
-            classical and electronic music and for an unconventional approach to the piano in which he mixes a grand
-            piano, upright piano, Roland Juno-60, Rhodes piano, drum machine, and Moog Taurus.
-          </p>
-        </div>
-        <div {...tabs().getTabPanelProps({ value: "agnes" })}>
-          <p>
-            Agnes Caroline Thaarup Obel is a Danish singer/songwriter. Her first album, Philharmonics, was released by
-            PIAS Recordings on 4 October 2010 in Europe. Philharmonics was certified gold in June 2011 by the Belgian
-            Entertainment Association (BEA) for sales of 10,000 Copies.
-          </p>
-        </div>
-        <div {...tabs().getTabPanelProps({ value: "complex" })}>
-          <p>Fear of complicated buildings:</p>
-          <p>A complex complex complex.</p>
-        </div>
+        <For each={tabsData}>
+          {(item) => (
+            <div data-testid={`${item.id}-tab-panel`} {...tabs().getTabPanelProps({ value: item.id })}>
+              <p>{item.content}</p>
+            </div>
+          )}
+        </For>
       </div>
 
       <StateVisualizer state={state} />

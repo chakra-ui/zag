@@ -6,18 +6,14 @@ import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"
 import { popoverStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { popoverControls } from "../../../../shared/controls"
 
 injectGlobal(popoverStyle)
 
 export default defineComponent({
   name: "Popover",
   setup() {
-    const controls = useControls({
-      modal: { type: "boolean", defaultValue: false },
-      portalled: { type: "boolean", defaultValue: true },
-      autoFocus: { type: "boolean", defaultValue: true },
-      closeOnEsc: { type: "boolean", defaultValue: true },
-    })
+    const controls = useControls(popoverControls)
 
     const [state, send] = useMachine(Popover.machine, {
       context: controls.context,

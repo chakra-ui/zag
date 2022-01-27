@@ -1,14 +1,14 @@
+import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@ui-machines/react"
 import * as Tabs from "@ui-machines/tabs"
-import { StateVisualizer } from "components/state-visualizer"
-import { useControls } from "hooks/use-controls"
+import { tabsControls } from "../../../shared/controls"
 import { tabsData } from "../../../shared/data"
+import { tabsStyle } from "../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({
-    activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
-    loop: { type: "boolean", defaultValue: true, label: "loop?" },
-  })
+  const controls = useControls(tabsControls)
 
   const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
     context: controls.context,
@@ -20,6 +20,7 @@ export default function Page() {
 
   return (
     <div style={{ width: "100%" }}>
+      <Global styles={tabsStyle} />
       <controls.ui />
       <div className="tabs">
         <div className="tabs__indicator" {...tabIndicatorProps} />

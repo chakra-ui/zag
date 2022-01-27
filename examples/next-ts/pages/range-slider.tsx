@@ -1,11 +1,9 @@
-import styled from "@emotion/styled"
+import { Global } from "@emotion/react"
 import * as RangeSlider from "@ui-machines/range-slider"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { StateVisualizer } from "components/state-visualizer"
+import { StateVisualizer } from "../components/state-visualizer"
 import serialize from "form-serialize"
 import { rangeSliderStyle } from "../../../shared/style"
-
-const Styles = styled.div(rangeSliderStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -31,7 +29,8 @@ export default function Page() {
   const { getThumbProps, rootProps, rangeProps, trackProps, getInputProps, values } = RangeSlider.connect(state, send)
 
   return (
-    <Styles>
+    <>
+      <Global styles={rangeSliderStyle} />
       <form
         // ensure we can read the value within forms
         onChange={(e) => {
@@ -52,6 +51,6 @@ export default function Page() {
 
         <StateVisualizer state={state} />
       </form>
-    </Styles>
+    </>
   )
 }
