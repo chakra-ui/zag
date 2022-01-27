@@ -301,19 +301,21 @@ export const tagsInputStyle: CSSObject = {
     userSelect: "none",
     cursor: "pointer",
     transition: "all 100ms ease",
-  },
-  ".tag:not([hidden])": {
     display: "inline-block",
+    "&[hidden]": {
+      display: "none !important",
+    },
+    "&[data-selected]": {
+      backgroundColor: "#777",
+      borderColor: "#777",
+      color: "#eee",
+    },
+    "&[data-disabled]": {
+      opacity: 0.6,
+      cursor: "default",
+    },
   },
-  ".tag[hidden]": {
-    display: "none !important",
-  },
-  ".tag[data-selected]": {
-    backgroundColor: "#777",
-    borderColor: "#777",
-    color: "#eee",
-  },
-  input: {
+  ".tag-input": {
     appearance: "none",
     padding: "3px",
     margin: "0",
@@ -323,12 +325,16 @@ export const tagsInputStyle: CSSObject = {
     font: "inherit",
     fontSize: "100%",
     outline: "none",
-  },
-  "input[hidden]": {
-    display: "none !important",
-  },
-  "input:not([hidden])": {
     display: "inline-block !important",
+    "&[data-part=tag-input]": {
+      width: "40px",
+    },
+    "&[hidden]": {
+      display: "none !important",
+    },
+    "&:disabled": {
+      opacity: 0.6,
+    },
   },
   ".tag-close": {
     border: "0",

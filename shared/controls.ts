@@ -72,7 +72,7 @@ export const tabsControls = defineControls({
 })
 
 export const tagsInputControls = defineControls({
-  autoFocus: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
   addOnPaste: { type: "boolean", defaultValue: false },
   addOnBlur: { type: "boolean", defaultValue: false },
   max: { type: "number", defaultValue: 4 },

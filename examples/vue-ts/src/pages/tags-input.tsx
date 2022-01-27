@@ -52,14 +52,10 @@ export default defineComponent({
                     &#x2715;
                   </button>
                 </div>
-                <input
-                  data-testid={`${toDashCase(value)}-input`}
-                  style={{ width: 40 }}
-                  {...getTagInputProps({ index })}
-                />
+                <input class="tag-input" data-testid={`${toDashCase(value)}-input`} {...getTagInputProps({ index })} />
               </span>
             ))}
-            <input data-testid="input" placeholder="Add tag..." {...inputProps} />
+            <input class="tag-input" data-testid="input" placeholder="Add tag..." {...inputProps} />
           </div>
 
           <StateVisualizer state={state} />

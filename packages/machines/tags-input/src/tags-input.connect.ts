@@ -51,6 +51,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-focus": dataAttr(isInputFocused),
       id: dom.getRootId(ctx),
       onPointerDown() {
+        if (!ctx.isInteractive) return
         send("POINTER_DOWN")
       },
     }),
@@ -142,10 +143,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-selected": dataAttr(id === ctx.focusedId),
         "data-ownedby": dom.getRootId(ctx),
         onPointerDown(event) {
+          if (!ctx.isInteractive) return
           event.preventDefault()
           send({ type: "POINTER_DOWN_TAG", id })
         },
         onDoubleClick() {
+          if (!ctx.isInteractive) return
           send({ type: "DOUBLE_CLICK_TAG", id })
         },
       })
@@ -155,7 +158,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       const id = dom.getTagId(ctx, index)
       const active = ctx.editedId === id
       return normalize.input<T>({
-        "data-part": "tag--input",
+        "data-part": "tag-input",
         id: dom.getTagInputId(ctx, index),
         type: "text",
         tabIndex: -1,
@@ -190,15 +193,22 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     getTagDeleteButtonProps({ index, value }: TagProps) {
       const id = dom.getTagId(ctx, index)
       return normalize.button<T>({
-        "data-part": "tag--delete-button",
+        "data-part": "delete-button",
         id: dom.getTagDeleteBtnId(ctx, index),
         type: "button",
         "aria-label": `Delete ${value}`,
         tabIndex: -1,
+        onPointerDown(event) {
+          if (!ctx.isInteractive) {
+            event.preventDefault()
+          }
+        },
         onPointerOver() {
+          if (!ctx.isInteractive) return
           send({ type: "HOVER_DELETE_TAG", id })
         },
         onClick() {
+          if (!ctx.isInteractive) return
           send({ type: "DELETE_TAG", id })
         },
       })
@@ -211,6 +221,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-label": "Clear all tags",
       hidden: ctx.count === 0,
       onClick() {
+        if (!ctx.isInteractive) return
         send("CLEAR_ALL")
       },
     }),

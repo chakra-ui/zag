@@ -25,6 +25,8 @@ export default function Page() {
 
   return (
     <>
+      <controls.ui />
+
       <div ref={ref} {...tagsInput().rootProps} className="tags-input">
         {state.context.value.map((value, index) => (
           <span>
@@ -34,10 +36,10 @@ export default function Page() {
                 &#x2715;
               </button>
             </div>
-            <input style={{ width: "40px" }} {...tagsInput().getTagInputProps({ index })} />
+            <input className="tag-input" {...tagsInput().getTagInputProps({ index })} />
           </span>
         ))}
-        <input placeholder="Add tag..." {...tagsInput().inputProps} />
+        <input className="tag-input" placeholder="Add tag..." {...tagsInput().inputProps} />
       </div>
 
       <StateVisualizer state={state} />
