@@ -10,16 +10,33 @@ export const machine = createMachine<MachineContext, MachineState>(
     context: {
       name: "rating",
       max: 5,
+      dir: "ltr",
       uid: "rating-input",
       value: -1,
       hoveredValue: -1,
       disabled: false,
       readonly: false,
     },
+
+    created(ctx) {
+      if (!ctx.allowHalf) {
+        ctx.value = Math.round(ctx.value)
+      }
+    },
+
+    watch: {
+      allowHalf(ctx) {
+        if (!ctx.allowHalf) {
+          ctx.value = Math.round(ctx.value)
+        }
+      },
+    },
+
     computed: {
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       isHovering: (ctx) => ctx.hoveredValue > -1,
     },
+
     states: {
       unknown: {
         on: {
@@ -125,8 +142,13 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.value = evt.value ?? ctx.hoveredValue
       },
       setHoveredValue(ctx, evt) {
-        const factor = ctx.allowHalf && evt.isMidway ? 0.5 : 0
-        ctx.hoveredValue = evt.index - factor
+        const half = ctx.allowHalf && evt.isMidway
+        let factor = half ? 0.5 : 0
+        if (ctx.dir === "rtl") {
+          factor = half ? 0 : 0.5
+        }
+        let value = evt.index - factor
+        ctx.hoveredValue = value
       },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)

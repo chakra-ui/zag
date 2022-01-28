@@ -179,19 +179,27 @@ export const rangeSliderStyle: CSSObject = {
 
 export const ratingStyle: CSSObject = {
   ".rating": {
-    display: "flex",
+    display: "inline-flex",
   },
   ".rating__rate": {
-    margin: "0 3px",
-    background: "salmon",
+    margin: "0 1px",
     width: "20px",
     height: "20px",
     padding: "1px",
     "&:focus": {
       outline: "2px solid royalblue",
     },
-    "&[data-highlighted]": {
-      background: "red",
+  },
+  ".rating__star": {
+    color: "#bdbdbd",
+    "[data-highlighted] &": {
+      color: "#ffb400",
+    },
+    "[data-highlighted][data-disabled] &": {
+      color: "#a1a1a1",
+    },
+    "[dir=rtl] [data-half] &": {
+      transform: "scale(-1, 1)",
     },
   },
 }

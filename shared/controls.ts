@@ -78,3 +78,11 @@ export const tagsInputControls = defineControls({
   max: { type: "number", defaultValue: 4 },
   allowOutOfRange: { type: "boolean", defaultValue: false },
 })
+
+export const ratingControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readonly: { type: "boolean", defaultValue: false },
+  allowHalf: { type: "boolean", defaultValue: true },
+  value: { type: "number", defaultValue: 3.5 },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})

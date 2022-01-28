@@ -34,6 +34,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     value: ctx.value,
     hoveredValue: ctx.hoveredValue,
     size: ctx.max,
+    sizeArray: Array.from({ length: ctx.max }).map((_, index) => index + 1),
 
     getRatingState,
     inputProps: normalize.input<T>({
@@ -51,6 +52,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     }),
 
     rootProps: normalize.element<T>({
+      dir: ctx.dir,
       "data-part": "root",
       id: dom.getRootId(ctx),
       role: "radiogroup",
@@ -75,10 +77,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-part": "rating",
         id: dom.getRatingId(ctx, index),
         role: "radio",
-        tabIndex: isChecked ? 0 : -1,
+        tabIndex: ctx.disabled ? -1 : isChecked ? 0 : -1,
         "aria-roledescription": "rating",
         "aria-label": valueText,
         "aria-disabled": ctx.disabled,
+        "data-disabled": dataAttr(ctx.disabled),
         "aria-readonly": ctx.readonly,
         "aria-setsize": ctx.max,
         "aria-checked": isChecked,
