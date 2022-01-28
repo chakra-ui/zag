@@ -136,10 +136,11 @@ type ArrowStyleOptions = {
   size?: number
   background?: string
   shadowColor?: string
+  measured?: boolean
 }
 
 export function getArrowStyle(opts: ArrowStyleOptions = {}) {
-  const { size = 8, background, shadowColor } = opts
+  const { size = 8, background, shadowColor, measured } = opts
   return {
     position: "absolute",
     [cssVars.arrowSize.variable]: `${size}px`,
@@ -149,6 +150,7 @@ export function getArrowStyle(opts: ArrowStyleOptions = {}) {
     [cssVars.arrowOffset.variable]: `calc(${cssVars.arrowSizeHalf.reference} * -1)`,
     [cssVars.arrowBg.variable]: background,
     [cssVars.arrowShadowColor.variable]: shadowColor,
+    ...(!measured && { opacity: 0 }),
   } as const
 }
 
@@ -169,6 +171,12 @@ export function getFloatingStyle(measured = false) {
   return {
     position: "absolute",
     minWidth: "max-content",
-    ...(!measured && { top: "0", left: "0" }),
+    ...(!measured && {
+      top: "0",
+      left: "0",
+      position: "fixed",
+      opacity: 0,
+      transform: "translate3d(0, -200%, 0)",
+    }),
   } as const
 }
