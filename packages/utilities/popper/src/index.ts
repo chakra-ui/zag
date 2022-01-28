@@ -167,16 +167,18 @@ export function getInnerArrowStyle() {
   } as const
 }
 
+const UNMEASURED_FLOATING_STYLE = {
+  top: "0",
+  left: "0",
+  position: "fixed",
+  opacity: 0,
+  transform: "translate3d(0, -200%, 0)",
+} as const
+
 export function getFloatingStyle(measured = false) {
   return {
     position: "absolute",
     minWidth: "max-content",
-    ...(!measured && {
-      top: "0",
-      left: "0",
-      position: "fixed",
-      opacity: 0,
-      transform: "translate3d(0, -200%, 0)",
-    }),
+    ...(!measured && UNMEASURED_FLOATING_STYLE),
   } as const
 }

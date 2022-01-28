@@ -113,7 +113,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closing: {
-        activities: "trackPointerMove",
+        activities: ["trackPointerMove", "computePlacement"],
         after: {
           SUBMENU_CLOSE_DELAY: {
             target: "close",
@@ -339,7 +339,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         const BUFFER = 20
         menuRect = inset(menuRect, { dx: -BUFFER, dy: -BUFFER })
         const { top, right, left, bottom } = menuRect.corners
-        ctx.intentPolygon = [evt.point, top, right, bottom, left]
+
+        let polygon = [evt.point, top, right, bottom, left]
+        if (ctx.isRtl && ctx.isSubmenu) {
+          polygon = [evt.point, top, left, bottom, right]
+        }
+        ctx.intentPolygon = polygon
       },
       clearIntentPolygon(ctx) {
         ctx.intentPolygon = null
