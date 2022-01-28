@@ -16,14 +16,25 @@ export default function Page() {
 
   return (
     <>
-      <button ref={ref} {...menu().triggerProps}>
-        Click me
-      </button>
-      <ul style={{ width: "300px" }} {...menu().contentProps}>
-        <li {...menu().getItemProps({ id: "menuitem-1" })}>Edit</li>
-        <li {...menu().getItemProps({ id: "menuitem-2" })}>Duplicate</li>
-        <li {...menu().getItemProps({ id: "menuitem-3" })}>Delete</li>
-      </ul>
+      <div>
+        <button className="menu__trigger" ref={ref} {...menu().triggerProps}>
+          Actions <span aria-hidden>▾</span>
+        </button>
+        <ul className="menu__content" {...menu().contentProps}>
+          <li className="menu__item" {...menu().getItemProps({ id: "edit" })}>
+            Edit
+          </li>
+          <li className="menu__item" {...menu().getItemProps({ id: "duplicate" })}>
+            Duplicate
+          </li>
+          <li className="menu__item" {...menu().getItemProps({ id: "delete" })}>
+            Delete
+          </li>
+          <li className="menu__item" {...menu().getItemProps({ id: "export" })}>
+            Export...
+          </li>
+        </ul>
+      </div>
 
       <StateVisualizer state={state} />
     </>

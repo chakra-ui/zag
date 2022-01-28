@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
+import { addPointerEvent, contains, isFocusable, nextTick, raf, trackPointerDown } from "@ui-machines/dom-utils"
 import { getPlacement } from "@ui-machines/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
 import { dom } from "./menu.dom"
@@ -295,19 +295,20 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         if (ctx.disablePlacement) return
-        const arrow = dom.getArrowEl(ctx)
-        const utils = getPlacement(dom.getTriggerEl(ctx), dom.getMenuEl(ctx), {
-          ...ctx.placementOptions,
-          arrow: arrow ? { element: arrow } : undefined,
-          onPlacementComplete(placement) {
-            ctx.__placement = placement
-          },
+        let cleanup: VoidFunction
+        ctx.__placement = ctx.placementOptions.placement
+        raf(() => {
+          const arrow = dom.getArrowEl(ctx)
+          cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getMenuEl(ctx), {
+            ...ctx.placementOptions,
+            arrow: arrow ? { element: arrow } : undefined,
+            onPlacementComplete(placement) {
+              ctx.__placement = placement
+            },
+          })
         })
-        utils.compute()
-        const cleanup = utils.addListeners()
-
         return () => {
-          cleanup()
+          cleanup?.()
           ctx.__placement = undefined
         }
       },

@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
-import { PLACEMENT_STYLE } from "@ui-machines/popper"
+import { getArrowStyle, getFloatingStyle, getInnerArrowStyle } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -74,12 +74,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(ctx),
       "data-part": "arrow",
-      style: PLACEMENT_STYLE.arrow(),
+      style: getArrowStyle(),
     }),
 
     innerArrowProps: normalize.element<T>({
       "data-part": "arrow--inner",
-      style: PLACEMENT_STYLE.innerArrow(),
+      style: getInnerArrowStyle(),
     }),
 
     contentProps: normalize.element<T>({
@@ -93,7 +93,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TOOLTIP_POINTER_LEAVE")
       },
       style: {
-        ...(ctx.__placement ? undefined : PLACEMENT_STYLE.floating()),
+        ...getFloatingStyle(!!ctx.__placement),
         pointerEvents: ctx.interactive ? "auto" : "none",
       },
     }),

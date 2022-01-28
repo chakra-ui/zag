@@ -1,5 +1,5 @@
 import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { PLACEMENT_STYLE } from "@ui-machines/popper"
+import { getArrowStyle, getFloatingStyle, getInnerArrowStyle } from "@ui-machines/popper"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
@@ -99,12 +99,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(ctx),
       "data-part": "arrow",
-      style: PLACEMENT_STYLE.arrow(),
+      style: getArrowStyle(),
     }),
 
     innerArrowProps: normalize.element<T>({
       "data-part": "arrow--inner",
-      style: PLACEMENT_STYLE.innerArrow(),
+      style: getInnerArrowStyle(),
     }),
 
     triggerProps: normalize.button<T>({
@@ -187,7 +187,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-activedescendant": ctx.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(ctx),
       "data-placement": ctx.__placement,
-      style: PLACEMENT_STYLE.floating(),
+      style: getFloatingStyle(!!ctx.__placement),
       onBlur(event) {
         const menu = dom.getMenuEl(ctx)
         const trigger = dom.getTriggerEl(ctx)

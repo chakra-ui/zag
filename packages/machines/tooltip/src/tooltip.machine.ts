@@ -122,19 +122,16 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     activities: {
       computePlacement(ctx) {
-        // pre-populate the placement with the current value
-        // for correct positioning on initial render
+        // pre-populate the placement with the current value for correct positioning on initial render
         ctx.__placement = "bottom"
         let cleanup: VoidFunction
         raf(() => {
-          const utils = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
+          cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
             placement: "bottom",
             onPlacementComplete(placement) {
               ctx.__placement = placement
             },
           })
-          utils.compute()
-          cleanup = utils.addListeners()
         })
         return () => {
           cleanup?.()

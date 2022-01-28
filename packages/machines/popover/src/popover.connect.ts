@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
-import { PLACEMENT_STYLE } from "@ui-machines/popper"
+import { getArrowStyle, getFloatingStyle, getInnerArrowStyle } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState } from "./popover.types"
@@ -27,12 +27,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(ctx),
       "data-part": "arrow",
-      style: PLACEMENT_STYLE.arrow(),
+      style: getArrowStyle(),
     }),
 
     innerArrowProps: normalize.element<T>({
       "data-part": "arrow--inner",
-      style: PLACEMENT_STYLE.innerArrow(),
+      style: getInnerArrowStyle(),
     }),
 
     anchorProps: normalize.element<T>({
@@ -60,7 +60,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       hidden: !isOpen,
       "aria-labelledby": dom.getHeaderId(ctx),
       "aria-describedby": dom.getBodyId(ctx),
-      style: ctx.__placement ? undefined : PLACEMENT_STYLE.floating(),
+      style: getFloatingStyle(!!ctx.__placement),
       "data-placement": ctx.__placement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {

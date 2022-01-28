@@ -23,18 +23,29 @@ export default defineComponent({
     return () => {
       const { triggerProps, contentProps, getItemProps } = menuRef.value
       return (
-        <div>
-          <button ref={ref} {...triggerProps}>
-            Click me
-          </button>
-          <ul style={{ width: "300px" }} {...contentProps}>
-            <li {...getItemProps({ id: "menuitem-1" })}>Edit</li>
-            <li {...getItemProps({ id: "menuitem-2" })}>Duplicate</li>
-            <li {...getItemProps({ id: "menuitem-3" })}>Delete</li>
-          </ul>
+        <>
+          <div>
+            <button class="menu__trigger" ref={ref} {...triggerProps}>
+              Actions <span aria-hidden>▾</span>
+            </button>
+            <ul class="menu__content" {...contentProps}>
+              <li class="menu__item" {...getItemProps({ id: "edit" })}>
+                Edit
+              </li>
+              <li class="menu__item" {...getItemProps({ id: "duplicate" })}>
+                Duplicate
+              </li>
+              <li class="menu__item" {...getItemProps({ id: "delete" })}>
+                Delete
+              </li>
+              <li class="menu__item" {...getItemProps({ id: "export" })}>
+                Export...
+              </li>
+            </ul>
+          </div>
 
           <StateVisualizer state={state} />
-        </div>
+        </>
       )
     }
   },

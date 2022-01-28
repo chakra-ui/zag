@@ -40,7 +40,7 @@ const defaultOpts: PlacementOptions = {
 
 export function getPlacement(reference: HTMLElement | null, floating: HTMLElement | null, opts: PlacementOptions = {}) {
   if (reference == null || floating == null) {
-    return { addListeners: () => noop, compute: () => noop }
+    return noop
   }
 
   opts = Object.assign({}, defaultOpts, opts)
@@ -88,8 +88,8 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
       placement: opts.placement,
       middleware,
       strategy: opts.strategy,
-    }).then(({ x, y, placement }) => {
-      Object.assign(floating.style, { left: `${x}px`, top: `${y}px` })
+    }).then(({ x, y, placement, strategy }) => {
+      Object.assign(floating.style, { left: `${x}px`, top: `${y}px`, position: strategy })
       opts.onPlacementComplete?.(placement)
     })
   }
@@ -121,12 +121,10 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
     }
   }
 
-  return {
-    addListeners() {
-      const cleanups = [addResizeListeners(), addScrollListeners()]
-      return () => cleanups.forEach((fn) => fn?.())
-    },
-    compute,
+  compute()
+  const cleanups = [addResizeListeners(), addScrollListeners()]
+  return function cleanup() {
+    cleanups.forEach((fn) => fn?.())
   }
 }
 
@@ -140,7 +138,7 @@ type ArrowStyleOptions = {
   shadowColor?: string
 }
 
-function getArrowStyle(opts: ArrowStyleOptions = {}) {
+export function getArrowStyle(opts: ArrowStyleOptions = {}) {
   const { size = 8, background, shadowColor } = opts
   return {
     position: "absolute",
@@ -154,12 +152,12 @@ function getArrowStyle(opts: ArrowStyleOptions = {}) {
   } as const
 }
 
-function getInnerArrowStyle() {
+export function getInnerArrowStyle() {
   return {
     transform: "rotate(45deg)",
     background: cssVars.arrowBg.reference,
-    top: 0,
-    left: 0,
+    top: "0",
+    left: "0",
     width: "100%",
     height: "100%",
     position: "absolute",
@@ -167,16 +165,10 @@ function getInnerArrowStyle() {
   } as const
 }
 
-function getFloatingStyle() {
+export function getFloatingStyle(measured = false) {
   return {
     position: "absolute",
     minWidth: "max-content",
-    inset: "0 auto auto 0",
+    ...(!measured && { top: "0", left: "0" }),
   } as const
-}
-
-export const PLACEMENT_STYLE = {
-  arrow: getArrowStyle,
-  innerArrow: getInnerArrowStyle,
-  floating: getFloatingStyle,
 }

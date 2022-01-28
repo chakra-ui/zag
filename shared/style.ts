@@ -53,10 +53,10 @@ export const menuStyle: CSSObject = {
     backgroundColor: "white",
     borderRadius: "6px",
     padding: "5px",
-    boxShadow: "rgb(22 23 24 / 35%) 0px 10px 38px -10px, rgb(22 23 24 / 20%) 0px 10px 20px -15px",
+    border: "1px solid lightgray",
     "&:focus": {
       outline: "2px dashed var(--ring-color)",
-      outlineOffset: "-3px",
+      outlineOffset: "-5px",
     },
   },
   '[role="menuitem"]': {
