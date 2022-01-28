@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
 import { getEventPoint, relativeToNode } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { cast, isLeftClick } from "@ui-machines/utils"
@@ -59,6 +59,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(ctx),
       tabIndex: ctx.readonly ? 0 : -1,
+      "data-disabled": dataAttr(ctx.disabled),
       onPointerMove() {
         if (!ctx.isInteractive) return
         send("GROUP_POINTER_OVER")
@@ -89,7 +90,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-highlighted": dataAttr(isHighlighted),
         "data-half": dataAttr(isHalf),
         onPointerDown(event) {
-          if (isLeftClick(cast(event))) {
+          if (!ctx.isInteractive) return
+          const evt = getNativeEvent(event)
+          if (isLeftClick(evt)) {
             event.preventDefault()
           }
         },

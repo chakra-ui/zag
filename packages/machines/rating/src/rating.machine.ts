@@ -95,8 +95,12 @@ export const machine = createMachine<MachineContext, MachineState>(
             {
               guard: "isRadioFocused",
               target: "focus",
+              actions: "clearHoveredValue",
             },
-            { target: "idle" },
+            {
+              target: "idle",
+              actions: "clearHoveredValue",
+            },
           ],
           CLICK: {
             actions: ["setValue", "invokeOnChange", "focusActiveRadio"],
