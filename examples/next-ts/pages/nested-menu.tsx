@@ -11,7 +11,7 @@ import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
   const [state, send, machine] = useMachine(Menu.machine)
-  const rootRef = useSetup<HTMLButtonElement>({ send, id: "1" })
+  const rootRef = useSetup<HTMLUListElement>({ send, id: "1" })
 
   const [subState, subSend, subMachine] = useMachine(Menu.machine)
   const subRef = useSetup<HTMLUListElement>({ send: subSend, id: "2" })
@@ -47,12 +47,12 @@ export default function Page() {
   return (
     <>
       <Global styles={menuStyle} />
-      <button ref={rootRef} data-testid="trigger" {...root.triggerProps}>
+      <button data-testid="trigger" {...root.triggerProps}>
         Click me
       </button>
 
       <Portal>
-        <ul data-testid="menu" ref={subRef} {...root.contentProps}>
+        <ul data-testid="menu" ref={rootRef} {...root.contentProps}>
           {level1.map((item) => {
             const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
             return (
@@ -65,7 +65,7 @@ export default function Page() {
       </Portal>
 
       <Portal>
-        <ul ref={sub2Ref} data-testid="more-tools-submenu" {...sub.contentProps}>
+        <ul ref={subRef} data-testid="more-tools-submenu" {...sub.contentProps}>
           {level2.map((item) => {
             const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
             return (
@@ -78,7 +78,7 @@ export default function Page() {
       </Portal>
 
       <Portal>
-        <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
+        <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.contentProps}>
           {level3.map((item) => (
             <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
               {item.label}
