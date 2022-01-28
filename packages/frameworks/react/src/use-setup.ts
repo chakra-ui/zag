@@ -11,7 +11,10 @@ export function useSetup<T extends HTMLElement = HTMLElement>(props: UseSetupPro
   const ref = useRef<T>(null)
 
   useEffect(() => {
-    send({ type: "SETUP", doc: ref.current?.ownerDocument, id })
+    Promise.resolve().then(() => {
+      const doc = ref.current?.ownerDocument
+      send({ type: "SETUP", doc, id })
+    })
   }, [id])
 
   return ref

@@ -15,8 +15,10 @@ export function useSetup(props: UseSetupProps) {
   const nodeRef = ref<null | MaybeElementRef>(null)
 
   onMounted(() => {
-    const doc = nodeRef.value?.$el?.ownerDocument || nodeRef.value?.ownerDocument
-    send({ type: "SETUP", doc, id: isRef(id) ? id.value : id })
+    Promise.resolve().then(() => {
+      const doc = nodeRef.value?.$el?.ownerDocument || nodeRef.value?.ownerDocument
+      send({ type: "SETUP", doc, id: isRef(id) ? id.value : id })
+    })
   })
 
   return nodeRef

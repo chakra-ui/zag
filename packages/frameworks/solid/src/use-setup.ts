@@ -11,7 +11,9 @@ export function useSetup<T extends HTMLElement = HTMLElement>(props: UseSetupPro
   const [el, setEl] = createSignal<T>()
 
   onMount(() => {
-    send({ type: "SETUP", doc: el()?.ownerDocument, id })
+    Promise.resolve().then(() => {
+      send({ type: "SETUP", doc: el()?.ownerDocument, id })
+    })
   })
 
   return setEl
