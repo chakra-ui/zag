@@ -6,28 +6,22 @@ import { BeatLoader } from "react-spinners"
 import { toastStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
-const ToastComponent = ({ actor }: { actor: Toast.Service }) => {
+function ToastItem({ actor }: { actor: Toast.Service }) {
   const [state, send] = useActor(actor)
-
-  const ctx = state.context
-
-  const t = Toast.connect(state, send)
-
-  // call `t.render()` if provided, else use default ui below
+  const toast = Toast.connect(state, send)
 
   return (
-    <pre className="toast" {...t.containerProps}>
-      <progress max={ctx.progress?.max} value={ctx.progress?.value} />
-      <p>{ctx.title}</p>
-      <p>{ctx.type === "loading" ? <BeatLoader /> : null}</p>
-      <button onClick={t.dismiss}>Close</button>
+    <pre className="toast" {...toast.containerProps}>
+      <progress max={toast.progress?.max} value={toast.progress?.value} />
+      <p {...toast.titleProps}>{toast.title}</p>
+      <p>{toast.type === "loading" ? <BeatLoader /> : null}</p>
+      <button onClick={toast.dismiss}>Close</button>
     </pre>
   )
 }
 
 export default function Page() {
   const [state, send] = useMachine(Toast.group.machine)
-  const { context: ctx } = state
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
@@ -35,10 +29,10 @@ export default function Page() {
   const id = useRef<string>()
 
   return (
-    <div ref={ref}>
+    <>
       <Global styles={toastStyle} />
 
-      <div style={{ display: "flex", gap: "16px" }}>
+      <div ref={ref} style={{ display: "flex", gap: "16px" }}>
         <button
           onClick={() => {
             id.current = toasts.create({
@@ -77,11 +71,12 @@ export default function Page() {
       </div>
 
       <div {...toasts.getContainerProps({ placement: "bottom" })}>
-        {ctx.toasts.map((actor) => (
-          <ToastComponent key={actor.id} actor={actor} />
+        {toasts.toasts.map((actor) => (
+          <ToastItem key={actor.id} actor={actor} />
         ))}
       </div>
+
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

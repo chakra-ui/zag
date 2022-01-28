@@ -377,6 +377,11 @@ const fadeOut = keyframes({
   to: { opacity: 0 },
 })
 
+const spin = keyframes({
+  from: { transform: "rotate(0deg)" },
+  to: { transform: "rotate(360deg)" },
+})
+
 export const toastStyle: CSSObject = {
   ".toast": {
     background: "rgb(116, 116, 116)",
@@ -403,6 +408,9 @@ export const toastStyle: CSSObject = {
     "&[data-type=loading]": {
       background: "purple",
     },
+  },
+  ".spin": {
+    animation: `${spin} 1s linear infinite`,
   },
 }
 

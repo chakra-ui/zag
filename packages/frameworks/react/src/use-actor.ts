@@ -8,6 +8,6 @@ export function useActor<
   TEvent extends S.EventObject = S.AnyEventObject,
 >(service: Machine<TContext, TState, TEvent>, options: { sync?: boolean } = {}) {
   const { sync } = options
-  const current = cast<S.State<TContext, TState, TEvent>>(useSnapshot(service, { sync }))
+  const current = cast<S.State<TContext, TState, TEvent>>(useSnapshot(service.state, { sync }))
   return [current, service.send] as const
 }

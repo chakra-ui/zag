@@ -4,10 +4,11 @@ import { normalizeProps, useActor, useMachine, useSetup, VuePropTypes } from "@u
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
 import { toastStyle } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
 
 injectGlobal(toastStyle)
 
-const ToastComponent = defineComponent({
+const ToastItem = defineComponent({
   props: {
     actor: {
       type: Object as PropType<Toast.Service>,
@@ -16,66 +17,81 @@ const ToastComponent = defineComponent({
   },
   setup(props) {
     const [state, send] = useActor(props.actor)
+    const toast = computed(() => Toast.connect<VuePropTypes>(state.value, send, normalizeProps))
 
-    const ctx = computed(() => state.value.context)
-    const t = computed(() => Toast.connect<VuePropTypes>(state.value, send))
-
-    return () => (
-      <pre hidden={!t.value.isVisible} {...t.value.containerProps}>
-        <progress max={ctx.value.progress?.max} value={ctx.value.progress?.value} />
-        <p>{ctx.value.title}</p>
-        {/* @ts-expect-error */}
-        <p>{ctx.value.type === "loading" ? <HollowDotsSpinner /> : null}</p>
-        <button onClick={t.value.dismiss}>Close</button>
-      </pre>
-    )
+    return () => {
+      const { isVisible, containerProps, progress, title, titleProps, type, dismiss } = toast.value
+      return (
+        <pre class="toast" hidden={!isVisible} {...containerProps}>
+          <progress max={progress?.max} value={progress?.value} />
+          <p {...titleProps}>{title}</p>
+          {/* @ts-expect-error */}
+          <p>{type === "loading" ? <HollowDotsSpinner /> : null}</p>
+          <button onClick={dismiss}>Close</button>
+        </pre>
+      )
+    }
   },
 })
 
 export default defineComponent({
   name: "Toast",
   setup() {
-    const [state, send] = useMachine(Toast.group.machine, { preserve: true })
-
+    const [state, send] = useMachine(Toast.group.machine.withContext({ pauseOnHover: true }))
     const toastRef = useSetup({ send, id: "1" })
-
     const toasts = computed(() => Toast.group.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const id = ref<string>()
 
     return () => {
       return (
-        <div ref={toastRef}>
-          <button
-            onClick={() => {
-              id.value = toasts.value.create({
-                title: "Welcome",
-                description: "Welcome",
-                type: "info",
-              })
-            }}
-          >
-            Notify
-          </button>
-          <button
-            onClick={() => {
-              if (!id.value) return
-              toasts.value.update(id.value, {
-                title: "Testing",
-                type: "loading",
-              })
-            }}
-          >
-            Update Child
-          </button>
-          <button onClick={() => toasts.value.dismiss()}>Close all</button>
-          <button onClick={() => toasts.value.pause()}>Pause</button>
+        <>
+          <div ref={toastRef} style={{ display: "flex", gap: "16px" }}>
+            <button
+              onClick={() => {
+                id.value = toasts.value.create({
+                  title: "Welcome",
+                  description: "Welcome",
+                  type: "info",
+                })
+              }}
+            >
+              Notify (Info)
+            </button>
+            <button
+              onClick={() => {
+                toasts.value.create({
+                  title: "Ooops! Something was wrong",
+                  type: "error",
+                })
+              }}
+            >
+              Notify (Error)
+            </button>
+            <button
+              onClick={() => {
+                if (!id.value) return
+                toasts.value.update(id.value, {
+                  title: "Testing",
+                  type: "loading",
+                })
+              }}
+            >
+              Update Child (info)
+            </button>
+            <button onClick={() => toasts.value.dismiss()}>Close all</button>
+            <button onClick={() => toasts.value.pause()}>Pause all</button>
+            <button onClick={() => toasts.value.resume()}>Resume all</button>
+          </div>
+
           <div {...toasts.value.getContainerProps({ placement: "bottom" })}>
-            {state.value.context.toasts.map((actor) => (
-              <ToastComponent key={actor.id} actor={actor} />
+            {toasts.value.toasts.map((actor) => (
+              <ToastItem key={actor.id} actor={actor} />
             ))}
           </div>
-        </div>
+
+          <StateVisualizer state={state} />
+        </>
       )
     }
   },

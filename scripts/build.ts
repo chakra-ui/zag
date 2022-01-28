@@ -59,7 +59,7 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
   const { dev } = opts
 
   const common: esbuild.BuildOptions = {
-    minify: true,
+    minify: process.env.NODE_ENV === "production",
     bundle: true,
     sourcemap: true,
     target: "es6",

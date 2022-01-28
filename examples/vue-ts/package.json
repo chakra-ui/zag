@@ -37,6 +37,7 @@
         "@floating-ui/dom",
         "@vue/runtime-core",
         "aria-hidden",
+        "epic-spinners",
         "focus-trap",
         "form-serialize",
         "klona",

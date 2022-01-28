@@ -14,6 +14,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
   return {
     type: ctx.type,
+    title: ctx.title,
     placement: ctx.placement,
     isVisible,
     progress: ctx.progress,

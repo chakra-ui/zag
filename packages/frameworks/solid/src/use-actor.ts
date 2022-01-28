@@ -18,5 +18,5 @@ export function useActor<
     unsubscribe()
   })
 
-  return [current, service.send] as const
+  return [current as S.State<TContext, TState, TEvent>, service.send] as const
 }
