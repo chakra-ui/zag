@@ -1,8 +1,8 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { dom } from "./split-view.dom"
-import { MachineContext, MachineState } from "./split-view.types"
+import { dom } from "./splitter.dom"
+import { MachineContext, MachineState } from "./splitter.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(
   state: S.State<MachineContext, MachineState>,

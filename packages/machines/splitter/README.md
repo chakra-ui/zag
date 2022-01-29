@@ -1,13 +1,13 @@
-# @ui-machines/split-view
+# @ui-machines/splitter
 
-Core logic for the split-view widget implemented as a state machine
+Core logic for the splitter widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/split-view
+yarn add  @ui-machines/splitter
 # or
-npm i  @ui-machines/split-view
+npm i  @ui-machines/splitter
 ```
 
 ## Contribution

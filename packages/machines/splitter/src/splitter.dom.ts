@@ -1,5 +1,5 @@
 import { Style } from "@ui-machines/types"
-import { MachineContext as Ctx } from "./split-view.types"
+import { MachineContext as Ctx } from "./splitter.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

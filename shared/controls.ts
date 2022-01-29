@@ -87,7 +87,7 @@ export const ratingControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
-export const splitViewControls = defineControls({
+export const splitterControls = defineControls({
   fixed: { type: "boolean", defaultValue: false },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 340 },

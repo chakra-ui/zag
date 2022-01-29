@@ -57,8 +57,8 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/slider")),
   },
   {
-    path: "/split-view",
-    component: lazy(() => import("./pages/split-view")),
+    path: "/splitter",
+    component: lazy(() => import("./pages/splitter")),
   },
   {
     path: "/tabs",

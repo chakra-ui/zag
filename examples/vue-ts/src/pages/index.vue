@@ -44,7 +44,7 @@
       <router-link to="/tooltip"> To tooltip </router-link>
     </li>
     <li>
-      <router-link to="/split-view"> To Split View </router-link>
+      <router-link to="/splitter"> To Splitter </router-link>
     </li>
   </ul>
 </template>

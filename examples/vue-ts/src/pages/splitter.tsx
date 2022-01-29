@@ -1,27 +1,27 @@
 import { injectGlobal } from "@emotion/css"
-import * as SplitView from "@ui-machines/split-view"
+import * as Splitter from "@ui-machines/splitter"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
-import { splitViewControls } from "../../../../shared/controls"
-import { splitViewStyle } from "../../../../shared/style"
+import { splitterControls } from "../../../../shared/controls"
+import { splitterStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
-injectGlobal(splitViewStyle)
+injectGlobal(splitterStyle)
 
 export default defineComponent({
-  name: "SplitView",
+  name: "Splitter",
   setup() {
-    const controls = useControls(splitViewControls)
+    const controls = useControls(splitterControls)
 
-    const [state, send] = useMachine(SplitView.machine, {
+    const [state, send] = useMachine(Splitter.machine, {
       context: controls.context,
     })
 
     const ref = useSetup({ send, id: "1" })
 
-    const splitter = computed(() => SplitView.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const splitter = computed(() => Splitter.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, primaryPaneProps, labelProps, splitterProps, secondaryPaneProps } = splitter.value

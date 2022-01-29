@@ -253,7 +253,7 @@ export const sliderStyle: CSSObject = {
   },
 }
 
-export const splitViewStyle: CSSObject = {
+export const splitterStyle: CSSObject = {
   ".root": {
     height: "300px",
   },

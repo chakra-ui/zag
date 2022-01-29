@@ -2,15 +2,15 @@ import { createMachine, ref } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { relativeToNode } from "@ui-machines/rect-utils"
-import { dom } from "./split-view.dom"
-import { MachineContext, MachineState } from "./split-view.types"
+import { dom } from "./splitter.dom"
+import { MachineContext, MachineState } from "./splitter.types"
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "split-view-machine",
+    id: "splitter",
     initial: "unknown",
     context: {
-      uid: "spliter",
+      uid: "",
       orientation: "horizontal",
       min: 224,
       max: 340,

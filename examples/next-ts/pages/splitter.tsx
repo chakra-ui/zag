@@ -1,25 +1,25 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@ui-machines/react"
-import * as SplitView from "@ui-machines/split-view"
-import { splitViewControls } from "../../../shared/controls"
-import { splitViewStyle } from "../../../shared/style"
+import * as Splitter from "@ui-machines/splitter"
+import { splitterControls } from "../../../shared/controls"
+import { splitterStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(splitViewControls)
+  const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(SplitView.machine, {
+  const [state, send] = useMachine(Splitter.machine, {
     context: controls.context,
   })
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = SplitView.connect(state, send)
+  const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = Splitter.connect(state, send)
 
   return (
     <>
-      <Global styles={splitViewStyle} />
+      <Global styles={splitterStyle} />
       <controls.ui />
 
       <div className="root">

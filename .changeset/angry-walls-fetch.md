@@ -16,7 +16,7 @@
 "@ui-machines/range-slider": patch
 "@ui-machines/rating": patch
 "@ui-machines/slider": patch
-"@ui-machines/split-view": patch
+"@ui-machines/splitter": patch
 "@ui-machines/tabs": patch
 "@ui-machines/tags-input": patch
 "@ui-machines/toast": patch

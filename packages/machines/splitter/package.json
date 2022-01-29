@@ -1,7 +1,7 @@
 {
-  "name": "@ui-machines/split-view",
+  "name": "@ui-machines/splitter",
   "version": "0.0.0",
-  "description": "Core logic for the split-view widget implemented as a state machine",
+  "description": "Core logic for the splitter widget implemented as a state machine",
   "keywords": [
     "js",
     "machine",
@@ -9,7 +9,8 @@
     "statechart",
     "component",
     "chakra-ui",
-    "split-view"
+    "splitter",
+    "split view"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/ui-machines#readme",
@@ -17,7 +18,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/split-view",
+  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/splitter",
   "sideEffects": false,
   "files": [
     "dist"
