@@ -86,3 +86,11 @@ export const ratingControls = defineControls({
   value: { type: "number", defaultValue: 3.5 },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
+
+export const splitViewControls = defineControls({
+  fixed: { type: "boolean", defaultValue: false },
+  min: { type: "number", defaultValue: 0 },
+  max: { type: "number", defaultValue: 340 },
+  disabled: { type: "boolean", defaultValue: false },
+  snapOffset: { type: "number", defaultValue: 0 },
+})

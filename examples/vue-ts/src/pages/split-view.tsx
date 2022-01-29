@@ -3,15 +3,21 @@ import * as SplitView from "@ui-machines/split-view"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
+import { splitViewControls } from "../../../../shared/controls"
 import { splitViewStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(splitViewStyle)
 
 export default defineComponent({
   name: "SplitView",
   setup() {
-    const [state, send] = useMachine(SplitView.machine.withContext({ min: 0 }))
+    const controls = useControls(splitViewControls)
+
+    const [state, send] = useMachine(SplitView.machine, {
+      context: controls.context,
+    })
 
     const ref = useSetup({ send, id: "1" })
 
@@ -20,7 +26,9 @@ export default defineComponent({
     return () => {
       const { rootProps, primaryPaneProps, labelProps, splitterProps, secondaryPaneProps } = splitter.value
       return (
-        <div>
+        <>
+          <controls.ui />
+
           <div class="root">
             <div ref={ref} {...rootProps}>
               <div class="pane" {...primaryPaneProps}>
@@ -39,7 +47,7 @@ export default defineComponent({
           </div>
 
           <StateVisualizer state={state} />
-        </div>
+        </>
       )
     }
   },

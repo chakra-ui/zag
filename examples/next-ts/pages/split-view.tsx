@@ -1,20 +1,27 @@
-import styled from "@emotion/styled"
+import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@ui-machines/react"
 import * as SplitView from "@ui-machines/split-view"
+import { splitViewControls } from "../../../shared/controls"
 import { splitViewStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-
-const Styles = styled.div(splitViewStyle)
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const [state, send] = useMachine(SplitView.machine.withContext({ min: 0 }))
+  const controls = useControls(splitViewControls)
+
+  const [state, send] = useMachine(SplitView.machine, {
+    context: controls.context,
+  })
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
   const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = SplitView.connect(state, send)
 
   return (
-    <Styles>
+    <>
+      <Global styles={splitViewStyle} />
+      <controls.ui />
+
       <div className="root">
         <div ref={ref} {...rootProps}>
           <div className="pane" {...primaryPaneProps}>
@@ -33,6 +40,6 @@ export default function Page() {
       </div>
 
       <StateVisualizer state={state} />
-    </Styles>
+    </>
   )
 }

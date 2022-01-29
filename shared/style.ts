@@ -272,12 +272,15 @@ export const splitViewStyle: CSSObject = {
     justifyContent: "center",
     transition: "background-color 0.2s ease-in-out",
     outline: "0",
-    "&[data-focus]": {
+    "&[data-focus]:not([data-disabled])": {
       background: "#b0baf1",
     },
-    "&:active": {
+    "&:active:not([data-disabled]])": {
       background: "#3f51b5",
       color: "white",
+    },
+    "&[data-disabled]": {
+      opacity: "0.5",
     },
   },
   ".splitter-bar": {

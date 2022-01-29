@@ -92,7 +92,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "splitter",
       id: dom.getSplitterId(ctx),
       role: "separator",
-      tabIndex: 0,
+      tabIndex: ctx.disabled ? -1 : 0,
       "aria-valuenow": ctx.value,
       "aria-valuemin": ctx.min,
       "aria-valuemax": ctx.max,
@@ -100,7 +100,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-labelledby": dom.getSplitterLabelId(ctx),
       "aria-controls": dom.getPrimaryPaneId(ctx),
       "data-orientation": ctx.orientation,
-      "data-focus": dataAttr(state.matches("hover", "dragging", "focused")),
+      "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(ctx.disabled),
       style: {
         touchAction: "none",
@@ -113,14 +113,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         minWidth: ctx.isHorizontal ? undefined : "0px",
       },
       onPointerDown(event) {
+        if (ctx.disabled) {
+          event.preventDefault()
+          return
+        }
         send("POINTER_DOWN")
         event.preventDefault()
         event.stopPropagation()
       },
       onPointerOver() {
+        if (ctx.disabled) return
         send("POINTER_OVER")
       },
       onPointerLeave() {
+        if (ctx.disabled) return
         send("POINTER_LEAVE")
       },
       onBlur() {
@@ -130,9 +136,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onDoubleClick() {
+        if (ctx.disabled) return
         send("DOUBLE_CLICK")
       },
       onKeyDown(event) {
+        if (ctx.disabled) return
         const step = getEventStep(event) * ctx.step
         const keyMap: EventKeyMap = {
           ArrowUp() {
@@ -159,9 +167,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         const exec = keyMap[key]
 
         if (exec) {
+          exec(event)
           event.preventDefault()
           event.stopPropagation()
-          exec(event)
         }
       },
     }),
