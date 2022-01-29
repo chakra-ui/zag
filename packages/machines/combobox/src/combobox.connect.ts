@@ -1,4 +1,5 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
+import { getFloatingStyle } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
@@ -6,13 +7,12 @@ import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const { context: ctx } = state
 
-  const expanded = state.hasTag("expanded")
-  const autoFill = expanded && ctx.navigationValue && ctx.autoComplete
+  const isExpanded = state.hasTag("expanded")
+  const autoFill = isExpanded && ctx.navigationValue && ctx.autoComplete
   const showClearButton = (!state.matches("idle", "unknown") || ctx.isHoveringInput) && !ctx.isInputValueEmpty
   const isFocused = state.hasTag("focused")
 
   return {
-    // methods
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
@@ -27,6 +27,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     isFocused,
+    isExpanded,
 
     inputValue: ctx.inputValue,
 
@@ -41,7 +42,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     containerProps: normalize.element<T>({
       "data-part": "container",
       id: dom.getContainerId(ctx),
-      "data-expanded": dataAttr(expanded),
+      "data-expanded": dataAttr(isExpanded),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(ctx.disabled),
       onPointerOver() {
@@ -50,6 +51,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onPointerLeave() {
         send("POINTER_LEAVE")
       },
+    }),
+
+    popoverProps: normalize.element<T>({
+      "data-part": "popover",
+      id: dom.getPopoverId(ctx),
+      "data-expanded": dataAttr(isExpanded),
+      hidden: !isExpanded,
+      style: getFloatingStyle(!!ctx.__placement),
     }),
 
     inputProps: normalize.input<T>({
@@ -68,8 +77,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       role: "combobox",
       value: autoFill ? ctx.navigationValue : ctx.inputValue,
       "aria-autocomplete": ctx.autoComplete ? "both" : "list",
-      "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
-      "aria-expanded": expanded,
+      "aria-controls": isExpanded ? dom.getListboxId(ctx) : undefined,
+      "aria-expanded": isExpanded,
       "aria-activedescendant": ctx.activeId ?? undefined,
       onPointerDown() {
         send("POINTER_DOWN")
@@ -166,9 +175,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       role: "button",
       tabIndex: -1,
-      "aria-label": expanded ? ctx.openText : ctx.closeText,
-      "aria-expanded": expanded,
-      "aria-controls": expanded ? dom.getListboxId(ctx) : undefined,
+      "aria-label": isExpanded ? ctx.openText : ctx.closeText,
+      "aria-expanded": isExpanded,
+      "aria-controls": isExpanded ? dom.getListboxId(ctx) : undefined,
       disabled: ctx.disabled,
       "data-readonly": dataAttr(ctx.readonly),
       "data-disabled": dataAttr(ctx.disabled),
@@ -182,7 +191,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "listbox",
       id: dom.getListboxId(ctx),
       role: "listbox",
-      hidden: !expanded,
+      hidden: !isExpanded,
       "aria-labelledby": dom.getLabelId(ctx),
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus

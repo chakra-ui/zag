@@ -7,6 +7,7 @@ function toCase(txt: string) {
 }
 
 const eventMap = {
+  htmlFor: "for",
   className: "class",
   onDoubleClick: "onDblclick",
   onChange: "onInput",

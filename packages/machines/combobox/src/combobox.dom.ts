@@ -10,14 +10,17 @@ export const dom = {
   getContainerId: (ctx: Ctx) => `combobox-${ctx.uid}`,
   getInputId: (ctx: Ctx) => `combobox-${ctx.uid}-input`,
   getListboxId: (ctx: Ctx) => `combobox-${ctx.uid}-listbox`,
+  getPopoverId: (ctx: Ctx) => `combobox-${ctx.uid}-popover`,
   getToggleBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-toggle-btn`,
   getClearBtnId: (ctx: Ctx) => `combobox-${ctx.uid}-clear-btn`,
   getOptionId: (ctx: Ctx, id: number | string, index?: number) =>
-    [`combobox-${ctx.uid}-option-${id}`, index].filter(Boolean).join("-"),
+    [`combobox-${ctx.uid}-option-${id}`, index].filter((v) => v != null).join("-"),
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
   getListboxEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getListboxId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
+  getPopoverEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPopoverId(ctx)),
+  getContainerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContainerId(ctx)),
   getToggleBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getToggleBtnId(ctx)),
   getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 

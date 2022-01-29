@@ -19,7 +19,7 @@ export default function Page() {
         setOptions(comboboxData)
       },
       onInputChange(value) {
-        const filtered = comboboxData.filter((o) => o.label.toLowerCase().includes(value.toLowerCase()))
+        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
@@ -28,7 +28,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { setValue, labelProps, containerProps, buttonProps, inputProps, listboxProps, getOptionProps } =
+  const { setValue, labelProps, containerProps, buttonProps, inputProps, listboxProps, getOptionProps, popoverProps } =
     Combobox.connect(state, send)
 
   return (
@@ -36,29 +36,37 @@ export default function Page() {
       <Global styles={comboboxStyle} />
       <controls.ui />
 
-      <button onClick={() => setValue("Togo")}>Set to Togo</button>
+      <div className="root">
+        <button onClick={() => setValue("Togo")}>Set to Togo</button>
+        <br />
 
-      <label className="combobox__label" {...labelProps}>
-        Select country
-      </label>
-      <div className="combobox__container" ref={ref} {...containerProps}>
-        <input {...inputProps} />
-        <button {...buttonProps}>▼</button>
+        <div className="combobox">
+          <label className="combobox__label" {...labelProps}>
+            Select country
+          </label>
+
+          <div className="combobox__container" ref={ref} {...containerProps}>
+            <input {...inputProps} />
+            <button {...buttonProps}>▼</button>
+          </div>
+        </div>
+
+        <div className="combobox__popover" {...popoverProps}>
+          {options.length > 0 && (
+            <ul className="combobox__listbox" {...listboxProps}>
+              {options.map((item, index) => (
+                <li
+                  className="combobox__option"
+                  key={`${item.code}:${index}`}
+                  {...getOptionProps({ label: item.label, value: item.code, index })}
+                >
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-
-      {options.length > 0 && (
-        <ul className="combobox__listbox" {...listboxProps}>
-          {options.map((item, index) => (
-            <li
-              className="combobox__option"
-              key={`${item.code}:${index}`}
-              {...getOptionProps({ label: item.label, value: item.code, index })}
-            >
-              {item.label}
-            </li>
-          ))}
-        </ul>
-      )}
 
       <StateVisualizer state={state} />
     </>

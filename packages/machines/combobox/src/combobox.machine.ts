@@ -1,5 +1,6 @@
 import { choose, createMachine, guards, ref } from "@ui-machines/core"
 import { createLiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
+import { getPlacement } from "@ui-machines/popper"
 import { dom } from "./combobox.dom"
 import { MachineContext, MachineState } from "./combobox.types"
 
@@ -144,7 +145,10 @@ export const machine = createMachine<MachineContext, MachineState>(
             guard: and("isCustomValue", not("allowCustomValue")),
             actions: "revertInputValue",
           },
-          CLICK_BUTTON: "suggesting",
+          CLICK_BUTTON: {
+            target: "suggesting",
+            actions: ["invokeOnOpen"],
+          },
           POINTER_OVER: {
             actions: "setIsHovering",
           },
@@ -180,7 +184,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       suggesting: {
         tags: ["expanded", "focused"],
-        activities: ["trackPointerDown", "scrollOptionIntoView"],
+        activities: ["trackPointerDown", "scrollOptionIntoView", "computePlacement"],
         entry: choose([
           {
             guard: and("autoComplete", "autoHighlight", "isInputValueEmpty"),
@@ -261,7 +265,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       interacting: {
         tags: ["expanded", "focused"],
-        activities: ["scrollOptionIntoView", "trackPointerDown"],
+        activities: ["scrollOptionIntoView", "trackPointerDown", "computePlacement"],
         on: {
           ARROW_DOWN: [
             {
@@ -362,6 +366,21 @@ export const machine = createMachine<MachineContext, MachineState>(
       hasActiveId: (ctx) => !!ctx.activeId,
     },
     activities: {
+      computePlacement(ctx) {
+        const popover = dom.getPopoverEl(ctx)
+        if (!popover) return
+        return getPlacement(dom.getContainerEl(ctx), popover, {
+          placement: "bottom",
+          flip: false,
+          matchWidth: true,
+          onPlacementComplete(placement) {
+            ctx.__placement = placement
+          },
+          onCleanup() {
+            ctx.__placement = undefined
+          },
+        })
+      },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
           ctx.pointerdownNode = ref(el)

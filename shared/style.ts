@@ -9,6 +9,10 @@ export const accordionStyle: CSSObject = {
 }
 
 export const comboboxStyle: CSSObject = {
+  ".combobox": {
+    display: "inline-flex",
+    flexDirection: "column",
+  },
   ".combobox__listbox": {
     listStyleType: "none",
     padding: "0",
@@ -17,12 +21,23 @@ export const comboboxStyle: CSSObject = {
     width: "300px",
     maxHeight: "400px",
     overflow: "auto",
+    ".combobox__popover &": {
+      width: "100%",
+    },
   },
   ".combobox__option": {
     '&[aria-selected="true"], &[data-highlighted]': {
       backgroundColor: "red",
       color: "white",
     },
+  },
+  ".combobox__label": {
+    display: "block",
+    marginTop: "12px",
+    marginBottom: "4px",
+  },
+  ".combobox__container": {
+    display: "inline-block",
   },
 }
 

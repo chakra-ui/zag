@@ -1,3 +1,4 @@
+import { Placement } from "@ui-machines/popper"
 import type { StateMachine as S } from "@ui-machines/core"
 import type { LiveRegion } from "@ui-machines/dom-utils"
 import type { Context } from "@ui-machines/types"
@@ -55,6 +56,7 @@ export type MachineContext = Context<{
   autoComplete: boolean
   /**
    * Whether the combobox should automatically highlight the first option.
+   * This is useful when you have a static list of options.
    */
   autoHighlight: boolean
   /**
@@ -130,6 +132,12 @@ export type MachineContext = Context<{
    * Returns the accessible label to use when announcing the available number of options
    */
   getOptionCountText: (count: number) => string
+  /**
+   * Whether the combobox popover is rendered. We use this to dynamically position
+   * the popover relative to the input.
+   */
+  isPopoverRendered?: boolean
+  __placement?: Placement
 }>
 
 export type OptionData = {

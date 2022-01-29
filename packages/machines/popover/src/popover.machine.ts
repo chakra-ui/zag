@@ -127,12 +127,12 @@ export const machine = createMachine<MachineContext, MachineState>(
             onPlacementComplete(placement) {
               ctx.__placement = placement
             },
+            onCleanup() {
+              ctx.__placement = undefined
+            },
           })
         })
-        return () => {
-          cleanup?.()
-          ctx.__placement = undefined
-        }
+        return () => cleanup?.()
       },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {

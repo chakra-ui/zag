@@ -26,6 +26,7 @@ export type PlacementOptions = {
   boundary?: "clippingParents" | Element | Element[]
   eventListeners?: boolean | { scroll?: boolean; resize?: boolean }
   onPlacementComplete?(placement: Placement): void
+  onCleanup?: VoidFunction
 }
 
 const defaultOpts: PlacementOptions = {
@@ -124,6 +125,7 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   compute()
   const cleanups = [addResizeListeners(), addScrollListeners()]
   return function cleanup() {
+    opts.onCleanup?.()
     cleanups.forEach((fn) => fn?.())
   }
 }

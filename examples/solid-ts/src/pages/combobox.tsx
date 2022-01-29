@@ -21,7 +21,7 @@ export default function Page() {
         setOptions(comboboxData)
       },
       onInputChange(value) {
-        const filtered = comboboxData.filter((o) => o.label.toLowerCase().includes(value.toLowerCase()))
+        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
@@ -36,30 +36,38 @@ export default function Page() {
     <>
       <controls.ui />
 
-      <button onClick={() => combobox().setValue("Togo")}>Set to Togo</button>
+      <div className="root">
+        <button onClick={() => combobox().setValue("Togo")}>Set to Togo</button>
+        <br />
 
-      <label className="combobox__label" {...combobox().labelProps}>
-        Select country
-      </label>
-      <div className="combobox__container" ref={ref} {...combobox().containerProps}>
-        <input {...combobox().inputProps} />
-        <button {...combobox().buttonProps}>▼</button>
-      </div>
+        <div className="combobox">
+          <label className="combobox__label" {...combobox().labelProps}>
+            Select country
+          </label>
 
-      {options().length > 0 && (
-        <ul className="combobox__listbox" {...combobox().listboxProps}>
-          <For each={options()}>
-            {(item, index) => (
-              <li
-                className="combobox__option"
-                {...combobox().getOptionProps({ label: item.label, value: item.code, index: index() })}
-              >
-                {item.label}
-              </li>
+          <div className="combobox__container" ref={ref} {...combobox().containerProps}>
+            <input {...combobox().inputProps} />
+            <button {...combobox().buttonProps}>▼</button>
+          </div>
+
+          <div className="combobox__popover">
+            {options().length > 0 && (
+              <ul className="combobox__listbox" {...combobox().listboxProps}>
+                <For each={options()}>
+                  {(item, index) => (
+                    <li
+                      className="combobox__option"
+                      {...combobox().getOptionProps({ label: item.label, value: item.code, index: index() })}
+                    >
+                      {item.label}
+                    </li>
+                  )}
+                </For>
+              </ul>
             )}
-          </For>
-        </ul>
-      )}
+          </div>
+        </div>
+      </div>
 
       <StateVisualizer state={state} />
     </>
