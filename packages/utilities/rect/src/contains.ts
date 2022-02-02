@@ -1,5 +1,5 @@
-import type { Point } from "./point"
 import { Rect } from "./rect"
+import type { Point } from "./types"
 
 export function containsPoint(r: Rect, p: Point): boolean {
   return r.minX <= p.x && p.x <= r.maxX && r.minY <= p.y && p.y <= r.maxY

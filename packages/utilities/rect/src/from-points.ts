@@ -1,4 +1,4 @@
-import type { Point } from "./point"
+import type { Point } from "./types"
 import { Rect } from "./rect"
 
 export function getRectFromPoints(...pts: Point[]): Rect {

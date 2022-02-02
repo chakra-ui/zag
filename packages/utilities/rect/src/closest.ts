@@ -1,6 +1,5 @@
-import { Point } from "./point"
 import { Rect } from "./rect"
-import { RectSide } from "./types"
+import type { Point, RectSide } from "./types"
 
 export function closestSideToRect(ref: Rect, r: Rect): RectSide {
   if (r.maxX <= ref.minX) return "left"

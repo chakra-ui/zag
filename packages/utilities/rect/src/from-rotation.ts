@@ -1,4 +1,4 @@
-import { Point } from "./point"
+import { Point } from "./types"
 import { Rect } from "./rect"
 
 export function toRad(d: number) {

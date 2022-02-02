@@ -1,7 +1,7 @@
-import { Point, distance } from "./point"
 import { intersects } from "./intersection"
+import { distance } from "./point"
 import { Rect } from "./rect"
-import { RectSide } from "./types"
+import { Point, RectSide } from "./types"
 
 export type DistanceValue = Point & {
   value: number
