@@ -30,5 +30,5 @@
     "target": "es2018"
   },
   "exclude": ["node_modules"],
-  "include": ["packages", "scripts", "shared"]
+  "include": ["packages", "scripts", "shared", "examples/misc"]
 }
