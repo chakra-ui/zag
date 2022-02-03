@@ -123,6 +123,9 @@ export class Machine<
 
     // For some reason `subscribe(this.state.event)` doesn't work, so we use `subscribeKey`
     this.removeEventListener = subscribeKey(this.state, "event", (value) => {
+      if (this.config.onEvent) {
+        this.executeActions(this.config.onEvent, value)
+      }
       for (const listener of this.eventListeners) {
         listener(value)
       }

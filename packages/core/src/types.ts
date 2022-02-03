@@ -197,6 +197,10 @@ export declare namespace StateMachine {
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
+     * Function called whenever the state receives an event through its send method
+     */
+    onEvent?: Actions<TContext, TState, TEvent>
+    /**
      * Function called synchronously after the machine has been instantiated,
      * before it is started.
      */
