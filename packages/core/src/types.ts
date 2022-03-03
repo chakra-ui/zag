@@ -40,7 +40,7 @@ export declare namespace StateMachine {
     state: State<TContext, TState>
     guards: Dict
     send: Send<TEvent>
-    self: SelfReference<TContext, TState, TEvent>
+    self: Self<TContext, TState, TEvent>
     getState: () => State<TContext, TState, TEvent>
     listen: (fn: EventListener<TEvent>) => void
   }
@@ -323,7 +323,7 @@ export declare namespace StateMachine {
     preserve?: boolean
   }
 
-  export type SelfReference<TContext, TState extends StateSchema, TEvent extends EventObject> = {
+  export type Self<TContext, TState extends StateSchema, TEvent extends EventObject> = {
     id: string
     send: (event: Event<TEvent>) => void
     sendParent: (evt: AnyEventObject) => void

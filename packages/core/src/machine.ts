@@ -442,7 +442,7 @@ export class Machine<
    * A reference to the instance methods of the machine.
    * Useful when spawning child machines and managing the communication between them.
    */
-  private get self(): S.SelfReference<TContext, TState, TEvent> {
+  private get self(): S.Self<TContext, TState, TEvent> {
     const _self = this
     return {
       id: this.id,
