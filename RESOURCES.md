@@ -30,6 +30,15 @@
 - https://angular-split.github.io
 - https://split.js.org
 
+# Date picker
+
+- Duet Date Picker, https://github.com/duetds/date-picker
+- [FlatPickr](https://github.com/flatpickr/flatpickr)
+- [Air Date Picker](https://air-datepicker.com/)
+- [Calendar Builder](https://github.com/mblarsen/calendar-builder)
+- https://mymth.github.io/vanillajs-datepicker/#/
+- https://github.com/wakirin/Litepicker
+
 ## Components ideas
 
 - https://component.kitchen/elix
