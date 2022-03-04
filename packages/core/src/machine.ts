@@ -99,6 +99,7 @@ export class Machine<
     const info = this.getNextStateInfo(transition, event)
     info.target = cast(info.target || transition.target)
     this.initialState = info
+    this.setEvent(event)
     this.performStateChangeEffects(info.target, info, event)
 
     this.removeStateListener = subscribe(
@@ -377,6 +378,7 @@ export class Machine<
         id = globalThis.setTimeout(() => {
           const current = this.state.value!
           const next = this.getNextStateInfo(transition, event)
+          this.setEvent(event)
           this.performStateChangeEffects(current, next, event)
         }, delay)
       },
@@ -463,7 +465,7 @@ export class Machine<
       state: this.stateSnapshot,
       guards: this.guardMap,
       send: this.send.bind(this),
-      listen: this.addEventListener.bind(this),
+      listen: this.onEvent.bind(this),
       self: this.self,
       getState: () => this.stateSnapshot,
     }
@@ -655,9 +657,6 @@ export class Machine<
     next: S.StateInfo<TContext, TState, TEvent>,
     event: TEvent,
   ) => {
-    // update event
-    this.setEvent(event)
-
     // determine next target
     next.target = next.target ?? this.state.value ?? undefined
     const ok = next.target && next.target !== this.state.value
@@ -715,6 +714,8 @@ export class Machine<
       return
     }
 
+    this.setEvent(event)
+
     const transitionConfig: S.Transitions<TContext, TState, TEvent> =
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
@@ -758,7 +759,7 @@ export class Machine<
     return this
   }
 
-  public addEventListener = (listener: S.EventListener<TEvent>) => {
+  public onEvent = (listener: S.EventListener<TEvent>) => {
     listener(this.state.event)
     this.eventListeners.add(listener)
     return this
