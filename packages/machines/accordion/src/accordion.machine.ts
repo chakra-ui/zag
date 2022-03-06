@@ -5,6 +5,8 @@ import { MachineContext, MachineState } from "./accordion.types"
 
 const { and, not } = guards
 
+const MULTIPLE_AND_VALUE_MISMATCH_WARNING = `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`
+
 export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "accordion-machine",
@@ -24,9 +26,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     created(ctx) {
       if (ctx.multiple && isString(ctx.value)) {
-        warn(
-          `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`,
-        )
+        warn(MULTIPLE_AND_VALUE_MISMATCH_WARNING)
         ctx.value = [ctx.value]
       }
     },

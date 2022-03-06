@@ -1,6 +1,6 @@
 import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { isArray } from "@ui-machines/utils"
+import { isArray, isSafari } from "@ui-machines/utils"
 import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 
@@ -76,8 +76,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           if (isDisabled) return
           send("BLUR")
         },
-        onClick() {
+        onClick(event) {
           if (isDisabled) return
+          if (isSafari()) {
+            event.currentTarget.focus()
+          }
           send({ type: "CLICK", value })
         },
         onKeyDown(event) {
@@ -89,9 +92,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
             },
             ArrowUp() {
               send({ type: "ARROW_UP", value })
-            },
-            Enter() {
-              send({ type: "CLICK", value })
             },
             Home() {
               send({ type: "HOME", value })

@@ -50,3 +50,5 @@
 - https://buefy.org/
 - https://outsystemsui.outsystems.com/OutsystemsUiWebsite/PatternOverview
 - https://retool.com/components
+- https://developers.arcgis.com/calcite-design-system/
+- https://www.primefaces.org/primereact

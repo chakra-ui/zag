@@ -3,7 +3,7 @@ import { defineControls } from "@ui-machines/types"
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
   multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
-  value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Active Id" },
+  value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Set value" },
 })
 
 export const comboboxControls = defineControls({
