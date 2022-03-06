@@ -22,7 +22,13 @@ export type MachineContext = Context<{
    * @default "horizontal"
    */
   orientation?: "horizontal" | "vertical"
+  /**
+   * @computed Whether the tab is in the horizontal orientation
+   */
   readonly isHorizontal: boolean
+  /**
+   * @computed Whether the tab is in the vertical orientation
+   */
   readonly isVertical: boolean
   /**
    * The activation mode of the tabs. Can be `manual` or `automatic`
@@ -47,8 +53,18 @@ export type MachineContext = Context<{
    * Callback to be called when the focused tab changes
    */
   onFocus?: (id: string | null) => void
+  /**
+   * The previously selected tab ids. This is useful for performance optimization in event
+   * you want to avoid mounting/unmounting the active tab.
+   */
+  prevValues: string[]
 }>
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused"
+}
+
+export type TabProps = {
+  value: string
+  disabled?: boolean
 }

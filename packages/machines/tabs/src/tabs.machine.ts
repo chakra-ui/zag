@@ -16,6 +16,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: null,
       focusedValue: null,
       uid: "",
+      prevValues: ref([]),
       indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
       measuredRect: false,
       loop: true,
@@ -26,9 +27,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       isVertical: (ctx) => ctx.orientation === "vertical",
     },
 
+    created(ctx) {
+      if (Boolean(ctx.value)) {
+        ctx.prevValues = Array.from(new Set(ctx.prevValues.concat(ctx.value!)))
+      }
+    },
+
     watch: {
       focusedValue: "invokeOnFocus",
-      value: "invokeOnChange",
+      value: ["invokeOnChange", "setPrevSelectedTabs"],
     },
 
     on: {
@@ -153,6 +160,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       invokeOnFocus(ctx) {
         ctx.onFocus?.(ctx.focusedValue)
+      },
+      setPrevSelectedTabs(ctx) {
+        if (Boolean(ctx.value)) {
+          ctx.prevValues = Array.from(new Set(ctx.prevValues.concat(ctx.value!)))
+        }
       },
     },
   },

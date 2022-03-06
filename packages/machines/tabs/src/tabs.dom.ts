@@ -14,7 +14,7 @@ export const dom = {
   getTabEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTabId(ctx, id)),
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getTablistId(ctx))
-    const selector = `[role=tab][data-ownedby='${ownerId}']`
+    const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
     return queryElements(dom.getTablistEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),

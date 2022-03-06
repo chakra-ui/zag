@@ -3,7 +3,7 @@ import { EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isSafari } from "@ui-machines/utils"
 import { dom } from "./tabs.dom"
-import { MachineContext, MachineState } from "./tabs.types"
+import { MachineContext, MachineState, TabProps } from "./tabs.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(
   state: S.State<MachineContext, MachineState>,
@@ -59,12 +59,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    getTabProps({ value }: { value: string }) {
+    getTabProps(props: TabProps) {
+      const { value, disabled } = props
       const selected = ctx.value === value
+
       return normalize.button<T>({
         "data-part": "tab",
         role: "tab",
         type: "button",
+        disabled,
         "data-value": value,
         "aria-selected": selected,
         "aria-controls": dom.getPanelId(ctx, value),
@@ -81,11 +84,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           }
         },
         onClick(event) {
-          send({ type: "TAB_CLICK", value })
-          // ensure browser focus for safari
+          if (disabled) return
           if (isSafari()) {
             event.currentTarget.focus()
           }
+          send({ type: "TAB_CLICK", value })
         },
       })
     },
