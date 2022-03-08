@@ -68,6 +68,7 @@ export default function Page() {
             </Portal>
           )}
           <StateVisualizer state={state} />
+          <StateVisualizer state={state2} offset="800px" />
         </div>
       </div>
     </>
