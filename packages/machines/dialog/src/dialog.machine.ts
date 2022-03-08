@@ -1,5 +1,5 @@
 import { createMachine, guards, ref, subscribe } from "@ui-machines/core"
-import { addDomEvent, nextTick, preventBodyScroll } from "@ui-machines/dom-utils"
+import { addDomEvent, nextTick, preventBodyScroll, trackPointerDown } from "@ui-machines/dom-utils"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
@@ -13,6 +13,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "dialog",
     initial: "unknown",
     context: {
+      pointerdownNode: null,
       role: "dialog",
       hasDescription: true,
       hasTitle: true,
@@ -35,17 +36,26 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       open: {
         entry: ["checkTitleExists", "checkDescriptionExists"],
-        activities: ["trapFocus", "preventScroll", "hideContentBelow", "subscribeToStore", "trackEscKey"],
+        activities: [
+          "trapFocus",
+          "preventScroll",
+          "hideContentBelow",
+          "subscribeToStore",
+          "trackEscKey",
+          "trackPointerDown",
+        ],
         on: {
           CLOSE: "closed",
           TRIGGER_CLICK: "closed",
           OVERLAY_CLICK: {
             guard: and("isTopMostDialog", "closeOnOverlayClick"),
             target: "closed",
+            actions: ["invokeOnOverlayClick"],
           },
         },
       },
       closed: {
+        entry: ["invokeOnClose"],
         on: {
           OPEN: "open",
           TRIGGER_CLICK: "open",
@@ -59,6 +69,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       closeOnOverlayClick: (ctx) => ctx.closeOnOverlayClick,
     },
     activities: {
+      trackPointerDown(ctx, _evt) {
+        return trackPointerDown(dom.getDoc(ctx), (el) => {
+          ctx.pointerdownNode = ref(el)
+        })
+      },
       trackEscKey(ctx, _evt, { send }) {
         return addDomEvent(dom.getWin(ctx), "keydown", (e) => {
           if (ctx.closeOnEsc && e.key === "Escape" && ctx.isTopMostDialog) {
@@ -131,6 +146,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         nextTick(() => {
           ctx.hasDescription = !!dom.getDescriptionEl(ctx)
         })
+      },
+      invokeOnOverlayClick(ctx) {
+        ctx.onOverlayClick?.()
+      },
+      invokeOnClose(ctx) {
+        ctx.onClose?.()
       },
     },
   },

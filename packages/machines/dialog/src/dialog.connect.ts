@@ -38,7 +38,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-hidden": true,
       id: dom.getOverlayId(ctx),
       onClick(event) {
-        if (event.target !== event.currentTarget) return
+        if (event.target !== ctx.pointerdownNode) return
         send("OVERLAY_CLICK")
         event.preventDefault()
         event.stopPropagation()
@@ -69,7 +69,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "close-button",
       id: dom.getCloseButtonId(ctx),
       type: "button",
-      onClick() {
+      onClick(event) {
+        event.stopPropagation()
         send("CLOSE")
       },
     }),
