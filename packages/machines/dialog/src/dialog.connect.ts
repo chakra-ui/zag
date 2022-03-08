@@ -38,9 +38,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-hidden": true,
       id: dom.getOverlayId(ctx),
       onClick(event) {
-        if (event.target !== ctx.pointerdownNode) return
+        if (event.currentTarget !== ctx.pointerdownNode) return
         send("OVERLAY_CLICK")
-        event.preventDefault()
         event.stopPropagation()
       },
     }),
