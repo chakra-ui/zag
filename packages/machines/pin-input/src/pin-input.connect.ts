@@ -10,11 +10,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-
   return {
-    value: ctx.value,
-    focusedIndex: ctx.focusedIndex,
+    value: state.context.value,
+    focusedIndex: state.context.focusedIndex,
 
     setValue(value: number[]) {
       send({ type: "SET_VALUE", value })
@@ -26,39 +24,39 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       send({ type: "SET_VALUE", value, index })
     },
     focus() {
-      dom.getFirstInputEl(ctx)?.focus()
+      dom.getFirstInputEl(state.context)?.focus()
     },
     blur() {
-      if (ctx.focusedIndex === -1) return
-      dom.getFirstInputEl(ctx)?.blur()
+      if (state.context.focusedIndex === -1) return
+      dom.getFirstInputEl(state.context)?.blur()
     },
 
     containerProps: normalize.element<T>({
       "data-part": "container",
-      id: dom.getRootId(ctx),
-      "data-invalid": dataAttr(ctx.invalid),
-      "data-disabled": dataAttr(ctx.disabled),
-      "data-complete": dataAttr(ctx.isValueComplete),
+      id: dom.getRootId(state.context),
+      "data-invalid": dataAttr(state.context.invalid),
+      "data-disabled": dataAttr(state.context.disabled),
+      "data-complete": dataAttr(state.context.isValueComplete),
     }),
 
     getInputProps({ index }: { index: number }) {
-      const inputType = ctx.type === "numeric" ? "tel" : "text"
+      const inputType = state.context.type === "numeric" ? "tel" : "text"
       return normalize.input<T>({
         "data-part": "input",
-        disabled: ctx.disabled,
-        "data-disabled": dataAttr(ctx.disabled),
-        "data-complete": dataAttr(ctx.isValueComplete),
-        id: dom.getInputId(ctx, index),
-        "data-ownedby": dom.getRootId(ctx),
+        disabled: state.context.disabled,
+        "data-disabled": dataAttr(state.context.disabled),
+        "data-complete": dataAttr(state.context.isValueComplete),
+        id: dom.getInputId(state.context, index),
+        "data-ownedby": dom.getRootId(state.context),
         "aria-label": "Please enter your pin code",
-        inputMode: ctx.otp || ctx.type === "numeric" ? "numeric" : "text",
-        "aria-invalid": ariaAttr(ctx.invalid),
-        "data-invalid": dataAttr(ctx.invalid),
-        type: ctx.mask ? "password" : inputType,
-        value: ctx.value[index] || "",
+        inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
+        "aria-invalid": ariaAttr(state.context.invalid),
+        "data-invalid": dataAttr(state.context.invalid),
+        type: state.context.mask ? "password" : inputType,
+        value: state.context.value[index] || "",
         autoCapitalize: "off",
-        autoComplete: ctx.otp ? "one-time-code" : "off",
-        placeholder: ctx.focusedIndex === index ? "" : ctx.placeholder,
+        autoComplete: state.context.otp ? "one-time-code" : "off",
+        placeholder: state.context.focusedIndex === index ? "" : state.context.placeholder,
         onChange(event) {
           const evt = getNativeEvent(event)
           if (evt.isComposing) return
@@ -94,7 +92,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
             },
           }
 
-          const key = getEventKey(event, { dir: ctx.dir })
+          const key = getEventKey(event, { dir: state.context.dir })
           const exec = keyMap[key]
 
           if (exec) {

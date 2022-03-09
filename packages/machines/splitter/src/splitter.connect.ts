@@ -9,14 +9,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-
   const isFocused = state.matches("hover", "dragging", "focused")
   const isDragging = state.matches("dragging")
 
   return {
-    isCollapsed: ctx.isAtMin,
-    isExpanded: ctx.isAtMax,
+    isCollapsed: state.context.isAtMin,
+    isExpanded: state.context.isAtMax,
     isFocused,
     isDragging,
 
@@ -35,25 +33,25 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     rootProps: normalize.element<T>({
       "data-part": "root",
-      "data-orientation": ctx.orientation,
-      "data-disabled": ctx.disabled,
-      id: dom.getRootId(ctx),
+      "data-orientation": state.context.orientation,
+      "data-disabled": state.context.disabled,
+      id: dom.getRootId(state.context),
       style: {
         display: "flex",
         flex: "1 1 0%",
-        height: ctx.isHorizontal ? "100%" : "auto",
-        width: ctx.isHorizontal ? "auto" : "100%",
-        flexDirection: ctx.isHorizontal ? "row" : "column",
+        height: state.context.isHorizontal ? "100%" : "auto",
+        width: state.context.isHorizontal ? "auto" : "100%",
+        flexDirection: state.context.isHorizontal ? "row" : "column",
       },
     }),
 
     secondaryPaneProps: normalize.element<T>({
       "data-part": "secondary-pane",
-      "data-disabled": ctx.disabled,
-      id: dom.getSecondaryPaneId(ctx),
+      "data-disabled": state.context.disabled,
+      id: dom.getSecondaryPaneId(state.context),
       style: {
-        height: ctx.isHorizontal ? "100%" : "auto",
-        width: ctx.isHorizontal ? "auto" : "100%",
+        height: state.context.isHorizontal ? "100%" : "auto",
+        width: state.context.isHorizontal ? "auto" : "100%",
         flex: "1 1 auto",
         position: "relative",
       },
@@ -61,14 +59,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     primaryPaneProps: normalize.element<T>({
       "data-part": "primary-pane",
-      id: dom.getPrimaryPaneId(ctx),
-      "data-disabled": ctx.disabled,
-      "data-state": ctx.isAtMax ? "at-max" : ctx.isAtMin ? "at-min" : "between",
+      id: dom.getPrimaryPaneId(state.context),
+      "data-disabled": state.context.disabled,
+      "data-state": state.context.isAtMax ? "at-max" : state.context.isAtMin ? "at-min" : "between",
       style: {
-        minWidth: `${ctx.min}px`,
-        maxWidth: `${ctx.max}px`,
+        minWidth: `${state.context.min}px`,
+        maxWidth: `${state.context.max}px`,
         visibility: "visible",
-        flex: `0 0 ${ctx.value}px`,
+        flex: `0 0 ${state.context.value}px`,
         position: "relative",
         userSelect: state.matches("dragging") ? "none" : "auto",
       },
@@ -76,8 +74,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     toggleButtonProps: normalize.element<T>({
       "data-part": "toggle-button",
-      id: dom.getToggleButtonId(ctx),
-      "aria-label": ctx.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
+      id: dom.getToggleButtonId(state.context),
+      "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
         send("TOGGLE")
       },
@@ -85,35 +83,35 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     labelProps: normalize.element<T>({
       "data-part": "label",
-      id: dom.getSplitterLabelId(ctx),
+      id: dom.getSplitterLabelId(state.context),
     }),
 
     splitterProps: normalize.element<T>({
       "data-part": "splitter",
-      id: dom.getSplitterId(ctx),
+      id: dom.getSplitterId(state.context),
       role: "separator",
-      tabIndex: ctx.disabled ? -1 : 0,
-      "aria-valuenow": ctx.value,
-      "aria-valuemin": ctx.min,
-      "aria-valuemax": ctx.max,
-      "aria-orientation": ctx.orientation,
-      "aria-labelledby": dom.getSplitterLabelId(ctx),
-      "aria-controls": dom.getPrimaryPaneId(ctx),
-      "data-orientation": ctx.orientation,
+      tabIndex: state.context.disabled ? -1 : 0,
+      "aria-valuenow": state.context.value,
+      "aria-valuemin": state.context.min,
+      "aria-valuemax": state.context.max,
+      "aria-orientation": state.context.orientation,
+      "aria-labelledby": dom.getSplitterLabelId(state.context),
+      "aria-controls": dom.getPrimaryPaneId(state.context),
+      "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(ctx.disabled),
+      "data-disabled": dataAttr(state.context.disabled),
       style: {
         touchAction: "none",
         userSelect: "none",
         WebkitUserSelect: "none",
         msUserSelect: "none",
         flex: "0 0 auto",
-        cursor: dom.getCursor(ctx),
-        minHeight: ctx.isHorizontal ? "0px" : undefined,
-        minWidth: ctx.isHorizontal ? undefined : "0px",
+        cursor: dom.getCursor(state.context),
+        minHeight: state.context.isHorizontal ? "0px" : undefined,
+        minWidth: state.context.isHorizontal ? undefined : "0px",
       },
       onPointerDown(event) {
-        if (ctx.disabled) {
+        if (state.context.disabled) {
           event.preventDefault()
           return
         }
@@ -122,11 +120,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         event.stopPropagation()
       },
       onPointerOver() {
-        if (ctx.disabled) return
+        if (state.context.disabled) return
         send("POINTER_OVER")
       },
       onPointerLeave() {
-        if (ctx.disabled) return
+        if (state.context.disabled) return
         send("POINTER_LEAVE")
       },
       onBlur() {
@@ -136,12 +134,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onDoubleClick() {
-        if (ctx.disabled) return
+        if (state.context.disabled) return
         send("DOUBLE_CLICK")
       },
       onKeyDown(event) {
-        if (ctx.disabled) return
-        const step = getEventStep(event) * ctx.step
+        if (state.context.disabled) return
+        const step = getEventStep(event) * state.context.step
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
@@ -163,7 +161,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           },
         }
 
-        const key = getEventKey(event, ctx)
+        const key = getEventKey(event, state.context)
         const exec = keyMap[key]
 
         if (exec) {

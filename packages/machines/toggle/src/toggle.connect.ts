@@ -8,20 +8,19 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: ToggleSend,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
   const isPressed = state.matches("pressed")
 
   return {
     isPressed,
     buttonProps: normalize.button<T>({
-      id: dom.getButtonId(ctx),
+      id: dom.getButtonId(state.context),
       type: "button",
-      "aria-label": ctx.label,
+      "aria-label": state.context.label,
       "aria-pressed": isPressed,
-      "data-disabled": dataAttr(ctx.disabled),
+      "data-disabled": dataAttr(state.context.disabled),
       "data-pressed": dataAttr(isPressed),
       onClick() {
-        if (ctx.disabled) return
+        if (state.context.disabled) return
         send({ type: "CLICK", pressed: isPressed })
       },
     }),

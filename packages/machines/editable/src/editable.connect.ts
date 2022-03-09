@@ -4,25 +4,24 @@ import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const { context: ctx } = state
   const isEditing = state.matches("edit")
 
   return {
     isEditing,
-    isValueEmpty: ctx.isValueEmpty,
+    isValueEmpty: state.context.isValueEmpty,
 
     inputProps: normalize.input<T>({
       "data-part": "input",
-      id: dom.getInputId(ctx),
+      id: dom.getInputId(state.context),
       hidden: !isEditing,
-      placeholder: ctx.placeholder,
-      disabled: ctx.disabled,
-      "aria-disabled": ctx.disabled,
-      value: ctx.value,
+      placeholder: state.context.placeholder,
+      disabled: state.context.disabled,
+      "aria-disabled": state.context.disabled,
+      value: state.context.value,
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
-          exclude: [dom.getCancelBtnEl(ctx), dom.getSubmitBtnEl(ctx)],
-          fallback: ctx.pointerdownNode,
+          exclude: [dom.getCancelBtnEl(state.context), dom.getSubmitBtnEl(state.context)],
+          fallback: state.context.pointerdownNode,
         })
         if (isValidBlur) {
           send("BLUR")
@@ -54,11 +53,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     previewProps: normalize.element<T>({
       "data-part": "preview",
-      "data-empty": ctx.isValueEmpty,
-      children: ctx.value === "" ? ctx.placeholder : ctx.value,
+      "data-empty": state.context.isValueEmpty,
+      children: state.context.value === "" ? state.context.placeholder : state.context.value,
       hidden: isEditing,
-      "aria-disabled": ariaAttr(ctx.disabled),
-      tabIndex: ctx.isInteractive && ctx.isPreviewFocusable ? 0 : undefined,
+      "aria-disabled": ariaAttr(state.context.disabled),
+      tabIndex: state.context.isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {
         send("FOCUS")
       },
@@ -69,7 +68,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     editButtonProps: normalize.button<T>({
       "data-part": "edit-button",
-      id: dom.getEditBtnId(ctx),
+      id: dom.getEditBtnId(state.context),
       "aria-label": "Submit",
       type: "button",
       onClick() {
@@ -79,7 +78,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     submitButtonProps: normalize.button<T>({
       "data-part": "submit-button",
-      id: dom.getSubmitBtnId(ctx),
+      id: dom.getSubmitBtnId(state.context),
       "aria-label": "Submit",
       type: "button",
       onClick() {
@@ -90,7 +89,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     cancelButtonProps: normalize.button<T>({
       "data-part": "cancel-button",
       "aria-label": "Cancel",
-      id: dom.getCancelBtnId(ctx),
+      id: dom.getCancelBtnId(state.context),
       type: "button",
       onClick() {
         send("CANCEL")

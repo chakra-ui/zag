@@ -9,9 +9,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-  const { "aria-label": ariaLabel } = ctx
-
+  const ariaLabel = state.context["aria-label"]
   const isOpen = state.matches("open")
 
   return {
@@ -24,11 +22,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
-      id: dom.getTriggerId(ctx),
+      id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       type: "button",
       "aria-expanded": isOpen,
-      "aria-controls": dom.getContentId(ctx),
+      "aria-controls": dom.getContentId(state.context),
       onClick() {
         send("TRIGGER_CLICK")
       },
@@ -36,37 +34,37 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     overlayProps: normalize.element<T>({
       "data-part": "overlay",
       "aria-hidden": true,
-      id: dom.getOverlayId(ctx),
+      id: dom.getOverlayId(state.context),
       onClick(event) {
-        if (event.currentTarget !== ctx.pointerdownNode) return
+        if (event.currentTarget !== state.context.pointerdownNode) return
         send("OVERLAY_CLICK")
         event.stopPropagation()
       },
     }),
     contentProps: normalize.element<T>({
       "data-part": "content",
-      role: ctx.role,
-      id: dom.getContentId(ctx),
+      role: state.context.role,
+      id: dom.getContentId(state.context),
       tabIndex: -1,
-      "aria-modal": ariaAttr(ctx.isTopMostDialog),
+      "aria-modal": ariaAttr(state.context.isTopMostDialog),
       "aria-label": ariaLabel || undefined,
-      "aria-labelledby": ariaLabel ? undefined : ctx.hasTitle ? dom.getTitleId(ctx) : undefined,
-      "aria-describedby": ctx.hasDescription ? dom.getDescriptionId(ctx) : undefined,
+      "aria-labelledby": ariaLabel ? undefined : state.context.hasTitle ? dom.getTitleId(state.context) : undefined,
+      "aria-describedby": state.context.hasDescription ? dom.getDescriptionId(state.context) : undefined,
       onClick(event) {
         event.stopPropagation()
       },
     }),
     titleProps: normalize.element<T>({
       "data-part": "title",
-      id: dom.getTitleId(ctx),
+      id: dom.getTitleId(state.context),
     }),
     descriptionProps: normalize.element<T>({
       "data-part": "description",
-      id: dom.getDescriptionId(ctx),
+      id: dom.getDescriptionId(state.context),
     }),
     closeButtonProps: normalize.button<T>({
       "data-part": "close-button",
-      id: dom.getCloseButtonId(ctx),
+      id: dom.getCloseButtonId(state.context),
       type: "button",
       onClick(event) {
         event.stopPropagation()

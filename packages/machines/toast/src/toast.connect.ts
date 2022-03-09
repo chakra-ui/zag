@@ -9,15 +9,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
   const isVisible = state.matches("active", "active:temp", "visible")
 
   return {
-    type: ctx.type,
-    title: ctx.title,
-    placement: ctx.placement,
+    type: state.context.type,
+    title: state.context.title,
+    placement: state.context.placement,
     isVisible,
-    progress: ctx.progress,
+    progress: state.context.progress,
 
     pause() {
       send("PAUSE")
@@ -35,41 +34,41 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "progress",
       role: "progressbar",
       "aria-valuemin": 0,
-      "aria-valuemax": ctx.progress?.max,
-      "aria-valuenow": ctx.progress?.value,
+      "aria-valuemax": state.context.progress?.max,
+      "aria-valuenow": state.context.progress?.value,
       style: {
-        "--toast-progress-percent": `${ctx.progress?.value / ctx.progress?.max}%`,
+        "--toast-progress-percent": `${state.context.progress?.value / state.context.progress?.max}%`,
       },
     }),
 
     containerProps: normalize.element<T>({
       "data-part": "container",
-      id: dom.getRootId(ctx),
+      id: dom.getRootId(state.context),
       "data-open": dataAttr(isVisible),
-      "data-type": ctx.type,
+      "data-type": state.context.type,
       style: {
         pointerEvents: "auto",
         margin: "calc(var(--toast-gutter) / 2)",
-        "--toast-remove-delay": `${ctx.removeDelay}ms`,
+        "--toast-remove-delay": `${state.context.removeDelay}ms`,
       },
       onPointerEnter() {
-        if (ctx.pauseOnHover) {
+        if (state.context.pauseOnHover) {
           send("PAUSE")
         }
       },
       onPointerLeave() {
-        if (ctx.pauseOnHover) {
+        if (state.context.pauseOnHover) {
           send("RESUME")
         }
       },
     }),
 
     titleProps: normalize.element<T>({
-      id: dom.getToastTitleId(ctx),
+      id: dom.getToastTitleId(state.context),
     }),
 
     closeButtonProps: normalize.button<T>({
-      id: dom.getCloseButtonId(ctx),
+      id: dom.getCloseButtonId(state.context),
       "data-part": "close-button",
       type: "button",
       "aria-label": "Dismiss notification",
@@ -79,9 +78,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     }),
 
     render() {
-      return ctx.render?.({
-        id: ctx.id,
-        type: ctx.type,
+      return state.context.render?.({
+        id: state.context.id,
+        type: state.context.type,
         dismiss() {
           send("DISMISS")
         },

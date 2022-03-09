@@ -7,21 +7,19 @@ import { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const { context: ctx } = state
-
   const isScrubbing = state.matches("scrubbing")
   const isFocused = state.matches("focused", "before:spin", "scrubbing", "spinning")
-  const isInvalid = ctx.isOutOfRange || Boolean(ctx.invalid)
+  const isInvalid = state.context.isOutOfRange || Boolean(state.context.invalid)
 
   return {
     // properties
-    valueAsNumber: ctx.valueAsNumber,
-    value: ctx.formattedValue,
-    canIncrement: ctx.canIncrement,
-    canDecrement: ctx.canDecrement,
+    valueAsNumber: state.context.valueAsNumber,
+    value: state.context.formattedValue,
+    canIncrement: state.context.canIncrement,
+    canDecrement: state.context.canDecrement,
     isScrubbing,
     isFocused,
-    isDisabled: ctx.disabled,
+    isDisabled: state.context.disabled,
     isInvalid,
 
     // methods
@@ -44,44 +42,44 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("SET_TO_MIN")
     },
     blur() {
-      dom.getInputEl(ctx)?.blur()
+      dom.getInputEl(state.context)?.blur()
     },
     focus() {
-      dom.getInputEl(ctx)?.focus()
+      dom.getInputEl(state.context)?.focus()
     },
 
     // properties
     labelProps: normalize.label<T>({
       "data-part": "label",
-      "data-disabled": dataAttr(ctx.disabled),
-      "data-readonly": dataAttr(ctx.readonly),
+      "data-disabled": dataAttr(state.context.disabled),
+      "data-readonly": dataAttr(state.context.readonly),
       "data-invalid": dataAttr(isInvalid),
-      id: dom.getLabelId(ctx),
-      htmlFor: dom.getInputId(ctx),
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getInputId(state.context),
     }),
 
     inputProps: normalize.input<T>({
       "data-part": "input",
-      name: ctx.name,
-      id: dom.getInputId(ctx),
+      name: state.context.name,
+      id: dom.getInputId(state.context),
       role: "spinbutton",
-      pattern: ctx.pattern,
-      inputMode: ctx.inputMode,
-      disabled: ctx.disabled,
-      readOnly: ctx.readonly,
+      pattern: state.context.pattern,
+      inputMode: state.context.inputMode,
+      disabled: state.context.disabled,
+      readOnly: state.context.readonly,
       autoComplete: "off",
       autoCorrect: "off",
       type: "text",
-      "aria-valuemin": ctx.min,
-      "aria-valuemax": ctx.max,
-      "aria-valuetext": ctx.ariaValueText || undefined,
-      "aria-valuenow": isNaN(ctx.valueAsNumber) ? undefined : ctx.valueAsNumber,
+      "aria-valuemin": state.context.min,
+      "aria-valuemax": state.context.max,
+      "aria-valuetext": state.context.ariaValueText || undefined,
+      "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
       "aria-invalid": isInvalid || undefined,
       "data-invalid": dataAttr(isInvalid),
-      "aria-disabled": ctx.disabled || undefined,
-      "data-disabled": dataAttr(ctx.disabled),
-      "aria-readonly": ctx.readonly || undefined,
-      value: ctx.value,
+      "aria-disabled": state.context.disabled || undefined,
+      "data-disabled": dataAttr(state.context.disabled),
+      "aria-readonly": state.context.readonly || undefined,
+      value: state.context.value,
       onFocus() {
         send("FOCUS")
       },
@@ -96,11 +94,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onKeyDown(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing) return
-        if (!utils.isValidNumericEvent(ctx, event)) {
+        if (!utils.isValidNumericEvent(state.context, event)) {
           event.preventDefault()
         }
 
-        const step = multiply(getEventStep(event), ctx.step)
+        const step = multiply(getEventStep(event), state.context.step)
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
@@ -127,15 +125,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     decrementButtonProps: normalize.button<T>({
       "data-part": "spinner-button",
-      id: dom.getDecButtonId(ctx),
-      "aria-disabled": !ctx.canDecrement,
-      "data-disabled": dataAttr(!ctx.canDecrement),
+      id: dom.getDecButtonId(state.context),
+      "aria-disabled": !state.context.canDecrement,
+      "data-disabled": dataAttr(!state.context.canDecrement),
       "aria-label": "Decrement value",
-      disabled: !ctx.canDecrement,
+      disabled: !state.context.canDecrement,
       role: "button",
       tabIndex: -1,
       onPointerDown(event) {
-        if (!ctx.canDecrement) return
+        if (!state.context.canDecrement) return
         send({ type: "PRESS_DOWN", hint: "decrement" })
         event.preventDefault()
       },
@@ -149,16 +147,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     incrementButtonProps: normalize.button<T>({
       "data-part": "spinner-button",
-      id: dom.getIncButtonId(ctx),
-      "aria-disabled": !ctx.canIncrement,
-      "data-disabled": dataAttr(!ctx.canIncrement),
+      id: dom.getIncButtonId(state.context),
+      "aria-disabled": !state.context.canIncrement,
+      "data-disabled": dataAttr(!state.context.canIncrement),
       "aria-label": "Increment value",
-      disabled: !ctx.canIncrement,
+      disabled: !state.context.canIncrement,
       role: "button",
       tabIndex: -1,
       onPointerDown(event) {
         event.preventDefault()
-        if (!ctx.canIncrement) return
+        if (!state.context.canIncrement) return
         send({ type: "PRESS_DOWN", hint: "increment" })
       },
       onPointerUp() {
@@ -171,7 +169,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     scrubberProps: normalize.element<T>({
       "data-part": "scrubber",
-      id: dom.getScrubberId(ctx),
+      id: dom.getScrubberId(state.context),
       role: "presentation",
       onMouseDown(event) {
         const evt = getNativeEvent(event)

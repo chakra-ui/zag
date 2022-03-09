@@ -20,16 +20,14 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-
   const group = {
-    count: ctx.toasts.length,
-    toasts: ctx.toasts,
-    toastsByPlacement: getToastsByPlacement(ctx.toasts),
+    count: state.context.toasts.length,
+    toasts: state.context.toasts,
+    toastsByPlacement: getToastsByPlacement(state.context.toasts),
 
     isVisible(id: string) {
-      if (!ctx.toasts.length) return false
-      return !!ctx.toasts.find((toast) => toast.id == id)
+      if (!state.context.toasts.length) return false
+      return !!state.context.toasts.find((toast) => toast.id == id)
     },
 
     create(options: Options) {
@@ -131,25 +129,25 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
     getContainerProps(props: GroupContainerProps) {
       const { placement } = props
       return normalize.element<T>({
-        id: dom.getGroupContainerId(ctx, placement),
+        id: dom.getGroupContainerId(state.context, placement),
         "data-placement": placement,
         "aria-live": "polite",
         role: "region",
-        style: getGroupPlacementStyle(ctx, placement),
+        style: getGroupPlacementStyle(state.context, placement),
       })
     },
 
     createPortal() {
-      const doc = dom.getDoc(ctx)
-      const exist = dom.getPortalEl(ctx)
+      const doc = dom.getDoc(state.context)
+      const exist = dom.getPortalEl(state.context)
       if (exist) return exist
-      const portal = dom.createPortalEl(ctx)
+      const portal = dom.createPortalEl(state.context)
       doc.body.appendChild(portal)
       return portal
     },
 
     subscribe(fn: (toasts: GroupMachineContext["toasts"]) => void) {
-      return subscribe(ctx.toasts, () => fn(ctx.toasts))
+      return subscribe(state.context.toasts, () => fn(state.context.toasts))
     },
   }
 

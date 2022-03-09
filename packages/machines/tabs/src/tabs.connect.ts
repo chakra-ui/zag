@@ -10,20 +10,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-
   return {
-    value: ctx.value,
-    focusedValue: ctx.focusedValue,
+    value: state.context.value,
+    focusedValue: state.context.focusedValue,
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
 
     tablistProps: normalize.element<T>({
       "data-part": "tablist",
-      id: dom.getTablistId(ctx),
+      id: dom.getTablistId(state.context),
       role: "tablist",
-      "aria-orientation": ctx.orientation,
+      "aria-orientation": state.context.orientation,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           ArrowDown() {
@@ -45,11 +43,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
             send("END")
           },
           Enter() {
-            send({ type: "ENTER", value: ctx.focusedValue })
+            send({ type: "ENTER", value: state.context.focusedValue })
           },
         }
 
-        let key = getEventKey(event, ctx)
+        let key = getEventKey(event, state.context)
         const exec = keyMap[key]
 
         if (exec) {
@@ -61,7 +59,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     getTabProps(props: TabProps) {
       const { value, disabled } = props
-      const selected = ctx.value === value
+      const selected = state.context.value === value
 
       return normalize.button<T>({
         "data-part": "tab",
@@ -70,9 +68,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         disabled,
         "data-value": value,
         "aria-selected": selected,
-        "aria-controls": dom.getPanelId(ctx, value),
-        "data-ownedby": dom.getTablistId(ctx),
-        id: dom.getTabId(ctx, value),
+        "aria-controls": dom.getPanelId(state.context, value),
+        "data-ownedby": dom.getTablistId(state.context),
+        id: dom.getTabId(state.context, value),
         tabIndex: selected ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
@@ -94,14 +92,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
 
     getTabPanelProps({ value }: { value: string }) {
-      const selected = ctx.value === value
+      const selected = state.context.value === value
       return normalize.element<T>({
         "data-part": "tabpanel",
-        id: dom.getPanelId(ctx, value),
+        id: dom.getPanelId(state.context, value),
         tabIndex: 0,
-        "aria-labelledby": dom.getTabId(ctx, value),
+        "aria-labelledby": dom.getTabId(state.context, value),
         role: "tabpanel",
-        "data-ownedby": dom.getTablistId(ctx),
+        "data-ownedby": dom.getTablistId(state.context),
         hidden: !selected,
       })
     },
@@ -112,8 +110,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",
         transitionProperty: "left, right, top, bottom, width, height",
-        transitionDuration: ctx.measuredRect ? "200ms" : "0ms",
-        ...ctx.indicatorRect,
+        transitionDuration: state.context.measuredRect ? "200ms" : "0ms",
+        ...state.context.indicatorRect,
       },
     }),
   }

@@ -5,11 +5,10 @@ import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const { context: ctx } = state
-
   const isExpanded = state.hasTag("expanded")
-  const autoFill = isExpanded && ctx.navigationValue && ctx.autoComplete
-  const showClearButton = (!state.matches("idle", "unknown") || ctx.isHoveringInput) && !ctx.isInputValueEmpty
+  const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
+  const showClearButton =
+    (!state.matches("idle", "unknown") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
   const isFocused = state.hasTag("focused")
 
   return {
@@ -23,28 +22,28 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("FOCUS")
     },
     blur() {
-      dom.getInputEl(ctx)?.blur()
+      dom.getInputEl(state.context)?.blur()
     },
 
     isFocused,
     isExpanded,
 
-    inputValue: ctx.inputValue,
+    inputValue: state.context.inputValue,
 
     labelProps: normalize.label<T>({
       "data-part": "label",
-      htmlFor: dom.getInputId(ctx),
-      id: dom.getLabelId(ctx),
-      "data-readonly": dataAttr(ctx.readonly),
-      "data-disabled": dataAttr(ctx.disabled),
+      htmlFor: dom.getInputId(state.context),
+      id: dom.getLabelId(state.context),
+      "data-readonly": dataAttr(state.context.readonly),
+      "data-disabled": dataAttr(state.context.disabled),
     }),
 
     containerProps: normalize.element<T>({
       "data-part": "container",
-      id: dom.getContainerId(ctx),
+      id: dom.getContainerId(state.context),
       "data-expanded": dataAttr(isExpanded),
       "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(ctx.disabled),
+      "data-disabled": dataAttr(state.context.disabled),
       onPointerOver() {
         send("POINTER_OVER")
       },
@@ -55,38 +54,38 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     popoverProps: normalize.element<T>({
       "data-part": "popover",
-      id: dom.getPopoverId(ctx),
+      id: dom.getPopoverId(state.context),
       "data-expanded": dataAttr(isExpanded),
       hidden: !isExpanded,
-      style: getFloatingStyle(!!ctx.__placement),
+      style: getFloatingStyle(!!state.context.__placement),
     }),
 
     inputProps: normalize.input<T>({
       "data-part": "input",
-      name: ctx.name,
-      disabled: ctx.disabled,
-      autoFocus: ctx.autoFocus,
+      name: state.context.name,
+      disabled: state.context.disabled,
+      autoFocus: state.context.autoFocus,
       autoComplete: "off",
       autoCorrect: "off",
       autoCapitalize: "off",
       spellCheck: "false",
-      readOnly: ctx.readonly,
-      placeholder: ctx.placeholder,
-      id: dom.getInputId(ctx),
+      readOnly: state.context.readonly,
+      placeholder: state.context.placeholder,
+      id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      value: autoFill ? ctx.navigationValue : ctx.inputValue,
-      "aria-autocomplete": ctx.autoComplete ? "both" : "list",
-      "aria-controls": isExpanded ? dom.getListboxId(ctx) : undefined,
+      value: autoFill ? state.context.navigationValue : state.context.inputValue,
+      "aria-autocomplete": state.context.autoComplete ? "both" : "list",
+      "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
       "aria-expanded": isExpanded,
-      "aria-activedescendant": ctx.activeId ?? undefined,
+      "aria-activedescendant": state.context.activeId ?? undefined,
       onPointerDown() {
         send("POINTER_DOWN")
       },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
-          exclude: [dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)],
-          fallback: ctx.pointerdownNode,
+          exclude: [dom.getListboxEl(state.context), dom.getToggleBtnEl(state.context)],
+          fallback: state.context.pointerdownNode,
         })
         if (isValidBlur) {
           send("BLUR")
@@ -154,7 +153,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           },
         }
 
-        const key = getEventKey(event, ctx)
+        const key = getEventKey(event, state.context)
         const exec = keymap[key]
 
         if (exec) {
@@ -170,17 +169,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     buttonProps: normalize.button<T>({
       "data-part": "button",
-      id: dom.getToggleBtnId(ctx),
+      id: dom.getToggleBtnId(state.context),
       "aria-haspopup": "listbox",
       type: "button",
       role: "button",
       tabIndex: -1,
-      "aria-label": isExpanded ? ctx.openText : ctx.closeText,
+      "aria-label": isExpanded ? state.context.openText : state.context.closeText,
       "aria-expanded": isExpanded,
-      "aria-controls": isExpanded ? dom.getListboxId(ctx) : undefined,
-      disabled: ctx.disabled,
-      "data-readonly": dataAttr(ctx.readonly),
-      "data-disabled": dataAttr(ctx.disabled),
+      "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
+      disabled: state.context.disabled,
+      "data-readonly": dataAttr(state.context.readonly),
+      "data-disabled": dataAttr(state.context.disabled),
       onPointerDown(event) {
         send("CLICK_BUTTON")
         event.preventDefault()
@@ -189,10 +188,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     listboxProps: normalize.element<T>({
       "data-part": "listbox",
-      id: dom.getListboxId(ctx),
+      id: dom.getListboxId(state.context),
       role: "listbox",
       hidden: !isExpanded,
-      "aria-labelledby": dom.getLabelId(ctx),
+      "aria-labelledby": dom.getLabelId(state.context),
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus
         event.preventDefault()
@@ -201,12 +200,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     clearButtonProps: normalize.button<T>({
       "data-part": "clear-button",
-      id: dom.getClearBtnId(ctx),
+      id: dom.getClearBtnId(state.context),
       type: "button",
       role: "button",
       tabIndex: -1,
-      disabled: ctx.disabled,
-      "aria-label": ctx.clearText,
+      disabled: state.context.disabled,
+      "aria-label": state.context.clearText,
       hidden: !showClearButton,
       onPointerDown(event) {
         send("CLEAR_VALUE")
@@ -216,9 +215,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getOptionProps(props: OptionProps) {
       const { value, label, index, count, disabled } = props
-      const id = dom.getOptionId(ctx, value, index)
-      const focused = ctx.activeId === id
-      const checked = ctx.selectedValue === value
+      const id = dom.getOptionId(state.context, value, index)
+      const focused = state.context.activeId === id
+      const checked = state.context.selectedValue === value
 
       return normalize.element<T>({
         "data-part": "option",

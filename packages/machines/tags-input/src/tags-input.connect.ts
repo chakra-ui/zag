@@ -14,15 +14,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-
   const isInputFocused = state.matches("focused:input", "navigating:tag")
   const isEditingTag = state.matches("editing:tag")
 
   return {
     // state
-    value: ctx.value,
-    valueAsString: ctx.valueAsString,
+    value: state.context.value,
+    valueAsString: state.context.valueAsString,
 
     // methods
     clear() {
@@ -36,32 +34,32 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
     focus() {
       nextTick(() => {
-        dom.getInputEl(ctx)?.focus()
+        dom.getInputEl(state.context)?.focus()
       })
     },
     blur() {
-      dom.getInputEl(ctx)?.blur()
+      dom.getInputEl(state.context)?.blur()
     },
 
     // attributes
     rootProps: normalize.element<T>({
       "data-part": "root",
-      "data-invalid": dataAttr(ctx.outOfRange),
-      "data-disabled": dataAttr(ctx.disabled),
+      "data-invalid": dataAttr(state.context.outOfRange),
+      "data-disabled": dataAttr(state.context.disabled),
       "data-focus": dataAttr(isInputFocused),
-      id: dom.getRootId(ctx),
+      id: dom.getRootId(state.context),
       onPointerDown() {
-        if (!ctx.isInteractive) return
+        if (!state.context.isInteractive) return
         send("POINTER_DOWN")
       },
     }),
 
     inputProps: normalize.input<T>({
       "data-part": "input",
-      id: dom.getInputId(ctx),
-      value: ctx.inputValue,
+      id: dom.getInputId(state.context),
+      value: state.context.inputValue,
       autoComplete: "off",
-      disabled: ctx.disabled,
+      disabled: state.context.disabled,
       onChange(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing || evt.inputType === "insertFromPaste") return
@@ -72,7 +70,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       },
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
-          exclude: dom.getRootEl(ctx),
+          exclude: dom.getRootEl(state.context),
         })
         if (isValidBlur) {
           send("BLUR")
@@ -93,7 +91,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
             send("ARROW_LEFT")
           },
           ArrowRight() {
-            if (ctx.focusedId) {
+            if (state.context.focusedId) {
               event.preventDefault()
             }
             send("ARROW_RIGHT")
@@ -118,7 +116,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           },
         }
 
-        const key = getEventKey(event, ctx)
+        const key = getEventKey(event, state.context)
         const exec = keyMap[key]
         exec?.(event)
       },
@@ -127,43 +125,43 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     hiddenInputProps: normalize.input<T>({
       "data-part": "hidden-input",
       type: "hidden",
-      name: ctx.name,
-      id: dom.getHiddenInputId(ctx),
-      value: ctx.valueAsString,
+      name: state.context.name,
+      id: dom.getHiddenInputId(state.context),
+      value: state.context.valueAsString,
     }),
 
     getTagProps({ index, value }: TagProps) {
-      const id = dom.getTagId(ctx, index)
+      const id = dom.getTagId(state.context, index)
       return normalize.element<T>({
         "data-part": "tag",
         id,
-        hidden: isEditingTag ? ctx.editedId === id : false,
+        hidden: isEditingTag ? state.context.editedId === id : false,
         "data-value": value,
-        "data-disabled": dataAttr(ctx.disabled),
-        "data-selected": dataAttr(id === ctx.focusedId),
-        "data-ownedby": dom.getRootId(ctx),
+        "data-disabled": dataAttr(state.context.disabled),
+        "data-selected": dataAttr(id === state.context.focusedId),
+        "data-ownedby": dom.getRootId(state.context),
         onPointerDown(event) {
-          if (!ctx.isInteractive) return
+          if (!state.context.isInteractive) return
           event.preventDefault()
           send({ type: "POINTER_DOWN_TAG", id })
         },
         onDoubleClick() {
-          if (!ctx.isInteractive) return
+          if (!state.context.isInteractive) return
           send({ type: "DOUBLE_CLICK_TAG", id })
         },
       })
     },
 
     getTagInputProps({ index }: { index: number }) {
-      const id = dom.getTagId(ctx, index)
-      const active = ctx.editedId === id
+      const id = dom.getTagId(state.context, index)
+      const active = state.context.editedId === id
       return normalize.input<T>({
         "data-part": "tag-input",
-        id: dom.getTagInputId(ctx, index),
+        id: dom.getTagInputId(state.context, index),
         type: "text",
         tabIndex: -1,
         hidden: isEditingTag ? !active : true,
-        value: active ? ctx.editedTagValue : "",
+        value: active ? state.context.editedTagValue : "",
         onChange(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.target.value })
         },
@@ -191,24 +189,24 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
 
     getTagDeleteButtonProps({ index, value }: TagProps) {
-      const id = dom.getTagId(ctx, index)
+      const id = dom.getTagId(state.context, index)
       return normalize.button<T>({
         "data-part": "delete-button",
-        id: dom.getTagDeleteBtnId(ctx, index),
+        id: dom.getTagDeleteBtnId(state.context, index),
         type: "button",
         "aria-label": `Delete ${value}`,
         tabIndex: -1,
         onPointerDown(event) {
-          if (!ctx.isInteractive) {
+          if (!state.context.isInteractive) {
             event.preventDefault()
           }
         },
         onPointerOver() {
-          if (!ctx.isInteractive) return
+          if (!state.context.isInteractive) return
           send({ type: "HOVER_DELETE_TAG", id })
         },
         onClick() {
-          if (!ctx.isInteractive) return
+          if (!state.context.isInteractive) return
           send({ type: "DELETE_TAG", id })
         },
       })
@@ -216,12 +214,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     clearButtonProps: normalize.button<T>({
       "data-part": "clear-button",
-      id: dom.getClearButtonId(ctx),
+      id: dom.getClearButtonId(state.context),
       type: "button",
       "aria-label": "Clear all tags",
-      hidden: ctx.count === 0,
+      hidden: state.context.count === 0,
       onClick() {
-        if (!ctx.isInteractive) return
+        if (!state.context.isInteractive) return
         send("CLEAR_ALL")
       },
     }),

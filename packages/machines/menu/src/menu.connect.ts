@@ -7,7 +7,6 @@ import { dom } from "./menu.dom"
 import { ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const { context: ctx } = state
   const isOpen = state.matches("open", "closing")
 
   function getItemProps(opts: ItemProps) {
@@ -18,8 +17,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       role: "menuitem",
       "aria-disabled": disabled,
       "data-disabled": dataAttr(disabled),
-      "data-ownedby": dom.getMenuId(ctx),
-      "data-selected": dataAttr(ctx.activeId === id),
+      "data-ownedby": dom.getMenuId(state.context),
+      "data-selected": dataAttr(state.context.activeId === id),
       "data-valuetext": valueText,
       onClick(event) {
         if (disabled) return
@@ -93,7 +92,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     }),
 
     arrowProps: normalize.element<T>({
-      id: dom.getArrowId(ctx),
+      id: dom.getArrowId(state.context),
       "data-part": "arrow",
       style: getArrowStyle(),
     }),
@@ -105,16 +104,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
-      "data-placement": ctx.__placement,
+      "data-placement": state.context.__placement,
       type: "button",
-      id: dom.getTriggerId(ctx),
-      "data-uid": ctx.uid,
+      id: dom.getTriggerId(state.context),
+      "data-uid": state.context.uid,
       "aria-haspopup": "menu",
-      "aria-controls": dom.getMenuId(ctx),
+      "aria-controls": dom.getMenuId(state.context),
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !ctx.isSubmenu) return
+        if (disabled || !state.context.isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
           target: event.currentTarget,
@@ -123,7 +122,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onPointerLeave(event) {
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !ctx.isSubmenu) return
+        if (disabled || !state.context.isSubmenu) return
         send({
           type: "TRIGGER_POINTERLEAVE",
           target: event.currentTarget,
@@ -162,7 +161,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           },
         }
 
-        const key = getEventKey(event, ctx)
+        const key = getEventKey(event, state.context)
         const exec = keyMap[key]
 
         if (exec) {
@@ -175,27 +174,27 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     contentProps: normalize.element<T>({
       "data-part": "content",
-      id: dom.getMenuId(ctx),
+      id: dom.getMenuId(state.context),
       hidden: !isOpen,
       role: "menu",
       tabIndex: 0,
-      dir: ctx.dir,
-      "aria-activedescendant": ctx.activeId ?? undefined,
-      "aria-labelledby": dom.getTriggerId(ctx),
-      "data-placement": ctx.__placement,
-      style: getFloatingStyle(!!ctx.__placement),
+      dir: state.context.dir,
+      "aria-activedescendant": state.context.activeId ?? undefined,
+      "aria-labelledby": dom.getTriggerId(state.context),
+      "data-placement": state.context.__placement,
+      style: getFloatingStyle(!!state.context.__placement),
       onBlur(event) {
-        const menu = dom.getMenuEl(ctx)
-        const trigger = dom.getTriggerEl(ctx)
+        const menu = dom.getMenuEl(state.context)
+        const trigger = dom.getTriggerEl(state.context)
 
-        const exclude = dom.getChildMenus(ctx).concat(dom.getParentMenus(ctx))
+        const exclude = dom.getChildMenus(state.context).concat(dom.getParentMenus(state.context))
 
-        if (trigger && !ctx.isSubmenu) {
+        if (trigger && !state.context.isSubmenu) {
           exclude.push(trigger)
         }
         const isValidBlur = validateBlur(event, {
           exclude,
-          fallback: ctx.pointerdownNode,
+          fallback: state.context.pointerdownNode,
         })
         if (isValidBlur && !contains(menu, event.relatedTarget)) {
           send("BLUR")
@@ -205,7 +204,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
-        const activeItem = dom.getActiveItemEl(ctx)
+        const activeItem = dom.getActiveItemEl(state.context)
         const isLink = !!activeItem?.matches("a[href]")
 
         const keyMap: EventKeyMap = {
@@ -240,7 +239,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           Tab() {},
         }
 
-        const key = getEventKey(event, { dir: ctx.dir })
+        const key = getEventKey(event, { dir: state.context.dir })
         const exec = keyMap[key]
 
         if (exec) {

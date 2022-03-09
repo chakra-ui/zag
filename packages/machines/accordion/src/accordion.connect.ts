@@ -5,21 +5,19 @@ import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const { context: ctx } = state
-
   function getItemState(props: ItemProps) {
     const { value, disabled } = props
     return {
-      isOpen: isArray(ctx.value) ? ctx.value.includes(value) : value === ctx.value,
-      isFocused: ctx.focusedValue === value,
-      isDisabled: disabled ?? ctx.disabled,
+      isOpen: isArray(state.context.value) ? state.context.value.includes(value) : value === state.context.value,
+      isFocused: state.context.focusedValue === value,
+      isDisabled: disabled ?? state.context.disabled,
     }
   }
 
   return {
-    value: ctx.value,
+    value: state.context.value,
     setValue(value: string | string[]) {
-      if (ctx.multiple && !Array.isArray(value)) {
+      if (state.context.multiple && !Array.isArray(value)) {
         value = [value]
       }
       send({ type: "SET_VALUE", value })
@@ -27,7 +25,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     rootProps: normalize.element<T>({
       "data-part": "root",
-      id: dom.getRootId(ctx),
+      id: dom.getRootId(state.context),
     }),
 
     getItemState,
@@ -36,7 +34,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const { isOpen } = getItemState(props)
       return normalize.element<T>({
         "data-part": "item",
-        id: dom.getGroupId(ctx, props.value),
+        id: dom.getGroupId(state.context, props.value),
         "data-expanded": dataAttr(isOpen),
       })
     },
@@ -46,8 +44,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return normalize.element<T>({
         "data-part": "content",
         role: "region",
-        id: dom.getPanelId(ctx, props.value),
-        "aria-labelledby": dom.getTriggerId(ctx, props.value),
+        id: dom.getPanelId(state.context, props.value),
+        "aria-labelledby": dom.getTriggerId(state.context, props.value),
         hidden: !isOpen,
         "data-disabled": dataAttr(isDisabled),
         "data-focus": dataAttr(isFocused),
@@ -61,13 +59,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return normalize.button<T>({
         "data-part": "trigger",
         type: "button",
-        id: dom.getTriggerId(ctx, value),
-        "aria-controls": dom.getPanelId(ctx, value),
+        id: dom.getTriggerId(state.context, value),
+        "aria-controls": dom.getPanelId(state.context, value),
         "aria-expanded": isOpen,
         disabled: isDisabled,
         "aria-disabled": isDisabled,
         "data-expanded": dataAttr(isOpen),
-        "data-ownedby": dom.getRootId(ctx),
+        "data-ownedby": dom.getRootId(state.context),
         onFocus() {
           if (isDisabled) return
           send({ type: "FOCUS", value })
@@ -102,7 +100,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           }
 
           const key = getEventKey(event, {
-            dir: ctx.dir,
+            dir: state.context.dir,
             orientation: "vertical",
           })
 

@@ -11,20 +11,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const { context: ctx } = state
-
   const isVisible = state.matches("open", "closing")
 
-  const triggerId = dom.getTriggerId(ctx)
-  const tooltipId = dom.getTooltipId(ctx)
+  const triggerId = dom.getTriggerId(state.context)
+  const tooltipId = dom.getTooltipId(state.context)
 
   return {
     isVisible,
-    hasAriaLabel: ctx.hasAriaLabel,
+    hasAriaLabel: state.context.hasAriaLabel,
 
     getAnimationState() {
       return {
-        enter: store.prevId === null && ctx.id === store.id,
+        enter: store.prevId === null && state.context.id === store.id,
         exit: store.id === null,
       }
     },
@@ -39,12 +37,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onBlur() {
-        if (ctx.id === store.id) {
+        if (state.context.id === store.id) {
           send("BLUR")
         }
       },
       onPointerDown() {
-        if (ctx.id === store.id) {
+        if (state.context.id === store.id) {
           send("POINTER_DOWN")
         }
       },
@@ -72,7 +70,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     }),
 
     arrowProps: normalize.element<T>({
-      id: dom.getArrowId(ctx),
+      id: dom.getArrowId(state.context),
       "data-part": "arrow",
       style: getArrowStyle(),
     }),
@@ -84,8 +82,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     contentProps: normalize.element<T>({
       "data-part": "content",
-      role: ctx.hasAriaLabel ? undefined : "tooltip",
-      id: ctx.hasAriaLabel ? undefined : tooltipId,
+      role: state.context.hasAriaLabel ? undefined : "tooltip",
+      id: state.context.hasAriaLabel ? undefined : tooltipId,
       onPointerEnter() {
         send("TOOLTIP_POINTER_ENTER")
       },
@@ -93,8 +91,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TOOLTIP_POINTER_LEAVE")
       },
       style: {
-        ...getFloatingStyle(!!ctx.__placement),
-        pointerEvents: ctx.interactive ? "auto" : "none",
+        ...getFloatingStyle(!!state.context.__placement),
+        pointerEvents: state.context.interactive ? "auto" : "none",
       },
     }),
 
@@ -106,10 +104,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     }),
 
     createPortal() {
-      const doc = dom.getDoc(ctx)
-      const exist = dom.getPortalEl(ctx)
+      const doc = dom.getDoc(state.context)
+      const exist = dom.getPortalEl(state.context)
       if (exist) return exist
-      const portal = dom.createPortalEl(ctx)
+      const portal = dom.createPortalEl(state.context)
       doc.body.appendChild(portal)
       return portal
     },
