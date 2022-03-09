@@ -7396,7 +7396,7 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
-klona@^2.0.4:
+klona@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
@@ -8751,10 +8751,10 @@ prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-proxy-compare@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/proxy-compare/-/proxy-compare-2.0.2.tgz#343e624d0ec399dfbe575f1d365d4fa042c9fc69"
-  integrity sha512-3qUXJBariEj3eO90M3Rgqq3+/P5Efl0t/dl9g/1uVzIQmO3M+ql4hvNH3mYdu8H+1zcKv07YvL55tsY74jmH1A==
+proxy-compare@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/proxy-compare/-/proxy-compare-2.0.3.tgz#13fac7a72ca186a3f4a5e99bdff4863f2ced85c1"
+  integrity sha512-YEmiPmDvwSUwudfjt68DTRo0VaUC2WrDOfktTYEICInBDCIwveTsnn0cRxkWPSUvZBhzRIxtI0ZoYeUpXU870Q==
 
 proxy-from-env@1.0.0:
   version "1.0.0"
@@ -10617,12 +10617,12 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valtio@^1.2.7:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.2.7.tgz#0274491a8919afce5f1a2fee2f08f9bdad90d5f8"
-  integrity sha512-vm9XwsndXVt+XTFwmb2Myo2p319Ssu/SDVRjBhDGQcNi6Epc8g0Pf/QaWAr67A3P1x4b1NApjK7qHjdL1WpuaQ==
+valtio@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.3.1.tgz#4532cc2e24dd7a38884fc8e1b1b2a3054b3707d8"
+  integrity sha512-k1eCoGbt88KuYT6fTRXb4lSZcuh4qLhhhNFwlZP8wItY7ue/3FJeZRCcM1YB3gNNKAMk5WlupQeVZbOp8EPRBg==
   dependencies:
-    proxy-compare "2.0.2"
+    proxy-compare "2.0.3"
 
 verror@1.10.0:
   version "1.10.0"
