@@ -1,4 +1,5 @@
 import { MachineSrc, StateMachine as S } from "@ui-machines/core"
+import { cast } from "@ui-machines/utils"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
 import { useConstant } from "./use-constant"
@@ -67,6 +68,6 @@ export function useMachine<
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent> & SyncOption) {
   const { sync, ...hookOptions } = options ?? {}
   const service = useService(machine, hookOptions)
-  const state = useSnapshot(service.state, { sync }) as S.State<TContext, TState, TEvent>
+  const state = cast<S.State<TContext, TState, TEvent>>(useSnapshot(service.state, { sync }))
   return [state, service.send, service] as const
 }
