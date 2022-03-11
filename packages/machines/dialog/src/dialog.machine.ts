@@ -47,8 +47,8 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           CLOSE: "closed",
           TRIGGER_CLICK: "closed",
-          OVERLAY_CLICK: {
-            guard: and("isTopMostDialog", "closeOnOutsideClick"),
+          UNDERLAY_CLICK: {
+            guard: and("isTopMostDialog", "closeOnOutsideClick", "isValidUnderlayClick"),
             target: "closed",
             actions: ["invokeOnOutsideClick"],
           },
@@ -67,6 +67,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     guards: {
       isTopMostDialog: (ctx) => ctx.isTopMostDialog,
       closeOnOutsideClick: (ctx) => ctx.closeOnOutsideClick,
+      isValidUnderlayClick: (ctx, evt) => evt.target === ctx.pointerdownNode,
     },
     activities: {
       trackPointerDown(ctx, _evt) {

@@ -39,9 +39,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           event.preventDefault()
         }
       },
-      onPointerUp(event) {
-        if (event.currentTarget !== state.context.pointerdownNode) return
-        send("OVERLAY_CLICK")
+      onClick(event) {
+        send({ type: "UNDERLAY_CLICK", target: event.currentTarget })
         event.stopPropagation()
       },
     }),

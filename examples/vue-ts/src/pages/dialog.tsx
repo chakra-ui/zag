@@ -37,46 +37,48 @@ export default defineComponent({
               {parentDialog.isOpen && (
                 <>
                   <Teleport to="body">
-                    <div class="dialog__overlay" {...parentDialog.overlayProps} data-testid="overlay-1" />
-                    <div class="dialog__content" {...parentDialog.contentProps}>
-                      <h2 class="dialog__title" {...parentDialog.titleProps}>
-                        Edit profile
-                      </h2>
-                      <p {...parentDialog.descriptionProps}>
-                        Make changes to your profile here. Click save when you are done.
-                      </p>
-                      <button class="dialog__close-button" {...parentDialog.closeButtonProps} data-testid="close-1">
-                        X
-                      </button>
-                      <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
-                      <button data-testid="save-button-1">Save Changes</button>
+                    <div class="dialog__overlay" />
+                    <div class="dialog__underlay" {...parentDialog.underlayProps} data-testid="underlay-1">
+                      <div class="dialog__content" {...parentDialog.contentProps}>
+                        <h2 class="dialog__title" {...parentDialog.titleProps}>
+                          Edit profile
+                        </h2>
+                        <p {...parentDialog.descriptionProps}>
+                          Make changes to your profile here. Click save when you are done.
+                        </p>
+                        <button class="dialog__close-button" {...parentDialog.closeButtonProps} data-testid="close-1">
+                          X
+                        </button>
+                        <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
+                        <button data-testid="save-button-1">Save Changes</button>
 
-                      <button class="dialog__button" {...childDialog.triggerProps} data-testid="trigger-2">
-                        Open Nested
-                      </button>
+                        <button class="dialog__button" {...childDialog.triggerProps} data-testid="trigger-2">
+                          Open Nested
+                        </button>
 
-                      {childDialog.isOpen && (
-                        <>
-                          <Teleport to="body">
-                            <div class="dialog__overlay" {...childDialog.overlayProps} data-testid="overlay-2" />
-                            <div class="dialog__content" {...childDialog.contentProps}>
-                              <h2 class="dialog__title" {...childDialog.titleProps}>
-                                Nested
-                              </h2>
-                              <button
-                                class="dialog__close-button"
-                                {...childDialog.closeButtonProps}
-                                data-testid="close-2"
-                              >
-                                X
-                              </button>
-                              <button onClick={() => parentDialog.close()} data-testid="special-close">
-                                Close Dialog 1
-                              </button>
-                            </div>
-                          </Teleport>
-                        </>
-                      )}
+                        {childDialog.isOpen && (
+                          <>
+                            <Teleport to="body">
+                              <div class="dialog__overlay" {...childDialog.underlayProps} data-testid="overlay-2" />
+                              <div class="dialog__content" {...childDialog.contentProps}>
+                                <h2 class="dialog__title" {...childDialog.titleProps}>
+                                  Nested
+                                </h2>
+                                <button
+                                  class="dialog__close-button"
+                                  {...childDialog.closeButtonProps}
+                                  data-testid="close-2"
+                                >
+                                  X
+                                </button>
+                                <button onClick={() => parentDialog.close()} data-testid="special-close">
+                                  Close Dialog 1
+                                </button>
+                              </div>
+                            </Teleport>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </Teleport>
                 </>
