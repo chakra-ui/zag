@@ -21,7 +21,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       trapFocus: true,
       preventScroll: true,
       isTopMostDialog: true,
-      closeOnOverlayClick: true,
+      closeOnOutsideClick: true,
       closeOnEsc: true,
       restoreFocus: true,
     },
@@ -48,14 +48,14 @@ export const machine = createMachine<MachineContext, MachineState>(
           CLOSE: "closed",
           TRIGGER_CLICK: "closed",
           OVERLAY_CLICK: {
-            guard: and("isTopMostDialog", "closeOnOverlayClick"),
+            guard: and("isTopMostDialog", "closeOnOutsideClick"),
             target: "closed",
-            actions: ["invokeOnOverlayClick"],
+            actions: ["invokeOnOutsideClick"],
           },
         },
       },
       closed: {
-        entry: ["invokeOnClose"],
+        entry: ["invokeOnClose", "clearPointerdownNode"],
         on: {
           OPEN: "open",
           TRIGGER_CLICK: "open",
@@ -66,7 +66,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     guards: {
       isTopMostDialog: (ctx) => ctx.isTopMostDialog,
-      closeOnOverlayClick: (ctx) => ctx.closeOnOverlayClick,
+      closeOnOutsideClick: (ctx) => ctx.closeOnOutsideClick,
     },
     activities: {
       trackPointerDown(ctx, _evt) {
@@ -124,7 +124,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       hideContentBelow(ctx) {
         let unhide: VoidFunction
         nextTick(() => {
-          const el = dom.getContentEl(ctx)
+          const el = dom.getUnderlayEl(ctx)
           try {
             unhide = hideOthers(el)
           } catch {}
@@ -147,11 +147,14 @@ export const machine = createMachine<MachineContext, MachineState>(
           ctx.hasDescription = !!dom.getDescriptionEl(ctx)
         })
       },
-      invokeOnOverlayClick(ctx) {
-        ctx.onOverlayClick?.()
+      invokeOnOutsideClick(ctx) {
+        ctx.onOutsideClick?.()
       },
       invokeOnClose(ctx) {
         ctx.onClose?.()
+      },
+      clearPointerdownNode(ctx) {
+        ctx.pointerdownNode = null
       },
     },
   },

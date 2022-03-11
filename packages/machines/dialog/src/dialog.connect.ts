@@ -31,11 +31,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TRIGGER_CLICK")
       },
     }),
-    overlayProps: normalize.element<T>({
-      "data-part": "overlay",
-      "aria-hidden": true,
-      id: dom.getOverlayId(state.context),
-      onClick(event) {
+    underlayProps: normalize.element<T>({
+      "data-part": "underlay",
+      id: dom.getUnderlayId(state.context),
+      onPointerDown(event) {
+        if (event.target === event.currentTarget) {
+          event.preventDefault()
+        }
+      },
+      onPointerUp(event) {
         if (event.currentTarget !== state.context.pointerdownNode) return
         send("OVERLAY_CLICK")
         event.stopPropagation()

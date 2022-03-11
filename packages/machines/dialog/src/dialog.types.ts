@@ -38,13 +38,13 @@ export type MachineContext = Context<{
    */
   onClose?: () => void
   /**
-   * Whether to close the dialog when the overlay is clicked
+   * Whether to close the dialog when the outside is clicked
    */
-  closeOnOverlayClick: boolean
+  closeOnOutsideClick: boolean
   /**
-   * Callback to be invoked when the overlay is clicked
+   * Callback to be invoked when the outside is clicked
    */
-  onOverlayClick?: () => void
+  onOutsideClick?: () => void
   /**
    * Whether to close the dialog when the escape key is pressed
    */
