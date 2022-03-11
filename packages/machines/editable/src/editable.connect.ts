@@ -4,6 +4,8 @@ import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+  void state.context.pointerdownNode
+
   const isEditing = state.matches("edit")
 
   return {

@@ -7,6 +7,8 @@ import { dom } from "./menu.dom"
 import { ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+  void state.context.pointerdownNode
+
   const isOpen = state.matches("open", "closing")
 
   function getItemProps(opts: ItemProps) {

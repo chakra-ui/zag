@@ -10,6 +10,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
+  void state.context.pointerdownNode
+
   const isOpen = state.matches("open")
 
   return {

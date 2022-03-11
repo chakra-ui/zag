@@ -5,11 +5,15 @@ import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+  void state.context.pointerdownNode
+
   const isExpanded = state.hasTag("expanded")
+  const isFocused = state.hasTag("focused")
+
   const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
+
   const showClearButton =
     (!state.matches("idle", "unknown") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
-  const isFocused = state.hasTag("focused")
 
   return {
     setValue(value: string) {
