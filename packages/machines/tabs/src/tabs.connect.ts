@@ -107,10 +107,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     tabIndicatorProps: normalize.element<T>({
       "data-part": "tab-indicator",
       style: {
+        "--transition-duration": "200ms",
         position: "absolute",
         willChange: "left, right, top, bottom, width, height",
         transitionProperty: "left, right, top, bottom, width, height",
-        transitionDuration: state.context.measuredRect ? "200ms" : "0ms",
+        transitionDuration: state.context.measuredRect ? "var(--transition-duration)" : "0ms",
         ...state.context.indicatorRect,
       },
     }),
