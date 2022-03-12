@@ -71,6 +71,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
+        tags: ["visible"],
         activities: [
           "trackEscapeKey",
           "trackPointermoveForSafari",
@@ -104,6 +105,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closing: {
+        tags: ["visible"],
         activities: ["trackStore", "computePlacement"],
         after: {
           CLOSE_DELAY: "closed",

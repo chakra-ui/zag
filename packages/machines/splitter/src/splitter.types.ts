@@ -53,4 +53,5 @@ export type MachineContext = Context<{
 
 export type MachineState = {
   value: "unknown" | "idle" | "hover:temp" | "hover" | "dragging" | "focused"
+  tags: "focus"
 }

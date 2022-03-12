@@ -69,6 +69,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       hover: {
+        tags: ["focus"],
         on: {
           POINTER_DOWN: "dragging",
           POINTER_LEAVE: "idle",
@@ -76,6 +77,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       focused: {
+        tags: ["focus"],
         on: {
           BLUR: "idle",
           POINTER_DOWN: "dragging",
@@ -119,6 +121,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       dragging: {
+        tags: ["focus"],
         entry: "focusSplitter",
         activities: "trackPointerMove",
         on: {

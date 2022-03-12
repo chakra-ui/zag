@@ -9,7 +9,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const isFocused = state.matches("hover", "dragging", "focused")
+  const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
 
   return {
