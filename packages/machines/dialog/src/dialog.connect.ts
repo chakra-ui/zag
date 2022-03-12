@@ -31,6 +31,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TRIGGER_CLICK")
       },
     }),
+    backdropProps: normalize.element<T>({
+      "data-part": "backdrop",
+      id: dom.getBackdropId(state.context),
+    }),
     underlayProps: normalize.element<T>({
       "data-part": "underlay",
       id: dom.getUnderlayId(state.context),
