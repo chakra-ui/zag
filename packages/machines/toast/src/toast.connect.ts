@@ -9,7 +9,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const isVisible = state.matches("active", "active:temp", "visible")
+  const isVisible = state.hasTag("visible")
 
   return {
     type: state.context.type,

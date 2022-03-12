@@ -89,7 +89,8 @@ export type RenderOptions = {
 export type Options = Partial<Omit<MachineContext, "progress">>
 
 export type MachineState = {
-  value: "active" | "active:temp" | "dismissing" | "inactive" | "visible"
+  value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
+  tags: "visible"
 }
 
 export type Service = Machine<MachineContext, MachineState>
