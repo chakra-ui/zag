@@ -18,6 +18,9 @@ const IndexPage = () => {
           <Link href="/menu"> To Menu </Link>
         </li>
         <li>
+          <Link href="/nested-menu"> To Menu </Link>
+        </li>
+        <li>
           <Link href="/number-input"> To number input </Link>
         </li>
         <li>
