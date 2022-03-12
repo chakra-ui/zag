@@ -50,7 +50,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         target: "open",
         actions: "focusFirstItem",
       },
-      CLOSE: "close",
+      CLOSE: "closed",
       SET_POINTER_EXIT: {
         guard: "isTriggerItem",
         actions: "setPointerExit",
@@ -80,7 +80,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           TRIGGER_FOCUS: {
             guard: not("isSubmenu"),
-            target: "close",
+            target: "closed",
           },
           TRIGGER_POINTERMOVE: {
             guard: and("isTriggerItem", "isParentActiveItem"),
@@ -94,7 +94,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           LONG_PRESS_DELAY: "open",
         },
         on: {
-          CONTEXT_MENU_CANCEL: "close",
+          CONTEXT_MENU_CANCEL: "closed",
           CONTEXT_MENU: {
             target: "open",
             actions: "setContextMenuPoint",
@@ -107,8 +107,8 @@ export const machine = createMachine<MachineContext, MachineState>(
           SUBMENU_OPEN_DELAY: "open",
         },
         on: {
-          BLUR: "close",
-          TRIGGER_POINTERLEAVE: "close",
+          BLUR: "closed",
+          TRIGGER_POINTERLEAVE: "closed",
         },
       },
 
@@ -117,7 +117,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         activities: ["trackPointerMove", "computePlacement"],
         after: {
           SUBMENU_CLOSE_DELAY: {
-            target: "close",
+            target: "closed",
             actions: ["resumePointer", "focusParentMenu", "sendRestoreFocus"],
           },
         },
@@ -129,7 +129,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         },
       },
 
-      close: {
+      closed: {
         entry: [
           "clearActiveId",
           "focusTrigger",
@@ -166,7 +166,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           TRIGGER_CLICK: {
             guard: not("isTriggerItem"),
-            target: "close",
+            target: "closed",
           },
           ARROW_UP: [
             {
@@ -188,7 +188,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ],
           ARROW_LEFT: {
             guard: "isSubmenu",
-            target: "close",
+            target: "closed",
             actions: "focusParentMenu",
           },
           HOME: {
@@ -198,7 +198,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             actions: ["focusLastItem", "focusMenu"],
           },
           BLUR: {
-            target: "close",
+            target: "closed",
             actions: "closeParents",
           },
           ARROW_RIGHT: {
@@ -211,17 +211,17 @@ export const machine = createMachine<MachineContext, MachineState>(
               actions: "openSubmenu",
             },
             {
-              target: "close",
+              target: "closed",
               actions: ["invokeOnSelect", "closeParents"],
             },
           ],
           ESCAPE: [
             {
               guard: "isSubmenu",
-              target: "close",
+              target: "closed",
               actions: "closeParents",
             },
-            { target: "close" },
+            { target: "closed" },
           ],
           ITEM_POINTERMOVE: [
             {
@@ -243,7 +243,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           ITEM_CLICK: {
             guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
-            target: "close",
+            target: "closed",
             actions: ["invokeOnSelect", "closeParents"],
           },
           TRIGGER_POINTERLEAVE: {
