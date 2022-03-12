@@ -7,6 +7,7 @@ export type Service = Machine<MachineContext, MachineState>
 
 export type MachineState = {
   value: "unknown" | "idle" | "open" | "close" | "opening" | "closing" | "opening:contextmenu"
+  tags: "visible"
 }
 
 export type MachineContext = Context<{

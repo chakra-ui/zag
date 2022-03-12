@@ -49,4 +49,5 @@ export type MachineContext = {
 
 export type MachineState = {
   value: "unknown" | "opening" | "open" | "closing" | "closed"
+  tags: "visible"
 }

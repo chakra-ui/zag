@@ -11,7 +11,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const isVisible = state.matches("open", "closing")
+  const isVisible = state.hasTag("visible")
 
   const triggerId = dom.getTriggerId(state.context)
   const tooltipId = dom.getTooltipId(state.context)

@@ -81,6 +81,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       focused: {
+        tags: ["focus"],
         activities: "attachWheelListener",
         on: {
           PRESS_DOWN: {
@@ -122,6 +123,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       "before:spin": {
+        tags: ["focus"],
         entry: choose([
           { guard: "canIncrement", actions: "increment" },
           { guard: "canDecrement", actions: "decrement" },
@@ -141,6 +143,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       spinning: {
+        tags: ["focus"],
         activities: "trackButtonDisabled",
         every: [
           {
@@ -163,6 +166,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       scrubbing: {
+        tags: ["focus"],
         entry: ["addCustomCursor", "disableTextSelection"],
         exit: ["removeCustomCursor", "restoreTextSelection"],
         activities: ["activatePointerLock", "trackMousemove"],

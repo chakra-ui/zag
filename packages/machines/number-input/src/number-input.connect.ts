@@ -8,7 +8,7 @@ import { utils } from "./number-input.utils"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isScrubbing = state.matches("scrubbing")
-  const isFocused = state.matches("focused", "before:spin", "scrubbing", "spinning")
+  const isFocused = state.hasTag("focus")
   const isInvalid = state.context.isOutOfRange || Boolean(state.context.invalid)
 
   return {

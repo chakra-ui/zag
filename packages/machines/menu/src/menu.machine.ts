@@ -113,6 +113,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closing: {
+        tags: ["visible"],
         activities: ["trackPointerMove", "computePlacement"],
         after: {
           SUBMENU_CLOSE_DELAY: {
@@ -159,6 +160,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
+        tags: ["visible"],
         activities: ["trackPointerDown", "computePlacement"],
         entry: ["focusMenu", "resumePointer"],
         on: {
