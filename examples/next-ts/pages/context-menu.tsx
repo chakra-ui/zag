@@ -1,7 +1,6 @@
 import { Global } from "@emotion/react"
 import * as Menu from "@ui-machines/menu"
 import { useMachine, useSetup } from "@ui-machines/react"
-import { useCallback, useEffect, useState } from "react"
 import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -12,42 +11,17 @@ export default function Page() {
     }),
   )
 
-  const { contentProps, getItemProps } = Menu.connect(state, send)
+  const { contentProps, contextTriggerProps, getItemProps } = Menu.connect(state, send)
 
   const ref = useSetup<HTMLUListElement>({ send, id: "1" })
-
-  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 })
-
-  const contextMenuPositionStyle = {
-    position: "fixed",
-    top: anchorPoint.y,
-    left: anchorPoint.x,
-  } as const
-
-  const contextMenuProps = { ...contentProps, style: { ...contentProps.style, ...contextMenuPositionStyle } }
-
-  const handleContextMenu = useCallback(
-    (event) => {
-      event.preventDefault()
-      const point = { x: event.pageX, y: event.pageY }
-      setAnchorPoint(point)
-      send("OPEN")
-    },
-    [send, setAnchorPoint],
-  )
-
-  useEffect(() => {
-    document.addEventListener("contextmenu", handleContextMenu)
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu)
-    }
-  })
 
   return (
     <>
       <Global styles={menuStyle} />
-
-      <ul ref={ref} className="menu__content" {...contextMenuProps}>
+      <div {...contextTriggerProps}>
+        <div style={{ border: "solid 1px red" }}>Open context menu</div>
+      </div>
+      <ul ref={ref} className="menu__content" {...contentProps}>
         <li className="menu__item" {...getItemProps({ id: "edit" })}>
           Edit
         </li>
