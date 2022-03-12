@@ -16,7 +16,7 @@ describe("accordion", () => {
 
   describe("given a single accordion", () => {
     it("should have no accessibility violation", () => {
-      cy.checkA11y(".root")
+      cy.checkA11y(".accordion")
     })
 
     describe("when navigating by keyboard", () => {
@@ -54,7 +54,7 @@ describe("accordion", () => {
       })
 
       it("should have no accessibility violations", () => {
-        cy.checkA11y(".root")
+        cy.checkA11y(".accordion")
       })
 
       it("then clicking the same trigger again: should not close the content", () => {
@@ -80,7 +80,7 @@ describe("accordion", () => {
     })
 
     it("should have no accessibility violations", () => {
-      cy.checkA11y(".root")
+      cy.checkA11y(".accordion")
     })
 
     describe("when navigating by keyboard", () => {
@@ -119,7 +119,7 @@ describe("accordion", () => {
       })
 
       it("should have no accessibility violations", () => {
-        cy.checkA11y(".root")
+        cy.checkA11y(".accordion")
       })
 
       it("then clicking the same trigger again: should hide the content", () => {
