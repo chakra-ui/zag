@@ -153,6 +153,7 @@ export type MachineContext = Context<{
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
+  tags: "focus"
 }
 
 export type State = S.State<MachineContext, MachineState>

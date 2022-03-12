@@ -88,6 +88,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     states: {
       unknown: {
+        tags: ["idle"],
         on: {
           SETUP: [
             {
@@ -104,6 +105,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       idle: {
+        tags: ["idle"],
         entry: ["resetScroll", "clearFocusedOption", "clearPointerdownNode"],
         on: {
           CLICK_BUTTON: {

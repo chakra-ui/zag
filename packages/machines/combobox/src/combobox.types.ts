@@ -5,7 +5,7 @@ import type { Context } from "@ui-machines/types"
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
-  tags: "expanded" | "focused"
+  tags: "expanded" | "focused" | "idle"
 }
 
 export type MachineContext = Context<{
