@@ -109,8 +109,7 @@ Here is a table of the components and their status.
 ## Inspirations
 
 - [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
-- [Merging Design and Development](https://youtu.be/3hccXiXI0u8) - Guillermo Rauch
-- [Component modelling in Stencil](https://stenciljs.com/)
+- [Material Components Web](https://github.com/material-components/material-components-web)
 - Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
 
 ## Issues
