@@ -20,7 +20,7 @@ export default function Page() {
     <>
       <Global styles={menuStyle} />
       <div {...contextTriggerProps}>
-        <div style={{ border: "solid 1px red", marginLeft: "300px", marginRight: "300px" }}>Open context menu</div>
+        <div style={{ border: "solid 1px red" }}>Open context menu</div>
       </div>
       <ul ref={ref} className="menu__content" {...contentProps}>
         <li className="menu__item" {...getItemProps({ id: "edit" })}>
