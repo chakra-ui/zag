@@ -23,7 +23,6 @@ export default defineComponent({
 
     return () => {
       const { triggerProps, contextTriggerProps, contentProps, getItemProps } = menuRef.value
-      console.log("contextTriggerProps :>> ", contextTriggerProps)
       return (
         <>
           <div {...contextTriggerProps}>
