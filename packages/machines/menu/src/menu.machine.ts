@@ -139,6 +139,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           "clearContextMenuPoint",
         ],
         on: {
+          CONTEXT_MENU_START: "opening:contextmenu",
           TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
