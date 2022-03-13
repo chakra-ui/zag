@@ -83,8 +83,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     contextTriggerProps: normalize.element<T>({
       "data-part": "trigger",
       onPointerDown(event) {
+        const evt = getNativeEvent(event)
         if (event.pointerType !== "mouse") {
-          send("CONTEXT_MENU_START")
+          send({ type: "CONTEXT_MENU_START", point: getEventPoint(evt) })
         }
       },
       onPointerCancel(event) {

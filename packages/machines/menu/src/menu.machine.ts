@@ -76,7 +76,10 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       idle: {
         on: {
-          CONTEXT_MENU_START: "opening:contextmenu",
+          CONTEXT_MENU_START: {
+            target: "opening:contextmenu",
+            actions: "setContextMenuPoint",
+          },
           CONTEXT_MENU: {
             target: "open",
             actions: "setContextMenuPoint",
@@ -103,10 +106,6 @@ export const machine = createMachine<MachineContext, MachineState>(
         },
         on: {
           CONTEXT_MENU_CANCEL: "closed",
-          CONTEXT_MENU: {
-            target: "open",
-            actions: "setContextMenuPoint",
-          },
         },
       },
 
@@ -147,7 +146,10 @@ export const machine = createMachine<MachineContext, MachineState>(
           "clearContextMenuPoint",
         ],
         on: {
-          CONTEXT_MENU_START: "opening:contextmenu",
+          CONTEXT_MENU_START: {
+            target: "opening:contextmenu",
+            actions: "setContextMenuPoint",
+          },
           CONTEXT_MENU: {
             target: "open",
             actions: "setContextMenuPoint",
