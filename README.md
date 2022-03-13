@@ -40,15 +40,15 @@ For framework specific solutions, we provide simple wrappers to help you consume
 ### React
 
 ```jsx
-import * as Toggle from "@ui-machines/toggle"
-import { useMachine, useMemo } from "@ui-machines/react"
+import * as toggle from "@ui-machines/toggle"
+import { useMachine } from "@ui-machines/react"
 
 function Example() {
   // if you need access to `state` or `send` from machine
-  const [state, send] = useMachine(Toggle.machine)
+  const [state, send] = useMachine(toggle.machine)
 
   // convert machine details into `DOM` props
-  const toggle = useMemo(() => Toggle.connect(state, send), [state])
+  const toggle = toggle.connect(state, send)
 
   // consume into components
   return <button {...toggle.buttonProps}>Toggle me</button>
