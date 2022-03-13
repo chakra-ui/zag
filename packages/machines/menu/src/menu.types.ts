@@ -6,7 +6,7 @@ import type { Context } from "@ui-machines/types"
 export type Service = Machine<MachineContext, MachineState>
 
 export type MachineState = {
-  value: "unknown" | "idle" | "open" | "close" | "opening" | "closing" | "opening:contextmenu"
+  value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
   tags: "visible"
 }
 
