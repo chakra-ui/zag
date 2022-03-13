@@ -27,9 +27,15 @@ export const machine = createMachine<MachineContext, MachineState>(
         },
         { actions: "setValue" },
       ],
-      CLEAR_VALUE: {
-        actions: ["clearValue", "setFocusIndexToFirst"],
-      },
+      CLEAR_VALUE: [
+        {
+          guard: "isDisabled",
+          actions: "clearValue",
+        },
+        {
+          actions: ["clearValue", "setFocusIndexToFirst"],
+        },
+      ],
     },
 
     computed: {
@@ -131,6 +137,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       isLastInputFocused: (ctx) => ctx.focusedIndex === ctx.valueLength - 1,
       hasIndex: (_ctx, evt) => evt.index !== undefined,
+      isDisabled: (ctx) => !!ctx.disabled,
     },
     actions: {
       setupDocument: (ctx, evt) => {
