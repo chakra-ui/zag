@@ -16,6 +16,9 @@ export type MachineContext = Context<{
    * Whether the popover is rendered in a portal
    */
   portalled?: boolean
+  /**
+   * @computed The computed value of `portalled`
+   */
   readonly __portalled: boolean
   /**
    * Whether to automatically set focus on the first focusable
@@ -43,6 +46,7 @@ export type MachineContext = Context<{
    */
   onClose?: () => void
   /**
+   * @internal
    * Whether the reference element is rendered to be used as the
    * positioning reference
    */
@@ -52,6 +56,7 @@ export type MachineContext = Context<{
    */
   placementOptions: PlacementOptions
   /**
+   * @internal
    * The computed placement (maybe different from initial placement)
    */
   __placement?: Placement

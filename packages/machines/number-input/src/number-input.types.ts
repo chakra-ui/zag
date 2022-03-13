@@ -115,7 +115,7 @@ export type MachineContext = Context<{
    */
   onInvalid?(message: ValidityState, value: string, valueAsNumber: number): void
   /**
-   * The selection range of the input
+   * @internal The selection range of the input
    */
   inputSelection: InputSelection | null
   /**

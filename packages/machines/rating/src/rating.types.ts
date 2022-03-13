@@ -14,7 +14,7 @@ export type MachineContext = Context<{
    */
   value: number
   /**
-   * The value of the hovered rating.
+   * @internal The value of the hovered rating.
    */
   hoveredValue: number
   /**
@@ -45,7 +45,13 @@ export type MachineContext = Context<{
    * Function to be called when the rating value is hovered.
    */
   onHighlightChange?: (value: number) => void
+  /**
+   * @computed Whether the rating is interactive
+   */
   readonly isInteractive: boolean
+  /**
+   * @computed Whether the pointer is hovering over the rating
+   */
   readonly isHovering: boolean
 }>
 

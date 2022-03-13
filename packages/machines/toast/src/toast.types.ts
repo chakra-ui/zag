@@ -22,7 +22,7 @@ export type MachineContext = SharedContext & {
    */
   id: string
   /**
-   * The owner document of the toast
+   * @internal The owner document of the toast
    */
   doc?: Document
   /**
@@ -98,7 +98,7 @@ export type Service = Machine<MachineContext, MachineState>
 export type GroupMachineContext = SharedContext &
   Context<{
     /**
-     * The child toast machines (spawned by the toast group)
+     * @internal The child toast machines (spawned by the toast group)
      */
     toasts: Service[]
     /**

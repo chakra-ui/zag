@@ -31,7 +31,7 @@ export type MachineContext = Context<{
    */
   type?: "alphanumeric" | "numeric" | "alphabetic"
   /**
-   * The index of the input field that has focus
+   * @internal The index of the input field that has focus
    */
   focusedIndex: number
   /**

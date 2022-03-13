@@ -11,7 +11,7 @@ export type MachineContext = Context<{
    */
   "aria-labelledby"?: string[]
   /**
-   * The slider thumbs dimensions
+   * @internal The slider thumbs dimensions
    */
   thumbSize: Array<{ width: number; height: number }> | null
   /**
@@ -23,7 +23,7 @@ export type MachineContext = Context<{
    */
   threshold: number
   /**
-   * The active index of the range slider. This represents
+   * @internal The active index of the range slider. This represents
    * the currently dragged/focused thumb.
    */
   activeIndex: number
@@ -39,6 +39,9 @@ export type MachineContext = Context<{
    * Whether the slider is read-only
    */
   readonly?: boolean
+  /**
+   * @computed Whether the slider is interactive
+   */
   readonly isInteractive: boolean
   /**
    * Function invoked when the value of the slider changes

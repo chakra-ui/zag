@@ -20,30 +20,24 @@ export type MachineContext = Context<{
    */
   onSelect?: (value: string) => void
   /**
-   * @internal
-   * The menu's parent. Used for submenus.
+   * @internal The menu's parent. Used for submenus.
    */
   parent: Service | null
   /**
-   * @internal
-   * The child menus. Used for submenus.
+   * @internal The child menus. Used for submenus.
    */
   children: Record<string, Service>
   /**
-   * @internal
-   * The polygon tells us if the pointer is
-   * moving toward the submenu
+   * @internal The polygon tells us if the pointer is moving toward the submenu
    */
   intentPolygon: Point[] | null
   /**
-   * @internal
-   * Whether to suspend listening to pointer-over events on a submenu.
+   * @internal Whether to suspend listening to pointer-over events on a submenu.
    * This is used to prevent the menu from closing when the user is hovering to a submenu.
    */
   suspendPointer: boolean
   /**
-   * @internal
-   * The `id` of the menu item that is currently being hovered.
+   * @internal The `id` of the menu item that is currently being hovered.
    */
   hoverId: string | null
   /**
@@ -51,8 +45,7 @@ export type MachineContext = Context<{
    */
   loop: boolean
   /**
-   * @internal
-   * For context menu, the point where the context menu is opened.
+   * @internal For context menu, the point where the context menu is opened.
    */
   contextMenuPoint: Point | null
   /**
@@ -72,8 +65,7 @@ export type MachineContext = Context<{
    */
   disablePlacement?: boolean
   /**
-   * @internal
-   * The computed placement (maybe different from initial placement)
+   * @internal The computed placement (maybe different from initial placement)
    */
   __placement?: Placement
 }>
