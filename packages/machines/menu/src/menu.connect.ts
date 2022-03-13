@@ -46,6 +46,25 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     })
   }
 
+  const getContentFloatingStyle = () => {
+    if (state.context.contextMenu) return
+    return getFloatingStyle(!!state.context.__placement)
+  }
+
+  const getContentFromContextStyle = () => {
+    if (state.context.contextMenu && !!state.context.contextMenuPoint)
+      return {
+        position: "absolute",
+        left: state.context.contextMenuPoint.x,
+        top: state.context.contextMenuPoint.y,
+      } as const
+  }
+
+  const contentStyle = {
+    ...getContentFloatingStyle(),
+    ...getContentFromContextStyle(),
+  }
+
   return {
     isOpen,
 
@@ -184,7 +203,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-activedescendant": state.context.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
       "data-placement": state.context.__placement,
-      style: getFloatingStyle(!!state.context.__placement),
+      style: contentStyle,
       onBlur(event) {
         const menu = dom.getMenuEl(state.context)
         const trigger = dom.getTriggerEl(state.context)

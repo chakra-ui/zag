@@ -30,6 +30,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       isRtl: (ctx) => ctx.dir === "rtl",
     },
 
+    created(ctx) {
+      if (ctx.contextMenu) ctx.disablePlacement = true
+    },
+
     watch: {
       isSubmenu(ctx) {
         if (ctx.isSubmenu) {
