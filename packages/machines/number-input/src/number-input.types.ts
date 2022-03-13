@@ -92,6 +92,7 @@ export type MachineContext = Context<{
    */
   format?(value: string): string | number
   /**
+   * @internal
    * The hint that determines if we're incrementing or decrementing
    */
   hint: "increment" | "decrement" | "set" | null
