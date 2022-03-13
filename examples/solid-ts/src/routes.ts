@@ -1,4 +1,4 @@
-import type { RouteDefinition } from "solid-app-router"
+import { RouteDefinition } from "solid-app-router"
 import { lazy } from "solid-js"
 
 import Home from "./pages/home"
@@ -79,6 +79,10 @@ export const routes: RouteDefinition[] = [
   {
     path: "/tooltip",
     component: lazy(() => import("./pages/tooltip")),
+  },
+  {
+    path: "/timer",
+    component: lazy(() => import("./pages/timer")),
   },
   {
     path: "**",

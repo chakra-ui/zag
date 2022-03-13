@@ -2,56 +2,56 @@ import Link from "next/link"
 
 const IndexPage = () => {
   return (
-    <div>
+    <div className="index-nav">
+      <h2>React UI Machines</h2>
       <ul>
-        <h2>React UI Machines</h2>
         <li>
-          <Link href="/accordion"> To Accordion </Link>
+          <Link href="/accordion">Accordion </Link>
         </li>
         <li>
-          <Link href="/combobox"> To Combobox </Link>
+          <Link href="/combobox">Combobox </Link>
         </li>
         <li>
-          <Link href="/editable"> To Editable </Link>
+          <Link href="/editable">Editable </Link>
         </li>
         <li>
-          <Link href="/menu"> To Menu </Link>
+          <Link href="/menu">Menu </Link>
         </li>
         <li>
-          <Link href="/nested-menu"> To Menu </Link>
+          <Link href="/nested-menu">Nested Menu </Link>
         </li>
         <li>
-          <Link href="/number-input"> To number input </Link>
+          <Link href="/number-input">number input </Link>
         </li>
         <li>
-          <Link href="/pin-input"> To pin input </Link>
+          <Link href="/pin-input">pin input </Link>
         </li>
         <li>
-          <Link href="/popover"> To popover </Link>
+          <Link href="/popover">popover </Link>
         </li>
         <li>
-          <Link href="/range-slider"> To range slider </Link>
+          <Link href="/range-slider">range slider </Link>
         </li>
         <li>
-          <Link href="/rating"> To rating </Link>
+          <Link href="/rating">rating </Link>
         </li>
         <li>
-          <Link href="/slider"> To slider </Link>
+          <Link href="/slider">slider </Link>
         </li>
         <li>
-          <Link href="/tabs"> To tabs </Link>
+          <Link href="/tabs">tabs </Link>
         </li>
         <li>
-          <Link href="/tags-input"> To tags input </Link>
+          <Link href="/tags-input">tags input </Link>
         </li>
         <li>
-          <Link href="/toast"> To toast </Link>
+          <Link href="/toast">toast </Link>
         </li>
         <li>
-          <Link href="/tooltip"> To tooltip </Link>
+          <Link href="/tooltip">tooltip </Link>
         </li>
         <li>
-          <Link href="/splitter"> To Splitter </Link>
+          <Link href="/splitter">Splitter </Link>
         </li>
       </ul>
     </div>

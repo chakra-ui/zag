@@ -20,4 +20,21 @@ injectGlobal({
     borderRadius: "10px",
     fontFamily: "monospace",
   },
+  ".index-nav": {
+    lineHeight: "1em",
+    ul: {
+      listStyleType: "none",
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+      gridGap: "20px",
+      padding: "0",
+      a: {
+        display: "block",
+        border: "1px solid rgba(0, 0, 0, 0.1)",
+        padding: "20px",
+        textTransform: "capitalize",
+        textDecoration: "none",
+      },
+    },
+  },
 })
