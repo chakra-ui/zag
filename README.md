@@ -70,42 +70,6 @@ The components to be built come from the the
 [Aria Practices Design Patterns and Widgets](https://www.w3.org/TR/wai-aria-practices-1.2) and common application
 widgets in the industry.
 
-Here is a table of the components and their status.
-
-✅ - Released <br/> 🛠 - Building<br/> ⚠️ - Under consideration<br/>
-
-| Component        | Status                 |
-| ---------------- | ---------------------- |
-| Accordion        | ✅ Ready               |
-| Carousel         | ⚠️ Under consideration |
-| Checkbox         | ⚠️ Under consideration |
-| Combobox (List)  | ✅ Ready               |
-| Combobox (Grid)  | 🚀 Up next             |
-| Dialog           | ✅ Ready               |
-| Date Picker      | ⚠️ Under consideration |
-| Editable         | ✅ Ready               |
-| Hover Card       | ⚠️ Under consideration |
-| Menu             | ✅ Ready               |
-| Listbox (Select) | 🚀 Up next             |
-| Popover          | ✅ Ready               |
-| Pin Input        | ✅ Ready               |
-| Number Input     | ✅ Ready               |
-| Radio            | ⚠️ Under consideration |
-| Range Slider     | ✅ Ready               |
-| Rating           | ✅ Ready               |
-| Scroll Area      | ⚠️ Under consideration |
-| Slider           | ✅ Ready               |
-| Splitter         | ⌛︎ Under review       |
-| Tabs             | ✅ Ready               |
-| Tags Input       | ✅ Ready               |
-| Time Input       | ⚠️ Under consideration |
-| Toast            | ✅ Ready               |
-| Toggle           | ✅ Ready               |
-| Toggle Group     | 🚀 Up next             |
-| Tooltip          | ✅ Ready               |
-| Tree View        | 🚀 Up next             |
-| Video Player     | ⚠️ Under consideration |
-
 ## Inspirations
 
 - [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
