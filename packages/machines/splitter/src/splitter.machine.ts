@@ -1,9 +1,11 @@
-import { createMachine, ref } from "@ui-machines/core"
+import { createMachine, ref, guards } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { relativeToNode } from "@ui-machines/rect-utils"
 import { dom } from "./splitter.dom"
 import { MachineContext, MachineState } from "./splitter.types"
+
+const { not } = guards
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
@@ -52,7 +54,10 @@ export const machine = createMachine<MachineContext, MachineState>(
 
       idle: {
         on: {
-          POINTER_OVER: "hover:temp",
+          POINTER_OVER: {
+            guard: not("isFixed"),
+            target: "hover:temp",
+          },
           POINTER_LEAVE: "idle",
           FOCUS: "focused",
         },
