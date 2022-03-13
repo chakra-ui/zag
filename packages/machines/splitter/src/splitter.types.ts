@@ -46,8 +46,17 @@ export type MachineContext = Context<{
    * The minimum offset needed to snap the primary pane to its minimum or maximum size.
    */
   snapOffset: number
+  /**
+   * @computed Whether the primary pane is at its minimum size.
+   */
   readonly isAtMin: boolean
+  /**
+   * @computed Whether the primary pane is at its maximum size.
+   */
   readonly isAtMax: boolean
+  /**
+   * @computed Whether the orientation is horizontal.
+   */
   readonly isHorizontal: boolean
 }>
 
