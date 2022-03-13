@@ -45,6 +45,10 @@ export type MachineContext = Context<{
    */
   loop: boolean
   /**
+   * Whether the menu is a context menu
+   */
+  contextMenu?: boolean
+  /**
    * @internal For context menu, the point where the context menu is opened.
    */
   contextMenuPoint: Point | null
