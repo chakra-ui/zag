@@ -5,7 +5,7 @@ import type { Context } from "@ui-machines/types"
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
-  tags: "expanded" | "focused"
+  tags: "expanded" | "focused" | "idle"
 }
 
 export type MachineContext = Context<{
@@ -22,6 +22,7 @@ export type MachineContext = Context<{
    */
   selectedValue: string
   /**
+   * @internal
    * The value of the option when the user hovers/navigates with keyboard
    */
   navigationValue: string
@@ -109,10 +110,12 @@ export type MachineContext = Context<{
    */
   onClose?: () => void
   /**
+   * @internal
    * The live region used to announce changes in the combobox
    */
   liveRegion?: LiveRegion | null
   /**
+   * @internal
    * Whether the pointer is hovering the combobox input. Used to show/hide the clear button
    */
   isHoveringInput: boolean
@@ -133,10 +136,15 @@ export type MachineContext = Context<{
    */
   getOptionCountText: (count: number) => string
   /**
+   * @internal
    * Whether the combobox popover is rendered. We use this to dynamically position
    * the popover relative to the input.
    */
   isPopoverRendered?: boolean
+  /**
+   * @internal
+   * The placement of the combobox popover.
+   */
   __placement?: Placement
 }>
 

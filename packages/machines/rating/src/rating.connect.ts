@@ -46,7 +46,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     labelProps: normalize.element<T>({
       "data-part": "label",
       id: dom.getLabelId(state.context),
-      "data-disabled": state.context.disabled,
+      "data-disabled": dataAttr(state.context.disabled),
     }),
 
     rootProps: normalize.element<T>({

@@ -29,7 +29,7 @@ export function createToastMachine(options: Options = {}) {
         UPDATE: [
           {
             guard: and("hasTypeChanged", "isLoadingType"),
-            target: "visible",
+            target: "persist",
             actions: ["setContext", "invokeOnUpdate"],
           },
           {
@@ -45,13 +45,15 @@ export function createToastMachine(options: Options = {}) {
 
       states: {
         "active:temp": {
+          tags: ["visible"],
           after: {
             // force a re-entry into the "active" state
             NOW: "active",
           },
         },
 
-        visible: {
+        persist: {
+          tags: ["visible"],
           activities: "trackDocumentVisibility",
           on: {
             RESUME: {
@@ -63,6 +65,7 @@ export function createToastMachine(options: Options = {}) {
         },
 
         active: {
+          tags: ["visible"],
           activities: "trackDocumentVisibility",
           after: {
             VISIBLE_DURATION: "dismissing",
@@ -77,7 +80,7 @@ export function createToastMachine(options: Options = {}) {
           on: {
             DISMISS: "dismissing",
             PAUSE: {
-              target: "visible",
+              target: "persist",
               actions: "setDurationToProgress",
             },
           },

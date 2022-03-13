@@ -40,15 +40,15 @@ For framework specific solutions, we provide simple wrappers to help you consume
 ### React
 
 ```jsx
-import * as Toggle from "@ui-machines/toggle"
-import { useMachine, useMemo } from "@ui-machines/react"
+import * as toggle from "@ui-machines/toggle"
+import { useMachine } from "@ui-machines/react"
 
 function Example() {
   // if you need access to `state` or `send` from machine
-  const [state, send] = useMachine(Toggle.machine)
+  const [state, send] = useMachine(toggle.machine)
 
   // convert machine details into `DOM` props
-  const toggle = useMemo(() => Toggle.connect(state, send), [state])
+  const toggle = toggle.connect(state, send)
 
   // consume into components
   return <button {...toggle.buttonProps}>Toggle me</button>
@@ -70,47 +70,10 @@ The components to be built come from the the
 [Aria Practices Design Patterns and Widgets](https://www.w3.org/TR/wai-aria-practices-1.2) and common application
 widgets in the industry.
 
-Here is a table of the components and their status.
-
-✅ - Released <br/> 🛠 - Building<br/> ⚠️ - Under consideration<br/>
-
-| Component        | Status                 |
-| ---------------- | ---------------------- |
-| Accordion        | ✅ Ready               |
-| Carousel         | ⚠️ Under consideration |
-| Checkbox         | ⚠️ Under consideration |
-| Combobox (List)  | ✅ Ready               |
-| Combobox (Grid)  | 🚀 Up next             |
-| Dialog           | ✅ Ready               |
-| Date Picker      | ⚠️ Under consideration |
-| Editable         | ✅ Ready               |
-| Hover Card       | ⚠️ Under consideration |
-| Menu             | ✅ Ready               |
-| Listbox (Select) | 🚀 Up next             |
-| Popover          | ✅ Ready               |
-| Pin Input        | ✅ Ready               |
-| Number Input     | ✅ Ready               |
-| Radio            | ⚠️ Under consideration |
-| Range Slider     | ✅ Ready               |
-| Rating           | ✅ Ready               |
-| Scroll Area      | ⚠️ Under consideration |
-| Slider           | ✅ Ready               |
-| Splitter         | ⌛︎ Under review       |
-| Tabs             | ✅ Ready               |
-| Tags Input       | ✅ Ready               |
-| Time Input       | ⚠️ Under consideration |
-| Toast            | ✅ Ready               |
-| Toggle           | ✅ Ready               |
-| Toggle Group     | 🚀 Up next             |
-| Tooltip          | ✅ Ready               |
-| Tree View        | 🚀 Up next             |
-| Video Player     | ⚠️ Under consideration |
-
 ## Inspirations
 
 - [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
-- [Merging Design and Development](https://youtu.be/3hccXiXI0u8) - Guillermo Rauch
-- [Component modelling in Stencil](https://stenciljs.com/)
+- [Material Components Web](https://github.com/material-components/material-components-web)
 - Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
 
 ## Issues

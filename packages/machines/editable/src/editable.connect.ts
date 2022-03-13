@@ -1,4 +1,4 @@
-import { ariaAttr, EventKeyMap, validateBlur } from "@ui-machines/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
@@ -55,7 +55,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     previewProps: normalize.element<T>({
       "data-part": "preview",
-      "data-empty": state.context.isValueEmpty,
+      "data-empty": dataAttr(state.context.isValueEmpty),
       children: state.context.value === "" ? state.context.placeholder : state.context.value,
       hidden: isEditing,
       "aria-disabled": ariaAttr(state.context.disabled),

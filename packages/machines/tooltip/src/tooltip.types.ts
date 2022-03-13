@@ -2,7 +2,7 @@ import { Placement } from "@ui-machines/popper"
 
 export type MachineContext = {
   /**
-   * The owner document of the tooltip.
+   * @internal The owner document of the tooltip.
    */
   doc?: Document
   /**
@@ -43,10 +43,17 @@ export type MachineContext = {
    * Custom label for the tooltip.
    */
   "aria-label"?: string
+  /**
+   * @computed Whether an `aria-label` is set.
+   */
   readonly hasAriaLabel: boolean
+  /**
+   * @internal The computed placement of the tooltip.
+   */
   __placement?: Placement
 }
 
 export type MachineState = {
   value: "unknown" | "opening" | "open" | "closing" | "closed"
+  tags: "visible"
 }

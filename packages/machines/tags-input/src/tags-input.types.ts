@@ -24,19 +24,19 @@ export type MachineContext = Context<{
    */
   readonly?: boolean
   /**
-   * The live region to announce messages to the user
+   * @internal The live region to announce messages to the user
    */
   liveRegion: LiveRegion | null
   /**
-   * The `id` of the currently focused tag
+   * @internal The `id` of the currently focused tag
    */
   focusedId: string | null
   /**
-   * The `id` of the currently edited tag
+   * @internal The `id` of the currently edited tag
    */
   editedId: string | null
   /**
-   * The value of the currently edited tag
+   * @internal The value of the currently edited tag
    */
   editedTagValue?: string
   /**
@@ -101,7 +101,13 @@ export type MachineContext = Context<{
    * @computed whether the tags input is at the maximum allowed number of tags
    */
   readonly isAtMax: boolean
+  /**
+   * @computed the total number of tags
+   */
   readonly count: number
+  /**
+   * @computed whether the tags input is exceeding the max number of tags
+   */
   readonly outOfRange: boolean
 }>
 

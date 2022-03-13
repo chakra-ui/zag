@@ -7,7 +7,7 @@ export type MachineContext = Context<{
    */
   loop: boolean
   /**
-   * The focused tab id
+   * @internal The focused tab id
    */
   focusedValue: string | null
   /**
@@ -54,8 +54,7 @@ export type MachineContext = Context<{
    */
   onFocus?: (id: string | null) => void
   /**
-   * The previously selected tab ids. This is useful for performance optimization in event
-   * you want to avoid mounting/unmounting the active tab.
+   * @internal The previously selected tab ids. This is useful for performance optimization
    */
   prevValues: string[]
 }>

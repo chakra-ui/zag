@@ -14,7 +14,7 @@ export const dom = {
   getPrimaryPaneEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPrimaryPaneId(ctx)),
 
   getCursor(ctx: Ctx) {
-    if (ctx.disabled) return "default"
+    if (ctx.disabled || ctx.fixed) return "default"
     const x = ctx.isHorizontal
     let cursor: Style["cursor"] = x ? "col-resize" : "row-resize"
     if (ctx.isAtMin) cursor = x ? "e-resize" : "s-resize"

@@ -6,14 +6,17 @@ export type Orientation = "horizontal" | "vertical"
 
 export type Context<T> = T & {
   /**
+   * @internal
    * The unique identifier of the accordion.
    */
   uid: string
   /**
+   * @internal
    * The owner document of the accordion widget.
    */
   doc?: Document
   /**
+   * @internal
    * The related target when the element is blurred.
    * Used as a polyfill for `e.relatedTarget`
    */

@@ -6,7 +6,8 @@ import type { Context } from "@ui-machines/types"
 export type Service = Machine<MachineContext, MachineState>
 
 export type MachineState = {
-  value: "unknown" | "idle" | "open" | "close" | "opening" | "closing" | "opening:contextmenu"
+  value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+  tags: "visible"
 }
 
 export type MachineContext = Context<{
@@ -19,25 +20,24 @@ export type MachineContext = Context<{
    */
   onSelect?: (value: string) => void
   /**
-   * The menu's parent. Used for submenus.
+   * @internal The menu's parent. Used for submenus.
    */
   parent: Service | null
   /**
-   * The child menus. Used for submenus.
+   * @internal The child menus. Used for submenus.
    */
   children: Record<string, Service>
   /**
-   * The polygon tells us if the pointer is
-   * moving toward the submenu
+   * @internal The polygon tells us if the pointer is moving toward the submenu
    */
   intentPolygon: Point[] | null
   /**
-   * Whether to suspend listening to pointer-over events on a submenu.
+   * @internal Whether to suspend listening to pointer-over events on a submenu.
    * This is used to prevent the menu from closing when the user is hovering to a submenu.
    */
   suspendPointer: boolean
   /**
-   * The `id` of the menu item that is currently being hovered.
+   * @internal The `id` of the menu item that is currently being hovered.
    */
   hoverId: string | null
   /**
@@ -45,7 +45,7 @@ export type MachineContext = Context<{
    */
   loop: boolean
   /**
-   * For context menu, the point where the context menu is opened.
+   * @internal For context menu, the point where the context menu is opened.
    */
   contextMenuPoint: Point | null
   /**
@@ -65,7 +65,7 @@ export type MachineContext = Context<{
    */
   disablePlacement?: boolean
   /**
-   * The computed placement (maybe different from initial placement)
+   * @internal The computed placement (maybe different from initial placement)
    */
   __placement?: Placement
 }>

@@ -92,6 +92,7 @@ export type MachineContext = Context<{
    */
   format?(value: string): string | number
   /**
+   * @internal
    * The hint that determines if we're incrementing or decrementing
    */
   hint: "increment" | "decrement" | "set" | null
@@ -114,7 +115,7 @@ export type MachineContext = Context<{
    */
   onInvalid?(message: ValidityState, value: string, valueAsNumber: number): void
   /**
-   * The selection range of the input
+   * @internal The selection range of the input
    */
   inputSelection: InputSelection | null
   /**
@@ -153,6 +154,7 @@ export type MachineContext = Context<{
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
+  tags: "focus"
 }
 
 export type State = S.State<MachineContext, MachineState>

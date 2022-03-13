@@ -22,7 +22,7 @@ export type MachineContext = SharedContext & {
    */
   id: string
   /**
-   * The owner document of the toast
+   * @internal The owner document of the toast
    */
   doc?: Document
   /**
@@ -89,7 +89,8 @@ export type RenderOptions = {
 export type Options = Partial<Omit<MachineContext, "progress">>
 
 export type MachineState = {
-  value: "active" | "active:temp" | "dismissing" | "inactive" | "visible"
+  value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
+  tags: "visible"
 }
 
 export type Service = Machine<MachineContext, MachineState>
@@ -97,7 +98,7 @@ export type Service = Machine<MachineContext, MachineState>
 export type GroupMachineContext = SharedContext &
   Context<{
     /**
-     * The child toast machines (spawned by the toast group)
+     * @internal The child toast machines (spawned by the toast group)
      */
     toasts: Service[]
     /**

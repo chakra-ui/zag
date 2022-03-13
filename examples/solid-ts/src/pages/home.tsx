@@ -1,49 +1,59 @@
-import { createMachine } from "@ui-machines/core"
-import { useMachine } from "@ui-machines/solid"
-
-const counter = createMachine(
-  {
-    id: "counter",
-    context: {
-      value: 3,
-    },
-    computed: {
-      isAbove: (ctx) => ctx.value > 10,
-    },
-    initial: "idle",
-    states: {
-      idle: {
-        on: {
-          INC: "running",
-        },
-      },
-      running: {
-        every: { 50: "increment" },
-        on: {
-          INC: "idle",
-        },
-      },
-    },
-  },
-  {
-    actions: {
-      increment: (ctx) => {
-        ctx.value += 1
-      },
-    },
-  },
-)
+import { Link } from "solid-app-router"
 
 export default function Home() {
-  const [state, send] = useMachine(counter)
   return (
-    <div>
-      <header>
-        <p>{state.context.value}</p>
-        <button onClick={() => send("INC")}>Increment</button>
-        <button disabled={state.matches("running")}>Running</button>
-        <pre>{JSON.stringify(state, null, 2)}</pre>
-      </header>
+    <div className="index-nav">
+      <h2>Solid UI Machines</h2>
+      <ul>
+        <li>
+          <Link href="/accordion">Accordion </Link>
+        </li>
+        <li>
+          <Link href="/combobox">Combobox </Link>
+        </li>
+        <li>
+          <Link href="/editable">Editable </Link>
+        </li>
+        <li>
+          <Link href="/menu">Menu </Link>
+        </li>
+        <li>
+          <Link href="/nested-menu">Nested Menu </Link>
+        </li>
+        <li>
+          <Link href="/number-input">number input </Link>
+        </li>
+        <li>
+          <Link href="/pin-input">pin input </Link>
+        </li>
+        <li>
+          <Link href="/popover">popover </Link>
+        </li>
+        <li>
+          <Link href="/range-slider">range slider </Link>
+        </li>
+        <li>
+          <Link href="/rating">rating </Link>
+        </li>
+        <li>
+          <Link href="/slider">slider </Link>
+        </li>
+        <li>
+          <Link href="/tabs">tabs </Link>
+        </li>
+        <li>
+          <Link href="/tags-input">tags input </Link>
+        </li>
+        <li>
+          <Link href="/toast">toast </Link>
+        </li>
+        <li>
+          <Link href="/tooltip">tooltip </Link>
+        </li>
+        <li>
+          <Link href="/splitter">Splitter </Link>
+        </li>
+      </ul>
     </div>
   )
 }

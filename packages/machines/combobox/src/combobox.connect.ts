@@ -12,8 +12,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
 
-  const showClearButton =
-    (!state.matches("idle", "unknown") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
+  const showClearButton = (!state.hasTag("idle") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
 
   return {
     setValue(value: string) {

@@ -9,7 +9,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const isFocused = state.matches("hover", "dragging", "focused")
+  const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
 
   return {
@@ -34,7 +34,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     rootProps: normalize.element<T>({
       "data-part": "root",
       "data-orientation": state.context.orientation,
-      "data-disabled": state.context.disabled,
+      "data-disabled": dataAttr(state.context.disabled),
       id: dom.getRootId(state.context),
       style: {
         display: "flex",
@@ -47,7 +47,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     secondaryPaneProps: normalize.element<T>({
       "data-part": "secondary-pane",
-      "data-disabled": state.context.disabled,
+      "data-disabled": dataAttr(state.context.disabled),
       id: dom.getSecondaryPaneId(state.context),
       style: {
         height: state.context.isHorizontal ? "100%" : "auto",
@@ -60,7 +60,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     primaryPaneProps: normalize.element<T>({
       "data-part": "primary-pane",
       id: dom.getPrimaryPaneId(state.context),
-      "data-disabled": state.context.disabled,
+      "data-disabled": dataAttr(state.context.disabled),
       "data-state": state.context.isAtMax ? "at-max" : state.context.isAtMin ? "at-min" : "between",
       style: {
         minWidth: `${state.context.min}px`,

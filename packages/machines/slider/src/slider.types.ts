@@ -17,6 +17,9 @@ export type MachineContext = Context<{
    * Whether the slider is read-only
    */
   readonly?: boolean
+  /**
+   * @computed Whether the slider is interactive
+   */
   readonly isInteractive: boolean
   /**
    * The minimum value of the slider
@@ -72,7 +75,7 @@ export type MachineContext = Context<{
    */
   onChangeStart?(value: number): void
   /**
-   * The slider thumb dimensions
+   * @internal The slider thumb dimensions
    */
   thumbSize: { width: number; height: number }
   /**
