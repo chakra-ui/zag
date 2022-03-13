@@ -73,6 +73,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       idle: {
         on: {
           CONTEXT_MENU_START: "opening:contextmenu",
+          CONTEXT_MENU: {
+            target: "open",
+            actions: "setContextMenuPoint",
+          },
           TRIGGER_CLICK: {
             guard: not("isSubmenu"),
             target: "open",
@@ -140,6 +144,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         ],
         on: {
           CONTEXT_MENU_START: "opening:contextmenu",
+          CONTEXT_MENU: {
+            target: "open",
+            actions: "setContextMenuPoint",
+          },
           TRIGGER_CLICK: {
             target: "open",
             actions: "focusFirstItem",
