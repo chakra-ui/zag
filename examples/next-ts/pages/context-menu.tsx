@@ -7,6 +7,7 @@ import { StateVisualizer } from "../components/state-visualizer"
 export default function Page() {
   const [state, send] = useMachine(
     Menu.machine.withContext({
+      contextMenu: true,
       onSelect: console.log,
     }),
   )
