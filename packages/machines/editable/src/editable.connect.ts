@@ -12,6 +12,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     isEditing,
     isValueEmpty: state.context.isValueEmpty,
 
+    value: state.context.value,
+    setValue(value: string) {
+      send({ type: "SET_VALUE", value })
+    },
+    edit() {
+      send("EDIT")
+    },
+    cancel() {
+      send("CANCEL")
+    },
+    submit() {
+      send("SUBMIT")
+    },
+
     inputProps: normalize.input<T>({
       "data-part": "input",
       id: dom.getInputId(state.context),
