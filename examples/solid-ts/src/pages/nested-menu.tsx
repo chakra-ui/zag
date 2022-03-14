@@ -50,7 +50,7 @@ export default function Page() {
 
   return (
     <>
-      <button style={{ "margin-left": "150px" }} data-testid="trigger" {...root().triggerProps}>
+      <button data-testid="trigger" {...root().triggerProps}>
         Click me
       </button>
 
