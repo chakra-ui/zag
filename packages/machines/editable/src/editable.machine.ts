@@ -27,6 +27,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       isPreviewFocusable: (ctx) => ctx.activationMode === "focus",
     },
 
+    on: {
+      SET_VALUE: {
+        actions: ["setValue", "invokeOnChange"],
+      },
+    },
+
     states: {
       unknown: {
         on: {
@@ -55,6 +61,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           FOCUS: {
             target: "edit",
             guard: "activateOnFocus",
+            actions: ["setPreviousValue"],
           },
         },
       },
