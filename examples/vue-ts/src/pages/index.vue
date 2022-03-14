@@ -17,6 +17,9 @@
       <li>
         <router-link to="/nested-menu">Nested Menu </router-link>
       </li>
+       <li>
+        <router-link to="/context-menu">Context Menu </router-link>
+      </li>
       <li>
         <router-link to="/number-input">number input </router-link>
       </li>

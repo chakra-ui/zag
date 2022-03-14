@@ -19,8 +19,7 @@ function toVueProp(prop: string) {
   if (prop in eventMap) return eventMap[prop]
 
   if (prop.startsWith("on")) {
-    const [value] = prop.split("on").filter(Boolean)
-    return `on${toCase(value)}`
+    return `on${toCase(prop.substr(2))}`
   }
 
   return prop.toLowerCase()
