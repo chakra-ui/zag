@@ -22,15 +22,12 @@ export default defineComponent({
     const menuRef = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, contextTriggerProps, contentProps, getItemProps } = menuRef.value
+      const { contextTriggerProps, contentProps, getItemProps } = menuRef.value
       return (
         <>
           <div {...contextTriggerProps}>
             <div style={{ border: "solid 1px red" }}>Open context menu</div>
           </div>
-          <button class="menu__trigger" ref={ref} {...triggerProps}>
-            Actions <span aria-hidden>▾</span>
-          </button>
           <ul ref={ref} class="menu__content" {...contentProps}>
             <li class="menu__item" {...getItemProps({ id: "edit" })}>
               Edit
