@@ -50,7 +50,7 @@ export default function Page() {
 
   return (
     <>
-      <button data-testid="trigger" {...root().triggerProps}>
+      <button style={{ "margin-left": "150px" }} data-testid="trigger" {...root().triggerProps}>
         Click me
       </button>
 
@@ -58,9 +58,9 @@ export default function Page() {
         <ul ref={rootRef} data-testid="menu" {...root().contentProps}>
           <For each={level1}>
             {(item) => {
-              const props = item.trigger ? triggerItemProps() : root().getItemProps({ id: item.id })
+              const props = createMemo(() => (item.trigger ? triggerItemProps() : root().getItemProps({ id: item.id })))
               return (
-                <li data-testid={item.id} {...props}>
+                <li data-testid={item.id} {...props()}>
                   {item.label}
                 </li>
               )
@@ -73,7 +73,7 @@ export default function Page() {
         <ul ref={subRef} data-testid="more-tools-submenu" {...sub().contentProps}>
           <For each={level2}>
             {(item) => {
-              const props = item.trigger ? triggerItem2Props() : sub().getItemProps({ id: item.id })
+              const props = createMemo(() => (item.trigger ? triggerItem2Props() : sub().getItemProps({ id: item.id })))
               return (
                 <li data-testid={item.id} {...props}>
                   {item.label}
