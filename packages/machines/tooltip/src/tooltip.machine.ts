@@ -61,6 +61,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         },
         on: {
           POINTER_LEAVE: "closed",
+          BLUR: "closed",
           POINTER_DOWN: {
             guard: "closeOnPointerDown",
             target: "closed",
