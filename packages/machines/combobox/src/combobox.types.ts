@@ -145,7 +145,7 @@ export type MachineContext = Context<{
    * @internal
    * The placement of the combobox popover.
    */
-  __placement?: Placement
+  currentPlacement?: Placement
 }>
 
 export type OptionData = {

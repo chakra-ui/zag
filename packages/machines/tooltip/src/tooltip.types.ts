@@ -50,7 +50,7 @@ export type MachineContext = {
   /**
    * @internal The computed placement of the tooltip.
    */
-  __placement?: Placement
+  currentPlacement?: Placement
 }
 
 export type MachineState = {

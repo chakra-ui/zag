@@ -376,10 +376,10 @@ export const machine = createMachine<MachineContext, MachineState>(
           flip: false,
           matchWidth: true,
           onPlacementComplete(placement) {
-            ctx.__placement = placement
+            ctx.currentPlacement = placement
           },
           onCleanup() {
-            ctx.__placement = undefined
+            ctx.currentPlacement = undefined
           },
         })
       },

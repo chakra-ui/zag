@@ -312,19 +312,19 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         if (ctx.disablePlacement) return
-        ctx.__placement = ctx.placementOptions.placement
+        ctx.currentPlacement = ctx.placementOptions.placement
         const arrow = dom.getArrowEl(ctx)
         const cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getMenuEl(ctx), {
           ...ctx.placementOptions,
           arrow: arrow ? { element: arrow } : undefined,
           onPlacementComplete(placement) {
-            ctx.__placement = placement
+            ctx.currentPlacement = placement
           },
         })
 
         return () => {
           cleanup?.()
-          ctx.__placement = undefined
+          ctx.currentPlacement = undefined
         }
       },
       trackPointerDown(ctx) {

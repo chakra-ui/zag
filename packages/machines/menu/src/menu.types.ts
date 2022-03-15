@@ -71,7 +71,7 @@ export type MachineContext = Context<{
   /**
    * @internal The computed placement (maybe different from initial placement)
    */
-  __placement?: Placement
+  currentPlacement?: Placement
 }>
 
 export type State = S.State<MachineContext, MachineState>

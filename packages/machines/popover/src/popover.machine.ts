@@ -117,7 +117,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         let cleanup: VoidFunction
-        ctx.__placement = ctx.placementOptions.placement
+        ctx.currentPlacement = ctx.placementOptions.placement
         raf(() => {
           const ref = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
           const arrow = dom.getArrowEl(ctx)
@@ -125,10 +125,10 @@ export const machine = createMachine<MachineContext, MachineState>(
             ...ctx.placementOptions,
             arrow: arrow ? { element: arrow } : undefined,
             onPlacementComplete(placement) {
-              ctx.__placement = placement
+              ctx.currentPlacement = placement
             },
             onCleanup() {
-              ctx.__placement = undefined
+              ctx.currentPlacement = undefined
             },
           })
         })

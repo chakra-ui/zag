@@ -43,7 +43,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
-      "data-placement": state.context.__placement,
+      "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
@@ -59,10 +59,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
-      "aria-labelledby": dom.getHeaderId(state.context),
-      "aria-describedby": dom.getBodyId(state.context),
-      style: getFloatingStyle(!!state.context.__placement),
-      "data-placement": state.context.__placement,
+      "aria-labelledby": dom.getTitleId(state.context),
+      "aria-describedby": dom.getDescriptionId(state.context),
+      style: getFloatingStyle(!!state.context.currentPlacement),
+      "data-placement": state.context.currentPlacement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           Escape(event) {
@@ -98,14 +98,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    headerProps: normalize.element<T>({
+    titleProps: normalize.element<T>({
       "data-part": "header",
-      id: dom.getHeaderId(state.context),
+      id: dom.getTitleId(state.context),
     }),
 
-    bodyProps: normalize.element<T>({
+    descriptionProps: normalize.element<T>({
       "data-part": "body",
-      id: dom.getBodyId(state.context),
+      id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button<T>({

@@ -91,7 +91,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TOOLTIP_POINTER_LEAVE")
       },
       style: {
-        ...getFloatingStyle(!!state.context.__placement),
+        ...getFloatingStyle(!!state.context.currentPlacement),
         pointerEvents: state.context.interactive ? "auto" : "none",
       },
     }),

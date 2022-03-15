@@ -48,7 +48,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   function getContentStyle() {
     if (!state.context.contextMenu) {
-      return getFloatingStyle(!!state.context.__placement)
+      return getFloatingStyle(!!state.context.currentPlacement)
     }
 
     if (state.context.contextMenuPoint)
@@ -120,7 +120,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
-      "data-placement": state.context.__placement,
+      "data-placement": state.context.currentPlacement,
       type: "button",
       id: dom.getTriggerId(state.context),
       "data-uid": state.context.uid,
@@ -197,7 +197,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dir: state.context.dir,
       "aria-activedescendant": state.context.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
-      "data-placement": state.context.__placement,
+      "data-placement": state.context.currentPlacement,
       style: getContentStyle(),
       onBlur(event) {
         const menu = dom.getMenuEl(state.context)

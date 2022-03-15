@@ -126,19 +126,19 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         // pre-populate the placement with the current value for correct positioning on initial render
-        ctx.__placement = "bottom"
+        ctx.currentPlacement = "bottom"
         let cleanup: VoidFunction
         raf(() => {
           cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
             placement: "bottom",
             onPlacementComplete(placement) {
-              ctx.__placement = placement
+              ctx.currentPlacement = placement
             },
           })
         })
         return () => {
           cleanup?.()
-          ctx.__placement = undefined
+          ctx.currentPlacement = undefined
         }
       },
       trackPointerlockChange(ctx, _evt, { send }) {

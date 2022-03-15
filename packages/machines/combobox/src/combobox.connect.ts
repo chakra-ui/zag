@@ -60,7 +60,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getPopoverId(state.context),
       "data-expanded": dataAttr(isExpanded),
       hidden: !isExpanded,
-      style: getFloatingStyle(!!state.context.__placement),
+      style: getFloatingStyle(!!state.context.currentPlacement),
     }),
 
     inputProps: normalize.input<T>({
