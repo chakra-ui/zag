@@ -1,4 +1,4 @@
-describe("dropdown menu", () => {
+describe("number input", () => {
   beforeEach(() => {
     cy.visit("/number-input")
     cy.injectAxe()
