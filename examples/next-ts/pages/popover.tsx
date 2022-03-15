@@ -21,7 +21,7 @@ export default function Page() {
     triggerProps,
     contentProps,
     closeButtonProps,
-    headerProps,
+    titleProps,
     portalled,
     arrowProps,
     innerArrowProps,
@@ -49,7 +49,7 @@ export default function Page() {
             <div className="popover__arrow" {...arrowProps}>
               <div {...innerArrowProps} />
             </div>
-            <div className="popover__title" data-testid="popover-title" {...headerProps}>
+            <div className="popover__title" data-testid="popover-title" {...titleProps}>
               Popover Title
             </div>
             <div className="popover__body" data-testid="popover-body">

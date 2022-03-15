@@ -24,7 +24,7 @@ export default defineComponent({
     const popover = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, headerProps, closeButtonProps, contentProps, arrowProps, innerArrowProps, portalled } =
+      const { triggerProps, titleProps, closeButtonProps, contentProps, arrowProps, innerArrowProps, portalled } =
         popover.value
 
       const Wrapper = portalled ? Teleport : Fragment
@@ -45,7 +45,7 @@ export default defineComponent({
                 <div class="popover__arrow" {...arrowProps}>
                   <div {...innerArrowProps} />
                 </div>
-                <div class="popover__title" data-testid="popover-title" {...headerProps}>
+                <div class="popover__title" data-testid="popover-title" {...titleProps}>
                   Popover Title
                 </div>
                 <div class="popover__body" data-testid="popover-body">
