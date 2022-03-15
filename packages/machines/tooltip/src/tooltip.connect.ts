@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
-import { getArrowStyle, getFloatingStyle, getInnerArrowStyle } from "@ui-machines/popper"
+import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -77,7 +77,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     innerArrowProps: normalize.element<T>({
       "data-part": "arrow--inner",
-      style: getInnerArrowStyle(),
+      style: innerArrowStyle,
     }),
 
     contentProps: normalize.element<T>({

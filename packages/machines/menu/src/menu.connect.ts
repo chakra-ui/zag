@@ -1,5 +1,5 @@
 import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { getArrowStyle, getFloatingStyle, getInnerArrowStyle } from "@ui-machines/popper"
+import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
@@ -115,7 +115,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     innerArrowProps: normalize.element<T>({
       "data-part": "arrow--inner",
-      style: getInnerArrowStyle(),
+      style: innerArrowStyle,
     }),
 
     triggerProps: normalize.button<T>({

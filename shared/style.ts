@@ -113,11 +113,9 @@ export const popoverStyle: CSSObject = {
     background: "white",
     padding: "20px",
     borderRadius: "4px",
+    position: "relative",
     boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px",
     width: "260px",
-    position: "absolute",
-    top: "40px",
-    left: "124px",
     "&:focus": {
       boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px, #c4b8f3 0 0 0 2px",
     },

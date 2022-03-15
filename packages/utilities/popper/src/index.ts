@@ -16,13 +16,13 @@ import { cssVars, positionArrow, transformOrigin } from "./middleware"
 export type { Placement }
 
 export type PlacementOptions = {
-  arrow?: { padding?: number; element?: HTMLElement }
+  arrow?: { padding?: number; element?: HTMLElement; size?: number; shadowColor?: string }
   strategy?: "absolute" | "fixed"
   placement?: Placement
   offset?: { mainAxis?: number; crossAxis?: number }
   gutter?: number
   flip?: boolean
-  matchWidth?: boolean
+  sameWidth?: boolean
   boundary?: "clippingParents" | Element | Element[]
   eventListeners?: boolean | { scroll?: boolean; resize?: boolean }
   onPlacementComplete?(placement: Placement): void
@@ -36,7 +36,7 @@ const defaultOpts: PlacementOptions = {
   gutter: 8,
   flip: true,
   boundary: "clippingParents",
-  matchWidth: false,
+  sameWidth: false,
 }
 
 export function getPlacement(reference: HTMLElement | null, floating: HTMLElement | null, opts: PlacementOptions = {}) {
@@ -70,7 +70,7 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
     )
   }
 
-  if (opts.matchWidth) {
+  if (opts.sameWidth) {
     middleware.push(
       size({
         apply({ reference }) {
@@ -156,18 +156,16 @@ export function getArrowStyle(opts: ArrowStyleOptions = {}) {
   } as const
 }
 
-export function getInnerArrowStyle() {
-  return {
-    transform: "rotate(45deg)",
-    background: cssVars.arrowBg.reference,
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-    zIndex: "inherit",
-  } as const
-}
+export const innerArrowStyle = {
+  transform: "rotate(45deg)",
+  background: cssVars.arrowBg.reference,
+  top: "0",
+  left: "0",
+  width: "100%",
+  height: "100%",
+  position: "absolute",
+  zIndex: "inherit",
+} as const
 
 const UNMEASURED_FLOATING_STYLE = {
   top: "0",

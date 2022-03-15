@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
-import { getArrowStyle, getFloatingStyle, getInnerArrowStyle } from "@ui-machines/popper"
+import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState } from "./popover.types"
@@ -13,10 +13,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   void state.context.pointerdownNode
 
   const isOpen = state.matches("open")
+  const arrow = state.context.placementOptions.arrow
 
   return {
     isOpen,
-    portalled: state.context.__portalled,
+    portalled: state.context.currentPortalled,
 
     open() {
       send("OPEN")
@@ -28,12 +29,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
-      style: getArrowStyle(),
+      style: getArrowStyle({
+        measured: state.context.isPlacementComplete,
+        size: arrow?.size,
+        shadowColor: arrow?.shadowColor,
+      }),
     }),
 
     innerArrowProps: normalize.element<T>({
       "data-part": "arrow--inner",
-      style: getInnerArrowStyle(),
+      style: innerArrowStyle,
     }),
 
     anchorProps: normalize.element<T>({
@@ -53,6 +58,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
+    positionerProps: normalize.element<T>({
+      id: dom.getPositionerId(state.context),
+      "data-part": "positioner",
+      style: getFloatingStyle(state.context.isPlacementComplete),
+    }),
+
     contentProps: normalize.element<T>({
       "data-part": "popover",
       id: dom.getContentId(state.context),
@@ -61,7 +72,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       hidden: !isOpen,
       "aria-labelledby": dom.getTitleId(state.context),
       "aria-describedby": dom.getDescriptionId(state.context),
-      style: getFloatingStyle(!!state.context.currentPlacement),
       "data-placement": state.context.currentPlacement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {

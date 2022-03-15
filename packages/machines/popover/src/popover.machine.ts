@@ -14,7 +14,7 @@ import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import { MachineContext, MachineState } from "./popover.types"
 
-const { and, not, or } = guards
+const { and, or } = guards
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
@@ -28,13 +28,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       autoFocus: true,
       modal: false,
       placementOptions: { placement: "bottom" },
+      currentPlacement: undefined,
     },
 
     computed: {
-      __portalled: (ctx) => !!ctx.modal || !!ctx.portalled,
+      currentPortalled: (ctx) => !!ctx.modal || !!ctx.portalled,
+      isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
-    entry: ["checkIfAnchorIsRendered"],
+    entry: ["checkAnchorExists"],
 
     states: {
       unknown: {
@@ -65,14 +67,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         ],
         entry: choose([
           {
-            guard: and("autoFocus", not("modal")),
+            guard: "autoFocus",
             actions: ["setInitialFocus", "invokeOnOpen"],
           },
-          {
-            guard: not("modal"),
-            actions: ["focusContent", "invokeOnOpen"],
-          },
-          { actions: ["invokeOnOpen"] },
+          { actions: ["focusContent", "invokeOnOpen"] },
         ]),
         on: {
           CLOSE: {
@@ -116,21 +114,18 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     activities: {
       computePlacement(ctx) {
-        let cleanup: VoidFunction
         ctx.currentPlacement = ctx.placementOptions.placement
-        raf(() => {
-          const ref = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
-          const arrow = dom.getArrowEl(ctx)
-          cleanup = getPlacement(ref, dom.getContentEl(ctx), {
-            ...ctx.placementOptions,
-            arrow: arrow ? { element: arrow } : undefined,
-            onPlacementComplete(placement) {
-              ctx.currentPlacement = placement
-            },
-            onCleanup() {
-              ctx.currentPlacement = undefined
-            },
-          })
+        const anchorEl = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
+        const arrow = dom.getArrowEl(ctx)
+        const cleanup = getPlacement(anchorEl, dom.getPositionerEl(ctx), {
+          ...ctx.placementOptions,
+          arrow: arrow ? { element: arrow } : undefined,
+          onPlacementComplete(placement) {
+            ctx.currentPlacement = placement
+          },
+          onCleanup() {
+            ctx.currentPlacement = undefined
+          },
         })
         return () => cleanup?.()
       },
@@ -198,7 +193,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
     },
     actions: {
-      checkIfAnchorIsRendered(ctx) {
+      checkAnchorExists(ctx) {
         raf(() => {
           const el = dom.getAnchorEl(ctx)
           ctx.isAnchorRendered = !!el
