@@ -15,8 +15,8 @@ describe("dropdown menu", () => {
 
     it("should open submenu and focus first item when pressing right arrow, enter or space key", () => {
       // Space key
-      cy.findByTestId("menu").type("{downarrow}{downarrow}{downarrow}").trigger("keydown", { key: " " })
-      cy.findByTestId("save-page").should("have.attr", "data-selected")
+      cy.findByTestId("menu").type("{downarrow}{downarrow}{downarrow}").type(" ")
+      cy.findByTestId("more-tools").should("have.attr", "data-selected")
       cy.findByTestId("more-tools-submenu").should("have.focus").type("{leftarrow}")
 
       // Enter key to reveal submenu
