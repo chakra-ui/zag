@@ -1,5 +1,5 @@
 import type { PlacementOptions, Placement } from "@ui-machines/popper"
-import type { Context } from "@ui-machines/types"
+import type { Context, MaybeElement } from "@ui-machines/types"
 
 export type MachineContext = Context<{
   /**
@@ -36,7 +36,7 @@ export type MachineContext = Context<{
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: HTMLElement | (() => HTMLElement)
+  initialFocusEl?: MaybeElement | (() => MaybeElement)
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    */
