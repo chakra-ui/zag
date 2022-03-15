@@ -77,6 +77,7 @@ export const tagsInputControls = defineControls({
   addOnBlur: { type: "boolean", defaultValue: false },
   max: { type: "number", defaultValue: 4 },
   allowOutOfRange: { type: "boolean", defaultValue: false },
+  autoFocus: { type: "boolean", defaultValue: true },
 })
 
 export const ratingControls = defineControls({

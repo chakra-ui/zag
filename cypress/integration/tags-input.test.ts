@@ -76,7 +76,6 @@ describe("tags input", () => {
   })
 
   it("autofocus input on load", () => {
-    cy.findByTestId("autoFocus").check()
     cy.get("@input").should("have.focus")
   })
 
