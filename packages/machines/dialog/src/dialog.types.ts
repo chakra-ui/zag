@@ -20,11 +20,11 @@ export type MachineContext = Context<{
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: HTMLElement | (() => HTMLElement)
+  initialFocusEl?: HTMLElement | null | (() => HTMLElement | null)
   /**
    * Element to receive focus when the dialog is closed
    */
-  finalFocusEl?: HTMLElement | (() => HTMLElement)
+  finalFocusEl?: HTMLElement | null | (() => HTMLElement | null)
   /**
    * @internal Whether the dialog is the topmost dialog (in a nested dialog scenario)
    */
