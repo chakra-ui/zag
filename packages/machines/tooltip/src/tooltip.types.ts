@@ -1,4 +1,4 @@
-import { Placement } from "@ui-machines/popper"
+import { Placement, PlacementOptions } from "@ui-machines/popper"
 
 export type MachineContext = {
   /**
@@ -48,9 +48,17 @@ export type MachineContext = {
    */
   readonly hasAriaLabel: boolean
   /**
+   * The user provided options used to position the popover content
+   */
+  placementOptions: PlacementOptions
+  /**
    * @internal The computed placement of the tooltip.
    */
   currentPlacement?: Placement
+  /**
+   * @computed Whether the dynamic placement has been computed
+   */
+  readonly isPlacementComplete?: boolean
 }
 
 export type MachineState = {

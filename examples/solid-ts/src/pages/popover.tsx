@@ -42,7 +42,7 @@ export default function Page() {
               <div className="popover__title" data-testid="popover-title" {...popover().titleProps}>
                 Popover Title
               </div>
-              <div className="popover__body" data-testid="popover-body">
+              <div className="popover__body" data-testid="popover-body" {...popover().descriptionProps}>
                 <a>Non-focusable Link</a>
                 <a href="#" data-testid="focusable-link">
                   Focusable Link

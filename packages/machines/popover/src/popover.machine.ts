@@ -21,6 +21,8 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "popover-machine",
     initial: "unknown",
     context: {
+      hasTitle: true,
+      hasDescription: true,
       isAnchorRendered: false,
       uid: "popover",
       closeOnBlur: true,
@@ -36,14 +38,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
-    entry: ["checkAnchorExists"],
-
     states: {
       unknown: {
         on: {
           SETUP: {
             target: "closed",
-            actions: ["setupDocument"],
+            actions: ["setupDocument", "checkRenderedElements"],
           },
         },
       },
@@ -193,10 +193,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
     },
     actions: {
-      checkAnchorExists(ctx) {
+      checkRenderedElements(ctx) {
         raf(() => {
-          const el = dom.getAnchorEl(ctx)
-          ctx.isAnchorRendered = !!el
+          ctx.isAnchorRendered = !!dom.getAnchorEl(ctx)
+          ctx.hasTitle = !!dom.getTitleEl(ctx)
+          ctx.hasDescription = !!dom.getDescriptionEl(ctx)
         })
       },
       setupDocument(ctx, evt) {

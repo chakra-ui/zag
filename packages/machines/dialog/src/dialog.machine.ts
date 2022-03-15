@@ -35,7 +35,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         },
       },
       open: {
-        entry: ["checkTitleExists", "checkDescriptionExists"],
+        entry: ["checkRenderedElements"],
         activities: [
           "trapFocus",
           "preventScroll",
@@ -138,14 +138,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
       },
-      checkTitleExists(ctx) {
-        nextTick(() => {
-          ctx.hasTitle = !!dom.getTitleEl(ctx)
-        })
-      },
-      checkDescriptionExists(ctx) {
+      checkRenderedElements(ctx) {
         nextTick(() => {
           ctx.hasDescription = !!dom.getDescriptionEl(ctx)
+          ctx.hasTitle = !!dom.getTitleEl(ctx)
         })
       },
       invokeOnOutsideClick(ctx) {

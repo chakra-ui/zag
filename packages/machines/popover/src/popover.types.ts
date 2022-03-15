@@ -3,6 +3,14 @@ import type { Context } from "@ui-machines/types"
 
 export type MachineContext = Context<{
   /**
+   * @internal Whether the dialog title is rendered
+   */
+  hasTitle: boolean
+  /**
+   * @internal Whether the dialog description is rendered
+   */
+  hasDescription: boolean
+  /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
    * - only popover content will be visible to screen readers

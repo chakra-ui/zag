@@ -27,6 +27,7 @@ export default defineComponent({
       const {
         triggerProps,
         titleProps,
+        descriptionProps,
         closeButtonProps,
         contentProps,
         positionerProps,
@@ -57,7 +58,7 @@ export default defineComponent({
                   <div class="popover__title" data-testid="popover-title" {...titleProps}>
                     Popover Title
                   </div>
-                  <div class="popover__body" data-testid="popover-body">
+                  <div class="popover__body" data-testid="popover-body" {...descriptionProps}>
                     <a>Non-focusable Link</a>
                     <a href="#" data-testid="focusable-link">
                       Focusable Link

@@ -28,10 +28,13 @@ export const machine = createMachine<MachineContext, MachineState>(
     computed: {
       isSubmenu: (ctx) => ctx.parent !== null,
       isRtl: (ctx) => ctx.dir === "rtl",
+      isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
     created(ctx) {
-      if (ctx.contextMenu) ctx.disablePlacement = true
+      if (ctx.contextMenu) {
+        ctx.disablePlacement = true
+      }
     },
 
     watch: {
@@ -285,7 +288,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       hasActiveId: (ctx) => ctx.activeId !== null,
       isRtl: (ctx) => ctx.isRtl,
       isMenuFocused: (ctx) => {
-        const menu = dom.getMenuEl(ctx)
+        const menu = dom.getContentEl(ctx)
         const activeElement = dom.getActiveElement(ctx)
         return contains(menu, activeElement)
       },
@@ -314,18 +317,18 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (ctx.disablePlacement) return
         ctx.currentPlacement = ctx.placementOptions.placement
         const arrow = dom.getArrowEl(ctx)
-        const cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getMenuEl(ctx), {
+        const cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
           ...ctx.placementOptions,
-          arrow: arrow ? { element: arrow } : undefined,
+          arrow: arrow ? { ...ctx.placementOptions.arrow, element: arrow } : undefined,
           onPlacementComplete(placement) {
             ctx.currentPlacement = placement
           },
+          onCleanup() {
+            ctx.currentPlacement = undefined
+          },
         })
 
-        return () => {
-          cleanup?.()
-          ctx.currentPlacement = undefined
-        }
+        return () => cleanup?.()
       },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
@@ -350,7 +353,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
     actions: {
       setIntentPolygon(ctx, evt) {
-        const menu = dom.getMenuEl(ctx)
+        const menu = dom.getContentEl(ctx)
         if (!menu) return
         let menuRect = getElementRect(menu)
         const BUFFER = 20
@@ -381,7 +384,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.pointerdownNode = null
       },
       focusMenu(ctx) {
-        const menu = dom.getMenuEl(ctx)
+        const menu = dom.getContentEl(ctx)
         const doc = dom.getDoc(ctx)
         if (menu && doc.activeElement !== menu) {
           nextTick(() => menu.focus())

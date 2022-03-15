@@ -597,10 +597,8 @@ export const tabsStyle: CSSObject = {
 }
 
 export const tooltipStyles: CSSObject = {
-  "[data-tooltip]": {
+  ".tooltip": {
     zIndex: 1,
-    width: "100px",
-    position: "absolute",
     padding: "0.25em 0.5em",
     boxShadow: "2px 2px 10px hsla(0, 0%, 0%, 0.1)",
     whiteSpace: "nowrap",

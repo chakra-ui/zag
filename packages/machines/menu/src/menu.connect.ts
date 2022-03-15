@@ -19,7 +19,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       role: "menuitem",
       "aria-disabled": disabled,
       "data-disabled": dataAttr(disabled),
-      "data-ownedby": dom.getMenuId(state.context),
+      "data-ownedby": dom.getContentId(state.context),
       "data-selected": dataAttr(state.context.activeId === id),
       "data-valuetext": valueText,
       onClick(event) {
@@ -46,9 +46,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     })
   }
 
-  function getContentStyle() {
+  function getPositionerStyle() {
     if (!state.context.contextMenu) {
-      return getFloatingStyle(!!state.context.currentPlacement)
+      return getFloatingStyle(state.context.isPlacementComplete)
     }
 
     if (state.context.contextMenuPoint)
@@ -125,7 +125,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getTriggerId(state.context),
       "data-uid": state.context.uid,
       "aria-haspopup": "menu",
-      "aria-controls": dom.getMenuId(state.context),
+      "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
@@ -188,9 +188,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
+    positionerProps: normalize.element<T>({
+      "data-part": "positioner",
+      id: dom.getPositionerId(state.context),
+      style: getPositionerStyle(),
+    }),
+
     contentProps: normalize.element<T>({
       "data-part": "content",
-      id: dom.getMenuId(state.context),
+      id: dom.getContentId(state.context),
       hidden: !isOpen,
       role: "menu",
       tabIndex: 0,
@@ -198,9 +204,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-activedescendant": state.context.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
       "data-placement": state.context.currentPlacement,
-      style: getContentStyle(),
       onBlur(event) {
-        const menu = dom.getMenuEl(state.context)
+        const menu = dom.getContentEl(state.context)
         const trigger = dom.getTriggerEl(state.context)
 
         const exclude = dom.getChildMenus(state.context).concat(dom.getParentMenus(state.context))

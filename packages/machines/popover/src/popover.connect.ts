@@ -70,8 +70,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
-      "aria-labelledby": dom.getTitleId(state.context),
-      "aria-describedby": dom.getDescriptionId(state.context),
+      "aria-labelledby": state.context.hasTitle ? dom.getTitleId(state.context) : undefined,
+      "aria-describedby": state.context.hasDescription ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": state.context.currentPlacement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {

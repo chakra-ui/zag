@@ -72,6 +72,10 @@ export type MachineContext = Context<{
    * @internal The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
+  /**
+   * @computed Whether the dynamic placement has been computed
+   */
+  readonly isPlacementComplete?: boolean
 }>
 
 export type State = S.State<MachineContext, MachineState>

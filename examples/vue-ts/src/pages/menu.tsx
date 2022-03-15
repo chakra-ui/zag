@@ -21,27 +21,29 @@ export default defineComponent({
     const menuRef = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, contentProps, getItemProps } = menuRef.value
+      const { triggerProps, contentProps, getItemProps, positionerProps } = menuRef.value
       return (
         <>
           <div>
             <button class="menu__trigger" ref={ref} {...triggerProps}>
               Actions <span aria-hidden>▾</span>
             </button>
-            <ul class="menu__content" {...contentProps}>
-              <li class="menu__item" {...getItemProps({ id: "edit" })}>
-                Edit
-              </li>
-              <li class="menu__item" {...getItemProps({ id: "duplicate" })}>
-                Duplicate
-              </li>
-              <li class="menu__item" {...getItemProps({ id: "delete" })}>
-                Delete
-              </li>
-              <li class="menu__item" {...getItemProps({ id: "export" })}>
-                Export...
-              </li>
-            </ul>
+            <div {...positionerProps}>
+              <ul class="menu__content" {...contentProps}>
+                <li class="menu__item" {...getItemProps({ id: "edit" })}>
+                  Edit
+                </li>
+                <li class="menu__item" {...getItemProps({ id: "duplicate" })}>
+                  Duplicate
+                </li>
+                <li class="menu__item" {...getItemProps({ id: "delete" })}>
+                  Delete
+                </li>
+                <li class="menu__item" {...getItemProps({ id: "export" })}>
+                  Export...
+                </li>
+              </ul>
+            </div>
           </div>
 
           <StateVisualizer state={state} />

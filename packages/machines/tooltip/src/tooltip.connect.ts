@@ -11,10 +11,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
+  void state.context.id
+
   const isVisible = state.hasTag("visible")
 
   const triggerId = dom.getTriggerId(state.context)
-  const tooltipId = dom.getTooltipId(state.context)
+  const contentId = dom.getContentId(state.context)
+  const arrow = state.context.placementOptions.arrow
 
   return {
     isVisible,
@@ -31,7 +34,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "trigger",
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
-      "aria-describedby": isVisible ? tooltipId : undefined,
+      "aria-describedby": isVisible ? contentId : undefined,
       "data-controls": "tooltip",
       onFocus() {
         send("FOCUS")
@@ -72,7 +75,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
-      style: getArrowStyle(),
+      style: getArrowStyle({
+        measured: state.context.isPlacementComplete,
+        size: arrow?.size,
+        shadowColor: arrow?.shadowColor,
+      }),
     }),
 
     innerArrowProps: normalize.element<T>({
@@ -80,10 +87,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       style: innerArrowStyle,
     }),
 
+    positionerProps: normalize.element<T>({
+      id: dom.getPositionerId(state.context),
+      "data-part": "positioner",
+      style: getFloatingStyle(state.context.isPlacementComplete),
+    }),
+
     contentProps: normalize.element<T>({
       "data-part": "content",
       role: state.context.hasAriaLabel ? undefined : "tooltip",
-      id: state.context.hasAriaLabel ? undefined : tooltipId,
+      id: state.context.hasAriaLabel ? undefined : contentId,
       onPointerEnter() {
         send("TOOLTIP_POINTER_ENTER")
       },
@@ -91,14 +104,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TOOLTIP_POINTER_LEAVE")
       },
       style: {
-        ...getFloatingStyle(!!state.context.currentPlacement),
         pointerEvents: state.context.interactive ? "auto" : "none",
       },
     }),
 
     labelProps: normalize.element<T>({
       "data-part": "label",
-      id: tooltipId,
+      id: contentId,
       role: "tooltip",
       style: visuallyHiddenStyle,
     }),
