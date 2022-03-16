@@ -15,6 +15,9 @@ const IndexPage = () => {
           <Link href="/editable">Editable </Link>
         </li>
         <li>
+          <Link href="/editable">Dialog </Link>
+        </li>
+        <li>
           <Link href="/menu">Menu </Link>
         </li>
         <li>
