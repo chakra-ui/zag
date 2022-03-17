@@ -104,6 +104,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
       style: {
         WebkitTouchCallout: "none",
+        userSelect: "none",
       },
     }),
 
