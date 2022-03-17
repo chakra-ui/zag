@@ -59,7 +59,7 @@ export default defineComponent({
                         {childDialog.isOpen && (
                           <>
                             <Teleport to="body">
-                              <div class="dialog__overlay" {...childDialog.underlayProps} data-testid="overlay-2" />
+                              <div class="dialog__overlay" {...childDialog.underlayProps} data-testid="underlay-2" />
                               <div class="dialog__content" {...childDialog.contentProps}>
                                 <h2 class="dialog__title" {...childDialog.titleProps}>
                                   Nested
