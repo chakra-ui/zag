@@ -96,8 +96,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           const exec = keyMap[key]
 
           if (exec) {
-            exec?.(event)
+            exec(event)
             event.preventDefault()
+          } else {
+            send({ type: "KEY_DOWN", value: key, preventDefault: () => event.preventDefault() })
           }
         },
         onFocus() {

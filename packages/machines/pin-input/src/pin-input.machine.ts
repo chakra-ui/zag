@@ -4,7 +4,7 @@ import { fromLength } from "@ui-machines/utils"
 import { dom } from "./pin-input.dom"
 import { MachineContext, MachineState } from "./pin-input.types"
 
-const { and } = guards
+const { and, not } = guards
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
@@ -118,6 +118,10 @@ export const machine = createMachine<MachineContext, MachineState>(
               actions: ["setPrevFocusedIndex", "clearFocusedValue"],
             },
           ],
+          KEY_DOWN: {
+            guard: not("isValidValue"),
+            actions: "preventDefault",
+          },
         },
       },
     },
@@ -211,6 +215,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         nextTick(() => {
           ctx.focusedIndex = Math.min(ctx.filledValueLength, ctx.valueLength - 1)
         })
+      },
+      preventDefault(_, evt) {
+        evt.preventDefault()
       },
     },
   },
