@@ -26,13 +26,22 @@ export default defineComponent({
       return (
         <>
           <controls.ui />
-          <div>
-            <div {...mergeProps(scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })} />
-            <label {...labelProps}>Enter number</label>
+          <div class="root">
+            <div
+              data-testid="scrubber"
+              {...mergeProps(scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
+            />
+            <label data-testid="label" {...labelProps}>
+              Enter number
+            </label>
             <div>
-              <button {...decrementButtonProps}>DEC</button>
-              <input ref={ref} {...inputProps} />
-              <button {...incrementButtonProps}>INC</button>
+              <button data-testid="dec-button" {...decrementButtonProps}>
+                DEC
+              </button>
+              <input data-testid="input" ref={ref} {...inputProps} />
+              <button data-testid="inc-button" {...incrementButtonProps}>
+                INC
+              </button>
             </div>
             <StateVisualizer state={state} />
           </div>
