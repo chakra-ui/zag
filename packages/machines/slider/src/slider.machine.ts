@@ -160,7 +160,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
         if (value == null) return
-        ctx.value = value
+        ctx.value = clamp(value, ctx)
       },
       focusThumb(ctx) {
         nextTick(() => dom.getThumbEl(ctx)?.focus())
@@ -182,7 +182,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.value = ctx.max
       },
       setValue(ctx, evt) {
-        ctx.value = evt.value
+        ctx.value = clamp(evt.value, ctx)
       },
     },
   },
