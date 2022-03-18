@@ -40,15 +40,19 @@ export default defineComponent({
               }
             }}
           >
-            <div>
-              <label {...labelProps}>Slider Label</label>
-              <output {...outputProps}>{value}</output>
+            <div class="root">
+              <label data-testid="label" {...labelProps}>
+                Slider Label
+              </label>
+              <output data-testid="output" {...outputProps}>
+                {value}
+              </output>
             </div>
             <div class="slider" ref={ref} {...rootProps}>
-              <div class="slider__track" {...trackProps}>
+              <div data-testid="track" class="slider__track" {...trackProps}>
                 <div class="slider__range" {...rangeProps} />
               </div>
-              <div class="slider__thumb" {...thumbProps}>
+              <div data-testid="thumb" class="slider__thumb" {...thumbProps}>
                 <input {...inputProps} />
               </div>
             </div>
