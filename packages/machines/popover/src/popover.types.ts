@@ -1,7 +1,15 @@
 import type { PlacementOptions, Placement } from "@ui-machines/popper"
-import type { Context } from "@ui-machines/types"
+import type { Context, MaybeElement } from "@ui-machines/types"
 
 export type MachineContext = Context<{
+  /**
+   * @internal Whether the dialog title is rendered
+   */
+  hasTitle: boolean
+  /**
+   * @internal Whether the dialog description is rendered
+   */
+  hasDescription: boolean
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
@@ -19,7 +27,7 @@ export type MachineContext = Context<{
   /**
    * @computed The computed value of `portalled`
    */
-  readonly __portalled: boolean
+  readonly currentPortalled: boolean
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
@@ -28,7 +36,7 @@ export type MachineContext = Context<{
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: HTMLElement | (() => HTMLElement)
+  initialFocusEl?: MaybeElement | (() => MaybeElement)
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    */
@@ -46,8 +54,8 @@ export type MachineContext = Context<{
    */
   onClose?: () => void
   /**
-   * @internal
-   * Whether the reference element is rendered to be used as the
+   *
+   * @internal Whether the reference element is rendered to be used as the
    * positioning reference
    */
   isAnchorRendered: boolean
@@ -56,10 +64,13 @@ export type MachineContext = Context<{
    */
   placementOptions: PlacementOptions
   /**
-   * @internal
-   * The computed placement (maybe different from initial placement)
+   * @internal The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
+  /**
+   * @computed Whether the dynamic placement has been computed
+   */
+  readonly isPlacementComplete?: boolean
 }>
 
 export type MachineState = {

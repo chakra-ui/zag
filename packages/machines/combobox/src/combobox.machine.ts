@@ -374,7 +374,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         return getPlacement(dom.getContainerEl(ctx), popover, {
           placement: "bottom",
           flip: false,
-          matchWidth: true,
+          sameWidth: true,
           onPlacementComplete(placement) {
             ctx.currentPlacement = placement
           },

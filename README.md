@@ -48,10 +48,10 @@ function Example() {
   const [state, send] = useMachine(toggle.machine)
 
   // convert machine details into `DOM` props
-  const toggle = toggle.connect(state, send)
+  const api = toggle.connect(state, send)
 
   // consume into components
-  return <button {...toggle.buttonProps}>Toggle me</button>
+  return <button {...api.buttonProps}>Toggle me</button>
 }
 ```
 

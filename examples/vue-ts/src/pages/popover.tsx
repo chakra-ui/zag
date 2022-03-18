@@ -24,8 +24,17 @@ export default defineComponent({
     const popover = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, titleProps, closeButtonProps, contentProps, arrowProps, innerArrowProps, portalled } =
-        popover.value
+      const {
+        triggerProps,
+        titleProps,
+        descriptionProps,
+        closeButtonProps,
+        contentProps,
+        positionerProps,
+        arrowProps,
+        innerArrowProps,
+        portalled,
+      } = popover.value
 
       const Wrapper = portalled ? Teleport : Fragment
 
@@ -41,22 +50,24 @@ export default defineComponent({
             </button>
 
             <Wrapper to="body">
-              <div class="popover__content" data-testid="popover-content" {...contentProps}>
-                <div class="popover__arrow" {...arrowProps}>
-                  <div {...innerArrowProps} />
-                </div>
-                <div class="popover__title" data-testid="popover-title" {...titleProps}>
-                  Popover Title
-                </div>
-                <div class="popover__body" data-testid="popover-body">
-                  <a>Non-focusable Link</a>
-                  <a href="#" data-testid="focusable-link">
-                    Focusable Link
-                  </a>
-                  <input data-testid="input" placeholder="input" />
-                  <button class="popover__close-button" data-testid="popover-close-button" {...closeButtonProps}>
-                    X
-                  </button>
+              <div class="popover__popper" {...positionerProps}>
+                <div class="popover__content" data-testid="popover-content" {...contentProps}>
+                  <div class="popover__arrow" {...arrowProps}>
+                    <div {...innerArrowProps} />
+                  </div>
+                  <div class="popover__title" data-testid="popover-title" {...titleProps}>
+                    Popover Title
+                  </div>
+                  <div class="popover__body" data-testid="popover-body" {...descriptionProps}>
+                    <a>Non-focusable Link</a>
+                    <a href="#" data-testid="focusable-link">
+                      Focusable Link
+                    </a>
+                    <input data-testid="input" placeholder="input" />
+                    <button class="popover__close-button" data-testid="popover-close-button" {...closeButtonProps}>
+                      X
+                    </button>
+                  </div>
                 </div>
               </div>
             </Wrapper>

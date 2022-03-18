@@ -4,6 +4,8 @@ export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"
 
+export type MaybeElement<T extends HTMLElement = HTMLElement> = T | null
+
 export type Context<T> = T & {
   /**
    * @internal

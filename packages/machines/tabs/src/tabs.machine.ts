@@ -35,7 +35,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     watch: {
       focusedValue: "invokeOnFocus",
-      value: ["invokeOnChange", "setPrevSelectedTabs"],
+      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect"],
     },
 
     on: {
@@ -49,20 +49,20 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: "setupDocument",
+            actions: ["setupDocument", "setIndicatorRect"],
           },
         },
       },
       idle: {
-        entry: "setIndicatorRect",
         on: {
           TAB_FOCUS: {
+            guard: "selectOnFocus",
             target: "focused",
-            actions: "setFocusedValue",
+            actions: ["setFocusedValue", "setValue"],
           },
           TAB_CLICK: {
             target: "focused",
-            actions: ["setFocusedValue", "setValue", "setIndicatorRect"],
+            actions: ["setFocusedValue", "setValue"],
           },
         },
       },
@@ -70,7 +70,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           TAB_CLICK: {
             target: "focused",
-            actions: ["setFocusedValue", "setValue", "setIndicatorRect"],
+            actions: ["setFocusedValue", "setValue"],
           },
           ARROW_LEFT: {
             guard: "isHorizontal",
@@ -88,16 +88,20 @@ export const machine = createMachine<MachineContext, MachineState>(
             guard: "isVertical",
             actions: "focusNextTab",
           },
-          HOME: { actions: "focusFirstTab" },
-          END: { actions: "focusLastTab" },
+          HOME: {
+            actions: "focusFirstTab",
+          },
+          END: {
+            actions: "focusLastTab",
+          },
           ENTER: {
             guard: not("selectOnFocus"),
-            actions: ["setValue", "setIndicatorRect"],
+            actions: "setValue",
           },
           TAB_FOCUS: [
             {
               guard: "selectOnFocus",
-              actions: ["setFocusedValue", "setValue", "setIndicatorRect"],
+              actions: ["setFocusedValue", "setValue"],
             },
             { actions: "setFocusedValue" },
           ],

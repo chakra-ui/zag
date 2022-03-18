@@ -1,4 +1,4 @@
-import { Context } from "@ui-machines/types"
+import { Context, MaybeElement } from "@ui-machines/types"
 
 export type MachineContext = Context<{
   /**
@@ -20,11 +20,11 @@ export type MachineContext = Context<{
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: HTMLElement | (() => HTMLElement)
+  initialFocusEl?: MaybeElement | (() => MaybeElement)
   /**
    * Element to receive focus when the dialog is closed
    */
-  finalFocusEl?: HTMLElement | (() => HTMLElement)
+  finalFocusEl?: MaybeElement | (() => MaybeElement)
   /**
    * @internal Whether the dialog is the topmost dialog (in a nested dialog scenario)
    */

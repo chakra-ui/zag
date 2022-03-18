@@ -18,15 +18,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
+  const isDisabled = state.context.disabled
 
   return {
-    // state
     isFocused,
     isDragging,
     value: state.context.value,
     percent: valueToPercent(state.context.value, state.context),
 
-    // methods
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
@@ -34,11 +33,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       return percentToValue(percent, state.context)
     },
     blur() {
-      if (state.context.disabled) return
+      if (isDisabled) return
       send("BLUR")
     },
     focus() {
-      if (state.context.disabled) return
+      if (isDisabled) return
       send("FOCUS")
     },
     increment() {
@@ -50,7 +49,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     labelProps: normalize.label<T>({
       "data-part": "label",
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
       onClick(event) {
@@ -65,7 +64,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     outputProps: normalize.output<T>({
       "data-part": "output",
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       id: dom.getOutputId(state.context),
       htmlFor: dom.getInputId(state.context),
       "aria-live": "off",
@@ -74,11 +73,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     thumbProps: normalize.element<T>({
       "data-part": "thumb",
       id: dom.getThumbId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       draggable: false,
-      "aria-disabled": state.context.disabled || undefined,
+      "aria-disabled": isDisabled || undefined,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy ?? dom.getLabelId(state.context),
       "aria-orientation": state.context.orientation,
@@ -87,13 +86,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-valuenow": state.context.value,
       "aria-valuetext": ariaValueText,
       role: "slider",
-      tabIndex: state.context.disabled ? -1 : 0,
+      tabIndex: state.context.isInteractive ? 0 : undefined,
       onBlur() {
-        if (state.context.disabled) return
+        if (isDisabled) return
         send("BLUR")
       },
       onFocus() {
-        if (state.context.disabled) return
+        if (isDisabled) return
         send("FOCUS")
       },
       onKeyDown(event) {
@@ -145,7 +144,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       style: dom.getThumbStyle(state.context),
     }),
 
-    // Slider Hidden Input (useful for forms)
     inputProps: normalize.input<T>({
       "data-part": "input",
       type: "hidden",
@@ -154,33 +152,30 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getInputId(state.context),
     }),
 
-    // Slider Track Attributes
     trackProps: normalize.element<T>({
       "data-part": "track",
       id: dom.getTrackId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       style: dom.getTrackStyle(),
     }),
 
-    // Slider Range Attributes
     rangeProps: normalize.element<T>({
       "data-part": "range",
       id: dom.getRangeId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
     }),
 
-    // Slider Container or Root Attributes
     rootProps: normalize.element<T>({
       "data-part": "root",
       id: dom.getRootId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      "aria-disabled": state.context.disabled || undefined,
+      "aria-disabled": isDisabled || undefined,
       onPointerDown(event) {
         if (!state.context.isInteractive) return
 
@@ -208,7 +203,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         role: "presentation",
         "data-value": value,
         "aria-hidden": true,
-        "data-disabled": dataAttr(state.context.disabled),
+        "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
         style,
       })

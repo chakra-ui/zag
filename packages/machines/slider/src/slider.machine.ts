@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@ui-machines/core"
-import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
+import { nextTick, raf, trackPointerMove } from "@ui-machines/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { dom } from "./slider.dom"
 import { MachineContext, MachineState } from "./slider.types"
@@ -38,10 +38,6 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     watch: {
       value: ["invokeOnChange", "dispatchChangeEvent"],
-    },
-
-    on: {
-      STOP: "focus",
     },
 
     states: {
@@ -154,7 +150,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         dom.dispatchChangeEvent(ctx)
       },
       setThumbSize(ctx) {
-        nextTick(() => {
+        raf(() => {
           const thumb = dom.getThumbEl(ctx)
           if (!thumb) return
           ctx.thumbSize.width = thumb.offsetWidth
@@ -164,7 +160,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
         if (value == null) return
-        ctx.value = value
+        ctx.value = clamp(value, ctx)
       },
       focusThumb(ctx) {
         nextTick(() => dom.getThumbEl(ctx)?.focus())
@@ -186,7 +182,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.value = ctx.max
       },
       setValue(ctx, evt) {
-        ctx.value = evt.value
+        ctx.value = clamp(evt.value, ctx)
       },
     },
   },

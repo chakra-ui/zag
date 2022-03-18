@@ -12,12 +12,15 @@
         <router-link to="/editable">Editable </router-link>
       </li>
       <li>
+        <router-link to="/dialog">Dialog </router-link>
+      </li>
+      <li>
         <router-link to="/menu">Menu </router-link>
       </li>
       <li>
         <router-link to="/nested-menu">Nested Menu </router-link>
       </li>
-       <li>
+      <li>
         <router-link to="/context-menu">Context Menu </router-link>
       </li>
       <li>

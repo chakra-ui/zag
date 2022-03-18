@@ -57,39 +57,45 @@ export default defineComponent({
           </button>
 
           <Teleport to="body">
-            <ul data-testid="menu" ref={rootRef} {...root.value.contentProps}>
-              {level1.map((item) => {
-                const props = item.trigger ? triggerItemProps.value : root.value.getItemProps({ id: item.id })
-                return (
-                  <li key={item.id} data-testid={item.id} {...(props as any)}>
-                    {item.label}
-                  </li>
-                )
-              })}
-            </ul>
+            <div {...root.value.positionerProps}>
+              <ul data-testid="menu" ref={rootRef} {...root.value.contentProps}>
+                {level1.map((item) => {
+                  const props = item.trigger ? triggerItemProps.value : root.value.getItemProps({ id: item.id })
+                  return (
+                    <li key={item.id} data-testid={item.id} {...(props as any)}>
+                      {item.label}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
           </Teleport>
 
           <Teleport to="body">
-            <ul ref={subRef} data-testid="more-tools-submenu" {...sub.value.contentProps}>
-              {level2.map((item) => {
-                const props = item.trigger ? triggerItem2Props.value : sub.value.getItemProps({ id: item.id })
-                return (
-                  <li key={item.id} data-testid={item.id} {...(props as any)}>
-                    {item.label}
-                  </li>
-                )
-              })}
-            </ul>
+            <div {...sub.value.positionerProps}>
+              <ul ref={subRef} data-testid="more-tools-submenu" {...sub.value.contentProps}>
+                {level2.map((item) => {
+                  const props = item.trigger ? triggerItem2Props.value : sub.value.getItemProps({ id: item.id })
+                  return (
+                    <li key={item.id} data-testid={item.id} {...(props as any)}>
+                      {item.label}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
           </Teleport>
 
           <Teleport to="body">
-            <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.value.contentProps}>
-              {level3.map((item) => (
-                <li key={item.id} data-testid={item.id} {...sub2.value.getItemProps({ id: item.id })}>
-                  {item.label}
-                </li>
-              ))}
-            </ul>
+            <div {...sub2.value.positionerProps}>
+              <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.value.contentProps}>
+                {level3.map((item) => (
+                  <li key={item.id} data-testid={item.id} {...sub2.value.getItemProps({ id: item.id })}>
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </Teleport>
 
           <StateVisualizer state={state} label="Root Machine" placement="left" />

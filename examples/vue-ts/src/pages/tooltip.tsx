@@ -20,7 +20,7 @@ const TooltipComponent = defineComponent({
     const ref = useSetup({ send, id: props.id })
 
     return () => {
-      const { triggerProps, isVisible, contentProps } = tooltip.value
+      const { triggerProps, isVisible, contentProps, positionerProps } = tooltip.value
       return (
         <>
           <div>
@@ -28,8 +28,10 @@ const TooltipComponent = defineComponent({
               Over me
             </button>
             {isVisible && (
-              <div data-testid={`${props.id}-tooltip`} {...contentProps} data-tooltip="">
-                Tooltip
+              <div {...positionerProps}>
+                <div data-testid={`${props.id}-tooltip`} {...contentProps} class="tooltip">
+                  Tooltip
+                </div>
               </div>
             )}
           </div>

@@ -8,19 +8,21 @@ export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
   getTriggerId: (ctx: Ctx) => `menu-${ctx.uid}-trigger`,
-  getMenuId: (ctx: Ctx) => `menu-${ctx.uid}-menulist`,
+  getContentId: (ctx: Ctx) => `menu-${ctx.uid}-menulist`,
   getArrowId: (ctx: Ctx) => `popover-${ctx.uid}--arrow`,
+  getPositionerId: (ctx: Ctx) => `tooltip-${ctx.uid}--popper`,
 
-  getMenuEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getMenuId(ctx)) as HTMLEl,
+  getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
+  getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
   getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
   getArrowEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getArrowId(ctx)),
 
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
   getElements: (ctx: Ctx) => {
-    const ownerId = CSS.escape(dom.getMenuId(ctx))
+    const ownerId = CSS.escape(dom.getContentId(ctx))
     const selector = `[role=menuitem][data-ownedby=${ownerId}]:not([data-disabled])`
-    return queryElements(dom.getMenuEl(ctx), selector)
+    return queryElements(dom.getContentEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
@@ -30,14 +32,14 @@ export const dom = {
   getElemByKey: (ctx: Ctx, key: string) => findByText(dom.getElements(ctx), key, ctx.activeId),
   getChildMenus: (ctx: Ctx) => {
     return Object.values(ctx.children)
-      .map((child) => dom.getMenuEl(child.state.context))
+      .map((child) => dom.getContentEl(child.state.context))
       .filter(isHTMLElement)
   },
   getParentMenus: (ctx: Ctx) => {
     const menus: HTMLElement[] = []
     let parent = ctx.parent
     while (parent) {
-      const menu = dom.getMenuEl(parent.state.context)
+      const menu = dom.getContentEl(parent.state.context)
       if (menu) menus.push(menu)
       parent = parent.state.context.parent
     }

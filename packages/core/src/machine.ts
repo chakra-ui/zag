@@ -99,7 +99,6 @@ export class Machine<
     const info = this.getNextStateInfo(transition, event)
     info.target = cast(info.target || transition.target)
     this.initialState = info
-    this.setEvent(event)
     this.performStateChangeEffects(info.target, info, event)
 
     this.removeStateListener = subscribe(
@@ -378,7 +377,6 @@ export class Machine<
         id = globalThis.setTimeout(() => {
           const current = this.state.value!
           const next = this.getNextStateInfo(transition, event)
-          this.setEvent(event)
           this.performStateChangeEffects(current, next, event)
         }, delay)
       },
@@ -657,6 +655,9 @@ export class Machine<
     next: S.StateInfo<TContext, TState, TEvent>,
     event: TEvent,
   ) => {
+    // update event
+    this.setEvent(event)
+
     // determine next target
     next.target = next.target ?? this.state.value ?? undefined
     const ok = next.target && next.target !== this.state.value
@@ -713,8 +714,6 @@ export class Machine<
       warn(msg)
       return
     }
-
-    this.setEvent(event)
 
     const transitionConfig: S.Transitions<TContext, TState, TEvent> =
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]

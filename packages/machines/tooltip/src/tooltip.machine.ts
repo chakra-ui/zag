@@ -24,10 +24,13 @@ export const machine = createMachine<MachineContext, MachineState>(
       closeDelay: 500,
       closeOnPointerDown: true,
       interactive: true,
+      placementOptions: { placement: "bottom" },
+      currentPlacement: undefined,
     },
 
     computed: {
       hasAriaLabel: (ctx) => !!ctx["aria-label"],
+      isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
     states: {
@@ -125,21 +128,22 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     activities: {
       computePlacement(ctx) {
-        // pre-populate the placement with the current value for correct positioning on initial render
-        ctx.currentPlacement = "bottom"
+        ctx.currentPlacement = ctx.placementOptions.placement
         let cleanup: VoidFunction
         raf(() => {
-          cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getTooltipEl(ctx), {
-            placement: "bottom",
+          const arrow = dom.getArrowEl(ctx)
+          cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+            ...ctx.placementOptions,
+            arrow: arrow ? { ...ctx.placementOptions.arrow, element: arrow } : undefined,
             onPlacementComplete(placement) {
               ctx.currentPlacement = placement
             },
+            onCleanup() {
+              ctx.currentPlacement = undefined
+            },
           })
         })
-        return () => {
-          cleanup?.()
-          ctx.currentPlacement = undefined
-        }
+        return () => cleanup?.()
       },
       trackPointerlockChange(ctx, _evt, { send }) {
         return addPointerlockChangeListener(dom.getDoc(ctx), () => {

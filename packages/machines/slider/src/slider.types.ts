@@ -34,7 +34,7 @@ export type MachineContext = Context<{
    */
   step: number
   /**
-   * The move threshold of the slider thumb before it is considered to be moved
+   * @internal The move threshold of the slider thumb before it is considered to be moved
    */
   threshold: number
   /**

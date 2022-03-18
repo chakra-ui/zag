@@ -13,7 +13,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
 
-  const { contentProps, getItemProps, triggerProps } = Menu.connect(state, send)
+  const { contentProps, getItemProps, triggerProps, positionerProps } = Menu.connect(state, send)
 
   return (
     <>
@@ -23,20 +23,22 @@ export default function Page() {
         <button className="menu__trigger" ref={ref} {...triggerProps}>
           Actions <span aria-hidden>▾</span>
         </button>
-        <ul className="menu__content" {...contentProps}>
-          <li className="menu__item" {...getItemProps({ id: "edit" })}>
-            Edit
-          </li>
-          <li className="menu__item" {...getItemProps({ id: "duplicate" })}>
-            Duplicate
-          </li>
-          <li className="menu__item" {...getItemProps({ id: "delete" })}>
-            Delete
-          </li>
-          <li className="menu__item" {...getItemProps({ id: "export" })}>
-            Export...
-          </li>
-        </ul>
+        <div {...positionerProps}>
+          <ul className="menu__content" {...contentProps}>
+            <li className="menu__item" {...getItemProps({ id: "edit" })}>
+              Edit
+            </li>
+            <li className="menu__item" {...getItemProps({ id: "duplicate" })}>
+              Duplicate
+            </li>
+            <li className="menu__item" {...getItemProps({ id: "delete" })}>
+              Delete
+            </li>
+            <li className="menu__item" {...getItemProps({ id: "export" })}>
+              Export...
+            </li>
+          </ul>
+        </div>
       </div>
 
       <StateVisualizer state={state} />

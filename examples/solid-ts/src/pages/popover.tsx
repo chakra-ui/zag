@@ -36,26 +36,28 @@ export default function Page() {
         </button>
 
         <MaybePortal guard={popover().portalled}>
-          <div className="popover__content" data-testid="popover-content" {...popover().contentProps}>
-            <div className="popover__arrow" {...popover().arrowProps}>
-              <div {...popover().innerArrowProps} />
-            </div>
-            <div className="popover__title" data-testid="popover-title" {...popover().titleProps}>
-              Popover Title
-            </div>
-            <div className="popover__body" data-testid="popover-body">
-              <a>Non-focusable Link</a>
-              <a href="#" data-testid="focusable-link">
-                Focusable Link
-              </a>
-              <input data-testid="input" placeholder="input" />
-              <button
-                className="popover__close-button"
-                data-testid="popover-close-button"
-                {...popover().closeButtonProps}
-              >
-                X
-              </button>
+          <div className="popover__popper" {...popover().positionerProps}>
+            <div className="popover__content" data-testid="popover-content" {...popover().contentProps}>
+              <div className="popover__arrow" {...popover().arrowProps}>
+                <div {...popover().innerArrowProps} />
+              </div>
+              <div className="popover__title" data-testid="popover-title" {...popover().titleProps}>
+                Popover Title
+              </div>
+              <div className="popover__body" data-testid="popover-body" {...popover().descriptionProps}>
+                <a>Non-focusable Link</a>
+                <a href="#" data-testid="focusable-link">
+                  Focusable Link
+                </a>
+                <input data-testid="input" placeholder="input" />
+                <button
+                  className="popover__close-button"
+                  data-testid="popover-close-button"
+                  {...popover().closeButtonProps}
+                >
+                  X
+                </button>
+              </div>
             </div>
           </div>
         </MaybePortal>

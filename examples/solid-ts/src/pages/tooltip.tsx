@@ -18,8 +18,10 @@ function TooltipComponent(props: { id?: string }) {
         Over me
       </button>
       {tooltip().isVisible && (
-        <div data-testid={`${props.id}-tooltip`} data-tooltip="" {...tooltip().contentProps}>
-          Tooltip
+        <div {...tooltip().positionerProps}>
+          <div data-testid={`${props.id}-tooltip`} class="tooltip" {...tooltip().contentProps}>
+            Tooltip
+          </div>
         </div>
       )}
     </div>

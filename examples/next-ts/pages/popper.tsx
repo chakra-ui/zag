@@ -17,7 +17,7 @@ export default function App() {
   return (
     <div>
       <button ref={referenceRef}>Hello StackBlitz!</button>
-      <div style={getFloatingStyle()} ref={floatingRef}>
+      <div style={getFloatingStyle(true)} ref={floatingRef}>
         Start editing to see some magic happen :)
       </div>
     </div>
