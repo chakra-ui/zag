@@ -5,7 +5,8 @@ import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  void state.context.pointerdownNode
+  const pointerdownNode = state.context.pointerdownNode
+  const isDisabled = state.context.disabled
 
   const isExpanded = state.hasTag("expanded")
   const isFocused = state.hasTag("focused")
@@ -38,7 +39,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-readonly": dataAttr(state.context.readonly),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
     }),
 
     containerProps: normalize.element<T>({
@@ -46,7 +47,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getContainerId(state.context),
       "data-expanded": dataAttr(isExpanded),
       "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       onPointerOver() {
         send("POINTER_OVER")
       },
@@ -66,7 +67,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     inputProps: normalize.input<T>({
       "data-part": "input",
       name: state.context.name,
-      disabled: state.context.disabled,
+      disabled: isDisabled,
       autoFocus: state.context.autoFocus,
       autoComplete: "off",
       autoCorrect: "off",
@@ -88,7 +89,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getListboxEl(state.context), dom.getToggleBtnEl(state.context)],
-          fallback: state.context.pointerdownNode,
+          fallback: pointerdownNode,
         })
         if (isValidBlur) {
           send("BLUR")
@@ -180,9 +181,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-label": isExpanded ? state.context.openText : state.context.closeText,
       "aria-expanded": isExpanded,
       "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
-      disabled: state.context.disabled,
+      disabled: isDisabled,
       "data-readonly": dataAttr(state.context.readonly),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
         send("CLICK_BUTTON")
         event.preventDefault()
@@ -207,7 +208,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       role: "button",
       tabIndex: -1,
-      disabled: state.context.disabled,
+      disabled: isDisabled,
       "aria-label": state.context.clearText,
       hidden: !showClearButton,
       onPointerDown(event) {

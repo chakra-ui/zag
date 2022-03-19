@@ -91,6 +91,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       "focused:input": {
+        tags: ["focused"],
         entry: ["focusInput", "clearFocusedId"],
         on: {
           TYPE: {
@@ -130,6 +131,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       "navigating:tag": {
+        tags: ["focused"],
         on: {
           ARROW_RIGHT: [
             {
@@ -165,6 +167,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       "editing:tag": {
+        tags: ["editing"],
         entry: "focusEditedTagInput",
         on: {
           TAG_INPUT_TYPE: {

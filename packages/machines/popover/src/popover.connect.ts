@@ -10,7 +10,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  void state.context.pointerdownNode
+  const pointerdownNode = state.context.pointerdownNode
 
   const isOpen = state.matches("open")
   const arrow = state.context.placementOptions.arrow
@@ -96,7 +96,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getTriggerEl(state.context), dom.getContentEl(state.context)],
-          fallback: state.context.pointerdownNode,
+          fallback: pointerdownNode,
         })
 
         const el = (event.relatedTarget ?? state.context.pointerdownNode) as HTMLElement

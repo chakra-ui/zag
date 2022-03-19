@@ -7,7 +7,7 @@ import { dom } from "./menu.dom"
 import { ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  void state.context.pointerdownNode
+  const pointerdownNode = state.context.pointerdownNode
 
   const isOpen = state.hasTag("visible")
 
@@ -216,7 +216,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         }
         const isValidBlur = validateBlur(event, {
           exclude,
-          fallback: state.context.pointerdownNode,
+          fallback: pointerdownNode,
         })
         if (isValidBlur && !contains(menu, event.relatedTarget)) {
           send("BLUR")

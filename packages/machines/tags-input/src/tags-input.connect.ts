@@ -14,7 +14,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const isInputFocused = state.matches("focused:input", "navigating:tag")
+  const isInteractive = state.context.isInteractive
+  const isDisabled = state.context.disabled
+
+  const isInputFocused = state.hasTag("focused")
   const isEditingTag = state.matches("editing:tag")
 
   return {
@@ -42,14 +45,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
 
     // attributes
+    labelProps: normalize.label<T>({
+      "data-part": "label",
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getInputId(state.context),
+    }),
+
     rootProps: normalize.element<T>({
       "data-part": "root",
       "data-invalid": dataAttr(state.context.outOfRange),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isInputFocused),
       id: dom.getRootId(state.context),
       onPointerDown() {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
         send("POINTER_DOWN")
       },
     }),
@@ -59,7 +68,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getInputId(state.context),
       value: state.context.inputValue,
       autoComplete: "off",
-      disabled: state.context.disabled,
+      disabled: isDisabled,
       onChange(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing || evt.inputType === "insertFromPaste") return
@@ -137,16 +146,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         id,
         hidden: isEditingTag ? state.context.editedId === id : false,
         "data-value": value,
-        "data-disabled": dataAttr(state.context.disabled),
+        "data-disabled": dataAttr(isDisabled),
         "data-selected": dataAttr(id === state.context.focusedId),
         "data-ownedby": dom.getRootId(state.context),
         onPointerDown(event) {
-          if (!state.context.isInteractive) return
+          if (!isInteractive) return
           event.preventDefault()
           send({ type: "POINTER_DOWN_TAG", id })
         },
         onDoubleClick() {
-          if (!state.context.isInteractive) return
+          if (!isInteractive) return
           send({ type: "DOUBLE_CLICK_TAG", id })
         },
       })
@@ -197,16 +206,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "aria-label": `Delete ${value}`,
         tabIndex: -1,
         onPointerDown(event) {
-          if (!state.context.isInteractive) {
+          if (!isInteractive) {
             event.preventDefault()
           }
         },
         onPointerOver() {
-          if (!state.context.isInteractive) return
+          if (!isInteractive) return
           send({ type: "HOVER_DELETE_TAG", id })
         },
         onClick() {
-          if (!state.context.isInteractive) return
+          if (!isInteractive) return
           send({ type: "DELETE_TAG", id })
         },
       })
@@ -219,7 +228,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-label": "Clear all tags",
       hidden: state.context.count === 0,
       onClick() {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
         send("CLEAR_ALL")
       },
     }),

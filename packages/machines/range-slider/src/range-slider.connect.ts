@@ -13,6 +13,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
+  const isDisabled = state.context.disabled
 
   return {
     // state
@@ -53,11 +54,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "DECREMENT", index })
     },
     focus(index = 0) {
-      if (state.context.disabled) return
+      if (isDisabled) return
       send({ type: "FOCUS", index })
     },
     blur() {
-      if (state.context.disabled) return
+      if (isDisabled) return
       send({ type: "BLUR" })
     },
 
@@ -86,7 +87,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     trackProps: normalize.element<T>({
       "data-part": "track",
       id: dom.getTrackId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       style: dom.getTrackStyle(),
@@ -105,11 +106,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         "data-part": "thumb",
         "data-index": index,
         id: dom.getThumbId(state.context, index),
-        "data-disabled": dataAttr(state.context.disabled),
+        "data-disabled": dataAttr(isDisabled),
         "data-orientation": state.context.orientation,
         "data-focus": dataAttr(isFocused),
         draggable: false,
-        "aria-disabled": state.context.disabled || undefined,
+        "aria-disabled": isDisabled || undefined,
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(state.context),
         "aria-orientation": state.context.orientation,
@@ -118,14 +119,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         "aria-valuenow": values[index],
         "aria-valuetext": ariaValueText,
         role: "slider",
-        tabIndex: state.context.disabled ? -1 : 0,
+        tabIndex: isDisabled ? undefined : 0,
         style: dom.getThumbStyle(state.context, index),
         onBlur() {
-          if (state.context.disabled) return
+          if (isDisabled) return
           send("BLUR")
         },
         onFocus() {
-          if (state.context.disabled) return
+          if (isDisabled) return
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
@@ -190,7 +191,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rangeProps: normalize.element<T>({
       id: dom.getRangeId(state.context),
       "data-part": "range",
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
     }),
@@ -198,7 +199,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rootProps: normalize.element<T>({
       "data-part": "root",
       id: dom.getRootId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       style: dom.getRootStyle(state.context),
@@ -234,7 +235,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         role: "presentation",
         "data-value": value,
         "aria-hidden": true,
-        "data-disabled": dataAttr(state.context.disabled),
+        "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
         style,
       })
