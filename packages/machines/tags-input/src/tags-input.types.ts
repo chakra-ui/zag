@@ -113,6 +113,7 @@ export type MachineContext = Context<{
 
 export type MachineState = {
   value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  tags: "focused" | "editing"
 }
 
 export type InvalidReason = "outOfRange" | "invalidTag"
