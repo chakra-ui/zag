@@ -1,6 +1,6 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
-import { decrement, increment, snapToStep } from "@ui-machines/number-utils"
+import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
 import { getElementRect } from "@ui-machines/rect-utils"
 import { isNumber } from "@ui-machines/utils"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
@@ -171,8 +171,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
+        const range = getRangeAtIndex(ctx, ctx.activeIndex)
         if (value == null) return
-        ctx.value[ctx.activeIndex] = value
+        ctx.value[ctx.activeIndex] = clamp(value, range)
       },
       focusActiveThumb(ctx) {
         nextTick(() => {
