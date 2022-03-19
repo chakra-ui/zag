@@ -11,7 +11,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  void state.context.id
+  const id = state.context.id
 
   const isVisible = state.hasTag("visible")
 
@@ -25,7 +25,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     getAnimationState() {
       return {
-        enter: store.prevId === null && state.context.id === store.id,
+        enter: store.prevId === null && id === store.id,
         exit: store.id === null,
       }
     },
@@ -40,12 +40,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onBlur() {
-        if (state.context.id === store.id) {
+        if (id === store.id) {
           send("BLUR")
         }
       },
       onPointerDown() {
-        if (state.context.id === store.id) {
+        if (id === store.id) {
           send("POINTER_DOWN")
         }
       },

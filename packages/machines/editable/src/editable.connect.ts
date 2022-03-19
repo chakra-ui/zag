@@ -4,7 +4,8 @@ import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  void state.context.pointerdownNode
+  const pointerdownNode = state.context.pointerdownNode
+  const isDisabled = state.context.disabled
 
   const isEditing = state.matches("edit")
 
@@ -31,13 +32,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getInputId(state.context),
       hidden: !isEditing,
       placeholder: state.context.placeholder,
-      disabled: state.context.disabled,
-      "aria-disabled": state.context.disabled,
+      disabled: isDisabled,
+      "aria-disabled": isDisabled,
       value: state.context.value,
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getCancelBtnEl(state.context), dom.getSubmitBtnEl(state.context)],
-          fallback: state.context.pointerdownNode,
+          fallback: pointerdownNode,
         })
         if (isValidBlur) {
           send("BLUR")
@@ -72,7 +73,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-empty": dataAttr(state.context.isValueEmpty),
       children: state.context.value === "" ? state.context.placeholder : state.context.value,
       hidden: isEditing,
-      "aria-disabled": ariaAttr(state.context.disabled),
+      "aria-disabled": ariaAttr(isDisabled),
       tabIndex: state.context.isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {
         send("FOCUS")
