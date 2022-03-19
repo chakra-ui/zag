@@ -42,6 +42,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
 
     // attributes
+    labelProps: normalize.label<T>({
+      "data-part": "label",
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getInputId(state.context),
+    }),
+
     rootProps: normalize.element<T>({
       "data-part": "root",
       "data-invalid": dataAttr(state.context.outOfRange),
