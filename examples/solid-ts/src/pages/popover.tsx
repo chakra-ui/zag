@@ -31,7 +31,9 @@ export default function Page() {
 
       <div className="popover" ref={ref}>
         <button data-testid="button-before">Button :before</button>
-        <button {...popover().triggerProps}>Click me</button>
+        <button data-testid="popover-trigger" {...popover().triggerProps}>
+          Click me
+        </button>
 
         <MaybePortal guard={popover().portalled}>
           <div className="popover__popper" {...popover().positionerProps}>

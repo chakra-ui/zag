@@ -35,7 +35,7 @@ export const numberInputControls = defineControls({
   step: { type: "number", defaultValue: 1 },
   precision: { type: "number", defaultValue: 0 },
   min: { type: "number", defaultValue: 0 },
-  max: { type: "number", defaultValue: 10 },
+  max: { type: "number", defaultValue: 100 },
 })
 
 export const pinInputControls = defineControls({
@@ -77,6 +77,7 @@ export const tagsInputControls = defineControls({
   addOnBlur: { type: "boolean", defaultValue: false },
   max: { type: "number", defaultValue: 4 },
   allowOutOfRange: { type: "boolean", defaultValue: false },
+  autoFocus: { type: "boolean", defaultValue: true },
 })
 
 export const ratingControls = defineControls({

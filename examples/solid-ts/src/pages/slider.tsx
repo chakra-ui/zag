@@ -31,15 +31,19 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div>
-          <label {...slider().labelProps}>Slider Label</label>
-          <output {...slider().outputProps}>{slider().value}</output>
+        <div className="root">
+          <label data-testid="label" {...slider().labelProps}>
+            Slider Label
+          </label>
+          <output data-testid="output" {...slider().outputProps}>
+            {slider().value}
+          </output>
         </div>
         <div className="slider" ref={ref} {...slider().rootProps}>
-          <div className="slider__track" {...slider().trackProps}>
+          <div data-testid="track" className="slider__track" {...slider().trackProps}>
             <div className="slider__range" {...slider().rangeProps} />
           </div>
-          <div className="slider__thumb" {...slider().thumbProps}>
+          <div data-testid="thumb" className="slider__thumb" {...slider().thumbProps}>
             <input {...slider().inputProps} />
           </div>
         </div>

@@ -29,18 +29,22 @@ export default function Page() {
 
       <div className="root">
         <div className="editable__area">
-          <input className="editable__input" ref={ref} {...editable().inputProps} />
-          <span className="editable__preview" {...editable().previewProps} />
+          <input className="editable__input" data-testid="input" ref={ref} {...editable().inputProps} />
+          <span className="editable__preview" data-testid="preview" {...editable().previewProps} />
         </div>
         {!editable().isEditing && (
-          <button className="editable__edit" {...editable().editButtonProps}>
+          <button className="editable__edit" data-testid="edit-button" {...editable().editButtonProps}>
             Edit
           </button>
         )}
         {editable().isEditing && (
           <div className="editable__controls">
-            <button {...editable().submitButtonProps}>Save</button>
-            <button {...editable().cancelButtonProps}>Cancel</button>
+            <button data-testid="save-button" {...editable().submitButtonProps}>
+              Save
+            </button>
+            <button data-testid="cancel-button" {...editable().cancelButtonProps}>
+              Cancel
+            </button>
           </div>
         )}
       </div>

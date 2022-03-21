@@ -1,5 +1,5 @@
 /* eslint-disable jest/expect-expect */
-describe("accordion", () => {
+describe("combobox", () => {
   beforeEach(() => {
     cy.visit("/combobox")
     cy.injectAxe()

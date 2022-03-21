@@ -9,6 +9,10 @@ import { useControls } from "../hooks/use-controls"
 
 injectGlobal(tagsInputStyle)
 
+function toDashCase(str: string) {
+  return str.replace(/\s+/g, "-").toLowerCase()
+}
+
 export default function Page() {
   const controls = useControls(tagsInputControls)
 
@@ -31,17 +35,29 @@ export default function Page() {
         <For each={tagsInput().value}>
           {(value, index) => (
             <span>
-              <div className="tag" {...tagsInput().getTagProps({ index: index(), value })}>
-                <span>{value} </span>
-                <button className="tag-close" {...tagsInput().getTagDeleteButtonProps({ index: index(), value })}>
+              <div
+                className="tag"
+                data-testid={`${toDashCase(value)}-tag`}
+                {...tagsInput().getTagProps({ index: index(), value })}
+              >
+                <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                <button
+                  className="tag-close"
+                  data-testid={`${toDashCase(value)}-close-button`}
+                  {...tagsInput().getTagDeleteButtonProps({ index: index(), value })}
+                >
                   &#x2715;
                 </button>
               </div>
-              <input className="tag-input" {...tagsInput().getTagInputProps({ index: index() })} />
+              <input
+                className="tag-input"
+                data-testid={`${toDashCase(value)}-input`}
+                {...tagsInput().getTagInputProps({ index: index() })}
+              />
             </span>
           )}
         </For>
-        <input className="tag-input" placeholder="Add tag..." {...tagsInput().inputProps} />
+        <input className="tag-input" data-testid="input" placeholder="Add tag..." {...tagsInput().inputProps} />
       </div>
 
       <StateVisualizer state={state} />

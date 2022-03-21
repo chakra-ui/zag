@@ -50,7 +50,7 @@ export default function Page() {
 
                   {childDialog().isOpen && (
                     <Portal>
-                      <div className="dialog__overlay" {...childDialog().underlayProps} data-testid="overlay-2" />
+                      <div className="dialog__overlay" {...childDialog().underlayProps} data-testid="underlay-2" />
                       <div className="dialog__content" {...childDialog().contentProps}>
                         <h2 className="dialog__title" {...childDialog().titleProps}>
                           Nested

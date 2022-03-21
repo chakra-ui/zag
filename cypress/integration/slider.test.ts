@@ -1,4 +1,4 @@
-describe("popover", () => {
+describe("slider", () => {
   beforeEach(() => {
     cy.visit("/slider")
     cy.injectAxe()
@@ -16,9 +16,9 @@ describe("popover", () => {
   describe("keyboard interaction", () => {
     it("should work with arrow left/right keys", () => {
       cy.get("@thumb").focus().realType("{rightarrow}")
-      cy.get("@output").should("have.text", "41")
+      cy.get("@output").should("have.text", "1")
       cy.get("@thumb").realType("{rightarrow}")
-      cy.get("@output").should("have.text", "42")
+      cy.get("@output").should("have.text", "2")
     })
 
     it("should work with home/end keys", () => {
@@ -30,16 +30,16 @@ describe("popover", () => {
 
     it("should work with shift modifier key", () => {
       cy.get("@thumb").focus().realPress(["Shift", "ArrowRight"])
-      cy.get("@output").should("have.text", "50")
+      cy.get("@output").should("have.text", "10")
       cy.get("@thumb").focus().realPress(["Shift", "ArrowLeft"])
-      cy.get("@output").should("have.text", "40")
+      cy.get("@output").should("have.text", "0")
     })
 
     it("should work with page up/down modifier keys", () => {
       cy.get("@thumb").focus().realType("{pageup}")
-      cy.get("@output").should("have.text", "50")
+      cy.get("@output").should("have.text", "10")
       cy.get("@thumb").focus().realType("{pagedown}")
-      cy.get("@output").should("have.text", "40")
+      cy.get("@output").should("have.text", "0")
     })
   })
 
@@ -61,7 +61,7 @@ describe("popover", () => {
         point.x += 10
         cy.document().trigger("mousemove", point)
         cy.document().trigger("pointerup")
-        cy.get("@output").should("have.text", "93")
+        cy.get("@output").should("have.text", "90")
       })
     })
   })
