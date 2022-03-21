@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Tooltip from "@ui-machines/tooltip"
 import { createMemo } from "solid-js"
 import { tooltipStyles } from "../../../../shared/style"
@@ -10,7 +10,7 @@ function TooltipComponent(props: { id?: string }) {
   const [state, send] = useMachine(Tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
 
-  const tooltip = createMemo(() => Tooltip.connect<SolidPropTypes>(state, send, normalizeProps))
+  const tooltip = createMemo(() => Tooltip.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div>

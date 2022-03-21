@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Editable from "@ui-machines/editable"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { editableControls } from "../../../../shared/controls"
 import { editableStyle } from "../../../../shared/style"
@@ -20,7 +20,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const editableRef = computed(() => Editable.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const editableRef = computed(() => Editable.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { isEditing, inputProps, previewProps, cancelButtonProps, submitButtonProps, editButtonProps } =

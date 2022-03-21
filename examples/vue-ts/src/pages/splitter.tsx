@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Splitter from "@ui-machines/splitter"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { splitterControls } from "../../../../shared/controls"
@@ -21,7 +21,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const splitter = computed(() => Splitter.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const splitter = computed(() => Splitter.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, primaryPaneProps, labelProps, splitterProps, secondaryPaneProps } = splitter.value

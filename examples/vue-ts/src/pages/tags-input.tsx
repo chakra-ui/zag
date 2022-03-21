@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as TagsInput from "@ui-machines/tags-input"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { tagsInputControls } from "../../../../shared/controls"
@@ -30,7 +30,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const tags = computed(() => TagsInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const tags = computed(() => TagsInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { value, rootProps, inputProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = tags.value

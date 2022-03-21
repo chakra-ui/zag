@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Popover from "@ui-machines/popover"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"
@@ -21,7 +21,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const popover = computed(() => Popover.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const popover = computed(() => Popover.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const {

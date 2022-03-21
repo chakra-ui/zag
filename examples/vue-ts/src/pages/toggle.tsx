@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, VuePropTypes, useMachine, useSetup } from "@ui-machines/vue"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/vue"
 import * as Toggle from "@ui-machines/toggle"
 import { defineComponent } from "@vue/runtime-core"
 import { toggleStyle } from "../../../../shared/style"
@@ -13,7 +13,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(Toggle.machine.withContext({ label: "Toggle italic" }))
     const ref = useSetup({ send, id: "1" })
-    const toggle = computed(() => Toggle.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const toggle = computed(() => Toggle.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { buttonProps } = toggle.value

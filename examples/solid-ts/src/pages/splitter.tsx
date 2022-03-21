@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Splitter from "@ui-machines/splitter"
 import { createMemo, createUniqueId } from "solid-js"
 import { splitterControls } from "../../../../shared/controls"
@@ -18,7 +18,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const splitter = createMemo(() => Splitter.connect<SolidPropTypes>(state, send, normalizeProps))
+  const splitter = createMemo(() => Splitter.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

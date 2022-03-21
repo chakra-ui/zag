@@ -1,6 +1,6 @@
 import { mergeProps } from "@ui-machines/core"
 import * as NumberInput from "@ui-machines/number-input"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
@@ -18,7 +18,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const numberInputRef = computed(() => NumberInput.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const numberInputRef = computed(() => NumberInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps } = numberInputRef.value

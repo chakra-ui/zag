@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Rating from "@ui-machines/rating"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, For } from "solid-js"
 import { ratingControls } from "../../../../shared/controls"
 import { ratingStyle } from "../../../../shared/style"
@@ -48,7 +48,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const rating = createMemo(() => Rating.connect<SolidPropTypes>(state, send, normalizeProps))
+  const rating = createMemo(() => Rating.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

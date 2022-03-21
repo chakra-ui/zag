@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Slider from "@ui-machines/slider"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
 import { sliderControls } from "../../../../shared/controls"
@@ -19,7 +19,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const slider = createMemo(() => Slider.connect<SolidPropTypes>(state, send, normalizeProps))
+  const slider = createMemo(() => Slider.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

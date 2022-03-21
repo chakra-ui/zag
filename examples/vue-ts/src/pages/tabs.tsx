@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Tabs from "@ui-machines/tabs"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { tabsControls } from "../../../../shared/controls"
@@ -21,7 +21,7 @@ export default defineComponent({
     })
 
     const ref = useSetup({ send, id: "1" })
-    const tabs = computed(() => Tabs.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const tabs = computed(() => Tabs.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { tabIndicatorProps, tablistProps, getTabProps, getTabPanelProps } = tabs.value

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Accordion from "@ui-machines/accordion"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { accordionControls } from "../../../../shared/controls"
 import { accordionData } from "../../../../shared/data"
@@ -21,7 +21,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const accordion = computed(() => Accordion.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const accordion = computed(() => Accordion.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordion.value

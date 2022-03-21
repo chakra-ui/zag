@@ -1,6 +1,6 @@
 import type { ElementAttrs, HTMLAttributes, NativeElements } from "@vue/runtime-dom"
 
-export type VuePropTypes = {
+export type PropTypes = {
   button: NativeElements["button"]
   input: NativeElements["input"]
   output: NativeElements["output"]

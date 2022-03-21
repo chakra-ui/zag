@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Menu from "@ui-machines/menu"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,7 +12,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
 
-  const menu = createMemo(() => Menu.connect<SolidPropTypes>(state, send, normalizeProps))
+  const menu = createMemo(() => Menu.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

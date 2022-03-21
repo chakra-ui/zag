@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Popover from "@ui-machines/popover"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId, PropsWithChildren } from "solid-js"
 import { Portal } from "solid-js/web"
 import { popoverControls } from "../../../../shared/controls"
@@ -23,7 +23,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const popover = createMemo(() => Popover.connect<SolidPropTypes>(state, send, normalizeProps))
+  const popover = createMemo(() => Popover.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

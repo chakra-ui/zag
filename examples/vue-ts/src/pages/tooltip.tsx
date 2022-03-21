@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Tooltip from "@ui-machines/tooltip"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, PropType, Fragment } from "vue"
 import { tooltipStyles } from "../../../../shared/style"
 
@@ -16,7 +16,7 @@ const TooltipComponent = defineComponent({
   },
   setup(props) {
     const [state, send] = useMachine(Tooltip.machine.withContext({ id: props.id }))
-    const tooltip = computed(() => Tooltip.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const tooltip = computed(() => Tooltip.connect<PropTypes>(state.value, send, normalizeProps))
     const ref = useSetup({ send, id: props.id })
 
     return () => {

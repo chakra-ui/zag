@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Editable from "@ui-machines/editable"
-import { normalizeProps, useMachine, useSetup, SolidPropTypes } from "@ui-machines/solid"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { editableControls } from "../../../../shared/controls"
 import { editableStyle } from "../../../../shared/style"
@@ -21,7 +21,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const editable = createMemo(() => Editable.connect<SolidPropTypes>(state, send, normalizeProps))
+  const editable = createMemo(() => Editable.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

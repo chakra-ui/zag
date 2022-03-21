@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Combobox from "@ui-machines/combobox"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, ref, h, Fragment } from "vue"
 import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"
@@ -32,7 +32,7 @@ export default defineComponent({
 
     const nodeRef = useSetup({ send, id: "1" })
 
-    const combobox = computed(() => Combobox.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const combobox = computed(() => Combobox.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const {

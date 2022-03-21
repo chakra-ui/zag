@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Accordion from "@ui-machines/accordion"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { accordionControls } from "../../../../shared/controls"
 import { accordionData } from "../../../../shared/data"
@@ -19,7 +19,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const accordion = createMemo(() => Accordion.connect<SolidPropTypes>(state, send, normalizeProps))
+  const accordion = createMemo(() => Accordion.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

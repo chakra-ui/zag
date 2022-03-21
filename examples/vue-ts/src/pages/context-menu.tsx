@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Menu from "@ui-machines/menu"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -19,7 +19,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const menuRef = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const menuRef = computed(() => Menu.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { contextTriggerProps, contentProps, getItemProps, positionerProps } = menuRef.value

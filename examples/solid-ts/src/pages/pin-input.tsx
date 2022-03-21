@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as PinInput from "@ui-machines/pin-input"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { pinInputControls } from "../../../../shared/controls"
 import { pinInputStyle } from "../../../../shared/style"
@@ -18,7 +18,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const pin = createMemo(() => PinInput.connect<SolidPropTypes>(state, send, normalizeProps))
+  const pin = createMemo(() => PinInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div>

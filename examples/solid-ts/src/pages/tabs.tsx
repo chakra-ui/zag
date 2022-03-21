@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as Tabs from "@ui-machines/tabs"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tabsControls } from "../../../../shared/controls"
@@ -19,7 +19,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const tabs = createMemo(() => Tabs.connect<SolidPropTypes>(state, send, normalizeProps))
+  const tabs = createMemo(() => Tabs.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div style={{ width: "100%" }}>

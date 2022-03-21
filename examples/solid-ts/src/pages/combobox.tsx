@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Combobox from "@ui-machines/combobox"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"
@@ -30,7 +30,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const combobox = createMemo(() => Combobox.connect<SolidPropTypes>(state, send, normalizeProps))
+  const combobox = createMemo(() => Combobox.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

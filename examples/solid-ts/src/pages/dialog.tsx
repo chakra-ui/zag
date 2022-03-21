@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import { Portal } from "solid-js/web"
 import * as Dialog from "@ui-machines/dialog"
-import { useMachine, useSetup, normalizeProps, SolidPropTypes } from "@ui-machines/solid"
+import { useMachine, useSetup, normalizeProps, PropTypes } from "@ui-machines/solid"
 import { StateVisualizer } from "../components/state-visualizer"
 import { dialogStyle } from "../../../../shared/style"
 import { createMemo } from "solid-js"
@@ -12,12 +12,12 @@ export default function Page() {
   // Dialog 1
   const [state, send] = useMachine(Dialog.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
-  const parentDialog = createMemo(() => Dialog.connect<SolidPropTypes>(state, send, normalizeProps))
+  const parentDialog = createMemo(() => Dialog.connect<PropTypes>(state, send, normalizeProps))
 
   // Dialog 2
   const [state2, send2] = useMachine(Dialog.machine)
   const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "2" })
-  const childDialog = createMemo(() => Dialog.connect<SolidPropTypes>(state2, send2, normalizeProps))
+  const childDialog = createMemo(() => Dialog.connect<PropTypes>(state2, send2, normalizeProps))
 
   return (
     <>

@@ -1,5 +1,5 @@
 export * from "./normalize-props"
-export type { SolidPropTypes } from "./prop-types"
+export type { PropTypes } from "./prop-types"
 export * from "./use-actor"
 export * from "./use-machine"
 export * from "./use-setup"

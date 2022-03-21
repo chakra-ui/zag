@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Rating from "@ui-machines/rating"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { ratingControls } from "../../../../shared/controls"
@@ -56,7 +56,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const rating = computed(() => Rating.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const rating = computed(() => Rating.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { getRatingState, rootProps, getRatingProps, inputProps, sizeArray } = rating.value

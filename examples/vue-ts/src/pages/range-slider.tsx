@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as RangeSlider from "@ui-machines/range-slider"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { computed, h, Fragment } from "vue"
@@ -26,7 +26,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const slider = computed(() => RangeSlider.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const slider = computed(() => RangeSlider.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = slider.value

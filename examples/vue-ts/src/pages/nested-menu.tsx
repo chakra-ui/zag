@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Menu from "@ui-machines/menu"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, onMounted, Teleport, Fragment, h } from "vue"
 import { menuData } from "../../../../shared/data"
 import { menuStyle } from "../../../../shared/style"
@@ -13,15 +13,15 @@ export default defineComponent({
   setup() {
     const [state, send, machine] = useMachine(Menu.machine)
     const rootRef = useSetup({ send, id: "1" })
-    const root = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const root = computed(() => Menu.connect<PropTypes>(state.value, send, normalizeProps))
 
     const [subState, subSend, subMachine] = useMachine(Menu.machine)
     const subRef = useSetup({ send: subSend, id: "2" })
-    const sub = computed(() => Menu.connect<VuePropTypes>(subState.value, subSend, normalizeProps))
+    const sub = computed(() => Menu.connect<PropTypes>(subState.value, subSend, normalizeProps))
 
     const [sub2State, sub2Send, sub2Machine] = useMachine(Menu.machine)
     const sub2Ref = useSetup({ send: sub2Send, id: "3" })
-    const sub2 = computed(() => Menu.connect<VuePropTypes>(sub2State.value, sub2Send, normalizeProps))
+    const sub2 = computed(() => Menu.connect<PropTypes>(sub2State.value, sub2Send, normalizeProps))
 
     onMounted(() => {
       setTimeout(() => {

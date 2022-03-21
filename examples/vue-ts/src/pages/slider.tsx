@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Slider from "@ui-machines/slider"
-import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { useControls } from "../hooks/use-controls"
@@ -22,7 +22,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const slider = computed(() => Slider.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const slider = computed(() => Slider.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } = slider.value

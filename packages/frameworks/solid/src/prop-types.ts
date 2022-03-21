@@ -2,7 +2,7 @@ import type * as Solid from "solid-js"
 
 type JSXElements = Solid.JSX.IntrinsicElements
 
-export type SolidPropTypes = {
+export type PropTypes = {
   button: JSXElements["button"]
   label: JSXElements["label"]
   input: JSXElements["input"]

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Toast from "@ui-machines/toast"
-import { normalizeProps, useActor, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
+import { normalizeProps, useActor, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
 import { toastStyle } from "../../../../shared/style"
@@ -17,7 +17,7 @@ const ToastItem = defineComponent({
   },
   setup(props) {
     const [state, send] = useActor(props.actor)
-    const toast = computed(() => Toast.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const toast = computed(() => Toast.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const { isVisible, containerProps, progress, title, titleProps, type, dismiss } = toast.value
@@ -39,7 +39,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(Toast.group.machine.withContext({ pauseOnHover: true }))
     const toastRef = useSetup({ send, id: "1" })
-    const toasts = computed(() => Toast.group.connect<VuePropTypes>(state.value, send, normalizeProps))
+    const toasts = computed(() => Toast.group.connect<PropTypes>(state.value, send, normalizeProps))
 
     const id = ref<string>()
 

@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, SolidPropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import * as TagsInput from "@ui-machines/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tagsInputControls } from "../../../../shared/controls"
@@ -21,7 +21,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const tagsInput = createMemo(() => TagsInput.connect<SolidPropTypes>(state, send, normalizeProps))
+  const tagsInput = createMemo(() => TagsInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
