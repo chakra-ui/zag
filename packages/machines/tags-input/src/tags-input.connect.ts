@@ -22,8 +22,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
   return {
     // state
+    inputValue: state.context.trimmedInputValue,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
+    isAtMax: state.context.isAtMax,
 
     // methods
     clear() {
@@ -65,6 +67,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     inputProps: normalize.input<T>({
       "data-part": "input",
+      maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
       value: state.context.inputValue,
       autoComplete: "off",

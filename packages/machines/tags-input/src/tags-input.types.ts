@@ -8,6 +8,10 @@ export type ValidateTagOptions = {
 
 export type MachineContext = Context<{
   /**
+   * The max length of the input.
+   */
+  maxLength?: number
+  /**
    * The separator used to split/join the tag values.
    */
   separator: string
