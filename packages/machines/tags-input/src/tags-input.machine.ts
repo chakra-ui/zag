@@ -25,6 +25,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       liveRegion: null,
       addOnBlur: false,
       addOnPaste: false,
+      allowEditTag: true,
       validateTag: () => true,
       separator: ",",
     },
@@ -47,6 +48,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     on: {
       DOUBLE_CLICK_TAG: {
+        guard: "allowEditTag",
         target: "editing:tag",
         actions: ["setEditedId", "initEditedTagValue"],
       },
@@ -148,6 +150,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             actions: "clearFocusedId",
           },
           ENTER: {
+            guard: "allowEditTag",
             target: "editing:tag",
             actions: ["setEditedId", "initEditedTagValue", "focusEditedTagInput"],
           },
@@ -202,6 +205,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       autoFocus: (ctx) => !!ctx.autoFocus,
       addOnBlur: (ctx) => !!ctx.addOnBlur,
       addOnPaste: (ctx) => !!ctx.addOnPaste,
+      allowEditTag: (ctx) => !!ctx.allowEditTag,
       isInputCaretAtStart(ctx) {
         const input = dom.getInputEl(ctx)
         if (!input) return false

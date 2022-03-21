@@ -24,6 +24,11 @@ export type MachineContext = Context<{
    */
   readonly?: boolean
   /**
+   * Whether a tag can be edited after creation.
+   * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
+   */
+  allowEditTag?: boolean
+  /**
    * @internal The live region to announce messages to the user
    */
   liveRegion: LiveRegion | null
