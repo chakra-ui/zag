@@ -1,4 +1,4 @@
-import type { PlacementOptions, Placement } from "@ui-machines/popper"
+import type { PositioningOptions, Placement } from "@ui-machines/popper"
 import type { Context, MaybeElement } from "@ui-machines/types"
 
 export type MachineContext = Context<{
@@ -62,7 +62,7 @@ export type MachineContext = Context<{
   /**
    * The user provided options used to position the popover content
    */
-  placementOptions: PlacementOptions
+  positioning: PositioningOptions
   /**
    * @internal The computed placement (maybe different from initial placement)
    */

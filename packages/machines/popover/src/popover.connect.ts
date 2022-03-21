@@ -13,7 +13,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   const pointerdownNode = state.context.pointerdownNode
 
   const isOpen = state.matches("open")
-  const arrow = state.context.placementOptions.arrow
+  const arrow = state.context.positioning.arrow
 
   return {
     isOpen,

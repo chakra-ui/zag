@@ -17,7 +17,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
   const triggerId = dom.getTriggerId(state.context)
   const contentId = dom.getContentId(state.context)
-  const arrow = state.context.placementOptions.arrow
+  const arrow = state.context.positioning.arrow
 
   return {
     isVisible,

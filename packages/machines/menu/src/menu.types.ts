@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@ui-machines/core"
-import type { PlacementOptions, Placement } from "@ui-machines/popper"
+import type { PositioningOptions, Placement } from "@ui-machines/popper"
 import type { Point } from "@ui-machines/rect-utils"
 import type { Context } from "@ui-machines/types"
 
@@ -63,7 +63,7 @@ export type MachineContext = Context<{
   /**
    * The options used to dynamically position the menu
    */
-  placementOptions: PlacementOptions
+  positioning: PositioningOptions
   /**
    * Whether to disable dynamic placement
    */

@@ -22,7 +22,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       loop: false,
       suspendPointer: false,
       contextMenuPoint: null,
-      placementOptions: { placement: "bottom-start", gutter: 8 },
+      positioning: { placement: "bottom-start", gutter: 8 },
     },
 
     computed: {
@@ -40,8 +40,8 @@ export const machine = createMachine<MachineContext, MachineState>(
     watch: {
       isSubmenu(ctx) {
         if (ctx.isSubmenu) {
-          ctx.placementOptions.placement = ctx.isRtl ? "left-start" : "right-start"
-          ctx.placementOptions.gutter = 0
+          ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
+          ctx.positioning.gutter = 0
         }
       },
     },
@@ -315,11 +315,11 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         if (ctx.disablePlacement) return
-        ctx.currentPlacement = ctx.placementOptions.placement
+        ctx.currentPlacement = ctx.positioning.placement
         const arrow = dom.getArrowEl(ctx)
         const cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
-          ...ctx.placementOptions,
-          arrow: arrow ? { ...ctx.placementOptions.arrow, element: arrow } : undefined,
+          ...ctx.positioning,
+          arrow: arrow ? { ...ctx.positioning.arrow, element: arrow } : undefined,
           onPlacementComplete(placement) {
             ctx.currentPlacement = placement
           },

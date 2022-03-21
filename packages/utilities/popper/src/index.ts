@@ -15,7 +15,7 @@ import { cssVars, positionArrow, transformOrigin } from "./middleware"
 
 export type { Placement }
 
-export type PlacementOptions = {
+export type PositioningOptions = {
   arrow?: { padding?: number; element?: HTMLElement; size?: number; shadowColor?: string }
   strategy?: "absolute" | "fixed"
   placement?: Placement
@@ -29,7 +29,7 @@ export type PlacementOptions = {
   onCleanup?: VoidFunction
 }
 
-const defaultOpts: PlacementOptions = {
+const defaultOptions: PositioningOptions = {
   strategy: "absolute",
   placement: "bottom",
   eventListeners: true,
@@ -39,38 +39,42 @@ const defaultOpts: PlacementOptions = {
   sameWidth: false,
 }
 
-export function getPlacement(reference: HTMLElement | null, floating: HTMLElement | null, opts: PlacementOptions = {}) {
+export function getPlacement(
+  reference: HTMLElement | null,
+  floating: HTMLElement | null,
+  options: PositioningOptions = {},
+) {
   if (reference == null || floating == null) {
     return noop
   }
 
-  opts = Object.assign({}, defaultOpts, opts)
+  options = Object.assign({}, defaultOptions, options)
   const win = reference.ownerDocument.defaultView || window
 
   const middleware: Middleware[] = [transformOrigin]
 
-  if (opts.flip) {
-    middleware.push(flip({ boundary: opts.boundary, padding: 8 }))
+  if (options.flip) {
+    middleware.push(flip({ boundary: options.boundary, padding: 8 }))
   }
 
-  if (opts.gutter || opts.offset) {
-    const data = opts.gutter ? { mainAxis: opts.gutter } : opts.offset
+  if (options.gutter || options.offset) {
+    const data = options.gutter ? { mainAxis: options.gutter } : options.offset
     middleware.push(offset(data))
   }
 
-  middleware.push(shift({ boundary: opts.boundary }))
+  middleware.push(shift({ boundary: options.boundary }))
 
-  if (opts.arrow?.element) {
+  if (options.arrow?.element) {
     middleware.push(
       arrow({
-        element: opts.arrow.element,
-        padding: opts.arrow.padding ?? 8,
+        element: options.arrow.element,
+        padding: options.arrow.padding ?? 8,
       }),
-      positionArrow({ element: opts.arrow?.element }),
+      positionArrow({ element: options.arrow?.element }),
     )
   }
 
-  if (opts.sameWidth) {
+  if (options.sameWidth) {
     middleware.push(
       size({
         apply({ reference }) {
@@ -86,17 +90,18 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   function compute() {
     if (reference == null || floating == null) return
     computePosition(reference, floating, {
-      placement: opts.placement,
+      placement: options.placement,
       middleware,
-      strategy: opts.strategy,
+      strategy: options.strategy,
     }).then(({ x, y, placement, strategy }) => {
       Object.assign(floating.style, { left: `${x}px`, top: `${y}px`, position: strategy })
-      opts.onPlacementComplete?.(placement)
+      options.onPlacementComplete?.(placement)
     })
   }
 
   function addResizeListeners() {
-    const enabled = typeof opts.eventListeners === "boolean" ? opts.eventListeners : opts.eventListeners?.resize
+    const enabled =
+      typeof options.eventListeners === "boolean" ? options.eventListeners : options.eventListeners?.resize
     if (!enabled) return
 
     const unobserve = observeElementRect(reference!, compute)
@@ -109,7 +114,8 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   }
 
   function addScrollListeners() {
-    const enabled = typeof opts.eventListeners === "boolean" ? opts.eventListeners : opts.eventListeners?.scroll
+    const enabled =
+      typeof options.eventListeners === "boolean" ? options.eventListeners : options.eventListeners?.scroll
     if (!enabled || reference == null) return
     const fns = getScrollParents(reference).map((el) => {
       el.addEventListener("scroll", compute)
@@ -125,7 +131,7 @@ export function getPlacement(reference: HTMLElement | null, floating: HTMLElemen
   compute()
   const cleanups = [addResizeListeners(), addScrollListeners()]
   return function cleanup() {
-    opts.onCleanup?.()
+    options.onCleanup?.()
     cleanups.forEach((fn) => fn?.())
   }
 }
@@ -141,8 +147,8 @@ type ArrowStyleOptions = {
   measured?: boolean
 }
 
-export function getArrowStyle(opts: ArrowStyleOptions = {}) {
-  const { size = 8, background, shadowColor, measured } = opts
+export function getArrowStyle(options: ArrowStyleOptions = {}) {
+  const { size = 8, background, shadowColor, measured } = options
   return {
     position: "absolute",
     [cssVars.arrowSize.variable]: `${size}px`,

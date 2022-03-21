@@ -24,7 +24,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       closeDelay: 500,
       closeOnPointerDown: true,
       interactive: true,
-      placementOptions: { placement: "bottom" },
+      positioning: { placement: "bottom" },
       currentPlacement: undefined,
     },
 
@@ -133,13 +133,13 @@ export const machine = createMachine<MachineContext, MachineState>(
   {
     activities: {
       computePlacement(ctx) {
-        ctx.currentPlacement = ctx.placementOptions.placement
+        ctx.currentPlacement = ctx.positioning.placement
         let cleanup: VoidFunction
         raf(() => {
           const arrow = dom.getArrowEl(ctx)
           cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
-            ...ctx.placementOptions,
-            arrow: arrow ? { ...ctx.placementOptions.arrow, element: arrow } : undefined,
+            ...ctx.positioning,
+            arrow: arrow ? { ...ctx.positioning.arrow, element: arrow } : undefined,
             onPlacementComplete(placement) {
               ctx.currentPlacement = placement
             },

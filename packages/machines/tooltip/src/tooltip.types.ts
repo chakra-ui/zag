@@ -1,4 +1,4 @@
-import { Placement, PlacementOptions } from "@ui-machines/popper"
+import { Placement, PositioningOptions } from "@ui-machines/popper"
 
 export type MachineContext = {
   /**
@@ -50,7 +50,7 @@ export type MachineContext = {
   /**
    * The user provided options used to position the popover content
    */
-  placementOptions: PlacementOptions
+  positioning: PositioningOptions
   /**
    * @internal The computed placement of the tooltip.
    */
