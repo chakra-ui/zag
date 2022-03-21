@@ -1,6 +1,4 @@
 import { injectGlobal } from "@emotion/css"
-import { mergeProps } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
 import * as Menu from "@ui-machines/menu"
 import { normalizeProps, useMachine, useSetup, VuePropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, onMounted, Teleport, Fragment, h } from "vue"
@@ -15,37 +13,32 @@ export default defineComponent({
   setup() {
     const [state, send, machine] = useMachine(Menu.machine)
     const rootRef = useSetup({ send, id: "1" })
+    const root = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     const [subState, subSend, subMachine] = useMachine(Menu.machine)
     const subRef = useSetup({ send: subSend, id: "2" })
+    const sub = computed(() => Menu.connect<VuePropTypes>(subState.value, subSend, normalizeProps))
 
     const [sub2State, sub2Send, sub2Machine] = useMachine(Menu.machine)
     const sub2Ref = useSetup({ send: sub2Send, id: "3" })
-
-    const root = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
-    const sub = computed(() => Menu.connect<VuePropTypes>(subState.value, subSend, normalizeProps))
     const sub2 = computed(() => Menu.connect<VuePropTypes>(sub2State.value, sub2Send, normalizeProps))
 
     onMounted(() => {
-      nextTick(() => {
+      setTimeout(() => {
         root.value.setChild(subMachine)
         sub.value.setParent(machine)
       })
     })
 
     onMounted(() => {
-      nextTick(() => {
+      setTimeout(() => {
         sub.value.setChild(sub2Machine)
         sub2.value.setParent(subMachine)
       })
     })
 
-    const triggerItemProps = computed(() =>
-      mergeProps(root.value.getItemProps({ id: sub.value.triggerProps.id! }), sub.value.triggerProps),
-    )
-    const triggerItem2Props = computed(() =>
-      mergeProps(sub.value.getItemProps({ id: sub2.value.triggerProps.id! }), sub2.value.triggerProps),
-    )
+    const triggerItemProps = computed(() => root.value.getTriggerItemProps(sub.value))
+    const triggerItem2Props = computed(() => sub.value.getTriggerItemProps(sub2.value))
 
     const [level1, level2, level3] = menuData
 

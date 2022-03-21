@@ -1,50 +1,17 @@
+import { mergeProps } from "@ui-machines/core"
 import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
 import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
-import { ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
+import { ItemProps, OptionItemProps, Send, Service, State, Api } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
+  const isSubmenu = state.context.isSubmenu
 
   const isOpen = state.hasTag("visible")
-
-  function getItemProps(opts: ItemProps) {
-    const { id, disabled, valueText } = opts
-    return normalize.element<T>({
-      "data-part": "menuitem",
-      id,
-      role: "menuitem",
-      "aria-disabled": disabled,
-      "data-disabled": dataAttr(disabled),
-      "data-ownedby": dom.getContentId(state.context),
-      "data-selected": dataAttr(state.context.activeId === id),
-      "data-valuetext": valueText,
-      onClick(event) {
-        if (disabled) return
-        send({ type: "ITEM_CLICK", target: event.currentTarget })
-      },
-      onPointerUp(event) {
-        const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || disabled) return
-        event.currentTarget.click()
-      },
-      onPointerLeave(event) {
-        if (disabled) return
-        send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
-      },
-      onPointerMove(event) {
-        if (disabled) return
-        send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
-      },
-      onDragStart(event) {
-        const isLink = event.currentTarget.matches("a[href]")
-        if (isLink) event.preventDefault()
-      },
-    })
-  }
 
   function getPositionerStyle() {
     if (!state.context.contextMenu) {
@@ -59,19 +26,19 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       } as const
   }
 
-  return {
+  const api = {
     isOpen,
-
     setParent(parent: Service) {
       send({ type: "SET_PARENT", value: parent, id: parent.state.context.uid })
     },
-
     setChild(child: Service) {
       send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
     },
-
     open() {
-      send({ type: "OPEN" })
+      send("OPEN")
+    },
+    close() {
+      send("CLOSE")
     },
 
     contextTriggerProps: normalize.element<T>({
@@ -108,16 +75,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    arrowProps: normalize.element<T>({
-      id: dom.getArrowId(state.context),
-      "data-part": "arrow",
-      style: getArrowStyle(),
-    }),
-
-    innerArrowProps: normalize.element<T>({
-      "data-part": "arrow--inner",
-      style: innerArrowStyle,
-    }),
+    getTriggerItemProps<A extends Api>(childApi: A) {
+      return mergeProps(api.getItemProps({ id: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
+    },
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
@@ -130,7 +90,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-expanded": isOpen ? true : undefined,
       onPointerMove(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !state.context.isSubmenu) return
+        if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
           target: event.currentTarget,
@@ -139,7 +99,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onPointerLeave(event) {
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !state.context.isSubmenu) return
+        if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERLEAVE",
           target: event.currentTarget,
@@ -195,6 +155,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: getPositionerStyle(),
     }),
 
+    arrowProps: normalize.element<T>({
+      id: dom.getArrowId(state.context),
+      "data-part": "arrow",
+      style: getArrowStyle(),
+    }),
+
+    innerArrowProps: normalize.element<T>({
+      "data-part": "arrow--inner",
+      style: innerArrowStyle,
+    }),
+
     contentProps: normalize.element<T>({
       "data-part": "content",
       id: dom.getContentId(state.context),
@@ -211,7 +182,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
         const exclude = dom.getChildMenus(state.context).concat(dom.getParentMenus(state.context))
 
-        if (trigger && !state.context.isSubmenu) {
+        if (trigger && !isSubmenu) {
           exclude.push(trigger)
         }
         const isValidBlur = validateBlur(event, {
@@ -288,12 +259,45 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-orientation": "horizontal",
     }),
 
-    getItemProps,
+    getItemProps(options: ItemProps) {
+      const { id, disabled, valueText } = options
+      return normalize.element<T>({
+        "data-part": "menuitem",
+        id,
+        role: "menuitem",
+        "aria-disabled": disabled,
+        "data-disabled": dataAttr(disabled),
+        "data-ownedby": dom.getContentId(state.context),
+        "data-selected": dataAttr(state.context.activeId === id),
+        "data-valuetext": valueText,
+        onClick(event) {
+          if (disabled) return
+          send({ type: "ITEM_CLICK", target: event.currentTarget })
+        },
+        onPointerUp(event) {
+          const evt = getNativeEvent(event)
+          if (!isLeftClick(evt) || disabled) return
+          event.currentTarget.click()
+        },
+        onPointerLeave(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
+        },
+        onPointerMove(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+        },
+        onDragStart(event) {
+          const isLink = event.currentTarget.matches("a[href]")
+          if (isLink) event.preventDefault()
+        },
+      })
+    },
 
-    getItemOptionProps(opts: OptionItemProps) {
-      const { type, checked, disabled, onCheckedChange } = opts
+    getItemOptionProps(options: OptionItemProps) {
+      const { type, checked, disabled, onCheckedChange } = options
       return Object.assign(
-        getItemProps(opts),
+        api.getItemProps(options),
         normalize.element<T>({
           "data-part": "menu-option",
           role: `menuitem${type}`,
@@ -307,4 +311,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       )
     },
   }
+
+  return api
 }

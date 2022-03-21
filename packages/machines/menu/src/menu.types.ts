@@ -82,6 +82,11 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = (event: S.Event<S.AnyEventObject>) => void
 
+export type Api = {
+  getItemProps: (opts: ItemProps) => Record<string, any>
+  triggerProps: Record<string, any>
+}
+
 export type ItemProps = {
   id: string
   disabled?: boolean
