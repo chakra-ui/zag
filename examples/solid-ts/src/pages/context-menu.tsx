@@ -25,20 +25,22 @@ export default function Page() {
         <div {...menu().contextTriggerProps}>
           <div style={{ border: "solid 1px red" }}>Open context menu</div>
         </div>
-        <ul ref={ref} className="menu__content" {...menu().contentProps}>
-          <li className="menu__item" {...menu().getItemProps({ id: "edit" })}>
-            Edit
-          </li>
-          <li className="menu__item" {...menu().getItemProps({ id: "duplicate" })}>
-            Duplicate
-          </li>
-          <li className="menu__item" {...menu().getItemProps({ id: "delete" })}>
-            Delete
-          </li>
-          <li className="menu__item" {...menu().getItemProps({ id: "export" })}>
-            Export...
-          </li>
-        </ul>
+        <div {...menu().positionerProps}>
+          <ul ref={ref} className="menu__content" {...menu().contentProps}>
+            <li className="menu__item" {...menu().getItemProps({ id: "edit" })}>
+              Edit
+            </li>
+            <li className="menu__item" {...menu().getItemProps({ id: "duplicate" })}>
+              Duplicate
+            </li>
+            <li className="menu__item" {...menu().getItemProps({ id: "delete" })}>
+              Delete
+            </li>
+            <li className="menu__item" {...menu().getItemProps({ id: "export" })}>
+              Export...
+            </li>
+          </ul>
+        </div>
       </div>
 
       <StateVisualizer state={state} />

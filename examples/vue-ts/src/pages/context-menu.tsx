@@ -22,26 +22,28 @@ export default defineComponent({
     const menuRef = computed(() => Menu.connect<VuePropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { contextTriggerProps, contentProps, getItemProps } = menuRef.value
+      const { contextTriggerProps, contentProps, getItemProps, positionerProps } = menuRef.value
       return (
         <>
           <div {...contextTriggerProps}>
             <div style={{ border: "solid 1px red" }}>Open context menu</div>
           </div>
-          <ul ref={ref} class="menu__content" {...contentProps}>
-            <li class="menu__item" {...getItemProps({ id: "edit" })}>
-              Edit
-            </li>
-            <li class="menu__item" {...getItemProps({ id: "duplicate" })}>
-              Duplicate
-            </li>
-            <li class="menu__item" {...getItemProps({ id: "delete" })}>
-              Delete
-            </li>
-            <li class="menu__item" {...getItemProps({ id: "export" })}>
-              Export...
-            </li>
-          </ul>
+          <div {...positionerProps}>
+            <ul ref={ref} class="menu__content" {...contentProps}>
+              <li class="menu__item" {...getItemProps({ id: "edit" })}>
+                Edit
+              </li>
+              <li class="menu__item" {...getItemProps({ id: "duplicate" })}>
+                Duplicate
+              </li>
+              <li class="menu__item" {...getItemProps({ id: "delete" })}>
+                Delete
+              </li>
+              <li class="menu__item" {...getItemProps({ id: "export" })}>
+                Export...
+              </li>
+            </ul>
+          </div>
 
           <StateVisualizer state={state} />
         </>

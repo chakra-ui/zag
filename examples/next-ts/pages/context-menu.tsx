@@ -12,7 +12,7 @@ export default function Page() {
     }),
   )
 
-  const { contentProps, contextTriggerProps, getItemProps } = Menu.connect(state, send)
+  const { contentProps, contextTriggerProps, positionerProps, getItemProps } = Menu.connect(state, send)
 
   const ref = useSetup<HTMLUListElement>({ send, id: "1" })
 
@@ -22,20 +22,22 @@ export default function Page() {
       <div {...contextTriggerProps}>
         <div style={{ border: "solid 1px red" }}>Open context menu</div>
       </div>
-      <ul ref={ref} className="menu__content" {...contentProps}>
-        <li className="menu__item" {...getItemProps({ id: "edit" })}>
-          Edit
-        </li>
-        <li className="menu__item" {...getItemProps({ id: "duplicate" })}>
-          Duplicate
-        </li>
-        <li className="menu__item" {...getItemProps({ id: "delete" })}>
-          Delete
-        </li>
-        <li className="menu__item" {...getItemProps({ id: "export" })}>
-          Export...
-        </li>
-      </ul>
+      <div {...positionerProps}>
+        <ul ref={ref} className="menu__content" {...contentProps}>
+          <li className="menu__item" {...getItemProps({ id: "edit" })}>
+            Edit
+          </li>
+          <li className="menu__item" {...getItemProps({ id: "duplicate" })}>
+            Duplicate
+          </li>
+          <li className="menu__item" {...getItemProps({ id: "delete" })}>
+            Delete
+          </li>
+          <li className="menu__item" {...getItemProps({ id: "export" })}>
+            Export...
+          </li>
+        </ul>
+      </div>
 
       <StateVisualizer state={state} />
     </>
