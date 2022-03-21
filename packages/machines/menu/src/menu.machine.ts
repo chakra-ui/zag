@@ -22,7 +22,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       loop: false,
       suspendPointer: false,
       contextMenuPoint: null,
-      placementOptions: { placement: "bottom", gutter: 8 },
+      placementOptions: { placement: "bottom-start", gutter: 8 },
     },
 
     computed: {
