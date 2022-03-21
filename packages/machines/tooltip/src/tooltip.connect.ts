@@ -22,7 +22,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   return {
     isVisible,
     hasAriaLabel: state.context.hasAriaLabel,
-
+    open() {
+      send("OPEN")
+    },
+    close() {
+      send("CLOSE")
+    },
     getAnimationState() {
       return {
         enter: store.prevId === null && id === store.id,

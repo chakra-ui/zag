@@ -33,6 +33,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
+    on: {
+      OPEN: "open",
+      CLOSE: "closed",
+    },
+
     states: {
       unknown: {
         on: {
@@ -65,12 +70,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           POINTER_LEAVE: "closed",
           BLUR: "closed",
+          SCROLL: "closed",
+          POINTER_LOCK_CHANGE: "closed",
           POINTER_DOWN: {
             guard: "closeOnPointerDown",
             target: "closed",
           },
-          SCROLL: "closed",
-          POINTER_LOCK_CHANGE: "closed",
         },
       },
 
