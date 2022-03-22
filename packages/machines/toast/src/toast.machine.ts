@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@ui-machines/core"
-import { addDomEvent } from "@ui-machines/dom-utils"
+import { trackDocumentVisibility } from "@ui-machines/dom-utils"
 import { dom } from "./toast.dom"
 import { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
@@ -23,6 +23,10 @@ export function createToastMachine(options: Options = {}) {
         progress: { max: timeout, value: timeout },
         placement,
         ...rest,
+      },
+
+      computed: {
+        progressPercent: (ctx) => ctx.progress.value / ctx.progress.max,
       },
 
       on: {
@@ -106,10 +110,8 @@ export function createToastMachine(options: Options = {}) {
       activities: {
         trackDocumentVisibility(ctx, _evt, { send }) {
           if (!ctx.pauseOnPageIdle) return
-          const doc = dom.getDoc(ctx) as Document & { msHidden?: boolean; webkitHidden?: string }
-          return addDomEvent(doc, "visibilitychange", () => {
-            const isPageHidden = doc.hidden || doc.msHidden || doc.webkitHidden
-            send(isPageHidden ? "PAUSE" : "RESUME")
+          return trackDocumentVisibility(dom.getDoc(ctx), function (hidden) {
+            send(hidden ? "PAUSE" : "RESUME")
           })
         },
       },
@@ -126,7 +128,7 @@ export function createToastMachine(options: Options = {}) {
       },
       actions: {
         setDurationToProgress(ctx) {
-          ctx.duration = ctx.progress?.value
+          ctx.duration = ctx.progress.value
         },
         setProgressValue(ctx) {
           ctx.progress.value -= 10
@@ -159,7 +161,7 @@ export function createToastMachine(options: Options = {}) {
 
           if (newType && newDuration == null) {
             ctx.duration = duration
-            ctx.progress!.value = duration
+            ctx.progress.value = duration
           }
         },
       },

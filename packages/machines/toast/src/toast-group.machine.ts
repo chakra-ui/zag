@@ -16,11 +16,14 @@ export const groupMachine = createMachine<GroupMachineContext>({
     pauseOnHover: false,
     offsets: { left: 0, right: 0, top: 0, bottom: 0 },
   },
+
   computed: {
+    count: (ctx) => ctx.toasts.length,
     spacingValue: (ctx) => {
       return typeof ctx.spacing === "number" ? `${ctx.spacing}px` : ctx.spacing
     },
   },
+
   on: {
     SETUP: {
       actions: (ctx, evt) => {

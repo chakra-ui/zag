@@ -59,6 +59,10 @@ export type MachineContext = SharedContext & {
    */
   progress: { max: number; value: number }
   /**
+   * @computed The progress percentage of the toast
+   */
+  readonly progressPercent: number
+  /**
    * Function called when the toast has been closed and removed
    */
   onExited?: VoidFunction
@@ -102,6 +106,10 @@ export type GroupMachineContext = SharedContext &
      */
     toasts: Service[]
     /**
+     * @internal The total number of toasts in the group
+     */
+    readonly count: number
+    /**
      * The gutter or spacing between toasts
      */
     spacing: string | number
@@ -135,8 +143,9 @@ export type PromiseOptions = Options & {
   [key in "success" | "loading" | "error"]?: Options
 }
 
-export type GroupContainerProps = {
+export type GroupProps = {
   placement: Placement
+  label?: string
 }
 
 export type GlobalConnect = {

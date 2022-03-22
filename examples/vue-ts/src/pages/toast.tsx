@@ -17,17 +17,17 @@ const ToastItem = defineComponent({
   },
   setup(props) {
     const [state, send] = useActor(props.actor)
-    const toast = computed(() => Toast.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => Toast.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { isVisible, containerProps, progress, title, titleProps, type, dismiss } = toast.value
+      const api = apiRef.value
       return (
-        <pre class="toast" hidden={!isVisible} {...containerProps}>
-          <progress max={progress?.max} value={progress?.value} />
-          <p {...titleProps}>{title}</p>
+        <pre class="toast" hidden={!api.isVisible} {...api.containerProps}>
+          <progress {...api.progress} />
+          <p {...api.titleProps}>{api.title}</p>
           {/* @ts-expect-error */}
-          <p>{type === "loading" ? <HollowDotsSpinner /> : null}</p>
-          <button onClick={dismiss}>Close</button>
+          <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
+          <button onClick={api.dismiss}>Close</button>
         </pre>
       )
     }
@@ -39,17 +39,18 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(Toast.group.machine.withContext({ pauseOnHover: true }))
     const toastRef = useSetup({ send, id: "1" })
-    const toasts = computed(() => Toast.group.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => Toast.group.connect<PropTypes>(state.value, send, normalizeProps))
 
     const id = ref<string>()
 
     return () => {
+      const api = apiRef.value
       return (
         <>
           <div ref={toastRef} style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={() => {
-                id.value = toasts.value.create({
+                id.value = api.create({
                   title: "Welcome",
                   description: "Welcome",
                   type: "info",
@@ -60,7 +61,7 @@ export default defineComponent({
             </button>
             <button
               onClick={() => {
-                toasts.value.create({
+                api.create({
                   title: "Ooops! Something was wrong",
                   type: "error",
                 })
@@ -71,7 +72,7 @@ export default defineComponent({
             <button
               onClick={() => {
                 if (!id.value) return
-                toasts.value.update(id.value, {
+                api.update(id.value, {
                   title: "Testing",
                   type: "loading",
                 })
@@ -79,13 +80,13 @@ export default defineComponent({
             >
               Update Child (info)
             </button>
-            <button onClick={() => toasts.value.dismiss()}>Close all</button>
-            <button onClick={() => toasts.value.pause()}>Pause all</button>
-            <button onClick={() => toasts.value.resume()}>Resume all</button>
+            <button onClick={() => api.dismiss()}>Close all</button>
+            <button onClick={() => api.pause()}>Pause all</button>
+            <button onClick={() => api.resume()}>Resume all</button>
           </div>
 
-          <div {...toasts.value.getContainerProps({ placement: "bottom" })}>
-            {toasts.value.toasts.map((actor) => (
+          <div {...api.getGroupProps({ placement: "bottom" })}>
+            {api.toasts.map((actor) => (
               <ToastItem key={actor.id} actor={actor} />
             ))}
           </div>

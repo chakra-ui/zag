@@ -10,22 +10,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const isVisible = state.hasTag("visible")
+  const pauseOnHover = state.context.pauseOnHover
+  const placement = state.context.placement
 
   return {
     type: state.context.type,
     title: state.context.title,
-    placement: state.context.placement,
+    placement,
     isVisible,
     progress: state.context.progress,
+    progressPercent: state.context.progressPercent,
 
     pause() {
       send("PAUSE")
     },
-
     resume() {
       send("RESUME")
     },
-
     dismiss() {
       send("DISMISS")
     },
@@ -34,11 +35,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "progress",
       role: "progressbar",
       "aria-valuemin": 0,
-      "aria-valuemax": state.context.progress?.max,
-      "aria-valuenow": state.context.progress?.value,
-      style: {
-        "--toast-progress-percent": `${state.context.progress?.value / state.context.progress?.max}%`,
-      },
+      "aria-valuemax": state.context.progress.max,
+      "aria-valuenow": state.context.progress.value,
     }),
 
     containerProps: normalize.element<T>({
@@ -46,24 +44,43 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getRootId(state.context),
       "data-open": dataAttr(isVisible),
       "data-type": state.context.type,
+      "data-placement": placement,
+      role: "status",
+      "aria-atomic": "true",
+      tabIndex: 0,
       style: {
         pointerEvents: "auto",
         margin: "calc(var(--toast-gutter) / 2)",
         "--toast-remove-delay": `${state.context.removeDelay}ms`,
+        "--toast-progress-percent": `${state.context.progressPercent * 100}%`,
+      },
+      onKeyDown(event) {
+        if (event.key == "Escape") {
+          send("DISMISS")
+          event.preventDefault()
+          event.stopPropagation()
+        }
+      },
+      onFocus() {
+        send("PAUSE")
+      },
+      onBlur() {
+        send("RESUME")
       },
       onPointerEnter() {
-        if (state.context.pauseOnHover) {
+        if (pauseOnHover) {
           send("PAUSE")
         }
       },
       onPointerLeave() {
-        if (state.context.pauseOnHover) {
+        if (pauseOnHover) {
           send("RESUME")
         }
       },
     }),
 
     titleProps: normalize.element<T>({
+      "data-part": "title",
       id: dom.getToastTitleId(state.context),
     }),
 

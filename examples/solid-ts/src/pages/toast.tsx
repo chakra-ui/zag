@@ -25,24 +25,23 @@ function Loader() {
 
 function ToastItem(props: { actor: Toast.Service }) {
   const [state, send] = useActor(props.actor)
-  const toast = createMemo(() => Toast.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => Toast.connect<PropTypes>(state, send, normalizeProps))
 
   return (
-    <div className="toast" {...toast().containerProps}>
-      <progress max={toast().progress?.max} value={toast().progress?.value} />
-      <p {...toast().titleProps}>{toast().title}</p>
-      <p>{toast().type === "loading" ? <Loader /> : null}</p>
-      <button onClick={toast().dismiss}>Close</button>
+    <div className="toast" {...api().containerProps}>
+      <progress {...api().progress} />
+      <p {...api().titleProps}>{api().title}</p>
+      <p>{api().type === "loading" ? <Loader /> : null}</p>
+      <button onClick={api().dismiss}>Close</button>
     </div>
   )
 }
 
 export default function Page() {
   const [state, send] = useMachine(Toast.group.machine)
-
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const api = createMemo(() => Toast.group.connect<PropTypes>(state, send, normalizeProps))
 
-  const toasts = createMemo(() => Toast.group.connect<PropTypes>(state, send, normalizeProps))
   const [id, setId] = createSignal<string>()
 
   return (
@@ -50,19 +49,19 @@ export default function Page() {
       <div ref={ref} style={{ display: "flex", gap: "16px" }}>
         <button
           onClick={() => {
-            const _id = toasts().create({
+            const toastId = api().create({
               title: "Welcome",
               description: "Welcome",
               type: "info",
             })
-            setId(_id)
+            setId(toastId)
           }}
         >
           Notify (Info)
         </button>
         <button
           onClick={() => {
-            toasts().create({
+            api().create({
               title: "Ooops! Something was wrong",
               type: "error",
             })
@@ -73,7 +72,7 @@ export default function Page() {
         <button
           onClick={() => {
             if (!id()) return
-            toasts().update(id(), {
+            api().update(id(), {
               title: "Testing",
               type: "loading",
             })
@@ -81,13 +80,13 @@ export default function Page() {
         >
           Update Child (info)
         </button>
-        <button onClick={() => toasts().dismiss()}>Close all</button>
-        <button onClick={() => toasts().pause()}>Pause all</button>
-        <button onClick={() => toasts().resume()}>Resume all</button>
+        <button onClick={() => api().dismiss()}>Close all</button>
+        <button onClick={() => api().pause()}>Pause all</button>
+        <button onClick={() => api().resume()}>Resume all</button>
       </div>
 
-      <div {...toasts().getContainerProps({ placement: "bottom" })}>
-        <For each={toasts().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
+      <div {...api().getGroupProps({ placement: "bottom" })}>
+        <For each={api().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
       </div>
 
       <StateVisualizer state={state} />

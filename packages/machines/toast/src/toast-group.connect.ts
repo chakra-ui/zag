@@ -4,7 +4,7 @@ import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
 import {
   GlobalConnect,
-  GroupContainerProps,
+  GroupProps,
   GroupMachineContext,
   Options,
   Placement,
@@ -21,7 +21,7 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const group = {
-    count: state.context.toasts.length,
+    count: state.context.count,
     toasts: state.context.toasts,
     toastsByPlacement: getToastsByPlacement(state.context.toasts),
 
@@ -126,10 +126,12 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
       }
     },
 
-    getContainerProps(props: GroupContainerProps) {
-      const { placement } = props
+    getGroupProps(options: GroupProps) {
+      const { placement, label = "Notifications" } = options
       return normalize.element<T>({
-        id: dom.getGroupContainerId(state.context, placement),
+        tabIndex: -1,
+        "aria-label": label,
+        id: dom.getGroupId(placement),
         "data-placement": placement,
         "aria-live": "polite",
         role: "region",

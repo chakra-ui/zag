@@ -3,7 +3,7 @@ import { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement } fro
 export const dom = {
   getDoc: (ctx: Ctx | GroupCtx) => ctx.doc ?? document,
   getGroupPortalId: (ctx: GroupCtx) => `toast-portal--${ctx.uid}`,
-  getGroupContainerId: (ctx: GroupCtx, placement: Placement) => `toast-group-container--${ctx.uid}--${placement}`,
+  getGroupId: (placement: Placement) => `toast-group--${placement}`,
 
   getToastTitleId: (ctx: Ctx) => `toast-title--${ctx.id}`,
   getRootId: (ctx: Ctx) => `toast--${ctx.id}`,
