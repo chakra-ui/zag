@@ -31,7 +31,7 @@ export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Plac
 
   const styles: Style = {
     position: "fixed",
-    pointerEvents: "none",
+    pointerEvents: ctx.count > 0 ? undefined : "none",
     display: "flex",
     flexDirection: "column",
     "--toast-gutter": ctx.spacingValue,
