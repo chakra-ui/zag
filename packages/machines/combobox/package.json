@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@ui-machines/core": "^0.0.0",
+    "@ui-machines/popper": "^0.0.0",
     "@ui-machines/dom-utils": "^0.0.0",
     "@ui-machines/types": "^0.0.0",
     "scroll-into-view-if-needed": "^2.2.28"

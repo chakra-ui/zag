@@ -1,6 +1,6 @@
-import { Placement } from "@ui-machines/popper"
 import type { StateMachine as S } from "@ui-machines/core"
 import type { LiveRegion } from "@ui-machines/dom-utils"
+import type { Placement } from "@ui-machines/popper"
 import type { Context } from "@ui-machines/types"
 
 export type MachineState = {
