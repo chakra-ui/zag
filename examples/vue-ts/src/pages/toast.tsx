@@ -37,7 +37,7 @@ const ToastItem = defineComponent({
 export default defineComponent({
   name: "Toast",
   setup() {
-    const [state, send] = useMachine(Toast.group.machine.withContext({ pauseOnHover: true }))
+    const [state, send] = useMachine(Toast.group.machine)
     const toastRef = useSetup({ send, id: "1" })
     const apiRef = computed(() => Toast.group.connect<PropTypes>(state.value, send, normalizeProps))
 

@@ -63,7 +63,7 @@ export const groupMachine = createMachine<GroupMachineContext>({
         const options = {
           ...evt.toast,
           pauseOnPageIdle: ctx.pauseOnPageIdle,
-          pauseOnHover: ctx.pauseOnInteraction,
+          pauseOnInteraction: ctx.pauseOnInteraction,
           dir: ctx.dir,
           doc: ref(ctx.doc ?? document),
         }
