@@ -39,6 +39,12 @@
 - https://mymth.github.io/vanillajs-datepicker/#/
 - https://github.com/wakirin/Litepicker
 
+# Time picker
+
+- https://paste.twilio.design/components/time-picker
+- https://paste-storybook.twilio.design/?path=/story/components-time-picker--default-time-picker
+- Figma timer tool in Figjam
+
 ## Components ideas
 
 - https://component.kitchen/elix
