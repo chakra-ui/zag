@@ -1,7 +1,7 @@
 import { getComputedStyle } from "./computed-style"
 import { isDisabled, isHTMLElement } from "./query"
 
-export const focusableSelector = [
+export const focusableSelector = /*#__PURE__*/ [
   "input:not([disabled]):not([type=hidden])",
   "select:not([disabled])",
   "textarea:not([disabled])",

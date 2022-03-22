@@ -22,7 +22,7 @@ export const callAll =
     })
   }
 
-export const uuid = (() => {
+export const uuid = /*#__PURE__*/ (() => {
   let id = 0
   return () => {
     id++
