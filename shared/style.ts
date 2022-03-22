@@ -74,7 +74,7 @@ export const menuStyle: CSSObject = {
       outlineOffset: "-5px",
     },
   },
-  '[role="menuitem"]': {
+  '[role*="menuitem"]': {
     all: "unset",
     fontSize: "14px",
     lineHeight: 1,
