@@ -10,7 +10,7 @@ import { ItemProps, OptionItemProps, Send, Service, State, Api } from "./menu.ty
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
   const isSubmenu = state.context.isSubmenu
-
+  const values = state.context.values
   const isOpen = state.hasTag("visible")
 
   function getPositionerStyle() {
@@ -295,7 +295,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getItemOptionProps(options: OptionItemProps) {
-      const { type, checked, disabled, onCheckedChange } = options
+      const { type, name, disabled, value, onChange } = options
+      const checked = type === "radio" ? values?.[name] === value : values?.[name].includes(value)
       return Object.assign(
         api.getItemProps(options),
         normalize.element<T>({
@@ -305,7 +306,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           onClick(event) {
             if (disabled) return
             send({ type: "ITEM_CLICK", target: event.currentTarget })
-            onCheckedChange?.(!checked)
+            onChange?.(!checked)
           },
         }),
       )

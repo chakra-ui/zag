@@ -12,6 +12,10 @@ export type MachineState = {
 
 export type MachineContext = Context<{
   /**
+   * The values of radios and checkboxes in the menu.
+   */
+  values?: Record<string, string | string[]>
+  /**
    * The `id` of the active menu item.
    */
   activeId: string | null
@@ -88,13 +92,36 @@ export type Api = {
 }
 
 export type ItemProps = {
+  /**
+   * The `id` of the menu item option.
+   */
   id: string
+  /**
+   * Whether the menu item is disabled
+   */
   disabled?: boolean
+  /**
+   * The textual value of the option. Used in typeahead navigation of the menu.
+   * If not provided, the text content of the menu item will be used.
+   */
   valueText?: string
 }
 
 export type OptionItemProps = ItemProps & {
+  /**
+   * The option's name as specified in menu's `context.values` object
+   */
+  name: string
+  /**
+   * Whether the option is a radio or a checkbox
+   */
   type: "radio" | "checkbox"
-  checked?: boolean
-  onCheckedChange?: (checked: boolean) => void
+  /**
+   * The value of the option
+   */
+  value: string
+  /**
+   * Function called when the option state is changed
+   */
+  onChange?: (checked: boolean) => void
 }
