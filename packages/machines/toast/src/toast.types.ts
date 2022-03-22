@@ -11,9 +11,9 @@ type SharedContext = {
    */
   pauseOnPageIdle?: boolean
   /**
-   * Whehther to pause the toast wnhen it is hovered
+   * Whether to pause the toast when interacted with
    */
-  pauseOnHover?: boolean
+  pauseOnInteraction?: boolean
 }
 
 export type MachineContext = SharedContext & {

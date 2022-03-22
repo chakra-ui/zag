@@ -1,4 +1,5 @@
 import { createMachine, ref } from "@ui-machines/core"
+import { MAX_Z_INDEX } from "@ui-machines/dom-utils"
 import { createToastMachine } from "./toast.machine"
 import { GroupMachineContext } from "./toast.types"
 
@@ -7,13 +8,13 @@ export const groupMachine = createMachine<GroupMachineContext>({
   initial: "active",
   context: {
     dir: "ltr",
-    max: 20,
-    uid: "toasts-machine",
+    max: Number.MAX_SAFE_INTEGER,
+    uid: "",
     toasts: [],
     spacing: "1rem",
-    zIndex: 9999,
+    zIndex: MAX_Z_INDEX,
     pauseOnPageIdle: false,
-    pauseOnHover: false,
+    pauseOnInteraction: true,
     offsets: { left: 0, right: 0, top: 0, bottom: 0 },
   },
 
@@ -61,8 +62,8 @@ export const groupMachine = createMachine<GroupMachineContext>({
       actions: (ctx, evt, { self }) => {
         const options = {
           ...evt.toast,
-          pauseOnPageIdle: ctx.pauseOnHover,
-          pauseOnHover: ctx.pauseOnHover,
+          pauseOnPageIdle: ctx.pauseOnPageIdle,
+          pauseOnHover: ctx.pauseOnInteraction,
           dir: ctx.dir,
           doc: ref(ctx.doc ?? document),
         }

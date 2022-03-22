@@ -10,7 +10,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const isVisible = state.hasTag("visible")
-  const pauseOnHover = state.context.pauseOnHover
+  const pauseOnInteraction = state.context.pauseOnInteraction
   const placement = state.context.placement
 
   return {
@@ -41,7 +41,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     containerProps: normalize.element<T>({
       "data-part": "container",
-      id: dom.getRootId(state.context),
+      id: dom.getContainerId(state.context),
       "data-open": dataAttr(isVisible),
       "data-type": state.context.type,
       "data-placement": placement,
@@ -62,18 +62,22 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         }
       },
       onFocus() {
-        send("PAUSE")
+        if (pauseOnInteraction) {
+          send("PAUSE")
+        }
       },
       onBlur() {
-        send("RESUME")
+        if (pauseOnInteraction) {
+          send("RESUME")
+        }
       },
       onPointerEnter() {
-        if (pauseOnHover) {
+        if (pauseOnInteraction) {
           send("PAUSE")
         }
       },
       onPointerLeave() {
-        if (pauseOnHover) {
+        if (pauseOnInteraction) {
           send("RESUME")
         }
       },
@@ -81,7 +85,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     titleProps: normalize.element<T>({
       "data-part": "title",
-      id: dom.getToastTitleId(state.context),
+      id: dom.getTitleId(state.context),
     }),
 
     closeButtonProps: normalize.button<T>({
