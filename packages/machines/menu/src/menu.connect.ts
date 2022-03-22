@@ -1,30 +1,17 @@
 import { mergeProps } from "@ui-machines/core"
 import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
+import { getArrowStyle, innerArrowStyle } from "@ui-machines/popper"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
-import { ItemProps, OptionItemProps, Send, Service, State, Api } from "./menu.types"
+import { Api, ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
   const isSubmenu = state.context.isSubmenu
   const values = state.context.values
   const isOpen = state.hasTag("visible")
-
-  function getPositionerStyle() {
-    if (!state.context.contextMenu) {
-      return getFloatingStyle(state.context.isPlacementComplete)
-    }
-
-    if (state.context.contextMenuPoint)
-      return {
-        position: "absolute",
-        left: `${state.context.contextMenuPoint.x}px`,
-        top: `${state.context.contextMenuPoint.y}px`,
-      } as const
-  }
 
   const api = {
     isOpen,
@@ -39,6 +26,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
     close() {
       send("CLOSE")
+    },
+    isOptionChecked(opts: OptionItemProps) {
+      return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
+    },
+    value: values,
+    setValue(name: string, value: any) {
+      send({ type: "SET_VALUE", name, value })
     },
 
     contextTriggerProps: normalize.element<T>({
@@ -152,7 +146,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     positionerProps: normalize.element<T>({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
-      style: getPositionerStyle(),
+      style: dom.getPositionerStyle(state.context),
     }),
 
     arrowProps: normalize.element<T>({
@@ -296,16 +290,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getItemOptionProps(options: OptionItemProps) {
       const { type, name, disabled, value, onChange } = options
-      const checked = type === "radio" ? values?.[name] === value : values?.[name].includes(value)
+      options.id = options.id ?? options.value
+      const checked = api.isOptionChecked(options)
       return Object.assign(
-        api.getItemProps(options),
+        api.getItemProps(options as any),
         normalize.element<T>({
           "data-part": "menu-option",
           role: `menuitem${type}`,
           "aria-checked": !!checked,
+          "data-checked": dataAttr(checked),
           onClick(event) {
             if (disabled) return
-            send({ type: "ITEM_CLICK", target: event.currentTarget })
+            send({ type: "ITEM_CLICK", target: event.currentTarget, option: { value, type, name } })
             onChange?.(!checked)
           },
         }),

@@ -16,6 +16,10 @@ export type MachineContext = Context<{
    */
   values?: Record<string, string | string[]>
   /**
+   * Callback to be called when the menu values change (for radios and checkboxes).
+   */
+  onValuesChange?: (data: { name: string; value: string | string[] }) => void
+  /**
    * The `id` of the active menu item.
    */
   activeId: string | null
@@ -107,7 +111,8 @@ export type ItemProps = {
   valueText?: string
 }
 
-export type OptionItemProps = ItemProps & {
+export type OptionItemProps = Omit<ItemProps, "id"> & {
+  id?: string
   /**
    * The option's name as specified in menu's `context.values` object
    */

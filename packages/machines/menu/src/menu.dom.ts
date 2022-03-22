@@ -1,4 +1,5 @@
 import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { getFloatingStyle } from "@ui-machines/popper"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./menu.types"
 
@@ -51,5 +52,16 @@ export const dom = {
   },
   isTriggerItem: (el: HTMLElement | null) => {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
+  },
+  getPositionerStyle(ctx: Ctx) {
+    if (!ctx.contextMenu) {
+      return getFloatingStyle(ctx.isPlacementComplete)
+    }
+    if (ctx.contextMenuPoint)
+      return {
+        position: "absolute",
+        left: `${ctx.contextMenuPoint.x}px`,
+        top: `${ctx.contextMenuPoint.y}px`,
+      } as const
   },
 }

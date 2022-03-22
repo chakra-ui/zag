@@ -2,6 +2,7 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { getPlacement } from "@ui-machines/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
+import { add, isArray, remove } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
 import { MachineContext, MachineState } from "./menu.types"
 
@@ -9,7 +10,7 @@ const { not, and } = guards
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "menu-machine",
+    id: "menu",
     initial: "unknown",
     context: {
       uid: "",
@@ -64,6 +65,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       RESTORE_FOCUS: {
         actions: "restoreFocus",
+      },
+      SET_VALUE: {
+        actions: ["setOptionValue", "invokeOnValueChange"],
       },
     },
 
@@ -262,7 +266,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ITEM_CLICK: {
             guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
             target: "closed",
-            actions: ["invokeOnSelect", "closeParents"],
+            actions: ["invokeOnSelect", "closeParents", "changeOptionValue", "invokeOnValueChange"],
           },
           TRIGGER_POINTERLEAVE: {
             target: "closing",
@@ -337,6 +341,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       trackPointerMove(ctx, _evt, { guards, send }) {
         const { isWithinPolygon } = guards
+        // hack: we're mutating parent context here. sending events to parent doesn't work
         ctx.parent!.state.context.suspendPointer = true
 
         const doc = dom.getDoc(ctx)
@@ -346,12 +351,33 @@ export const machine = createMachine<MachineContext, MachineState>(
           })
           if (!isMovingToSubmenu) {
             send("CLOSE")
+            // hack: we're mutating parent context here. sending events to parent doesn't work
             ctx.parent!.state.context.suspendPointer = false
           }
         })
       },
     },
     actions: {
+      invokeOnValueChange(ctx, evt) {
+        if (!ctx.values) return
+        const name = evt.name ?? evt.option.name
+        const values = ctx.values[name]
+        return ctx.onValuesChange?.({ name, value: isArray(values) ? Array.from(values) : values })
+      },
+      setOptionValue(ctx, evt) {
+        if (!ctx.values) return
+        ctx.values[evt.name] = evt.value
+      },
+      changeOptionValue(ctx, evt) {
+        if (!evt.option || !ctx.values) return
+        const { value, type, name } = evt.option
+        const values = ctx.values[name]
+        if (type === "checkbox" && isArray(values)) {
+          ctx.values[name] = values.includes(value) ? remove(values, value) : add(values, value)
+        } else {
+          ctx.values[name] = value
+        }
+      },
       setIntentPolygon(ctx, evt) {
         const menu = dom.getContentEl(ctx)
         if (!menu) return
