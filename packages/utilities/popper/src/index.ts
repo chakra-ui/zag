@@ -88,15 +88,24 @@ export function getPlacement(
   }
 
   function compute() {
-    if (reference == null || floating == null) return
+    if (reference == null || floating == null) {
+      return
+    }
+
     computePosition(reference, floating, {
       placement: options.placement,
       middleware,
       strategy: options.strategy,
-    }).then(({ x, y, placement, strategy }) => {
-      Object.assign(floating.style, { left: `${x}px`, top: `${y}px`, position: strategy })
-      options.onPlacementComplete?.(placement)
     })
+      .then((data) => {
+        const { x, y, strategy } = data
+        Object.assign(floating.style, { left: `${x}px`, top: `${y}px`, position: strategy })
+        return data
+      })
+      .then((data) => {
+        const { placement } = data
+        options.onPlacementComplete?.(placement)
+      })
   }
 
   function addResizeListeners() {
