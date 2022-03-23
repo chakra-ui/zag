@@ -10,6 +10,7 @@ export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
   getTriggerId: (ctx: Ctx) => `menu-${ctx.uid}-trigger`,
+  getContextTriggerId: (ctx: Ctx) => `menu-${ctx.uid}-context-trigger`,
   getContentId: (ctx: Ctx) => `menu-${ctx.uid}-menulist`,
   getArrowId: (ctx: Ctx) => `popover-${ctx.uid}--arrow`,
   getPositionerId: (ctx: Ctx) => `tooltip-${ctx.uid}--popper`,
@@ -56,15 +57,15 @@ export const dom = {
   },
   getPositionerStyle(ctx: Ctx) {
     // Disable pointer events until the placement is complete to avoid weird pointer behavior
-    const styles: Style = { pointerEvents: !ctx.isPlacementComplete ? "none" : undefined }
-    if (!ctx.contextMenu) {
-      return Object.assign(styles, getFloatingStyle(!!ctx.currentPlacement))
-    }
-    if (ctx.contextMenuPoint)
-      return Object.assign(styles, {
+    if (ctx.contextMenu && ctx.contextMenuPoint) {
+      return {
         position: "absolute",
         left: `${ctx.contextMenuPoint.x}px`,
         top: `${ctx.contextMenuPoint.y}px`,
-      })
+      } as Style
+    }
+
+    const styles: Style = { pointerEvents: !ctx.isPlacementComplete ? "none" : undefined }
+    return Object.assign(styles, getFloatingStyle(!!ctx.currentPlacement))
   },
 }

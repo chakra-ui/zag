@@ -2,7 +2,7 @@ import { createMachine, guards, ref } from "@ui-machines/core"
 import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
 import { getPlacement } from "@ui-machines/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
-import { add, isArray, remove } from "@ui-machines/utils"
+import { add, invariant, isArray, remove } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
 import { MachineContext, MachineState } from "./menu.types"
 
@@ -80,7 +80,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: "setupDocument",
+            actions: ["setupDocument", "validateMenuSetup"],
           },
         },
       },
@@ -412,6 +412,16 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
+      },
+      validateMenuSetup(ctx) {
+        nextTick(() => {
+          const trigger = dom.getTriggerEl(ctx)
+          if (ctx.contextMenu && trigger) {
+            invariant(
+              `[menu/invalid-setup] A menu cannot be a context menu and have a button trigger. Please remove one of the two.`,
+            )
+          }
+        })
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id
