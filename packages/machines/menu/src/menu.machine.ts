@@ -24,12 +24,13 @@ export const machine = createMachine<MachineContext, MachineState>(
       suspendPointer: false,
       contextMenuPoint: null,
       positioning: { placement: "bottom-start", gutter: 8 },
+      closeOnSelect: true,
+      isPlacementComplete: false,
     },
 
     computed: {
       isSubmenu: (ctx) => ctx.parent !== null,
       isRtl: (ctx) => ctx.dir === "rtl",
-      isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
     created(ctx) {
@@ -49,10 +50,10 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     on: {
       SET_PARENT: {
-        actions: "setParent",
+        actions: "setParentMenu",
       },
       SET_CHILD: {
-        actions: "setChild",
+        actions: "setChildMenu",
       },
       OPEN: {
         target: "open",
@@ -68,6 +69,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       SET_VALUE: {
         actions: ["setOptionValue", "invokeOnValueChange"],
+      },
+      SET_ACTIVE_ID: {
+        actions: "setActiveId",
       },
     },
 
@@ -132,7 +136,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         after: {
           SUBMENU_CLOSE_DELAY: {
             target: "closed",
-            actions: ["resumePointer", "focusParentMenu", "sendRestoreFocus"],
+            actions: ["resumePointer", "focusParentMenu", "restoreParentFocus"],
           },
         },
         on: {
@@ -149,7 +153,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           "focusTrigger",
           "clearPointerDownNode",
           "resumePointer",
-          "closeChildren",
+          "closeChildMenus",
           "clearContextMenuPoint",
         ],
         on: {
@@ -221,7 +225,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           BLUR: {
             target: "closed",
-            actions: "closeParents",
+            actions: "closeParentMenus",
           },
           ARROW_RIGHT: {
             guard: "isTriggerActiveItem",
@@ -234,21 +238,21 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
             {
               target: "closed",
-              actions: ["invokeOnSelect", "closeParents"],
+              actions: ["invokeOnSelect", "closeParentMenus"],
             },
           ],
           ESCAPE: [
             {
               guard: "isSubmenu",
               target: "closed",
-              actions: "closeParents",
+              actions: "closeParentMenus",
             },
             { target: "closed" },
           ],
           ITEM_POINTERMOVE: [
             {
               guard: and(not("isMenuFocused"), not("isTriggerActiveItem"), not("suspendPointer"), not("isActiveItem")),
-              actions: ["focusItem", "focusMenu", "closeChildren"],
+              actions: ["focusItem", "focusMenu", "closeChildMenus"],
             },
             {
               guard: and(not("suspendPointer"), not("isActiveItem")),
@@ -263,11 +267,17 @@ export const machine = createMachine<MachineContext, MachineState>(
             guard: and(not("isTriggerItem"), not("suspendPointer")),
             actions: "clearActiveId",
           },
-          ITEM_CLICK: {
-            guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
-            target: "closed",
-            actions: ["invokeOnSelect", "closeParents", "changeOptionValue", "invokeOnValueChange"],
-          },
+          ITEM_CLICK: [
+            {
+              guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable"), "closeOnSelect"),
+              target: "closed",
+              actions: ["invokeOnSelect", "closeParentMenus", "changeOptionValue", "invokeOnValueChange"],
+            },
+            {
+              guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
+              actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
+            },
+          ],
           TRIGGER_POINTERLEAVE: {
             target: "closing",
             actions: "setIntentPolygon",
@@ -289,6 +299,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       SUBMENU_CLOSE_DELAY: 200,
     },
     guards: {
+      closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
       hasActiveId: (ctx) => ctx.activeId !== null,
       isRtl: (ctx) => ctx.isRtl,
       isMenuFocused: (ctx) => {
@@ -321,18 +332,18 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (ctx.disablePlacement) return
         ctx.currentPlacement = ctx.positioning.placement
         const arrow = dom.getArrowEl(ctx)
-        const cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+        return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
           ...ctx.positioning,
           arrow: arrow ? { ...ctx.positioning.arrow, element: arrow } : undefined,
           onPlacementComplete(placement) {
             ctx.currentPlacement = placement
+            ctx.isPlacementComplete = true
           },
           onCleanup() {
             ctx.currentPlacement = undefined
+            ctx.isPlacementComplete = false
           },
         })
-
-        return () => cleanup?.()
       },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
@@ -341,17 +352,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       trackPointerMove(ctx, _evt, { guards, send }) {
         const { isWithinPolygon } = guards
-        // hack: we're mutating parent context here. sending events to parent doesn't work
+        // NOTE: we're mutating parent context here. sending events to parent doesn't work
         ctx.parent!.state.context.suspendPointer = true
 
         const doc = dom.getDoc(ctx)
         return addPointerEvent(doc, "pointermove", (e) => {
-          const isMovingToSubmenu = isWithinPolygon(ctx, {
-            point: getEventPoint(e),
-          })
+          const isMovingToSubmenu = isWithinPolygon(ctx, { point: getEventPoint(e) })
           if (!isMovingToSubmenu) {
             send("CLOSE")
-            // hack: we're mutating parent context here. sending events to parent doesn't work
+            // NOTE: we're mutating parent context here. sending events to parent doesn't work
             ctx.parent!.state.context.suspendPointer = false
           }
         })
@@ -387,6 +396,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         const { top, right, left, bottom } = menuRect.corners
 
         let polygon = [evt.point, top, right, bottom, left]
+        // NOTE: this might need to be changed to the current placement, not just rtl
         if (ctx.isRtl && ctx.isSubmenu) {
           polygon = [evt.point, top, left, bottom, right]
         }
@@ -402,6 +412,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
         ctx.doc = ref(evt.doc)
+      },
+      setActiveId(ctx, evt) {
+        ctx.activeId = evt.id
       },
       clearActiveId(ctx) {
         ctx.activeId = null
@@ -451,18 +464,18 @@ export const machine = createMachine<MachineContext, MachineState>(
         const node = dom.getElemByKey(ctx, evt.key)
         if (node) ctx.activeId = node.id
       },
-      setParent(ctx, evt) {
+      setParentMenu(ctx, evt) {
         ctx.parent = ref(evt.value)
       },
-      setChild(ctx, evt) {
+      setChildMenu(ctx, evt) {
         ctx.children[evt.id] = ref(evt.value)
       },
-      closeChildren(ctx) {
+      closeChildMenus(ctx) {
         for (const child of Object.values(ctx.children)) {
           child.send("CLOSE")
         }
       },
-      closeParents(ctx) {
+      closeParentMenus(ctx) {
         let parent = ctx.parent
         while (parent) {
           parent.send("CLOSE")
@@ -487,7 +500,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.activeId = ctx.hoverId
         ctx.hoverId = null
       },
-      sendRestoreFocus(ctx) {
+      restoreParentFocus(ctx) {
         ctx.parent?.send("RESTORE_FOCUS")
       },
       setContextMenuPoint(ctx, evt) {

@@ -81,9 +81,13 @@ export type MachineContext = Context<{
    */
   currentPlacement?: Placement
   /**
-   * @computed Whether the dynamic placement has been computed
+   *  @internal Whether the dynamic placement has been computed
    */
-  readonly isPlacementComplete?: boolean
+  isPlacementComplete: boolean
+  /**
+   * Whether to close the menu when an option is selected
+   */
+  closeOnSelect: boolean
 }>
 
 export type State = S.State<MachineContext, MachineState>
@@ -109,10 +113,13 @@ export type ItemProps = {
    * If not provided, the text content of the menu item will be used.
    */
   valueText?: string
+  /**
+   * Whether the menu should be closed when the option is selected.
+   */
+  closeOnSelect?: boolean
 }
 
-export type OptionItemProps = Omit<ItemProps, "id"> & {
-  id?: string
+export type OptionItemProps = Partial<ItemProps> & {
   /**
    * The option's name as specified in menu's `context.values` object
    */
@@ -128,5 +135,5 @@ export type OptionItemProps = Omit<ItemProps, "id"> & {
   /**
    * Function called when the option state is changed
    */
-  onChange?: (checked: boolean) => void
+  onCheckedChange?: (checked: boolean) => void
 }

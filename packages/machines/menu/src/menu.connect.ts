@@ -34,6 +34,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     setValue(name: string, value: any) {
       send({ type: "SET_VALUE", name, value })
     },
+    activeId: state.context.activeId,
+    setActiveId(id: string) {
+      send({ type: "SET_ACTIVE_ID", id })
+    },
 
     contextTriggerProps: normalize.element<T>({
       "data-part": "trigger",
@@ -234,9 +238,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           if (!allow) event.preventDefault()
           exec(event)
         } else {
+          // NOTE: we'll need to more robust isEditable(el) check
           const editable = activeItem?.matches("input, textarea, [contenteditable], select")
           const isKeyDownInside = event.currentTarget.contains(event.target as HTMLElement)
           const isModifierKey = event.ctrlKey || event.altKey || event.metaKey
+
+          // NOTE: we'll need to support full text search typeahead, not just single key
           const isSingleKey = event.key.length === 1
 
           if (isSingleKey && !isModifierKey && isKeyDownInside && !editable) {
@@ -270,7 +277,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || disabled) return
+          const isSameTarget = contains(pointerdownNode, event.currentTarget)
+          if (!isLeftClick(evt) || disabled || isSameTarget) return
           event.currentTarget.click()
         },
         onPointerLeave(event) {
@@ -289,20 +297,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getItemOptionProps(options: OptionItemProps) {
-      const { type, name, disabled, value, onChange } = options
+      const { type, disabled, onCheckedChange } = options
       options.id = options.id ?? options.value
       const checked = api.isOptionChecked(options)
       return Object.assign(
         api.getItemProps(options as any),
         normalize.element<T>({
-          "data-part": "menu-option",
+          "data-part": "menuitem-option",
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           "data-checked": dataAttr(checked),
           onClick(event) {
             if (disabled) return
-            send({ type: "ITEM_CLICK", target: event.currentTarget, option: { value, type, name } })
-            onChange?.(!checked)
+            send({ type: "ITEM_CLICK", target: event.currentTarget, option: options })
+            onCheckedChange?.(!checked)
           },
         }),
       )

@@ -1,5 +1,6 @@
 import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
 import { getFloatingStyle } from "@ui-machines/popper"
+import { Style } from "@ui-machines/types"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./menu.types"
 
@@ -54,14 +55,16 @@ export const dom = {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
   },
   getPositionerStyle(ctx: Ctx) {
+    // Disable pointer events until the placement is complete to avoid weird pointer behavior
+    const styles: Style = { pointerEvents: !ctx.isPlacementComplete ? "none" : undefined }
     if (!ctx.contextMenu) {
-      return getFloatingStyle(ctx.isPlacementComplete)
+      return Object.assign(styles, getFloatingStyle(!!ctx.currentPlacement))
     }
     if (ctx.contextMenuPoint)
-      return {
+      return Object.assign(styles, {
         position: "absolute",
         left: `${ctx.contextMenuPoint.x}px`,
         top: `${ctx.contextMenuPoint.y}px`,
-      } as const
+      })
   },
 }
