@@ -9,6 +9,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
+  const isHorizontal = state.context.isHorizontal
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
 
@@ -39,9 +40,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       style: {
         display: "flex",
         flex: "1 1 0%",
-        height: state.context.isHorizontal ? "100%" : "auto",
-        width: state.context.isHorizontal ? "auto" : "100%",
-        flexDirection: state.context.isHorizontal ? "row" : "column",
+        height: isHorizontal ? "100%" : "auto",
+        width: isHorizontal ? "auto" : "100%",
+        flexDirection: isHorizontal ? "row" : "column",
       },
     }),
 
@@ -50,8 +51,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-disabled": dataAttr(state.context.disabled),
       id: dom.getSecondaryPaneId(state.context),
       style: {
-        height: state.context.isHorizontal ? "100%" : "auto",
-        width: state.context.isHorizontal ? "auto" : "100%",
+        height: isHorizontal ? "100%" : "auto",
+        width: isHorizontal ? "auto" : "100%",
         flex: "1 1 auto",
         position: "relative",
       },
@@ -107,8 +108,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         msUserSelect: "none",
         flex: "0 0 auto",
         cursor: dom.getCursor(state.context),
-        minHeight: state.context.isHorizontal ? "0px" : undefined,
-        minWidth: state.context.isHorizontal ? undefined : "0px",
+        minHeight: isHorizontal ? "0px" : undefined,
+        minWidth: isHorizontal ? undefined : "0px",
       },
       onPointerDown(event) {
         if (state.context.disabled) {
