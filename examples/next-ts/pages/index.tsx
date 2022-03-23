@@ -21,7 +21,10 @@ const IndexPage = () => {
           <Link href="/menu">Menu </Link>
         </li>
         <li>
-          <Link href="/nested-menu"> To nested menu </Link>
+          <Link href="/nested-menu"> Nested menu </Link>
+        </li>
+        <li>
+          <Link href="/menu-options"> Menu with Options </Link>
         </li>
         <li>
           <Link href="/context-menu">Context Menu </Link>
