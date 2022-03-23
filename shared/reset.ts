@@ -37,4 +37,7 @@ injectGlobal({
       },
     },
   },
+  ".backlink": {
+    margin: "16px 12px",
+  },
 })
