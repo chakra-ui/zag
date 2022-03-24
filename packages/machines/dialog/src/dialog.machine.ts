@@ -1,5 +1,6 @@
 import { createMachine, guards, ref, subscribe } from "@ui-machines/core"
 import { addDomEvent, nextTick, preventBodyScroll, trackPointerDown } from "@ui-machines/dom-utils"
+import { runIfFn } from "@ui-machines/utils"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
@@ -15,8 +16,8 @@ export const machine = createMachine<MachineContext, MachineState>(
     context: {
       pointerdownNode: null,
       role: "dialog",
-      hasDescription: true,
-      hasTitle: true,
+      isTitleRendered: true,
+      isDescriptionRendered: true,
       uid: "234",
       trapFocus: true,
       preventScroll: true,
@@ -101,8 +102,8 @@ export const machine = createMachine<MachineContext, MachineState>(
             fallbackFocus: dom.getContentEl(ctx),
             allowOutsideClick: true,
             returnFocusOnDeactivate: ctx.restoreFocus,
-            initialFocus: ctx.initialFocusEl,
-            setReturnFocus: ctx.finalFocusEl,
+            initialFocus: runIfFn(ctx.initialFocusEl) ?? undefined,
+            setReturnFocus: runIfFn(ctx.finalFocusEl) ?? undefined,
           })
           try {
             trap.activate()
@@ -140,8 +141,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       checkRenderedElements(ctx) {
         nextTick(() => {
-          ctx.hasDescription = !!dom.getDescriptionEl(ctx)
-          ctx.hasTitle = !!dom.getTitleEl(ctx)
+          ctx.isTitleRendered = !!dom.getTitleEl(ctx)
+          ctx.isDescriptionRendered = !!dom.getDescriptionEl(ctx)
         })
       },
       invokeOnOutsideClick(ctx) {

@@ -4,11 +4,11 @@ export type MachineContext = Context<{
   /**
    * @internal Whether the dialog title is rendered
    */
-  hasTitle: boolean
+  isTitleRendered: boolean
   /**
    * @internal Whether the dialog description is rendered
    */
-  hasDescription: boolean
+  isDescriptionRendered: boolean
   /**
    * Whether to trap focus inside the dialog when it's opened
    */
