@@ -294,6 +294,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           const isLink = event.currentTarget.matches("a[href]")
           if (isLink) event.preventDefault()
         },
+        onAuxClick(event) {
+          if (disabled) return
+          event.preventDefault()
+          event.currentTarget.click()
+        },
       })
     },
 

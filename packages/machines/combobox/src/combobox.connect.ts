@@ -252,6 +252,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         },
         onAuxClick(event) {
           if (disabled) return
+          event.preventDefault()
           event.currentTarget.click()
         },
       })
