@@ -6,6 +6,7 @@ type HTMLInputEl = HTMLInputElement | null
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
+  getRootId: (ctx: Ctx) => `editable-${ctx.uid}`,
   getLabelId: (ctx: Ctx) => `editable-label-${ctx.uid}`,
   getInputId: (ctx: Ctx) => `editable-input-${ctx.uid}`,
   getSubmitBtnId: (ctx: Ctx) => `editable-submit-btn-${ctx.uid}`,

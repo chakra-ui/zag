@@ -59,8 +59,8 @@ export const machine = createMachine<MachineContext, MachineState>(
             target: "edit",
           },
           FOCUS: {
-            target: "edit",
             guard: "activateOnFocus",
+            target: "edit",
             actions: ["setPreviousValue"],
           },
         },
@@ -104,10 +104,8 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
-      canFocusPreview: (ctx) => ctx.isPreviewFocusable,
       submitOnBlur: (ctx) => ctx.submitOnBlur,
       submitOnEnter: (ctx) => ctx.submitOnEnter,
-      selectOnFocus: (ctx) => !!ctx.selectOnFocus,
       isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
       activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
       activateOnFocus: (ctx) => ctx.activationMode === "focus",
@@ -136,15 +134,8 @@ export const machine = createMachine<MachineContext, MachineState>(
         nextTick(() => {
           const input = dom.getInputEl(ctx)
           if (!input) return
-          input.focus()
-          if (ctx.selectOnFocus) {
-            input.select()
-          }
-        })
-      },
-      selectInput(ctx) {
-        nextTick(() => {
-          dom.getInputEl(ctx)?.select()
+          if (ctx.selectOnFocus) input.select()
+          else input.focus()
         })
       },
       invokeOnCancel(ctx) {

@@ -12,7 +12,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   return {
     isEditing,
     isValueEmpty: state.context.isValueEmpty,
-
     value: state.context.value,
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
@@ -26,6 +25,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     submit() {
       send("SUBMIT")
     },
+
+    rootProps: normalize.element<T>({
+      "data-part": "root",
+      id: dom.getRootId(state.context),
+    }),
 
     inputProps: normalize.input<T>({
       "data-part": "input",
