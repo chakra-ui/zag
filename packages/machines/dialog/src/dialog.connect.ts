@@ -1,4 +1,4 @@
-import { StateMachine as S } from "@ui-machines/core"
+import type { StateMachine as S } from "@ui-machines/core"
 import { ariaAttr } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./dialog.dom"
@@ -20,6 +20,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     close() {
       send("CLOSE")
     },
+
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
       id: dom.getTriggerId(state.context),
@@ -31,10 +32,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("TRIGGER_CLICK")
       },
     }),
+
     backdropProps: normalize.element<T>({
       "data-part": "backdrop",
       id: dom.getBackdropId(state.context),
     }),
+
     underlayProps: normalize.element<T>({
       "data-part": "underlay",
       id: dom.getUnderlayId(state.context),
@@ -48,6 +51,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         event.stopPropagation()
       },
     }),
+
     contentProps: normalize.element<T>({
       "data-part": "content",
       role: state.context.role,
@@ -55,20 +59,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       tabIndex: -1,
       "aria-modal": ariaAttr(state.context.isTopMostDialog),
       "aria-label": ariaLabel || undefined,
-      "aria-labelledby": ariaLabel ? undefined : state.context.hasTitle ? dom.getTitleId(state.context) : undefined,
-      "aria-describedby": state.context.hasDescription ? dom.getDescriptionId(state.context) : undefined,
+      "aria-labelledby": ariaLabel || !state.context.isTitleRendered ? undefined : dom.getTitleId(state.context),
+      "aria-describedby": state.context.isDescriptionRendered ? dom.getDescriptionId(state.context) : undefined,
       onClick(event) {
         event.stopPropagation()
       },
     }),
+
     titleProps: normalize.element<T>({
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
+
     descriptionProps: normalize.element<T>({
       "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
+
     closeButtonProps: normalize.button<T>({
       "data-part": "close-button",
       id: dom.getCloseButtonId(state.context),

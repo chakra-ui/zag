@@ -1,4 +1,4 @@
-import { Context, MaybeElement } from "@ui-machines/types"
+import type { Context, MaybeElement } from "@ui-machines/types"
 
 export type MachineContext = Context<{
   /**
