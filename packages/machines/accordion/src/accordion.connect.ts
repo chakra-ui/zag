@@ -5,17 +5,11 @@ import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  function getItemState(props: ItemProps) {
-    const { value, disabled } = props
-    return {
-      isOpen: isArray(state.context.value) ? state.context.value.includes(value) : value === state.context.value,
-      isFocused: state.context.focusedValue === value,
-      isDisabled: disabled ?? state.context.disabled,
-    }
-  }
+  const focusedValue = state.context.focusedValue
+  const value = state.context.value
 
-  return {
-    value: state.context.value,
+  const api = {
+    value: value,
     setValue(value: string | string[]) {
       if (state.context.multiple && !Array.isArray(value)) {
         value = [value]
@@ -28,10 +22,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getRootId(state.context),
     }),
 
-    getItemState,
+    getItemState(props: ItemProps) {
+      return {
+        isOpen: isArray(value) ? value.includes(props.value) : props.value === value,
+        isFocused: focusedValue === props.value,
+        isDisabled: props.disabled ?? state.context.disabled,
+      }
+    },
 
     getItemProps(props: ItemProps) {
-      const { isOpen } = getItemState(props)
+      const { isOpen } = api.getItemState(props)
       return normalize.element<T>({
         "data-part": "item",
         id: dom.getGroupId(state.context, props.value),
@@ -40,7 +40,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getContentProps(props: ItemProps) {
-      const { isOpen, isFocused, isDisabled } = getItemState(props)
+      const { isOpen, isFocused, isDisabled } = api.getItemState(props)
       return normalize.element<T>({
         "data-part": "content",
         role: "region",
@@ -55,7 +55,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getTriggerProps(props: ItemProps) {
       const { value } = props
-      const { isDisabled, isOpen } = getItemState(props)
+      const { isDisabled, isOpen } = api.getItemState(props)
       return normalize.button<T>({
         "data-part": "trigger",
         type: "button",
@@ -114,4 +114,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
   }
+
+  return api
 }
