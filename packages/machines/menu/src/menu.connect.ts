@@ -15,28 +15,28 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   const api = {
     isOpen,
-    setParent(parent: Service) {
-      send({ type: "SET_PARENT", value: parent, id: parent.state.context.uid })
-    },
-    setChild(child: Service) {
-      send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
-    },
     open() {
       send("OPEN")
     },
     close() {
       send("CLOSE")
     },
-    isOptionChecked(opts: OptionItemProps) {
-      return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
+    activeId: state.context.activeId,
+    setActiveId(id: string) {
+      send({ type: "SET_ACTIVE_ID", id })
+    },
+    setParent(parent: Service) {
+      send({ type: "SET_PARENT", value: parent, id: parent.state.context.uid })
+    },
+    setChild(child: Service) {
+      send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
     },
     value: values,
     setValue(name: string, value: any) {
       send({ type: "SET_VALUE", name, value })
     },
-    activeId: state.context.activeId,
-    setActiveId(id: string) {
-      send({ type: "SET_ACTIVE_ID", id })
+    isOptionChecked(opts: OptionItemProps) {
+      return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
     },
 
     contextTriggerProps: normalize.element<T>({
