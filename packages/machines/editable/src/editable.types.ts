@@ -7,6 +7,22 @@ export type SubmitMode = "enter" | "blur" | "both" | "none"
 
 export type MachineContext = Context<{
   /**
+   * The accessiblity label of the editable component.
+   */
+  "aria-label": string
+  /**
+   * The name attribute of the editable component. Used for form submission.
+   */
+  name?: string
+  /**
+   * The CSS max-width of the editable area.
+   */
+  maxWidth?: string
+  /**
+   * Whether the editable should auto-resize to fit the content.
+   */
+  autoResize?: boolean
+  /**
    * The activation mode for the preview element.
    *
    * - "focus" - Enter edit mode when the preview element is focused

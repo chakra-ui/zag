@@ -45,6 +45,7 @@ export const editableStyle: CSSObject = {
   ".editable__area": {
     display: "inline-block",
     marginRight: "0.5em",
+    marginBottom: "1em",
   },
   ".editable__input": {
     width: "auto",

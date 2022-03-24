@@ -10,6 +10,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "editable-machine",
     initial: "unknown",
     context: {
+      "aria-label": "editable input",
       startWithEditView: false,
       activationMode: "focus",
       submitMode: "both",

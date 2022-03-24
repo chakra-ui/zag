@@ -21,32 +21,34 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const editable = createMemo(() => Editable.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => Editable.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
-      <div className="root">
-        <div className="editable__area">
-          <input className="editable__input" data-testid="input" ref={ref} {...editable().inputProps} />
-          <span className="editable__preview" data-testid="preview" {...editable().previewProps} />
+      <div className="root" {...api().rootProps}>
+        <div className="editable__area" {...api().areaProps}>
+          <input className="editable__input" data-testid="input" ref={ref} {...api().inputProps} />
+          <span className="editable__preview" data-testid="preview" {...api().previewProps} />
         </div>
-        {!editable().isEditing && (
-          <button className="editable__edit" data-testid="edit-button" {...editable().editButtonProps}>
-            Edit
-          </button>
-        )}
-        {editable().isEditing && (
-          <div className="editable__controls">
-            <button data-testid="save-button" {...editable().submitButtonProps}>
-              Save
+        <div>
+          {!api().isEditing && (
+            <button className="editable__edit" data-testid="edit-button" {...api().editButtonProps}>
+              Edit
             </button>
-            <button data-testid="cancel-button" {...editable().cancelButtonProps}>
-              Cancel
-            </button>
-          </div>
-        )}
+          )}
+          {api().isEditing && (
+            <div className="editable__controls">
+              <button data-testid="save-button" {...api().submitButtonProps}>
+                Save
+              </button>
+              <button data-testid="cancel-button" {...api().cancelButtonProps}>
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <StateVisualizer state={state} />

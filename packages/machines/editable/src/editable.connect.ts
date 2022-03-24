@@ -6,7 +6,7 @@ import { Send, State } from "./editable.types"
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
   const isDisabled = state.context.disabled
-
+  const autoResize = state.context.autoResize
   const isEditing = state.matches("edit")
 
   return {
@@ -31,14 +31,26 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getRootId(state.context),
     }),
 
+    areaProps: normalize.element<T>({
+      "data-part": "area",
+      id: dom.getAreaId(state.context),
+      style: autoResize ? { display: "inline-grid" } : undefined,
+      "data-focus": dataAttr(!isEditing),
+      "data-disabled": dataAttr(isDisabled),
+      "data-empty": dataAttr(state.context.isValueEmpty),
+    }),
+
     inputProps: normalize.input<T>({
       "data-part": "input",
+      "aria-label": state.context["aria-label"],
+      name: state.context.name,
       id: dom.getInputId(state.context),
-      hidden: !isEditing,
+      hidden: autoResize ? undefined : !isEditing,
       placeholder: state.context.placeholder,
       disabled: isDisabled,
       "aria-disabled": isDisabled,
       value: state.context.value,
+      size: autoResize ? 1 : undefined,
       onBlur(event) {
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getCancelBtnEl(state.context), dom.getSubmitBtnEl(state.context)],
@@ -70,13 +82,21 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           exec(event)
         }
       },
+      style: autoResize
+        ? {
+            all: "unset",
+            gridArea: "1 / 1 / auto / auto",
+            visibility: !isEditing ? "hidden" : undefined,
+          }
+        : undefined,
     }),
 
     previewProps: normalize.element<T>({
+      id: dom.getPreviewId(state.context),
       "data-part": "preview",
       "data-empty": dataAttr(state.context.isValueEmpty),
       children: state.context.value === "" ? state.context.placeholder : state.context.value,
-      hidden: isEditing,
+      hidden: autoResize ? undefined : isEditing,
       "aria-disabled": ariaAttr(isDisabled),
       tabIndex: state.context.isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {
@@ -85,6 +105,19 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onDoubleClick() {
         send("DBLCLICK")
       },
+      style: autoResize
+        ? {
+            whiteSpace: "pre",
+            userSelect: "none",
+            gridArea: "1 / 1 / auto / auto",
+            visibility: isEditing ? "hidden" : undefined,
+            ...(state.context.maxWidth && {
+              maxWidth: state.context.maxWidth,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }),
+          }
+        : undefined,
     }),
 
     editButtonProps: normalize.button<T>({

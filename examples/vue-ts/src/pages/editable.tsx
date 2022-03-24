@@ -23,33 +23,34 @@ export default defineComponent({
     const editableRef = computed(() => Editable.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { isEditing, inputProps, previewProps, cancelButtonProps, submitButtonProps, editButtonProps } =
-        editableRef.value
+      const api = editableRef.value
 
       return (
         <>
           <controls.ui />
 
-          <div class="root">
-            <div class="editable__area">
-              <input class="editable__input" data-testid="input" ref={ref} {...inputProps} />
-              <span class="editable__preview" data-testid="preview" {...previewProps} />
+          <div class="root" {...api.rootProps}>
+            <div class="editable__area" {...api.areaProps}>
+              <input class="editable__input" data-testid="input" ref={ref} {...api.inputProps} />
+              <span class="editable__preview" data-testid="preview" {...api.previewProps} />
             </div>
-            {!isEditing && (
-              <button class="editable__edit" data-testid="edit-button" {...editButtonProps}>
-                Edit
-              </button>
-            )}
-            {isEditing && (
-              <div class="editable__controls">
-                <button data-testid="save-button" {...submitButtonProps}>
-                  Save
+            <div>
+              {!api.isEditing && (
+                <button class="editable__edit" data-testid="edit-button" {...api.editButtonProps}>
+                  Edit
                 </button>
-                <button data-testid="cancel-button" {...cancelButtonProps}>
-                  Cancel
-                </button>
-              </div>
-            )}
+              )}
+              {api.isEditing && (
+                <div class="editable__controls">
+                  <button data-testid="save-button" {...api.submitButtonProps}>
+                    Save
+                  </button>
+                  <button data-testid="cancel-button" {...api.cancelButtonProps}>
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <StateVisualizer state={state} />
