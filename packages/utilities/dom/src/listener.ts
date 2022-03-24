@@ -1,16 +1,7 @@
-export const t = (v: any) => Object.prototype.toString.call(v).slice(8, -1)
-
-export const isRef = (v: any): v is RefTarget => {
-  return t(v) === "Object" && "current" in v
-}
-
-export const runIfFn = (fn: any): HTMLElement | null => {
-  return t(fn) === "Function" ? fn() : fn
-}
-
-const isTouchEvent = (v: Event): v is TouchEvent => {
-  return t(v) === "Object" && !!(v as TouchEvent).touches
-}
+const t = (v: any) => Object.prototype.toString.call(v).slice(8, -1)
+const isRef = (v: any): v is RefTarget => t(v) === "Object" && "current" in v
+const runIfFn = (fn: any): HTMLElement | null => (t(fn) === "Function" ? fn() : fn)
+const isTouchEvent = (v: Event): v is TouchEvent => t(v) === "Object" && !!(v as TouchEvent).touches
 
 const fallback = { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }
 
@@ -59,9 +50,7 @@ function filterPrimaryPointer(fn: EventListener): EventListener {
     const win = ((event as UIEvent).view ?? window) as typeof window
     const isMouseEvent = event instanceof win.MouseEvent
     const isPrimary = !isMouseEvent || (isMouseEvent && (event as MouseEvent).button === 0)
-    if (isPrimary) {
-      fn(event)
-    }
+    if (isPrimary) fn(event)
   }
 }
 
