@@ -95,7 +95,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getPreviewId(state.context),
       "data-part": "preview",
       "data-empty": dataAttr(state.context.isValueEmpty),
-      children: state.context.value === "" ? state.context.placeholder : state.context.value,
+      children: state.context.isValueEmpty ? state.context.placeholder : state.context.value,
       hidden: autoResize ? undefined : isEditing,
       "aria-disabled": ariaAttr(isDisabled),
       tabIndex: state.context.isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
