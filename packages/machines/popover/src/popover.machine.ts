@@ -8,7 +8,7 @@ import {
   trackPointerDown,
 } from "@ui-machines/dom-utils"
 import { getPlacement } from "@ui-machines/popper"
-import { next } from "@ui-machines/utils"
+import { next, runIfFn } from "@ui-machines/utils"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
@@ -172,7 +172,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             returnFocusOnDeactivate: true,
             document: dom.getDoc(ctx),
             fallbackFocus: el,
-            initialFocus: ctx.initialFocusEl,
+            initialFocus: runIfFn(ctx.initialFocusEl) ?? undefined,
           })
           try {
             trap.activate()
