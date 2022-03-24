@@ -31,7 +31,8 @@ export function dispatchInputEvent(el: HTMLElement, opts: DispatchEventOptions) 
   }
 }
 
-export function onElementValueChange(el: HTMLInputElement, fn: (value: string) => void) {
+export function onElementValueChange(el: HTMLInputElement, fn?: (value: string) => void) {
+  if (!fn) return
   const win = getOwnerWindow(el)
   const descriptor = Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype, "value")
 
