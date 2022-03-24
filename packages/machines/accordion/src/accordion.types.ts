@@ -13,7 +13,7 @@ export type MachineContext = Context<{
    */
   collapsible?: boolean
   /**
-   * @internal - The `id` of the focused accordion item.
+   * @internal The `id` of the focused accordion item.
    */
   focusedValue: string | null
   /**
