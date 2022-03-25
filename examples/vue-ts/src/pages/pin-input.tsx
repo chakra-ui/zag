@@ -21,20 +21,20 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const pin = computed(() => PinInput.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => PinInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { containerProps, getInputProps, clearValue } = pin.value
+      const api = apiRef.value
       return (
         <div>
           <controls.ui />
-          <div class="pin-input" ref={ref} {...containerProps}>
-            <input data-testid="input-1" {...getInputProps({ index: 0 })} />
-            <input data-testid="input-2" {...getInputProps({ index: 1 })} />
-            <input data-testid="input-3" {...getInputProps({ index: 2 })} />
+          <div class="pin-input" ref={ref} {...api.rootProps}>
+            <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
+            <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
+            <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
           </div>
 
-          <button data-testid="clear-button" onClick={clearValue}>
+          <button data-testid="clear-button" onClick={api.clearValue}>
             Clear
           </button>
 

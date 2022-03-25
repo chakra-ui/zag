@@ -18,19 +18,19 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const pin = createMemo(() => PinInput.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => PinInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div>
       <controls.ui />
 
-      <div className="pin-input" ref={ref} {...pin().containerProps}>
-        <input data-testid="input-1" {...pin().getInputProps({ index: 0 })} />
-        <input data-testid="input-2" {...pin().getInputProps({ index: 1 })} />
-        <input data-testid="input-3" {...pin().getInputProps({ index: 2 })} />
+      <div className="pin-input" ref={ref} {...api().rootProps}>
+        <input data-testid="input-1" {...api().getInputProps({ index: 0 })} />
+        <input data-testid="input-2" {...api().getInputProps({ index: 1 })} />
+        <input data-testid="input-3" {...api().getInputProps({ index: 2 })} />
       </div>
 
-      <button data-testid="clear-button" onClick={pin().clearValue}>
+      <button data-testid="clear-button" onClick={api().clearValue}>
         Clear
       </button>
 

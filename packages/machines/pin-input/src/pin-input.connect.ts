@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { isModifiedEvent } from "@ui-machines/utils"
+import { invariant, isModifiedEvent } from "@ui-machines/utils"
 import { dom } from "./pin-input.dom"
 import { MachineContext, MachineState } from "./pin-input.types"
 
@@ -10,33 +10,39 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
+  const isValueComplete = state.context.isValueComplete
+  const isInvalid = state.context.invalid
+  const focusedIndex = state.context.focusedIndex
+
   return {
     value: state.context.value,
-    focusedIndex: state.context.focusedIndex,
-
-    setValue(value: number[]) {
+    valueAsString: state.context.valueAsString,
+    isValueComplete: isValueComplete,
+    setValue(value: string[]) {
+      if (!Array.isArray(value)) {
+        invariant("[pin-input/setValue] value must be an array")
+      }
       send({ type: "SET_VALUE", value })
     },
     clearValue() {
       send({ type: "CLEAR_VALUE" })
     },
-    setValueAtIndex(value: string, index: number) {
+    setValueAtIndex(index: number, value: string) {
       send({ type: "SET_VALUE", value, index })
     },
     focus() {
-      dom.getFirstInputEl(state.context)?.focus()
-    },
-    blur() {
-      if (state.context.focusedIndex === -1) return
-      dom.getFirstInputEl(state.context)?.blur()
+      nextTick(() => {
+        dom.getFirstInputEl(state.context)?.focus()
+      })
     },
 
-    containerProps: normalize.element<T>({
-      "data-part": "container",
+    rootProps: normalize.element<T>({
+      dir: state.context.dir,
+      "data-part": "root",
       id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(state.context.invalid),
+      "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(state.context.disabled),
-      "data-complete": dataAttr(state.context.isValueComplete),
+      "data-complete": dataAttr(isValueComplete),
     }),
 
     getInputProps({ index }: { index: number }) {
@@ -45,22 +51,21 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-part": "input",
         disabled: state.context.disabled,
         "data-disabled": dataAttr(state.context.disabled),
-        "data-complete": dataAttr(state.context.isValueComplete),
+        "data-complete": dataAttr(isValueComplete),
         id: dom.getInputId(state.context, index),
         "data-ownedby": dom.getRootId(state.context),
-        "aria-label": "Please enter your pin code",
+        "aria-label": `pin code ${index + 1} of ${state.context.valueLength}`,
         inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
-        "aria-invalid": ariaAttr(state.context.invalid),
-        "data-invalid": dataAttr(state.context.invalid),
+        "aria-invalid": ariaAttr(isInvalid),
+        "data-invalid": dataAttr(isInvalid),
         type: state.context.mask ? "password" : inputType,
         value: state.context.value[index] || "",
-        autoCapitalize: "off",
+        autoCapitalize: "none",
         autoComplete: state.context.otp ? "one-time-code" : "off",
-        placeholder: state.context.focusedIndex === index ? "" : state.context.placeholder,
+        placeholder: focusedIndex === index ? "" : state.context.placeholder,
         onChange(event) {
           const evt = getNativeEvent(event)
           if (evt.isComposing) return
-
           const value = event.target.value
 
           if (evt.inputType === "insertFromPaste" || value.length > 2) {

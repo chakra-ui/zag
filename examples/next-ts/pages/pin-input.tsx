@@ -25,18 +25,18 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { containerProps, getInputProps, clearValue } = PinInput.connect(state, send)
+  const api = PinInput.connect(state, send)
 
   return (
     <>
       <Global styles={pinInputStyle} />
       <controls.ui />
-      <div className="pin-input" ref={ref} {...containerProps}>
-        <input data-testid="input-1" {...getInputProps({ index: 0 })} />
-        <input data-testid="input-2" {...getInputProps({ index: 1 })} />
-        <input data-testid="input-3" {...getInputProps({ index: 2 })} />
+      <div className="pin-input" ref={ref} {...api.rootProps}>
+        <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
+        <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
+        <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
       </div>
-      <button data-testid="clear-button" onClick={clearValue}>
+      <button data-testid="clear-button" onClick={api.clearValue}>
         Clear
       </button>
 

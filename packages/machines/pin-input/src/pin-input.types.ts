@@ -37,15 +37,23 @@ export type MachineContext = Context<{
   /**
    * Function called when all inputs have valid values
    */
-  onComplete?(value: string[], valueAsString: string): void
+  onComplete?: (value: string[], valueAsString: string) => void
   /**
    * Function called on input change
    */
   onChange?: (value: string[]) => void
   /**
+   * Function called when an invalid value is entered
+   */
+  onInvalid?: (data: { value: string; index: number }) => void
+  /**
    * If `true`, the input's value will be masked just like `type=password`
    */
   mask?: boolean
+  /**
+   * Whether to blur the input when the value is complete
+   */
+  blurOnComplete?: boolean
   /**
    * @computed the number of inputs
    */

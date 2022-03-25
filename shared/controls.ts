@@ -43,6 +43,7 @@ export const pinInputControls = defineControls({
   type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
+  blurOnComplete: { type: "boolean", defaultValue: false },
 })
 
 export const popoverControls = defineControls({

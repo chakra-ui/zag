@@ -19,6 +19,19 @@ export const machine = createMachine<MachineContext, MachineState>(
       type: "numeric",
     },
 
+    computed: {
+      valueLength: (ctx) => ctx.value.length,
+      filledValueLength: (ctx) => ctx.value.filter((v) => v?.trim() !== "").length,
+      isValueComplete: (ctx) => ctx.valueLength === ctx.filledValueLength,
+      valueAsString: (ctx) => ctx.value.join(""),
+    },
+
+    watch: {
+      focusedIndex: "focusInput",
+      value: "invokeOnChange",
+      isValueComplete: ["invokeComplete", "blurFocusedInputIfNeeded"],
+    },
+
     on: {
       SET_VALUE: [
         {
@@ -36,19 +49,6 @@ export const machine = createMachine<MachineContext, MachineState>(
           actions: ["clearValue", "setFocusIndexToFirst"],
         },
       ],
-    },
-
-    computed: {
-      valueLength: (ctx) => ctx.value.length,
-      filledValueLength: (ctx) => ctx.value.filter((v) => v?.trim() !== "").length,
-      isValueComplete: (ctx) => ctx.valueLength === ctx.filledValueLength,
-      valueAsString: (ctx) => ctx.value.join(""),
-    },
-
-    watch: {
-      focusedIndex: "focusInput",
-      value: "invokeOnChange",
-      isValueComplete: "invokeComplete",
     },
 
     states: {
@@ -120,7 +120,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ],
           KEY_DOWN: {
             guard: not("isValidValue"),
-            actions: "preventDefault",
+            actions: ["preventDefault", "invokeOnInvalid"],
           },
         },
       },
@@ -171,6 +171,9 @@ export const machine = createMachine<MachineContext, MachineState>(
           ctx.onChange?.(Array.from(ctx.value))
         }
       },
+      invokeOnInvalid: (ctx, evt) => {
+        ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
+      },
       clearFocusedIndex: (ctx) => {
         ctx.focusedIndex = -1
       },
@@ -218,6 +221,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       preventDefault(_, evt) {
         evt.preventDefault()
+      },
+      blurFocusedInputIfNeeded(ctx) {
+        if (!ctx.blurOnComplete) return
+        nextTick(() => {
+          dom.getFocusedEl(ctx)?.blur()
+        })
       },
     },
   },
