@@ -35,7 +35,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "area",
       id: dom.getAreaId(state.context),
       style: autoResize ? { display: "inline-grid" } : undefined,
-      "data-focus": dataAttr(!isEditing),
+      "data-focus": dataAttr(isEditing),
       "data-disabled": dataAttr(isDisabled),
       "data-empty": dataAttr(state.context.isValueEmpty),
     }),
