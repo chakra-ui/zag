@@ -43,12 +43,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
     },
 
-    entry: ["syncInputValue"],
-
     watch: {
       value: ["invokeOnChange"],
       isOutOfRange: ["invokeOnInvalid"],
     },
+
+    entry: ["syncInputValue"],
 
     on: {
       SET_VALUE: {
@@ -125,8 +125,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       "before:spin": {
         tags: ["focus"],
         entry: choose([
-          { guard: "canIncrement", actions: "increment" },
-          { guard: "canDecrement", actions: "decrement" },
+          { guard: "isIncrementHint", actions: "increment" },
+          { guard: "isDecrementHint", actions: "decrement" },
         ]),
         after: {
           CHANGE_DELAY: {
@@ -148,12 +148,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         every: [
           {
             delay: "CHANGE_INTERVAL",
-            guard: and(not("isAtMin"), "canIncrement"),
+            guard: and(not("isAtMin"), "isIncrementHint"),
             actions: "increment",
           },
           {
             delay: "CHANGE_INTERVAL",
-            guard: and(not("isAtMax"), "canDecrement"),
+            guard: and(not("isAtMax"), "isDecrementHint"),
             actions: "decrement",
           },
         ],
@@ -177,11 +177,11 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           POINTER_MOVE_SCRUBBER: [
             {
-              guard: "canIncrement",
+              guard: "isIncrementHint",
               actions: ["increment", "setCursorPoint", "updateCursor"],
             },
             {
-              guard: "canDecrement",
+              guard: "isDecrementHint",
               actions: ["decrement", "setCursorPoint", "updateCursor"],
             },
           ],
@@ -199,15 +199,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       isAtMin: (ctx) => ctx.isAtMin,
       isAtMax: (ctx) => ctx.isAtMax,
       isInRange: (ctx) => !ctx.isOutOfRange,
-      canDecrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
-      canIncrement: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
+      isDecrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
+      isIncrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
       isInvalidExponential: (ctx) => ctx.value.startsWith("e"),
     },
     activities: {
       trackButtonDisabled(ctx, _evt, { send }) {
         let btnEl: HTMLButtonElement | null = null
         if (ctx.hint === "increment") btnEl = dom.getIncButtonEl(ctx)
-        if (ctx.hint === "decrement") dom.getDecButtonEl(ctx)
+        if (ctx.hint === "decrement") btnEl = dom.getDecButtonEl(ctx)
         return observeAttributes(btnEl, "disabled", () => {
           send("PRESS_UP")
         })
@@ -225,11 +225,8 @@ export const machine = createMachine<MachineContext, MachineState>(
               event.preventDefault()
 
               const dir = Math.sign(event.deltaY) * -1
-              if (dir === 1) {
-                ctx.value = utils.increment(ctx)
-              } else if (dir === -1) {
-                ctx.value = utils.decrement(ctx)
-              }
+              if (dir === 1) ctx.value = utils.increment(ctx)
+              else if (dir === -1) ctx.value = utils.decrement(ctx)
             }
             cleanups.push(addDomEvent(input, "wheel", onWheel, { passive: false }))
           }),

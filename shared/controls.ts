@@ -37,6 +37,7 @@ export const numberInputControls = defineControls({
   precision: { type: "number", defaultValue: 0 },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
+  disabled: { type: "boolean", defaultValue: false },
 })
 
 export const pinInputControls = defineControls({
