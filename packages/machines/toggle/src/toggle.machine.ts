@@ -28,7 +28,7 @@ export const machine = createMachine<ToggleMachineContext, ToggleMachineState>(
     actions: {
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
-        ctx.doc = ref(evt.doc)
+        if (evt.doc) ctx.doc = ref(evt.doc)
       },
       invokeOnChange(ctx, evt) {
         ctx.onChange?.(evt.pressed)

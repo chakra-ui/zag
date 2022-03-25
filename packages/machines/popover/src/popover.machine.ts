@@ -201,7 +201,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
       setupDocument(ctx, evt) {
-        ctx.doc = ref(evt.doc)
+        if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
       },
       clearPointerDown(ctx) {

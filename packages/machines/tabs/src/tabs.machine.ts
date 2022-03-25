@@ -122,7 +122,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     actions: {
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
-        ctx.doc = ref(evt.doc)
+        if (evt.doc) ctx.doc = ref(evt.doc)
       },
       setFocusedValue(ctx, evt) {
         ctx.focusedValue = evt.value

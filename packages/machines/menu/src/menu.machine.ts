@@ -411,7 +411,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
-        ctx.doc = ref(evt.doc)
+        if (evt.doc) ctx.doc = ref(evt.doc)
       },
       validateMenuSetup(ctx) {
         nextTick(() => {

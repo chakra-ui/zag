@@ -145,7 +145,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
     actions: {
       setupDocument: (ctx, evt) => {
-        ctx.doc = ref(evt.doc)
+        if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
       },
       setupValue: (ctx) => {
