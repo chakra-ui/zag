@@ -3,7 +3,7 @@ import { addDomEvent, nextTick, observeAttributes, requestPointerLock } from "@u
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@ui-machines/number-utils"
 import { isSafari, pipe, supportsPointerEvent } from "@ui-machines/utils"
 import { dom } from "./number-input.dom"
-import { MachineContext, MachineState } from "./number-input.types"
+import type { MachineContext, MachineState } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
 const { not, and } = guards
@@ -14,9 +14,10 @@ export const machine = createMachine<MachineContext, MachineState>(
     initial: "unknown",
     context: {
       uid: "",
+      dir: "ltr",
       focusInputOnChange: true,
       clampValueOnBlur: true,
-      keepWithinRange: true,
+      allowOverflow: false,
       inputMode: "decimal",
       pattern: "[0-9]*(.[0-9]+)?",
       hint: null,
@@ -26,9 +27,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       max: Number.MAX_SAFE_INTEGER,
       precision: 0,
       inputSelection: null,
-      cursorPoint: null,
+      scrubberCursorPoint: null,
       invalid: false,
-      dir: "ltr",
     },
 
     computed: {
@@ -37,8 +37,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       isAtMin: (ctx) => isAtMin(ctx.value, ctx),
       isAtMax: (ctx) => isAtMax(ctx.value, ctx),
       isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
-      canIncrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !ctx.isAtMax),
-      canDecrement: (ctx) => !ctx.keepWithinRange || (!ctx.disabled && !ctx.isAtMin),
+      canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
+      canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
       ariaValueText: (ctx) => ctx.getAriaValueText?.(ctx.value) ?? ctx.value,
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
     },
@@ -118,6 +118,9 @@ export const machine = createMachine<MachineContext, MachineState>(
               target: "idle",
               actions: ["clampValue", "clearHint"],
             },
+            {
+              actions: ["roundValue"],
+            },
           ],
         },
       },
@@ -159,7 +162,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         ],
         on: {
           PRESS_UP: {
-            target: "idle",
+            target: "focused",
             actions: ["clearHint", "restoreSelection"],
           },
         },
@@ -194,6 +197,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       CHANGE_INTERVAL: 50,
       CHANGE_DELAY: 300,
     },
+
     guards: {
       clampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
       isAtMin: (ctx) => ctx.isAtMin,
@@ -203,12 +207,17 @@ export const machine = createMachine<MachineContext, MachineState>(
       isIncrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
       isInvalidExponential: (ctx) => ctx.value.startsWith("e"),
     },
+
     activities: {
       trackButtonDisabled(ctx, _evt, { send }) {
         let btnEl: HTMLButtonElement | null = null
-        if (ctx.hint === "increment") btnEl = dom.getIncButtonEl(ctx)
-        if (ctx.hint === "decrement") btnEl = dom.getDecButtonEl(ctx)
-        return observeAttributes(btnEl, "disabled", () => {
+        if (ctx.hint === "increment") {
+          btnEl = dom.getIncButtonEl(ctx)
+        }
+        if (ctx.hint === "decrement") {
+          btnEl = dom.getDecButtonEl(ctx)
+        }
+        return observeAttributes(btnEl, "disabled", function onDisable() {
           send("PRESS_UP")
         })
       },
@@ -239,29 +248,27 @@ export const machine = createMachine<MachineContext, MachineState>(
         return requestPointerLock(dom.getDoc(ctx))
       },
       trackMousemove(ctx, _evt, { send }) {
+        const doc = dom.getDoc(ctx)
+
+        function onMousemove(event: MouseEvent) {
+          if (!ctx.scrubberCursorPoint) return
+          const value = dom.getMousementValue(ctx, event)
+          if (!value.hint) return
+          send({ type: "POINTER_MOVE_SCRUBBER", hint: value.hint, point: value.point })
+        }
+
+        function onMouseup() {
+          send("POINTER_UP_SCRUBBER")
+        }
+
+        // prettier-ignore
         return pipe(
-          addDomEvent(
-            dom.getDoc(ctx),
-            "mousemove",
-            function onMousemove(event) {
-              if (!ctx.cursorPoint) return
-              const value = dom.getMousementValue(ctx, event)
-              if (!value.hint) return
-              send({ type: "POINTER_MOVE_SCRUBBER", hint: value.hint, point: value.point })
-            },
-            false,
-          ),
-          addDomEvent(
-            dom.getDoc(ctx),
-            "mouseup",
-            function onMouseup() {
-              send("POINTER_UP_SCRUBBER")
-            },
-            false,
-          ),
-        )
+            addDomEvent(doc, "mousemove", onMousemove, false),
+            addDomEvent(doc, "mouseup", onMouseup, false)
+          )
       },
     },
+
     actions: {
       setupDocument: (ctx, evt) => {
         if (evt.doc) ctx.doc = ref(evt.doc)
@@ -280,6 +287,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       clampValue(ctx) {
         ctx.value = utils.clamp(ctx)
+      },
+      roundValue(ctx) {
+        ctx.value = utils.round(ctx)
       },
       setValue(ctx, evt) {
         const value = evt.target?.value ?? evt.value
@@ -323,6 +333,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         const type = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
         ctx.onInvalid?.(type, ctx.formattedValue, ctx.valueAsNumber)
       },
+      // sync input value, in event it was set from form libraries via `ref`, `bind:this`, etc.
       syncInputValue(ctx) {
         const input = dom.getInputEl(ctx)
         if (!input || input.value == ctx.value) return
@@ -330,48 +341,25 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.value = utils.sanitize(ctx, value)
       },
       setCursorPoint(ctx, evt) {
-        ctx.cursorPoint = evt.point
+        ctx.scrubberCursorPoint = evt.point
       },
       clearCursorPoint(ctx) {
-        ctx.cursorPoint = null
+        ctx.scrubberCursorPoint = null
       },
       updateCursor(ctx) {
         const cursor = dom.getCursorEl(ctx)
-        if (!cursor || !ctx.cursorPoint) return
-        cursor.style.transform = `translate3d(${ctx.cursorPoint.x}px, ${ctx.cursorPoint.y}px, 0px)`
+        if (!cursor || !ctx.scrubberCursorPoint) return
+        cursor.style.transform = `translate3d(${ctx.scrubberCursorPoint.x}px, ${ctx.scrubberCursorPoint.y}px, 0px)`
       },
       addCustomCursor(ctx) {
         if (isSafari() || !supportsPointerEvent()) return
-        const doc = dom.getDoc(ctx)
-        const el = doc.createElement("div")
-        el.className = "scrubber--cursor"
-        el.id = dom.getCursorId(ctx)
-        Object.assign(el.style, {
-          width: "15px",
-          height: "15px",
-          position: "fixed",
-          pointerEvents: "none",
-          left: "0px",
-          top: "0px",
-          zIndex: 99999,
-          transform: ctx.cursorPoint ? `translate3d(${ctx.cursorPoint.x}px, ${ctx.cursorPoint.y}px, 0px)` : undefined,
-          willChange: "transform",
-        })
-        el.innerHTML = `
-        <svg width="46" height="15" style="left: -15.5px; position: absolute; top: 0; filter: drop-shadow(rgba(0, 0, 0, 0.4) 0px 1px 1.1px);">
-          <g transform="translate(2 3)">
-            <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z" style="stroke-width: 2px; stroke: white;"></path>
-            <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z"></path>
-          </g>
-        </svg>`
-        doc.body.appendChild(el)
+        dom.createVirtualCursor(ctx)
       },
       removeCustomCursor(ctx) {
         if (isSafari() || !supportsPointerEvent()) return
         const doc = dom.getDoc(ctx)
         const el = doc.getElementById(dom.getCursorId(ctx))
-        if (!el) return
-        el.remove()
+        el?.remove()
       },
       disableTextSelection(ctx) {
         const doc = dom.getDoc(ctx)

@@ -38,4 +38,7 @@ export const utils = {
     const _val = value.toString()
     return ctx.format?.(_val) ?? _val
   },
+  round: (ctx: Ctx) => {
+    return roundToPrecision(ctx.value, ctx)
+  },
 }

@@ -7,7 +7,6 @@ import { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const isScrubbing = state.matches("scrubbing")
   const isFocused = state.hasTag("focus")
   const isInvalid = state.context.isOutOfRange || Boolean(state.context.invalid)
 
@@ -16,16 +15,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isDecrementDisabled = isDisabled || !state.context.canDecrement
 
   return {
-    valueAsNumber: state.context.valueAsNumber,
-    value: state.context.formattedValue,
-    isScrubbing,
     isFocused,
-    isDisabled,
     isInvalid,
+    value: state.context.formattedValue,
+    valueAsNumber: state.context.valueAsNumber,
     setValue(value: string | number) {
       send({ type: "SET_VALUE", value: value.toString() })
     },
-    clear() {
+    clearValue() {
       send("CLEAR_VALUE")
     },
     increment() {
@@ -49,12 +46,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rootProps: normalize.element<T>({
       id: dom.getRootId(state.context),
       "data-part": "root",
+      "data-disabled": dataAttr(isDisabled),
     }),
 
     labelProps: normalize.label<T>({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
-      "data-readonly": dataAttr(state.context.readonly),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
@@ -65,22 +62,22 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       name: state.context.name,
       id: dom.getInputId(state.context),
       role: "spinbutton",
+      value: state.context.formattedValue,
       pattern: state.context.pattern,
       inputMode: state.context.inputMode,
+      "aria-invalid": isInvalid || undefined,
+      "data-invalid": dataAttr(isInvalid),
       disabled: isDisabled,
+      "data-disabled": dataAttr(isDisabled),
       readOnly: state.context.readonly,
+      "aria-readonly": state.context.readonly || undefined,
       autoComplete: "off",
       autoCorrect: "off",
       type: "text",
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
-      "aria-valuetext": state.context.ariaValueText || undefined,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
-      "aria-invalid": isInvalid || undefined,
-      "data-invalid": dataAttr(isInvalid),
-      "data-disabled": dataAttr(isDisabled),
-      "aria-readonly": state.context.readonly || undefined,
-      value: state.context.value,
+      "aria-valuetext": state.context.ariaValueText || undefined,
       onFocus() {
         send("FOCUS")
       },
@@ -95,11 +92,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onKeyDown(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing) return
+
         if (!utils.isValidNumericEvent(state.context, event)) {
           event.preventDefault()
         }
 
         const step = multiply(getEventStep(event), state.context.step)
+
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP", step })
@@ -125,11 +124,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     }),
 
     decrementButtonProps: normalize.button<T>({
-      "data-part": "spinner-button",
+      "data-part": "spin-button",
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
-      "aria-label": "Decrement value",
+      "aria-label": "decrement value",
       role: "button",
       tabIndex: -1,
       onPointerDown(event) {
@@ -147,11 +146,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     }),
 
     incrementButtonProps: normalize.button<T>({
-      "data-part": "spinner-button",
+      "data-part": "spin-button",
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
-      "aria-label": "Increment value",
+      "aria-label": "increment value",
       role: "button",
       tabIndex: -1,
       onPointerDown(event) {
@@ -184,7 +183,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         send({ type: "PRESS_DOWN_SCRUBBER", point })
       },
       style: {
-        cursor: "ew-resize",
+        cursor: isDisabled ? undefined : "ew-resize",
       },
     }),
   }

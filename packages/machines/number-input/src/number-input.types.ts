@@ -62,12 +62,12 @@ export type MachineContext = Context<{
    * Whether to allow the value overflow the min/max range
    * @default true
    */
-  keepWithinRange?: boolean
+  allowOverflow: boolean
   /**
    * Whether the pressed key should be allowed in the input.
    * The default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\-.]$/
    */
-  validateCharacter?(value: string): boolean
+  validateCharacter?: (char: string) => boolean
   /**
    * Whether to clamp the value when the input loses focus (blur)
    * @default true
@@ -82,18 +82,17 @@ export type MachineContext = Context<{
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input
    */
-  getAriaValueText?(value: string): string
+  getAriaValueText?: (value: string) => string
   /**
    * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
    */
-  parse?(value: string): string
+  parse?: (value: string) => string
   /**
    * If using a custom display format, this converts the default format to the custom format.
    */
-  format?(value: string): string | number
+  format?: (value: string) => string | number
   /**
-   * @internal
-   * The hint that determines if we're incrementing or decrementing
+   * @internal The hint that determines if we're incrementing or decrementing
    */
   hint: "increment" | "decrement" | "set" | null
   /**
@@ -101,19 +100,19 @@ export type MachineContext = Context<{
    * the type of keyboard shown to the user on mobile devices
    * @default "decimal"
    */
-  inputMode: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search"
+  inputMode: "text" | "tel" | "numeric" | "decimal"
   /**
    * The scrubber cursor position
    */
-  cursorPoint: Point | null
+  scrubberCursorPoint: Point | null
   /**
    * Function invoked when the value changes
    */
-  onChange?(value: string, valueAsNumber: number): void
+  onChange?: (value: string, valueAsNumber: number) => void
   /**
    * Function invoked when the value overflows or underflows the min/max range
    */
-  onInvalid?(message: ValidityState, value: string, valueAsNumber: number): void
+  onInvalid?: (message: ValidityState, value: string, valueAsNumber: number) => void
   /**
    * @internal The selection range of the input
    */

@@ -1,3 +1,4 @@
+import { MAX_Z_INDEX } from "@ui-machines/dom-utils"
 import { roundToPx, wrap } from "@ui-machines/number-utils"
 import { MachineContext as Ctx } from "./number-input.types"
 
@@ -32,8 +33,8 @@ export const dom = {
     if (ctx.isRtl && hint === "decrement") hint = "increment"
 
     const point = {
-      x: ctx.cursorPoint!.x + x,
-      y: ctx.cursorPoint!.y + y,
+      x: ctx.scrubberCursorPoint!.x + x,
+      y: ctx.scrubberCursorPoint!.y + y,
     }
 
     const win = dom.getWin(ctx)
@@ -42,5 +43,36 @@ export const dom = {
     point.x = wrap(point.x + half, width) - half
 
     return { hint, point }
+  },
+
+  createVirtualCursor(ctx: Ctx) {
+    const doc = dom.getDoc(ctx)
+    const el = doc.createElement("div")
+    el.className = "scrubber--cursor"
+    el.id = dom.getCursorId(ctx)
+
+    Object.assign(el.style, {
+      width: "15px",
+      height: "15px",
+      position: "fixed",
+      pointerEvents: "none",
+      left: "0px",
+      top: "0px",
+      zIndex: MAX_Z_INDEX,
+      transform: ctx.scrubberCursorPoint
+        ? `translate3d(${ctx.scrubberCursorPoint.x}px, ${ctx.scrubberCursorPoint.y}px, 0px)`
+        : undefined,
+      willChange: "transform",
+    })
+
+    el.innerHTML = `
+        <svg width="46" height="15" style="left: -15.5px; position: absolute; top: 0; filter: drop-shadow(rgba(0, 0, 0, 0.4) 0px 1px 1.1px);">
+          <g transform="translate(2 3)">
+            <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z" style="stroke-width: 2px; stroke: white;"></path>
+            <path fill-rule="evenodd" d="M 15 4.5L 15 2L 11.5 5.5L 15 9L 15 6.5L 31 6.5L 31 9L 34.5 5.5L 31 2L 31 4.5Z"></path>
+          </g>
+        </svg>`
+
+    doc.body.appendChild(el)
   },
 }
