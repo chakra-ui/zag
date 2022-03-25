@@ -56,8 +56,9 @@ export class Machine<
     public options?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
     this.id = config.id ?? `machine-${uuid()}`
-    this.state = createProxy(config)
+    this.state = createProxy(klona(config))
     config.created?.(this.state.context)
+    this.setupComputed()
     this.guardMap = options?.guards ?? {}
     this.actionMap = options?.actions ?? {}
     this.delayMap = options?.delays ?? {}
@@ -131,7 +132,6 @@ export class Machine<
       }
     })
 
-    this.setupComputed()
     this.setupContextWatchers()
     this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
     this.executeActions(this.config.entry, toEvent<TEvent>(ActionTypes.Start))
@@ -160,6 +160,10 @@ export class Machine<
     derive(deriveFns, { proxy: this.state.context })
   }
 
+  private detachComputed = () => {
+    underive(this.state.context, { delete: true })
+  }
+
   // Stops the interpreted machine
   stop = () => {
     // No need to call if already stopped
@@ -182,7 +186,7 @@ export class Machine<
     this.stopEventListeners()
 
     // cleanup `derive` subscriptions that was attached to the context
-    underive(this.state.context)
+    this.detachComputed()
 
     this.status = MachineStatus.Stopped
     this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
@@ -241,7 +245,7 @@ export class Machine<
     const id = runIfFn(to, this.contextSnapshot)
     const child = this.children.get(id)
     if (!child) {
-      invariant(`[machine] Cannot send '${event.type}' event to unknown child`)
+      invariant(`[machine/send-child] Cannot send '${event.type}' event to unknown child`)
     }
     child!.send(event)
   }
@@ -251,7 +255,7 @@ export class Machine<
    */
   stopChild = (id: string) => {
     if (!this.children.has(id)) {
-      invariant("[machine] Cannot stop unknown child")
+      invariant("[machine/stop-child] Cannot stop unknown child")
     }
     this.children.get(id)!.stop()
     this.children.delete(id)
@@ -340,6 +344,7 @@ export class Machine<
   }
 
   clone = () => {
+    this.detachComputed()
     return new Machine(klona(this.config), klona(this.options))
   }
 
@@ -477,7 +482,7 @@ export class Machine<
     const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event)
     for (const action of toArray(_actions)) {
       const fn = isString(action) ? this.actionMap?.[action] : action
-      warn(isString(action) && !fn, `[machine] No implementation found for action: \`${action}\``)
+      warn(isString(action) && !fn, `[machine/exec-action] No implementation found for action: \`${action}\``)
       fn?.(this.state.context, event, this.meta)
     }
   }
@@ -495,7 +500,7 @@ export class Machine<
       const fn = isString(activity) ? this.activityMap?.[activity] : activity
 
       if (!fn) {
-        warn(`[machine] No implementation found for activity: \`${activity}\``)
+        warn(`[machine/exec-activity] No implementation found for activity: \`${activity}\``)
         continue
       }
 
@@ -687,7 +692,7 @@ export class Machine<
    */
   sendParent = (evt: S.Event<S.AnyEventObject>) => {
     if (!this.parent) {
-      invariant("[machine] Cannot send event to an unknown parent")
+      invariant("[machine/send-parent] Cannot send event to an unknown parent")
     }
     const event = toEvent<S.AnyEventObject>(evt)
     this.parent?.send(event)
@@ -709,8 +714,8 @@ export class Machine<
     if (!stateNode && !this.config.on) {
       const msg =
         this.status === MachineStatus.Stopped
-          ? "[machine] Cannot transition a stopped machine"
-          : "[machine] State does not have a definition"
+          ? "[machine/transition] Cannot transition a stopped machine"
+          : "[machine/transition] State does not have a definition"
       warn(msg)
       return
     }
