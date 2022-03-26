@@ -6,7 +6,7 @@ export type UseSetupProps = {
   id: string
 }
 
-export function useSetup<T extends HTMLElement = HTMLElement>(props: UseSetupProps) {
+export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetupProps) {
   const { send, id } = props
   const [el, setEl] = createSignal<T>()
 
