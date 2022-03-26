@@ -306,7 +306,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
 
-    getItemOptionProps(options: OptionItemProps) {
+    getOptionItemProps(options: OptionItemProps) {
       const { type, disabled, onCheckedChange } = options
       options.id = options.id ?? options.value
       const checked = api.isOptionChecked(options)

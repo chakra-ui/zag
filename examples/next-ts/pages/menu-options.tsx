@@ -40,7 +40,7 @@ export default function Page() {
             {data.radio.map((item) => {
               const opts = { type: "radio", name: "order", value: item.id } as const
               return (
-                <div key={item.id} className="menu__item" {...api.getItemOptionProps(opts)}>
+                <div key={item.id} className="menu__item" {...api.getOptionItemProps(opts)}>
                   {api.isOptionChecked(opts) ? "✅" : null} {item.label}
                 </div>
               )
@@ -49,7 +49,7 @@ export default function Page() {
             {data.checkbox.map((item) => {
               const opts = { type: "checkbox", name: "type", value: item.id } as const
               return (
-                <div key={item.id} className="menu__item" {...api.getItemOptionProps(opts)}>
+                <div key={item.id} className="menu__item" {...api.getOptionItemProps(opts)}>
                   {api.isOptionChecked(opts) ? "✅" : null} {item.label}
                 </div>
               )
