@@ -75,7 +75,7 @@ export type MachineContext = Context<{
   /**
    * Whether to disable dynamic placement
    */
-  disablePlacement?: boolean
+  disablePositioning?: boolean
   /**
    * @internal The computed placement (maybe different from initial placement)
    */

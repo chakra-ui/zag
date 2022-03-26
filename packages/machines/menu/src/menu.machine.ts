@@ -35,7 +35,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     created(ctx) {
       if (ctx.contextMenu) {
-        ctx.disablePlacement = true
+        ctx.disablePositioning = true
       }
     },
 
@@ -329,7 +329,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
     activities: {
       computePlacement(ctx) {
-        if (ctx.disablePlacement) return
+        if (ctx.disablePositioning) return
         ctx.currentPlacement = ctx.positioning.placement
         return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
           ...ctx.positioning,
