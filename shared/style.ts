@@ -111,15 +111,14 @@ export const popoverStyle: CSSObject = {
     gap: "24px",
   },
   ".popover__content": {
+    "--arrow-background": "white",
+    "--arrow-size": "10px",
     background: "white",
     padding: "20px",
     borderRadius: "4px",
     position: "relative",
-    boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px",
+    filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))",
     width: "260px",
-    "&:focus": {
-      boxShadow: "rgba(14,18,22,.35) 0 10px 38px -10px,rgba(14,18,22,.2) 0 10px 20px -15px, #c4b8f3 0 0 0 2px",
-    },
   },
   ".popover__title": {
     fontSize: "15px",
