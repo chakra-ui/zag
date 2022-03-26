@@ -1,9 +1,13 @@
 // Credit goes to the radix-ui team for this utility:
 // https://github.com/radix-ui/primitives/blob/main/packages/core/rect/src/observeElementRect.ts
 
+type Fn = (rect: DOMRect) => void
+type ObservedData = { rect: DOMRect; callbacks: Fn[] }
 export type Measurable = { getBoundingClientRect(): DOMRect }
 
-export function observeElementRect(el: Measurable, fn: CallbackFn) {
+const observedElements: Map<Measurable, ObservedData> = new Map()
+
+export function observeElementRect(el: Measurable, fn: Fn) {
   const data = observedElements.get(el)
 
   if (!data) {
@@ -36,15 +40,7 @@ export function observeElementRect(el: Measurable, fn: CallbackFn) {
   }
 }
 
-type CallbackFn = (rect: DOMRect) => void
-
-type ObservedData = {
-  rect: DOMRect
-  callbacks: Array<CallbackFn>
-}
-
 let rafId: number
-const observedElements: Map<Measurable, ObservedData> = new Map()
 
 function runLoop() {
   const changedRectsData: Array<ObservedData> = []
