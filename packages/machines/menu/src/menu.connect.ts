@@ -5,7 +5,7 @@ import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
 import { dom } from "./menu.dom"
-import { Api, ItemProps, OptionItemProps, Send, Service, State } from "./menu.types"
+import { Api, ItemProps, OptionItemProps, Send, Service, State, GroupProps } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
@@ -325,6 +325,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           },
         }),
       )
+    },
+
+    getGroupProps(options: GroupProps) {
+      return normalize.element<T>({
+        "aria-label": options.label,
+        role: "group",
+      })
     },
   }
 

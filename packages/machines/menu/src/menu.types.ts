@@ -137,3 +137,10 @@ export type OptionItemProps = Partial<ItemProps> & {
    */
   onCheckedChange?: (checked: boolean) => void
 }
+
+export type GroupProps = {
+  /**
+   * The accessibility label of the option group
+   */
+  label: string
+}
