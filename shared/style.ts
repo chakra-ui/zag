@@ -87,7 +87,8 @@ export const menuStyle: CSSObject = {
     userSelect: "none",
     borderRadius: "3px",
     padding: "0px 5px 0px 25px",
-    "&[data-selected]": {
+    "&[data-focus]": {
+      outline: "none",
       backgroundColor: "rgb(110, 86, 207)",
       color: "rgb(253, 252, 254)",
     },

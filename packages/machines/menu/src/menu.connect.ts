@@ -91,7 +91,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-uid": state.context.uid,
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": isOpen ? true : undefined,
+      "aria-expanded": isOpen || undefined,
       onPointerMove(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
@@ -270,13 +270,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     getItemProps(options: ItemProps) {
       const { id, disabled, valueText } = options
       return normalize.element<T>({
-        "data-part": "menuitem",
+        "data-part": "item",
         id,
         role: "menuitem",
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
         "data-ownedby": dom.getContentId(state.context),
-        "data-selected": dataAttr(state.context.activeId === id),
+        "data-focus": dataAttr(state.context.activeId === id),
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
@@ -316,7 +316,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         api.getItemProps(options as any),
         normalize.element<T>({
           "data-name": options.name,
-          "data-part": "menuitem-option",
+          "data-part": "option-item",
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           "data-checked": dataAttr(checked),
