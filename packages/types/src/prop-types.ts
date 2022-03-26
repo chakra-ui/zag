@@ -14,6 +14,7 @@ type WithStyle<T extends { style?: any }> = Omit<T, "style"> & {
 
 type DataAttr = {
   "data-uid"?: string
+  "data-name"?: string
   "data-ownedby"?: string
   "data-selected"?: Booleanish
   "data-expanded"?: Booleanish

@@ -313,6 +313,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return Object.assign(
         api.getItemProps(options as any),
         normalize.element<T>({
+          "data-name": options.name,
           "data-part": "menuitem-option",
           role: `menuitem${type}`,
           "aria-checked": !!checked,
