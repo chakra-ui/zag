@@ -21,8 +21,8 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "popover-machine",
     initial: "unknown",
     context: {
-      hasTitle: true,
-      hasDescription: true,
+      isTitleRendered: true,
+      isDescriptionRendered: true,
       isAnchorRendered: false,
       uid: "popover",
       closeOnBlur: true,
@@ -196,8 +196,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       checkRenderedElements(ctx) {
         raf(() => {
           ctx.isAnchorRendered = !!dom.getAnchorEl(ctx)
-          ctx.hasTitle = !!dom.getTitleEl(ctx)
-          ctx.hasDescription = !!dom.getDescriptionEl(ctx)
+          ctx.isTitleRendered = !!dom.getTitleEl(ctx)
+          ctx.isDescriptionRendered = !!dom.getDescriptionEl(ctx)
         })
       },
       setupDocument(ctx, evt) {

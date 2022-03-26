@@ -5,11 +5,11 @@ export type MachineContext = Context<{
   /**
    * @internal Whether the dialog title is rendered
    */
-  hasTitle: boolean
+  isTitleRendered: boolean
   /**
    * @internal Whether the dialog description is rendered
    */
-  hasDescription: boolean
+  isDescriptionRendered: boolean
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled

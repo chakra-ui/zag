@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
 import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
@@ -10,15 +10,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   send: (event: S.Event<S.AnyEventObject>) => void,
   normalize = normalizeProp,
 ) {
-  const pointerdownNode = state.context.pointerdownNode
-
   const isOpen = state.matches("open")
   const arrow = state.context.positioning.arrow
+  const pointerdownNode = state.context.pointerdownNode
 
   return {
-    isOpen,
     portalled: state.context.currentPortalled,
-
+    isOpen,
     open() {
       send("OPEN")
     },
@@ -52,6 +50,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
+      "data-expanded": dataAttr(isOpen),
       "aria-controls": dom.getContentId(state.context),
       onClick() {
         send("TRIGGER_CLICK")
@@ -65,13 +64,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     }),
 
     contentProps: normalize.element<T>({
-      "data-part": "popover",
+      "data-part": "content",
       id: dom.getContentId(state.context),
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
-      "aria-labelledby": state.context.hasTitle ? dom.getTitleId(state.context) : undefined,
-      "aria-describedby": state.context.hasDescription ? dom.getDescriptionId(state.context) : undefined,
+      "aria-labelledby": state.context.isTitleRendered ? dom.getTitleId(state.context) : undefined,
+      "aria-describedby": state.context.isDescriptionRendered ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": state.context.currentPlacement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -81,12 +80,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           },
           Tab(event) {
             const type = event.shiftKey ? "SHIFT_TAB" : "TAB"
-            send({
-              type,
-              preventDefault() {
-                event.preventDefault()
-              },
-            })
+            send({ type, preventDefault: () => event.preventDefault() })
           },
         }
 
@@ -99,7 +93,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           fallback: pointerdownNode,
         })
 
-        const el = (event.relatedTarget ?? state.context.pointerdownNode) as HTMLElement
+        const el = (event.relatedTarget ?? pointerdownNode) as HTMLElement
         const focusable = isTabbable(el) || isFocusable(el)
 
         if (isValidBlur) {
@@ -109,12 +103,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     }),
 
     titleProps: normalize.element<T>({
-      "data-part": "header",
+      "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element<T>({
-      "data-part": "body",
+      "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
 
@@ -122,7 +116,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "close-button",
       id: dom.getCloseButtonId(state.context),
       type: "button",
-      "aria-label": "Close",
+      "aria-label": "close",
       onClick() {
         send("CLOSE")
       },
