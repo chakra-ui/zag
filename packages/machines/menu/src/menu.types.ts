@@ -88,6 +88,10 @@ export type MachineContext = Context<{
    * Whether to close the menu when an option is selected
    */
   closeOnSelect: boolean
+  /**
+   * The accessibility label for the menu
+   */
+  "aria-label"?: string
 }>
 
 export type State = S.State<MachineContext, MachineState>
@@ -140,7 +144,14 @@ export type OptionItemProps = Partial<ItemProps> & {
 
 export type GroupProps = {
   /**
-   * The accessibility label of the option group
+   * The `id` of the element that provides accessibility label to the option group
    */
-  label: string
+  id: string
+}
+
+export type LabelProps = {
+  /**
+   * The `id` of the group this refers to
+   */
+  htmlFor: string
 }

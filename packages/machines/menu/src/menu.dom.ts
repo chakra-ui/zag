@@ -14,6 +14,8 @@ export const dom = {
   getContentId: (ctx: Ctx) => `menu-${ctx.uid}-menulist`,
   getArrowId: (ctx: Ctx) => `popover-${ctx.uid}--arrow`,
   getPositionerId: (ctx: Ctx) => `tooltip-${ctx.uid}--popper`,
+  getGroupId: (ctx: Ctx, id: string) => `menu-${ctx.uid}-group-${id}`,
+  getLabelId: (ctx: Ctx, id: string) => `menu-${ctx.uid}-label-${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
   getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
