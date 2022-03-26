@@ -7,11 +7,12 @@ import type { ItemProps, Send, State } from "./accordion.types"
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const focusedValue = state.context.focusedValue
   const value = state.context.value
+  const multiple = state.context.multiple
 
   const api = {
     value: value,
     setValue(value: string | string[]) {
-      if (state.context.multiple && !Array.isArray(value)) {
+      if (multiple && !Array.isArray(value)) {
         value = [value]
       }
       send({ type: "SET_VALUE", value })

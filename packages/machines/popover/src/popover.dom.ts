@@ -21,7 +21,6 @@ export const dom = {
   getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
   getTitleEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTitleId(ctx)),
   getDescriptionEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getDescriptionId(ctx)),
-  getArrowEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getArrowId(ctx)),
 
   getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx)),
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
@@ -33,8 +32,5 @@ export const dom = {
   },
   getFirstTabbableEl: (ctx: Ctx) => first(dom.getTabbableEls(ctx)),
   getLastTabbableEl: (ctx: Ctx) => last(dom.getTabbableEls(ctx)),
-
-  getInitialFocusEl: (ctx: Ctx) => {
-    return runIfFn(ctx.initialFocusEl) ?? dom.getFirstFocusableEl(ctx)
-  },
+  getInitialFocusEl: (ctx: Ctx) => runIfFn(ctx.initialFocusEl) ?? dom.getFirstFocusableEl(ctx),
 }
