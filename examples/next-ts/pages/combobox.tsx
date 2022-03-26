@@ -39,12 +39,12 @@ export default function Page() {
         <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
         <br />
 
-        <div className="combobox">
+        <div className="combobox" ref={ref} {...api.rootProps}>
           <label className="combobox__label" {...api.labelProps}>
             Select country
           </label>
 
-          <div className="combobox__container" ref={ref} {...api.containerProps}>
+          <div className="combobox__container" {...api.containerProps}>
             <input {...api.inputProps} />
             <button {...api.buttonProps}>▼</button>
           </div>

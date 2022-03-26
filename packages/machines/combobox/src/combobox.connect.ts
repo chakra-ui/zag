@@ -34,6 +34,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dom.getInputEl(state.context)?.blur()
     },
 
+    rootProps: normalize.element<T>({
+      "data-part": "root",
+      id: dom.getRootId(state.context),
+    }),
+
     labelProps: normalize.label<T>({
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),

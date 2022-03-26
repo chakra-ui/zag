@@ -43,31 +43,31 @@ export default defineComponent({
             <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
             <br />
 
-            <div class="combobox">
+            <div ref={nodeRef} class="combobox" {...api.rootProps}>
               <label class="combobox__label" {...api.labelProps}>
                 Select country
               </label>
 
-              <div class="combobox__container" ref={nodeRef} {...api.containerProps}>
+              <div class="combobox__container" {...api.containerProps}>
                 <input {...api.inputProps} />
                 <button {...api.buttonProps}>▼</button>
               </div>
+            </div>
 
-              <div class="combobox__popover" {...api.positionerProps}>
-                {options.value.length > 0 && (
-                  <ul class="combobox__listbox" {...api.listboxProps}>
-                    {options.value.map((item, index) => (
-                      <li
-                        class="combobox__option"
-                        key={`${item.code}:${index}`}
-                        {...api.getOptionProps({ label: item.label, value: item.code, index })}
-                      >
-                        {item.label}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+            <div class="combobox__popover" {...api.positionerProps}>
+              {options.value.length > 0 && (
+                <ul class="combobox__listbox" {...api.listboxProps}>
+                  {options.value.map((item, index) => (
+                    <li
+                      class="combobox__option"
+                      key={`${item.code}:${index}`}
+                      {...api.getOptionProps({ label: item.label, value: item.code, index })}
+                    >
+                      {item.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 
