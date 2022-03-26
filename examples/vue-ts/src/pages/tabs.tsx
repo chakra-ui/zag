@@ -28,9 +28,9 @@ export default defineComponent({
       return (
         <div style={{ width: "100%" }}>
           <controls.ui />
-          <div class="tabs">
+          <div class="tabs" ref={ref}>
             <div class="tabs__indicator" {...tabIndicatorProps} />
-            <div ref={ref} {...tablistProps}>
+            <div {...tablistProps}>
               {tabsData.map((data) => (
                 <button {...getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                   {data.label}

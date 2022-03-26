@@ -24,8 +24,8 @@ export default defineComponent({
       const { triggerProps, contentProps, getItemProps, positionerProps } = menuRef.value
       return (
         <>
-          <div>
-            <button class="menu__trigger" ref={ref} {...triggerProps}>
+          <div ref={ref}>
+            <button class="menu__trigger" {...triggerProps}>
               Actions <span aria-hidden>▾</span>
             </button>
             <div {...positionerProps}>

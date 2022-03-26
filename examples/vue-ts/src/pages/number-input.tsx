@@ -26,7 +26,7 @@ export default defineComponent({
       return (
         <>
           <controls.ui />
-          <div class="root">
+          <div class="root" ref={ref}>
             <div
               data-testid="scrubber"
               {...mergeProps(scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
@@ -38,7 +38,7 @@ export default defineComponent({
               <button data-testid="dec-button" {...decrementButtonProps}>
                 DEC
               </button>
-              <input data-testid="input" ref={ref} {...inputProps} />
+              <input data-testid="input" {...inputProps} />
               <button data-testid="inc-button" {...incrementButtonProps}>
                 INC
               </button>

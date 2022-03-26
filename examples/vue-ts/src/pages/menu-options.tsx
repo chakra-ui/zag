@@ -26,8 +26,8 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <div>
-            <button class="menu__trigger" ref={ref} {...api.triggerProps}>
+          <div ref={ref}>
+            <button class="menu__trigger" {...api.triggerProps}>
               Actions <span aria-hidden>▾</span>
             </button>
             <div {...api.positionerProps}>

@@ -17,7 +17,7 @@ const TooltipComponent = defineComponent({
   setup(props) {
     const [state, send] = useMachine(Tooltip.machine.withContext({ id: props.id }))
     const tooltip = computed(() => Tooltip.connect<PropTypes>(state.value, send, normalizeProps))
-    const ref = useSetup({ send, id: props.id })
+    const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
 
     return () => {
       const { triggerProps, isVisible, contentProps, positionerProps } = tooltip.value

@@ -29,8 +29,8 @@ export default defineComponent({
       return (
         <>
           <div ref={ref2}>
-            <div class="root">
-              <button ref={ref} class="dialog__button" {...parentDialog.triggerProps} data-testid="trigger-1">
+            <div class="root" ref={ref}>
+              <button class="dialog__button" {...parentDialog.triggerProps} data-testid="trigger-1">
                 Open Dialog
               </button>
               <div style={{ minHeight: "1200px", pointerEvents: "none" }} />

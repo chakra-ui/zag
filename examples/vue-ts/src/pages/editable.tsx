@@ -29,9 +29,9 @@ export default defineComponent({
         <>
           <controls.ui />
 
-          <div class="root" {...api.rootProps}>
+          <div class="root" ref={ref} {...api.rootProps}>
             <div class="editable__area" {...api.areaProps}>
-              <input class="editable__input" data-testid="input" ref={ref} {...api.inputProps} />
+              <input class="editable__input" data-testid="input" {...api.inputProps} />
               <span class="editable__preview" data-testid="preview" {...api.previewProps} />
             </div>
             <div>

@@ -40,7 +40,7 @@ export default defineComponent({
               }
             }}
           >
-            <div class="root">
+            <div class="root" ref={ref}>
               <label data-testid="label" {...labelProps}>
                 Slider Label
               </label>
@@ -48,7 +48,7 @@ export default defineComponent({
                 {value}
               </output>
             </div>
-            <div class="slider" ref={ref} {...rootProps}>
+            <div class="slider" {...rootProps}>
               <div data-testid="track" class="slider__track" {...trackProps}>
                 <div class="slider__range" {...rangeProps} />
               </div>
