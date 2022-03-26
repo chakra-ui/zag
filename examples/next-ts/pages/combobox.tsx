@@ -28,8 +28,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { setValue, labelProps, containerProps, buttonProps, inputProps, listboxProps, getOptionProps, popoverProps } =
-    Combobox.connect(state, send)
+  const api = Combobox.connect(state, send)
 
   return (
     <>
@@ -37,28 +36,28 @@ export default function Page() {
       <controls.ui />
 
       <div className="root">
-        <button onClick={() => setValue("Togo")}>Set to Togo</button>
+        <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
         <br />
 
         <div className="combobox">
-          <label className="combobox__label" {...labelProps}>
+          <label className="combobox__label" {...api.labelProps}>
             Select country
           </label>
 
-          <div className="combobox__container" ref={ref} {...containerProps}>
-            <input {...inputProps} />
-            <button {...buttonProps}>▼</button>
+          <div className="combobox__container" ref={ref} {...api.containerProps}>
+            <input {...api.inputProps} />
+            <button {...api.buttonProps}>▼</button>
           </div>
         </div>
 
-        <div className="combobox__popover" {...popoverProps}>
+        <div className="combobox__popover" {...api.positionerProps}>
           {options.length > 0 && (
-            <ul className="combobox__listbox" {...listboxProps}>
+            <ul className="combobox__listbox" {...api.listboxProps}>
               {options.map((item, index) => (
                 <li
                   className="combobox__option"
                   key={`${item.code}:${index}`}
-                  {...getOptionProps({ label: item.label, value: item.code, index })}
+                  {...api.getOptionProps({ label: item.label, value: item.code, index })}
                 >
                   {item.label}
                 </li>

@@ -7,18 +7,20 @@ import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
   const isDisabled = state.context.disabled
-
   const isExpanded = state.hasTag("expanded")
   const isFocused = state.hasTag("focused")
 
   const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
+  const showClearButton = (!state.hasTag("idle") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
+
   const popperStyles = getRecommendedStyles({
     measured: !!state.context.currentPlacement,
   })
 
-  const showClearButton = (!state.hasTag("idle") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
-
   return {
+    isFocused,
+    isExpanded,
+    inputValue: state.context.inputValue,
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
@@ -31,11 +33,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     blur() {
       dom.getInputEl(state.context)?.blur()
     },
-
-    isFocused,
-    isExpanded,
-
-    inputValue: state.context.inputValue,
 
     labelProps: normalize.label<T>({
       "data-part": "label",
@@ -59,9 +56,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    popoverProps: normalize.element<T>({
-      "data-part": "popover",
-      id: dom.getPopoverId(state.context),
+    positionerProps: normalize.element<T>({
+      "data-part": "positioner",
+      id: dom.getPositionerId(state.context),
       "data-expanded": dataAttr(isExpanded),
       hidden: !isExpanded,
       style: popperStyles.floating,
@@ -209,7 +206,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "clear-button",
       id: dom.getClearBtnId(state.context),
       type: "button",
-      role: "button",
       tabIndex: -1,
       disabled: isDisabled,
       "aria-label": state.context.clearText,

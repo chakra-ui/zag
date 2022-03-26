@@ -30,34 +30,34 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const combobox = createMemo(() => Combobox.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => Combobox.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
       <div className="root">
-        <button onClick={() => combobox().setValue("Togo")}>Set to Togo</button>
+        <button onClick={() => api().setValue("Togo")}>Set to Togo</button>
         <br />
 
         <div className="combobox">
-          <label className="combobox__label" {...combobox().labelProps}>
+          <label className="combobox__label" {...api().labelProps}>
             Select country
           </label>
 
-          <div className="combobox__container" ref={ref} {...combobox().containerProps}>
-            <input {...combobox().inputProps} />
-            <button {...combobox().buttonProps}>▼</button>
+          <div className="combobox__container" ref={ref} {...api().containerProps}>
+            <input {...api().inputProps} />
+            <button {...api().buttonProps}>▼</button>
           </div>
 
-          <div className="combobox__popover">
+          <div className="combobox__popover" {...api().positionerProps}>
             {options().length > 0 && (
-              <ul className="combobox__listbox" {...combobox().listboxProps}>
+              <ul className="combobox__listbox" {...api().listboxProps}>
                 <For each={options()}>
                   {(item, index) => (
                     <li
                       className="combobox__option"
-                      {...combobox().getOptionProps({ label: item.label, value: item.code, index: index() })}
+                      {...api().getOptionProps({ label: item.label, value: item.code, index: index() })}
                     >
                       {item.label}
                     </li>

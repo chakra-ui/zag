@@ -14,7 +14,6 @@ export default defineComponent({
   name: "Combobox",
   setup() {
     const controls = useControls(comboboxControls)
-
     const options = ref(comboboxData)
 
     const [state, send] = useMachine(
@@ -31,47 +30,37 @@ export default defineComponent({
     )
 
     const nodeRef = useSetup({ send, id: "1" })
-
-    const combobox = computed(() => Combobox.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => Combobox.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const {
-        labelProps,
-        containerProps,
-        inputProps,
-        buttonProps,
-        listboxProps,
-        popoverProps,
-        getOptionProps,
-        setValue,
-      } = combobox.value
+      const api = apiRef.value
 
       return (
         <>
           <controls.ui />
 
           <div class="root">
-            <button onClick={() => setValue("Togo")}>Set to Togo</button>
+            <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
             <br />
 
             <div class="combobox">
-              <label class="combobox__label" {...labelProps}>
+              <label class="combobox__label" {...api.labelProps}>
                 Select country
               </label>
 
-              <div class="combobox__container" ref={nodeRef} {...containerProps}>
-                <input {...inputProps} />
-                <button {...buttonProps}>▼</button>
+              <div class="combobox__container" ref={nodeRef} {...api.containerProps}>
+                <input {...api.inputProps} />
+                <button {...api.buttonProps}>▼</button>
               </div>
 
-              <div class="combobox__popover" {...popoverProps}>
+              <div class="combobox__popover" {...api.positionerProps}>
                 {options.value.length > 0 && (
-                  <ul class="combobox__listbox" {...listboxProps}>
+                  <ul class="combobox__listbox" {...api.listboxProps}>
                     {options.value.map((item, index) => (
                       <li
                         class="combobox__option"
                         key={`${item.code}:${index}`}
-                        {...getOptionProps({ label: item.label, value: item.code, index })}
+                        {...api.getOptionProps({ label: item.label, value: item.code, index })}
                       >
                         {item.label}
                       </li>

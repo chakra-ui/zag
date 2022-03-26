@@ -370,9 +370,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     activities: {
       computePlacement(ctx) {
-        const popover = dom.getPopoverEl(ctx)
-        if (!popover) return
-        return getPlacement(dom.getContainerEl(ctx), popover, {
+        return getPlacement(dom.getContainerEl(ctx), dom.getPositionerEl(ctx), {
           placement: "bottom",
           flip: false,
           sameWidth: true,
@@ -384,7 +382,6 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
         })
       },
-
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
           ctx.pointerdownNode = ref(el)
@@ -413,11 +410,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
-        ctx.liveRegion = createLiveRegion({
-          ariaLive: "assertive",
-          role: "status",
-          doc: ctx.doc,
-        })
+        ctx.liveRegion = createLiveRegion({ ariaLive: "assertive", role: "status", doc: ctx.doc })
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id
