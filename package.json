@@ -40,7 +40,6 @@
     "@changesets/cli": "^2.19.0",
     "@commitlint/cli": "^16.0.2",
     "@commitlint/config-conventional": "^16.0.0",
-    "@floating-ui/dom": "^0.1.10",
     "@lerna/package-graph": "^4.0.0",
     "@manypkg/cli": "^0.17.0",
     "@swc-node/jest": "^1.4.3",

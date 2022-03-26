@@ -1,5 +1,5 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { getFloatingStyle } from "@ui-machines/popper"
+import { getRecommendedStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
@@ -12,6 +12,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isFocused = state.hasTag("focused")
 
   const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
+  const popperStyles = getRecommendedStyles({
+    measured: !!state.context.currentPlacement,
+  })
 
   const showClearButton = (!state.hasTag("idle") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
 
@@ -61,7 +64,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getPopoverId(state.context),
       "data-expanded": dataAttr(isExpanded),
       hidden: !isExpanded,
-      style: getFloatingStyle(!!state.context.currentPlacement),
+      style: popperStyles.floating,
     }),
 
     inputProps: normalize.input<T>({

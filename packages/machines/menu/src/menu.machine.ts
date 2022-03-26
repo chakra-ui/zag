@@ -331,12 +331,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       computePlacement(ctx) {
         if (ctx.disablePlacement) return
         ctx.currentPlacement = ctx.positioning.placement
-        const arrow = dom.getArrowEl(ctx)
         return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
           ...ctx.positioning,
-          arrow: arrow ? { ...ctx.positioning.arrow, element: arrow } : undefined,
-          onPlacementComplete(placement) {
-            ctx.currentPlacement = placement
+          onComplete(data) {
+            ctx.currentPlacement = data.placement
             ctx.isPlacementComplete = true
           },
           onCleanup() {

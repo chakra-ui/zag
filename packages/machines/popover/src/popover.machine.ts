@@ -116,18 +116,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       computePlacement(ctx) {
         ctx.currentPlacement = ctx.positioning.placement
         const anchorEl = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
-        const arrow = dom.getArrowEl(ctx)
-        const cleanup = getPlacement(anchorEl, dom.getPositionerEl(ctx), {
+        return getPlacement(anchorEl, dom.getPositionerEl(ctx), {
           ...ctx.positioning,
-          arrow: arrow ? { element: arrow } : undefined,
-          onPlacementComplete(placement) {
-            ctx.currentPlacement = placement
+          onComplete(data) {
+            ctx.currentPlacement = data.placement
           },
           onCleanup() {
             ctx.currentPlacement = undefined
           },
         })
-        return () => cleanup?.()
       },
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {

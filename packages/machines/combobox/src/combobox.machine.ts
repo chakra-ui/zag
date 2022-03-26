@@ -367,6 +367,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       allowCustomValue: (ctx) => !!ctx.allowCustomValue,
       hasActiveId: (ctx) => !!ctx.activeId,
     },
+
     activities: {
       computePlacement(ctx) {
         const popover = dom.getPopoverEl(ctx)
@@ -375,14 +376,15 @@ export const machine = createMachine<MachineContext, MachineState>(
           placement: "bottom",
           flip: false,
           sameWidth: true,
-          onPlacementComplete(placement) {
-            ctx.currentPlacement = placement
+          onComplete(data) {
+            ctx.currentPlacement = data.placement
           },
           onCleanup() {
             ctx.currentPlacement = undefined
           },
         })
       },
+
       trackPointerDown(ctx) {
         return trackPointerDown(dom.getDoc(ctx), (el) => {
           ctx.pointerdownNode = ref(el)

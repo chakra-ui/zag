@@ -136,12 +136,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.currentPlacement = ctx.positioning.placement
         let cleanup: VoidFunction
         raf(() => {
-          const arrow = dom.getArrowEl(ctx)
           cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
             ...ctx.positioning,
-            arrow: arrow ? { ...ctx.positioning.arrow, element: arrow } : undefined,
-            onPlacementComplete(placement) {
-              ctx.currentPlacement = placement
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
             },
             onCleanup() {
               ctx.currentPlacement = undefined

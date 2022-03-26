@@ -1,6 +1,6 @@
 import { mergeProps } from "@ui-machines/core"
 import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { getArrowStyle, innerArrowStyle } from "@ui-machines/popper"
+import { getRecommendedStyles } from "@ui-machines/popper"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
@@ -12,6 +12,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isSubmenu = state.context.isSubmenu
   const values = state.context.values
   const isOpen = state.hasTag("visible")
+
+  const popperStyles = getRecommendedStyles({
+    measured: state.context.isPlacementComplete,
+  })
 
   const api = {
     isOpen,
@@ -151,18 +155,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     positionerProps: normalize.element<T>({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
-      style: dom.getPositionerStyle(state.context),
+      style: popperStyles.floating,
     }),
 
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
-      style: getArrowStyle(),
+      style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element<T>({
-      "data-part": "arrow--inner",
-      style: innerArrowStyle,
+      "data-part": "arrow-inner",
+      style: popperStyles.innerArrow,
     }),
 
     contentProps: normalize.element<T>({

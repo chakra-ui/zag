@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
-import { getArrowStyle, getFloatingStyle, innerArrowStyle } from "@ui-machines/popper"
+import { getRecommendedStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -17,7 +17,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
   const triggerId = dom.getTriggerId(state.context)
   const contentId = dom.getContentId(state.context)
-  const arrow = state.context.positioning.arrow
+
+  const popperStyles = getRecommendedStyles({
+    measured: !!state.context.isPlacementComplete,
+  })
 
   return {
     isVisible,
@@ -80,22 +83,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     arrowProps: normalize.element<T>({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
-      style: getArrowStyle({
-        measured: state.context.isPlacementComplete,
-        size: arrow?.size,
-        shadowColor: arrow?.shadowColor,
-      }),
+      style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element<T>({
-      "data-part": "arrow--inner",
-      style: innerArrowStyle,
+      "data-part": "arrow-inner",
+      style: popperStyles.innerArrow,
     }),
 
     positionerProps: normalize.element<T>({
       id: dom.getPositionerId(state.context),
       "data-part": "positioner",
-      style: getFloatingStyle(state.context.isPlacementComplete),
+      style: popperStyles.floating,
     }),
 
     contentProps: normalize.element<T>({

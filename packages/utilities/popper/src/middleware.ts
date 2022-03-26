@@ -4,10 +4,7 @@ import { Middleware, Placement } from "@floating-ui/dom"
  * Shared middleware utils
  * -----------------------------------------------------------------------------*/
 
-const toVar = (value: string, fallback?: string | number) => ({
-  variable: value,
-  reference: fallback ? `var(${value}, ${fallback})` : `var(${value})`,
-})
+const toVar = (value: string) => ({ variable: value, reference: `var(${value})` })
 
 export const cssVars = {
   arrowShadowColor: toVar("--arrow-shadow-color"),
@@ -55,8 +52,8 @@ export const transformOrigin: Middleware = {
 
 type ArrowOptions = { element: HTMLElement }
 
-export const positionArrow = (opts: ArrowOptions): Middleware => ({
-  name: "positionArrow",
+export const shiftArrow = (opts: ArrowOptions): Middleware => ({
+  name: "shiftArrow",
   fn({ placement, middlewareData }) {
     const { element: arrow } = opts
     const { x, y } = middlewareData.arrow ?? { x: 0, y: 0 }
@@ -69,10 +66,8 @@ export const positionArrow = (opts: ArrowOptions): Middleware => ({
     }[placement.split("-")[0]]!
 
     Object.assign(arrow.style, {
-      left: x != null ? `${x}px` : "",
-      top: y != null ? `${y}px` : "",
-      right: "",
-      bottom: "",
+      top: `${y}px`,
+      left: `${x}px`,
       [staticSide]: cssVars.arrowOffset.reference,
       [cssVars.boxShadow.variable]: getBoxShadow(placement)!,
     })
