@@ -49,21 +49,23 @@ export class Machine<
   private delayMap: S.DelayMap<TContext, TEvent>
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
   private sync: boolean
+  public options?: S.MachineOptions<TContext, TState, TEvent>
 
   // Let's get started!
   constructor(
     public config: S.MachineConfig<TContext, TState, TEvent>,
-    public options?: S.MachineOptions<TContext, TState, TEvent>,
+    opts?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
+    this.options = klona(opts)
     this.id = config.id ?? `machine-${uuid()}`
     this.state = createProxy(klona(config))
     config.created?.(this.state.context)
     this.setupComputed()
-    this.guardMap = options?.guards ?? {}
-    this.actionMap = options?.actions ?? {}
-    this.delayMap = options?.delays ?? {}
-    this.activityMap = options?.activities ?? {}
-    this.sync = options?.sync ?? false
+    this.guardMap = this.options?.guards ?? {}
+    this.actionMap = this.options?.actions ?? {}
+    this.delayMap = this.options?.delays ?? {}
+    this.activityMap = this.options?.activities ?? {}
+    this.sync = this.options?.sync ?? false
   }
 
   // immutable state value
@@ -327,15 +329,18 @@ export class Machine<
   }
 
   withContext = (context: Partial<Writable<TContext>>) => {
+    this.detachComputed()
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 
   withConfig = (config: Partial<S.MachineConfig<TContext, TState, TEvent>>) => {
+    this.detachComputed()
     return new Machine({ ...this.config, ...config }, this.options)
   }
 
   withOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
+    this.detachComputed()
     return new Machine(this.config, { ...this.options, ...options })
   }
 
@@ -345,7 +350,7 @@ export class Machine<
 
   clone = () => {
     this.detachComputed()
-    return new Machine(klona(this.config), klona(this.options))
+    return new Machine(this.config, this.options)
   }
 
   private getStateNode = (state: TState["value"] | null) => {
