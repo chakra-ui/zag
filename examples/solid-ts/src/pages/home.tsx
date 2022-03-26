@@ -16,13 +16,16 @@ export default function Home() {
         </li>
         <li>
           <Link href="/dialog">Dialog </Link>
-        </li>{" "}
+        </li>
         <li>
           <Link href="/menu">Menu </Link>
         </li>
         <li>
           <Link href="/nested-menu">Nested Menu </Link>
-        </li>{" "}
+        </li>
+        <li>
+          <Link href="/menu-options">Menu Options </Link>
+        </li>
         <li>
           <Link href="/context-menu">Context Menu </Link>
         </li>

@@ -86,6 +86,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "trigger",
       "data-placement": state.context.currentPlacement,
       type: "button",
+      dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       "data-uid": state.context.uid,
       "aria-haspopup": "menu",

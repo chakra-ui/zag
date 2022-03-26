@@ -2,20 +2,8 @@ import { Global } from "@emotion/react"
 import * as Menu from "@ui-machines/menu"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { menuStyle } from "../../../shared/style"
+import { menuOptionData as data } from "../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
-
-const data = {
-  radio: [
-    { label: "Ascending", id: "asc" },
-    { label: "Descending", id: "desc" },
-    { label: "None", id: "none" },
-  ],
-  checkbox: [
-    { label: "Email", id: "email" },
-    { label: "Phone", id: "phone" },
-    { label: "Address", id: "address" },
-  ],
-}
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -37,7 +25,7 @@ export default function Page() {
         </button>
         <div {...api.positionerProps}>
           <div className="menu__content" {...api.contentProps}>
-            {data.radio.map((item) => {
+            {data.order.map((item) => {
               const opts = { type: "radio", name: "order", value: item.id } as const
               return (
                 <div key={item.id} className="menu__item" {...api.getOptionItemProps(opts)}>
@@ -46,7 +34,7 @@ export default function Page() {
               )
             })}
             <hr />
-            {data.checkbox.map((item) => {
+            {data.type.map((item) => {
               const opts = { type: "checkbox", name: "type", value: item.id } as const
               return (
                 <div key={item.id} className="menu__item" {...api.getOptionItemProps(opts)}>

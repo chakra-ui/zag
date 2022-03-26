@@ -21,6 +21,9 @@
         <router-link to="/nested-menu">Nested Menu </router-link>
       </li>
       <li>
+        <router-link to="/menu-options">Menu option </router-link>
+      </li>
+      <li>
         <router-link to="/context-menu">Context Menu </router-link>
       </li>
       <li>

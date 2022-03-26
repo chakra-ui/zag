@@ -1,5 +1,5 @@
 import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
-import { getFloatingStyle } from "@ui-machines/popper"
+import { getRecommendedStyles } from "@ui-machines/popper"
 import { Style } from "@ui-machines/types"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./menu.types"
@@ -66,6 +66,6 @@ export const dom = {
     }
 
     const styles: Style = { pointerEvents: !ctx.isPlacementComplete ? "none" : undefined }
-    return Object.assign(styles, getFloatingStyle(!!ctx.currentPlacement))
+    return Object.assign(styles, getRecommendedStyles({ measured: !!ctx.currentPlacement }))
   },
 }

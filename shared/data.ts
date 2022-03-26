@@ -88,3 +88,16 @@ export const menuData = [
     { label: "Export", id: "export" },
   ],
 ]
+
+export const menuOptionData = {
+  order: [
+    { label: "Ascending", id: "asc" },
+    { label: "Descending", id: "desc" },
+    { label: "None", id: "none" },
+  ],
+  type: [
+    { label: "Email", id: "email" },
+    { label: "Phone", id: "phone" },
+    { label: "Address", id: "address" },
+  ],
+}

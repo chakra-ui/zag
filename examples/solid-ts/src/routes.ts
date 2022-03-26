@@ -33,6 +33,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/nested-menu")),
   },
   {
+    path: "/menu-options",
+    component: lazy(() => import("./pages/menu-options")),
+  },
+  {
     path: "/context-menu",
     component: lazy(() => import("./pages/context-menu")),
   },
