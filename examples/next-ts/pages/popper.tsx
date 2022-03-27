@@ -1,4 +1,4 @@
-import { getPositioningStyles, getPlacement } from "@ui-machines/popper"
+import { getPlacementStyles, getPlacement } from "@ui-machines/popper"
 import React, { useEffect, useLayoutEffect } from "react"
 
 const useSafeEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
@@ -14,7 +14,7 @@ export default function App() {
     })
   }, [])
 
-  const styles = getPositioningStyles({ measured: true })
+  const styles = getPlacementStyles({ measured: true })
 
   return (
     <div>

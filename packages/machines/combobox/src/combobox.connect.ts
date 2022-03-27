@@ -1,5 +1,5 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { getPositioningStyles } from "@ui-machines/popper"
+import { getPlacementStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
@@ -13,7 +13,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
   const showClearButton = (!state.hasTag("idle") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
 
-  const popperStyles = getPositioningStyles({
+  const popperStyles = getPlacementStyles({
     measured: !!state.context.currentPlacement,
   })
 

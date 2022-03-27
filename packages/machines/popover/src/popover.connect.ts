@@ -1,6 +1,6 @@
 import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
-import { getPositioningStyles } from "@ui-machines/popper"
+import { getPlacementStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState } from "./popover.types"
@@ -12,7 +12,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 ) {
   const isOpen = state.matches("open")
   const pointerdownNode = state.context.pointerdownNode
-  const popperStyles = getPositioningStyles({ measured: !!state.context.isPlacementComplete })
+  const popperStyles = getPlacementStyles({ measured: !!state.context.isPlacementComplete })
 
   return {
     portalled: state.context.currentPortalled,

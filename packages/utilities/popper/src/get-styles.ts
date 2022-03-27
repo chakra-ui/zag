@@ -13,7 +13,7 @@ const UNMEASURED_FLOATING_STYLE = {
   transform: "translate3d(0, -200%, 0)",
 } as const
 
-export function getPositioningStyles(options: Options) {
+export function getPlacementStyles(options: Options) {
   const { measured, strategy = "absolute" } = options
 
   return {
