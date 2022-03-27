@@ -1,6 +1,6 @@
 import { mergeProps } from "@ui-machines/core"
 import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
-import { getRecommendedStyles } from "@ui-machines/popper"
+import { getPositioningStyles } from "@ui-machines/popper"
 import { getEventPoint } from "@ui-machines/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { isLeftClick } from "@ui-machines/utils"
@@ -13,7 +13,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const values = state.context.values
   const isOpen = state.hasTag("visible")
 
-  const popperStyles = getRecommendedStyles({
+  const popperStyles = getPositioningStyles({
     measured: state.context.isPlacementComplete,
   })
 

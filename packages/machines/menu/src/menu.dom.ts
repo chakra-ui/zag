@@ -1,5 +1,5 @@
 import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
-import { getRecommendedStyles } from "@ui-machines/popper"
+import { getPositioningStyles } from "@ui-machines/popper"
 import { Style } from "@ui-machines/types"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./menu.types"
@@ -68,6 +68,6 @@ export const dom = {
     }
 
     const styles: Style = { pointerEvents: !ctx.isPlacementComplete ? "none" : undefined }
-    return Object.assign(styles, getRecommendedStyles({ measured: !!ctx.currentPlacement }))
+    return Object.assign(styles, getPositioningStyles({ measured: !!ctx.currentPlacement }))
   },
 }
