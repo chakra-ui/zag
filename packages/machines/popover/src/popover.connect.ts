@@ -42,6 +42,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
+      type: "button",
       "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
