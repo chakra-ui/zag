@@ -58,12 +58,10 @@ export function globalEventBus(node: El | null, type: string, handler: Handler, 
     if (!listenerElements.has(node)) return
 
     const group = listenerElements.get(node)
-    const listener = listenerCache.get(node)?.get(hash)!
-
     group?.get(hash)?.delete(handler)
 
     if (group?.get(hash)?.size === 0) {
-      //
+      const listener = listenerCache.get(node)?.get(hash)!
       node.removeEventListener(type, listener, options)
       group?.delete(hash)
       listenerCache.get(node)?.delete(hash)
