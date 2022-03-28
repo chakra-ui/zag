@@ -1,7 +1,7 @@
-import { isLeftClick, isMouseEvent, callAll } from "@ui-machines/utils"
-import { disableTextSelection } from "./text-selection"
+import { isLeftClick, isMouseEvent, pipe } from "@ui-machines/utils"
 import { addDomEvent, addPointerEvent } from "./listener"
 import type { AnyPointerEvent, EventListenerWithPointInfo as Listener, PointerEventInfo } from "./listener.types"
+import { disableTextSelection } from "./text-selection"
 
 export function trackPointerDown(doc: Document, onPointerDown: (el: HTMLElement) => void) {
   const win = doc.defaultView ?? window
@@ -37,7 +37,7 @@ export function trackPointerMove(opts: TrackPointerMoveOptions) {
     onPointerMove(info, event)
   }
 
-  return callAll(
+  return pipe(
     addPointerEvent(doc, "pointermove", handlePointerMove, false),
     addPointerEvent(doc, "pointerup", onPointerUp, false),
     addPointerEvent(doc, "pointercancel", onPointerUp, false),

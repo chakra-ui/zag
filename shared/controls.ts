@@ -15,6 +15,8 @@ export const comboboxControls = defineControls({
 })
 
 export const editableControls = defineControls({
+  readonly: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
   autoResize: { type: "boolean", defaultValue: false },
   placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
   submitMode: {
