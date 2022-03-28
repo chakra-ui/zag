@@ -8,6 +8,7 @@ export const dom = {
 
   getRootId: (ctx: Ctx) => `editable-${ctx.uid}`,
   getAreaId: (ctx: Ctx) => `editable-${ctx.uid}-area`,
+  getLabelId: (ctx: Ctx) => `editable-${ctx.uid}-label`,
   getPreviewId: (ctx: Ctx) => `editable-${ctx.uid}-preview`,
   getInputId: (ctx: Ctx) => `editable-${ctx.uid}-input`,
   getSubmitBtnId: (ctx: Ctx) => `editable-${ctx.uid}-submit-btn`,
@@ -15,6 +16,7 @@ export const dom = {
   getEditBtnId: (ctx: Ctx) => `editable-${ctx.uid}-edit-btn`,
 
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputEl,
+  getPreviewEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPreviewId(ctx)) as HTMLInputEl,
   getSubmitBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getSubmitBtnId(ctx)) as HTMLButtonEl,
   getCancelBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCancelBtnId(ctx)) as HTMLButtonEl,
   getEditBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditBtnId(ctx)) as HTMLButtonEl,

@@ -4,25 +4,38 @@ import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
-  const pointerdownNode = state.context.pointerdownNode
+  //
   const isDisabled = state.context.disabled
+  const isInteractive = state.context.isInteractive
+  const isReadonly = state.context.readonly
+  const isValueEmpty = state.context.isValueEmpty
+  const isInvalid = state.context.invalid
+
+  const pointerdownNode = state.context.pointerdownNode
   const autoResize = state.context.autoResize
+
   const isEditing = state.matches("edit")
 
   return {
     isEditing,
-    isValueEmpty: state.context.isValueEmpty,
+    isValueEmpty: isValueEmpty,
     value: state.context.value,
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
+    clearValue() {
+      send({ type: "SET_VALUE", value: "" })
+    },
     edit() {
+      if (!isInteractive) return
       send("EDIT")
     },
     cancel() {
+      if (!isInteractive) return
       send("CANCEL")
     },
     submit() {
+      if (!isInteractive) return
       send("SUBMIT")
     },
 
@@ -37,7 +50,21 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: autoResize ? { display: "inline-grid" } : undefined,
       "data-focus": dataAttr(isEditing),
       "data-disabled": dataAttr(isDisabled),
-      "data-empty": dataAttr(state.context.isValueEmpty),
+      "data-placeholder-shown": dataAttr(isValueEmpty),
+    }),
+
+    labelProps: normalize.label<T>({
+      "data-part": "label",
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getInputId(state.context),
+      "data-focus": dataAttr(isEditing),
+      "data-invalid": dataAttr(isInvalid),
+      onPointerDown(event) {
+        if (!isEditing) {
+          event.preventDefault()
+          dom.getPreviewEl(state.context)?.focus()
+        }
+      },
     }),
 
     inputProps: normalize.input<T>({
@@ -48,7 +75,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       hidden: autoResize ? undefined : !isEditing,
       placeholder: state.context.placeholder,
       disabled: isDisabled,
-      "aria-disabled": isDisabled,
+      "data-disabled": dataAttr(isDisabled),
+      readOnly: isReadonly,
+      "data-readonly": dataAttr(isReadonly),
+      "aria-invalid": ariaAttr(isInvalid),
+      "data-invalid": dataAttr(isInvalid),
       value: state.context.value,
       size: autoResize ? 1 : undefined,
       onBlur(event) {
@@ -94,15 +125,22 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     previewProps: normalize.element<T>({
       id: dom.getPreviewId(state.context),
       "data-part": "preview",
-      "data-empty": dataAttr(state.context.isValueEmpty),
-      children: state.context.isValueEmpty ? state.context.placeholder : state.context.value,
-      hidden: autoResize ? undefined : isEditing,
+      "data-placeholder-shown": dataAttr(isValueEmpty),
+      "aria-readonly": ariaAttr(isReadonly),
+      "data-readonly": dataAttr(isDisabled),
+      "data-disabled": dataAttr(isDisabled),
       "aria-disabled": ariaAttr(isDisabled),
-      tabIndex: state.context.isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
+      "aria-invalid": ariaAttr(isInvalid),
+      "data-invalid": dataAttr(isInvalid),
+      children: isValueEmpty ? state.context.placeholder : state.context.value,
+      hidden: autoResize ? undefined : isEditing,
+      tabIndex: isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {
+        if (!isInteractive) return
         send("FOCUS")
       },
       onDoubleClick() {
+        if (!isInteractive) return
         send("DBLCLICK")
       },
       style: autoResize
@@ -111,11 +149,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
             userSelect: "none",
             gridArea: "1 / 1 / auto / auto",
             visibility: isEditing ? "hidden" : undefined,
-            ...(state.context.maxWidth && {
-              maxWidth: state.context.maxWidth,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }),
+            // in event the preview overflow's the parent element
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }
         : undefined,
     }),
@@ -123,9 +159,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     editButtonProps: normalize.button<T>({
       "data-part": "edit-button",
       id: dom.getEditBtnId(state.context),
-      "aria-label": "Submit",
+      "aria-label": "edit",
       type: "button",
+      disabled: isDisabled,
       onClick() {
+        if (!isInteractive) return
         send("EDIT")
       },
     }),
@@ -133,19 +171,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     submitButtonProps: normalize.button<T>({
       "data-part": "submit-button",
       id: dom.getSubmitBtnId(state.context),
-      "aria-label": "Submit",
+      "aria-label": "submit",
+      disabled: isDisabled,
       type: "button",
       onClick() {
+        if (!isInteractive) return
         send("SUBMIT")
       },
     }),
 
     cancelButtonProps: normalize.button<T>({
       "data-part": "cancel-button",
-      "aria-label": "Cancel",
+      "aria-label": "cancel",
       id: dom.getCancelBtnId(state.context),
       type: "button",
+      disabled: isDisabled,
       onClick() {
+        if (!isInteractive) return
         send("CANCEL")
       },
     }),

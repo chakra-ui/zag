@@ -7,6 +7,10 @@ export type SubmitMode = "enter" | "blur" | "both" | "none"
 
 export type MachineContext = Context<{
   /**
+   * Whether the input's value is invalid.
+   */
+  invalid?: boolean
+  /**
    * The accessiblity label of the editable component.
    */
   "aria-label": string
@@ -14,10 +18,6 @@ export type MachineContext = Context<{
    * The name attribute of the editable component. Used for form submission.
    */
   name?: string
-  /**
-   * The CSS max-width of the editable area.
-   */
-  maxWidth?: string
   /**
    * Whether the editable should auto-resize to fit the content.
    */
