@@ -1,8 +1,9 @@
 export const runIfFn = <T>(
   v: T,
   ...a: T extends (...a: any[]) => void ? Parameters<T> : never
-): T extends (...a: any[]) => void ? ReturnType<T> : T => {
-  return typeof v === "function" ? v(...a) : v
+): T extends (...a: any[]) => void ? NonNullable<ReturnType<T>> | undefined : NonNullable<T> | undefined => {
+  const res = typeof v === "function" ? v(...a) : v
+  return res ?? undefined
 }
 
 export const cast = <T>(v: unknown): T => v as T

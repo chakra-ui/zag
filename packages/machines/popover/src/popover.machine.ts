@@ -169,7 +169,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             returnFocusOnDeactivate: true,
             document: dom.getDoc(ctx),
             fallbackFocus: el,
-            initialFocus: runIfFn(ctx.initialFocusEl) ?? undefined,
+            initialFocus: runIfFn(ctx.initialFocusEl),
           })
           try {
             trap.activate()
