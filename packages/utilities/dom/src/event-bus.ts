@@ -21,23 +21,7 @@ export function globalEventBus(node: El | null, type: string, handler: Handler, 
   // unique identifier for the event listener
   const hash = JSON.stringify({ type, options })
 
-  function attach() {
-    if (!node) return
-
-    function listener(event: Event) {
-      const group = listenerElements.get(node!)
-      group?.get(hash)?.forEach((fn) => fn(event))
-    }
-
-    if (!listenerCache?.has(node)) {
-      listenerCache.set(node, new Map([[hash, listener]]))
-      node.addEventListener(type, listener, options)
-    } else if (!listenerCache?.get(node)?.has(hash)) {
-      listenerCache.get(node)?.set(hash, listener)
-      node.addEventListener(type, listener, options)
-    }
-  }
-
+  // create group of listeners per hash
   const group = listenerElements.get(node)
 
   if (!listenerElements.has(node)) {
@@ -49,7 +33,26 @@ export function globalEventBus(node: El | null, type: string, handler: Handler, 
     group?.set(hash, new Set([handler]))
   }
 
-  attach()
+  // add the event listener to the node or register it in the cache
+  function attach(node: El) {
+    function listener(event: Event) {
+      const group = listenerElements.get(node)
+      group?.get(hash)?.forEach((fn) => fn(event))
+    }
+
+    if (!listenerCache?.has(node)) {
+      listenerCache.set(node, new Map([[hash, listener]]))
+      node.addEventListener(type, listener, options)
+      return
+    }
+
+    if (!listenerCache?.get(node)?.has(hash)) {
+      listenerCache.get(node)?.set(hash, listener)
+      node.addEventListener(type, listener, options)
+    }
+  }
+
+  attach(node)
 
   return function remove() {
     if (!listenerElements.has(node)) return
