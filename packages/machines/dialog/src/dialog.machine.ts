@@ -102,8 +102,8 @@ export const machine = createMachine<MachineContext, MachineState>(
             fallbackFocus: dom.getContentEl(ctx),
             allowOutsideClick: true,
             returnFocusOnDeactivate: ctx.restoreFocus,
-            initialFocus: runIfFn(ctx.initialFocusEl) ?? undefined,
-            setReturnFocus: runIfFn(ctx.finalFocusEl) ?? undefined,
+            initialFocus: runIfFn(ctx.initialFocusEl),
+            setReturnFocus: runIfFn(ctx.finalFocusEl),
           })
           try {
             trap.activate()

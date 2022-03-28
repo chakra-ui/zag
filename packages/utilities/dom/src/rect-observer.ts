@@ -21,7 +21,7 @@ export function observeElementRect(el: Measurable, fn: Fn) {
     fn(el.getBoundingClientRect())
   }
 
-  return () => {
+  return function unobserve() {
     const data = observedElements.get(el)
     if (!data) return
 

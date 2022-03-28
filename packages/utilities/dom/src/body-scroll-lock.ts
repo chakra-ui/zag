@@ -86,13 +86,10 @@ export function preventBodyScroll(opts?: PreventScrollOptions) {
               scrollIntoView(target, { scrollMode: "if-needed" })
             })
           } else {
-            viewport.addEventListener(
-              "resize",
-              function () {
-                scrollIntoView(target, { scrollMode: "if-needed" })
-              },
-              { once: true },
-            )
+            const onResize = () => {
+              scrollIntoView(target, { scrollMode: "if-needed" })
+            }
+            addDomEvent(viewport, "resize", onResize, { once: true })
           }
         })
       }
