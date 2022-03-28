@@ -1,3 +1,13 @@
+import { globalEventBus } from "./event-bus"
+import {
+  AnyPointerEvent,
+  DOMEventTarget,
+  EventMap,
+  PointerEventInfo,
+  PointerNameMap,
+  RefTarget,
+} from "./listener.types"
+
 const t = (v: any) => Object.prototype.toString.call(v).slice(8, -1)
 const isRef = (v: any): v is RefTarget => t(v) === "Object" && "current" in v
 const runIfFn = (fn: any): HTMLElement | null => (t(fn) === "Function" ? fn() : fn)
@@ -22,8 +32,7 @@ export function addDomEvent<K extends keyof EventMap>(
   options?: boolean | AddEventListenerOptions,
 ) {
   const node = isRef(target) ? target.current : runIfFn(target)
-  node?.addEventListener(event, listener as any, options)
-  return () => node?.removeEventListener(event, listener as any, options)
+  return globalEventBus(node, event, listener as any, options)
 }
 
 export function addPointerEvent<K extends keyof EventMap>(
@@ -32,7 +41,8 @@ export function addPointerEvent<K extends keyof EventMap>(
   listener: (event: EventMap[K], info: PointerEventInfo) => void,
   options?: boolean | AddEventListenerOptions,
 ) {
-  return addDomEvent(target, getEventName(event), wrapHandler(listener, event === "pointerdown"), options)
+  const type = getEventName(event) ?? event
+  return addDomEvent(target, type, wrapHandler(listener, event === "pointerdown"), options)
 }
 
 function wrapHandler<E extends EventMap[keyof EventMap]>(
@@ -62,39 +72,6 @@ const supportsPointerEvent = () => typeof window !== "undefined" && window.onpoi
 const supportsTouchEvent = () => typeof window !== "undefined" && window.ontouchstart === null
 const supportsMouseEvent = () => typeof window !== "undefined" && window.onmousedown === null
 
-export function getEventName(evt: keyof EventMap): keyof EventMap {
-  if (supportsPointerEvent()) return evt
-  if (supportsTouchEvent()) return touchEventNames[evt]
-  if (supportsMouseEvent()) return mouseEventNames[evt]
-  return evt
-}
-
-export interface EventMap extends DocumentEventMap, WindowEventMap, HTMLElementEventMap {}
-
-export type DOMTarget = Document | HTMLElement | EventTarget | null
-export type AnyPointerEvent = MouseEvent | TouchEvent | PointerEvent
-export type RefTarget = { current: HTMLElement | null }
-export type DOMEventTarget = (() => DOMTarget) | DOMTarget | RefTarget
-export type EventListenerOptions = boolean | AddEventListenerOptions
-export interface PointerEventInfo {
-  point: { x: number; y: number }
-}
-export type EventListenerWithPointInfo<T extends AnyPointerEvent = AnyPointerEvent> = (
-  event: T,
-  info: PointerEventInfo,
-) => void
-
-interface PointerNameMap {
-  pointerdown: string
-  pointermove: string
-  pointerup: string
-  pointercancel: string
-  pointerover?: string
-  pointerout?: string
-  pointerenter?: string
-  pointerleave?: string
-}
-
 const mouseEventNames: PointerNameMap = {
   pointerdown: "mousedown",
   pointermove: "mousemove",
@@ -111,4 +88,11 @@ const touchEventNames: PointerNameMap = {
   pointermove: "touchmove",
   pointerup: "touchend",
   pointercancel: "touchcancel",
+}
+
+export function getEventName(evt: keyof EventMap): keyof EventMap {
+  if (supportsPointerEvent()) return evt
+  if (supportsTouchEvent()) return touchEventNames[evt]
+  if (supportsMouseEvent()) return mouseEventNames[evt]
+  return evt
 }
