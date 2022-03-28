@@ -1,4 +1,5 @@
-import { isLeftClick } from "@ui-machines/utils"
+import { isLeftClick, pipe } from "@ui-machines/utils"
+import { addDomEvent } from "./listener"
 import { nextTick } from "./next-tick"
 
 let changeCount = 0
@@ -28,13 +29,11 @@ export function preventBodyPointerEvents(el: HTMLElement | null, opts: Partial<P
       isLeftClickPressed = false
     }
 
-    doc.addEventListener("pointerdown", onPointerDown)
-    doc.addEventListener("pointerup", onPointerUp)
-
-    return function () {
-      doc.removeEventListener("pointerdown", onPointerDown)
-      doc.removeEventListener("pointerup", onPointerUp)
-    }
+    // prettier-ignore
+    return pipe(
+        addDomEvent(doc, "pointerdown", onPointerDown),
+        addDomEvent(doc,"pointerup", onPointerUp)
+      )
   }
 
   function reset() {
@@ -63,9 +62,9 @@ export function preventBodyPointerEvents(el: HTMLElement | null, opts: Partial<P
 
     return function () {
       if (isTouchOrPenPressed) {
-        doc.addEventListener("click", reset, { once: true })
+        addDomEvent(doc, "click", reset, { once: true })
       } else if (isLeftClickPressed) {
-        doc.addEventListener("pointerup", reset, { once: true })
+        addDomEvent(doc, "pointerup", reset, { once: true })
       } else {
         reset()
       }

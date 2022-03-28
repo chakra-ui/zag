@@ -21,10 +21,12 @@ export function globalEventBus(node: El | null, type: string, handler: Handler, 
   // unique identifier for the event listener
   const hash = JSON.stringify({ type, options })
 
-  // create group of listeners per hash
+  // Subscribe pattern
+
   const group = listenerElements.get(node)
 
   if (!listenerElements.has(node)) {
+    // create group of listeners per hash
     const group: Group = new Map([[hash, new Set([handler])]])
     listenerElements.set(node, group)
   } else if (group?.has(hash)) {
@@ -35,6 +37,7 @@ export function globalEventBus(node: El | null, type: string, handler: Handler, 
 
   // add the event listener to the node or register it in the cache
   function attach(node: El) {
+    // Publish pattern
     function listener(event: Event) {
       const group = listenerElements.get(node)
       group?.get(hash)?.forEach((fn) => fn(event))
