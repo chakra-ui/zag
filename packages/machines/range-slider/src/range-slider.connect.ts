@@ -15,13 +15,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isDragging = state.matches("dragging")
   const isDisabled = state.context.disabled
 
+  const isInteractive = state.context.isInteractive
+
   return {
-    // state
     values: state.context.value,
     isDragging,
     isFocused,
-
-    // methods
     setValue(values: number[]) {
       send({ type: "SET_VALUE", value: values })
     },
@@ -54,15 +53,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "DECREMENT", index })
     },
     focus(index = 0) {
-      if (isDisabled) return
+      if (!isInteractive) return
       send({ type: "FOCUS", index })
     },
-    blur() {
-      if (isDisabled) return
-      send({ type: "BLUR" })
-    },
 
-    // dom attributes
     labelProps: normalize.label<T>({
       "data-part": "label",
       id: dom.getLabelId(state.context),
@@ -75,6 +69,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: {
         userSelect: "none",
       },
+    }),
+
+    rootProps: normalize.element<T>({
+      "data-part": "root",
+      "data-disabled": dataAttr(isDisabled),
+      "data-orientation": state.context.orientation,
+      id: dom.getRootId(state.context),
+      dir: state.context.dir,
     }),
 
     outputProps: normalize.output<T>({
@@ -95,9 +97,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getThumbProps(index: number) {
       const value = values[index]
-      const spacing = multiply(state.context.minStepsBetweenThumbs, state.context.step)
-      const range = toRanges({ ...state.context, spacing })[index]
-
+      const range = toRanges(state.context)[index]
       const ariaValueText = state.context.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
@@ -122,15 +122,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         tabIndex: isDisabled ? undefined : 0,
         style: dom.getThumbStyle(state.context, index),
         onBlur() {
-          if (isDisabled) return
+          if (!isInteractive) return
           send("BLUR")
         },
         onFocus() {
-          if (isDisabled) return
+          if (!isInteractive) return
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
-          if (!state.context.isInteractive) return
+          if (!isInteractive) return
           const step = multiply(getEventStep(event), state.context.step)
           let prevent = true
           const keyMap: EventKeyMap = {
@@ -181,9 +181,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     getInputProps(index: number) {
       return normalize.input<T>({
         "data-part": "input",
-        name: state.context.name?.[index],
+        name: `${state.context.name}[${index}]`,
         type: "hidden",
-        value: state.context.value[index],
+        defaultValue: state.context.value[index],
         id: dom.getInputId(state.context, index),
       })
     },
@@ -196,15 +196,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getRangeStyle(state.context),
     }),
 
-    rootProps: normalize.element<T>({
-      "data-part": "root",
-      id: dom.getRootId(state.context),
+    controlProps: normalize.element<T>({
+      "data-part": "control",
+      id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      style: dom.getRootStyle(state.context),
+      style: dom.getControlStyle(state.context),
       onPointerDown(event) {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
 
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
@@ -213,6 +213,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
         event.preventDefault()
         event.stopPropagation()
+      },
+    }),
+
+    markerGroupProps: normalize.element<T>({
+      "data-part": "marker-group",
+      role: "presentation",
+      "aria-hidden": true,
+      "data-orientation": state.context.orientation,
+      style: {
+        userSelect: "none",
+        pointerEvents: "none",
+        position: "relative",
       },
     }),
 

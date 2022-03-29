@@ -1,6 +1,6 @@
 import { createMachine, ref } from "@ui-machines/core"
 import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
-import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
+import { clamp, decrement, increment, multiply, snapToStep } from "@ui-machines/number-utils"
 import { getElementRect } from "@ui-machines/rect-utils"
 import { isNumber } from "@ui-machines/utils"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
@@ -30,6 +30,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
+      spacing: (ctx) => multiply(ctx.minStepsBetweenThumbs, ctx.step),
     },
 
     watch: {
@@ -164,7 +165,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
       setActiveIndex(ctx, evt) {
-        ctx.activeIndex = getClosestIndex(ctx, evt)
+        ctx.activeIndex = evt.index ?? getClosestIndex(ctx, evt)
       },
       clearActiveIndex(ctx) {
         ctx.activeIndex = -1

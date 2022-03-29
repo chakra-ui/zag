@@ -84,7 +84,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-valuenow": state.context.value,
       "aria-valuetext": ariaValueText,
       role: "slider",
-      tabIndex: !isDisabled ? 0 : undefined,
+      tabIndex: isDisabled ? undefined : 0,
       onBlur() {
         if (!isInteractive) return
         send("BLUR")
@@ -145,7 +145,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     inputProps: normalize.input<T>({
       "data-part": "input",
       type: "hidden",
-      value: state.context.value,
+      defaultValue: state.context.value,
       name: state.context.name,
       id: dom.getInputId(state.context),
     }),

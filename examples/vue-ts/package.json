@@ -41,6 +41,7 @@
         "focus-trap",
         "form-serialize",
         "klona",
+        "klona/json",
         "merge-anything",
         "react",
         "scroll-into-view-if-needed",

@@ -4,18 +4,18 @@ import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/so
 import serialize from "form-serialize"
 import { createMemo, For, createUniqueId } from "solid-js"
 import { rangeSliderControls } from "../../../../shared/controls"
-import { rangeSliderStyle } from "../../../../shared/style"
+import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
-injectGlobal(rangeSliderStyle)
+injectGlobal(sliderStyle)
 
 export default function Page() {
   const controls = useControls(rangeSliderControls)
 
   const [state, send] = useMachine(
     RangeSlider.machine.withContext({
-      name: ["min", "max"],
+      name: "quantity",
       value: [10, 60],
     }),
     { context: controls.context as any },
@@ -23,7 +23,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const slider = createMemo(() => RangeSlider.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => RangeSlider.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
@@ -36,21 +36,30 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div className="slider" ref={ref} {...slider().rootProps}>
-          <div className="slider__track" {...slider().trackProps}>
-            <div className="slider__range" {...slider().rangeProps} />
+        <div ref={ref} {...api().rootProps}>
+          <div>
+            <label {...api().labelProps}>Quantity:</label>
+            <output {...api().outputProps}>{api().values.join(" - ")}</output>
           </div>
-          <For each={slider().values}>
-            {(val, index) => (
-              <div className="slider__thumb" {...slider().getThumbProps(index())}>
-                <input {...slider().getInputProps(index())} />
-              </div>
-            )}
-          </For>
-        </div>
 
-        <StateVisualizer state={state} />
+          <div className="control-area">
+            <div {...api().controlProps}>
+              <div {...api().trackProps}>
+                <div {...api().rangeProps} />
+              </div>
+              <For each={api().values}>
+                {(_, index) => (
+                  <div className="slider__thumb" {...api().getThumbProps(index())}>
+                    <input {...api().getInputProps(index())} />
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </div>
       </form>
+
+      <StateVisualizer state={state} />
     </>
   )
 }

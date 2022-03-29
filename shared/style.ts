@@ -147,50 +147,6 @@ export const popoverStyle: CSSObject = {
   },
 }
 
-export const rangeSliderStyle: CSSObject = {
-  ".slider": {
-    "--slider-thumb-size": "20px",
-    "--slider-track-height": "4px",
-    height: "var(--slider-thumb-size)",
-    display: "flex",
-    alignItems: "center",
-    margin: "45px",
-    maxWidth: "200px",
-    position: "relative",
-  },
-  ".slider__thumb": {
-    all: "unset",
-    width: "var(--slider-thumb-size)",
-    height: "var(--slider-thumb-size)",
-    borderRadius: ["9999px", "999px"],
-    background: "white",
-    boxShadow: "rgba(0, 0, 0, 0.14) 0px 2px 10px",
-    "&:focus-visible": {
-      boxShadow: "rgb(0 0 0 / 22%) 0px 0px 0px 5px",
-    },
-    "&:hover:not([data-disabled])": {
-      backgroundColor: "rgb(245, 242, 255)",
-    },
-    "&[data-disabled]": {
-      background: "lightgray",
-    },
-  },
-  ".slider__track": {
-    height: "var(--slider-track-height)",
-    background: "rgba(0, 0, 0, 0.2)",
-    borderRadius: "9999px",
-    flexGrow: 1,
-  },
-  ".slider__range": {
-    background: "magenta",
-    borderRadius: "inherit",
-    height: "100%",
-    "&[data-disabled]": {
-      background: "rgba(0, 0, 0, 0.4)",
-    },
-  },
-}
-
 export const ratingStyle: CSSObject = {
   ".rating": {
     display: "inline-flex",

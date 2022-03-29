@@ -16,9 +16,14 @@ export default defineComponent({
   setup() {
     const controls = useControls(sliderControls)
 
-    const [state, send] = useMachine(Slider.machine, {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      Slider.machine.withContext({
+        name: "quantity",
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const ref = useSetup({ send, id: "1" })
 
@@ -32,7 +37,7 @@ export default defineComponent({
           <controls.ui />
           <form
             // ensure we can read the value within forms
-            onChange={(e) => {
+            onInput={(e) => {
               const target = e.currentTarget
               if (target instanceof HTMLFormElement) {
                 const formData = serialize(target, { hash: true })
@@ -51,19 +56,19 @@ export default defineComponent({
               </div>
 
               <div class="control-area">
-                <div class="slider" {...api.controlProps}>
-                  <div data-testid="track" class="slider__track" {...api.trackProps}>
-                    <div class="slider__range" {...api.rangeProps} />
+                <div {...api.controlProps}>
+                  <div data-testid="track" {...api.trackProps}>
+                    <div {...api.rangeProps} />
                   </div>
-                  <div data-testid="thumb" class="slider__thumb" {...api.thumbProps}>
+                  <div data-testid="thumb" {...api.thumbProps}>
                     <input {...api.inputProps} />
                   </div>
                 </div>
 
                 <div {...api.markerGroupProps}>
-                  <span {...api.getMarkerProps({ value: 10 })}>|</span>
-                  <span {...api.getMarkerProps({ value: 30 })}>|</span>
-                  <span {...api.getMarkerProps({ value: 90 })}>|</span>
+                  <span {...api.getMarkerProps({ value: 10 })}>*</span>
+                  <span {...api.getMarkerProps({ value: 30 })}>*</span>
+                  <span {...api.getMarkerProps({ value: 90 })}>*</span>
                 </div>
               </div>
             </div>

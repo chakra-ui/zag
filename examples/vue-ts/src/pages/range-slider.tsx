@@ -5,11 +5,11 @@ import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { computed, h, Fragment } from "vue"
 import { rangeSliderControls } from "../../../../shared/controls"
-import { rangeSliderStyle } from "../../../../shared/style"
+import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
-injectGlobal(rangeSliderStyle)
+injectGlobal(sliderStyle)
 
 export default defineComponent({
   name: "RangeSlider",
@@ -18,7 +18,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       RangeSlider.machine.withContext({
-        name: ["min", "max"],
+        name: "quantity",
         value: [10, 60],
       }),
       { context: controls.context },
@@ -26,10 +26,10 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const slider = computed(() => RangeSlider.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => RangeSlider.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, getInputProps, getThumbProps, values } = slider.value
+      const api = apiRef.value
 
       return (
         <>
@@ -37,24 +37,33 @@ export default defineComponent({
 
           <form
             // ensure we can read the value within forms
-            onChange={(e) => {
+            onInput={(e) => {
               const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
               console.log(formData)
             }}
           >
-            <div class="slider" ref={ref} {...rootProps}>
-              <div class="slider__track" {...trackProps}>
-                <div class="slider__range" {...rangeProps} />
+            <div ref={ref} {...api.rootProps}>
+              <div>
+                <label {...api.labelProps}>Quantity:</label>
+                <output {...api.outputProps}>{api.values.join(" - ")}</output>
               </div>
-              {values.map((_, index) => (
-                <div key={index} class="slider__thumb" {...getThumbProps(index)}>
-                  <input name="min" {...getInputProps(index)} />
-                </div>
-              ))}
-            </div>
 
-            <StateVisualizer state={state} />
+              <div class="control-area">
+                <div {...api.controlProps}>
+                  <div {...api.trackProps}>
+                    <div {...api.rangeProps} />
+                  </div>
+                  {api.values.map((_, index) => (
+                    <div key={index} {...api.getThumbProps(index)}>
+                      <input {...api.getInputProps(index)} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </form>
+
+          <StateVisualizer state={state} />
         </>
       )
     }

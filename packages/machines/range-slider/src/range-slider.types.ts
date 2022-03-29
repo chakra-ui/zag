@@ -17,7 +17,7 @@ export type MachineContext = Context<{
   /**
    * The name associated with each slider thumb (when used in a form)
    */
-  name?: string[]
+  name?: string
   /**
    * The move threshold of the slider thumb before it is considered to be moved
    */
@@ -75,6 +75,10 @@ export type MachineContext = Context<{
    * The minimum permitted steps between multiple thumbs.
    */
   minStepsBetweenThumbs: number
+  /**
+   * The raw value of the space between each thumb
+   */
+  readonly spacing: number
   /**
    * The orientation of the slider
    */

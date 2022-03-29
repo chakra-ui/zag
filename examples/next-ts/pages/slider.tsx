@@ -10,9 +10,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(sliderControls)
 
-  const [state, send] = useMachine(Slider.machine, {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    Slider.machine.withContext({
+      name: "quantity",
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
