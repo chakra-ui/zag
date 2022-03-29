@@ -108,7 +108,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         id: dom.getThumbId(state.context, index),
         "data-disabled": dataAttr(isDisabled),
         "data-orientation": state.context.orientation,
-        "data-focus": dataAttr(isFocused),
+        "data-focus": dataAttr(isFocused && state.context.activeIndex === index),
         draggable: false,
         "aria-disabled": isDisabled || undefined,
         "aria-label": _ariaLabel,
