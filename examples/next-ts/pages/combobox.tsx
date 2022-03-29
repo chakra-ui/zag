@@ -45,14 +45,16 @@ export default function Page() {
           </label>
 
           <div className="combobox__container" {...api.containerProps}>
-            <input {...api.inputProps} />
-            <button {...api.buttonProps}>▼</button>
+            <input data-testid="input" {...api.inputProps} />
+            <button data-testid="input-arrow" {...api.buttonProps}>
+              ▼
+            </button>
           </div>
         </div>
 
         <div className="combobox__popover" {...api.positionerProps}>
           {options.length > 0 && (
-            <ul className="combobox__listbox" {...api.listboxProps}>
+            <ul data-testid="combobox-listbox" className="combobox__listbox" {...api.listboxProps}>
               {options.map((item, index) => (
                 <li
                   className="combobox__option"
