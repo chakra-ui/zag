@@ -62,7 +62,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context, 0),
       onClick(event) {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
         event.preventDefault()
         dom.getFirstEl(state.context)?.focus()
       },
