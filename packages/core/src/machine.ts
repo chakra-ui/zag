@@ -1,5 +1,5 @@
 import { cast, clear, invariant, isArray, isObject, isString, noop, runIfFn, uuid, warn } from "@ui-machines/utils"
-import { klona } from "klona/lite"
+import { klona } from "klona/json"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { determineActionsFn } from "./action-utils"
