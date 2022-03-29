@@ -42,6 +42,6 @@ export function trackPointerMove(opts: TrackPointerMoveOptions) {
     addPointerEvent(doc, "pointerup", onPointerUp, false),
     addPointerEvent(doc, "pointercancel", onPointerUp, false),
     addPointerEvent(doc, "contextmenu", onPointerUp, false),
-    disableTextSelection(doc),
+    disableTextSelection({ doc }),
   )
 }

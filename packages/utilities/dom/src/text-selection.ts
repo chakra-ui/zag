@@ -5,50 +5,58 @@ import { nextTick } from "./next-tick"
 type State = "default" | "disabled" | "restoring"
 
 let state: State = "default"
-let cache: CSSStyleDeclaration["userSelect"] = ""
-let map = new WeakMap<HTMLElement, string>()
+let savedUserSelect = ""
+let modifiedElementMap = new WeakMap<HTMLElement, string>()
 
-const isDocument = (target: Document | HTMLElement): target is Document =>
-  "[object HTMLDocument]" === Object.prototype.toString.call(target)
-
-export function disableTextSelection(target: Document | HTMLElement) {
-  const doc = isDocument(target) ? target : target.ownerDocument
-  const root = doc.documentElement
+export function disableTextSelection({ target, doc }: { target?: HTMLElement; doc?: Document } = {}) {
+  const _document = doc ?? document
 
   if (isIos()) {
     if (state === "default") {
-      cache = root.style.webkitUserSelect
-      root.style.webkitUserSelect = "none"
+      savedUserSelect = _document.documentElement.style.webkitUserSelect
+      _document.documentElement.style.webkitUserSelect = "none"
     }
+
     state = "disabled"
-  } else if (!isDocument(target)) {
-    map.set(target, target.style.userSelect)
+  } else if (target) {
+    modifiedElementMap.set(target, target.style.userSelect)
     target.style.userSelect = "none"
   }
 
-  return function restoreTextSelection() {
-    if (isIos()) {
-      if (state !== "disabled") return
-      state = "restoring"
+  return () => restoreTextSelection({ target, doc: _document })
+}
+
+export function restoreTextSelection({ target, doc }: { target?: HTMLElement; doc?: Document } = {}) {
+  const _document = doc ?? document
+
+  if (isIos()) {
+    if (state !== "disabled") return
+    state = "restoring"
+
+    setTimeout(() => {
       nextTick(() => {
         if (state === "restoring") {
-          if (root.style.webkitUserSelect === "none") {
-            root.style.webkitUserSelect = cache ?? ""
+          if (_document.documentElement.style.webkitUserSelect === "none") {
+            _document.documentElement.style.webkitUserSelect = savedUserSelect || ""
           }
-          cache = ""
+
+          savedUserSelect = ""
           state = "default"
         }
       })
-    } else {
-      if (!isDocument(target) && map.has(target)) {
-        let targetOldUserSelect = map.get(target)
+    }, 300)
+  } else {
+    if (target && modifiedElementMap.has(target)) {
+      let targetOldUserSelect = modifiedElementMap.get(target)
 
-        if (target.style.userSelect === "none") {
-          target.style.userSelect = targetOldUserSelect ?? ""
-        }
-
-        map.delete(target)
+      if (target.style.userSelect === "none") {
+        target.style.userSelect = targetOldUserSelect ?? ""
       }
+
+      if (target.getAttribute("style") === "") {
+        target.removeAttribute("style")
+      }
+      modifiedElementMap.delete(target)
     }
   }
 }

@@ -8,7 +8,7 @@ import { MachineContext, MachineState } from "./range-slider.types"
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "range-slider-machine",
+    id: "range-slider",
     initial: "unknown",
 
     context: {
