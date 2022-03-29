@@ -22,10 +22,10 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const slider = computed(() => Slider.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => Slider.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { rootProps, rangeProps, trackProps, inputProps, thumbProps, labelProps, outputProps, value } = slider.value
+      const api = apiRef.value
 
       return (
         <>
@@ -40,25 +40,36 @@ export default defineComponent({
               }
             }}
           >
-            <div class="root" ref={ref}>
-              <label data-testid="label" {...labelProps}>
-                Slider Label
-              </label>
-              <output data-testid="output" {...outputProps}>
-                {value}
-              </output>
-            </div>
-            <div class="slider" {...rootProps}>
-              <div data-testid="track" class="slider__track" {...trackProps}>
-                <div class="slider__range" {...rangeProps} />
+            <div class="slider" ref={ref} {...api.rootProps}>
+              <div>
+                <label data-testid="label" {...api.labelProps}>
+                  Slider Label
+                </label>
+                <output data-testid="output" {...api.outputProps}>
+                  {api.value}
+                </output>
               </div>
-              <div data-testid="thumb" class="slider__thumb" {...thumbProps}>
-                <input {...inputProps} />
-              </div>
-            </div>
 
-            <StateVisualizer state={state} />
+              <div class="control-area">
+                <div class="slider" {...api.controlProps}>
+                  <div data-testid="track" class="slider__track" {...api.trackProps}>
+                    <div class="slider__range" {...api.rangeProps} />
+                  </div>
+                  <div data-testid="thumb" class="slider__thumb" {...api.thumbProps}>
+                    <input {...api.inputProps} />
+                  </div>
+                </div>
+
+                <div {...api.markerGroupProps}>
+                  <span {...api.getMarkerProps({ value: 10 })}>|</span>
+                  <span {...api.getMarkerProps({ value: 30 })}>|</span>
+                  <span {...api.getMarkerProps({ value: 90 })}>|</span>
+                </div>
+              </div>
+            </div>
           </form>
+
+          <StateVisualizer state={state} />
         </>
       )
     }

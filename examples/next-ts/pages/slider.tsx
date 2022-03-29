@@ -16,10 +16,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { inputProps, thumbProps, rootProps, trackProps, rangeProps, labelProps, outputProps, value } = Slider.connect(
-    state,
-    send,
-  )
+  const api = Slider.connect(state, send)
 
   return (
     <>
@@ -33,20 +30,31 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div className="root">
-          <label data-testid="label" {...labelProps}>
-            Slider Label
-          </label>
-          <output data-testid="output" {...outputProps}>
-            {value}
-          </output>
-        </div>
-        <div className="slider" ref={ref} {...rootProps}>
-          <div data-testid="track" className="slider__track" {...trackProps}>
-            <div className="slider__range" {...rangeProps} />
+        <div className="slider" ref={ref} {...api.rootProps}>
+          <div>
+            <label data-testid="label" {...api.labelProps}>
+              Slider Label
+            </label>
+            <output data-testid="output" {...api.outputProps}>
+              {api.value}
+            </output>
           </div>
-          <div data-testid="thumb" className="slider__thumb" {...thumbProps}>
-            <input {...inputProps} />
+
+          <div className="control-area">
+            <div {...api.controlProps}>
+              <div data-testid="track" {...api.trackProps}>
+                <div {...api.rangeProps} />
+              </div>
+              <div data-testid="thumb" {...api.thumbProps}>
+                <input {...api.inputProps} />
+              </div>
+            </div>
+
+            <div {...api.markerGroupProps}>
+              <span {...api.getMarkerProps({ value: 10 })}>*</span>
+              <span {...api.getMarkerProps({ value: 30 })}>*</span>
+              <span {...api.getMarkerProps({ value: 90 })}>*</span>
+            </div>
           </div>
         </div>
 

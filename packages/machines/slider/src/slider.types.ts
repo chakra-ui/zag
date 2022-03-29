@@ -18,6 +18,10 @@ export type MachineContext = Context<{
    */
   readonly?: boolean
   /**
+   * Whether the slider value is invalid
+   */
+  invalid?: boolean
+  /**
    * @computed Whether the slider is interactive
    */
   readonly isInteractive: boolean

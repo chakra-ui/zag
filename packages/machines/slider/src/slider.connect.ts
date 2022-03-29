@@ -15,30 +15,25 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const ariaValueText = state.context.getAriaValueText?.(state.context.value)
-
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
   const isDisabled = state.context.disabled
+  const isInteractive = state.context.isInteractive
+  const isInvalid = state.context.invalid
 
   return {
     isFocused,
     isDragging,
     value: state.context.value,
     percent: valueToPercent(state.context.value, state.context),
-
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
     getPercentValue(percent: number) {
       return percentToValue(percent, state.context)
     },
-    blur() {
-      if (isDisabled) return
-      send("BLUR")
-    },
     focus() {
-      if (isDisabled) return
-      send("FOCUS")
+      dom.getThumbEl(state.context)?.focus()
     },
     increment() {
       send("INCREMENT")
@@ -47,27 +42,28 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       send("DECREMENT")
     },
 
+    rootProps: normalize.element<T>({
+      "data-part": "root",
+      "data-disabled": dataAttr(isDisabled),
+      "data-orientation": state.context.orientation,
+      id: dom.getRootId(state.context),
+      dir: state.context.dir,
+    }),
+
     labelProps: normalize.label<T>({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
       onClick(event) {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
         event.preventDefault()
         dom.getThumbEl(state.context)?.focus()
       },
       style: {
         userSelect: "none",
       },
-    }),
-
-    outputProps: normalize.output<T>({
-      "data-part": "output",
-      "data-disabled": dataAttr(isDisabled),
-      id: dom.getOutputId(state.context),
-      htmlFor: dom.getInputId(state.context),
-      "aria-live": "off",
     }),
 
     thumbProps: normalize.element<T>({
@@ -77,6 +73,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       draggable: false,
+      "aria-invalid": isInvalid || undefined,
+      "data-invalid": dataAttr(isInvalid),
       "aria-disabled": isDisabled || undefined,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy ?? dom.getLabelId(state.context),
@@ -86,17 +84,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-valuenow": state.context.value,
       "aria-valuetext": ariaValueText,
       role: "slider",
-      tabIndex: state.context.isInteractive ? 0 : undefined,
+      tabIndex: !isDisabled ? 0 : undefined,
       onBlur() {
-        if (isDisabled) return
+        if (!isInteractive) return
         send("BLUR")
       },
       onFocus() {
-        if (isDisabled) return
+        if (!isInteractive) return
         send("FOCUS")
       },
       onKeyDown(event) {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
         const step = multiply(getEventStep(event), state.context.step)
         let prevent = true
         const keyMap: EventKeyMap = {
@@ -152,10 +150,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getInputId(state.context),
     }),
 
+    outputProps: normalize.output<T>({
+      "data-part": "output",
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      id: dom.getOutputId(state.context),
+      htmlFor: dom.getInputId(state.context),
+      "aria-live": "off",
+    }),
+
     trackProps: normalize.element<T>({
       "data-part": "track",
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       style: dom.getTrackStyle(),
@@ -164,20 +172,21 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     rangeProps: normalize.element<T>({
       "data-part": "range",
       id: dom.getRangeId(state.context),
+      "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
     }),
 
-    rootProps: normalize.element<T>({
-      "data-part": "root",
-      id: dom.getRootId(state.context),
+    controlProps: normalize.element<T>({
+      "data-part": "control",
+      id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      "aria-disabled": isDisabled || undefined,
       onPointerDown(event) {
-        if (!state.context.isInteractive) return
+        if (!isInteractive) return
 
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
@@ -188,7 +197,19 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         event.preventDefault()
         event.stopPropagation()
       },
-      style: dom.getRootStyle(state.context),
+      style: dom.getControlStyle(state.context),
+    }),
+
+    markerGroupProps: normalize.element<T>({
+      "data-part": "marker-group",
+      role: "presentation",
+      "aria-hidden": true,
+      "data-orientation": state.context.orientation,
+      style: {
+        userSelect: "none",
+        pointerEvents: "none",
+        position: "relative",
+      },
     }),
 
     getMarkerProps({ value }: { value: number }) {
@@ -199,10 +220,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
       return normalize.element<T>({
         "data-part": "marker",
+        "data-orientation": state.context.orientation,
         id: dom.getMarkerId(state.context, value),
-        role: "presentation",
         "data-value": value,
-        "aria-hidden": true,
         "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
         style,

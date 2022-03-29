@@ -19,7 +19,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const slider = createMemo(() => Slider.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => Slider.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
@@ -31,25 +31,35 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div className="root">
-          <label data-testid="label" {...slider().labelProps}>
-            Slider Label
-          </label>
-          <output data-testid="output" {...slider().outputProps}>
-            {slider().value}
-          </output>
-        </div>
-        <div className="slider" ref={ref} {...slider().rootProps}>
-          <div data-testid="track" className="slider__track" {...slider().trackProps}>
-            <div className="slider__range" {...slider().rangeProps} />
+        <div className="slider" ref={ref} {...api().rootProps}>
+          <div>
+            <label data-testid="label" {...api().labelProps}>
+              Slider Label
+            </label>
+            <output data-testid="output" {...api().outputProps}>
+              {api().value}
+            </output>
           </div>
-          <div data-testid="thumb" className="slider__thumb" {...slider().thumbProps}>
-            <input {...slider().inputProps} />
-          </div>
-        </div>
 
-        <StateVisualizer state={state} />
+          <div className="control-area">
+            <div {...api().controlProps}>
+              <div data-testid="track" {...api().trackProps}>
+                <div {...api().rangeProps} />
+              </div>
+              <div data-testid="thumb" {...api().thumbProps}>
+                <input {...api().inputProps} />
+              </div>
+            </div>
+
+            <div {...api().markerGroupProps}>
+              <span {...api().getMarkerProps({ value: 10 })}>|</span>
+              <span {...api().getMarkerProps({ value: 30 })}>|</span>
+              <span {...api().getMarkerProps({ value: 90 })}>|</span>
+            </div>
+          </div>
+        </div>
       </form>
+      <StateVisualizer state={state} />
     </>
   )
 }

@@ -218,20 +218,30 @@ export const ratingStyle: CSSObject = {
 }
 
 export const sliderStyle: CSSObject = {
-  form: {
+  "[data-part=root]": {
     margin: "45px",
+    maxWidth: "320px",
+    display: "flex",
+    flexDirection: "column",
+    "&[data-orientation=vertical]": {
+      height: "240px",
+    },
   },
-  ".slider": {
-    marginTop: "12px",
+  "[data-part=control]": {
     "--slider-thumb-size": "20px",
     "--slider-track-height": "4px",
-    height: "var(--slider-thumb-size)",
     display: "flex",
     alignItems: "center",
-    maxWidth: "200px",
+    justifyContent: "center",
     position: "relative",
+    "&[data-orientation=horizontal]": {
+      height: "var(--slider-thumb-size)",
+    },
+    "&[data-orientation=vertical]": {
+      width: "var(--slider-thumb-size)",
+    },
   },
-  ".slider__thumb": {
+  "[data-part=thumb]": {
     all: "unset",
     width: "var(--slider-thumb-size)",
     height: "var(--slider-thumb-size)",
@@ -248,22 +258,56 @@ export const sliderStyle: CSSObject = {
       background: "lightgray",
     },
   },
-  ".slider__track": {
-    height: "var(--slider-track-height)",
+  ".control-area": {
+    marginTop: "12px",
+    display: "flex",
+    "[data-orientation=horizontal] &": {
+      flexDirection: "column",
+      width: "100%",
+    },
+    "[data-orientation=vertical] &": {
+      flexDirection: "row",
+      height: "100%",
+    },
+  },
+  "[data-part=track]": {
     background: "rgba(0, 0, 0, 0.2)",
     borderRadius: "9999px",
-    flexGrow: 1,
+    "&[data-orientation=horizontal]": {
+      height: "var(--slider-track-height)",
+      width: "100%",
+    },
+    "&[data-orientation=vertical]": {
+      height: "100%",
+      width: "var(--slider-track-height)",
+    },
   },
-  ".slider__range": {
+  "[data-part=range]": {
     background: "magenta",
     borderRadius: "inherit",
-    height: "100%",
     "&[data-disabled]": {
       background: "rgba(0, 0, 0, 0.4)",
     },
+    "&[data-orientation=horizontal]": {
+      height: "100%",
+    },
+    "&[data-orientation=vertical]": {
+      width: "100%",
+    },
   },
-  output: {
+  "[data-part=output]": {
     marginInlineStart: "12px",
+  },
+  "[data-part=marker-group]": {
+    "&[data-orientation=vertical]": {
+      height: "100%",
+    },
+  },
+  "[data-part=marker]": {
+    color: "lightgray",
+    "&[data-state=under-value]": {
+      color: "red",
+    },
   },
 }
 

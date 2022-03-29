@@ -79,7 +79,7 @@ function getRangeStyle(ctx: Ctx): Style {
   }
 }
 
-function getRootStyle(ctx: Pick<Ctx, "isVertical">): Style {
+function getControlStyle(ctx: Pick<Ctx, "isVertical">): Style {
   return {
     touchAction: "none",
     userSelect: "none",
@@ -90,20 +90,22 @@ function getRootStyle(ctx: Pick<Ctx, "isVertical">): Style {
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getThumbId: (ctx: Ctx) => `slider-thumb-${ctx.uid}`,
-  getRootId: (ctx: Ctx) => `slider-root-${ctx.uid}`,
-  getInputId: (ctx: Ctx) => `slider-input-${ctx.uid}`,
-  getOutputId: (ctx: Ctx) => `slider-output-${ctx.uid}`,
-  getTrackId: (ctx: Ctx) => `slider-track-${ctx.uid}`,
-  getRangeId: (ctx: Ctx) => `slider-range-${ctx.uid}`,
-  getLabelId: (ctx: Ctx) => `slider-label-${ctx.uid}`,
-  getMarkerId: (ctx: Ctx, value: number) => `slider-marker-${ctx.uid}-${value}`,
+
+  getRootId: (ctx: Ctx) => `slider-${ctx.uid}`,
+  getThumbId: (ctx: Ctx) => `slider-${ctx.uid}-thumb`,
+  getControlId: (ctx: Ctx) => `slider-${ctx.uid}-control`,
+  getInputId: (ctx: Ctx) => `slider-${ctx.uid}-input`,
+  getOutputId: (ctx: Ctx) => `slider-${ctx.uid}-output`,
+  getTrackId: (ctx: Ctx) => `slider--${ctx.uid}track`,
+  getRangeId: (ctx: Ctx) => `slider-${ctx.uid}-range`,
+  getLabelId: (ctx: Ctx) => `slider-${ctx.uid}-label`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider-${ctx.uid}-marker-${value}`,
 
   getThumbEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx)),
-  getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)),
 
-  getRootStyle,
+  getControlStyle,
   getThumbStyle,
   getRangeStyle,
   getTrackStyle: (): Style => ({
@@ -112,18 +114,21 @@ export const dom = {
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
     // get the slider root element
-    const root = dom.getRootEl(ctx)
-    if (!root) return
+    const control = dom.getControlEl(ctx)
+    if (!control) return
 
     // get the position/progress % of the point relative to the root's width/height
-    const { progress } = relativeToNode(point, root)
+    const { progress } = relativeToNode(point, control)
 
     // get the progress % depending on the orientation
-    let percent = ctx.isHorizontal ? progress.x : progress.y
-    // get the rtl equivalent of the progress
-    if (ctx.isRtl) {
-      percent = 1 - percent
+    let percent: number
+
+    if (ctx.isHorizontal) {
+      percent = ctx.isRtl ? 1 - progress.x : progress.x
+    } else {
+      percent = 1 - progress.y
     }
+
     // clamp the progress % between 0 and 1
     percent = clamp(percent, { min: 0, max: 1 })
 
