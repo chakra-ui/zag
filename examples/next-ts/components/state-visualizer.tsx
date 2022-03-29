@@ -1,4 +1,3 @@
-import { Machine } from "@ui-machines/core"
 import { isDom } from "@ui-machines/utils"
 
 type StateVisualizerProps = {
@@ -36,10 +35,6 @@ export function StateVisualizer(props: StateVisualizerProps) {
       {JSON.stringify(
         state,
         (_k, v) => {
-          if (v instanceof Machine) {
-            const id = v.state.context.uid ?? v.id
-            return `Machine: ${id}`
-          }
           if (isDom()) {
             if (v instanceof Document) return "doc:loaded"
             if (v instanceof HTMLElement) return v.tagName

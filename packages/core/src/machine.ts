@@ -99,7 +99,8 @@ export function createMachine<
     id,
     type,
     toString() {
-      return `Machine: ${id}`
+      const _id = state.context.uid ?? id
+      return `Machine: ${_id}`
     },
     state,
     config,

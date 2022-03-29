@@ -372,6 +372,7 @@ export declare namespace StateMachine {
       state: TState["value"] | StateInfo<TContext, TState, TEvent> | null,
       evt: Event<TEvent>,
     ): StateNode<TContext, TState, TEvent> | undefined
+    setContext(context: Partial<Writable<TContext>>): void
     withContext(context: Partial<Writable<TContext>>): Machine<TContext, TState, TEvent>
     withConfig(config: Partial<MachineConfig<TContext, TState, TEvent>>): Machine<TContext, TState, TEvent>
     withOptions(options: Partial<MachineOptions<TContext, TState, TEvent>>): Machine<TContext, TState, TEvent>
@@ -409,3 +410,9 @@ export enum MachineType {
   Machine = "machine",
   Actor = "machine.actor",
 }
+
+export type MachineSrc<
+  TContext,
+  TStateSchema extends StateMachine.StateSchema,
+  TEvent extends StateMachine.EventObject,
+> = StateMachine.Machine<TContext, TStateSchema, TEvent> | (() => StateMachine.Machine<TContext, TStateSchema, TEvent>)

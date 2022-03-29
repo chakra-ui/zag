@@ -1,4 +1,3 @@
-import { Machine } from "@ui-machines/core"
 import { isDom } from "@ui-machines/utils"
 import { h, isRef, SetupContext } from "vue"
 
@@ -33,10 +32,6 @@ export function StateVisualizer(props: StateVisualizerProps, { attrs }: SetupCon
       {JSON.stringify(
         state,
         (k, v) => {
-          if (v instanceof Machine) {
-            const id = v.state.context.uid ?? v.id
-            return `Machine: ${id}`
-          }
           if (isDom()) {
             if (v instanceof Document) return "doc:loaded"
             if (v instanceof HTMLElement) return v.tagName

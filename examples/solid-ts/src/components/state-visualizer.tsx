@@ -1,5 +1,4 @@
 import { isDom } from "@ui-machines/utils"
-import { Machine } from "@ui-machines/core"
 
 type StateVisualizerProps = {
   offset?: string
@@ -36,10 +35,6 @@ export function StateVisualizer(props: StateVisualizerProps) {
       {JSON.stringify(
         state,
         (_k, v) => {
-          if (v instanceof Machine) {
-            const id = v.state.context.uid ?? v.id
-            return `Machine: ${id}`
-          }
           if (v instanceof Document) return "doc:loaded"
           return isDom() && v instanceof HTMLElement ? v.tagName : v
         },
