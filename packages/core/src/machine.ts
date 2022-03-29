@@ -98,9 +98,9 @@ export function createMachine<
   const _this = {
     id,
     type,
-    toString() {
+    toJSON() {
       const _id = state.context.uid ?? id
-      return `Machine: ${_id}`
+      return { id: `Machine: ${_id}` }
     },
     state,
     config,
