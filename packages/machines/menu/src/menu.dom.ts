@@ -1,6 +1,4 @@
 import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
-import { getPlacementStyles } from "@ui-machines/popper"
-import { Style } from "@ui-machines/types"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./menu.types"
 
@@ -56,18 +54,5 @@ export const dom = {
   },
   isTriggerItem: (el: HTMLElement | null) => {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
-  },
-  getPositionerStyle(ctx: Ctx) {
-    // Disable pointer events until the placement is complete to avoid weird pointer behavior
-    if (ctx.contextMenu && ctx.contextMenuPoint) {
-      return {
-        position: "absolute",
-        left: `${ctx.contextMenuPoint.x}px`,
-        top: `${ctx.contextMenuPoint.y}px`,
-      } as Style
-    }
-
-    const styles: Style = { pointerEvents: !ctx.isPlacementComplete ? "none" : undefined }
-    return Object.assign(styles, getPlacementStyles({ measured: !!ctx.currentPlacement }))
   },
 }
