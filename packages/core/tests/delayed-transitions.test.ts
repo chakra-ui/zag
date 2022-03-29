@@ -1,4 +1,4 @@
-import { createMachine } from "../src"
+import { createMachine } from "../src/machine.func"
 
 const initialMachine = {
   context: { value: 0 },

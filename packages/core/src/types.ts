@@ -323,6 +323,22 @@ export declare namespace StateMachine {
     preserve?: boolean
   }
 
+  export type Parent = {
+    stop: VoidFunction
+    send: (event: any) => void
+  }
+
+  export type Child = Parent
+
+  export type Actor = {
+    id: string
+    type: MachineType
+    setParent: (parent: Parent) => void
+    send: (event: any) => void
+    onDone: (fn: VoidFunction) => Actor
+    start: () => void
+  }
+
   export type Self<TContext, TState extends StateSchema, TEvent extends EventObject> = {
     id: string
     send: (event: Event<TEvent>) => void
@@ -330,8 +346,44 @@ export declare namespace StateMachine {
     sendChild: (evt: Event<TEvent>, to: string | ((ctx: TContext) => string)) => void
     stop: VoidFunction
     stopChild: (id: string) => void
-    spawn<T>(src: T | (() => T), id?: string): T
+    spawn<T extends Actor>(src: T | (() => T), id?: string): T
     state: State<TContext, TState, TEvent>
+  }
+
+  export type Machine<
+    TContext extends Dict,
+    TState extends StateSchema,
+    TEvent extends EventObject = AnyEventObject,
+  > = {
+    id: string
+    state: State<TContext, TState, TEvent>
+    type: MachineType
+    toString: () => string
+    send: (event: Event<TEvent>) => void
+    sendParent: (evt: Event<AnyEventObject>) => void
+    setParent: (parent: Parent) => void
+    sendChild: (evt: Event<TEvent>, to: string | ((ctx: TContext) => string)) => void
+    stopChild: (id: string) => void
+    removeChild: (id: string) => void
+    spawn<T extends Actor>(src: T | (() => T), id?: string): T
+    start(init?: StateInit<TContext, TState>): Machine<TContext, TState, TEvent>
+    stop(): Machine<TContext, TState, TEvent>
+    transition(
+      state: TState["value"] | StateInfo<TContext, TState, TEvent> | null,
+      evt: Event<TEvent>,
+    ): StateNode<TContext, TState, TEvent> | undefined
+    withContext(context: Partial<Writable<TContext>>): Machine<TContext, TState, TEvent>
+    withConfig(config: Partial<MachineConfig<TContext, TState, TEvent>>): Machine<TContext, TState, TEvent>
+    withOptions(options: Partial<MachineOptions<TContext, TState, TEvent>>): Machine<TContext, TState, TEvent>
+    setActions(actions: Partial<MachineOptions<TContext, TState, TEvent>>["actions"]): void
+    clone(): Machine<TContext, TState, TEvent>
+    meta(): Meta<TContext, TState, TEvent>
+    self(): Self<TContext, TState, TEvent>
+    onDone(listener: StateListener<TContext, TState, TEvent>): Machine<TContext, TState, TEvent>
+    subscribe(listener: StateListener<TContext, TState, TEvent>): () => void
+    onTransition(listener: StateListener<TContext, TState, TEvent>): Machine<TContext, TState, TEvent>
+    onChange(listener: ContextListener<TContext>): Machine<TContext, TState, TEvent>
+    onEvent(listener: EventListener<TEvent>): Machine<TContext, TState, TEvent>
   }
 }
 

@@ -1,7 +1,7 @@
 export const runIfFn = <T>(
-  v: T,
+  v: T | undefined,
   ...a: T extends (...a: any[]) => void ? Parameters<T> : never
-): T extends (...a: any[]) => void ? NonNullable<ReturnType<T>> | undefined : NonNullable<T> | undefined => {
+): T extends (...a: any[]) => void ? NonNullable<ReturnType<T>> : NonNullable<T> => {
   const res = typeof v === "function" ? v(...a) : v
   return res ?? undefined
 }

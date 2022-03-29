@@ -1,6 +1,6 @@
 export { proxy, ref, snapshot, subscribe } from "valtio/vanilla"
 export { choose } from "./action-utils"
 export { guards } from "./guard-utils"
-export * from "./machine"
+export { createMachine } from "./machine.func"
 export { mergeProps } from "./merge-props"
 export type { StateMachine } from "./types"

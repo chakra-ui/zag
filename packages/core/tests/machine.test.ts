@@ -1,4 +1,4 @@
-import { createMachine } from "../src"
+import { createMachine } from "../src/machine.func"
 
 it("should start the service with initial state by default", () => {
   const machine = createMachine<{}, { value: "foo" | "bar" }>({

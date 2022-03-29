@@ -1,4 +1,4 @@
-import { Machine } from "@ui-machines/core"
+import { StateMachine as S } from "@ui-machines/core"
 import { Context, Direction } from "@ui-machines/types"
 
 export type Type = "success" | "error" | "loading" | "info" | "custom"
@@ -97,7 +97,7 @@ export type MachineState = {
   tags: "visible"
 }
 
-export type Service = Machine<MachineContext, MachineState>
+export type Service = S.Machine<MachineContext, MachineState>
 
 export type GroupMachineContext = SharedContext &
   Context<{
