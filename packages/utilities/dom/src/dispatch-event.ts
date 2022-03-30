@@ -1,5 +1,19 @@
 import { getOwnerWindow } from "./query"
 
+function descriptor(el: HTMLElement, type: "input" | "textarea" = "input") {
+  const win = getOwnerWindow(el)
+  const _type = type === "input" ? "HTMLInputElement" : "HTMLTextAreaElement"
+  const proto = win[_type].prototype
+  return Object.getOwnPropertyDescriptor(proto, "value") ?? {}
+}
+
+export function dispatchEvent(el: HTMLElement, name: string, options: CustomEventInit) {
+  const win = getOwnerWindow(el)
+  const evt = new win.CustomEvent(name, options)
+  el.dispatchEvent(evt)
+  return evt
+}
+
 export function dispatchInputEvent(el: HTMLElement, value: string | number) {
   const win = getOwnerWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
@@ -7,9 +21,7 @@ export function dispatchInputEvent(el: HTMLElement, value: string | number) {
   el.type = "text"
   el.hidden = true
 
-  const proto = win.HTMLInputElement.prototype
-  const descriptor = Object.getOwnPropertyDescriptor(proto, "value")
-  descriptor?.set?.call(el, value)
+  descriptor(el).set?.call(el, value)
 
   const evt = new win.Event("input", { bubbles: true })
   el.dispatchEvent(evt)
@@ -20,20 +32,22 @@ export function dispatchInputEvent(el: HTMLElement, value: string | number) {
 
 export function onElementValueChange(el: HTMLInputElement, fn?: (value: string) => void) {
   if (!fn) return
-  const win = getOwnerWindow(el)
-  const descriptor = Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype, "value")
 
-  if (!descriptor) return
+  const { get, set } = descriptor(el)
 
-  const { get, set } = descriptor
+  let run = true
 
   Object.defineProperty(el, "value", {
     get() {
       return get?.call(this)
     },
     set(value: string) {
-      fn(value)
+      if (run) fn(value)
       return set?.call(this, value)
     },
   })
+
+  return function () {
+    run = false
+  }
 }
