@@ -57,9 +57,10 @@ export default function Page() {
             <ul data-testid="combobox-listbox" className="combobox__listbox" {...api.listboxProps}>
               {options.map((item, index) => (
                 <li
+                  data-testid={item.code}
                   className="combobox__option"
                   key={`${item.code}:${index}`}
-                  {...api.getOptionProps({ label: item.label, value: item.code, index })}
+                  {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
                 >
                   {item.label}
                 </li>

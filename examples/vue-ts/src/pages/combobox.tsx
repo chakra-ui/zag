@@ -61,7 +61,7 @@ export default defineComponent({
                     <li
                       class="combobox__option"
                       key={`${item.code}:${index}`}
-                      {...api.getOptionProps({ label: item.label, value: item.code, index })}
+                      {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
                     >
                       {item.label}
                     </li>

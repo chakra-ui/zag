@@ -58,7 +58,12 @@ export default function Page() {
                 {(item, index) => (
                   <li
                     className="combobox__option"
-                    {...api().getOptionProps({ label: item.label, value: item.code, index: index() })}
+                    {...api().getOptionProps({
+                      label: item.label,
+                      value: item.code,
+                      index: index(),
+                      disabled: item.disabled,
+                    })}
                   >
                     {item.label}
                   </li>

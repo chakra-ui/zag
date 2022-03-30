@@ -7,7 +7,7 @@ export const accordionData = [
 export const comboboxData = [
   { label: "Zambia", code: "ZA" },
   { label: "Benin", code: "BN" },
-  { label: "Canada", code: "CA" },
+  { label: "Canada", code: "CA", disabled: true },
   { label: "United States", code: "US" },
   { label: "Japan", code: "JP" },
   { label: "Nigeria", code: "NG" },
