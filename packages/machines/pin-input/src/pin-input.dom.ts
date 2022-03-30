@@ -1,4 +1,4 @@
-import { queryElements } from "@ui-machines/dom-utils"
+import { queryAll } from "@ui-machines/dom-utils"
 import { MachineContext as Ctx } from "./pin-input.types"
 
 export const dom = {
@@ -11,7 +11,7 @@ export const dom = {
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `input[data-ownedby=${ownerId}]`
-    return queryElements<HTMLInputElement>(dom.getRootEl(ctx), selector)
+    return queryAll<HTMLInputElement>(dom.getRootEl(ctx), selector)
   },
   getFocusedEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
 

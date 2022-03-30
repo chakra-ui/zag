@@ -1,4 +1,4 @@
-import { itemById, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { itemById, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./tabs.types"
 
@@ -15,7 +15,7 @@ export const dom = {
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getTablistId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
-    return queryElements(dom.getTablistEl(ctx), selector)
+    return queryAll(dom.getTablistEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),

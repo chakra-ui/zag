@@ -1,4 +1,4 @@
-import { nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
 import type { MachineContext as Ctx } from "./accordion.types"
 
@@ -14,7 +14,7 @@ export const dom = {
   getTriggers: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `[aria-controls][data-ownedby='${ownerId}']:not([disabled])`
-    return queryElements(dom.getRootEl(ctx), selector)
+    return queryAll(dom.getRootEl(ctx), selector)
   },
 
   getFirstTriggerEl: (ctx: Ctx) => first(dom.getTriggers(ctx)),

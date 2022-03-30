@@ -1,4 +1,4 @@
-import { indexOfId, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { indexOfId, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { MachineContext as Ctx } from "./tags-input.types"
 
 export const dom = {
@@ -21,7 +21,7 @@ export const dom = {
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `[data-ownedby=${ownerId}]`
-    return queryElements(dom.getRootEl(ctx), selector)
+    return queryAll(dom.getRootEl(ctx), selector)
   },
   getClosestFormEl: (ctx: Ctx) => dom.getInputEl(ctx)?.closest("form"),
 

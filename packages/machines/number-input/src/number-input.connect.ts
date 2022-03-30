@@ -73,7 +73,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-readonly": state.context.readonly || undefined,
       autoComplete: "off",
       autoCorrect: "off",
+      spellCheck: "false",
       type: "text",
+      "aria-roledescription": "number field",
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
@@ -131,6 +133,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-label": "decrement value",
       role: "button",
       tabIndex: -1,
+      "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         if (isDecrementDisabled) return
         send({ type: "PRESS_DOWN", hint: "decrement" })
@@ -153,6 +156,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-label": "increment value",
       role: "button",
       tabIndex: -1,
+      "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         event.preventDefault()
         if (isIncrementDisabled) return
