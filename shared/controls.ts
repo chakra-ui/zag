@@ -76,6 +76,7 @@ export const rangeSliderControls = defineControls({
 export const tabsControls = defineControls({
   activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
   loop: { type: "boolean", defaultValue: true, label: "loop?" },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const tagsInputControls = defineControls({

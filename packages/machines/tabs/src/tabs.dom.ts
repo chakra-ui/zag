@@ -4,7 +4,8 @@ import { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
+
+  getRootId: (ctx: Ctx) => `tabs-${ctx.uid}`,
   getTablistId: (ctx: Ctx) => `tabs-${ctx.uid}-tablist`,
   getPanelId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tabpanel-${id}`,
   getTabId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tab-${id}`,
@@ -28,5 +29,10 @@ export const dom = {
       return { top: `${tab.offsetTop}px`, height: `${tab.offsetHeight}px` }
     }
     return { left: `${tab.offsetLeft}px`, width: `${tab.offsetWidth}px` }
+  },
+  getActiveTabPanelEl: (ctx: Ctx) => {
+    if (!ctx.value) return
+    const id = dom.getPanelId(ctx, ctx.value)
+    return dom.getDoc(ctx).getElementById(id)
   },
 }

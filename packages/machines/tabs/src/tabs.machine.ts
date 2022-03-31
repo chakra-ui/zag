@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
+import { getFocusables, nextTick } from "@ui-machines/dom-utils"
 import { dom } from "./tabs.dom"
 import { MachineContext, MachineState } from "./tabs.types"
 
@@ -20,6 +20,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
       measuredRect: false,
       loop: true,
+      messages: {},
     },
 
     computed: {
@@ -35,7 +36,8 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     watch: {
       focusedValue: "invokeOnFocus",
-      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect"],
+      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect", "setTabPanelTabIndex"],
+      dir: ["clearMeasured", "setIndicatorRect"],
     },
 
     on: {
@@ -49,7 +51,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setupDocument", "setIndicatorRect"],
+            actions: ["setupDocument", "setIndicatorRect", "setTabPanelTabIndex"],
           },
         },
       },
@@ -159,6 +161,9 @@ export const machine = createMachine<MachineContext, MachineState>(
           })
         })
       },
+      clearMeasured(ctx) {
+        ctx.measuredRect = false
+      },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
       },
@@ -169,6 +174,19 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (Boolean(ctx.value)) {
           ctx.prevValues = Array.from(new Set(ctx.prevValues.concat(ctx.value!)))
         }
+      },
+      // if tab panel contains focusable elements, remove the tabindex attribute
+      setTabPanelTabIndex(ctx) {
+        nextTick(() => {
+          const panel = dom.getActiveTabPanelEl(ctx)
+          if (!panel) return
+          const focusables = getFocusables(panel)
+          if (focusables.length > 0) {
+            panel.removeAttribute("tabindex")
+          } else {
+            panel.setAttribute("tabindex", "0")
+          }
+        })
       },
     },
   },

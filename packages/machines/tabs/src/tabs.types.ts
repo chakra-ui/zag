@@ -1,6 +1,15 @@
 import { Context } from "@ui-machines/types"
 
+type IntlMessages = {
+  tablistLabel?: string
+  deleteLabel?(value: string): string
+}
+
 export type MachineContext = Context<{
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
@@ -53,6 +62,10 @@ export type MachineContext = Context<{
    * Callback to be called when the focused tab changes
    */
   onFocus?: (id: string | null) => void
+  /**
+   * Callback to be called when the tab is deleted
+   */
+  onDelete?: (id: string) => void
   /**
    * @internal The previously selected tab ids. This is useful for performance optimization
    */

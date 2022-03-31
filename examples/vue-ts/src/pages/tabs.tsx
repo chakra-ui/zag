@@ -21,25 +21,26 @@ export default defineComponent({
     })
 
     const ref = useSetup({ send, id: "1" })
-    const tabs = computed(() => Tabs.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => Tabs.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { tabIndicatorProps, tablistProps, getTabProps, getTabPanelProps } = tabs.value
+      const api = apiRef.value
       return (
         <div style={{ width: "100%" }}>
           <controls.ui />
-          <div class="tabs" ref={ref}>
-            <div class="tabs__indicator" {...tabIndicatorProps} />
-            <div {...tablistProps}>
+          <div class="tabs" ref={ref} {...api.rootProps}>
+            <div class="tabs__indicator" {...api.tabIndicatorProps} />
+            <div {...api.tablistProps}>
               {tabsData.map((data) => (
-                <button {...getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
+                <button {...api.getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                   {data.label}
                 </button>
               ))}
             </div>
             {tabsData.map((data) => (
-              <div {...getTabPanelProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
+              <div {...api.getTabPanelProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
                 <p>{data.content}</p>
+                {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
               </div>
             ))}
           </div>

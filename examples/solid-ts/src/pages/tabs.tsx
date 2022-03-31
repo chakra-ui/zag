@@ -19,17 +19,17 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const tabs = createMemo(() => Tabs.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => Tabs.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div style={{ width: "100%" }}>
       <controls.ui />
-      <div className="tabs">
-        <div className="tabs__indicator" {...tabs().tabIndicatorProps} />
-        <div ref={ref} {...tabs().tablistProps}>
+      <div className="tabs" {...api().rootProps}>
+        <div className="tabs__indicator" {...api().tabIndicatorProps} />
+        <div ref={ref} {...api().tablistProps}>
           <For each={tabsData}>
             {(item) => (
-              <button data-testid={`${item.id}-tab`} {...tabs().getTabProps({ value: item.id })}>
+              <button data-testid={`${item.id}-tab`} {...api().getTabProps({ value: item.id })}>
                 {item.label}
               </button>
             )}
@@ -37,8 +37,9 @@ export default function Page() {
         </div>
         <For each={tabsData}>
           {(item) => (
-            <div data-testid={`${item.id}-tab-panel`} {...tabs().getTabPanelProps({ value: item.id })}>
+            <div data-testid={`${item.id}-tab-panel`} {...api().getTabPanelProps({ value: item.id })}>
               <p>{item.content}</p>
+              {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
             </div>
           )}
         </For>
