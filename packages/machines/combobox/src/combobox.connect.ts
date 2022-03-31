@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@ui-machines/dom-utils"
 import { getPlacementStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
@@ -30,10 +30,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("CLEAR_VALUE")
     },
     focus() {
-      send("FOCUS")
-    },
-    blur() {
-      dom.getInputEl(state.context)?.blur()
+      nextTick(() => {
+        dom.getInputEl(state.context)?.focus()
+      })
     },
 
     rootProps: normalize.element<T>({

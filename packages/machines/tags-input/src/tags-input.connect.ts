@@ -41,9 +41,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         dom.getInputEl(state.context)?.focus()
       })
     },
-    blur() {
-      dom.getInputEl(state.context)?.blur()
-    },
 
     // attributes
     labelProps: normalize.label<T>({
