@@ -30,8 +30,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       scrubberCursorPoint: null,
       invalid: false,
       messages: {
-        increment: "increment value",
-        decrement: "decrease value",
+        incrementLabel: "increment value",
+        decrementLabel: "decrease value",
       },
     },
 

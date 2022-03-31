@@ -6,7 +6,7 @@ type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 type InputSelection = Record<"start" | "end", number | null>
 
-type Messages = {
+type IntlMessages = {
   /**
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input
@@ -15,11 +15,11 @@ type Messages = {
   /**
    * The label foe the increment button
    */
-  increment: string
+  incrementLabel: string
   /**
    * The label for the decrement button
    */
-  decrement: string
+  decrementLabel: string
 }
 
 export type MachineContext = Context<{
@@ -97,7 +97,7 @@ export type MachineContext = Context<{
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  messages: Messages
+  messages: IntlMessages
   /**
    * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
    */

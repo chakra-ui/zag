@@ -132,8 +132,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
-      "aria-label": messages.decrement,
-      role: "button",
+      "aria-label": messages.decrementLabel,
+      type: "button",
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
@@ -155,8 +155,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
-      "aria-label": messages.increment,
-      role: "button",
+      "aria-label": messages.incrementLabel,
+      type: "button",
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
