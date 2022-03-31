@@ -6,6 +6,22 @@ type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 type InputSelection = Record<"start" | "end", number | null>
 
+type Messages = {
+  /**
+   * Function that returns the human-readable value.
+   * It is used to set the `aria-valuetext` property of the input
+   */
+  valueText?: (value: string) => string
+  /**
+   * The label foe the increment button
+   */
+  increment: string
+  /**
+   * The label for the decrement button
+   */
+  decrement: string
+}
+
 export type MachineContext = Context<{
   /**
    * The name attribute of the number input. Useful for form submission.
@@ -79,10 +95,9 @@ export type MachineContext = Context<{
    */
   focusInputOnChange: boolean
   /**
-   * Function that returns the human-readable value.
-   * It is used to set the `aria-valuetext` property of the input
+   * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  getAriaValueText?: (value: string) => string
+  messages: Messages
   /**
    * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
    */
@@ -140,7 +155,7 @@ export type MachineContext = Context<{
   /**
    * @computed The `aria-valuetext` attribute of the input
    */
-  readonly ariaValueText: string
+  readonly valueText: string
   /**
    * @computed The formatted value of the input
    */

@@ -13,6 +13,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   const isValueComplete = state.context.isValueComplete
   const isInvalid = state.context.invalid
   const focusedIndex = state.context.focusedIndex
+  const messages = state.context.messages
 
   return {
     value: state.context.value,
@@ -54,7 +55,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-complete": dataAttr(isValueComplete),
         id: dom.getInputId(state.context, index),
         "data-ownedby": dom.getRootId(state.context),
-        "aria-label": `pin code ${index + 1} of ${state.context.valueLength}`,
+        "aria-label": messages.inputLabel(index, state.context.valueLength),
         inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(isInvalid),
         "data-invalid": dataAttr(isInvalid),

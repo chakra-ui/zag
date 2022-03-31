@@ -28,6 +28,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       allowEditTag: true,
       validateTag: () => true,
       separator: ",",
+      messages: {
+        clearLabel: "Clear all tags",
+        deleteTagLabel: (value) => `Delete ${value}`,
+      },
     },
 
     computed: {

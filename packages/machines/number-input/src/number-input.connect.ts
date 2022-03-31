@@ -14,6 +14,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isIncrementDisabled = isDisabled || !state.context.canIncrement
   const isDecrementDisabled = isDisabled || !state.context.canDecrement
 
+  const messages = state.context.messages
+
   return {
     isFocused,
     isInvalid,
@@ -79,7 +81,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
-      "aria-valuetext": state.context.ariaValueText || undefined,
+      "aria-valuetext": state.context.valueText || undefined,
       onFocus() {
         send("FOCUS")
       },
@@ -130,7 +132,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
-      "aria-label": "decrement value",
+      "aria-label": messages.decrement,
       role: "button",
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
@@ -153,7 +155,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
-      "aria-label": "increment value",
+      "aria-label": messages.increment,
       role: "button",
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),

@@ -37,16 +37,16 @@ export const machine = createMachine<MachineContext, MachineState>(
       focusOnClear: true,
       selectOnFocus: false,
       isHoveringInput: false,
-      openText: "Show suggestions",
-      closeText: "Hide suggestions",
-      clearText: "Clear value",
       allowCustomValue: false,
       isCustomValue: (opts) => opts.inputValue !== opts.previousValue,
-      getOptionCountText: (count) => {
-        return [
-          `${count} ${count === 1 ? "option" : "options"} available`,
-          "use the up and down keys to navigate. Press the enter key to select",
-        ].join(" ")
+      messages: {
+        openLabel: "Show suggestions",
+        closeLabel: "Hide suggestions",
+        clearLabel: "Clear value",
+        navigationHint: "use the up and down keys to navigate. Press the enter key to select",
+        countAnnouncement(count) {
+          return `${count} ${count === 1 ? "option" : "options"} available`
+        },
       },
     },
 
@@ -517,7 +517,8 @@ export const machine = createMachine<MachineContext, MachineState>(
         nextTick(() => {
           const count = dom.getOptionCount(ctx)
           if (count > 0) {
-            ctx.liveRegion?.announce(ctx.getOptionCountText(count))
+            const text = ctx.messages.countAnnouncement(count)
+            ctx.liveRegion?.announce(text)
           }
         })
       },

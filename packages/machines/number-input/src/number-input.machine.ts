@@ -29,6 +29,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       inputSelection: null,
       scrubberCursorPoint: null,
       invalid: false,
+      messages: {
+        increment: "increment value",
+        decrement: "decrease value",
+      },
     },
 
     computed: {
@@ -39,7 +43,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
       canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
       canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
-      ariaValueText: (ctx) => ctx.getAriaValueText?.(ctx.value) ?? ctx.value,
+      valueText: (ctx) => ctx.messages.valueText?.(ctx.value) ?? ctx.value,
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
     },
 

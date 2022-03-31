@@ -20,14 +20,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   const isInputFocused = state.hasTag("focused")
   const isEditingTag = state.matches("editing:tag")
 
+  const messages = state.context.messages
+
   return {
-    // state
     inputValue: state.context.trimmedInputValue,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
     isAtMax: state.context.isAtMax,
-
-    // methods
     clear() {
       send("CLEAR_ALL")
     },
@@ -206,7 +205,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-part": "delete-button",
         id: dom.getTagDeleteBtnId(state.context, index),
         type: "button",
-        "aria-label": `Delete ${value}`,
+        "aria-label": messages.deleteTagLabel(value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isInteractive) {
@@ -228,7 +227,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",
-      "aria-label": "Clear all tags",
+      "aria-label": messages.clearLabel,
       hidden: state.context.count === 0,
       onClick() {
         if (!isInteractive) return

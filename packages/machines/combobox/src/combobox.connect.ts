@@ -17,6 +17,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     measured: !!state.context.currentPlacement,
   })
 
+  const messages = state.context.messages
+
   return {
     isFocused,
     isExpanded,
@@ -183,7 +185,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       role: "button",
       tabIndex: -1,
-      "aria-label": isExpanded ? state.context.openText : state.context.closeText,
+      "aria-label": isExpanded ? messages.openLabel : messages.closeLabel,
       "aria-expanded": isExpanded,
       "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
       disabled: isDisabled,
@@ -213,7 +215,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
-      "aria-label": state.context.clearText,
+      "aria-label": messages.clearLabel,
       hidden: !showClearButton,
       onPointerDown(event) {
         send("CLEAR_VALUE")

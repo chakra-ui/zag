@@ -6,7 +6,16 @@ export type ValidateTagOptions = {
   values: string[]
 }
 
+type IntlMessages = {
+  clearLabel: string
+  deleteTagLabel(value: string): string
+}
+
 export type MachineContext = Context<{
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * The max length of the input.
    */

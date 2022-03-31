@@ -13,6 +13,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   const pointerdownNode = state.context.pointerdownNode
   const autoResize = state.context.autoResize
+  const messages = state.context.messages
 
   const isEditing = state.matches("edit")
 
@@ -69,7 +70,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     inputProps: normalize.input<T>({
       "data-part": "input",
-      "aria-label": state.context["aria-label"],
+      "aria-label": messages.input,
       name: state.context.name,
       id: dom.getInputId(state.context),
       hidden: autoResize ? undefined : !isEditing,
@@ -159,7 +160,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     editButtonProps: normalize.button<T>({
       "data-part": "edit-button",
       id: dom.getEditBtnId(state.context),
-      "aria-label": "edit",
+      "aria-label": messages.edit,
       type: "button",
       disabled: isDisabled,
       onClick() {
@@ -171,7 +172,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     submitButtonProps: normalize.button<T>({
       "data-part": "submit-button",
       id: dom.getSubmitBtnId(state.context),
-      "aria-label": "submit",
+      "aria-label": messages.submit,
       disabled: isDisabled,
       type: "button",
       onClick() {
@@ -182,7 +183,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     cancelButtonProps: normalize.button<T>({
       "data-part": "cancel-button",
-      "aria-label": "cancel",
+      "aria-label": messages.cancel,
       id: dom.getCancelBtnId(state.context),
       type: "button",
       disabled: isDisabled,
