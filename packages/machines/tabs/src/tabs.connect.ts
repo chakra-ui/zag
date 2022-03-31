@@ -118,7 +118,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getDeleteButtonProps({ value }: { value: string }) {
+    getTabDeleteButtonProps({ value }: { value: string }) {
       return normalize.button<T>({
         "data-part": "delete-button",
         type: "button",
