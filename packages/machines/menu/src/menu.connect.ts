@@ -97,6 +97,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       onPointerMove(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
