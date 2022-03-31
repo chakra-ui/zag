@@ -11,10 +11,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const messages = state.context.messages
+  const isFocused = state.matches("focused")
 
   return {
     value: state.context.value,
     focusedValue: state.context.focusedValue,
+    previousValues: Array.from(state.context.previousValues),
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
@@ -23,6 +25,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
+      "data-focus": dataAttr(isFocused),
       dir: state.context.dir,
     }),
 
@@ -30,6 +33,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "tablist",
       id: dom.getTablistId(state.context),
       role: "tablist",
+      "data-focus": dataAttr(isFocused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
       "aria-label": messages.tablistLabel,
@@ -77,6 +81,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         role: "tab",
         type: "button",
         disabled,
+        "data-orientation": state.context.orientation,
         "data-disabled": dataAttr(disabled),
         "aria-disabled": disabled,
         "data-value": value,
@@ -118,12 +123,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getTabDeleteButtonProps({ value }: { value: string }) {
+    getTabDeleteButtonProps({ value, disabled }: TabProps) {
       return normalize.button<T>({
         "data-part": "delete-button",
         type: "button",
         tabIndex: -1,
         "aria-label": messages.deleteLabel?.(value),
+        disabled,
         onClick() {
           state.context.onDelete?.(value)
         },
@@ -131,14 +137,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
 
     tabIndicatorProps: normalize.element<T>({
+      id: dom.getIndicatorId(state.context),
       "data-part": "tab-indicator",
+      "data-orientation": state.context.orientation,
       style: {
         "--transition-duration": "200ms",
         "--transition-property": "left, right, top, bottom, width, height",
         position: "absolute",
         willChange: "var(--transition-property)",
         transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.measuredRect ? "var(--transition-duration)" : "0ms",
+        transitionDuration: state.context.hasMeasuredRect ? "var(--transition-duration)" : "0ms",
+        transitionTimingFunction: "var(--transition-timing-function)",
         ...state.context.indicatorRect,
       },
     }),

@@ -16,6 +16,10 @@ export type MachineContext = Context<{
    */
   loop: boolean
   /**
+   * Whether the indicator is rendered.
+   */
+  isIndicatorRendered: boolean
+  /**
    * @internal The focused tab id
    */
   focusedValue: string | null
@@ -53,23 +57,23 @@ export type MachineContext = Context<{
   /**
    * @internal Whether the active tab indicator's rect has been measured
    */
-  measuredRect?: boolean
+  hasMeasuredRect?: boolean
   /**
    * Callback to be called when the selected/active tab changes
    */
-  onChange?: (id: string | null) => void
+  onChange?: (value: string | null) => void
   /**
    * Callback to be called when the focused tab changes
    */
-  onFocus?: (id: string | null) => void
+  onFocus?: (value: string | null) => void
   /**
-   * Callback to be called when the tab is deleted
+   * Callback to be called when a tab's close button is clicked
    */
-  onDelete?: (id: string) => void
+  onDelete?: (value: string) => void
   /**
    * @internal The previously selected tab ids. This is useful for performance optimization
    */
-  prevValues: string[]
+  previousValues: string[]
 }>
 
 export type MachineState = {

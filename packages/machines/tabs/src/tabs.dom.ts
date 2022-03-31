@@ -9,10 +9,13 @@ export const dom = {
   getTablistId: (ctx: Ctx) => `tabs-${ctx.uid}-tablist`,
   getPanelId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tabpanel-${id}`,
   getTabId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tab-${id}`,
+  getIndicatorId: (ctx: Ctx) => `tabs-${ctx.uid}-indicator`,
 
   getTablistEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTablistId(ctx)),
   getPanelEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getPanelId(ctx, id)),
   getTabEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTabId(ctx, id)),
+  getIndicatorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getIndicatorId(ctx)),
+
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getTablistId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
