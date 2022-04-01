@@ -33,7 +33,7 @@ export default function Page() {
 
       <div ref={ref} {...api().rootProps}>
         <label {...api().labelProps}>Enter frameworks:</label>
-        <div className="tags-input">
+        <div className="tags-input" {...api().controlProps}>
           <For each={api().value}>
             {(value, index) => (
               <span>

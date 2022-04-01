@@ -41,7 +41,7 @@ export default defineComponent({
 
           <div ref={ref} {...api.rootProps}>
             <label {...api.labelProps}>Enter frameworks:</label>
-            <div class="tags-input">
+            <div class="tags-input" {...api.controlProps}>
               {api.value.map((value, index) => (
                 <span key={`${toDashCase(value)}-tag-${index}`}>
                   <div class="tag" data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>

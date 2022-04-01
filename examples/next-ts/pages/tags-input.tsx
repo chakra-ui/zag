@@ -33,7 +33,7 @@ export default function Page() {
 
       <div ref={ref} {...api.rootProps}>
         <label {...api.labelProps}>Enter frameworks:</label>
-        <div className="tags-input">
+        <div className="tags-input" {...api.controlProps}>
           {api.value.map((value, index) => (
             <span key={`${toDashCase(value)}-tag-${index}`}>
               <div className="tag" data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
