@@ -1,4 +1,5 @@
 export * from "./attrs"
+export * from "./auto-resize"
 export * from "./body-pointer-event"
 export * from "./body-scroll-lock"
 export * from "./computed-style"
