@@ -1,12 +1,9 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { createLiveRegion, nextTick } from "@ui-machines/dom-utils"
+import { autoResizeInput, createLiveRegion, nextTick, raf } from "@ui-machines/dom-utils"
 import { dom } from "./tags-input.dom"
 import { MachineContext, MachineState } from "./tags-input.types"
 
 const { and, not, or } = guards
-
-// (!isAtMax || allowOutOfRange) && !inputValueIsEmpty
-const canAddTag = and(or(not("isAtMax"), "allowOutOfRange"), not("isInputValueEmpty"))
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
@@ -14,7 +11,8 @@ export const machine = createMachine<MachineContext, MachineState>(
     initial: "unknown",
 
     context: {
-      uid: "test",
+      log: { current: null, prev: null },
+      uid: "",
       inputValue: "",
       editedTagValue: "",
       focusedId: null,
@@ -26,17 +24,23 @@ export const machine = createMachine<MachineContext, MachineState>(
       addOnBlur: false,
       addOnPaste: false,
       allowEditTag: true,
-      validateTag: () => true,
+      validate: () => true,
       separator: ",",
       messages: {
-        clearLabel: "Clear all tags",
-        deleteTagLabel: (value) => `Delete ${value}`,
+        clearButtonLabel: "Clear all tags",
+        deleteTagButtonLabel: (value) => `Delete tag ${value}`,
+        tagAdded: (value) => `Added tag ${value}`,
+        tagsPasted: (values) => `Pasted ${values.length} tags`,
+        tagEdited: (value) => `Editing tag ${value}. Press enter to save or escape to cancel.`,
+        tagUpdated: (value) => `Tag update to ${value}`,
+        tagDeleted: (value) => `Tag ${value} deleted`,
+        tagSelected: (value) => `Tag ${value} selected. Press enter to edit, delete or backspace to remove.`,
       },
     },
 
     computed: {
       count: (ctx) => ctx.value.length,
-      valueAsString: (ctx) => ctx.value.join(ctx.separator),
+      valueAsString: (ctx) => JSON.stringify(ctx.value),
       trimmedInputValue: (ctx) => ctx.inputValue.trim(),
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
       isAtMax: (ctx) => ctx.count === ctx.max,
@@ -44,30 +48,36 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
 
     watch: {
-      focusedId: "invokeOnHighlight",
+      focusedId: ["invokeOnHighlight", "logFocused"],
       outOfRange: "invokeOnInvalid",
+      log: "announceLog",
     },
 
-    exit: ["removeLiveRegion"],
+    exit: ["removeLiveRegion", "clearLog"],
 
     on: {
       DOUBLE_CLICK_TAG: {
         guard: "allowEditTag",
         target: "editing:tag",
-        actions: ["setEditedId", "initEditedTagValue"],
+        actions: ["setEditedId", "initializeEditedTagValue"],
       },
       POINTER_DOWN_TAG: {
         guard: not("isTagFocused"),
         target: "navigating:tag",
         actions: ["focusTag", "focusInput"],
       },
+      SET_VALUE: {
+        actions: ["setValue"],
+      },
       DELETE_TAG: {
-        actions: "deleteTag",
+        actions: ["deleteTag"],
       },
       CLEAR_ALL: {
-        actions: "clearValue",
+        actions: ["clearTags", "focusInput"],
       },
       ADD_TAG: {
+        // (!isAtMax || allowOutOfRange) && !inputValueIsEmpty
+        guard: and(or(not("isAtMax"), "allowOutOfRange"), not("isInputValueEmpty")),
         actions: ["addTag", "clearInputValue"],
       },
     },
@@ -106,18 +116,16 @@ export const machine = createMachine<MachineContext, MachineState>(
           BLUR: [
             {
               target: "idle",
-              guard: and("addOnBlur", canAddTag),
-              actions: ["addTag", "clearInputValue"],
+              guard: "addOnBlur",
+              actions: "raiseAddTagEvent",
             },
             { target: "idle" },
           ],
           ENTER: {
-            guard: canAddTag,
-            actions: ["addTag", "clearInputValue"],
+            actions: ["raiseAddTagEvent"],
           },
           COMMA: {
-            guard: canAddTag,
-            actions: ["addTag", "clearInputValue"],
+            actions: ["raiseAddTagEvent"],
           },
           ARROW_LEFT: {
             guard: and("hasTags", "isInputCaretAtStart"),
@@ -156,7 +164,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ENTER: {
             guard: "allowEditTag",
             target: "editing:tag",
-            actions: ["setEditedId", "initEditedTagValue", "focusEditedTagInput"],
+            actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"],
           },
           ARROW_DOWN: "focused:input",
           ESCAPE: "focused:input",
@@ -164,11 +172,17 @@ export const machine = createMachine<MachineContext, MachineState>(
             target: "focused:input",
             actions: "setInputValue",
           },
-          BACKSPACE: {
-            actions: ["deleteFocusedTag", "focusPrevTag"],
-          },
+          BACKSPACE: [
+            {
+              guard: "isFirstTagFocused",
+              actions: ["deleteFocusedTag", "focusFirstTag"],
+            },
+            {
+              actions: ["deleteFocusedTag", "focusPrevTag"],
+            },
+          ],
           DELETE: {
-            actions: "deleteFocusedTag",
+            actions: ["deleteFocusedTag", "focusTagAtIndex"],
           },
         },
       },
@@ -176,21 +190,22 @@ export const machine = createMachine<MachineContext, MachineState>(
       "editing:tag": {
         tags: ["editing"],
         entry: "focusEditedTagInput",
+        activities: ["autoResizeTagInput"],
         on: {
-          TAG_INPUT_TYPE: {
+          TYPE: {
             actions: "setEditedTagValue",
           },
-          TAG_INPUT_ESCAPE: {
+          ESCAPE: {
             target: "navigating:tag",
-            actions: ["clearEditedTagValue", "focusInput", "clearEditedId"],
+            actions: ["clearEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
           },
-          TAG_INPUT_BLUR: {
+          BLUR: {
             target: "navigating:tag",
             actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
           },
-          TAG_INPUT_ENTER: {
+          ENTER: {
             target: "navigating:tag",
-            actions: ["submitEditedTagValue", "focusInput", "clearEditedId"],
+            actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
           },
         },
       },
@@ -200,8 +215,8 @@ export const machine = createMachine<MachineContext, MachineState>(
     guards: {
       isAtMax: (ctx) => ctx.isAtMax,
       hasFocusedId: (ctx) => ctx.focusedId !== null,
-      isInputFocused: (ctx) => dom.isInputFocused(ctx),
       isTagFocused: (ctx, evt) => ctx.focusedId === evt.id,
+      isFirstTagFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.focusedId,
       isLastTagFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.focusedId,
       isInputValueEmpty: (ctx) => ctx.trimmedInputValue.length === 0,
       hasTags: (ctx) => ctx.value.length > 0,
@@ -221,7 +236,18 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
     },
 
+    activities: {
+      autoResizeTagInput(ctx) {
+        if (!ctx.editedTagValue || ctx.__index == null) return
+        const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.__index })
+        return autoResizeInput(input)
+      },
+    },
+
     actions: {
+      raiseAddTagEvent(_, __, { self }) {
+        self.send("ADD_TAG")
+      },
       invokeOnHighlight(ctx) {
         const value = dom.getFocusedTagValue(ctx)
         ctx.onHighlight?.(value)
@@ -229,16 +255,20 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
         if (evt.doc) ctx.doc = ref(evt.doc)
-        ctx.liveRegion = createLiveRegion({
-          name: "tags-announcer",
-          role: "alert",
-          ariaLive: "assertive",
+        nextTick(() => {
+          ctx.liveRegion = createLiveRegion({ level: "assertive", doc: ctx.doc })
         })
       },
       focusNextTag(ctx) {
         if (!ctx.focusedId) return
         const next = dom.getNextEl(ctx, ctx.focusedId)
         if (next) ctx.focusedId = next.id
+      },
+      focusFirstTag(ctx) {
+        raf(() => {
+          const first = dom.getFirstEl(ctx)?.id
+          if (first) ctx.focusedId = first
+        })
       },
       focusLastTag(ctx) {
         const last = dom.getLastEl(ctx)
@@ -252,17 +282,41 @@ export const machine = createMachine<MachineContext, MachineState>(
       focusTag(ctx, evt) {
         ctx.focusedId = evt.id
       },
+      focusTagAtIndex(ctx) {
+        raf(() => {
+          if (ctx.__index == null) return
+          const el = dom.getElAtIndex(ctx, ctx.__index)
+          if (el) {
+            ctx.focusedId = el.id
+            ctx.__index = undefined
+          }
+        })
+      },
       deleteTag(ctx, evt) {
         const index = dom.getIndexOfId(ctx, evt.id)
+        const value = ctx.value[index]
+
+        // log
+        ctx.log.prev = ctx.log.current
+        ctx.log.current = { type: "delete", value }
+
         ctx.value.splice(index, 1)
       },
       deleteFocusedTag(ctx) {
         if (!ctx.focusedId) return
         const index = dom.getIndexOfId(ctx, ctx.focusedId)
+        ctx.__index = index
+        const value = ctx.value[index]
+
+        // log
+        ctx.log.prev = ctx.log.current
+        ctx.log.current = { type: "delete", value }
+
         ctx.value.splice(index, 1)
       },
       setEditedId(ctx, evt) {
         ctx.editedId = evt.id ?? ctx.focusedId
+        ctx.__index = dom.getIndexOfId(ctx, ctx.editedId!)
       },
       clearEditedId(ctx) {
         ctx.editedId = null
@@ -277,8 +331,11 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!ctx.editedId) return
         const index = dom.getIndexOfId(ctx, ctx.editedId)
         ctx.value[index] = ctx.editedTagValue ?? ""
+        // log
+        ctx.log.prev = ctx.log.current
+        ctx.log.current = { type: "update", value: ctx.editedTagValue! }
       },
-      initEditedTagValue(ctx) {
+      initializeEditedTagValue(ctx) {
         if (!ctx.editedId) return
         const index = dom.getIndexOfId(ctx, ctx.editedId)
         ctx.editedTagValue = ctx.value[index]
@@ -304,12 +361,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       addTag(ctx, evt) {
         const value = evt.value ?? ctx.trimmedInputValue
-        const guard = ctx.validateTag?.({
-          inputValue: value,
-          values: ctx.value,
-        })
+        const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
         if (guard) {
           ctx.value.push(value)
+          // log
+          ctx.log.prev = ctx.log.current
+          ctx.log.current = { type: "add", value }
         } else {
           ctx.onInvalid?.("invalidTag")
         }
@@ -317,21 +374,27 @@ export const machine = createMachine<MachineContext, MachineState>(
       addTagFromPaste(ctx) {
         nextTick(() => {
           const value = ctx.trimmedInputValue
-          const guard = ctx.validateTag?.({
-            inputValue: value,
-            values: ctx.value,
-          })
+          const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
           if (guard) {
             const trimmedValue = value.split(ctx.separator).map((v) => v.trim())
             ctx.value.push(...trimmedValue)
+            // log
+            ctx.log.prev = ctx.log.current
+            ctx.log.current = { type: "paste", values: trimmedValue }
           } else {
             ctx.onInvalid?.("invalidTag")
           }
           ctx.inputValue = ""
         })
       },
-      clearValue(ctx) {
+      clearTags(ctx) {
         ctx.value = []
+        // log
+        ctx.log.prev = ctx.log.current
+        ctx.log.current = { type: "clear" }
+      },
+      setValue(ctx, evt) {
+        ctx.value = evt.value
       },
       removeLiveRegion(ctx) {
         ctx.liveRegion?.destroy()
@@ -340,6 +403,52 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (ctx.outOfRange) {
           ctx.onInvalid?.("outOfRange")
         }
+      },
+      clearLog(ctx) {
+        ctx.log = { prev: null, current: null }
+      },
+      logFocused(ctx) {
+        if (!ctx.focusedId) return
+        const index = dom.getIndexOfId(ctx, ctx.focusedId)
+
+        // log
+        ctx.log.prev = ctx.log.current
+        ctx.log.current = { type: "select", value: ctx.value[index] }
+      },
+      // queue logs with screen reader and get it announced
+      announceLog(ctx) {
+        if (!ctx.log.current || ctx.liveRegion == null) return
+
+        const region = ctx.liveRegion
+        const { current, prev } = ctx.log
+        let msg: string | undefined
+
+        switch (current.type) {
+          case "add":
+            msg = ctx.messages.tagAdded(current.value)
+            break
+          case "delete":
+            msg = ctx.messages.tagDeleted(current.value)
+            break
+          case "update":
+            msg = ctx.messages.tagUpdated(current.value)
+            break
+          case "paste":
+            msg = ctx.messages.tagsPasted(current.values)
+            break
+          case "select":
+            msg = ctx.messages.tagSelected(current.value)
+            if (prev?.type === "delete") {
+              msg = `${ctx.messages.tagDeleted(prev.value)}. ${msg}`
+            } else if (prev?.type === "update") {
+              msg = `${ctx.messages.tagUpdated(prev.value)}. ${msg}`
+            }
+            break
+          default:
+            break
+        }
+
+        if (msg) region.announce(msg)
       },
     },
   },

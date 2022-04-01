@@ -410,7 +410,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
-        ctx.liveRegion = createLiveRegion({ ariaLive: "assertive", role: "status", doc: ctx.doc })
+        nextTick(() => {
+          ctx.liveRegion = createLiveRegion({ level: "assertive", doc: ctx.doc })
+        })
       },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id

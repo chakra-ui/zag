@@ -7,11 +7,29 @@ export type ValidateTagOptions = {
 }
 
 type IntlMessages = {
-  clearLabel: string
-  deleteTagLabel(value: string): string
+  clearButtonLabel: string
+  deleteTagButtonLabel(value: string): string
+  tagSelected(value: string): string
+  tagAdded(value: string): string
+  tagsPasted(values: string[]): string
+  tagEdited(value: string): string
+  tagUpdated(value: string): string
+  tagDeleted(value: string): string
+  noTagsSelected?: string
+  inputLabel?(count: number): string
 }
 
+type Log =
+  | { type: "add" | "update" | "delete" | "select"; value: string }
+  | { type: "clear" }
+  | { type: "paste"; values: string[] }
+  | { type: "set"; values: string[] }
+
 export type MachineContext = Context<{
+  /**
+   * The output log for the screen reader to speak
+   */
+  log: { current: Log | null; prev: Log | null }
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -50,6 +68,10 @@ export type MachineContext = Context<{
    */
   focusedId: string | null
   /**
+   * @internal The index of the deleted tag. Used to determine the next tag to focus.
+   */
+  __index?: number
+  /**
    * @internal The `id` of the currently edited tag
    */
   editedId: string | null
@@ -81,7 +103,7 @@ export type MachineContext = Context<{
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validateTag?(options: ValidateTagOptions): boolean
+  validate?(options: ValidateTagOptions): boolean
   /**
    * Whether to add a tag when the tag input is blurred
    */
@@ -135,3 +157,9 @@ export type MachineState = {
 }
 
 export type InvalidReason = "outOfRange" | "invalidTag"
+
+export type TagProps = {
+  index: string | number
+  value: string
+  disabled?: boolean
+}

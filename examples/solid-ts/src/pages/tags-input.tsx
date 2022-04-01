@@ -25,39 +25,43 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const tagsInput = createMemo(() => TagsInput.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => TagsInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
-      <div ref={ref} {...tagsInput().rootProps} className="tags-input">
-        <For each={tagsInput().value}>
-          {(value, index) => (
-            <span>
-              <div
-                className="tag"
-                data-testid={`${toDashCase(value)}-tag`}
-                {...tagsInput().getTagProps({ index: index(), value })}
-              >
-                <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
-                <button
-                  className="tag-close"
-                  data-testid={`${toDashCase(value)}-close-button`}
-                  {...tagsInput().getTagDeleteButtonProps({ index: index(), value })}
+      <div ref={ref} {...api().rootProps}>
+        <label {...api().labelProps}>Enter frameworks:</label>
+        <div className="tags-input">
+          <For each={api().value}>
+            {(value, index) => (
+              <span>
+                <div
+                  className="tag"
+                  data-testid={`${toDashCase(value)}-tag`}
+                  {...api().getTagProps({ index: index(), value })}
                 >
-                  &#x2715;
-                </button>
-              </div>
-              <input
-                className="tag-input"
-                data-testid={`${toDashCase(value)}-input`}
-                {...tagsInput().getTagInputProps({ index: index() })}
-              />
-            </span>
-          )}
-        </For>
-        <input className="tag-input" data-testid="input" placeholder="Add tag..." {...tagsInput().inputProps} />
+                  <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                  <button
+                    className="tag-close"
+                    data-testid={`${toDashCase(value)}-close-button`}
+                    {...api().getTagDeleteButtonProps({ index: index(), value })}
+                  >
+                    &#x2715;
+                  </button>
+                </div>
+                <input
+                  className="tag-input"
+                  data-testid={`${toDashCase(value)}-input`}
+                  {...api().getTagInputProps({ index: index(), value })}
+                />
+              </span>
+            )}
+          </For>
+          <input className="tag-input" data-testid="input" placeholder="Add tag..." {...api().inputProps} />
+        </div>
+        <input {...api().hiddenInputProps} />
       </div>
 
       <StateVisualizer state={state} />

@@ -363,8 +363,7 @@ export const tagsInputStyle: CSSObject = {
     },
   },
   ".tag-close": {
-    border: "0",
-    background: "inherit",
+    all: "unset",
   },
 }
 

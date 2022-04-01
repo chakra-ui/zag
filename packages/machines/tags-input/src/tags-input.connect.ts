@@ -2,12 +2,7 @@ import { StateMachine as S } from "@ui-machines/core"
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@ui-machines/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tags-input.dom"
-import { MachineContext, MachineState } from "./tags-input.types"
-
-type TagProps = {
-  index: string | number
-  value: string
-}
+import { MachineContext, MachineState, TagProps } from "./tags-input.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(
   state: S.State<MachineContext, MachineState>,
@@ -27,13 +22,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     value: state.context.value,
     valueAsString: state.context.valueAsString,
     isAtMax: state.context.isAtMax,
-    clear() {
+    setValue(value: string[]) {
+      send({ type: "SET_VALUE", value })
+    },
+    clearValue() {
       send("CLEAR_ALL")
     },
-    add(value: string) {
+    addValue(value: string) {
       send({ type: "ADD_TAG", value })
     },
-    delete(id: string) {
+    deleteValue(id: string) {
       send({ type: "DELETE_TAG", id })
     },
     focus() {
@@ -42,16 +40,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    // attributes
-    labelProps: normalize.label<T>({
-      "data-part": "label",
-      id: dom.getLabelId(state.context),
-      htmlFor: dom.getInputId(state.context),
-    }),
-
     rootProps: normalize.element<T>({
+      dir: state.context.dir,
       "data-part": "root",
       "data-invalid": dataAttr(state.context.outOfRange),
+      "data-readonly": dataAttr(!state.context.readonly),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isInputFocused),
       id: dom.getRootId(state.context),
@@ -59,6 +52,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         if (!isInteractive) return
         send("POINTER_DOWN")
       },
+    }),
+
+    labelProps: normalize.label<T>({
+      "data-part": "label",
+      "data-disabled": dataAttr(isDisabled),
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getInputId(state.context),
     }),
 
     inputProps: normalize.input<T>({
@@ -138,8 +138,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       value: state.context.valueAsString,
     }),
 
-    getTagProps({ index, value }: TagProps) {
-      const id = dom.getTagId(state.context, index)
+    getTagProps(options: TagProps) {
+      const { value } = options
+      const id = dom.getTagId(state.context, options)
       return normalize.element<T>({
         "data-part": "tag",
         id,
@@ -160,29 +161,32 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getTagInputProps({ index }: { index: number }) {
-      const id = dom.getTagId(state.context, index)
+    getTagInputProps(options: TagProps) {
+      const id = dom.getTagId(state.context, options)
       const active = state.context.editedId === id
       return normalize.input<T>({
         "data-part": "tag-input",
-        id: dom.getTagInputId(state.context, index),
+        "aria-label": messages.tagEdited(options.value),
+        "aria-hidden": true,
+        disabled: isDisabled,
+        id: dom.getTagInputId(state.context, options),
         type: "text",
         tabIndex: -1,
         hidden: isEditingTag ? !active : true,
         value: active ? state.context.editedTagValue : "",
         onChange(event) {
-          send({ type: "TAG_INPUT_TYPE", value: event.target.value })
+          send({ type: "TYPE", value: event.target.value })
         },
         onBlur() {
-          send("TAG_INPUT_BLUR")
+          send("BLUR")
         },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             Enter() {
-              send("TAG_INPUT_ENTER")
+              send("ENTER")
             },
             Escape() {
-              send("TAG_INPUT_ESCAPE")
+              send("ESCAPE")
             },
           }
 
@@ -196,22 +200,27 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getTagDeleteButtonProps({ index, value }: TagProps) {
-      const id = dom.getTagId(state.context, index)
+    getTagDeleteButtonProps(options: TagProps) {
+      const id = dom.getTagId(state.context, options)
       return normalize.button<T>({
         "data-part": "delete-button",
-        id: dom.getTagDeleteBtnId(state.context, index),
+        id: dom.getTagDeleteBtnId(state.context, options),
         type: "button",
-        "aria-label": messages.deleteTagLabel(value),
+        disabled: isDisabled,
+        "aria-label": messages.deleteTagButtonLabel(options.value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isInteractive) {
             event.preventDefault()
           }
         },
-        onPointerOver() {
+        onPointerMove() {
           if (!isInteractive) return
-          send({ type: "HOVER_DELETE_TAG", id })
+          send({ type: "DELETE_POINTER_MOVE", id })
+        },
+        onPointerLeave() {
+          if (!isInteractive) return
+          send({ type: "DELETE_POINTER_LEAVE", id })
         },
         onClick() {
           if (!isInteractive) return
@@ -224,7 +233,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",
-      "aria-label": messages.clearLabel,
+      "aria-label": messages.clearButtonLabel,
       hidden: state.context.count === 0,
       onClick() {
         if (!isInteractive) return

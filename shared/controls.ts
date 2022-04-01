@@ -83,9 +83,9 @@ export const tagsInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   addOnPaste: { type: "boolean", defaultValue: false },
   addOnBlur: { type: "boolean", defaultValue: false },
-  max: { type: "number", defaultValue: 4 },
+  max: { type: "number", defaultValue: 6 },
   allowOutOfRange: { type: "boolean", defaultValue: false },
-  autoFocus: { type: "boolean", defaultValue: true },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const ratingControls = defineControls({

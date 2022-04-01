@@ -10,7 +10,7 @@ function createGhostElement(doc: Document) {
   return el
 }
 
-export function autoresizeInput(input: HTMLInputElement | null) {
+export function autoResizeInput(input: HTMLInputElement | null) {
   if (!input) return
   const doc = input.ownerDocument ?? document
   const ghost = createGhostElement(doc)
