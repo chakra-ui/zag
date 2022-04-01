@@ -25,7 +25,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       addOnPaste: false,
       allowEditTag: true,
       validate: () => true,
-      separator: ",",
+      delimiter: ",",
       messages: {
         clearButtonLabel: "Clear all tags",
         deleteTagButtonLabel: (value) => `Delete tag ${value}`,
@@ -124,7 +124,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ENTER: {
             actions: ["raiseAddTagEvent"],
           },
-          COMMA: {
+          DELIMITER_KEY: {
             actions: ["raiseAddTagEvent"],
           },
           ARROW_LEFT: {
@@ -205,7 +205,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           ENTER: {
             target: "navigating:tag",
-            actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
+            actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"],
           },
         },
       },
@@ -238,7 +238,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     activities: {
       autoResizeTagInput(ctx) {
-        if (!ctx.editedTagValue || ctx.__index == null) return
+        if (!ctx.editedTagValue || ctx.__index == null || !ctx.allowEditTag) return
         const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.__index })
         return autoResizeInput(input)
       },
@@ -251,6 +251,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       invokeOnHighlight(ctx) {
         const value = dom.getFocusedTagValue(ctx)
         ctx.onHighlight?.(value)
+      },
+      invokeOnTagUpdate(ctx) {
+        if (!ctx.__index) return
+        const value = ctx.value[ctx.__index]
+        ctx.onTagUpdate?.(value, ctx.__index)
       },
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
@@ -376,7 +381,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           const value = ctx.trimmedInputValue
           const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
           if (guard) {
-            const trimmedValue = value.split(ctx.separator).map((v) => v.trim())
+            const trimmedValue = ctx.delimiter ? value.split(ctx.delimiter).map((v) => v.trim()) : [value]
             ctx.value.push(...trimmedValue)
             // log
             ctx.log.prev = ctx.log.current

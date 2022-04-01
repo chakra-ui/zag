@@ -39,9 +39,13 @@ export type MachineContext = Context<{
    */
   maxLength?: number
   /**
-   * The separator used to split/join the tag values.
+   * The character that serves has:
+   * - event key to trigger the addition of a new tag
+   * - character used to split tags when pasting into the input
+   *
+   * @default "," (aka COMMA)
    */
-  separator: string
+  delimiter: string | null
   /**
    * Whether the input should be auto-focused
    */
@@ -99,6 +103,10 @@ export type MachineContext = Context<{
    * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
    */
   onInvalid?: (error: InvalidReason) => void
+  /**
+   * Callback fired when a tag's value is updated
+   */
+  onTagUpdate?(value: string, index: number): void
   /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.

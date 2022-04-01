@@ -20,6 +20,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   return {
     inputValue: state.context.trimmedInputValue,
     value: state.context.value,
+    count: state.context.count,
     valueAsString: state.context.valueAsString,
     isAtMax: state.context.isAtMax,
     setValue(value: string[]) {
@@ -47,6 +48,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-readonly": dataAttr(!state.context.readonly),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isInputFocused),
+      "data-empty": dataAttr(state.context.count === 0),
       id: dom.getRootId(state.context),
       onPointerDown() {
         if (!isInteractive) return
@@ -114,10 +116,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           Delete() {
             send("DELETE")
           },
-          Comma(event) {
-            event.preventDefault()
-            send("COMMA")
-          },
           Enter(event) {
             event.preventDefault()
             send("ENTER")
@@ -126,7 +124,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
         const key = getEventKey(event, state.context)
         const exec = keyMap[key]
-        exec?.(event)
+        if (exec) {
+          exec?.(event)
+          return
+        }
+
+        const isDelimiter = event.key === state.context.delimiter
+        if (isDelimiter) {
+          event.preventDefault()
+          send("DELIMITER_KEY")
+        }
       },
     }),
 
@@ -148,7 +155,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-value": value,
         "data-disabled": dataAttr(isDisabled),
         "data-selected": dataAttr(id === state.context.focusedId),
-        "data-ownedby": dom.getRootId(state.context),
         onPointerDown(event) {
           if (!isInteractive) return
           event.preventDefault()
@@ -214,13 +220,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(
             event.preventDefault()
           }
         },
-        onPointerMove() {
+        onPointerMove(event) {
           if (!isInteractive) return
-          send({ type: "DELETE_POINTER_MOVE", id })
+          dom.setHoverIntent(event.currentTarget)
         },
-        onPointerLeave() {
+        onPointerLeave(event) {
           if (!isInteractive) return
-          send({ type: "DELETE_POINTER_LEAVE", id })
+          dom.clearHoverIntent(event.currentTarget)
         },
         onClick() {
           if (!isInteractive) return

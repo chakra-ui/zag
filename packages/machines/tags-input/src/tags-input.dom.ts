@@ -19,11 +19,7 @@ export const dom = {
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
   getEditInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditInputId(ctx)) as HTMLInputElement | null,
-  getElements: (ctx: Ctx) => {
-    const ownerId = CSS.escape(dom.getRootId(ctx))
-    const selector = `[data-ownedby=${ownerId}]`
-    return queryAll(dom.getRootEl(ctx), selector)
-  },
+  getElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=tag]:not([data-disabled])`),
 
   getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getElements(ctx), id),
   getElAtIndex: (ctx: Ctx, index: number) => dom.getElements(ctx)[index],
@@ -38,5 +34,15 @@ export const dom = {
     const idx = dom.getIndexOfId(ctx, ctx.focusedId)
     if (idx === -1) return null
     return dom.getElements(ctx)[idx].dataset.value ?? null
+  },
+  setHoverIntent: (el: Element) => {
+    const tag = el.closest<HTMLElement>("[data-part=tag]")
+    if (!tag) return
+    tag.dataset.deleteIntent = ""
+  },
+  clearHoverIntent: (el: Element) => {
+    const tag = el.closest<HTMLElement>("[data-part=tag]")
+    if (!tag) return
+    delete tag.dataset.deleteIntent
   },
 }
