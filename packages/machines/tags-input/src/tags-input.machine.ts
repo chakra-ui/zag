@@ -50,6 +50,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     watch: {
       focusedId: ["invokeOnHighlight", "logFocused"],
       outOfRange: "invokeOnInvalid",
+      value: ["invokeOnChange", "dispatchChangeEvent"],
       log: "announceLog",
     },
 
@@ -76,8 +77,8 @@ export const machine = createMachine<MachineContext, MachineState>(
         actions: ["clearTags", "focusInput"],
       },
       ADD_TAG: {
-        // (!isAtMax || allowOutOfRange) && !inputValueIsEmpty
-        guard: and(or(not("isAtMax"), "allowOutOfRange"), not("isInputValueEmpty")),
+        // (!isAtMax || allowOverflow) && !inputValueIsEmpty
+        guard: and(or(not("isAtMax"), "allowOverflow"), not("isInputValueEmpty")),
         actions: ["addTag", "clearInputValue"],
       },
     },
@@ -220,7 +221,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isLastTagFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.focusedId,
       isInputValueEmpty: (ctx) => ctx.trimmedInputValue.length === 0,
       hasTags: (ctx) => ctx.value.length > 0,
-      allowOutOfRange: (ctx) => !!ctx.allowOutOfRange,
+      allowOverflow: (ctx) => !!ctx.allowOverflow,
       autoFocus: (ctx) => !!ctx.autoFocus,
       addOnBlur: (ctx) => !!ctx.addOnBlur,
       addOnPaste: (ctx) => !!ctx.addOnPaste,
@@ -256,6 +257,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!ctx.__index) return
         const value = ctx.value[ctx.__index]
         ctx.onTagUpdate?.(value, ctx.__index)
+      },
+      invokeOnChange(ctx) {
+        ctx.onChange?.(ctx.value)
+      },
+      dispatchChangeEvent(ctx) {
+        dom.dispatchInputEvent(ctx)
       },
       setupDocument(ctx, evt) {
         ctx.uid = evt.id

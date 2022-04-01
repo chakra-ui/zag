@@ -11,13 +11,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 ) {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
+  const messages = state.context.messages
+  const isReadonly = state.context.readonly
 
   const isInputFocused = state.hasTag("focused")
   const isEditingTag = state.matches("editing:tag")
-
-  const messages = state.context.messages
+  const isEmpty = state.context.count === 0
 
   return {
+    isEmpty,
     inputValue: state.context.trimmedInputValue,
     value: state.context.value,
     count: state.context.count,
@@ -45,10 +47,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       dir: state.context.dir,
       "data-part": "root",
       "data-invalid": dataAttr(state.context.outOfRange),
-      "data-readonly": dataAttr(!state.context.readonly),
+      "data-readonly": dataAttr(!isReadonly),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isInputFocused),
-      "data-empty": dataAttr(state.context.count === 0),
+      "data-empty": dataAttr(isEmpty),
       id: dom.getRootId(state.context),
       onPointerDown() {
         if (!isInteractive) return
@@ -61,6 +63,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-disabled": dataAttr(isDisabled),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
+    }),
+
+    controlProps: normalize.element<T>({
+      id: dom.getControlId(state.context),
+      "data-part": "control",
+      "data-disabled": dataAttr(isDisabled),
+      "data-readonly": dataAttr(!isReadonly),
+      "data-focus": dataAttr(isInputFocused),
     }),
 
     inputProps: normalize.input<T>({
@@ -239,8 +249,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",
+      "data-readonly": dataAttr(!isReadonly),
+      disabled: isDisabled,
       "aria-label": messages.clearButtonLabel,
-      hidden: state.context.count === 0,
+      hidden: isEmpty,
       onClick() {
         if (!isInteractive) return
         send("CLEAR_ALL")

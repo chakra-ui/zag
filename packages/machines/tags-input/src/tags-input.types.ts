@@ -128,7 +128,7 @@ export type MachineContext = Context<{
    * Whether to allow tags to exceed max. In this case,
    * we'll attach `data-invalid` to the root
    */
-  allowOutOfRange?: boolean
+  allowOverflow?: boolean
   /**
    * The name attribute for the input. Useful for form submissions
    */

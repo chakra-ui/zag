@@ -1,4 +1,4 @@
-import { indexOfId, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
+import { dispatchInputEvent, indexOfId, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
 export const dom = {
@@ -10,6 +10,7 @@ export const dom = {
   getClearButtonId: (ctx: Ctx) => `tags-input-${ctx.uid}-clear-btn`,
   getHiddenInputId: (ctx: Ctx) => `tags-input-${ctx.uid}-hidden-input`,
   getLabelId: (ctx: Ctx) => `tags-input-${ctx.uid}-label`,
+  getControlId: (ctx: Ctx) => `tags-input-${ctx.uid}-control`,
   getTagId: (ctx: Ctx, opt: TagProps) => `tags-input-${ctx.uid}-tag-${opt.value}-${opt.index}`,
   getTagDeleteBtnId: (ctx: Ctx, opt: TagProps) => `${dom.getTagId(ctx, opt)}-delete-btn`,
   getTagInputId: (ctx: Ctx, opt: TagProps) => `${dom.getTagId(ctx, opt)}-input`,
@@ -18,6 +19,7 @@ export const dom = {
     dom.getDoc(ctx)?.getElementById(dom.getTagInputId(ctx, opt)) as HTMLInputElement | null,
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
+  getHiddenInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getHiddenInputId(ctx)) as HTMLInputElement | null,
   getEditInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditInputId(ctx)) as HTMLInputElement | null,
   getElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=tag]:not([data-disabled])`),
 
@@ -44,5 +46,10 @@ export const dom = {
     const tag = el.closest<HTMLElement>("[data-part=tag]")
     if (!tag) return
     delete tag.dataset.deleteIntent
+  },
+  dispatchInputEvent(ctx: Ctx) {
+    const input = dom.getHiddenInputEl(ctx)
+    if (!input) return
+    dispatchInputEvent(input, ctx.valueAsString)
   },
 }
