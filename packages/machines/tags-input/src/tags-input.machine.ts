@@ -44,12 +44,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       trimmedInputValue: (ctx) => ctx.inputValue.trim(),
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
       isAtMax: (ctx) => ctx.count === ctx.max,
-      outOfRange: (ctx) => ctx.count > ctx.max,
+      isOverflowing: (ctx) => ctx.count > ctx.max,
     },
 
     watch: {
       focusedId: ["invokeOnHighlight", "logFocused"],
-      outOfRange: "invokeOnInvalid",
+      isOverflowing: "invokeOnInvalid",
       value: ["invokeOnChange", "dispatchChangeEvent"],
       log: "announceLog",
     },
@@ -412,8 +412,8 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.liveRegion?.destroy()
       },
       invokeOnInvalid(ctx) {
-        if (ctx.outOfRange) {
-          ctx.onInvalid?.("outOfRange")
+        if (ctx.isOverflowing) {
+          ctx.onInvalid?.("rangeOverflow")
         }
       },
       clearLog(ctx) {

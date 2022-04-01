@@ -11,8 +11,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 ) {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
-  const messages = state.context.messages
   const isReadonly = state.context.readonly
+  const isInvalid = state.context.invalid || state.context.isOverflowing
+
+  const messages = state.context.messages
 
   const isInputFocused = state.hasTag("focused")
   const isEditingTag = state.matches("editing:tag")
@@ -46,8 +48,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     rootProps: normalize.element<T>({
       dir: state.context.dir,
       "data-part": "root",
-      "data-invalid": dataAttr(state.context.outOfRange),
-      "data-readonly": dataAttr(!isReadonly),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadonly),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isInputFocused),
       "data-empty": dataAttr(isEmpty),
@@ -61,6 +63,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     labelProps: normalize.label<T>({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadonly),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
     }),
@@ -69,16 +73,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: dom.getControlId(state.context),
       "data-part": "control",
       "data-disabled": dataAttr(isDisabled),
-      "data-readonly": dataAttr(!isReadonly),
+      "data-readonly": dataAttr(isReadonly),
+      "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isInputFocused),
     }),
 
     inputProps: normalize.input<T>({
       "data-part": "input",
+      "data-invalid": dataAttr(isInvalid),
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
       value: state.context.inputValue,
       autoComplete: "off",
+      autoCorrect: "off",
+      autoCapitalize: "off",
       disabled: isDisabled,
       onChange(event) {
         const evt = getNativeEvent(event)
@@ -249,7 +257,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",
-      "data-readonly": dataAttr(!isReadonly),
+      "data-readonly": dataAttr(isReadonly),
       disabled: isDisabled,
       "aria-label": messages.clearButtonLabel,
       hidden: isEmpty,

@@ -59,6 +59,10 @@ export type MachineContext = Context<{
    */
   readonly?: boolean
   /**
+   * Whether the tags input is invalid
+   */
+  invalid?: boolean
+  /**
    * Whether a tag can be edited after creation.
    * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
    */
@@ -156,7 +160,7 @@ export type MachineContext = Context<{
   /**
    * @computed whether the tags input is exceeding the max number of tags
    */
-  readonly outOfRange: boolean
+  readonly isOverflowing: boolean
 }>
 
 export type MachineState = {
@@ -164,7 +168,7 @@ export type MachineState = {
   tags: "focused" | "editing"
 }
 
-export type InvalidReason = "outOfRange" | "invalidTag"
+export type InvalidReason = "rangeOverflow" | "invalidTag"
 
 export type TagProps = {
   index: string | number
