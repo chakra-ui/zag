@@ -86,7 +86,7 @@ export const tagsInputControls = defineControls({
   addOnPaste: { type: "boolean", defaultValue: false },
   addOnBlur: { type: "boolean", defaultValue: false },
   max: { type: "number", defaultValue: 6 },
-  allowOutOfRange: { type: "boolean", defaultValue: false },
+  allowOverflow: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
