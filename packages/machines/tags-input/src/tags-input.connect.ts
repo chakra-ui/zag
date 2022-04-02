@@ -30,7 +30,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     setValue(value: string[]) {
       send({ type: "SET_VALUE", value })
     },
-    clearValue() {
+    clearAll() {
       send("CLEAR_ALL")
     },
     addValue(value: string) {
