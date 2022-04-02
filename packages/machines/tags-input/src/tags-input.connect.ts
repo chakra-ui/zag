@@ -72,6 +72,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     controlProps: normalize.element<T>({
       id: dom.getControlId(state.context),
       "data-part": "control",
+      tabIndex: isReadonly ? 0 : undefined,
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(isReadonly),
       "data-invalid": dataAttr(isInvalid),
@@ -81,13 +82,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     inputProps: normalize.input<T>({
       "data-part": "input",
       "data-invalid": dataAttr(isInvalid),
+      "aria-invalid": isInvalid,
+      "data-readonly": dataAttr(isReadonly),
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
       value: state.context.inputValue,
       autoComplete: "off",
       autoCorrect: "off",
       autoCapitalize: "off",
-      disabled: isDisabled,
+      disabled: isDisabled || isReadonly,
       onChange(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing || evt.inputType === "insertFromPaste") return
