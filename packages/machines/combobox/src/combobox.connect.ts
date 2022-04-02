@@ -90,7 +90,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       autoFocus: state.context.autoFocus,
       autoComplete: "off",
       autoCorrect: "off",
-      autoCapitalize: "off",
+      autoCapitalize: "none",
       spellCheck: "false",
       readOnly: isReadonly,
       placeholder: state.context.placeholder,
