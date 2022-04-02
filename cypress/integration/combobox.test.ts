@@ -107,6 +107,12 @@ describe("combobox", () => {
       it("should have disabled mode enabled", () => {
         cy.findByTestId("disabled").should("be.checked")
       })
+      it("should have input in disabled state", () => {
+        cy.get("@input").should("be.disabled")
+      })
+      it("should have arrow button in disabled state", () => {
+        cy.get("@input-arrow").should("be.disabled")
+      })
     })
   }
 
