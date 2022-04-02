@@ -8,6 +8,29 @@ export type MachineState = {
   tags: "expanded" | "focused" | "idle"
 }
 
+type IntlMessages = {
+  /**
+   * The accessible label to use for the toggle button when the popup is closed
+   */
+  openLabel?: string
+  /**
+   * The accessible label to use for the toggle button when the popup is open
+   */
+  closeLabel?: string
+  /**
+   * The accessible label to use for the clear button
+   */
+  clearLabel?: string
+  /**
+   * Returns the accessible label to use when announcing the available number of options
+   */
+  countAnnouncement: (count: number) => string
+  /**
+   * The text that provides hints about how to navigate the list of options
+   */
+  navigationHint?: string
+}
+
 export type MachineContext = Context<{
   /**
    * The current value of the combobox's input
@@ -83,7 +106,7 @@ export type MachineContext = Context<{
   /**
    * Function called to validate the input value
    */
-  isCustomValue?: (opts: { inputValue: string; previousValue: string }) => boolean
+  isCustomValue?: (details: { inputValue: string; previousValue: string }) => boolean
   /**
    * Whether to loop the keyboard navigation through the options
    */
@@ -120,21 +143,9 @@ export type MachineContext = Context<{
    */
   isHoveringInput: boolean
   /**
-   * The accessible label to use for the toggle button when the popup is closed
+   * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  openText?: string
-  /**
-   * The accessible label to use for the toggle button when the popup is open
-   */
-  closeText?: string
-  /**
-   * The accessible label to use for the clear button
-   */
-  clearText?: string
-  /**
-   * Returns the accessible label to use when announcing the available number of options
-   */
-  getOptionCountText: (count: number) => string
+  messages: IntlMessages
   /**
    * @internal
    * Whether the combobox popover is rendered. We use this to dynamically position

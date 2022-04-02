@@ -17,6 +17,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       placeholder: "○",
       otp: false,
       type: "numeric",
+      messages: {
+        inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
+      },
     },
 
     computed: {

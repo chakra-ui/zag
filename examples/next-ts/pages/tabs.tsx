@@ -16,24 +16,25 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: "1" })
 
-  const { getTabProps, getTabPanelProps, tablistProps, tabIndicatorProps } = Tabs.connect(state, send)
+  const api = Tabs.connect(state, send)
 
   return (
     <>
       <Global styles={tabsStyle} />
       <controls.ui />
-      <div className="tabs">
-        <div className="tabs__indicator" {...tabIndicatorProps} />
-        <div ref={ref} {...tablistProps}>
+      <div className="tabs" {...api.rootProps}>
+        <div className="tabs__indicator" {...api.tabIndicatorProps} />
+        <div ref={ref} {...api.tablistProps}>
           {tabsData.map((data) => (
-            <button {...getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
+            <button {...api.getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
               {data.label}
             </button>
           ))}
         </div>
         {tabsData.map((data) => (
-          <div {...getTabPanelProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
+          <div {...api.getTabPanelProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
             <p>{data.content}</p>
+            {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
           </div>
         ))}
       </div>

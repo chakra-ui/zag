@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
+import { getFocusables, nextTick } from "@ui-machines/dom-utils"
 import { dom } from "./tabs.dom"
 import { MachineContext, MachineState } from "./tabs.types"
 
@@ -16,10 +16,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: null,
       focusedValue: null,
       uid: "",
-      prevValues: ref([]),
+      previousValues: [],
       indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
-      measuredRect: false,
+      hasMeasuredRect: false,
+      isIndicatorRendered: false,
       loop: true,
+      messages: {},
     },
 
     computed: {
@@ -28,14 +30,16 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
 
     created(ctx) {
-      if (Boolean(ctx.value)) {
-        ctx.prevValues = Array.from(new Set(ctx.prevValues.concat(ctx.value!)))
+      if (ctx.value != null) {
+        const newSelected = Array.from(ctx.previousValues).concat(ctx.value)
+        ctx.previousValues = Array.from(new Set(newSelected))
       }
     },
 
     watch: {
       focusedValue: "invokeOnFocus",
-      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect"],
+      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect", "setTabPanelTabIndex"],
+      dir: ["clearMeasured", "setIndicatorRect"],
     },
 
     on: {
@@ -49,7 +53,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setupDocument", "setIndicatorRect"],
+            actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setTabPanelTabIndex"],
           },
         },
       },
@@ -151,13 +155,21 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setIndicatorRect(ctx) {
         nextTick(() => {
-          if (!ctx.value) return
+          if (!ctx.isIndicatorRendered || !ctx.value) return
           ctx.indicatorRect = dom.getRectById(ctx, ctx.value)
-          if (ctx.measuredRect) return
+          if (ctx.hasMeasuredRect) return
           nextTick(() => {
-            ctx.measuredRect = true
+            ctx.hasMeasuredRect = true
           })
         })
+      },
+      checkRenderedElements(ctx) {
+        nextTick(() => {
+          ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
+        })
+      },
+      clearMeasured(ctx) {
+        ctx.hasMeasuredRect = false
       },
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
@@ -166,9 +178,23 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.onFocus?.(ctx.focusedValue)
       },
       setPrevSelectedTabs(ctx) {
-        if (Boolean(ctx.value)) {
-          ctx.prevValues = Array.from(new Set(ctx.prevValues.concat(ctx.value!)))
+        if (ctx.value != null) {
+          const newSelected = Array.from(ctx.previousValues).concat(ctx.value)
+          ctx.previousValues = Array.from(new Set(newSelected))
         }
+      },
+      // if tab panel contains focusable elements, remove the tabindex attribute
+      setTabPanelTabIndex(ctx) {
+        nextTick(() => {
+          const panel = dom.getActiveTabPanelEl(ctx)
+          if (!panel) return
+          const focusables = getFocusables(panel)
+          if (focusables.length > 0) {
+            panel.removeAttribute("tabindex")
+          } else {
+            panel.setAttribute("tabindex", "0")
+          }
+        })
       },
     },
   },

@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@ui-machines/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@ui-machines/dom-utils"
 import { getPlacementStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./combobox.dom"
@@ -17,6 +17,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     measured: !!state.context.currentPlacement,
   })
 
+  const messages = state.context.messages
+
   return {
     isFocused,
     isExpanded,
@@ -28,10 +30,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("CLEAR_VALUE")
     },
     focus() {
-      send("FOCUS")
-    },
-    blur() {
-      dom.getInputEl(state.context)?.blur()
+      nextTick(() => {
+        dom.getInputEl(state.context)?.focus()
+      })
     },
 
     rootProps: normalize.element<T>({
@@ -183,7 +184,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       role: "button",
       tabIndex: -1,
-      "aria-label": isExpanded ? state.context.openText : state.context.closeText,
+      "aria-label": isExpanded ? messages.openLabel : messages.closeLabel,
       "aria-expanded": isExpanded,
       "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
       disabled: isDisabled,
@@ -213,7 +214,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
-      "aria-label": state.context.clearText,
+      "aria-label": messages.clearLabel,
       hidden: !showClearButton,
       onPointerDown(event) {
         send("CLEAR_VALUE")

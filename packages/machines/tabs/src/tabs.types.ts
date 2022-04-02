@@ -1,11 +1,24 @@
 import { Context } from "@ui-machines/types"
 
+type IntlMessages = {
+  tablistLabel?: string
+  deleteLabel?(value: string): string
+}
+
 export type MachineContext = Context<{
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
    */
   loop: boolean
+  /**
+   * Whether the indicator is rendered.
+   */
+  isIndicatorRendered: boolean
   /**
    * @internal The focused tab id
    */
@@ -44,19 +57,23 @@ export type MachineContext = Context<{
   /**
    * @internal Whether the active tab indicator's rect has been measured
    */
-  measuredRect?: boolean
+  hasMeasuredRect?: boolean
   /**
    * Callback to be called when the selected/active tab changes
    */
-  onChange?: (id: string | null) => void
+  onChange?: (value: string | null) => void
   /**
    * Callback to be called when the focused tab changes
    */
-  onFocus?: (id: string | null) => void
+  onFocus?: (value: string | null) => void
+  /**
+   * Callback to be called when a tab's close button is clicked
+   */
+  onDelete?: (value: string) => void
   /**
    * @internal The previously selected tab ids. This is useful for performance optimization
    */
-  prevValues: string[]
+  previousValues: string[]
 }>
 
 export type MachineState = {

@@ -1,7 +1,11 @@
-type Root = Document | Element | null
+type Root = Document | Element | null | undefined
 
-export function queryElements<T extends HTMLElement>(root: Root, selector: string) {
+export function queryAll<T extends HTMLElement = HTMLElement>(root: Root, selector: string) {
   return Array.from(root?.querySelectorAll<T>(selector) ?? [])
+}
+
+export function query<T extends HTMLElement = HTMLElement>(root: Root, selector: string) {
+  return root?.querySelector<T>(selector)
 }
 
 export function itemById<T extends HTMLElement>(v: T[], id: string) {

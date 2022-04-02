@@ -10,7 +10,6 @@ export const machine = createMachine<MachineContext, MachineState>(
     id: "editable-machine",
     initial: "unknown",
     context: {
-      "aria-label": "editable input",
       startWithEditView: false,
       activationMode: "focus",
       submitMode: "both",
@@ -18,6 +17,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: "",
       previousValue: "",
       selectOnFocus: true,
+      messages: {
+        input: "editable input",
+        edit: "edit",
+        submit: "submit",
+        cancel: "cancel",
+      },
     },
 
     computed: {

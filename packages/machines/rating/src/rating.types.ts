@@ -1,6 +1,17 @@
 import { Context } from "@ui-machines/types"
 
+type IntlMessages = {
+  /**
+   * Returns a human readable value for the rating.
+   */
+  ratingValueText(index: number): string
+}
+
 export type MachineContext = Context<{
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * The maximum rating value.
    */
@@ -33,10 +44,6 @@ export type MachineContext = Context<{
    * Whether to autofocus the rating.
    */
   autoFocus?: boolean
-  /**
-   * Returns a human readable value for the rating.
-   */
-  getLabelText?(value: number): string
   /**
    * Function to be called when the rating value changes.
    */

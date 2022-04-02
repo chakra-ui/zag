@@ -30,32 +30,40 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const tags = computed(() => TagsInput.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => TagsInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { value, rootProps, inputProps, getTagProps, getTagDeleteButtonProps, getTagInputProps } = tags.value
+      const api = apiRef.value
 
       return (
         <>
           <controls.ui />
 
-          <div ref={ref} {...rootProps} class="tags-input">
-            {value.map((value, index) => (
-              <span key={index}>
-                <div class="tag" data-testid={`${toDashCase(value)}-tag`} {...getTagProps({ index, value })}>
-                  <span>{value} </span>
-                  <button
-                    class="tag-close"
-                    data-testid={`${toDashCase(value)}-close-button`}
-                    {...getTagDeleteButtonProps({ index, value })}
-                  >
-                    &#x2715;
-                  </button>
-                </div>
-                <input class="tag-input" data-testid={`${toDashCase(value)}-input`} {...getTagInputProps({ index })} />
-              </span>
-            ))}
-            <input class="tag-input" data-testid="input" placeholder="Add tag..." {...inputProps} />
+          <div ref={ref} {...api.rootProps}>
+            <label {...api.labelProps}>Enter frameworks:</label>
+            <div class="tags-input" {...api.controlProps}>
+              {api.value.map((value, index) => (
+                <span key={`${toDashCase(value)}-tag-${index}`}>
+                  <div class="tag" data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
+                    <span>{value} </span>
+                    <button
+                      class="tag-close"
+                      data-testid={`${toDashCase(value)}-close-button`}
+                      {...api.getTagDeleteButtonProps({ index, value })}
+                    >
+                      &#x2715;
+                    </button>
+                  </div>
+                  <input
+                    class="tag-input"
+                    data-testid={`${toDashCase(value)}-input`}
+                    {...api.getTagInputProps({ index, value })}
+                  />
+                </span>
+              ))}
+              <input class="tag-input" data-testid="input" placeholder="Add tag..." {...api.inputProps} />
+            </div>
+            <input {...api.hiddenInputProps} />
           </div>
 
           <StateVisualizer state={state} />

@@ -1,4 +1,4 @@
-import { findByText, isHTMLElement, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { findByText, isHTMLElement, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./menu.types"
 
@@ -25,7 +25,7 @@ export const dom = {
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getContentId(ctx))
     const selector = `[role=menuitem][data-ownedby=${ownerId}]:not([data-disabled])`
-    return queryElements(dom.getContentEl(ctx), selector)
+    return queryAll(dom.getContentEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),

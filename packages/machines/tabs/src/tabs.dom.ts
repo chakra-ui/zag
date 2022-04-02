@@ -1,21 +1,25 @@
-import { itemById, nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { itemById, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
 import { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
+
+  getRootId: (ctx: Ctx) => `tabs-${ctx.uid}`,
   getTablistId: (ctx: Ctx) => `tabs-${ctx.uid}-tablist`,
   getPanelId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tabpanel-${id}`,
   getTabId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tab-${id}`,
+  getIndicatorId: (ctx: Ctx) => `tabs-${ctx.uid}-indicator`,
 
   getTablistEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTablistId(ctx)),
   getPanelEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getPanelId(ctx, id)),
   getTabEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTabId(ctx, id)),
+  getIndicatorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getIndicatorId(ctx)),
+
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getTablistId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
-    return queryElements(dom.getTablistEl(ctx), selector)
+    return queryAll(dom.getTablistEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
@@ -28,5 +32,10 @@ export const dom = {
       return { top: `${tab.offsetTop}px`, height: `${tab.offsetHeight}px` }
     }
     return { left: `${tab.offsetLeft}px`, width: `${tab.offsetWidth}px` }
+  },
+  getActiveTabPanelEl: (ctx: Ctx) => {
+    if (!ctx.value) return
+    const id = dom.getPanelId(ctx, ctx.value)
+    return dom.getDoc(ctx).getElementById(id)
   },
 }

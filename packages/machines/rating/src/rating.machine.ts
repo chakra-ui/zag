@@ -16,6 +16,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       hoveredValue: -1,
       disabled: false,
       readonly: false,
+      messages: {
+        ratingValueText: (index) => `${index} stars`,
+      },
     },
 
     created(ctx) {

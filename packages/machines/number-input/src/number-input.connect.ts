@@ -14,6 +14,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isIncrementDisabled = isDisabled || !state.context.canIncrement
   const isDecrementDisabled = isDisabled || !state.context.canDecrement
 
+  const messages = state.context.messages
+
   return {
     isFocused,
     isInvalid,
@@ -73,11 +75,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-readonly": state.context.readonly || undefined,
       autoComplete: "off",
       autoCorrect: "off",
+      spellCheck: "false",
       type: "text",
+      "aria-roledescription": "number field",
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
-      "aria-valuetext": state.context.ariaValueText || undefined,
+      "aria-valuetext": state.context.valueText || undefined,
       onFocus() {
         send("FOCUS")
       },
@@ -128,9 +132,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
-      "aria-label": "decrement value",
-      role: "button",
+      "aria-label": messages.decrementLabel,
+      type: "button",
       tabIndex: -1,
+      "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         if (isDecrementDisabled) return
         send({ type: "PRESS_DOWN", hint: "decrement" })
@@ -150,9 +155,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
-      "aria-label": "increment value",
-      role: "button",
+      "aria-label": messages.incrementLabel,
+      type: "button",
       tabIndex: -1,
+      "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         event.preventDefault()
         if (isIncrementDisabled) return

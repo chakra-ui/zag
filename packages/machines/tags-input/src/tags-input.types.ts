@@ -6,15 +6,46 @@ export type ValidateTagOptions = {
   values: string[]
 }
 
+type IntlMessages = {
+  clearButtonLabel: string
+  deleteTagButtonLabel(value: string): string
+  tagSelected(value: string): string
+  tagAdded(value: string): string
+  tagsPasted(values: string[]): string
+  tagEdited(value: string): string
+  tagUpdated(value: string): string
+  tagDeleted(value: string): string
+  noTagsSelected?: string
+  inputLabel?(count: number): string
+}
+
+type Log =
+  | { type: "add" | "update" | "delete" | "select"; value: string }
+  | { type: "clear" }
+  | { type: "paste"; values: string[] }
+  | { type: "set"; values: string[] }
+
 export type MachineContext = Context<{
+  /**
+   * The output log for the screen reader to speak
+   */
+  log: { current: Log | null; prev: Log | null }
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * The max length of the input.
    */
   maxLength?: number
   /**
-   * The separator used to split/join the tag values.
+   * The character that serves has:
+   * - event key to trigger the addition of a new tag
+   * - character used to split tags when pasting into the input
+   *
+   * @default "," (aka COMMA)
    */
-  separator: string
+  delimiter: string | null
   /**
    * Whether the input should be auto-focused
    */
@@ -28,6 +59,10 @@ export type MachineContext = Context<{
    */
   readonly?: boolean
   /**
+   * Whether the tags input is invalid
+   */
+  invalid?: boolean
+  /**
    * Whether a tag can be edited after creation.
    * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
    */
@@ -40,6 +75,10 @@ export type MachineContext = Context<{
    * @internal The `id` of the currently focused tag
    */
   focusedId: string | null
+  /**
+   * @internal The index of the deleted tag. Used to determine the next tag to focus.
+   */
+  __index?: number
   /**
    * @internal The `id` of the currently edited tag
    */
@@ -69,10 +108,14 @@ export type MachineContext = Context<{
    */
   onInvalid?: (error: InvalidReason) => void
   /**
+   * Callback fired when a tag's value is updated
+   */
+  onTagUpdate?(value: string, index: number): void
+  /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validateTag?(options: ValidateTagOptions): boolean
+  validate?(options: ValidateTagOptions): boolean
   /**
    * Whether to add a tag when the tag input is blurred
    */
@@ -89,7 +132,7 @@ export type MachineContext = Context<{
    * Whether to allow tags to exceed max. In this case,
    * we'll attach `data-invalid` to the root
    */
-  allowOutOfRange?: boolean
+  allowOverflow?: boolean
   /**
    * The name attribute for the input. Useful for form submissions
    */
@@ -117,7 +160,7 @@ export type MachineContext = Context<{
   /**
    * @computed whether the tags input is exceeding the max number of tags
    */
-  readonly outOfRange: boolean
+  readonly isOverflowing: boolean
 }>
 
 export type MachineState = {
@@ -125,4 +168,10 @@ export type MachineState = {
   tags: "focused" | "editing"
 }
 
-export type InvalidReason = "outOfRange" | "invalidTag"
+export type InvalidReason = "rangeOverflow" | "invalidTag"
+
+export type TagProps = {
+  index: string | number
+  value: string
+  disabled?: boolean
+}

@@ -1,5 +1,9 @@
 import type { Context } from "@ui-machines/types"
 
+type IntlMessages = {
+  inputLabel: (index: number, length: number) => string
+}
+
 export type MachineContext = Context<{
   /**
    * Whether the inputs are disabled
@@ -45,7 +49,7 @@ export type MachineContext = Context<{
   /**
    * Function called when an invalid value is entered
    */
-  onInvalid?: (data: { value: string; index: number }) => void
+  onInvalid?: (info: { value: string; index: number }) => void
   /**
    * If `true`, the input's value will be masked just like `type=password`
    */
@@ -54,6 +58,10 @@ export type MachineContext = Context<{
    * Whether to blur the input when the value is complete
    */
   blurOnComplete?: boolean
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * @computed the number of inputs
    */

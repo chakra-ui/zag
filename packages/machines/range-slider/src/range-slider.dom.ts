@@ -1,5 +1,5 @@
 import { StateMachine } from "@ui-machines/core"
-import { dispatchInputEvent, queryElements } from "@ui-machines/dom-utils"
+import { dispatchInputEvent, queryAll } from "@ui-machines/dom-utils"
 import { clamp, percentToValue, snapToStep, toRanges } from "@ui-machines/number-utils"
 import type { Point } from "@ui-machines/rect-utils"
 import { closest, getElementRect, relativeToNode } from "@ui-machines/rect-utils"
@@ -81,7 +81,7 @@ export const dom = {
   getThumbEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx, index)),
   getInputEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx, index)),
   getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
-  getElements: (ctx: Ctx) => queryElements(dom.getControlEl(ctx), "[role=slider]"),
+  getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
   getRangeEl: (ctx: Ctx) => dom.getDoc(ctx)?.getElementById(dom.getRangeId(ctx)),
 

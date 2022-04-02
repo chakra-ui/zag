@@ -1,4 +1,4 @@
-import { nextById, prevById, queryElements } from "@ui-machines/dom-utils"
+import { nextById, prevById, queryAll } from "@ui-machines/dom-utils"
 import { first, last } from "@ui-machines/utils"
 import scrollIntoViewIfNeeded from "scroll-into-view-if-needed"
 import type { MachineContext as Ctx } from "./combobox.types"
@@ -25,7 +25,7 @@ export const dom = {
   getToggleBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getToggleBtnId(ctx)),
   getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 
-  getElements: (ctx: Ctx) => queryElements(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
+  getElements: (ctx: Ctx) => queryAll(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {
     if (!ctx.activeId) return null
     const selector = `[role=option][id=${CSS.escape(ctx.activeId)}]`

@@ -5,15 +5,18 @@ export type ActivationMode = "focus" | "dblclick" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
+type IntlMessages = {
+  edit: string
+  submit: string
+  cancel: string
+  input: string
+}
+
 export type MachineContext = Context<{
   /**
    * Whether the input's value is invalid.
    */
   invalid?: boolean
-  /**
-   * The accessiblity label of the editable component.
-   */
-  "aria-label": string
   /**
    * The name attribute of the editable component. Used for form submission.
    */
@@ -91,6 +94,10 @@ export type MachineContext = Context<{
    * The placeholder value to show when the `value` is empty
    */
   placeholder?: string
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
   /**
    * @computed Whether the editable can be interacted with
    */

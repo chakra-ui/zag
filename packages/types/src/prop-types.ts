@@ -41,6 +41,7 @@ type DataAttr = {
   "data-part"?: string
   "data-index"?: number
   "data-complete"?: Booleanish
+  "data-empty"?: Booleanish
   "data-placeholder-shown"?: Booleanish
 }
 
