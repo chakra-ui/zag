@@ -6,18 +6,23 @@ import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode
+  const messages = state.context.messages
+
   const isDisabled = state.context.disabled
+  const isInteractive = state.context.isInteractive
+  const isInvalid = state.context.invalid
+  const isReadonly = state.context.readonly
+
   const isExpanded = state.hasTag("expanded")
   const isFocused = state.hasTag("focused")
+  const isIdle = state.hasTag("idle")
 
   const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
-  const showClearButton = (!state.hasTag("idle") || state.context.isHoveringInput) && !state.context.isInputValueEmpty
+  const showClearButton = (!isIdle || state.context.isHoveringInput) && !state.context.isInputValueEmpty
 
   const popperStyles = getPlacementStyles({
     measured: !!state.context.currentPlacement,
   })
-
-  const messages = state.context.messages
 
   return {
     isFocused,
@@ -38,26 +43,32 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rootProps: normalize.element<T>({
       "data-part": "root",
       id: dom.getRootId(state.context),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadonly),
     }),
 
     labelProps: normalize.label<T>({
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
-      "data-readonly": dataAttr(state.context.readonly),
+      "data-readonly": dataAttr(isReadonly),
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
     }),
 
-    containerProps: normalize.element<T>({
-      "data-part": "container",
-      id: dom.getContainerId(state.context),
+    controlProps: normalize.element<T>({
+      "data-part": "control",
+      id: dom.getControlId(state.context),
       "data-expanded": dataAttr(isExpanded),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       onPointerOver() {
+        if (!isInteractive) return
         send("POINTER_OVER")
       },
       onPointerLeave() {
+        if (!isInteractive) return
         send("POINTER_LEAVE")
       },
     }),
@@ -72,6 +83,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     inputProps: normalize.input<T>({
       "data-part": "input",
+      "aria-invalid": isInvalid,
+      "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
       disabled: isDisabled,
       autoFocus: state.context.autoFocus,
@@ -79,7 +92,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       autoCorrect: "off",
       autoCapitalize: "off",
       spellCheck: "false",
-      readOnly: state.context.readonly,
+      readOnly: isReadonly,
       placeholder: state.context.placeholder,
       id: dom.getInputId(state.context),
       type: "text",
@@ -90,9 +103,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-expanded": isExpanded,
       "aria-activedescendant": state.context.activeId ?? undefined,
       onPointerDown() {
+        if (!isInteractive) return
         send("POINTER_DOWN")
       },
       onBlur(event) {
+        if (!isInteractive) return
         const isValidBlur = validateBlur(event, {
           exclude: [dom.getListboxEl(state.context), dom.getToggleBtnEl(state.context)],
           fallback: pointerdownNode,
@@ -102,6 +117,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         }
       },
       onFocus() {
+        if (!isInteractive) return
         send("FOCUS")
       },
       onChange(event) {
@@ -110,6 +126,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         send({ type: "CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
+        if (!isInteractive) return
+
         const evt = getNativeEvent(event)
         if (evt.ctrlKey || evt.shiftKey || evt.isComposing) return
 
@@ -177,20 +195,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    buttonProps: normalize.button<T>({
-      "data-part": "button",
+    toggleButtonProps: normalize.button<T>({
+      "data-part": "toggle-button",
       id: dom.getToggleBtnId(state.context),
       "aria-haspopup": "listbox",
       type: "button",
-      role: "button",
       tabIndex: -1,
-      "aria-label": isExpanded ? messages.openLabel : messages.closeLabel,
+      "aria-label": messages.toggleButtonLabel,
       "aria-expanded": isExpanded,
       "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
       disabled: isDisabled,
-      "data-readonly": dataAttr(state.context.readonly),
+      "data-readonly": dataAttr(isReadonly),
       "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
+        if (!isInteractive) return
         send("CLICK_BUTTON")
         event.preventDefault()
       },
@@ -214,9 +232,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
-      "aria-label": messages.clearLabel,
+      "aria-label": messages.clearButtonLabel,
       hidden: !showClearButton,
       onPointerDown(event) {
+        if (!isInteractive) return
         send("CLEAR_VALUE")
         event.preventDefault()
       },

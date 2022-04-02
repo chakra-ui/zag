@@ -9,25 +9,9 @@ export type MachineState = {
 }
 
 type IntlMessages = {
-  /**
-   * The accessible label to use for the toggle button when the popup is closed
-   */
-  openLabel?: string
-  /**
-   * The accessible label to use for the toggle button when the popup is open
-   */
-  closeLabel?: string
-  /**
-   * The accessible label to use for the clear button
-   */
-  clearLabel?: string
-  /**
-   * Returns the accessible label to use when announcing the available number of options
-   */
-  countAnnouncement: (count: number) => string
-  /**
-   * The text that provides hints about how to navigate the list of options
-   */
+  toggleButtonLabel?: string
+  clearButtonLabel?: string
+  countAnnouncement(count: number): string
   navigationHint?: string
 }
 
@@ -67,9 +51,13 @@ export type MachineContext = Context<{
    */
   readonly?: boolean
   /**
+   * Whether the combobox is interactive
+   */
+  readonly isInteractive: boolean
+  /**
    * Whether the combobox is required
    */
-  required?: boolean
+  invalid?: boolean
   /**
    * The placeholder text of the combobox's input
    */

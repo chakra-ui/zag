@@ -12,6 +12,7 @@ export const comboboxControls = defineControls({
   allowCustomValue: { type: "boolean", defaultValue: false },
   autoHighlight: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: true },
+  disabled: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({
