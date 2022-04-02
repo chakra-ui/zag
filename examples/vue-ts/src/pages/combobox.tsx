@@ -48,9 +48,9 @@ export default defineComponent({
                 Select country
               </label>
 
-              <div class="combobox__container" {...api.containerProps}>
+              <div class="combobox__container" {...api.controlProps}>
                 <input {...api.inputProps} />
-                <button {...api.buttonProps}>▼</button>
+                <button {...api.toggleButtonProps}>▼</button>
               </div>
             </div>
 

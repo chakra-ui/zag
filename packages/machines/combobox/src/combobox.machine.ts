@@ -40,9 +40,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       allowCustomValue: false,
       isCustomValue: (opts) => opts.inputValue !== opts.previousValue,
       messages: {
-        openLabel: "Show suggestions",
-        closeLabel: "Hide suggestions",
-        clearLabel: "Clear value",
+        toggleButtonLabel: "Toggle suggestions",
+        clearButtonLabel: "Clear value",
         navigationHint: "use the up and down keys to navigate. Press the enter key to select",
         countAnnouncement(count) {
           return `${count} ${count === 1 ? "option" : "options"} available`
@@ -52,6 +51,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     computed: {
       isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
+      isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
     },
 
     watch: {
@@ -297,7 +297,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             actions: "clearFocusedOption",
           },
           DELETE: {
-            guard: not("isCursorAtEnd"),
+            guard: not("isCaretAtEnd"),
             actions: "clearFocusedOption",
           },
           TAB: {
@@ -350,7 +350,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
-      isCursorAtEnd: (ctx) => {
+      isCaretAtEnd: (ctx) => {
         const el = dom.getInputEl(ctx)
         if (!el) return false
         return el.selectionStart === el.selectionEnd && el.selectionEnd === el.value.length
@@ -370,7 +370,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     activities: {
       computePlacement(ctx) {
-        return getPlacement(dom.getContainerEl(ctx), dom.getPositionerEl(ctx), {
+        return getPlacement(dom.getControlEl(ctx), dom.getPositionerEl(ctx), {
           placement: "bottom",
           flip: false,
           sameWidth: true,

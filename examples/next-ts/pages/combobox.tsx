@@ -44,9 +44,9 @@ export default function Page() {
             Select country
           </label>
 
-          <div className="combobox__container" {...api.containerProps}>
+          <div className="combobox__container" {...api.controlProps}>
             <input data-testid="input" {...api.inputProps} />
-            <button data-testid="input-arrow" {...api.buttonProps}>
+            <button data-testid="input-arrow" {...api.toggleButtonProps}>
               ▼
             </button>
           </div>

@@ -8,7 +8,7 @@ export const dom = {
 
   getRootId: (ctx: Ctx) => `combobox-${ctx.uid}-root`,
   getLabelId: (ctx: Ctx) => `combobox-${ctx.uid}-label`,
-  getContainerId: (ctx: Ctx) => `combobox-${ctx.uid}`,
+  getControlId: (ctx: Ctx) => `combobox-${ctx.uid}`,
   getInputId: (ctx: Ctx) => `combobox-${ctx.uid}-input`,
   getListboxId: (ctx: Ctx) => `combobox-${ctx.uid}-listbox`,
   getPositionerId: (ctx: Ctx) => `combobox-${ctx.uid}-popover`,
@@ -21,7 +21,7 @@ export const dom = {
   getListboxEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getListboxId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
   getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
-  getContainerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContainerId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
   getToggleBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getToggleBtnId(ctx)),
   getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
 
