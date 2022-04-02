@@ -39,6 +39,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     deleteValue(id: string) {
       send({ type: "DELETE_TAG", id })
     },
+    setInputValue(value: string) {
+      send({ type: "SET_INPUT_VALUE", value })
+    },
+    clearInputValue() {
+      send({ type: "SET_INPUT_VALUE", value: "" })
+    },
     focus() {
       nextTick(() => {
         dom.getInputEl(state.context)?.focus()

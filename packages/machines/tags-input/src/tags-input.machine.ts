@@ -21,7 +21,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       dir: "ltr",
       max: Infinity,
       liveRegion: null,
-      addOnBlur: false,
+      blurBehavior: undefined,
       addOnPaste: false,
       allowEditTag: true,
       validate: () => true,
@@ -67,6 +67,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         target: "navigating:tag",
         actions: ["focusTag", "focusInput"],
       },
+      SET_INPUT_VALUE: {
+        actions: ["setInputValue"],
+      },
       SET_VALUE: {
         actions: ["setValue"],
       },
@@ -81,6 +84,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         guard: and(or(not("isAtMax"), "allowOverflow"), not("isInputValueEmpty")),
         actions: ["addTag", "clearInputValue"],
       },
+      EXT_BLUR: [
+        { guard: "addOnBlur", actions: "raiseAddTagEvent" },
+        { guard: "clearOnBlur", actions: "clearInputValue" },
+      ],
     },
 
     states: {
@@ -119,6 +126,11 @@ export const machine = createMachine<MachineContext, MachineState>(
               guard: "addOnBlur",
               target: "idle",
               actions: "raiseAddTagEvent",
+            },
+            {
+              guard: "clearOnBlur",
+              target: "idle",
+              actions: "clearInputValue",
             },
             { target: "idle" },
           ],
@@ -208,7 +220,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
             {
               target: "idle",
-              actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
+              actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExtBlurEvent"],
             },
           ],
           TAG_INPUT_ENTER: {
@@ -231,7 +243,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       hasTags: (ctx) => ctx.value.length > 0,
       allowOverflow: (ctx) => !!ctx.allowOverflow,
       autoFocus: (ctx) => !!ctx.autoFocus,
-      addOnBlur: (ctx) => !!ctx.addOnBlur,
+      addOnBlur: (ctx) => ctx.blurBehavior === "add",
+      clearOnBlur: (ctx) => ctx.blurBehavior === "clear",
       addOnPaste: (ctx) => !!ctx.addOnPaste,
       allowEditTag: (ctx) => !!ctx.allowEditTag,
       isInputCaretAtStart(ctx) {
@@ -256,6 +269,9 @@ export const machine = createMachine<MachineContext, MachineState>(
     actions: {
       raiseAddTagEvent(_, __, { self }) {
         self.send("ADD_TAG")
+      },
+      raiseExtBlurEvent(_, __, { self }) {
+        self.send("EXT_BLUR")
       },
       invokeOnHighlight(ctx) {
         const value = dom.getFocusedTagValue(ctx)
