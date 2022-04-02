@@ -89,7 +89,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       value: state.context.inputValue,
       autoComplete: "off",
       autoCorrect: "off",
-      autoCapitalize: "off",
+      autoCapitalize: "none",
       disabled: isDisabled || isReadonly,
       onChange(event) {
         const evt = getNativeEvent(event)
@@ -202,18 +202,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         hidden: isEditingTag ? !active : true,
         value: active ? state.context.editedTagValue : "",
         onChange(event) {
-          send({ type: "TYPE", value: event.target.value })
+          send({ type: "TAG_INPUT_TYPE", value: event.target.value })
         },
-        onBlur() {
-          send("BLUR")
+        onBlur(event) {
+          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget })
         },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             Enter() {
-              send("ENTER")
+              send("TAG_INPUT_ENTER")
             },
             Escape() {
-              send("ESCAPE")
+              send("TAG_INPUT_ESCAPE")
             },
           }
 

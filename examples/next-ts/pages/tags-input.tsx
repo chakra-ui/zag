@@ -33,27 +33,22 @@ export default function Page() {
 
       <div ref={ref} {...api.rootProps}>
         <label {...api.labelProps}>Enter frameworks:</label>
-        <div className="tags-input" {...api.controlProps}>
+        <div {...api.controlProps}>
           {api.value.map((value, index) => (
             <span key={`${toDashCase(value)}-tag-${index}`}>
-              <div className="tag" data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
+              <div data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
                 <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
                 <button
-                  className="tag-close"
                   data-testid={`${toDashCase(value)}-close-button`}
                   {...api.getTagDeleteButtonProps({ index, value })}
                 >
                   &#x2715;
                 </button>
               </div>
-              <input
-                className="tag-input"
-                data-testid={`${toDashCase(value)}-input`}
-                {...api.getTagInputProps({ index, value })}
-              />
+              <input data-testid={`${toDashCase(value)}-input`} {...api.getTagInputProps({ index, value })} />
             </span>
           ))}
-          <input className="tag-input" data-testid="input" placeholder="Add tag..." {...api.inputProps} />
+          <input data-testid="input" placeholder="add tag" {...api.inputProps} />
         </div>
         <input {...api.hiddenInputProps} />
       </div>

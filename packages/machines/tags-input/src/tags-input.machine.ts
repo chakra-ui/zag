@@ -116,8 +116,8 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           BLUR: [
             {
-              target: "idle",
               guard: "addOnBlur",
+              target: "idle",
               actions: "raiseAddTagEvent",
             },
             { target: "idle" },
@@ -189,22 +189,29 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       "editing:tag": {
-        tags: ["editing"],
+        tags: ["editing", "focused"],
         entry: "focusEditedTagInput",
         activities: ["autoResizeTagInput"],
         on: {
-          TYPE: {
+          TAG_INPUT_TYPE: {
             actions: "setEditedTagValue",
           },
-          ESCAPE: {
+          TAG_INPUT_ESCAPE: {
             target: "navigating:tag",
             actions: ["clearEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
           },
-          BLUR: {
-            target: "navigating:tag",
-            actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
-          },
-          ENTER: {
+          TAG_INPUT_BLUR: [
+            {
+              guard: "isInputRelatedTarget",
+              target: "navigating:tag",
+              actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
+            },
+            {
+              target: "idle",
+              actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
+            },
+          ],
+          TAG_INPUT_ENTER: {
             target: "navigating:tag",
             actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"],
           },
@@ -214,6 +221,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
+      isInputRelatedTarget: (ctx, evt) => evt.relatedTarget === dom.getInputEl(ctx),
       isAtMax: (ctx) => ctx.isAtMax,
       hasFocusedId: (ctx) => ctx.focusedId !== null,
       isTagFocused: (ctx, evt) => ctx.focusedId === evt.id,

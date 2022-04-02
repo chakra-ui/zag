@@ -305,7 +305,7 @@ export const splitterStyle: CSSObject = {
 }
 
 export const tagsInputStyle: CSSObject = {
-  ".tags-input": {
+  "[data-part=control]": {
     padding: "0 2px",
     background: "#fff",
     border: "1px solid #ccc",
@@ -315,8 +315,12 @@ export const tagsInputStyle: CSSObject = {
     "&[data-disabled]": {
       background: "#f9f9f9",
     },
+    "&[data-focus], &:focus": {
+      borderColor: "red",
+      outline: 0,
+    },
   },
-  ".tag": {
+  "[data-part=tag]": {
     background: "#eee",
     color: "#444",
     padding: "0 4px",
@@ -326,7 +330,6 @@ export const tagsInputStyle: CSSObject = {
     font: "inherit",
     userSelect: "none",
     cursor: "pointer",
-    transition: "all 100ms ease",
     display: "inline-block",
     "&[hidden]": {
       display: "none !important",
@@ -341,7 +344,7 @@ export const tagsInputStyle: CSSObject = {
       cursor: "default",
     },
   },
-  ".tag-input": {
+  "[data-part*=input]": {
     appearance: "none",
     padding: "3px",
     margin: "0",
@@ -352,9 +355,6 @@ export const tagsInputStyle: CSSObject = {
     fontSize: "100%",
     outline: "none",
     display: "inline-block !important",
-    "&[data-part=tag-input]": {
-      width: "40px",
-    },
     "&[hidden]": {
       display: "none !important",
     },
@@ -362,7 +362,7 @@ export const tagsInputStyle: CSSObject = {
       opacity: 0.6,
     },
   },
-  ".tag-close": {
+  "[data-part=delete-button]": {
     all: "unset",
   },
 }
