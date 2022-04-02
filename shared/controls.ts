@@ -11,6 +11,7 @@ export const comboboxControls = defineControls({
   selectOnFocus: { type: "boolean", defaultValue: false },
   allowCustomValue: { type: "boolean", defaultValue: false },
   autoHighlight: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: true },
 })
 
