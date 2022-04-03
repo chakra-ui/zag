@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
+import { dataAttr, visuallyHiddenStyle } from "@ui-machines/dom-utils"
 import { getPlacementStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
@@ -43,7 +43,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: triggerId,
       "data-expanded": dataAttr(isVisible),
       "aria-describedby": isVisible ? contentId : undefined,
-      "data-controls": "tooltip",
+      onClick() {
+        send("CLICK")
+      },
       onFocus() {
         send("FOCUS")
       },
@@ -63,20 +65,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       onPointerLeave() {
         send("POINTER_LEAVE")
       },
-      onKeyDown(event) {
-        const keymap: EventKeyMap = {
-          Enter() {
-            send("PRESS_ENTER")
-          },
-          Space() {
-            send("PRESS_ENTER")
-          },
-        }
-        const key = getEventKey(event)
-        const exec = keymap[key]
-        if (exec) {
-          exec(event)
-        }
+      onPointerCancel() {
+        send("POINTER_LEAVE")
       },
     }),
 
