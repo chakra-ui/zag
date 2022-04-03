@@ -12,6 +12,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const id = state.context.id
+  const hasAriaLabel = state.context.hasAriaLabel
 
   const isVisible = state.hasTag("visible")
 
@@ -24,7 +25,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
   return {
     isVisible,
-    hasAriaLabel: state.context.hasAriaLabel,
     open() {
       send("OPEN")
     },
@@ -99,8 +99,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     contentProps: normalize.element<T>({
       "data-part": "content",
-      role: state.context.hasAriaLabel ? undefined : "tooltip",
-      id: state.context.hasAriaLabel ? undefined : contentId,
+      role: hasAriaLabel ? undefined : "tooltip",
+      id: hasAriaLabel ? undefined : contentId,
       onPointerEnter() {
         send("TOOLTIP_POINTER_ENTER")
       },
@@ -117,6 +117,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: contentId,
       role: "tooltip",
       style: visuallyHiddenStyle,
+      children: state.context["aria-label"],
     }),
 
     createPortal() {
