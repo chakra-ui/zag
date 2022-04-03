@@ -50,6 +50,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closed: {
+        tags: ["closed"],
         entry: ["clearGlobalId", "invokeOnClose"],
         on: {
           FOCUS: "open",
@@ -64,6 +65,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       opening: {
+        tags: ["closed"],
         activities: ["trackScroll", "trackPointerlockChange"],
         after: {
           OPEN_DELAY: "open",
@@ -81,7 +83,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
-        tags: ["visible"],
+        tags: ["open"],
         activities: [
           "trackEscapeKey",
           "trackDisabledTriggerOnSafari",
@@ -115,7 +117,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closing: {
-        tags: ["visible"],
+        tags: ["open"],
         activities: ["trackStore", "computePlacement"],
         after: {
           CLOSE_DELAY: "closed",
@@ -221,7 +223,6 @@ export const machine = createMachine<MachineContext, MachineState>(
       closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
       noVisibleTooltip: () => store.id === null,
       isVisible: (ctx) => ctx.id === store.id,
-      isDisabled: (ctx) => !!ctx.disabled,
       isInteractive: (ctx) => ctx.interactive,
     },
     delays: {

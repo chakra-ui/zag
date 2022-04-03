@@ -16,20 +16,20 @@ const TooltipComponent = defineComponent({
   },
   setup(props) {
     const [state, send] = useMachine(Tooltip.machine.withContext({ id: props.id }))
-    const tooltip = computed(() => Tooltip.connect<PropTypes>(state.value, send, normalizeProps))
     const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
+    const apiRef = computed(() => Tooltip.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, isVisible, contentProps, positionerProps } = tooltip.value
+      const api = apiRef.value
       return (
         <>
           <div>
-            <button ref={ref} {...triggerProps}>
+            <button ref={ref} {...api.triggerProps}>
               Over me
             </button>
-            {isVisible && (
-              <div {...positionerProps}>
-                <div data-testid={`${props.id}-tooltip`} {...contentProps} class="tooltip">
+            {api.isOpen && (
+              <div {...api.positionerProps}>
+                <div data-testid={`${props.id}-tooltip`} {...api.contentProps} class="tooltip">
                   Tooltip
                 </div>
               </div>

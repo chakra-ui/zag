@@ -14,7 +14,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   const id = state.context.id
   const hasAriaLabel = state.context.hasAriaLabel
 
-  const isVisible = state.hasTag("visible")
+  const isOpen = state.hasTag("open")
 
   const triggerId = dom.getTriggerId(state.context)
   const contentId = dom.getContentId(state.context)
@@ -24,7 +24,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   })
 
   return {
-    isVisible,
+    isOpen,
     open() {
       send("OPEN")
     },
@@ -41,8 +41,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
       id: triggerId,
-      "data-expanded": dataAttr(isVisible),
-      "aria-describedby": isVisible ? contentId : undefined,
+      "data-expanded": dataAttr(isOpen),
+      "aria-describedby": isOpen ? contentId : undefined,
       onClick() {
         send("CLICK")
       },
@@ -91,6 +91,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "content",
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
+      "data-placement": state.context.currentPlacement,
       onPointerEnter() {
         send("TOOLTIP_POINTER_ENTER")
       },

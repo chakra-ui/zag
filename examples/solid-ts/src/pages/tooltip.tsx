@@ -10,16 +10,16 @@ function TooltipComponent(props: { id?: string }) {
   const [state, send] = useMachine(Tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
 
-  const tooltip = createMemo(() => Tooltip.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => Tooltip.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div>
-      <button data-testid={`${props.id}-trigger`} ref={ref} {...tooltip().triggerProps}>
+      <button data-testid={`${props.id}-trigger`} ref={ref} {...api().triggerProps}>
         Over me
       </button>
-      {tooltip().isVisible && (
-        <div {...tooltip().positionerProps}>
-          <div data-testid={`${props.id}-tooltip`} class="tooltip" {...tooltip().contentProps}>
+      {api().isOpen && (
+        <div {...api().positionerProps}>
+          <div data-testid={`${props.id}-tooltip`} class="tooltip" {...api().contentProps}>
             Tooltip
           </div>
         </div>
