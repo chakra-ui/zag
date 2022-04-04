@@ -2,42 +2,42 @@ import type { CSSObject } from "@emotion/react"
 import { keyframes } from "@emotion/css"
 
 export const accordionStyle: CSSObject = {
-  ".accordion": {
+  "[data-part=root]": {
     width: "100%",
     maxWidth: "40ch",
   },
 }
 
 export const comboboxStyle: CSSObject = {
-  ".combobox": {
+  "[data-part=root]": {
     display: "inline-flex",
     flexDirection: "column",
   },
-  ".combobox__listbox": {
+  "[data-part=listbox]": {
     listStyleType: "none",
     padding: "0",
     margin: "0",
     border: "1px solid lightgray",
-    width: "300px",
     maxHeight: "400px",
     overflow: "auto",
-    ".combobox__popover &": {
-      width: "100%",
-    },
   },
-  ".combobox__option": {
+  "[data-part=option]": {
     '&[aria-selected="true"], &[data-highlighted]': {
       backgroundColor: "red",
       color: "white",
     },
   },
-  ".combobox__label": {
+  "[data-part=label]": {
     display: "block",
     marginTop: "12px",
     marginBottom: "4px",
   },
-  ".combobox__container": {
-    display: "inline-block",
+  "[data-part=control]": {
+    display: "inline-flex",
+    width: "300px",
+  },
+  "[data-part=input]": {
+    flex: "1",
   },
 }
 
@@ -506,14 +506,14 @@ export const toggleStyle: CSSObject = {
 }
 
 export const tabsStyle: CSSObject = {
-  ".tabs": {
+  "[data-part=root]": {
     maxWidth: "20em",
   },
-  '[role="tablist"]': {
+  "[data-part=trigger-group]": {
     margin: "0 0 -0.1em",
     overflow: "visible",
   },
-  '[role="tab"]': {
+  "[data-part=trigger]": {
     position: "relative",
     margin: "0",
     padding: "0.3em 0.5em 0.4em",
@@ -523,44 +523,44 @@ export const tabsStyle: CSSObject = {
     overflow: "visible",
     fontSize: "inherit",
     background: "hsl(220, 20%, 94%)",
+    "&:hover, &:focus, &:active": {
+      outline: "0",
+      borderRadius: "0",
+      color: "inherit",
+    },
+    "&[data-selected]": {
+      borderRadius: "0",
+      background: "hsl(220, 43%, 99%)",
+      outline: "0",
+      "&:not(:focus):not(:hover)::before": {
+        borderTop: "5px solid hsl(218, 96%, 48%)",
+      },
+      "&::after": {
+        position: "absolute",
+        zIndex: 3,
+        bottom: "-1px",
+        right: "0",
+        left: "0",
+        height: "0.3em",
+        background: "hsl(220, 43%, 99%)",
+        boxShadow: "none",
+        content: '""',
+      },
+    },
+    "&:hover::before, &:focus::before": {
+      borderColor: "hsl(20, 96%, 48%)",
+    },
+    "&:hover::before, &:focus::before, &[data-selected]::before": {
+      position: "absolute",
+      bottom: "100%",
+      right: "-1px",
+      left: "-1px",
+      borderRadius: "0.2em 0.2em 0 0",
+      borderTop: "3px solid hsl(20, 96%, 48%)",
+      content: '""',
+    },
   },
-  '[role="tab"]:hover::before, [role="tab"]:focus::before, [role="tab"][aria-selected="true"]::before': {
-    position: "absolute",
-    bottom: "100%",
-    right: "-1px",
-    left: "-1px",
-    borderRadius: "0.2em 0.2em 0 0",
-    borderTop: "3px solid hsl(20, 96%, 48%)",
-    content: '""',
-  },
-  '[role="tab"][aria-selected="true"]': {
-    borderRadius: "0",
-    background: "hsl(220, 43%, 99%)",
-    outline: "0",
-  },
-  '[role="tab"][aria-selected="true"]:not(:focus):not(:hover)::before': {
-    borderTop: "5px solid hsl(218, 96%, 48%)",
-  },
-  '[role="tab"][aria-selected="true"]::after': {
-    position: "absolute",
-    zIndex: 3,
-    bottom: "-1px",
-    right: "0",
-    left: "0",
-    height: "0.3em",
-    background: "hsl(220, 43%, 99%)",
-    boxShadow: "none",
-    content: '""',
-  },
-  '[role="tab"]:hover, [role="tab"]:focus, [role="tab"]:active': {
-    outline: "0",
-    borderRadius: "0",
-    color: "inherit",
-  },
-  '[role="tab"]:hover::before, [role="tab"]:focus::before': {
-    borderColor: "hsl(20, 96%, 48%)",
-  },
-  '[role="tabpanel"]': {
+  "[data-part=content]": {
     position: "relative",
     zIndex: 2,
     padding: "0.5em 0.5em 0.7em",
@@ -568,28 +568,28 @@ export const tabsStyle: CSSObject = {
     borderRadius: "0 0.2em 0.2em 0.2em",
     boxShadow: "0 0 0.2em hsl(219, 1%, 72%)",
     background: "hsl(220, 43%, 99%)",
+    "& p": {
+      margin: "0",
+    },
+    "& * + p": {
+      marginTop: "1em",
+    },
+    "&:focus": {
+      borderColor: "hsl(20, 96%, 48%)",
+      boxShadow: "0 0 0.2em hsl(20, 96%, 48%)",
+      outline: "0",
+      "&::after": {
+        position: "absolute",
+        bottom: "0",
+        right: "-1px",
+        left: "-1px",
+        borderBottom: "3px solid hsl(20, 96%, 48%)",
+        borderRadius: "0 0 0.2em 0.2em",
+        content: '""',
+      },
+    },
   },
-  '[role="tabpanel"]:focus': {
-    borderColor: "hsl(20, 96%, 48%)",
-    boxShadow: "0 0 0.2em hsl(20, 96%, 48%)",
-    outline: "0",
-  },
-  '[role="tabpanel"]:focus::after': {
-    position: "absolute",
-    bottom: "0",
-    right: "-1px",
-    left: "-1px",
-    borderBottom: "3px solid hsl(20, 96%, 48%)",
-    borderRadius: "0 0 0.2em 0.2em",
-    content: '""',
-  },
-  '[role="tabpanel"] p': {
-    margin: "0",
-  },
-  '[role="tabpanel"] * + p': {
-    marginTop: "1em",
-  },
-  ".tabs__indicator": {
+  "[data-part=indicator]": {
     height: "4px",
     backgroundColor: "red",
     zIndex: 10,
@@ -597,7 +597,7 @@ export const tabsStyle: CSSObject = {
 }
 
 export const tooltipStyles: CSSObject = {
-  ".tooltip": {
+  "[data-part=content]": {
     zIndex: 1,
     padding: "0.25em 0.5em",
     boxShadow: "2px 2px 10px hsla(0, 0%, 0%, 0.1)",
