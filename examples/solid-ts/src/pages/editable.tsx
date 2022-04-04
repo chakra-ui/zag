@@ -19,7 +19,7 @@ export default function Page() {
     { context: controls.context },
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
+  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => editable.connect<PropTypes>(state, send, normalizeProps))
 

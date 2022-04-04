@@ -22,7 +22,7 @@ function ToastItem({ actor }: { actor: Toast.Service }) {
 
 export default function Page() {
   const [state, send] = useMachine(Toast.group.machine)
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
   const api = Toast.group.connect(state, send)
 
   const id = useRef<string>()

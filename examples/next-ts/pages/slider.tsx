@@ -19,7 +19,7 @@ export default function Page() {
     },
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
 
   const api = Slider.connect(state, send)
 

@@ -14,7 +14,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
 
   const api = tabs.connect(state, send)
 

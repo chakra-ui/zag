@@ -16,7 +16,7 @@ export default function Page() {
 
   // Dialog 2
   const [state2, send2] = useMachine(dialog.machine)
-  const ref2 = useSetup<HTMLDivElement>({ send: send2, id: "2" })
+  const ref2 = useSetup({ send: send2, id: "2" })
   const childDialog = dialog.connect(state2, send2)
 
   return (

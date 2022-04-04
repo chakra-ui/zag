@@ -10,7 +10,7 @@ injectGlobal(toggleStyle)
 export default function Page() {
   const [state, send] = useMachine(Toggle.machine.withContext({ label: "Toggle italic" }))
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "12" })
+  const ref = useSetup({ send, id: "12" })
   const toggle = createMemo(() => Toggle.connect<PropTypes>(state, send, normalizeProps))
 
   return (
