@@ -22,30 +22,35 @@ export default function Page() {
   const api = createMemo(() => Tabs.connect<PropTypes>(state, send, normalizeProps))
 
   return (
-    <div style={{ width: "100%" }}>
+    <>
       <controls.ui />
-      <div className="tabs" {...api().rootProps}>
-        <div className="tabs__indicator" {...api().tabIndicatorProps} />
-        <div ref={ref} {...api().tablistProps}>
+
+      <div {...api().rootProps}>
+        <div {...api().indicatorProps} />
+
+        <div ref={ref} {...api().triggerGroupProps}>
           <For each={tabsData}>
             {(item) => (
-              <button data-testid={`${item.id}-tab`} {...api().getTabProps({ value: item.id })}>
+              <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>
                 {item.label}
               </button>
             )}
           </For>
         </div>
-        <For each={tabsData}>
-          {(item) => (
-            <div data-testid={`${item.id}-tab-panel`} {...api().getTabPanelProps({ value: item.id })}>
-              <p>{item.content}</p>
-              {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
-            </div>
-          )}
-        </For>
+
+        <div {...api().contentGroupProps}>
+          <For each={tabsData}>
+            {(item) => (
+              <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
+                <p>{item.content}</p>
+                {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
+              </div>
+            )}
+          </For>
+        </div>
       </div>
 
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

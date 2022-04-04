@@ -26,27 +26,32 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div style={{ width: "100%" }}>
+        <>
           <controls.ui />
-          <div class="tabs" ref={ref} {...api.rootProps}>
-            <div class="tabs__indicator" {...api.tabIndicatorProps} />
-            <div {...api.tablistProps}>
+
+          <div ref={ref} {...api.rootProps}>
+            <div {...api.indicatorProps} />
+
+            <div {...api.triggerGroupProps}>
               {tabsData.map((data) => (
-                <button {...api.getTabProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
+                <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                   {data.label}
                 </button>
               ))}
             </div>
-            {tabsData.map((data) => (
-              <div {...api.getTabPanelProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
-                <p>{data.content}</p>
-                {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
-              </div>
-            ))}
+
+            <div {...api.contentGroupProps}>
+              {tabsData.map((data) => (
+                <div {...api.getContentProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
+                  <p>{data.content}</p>
+                  {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
+                </div>
+              ))}
+            </div>
           </div>
 
           <StateVisualizer state={state} />
-        </div>
+        </>
       )
     }
   },
