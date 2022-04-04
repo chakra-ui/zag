@@ -25,7 +25,7 @@ const ToastItem = defineComponent({
         <pre class="toast" hidden={!api.isVisible} {...api.containerProps}>
           <progress {...api.progress} />
           <p {...api.titleProps}>{api.title}</p>
-          {/* @ts-expect-error */}
+
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
           <button onClick={api.dismiss}>Close</button>
         </pre>
