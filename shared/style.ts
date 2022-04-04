@@ -104,15 +104,15 @@ export const menuStyle: CSSObject = {
 }
 
 export const popoverStyle: CSSObject = {
+  "[data-part=root]": {
+    display: "flex",
+    gap: "24px",
+  },
   "*:focus": {
     outline: "2px dashed blue",
     outlineOffset: "2px",
   },
-  ".popover": {
-    display: "flex",
-    gap: "24px",
-  },
-  ".popover__content": {
+  "[data-part=content]": {
     "--arrow-background": "white",
     "--arrow-size": "10px",
     background: "white",
@@ -122,12 +122,12 @@ export const popoverStyle: CSSObject = {
     filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))",
     width: "260px",
   },
-  ".popover__title": {
+  "[data-part=title]": {
     fontSize: "15px",
     lineHeight: "19px",
     fontWeight: "bold",
   },
-  ".popover__body": {
+  "[data-part=body]": {
     paddingTop: "12px",
     display: "flex",
     alignItems: "flex-start",
@@ -136,12 +136,12 @@ export const popoverStyle: CSSObject = {
     position: "relative",
     fontSize: "14px",
   },
-  ".popover__close-button": {
+  "[data-part=close-button]": {
     position: "absolute",
     right: "0px",
     top: "-20px",
   },
-  ".popover__arrow [data-part=arrow--inner]": {
+  "[data-part=arrow]": {
     "--arrow-background": "white",
     "--arrow-shadow-color": "#ebebeb",
     boxShadow: "var(--box-shadow)",
@@ -149,10 +149,10 @@ export const popoverStyle: CSSObject = {
 }
 
 export const ratingStyle: CSSObject = {
-  ".rating": {
+  "[data-part=item-group]": {
     display: "inline-flex",
   },
-  ".rating__rate": {
+  "[data-part=item]": {
     width: "20px",
     height: "20px",
     padding: "1px",
@@ -160,7 +160,7 @@ export const ratingStyle: CSSObject = {
       outline: "2px solid royalblue",
     },
   },
-  ".rating__star": {
+  "[data-part=star]": {
     color: "#bdbdbd",
     "[data-highlighted] &": {
       color: "#ffb400",

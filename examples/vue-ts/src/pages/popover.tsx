@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Popover from "@ui-machines/popover"
+import * as popover from "@ui-machines/popover"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
@@ -15,56 +15,46 @@ export default defineComponent({
   setup() {
     const controls = useControls(popoverControls)
 
-    const [state, send] = useMachine(Popover.machine, {
+    const [state, send] = useMachine(popover.machine, {
       context: controls.context,
     })
 
     const ref = useSetup({ send, id: "1" })
 
-    const popover = computed(() => Popover.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => popover.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const {
-        triggerProps,
-        titleProps,
-        descriptionProps,
-        closeButtonProps,
-        contentProps,
-        positionerProps,
-        arrowProps,
-        innerArrowProps,
-        portalled,
-      } = popover.value
+      const api = apiRef.value
 
-      const Wrapper = portalled ? Teleport : Fragment
+      const Wrapper = api.portalled ? Teleport : Fragment
 
       return (
         <>
           <controls.ui />
 
-          <div class="popover" ref={ref}>
+          <div data-part="root" ref={ref}>
             <button data-testid="button-before">Button :before</button>
 
-            <button class="popover__trigger" data-testid="popover-trigger" {...triggerProps}>
+            <button data-testid="popover-trigger" {...api.triggerProps}>
               Click me
             </button>
 
             <Wrapper to="body">
-              <div class="popover__popper" {...positionerProps}>
-                <div class="popover__content" data-testid="popover-content" {...contentProps}>
-                  <div class="popover__arrow" {...arrowProps}>
-                    <div {...innerArrowProps} />
+              <div {...api.positionerProps}>
+                <div data-testid="popover-content" {...api.contentProps}>
+                  <div {...api.arrowProps}>
+                    <div {...api.innerArrowProps} />
                   </div>
-                  <div class="popover__title" data-testid="popover-title" {...titleProps}>
+                  <div data-testid="popover-title" {...api.titleProps}>
                     Popover Title
                   </div>
-                  <div class="popover__body" data-testid="popover-body" {...descriptionProps}>
+                  <div data-testid="popover-body" {...api.descriptionProps}>
                     <a>Non-focusable Link</a>
                     <a href="#" data-testid="focusable-link">
                       Focusable Link
                     </a>
                     <input data-testid="input" placeholder="input" />
-                    <button class="popover__close-button" data-testid="popover-close-button" {...closeButtonProps}>
+                    <button data-testid="popover-close-button" {...api.closeButtonProps}>
                       X
                     </button>
                   </div>

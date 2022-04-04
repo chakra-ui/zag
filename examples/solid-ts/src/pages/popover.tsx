@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Popover from "@ui-machines/popover"
+import * as popover from "@ui-machines/popover"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId, PropsWithChildren } from "solid-js"
 import { Portal } from "solid-js/web"
@@ -10,57 +10,53 @@ import { useControls } from "../hooks/use-controls"
 
 injectGlobal(popoverStyle)
 
-function MaybePortal(props: PropsWithChildren<{ guard: boolean }>) {
+function Wrapper(props: PropsWithChildren<{ guard: boolean }>) {
   return <>{props.guard ? <Portal mount={document.body}>{props.children}</Portal> : props.children}</>
 }
 
 export default function Page() {
   const controls = useControls(popoverControls)
 
-  const [state, send] = useMachine(Popover.machine, {
+  const [state, send] = useMachine(popover.machine, {
     context: controls.context,
   })
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const popover = createMemo(() => Popover.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => popover.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
-      <div className="popover" ref={ref}>
+      <div data-part="root" ref={ref}>
         <button data-testid="button-before">Button :before</button>
-        <button data-testid="popover-trigger" {...popover().triggerProps}>
+        <button data-testid="popover-trigger" {...api().triggerProps}>
           Click me
         </button>
 
-        <MaybePortal guard={popover().portalled}>
-          <div className="popover__popper" {...popover().positionerProps}>
-            <div className="popover__content" data-testid="popover-content" {...popover().contentProps}>
-              <div className="popover__arrow" {...popover().arrowProps}>
-                <div {...popover().innerArrowProps} />
+        <Wrapper guard={api().portalled}>
+          <div {...api().positionerProps}>
+            <div data-testid="popover-content" {...api().contentProps}>
+              <div {...api().arrowProps}>
+                <div {...api().innerArrowProps} />
               </div>
-              <div className="popover__title" data-testid="popover-title" {...popover().titleProps}>
+              <div data-testid="popover-title" {...api().titleProps}>
                 Popover Title
               </div>
-              <div className="popover__body" data-testid="popover-body" {...popover().descriptionProps}>
+              <div data-testid="popover-body" {...api().descriptionProps}>
                 <a>Non-focusable Link</a>
                 <a href="#" data-testid="focusable-link">
                   Focusable Link
                 </a>
                 <input data-testid="input" placeholder="input" />
-                <button
-                  className="popover__close-button"
-                  data-testid="popover-close-button"
-                  {...popover().closeButtonProps}
-                >
+                <button data-testid="popover-close-button" {...api().closeButtonProps}>
                   X
                 </button>
               </div>
             </div>
           </div>
-        </MaybePortal>
+        </Wrapper>
 
         <span data-testid="plain-text">I am just text</span>
         <button data-testid="button-after">Button :after</button>
