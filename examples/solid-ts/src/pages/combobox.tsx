@@ -36,30 +36,25 @@ export default function Page() {
     <>
       <controls.ui />
 
-      <div className="root">
+      <div>
         <button onClick={() => api().setValue("Togo")}>Set to Togo</button>
         <br />
 
-        <div className="combobox" ref={ref} {...api().rootProps}>
-          <label className="combobox__label" {...api().labelProps}>
-            Select country
-          </label>
+        <div ref={ref} {...api().rootProps}>
+          <label {...api().labelProps}>Select country</label>
 
-          <div className="combobox__container" {...api().controlProps}>
+          <div {...api().controlProps}>
             <input {...api().inputProps} />
             <button {...api().toggleButtonProps}>▼</button>
           </div>
         </div>
 
-        <div className="combobox__popover" {...api().positionerProps}>
+        <div {...api().positionerProps}>
           {options().length > 0 && (
-            <ul className="combobox__listbox" {...api().listboxProps}>
+            <ul {...api().listboxProps}>
               <For each={options()}>
                 {(item, index) => (
-                  <li
-                    className="combobox__option"
-                    {...api().getOptionProps({ label: item.label, value: item.code, index: index() })}
-                  >
+                  <li {...api().getOptionProps({ label: item.label, value: item.code, index: index() })}>
                     {item.label}
                   </li>
                 )}
