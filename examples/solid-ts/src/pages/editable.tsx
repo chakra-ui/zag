@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Editable from "@ui-machines/editable"
+import * as editable from "@ui-machines/editable"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { editableControls } from "../../../../shared/controls"
@@ -13,7 +13,7 @@ export default function Page() {
   const controls = useControls(editableControls)
 
   const [state, send] = useMachine(
-    Editable.machine.withContext({
+    editable.machine.withContext({
       placeholder: "Edit me...",
     }),
     { context: controls.context },
@@ -21,32 +21,33 @@ export default function Page() {
 
   const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
 
-  const api = createMemo(() => Editable.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => editable.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
-      <div className="root" {...api().rootProps}>
-        <div className="editable__area" {...api().areaProps}>
-          <input className="editable__input" data-testid="input" ref={ref} {...api().inputProps} />
-          <span className="editable__preview" data-testid="preview" {...api().previewProps} />
+      <div {...api().rootProps}>
+        <div {...api().areaProps}>
+          <input data-testid="input" ref={ref} {...api().inputProps} />
+          <span data-testid="preview" {...api().previewProps} />
         </div>
-        <div>
+
+        <div {...api().controlGroupProps}>
           {!api().isEditing && (
-            <button className="editable__edit" data-testid="edit-button" {...api().editButtonProps}>
+            <button data-testid="edit-button" {...api().editButtonProps}>
               Edit
             </button>
           )}
           {api().isEditing && (
-            <div className="editable__controls">
+            <>
               <button data-testid="save-button" {...api().submitButtonProps}>
                 Save
               </button>
               <button data-testid="cancel-button" {...api().cancelButtonProps}>
                 Cancel
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>

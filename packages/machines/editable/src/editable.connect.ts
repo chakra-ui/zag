@@ -169,6 +169,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
+    controlGroupProps: normalize.element<T>({
+      id: dom.getControlGroupId(state.context),
+      "data-part": "control-group",
+    }),
+
     submitButtonProps: normalize.button<T>({
       "data-part": "submit-button",
       id: dom.getSubmitBtnId(state.context),

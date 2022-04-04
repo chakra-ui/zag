@@ -42,21 +42,21 @@ export const comboboxStyle: CSSObject = {
 }
 
 export const editableStyle: CSSObject = {
-  ".editable__area": {
+  "[data-part=area]": {
     display: "inline-block",
     marginRight: "0.5em",
     marginBottom: "1em",
   },
-  ".editable__input": {
+  "[data-part=input]": {
     width: "auto",
     background: "transparent",
   },
-  ".editable__preview": {
+  "[data-part=preview]": {
     "&[data-empty]": {
       opacity: 0.7,
     },
   },
-  ".editable__controls": {
+  "[data-part=control-group]": {
     display: "inline-flex",
     gap: "0.5em",
   },

@@ -11,6 +11,7 @@ export const dom = {
   getLabelId: (ctx: Ctx) => `editable-${ctx.uid}-label`,
   getPreviewId: (ctx: Ctx) => `editable-${ctx.uid}-preview`,
   getInputId: (ctx: Ctx) => `editable-${ctx.uid}-input`,
+  getControlGroupId: (ctx: Ctx) => `editable-${ctx.uid}-controls`,
   getSubmitBtnId: (ctx: Ctx) => `editable-${ctx.uid}-submit-btn`,
   getCancelBtnId: (ctx: Ctx) => `editable-${ctx.uid}-cancel-btn`,
   getEditBtnId: (ctx: Ctx) => `editable-${ctx.uid}-edit-btn`,
