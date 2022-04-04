@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as PinInput from "@ui-machines/pin-input"
+import * as pinInput from "@ui-machines/pin-input"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
@@ -15,20 +15,21 @@ export default defineComponent({
   setup() {
     const controls = useControls(pinInputControls)
 
-    const [state, send] = useMachine(PinInput.machine, {
+    const [state, send] = useMachine(pinInput.machine, {
       context: controls.context,
     })
 
     const ref = useSetup({ send, id: "1" })
 
-    const apiRef = computed(() => PinInput.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => pinInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
       return (
-        <div>
+        <>
           <controls.ui />
-          <div class="pin-input" ref={ref} {...api.rootProps}>
+
+          <div ref={ref} {...api.rootProps}>
             <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
             <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
             <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
@@ -39,7 +40,7 @@ export default defineComponent({
           </button>
 
           <StateVisualizer state={state} />
-        </div>
+        </>
       )
     }
   },

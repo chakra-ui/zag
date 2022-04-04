@@ -368,18 +368,17 @@ export const tagsInputStyle: CSSObject = {
 }
 
 export const pinInputStyle: CSSObject = {
-  ".pin-input": {
+  "[data-part=root]": {
     width: "300px",
     display: "flex",
     marginBottom: "12px",
     gap: "12px",
-
-    input: {
-      width: "48px",
-      height: "48px",
-      textAlign: "center",
-      fontSize: "24px",
-    },
+  },
+  "[data-part=input]": {
+    width: "48px",
+    height: "48px",
+    textAlign: "center",
+    fontSize: "24px",
   },
 }
 
