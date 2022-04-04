@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Menu from "@ui-machines/menu"
+import * as menu from "@ui-machines/menu"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { menuStyle } from "../../../../shared/style"
@@ -11,37 +11,30 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const [state, send] = useMachine(
-      Menu.machine.withContext({
+      menu.machine.withContext({
         onSelect: console.log,
       }),
     )
 
     const ref = useSetup({ send, id: "1" })
 
-    const menuRef = computed(() => Menu.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => menu.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { triggerProps, contentProps, getItemProps, positionerProps } = menuRef.value
+      const api = apiRef.value
       return (
         <>
           <div ref={ref}>
-            <button class="menu__trigger" {...triggerProps}>
+            <button {...api.triggerProps}>
               Actions <span aria-hidden>▾</span>
             </button>
-            <div {...positionerProps}>
-              <ul class="menu__content" {...contentProps}>
-                <li class="menu__item" {...getItemProps({ id: "edit" })}>
-                  Edit
-                </li>
-                <li class="menu__item" {...getItemProps({ id: "duplicate" })}>
-                  Duplicate
-                </li>
-                <li class="menu__item" {...getItemProps({ id: "delete" })}>
-                  Delete
-                </li>
-                <li class="menu__item" {...getItemProps({ id: "export" })}>
-                  Export...
-                </li>
+
+            <div {...api.positionerProps}>
+              <ul {...api.contentProps}>
+                <li {...api.getItemProps({ id: "edit" })}>Edit</li>
+                <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
+                <li {...api.getItemProps({ id: "delete" })}>Delete</li>
+                <li {...api.getItemProps({ id: "export" })}>Export...</li>
               </ul>
             </div>
           </div>

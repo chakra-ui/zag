@@ -63,19 +63,20 @@ export const editableStyle: CSSObject = {
 }
 
 export const menuStyle: CSSObject = {
-  '[role="menu"]': {
+  "[data-part=content]": {
     margin: "0",
     width: "160px",
     backgroundColor: "white",
     borderRadius: "6px",
     padding: "5px",
     border: "1px solid lightgray",
+    listStyleType: "none",
     "&:focus": {
       outline: "2px dashed var(--ring-color)",
       outlineOffset: "-5px",
     },
   },
-  '[role*="menuitem"]': {
+  "[data-part*=item]": {
     all: "unset",
     fontSize: "14px",
     lineHeight: 1,
@@ -96,7 +97,7 @@ export const menuStyle: CSSObject = {
       opacity: 0.4,
     },
   },
-  "button[aria-controls]:focus": {
+  "[data-part=trigger]:focus": {
     outline: "2px dashed var(--ring-color)",
     outlineOffset: "-3px",
   },

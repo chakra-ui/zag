@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Menu from "@ui-machines/menu"
+import * as menu from "@ui-machines/menu"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, For, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
@@ -10,17 +10,17 @@ import { StateVisualizer } from "../components/state-visualizer"
 injectGlobal(menuStyle)
 
 export default function Page() {
-  const [state, send, machine] = useMachine(Menu.machine)
+  const [state, send, machine] = useMachine(menu.machine)
   const rootRef = useSetup<HTMLUListElement>({ send, id: "1" })
-  const root = createMemo(() => Menu.connect<PropTypes>(state, send, normalizeProps))
+  const root = createMemo(() => menu.connect<PropTypes>(state, send, normalizeProps))
 
-  const [subState, subSend, subMachine] = useMachine(Menu.machine)
+  const [subState, subSend, subMachine] = useMachine(menu.machine)
   const subRef = useSetup<HTMLUListElement>({ send: subSend, id: "2" })
-  const sub = createMemo(() => Menu.connect<PropTypes>(subState, subSend, normalizeProps))
+  const sub = createMemo(() => menu.connect<PropTypes>(subState, subSend, normalizeProps))
 
-  const [sub2State, sub2Send, sub2Machine] = useMachine(Menu.machine)
+  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
   const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: "3" })
-  const sub2 = createMemo(() => Menu.connect<PropTypes>(sub2State, sub2Send, normalizeProps))
+  const sub2 = createMemo(() => menu.connect<PropTypes>(sub2State, sub2Send, normalizeProps))
 
   onMount(() => {
     setTimeout(() => {
