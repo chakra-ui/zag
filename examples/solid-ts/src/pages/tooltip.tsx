@@ -19,7 +19,7 @@ function TooltipComponent(props: { id?: string }) {
       </button>
       {api().isOpen && (
         <div {...api().positionerProps}>
-          <div data-testid={`${props.id}-tooltip`} class="tooltip" {...api().contentProps}>
+          <div data-testid={`${props.id}-tooltip`} {...api().contentProps}>
             Tooltip
           </div>
         </div>

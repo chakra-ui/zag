@@ -15,7 +15,7 @@ function TooltipComponent({ id }: { id?: string }) {
       </button>
       {api.isOpen && (
         <div {...api.positionerProps}>
-          <div data-testid={`${id}-tooltip`} className="tooltip" {...api.contentProps}>
+          <div data-testid={`${id}-tooltip`} {...api.contentProps}>
             Tooltip
           </div>
         </div>

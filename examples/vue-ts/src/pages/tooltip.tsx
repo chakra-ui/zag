@@ -29,7 +29,7 @@ const TooltipComponent = defineComponent({
             </button>
             {api.isOpen && (
               <div {...api.positionerProps}>
-                <div data-testid={`${props.id}-tooltip`} {...api.contentProps} class="tooltip">
+                <div data-testid={`${props.id}-tooltip`} {...api.contentProps}>
                   Tooltip
                 </div>
               </div>
