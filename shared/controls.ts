@@ -78,6 +78,7 @@ export const tabsControls = defineControls({
   activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
   loop: { type: "boolean", defaultValue: true, label: "loop?" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
 
 export const tagsInputControls = defineControls({
@@ -104,4 +105,5 @@ export const splitterControls = defineControls({
   max: { type: "number", defaultValue: 340 },
   disabled: { type: "boolean", defaultValue: false },
   snapOffset: { type: "number", defaultValue: 0 },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
