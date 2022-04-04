@@ -17,32 +17,23 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
-
-  const accordion = createMemo(() => Accordion.connect<PropTypes>(state, send, normalizeProps))
+  const ref = useSetup({ send, id: createUniqueId() })
+  const api = createMemo(() => Accordion.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
-      <div className="accordion" ref={ref} {...accordion().rootProps}>
+      <div ref={ref} {...api().rootProps}>
         <For each={accordionData}>
           {(item) => (
-            <div className="accordion__item" {...accordion().getItemProps({ value: item.id })}>
+            <div {...api().getItemProps({ value: item.id })}>
               <h3>
-                <button
-                  className="accordion__trigger"
-                  data-testid={`${item.id}:trigger`}
-                  {...accordion().getTriggerProps({ value: item.id })}
-                >
+                <button data-testid={`${item.id}:trigger`} {...api().getTriggerProps({ value: item.id })}>
                   {item.label}
                 </button>
               </h3>
-              <div
-                className="accordion__content"
-                data-testid={`${item.id}:content`}
-                {...accordion().getContentProps({ value: item.id })}
-              >
+              <div data-testid={`${item.id}:content`} {...api().getContentProps({ value: item.id })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>

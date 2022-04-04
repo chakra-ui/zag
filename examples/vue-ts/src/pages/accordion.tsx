@@ -21,32 +21,24 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: "1" })
 
-    const accordion = computed(() => Accordion.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => Accordion.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { getItemProps, getTriggerProps, getContentProps, rootProps } = accordion.value
+      const api = apiRef.value
 
       return (
         <>
           <controls.ui />
 
-          <div class="accordion" ref={ref} {...rootProps}>
+          <div ref={ref} {...api.rootProps}>
             {accordionData.map((item) => (
-              <div class="accordion__item" {...getItemProps({ value: item.id })}>
+              <div {...api.getItemProps({ value: item.id })}>
                 <h3>
-                  <button
-                    class="accordion__trigger"
-                    data-testid={`${item.id}:trigger`}
-                    {...getTriggerProps({ value: item.id })}
-                  >
+                  <button data-testid={`${item.id}:trigger`} {...api.getTriggerProps({ value: item.id })}>
                     {item.label}
                   </button>
                 </h3>
-                <div
-                  class="accordion__content"
-                  data-testid={`${item.id}:content`}
-                  {...getContentProps({ value: item.id })}
-                >
+                <div data-testid={`${item.id}:content`} {...api.getContentProps({ value: item.id })}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                   dolore magna aliqua.
                 </div>
