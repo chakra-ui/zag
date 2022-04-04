@@ -269,28 +269,39 @@ export const sliderStyle: CSSObject = {
 }
 
 export const splitterStyle: CSSObject = {
-  ".root": {
-    height: "300px",
+  "[data-part=root]": {
+    "&[data-orientation=horizontal]": {
+      height: "300px",
+    },
+    "&[data-orientation=vertical]": {
+      width: "800px",
+      height: "600px",
+    },
   },
-  ".pane": {
+  "[data-part*=pane]": {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     border: "1px solid lightgray",
     overflow: "auto",
   },
-  ".splitter": {
-    width: "8px",
+  "[data-part=splitter]": {
+    "&[data-orientation=horizontal]": {
+      width: "8px",
+    },
+    "&[data-orientation=vertical]": {
+      height: "8px",
+    },
     background: "#ebebeb",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     transition: "background-color 0.2s ease-in-out",
     outline: "0",
-    "&[data-focus]:not([data-disabled])": {
+    "&[data-focus]": {
       background: "#b0baf1",
     },
-    "&:active:not([data-disabled]])": {
+    "&:active": {
       background: "#3f51b5",
       color: "white",
     },
@@ -299,8 +310,14 @@ export const splitterStyle: CSSObject = {
     },
   },
   ".splitter-bar": {
-    width: "2px",
-    height: "40px",
+    "[data-orientation=horizontal] &": {
+      width: "2px",
+      height: "40px",
+    },
+    "[data-orientation=vertical] &": {
+      height: "2px",
+      width: "40px",
+    },
     backgroundColor: "currentColor",
   },
 }

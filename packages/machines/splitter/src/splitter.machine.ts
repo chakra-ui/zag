@@ -189,7 +189,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!primaryPane) return
 
         const { point } = relativeToNode(evt.point, primaryPane)
-        let value = parseFloat(snapToStep(clamp(point.x, ctx), ctx.step))
+        let __point = ctx.isHorizontal ? point.x : point.y
+
+        let value = parseFloat(snapToStep(clamp(__point, ctx), ctx.step))
 
         if (Math.abs(value - ctx.min) <= ctx.snapOffset) {
           value = ctx.min

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@ui-machines/react"
-import * as Splitter from "@ui-machines/splitter"
+import * as splitter from "@ui-machines/splitter"
 import { splitterControls } from "../../../shared/controls"
 import { splitterStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -9,34 +9,30 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(Splitter.machine, {
+  const [state, send] = useMachine(splitter.machine, {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
 
-  const { rootProps, splitterProps, primaryPaneProps, secondaryPaneProps, labelProps } = Splitter.connect(state, send)
+  const api = splitter.connect(state, send)
 
   return (
     <>
       <Global styles={splitterStyle} />
       <controls.ui />
 
-      <div className="root">
-        <div ref={ref} {...rootProps}>
-          <div className="pane" {...primaryPaneProps}>
-            <div>
-              <small {...labelProps}>Table of Contents</small>
-              <p>Primary Pane</p>
-            </div>
-          </div>
-          <div className="splitter" {...splitterProps}>
-            <div className="splitter-bar" />
-          </div>
-          <div className="pane" {...secondaryPaneProps}>
-            Secondary Pane
+      <div ref={ref} {...api.rootProps}>
+        <div {...api.primaryPaneProps}>
+          <div>
+            <small {...api.labelProps}>Table of Contents</small>
+            <p>Primary Pane</p>
           </div>
         </div>
+        <div {...api.splitterProps}>
+          <div className="splitter-bar" />
+        </div>
+        <div {...api.secondaryPaneProps}>Secondary Pane</div>
       </div>
 
       <StateVisualizer state={state} />
