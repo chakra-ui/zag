@@ -431,24 +431,24 @@ export const toastStyle: CSSObject = {
 }
 
 export const dialogStyle: CSSObject = {
-  ".dialog__overlay": {
+  "[data-part=backdrop]": {
     backgroundColor: "rgba(0, 0, 0, 0.44)",
     position: "fixed",
     inset: "0px",
   },
-  ".dialog__title": {
+  "[data-part=title]": {
     margin: "0px",
     fontWeight: 500,
     color: "rgb(26, 21, 35)",
     fontSize: "17px",
   },
-  ".dialog__description": {
+  "[data-part=description]": {
     margin: "10px 0px 20px",
     color: "rgb(111, 110, 119)",
     fontSize: "15px",
     lineHeight: 1.5,
   },
-  ".dialog__underlay": {
+  "[data-part=underlay]": {
     height: "100vh",
     width: "100vw",
     position: "fixed",
@@ -457,7 +457,7 @@ export const dialogStyle: CSSObject = {
     alignItems: "center",
     justifyContent: "center",
   },
-  ".dialog__content": {
+  "[data-part=content]": {
     backgroundColor: "white",
     borderRadius: "6px",
     boxShadow: "rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px",
@@ -467,7 +467,7 @@ export const dialogStyle: CSSObject = {
     padding: "24px",
     position: "relative",
   },
-  ".dialog__close-button": {
+  "[data-part=close-button]": {
     fontFamily: "inherit",
     height: "25px",
     width: "25px",
