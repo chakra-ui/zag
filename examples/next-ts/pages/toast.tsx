@@ -1,14 +1,14 @@
 import { Global } from "@emotion/react"
 import { useActor, useMachine, useSetup } from "@ui-machines/react"
-import * as Toast from "@ui-machines/toast"
+import * as toast from "@ui-machines/toast"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
 import { toastStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
-function ToastItem({ actor }: { actor: Toast.Service }) {
+function ToastItem({ actor }: { actor: toast.Service }) {
   const [state, send] = useActor(actor)
-  const api = Toast.connect(state, send)
+  const api = toast.connect(state, send)
 
   return (
     <pre className="toast" {...api.containerProps}>
@@ -21,9 +21,9 @@ function ToastItem({ actor }: { actor: Toast.Service }) {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(Toast.group.machine)
+  const [state, send] = useMachine(toast.group.machine)
   const ref = useSetup({ send, id: "1" })
-  const api = Toast.group.connect(state, send)
+  const api = toast.group.connect(state, send)
 
   const id = useRef<string>()
 

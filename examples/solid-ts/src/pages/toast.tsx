@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import { useActor, useMachine, useSetup, normalizeProps, PropTypes } from "@ui-machines/solid"
-import * as Toast from "@ui-machines/toast"
+import * as toast from "@ui-machines/toast"
 import { createMemo, createSignal, For } from "solid-js"
 import { toastStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -23,9 +23,9 @@ function Loader() {
   )
 }
 
-function ToastItem(props: { actor: Toast.Service }) {
+function ToastItem(props: { actor: toast.Service }) {
   const [state, send] = useActor(props.actor)
-  const api = createMemo(() => Toast.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => toast.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div className="toast" {...api().containerProps}>
@@ -38,9 +38,9 @@ function ToastItem(props: { actor: Toast.Service }) {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(Toast.group.machine)
+  const [state, send] = useMachine(toast.group.machine)
   const ref = useSetup({ send, id: "1" })
-  const api = createMemo(() => Toast.group.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => toast.group.connect<PropTypes>(state, send, normalizeProps))
 
   const [id, setId] = createSignal<string>()
 
