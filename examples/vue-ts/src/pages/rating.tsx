@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Rating from "@ui-machines/rating"
+import * as rating from "@ui-machines/rating"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
@@ -12,9 +12,9 @@ injectGlobal(ratingStyle)
 
 const HalfStar = defineComponent({
   name: "HalfStar",
-  setup(_, { attrs }) {
+  setup() {
     return () => (
-      <svg viewBox="0 0 273 260" {...attrs}>
+      <svg viewBox="0 0 273 260" data-part="star">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
@@ -34,9 +34,9 @@ const HalfStar = defineComponent({
 
 const Star = defineComponent({
   name: "Star",
-  setup(_, { attrs }) {
+  setup() {
     return () => (
-      <svg viewBox="0 0 273 260" {...attrs}>
+      <svg viewBox="0 0 273 260" data-part="star">
         <path
           d="M136.5 0L177.83 86.614L272.977 99.1561L203.374 165.229L220.847 259.594L136.5 213.815L52.1528 259.594L69.6265 165.229L0.0233917 99.1561L95.1699 86.614L136.5 0Z"
           fill="currentColor"
@@ -50,32 +50,33 @@ export default defineComponent({
   name: "Rating",
   setup() {
     const controls = useControls(ratingControls)
-    const [state, send] = useMachine(Rating.machine, {
+    const [state, send] = useMachine(rating.machine, {
       context: controls.context,
     })
 
     const ref = useSetup({ send, id: "1" })
 
-    const rating = computed(() => Rating.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => rating.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { getRatingState, rootProps, getRatingProps, inputProps, sizeArray } = rating.value
+      const api = apiRef.value
+
       return (
         <>
           <controls.ui />
 
-          <div>
-            <div class="rating" ref={ref} {...rootProps}>
-              {sizeArray.map((index) => {
-                const state = getRatingState(index)
+          <div ref={ref} {...api.rootProps}>
+            <div {...api.itemGroupProps}>
+              {api.sizeArray.map((index) => {
+                const state = api.getRatingState(index)
                 return (
-                  <span class="rating__rate" key={index} {...getRatingProps({ index })}>
-                    {state.isHalf ? <HalfStar class="rating__star" /> : <Star class="rating__star" />}
+                  <span key={index} {...api.getItemProps({ index })}>
+                    {state.isHalf ? <HalfStar /> : <Star />}
                   </span>
                 )
               })}
             </div>
-            <input {...inputProps} />
+            <input {...api.inputProps} />
           </div>
 
           <StateVisualizer state={state} />
