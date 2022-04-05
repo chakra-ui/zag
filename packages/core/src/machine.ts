@@ -54,13 +54,21 @@ export class Machine<
   // Let's get started!
   constructor(
     public config: S.MachineConfig<TContext, TState, TEvent>,
-    opts?: S.MachineOptions<TContext, TState, TEvent>,
+    options?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
-    this.options = klona(opts)
+    // deep clone the config
+    this.options = klona(options)
     this.id = config.id ?? `machine-${uuid()}`
     this.state = createProxy(klona(config))
-    config.created?.(this.state.context)
+
+    // created actions
+    const event = toEvent<TEvent>(ActionTypes.Created)
+    this.executeActions(config?.created, event)
+
+    // setup computed
     this.setupComputed()
+
+    // maps
     this.guardMap = this.options?.guards ?? {}
     this.actionMap = this.options?.actions ?? {}
     this.delayMap = this.options?.delays ?? {}
@@ -362,12 +370,12 @@ export class Machine<
     transitions: S.Transitions<TContext, TState, TEvent>,
     event: TEvent,
   ): S.StateInfo<TContext, TState, TEvent> => {
-    const resolvedTransition = this.determineTransition(transitions, event)
-    const target = resolvedTransition?.target ?? this.state.value
+    const transition = this.determineTransition(transitions, event)
+    const target = transition?.target ?? this.state.value
     const stateNode = this.getStateNode(target)
 
     return {
-      transition: resolvedTransition,
+      transition,
       stateNode,
       target: target!,
     }

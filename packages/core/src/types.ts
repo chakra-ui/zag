@@ -204,7 +204,7 @@ export declare namespace StateMachine {
      * Function called synchronously after the machine has been instantiated,
      * before it is started.
      */
-    created?: (context: TContext) => void
+    created?: Actions<TContext, TState, TEvent>
     /**
      * The actions to run when the machine has started. This is usually
      * called in the `beforeMount`, `onMount` or `useLayoutEffect` lifecycle methods.
@@ -344,13 +344,11 @@ export enum MachineStatus {
 export enum ActionTypes {
   Start = "machine.start",
   Stop = "machine.stop",
+  Created = "machine.created",
   SendParent = "machine.send-parent",
-  Cancel = "machine.cancel",
   After = "machine.after",
   Every = "machine.every",
-  Log = "machine.log",
   Init = "machine.init",
-  Error = "machine.error",
 }
 
 export enum MachineType {
