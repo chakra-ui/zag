@@ -13,7 +13,7 @@ export function createToastMachine(options: Options = {}) {
   return createMachine<MachineContext, MachineState>(
     {
       id,
-      entry: ["invokeOnEntered"],
+      entry: "invokeOnEntered",
       initial: type === "loading" ? "persist" : "active",
       context: {
         id,
@@ -81,7 +81,7 @@ export function createToastMachine(options: Options = {}) {
         },
 
         dismissing: {
-          entry: ["clearProgressValue", "invokeOnExiting"],
+          entry: "invokeOnExiting",
           after: {
             REMOVE_DELAY: {
               target: "inactive",
