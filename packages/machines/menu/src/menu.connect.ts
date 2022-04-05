@@ -311,6 +311,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           if (disabled) return
           send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
         },
+        onPointerEnter(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+        },
         onDragStart(event) {
           const isLink = event.currentTarget.matches("a[href]")
           if (isLink) event.preventDefault()
