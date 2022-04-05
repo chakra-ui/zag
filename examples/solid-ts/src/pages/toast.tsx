@@ -28,7 +28,7 @@ function ToastItem(props: { actor: toast.Service }) {
   const api = createMemo(() => toast.connect<PropTypes>(state, send, normalizeProps))
 
   return (
-    <div className="toast" {...api().containerProps}>
+    <div {...api().rootProps}>
       <progress {...api().progress} />
       <p {...api().titleProps}>{api().title}</p>
       <p>{api().type === "loading" ? <Loader /> : null}</p>

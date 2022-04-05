@@ -22,10 +22,10 @@ const ToastItem = defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <pre class="toast" hidden={!api.isVisible} {...api.containerProps}>
+        <pre {...api.rootProps}>
           <progress {...api.progress} />
           <p {...api.titleProps}>{api.title}</p>
-
+          {/* @ts-ignore */}
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
           <button onClick={api.dismiss}>Close</button>
         </pre>

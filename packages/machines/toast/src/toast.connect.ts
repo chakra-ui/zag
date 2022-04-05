@@ -31,16 +31,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       send("DISMISS")
     },
 
-    progressProps: normalize.element<T>({
-      "data-part": "progress",
-      role: "progressbar",
-      "aria-valuemin": 0,
-      "aria-valuemax": state.context.progress.max,
-      "aria-valuenow": state.context.progress.value,
-    }),
-
-    containerProps: normalize.element<T>({
-      "data-part": "container",
+    rootProps: normalize.element<T>({
+      "data-part": "root",
       id: dom.getContainerId(state.context),
       "data-open": dataAttr(isVisible),
       "data-type": state.context.type,
@@ -81,6 +73,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           send("RESUME")
         }
       },
+    }),
+
+    progressProps: normalize.element<T>({
+      "data-part": "progress",
+      role: "progressbar",
+      "aria-valuemin": 0,
+      "aria-valuemax": state.context.progress.max,
+      "aria-valuenow": state.context.progress.value,
     }),
 
     titleProps: normalize.element<T>({

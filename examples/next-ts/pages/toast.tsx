@@ -11,7 +11,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
   const api = toast.connect(state, send)
 
   return (
-    <pre className="toast" {...api.containerProps}>
+    <pre {...api.rootProps}>
       <progress {...api.progress} />
       <p {...api.titleProps}>{api.title}</p>
       <p>{api.type === "loading" ? <BeatLoader /> : null}</p>

@@ -416,7 +416,7 @@ const spin = keyframes({
 })
 
 export const toastStyle: CSSObject = {
-  ".toast": {
+  "[data-part=root]": {
     background: "rgb(116, 116, 116)",
     borderRadius: "4px",
     color: "white",
