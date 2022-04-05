@@ -12,6 +12,8 @@ export const dom = {
   getPortalEl: (ctx: GroupCtx) => dom.getDoc(ctx).getElementById(dom.getPortalId(ctx)),
 
   createPortalEl: (ctx: GroupCtx) => {
+    const existing = dom.getPortalEl(ctx)
+    if (existing) return existing
     const portal = dom.getDoc(ctx).createElement("toast-portal")
     portal.id = dom.getPortalId(ctx)
     return portal

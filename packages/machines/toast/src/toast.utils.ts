@@ -17,7 +17,7 @@ export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
   error: 5000,
   success: 2000,
-  loading: Number.MAX_SAFE_INTEGER,
+  loading: Infinity,
   custom: 5000,
 }
 

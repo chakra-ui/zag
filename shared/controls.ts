@@ -107,3 +107,9 @@ export const splitterControls = defineControls({
   snapOffset: { type: "number", defaultValue: 0 },
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
+
+export const toastControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  pauseOnPageIdle: { type: "boolean", defaultValue: false },
+  pauseOnInteraction: { type: "boolean", defaultValue: true },
+})

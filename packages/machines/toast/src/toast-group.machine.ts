@@ -11,7 +11,7 @@ export const groupMachine = createMachine<GroupMachineContext>({
     max: Number.MAX_SAFE_INTEGER,
     uid: "",
     toasts: [],
-    spacing: "1rem",
+    gutter: "1rem",
     zIndex: MAX_Z_INDEX,
     pauseOnPageIdle: false,
     pauseOnInteraction: true,
@@ -20,9 +20,6 @@ export const groupMachine = createMachine<GroupMachineContext>({
 
   computed: {
     count: (ctx) => ctx.toasts.length,
-    spacingValue: (ctx) => {
-      return typeof ctx.spacing === "number" ? `${ctx.spacing}px` : ctx.spacing
-    },
   },
 
   on: {

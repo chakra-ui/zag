@@ -2,8 +2,10 @@ import { injectGlobal } from "@emotion/css"
 import { useActor, useMachine, useSetup, normalizeProps, PropTypes } from "@ui-machines/solid"
 import * as toast from "@ui-machines/toast"
 import { createMemo, createSignal, For } from "solid-js"
+import { toastControls } from "../../../../shared/controls"
 import { toastStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(toastStyle)
 
@@ -29,7 +31,7 @@ function ToastItem(props: { actor: toast.Service }) {
 
   return (
     <div {...api().rootProps}>
-      <progress {...api().progress} />
+      <div {...api().progressbarProps} />
       <p {...api().titleProps}>{api().title}</p>
       <p>{api().type === "loading" ? <Loader /> : null}</p>
       <button onClick={api().dismiss}>Close</button>
@@ -38,7 +40,9 @@ function ToastItem(props: { actor: toast.Service }) {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(toast.group.machine)
+  const controls = useControls(toastControls)
+
+  const [state, send] = useMachine(toast.group.machine, { context: controls.context })
   const ref = useSetup({ send, id: "1" })
   const api = createMemo(() => toast.group.connect<PropTypes>(state, send, normalizeProps))
 
@@ -46,6 +50,8 @@ export default function Page() {
 
   return (
     <>
+      <controls.ui />
+
       <div ref={ref} style={{ display: "flex", gap: "16px" }}>
         <button
           onClick={() => {

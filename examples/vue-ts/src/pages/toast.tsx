@@ -3,8 +3,10 @@ import * as toast from "@ui-machines/toast"
 import { normalizeProps, useActor, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
+import { toastControls } from "../../../../shared/controls"
 import { toastStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(toastStyle)
 
@@ -23,7 +25,7 @@ const ToastItem = defineComponent({
       const api = apiRef.value
       return (
         <pre {...api.rootProps}>
-          <progress {...api.progress} />
+          <div {...api.progressbarProps} />
           <p {...api.titleProps}>{api.title}</p>
           {/* @ts-ignore */}
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
@@ -37,7 +39,12 @@ const ToastItem = defineComponent({
 export default defineComponent({
   name: "Toast",
   setup() {
-    const [state, send] = useMachine(toast.group.machine)
+    const controls = useControls(toastControls)
+
+    const [state, send] = useMachine(toast.group.machine, {
+      context: controls.context,
+    })
+
     const toastRef = useSetup({ send, id: "1" })
     const apiRef = computed(() => toast.group.connect<PropTypes>(state.value, send, normalizeProps))
 
@@ -47,6 +54,8 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
+          <controls.ui />
+
           <div ref={toastRef} style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={() => {

@@ -31,7 +31,7 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     create(options: Options) {
-      const uid = "toast-" + Math.random().toString(36).substr(2, 9)
+      const uid = "toast-" + Math.random().toString(36).substring(2, 9)
       const id = options.id ? options.id : uid
 
       if (group.isVisible(id)) return

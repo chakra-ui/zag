@@ -10,6 +10,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const isVisible = state.hasTag("visible")
+  const isPaused = state.hasTag("paused")
+  const isUpdating = state.hasTag("updating")
+
+  const isRtl = state.context.dir === "rtl"
+
   const pauseOnInteraction = state.context.pauseOnInteraction
   const placement = state.context.placement
 
@@ -18,9 +23,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     title: state.context.title,
     placement,
     isVisible,
-    progress: state.context.progress,
-    progressPercent: state.context.progressPercent,
-
+    isPaused,
     pause() {
       send("PAUSE")
     },
@@ -33,6 +36,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     rootProps: normalize.element<T>({
       "data-part": "root",
+      dir: state.context.dir,
       id: dom.getContainerId(state.context),
       "data-open": dataAttr(isVisible),
       "data-type": state.context.type,
@@ -41,10 +45,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-atomic": "true",
       tabIndex: 0,
       style: {
+        position: "relative",
         pointerEvents: "auto",
         margin: "calc(var(--toast-gutter) / 2)",
-        "--toast-remove-delay": `${state.context.removeDelay}ms`,
-        "--toast-progress-percent": `${state.context.progressPercent * 100}%`,
+        "--remove-delay": `${state.context.removeDelay}ms`,
+        "--duration": `${state.context.duration}ms`,
       },
       onKeyDown(event) {
         if (event.key == "Escape") {
@@ -75,12 +80,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    progressProps: normalize.element<T>({
-      "data-part": "progress",
-      role: "progressbar",
-      "aria-valuemin": 0,
-      "aria-valuemax": state.context.progress.max,
-      "aria-valuenow": state.context.progress.value,
+    progressbarProps: normalize.element<T>({
+      "data-part": "progressbar",
+      "data-type": state.context.type,
+      style: {
+        opacity: isVisible ? 1 : 0,
+        animationName: isUpdating ? "none" : undefined,
+        transformOrigin: isRtl ? "right" : "left",
+        animationPlayState: isPaused ? "paused" : "running",
+        animationDuration: `${state.context.duration}ms`,
+        animationFillMode: isUpdating ? undefined : "forwards",
+      },
     }),
 
     titleProps: normalize.element<T>({

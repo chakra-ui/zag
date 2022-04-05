@@ -3,8 +3,10 @@ import { useActor, useMachine, useSetup } from "@ui-machines/react"
 import * as toast from "@ui-machines/toast"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
+import { toastControls } from "../../../shared/controls"
 import { toastStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 function ToastItem({ actor }: { actor: toast.Service }) {
   const [state, send] = useActor(actor)
@@ -12,7 +14,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
 
   return (
     <pre {...api.rootProps}>
-      <progress {...api.progress} />
+      <div {...api.progressbarProps} />
       <p {...api.titleProps}>{api.title}</p>
       <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
       <button onClick={api.dismiss}>Close</button>
@@ -21,7 +23,12 @@ function ToastItem({ actor }: { actor: toast.Service }) {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(toast.group.machine)
+  const controls = useControls(toastControls)
+
+  const [state, send] = useMachine(toast.group.machine, {
+    context: controls.context,
+  })
+
   const ref = useSetup({ send, id: "1" })
   const api = toast.group.connect(state, send)
 
@@ -29,6 +36,8 @@ export default function Page() {
 
   return (
     <>
+      <controls.ui />
+
       <Global styles={toastStyle} />
 
       <div ref={ref} style={{ display: "flex", gap: "16px" }}>

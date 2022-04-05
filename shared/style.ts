@@ -415,6 +415,11 @@ const spin = keyframes({
   to: { transform: "rotate(360deg)" },
 })
 
+const shrink = keyframes({
+  from: { transform: "scaleX(1)" },
+  to: { transform: "scaleX(0)" },
+})
+
 export const toastStyle: CSSObject = {
   "[data-part=root]": {
     background: "rgb(116, 116, 116)",
@@ -422,21 +427,24 @@ export const toastStyle: CSSObject = {
     color: "white",
     padding: "8px 8px 8px 16px",
     width: "400px",
-    animation: `${fadeIn} 0.2s`,
+    animationName: fadeIn,
+    animationFillMode: "forwards",
+    animationDuration: "0.2s",
     "&:not([data-open])": {
-      animation: `${fadeOut} var(--toast-remove-delay)`,
+      animationDuration: "var(--remove-delay)",
+      animationName: fadeOut,
     },
     "&[data-type=error]": {
-      background: "rgb(201, 37, 45)",
+      background: "red",
     },
     "&[data-type=info]": {
-      background: "rgb(13, 102, 208)",
+      background: "blue",
     },
     "&[data-type=warning]": {
       background: "orange",
     },
     "&[data-type=success]": {
-      background: "rgb(18, 128, 92)",
+      background: "green",
     },
     "&[data-type=loading]": {
       background: "purple",
@@ -444,6 +452,14 @@ export const toastStyle: CSSObject = {
   },
   ".spin": {
     animation: `${spin} 1s linear infinite`,
+  },
+  "[data-part=progressbar]": {
+    height: "4px",
+    background: "rgb(116, 116, 116)",
+    animationName: shrink,
+    "&[data-type=loading]": {
+      animationName: "none",
+    },
   },
 }
 
