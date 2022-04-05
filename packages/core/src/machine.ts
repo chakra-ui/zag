@@ -30,13 +30,11 @@ export class Machine<
   // state update listeners the user can opt-in for
   private stateListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private eventListeners = new Set<S.EventListener<TEvent>>()
-  private contextListeners = new Set<S.ContextListener<TContext>>()
   private doneListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private contextWatchers = new Set<VoidFunction>()
 
   // Cleanup functions (for `subscribe`)
   private removeStateListener: VoidFunction = noop
-  private removeContextListener: VoidFunction = noop
   private removeEventListener: VoidFunction = noop
 
   // For Parent <==> Spawned Actor relationship
@@ -59,14 +57,6 @@ export class Machine<
     // deep clone the config
     this.options = klona(options)
     this.id = config.id ?? `machine-${uuid()}`
-    this.state = createProxy(klona(config))
-
-    // created actions
-    const event = toEvent<TEvent>(ActionTypes.Created)
-    this.executeActions(config?.created, event)
-
-    // setup computed
-    this.setupComputed()
 
     // maps
     this.guardMap = this.options?.guards ?? {}
@@ -74,6 +64,14 @@ export class Machine<
     this.delayMap = this.options?.delays ?? {}
     this.activityMap = this.options?.activities ?? {}
     this.sync = this.options?.sync ?? false
+
+    // create mutatable state
+    this.state = createProxy(klona(config))
+    this.setupComputed()
+
+    // created actions
+    const event = toEvent<TEvent>(ActionTypes.Created)
+    this.executeActions(config?.created, event)
   }
 
   // immutable state value
@@ -117,16 +115,6 @@ export class Machine<
       () => {
         this.stateListeners.forEach((listener) => {
           listener(this.stateSnapshot)
-        })
-      },
-      this.sync,
-    )
-
-    this.removeContextListener = subscribe(
-      this.state.context,
-      () => {
-        this.contextListeners.forEach((listener) => {
-          listener(this.contextSnapshot)
         })
       },
       this.sync,
@@ -188,7 +176,6 @@ export class Machine<
 
     // cleanups
     this.stopStateListeners()
-    this.stopContextListeners()
     this.stopChildren()
     this.stopActivities()
     this.stopDelayedEvents()
@@ -211,11 +198,6 @@ export class Machine<
   private stopStateListeners = () => {
     this.removeStateListener()
     this.stateListeners.clear()
-  }
-
-  private stopContextListeners = () => {
-    this.removeContextListener()
-    this.contextListeners.clear()
   }
 
   private stopContextWatchers = () => {
@@ -340,11 +322,6 @@ export class Machine<
     this.detachComputed()
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
-  }
-
-  withConfig = (config: Partial<S.MachineConfig<TContext, TState, TEvent>>) => {
-    this.detachComputed()
-    return new Machine({ ...this.config, ...config }, this.options)
   }
 
   withOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
@@ -768,11 +745,6 @@ export class Machine<
     if (this.status === MachineStatus.Running) {
       listener(this.stateSnapshot)
     }
-    return this
-  }
-
-  public onChange = (listener: S.ContextListener<TContext>) => {
-    this.contextListeners.add(listener)
     return this
   }
 

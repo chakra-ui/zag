@@ -29,12 +29,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
     },
 
-    created(ctx) {
-      // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#value
-      if (ctx.value == null) {
-        ctx.value = ctx.max < ctx.min ? ctx.min : ctx.min + (ctx.max - ctx.min) / 2
-      }
-    },
+    created: ["setDefaultValueIfNeeded"],
 
     watch: {
       value: ["invokeOnChange", "dispatchChangeEvent"],
@@ -183,6 +178,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setValue(ctx, evt) {
         ctx.value = clamp(evt.value, ctx)
+      },
+      setDefaultValueIfNeeded(ctx) {
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#value
+        if (ctx.value == null) {
+          ctx.value = ctx.max < ctx.min ? ctx.min : ctx.min + (ctx.max - ctx.min) / 2
+        }
       },
     },
   },

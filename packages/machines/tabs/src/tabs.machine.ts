@@ -29,12 +29,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isVertical: (ctx) => ctx.orientation === "vertical",
     },
 
-    created(ctx) {
-      if (ctx.value != null) {
-        const newSelected = Array.from(ctx.previousValues).concat(ctx.value)
-        ctx.previousValues = Array.from(new Set(newSelected))
-      }
-    },
+    created: ["setPrevSelectedTabs"],
 
     watch: {
       focusedValue: "invokeOnFocus",

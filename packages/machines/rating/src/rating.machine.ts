@@ -21,18 +21,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
     },
 
-    created(ctx) {
-      if (!ctx.allowHalf) {
-        ctx.value = Math.round(ctx.value)
-      }
-    },
+    created: ["roundValueIfNeeded"],
 
     watch: {
-      allowHalf(ctx) {
-        if (!ctx.allowHalf) {
-          ctx.value = Math.round(ctx.value)
-        }
-      },
+      allowHalf: ["roundValueIfNeeded"],
     },
 
     computed: {
@@ -160,6 +152,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
         dom.dispatchChangeEvent(ctx)
+      },
+      roundValueIfNeeded(ctx) {
+        if (!ctx.allowHalf) {
+          ctx.value = Math.round(ctx.value)
+        }
       },
     },
   },

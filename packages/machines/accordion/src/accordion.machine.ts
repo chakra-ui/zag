@@ -24,12 +24,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: "invokeOnChange",
     },
 
-    created(ctx) {
-      if (ctx.multiple && isString(ctx.value)) {
-        warn(MULTIPLE_AND_VALUE_MISMATCH_WARNING)
-        ctx.value = [ctx.value]
-      }
-    },
+    created: ["setValueIfNeeded"],
 
     on: {
       SET_VALUE: {
@@ -132,6 +127,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setValue(ctx, evt) {
         ctx.value = evt.value
+      },
+      setValueIfNeeded(ctx) {
+        if (ctx.multiple && isString(ctx.value)) {
+          warn(MULTIPLE_AND_VALUE_MISMATCH_WARNING)
+          ctx.value = [ctx.value]
+        }
       },
     },
   },
