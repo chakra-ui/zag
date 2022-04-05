@@ -3,7 +3,7 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { runIfFn } from "@ui-machines/utils"
 import { dom } from "./toast.dom"
 import {
-  GlobalConnect,
+  Toaster,
   GroupProps,
   GroupMachineContext,
   Options,
@@ -13,7 +13,7 @@ import {
 } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
-export let toastGlobalConnect: GlobalConnect
+export let toaster: Toaster = {} as any
 
 export function groupConnect<T extends PropTypes = ReactPropTypes>(
   state: S.State<GroupMachineContext>,
@@ -154,17 +154,7 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
   }
 
   if (!state.matches("unknown")) {
-    toastGlobalConnect = {
-      count: group.count,
-      isVisible: group.isVisible,
-      upsert: group.upsert,
-      dismiss: group.dismiss,
-      success: group.success,
-      error: group.error,
-      loading: group.loading,
-      remove: group.remove,
-      promise: group.promise,
-    }
+    Object.assign(toaster, group)
   }
 
   return group

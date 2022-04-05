@@ -34,7 +34,7 @@ export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Plac
     pointerEvents: ctx.count > 0 ? undefined : "none",
     display: "flex",
     flexDirection: "column",
-    "--toast-gutter": ctx.spacingValue,
+    "--toast-gutter": ctx.gutter,
     zIndex: ctx.zIndex,
   }
 
@@ -45,23 +45,23 @@ export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Plac
   styles.alignItems = alignItems
 
   if (placement.includes("top")) {
-    const topOffset = ctx.offsets.top + "px"
-    styles.top = `calc(env(safe-area-inset-top, 0px) + ${topOffset})`
+    const offset = ctx.offsets.top
+    styles.top = `calc(env(safe-area-inset-top, 0px) + ${offset})`
   }
 
   if (placement.includes("bottom")) {
-    const bottomOffset = ctx.offsets.bottom + "px"
-    styles.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${bottomOffset})`
+    const offset = ctx.offsets.bottom
+    styles.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${offset})`
   }
 
   if (!placement.includes("left")) {
-    const rightOffset = ctx.offsets.right + "px"
-    styles.right = `calc(env(safe-area-inset-right, 0px) + ${rightOffset})`
+    const offset = ctx.offsets.right
+    styles.right = `calc(env(safe-area-inset-right, 0px) + ${offset})`
   }
 
   if (!placement.includes("right")) {
-    const leftOffset = ctx.offsets.left + "px"
-    styles.left = `calc(env(safe-area-inset-left, 0px) + ${leftOffset})`
+    const offset = ctx.offsets.left
+    styles.left = `calc(env(safe-area-inset-left, 0px) + ${offset})`
   }
 
   return styles

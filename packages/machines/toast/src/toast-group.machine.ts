@@ -15,7 +15,7 @@ export const groupMachine = createMachine<GroupMachineContext>({
     zIndex: MAX_Z_INDEX,
     pauseOnPageIdle: false,
     pauseOnInteraction: true,
-    offsets: { left: 0, right: 0, top: 0, bottom: 0 },
+    offsets: { left: "0px", right: "0px", top: "0px", bottom: "0px" },
   },
 
   computed: {

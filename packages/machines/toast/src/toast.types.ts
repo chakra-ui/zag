@@ -124,7 +124,7 @@ export type GroupMachineContext = SharedContext &
     /**
      * The offset from the safe environment edge of the viewport
      */
-    offsets: Record<"left" | "right" | "bottom" | "top", number>
+    offsets: Record<"left" | "right" | "bottom" | "top", string>
   }>
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
@@ -144,10 +144,11 @@ export type GroupProps = {
   label?: string
 }
 
-export type GlobalConnect = {
+export type Toaster = {
   count: number
   isVisible(id: string): boolean
   upsert(options: Options): string | undefined
+  create(options: Options): string | undefined
   success(options: Options): string | undefined
   error(options: Options): string | undefined
   loading(options: Options): string | undefined
