@@ -7,7 +7,7 @@ import { getToastDuration } from "./toast.utils"
 const { not, and, or } = guards
 
 export function createToastMachine(options: Options = {}) {
-  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 1000, ...rest } = options
+  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 500, ...rest } = options
   const __duration = getToastDuration(duration, type)
 
   return createMachine<MachineContext, MachineState>(
