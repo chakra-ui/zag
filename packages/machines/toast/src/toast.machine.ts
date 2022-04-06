@@ -29,7 +29,7 @@ export function createToastMachine(options: Options = {}) {
       on: {
         UPDATE: [
           {
-            guard: and("hasTypeChanged", "isLoadingType"),
+            guard: and("hasTypeChanged", "isChangingToLoading"),
             target: "persist",
             actions: ["setContext", "invokeOnUpdate"],
           },
@@ -107,7 +107,8 @@ export function createToastMachine(options: Options = {}) {
       },
 
       guards: {
-        isLoadingType: (ctx, evt) => evt.toast?.type === "loading" || ctx.type === "loading",
+        isChangingToLoading: (_, evt) => evt.toast?.type === "loading",
+        isLoadingType: (ctx) => ctx.type === "loading",
         hasTypeChanged: (ctx, evt) => evt.toast?.type !== ctx.type,
         hasDurationChanged: (ctx, evt) => evt.toast?.duration !== ctx.duration,
       },
@@ -142,7 +143,7 @@ export function createToastMachine(options: Options = {}) {
         setContext(ctx, evt) {
           const { duration, type } = evt.toast
           const time = getToastDuration(duration, type)
-          Object.assign(ctx, { duration: time, remaining: time, ...evt.toast })
+          Object.assign(ctx, { ...evt.toast, duration: time, remaining: time })
         },
       },
     },
