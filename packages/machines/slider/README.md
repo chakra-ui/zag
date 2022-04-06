@@ -1,13 +1,13 @@
-# @ui-machines/slider
+# @zag-js/slider
 
 Core logic for the slider widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/slider
+yarn add  @zag-js/slider
 # or
-npm i  @ui-machines/slider
+npm i  @zag-js/slider
 ```
 
 ## Contribution

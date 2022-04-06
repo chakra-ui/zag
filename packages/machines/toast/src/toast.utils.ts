@@ -1,4 +1,4 @@
-import { Style } from "@ui-machines/types"
+import { Style } from "@zag-js/types"
 import { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
 
 export function getToastsByPlacement(toasts: Service[]) {

@@ -1,5 +1,5 @@
-import { MAX_Z_INDEX } from "@ui-machines/dom-utils"
-import { roundToPx, wrap } from "@ui-machines/number-utils"
+import { MAX_Z_INDEX } from "@zag-js/dom-utils"
+import { roundToPx, wrap } from "@zag-js/number-utils"
 import { MachineContext as Ctx } from "./number-input.types"
 
 type InputEl = HTMLInputElement | null

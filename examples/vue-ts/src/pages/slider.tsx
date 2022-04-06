@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as Slider from "@ui-machines/slider"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as Slider from "@zag-js/slider"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { useControls } from "../hooks/use-controls"

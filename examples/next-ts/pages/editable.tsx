@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as editable from "@ui-machines/editable"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as editable from "@zag-js/editable"
+import { useMachine, useSetup } from "@zag-js/react"
 import { editableControls } from "../../../shared/controls"
 import { editableStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

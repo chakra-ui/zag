@@ -1,13 +1,13 @@
-# @ui-machines/tags-input
+# @zag-js/tags-input
 
 Core logic for the tags-input widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/tags-input
+yarn add  @zag-js/tags-input
 # or
-npm i  @ui-machines/tags-input
+npm i  @zag-js/tags-input
 ```
 
 ## Contribution

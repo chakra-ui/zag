@@ -1,6 +1,6 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { StateMachine as S } from "@zag-js/core"
+import { dataAttr } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./toast.dom"
 import { MachineContext, MachineState } from "./toast.types"
 

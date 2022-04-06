@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as pinInput from "@ui-machines/pin-input"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as pinInput from "@zag-js/pin-input"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { pinInputControls } from "../../../../shared/controls"
 import { pinInputStyle } from "../../../../shared/style"

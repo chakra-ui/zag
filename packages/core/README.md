@@ -1,4 +1,4 @@
-# @ui-machines/core
+# @zag-js/core
 
 This package contains a minimal implementation of [XState FSM](https://github.com/statelyai/xstate) for **finite state
 machines** with addition of extra features we need for our components.
@@ -26,13 +26,13 @@ machines** with addition of extra features we need for our components.
 **Installation**
 
 ```bash
-npm i @ui-machines/core
+npm i @zag-js/core
 ```
 
 **Usage (machine):**
 
 ```js
-import { createMachine } from "@ui-machines/core"
+import { createMachine } from "@zag-js/core"
 
 const toggleMachine = createMachine({
   id: "toggle",
@@ -56,7 +56,7 @@ console.log(toggleMachine.state.value) // => "inactive"
 **Usage (service):**
 
 ```js
-import { createMachine } from "@ui-machines/core"
+import { createMachine } from "@zag-js/core"
 
 const toggleMachine = createMachine({...})
 toggleMachine.start()

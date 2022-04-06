@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@ui-machines/react"
-import * as splitter from "@ui-machines/splitter"
+import { useMachine, useSetup } from "@zag-js/react"
+import * as splitter from "@zag-js/splitter"
 import { splitterControls } from "../../../shared/controls"
 import { splitterStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

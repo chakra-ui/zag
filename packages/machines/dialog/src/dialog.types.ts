@@ -1,4 +1,4 @@
-import type { Context, MaybeElement } from "@ui-machines/types"
+import type { Context, MaybeElement } from "@zag-js/types"
 
 export type MachineContext = Context<{
   /**

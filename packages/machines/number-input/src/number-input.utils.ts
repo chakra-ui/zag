@@ -1,4 +1,4 @@
-import { clamp, decrement, increment, roundToPrecision } from "@ui-machines/number-utils"
+import { clamp, decrement, increment, roundToPrecision } from "@zag-js/number-utils"
 import type { KeyboardEvent } from "react"
 import { MachineContext as Ctx } from "./number-input.types"
 

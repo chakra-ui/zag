@@ -1,13 +1,13 @@
-# @ui-machines/tooltip
+# @zag-js/tooltip
 
 Core logic for the tooltip widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/tooltip
+yarn add  @zag-js/tooltip
 # or
-npm i  @ui-machines/tooltip
+npm i  @zag-js/tooltip
 ```
 
 ## Contribution

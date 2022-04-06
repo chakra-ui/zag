@@ -1,5 +1,5 @@
 {
-  "name": "@ui-machines/core",
+  "name": "@zag-js/core",
   "version": "0.0.0",
   "description": "A minimal implementation of xstate fsm for UI machines",
   "keywords": [
@@ -29,7 +29,7 @@
     "url": "https://github.com/chakra-ui/core/issues"
   },
   "dependencies": {
-    "@ui-machines/utils": "^0.0.0",
+    "@zag-js/utils": "^0.0.0",
     "klona": "^2.0.5",
     "valtio": "^1.3.1"
   }

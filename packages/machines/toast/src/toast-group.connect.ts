@@ -1,6 +1,6 @@
-import { StateMachine as S, subscribe } from "@ui-machines/core"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { runIfFn } from "@ui-machines/utils"
+import { StateMachine as S, subscribe } from "@zag-js/core"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { runIfFn } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import {
   Toaster,

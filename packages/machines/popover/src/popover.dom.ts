@@ -1,5 +1,5 @@
-import { getFocusables, getTabbables } from "@ui-machines/dom-utils"
-import { cast, first, last, runIfFn } from "@ui-machines/utils"
+import { getFocusables, getTabbables } from "@zag-js/dom-utils"
+import { cast, first, last, runIfFn } from "@zag-js/utils"
 import { MachineContext as Ctx } from "./popover.types"
 
 export const dom = {

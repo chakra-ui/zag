@@ -1,13 +1,13 @@
-# @ui-machines/pin-input
+# @zag-js/pin-input
 
 Core logic for the pin-input widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/pin-input
+yarn add  @zag-js/pin-input
 # or
-npm i  @ui-machines/pin-input
+npm i  @zag-js/pin-input
 ```
 
 ## Contribution

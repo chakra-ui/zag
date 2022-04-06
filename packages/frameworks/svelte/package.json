@@ -1,5 +1,5 @@
 {
-  "name": "@ui-machines/svelte",
+  "name": "@zag-js/svelte",
   "version": "0.0.0",
   "description": "The svelte wrapper for ui-machines",
   "keywords": [
@@ -26,7 +26,7 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "@ui-machines/core": "0.0.0"
+    "@zag-js/core": "0.0.0"
   },
   "devDependencies": {
     "svelte": "^3.38.2"

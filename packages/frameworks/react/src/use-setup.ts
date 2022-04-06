@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@ui-machines/core"
+import type { StateMachine as S } from "@zag-js/core"
 import { useEffect, useRef } from "react"
 
 export type UseSetupProps = {

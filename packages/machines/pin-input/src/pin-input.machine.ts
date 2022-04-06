@@ -1,6 +1,6 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
-import { fromLength } from "@ui-machines/utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { nextTick } from "@zag-js/dom-utils"
+import { fromLength } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import { MachineContext, MachineState } from "./pin-input.types"
 

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as Slider from "@ui-machines/slider"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as Slider from "@zag-js/slider"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
 import { sliderControls } from "../../../../shared/controls"

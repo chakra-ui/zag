@@ -1,13 +1,13 @@
-# @ui-machines/toggle
+# @zag-js/toggle
 
 Core logic for the toggle widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/toggle
+yarn add  @zag-js/toggle
 # or
-npm i  @ui-machines/toggle
+npm i  @zag-js/toggle
 ```
 
 ## Contribution

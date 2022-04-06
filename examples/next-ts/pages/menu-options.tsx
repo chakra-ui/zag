@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as menu from "@ui-machines/menu"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as menu from "@zag-js/menu"
+import { useMachine, useSetup } from "@zag-js/react"
 import { menuStyle } from "../../../shared/style"
 import { menuOptionData as data } from "../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"

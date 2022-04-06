@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as pinInput from "@ui-machines/pin-input"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as pinInput from "@zag-js/pin-input"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as Tabs from "@ui-machines/tabs"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as Tabs from "@zag-js/tabs"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { tabsControls } from "../../../../shared/controls"

@@ -1,8 +1,8 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@ui-machines/dom-utils"
-import { getEventPoint, relativeToNode } from "@ui-machines/rect-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { cast, isLeftClick } from "@ui-machines/utils"
+import { StateMachine as S } from "@zag-js/core"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
+import { getEventPoint, relativeToNode } from "@zag-js/rect-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { cast, isLeftClick } from "@zag-js/utils"
 import { dom } from "./rating.dom"
 import { MachineContext, MachineState } from "./rating.types"
 

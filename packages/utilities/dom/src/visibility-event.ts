@@ -1,4 +1,4 @@
-import { cast } from "@ui-machines/utils"
+import { cast } from "@zag-js/utils"
 import { addDomEvent } from "./listener"
 
 export function trackDocumentVisibility(_doc: Document, callback: (hidden: boolean) => void) {

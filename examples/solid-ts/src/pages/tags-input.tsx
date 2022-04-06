@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import * as TagsInput from "@ui-machines/tags-input"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import * as TagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tagsInputControls } from "../../../../shared/controls"
 import { tagsInputStyle } from "../../../../shared/style"

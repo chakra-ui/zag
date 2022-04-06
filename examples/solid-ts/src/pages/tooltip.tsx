@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import * as Tooltip from "@ui-machines/tooltip"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import * as Tooltip from "@zag-js/tooltip"
 import { createMemo } from "solid-js"
 import { tooltipStyles } from "../../../../shared/style"
 

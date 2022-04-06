@@ -22,26 +22,26 @@ methodology.
 ## Installation
 
 ```sh
-npm i --save @ui-machines/<component>
+npm i --save @zag-js/<component>
 
 # or
 
-yarn add @ui-machines/<component>
+yarn add @zag-js/<component>
 ```
 
 For framework specific solutions, we provide simple wrappers to help you consume the component state machines.
 
-- ⚛️ `@ui-machines/react` - React hooks for consuming machines in React applications
-- 💚 `@ui-machines/vue` - Vue composition for consuming machines in Vue applications
-- 🎷 `@ui-machines/solid` - Solid.js utilities for consuming machines in Solid.js applications
+- ⚛️ `@zag-js/react` - React hooks for consuming machines in React applications
+- 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
+- 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
 
 ## Examples
 
 ### React
 
 ```jsx
-import * as toggle from "@ui-machines/toggle"
-import { useMachine } from "@ui-machines/react"
+import * as toggle from "@zag-js/toggle"
+import { useMachine } from "@zag-js/react"
 
 function Example() {
   // if you need access to `state` or `send` from machine

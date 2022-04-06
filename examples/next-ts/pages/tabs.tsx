@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@ui-machines/react"
-import * as tabs from "@ui-machines/tabs"
+import { useMachine, useSetup } from "@zag-js/react"
+import * as tabs from "@zag-js/tabs"
 import { tabsControls } from "../../../shared/controls"
 import { tabsData } from "../../../shared/data"
 import { tabsStyle } from "../../../shared/style"

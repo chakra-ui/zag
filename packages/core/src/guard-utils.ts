@@ -1,4 +1,4 @@
-import { isFunction, isObject, isString } from "@ui-machines/utils"
+import { isFunction, isObject, isString } from "@zag-js/utils"
 import { Dict, StateMachine as S } from "./types"
 
 function or<TContext, TEvent extends S.EventObject>(

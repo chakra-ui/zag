@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import * as splitter from "@ui-machines/splitter"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import * as splitter from "@zag-js/splitter"
 import { createMemo, createUniqueId } from "solid-js"
 import { splitterControls } from "../../../../shared/controls"
 import { splitterStyle } from "../../../../shared/style"

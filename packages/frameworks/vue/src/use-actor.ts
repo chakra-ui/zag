@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@ui-machines/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import { computed, onBeforeUnmount, onMounted, shallowRef } from "vue"
 
 export function useActor<

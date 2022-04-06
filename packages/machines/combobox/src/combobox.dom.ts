@@ -1,5 +1,5 @@
-import { nextById, prevById, queryAll } from "@ui-machines/dom-utils"
-import { first, last } from "@ui-machines/utils"
+import { nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { first, last } from "@zag-js/utils"
 import scrollIntoViewIfNeeded from "scroll-into-view-if-needed"
 import type { MachineContext as Ctx } from "./combobox.types"
 

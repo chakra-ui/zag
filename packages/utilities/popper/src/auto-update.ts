@@ -1,7 +1,7 @@
 import type { Placement, ReferenceElement } from "@floating-ui/dom"
 import { getOverflowAncestors } from "@floating-ui/dom"
-import { addDomEvent, isHTMLElement, observeElementRect } from "@ui-machines/dom-utils"
-import { isBoolean, pipe } from "@ui-machines/utils"
+import { addDomEvent, isHTMLElement, observeElementRect } from "@zag-js/dom-utils"
+import { isBoolean, pipe } from "@zag-js/utils"
 
 export type { Placement }
 

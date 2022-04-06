@@ -1,5 +1,5 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { autoResizeInput, createLiveRegion, nextTick, raf } from "@ui-machines/dom-utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { autoResizeInput, createLiveRegion, nextTick, raf } from "@zag-js/dom-utils"
 import { dom } from "./tags-input.dom"
 import { MachineContext, MachineState } from "./tags-input.types"
 

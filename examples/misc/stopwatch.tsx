@@ -1,5 +1,5 @@
-import { createMachine } from "@ui-machines/core"
-import { useMachine } from "@ui-machines/react"
+import { createMachine } from "@zag-js/core"
+import { useMachine } from "@zag-js/react"
 
 type State = {
   value: "idle" | "ticking" | "paused"

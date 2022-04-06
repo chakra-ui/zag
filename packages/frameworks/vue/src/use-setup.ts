@@ -1,4 +1,4 @@
-import { StateMachine as S } from "@ui-machines/core"
+import { StateMachine as S } from "@zag-js/core"
 import { ComputedRef, isRef, onMounted, ref, Ref } from "vue"
 
 type MaybeRef<T> = T | Ref<T> | ComputedRef<T>

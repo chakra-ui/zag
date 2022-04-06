@@ -1,13 +1,13 @@
-# @ui-machines/splitter
+# @zag-js/splitter
 
 Core logic for the splitter widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/splitter
+yarn add  @zag-js/splitter
 # or
-npm i  @ui-machines/splitter
+npm i  @zag-js/splitter
 ```
 
 ## Contribution

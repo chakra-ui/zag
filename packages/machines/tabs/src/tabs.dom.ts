@@ -1,5 +1,5 @@
-import { itemById, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
-import { first, last } from "@ui-machines/utils"
+import { itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { first, last } from "@zag-js/utils"
 import { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {

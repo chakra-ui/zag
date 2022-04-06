@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as popover from "@ui-machines/popover"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as popover from "@zag-js/popover"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId, PropsWithChildren } from "solid-js"
 import { Portal } from "solid-js/web"
 import { popoverControls } from "../../../../shared/controls"

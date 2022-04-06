@@ -1,8 +1,8 @@
-import { createMachine, ref } from "@ui-machines/core"
-import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
-import { clamp, decrement, increment, multiply, snapToStep } from "@ui-machines/number-utils"
-import { getElementRect } from "@ui-machines/rect-utils"
-import { isNumber } from "@ui-machines/utils"
+import { createMachine, ref } from "@zag-js/core"
+import { nextTick, trackPointerMove } from "@zag-js/dom-utils"
+import { clamp, decrement, increment, multiply, snapToStep } from "@zag-js/number-utils"
+import { getElementRect } from "@zag-js/rect-utils"
+import { isNumber } from "@zag-js/utils"
 import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
 import { MachineContext, MachineState } from "./range-slider.types"
 

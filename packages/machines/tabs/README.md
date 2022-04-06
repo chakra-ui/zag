@@ -1,13 +1,13 @@
-# @ui-machines/tabs
+# @zag-js/tabs
 
 Core logic for the tabs widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/tabs
+yarn add  @zag-js/tabs
 # or
-npm i  @ui-machines/tabs
+npm i  @zag-js/tabs
 ```
 
 ## Contribution

@@ -1,5 +1,5 @@
-import { createMachine, guards } from "@ui-machines/core"
-import { trackDocumentVisibility } from "@ui-machines/dom-utils"
+import { createMachine, guards } from "@zag-js/core"
+import { trackDocumentVisibility } from "@zag-js/dom-utils"
 import { dom } from "./toast.dom"
 import { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"

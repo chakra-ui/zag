@@ -1,4 +1,4 @@
-import { isArray, isString } from "@ui-machines/utils"
+import { isArray, isString } from "@zag-js/utils"
 import type { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {

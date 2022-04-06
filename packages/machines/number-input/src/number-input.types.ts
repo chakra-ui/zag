@@ -1,6 +1,6 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { Context } from "@ui-machines/types"
-import { Point } from "@ui-machines/rect-utils"
+import { StateMachine as S } from "@zag-js/core"
+import { Context } from "@zag-js/types"
+import { Point } from "@zag-js/rect-utils"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 

@@ -1,4 +1,4 @@
-import { isLeftClick, pipe } from "@ui-machines/utils"
+import { isLeftClick, pipe } from "@zag-js/utils"
 import { addDomEvent } from "./listener"
 import { nextTick } from "./next-tick"
 

@@ -1,5 +1,5 @@
 {
-  "name": "@ui-machines/rect-utils",
+  "name": "@zag-js/rect-utils",
   "version": "0.0.0",
   "description": "",
   "keywords": [
@@ -25,6 +25,6 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "@ui-machines/utils": "^0.0.0"
+    "@zag-js/utils": "^0.0.0"
   }
 }

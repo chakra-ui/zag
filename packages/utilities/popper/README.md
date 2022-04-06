@@ -1,13 +1,13 @@
-# @ui-machines/popper
+# @zag-js/popper
 
 Dynamic positioning logic for ui machines
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/popper
+yarn add  @zag-js/popper
 # or
-npm i  @ui-machines/popper
+npm i  @zag-js/popper
 ```
 
 ## Contribution

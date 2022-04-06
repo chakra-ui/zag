@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as accordion from "@ui-machines/accordion"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as accordion from "@zag-js/accordion"
+import { useMachine, useSetup } from "@zag-js/react"
 import { accordionControls } from "../../../shared/controls"
 import { accordionData } from "../../../shared/data"
 import { accordionStyle } from "../../../shared/style"

@@ -1,7 +1,7 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, isFocusable, isTabbable, validateBlur } from "@ui-machines/dom-utils"
-import { getPlacementStyles } from "@ui-machines/popper"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { StateMachine as S } from "@zag-js/core"
+import { dataAttr, EventKeyMap, isFocusable, isTabbable, validateBlur } from "@zag-js/dom-utils"
+import { getPlacementStyles } from "@zag-js/popper"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState } from "./popover.types"
 

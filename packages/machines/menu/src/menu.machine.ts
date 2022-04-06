@@ -1,8 +1,8 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@ui-machines/dom-utils"
-import { getPlacement } from "@ui-machines/popper"
-import { getElementRect, getEventPoint, inset, withinPolygon } from "@ui-machines/rect-utils"
-import { add, invariant, isArray, remove } from "@ui-machines/utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@zag-js/dom-utils"
+import { getPlacement } from "@zag-js/popper"
+import { getElementRect, getEventPoint, inset, withinPolygon } from "@zag-js/rect-utils"
+import { add, invariant, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import { MachineContext, MachineState } from "./menu.types"
 

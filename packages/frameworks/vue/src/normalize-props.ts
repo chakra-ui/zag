@@ -1,4 +1,4 @@
-import { createNormalizer } from "@ui-machines/types"
+import { createNormalizer } from "@zag-js/types"
 
 type Dict = Record<string, string>
 

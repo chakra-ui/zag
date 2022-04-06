@@ -1,13 +1,13 @@
-# @ui-machines/number-input
+# @zag-js/number-input
 
 Core logic for the number-input widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/number-input
+yarn add  @zag-js/number-input
 # or
-npm i  @ui-machines/number-input
+npm i  @zag-js/number-input
 ```
 
 ## Contribution

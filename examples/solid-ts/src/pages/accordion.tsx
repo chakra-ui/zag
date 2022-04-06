@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as Accordion from "@ui-machines/accordion"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as Accordion from "@zag-js/accordion"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { accordionControls } from "../../../../shared/controls"
 import { accordionData } from "../../../../shared/data"

@@ -1,10 +1,10 @@
-import { StateMachine } from "@ui-machines/core"
-import { dispatchInputEvent, queryAll } from "@ui-machines/dom-utils"
-import { clamp, percentToValue, snapToStep, toRanges } from "@ui-machines/number-utils"
-import type { Point } from "@ui-machines/rect-utils"
-import { closest, getElementRect, relativeToNode } from "@ui-machines/rect-utils"
-import { unstable__dom } from "@ui-machines/slider"
-import type { Style } from "@ui-machines/types"
+import { StateMachine } from "@zag-js/core"
+import { dispatchInputEvent, queryAll } from "@zag-js/dom-utils"
+import { clamp, percentToValue, snapToStep, toRanges } from "@zag-js/number-utils"
+import type { Point } from "@zag-js/rect-utils"
+import { closest, getElementRect, relativeToNode } from "@zag-js/rect-utils"
+import { unstable__dom } from "@zag-js/slider"
+import type { Style } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./range-slider.types"
 
 export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {

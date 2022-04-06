@@ -1,5 +1,5 @@
-import { Machine } from "@ui-machines/core"
-import { isDom } from "@ui-machines/utils"
+import { Machine } from "@zag-js/core"
+import { isDom } from "@zag-js/utils"
 
 type StateVisualizerProps = {
   offset?: string

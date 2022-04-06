@@ -1,4 +1,4 @@
-import { choose, createMachine, guards, ref } from "@ui-machines/core"
+import { choose, createMachine, guards, ref } from "@zag-js/core"
 import {
   contains,
   nextTick,
@@ -6,9 +6,9 @@ import {
   preventBodyScroll,
   raf,
   trackPointerDown,
-} from "@ui-machines/dom-utils"
-import { getPlacement } from "@ui-machines/popper"
-import { next, runIfFn } from "@ui-machines/utils"
+} from "@zag-js/dom-utils"
+import { getPlacement } from "@zag-js/popper"
+import { next, runIfFn } from "@zag-js/utils"
 import { hideOthers } from "aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"

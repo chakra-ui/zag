@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as pinInput from "@ui-machines/pin-input"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as pinInput from "@zag-js/pin-input"
+import { useMachine, useSetup } from "@zag-js/react"
 import { pinInputControls } from "../../../shared/controls"
 import { pinInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

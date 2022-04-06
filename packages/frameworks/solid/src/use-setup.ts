@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@ui-machines/core"
+import type { StateMachine as S } from "@zag-js/core"
 import { createSignal, onMount } from "solid-js"
 
 export type UseSetupProps = {

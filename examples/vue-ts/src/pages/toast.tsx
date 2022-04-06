@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as toast from "@ui-machines/toast"
-import { normalizeProps, useActor, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as toast from "@zag-js/toast"
+import { normalizeProps, useActor, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
 import { toastControls } from "../../../../shared/controls"

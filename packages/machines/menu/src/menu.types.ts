@@ -1,7 +1,7 @@
-import type { Machine, StateMachine as S } from "@ui-machines/core"
-import type { PositioningOptions, Placement } from "@ui-machines/popper"
-import type { Point } from "@ui-machines/rect-utils"
-import type { Context } from "@ui-machines/types"
+import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { PositioningOptions, Placement } from "@zag-js/popper"
+import type { Point } from "@zag-js/rect-utils"
+import type { Context } from "@zag-js/types"
 
 export type Service = Machine<MachineContext, MachineState>
 

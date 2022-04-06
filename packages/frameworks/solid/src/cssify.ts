@@ -1,5 +1,5 @@
 import hyphenate from "hyphenate-style-name"
-import { isNumber, isString } from "@ui-machines/utils"
+import { isNumber, isString } from "@zag-js/utils"
 
 const format = (v: string) => (v.startsWith("--") ? v : hyphenate(v))
 

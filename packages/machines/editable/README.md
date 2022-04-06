@@ -1,13 +1,13 @@
-# @ui-machines/editable
+# @zag-js/editable
 
 Core logic for the editable widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/editable
+yarn add  @zag-js/editable
 # or
-npm i  @ui-machines/editable
+npm i  @zag-js/editable
 ```
 
 ## Contribution

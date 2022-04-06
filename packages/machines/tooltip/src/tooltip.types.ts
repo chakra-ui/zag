@@ -1,4 +1,4 @@
-import { Placement, PositioningOptions } from "@ui-machines/popper"
+import { Placement, PositioningOptions } from "@zag-js/popper"
 
 export type MachineContext = {
   /**

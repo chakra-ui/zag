@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@ui-machines/react"
-import * as Toggle from "@ui-machines/toggle"
+import { useMachine, useSetup } from "@zag-js/react"
+import * as Toggle from "@zag-js/toggle"
 import { toggleStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 

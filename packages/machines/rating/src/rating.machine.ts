@@ -1,5 +1,5 @@
-import { createMachine, ref } from "@ui-machines/core"
-import { nextTick } from "@ui-machines/dom-utils"
+import { createMachine, ref } from "@zag-js/core"
+import { nextTick } from "@zag-js/dom-utils"
 import { MachineContext, MachineState } from "./rating.types"
 import { dom } from "./rating.dom"
 

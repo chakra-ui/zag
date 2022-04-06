@@ -1,4 +1,4 @@
-import { callAll } from "@ui-machines/utils"
+import { callAll } from "@zag-js/utils"
 
 interface Props {
   [key: string]: any

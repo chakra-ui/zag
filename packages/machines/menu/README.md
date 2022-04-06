@@ -1,13 +1,13 @@
-# @ui-machines/menu
+# @zag-js/menu
 
 Core logic for the menu widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/menu
+yarn add  @zag-js/menu
 # or
-npm i  @ui-machines/menu
+npm i  @zag-js/menu
 ```
 
 ## Contribution

@@ -1,13 +1,13 @@
-# @ui-machines/rating
+# @zag-js/rating
 
 Core logic for the rating widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/rating
+yarn add  @zag-js/rating
 # or
-npm i  @ui-machines/rating
+npm i  @zag-js/rating
 ```
 
 ## Contribution

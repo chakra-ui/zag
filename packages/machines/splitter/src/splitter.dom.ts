@@ -1,4 +1,4 @@
-import { Style } from "@ui-machines/types"
+import { Style } from "@zag-js/types"
 import { MachineContext as Ctx } from "./splitter.types"
 
 export const dom = {

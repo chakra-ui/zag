@@ -1,13 +1,13 @@
-# @ui-machines/range-slider
+# @zag-js/range-slider
 
 Core logic for the range-slider widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/range-slider
+yarn add  @zag-js/range-slider
 # or
-npm i  @ui-machines/range-slider
+npm i  @zag-js/range-slider
 ```
 
 ## Contribution

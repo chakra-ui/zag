@@ -1,5 +1,5 @@
-import { Machine } from "@ui-machines/core"
-import { Context, Direction } from "@ui-machines/types"
+import { Machine } from "@zag-js/core"
+import { Context, Direction } from "@zag-js/types"
 
 export type Type = "success" | "error" | "loading" | "info" | "custom"
 

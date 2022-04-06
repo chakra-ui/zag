@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@ui-machines/react"
-import * as TagsInput from "@ui-machines/tags-input"
+import { useMachine, useSetup } from "@zag-js/react"
+import * as TagsInput from "@zag-js/tags-input"
 import { tagsInputControls } from "../../../shared/controls"
 import { tagsInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

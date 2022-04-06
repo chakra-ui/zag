@@ -1,7 +1,7 @@
-import type { StateMachine as S } from "@ui-machines/core"
-import type { LiveRegion } from "@ui-machines/dom-utils"
-import type { Placement } from "@ui-machines/popper"
-import type { Context } from "@ui-machines/types"
+import type { StateMachine as S } from "@zag-js/core"
+import type { LiveRegion } from "@zag-js/dom-utils"
+import type { Placement } from "@zag-js/popper"
+import type { Context } from "@zag-js/types"
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"

@@ -1,5 +1,5 @@
-import type { StateMachine as S } from "@ui-machines/core"
-import { Context } from "@ui-machines/types"
+import type { StateMachine as S } from "@zag-js/core"
+import { Context } from "@zag-js/types"
 
 export type ToggleMachineContext = Context<{
   /**

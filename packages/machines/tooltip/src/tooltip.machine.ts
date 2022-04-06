@@ -1,4 +1,4 @@
-import { createMachine, ref, subscribe } from "@ui-machines/core"
+import { createMachine, ref, subscribe } from "@zag-js/core"
 import {
   addDomEvent,
   addPointerEvent,
@@ -6,9 +6,9 @@ import {
   getScrollParents,
   isHTMLElement,
   raf,
-} from "@ui-machines/dom-utils"
-import { getPlacement } from "@ui-machines/popper"
-import { isSafari, noop } from "@ui-machines/utils"
+} from "@zag-js/dom-utils"
+import { getPlacement } from "@zag-js/popper"
+import { isSafari, noop } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import { MachineContext, MachineState } from "./tooltip.types"

@@ -1,8 +1,8 @@
-import { dispatchInputEvent } from "@ui-machines/dom-utils"
-import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "@ui-machines/number-utils"
-import type { Point } from "@ui-machines/rect-utils"
-import { relativeToNode } from "@ui-machines/rect-utils"
-import type { Style } from "@ui-machines/types"
+import { dispatchInputEvent } from "@zag-js/dom-utils"
+import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "@zag-js/number-utils"
+import type { Point } from "@zag-js/rect-utils"
+import { relativeToNode } from "@zag-js/rect-utils"
+import type { Style } from "@zag-js/types"
 import type { SharedContext, MachineContext as Ctx } from "./slider.types"
 
 /**

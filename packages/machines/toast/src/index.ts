@@ -1,4 +1,4 @@
-import { isDom, warn } from "@ui-machines/utils"
+import { isDom, warn } from "@zag-js/utils"
 import { groupConnect, toaster } from "./toast-group.connect"
 import { groupMachine } from "./toast-group.machine"
 import { createToastMachine as createMachine } from "./toast.machine"

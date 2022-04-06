@@ -1,4 +1,4 @@
-import type { Context } from "@ui-machines/types"
+import type { Context } from "@zag-js/types"
 
 type IntlMessages = {
   inputLabel: (index: number, length: number) => string

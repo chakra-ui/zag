@@ -1,5 +1,5 @@
 {
-  "name": "@ui-machines/popper",
+  "name": "@zag-js/popper",
   "version": "0.0.0",
   "description": "Dynamic positioning logic for ui machines",
   "keywords": [
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^0.4.2",
-    "@ui-machines/dom-utils": "^0.0.0",
-    "@ui-machines/utils": "^0.0.0"
+    "@zag-js/dom-utils": "^0.0.0",
+    "@zag-js/utils": "^0.0.0"
   }
 }

@@ -1,8 +1,8 @@
-import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@ui-machines/dom-utils"
-import { multiply, percentToValue, toRanges, valueToPercent } from "@ui-machines/number-utils"
-import { getEventPoint } from "@ui-machines/rect-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { isLeftClick, isModifiedEvent } from "@ui-machines/utils"
+import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
+import { multiply, percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
+import { getEventPoint } from "@zag-js/rect-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom, getRangeAtIndex } from "./range-slider.dom"
 import { Send, State } from "./range-slider.types"
 

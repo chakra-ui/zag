@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as combobox from "@ui-machines/combobox"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as combobox from "@zag-js/combobox"
+import { useMachine, useSetup } from "@zag-js/react"
 import { useState } from "react"
 import { comboboxControls } from "../../../shared/controls"
 import { comboboxData } from "../../../shared/data"

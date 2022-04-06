@@ -1,4 +1,4 @@
-import { defineControls } from "@ui-machines/types"
+import { defineControls } from "@zag-js/types"
 
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },

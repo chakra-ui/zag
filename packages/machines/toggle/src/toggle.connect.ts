@@ -1,5 +1,5 @@
-import { dataAttr } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { dataAttr } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./toggle.dom"
 import { ToggleSend, ToggleState } from "./toggle.types"
 

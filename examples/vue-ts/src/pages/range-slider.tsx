@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as RangeSlider from "@ui-machines/range-slider"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as RangeSlider from "@zag-js/range-slider"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { computed, h, Fragment } from "vue"

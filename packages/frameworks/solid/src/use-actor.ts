@@ -1,4 +1,4 @@
-import { Machine, StateMachine as S } from "@ui-machines/core"
+import { Machine, StateMachine as S } from "@zag-js/core"
 import { onCleanup } from "solid-js"
 import { createStore } from "solid-js/store"
 import { unwrap } from "./unwrap"

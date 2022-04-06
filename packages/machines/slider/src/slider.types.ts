@@ -1,4 +1,4 @@
-import { Context } from "@ui-machines/types"
+import { Context } from "@zag-js/types"
 
 export type MachineContext = Context<{
   /**

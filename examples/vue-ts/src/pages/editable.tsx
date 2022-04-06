@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as editable from "@ui-machines/editable"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as editable from "@zag-js/editable"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { editableControls } from "../../../../shared/controls"
 import { editableStyle } from "../../../../shared/style"

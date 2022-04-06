@@ -1,4 +1,4 @@
-import { cast, isArray, isObject, isString } from "@ui-machines/utils"
+import { cast, isArray, isObject, isString } from "@zag-js/utils"
 import { determineGuardFn } from "./guard-utils"
 import type { StateMachine as S } from "./types"
 import { toArray } from "./utils"

@@ -1,4 +1,4 @@
-import { dispatchInputEvent } from "@ui-machines/dom-utils"
+import { dispatchInputEvent } from "@zag-js/dom-utils"
 import { MachineContext as Ctx } from "./rating.types"
 
 export const dom = {

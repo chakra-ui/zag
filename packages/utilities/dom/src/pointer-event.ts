@@ -1,4 +1,4 @@
-import { isLeftClick, isMouseEvent, pipe } from "@ui-machines/utils"
+import { isLeftClick, isMouseEvent, pipe } from "@zag-js/utils"
 import { addDomEvent, addPointerEvent } from "./listener"
 import type { AnyPointerEvent, EventListenerWithPointInfo as Listener, PointerEventInfo } from "./listener.types"
 import { disableTextSelection } from "./text-selection"

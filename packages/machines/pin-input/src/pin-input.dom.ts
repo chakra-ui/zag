@@ -1,4 +1,4 @@
-import { queryAll } from "@ui-machines/dom-utils"
+import { queryAll } from "@zag-js/dom-utils"
 import { MachineContext as Ctx } from "./pin-input.types"
 
 export const dom = {

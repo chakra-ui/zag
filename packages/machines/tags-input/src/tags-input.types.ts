@@ -1,5 +1,5 @@
-import { LiveRegion } from "@ui-machines/dom-utils"
-import type { Context } from "@ui-machines/types"
+import { LiveRegion } from "@zag-js/dom-utils"
+import type { Context } from "@zag-js/types"
 
 export type ValidateTagOptions = {
   inputValue: string

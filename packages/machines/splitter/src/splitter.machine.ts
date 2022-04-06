@@ -1,7 +1,7 @@
-import { createMachine, ref, guards } from "@ui-machines/core"
-import { nextTick, trackPointerMove } from "@ui-machines/dom-utils"
-import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
-import { relativeToNode } from "@ui-machines/rect-utils"
+import { createMachine, ref, guards } from "@zag-js/core"
+import { nextTick, trackPointerMove } from "@zag-js/dom-utils"
+import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
+import { relativeToNode } from "@zag-js/rect-utils"
 import { dom } from "./splitter.dom"
 import { MachineContext, MachineState } from "./splitter.types"
 

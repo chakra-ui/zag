@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as menu from "@ui-machines/menu"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

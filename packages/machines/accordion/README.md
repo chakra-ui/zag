@@ -1,13 +1,13 @@
-# @ui-machines/accordion
+# @zag-js/accordion
 
 Core logic for the accordion widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/accordion
+yarn add  @zag-js/accordion
 # or
-npm i  @ui-machines/accordion
+npm i  @zag-js/accordion
 ```
 
 ## Contribution

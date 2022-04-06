@@ -1,6 +1,6 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@ui-machines/dom-utils"
-import { getPlacementStyles } from "@ui-machines/popper"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@zag-js/dom-utils"
+import { getPlacementStyles } from "@zag-js/popper"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./combobox.dom"
 import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 

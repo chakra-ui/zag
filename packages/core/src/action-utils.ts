@@ -1,4 +1,4 @@
-import { isObject, isString } from "@ui-machines/utils"
+import { isObject, isString } from "@zag-js/utils"
 import { Dict, StateMachine as S } from "./types"
 
 export function choose<TContext, TState extends S.StateSchema, TEvent extends S.EventObject = S.AnyEventObject>(

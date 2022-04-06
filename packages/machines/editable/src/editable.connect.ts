@@ -1,5 +1,5 @@
-import { ariaAttr, dataAttr, EventKeyMap, validateBlur } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import { ariaAttr, dataAttr, EventKeyMap, validateBlur } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
 

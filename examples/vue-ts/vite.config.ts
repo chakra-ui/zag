@@ -14,9 +14,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@ui-machines/vue": `${resolve(__dirname, "../../packages/frameworks/vue/src")}`,
-      "@ui-machines/core": `${resolve(__dirname, "../../packages/core/src")}`,
-      "@ui-machines/web": `${resolve(__dirname, "../../packages/machines/src")}`,
+      "@zag-js/vue": `${resolve(__dirname, "../../packages/frameworks/vue/src")}`,
+      "@zag-js/core": `${resolve(__dirname, "../../packages/core/src")}`,
+      "@zag-js/web": `${resolve(__dirname, "../../packages/machines/src")}`,
     },
   },
   plugins: [

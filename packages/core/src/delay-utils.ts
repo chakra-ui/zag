@@ -1,4 +1,4 @@
-import { isFunction, isNumber, isString } from "@ui-machines/utils"
+import { isFunction, isNumber, isString } from "@zag-js/utils"
 import { StateMachine as S } from "./types"
 
 /**

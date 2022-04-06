@@ -15,7 +15,7 @@
     "build:bundle": "yarn buildr",
     "prepare": "husky install && yarn dev",
     "clean": "esr scripts/generate-typings.ts",
-    "build:types": "ultra -r --silent --concurrency 20 --filter \"@ui-machines/*\" \"tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false\"",
+    "build:types": "ultra -r --silent --concurrency 20 --filter \"@zag-js/*\" \"tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false\"",
     "prebuild": "yarn clean && yarn build:types",
     "build": "NODE_ENV=production yarn build:bundle",
     "start:react": "cd examples/next-ts && yarn dev",

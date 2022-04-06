@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as Accordion from "@ui-machines/accordion"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as Accordion from "@zag-js/accordion"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { accordionControls } from "../../../../shared/controls"
 import { accordionData } from "../../../../shared/data"

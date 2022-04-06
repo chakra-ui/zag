@@ -1,7 +1,7 @@
-import { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { invariant, isModifiedEvent } from "@ui-machines/utils"
+import { StateMachine as S } from "@zag-js/core"
+import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { invariant, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import { MachineContext, MachineState } from "./pin-input.types"
 

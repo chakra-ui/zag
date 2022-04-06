@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as splitter from "@ui-machines/splitter"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as splitter from "@zag-js/splitter"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { splitterControls } from "../../../../shared/controls"

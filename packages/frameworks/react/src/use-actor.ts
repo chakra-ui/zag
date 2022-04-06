@@ -1,5 +1,5 @@
-import { Machine, StateMachine as S } from "@ui-machines/core"
-import { cast } from "@ui-machines/utils"
+import { Machine, StateMachine as S } from "@zag-js/core"
+import { cast } from "@zag-js/utils"
 import { useSnapshot } from "valtio"
 
 export function useActor<

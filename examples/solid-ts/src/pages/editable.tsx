@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as editable from "@ui-machines/editable"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/solid"
+import * as editable from "@zag-js/editable"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { editableControls } from "../../../../shared/controls"
 import { editableStyle } from "../../../../shared/style"

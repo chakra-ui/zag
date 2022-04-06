@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as RangeSlider from "@ui-machines/range-slider"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as RangeSlider from "@zag-js/range-slider"
+import { useMachine, useSetup } from "@zag-js/react"
 import { StateVisualizer } from "../components/state-visualizer"
 import serialize from "form-serialize"
 import { sliderStyle } from "../../../shared/style"

@@ -1,5 +1,5 @@
-import { createNormalizer } from "@ui-machines/types"
-import { isObject, isString } from "@ui-machines/utils"
+import { createNormalizer } from "@zag-js/types"
+import { isObject, isString } from "@zag-js/utils"
 import { cssify } from "./cssify"
 
 const eventMap = {

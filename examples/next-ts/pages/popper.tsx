@@ -1,4 +1,4 @@
-import { getPlacementStyles, getPlacement } from "@ui-machines/popper"
+import { getPlacementStyles, getPlacement } from "@zag-js/popper"
 import React, { useEffect, useLayoutEffect } from "react"
 
 const useSafeEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect

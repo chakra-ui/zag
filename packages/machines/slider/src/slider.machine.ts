@@ -1,6 +1,6 @@
-import { createMachine, ref } from "@ui-machines/core"
-import { nextTick, raf, trackPointerMove } from "@ui-machines/dom-utils"
-import { clamp, decrement, increment, snapToStep } from "@ui-machines/number-utils"
+import { createMachine, ref } from "@zag-js/core"
+import { nextTick, raf, trackPointerMove } from "@zag-js/dom-utils"
+import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
 import { dom } from "./slider.dom"
 import { MachineContext, MachineState } from "./slider.types"
 

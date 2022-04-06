@@ -1,5 +1,5 @@
-import type { PositioningOptions, Placement } from "@ui-machines/popper"
-import type { Context, MaybeElement } from "@ui-machines/types"
+import type { PositioningOptions, Placement } from "@zag-js/popper"
+import type { Context, MaybeElement } from "@zag-js/types"
 
 export type MachineContext = Context<{
   /**

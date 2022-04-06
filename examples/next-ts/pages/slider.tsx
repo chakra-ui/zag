@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@ui-machines/react"
-import * as Slider from "@ui-machines/slider"
+import { useMachine, useSetup } from "@zag-js/react"
+import * as Slider from "@zag-js/slider"
 import serialize from "form-serialize"
 import { sliderControls } from "../../../shared/controls"
 import { sliderStyle } from "../../../shared/style"

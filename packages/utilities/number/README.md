@@ -1,11 +1,11 @@
-# @ui-machines/number
+# @zag-js/number
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/number
+yarn add  @zag-js/number
 # or
-npm i  @ui-machines/number
+npm i  @zag-js/number
 ```
 
 ## Contribution

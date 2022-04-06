@@ -1,6 +1,6 @@
 import { createMutable } from "solid-js/store"
 import { For } from "solid-js"
-import { ControlRecord, ControlValue } from "@ui-machines/types"
+import { ControlRecord, ControlValue } from "@zag-js/types"
 
 function getDefaultValues<T extends ControlRecord>(obj: T): ControlValue<T> {
   return Object.keys(obj).reduce(

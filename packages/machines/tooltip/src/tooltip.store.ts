@@ -1,4 +1,4 @@
-import { proxy } from "@ui-machines/core"
+import { proxy } from "@zag-js/core"
 
 type Id = string | null
 

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as rating from "@ui-machines/rating"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as rating from "@zag-js/rating"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { ratingControls } from "../../../../shared/controls"

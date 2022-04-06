@@ -1,13 +1,13 @@
-# @ui-machines/combobox
+# @zag-js/combobox
 
 Core logic for the combobox widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/combobox
+yarn add  @zag-js/combobox
 # or
-npm i  @ui-machines/combobox
+npm i  @zag-js/combobox
 ```
 
 ## Contribution

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as combobox from "@ui-machines/combobox"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as combobox from "@zag-js/combobox"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"

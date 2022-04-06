@@ -1,6 +1,6 @@
-import { dataAttr, EventKeyMap, getEventKey } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
-import { isArray, isSafari } from "@ui-machines/utils"
+import { dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { isArray, isSafari } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 

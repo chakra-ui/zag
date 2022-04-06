@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
-import * as Tabs from "@ui-machines/tabs"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import * as Tabs from "@zag-js/tabs"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tabsControls } from "../../../../shared/controls"
 import { tabsData } from "../../../../shared/data"

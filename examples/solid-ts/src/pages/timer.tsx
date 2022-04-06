@@ -1,5 +1,5 @@
-import { createMachine } from "@ui-machines/core"
-import { useMachine } from "@ui-machines/solid"
+import { createMachine } from "@zag-js/core"
+import { useMachine } from "@zag-js/solid"
 
 const counter = createMachine(
   {

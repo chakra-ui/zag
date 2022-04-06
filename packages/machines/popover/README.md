@@ -1,13 +1,13 @@
-# @ui-machines/popover
+# @zag-js/popover
 
 Core logic for the popover widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/popover
+yarn add  @zag-js/popover
 # or
-npm i  @ui-machines/popover
+npm i  @zag-js/popover
 ```
 
 ## Contribution

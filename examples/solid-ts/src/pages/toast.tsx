@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import { useActor, useMachine, useSetup, normalizeProps, PropTypes } from "@ui-machines/solid"
-import * as toast from "@ui-machines/toast"
+import { useActor, useMachine, useSetup, normalizeProps, PropTypes } from "@zag-js/solid"
+import * as toast from "@zag-js/toast"
 import { createMemo, createSignal, For } from "solid-js"
 import { toastControls } from "../../../../shared/controls"
 import { toastStyle } from "../../../../shared/style"

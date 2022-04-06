@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as menu from "@ui-machines/menu"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as menu from "@zag-js/menu"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, For, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
 import { menuData } from "../../../../shared/data"

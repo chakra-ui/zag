@@ -1,5 +1,5 @@
 {
-  "name": "@ui-machines/combobox",
+  "name": "@zag-js/combobox",
   "version": "0.0.0",
   "description": "Core logic for the combobox widget implemented as a state machine",
   "keywords": [
@@ -29,10 +29,10 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "@ui-machines/core": "^0.0.0",
-    "@ui-machines/popper": "^0.0.0",
-    "@ui-machines/dom-utils": "^0.0.0",
-    "@ui-machines/types": "^0.0.0",
+    "@zag-js/core": "^0.0.0",
+    "@zag-js/popper": "^0.0.0",
+    "@zag-js/dom-utils": "^0.0.0",
+    "@zag-js/types": "^0.0.0",
     "scroll-into-view-if-needed": "^2.2.28"
   }
 }

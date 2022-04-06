@@ -1,4 +1,4 @@
-import { getScrollParent } from "@ui-machines/dom-utils"
+import { getScrollParent } from "@zag-js/dom-utils"
 import { MachineContext as Ctx } from "./tooltip.types"
 
 export const dom = {

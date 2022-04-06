@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import * as rating from "@ui-machines/rating"
-import { useMachine, useSetup } from "@ui-machines/react"
+import * as rating from "@zag-js/rating"
+import { useMachine, useSetup } from "@zag-js/react"
 import { ratingControls } from "../../../shared/controls"
 import { ratingStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

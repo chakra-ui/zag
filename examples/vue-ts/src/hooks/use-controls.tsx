@@ -1,5 +1,5 @@
 import { h, Fragment, Ref, ref, inject, provide } from "vue"
-import { ControlRecord, ControlValue } from "@ui-machines/types"
+import { ControlRecord, ControlValue } from "@zag-js/types"
 
 const ControlsSymbol = Symbol("use-controls")
 

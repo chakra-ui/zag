@@ -1,5 +1,5 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { add, isString, remove, toArray, warn } from "@ui-machines/utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { add, isString, remove, toArray, warn } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import { MachineContext, MachineState } from "./accordion.types"
 

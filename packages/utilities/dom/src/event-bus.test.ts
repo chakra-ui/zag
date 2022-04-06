@@ -1,6 +1,6 @@
 import { addPointerEvent } from "./listener"
 import { fireEvent } from "@testing-library/dom"
-import { callAll } from "@ui-machines/utils"
+import { callAll } from "@zag-js/utils"
 
 test("should add multiple listeners", () => {
   const called = { pointermove: 0, pointerup: 0 }

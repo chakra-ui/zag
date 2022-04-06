@@ -1,11 +1,11 @@
-# @ui-machines/geometry
+# @zag-js/geometry
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/geometry
+yarn add  @zag-js/geometry
 # or
-npm i  @ui-machines/geometry
+npm i  @zag-js/geometry
 ```
 
 ## Contribution

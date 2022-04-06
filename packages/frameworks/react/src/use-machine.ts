@@ -1,5 +1,5 @@
-import { MachineSrc, StateMachine as S } from "@ui-machines/core"
-import { cast } from "@ui-machines/utils"
+import { MachineSrc, StateMachine as S } from "@zag-js/core"
+import { cast } from "@zag-js/utils"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
 import { useConstant } from "./use-constant"

@@ -1,5 +1,5 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { nextTick, trackPointerDown } from "@ui-machines/dom-utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { nextTick, trackPointerDown } from "@zag-js/dom-utils"
 import { dom } from "./editable.dom"
 import { MachineContext, MachineState } from "./editable.types"
 

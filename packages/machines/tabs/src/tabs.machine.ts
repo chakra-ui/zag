@@ -1,5 +1,5 @@
-import { createMachine, guards, ref } from "@ui-machines/core"
-import { getFocusables, nextTick } from "@ui-machines/dom-utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { getFocusables, nextTick } from "@zag-js/dom-utils"
 import { dom } from "./tabs.dom"
 import { MachineContext, MachineState } from "./tabs.types"
 

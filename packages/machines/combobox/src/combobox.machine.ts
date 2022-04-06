@@ -1,6 +1,6 @@
-import { choose, createMachine, guards, ref } from "@ui-machines/core"
-import { createLiveRegion, nextTick, observeAttributes, trackPointerDown } from "@ui-machines/dom-utils"
-import { getPlacement } from "@ui-machines/popper"
+import { choose, createMachine, guards, ref } from "@zag-js/core"
+import { createLiveRegion, nextTick, observeAttributes, trackPointerDown } from "@zag-js/dom-utils"
+import { getPlacement } from "@zag-js/popper"
 import { dom } from "./combobox.dom"
 import { MachineContext, MachineState } from "./combobox.types"
 

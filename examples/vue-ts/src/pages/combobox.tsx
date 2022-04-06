@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as combobox from "@ui-machines/combobox"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as combobox from "@zag-js/combobox"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, ref, h, Fragment } from "vue"
 import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"

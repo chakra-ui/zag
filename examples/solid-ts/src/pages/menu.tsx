@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as menu from "@ui-machines/menu"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as menu from "@zag-js/menu"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

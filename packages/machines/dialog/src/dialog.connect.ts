@@ -1,6 +1,6 @@
-import type { StateMachine as S } from "@ui-machines/core"
-import { ariaAttr } from "@ui-machines/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
+import type { StateMachine as S } from "@zag-js/core"
+import { ariaAttr } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./dialog.dom"
 import { MachineContext, MachineState } from "./dialog.types"
 

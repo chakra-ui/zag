@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as popover from "@ui-machines/popover"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
+import * as popover from "@zag-js/popover"
+import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"

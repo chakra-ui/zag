@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as rating from "@ui-machines/rating"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as rating from "@zag-js/rating"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, For } from "solid-js"
 import { ratingControls } from "../../../../shared/controls"
 import { ratingStyle } from "../../../../shared/style"

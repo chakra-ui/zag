@@ -1,4 +1,4 @@
-import { isTouchEvent } from "@ui-machines/utils"
+import { isTouchEvent } from "@zag-js/utils"
 import { Point } from "./types"
 
 export function distance(a: Point, b: Point = { x: 0, y: 0 }): number {

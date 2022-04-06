@@ -1,4 +1,4 @@
-import { dispatchInputEvent, indexOfId, nextById, prevById, queryAll } from "@ui-machines/dom-utils"
+import { dispatchInputEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
 export const dom = {

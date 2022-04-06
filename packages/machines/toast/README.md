@@ -1,13 +1,13 @@
-# @ui-machines/toast
+# @zag-js/toast
 
 Core logic for the toast widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @ui-machines/toast
+yarn add  @zag-js/toast
 # or
-npm i  @ui-machines/toast
+npm i  @zag-js/toast
 ```
 
 ## Contribution

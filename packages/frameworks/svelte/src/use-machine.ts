@@ -1,6 +1,6 @@
 import { onDestroy } from "svelte/internal"
 import { readable } from "svelte/store"
-import type { MachineSrc, StateMachine as S } from "@ui-machines/core"
+import type { MachineSrc, StateMachine as S } from "@zag-js/core"
 
 export function useMachine<
   TContext extends Record<string, any>,

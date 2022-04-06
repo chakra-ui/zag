@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/vue"
-import * as Toggle from "@ui-machines/toggle"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/vue"
+import * as Toggle from "@zag-js/toggle"
 import { defineComponent } from "@vue/runtime-core"
 import { toggleStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"

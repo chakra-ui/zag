@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
-import * as RangeSlider from "@ui-machines/range-slider"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
+import * as RangeSlider from "@zag-js/range-slider"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, For, createUniqueId } from "solid-js"
 import { rangeSliderControls } from "../../../../shared/controls"

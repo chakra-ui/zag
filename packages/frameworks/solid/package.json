@@ -1,5 +1,5 @@
 {
-  "name": "@ui-machines/solid",
+  "name": "@zag-js/solid",
   "version": "0.0.0",
   "description": "The solid.js wrapper for ui-machines",
   "keywords": [
@@ -26,7 +26,7 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "@ui-machines/core": "0.0.0",
+    "@zag-js/core": "0.0.0",
     "hyphenate-style-name": "^1.0.4",
     "valtio": "^1.3.1"
   },

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useActor, useMachine, useSetup } from "@ui-machines/react"
-import * as toast from "@ui-machines/toast"
+import { useActor, useMachine, useSetup } from "@zag-js/react"
+import * as toast from "@zag-js/toast"
 import { useRef } from "react"
 import { BeatLoader } from "react-spinners"
 import { toastControls } from "../../../shared/controls"

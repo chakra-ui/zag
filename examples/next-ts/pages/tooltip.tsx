@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@ui-machines/react"
-import * as Tooltip from "@ui-machines/tooltip"
+import { useMachine, useSetup } from "@zag-js/react"
+import * as Tooltip from "@zag-js/tooltip"
 import { tooltipStyles } from "../../../shared/style"
 
 function TooltipComponent({ id }: { id?: string }) {
