@@ -26,8 +26,14 @@ export function getToastDuration(duration: number | undefined, type: MachineCont
 }
 
 export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Placement): Style {
-  const isRighty = placement.includes("right")
-  const isLefty = placement.includes("left")
+  const offset = ctx.offsets
+  const __offset = typeof offset === "string" ? { left: offset, right: offset, bottom: offset, top: offset } : offset
+
+  const rtl = ctx.dir === "rtl"
+  const __placement = placement.replace("-start", rtl ? "-right" : "-left").replace("-end", rtl ? "-left" : "-right")
+
+  const isRighty = __placement.includes("right")
+  const isLefty = __placement.includes("left")
 
   const styles: Style = {
     position: "fixed",
@@ -44,23 +50,23 @@ export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Plac
 
   styles.alignItems = alignItems
 
-  if (placement.includes("top")) {
-    const offset = ctx.offsets.top
+  if (__placement.includes("top")) {
+    const offset = __offset.top
     styles.top = `calc(env(safe-area-inset-top, 0px) + ${offset})`
   }
 
-  if (placement.includes("bottom")) {
-    const offset = ctx.offsets.bottom
+  if (__placement.includes("bottom")) {
+    const offset = __offset.bottom
     styles.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${offset})`
   }
 
-  if (!placement.includes("left")) {
-    const offset = ctx.offsets.right
+  if (!__placement.includes("left")) {
+    const offset = __offset.right
     styles.right = `calc(env(safe-area-inset-right, 0px) + ${offset})`
   }
 
-  if (!placement.includes("right")) {
-    const offset = ctx.offsets.left
+  if (!__placement.includes("right")) {
+    const offset = __offset.left
     styles.left = `calc(env(safe-area-inset-left, 0px) + ${offset})`
   }
 

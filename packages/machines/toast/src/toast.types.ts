@@ -130,7 +130,7 @@ export type GroupMachineContext = SharedContext &
     /**
      * The offset from the safe environment edge of the viewport
      */
-    offsets: Record<"left" | "right" | "bottom" | "top", string>
+    offsets: string | Record<"left" | "right" | "bottom" | "top", string>
   }>
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
