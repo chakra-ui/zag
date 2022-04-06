@@ -14,6 +14,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   const isUpdating = state.hasTag("updating")
 
   const isRtl = state.context.dir === "rtl"
+  const type = state.context.type
 
   const pauseOnInteraction = state.context.pauseOnInteraction
   const placement = state.context.placement
@@ -85,7 +86,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-type": state.context.type,
       style: {
         opacity: isVisible ? 1 : 0,
-        animationName: isUpdating ? "none" : undefined,
+        animation: isUpdating || type === "loading" ? "none" : undefined,
         transformOrigin: isRtl ? "right" : "left",
         animationPlayState: isPaused ? "paused" : "running",
         animationDuration: `${state.context.duration}ms`,
@@ -112,6 +113,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       return state.context.render?.({
         id: state.context.id,
         type: state.context.type,
+        duration: state.context.duration,
+        title: state.context.title,
+        placement: state.context.placement,
+        description: state.context.description,
         dismiss() {
           send("DISMISS")
         },

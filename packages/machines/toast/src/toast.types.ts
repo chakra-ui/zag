@@ -16,19 +16,15 @@ type SharedContext = {
   pauseOnInteraction?: boolean
 }
 
-export type MachineContext = SharedContext & {
+export type RenderOptions = Omit<ToastOptions, "render"> & {
+  dismiss(): void
+}
+
+type ToastOptions = {
   /**
    * The unique id of the toast
    */
   id: string
-  /**
-   * @internal The owner document of the toast
-   */
-  doc?: Document
-  /**
-   * The document's text/writing direction.
-   */
-  dir?: Direction
   /**
    * The type of the toast
    */
@@ -50,45 +46,55 @@ export type MachineContext = SharedContext & {
    */
   duration: number
   /**
-   * The duration for the toast to kept alive before it is removed.
-   * Useful for exit transitions.
-   */
-  removeDelay: number
-  /**
-   * The time the toast was created
-   */
-  createdAt: number
-  /**
-   * The time left before the toast is removed
-   */
-  remaining: number
-  /**
-   * Function called when the toast has been closed and removed
-   */
-  onExited?: VoidFunction
-  /**
-   * Function called when the toast is leaving
-   */
-  onExiting?: VoidFunction
-  /**
-   * Function called when the toast is shown
-   */
-  onEntered?: VoidFunction
-  /**
-   * Function called when the toast is updated
-   */
-  onUpdate?: VoidFunction
-  /**
    * Custom function to render the toast element.
    */
   render?: (options: RenderOptions) => any
 }
 
-export type RenderOptions = {
-  id: string
-  type: Type
-  dismiss(): void
-}
+export type MachineContext = SharedContext &
+  ToastOptions & {
+    /**
+     * The unique id of the toast
+     */
+    id: string
+    /**
+     * @internal The owner document of the toast
+     */
+    doc?: Document
+    /**
+     * The document's text/writing direction.
+     */
+    dir?: Direction
+    /**
+     * The duration for the toast to kept alive before it is removed.
+     * Useful for exit transitions.
+     */
+    removeDelay: number
+    /**
+     * The time the toast was created
+     */
+    createdAt: number
+    /**
+     * The time left before the toast is removed
+     */
+    remaining: number
+    /**
+     * Function called when the toast has been closed and removed
+     */
+    onClose?: VoidFunction
+    /**
+     * Function called when the toast is leaving
+     */
+    onClosing?: VoidFunction
+    /**
+     * Function called when the toast is shown
+     */
+    onOpen?: VoidFunction
+    /**
+     * Function called when the toast is updated
+     */
+    onUpdate?: VoidFunction
+  }
 
 export type Options = Partial<Omit<MachineContext, "progress">>
 

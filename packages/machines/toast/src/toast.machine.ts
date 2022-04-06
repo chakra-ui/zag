@@ -13,7 +13,7 @@ export function createToastMachine(options: Options = {}) {
   return createMachine<MachineContext, MachineState>(
     {
       id,
-      entry: "invokeOnEntered",
+      entry: "invokeOnOpen",
       initial: type === "loading" ? "persist" : "active",
       context: {
         id,
@@ -81,7 +81,7 @@ export function createToastMachine(options: Options = {}) {
         },
 
         dismissing: {
-          entry: "invokeOnExiting",
+          entry: "invokeOnClosing",
           after: {
             REMOVE_DELAY: {
               target: "inactive",
@@ -91,7 +91,7 @@ export function createToastMachine(options: Options = {}) {
         },
 
         inactive: {
-          entry: "invokeOnExited",
+          entry: "invokeOnClose",
           type: "final",
         },
       },
@@ -127,14 +127,14 @@ export function createToastMachine(options: Options = {}) {
         notifyParentToRemove(_ctx, _evt, { self }) {
           self.sendParent({ type: "REMOVE_TOAST", id: self.id })
         },
-        invokeOnExiting(ctx) {
-          ctx.onExiting?.()
+        invokeOnClosing(ctx) {
+          ctx.onClosing?.()
         },
-        invokeOnExited(ctx) {
-          ctx.onExited?.()
+        invokeOnClose(ctx) {
+          ctx.onClose?.()
         },
-        invokeOnEntered(ctx) {
-          ctx.onEntered?.()
+        invokeOnOpen(ctx) {
+          ctx.onOpen?.()
         },
         invokeOnUpdate(ctx) {
           ctx.onUpdate?.()
