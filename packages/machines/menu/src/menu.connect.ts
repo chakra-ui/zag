@@ -88,7 +88,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     triggerProps: normalize.button<T>({
-      "data-part": "trigger",
+      "data-part": isSubmenu ? "trigger-item" : "trigger",
       "data-placement": state.context.currentPlacement,
       type: "button",
       dir: state.context.dir,
@@ -308,6 +308,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
         },
         onPointerMove(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+        },
+        onPointerEnter(event) {
           if (disabled) return
           send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
         },

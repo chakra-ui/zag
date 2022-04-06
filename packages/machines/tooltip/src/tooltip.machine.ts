@@ -23,6 +23,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       openDelay: 1000,
       closeDelay: 500,
       closeOnPointerDown: true,
+      closeOnEsc: true,
       interactive: true,
       positioning: { placement: "bottom" },
       currentPlacement: undefined,
@@ -49,6 +50,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       closed: {
+        tags: ["closed"],
         entry: ["clearGlobalId", "invokeOnClose"],
         on: {
           FOCUS: "open",
@@ -63,6 +65,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       opening: {
+        tags: ["closed"],
         activities: ["trackScroll", "trackPointerlockChange"],
         after: {
           OPEN_DELAY: "open",
@@ -80,10 +83,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       open: {
-        tags: ["visible"],
+        tags: ["open"],
         activities: [
           "trackEscapeKey",
-          "trackPointermoveForSafari",
+          "trackDisabledTriggerOnSafari",
           "trackScroll",
           "trackPointerlockChange",
           "computePlacement",
@@ -97,7 +100,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
             { target: "closed" },
           ],
-          BLUR: "closing",
+          BLUR: "closed",
           ESCAPE: "closed",
           SCROLL: "closed",
           POINTER_LOCK_CHANGE: "closed",
@@ -109,12 +112,12 @@ export const machine = createMachine<MachineContext, MachineState>(
             guard: "closeOnPointerDown",
             target: "closed",
           },
-          PRESS_ENTER: "closed",
+          CLICK: "closed",
         },
       },
 
       closing: {
-        tags: ["visible"],
+        tags: ["open"],
         activities: ["trackStore", "computePlacement"],
         after: {
           CLOSE_DELAY: "closed",
@@ -154,7 +157,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
       trackScroll(ctx, _evt, { send }) {
-        const cleanups = getScrollParents(dom.getTriggerEl(ctx)!).map((el) => {
+        const trigger = dom.getTriggerEl(ctx)
+        if (!trigger) return
+        const cleanups = getScrollParents(trigger).map((el) => {
           const opts = { passive: true, capture: true } as const
           return addDomEvent(el, "scroll", () => send("SCROLL"), opts)
         })
@@ -169,16 +174,17 @@ export const machine = createMachine<MachineContext, MachineState>(
           }
         })
       },
-      trackPointermoveForSafari(ctx, _evt, { send }) {
+      trackDisabledTriggerOnSafari(ctx, _evt, { send }) {
         if (!isSafari()) return noop
         const doc = dom.getDoc(ctx)
         return addPointerEvent(doc, "pointermove", (event) => {
-          const selector = "[data-controls=tooltip][data-expanded]"
+          const selector = "[data-part=trigger][data-expanded]"
           if (isHTMLElement(event.target) && event.target.closest(selector)) return
           send("POINTER_LEAVE")
         })
       },
       trackEscapeKey(ctx, _evt, { send }) {
+        if (!ctx.closeOnEsc) return
         const doc = dom.getDoc(ctx)
         return addDomEvent(doc, "keydown", (event) => {
           if (event.key === "Escape" || event.key === "Esc") {
@@ -217,7 +223,6 @@ export const machine = createMachine<MachineContext, MachineState>(
       closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
       noVisibleTooltip: () => store.id === null,
       isVisible: (ctx) => ctx.id === store.id,
-      isDisabled: (ctx) => !!ctx.disabled,
       isInteractive: (ctx) => ctx.interactive,
     },
     delays: {

@@ -1,31 +1,33 @@
 import { injectGlobal } from "@emotion/css"
-import * as Toast from "@ui-machines/toast"
+import * as toast from "@ui-machines/toast"
 import { normalizeProps, useActor, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
+import { toastControls } from "../../../../shared/controls"
 import { toastStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(toastStyle)
 
 const ToastItem = defineComponent({
   props: {
     actor: {
-      type: Object as PropType<Toast.Service>,
+      type: Object as PropType<toast.Service>,
       required: true,
     },
   },
   setup(props) {
     const [state, send] = useActor(props.actor)
-    const apiRef = computed(() => Toast.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => toast.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
       return (
-        <pre class="toast" hidden={!api.isVisible} {...api.containerProps}>
-          <progress {...api.progress} />
+        <pre {...api.rootProps}>
+          <div {...api.progressbarProps} />
           <p {...api.titleProps}>{api.title}</p>
-          {/* @ts-expect-error */}
+          {/* @ts-ignore */}
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
           <button onClick={api.dismiss}>Close</button>
         </pre>
@@ -37,9 +39,14 @@ const ToastItem = defineComponent({
 export default defineComponent({
   name: "Toast",
   setup() {
-    const [state, send] = useMachine(Toast.group.machine)
+    const controls = useControls(toastControls)
+
+    const [state, send] = useMachine(toast.group.machine, {
+      context: controls.context,
+    })
+
     const toastRef = useSetup({ send, id: "1" })
-    const apiRef = computed(() => Toast.group.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => toast.group.connect<PropTypes>(state.value, send, normalizeProps))
 
     const id = ref<string>()
 
@@ -47,6 +54,8 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
+          <controls.ui />
+
           <div ref={toastRef} style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={() => {

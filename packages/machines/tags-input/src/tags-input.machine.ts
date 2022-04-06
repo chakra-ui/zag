@@ -21,7 +21,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       dir: "ltr",
       max: Infinity,
       liveRegion: null,
-      addOnBlur: false,
+      blurBehavior: undefined,
       addOnPaste: false,
       allowEditTag: true,
       validate: () => true,
@@ -67,6 +67,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         target: "navigating:tag",
         actions: ["focusTag", "focusInput"],
       },
+      SET_INPUT_VALUE: {
+        actions: ["setInputValue"],
+      },
       SET_VALUE: {
         actions: ["setValue"],
       },
@@ -81,6 +84,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         guard: and(or(not("isAtMax"), "allowOverflow"), not("isInputValueEmpty")),
         actions: ["addTag", "clearInputValue"],
       },
+      EXT_BLUR: [
+        { guard: "addOnBlur", actions: "raiseAddTagEvent" },
+        { guard: "clearOnBlur", actions: "clearInputValue" },
+      ],
     },
 
     states: {
@@ -116,9 +123,14 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           BLUR: [
             {
-              target: "idle",
               guard: "addOnBlur",
+              target: "idle",
               actions: "raiseAddTagEvent",
+            },
+            {
+              guard: "clearOnBlur",
+              target: "idle",
+              actions: "clearInputValue",
             },
             { target: "idle" },
           ],
@@ -189,22 +201,29 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
 
       "editing:tag": {
-        tags: ["editing"],
+        tags: ["editing", "focused"],
         entry: "focusEditedTagInput",
         activities: ["autoResizeTagInput"],
         on: {
-          TYPE: {
+          TAG_INPUT_TYPE: {
             actions: "setEditedTagValue",
           },
-          ESCAPE: {
+          TAG_INPUT_ESCAPE: {
             target: "navigating:tag",
             actions: ["clearEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
           },
-          BLUR: {
-            target: "navigating:tag",
-            actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
-          },
-          ENTER: {
+          TAG_INPUT_BLUR: [
+            {
+              guard: "isInputRelatedTarget",
+              target: "navigating:tag",
+              actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
+            },
+            {
+              target: "idle",
+              actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExtBlurEvent"],
+            },
+          ],
+          TAG_INPUT_ENTER: {
             target: "navigating:tag",
             actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"],
           },
@@ -214,6 +233,7 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
+      isInputRelatedTarget: (ctx, evt) => evt.relatedTarget === dom.getInputEl(ctx),
       isAtMax: (ctx) => ctx.isAtMax,
       hasFocusedId: (ctx) => ctx.focusedId !== null,
       isTagFocused: (ctx, evt) => ctx.focusedId === evt.id,
@@ -223,7 +243,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       hasTags: (ctx) => ctx.value.length > 0,
       allowOverflow: (ctx) => !!ctx.allowOverflow,
       autoFocus: (ctx) => !!ctx.autoFocus,
-      addOnBlur: (ctx) => !!ctx.addOnBlur,
+      addOnBlur: (ctx) => ctx.blurBehavior === "add",
+      clearOnBlur: (ctx) => ctx.blurBehavior === "clear",
       addOnPaste: (ctx) => !!ctx.addOnPaste,
       allowEditTag: (ctx) => !!ctx.allowEditTag,
       isInputCaretAtStart(ctx) {
@@ -248,6 +269,9 @@ export const machine = createMachine<MachineContext, MachineState>(
     actions: {
       raiseAddTagEvent(_, __, { self }) {
         self.send("ADD_TAG")
+      },
+      raiseExtBlurEvent(_, __, { self }) {
+        self.send("EXT_BLUR")
       },
       invokeOnHighlight(ctx) {
         const value = dom.getFocusedTagValue(ctx)

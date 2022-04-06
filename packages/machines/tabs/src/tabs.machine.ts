@@ -29,16 +29,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       isVertical: (ctx) => ctx.orientation === "vertical",
     },
 
-    created(ctx) {
-      if (ctx.value != null) {
-        const newSelected = Array.from(ctx.previousValues).concat(ctx.value)
-        ctx.previousValues = Array.from(new Set(newSelected))
-      }
-    },
+    created: ["setPrevSelectedTabs"],
 
     watch: {
       focusedValue: "invokeOnFocus",
-      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect", "setTabPanelTabIndex"],
+      value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect", "setContentTabIndex"],
       dir: ["clearMeasured", "setIndicatorRect"],
     },
 
@@ -53,7 +48,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setTabPanelTabIndex"],
+            actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
           },
         },
       },
@@ -184,9 +179,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         }
       },
       // if tab panel contains focusable elements, remove the tabindex attribute
-      setTabPanelTabIndex(ctx) {
+      setContentTabIndex(ctx) {
         nextTick(() => {
-          const panel = dom.getActiveTabPanelEl(ctx)
+          const panel = dom.getActiveContentEl(ctx)
           if (!panel) return
           const focusables = getFocusables(panel)
           if (focusables.length > 0) {

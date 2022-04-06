@@ -30,7 +30,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     setValue(value: string[]) {
       send({ type: "SET_VALUE", value })
     },
-    clearValue() {
+    clearAll() {
       send("CLEAR_ALL")
     },
     addValue(value: string) {
@@ -38,6 +38,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     },
     deleteValue(id: string) {
       send({ type: "DELETE_TAG", id })
+    },
+    setInputValue(value: string) {
+      send({ type: "SET_INPUT_VALUE", value })
+    },
+    clearInputValue() {
+      send({ type: "SET_INPUT_VALUE", value: "" })
     },
     focus() {
       nextTick(() => {
@@ -72,6 +78,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     controlProps: normalize.element<T>({
       id: dom.getControlId(state.context),
       "data-part": "control",
+      tabIndex: isReadonly ? 0 : undefined,
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(isReadonly),
       "data-invalid": dataAttr(isInvalid),
@@ -81,13 +88,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     inputProps: normalize.input<T>({
       "data-part": "input",
       "data-invalid": dataAttr(isInvalid),
+      "aria-invalid": isInvalid,
+      "data-readonly": dataAttr(isReadonly),
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
       value: state.context.inputValue,
       autoComplete: "off",
       autoCorrect: "off",
-      autoCapitalize: "off",
-      disabled: isDisabled,
+      autoCapitalize: "none",
+      disabled: isDisabled || isReadonly,
       onChange(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing || evt.inputType === "insertFromPaste") return
@@ -199,18 +208,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         hidden: isEditingTag ? !active : true,
         value: active ? state.context.editedTagValue : "",
         onChange(event) {
-          send({ type: "TYPE", value: event.target.value })
+          send({ type: "TAG_INPUT_TYPE", value: event.target.value })
         },
-        onBlur() {
-          send("BLUR")
+        onBlur(event) {
+          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget })
         },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             Enter() {
-              send("ENTER")
+              send("TAG_INPUT_ENTER")
             },
             Escape() {
-              send("ESCAPE")
+              send("TAG_INPUT_ESCAPE")
             },
           }
 

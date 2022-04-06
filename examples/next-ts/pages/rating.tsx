@@ -1,14 +1,14 @@
 import { Global } from "@emotion/react"
-import * as Rating from "@ui-machines/rating"
+import * as rating from "@ui-machines/rating"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { ratingControls } from "../../../shared/controls"
 import { ratingStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
-function HalfStar(props: { className: string }) {
+function HalfStar() {
   return (
-    <svg viewBox="0 0 273 260" className={props.className}>
+    <svg viewBox="0 0 273 260" data-part="star">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -25,9 +25,9 @@ function HalfStar(props: { className: string }) {
   )
 }
 
-function Star(props: { className: string }) {
+function Star() {
   return (
-    <svg viewBox="0 0 273 260" className={props.className}>
+    <svg viewBox="0 0 273 260" data-part="star">
       <path
         d="M136.5 0L177.83 86.614L272.977 99.1561L203.374 165.229L220.847 259.594L136.5 213.815L52.1528 259.594L69.6265 165.229L0.0233917 99.1561L95.1699 86.614L136.5 0Z"
         fill="currentColor"
@@ -39,31 +39,34 @@ function Star(props: { className: string }) {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(Rating.machine, {
+  const [state, send] = useMachine(rating.machine, {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
 
-  const { inputProps, getRatingProps, rootProps, getRatingState, sizeArray } = Rating.connect(state, send)
+  const api = rating.connect(state, send)
 
   return (
     <>
       <Global styles={ratingStyle} />
       <controls.ui />
 
-      <div>
-        <div className="rating" ref={ref} {...rootProps}>
-          {sizeArray.map((index) => {
-            const state = getRatingState(index)
+      <div ref={ref} {...api.rootProps}>
+        <label {...api.labelProps}>Rate:</label>
+
+        <div {...api.itemGroupProps}>
+          {api.sizeArray.map((index) => {
+            const state = api.getRatingState(index)
             return (
-              <span className="rating__rate" key={index} {...getRatingProps({ index })}>
-                {state.isHalf ? <HalfStar className="rating__star" /> : <Star className="rating__star" />}
+              <span key={index} {...api.getItemProps({ index })}>
+                {state.isHalf ? <HalfStar /> : <Star />}
               </span>
             )
           })}
         </div>
-        <input {...inputProps} />
+
+        <input {...api.inputProps} />
       </div>
 
       <StateVisualizer state={state} />

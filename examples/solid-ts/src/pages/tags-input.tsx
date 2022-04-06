@@ -23,7 +23,7 @@ export default function Page() {
     { context: controls.context },
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
+  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => TagsInput.connect<PropTypes>(state, send, normalizeProps))
 
@@ -33,18 +33,13 @@ export default function Page() {
 
       <div ref={ref} {...api().rootProps}>
         <label {...api().labelProps}>Enter frameworks:</label>
-        <div className="tags-input" {...api().controlProps}>
+        <div {...api().controlProps}>
           <For each={api().value}>
             {(value, index) => (
               <span>
-                <div
-                  className="tag"
-                  data-testid={`${toDashCase(value)}-tag`}
-                  {...api().getTagProps({ index: index(), value })}
-                >
+                <div data-testid={`${toDashCase(value)}-tag`} {...api().getTagProps({ index: index(), value })}>
                   <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
                   <button
-                    className="tag-close"
                     data-testid={`${toDashCase(value)}-close-button`}
                     {...api().getTagDeleteButtonProps({ index: index(), value })}
                   >
@@ -52,14 +47,13 @@ export default function Page() {
                   </button>
                 </div>
                 <input
-                  className="tag-input"
                   data-testid={`${toDashCase(value)}-input`}
                   {...api().getTagInputProps({ index: index(), value })}
                 />
               </span>
             )}
           </For>
-          <input className="tag-input" data-testid="input" placeholder="Add tag..." {...api().inputProps} />
+          <input data-testid="input" placeholder="add tag" {...api().inputProps} />
         </div>
         <input {...api().hiddenInputProps} />
       </div>

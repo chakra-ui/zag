@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
-import * as Menu from "@ui-machines/menu"
+import * as menu from "@ui-machines/menu"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { useEffect } from "react"
 import { menuData } from "../../../shared/data"
@@ -8,17 +8,17 @@ import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
-  const [state, send, machine] = useMachine(Menu.machine)
+  const [state, send, machine] = useMachine(menu.machine)
   const rootRef = useSetup<HTMLUListElement>({ send, id: "1" })
-  const root = Menu.connect(state, send)
+  const root = menu.connect(state, send)
 
-  const [subState, subSend, subMachine] = useMachine(Menu.machine)
+  const [subState, subSend, subMachine] = useMachine(menu.machine)
   const subRef = useSetup<HTMLUListElement>({ send: subSend, id: "2" })
-  const sub = Menu.connect(subState, subSend)
+  const sub = menu.connect(subState, subSend)
 
-  const [sub2State, sub2Send, sub2Machine] = useMachine(Menu.machine)
+  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
   const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: "3" })
-  const sub2 = Menu.connect(sub2State, sub2Send)
+  const sub2 = menu.connect(sub2State, sub2Send)
 
   useEffect(() => {
     setTimeout(() => {

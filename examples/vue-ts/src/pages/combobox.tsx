@@ -39,27 +39,25 @@ export default defineComponent({
         <>
           <controls.ui />
 
-          <div class="root">
+          <div>
             <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
+
             <br />
 
-            <div ref={nodeRef} class="combobox" {...api.rootProps}>
-              <label class="combobox__label" {...api.labelProps}>
-                Select country
-              </label>
+            <div ref={nodeRef} {...api.rootProps}>
+              <label {...api.labelProps}>Select country</label>
 
-              <div class="combobox__container" {...api.controlProps}>
+              <div {...api.controlProps}>
                 <input {...api.inputProps} />
                 <button {...api.toggleButtonProps}>▼</button>
               </div>
             </div>
 
-            <div class="combobox__popover" {...api.positionerProps}>
+            <div {...api.positionerProps}>
               {options.value.length > 0 && (
-                <ul class="combobox__listbox" {...api.listboxProps}>
+                <ul {...api.listboxProps}>
                   {options.value.map((item, index) => (
                     <li
-                      class="combobox__option"
                       key={`${item.code}:${index}`}
                       {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
                     >

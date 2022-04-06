@@ -60,12 +60,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       selectedValue: "invokeOnSelect",
     },
 
-    created(ctx) {
-      // if user initializes with a value, we need to set the selected value
-      if (ctx.inputValue !== "") {
-        ctx.selectedValue = ctx.inputValue
-      }
-    },
+    created: ["setSelectedValueIfNeeded"],
 
     on: {
       SET_VALUE: {
@@ -452,6 +447,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setSelectedValue(ctx, evt) {
         ctx.selectedValue = evt.value
+      },
+      setSelectedValueIfNeeded(ctx) {
+        // if user initializes with a value, we need to set the selected value
+        if (ctx.inputValue !== "") {
+          ctx.selectedValue = ctx.inputValue
+        }
       },
       clearSelectedValue(ctx) {
         ctx.selectedValue = ""

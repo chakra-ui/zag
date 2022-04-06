@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Rating from "@ui-machines/rating"
+import * as rating from "@ui-machines/rating"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, For } from "solid-js"
 import { ratingControls } from "../../../../shared/controls"
@@ -42,32 +42,32 @@ function Star(props: { className: string }) {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(Rating.machine, {
+  const [state, send] = useMachine(rating.machine, {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
 
-  const rating = createMemo(() => Rating.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => rating.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
       <controls.ui />
 
       <div>
-        <div className="rating" ref={ref} {...rating().rootProps}>
-          <For each={rating().sizeArray}>
+        <div className="rating" ref={ref} {...api().rootProps}>
+          <For each={api().sizeArray}>
             {(index) => {
-              const state = createMemo(() => rating().getRatingState(index))
+              const state = createMemo(() => api().getRatingState(index))
               return (
-                <span className="rating__rate" {...rating().getRatingProps({ index })}>
+                <span className="rating__rate" {...api().getItemProps({ index })}>
                   {state().isHalf ? <HalfStar className="rating__star" /> : <Star className="rating__star" />}
                 </span>
               )
             }}
           </For>
         </div>
-        <input {...rating().inputProps} />
+        <input {...api().inputProps} />
       </div>
 
       <StateVisualizer state={state} />

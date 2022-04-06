@@ -78,14 +78,16 @@ export const tabsControls = defineControls({
   activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
   loop: { type: "boolean", defaultValue: true, label: "loop?" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
 
 export const tagsInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
+  readonly: { type: "boolean", defaultValue: false },
   addOnPaste: { type: "boolean", defaultValue: false },
-  addOnBlur: { type: "boolean", defaultValue: false },
+  blurBehavior: { type: "select", options: ["add", "clear"] as const, defaultValue: "---" },
   max: { type: "number", defaultValue: 6 },
-  allowOutOfRange: { type: "boolean", defaultValue: false },
+  allowOverflow: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
@@ -103,4 +105,11 @@ export const splitterControls = defineControls({
   max: { type: "number", defaultValue: 340 },
   disabled: { type: "boolean", defaultValue: false },
   snapOffset: { type: "number", defaultValue: 0 },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
+})
+
+export const toastControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  pauseOnPageIdle: { type: "boolean", defaultValue: false },
+  pauseOnInteraction: { type: "boolean", defaultValue: true },
 })

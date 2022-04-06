@@ -8,25 +8,22 @@ const { not, and, or } = guards
 
 export function createToastMachine(options: Options = {}) {
   const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 1000, ...rest } = options
-  const timeout = getToastDuration(duration, type)
+  const __duration = getToastDuration(duration, type)
 
   return createMachine<MachineContext, MachineState>(
     {
       id,
-      initial: "active",
-      entry: ["invokeOnEntered"],
+      entry: "invokeOnEntered",
+      initial: type === "loading" ? "persist" : "active",
       context: {
         id,
         type,
-        duration: timeout,
+        remaining: __duration,
+        duration: __duration,
         removeDelay,
-        progress: { max: timeout, value: timeout },
+        createdAt: Date.now(),
         placement,
         ...rest,
-      },
-
-      computed: {
-        progressPercent: (ctx) => ctx.progress.value / ctx.progress.max,
       },
 
       on: {
@@ -49,20 +46,20 @@ export function createToastMachine(options: Options = {}) {
 
       states: {
         "active:temp": {
-          tags: ["visible"],
+          tags: ["visible", "updating"],
           after: {
-            // force a re-entry into the "active" state
-            NOW: "active",
+            0: "active",
           },
         },
 
         persist: {
-          tags: ["visible"],
+          tags: ["visible", "paused"],
           activities: "trackDocumentVisibility",
           on: {
             RESUME: {
               guard: not("isLoadingType"),
               target: "active",
+              actions: ["setCreatedAt"],
             },
             DISMISS: "dismissing",
           },
@@ -74,24 +71,17 @@ export function createToastMachine(options: Options = {}) {
           after: {
             VISIBLE_DURATION: "dismissing",
           },
-          every: [
-            {
-              guard: not("isLoadingType"),
-              actions: "setProgressValue",
-              delay: "PROGRESS_INTERVAL",
-            },
-          ],
           on: {
             DISMISS: "dismissing",
             PAUSE: {
               target: "persist",
-              actions: "setDurationToProgress",
+              actions: "setRemainingDuration",
             },
           },
         },
 
         dismissing: {
-          entry: ["clearProgressValue", "invokeOnExiting"],
+          entry: "invokeOnExiting",
           after: {
             REMOVE_DELAY: {
               target: "inactive",
@@ -115,26 +105,24 @@ export function createToastMachine(options: Options = {}) {
           })
         },
       },
+
       guards: {
         isLoadingType: (ctx, evt) => evt.toast?.type === "loading" || ctx.type === "loading",
         hasTypeChanged: (ctx, evt) => evt.toast?.type !== ctx.type,
         hasDurationChanged: (ctx, evt) => evt.toast?.duration !== ctx.duration,
       },
+
       delays: {
-        VISIBLE_DURATION: (ctx) => ctx.duration,
+        VISIBLE_DURATION: (ctx) => ctx.remaining,
         REMOVE_DELAY: (ctx) => ctx.removeDelay,
-        PROGRESS_INTERVAL: 10,
-        NOW: 0,
       },
+
       actions: {
-        setDurationToProgress(ctx) {
-          ctx.duration = ctx.progress.value
+        setRemainingDuration(ctx) {
+          ctx.remaining -= Date.now() - ctx.createdAt
         },
-        setProgressValue(ctx) {
-          ctx.progress.value -= 10
-        },
-        clearProgressValue(ctx) {
-          ctx.progress.value = 0
+        setCreatedAt(ctx) {
+          ctx.createdAt = Date.now()
         },
         notifyParentToRemove(_ctx, _evt, { self }) {
           self.sendParent({ type: "REMOVE_TOAST", id: self.id })
@@ -152,17 +140,9 @@ export function createToastMachine(options: Options = {}) {
           ctx.onUpdate?.()
         },
         setContext(ctx, evt) {
-          const { duration: newDuration, type: newType } = evt.toast
-          const duration = getToastDuration(newDuration, newType)
-
-          for (const key in evt.toast) {
-            ctx[key] = evt.toast[key]
-          }
-
-          if (newType && newDuration == null) {
-            ctx.duration = duration
-            ctx.progress.value = duration
-          }
+          const { duration, type } = evt.toast
+          const time = getToastDuration(duration, type)
+          Object.assign(ctx, { duration: time, remaining: time, ...evt.toast })
         },
       },
     },

@@ -10,14 +10,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const isHorizontal = state.context.isHorizontal
+  const isDisabled = state.context.disabled
+
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
 
+  const isAtMin = state.context.isAtMin
+  const isAtMax = state.context.isAtMax
+  const min = state.context.min
+  const max = state.context.max
+  const value = state.context.value
+
   return {
-    isCollapsed: state.context.isAtMin,
-    isExpanded: state.context.isAtMax,
+    isCollapsed: isAtMin,
+    isExpanded: isAtMax,
     isFocused,
     isDragging,
+    value,
 
     collapse() {
       send("COLLAPSE")
@@ -35,20 +44,18 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     rootProps: normalize.element<T>({
       "data-part": "root",
       "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       id: dom.getRootId(state.context),
       style: {
         display: "flex",
         flex: "1 1 0%",
-        height: isHorizontal ? "100%" : "auto",
-        width: isHorizontal ? "auto" : "100%",
         flexDirection: isHorizontal ? "row" : "column",
       },
     }),
 
     secondaryPaneProps: normalize.element<T>({
       "data-part": "secondary-pane",
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       id: dom.getSecondaryPaneId(state.context),
       style: {
         height: isHorizontal ? "100%" : "auto",
@@ -61,15 +68,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     primaryPaneProps: normalize.element<T>({
       "data-part": "primary-pane",
       id: dom.getPrimaryPaneId(state.context),
-      "data-disabled": dataAttr(state.context.disabled),
-      "data-state": state.context.isAtMax ? "at-max" : state.context.isAtMin ? "at-min" : "between",
+      "data-disabled": dataAttr(isDisabled),
+      "data-state": isAtMax ? "at-max" : isAtMin ? "at-min" : "between",
       style: {
-        minWidth: `${state.context.min}px`,
-        maxWidth: `${state.context.max}px`,
         visibility: "visible",
-        flex: `0 0 ${state.context.value}px`,
+        flex: `0 0 ${value}px`,
         position: "relative",
-        userSelect: state.matches("dragging") ? "none" : "auto",
+        userSelect: isDragging ? "none" : "auto",
+        ...(isHorizontal
+          ? { minWidth: `${min}px`, maxWidth: `${max}px` }
+          : { minHeight: `${min}px`, maxHeight: `${max}px` }),
       },
     }),
 
@@ -91,16 +99,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-part": "splitter",
       id: dom.getSplitterId(state.context),
       role: "separator",
-      tabIndex: state.context.disabled ? -1 : 0,
-      "aria-valuenow": state.context.value,
-      "aria-valuemin": state.context.min,
-      "aria-valuemax": state.context.max,
+      tabIndex: isDisabled ? undefined : 0,
+      "aria-valuenow": value,
+      "aria-valuemin": min,
+      "aria-valuemax": max,
       "aria-orientation": state.context.orientation,
       "aria-labelledby": dom.getSplitterLabelId(state.context),
       "aria-controls": dom.getPrimaryPaneId(state.context),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(state.context.disabled),
+      "data-disabled": dataAttr(isDisabled),
       style: {
         touchAction: "none",
         userSelect: "none",
@@ -112,7 +120,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         minWidth: isHorizontal ? undefined : "0px",
       },
       onPointerDown(event) {
-        if (state.context.disabled) {
+        if (isDisabled) {
           event.preventDefault()
           return
         }
@@ -121,11 +129,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         event.stopPropagation()
       },
       onPointerOver() {
-        if (state.context.disabled) return
+        if (isDisabled) return
         send("POINTER_OVER")
       },
       onPointerLeave() {
-        if (state.context.disabled) return
+        if (isDisabled) return
         send("POINTER_LEAVE")
       },
       onBlur() {
@@ -135,11 +143,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         send("FOCUS")
       },
       onDoubleClick() {
-        if (state.context.disabled) return
+        if (isDisabled) return
         send("DOUBLE_CLICK")
       },
       onKeyDown(event) {
-        if (state.context.disabled) return
+        if (isDisabled) return
         const step = getEventStep(event) * state.context.step
         const keyMap: EventKeyMap = {
           ArrowUp() {

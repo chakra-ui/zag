@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as PinInput from "@ui-machines/pin-input"
+import * as pinInput from "@ui-machines/pin-input"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { pinInputControls } from "../../../../shared/controls"
@@ -12,19 +12,19 @@ injectGlobal(pinInputStyle)
 export default function Page() {
   const controls = useControls(pinInputControls)
 
-  const [state, send] = useMachine(PinInput.machine, {
+  const [state, send] = useMachine(pinInput.machine, {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
+  const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => PinInput.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => pinInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
-    <div>
+    <>
       <controls.ui />
 
-      <div className="pin-input" ref={ref} {...api().rootProps}>
+      <div ref={ref} {...api().rootProps}>
         <input data-testid="input-1" {...api().getInputProps({ index: 0 })} />
         <input data-testid="input-2" {...api().getInputProps({ index: 1 })} />
         <input data-testid="input-3" {...api().getInputProps({ index: 2 })} />
@@ -35,6 +35,6 @@ export default function Page() {
       </button>
 
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

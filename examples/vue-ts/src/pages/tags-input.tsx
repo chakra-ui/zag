@@ -41,27 +41,22 @@ export default defineComponent({
 
           <div ref={ref} {...api.rootProps}>
             <label {...api.labelProps}>Enter frameworks:</label>
-            <div class="tags-input" {...api.controlProps}>
+            <div {...api.controlProps}>
               {api.value.map((value, index) => (
                 <span key={`${toDashCase(value)}-tag-${index}`}>
-                  <div class="tag" data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
+                  <div data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
                     <span>{value} </span>
                     <button
-                      class="tag-close"
                       data-testid={`${toDashCase(value)}-close-button`}
                       {...api.getTagDeleteButtonProps({ index, value })}
                     >
                       &#x2715;
                     </button>
                   </div>
-                  <input
-                    class="tag-input"
-                    data-testid={`${toDashCase(value)}-input`}
-                    {...api.getTagInputProps({ index, value })}
-                  />
+                  <input data-testid={`${toDashCase(value)}-input`} {...api.getTagInputProps({ index, value })} />
                 </span>
               ))}
-              <input class="tag-input" data-testid="input" placeholder="Add tag..." {...api.inputProps} />
+              <input data-testid="input" placeholder="add tag" {...api.inputProps} />
             </div>
             <input {...api.hiddenInputProps} />
           </div>

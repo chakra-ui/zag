@@ -1,5 +1,5 @@
 import { isDom, warn } from "@ui-machines/utils"
-import { groupConnect, toastGlobalConnect } from "./toast-group.connect"
+import { groupConnect, toaster } from "./toast-group.connect"
 import { groupMachine } from "./toast-group.machine"
 import { createToastMachine as createMachine } from "./toast.machine"
 
@@ -12,10 +12,10 @@ export const group = {
   machine: groupMachine,
 }
 
-export function global() {
+export function api() {
   if (!isDom()) {
-    warn("Toast.global() is only available in the browser")
+    warn("toast.api() is only available in the browser")
   } else {
-    return toastGlobalConnect
+    return toaster
   }
 }

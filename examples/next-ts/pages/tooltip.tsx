@@ -6,17 +6,16 @@ import { tooltipStyles } from "../../../shared/style"
 function TooltipComponent({ id }: { id?: string }) {
   const [state, send] = useMachine(Tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id })
-
-  const { triggerProps, isVisible, contentProps, positionerProps } = Tooltip.connect(state, send)
+  const api = Tooltip.connect(state, send)
 
   return (
     <div>
-      <button data-testid={`${id}-trigger`} ref={ref} {...triggerProps}>
+      <button data-testid={`${id}-trigger`} ref={ref} {...api.triggerProps}>
         Over me
       </button>
-      {isVisible && (
-        <div {...positionerProps}>
-          <div data-testid={`${id}-tooltip`} className="tooltip" {...contentProps}>
+      {api.isOpen && (
+        <div {...api.positionerProps}>
+          <div data-testid={`${id}-tooltip`} {...api.contentProps}>
             Tooltip
           </div>
         </div>

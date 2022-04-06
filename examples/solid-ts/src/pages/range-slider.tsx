@@ -21,7 +21,7 @@ export default function Page() {
     { context: controls.context as any },
   )
 
-  const ref = useSetup<HTMLDivElement>({ send, id: createUniqueId() })
+  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => RangeSlider.connect<PropTypes>(state, send, normalizeProps))
 

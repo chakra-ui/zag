@@ -29,9 +29,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       dir: state.context.dir,
     }),
 
-    tablistProps: normalize.element<T>({
-      "data-part": "tablist",
-      id: dom.getTablistId(state.context),
+    triggerGroupProps: normalize.element<T>({
+      "data-part": "trigger-group",
+      id: dom.getTriggerGroupId(state.context),
       role: "tablist",
       "data-focus": dataAttr(isFocused),
       "aria-orientation": state.context.orientation,
@@ -72,12 +72,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       },
     }),
 
-    getTabProps(props: TabProps) {
+    getTriggerProps(props: TabProps) {
       const { value, disabled } = props
       const selected = state.context.value === value
 
       return normalize.button<T>({
-        "data-part": "tab",
+        "data-part": "trigger",
         role: "tab",
         type: "button",
         disabled,
@@ -87,9 +87,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "data-value": value,
         "aria-selected": selected,
         "data-selected": dataAttr(selected),
-        "aria-controls": dom.getPanelId(state.context, value),
-        "data-ownedby": dom.getTablistId(state.context),
-        id: dom.getTabId(state.context, value),
+        "aria-controls": dom.getContentId(state.context, value),
+        "data-ownedby": dom.getTriggerGroupId(state.context),
+        id: dom.getTriggerId(state.context, value),
         tabIndex: selected ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
@@ -110,20 +110,26 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    getTabPanelProps({ value }: { value: string }) {
+    contentGroupProps: normalize.element<T>({
+      "data-part": "content-group",
+      id: dom.getContentGroupId(state.context),
+      "data-orientation": state.context.orientation,
+    }),
+
+    getContentProps({ value }: { value: string }) {
       const selected = state.context.value === value
       return normalize.element<T>({
-        "data-part": "tabpanel",
-        id: dom.getPanelId(state.context, value),
+        "data-part": "content",
+        id: dom.getContentId(state.context, value),
         tabIndex: 0,
-        "aria-labelledby": dom.getTabId(state.context, value),
+        "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
-        "data-ownedby": dom.getTablistId(state.context),
+        "data-ownedby": dom.getTriggerGroupId(state.context),
         hidden: !selected,
       })
     },
 
-    getTabDeleteButtonProps({ value, disabled }: TabProps) {
+    getDeleteButtonProps({ value, disabled }: TabProps) {
       return normalize.button<T>({
         "data-part": "delete-button",
         type: "button",
@@ -136,9 +142,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       })
     },
 
-    tabIndicatorProps: normalize.element<T>({
+    indicatorProps: normalize.element<T>({
       id: dom.getIndicatorId(state.context),
-      "data-part": "tab-indicator",
+      "data-part": "indicator",
       "data-orientation": state.context.orientation,
       style: {
         "--transition-duration": "200ms",

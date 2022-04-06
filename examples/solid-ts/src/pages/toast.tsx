@@ -1,9 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import { useActor, useMachine, useSetup, normalizeProps, PropTypes } from "@ui-machines/solid"
-import * as Toast from "@ui-machines/toast"
+import * as toast from "@ui-machines/toast"
 import { createMemo, createSignal, For } from "solid-js"
+import { toastControls } from "../../../../shared/controls"
 import { toastStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(toastStyle)
 
@@ -23,13 +25,13 @@ function Loader() {
   )
 }
 
-function ToastItem(props: { actor: Toast.Service }) {
+function ToastItem(props: { actor: toast.Service }) {
   const [state, send] = useActor(props.actor)
-  const api = createMemo(() => Toast.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => toast.connect<PropTypes>(state, send, normalizeProps))
 
   return (
-    <div className="toast" {...api().containerProps}>
-      <progress {...api().progress} />
+    <div {...api().rootProps}>
+      <div {...api().progressbarProps} />
       <p {...api().titleProps}>{api().title}</p>
       <p>{api().type === "loading" ? <Loader /> : null}</p>
       <button onClick={api().dismiss}>Close</button>
@@ -38,14 +40,18 @@ function ToastItem(props: { actor: Toast.Service }) {
 }
 
 export default function Page() {
-  const [state, send] = useMachine(Toast.group.machine)
-  const ref = useSetup<HTMLDivElement>({ send, id: "1" })
-  const api = createMemo(() => Toast.group.connect<PropTypes>(state, send, normalizeProps))
+  const controls = useControls(toastControls)
+
+  const [state, send] = useMachine(toast.group.machine, { context: controls.context })
+  const ref = useSetup({ send, id: "1" })
+  const api = createMemo(() => toast.group.connect<PropTypes>(state, send, normalizeProps))
 
   const [id, setId] = createSignal<string>()
 
   return (
     <>
+      <controls.ui />
+
       <div ref={ref} style={{ display: "flex", gap: "16px" }}>
         <button
           onClick={() => {

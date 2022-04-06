@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import * as Editable from "@ui-machines/editable"
+import * as editable from "@ui-machines/editable"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { editableControls } from "../../../shared/controls"
 import { editableStyle } from "../../../shared/style"
@@ -9,39 +9,40 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(editableControls)
 
-  const [state, send] = useMachine(Editable.machine, {
+  const [state, send] = useMachine(editable.machine, {
     context: controls.context,
   })
 
-  const ref = useSetup<HTMLInputElement>({ send, id: "1" })
+  const ref = useSetup({ send, id: "1" })
 
-  const api = Editable.connect(state, send)
+  const api = editable.connect(state, send)
 
   return (
     <>
       <Global styles={editableStyle} />
       <controls.ui />
 
-      <div className="root" {...api.rootProps}>
-        <div className="editable__area" {...api.areaProps}>
-          <input className="editable__input" data-testid="input" ref={ref} {...api.inputProps} />
-          <span className="editable__preview" data-testid="preview" {...api.previewProps} />
+      <div ref={ref} {...api.rootProps}>
+        <div {...api.areaProps}>
+          <input data-testid="input" {...api.inputProps} />
+          <span data-testid="preview" {...api.previewProps} />
         </div>
-        <div>
+
+        <div {...api.controlGroupProps}>
           {!api.isEditing && (
-            <button className="editable__edit" data-testid="edit-button" {...api.editButtonProps}>
+            <button data-testid="edit-button" {...api.editButtonProps}>
               Edit
             </button>
           )}
           {api.isEditing && (
-            <div className="editable__controls">
+            <>
               <button data-testid="save-button" {...api.submitButtonProps}>
                 Save
               </button>
               <button data-testid="cancel-button" {...api.cancelButtonProps}>
                 Cancel
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>

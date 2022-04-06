@@ -117,9 +117,14 @@ export type MachineContext = Context<{
    */
   validate?(options: ValidateTagOptions): boolean
   /**
-   * Whether to add a tag when the tag input is blurred
+   * The behavior of the tags input when the input is blurred
+   * - `"add"`: add the input value as a new tag
+   * - `"none"`: do nothing
+   * - `"clear"`: clear the input value
+   *
+   * @default "none"
    */
-  addOnBlur?: boolean
+  blurBehavior?: "clear" | "add"
   /**
    * Whether to add a tag when you paste values into the tag input
    */

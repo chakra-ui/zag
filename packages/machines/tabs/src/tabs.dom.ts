@@ -6,36 +6,37 @@ export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
   getRootId: (ctx: Ctx) => `tabs-${ctx.uid}`,
-  getTablistId: (ctx: Ctx) => `tabs-${ctx.uid}-tablist`,
-  getPanelId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tabpanel-${id}`,
-  getTabId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-tab-${id}`,
+  getTriggerGroupId: (ctx: Ctx) => `tabs-${ctx.uid}-trigger-group`,
+  getContentId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-content-${id}`,
+  getContentGroupId: (ctx: Ctx) => `tabs-${ctx.uid}-content-group`,
+  getTriggerId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-trigger-${id}`,
   getIndicatorId: (ctx: Ctx) => `tabs-${ctx.uid}-indicator`,
 
-  getTablistEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTablistId(ctx)),
-  getPanelEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getPanelId(ctx, id)),
-  getTabEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTabId(ctx, id)),
+  getTriggerGroupEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerGroupId(ctx)),
+  getContentEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx, id)),
+  getTriggerEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx, id)),
   getIndicatorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getIndicatorId(ctx)),
 
   getElements: (ctx: Ctx) => {
-    const ownerId = CSS.escape(dom.getTablistId(ctx))
+    const ownerId = CSS.escape(dom.getTriggerGroupId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
-    return queryAll(dom.getTablistEl(ctx), selector)
+    return queryAll(dom.getTriggerGroupEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTabId(ctx, id), ctx.loop),
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTabId(ctx, id), ctx.loop),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loop),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loop),
   getRectById: (ctx: Ctx, id: string) => {
     const empty = { offsetLeft: 0, offsetTop: 0, offsetWidth: 0, offsetHeight: 0 }
-    const tab = itemById(dom.getElements(ctx), dom.getTabId(ctx, id)) ?? empty
+    const tab = itemById(dom.getElements(ctx), dom.getTriggerId(ctx, id)) ?? empty
     if (ctx.isVertical) {
       return { top: `${tab.offsetTop}px`, height: `${tab.offsetHeight}px` }
     }
     return { left: `${tab.offsetLeft}px`, width: `${tab.offsetWidth}px` }
   },
-  getActiveTabPanelEl: (ctx: Ctx) => {
+  getActiveContentEl: (ctx: Ctx) => {
     if (!ctx.value) return
-    const id = dom.getPanelId(ctx, ctx.value)
+    const id = dom.getContentId(ctx, ctx.value)
     return dom.getDoc(ctx).getElementById(id)
   },
 }

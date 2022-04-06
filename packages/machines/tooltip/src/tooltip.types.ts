@@ -10,10 +10,6 @@ export type MachineContext = {
    */
   id: string
   /**
-   * Whether the tooltip is disabled.
-   */
-  disabled?: boolean
-  /**
    * The open delay of the tooltip.
    */
   openDelay: number
@@ -25,6 +21,10 @@ export type MachineContext = {
    * Whether to close the tooltip on pointerdown.
    */
   closeOnPointerDown: boolean
+  /**
+   * Whether to close the tooltip when the Escape key is pressed.
+   */
+  closeOnEsc?: boolean
   /**
    * Whether the tooltip's content is interactive.
    * In this mode, the tooltip will remain open when user hovers over the content.
@@ -63,5 +63,5 @@ export type MachineContext = {
 
 export type MachineState = {
   value: "unknown" | "opening" | "open" | "closing" | "closed"
-  tags: "visible"
+  tags: "open" | "closed"
 }

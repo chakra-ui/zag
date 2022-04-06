@@ -55,13 +55,13 @@ export type MachineContext = SharedContext & {
    */
   removeDelay: number
   /**
-   * The progress of the toast until it is closed
+   * The time the toast was created
    */
-  progress: { max: number; value: number }
+  createdAt: number
   /**
-   * @computed The progress percentage of the toast
+   * The time left before the toast is removed
    */
-  readonly progressPercent: number
+  remaining: number
   /**
    * Function called when the toast has been closed and removed
    */
@@ -94,7 +94,7 @@ export type Options = Partial<Omit<MachineContext, "progress">>
 
 export type MachineState = {
   value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
-  tags: "visible"
+  tags: "visible" | "paused" | "updating"
 }
 
 export type Service = Machine<MachineContext, MachineState>
@@ -112,11 +112,7 @@ export type GroupMachineContext = SharedContext &
     /**
      * The gutter or spacing between toasts
      */
-    spacing: string | number
-    /**
-     * @computed The string value of the spacing
-     */
-    readonly spacingValue: string
+    gutter: string
     /**
      * The z-index applied to each toast group
      */
@@ -128,7 +124,7 @@ export type GroupMachineContext = SharedContext &
     /**
      * The offset from the safe environment edge of the viewport
      */
-    offsets: Record<"left" | "right" | "bottom" | "top", number>
+    offsets: Record<"left" | "right" | "bottom" | "top", string>
   }>
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
@@ -148,10 +144,11 @@ export type GroupProps = {
   label?: string
 }
 
-export type GlobalConnect = {
+export type Toaster = {
   count: number
   isVisible(id: string): boolean
   upsert(options: Options): string | undefined
+  create(options: Options): string | undefined
   success(options: Options): string | undefined
   error(options: Options): string | undefined
   loading(options: Options): string | undefined

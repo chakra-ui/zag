@@ -45,7 +45,7 @@ export default defineComponent({
               }
             }}
           >
-            <div class="slider" ref={ref} {...api.rootProps}>
+            <div ref={ref} {...api.rootProps}>
               <div>
                 <label data-testid="label" {...api.labelProps}>
                   Slider Label

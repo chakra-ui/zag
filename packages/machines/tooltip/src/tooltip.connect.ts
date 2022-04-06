@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@ui-machines/core"
-import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@ui-machines/dom-utils"
+import { dataAttr, visuallyHiddenStyle } from "@ui-machines/dom-utils"
 import { getPlacementStyles } from "@ui-machines/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@ui-machines/types"
 import { dom } from "./tooltip.dom"
@@ -12,8 +12,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   normalize = normalizeProp,
 ) {
   const id = state.context.id
+  const hasAriaLabel = state.context.hasAriaLabel
 
-  const isVisible = state.hasTag("visible")
+  const isOpen = state.hasTag("open")
 
   const triggerId = dom.getTriggerId(state.context)
   const contentId = dom.getContentId(state.context)
@@ -23,8 +24,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
   })
 
   return {
-    isVisible,
-    hasAriaLabel: state.context.hasAriaLabel,
+    isOpen,
     open() {
       send("OPEN")
     },
@@ -41,9 +41,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
       id: triggerId,
-      "data-expanded": dataAttr(isVisible),
-      "aria-describedby": isVisible ? contentId : undefined,
-      "data-controls": "tooltip",
+      "data-expanded": dataAttr(isOpen),
+      "aria-describedby": isOpen ? contentId : undefined,
+      onClick() {
+        send("CLICK")
+      },
       onFocus() {
         send("FOCUS")
       },
@@ -63,20 +65,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       onPointerLeave() {
         send("POINTER_LEAVE")
       },
-      onKeyDown(event) {
-        const keymap: EventKeyMap = {
-          Enter() {
-            send("PRESS_ENTER")
-          },
-          Space() {
-            send("PRESS_ENTER")
-          },
-        }
-        const key = getEventKey(event)
-        const exec = keymap[key]
-        if (exec) {
-          exec(event)
-        }
+      onPointerCancel() {
+        send("POINTER_LEAVE")
       },
     }),
 
@@ -99,8 +89,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     contentProps: normalize.element<T>({
       "data-part": "content",
-      role: state.context.hasAriaLabel ? undefined : "tooltip",
-      id: state.context.hasAriaLabel ? undefined : contentId,
+      role: hasAriaLabel ? undefined : "tooltip",
+      id: hasAriaLabel ? undefined : contentId,
+      "data-placement": state.context.currentPlacement,
       onPointerEnter() {
         send("TOOLTIP_POINTER_ENTER")
       },
@@ -117,6 +108,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       id: contentId,
       role: "tooltip",
       style: visuallyHiddenStyle,
+      children: state.context["aria-label"],
     }),
 
     createPortal() {

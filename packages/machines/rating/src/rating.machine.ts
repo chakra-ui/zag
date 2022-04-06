@@ -11,7 +11,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       name: "rating",
       max: 5,
       dir: "ltr",
-      uid: "rating-input",
+      uid: "",
       value: -1,
       hoveredValue: -1,
       disabled: false,
@@ -21,18 +21,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
     },
 
-    created(ctx) {
-      if (!ctx.allowHalf) {
-        ctx.value = Math.round(ctx.value)
-      }
-    },
+    created: ["roundValueIfNeeded"],
 
     watch: {
-      allowHalf(ctx) {
-        if (!ctx.allowHalf) {
-          ctx.value = Math.round(ctx.value)
-        }
-      },
+      allowHalf: ["roundValueIfNeeded"],
     },
 
     computed: {
@@ -117,7 +109,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
       isValueEmpty: (ctx) => ctx.value <= 0,
-      isRadioFocused: (ctx) => !!dom.getRootEl(ctx)?.contains(dom.getActiveEl(ctx)),
+      isRadioFocused: (ctx) => !!dom.getItemGroupEl(ctx)?.contains(dom.getActiveEl(ctx)),
     },
     actions: {
       setupDocument(ctx, evt) {
@@ -160,6 +152,11 @@ export const machine = createMachine<MachineContext, MachineState>(
       invokeOnChange(ctx) {
         ctx.onChange?.(ctx.value)
         dom.dispatchChangeEvent(ctx)
+      },
+      roundValueIfNeeded(ctx) {
+        if (!ctx.allowHalf) {
+          ctx.value = Math.round(ctx.value)
+        }
       },
     },
   },

@@ -42,19 +42,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       dir: state.context.dir,
       "data-part": "root",
       id: dom.getRootId(state.context),
-      role: "radiogroup",
-      "aria-orientation": "horizontal",
-      "aria-labelledby": dom.getLabelId(state.context),
-      tabIndex: state.context.readonly ? 0 : -1,
-      "data-disabled": dataAttr(isDisabled),
-      onPointerMove() {
-        if (!isInteractive) return
-        send("GROUP_POINTER_OVER")
-      },
-      onPointerLeave() {
-        if (!isInteractive) return
-        send("GROUP_POINTER_LEAVE")
-      },
     }),
 
     inputProps: normalize.input<T>({
@@ -71,13 +58,31 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-disabled": dataAttr(isDisabled),
     }),
 
-    getRatingProps({ index }: { index: number }) {
+    itemGroupProps: normalize.element<T>({
+      id: dom.getItemGroupId(state.context),
+      "data-part": "item-group",
+      role: "radiogroup",
+      "aria-orientation": "horizontal",
+      "aria-labelledby": dom.getLabelId(state.context),
+      tabIndex: state.context.readonly ? 0 : -1,
+      "data-disabled": dataAttr(isDisabled),
+      onPointerMove() {
+        if (!isInteractive) return
+        send("GROUP_POINTER_OVER")
+      },
+      onPointerLeave() {
+        if (!isInteractive) return
+        send("GROUP_POINTER_LEAVE")
+      },
+    }),
+
+    getItemProps({ index }: { index: number }) {
       const { isHalf, isHighlighted, isChecked } = api.getRatingState(index)
       const valueText = messages.ratingValueText(index)
 
       return normalize.element<T>({
-        "data-part": "rating",
-        id: dom.getRatingId(state.context, index),
+        "data-part": "item",
+        id: dom.getItemId(state.context, index),
         role: "radio",
         tabIndex: isDisabled ? undefined : isChecked ? 0 : -1,
         "aria-roledescription": "rating",
