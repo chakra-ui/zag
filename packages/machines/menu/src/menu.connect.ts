@@ -12,14 +12,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isSubmenu = state.context.isSubmenu
   const values = state.context.values
 
-  const contextMenu = state.context.contextMenu
-  const contextMenuPoint = state.context.contextMenuPoint
-  const useContextMenuStyle = contextMenu && contextMenuPoint
-
   const isOpen = state.hasTag("visible")
 
   const popperStyles = getPlacementStyles({
-    measured: !!state.context.currentPlacement,
+    measured: !!state.context.anchorPoint || !!state.context.currentPlacement,
   })
 
   const api = {
@@ -162,16 +158,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     positionerProps: normalize.element<T>({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
-      style: useContextMenuStyle
-        ? {
-            position: "absolute",
-            left: `${contextMenuPoint.x}px`,
-            top: `${contextMenuPoint.y}px`,
-          }
-        : {
-            ...popperStyles.floating,
-            pointerEvents: !state.context.isPlacementComplete ? "none" : undefined,
-          },
+      style: {
+        ...popperStyles.floating,
+        pointerEvents: !state.context.isPlacementComplete ? "none" : undefined,
+      },
     }),
 
     arrowProps: normalize.element<T>({

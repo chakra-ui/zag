@@ -2,7 +2,7 @@ import { createMachine, guards, ref } from "@zag-js/core"
 import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@zag-js/rect-utils"
-import { add, invariant, isArray, remove } from "@zag-js/utils"
+import { add, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import { MachineContext, MachineState } from "./menu.types"
 
@@ -22,7 +22,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       intentPolygon: null,
       loop: false,
       suspendPointer: false,
-      contextMenuPoint: null,
+      anchorPoint: null,
       positioning: { placement: "bottom-start", gutter: 8 },
       closeOnSelect: true,
       isPlacementComplete: false,
@@ -33,19 +33,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       isRtl: (ctx) => ctx.dir === "rtl",
     },
 
-    created(ctx) {
-      if (ctx.contextMenu) {
-        ctx.disablePositioning = true
-      }
-    },
-
     watch: {
-      isSubmenu(ctx) {
-        if (ctx.isSubmenu) {
-          ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
-          ctx.positioning.gutter = 0
-        }
-      },
+      isSubmenu: ["setSubmenuPlacement"],
+      anchorPoint: ["applyAnchorPoint"],
     },
 
     on: {
@@ -78,10 +68,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     states: {
       unknown: {
         on: {
-          SETUP: {
-            target: "idle",
-            actions: ["setupDocument", "validateMenuSetup"],
-          },
+          SETUP: { target: "idle", actions: "setupDocument" },
         },
       },
 
@@ -89,11 +76,11 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           CONTEXT_MENU_START: {
             target: "opening:contextmenu",
-            actions: "setContextMenuPoint",
+            actions: "setAnchorPoint",
           },
           CONTEXT_MENU: {
             target: "open",
-            actions: "setContextMenuPoint",
+            actions: "setAnchorPoint",
           },
           TRIGGER_CLICK: {
             guard: not("isSubmenu"),
@@ -151,19 +138,19 @@ export const machine = createMachine<MachineContext, MachineState>(
         entry: [
           "clearActiveId",
           "focusTrigger",
+          "clearAnchorPoint",
           "clearPointerDownNode",
           "resumePointer",
           "closeChildMenus",
-          "clearContextMenuPoint",
         ],
         on: {
           CONTEXT_MENU_START: {
             target: "opening:contextmenu",
-            actions: "setContextMenuPoint",
+            actions: "setAnchorPoint",
           },
           CONTEXT_MENU: {
             target: "open",
-            actions: "setContextMenuPoint",
+            actions: "setAnchorPoint",
           },
           TRIGGER_CLICK: {
             target: "open",
@@ -298,6 +285,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       SUBMENU_OPEN_DELAY: 100,
       SUBMENU_CLOSE_DELAY: 200,
     },
+
     guards: {
       closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
       hasActiveId: (ctx) => ctx.activeId !== null,
@@ -327,9 +315,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         return withinPolygon(ctx.intentPolygon, evt.point)
       },
     },
+
     activities: {
       computePlacement(ctx) {
-        if (ctx.disablePositioning) return
+        if (ctx.anchorPoint) return
         ctx.currentPlacement = ctx.positioning.placement
         return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
           ...ctx.positioning,
@@ -364,7 +353,28 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
     },
+
     actions: {
+      setAnchorPoint(ctx, evt) {
+        ctx.anchorPoint = evt.point
+      },
+      clearAnchorPoint(ctx) {
+        ctx.anchorPoint = null
+      },
+      applyAnchorPoint(ctx) {
+        const pt = ctx.anchorPoint
+        if (!pt) return
+        const el = dom.getPositionerEl(ctx)
+        if (!el) return
+        Object.assign(el.style, { left: `${pt.x}px`, top: `${pt.y}px`, position: "absolute" })
+        ctx.isPlacementComplete = true
+      },
+      setSubmenuPlacement(ctx) {
+        if (ctx.isSubmenu) {
+          ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
+          ctx.positioning.gutter = 0
+        }
+      },
       invokeOnValueChange(ctx, evt) {
         if (!ctx.values) return
         const name = evt.name ?? evt.option.name
@@ -411,16 +421,6 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.uid = evt.id
         if (evt.doc) ctx.doc = ref(evt.doc)
       },
-      validateMenuSetup(ctx) {
-        nextTick(() => {
-          const trigger = dom.getTriggerEl(ctx)
-          if (ctx.contextMenu && trigger) {
-            invariant(
-              `[menu/invalid-setup] A menu cannot be a context menu and have a button trigger. Please remove one of the two.`,
-            )
-          }
-        })
-      },
       setActiveId(ctx, evt) {
         ctx.activeId = evt.id
       },
@@ -464,7 +464,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.activeId = event.id
       },
       focusTrigger(ctx) {
-        if (ctx.parent) return
+        // only want to re-focus trigger if it's not a submenu or the
+        // menu was not manually positioned (e.g. context menu)
+        if (ctx.parent || ctx.anchorPoint) return
         const trigger = dom.getTriggerEl(ctx)
         nextTick(() => trigger?.focus())
       },
@@ -510,12 +512,6 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       restoreParentFocus(ctx) {
         ctx.parent?.send("RESTORE_FOCUS")
-      },
-      setContextMenuPoint(ctx, evt) {
-        ctx.contextMenuPoint = evt.point
-      },
-      clearContextMenuPoint(ctx) {
-        ctx.contextMenuPoint = null
       },
     },
   },

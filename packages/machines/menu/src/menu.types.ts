@@ -40,6 +40,10 @@ export type MachineContext = Context<{
    */
   intentPolygon: Point[] | null
   /**
+   * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
+   */
+  anchorPoint: Point | null
+  /**
    * @internal Whether to suspend listening to pointer-over events on a submenu.
    * This is used to prevent the menu from closing when the user is hovering to a submenu.
    */
@@ -53,14 +57,6 @@ export type MachineContext = Context<{
    */
   loop: boolean
   /**
-   * Whether the menu is a context menu
-   */
-  contextMenu?: boolean
-  /**
-   * @internal For context menu, the point where the context menu is opened.
-   */
-  contextMenuPoint: Point | null
-  /**
    * @computed Whether the menu is a submenu (has a parent menu)
    */
   readonly isSubmenu: boolean
@@ -72,10 +68,6 @@ export type MachineContext = Context<{
    * The options used to dynamically position the menu
    */
   positioning: PositioningOptions
-  /**
-   * Whether to disable dynamic placement
-   */
-  disablePositioning?: boolean
   /**
    * @internal The computed placement (maybe different from initial placement)
    */

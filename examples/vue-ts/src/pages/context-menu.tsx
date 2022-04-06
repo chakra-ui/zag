@@ -12,7 +12,6 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       menu.machine.withContext({
-        contextMenu: true,
         onSelect: console.log,
       }),
     )

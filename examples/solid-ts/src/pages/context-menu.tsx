@@ -10,7 +10,6 @@ injectGlobal(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine.withContext({
-      contextMenu: true,
       onSelect: console.log,
     }),
   )
