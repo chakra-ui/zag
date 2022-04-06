@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Combobox from "@ui-machines/combobox"
+import * as combobox from "@ui-machines/combobox"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@ui-machines/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { comboboxControls } from "../../../../shared/controls"
@@ -16,7 +16,7 @@ export default function Page() {
   const [options, setOptions] = createSignal(comboboxData)
 
   const [state, send] = useMachine(
-    Combobox.machine.withContext({
+    combobox.machine.withContext({
       onOpen() {
         setOptions(comboboxData)
       },
@@ -30,7 +30,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => Combobox.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => combobox.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
@@ -53,11 +53,14 @@ export default function Page() {
           {options().length > 0 && (
             <ul {...api().listboxProps}>
               <For each={options()}>
-                {(item, index) => (
-                  <li {...api().getOptionProps({ label: item.label, value: item.code, index: index() })}>
-                    {item.label}
-                  </li>
-                )}
+                {(item, index) => {
+                  const options = { label: item.label, value: item.code, index: index(), disabled: item.disabled }
+                  return (
+                    <li className="combobox__option" {...api().getOptionProps(options)}>
+                      {item.label}
+                    </li>
+                  )
+                }}
               </For>
             </ul>
           )}

@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Combobox from "@ui-machines/combobox"
+import * as combobox from "@ui-machines/combobox"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@ui-machines/vue"
 import { computed, defineComponent, ref, h, Fragment } from "vue"
 import { comboboxControls } from "../../../../shared/controls"
@@ -17,7 +17,7 @@ export default defineComponent({
     const options = ref(comboboxData)
 
     const [state, send] = useMachine(
-      Combobox.machine.withContext({
+      combobox.machine.withContext({
         onOpen() {
           options.value = comboboxData
         },
@@ -30,7 +30,7 @@ export default defineComponent({
     )
 
     const nodeRef = useSetup({ send, id: "1" })
-    const apiRef = computed(() => Combobox.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => combobox.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
@@ -59,7 +59,7 @@ export default defineComponent({
                   {options.value.map((item, index) => (
                     <li
                       key={`${item.code}:${index}`}
-                      {...api.getOptionProps({ label: item.label, value: item.code, index })}
+                      {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
                     >
                       {item.label}
                     </li>
