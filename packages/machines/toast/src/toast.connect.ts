@@ -86,8 +86,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-type": state.context.type,
       style: {
         opacity: isVisible ? 1 : 0,
-        animation: isUpdating || type === "loading" ? "none" : undefined,
         transformOrigin: isRtl ? "right" : "left",
+        animationName: isUpdating || type === "loading" ? "none" : undefined,
         animationPlayState: isPaused ? "paused" : "running",
         animationDuration: `${state.context.duration}ms`,
         animationFillMode: isUpdating ? undefined : "forwards",
