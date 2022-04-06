@@ -1,4 +1,4 @@
-# UI Machines
+# Zag
 
 Finite state machines for accessible JavaScript components
 
@@ -16,8 +16,7 @@ understand, debug, improve or test.
 
 ## Solution
 
-`UI Machines` is a lightweight solution that implements common component patterns using the state machine and XState
-methodology.
+**Zag** is a JavaScript API that implements common component patterns using the state machine methodology.
 
 ## Installation
 
