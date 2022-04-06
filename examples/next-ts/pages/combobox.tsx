@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import * as Combobox from "@ui-machines/combobox"
+import * as combobox from "@ui-machines/combobox"
 import { useMachine, useSetup } from "@ui-machines/react"
 import { useState } from "react"
 import { comboboxControls } from "../../../shared/controls"
@@ -14,7 +14,7 @@ export default function Page() {
   const [options, setOptions] = useState(comboboxData)
 
   const [state, send] = useMachine(
-    Combobox.machine.withContext({
+    combobox.machine.withContext({
       onOpen() {
         setOptions(comboboxData)
       },
@@ -28,7 +28,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: "1" })
 
-  const api = Combobox.connect(state, send)
+  const api = combobox.connect(state, send)
 
   return (
     <>
