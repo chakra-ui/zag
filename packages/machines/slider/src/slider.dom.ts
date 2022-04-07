@@ -1,15 +1,16 @@
-import { dispatchInputEvent } from "@zag-js/dom-utils"
-import { clamp, percentToValue, snapToStep, transform, valueToPercent } from "@zag-js/number-utils"
+import { dispatchInputValueEvent } from "@zag-js/dom-utils"
+import { transform, valueToPercent } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { relativeToNode } from "@zag-js/rect-utils"
 import type { Style } from "@zag-js/types"
-import type { SharedContext, MachineContext as Ctx } from "./slider.types"
+import type { MachineContext as Ctx, SharedContext } from "./slider.types"
+import { utils } from "./slider.utils"
 
 /**
  * To ensure the slider thumb is always within the track (on the y-axis)
  */
 function getVerticalThumbOffset(ctx: SharedContext) {
-  const { height } = ctx.thumbSize
+  const { height = 0 } = ctx.thumbSize ?? {}
   const getValue = transform([ctx.min, ctx.max], [-height / 2, height / 2])
   return parseFloat(getValue(ctx.value).toFixed(2))
 }
@@ -18,7 +19,7 @@ function getVerticalThumbOffset(ctx: SharedContext) {
  * To ensure the slider thumb is always within the track (on the x-axis)
  */
 function getHorizontalThumbOffset(ctx: SharedContext) {
-  const { width } = ctx.thumbSize
+  const { width = 0 } = ctx.thumbSize ?? {}
 
   if (ctx.isRtl) {
     const getValue = transform([ctx.max, ctx.min], [-width * 1.5, -width / 2])
@@ -103,14 +104,11 @@ export const dom = {
 
   getThumbEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
 
   getControlStyle,
   getThumbStyle,
   getRangeStyle,
-  getTrackStyle: (): Style => ({
-    position: "relative",
-  }),
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
     // get the slider root element
@@ -129,17 +127,13 @@ export const dom = {
       percent = 1 - progress.y
     }
 
-    // clamp the progress % between 0 and 1
-    percent = clamp(percent, { min: 0, max: 1 })
-
-    // get the computed value from the progress %
-    return parseFloat(snapToStep(percentToValue(percent, ctx), ctx.step))
+    return utils.fromPercent(ctx, percent)
   },
 
   dispatchChangeEvent(ctx: Ctx) {
     const input = dom.getInputEl(ctx)
     if (!input) return
-    dispatchInputEvent(input, ctx.value)
+    dispatchInputValueEvent(input, ctx.value)
   },
 
   getMarkerStyle(ctx: Ctx, percent: number): Style {

@@ -1,4 +1,4 @@
-import { dispatchInputEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
 export const dom = {
@@ -50,6 +50,6 @@ export const dom = {
   dispatchInputEvent(ctx: Ctx) {
     const input = dom.getHiddenInputEl(ctx)
     if (!input) return
-    dispatchInputEvent(input, ctx.valueAsString)
+    dispatchInputValueEvent(input, ctx.valueAsString)
   },
 }

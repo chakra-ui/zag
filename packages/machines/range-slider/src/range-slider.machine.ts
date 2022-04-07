@@ -20,6 +20,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       max: 100,
       step: 1,
       value: [0, 100],
+      initialValue: [],
       orientation: "horizontal",
       dir: "ltr",
       minStepsBetweenThumbs: 0,
@@ -31,6 +32,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
       isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
       spacing: (ctx) => multiply(ctx.minStepsBetweenThumbs, ctx.step),
+      hasMeasuredThumbSize: (ctx) => ctx.thumbSize != null,
     },
 
     watch: {
@@ -48,7 +50,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setupDocument", "setThumbSize"],
+            actions: ["setupDocument", "setThumbSize", "checkValue"],
           },
         },
       },
@@ -142,6 +144,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       setupDocument(ctx, evt) {
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
+      },
+      checkValue(ctx) {
+        const values = Array.from(ctx.value)
+        values.forEach((value, index) => {
+          const range = getRangeAtIndex(ctx, index)
+          value = clamp(snapToStep(value, ctx.step), range)
+          ctx.value[index] = value
+          ctx.initialValue[index] = value
+        })
       },
       invokeOnChangeStart(ctx) {
         ctx.onChangeStart?.(ctx.value)

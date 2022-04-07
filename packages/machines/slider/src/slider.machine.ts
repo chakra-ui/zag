@@ -1,21 +1,22 @@
 import { createMachine, ref } from "@zag-js/core"
-import { nextTick, raf, trackPointerMove } from "@zag-js/dom-utils"
-import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
+import { nextTick, raf, trackFormReset, trackInputPropertyMutation, trackPointerMove } from "@zag-js/dom-utils"
 import { dom } from "./slider.dom"
 import { MachineContext, MachineState } from "./slider.types"
+import { utils } from "./slider.utils"
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "slider-machine",
     initial: "unknown",
     context: {
-      thumbSize: { width: 0, height: 0 },
+      thumbSize: null,
       uid: "",
       disabled: false,
       threshold: 5,
       dir: "ltr",
       origin: "start",
       orientation: "horizontal",
+      initialValue: null,
       value: 0,
       step: 1,
       min: 0,
@@ -27,18 +28,21 @@ export const machine = createMachine<MachineContext, MachineState>(
       isVertical: (ctx) => ctx.orientation === "vertical",
       isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
       isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+      hasMeasuredThumbSize: (ctx) => ctx.thumbSize !== null,
     },
 
     watch: {
       value: ["invokeOnChange", "dispatchChangeEvent"],
     },
 
+    activities: ["trackFormReset", "trackScriptedUpdate"],
+
     states: {
       unknown: {
         on: {
           SETUP: {
             target: "idle",
-            actions: ["setupDocument", "setThumbSize"],
+            actions: ["setupDocument", "setThumbSize", "checkValue"],
           },
         },
       },
@@ -62,31 +66,31 @@ export const machine = createMachine<MachineContext, MachineState>(
           },
           ARROW_LEFT: {
             guard: "isHorizontal",
-            actions: ["decrement"],
+            actions: "decrement",
           },
           ARROW_RIGHT: {
             guard: "isHorizontal",
-            actions: ["increment"],
+            actions: "increment",
           },
           ARROW_UP: {
             guard: "isVertical",
-            actions: ["increment"],
+            actions: "increment",
           },
           ARROW_DOWN: {
             guard: "isVertical",
-            actions: ["decrement"],
+            actions: "decrement",
           },
           PAGE_UP: {
-            actions: ["increment"],
+            actions: "increment",
           },
           PAGE_DOWN: {
-            actions: ["decrement"],
+            actions: "decrement",
           },
           HOME: {
-            actions: ["setToMin"],
+            actions: "setToMin",
           },
           END: {
-            actions: ["setToMax"],
+            actions: "setToMax",
           },
           BLUR: "idle",
         },
@@ -112,7 +116,34 @@ export const machine = createMachine<MachineContext, MachineState>(
       isHorizontal: (ctx) => ctx.isHorizontal,
       isVertical: (ctx) => ctx.isVertical,
     },
+
     activities: {
+      trackScriptedUpdate(ctx, _, { send }) {
+        let cleanup: VoidFunction | undefined
+        nextTick(() => {
+          const el = dom.getInputEl(ctx)
+          if (!el) return
+          cleanup = trackInputPropertyMutation(el, {
+            type: "input",
+            property: "value",
+            fn(value) {
+              send({ type: "SET_VALUE", value: parseFloat(value) })
+            },
+          })
+        })
+        return cleanup
+      },
+      trackFormReset(ctx) {
+        let cleanup: VoidFunction | undefined
+        nextTick(() => {
+          const el = dom.getInputEl(ctx)
+          if (!el) return
+          cleanup = trackFormReset(el, () => {
+            if (ctx.initialValue != null) ctx.value = ctx.initialValue
+          })
+        })
+        return cleanup
+      },
       trackPointerMove(ctx, _evt, { send }) {
         return trackPointerMove({
           ctx,
@@ -125,10 +156,15 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
     },
+
     actions: {
       setupDocument(ctx, evt) {
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
+      },
+      checkValue(ctx) {
+        const value = utils.convert(ctx, ctx.value)
+        Object.assign(ctx, { value, initialValue: value })
       },
       invokeOnChangeStart(ctx) {
         ctx.onChangeStart?.(ctx.value)
@@ -144,29 +180,24 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setThumbSize(ctx) {
         raf(() => {
-          const thumb = dom.getThumbEl(ctx)
-          if (!thumb) return
-          ctx.thumbSize.width = thumb.offsetWidth
-          ctx.thumbSize.height = thumb.offsetHeight
+          const el = dom.getThumbEl(ctx)
+          if (!el) return
+          ctx.thumbSize = { width: el.offsetWidth, height: el.offsetHeight }
         })
       },
       setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
         if (value == null) return
-        ctx.value = clamp(value, ctx)
+        ctx.value = utils.clamp(ctx, value)
       },
       focusThumb(ctx) {
         nextTick(() => dom.getThumbEl(ctx)?.focus())
       },
       decrement(ctx, evt) {
-        let value = decrement(ctx.value, evt.step ?? ctx.step)
-        value = parseFloat(snapToStep(value, ctx.step))
-        ctx.value = clamp(value, ctx)
+        ctx.value = utils.decrement(ctx, evt.step)
       },
       increment(ctx, evt) {
-        let value = increment(ctx.value, evt.step ?? ctx.step)
-        value = parseFloat(snapToStep(value, ctx.step))
-        ctx.value = clamp(value, ctx)
+        ctx.value = utils.increment(ctx, evt.step)
       },
       setToMin(ctx) {
         ctx.value = ctx.min
@@ -175,7 +206,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.value = ctx.max
       },
       setValue(ctx, evt) {
-        ctx.value = clamp(evt.value, ctx)
+        ctx.value = utils.convert(ctx, evt.value)
       },
     },
   },

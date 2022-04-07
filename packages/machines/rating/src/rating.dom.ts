@@ -1,4 +1,4 @@
-import { dispatchInputEvent } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent } from "@zag-js/dom-utils"
 import { MachineContext as Ctx } from "./rating.types"
 
 export const dom = {
@@ -18,6 +18,6 @@ export const dom = {
 
   dispatchChangeEvent: (ctx: Ctx) => {
     const input = dom.getInputEl(ctx)
-    if (input) dispatchInputEvent(input, ctx.value)
+    if (input) dispatchInputValueEvent(input, ctx.value)
   },
 }

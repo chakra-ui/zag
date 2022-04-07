@@ -144,10 +144,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     inputProps: normalize.input<T>({
       "data-part": "input",
-      type: "hidden",
+      type: "text",
       defaultValue: state.context.value,
       name: state.context.name,
       id: dom.getInputId(state.context),
+      hidden: true,
     }),
 
     outputProps: normalize.output<T>({
@@ -166,7 +167,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      style: dom.getTrackStyle(),
+      style: { position: "relative" },
     }),
 
     rangeProps: normalize.element<T>({

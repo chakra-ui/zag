@@ -6,6 +6,11 @@ export type MachineContext = Context<{
    */
   value: number
   /**
+   * The value of the slider when it was initially rendered.
+   * Used when the `form.reset(...)` is called.
+   */
+  initialValue: number | null
+  /**
    * The name associated with the slider (when used in a form)
    */
   name?: string
@@ -81,7 +86,11 @@ export type MachineContext = Context<{
   /**
    * @internal The slider thumb dimensions
    */
-  thumbSize: { width: number; height: number }
+  thumbSize: { width: number; height: number } | null
+  /**
+   * @internal Whether the thumb size has been measured
+   */
+  readonly hasMeasuredThumbSize: boolean
   /**
    * @computed Whether the slider is horizontal
    */
@@ -105,8 +114,9 @@ export type SharedContext = {
   isVertical: boolean
   isHorizontal: boolean
   value: number
-  thumbSize: { width: number; height: number }
+  thumbSize: { width: number; height: number } | null
   orientation?: "horizontal" | "vertical"
+  readonly hasMeasuredThumbSize: boolean
 }
 
 export type MachineState = {

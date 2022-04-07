@@ -166,10 +166,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     hiddenInputProps: normalize.input<T>({
       "data-part": "hidden-input",
-      type: "hidden",
+      type: "text",
+      hidden: true,
       name: state.context.name,
       id: dom.getHiddenInputId(state.context),
-      value: state.context.valueAsString,
+      defaultValue: state.context.valueAsString,
     }),
 
     getTagProps(options: TagProps) {

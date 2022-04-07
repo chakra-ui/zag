@@ -1,5 +1,5 @@
 import { StateMachine } from "@zag-js/core"
-import { dispatchInputEvent, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue, snapToStep, toRanges } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { closest, getElementRect, relativeToNode } from "@zag-js/rect-utils"
@@ -90,7 +90,7 @@ export const dom = {
     const value = ctx.value[ctx.activeIndex]
     const input = dom.getInputEl(ctx, ctx.activeIndex)
     if (!input) return
-    dispatchInputEvent(input, value)
+    dispatchInputValueEvent(input, value)
   },
 
   getControlStyle: unstable__dom.getControlStyle,
@@ -100,9 +100,6 @@ export const dom = {
     return unstable__dom.getThumbStyle({ ...ctx, value, thumbSize })
   },
   getRangeStyle,
-  getTrackStyle: (): Style => ({
-    position: "relative",
-  }),
   getMarkerStyle(ctx: Ctx, percent: number): Style {
     const style: Style = {
       position: "absolute",

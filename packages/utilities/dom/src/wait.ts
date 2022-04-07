@@ -1,10 +1,12 @@
-export function waitUntil(predicate: () => boolean) {
-  if (predicate()) return Promise.resolve(true)
+export function waitFor<T>(predicate: () => T): Promise<T> {
+  let value = predicate()
+  if (!!value) return Promise.resolve(value)
   return new Promise((resolve) => {
     const id = globalThis.setInterval(function () {
-      if (predicate()) {
+      let value = predicate()
+      if (value) {
         globalThis.clearInterval(id)
-        resolve(true)
+        resolve(value)
       }
     }, 0)
   })

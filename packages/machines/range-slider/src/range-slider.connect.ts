@@ -92,7 +92,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      style: dom.getTrackStyle(),
+      style: { position: "relative" },
     }),
 
     getThumbProps(index: number) {
@@ -182,7 +182,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return normalize.input<T>({
         "data-part": "input",
         name: `${state.context.name}[${index}]`,
-        type: "hidden",
+        type: "text",
+        hidden: true,
         defaultValue: state.context.value[index],
         id: dom.getInputId(state.context, index),
       })

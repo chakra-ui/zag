@@ -47,7 +47,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(
     inputProps: normalize.input<T>({
       "data-part": "input",
       name: state.context.name,
-      type: "hidden",
+      type: "text",
+      hidden: true,
       id: dom.getInputId(state.context),
       value: state.context.value,
     }),

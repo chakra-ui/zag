@@ -15,6 +15,10 @@ export type MachineContext = Context<{
    */
   thumbSize: Array<{ width: number; height: number }> | null
   /**
+   * @computed Whether the slider thumb has been measured
+   */
+  readonly hasMeasuredThumbSize: boolean
+  /**
    * The name associated with each slider thumb (when used in a form)
    */
   name?: string
@@ -31,6 +35,11 @@ export type MachineContext = Context<{
    * The value of the range slider
    */
   value: number[]
+  /**
+   * The value of the slider when it was initially rendered.
+   * Used when the `form.reset(...)` is called.
+   */
+  initialValue: number[]
   /**
    * Whether the slider is disabled
    */
