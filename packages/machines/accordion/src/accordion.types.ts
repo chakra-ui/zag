@@ -27,7 +27,7 @@ export type MachineContext = Context<{
   /**
    * The callback fired when the state of opened/closed accordion items changes.
    */
-  onChange?: (activeId: string | string[] | null) => void
+  onChange?: (value: string | string[] | null) => void
 }>
 
 export type MachineState = {
