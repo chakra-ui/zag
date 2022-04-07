@@ -35,7 +35,7 @@ export default function Page() {
           console.log(formData)
         }}
       >
-        <div ref={ref} {...api.rootProps}>
+        <div className="root" ref={ref} {...api.rootProps}>
           <div>
             <label data-testid="label" {...api.labelProps}>
               Slider Label

@@ -23,7 +23,7 @@ export default function Page() {
       <Global styles={accordionStyle} />
       <controls.ui />
 
-      <div ref={ref} {...api.rootProps}>
+      <div className="accordion" ref={ref} {...api.rootProps}>
         {accordionData.map((item) => (
           <div key={item.id} {...api.getItemProps({ value: item.id })}>
             <h3>

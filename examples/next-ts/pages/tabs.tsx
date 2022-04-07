@@ -23,7 +23,7 @@ export default function Page() {
       <Global styles={tabsStyle} />
       <controls.ui />
 
-      <div {...api.rootProps}>
+      <div className="tabs" {...api.rootProps}>
         <div {...api.indicatorProps} />
 
         <div ref={ref} {...api.triggerGroupProps}>
