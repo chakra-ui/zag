@@ -72,6 +72,7 @@ widgets in the industry.
 ## Inspirations
 
 - [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
+- [Pure UI Control](https://asolove.medium.com/pure-ui-control-ac8d1be97a8d) - Adam Solve
 - [Material Components Web](https://github.com/material-components/material-components-web)
 - Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
 
