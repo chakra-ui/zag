@@ -44,16 +44,19 @@ export default function Page() {
           <label {...api.labelProps}>Select country</label>
 
           <div {...api.controlProps}>
-            <input {...api.inputProps} />
-            <button {...api.toggleButtonProps}>▼</button>
+            <input data-testid="input" {...api.inputProps} />
+            <button data-testid="input-arrow" {...api.toggleButtonProps}>
+              ▼
+            </button>
           </div>
         </div>
 
         <div {...api.positionerProps}>
           {options.length > 0 && (
-            <ul {...api.listboxProps}>
+            <ul data-testid="combobox-listbox" {...api.listboxProps}>
               {options.map((item, index) => (
                 <li
+                  data-testid={item.code}
                   key={`${item.code}:${index}`}
                   {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
                 >
