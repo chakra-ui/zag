@@ -35,6 +35,7 @@ function getThumbStyle(ctx: SharedContext): Style {
   const offset = ctx.isVertical ? getVerticalThumbOffset(ctx) : getHorizontalThumbOffset(ctx)
 
   const style: Style = {
+    visibility: ctx.hasMeasuredThumbSize ? "visible" : "hidden",
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     "--slider-thumb-placement": `calc(${percent}% - ${offset}px)`,
