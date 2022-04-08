@@ -10,7 +10,7 @@ describe("editable", () => {
 
   describe("given that the preview is focusable", () => {
     it("should have no accessibility violations", () => {
-      cy.checkA11y(".root")
+      cy.checkA11y("[data-part=root]")
     })
 
     describe("when in edit mode", () => {

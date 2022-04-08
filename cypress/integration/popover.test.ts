@@ -17,7 +17,7 @@ describe("popover", () => {
   })
 
   it("should have no accessibility violations", () => {
-    cy.checkA11y(".popover")
+    cy.checkA11y("[data-part=root]")
   })
 
   describe("focus management", () => {

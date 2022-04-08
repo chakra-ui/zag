@@ -14,7 +14,7 @@ describe("tabs", () => {
   })
 
   it("should have no accessibility violation", () => {
-    cy.checkA11y(".tabs")
+    cy.checkA11y("[data-part=root]")
   })
 
   describe("in automatic mode", () => {

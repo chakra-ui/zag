@@ -10,7 +10,7 @@ describe("combobox", () => {
     cy.findByTestId("combobox-listbox").as("listbox")
 
     it("should have no accessibility violations", () => {
-      cy.checkA11y(".combobox")
+      cy.checkA11y("[data-part=root]")
     })
   })
 

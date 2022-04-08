@@ -16,7 +16,7 @@ describe("accordion", () => {
 
   describe("given a single accordion", () => {
     it("should have no accessibility violation", () => {
-      cy.checkA11y(".accordion")
+      cy.checkA11y("[data-part=root]")
     })
 
     describe("when navigating by keyboard", () => {
