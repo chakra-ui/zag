@@ -123,11 +123,11 @@ export type MachineContext = Context<{
   /**
    * Function invoked when the value changes
    */
-  onChange?: (value: string, valueAsNumber: number) => void
+  onChange?: (details: { value: string; valueAsNumber: number }) => void
   /**
    * Function invoked when the value overflows or underflows the min/max range
    */
-  onInvalid?: (message: ValidityState, value: string, valueAsNumber: number) => void
+  onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
   /**
    * @internal The selection range of the input
    */

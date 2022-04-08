@@ -48,8 +48,8 @@ export const dom = {
     delete tag.dataset.deleteIntent
   },
   dispatchInputEvent(ctx: Ctx) {
-    const input = dom.getHiddenInputEl(ctx)
-    if (!input) return
-    dispatchInputValueEvent(input, ctx.valueAsString)
+    const el = dom.getHiddenInputEl(ctx)
+    if (!el) return
+    dispatchInputValueEvent(el, ctx.valueAsString)
   },
 }

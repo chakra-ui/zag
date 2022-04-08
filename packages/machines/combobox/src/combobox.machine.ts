@@ -463,13 +463,13 @@ export const machine = createMachine<MachineContext, MachineState>(
         listbox.scrollTop = 0
       },
       invokeOnInputChange(ctx) {
-        ctx.onInputChange?.(ctx.inputValue)
+        ctx.onInputChange?.({ value: ctx.inputValue })
       },
       invokeOnHighlight(ctx) {
-        ctx.onHighlight?.(ctx.navigationValue)
+        ctx.onHighlight?.({ value: ctx.navigationValue })
       },
       invokeOnSelect(ctx) {
-        ctx.onSelect?.(ctx.selectedValue)
+        ctx.onSelect?.({ value: ctx.selectedValue })
       },
       invokeOnOpen(ctx) {
         ctx.onOpen?.()

@@ -102,16 +102,16 @@ export type MachineContext = Context<{
   /**
    * Function called when the input's value changes
    */
-  onInputChange?: (value: string) => void
+  onInputChange?: (details: { value: string }) => void
   /**
    * Function called when a new option is selected
    */
-  onSelect?: (value: string) => void
+  onSelect?: (details: { value: string }) => void
   /**
    * Function called when an options is highlighted using the pointer
    * or keyboard navigation.
    */
-  onHighlight?: (value: string) => void
+  onHighlight?: (details: { value: string }) => void
   /**
    * Function called when the popup is opened
    */

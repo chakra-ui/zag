@@ -145,16 +145,16 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
       invokeOnCancel(ctx) {
-        ctx.onCancel?.(ctx.previousValue)
+        ctx.onCancel?.({ value: ctx.previousValue })
       },
       invokeOnSubmit(ctx) {
-        ctx.onSubmit?.(ctx.value)
+        ctx.onSubmit?.({ value: ctx.value })
       },
       invokeOnEdit(ctx) {
         ctx.onEdit?.()
       },
       invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
+        ctx.onChange?.({ value: ctx.value })
       },
       setValue(ctx, evt) {
         ctx.value = evt.value

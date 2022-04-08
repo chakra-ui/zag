@@ -90,8 +90,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
     },
     actions: {
-      invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
+      invokeOnChange(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          ctx.onChange?.({ value: ctx.value })
+        }
       },
       collapse(ctx, evt) {
         ctx.value = ctx.multiple ? remove(toArray(ctx.value), evt.value) : null

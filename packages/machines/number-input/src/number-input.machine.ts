@@ -330,12 +330,12 @@ export const machine = createMachine<MachineContext, MachineState>(
         input.selectionEnd = ctx.inputSelection.end ?? input.selectionStart
       },
       invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value, ctx.valueAsNumber)
+        ctx.onChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
       },
       invokeOnInvalid(ctx) {
         if (!ctx.isOutOfRange) return
-        const type = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
-        ctx.onInvalid?.(type, ctx.formattedValue, ctx.valueAsNumber)
+        const reason = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
+        ctx.onInvalid?.({ reason, value: ctx.formattedValue, valueAsNumber: ctx.valueAsNumber })
       },
       // sync input value, in event it was set from form libraries via `ref`, `bind:this`, etc.
       syncInputValue(ctx) {

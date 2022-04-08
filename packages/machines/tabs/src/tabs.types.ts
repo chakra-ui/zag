@@ -61,15 +61,15 @@ export type MachineContext = Context<{
   /**
    * Callback to be called when the selected/active tab changes
    */
-  onChange?: (value: string | null) => void
+  onChange?: (details: { value: string | null }) => void
   /**
    * Callback to be called when the focused tab changes
    */
-  onFocus?: (value: string | null) => void
+  onFocus?: (details: { value: string | null }) => void
   /**
    * Callback to be called when a tab's close button is clicked
    */
-  onDelete?: (value: string) => void
+  onDelete?: (details: { value: string }) => void
   /**
    * @internal The previously selected tab ids. This is useful for performance optimization
    */

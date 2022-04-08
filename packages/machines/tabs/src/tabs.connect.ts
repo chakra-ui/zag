@@ -137,7 +137,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         "aria-label": messages.deleteLabel?.(value),
         disabled,
         onClick() {
-          state.context.onDelete?.(value)
+          send({ type: "DELETE", value })
         },
       })
     },

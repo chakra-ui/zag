@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { autoResizeInput, createLiveRegion, nextTick, raf } from "@zag-js/dom-utils"
+import { autoResizeInput, createLiveRegion, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
 import { dom } from "./tags-input.dom"
 import { MachineContext, MachineState } from "./tags-input.types"
 
@@ -17,6 +17,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       editedTagValue: "",
       focusedId: null,
       editedId: null,
+      initialValue: [],
       value: [],
       dir: "ltr",
       max: Infinity,
@@ -53,6 +54,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: ["invokeOnChange", "dispatchChangeEvent"],
       log: "announceLog",
     },
+
+    activities: ["trackFormReset"],
 
     exit: ["removeLiveRegion", "clearLog"],
 
@@ -97,9 +100,9 @@ export const machine = createMachine<MachineContext, MachineState>(
             {
               guard: "autoFocus",
               target: "focused:input",
-              actions: "setupDocument",
+              actions: ["setupDocument", "checkValue"],
             },
-            { target: "idle", actions: "setupDocument" },
+            { target: "idle", actions: ["setupDocument", "checkValue"] },
           ],
         },
       },
@@ -259,6 +262,15 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
 
     activities: {
+      trackFormReset(ctx) {
+        let cleanup: VoidFunction | undefined
+        nextTick(() => {
+          cleanup = trackFormReset(dom.getHiddenInputEl(ctx), () => {
+            ctx.value = ctx.initialValue
+          })
+        })
+        return cleanup
+      },
       autoResizeTagInput(ctx) {
         if (!ctx.editedTagValue || ctx.__index == null || !ctx.allowEditTag) return
         const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.__index })
@@ -275,15 +287,15 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       invokeOnHighlight(ctx) {
         const value = dom.getFocusedTagValue(ctx)
-        ctx.onHighlight?.(value)
+        ctx.onHighlight?.({ value })
       },
       invokeOnTagUpdate(ctx) {
         if (!ctx.__index) return
         const value = ctx.value[ctx.__index]
-        ctx.onTagUpdate?.(value, ctx.__index)
+        ctx.onTagUpdate?.({ value, index: ctx.__index })
       },
       invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
+        ctx.onChange?.({ values: ctx.value })
       },
       dispatchChangeEvent(ctx) {
         dom.dispatchInputEvent(ctx)
@@ -404,7 +416,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "add", value }
         } else {
-          ctx.onInvalid?.("invalidTag")
+          ctx.onInvalid?.({ reason: "invalidTag" })
         }
       },
       addTagFromPaste(ctx) {
@@ -418,7 +430,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             ctx.log.prev = ctx.log.current
             ctx.log.current = { type: "paste", values: trimmedValue }
           } else {
-            ctx.onInvalid?.("invalidTag")
+            ctx.onInvalid?.({ reason: "invalidTag" })
           }
           ctx.inputValue = ""
         })
@@ -429,6 +441,9 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.log.prev = ctx.log.current
         ctx.log.current = { type: "clear" }
       },
+      checkValue(ctx) {
+        ctx.initialValue = ctx.value.slice()
+      },
       setValue(ctx, evt) {
         ctx.value = evt.value
       },
@@ -437,7 +452,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       invokeOnInvalid(ctx) {
         if (ctx.isOverflowing) {
-          ctx.onInvalid?.("rangeOverflow")
+          ctx.onInvalid?.({ reason: "rangeOverflow" })
         }
       },
       clearLog(ctx) {

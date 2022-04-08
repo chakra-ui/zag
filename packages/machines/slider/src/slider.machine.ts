@@ -179,13 +179,13 @@ export const machine = createMachine<MachineContext, MachineState>(
         Object.assign(ctx, { value, initialValue: value })
       },
       invokeOnChangeStart(ctx) {
-        ctx.onChangeStart?.(ctx.value)
+        ctx.onChangeStart?.({ value: ctx.value })
       },
       invokeOnChangeEnd(ctx) {
-        ctx.onChangeEnd?.(ctx.value)
+        ctx.onChangeEnd?.({ value: ctx.value })
       },
       invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
+        ctx.onChange?.({ value: ctx.value })
       },
       dispatchChangeEvent(ctx) {
         dom.dispatchChangeEvent(ctx)

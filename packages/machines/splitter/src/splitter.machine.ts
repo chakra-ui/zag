@@ -20,11 +20,13 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: 256,
       snapOffset: 0,
     },
+
     computed: {
       isHorizontal: (ctx) => ctx.orientation === "horizontal",
       isAtMin: (ctx) => ctx.value === ctx.min,
       isAtMax: (ctx) => ctx.value === ctx.max,
     },
+
     on: {
       COLLAPSE: {
         actions: "setToMin",
@@ -68,7 +70,10 @@ export const machine = createMachine<MachineContext, MachineState>(
           HOVER_DELAY: "hover",
         },
         on: {
-          POINTER_DOWN: "dragging",
+          POINTER_DOWN: {
+            target: "dragging",
+            actions: ["invokeOnChangeStart"],
+          },
           POINTER_LEAVE: "idle",
         },
       },
@@ -76,7 +81,10 @@ export const machine = createMachine<MachineContext, MachineState>(
       hover: {
         tags: ["focus"],
         on: {
-          POINTER_DOWN: "dragging",
+          POINTER_DOWN: {
+            target: "dragging",
+            actions: ["invokeOnChangeStart"],
+          },
           POINTER_LEAVE: "idle",
         },
       },
@@ -85,7 +93,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         tags: ["focus"],
         on: {
           BLUR: "idle",
-          POINTER_DOWN: "dragging",
+          POINTER_DOWN: {
+            target: "dragging",
+            actions: ["invokeOnChangeStart"],
+          },
           ARROW_LEFT: {
             guard: "isHorizontal",
             actions: "decrement",
@@ -130,7 +141,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         entry: "focusSplitter",
         activities: "trackPointerMove",
         on: {
-          POINTER_UP: "focused",
+          POINTER_UP: {
+            target: "focused",
+            actions: ["invokeOnChangeEnd"],
+          },
           POINTER_MOVE: {
             actions: "setPointerValue",
           },
@@ -165,6 +179,17 @@ export const machine = createMachine<MachineContext, MachineState>(
       HOVER_DELAY: 250,
     },
     actions: {
+      invokeOnChange(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          ctx.onChange?.({ value: ctx.value })
+        }
+      },
+      invokeOnChangeStart(ctx) {
+        ctx.onChangeStart?.({ value: ctx.value })
+      },
+      invokeOnChangeEnd(ctx) {
+        ctx.onChangeEnd?.({ value: ctx.value })
+      },
       setupDocument(ctx, evt) {
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id

@@ -41,6 +41,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       SET_VALUE: {
         actions: "setValue",
       },
+      DELETE: {
+        actions: "deleteValue",
+      },
     },
 
     states: {
@@ -132,6 +135,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       setValue(ctx, evt) {
         ctx.value = evt.value
       },
+      invokeOnDelete(ctx, evt) {
+        ctx.onDelete?.({ value: evt.value })
+      },
       focusFirstTab(ctx) {
         nextTick(() => dom.getFirstEl(ctx)?.focus())
       },
@@ -167,10 +173,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         ctx.hasMeasuredRect = false
       },
       invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
+        ctx.onChange?.({ value: ctx.value })
       },
       invokeOnFocus(ctx) {
-        ctx.onFocus?.(ctx.focusedValue)
+        ctx.onFocus?.({ value: ctx.focusedValue })
       },
       setPrevSelectedTabs(ctx) {
         if (ctx.value != null) {

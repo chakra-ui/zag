@@ -55,15 +55,15 @@ export type MachineContext = Context<{
   /**
    * Function invoked when the value of the slider changes
    */
-  onChange?(value: number[]): void
+  onChange?(details: { value: number[] }): void
   /**
    * Function invoked when the slider value change is started
    */
-  onChangeStart?(value: number[]): void
+  onChangeStart?(details: { value: number[] }): void
   /**
    * Function invoked when the slider value change is done
    */
-  onChangeEnd?(value: number[]): void
+  onChangeEnd?(details: { value: number[] }): void
   /**
    * Function that returns a human readable value for the slider thumb
    */

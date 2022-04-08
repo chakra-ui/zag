@@ -8,7 +8,9 @@ export const machine = createMachine<ToggleMachineContext, ToggleMachineState>(
     context: {
       uid: "",
       disabled: false,
-      label: "Toggle",
+      messages: {
+        buttonLabel: "toggle",
+      },
     },
     states: {
       unknown: {
@@ -31,7 +33,7 @@ export const machine = createMachine<ToggleMachineContext, ToggleMachineState>(
         if (evt.doc) ctx.doc = ref(evt.doc)
       },
       invokeOnChange(ctx, evt) {
-        ctx.onChange?.(evt.pressed)
+        ctx.onChange?.({ pressed: evt.pressed })
       },
     },
   },

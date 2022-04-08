@@ -77,15 +77,15 @@ export type MachineContext = Context<{
   /**
    * The callback that is called when the editable's value is changed
    */
-  onChange?: (value: string) => void
+  onChange?: (details: { value: string }) => void
   /**
    * The callback that is called when the esc key is pressed or the cancel button is clicked
    */
-  onCancel?: (value: string) => void
+  onCancel?: (details: { value: string }) => void
   /**
    * The callback that is called when the editable's value is submitted.
    */
-  onSubmit?: (value: string) => void
+  onSubmit?: (details: { value: string }) => void
   /**
    * The callback that is called when in the edit mode.
    */

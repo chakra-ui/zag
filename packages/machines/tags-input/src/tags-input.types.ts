@@ -1,7 +1,7 @@
 import { LiveRegion } from "@zag-js/dom-utils"
 import type { Context } from "@zag-js/types"
 
-export type ValidateTagOptions = {
+export type ValidateDetails = {
   inputValue: string
   values: string[]
 }
@@ -96,26 +96,30 @@ export type MachineContext = Context<{
    */
   value: string[]
   /**
+   * The intial values of the tags input
+   */
+  initialValue: string[]
+  /**
    * Callback fired when the tag values is updated
    */
-  onChange?(values: string[]): void
+  onChange?(details: { values: string[] }): void
   /**
    * Callback fired when a tag is focused by pointer or keyboard navigation
    */
-  onHighlight?(value: string | null): void
+  onHighlight?(details: { value: string | null }): void
   /**
    * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
    */
-  onInvalid?: (error: InvalidReason) => void
+  onInvalid?: (details: { reason: ValidityState }) => void
   /**
    * Callback fired when a tag's value is updated
    */
-  onTagUpdate?(value: string, index: number): void
+  onTagUpdate?(details: { value: string; index: number }): void
   /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validate?(options: ValidateTagOptions): boolean
+  validate?(details: ValidateDetails): boolean
   /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
@@ -173,7 +177,7 @@ export type MachineState = {
   tags: "focused" | "editing"
 }
 
-export type InvalidReason = "rangeOverflow" | "invalidTag"
+export type ValidityState = "rangeOverflow" | "invalidTag"
 
 export type TagProps = {
   index: string | number

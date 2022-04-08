@@ -18,7 +18,7 @@ export type MachineContext = Context<{
   /**
    * Callback to be called when the menu values change (for radios and checkboxes).
    */
-  onValuesChange?: (data: { name: string; value: string | string[] }) => void
+  onValuesChange?: (details: { name: string; value: string | string[] }) => void
   /**
    * The `id` of the active menu item.
    */

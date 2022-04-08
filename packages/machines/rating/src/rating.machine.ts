@@ -13,6 +13,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       dir: "ltr",
       uid: "",
       value: -1,
+      initialValue: -1,
       hoveredValue: -1,
       disabled: false,
       readonly: false,
@@ -25,6 +26,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     watch: {
       allowHalf: ["roundValueIfNeeded"],
+      value: ["invokeOnChange", "dispatchChangeEvent"],
     },
 
     computed: {
@@ -37,7 +39,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         on: {
           SETUP: {
             target: "idle",
-            actions: "setupDocument",
+            actions: ["setupDocument", "checkValue"],
           },
         },
       },
@@ -61,22 +63,22 @@ export const machine = createMachine<MachineContext, MachineState>(
           BLUR: "idle",
           SPACE: {
             guard: "isValueEmpty",
-            actions: ["setValue", "invokeOnChange"],
+            actions: ["setValue"],
           },
           CLICK: {
-            actions: ["setValue", "invokeOnChange", "focusActiveRadio"],
+            actions: ["setValue", "focusActiveRadio"],
           },
           ARROW_LEFT: {
-            actions: ["setPrevValue", "invokeOnChange", "focusActiveRadio"],
+            actions: ["setPrevValue", "focusActiveRadio"],
           },
           ARROW_RIGHT: {
-            actions: ["setNextValue", "invokeOnChange", "focusActiveRadio"],
+            actions: ["setNextValue", "focusActiveRadio"],
           },
           HOME: {
-            actions: ["setValueToMin", "invokeOnChange", "focusActiveRadio"],
+            actions: ["setValueToMin", "focusActiveRadio"],
           },
           END: {
-            actions: ["setValueToMax", "invokeOnChange", "focusActiveRadio"],
+            actions: ["setValueToMax", "focusActiveRadio"],
           },
         },
       },
@@ -98,7 +100,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
           ],
           CLICK: {
-            actions: ["setValue", "invokeOnChange", "focusActiveRadio"],
+            actions: ["setValue", "focusActiveRadio"],
           },
         },
       },
@@ -112,6 +114,9 @@ export const machine = createMachine<MachineContext, MachineState>(
       isRadioFocused: (ctx) => !!dom.getItemGroupEl(ctx)?.contains(dom.getActiveEl(ctx)),
     },
     actions: {
+      checkValue(ctx) {
+        ctx.initialValue = ctx.value
+      },
       setupDocument(ctx, evt) {
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
@@ -149,9 +154,18 @@ export const machine = createMachine<MachineContext, MachineState>(
         let value = evt.index - factor
         ctx.hoveredValue = value
       },
-      invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
-        dom.dispatchChangeEvent(ctx)
+      dispatchChangeEvent(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          dom.dispatchChangeEvent(ctx)
+        }
+      },
+      invokeOnChange(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          ctx.onChange?.({ value: ctx.value })
+        }
+      },
+      invokeOnHover(ctx) {
+        ctx.onHover?.({ value: ctx.hoveredValue })
       },
       roundValueIfNeeded(ctx) {
         if (!ctx.allowHalf) {

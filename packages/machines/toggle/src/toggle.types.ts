@@ -1,11 +1,15 @@
 import type { StateMachine as S } from "@zag-js/core"
 import { Context } from "@zag-js/types"
 
+type IntlMessages = {
+  buttonLabel: string
+}
+
 export type ToggleMachineContext = Context<{
   /**
-   * The accessible label for the toggle.
+   * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  label: string
+  messages: IntlMessages
   /**
    * Whether the toggle is disabled.
    */
@@ -13,7 +17,7 @@ export type ToggleMachineContext = Context<{
   /**
    * Function to call when the toggle is clicked.
    */
-  onChange?: (pressed: boolean) => void
+  onChange?: (details: { pressed: boolean }) => void
 }>
 
 export type ToggleMachineState = {

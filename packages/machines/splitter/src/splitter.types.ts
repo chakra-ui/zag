@@ -29,15 +29,15 @@ export type MachineContext = Context<{
   /**
    * Callback to be invoked when the primary pane is resized.
    */
-  onResize?: (size: number) => void
+  onChange?: (details: { value: number }) => void
   /**
    * Callback to be invoked when the primary pane's resize session starts
    */
-  onResizeStart?: () => void
+  onChangeStart?: (details: { value: number }) => void
   /**
    * Callback to be invoked when the primary pane's resize session ends
    */
-  onResizeEnd?: () => void
+  onChangeEnd?: (details: { value: number }) => void
   /**
    * Whether the primary pane is disabled.
    */

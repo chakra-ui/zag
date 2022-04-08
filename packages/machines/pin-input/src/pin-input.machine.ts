@@ -166,12 +166,12 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       invokeComplete: (ctx) => {
         if (ctx.isValueComplete) {
-          ctx.onComplete?.(Array.from(ctx.value), ctx.valueAsString)
+          ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
         }
       },
       invokeOnChange: (ctx, evt) => {
         if (evt.type !== "SETUP") {
-          ctx.onChange?.(Array.from(ctx.value))
+          ctx.onChange?.({ value: Array.from(ctx.value) })
         }
       },
       invokeOnInvalid: (ctx, evt) => {
