@@ -46,7 +46,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return normalize.element<T>({
         "data-part": "content",
         role: "region",
-        id: dom.getPanelId(state.context, props.value),
+        id: dom.getContentId(state.context, props.value),
         "aria-labelledby": dom.getTriggerId(state.context, props.value),
         hidden: !isOpen,
         "data-disabled": dataAttr(isDisabled),
@@ -62,7 +62,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         "data-part": "trigger",
         type: "button",
         id: dom.getTriggerId(state.context, value),
-        "aria-controls": dom.getPanelId(state.context, value),
+        "aria-controls": dom.getContentId(state.context, value),
         "aria-expanded": isOpen,
         disabled: isDisabled,
         "aria-disabled": isDisabled,

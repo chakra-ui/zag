@@ -7,7 +7,7 @@ export const dom = {
 
   getRootId: (ctx: Ctx) => `accordion-${ctx.uid}`,
   getGroupId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-item-${id}`,
-  getPanelId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-panel-${id}`,
+  getContentId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-content-${id}`,
   getTriggerId: (ctx: Ctx, id: string) => `accordion-${ctx.uid}-trigger-${id}`,
 
   getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
