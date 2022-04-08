@@ -25,8 +25,8 @@
     "url": "https://github.com/chakra-ui/ui-machines/issues"
   },
   "dependencies": {
-    "@types/react": "^17.0.38",
+    "@types/react": "^18.0.0",
     "@zag-js/utils": "^0.0.0",
-    "scroll-into-view-if-needed": "^2.2.28"
+    "scroll-into-view-if-needed": "^2.2.29"
   }
 }

@@ -8,9 +8,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     context: {
       uid: "",
       disabled: false,
-      messages: {
-        buttonLabel: "toggle",
-      },
+      label: "toggle",
     },
     states: {
       unknown: {

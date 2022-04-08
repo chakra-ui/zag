@@ -1,15 +1,11 @@
 import type { StateMachine as S } from "@zag-js/core"
 import { Context } from "@zag-js/types"
 
-type IntlMessages = {
-  buttonLabel: string
-}
-
 export type MachineContext = Context<{
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  messages: IntlMessages
+  label: string
   /**
    * Whether the toggle is disabled.
    */

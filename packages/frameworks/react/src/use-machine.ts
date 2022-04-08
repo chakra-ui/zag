@@ -29,7 +29,7 @@ export function useService<
     return () => {
       service.stop()
     }
-  }, [service])
+  }, [])
 
   useSafeLayoutEffect(() => {
     service.setActions(actions)

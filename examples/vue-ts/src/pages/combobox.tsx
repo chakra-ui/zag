@@ -21,7 +21,7 @@ export default defineComponent({
         onOpen() {
           options.value = comboboxData
         },
-        onInputChange(value) {
+        onInputChange({ value }) {
           const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
           options.value = filtered.length > 0 ? filtered : comboboxData
         },
