@@ -27,17 +27,17 @@ export function dispatchInputCheckedEvent(el: HTMLElement, checked: boolean) {
   if (!(el instanceof win.HTMLInputElement)) return
   const desc = getDescriptor(el, { type: "input", property: "checked" })
   desc.set?.call(el, checked)
-  const event = new Event("click", { bubbles: true })
+  const event = new win.Event("click", { bubbles: true })
   el.dispatchEvent(event)
 }
 
 export function trackInputPropertyMutation(
-  el: HTMLInputElement,
+  el: HTMLInputElement | null,
   options: DescriptorOptions & { fn?: (value: string) => void },
 ) {
   const { fn, property, type } = options
 
-  if (!fn) return
+  if (!fn || !el) return
 
   const { get, set } = getDescriptor(el, { property, type })
 

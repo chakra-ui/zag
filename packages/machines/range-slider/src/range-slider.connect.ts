@@ -3,8 +3,9 @@ import { multiply, percentToValue, toRanges, valueToPercent } from "@zag-js/numb
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
-import { dom, getRangeAtIndex } from "./range-slider.dom"
+import { dom } from "./range-slider.dom"
 import { Send, State } from "./range-slider.types"
+import { utils } from "./range-slider.utils"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const ariaLabel = state.context["aria-label"]
@@ -41,10 +42,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return percentToValue(percent, state.context)
     },
     getThumbMin(index: number) {
-      return getRangeAtIndex(state.context, index).min
+      return utils.getRangeAtIndex(state.context, index).min
     },
     getThumbMax(index: number) {
-      return getRangeAtIndex(state.context, index).max
+      return utils.getRangeAtIndex(state.context, index).max
     },
     increment(index: number) {
       send({ type: "INCREMENT", index })

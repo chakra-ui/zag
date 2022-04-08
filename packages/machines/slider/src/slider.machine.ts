@@ -37,6 +37,18 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     activities: ["trackFormReset", "trackScriptedUpdate"],
 
+    on: {
+      SET_VALUE: {
+        actions: "setValue",
+      },
+      INCREMENT: {
+        actions: "increment",
+      },
+      DECREMENT: {
+        actions: "decrement",
+      },
+    },
+
     states: {
       unknown: {
         on: {
@@ -131,7 +143,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
           })
         })
-        return cleanup
+        return () => cleanup?.()
       },
       trackFormReset(ctx) {
         let cleanup: VoidFunction | undefined

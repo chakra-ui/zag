@@ -1,10 +1,11 @@
 import { createMachine, ref } from "@zag-js/core"
-import { nextTick, trackPointerMove } from "@zag-js/dom-utils"
-import { clamp, decrement, increment, multiply, snapToStep } from "@zag-js/number-utils"
+import { nextTick, raf, trackFormReset, trackInputPropertyMutation, trackPointerMove } from "@zag-js/dom-utils"
+import { multiply } from "@zag-js/number-utils"
 import { getElementRect } from "@zag-js/rect-utils"
 import { isNumber } from "@zag-js/utils"
-import { dom, getClosestIndex, getRangeAtIndex } from "./range-slider.dom"
+import { dom, getClosestIndex } from "./range-slider.dom"
 import { MachineContext, MachineState } from "./range-slider.types"
+import { utils } from "./range-slider.utils"
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
@@ -39,10 +40,18 @@ export const machine = createMachine<MachineContext, MachineState>(
       value: ["invokeOnChange", "dispatchChangeEvent"],
     },
 
+    activities: ["trackFormReset", "trackScriptedUpdate"],
+
     on: {
-      SET_VALUE: { actions: "setValue" },
-      INCREMENT: { actions: "increment" },
-      DECREMENT: { actions: "decrement" },
+      SET_VALUE: {
+        actions: "setValue",
+      },
+      INCREMENT: {
+        actions: "incrementAtIndex",
+      },
+      DECREMENT: {
+        actions: "decrementAtIndex",
+      },
     },
 
     states: {
@@ -128,6 +137,41 @@ export const machine = createMachine<MachineContext, MachineState>(
       isVertical: (ctx) => ctx.isVertical,
     },
     activities: {
+      trackScriptedUpdate(ctx, _, { send }) {
+        let cleanup: VoidFunction[] = []
+        nextTick(() => {
+          ctx.value.forEach((value, index) => {
+            const el = dom.getInputEl(ctx, index)
+            if (!el) return
+            cleanup.push(
+              trackInputPropertyMutation(el, {
+                type: "input",
+                property: "value",
+                fn(value) {
+                  send({ type: "SET_VALUE", value: parseFloat(value), index })
+                },
+              }),
+            )
+          })
+        })
+        return () => cleanup.forEach((fn) => fn())
+      },
+      trackFormReset(ctx) {
+        let cleanup: Array<VoidFunction | undefined> = []
+        nextTick(() => {
+          for (let i = 0; i < ctx.value.length; i++) {
+            const el = dom.getInputEl(ctx, i)
+            cleanup.push(
+              trackFormReset(el, () => {
+                if (ctx.initialValue[i] != null) {
+                  ctx.value[i] = ctx.initialValue[i]
+                }
+              }),
+            )
+          }
+        })
+        return () => cleanup.forEach((fn) => fn?.())
+      },
       trackPointerMove(ctx, _evt, { send }) {
         return trackPointerMove({
           ctx,
@@ -145,29 +189,24 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (evt.doc) ctx.doc = ref(evt.doc)
         ctx.uid = evt.id
       },
-      checkValue(ctx) {
-        const values = Array.from(ctx.value)
-        values.forEach((value, index) => {
-          const range = getRangeAtIndex(ctx, index)
-          value = clamp(snapToStep(value, ctx.step), range)
-          ctx.value[index] = value
-          ctx.initialValue[index] = value
-        })
-      },
       invokeOnChangeStart(ctx) {
         ctx.onChangeStart?.(ctx.value)
       },
       invokeOnChangeEnd(ctx) {
         ctx.onChangeEnd?.(ctx.value)
       },
-      invokeOnChange(ctx) {
-        ctx.onChange?.(ctx.value)
+      invokeOnChange(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          ctx.onChange?.(ctx.value)
+        }
       },
-      dispatchChangeEvent(ctx) {
-        dom.dispatchChangeEvent(ctx)
+      dispatchChangeEvent(ctx, evt) {
+        if (evt.type !== "SETUP") {
+          dom.dispatchChangeEvent(ctx)
+        }
       },
       setThumbSize(ctx) {
-        nextTick(() => {
+        raf(() => {
           const thumbs = dom.getElements(ctx)
           ctx.thumbSize = thumbs.map((thumb) => {
             const { width, height } = getElementRect(thumb)
@@ -183,9 +222,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
       setPointerValue(ctx, evt) {
         const value = dom.getValueFromPoint(ctx, evt.point)
-        const range = getRangeAtIndex(ctx, ctx.activeIndex)
         if (value == null) return
-        ctx.value[ctx.activeIndex] = clamp(value, range)
+        ctx.value[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
       },
       focusActiveThumb(ctx) {
         nextTick(() => {
@@ -194,34 +232,33 @@ export const machine = createMachine<MachineContext, MachineState>(
         })
       },
       decrementAtIndex(ctx, evt) {
-        const index = evt.index ?? ctx.activeIndex
-        const range = getRangeAtIndex(ctx, index)
-        const value = snapToStep(decrement(range.value, evt.step), ctx.step)
-        ctx.value[ctx.activeIndex] = parseFloat(value)
+        ctx.value[ctx.activeIndex] = utils.decrement(ctx, evt.index, evt.step)
       },
       incrementAtIndex(ctx, evt) {
-        const index = evt.index ?? ctx.activeIndex
-        const range = getRangeAtIndex(ctx, index)
-        const value = snapToStep(increment(range.value, evt.step), ctx.step)
-        ctx.value[ctx.activeIndex] = parseFloat(value)
+        ctx.value[ctx.activeIndex] = utils.increment(ctx, evt.index, evt.step)
       },
       setActiveThumbToMin(ctx) {
-        const { min } = getRangeAtIndex(ctx)
+        const { min } = utils.getRangeAtIndex(ctx)
         ctx.value[ctx.activeIndex] = min
       },
       setActiveThumbToMax(ctx) {
-        const { max } = getRangeAtIndex(ctx)
+        const { max } = utils.getRangeAtIndex(ctx)
         ctx.value[ctx.activeIndex] = max
+      },
+      checkValue(ctx) {
+        let value = utils.check(ctx, ctx.value)
+        Object.assign(ctx, { value, initialValue: value.slice() })
       },
       setValue(ctx, evt) {
         // set value at specified index
         if (isNumber(evt.index) && isNumber(evt.value)) {
-          ctx.value[evt.index] = evt.value
+          ctx.value[evt.index] = utils.convert(ctx, evt.value, evt.index)
           return
         }
+
         // set values
         if (Array.isArray(evt.value)) {
-          ctx.value = evt.value
+          ctx.value = utils.check(ctx, evt.value)
         }
       },
     },

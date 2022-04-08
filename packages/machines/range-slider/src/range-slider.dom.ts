@@ -1,15 +1,12 @@
 import { StateMachine } from "@zag-js/core"
 import { dispatchInputValueEvent, queryAll } from "@zag-js/dom-utils"
-import { clamp, percentToValue, snapToStep, toRanges } from "@zag-js/number-utils"
+import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { closest, getElementRect, relativeToNode } from "@zag-js/rect-utils"
 import { unstable__dom } from "@zag-js/slider"
 import type { Style } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./range-slider.types"
-
-export function getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
-  return toRanges(ctx)[index]
-}
+import { utils } from "./range-slider.utils"
 
 function getPointProgress(ctx: Ctx, point: Point) {
   const { progress } = relativeToNode(point, dom.getControlEl(ctx)!)
@@ -21,26 +18,18 @@ function getPointProgress(ctx: Ctx, point: Point) {
     percent = 1 - progress.y
   }
 
-  return clamp(percent, { min: 0, max: 1 })
+  return utils.clampPercent(percent)
 }
 
 function getValueFromPoint(ctx: Ctx, point: Point) {
-  const control = dom.getControlEl(ctx)
-  if (!control || ctx.activeIndex === -1) return
-
-  const range = getRangeAtIndex(ctx)
-  const maxPercent = range.max / ctx.max
-  const minPercent = range.min / ctx.max
-
+  if (ctx.activeIndex === -1) return
   let percent = getPointProgress(ctx, point)
-  percent = clamp(percent, { min: minPercent, max: maxPercent })
-
-  const value = percentToValue(percent, ctx)
-  return parseFloat(snapToStep(value, ctx.step))
+  return utils.fromPercent(ctx, percent)
 }
 
 export function getRangeStyle(ctx: Ctx): Style {
   const { orientation, value: values, max } = ctx
+
   const startValue = (values[0] / max) * 100
   const endValue = 100 - (values[values.length - 1] / max) * 100
 
@@ -79,7 +68,8 @@ export const dom = {
   getMarkerId: (ctx: Ctx, value: number) => `slider-marker-${ctx.uid}-${value}`,
 
   getThumbEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx, index)),
-  getInputEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx, index)),
+  getInputEl: (ctx: Ctx, index: number) =>
+    dom.getDoc(ctx).getElementById(dom.getInputId(ctx, index)) as HTMLInputElement | null,
   getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
@@ -87,10 +77,12 @@ export const dom = {
 
   getValueFromPoint,
   dispatchChangeEvent(ctx: Ctx) {
-    const value = ctx.value[ctx.activeIndex]
-    const input = dom.getInputEl(ctx, ctx.activeIndex)
-    if (!input) return
-    dispatchInputValueEvent(input, value)
+    const _values = Array.from(ctx.value)
+    _values.forEach((value, index) => {
+      const input = dom.getInputEl(ctx, index)
+      if (!input) return
+      dispatchInputValueEvent(input, value)
+    })
   },
 
   getControlStyle: unstable__dom.getControlStyle,
@@ -137,7 +129,11 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
   const percent = getPointProgress(ctx, evt.point)
   const point = percentToValue(percent, ctx)
 
-  const axisPoints = ctx.isHorizontal ? points.map((p) => p.x) : points.map((p) => p.y)
+  // prettier-ignore
+  const axisPoints = ctx.isHorizontal ? 
+    points.map((p) => p.x) :
+    points.map((p) => p.y)
+
   const isThumbStacked = new Set(axisPoints).size !== points.length
 
   if (isThumbStacked && point > ctx.value[index]) {

@@ -7,7 +7,8 @@ function isFormElement(el: HTMLElement): el is HTMLInputElement | HTMLSelectElem
   return ["textarea", "input", "select", "button"].includes(el.localName)
 }
 
-export function trackFormReset(el: HTMLElement, callback: () => void) {
+export function trackFormReset(el: HTMLElement | null | undefined, callback: () => void) {
+  if (!el) return
   const form = getClosestFormElement(el)
   form?.addEventListener("reset", callback, { passive: true })
   return () => {
