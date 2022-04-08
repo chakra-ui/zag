@@ -27,6 +27,7 @@ declare global {
     interface Chainable {
       paste(text: string): Chainable<Element>
       clickOutside(): Chainable<Element>
+      findByPart(label: string): Chainable<Element>
       realInput(
         value: string,
         options?: {

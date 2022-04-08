@@ -28,6 +28,10 @@ Cypress.Commands.add("clickOutside", () => {
   return cy.get("body").click(0, 0)
 })
 
+Cypress.Commands.add("findByPart", (label) => {
+  return cy.get(`[data-part=${label}]`)
+})
+
 Cypress.Commands.add("realInput", { prevSubject: "element" }, (subject, value, options = {}) => {
   const { overwrite = true, prepend = false, inputType = "insertFromPaste" } = options
   const element = subject[0]
