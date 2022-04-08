@@ -138,23 +138,23 @@ export const machine = createMachine<MachineContext, MachineState>(
     },
     activities: {
       trackScriptedUpdate(ctx, _, { send }) {
-        let cleanup: VoidFunction[] = []
+        let cleanup: Array<VoidFunction | undefined> = []
         nextTick(() => {
-          ctx.value.forEach((value, index) => {
-            const el = dom.getInputEl(ctx, index)
+          for (let i = 0; i < ctx.value.length; i++) {
+            const el = dom.getInputEl(ctx, i)
             if (!el) return
             cleanup.push(
               trackInputPropertyMutation(el, {
                 type: "input",
                 property: "value",
                 fn(value) {
-                  send({ type: "SET_VALUE", value: parseFloat(value), index })
+                  send({ type: "SET_VALUE", value: parseFloat(value), index: i })
                 },
               }),
             )
-          })
+          }
         })
-        return () => cleanup.forEach((fn) => fn())
+        return () => cleanup.forEach((fn) => fn?.())
       },
       trackFormReset(ctx) {
         let cleanup: Array<VoidFunction | undefined> = []
