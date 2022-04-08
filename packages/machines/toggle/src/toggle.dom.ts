@@ -1,4 +1,4 @@
-import type { ToggleMachineContext as Ctx } from "./toggle.types"
+import type { MachineContext as Ctx } from "./toggle.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

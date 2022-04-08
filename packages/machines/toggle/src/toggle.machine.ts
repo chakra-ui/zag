@@ -1,7 +1,7 @@
 import { createMachine, ref } from "@zag-js/core"
-import { ToggleMachineContext, ToggleMachineState } from "./toggle.types"
+import { MachineContext, MachineState } from "./toggle.types"
 
-export const machine = createMachine<ToggleMachineContext, ToggleMachineState>(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "toggle-machine",
     initial: "unknown",

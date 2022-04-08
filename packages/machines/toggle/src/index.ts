@@ -1,3 +1,3 @@
 export { connect } from "./toggle.connect"
 export { machine } from "./toggle.machine"
-export type { ToggleMachineContext, ToggleMachineState } from "./toggle.types"
+export type { MachineContext, MachineState } from "./toggle.types"

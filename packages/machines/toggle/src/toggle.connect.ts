@@ -1,13 +1,9 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./toggle.dom"
-import { ToggleSend, ToggleState } from "./toggle.types"
+import { Send, State } from "./toggle.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: ToggleState,
-  send: ToggleSend,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isPressed = state.matches("pressed")
   const isDisabled = state.context.disabled
   const messages = state.context.messages

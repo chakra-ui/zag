@@ -5,7 +5,7 @@ type IntlMessages = {
   buttonLabel: string
 }
 
-export type ToggleMachineContext = Context<{
+export type MachineContext = Context<{
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -20,10 +20,10 @@ export type ToggleMachineContext = Context<{
   onChange?: (details: { pressed: boolean }) => void
 }>
 
-export type ToggleMachineState = {
+export type MachineState = {
   value: "unknown" | "pressed" | "unpressed"
 }
 
-export type ToggleState = S.State<ToggleMachineContext, ToggleMachineState>
+export type State = S.State<MachineContext, MachineState>
 
-export type ToggleSend = S.Send<S.AnyEventObject>
+export type Send = S.Send<S.AnyEventObject>
