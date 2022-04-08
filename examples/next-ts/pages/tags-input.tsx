@@ -15,7 +15,7 @@ export default function Page() {
 
   const [state, send] = useMachine(
     TagsInput.machine.withContext({
-      value: ["React", "Vue", "Svelte", "Solid"],
+      value: ["React", "Vue"],
     }),
     {
       context: controls.context,

@@ -75,10 +75,6 @@ describe("tags input", () => {
     cy.findByTestId("jenkins-tag").should("be.visible")
   })
 
-  it("autofocus input on load", () => {
-    cy.get("@input").should("have.focus")
-  })
-
   it("clears highlighted tag on escape press", () => {
     cy.get("@input").type("Svelte{enter}")
     cy.get("@input").type("{leftarrow}")
