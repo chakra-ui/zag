@@ -22,7 +22,7 @@ export default function Page() {
       <Global styles={editableStyle} />
       <controls.ui />
 
-      <div className="root" ref={ref} {...api.rootProps}>
+      <div ref={ref} {...api.rootProps}>
         <div {...api.areaProps}>
           <input data-testid="input" {...api.inputProps} />
           <span data-testid="preview" {...api.previewProps} />

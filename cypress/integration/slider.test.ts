@@ -10,7 +10,7 @@ describe("slider", () => {
   })
 
   it("should have no accessibility violations", () => {
-    cy.checkA11y(".root")
+    cy.checkA11y("[data-part=root]")
   })
 
   describe("keyboard interaction", () => {

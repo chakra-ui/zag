@@ -26,7 +26,7 @@ export default function Page() {
       <controls.ui />
       <Global styles={popoverStyle} />
 
-      <div className="popover" data-part="root" ref={ref}>
+      <div data-part="root" ref={ref}>
         <button data-testid="button-before">Button :before</button>
 
         <button data-testid="popover-trigger" {...api.triggerProps}>

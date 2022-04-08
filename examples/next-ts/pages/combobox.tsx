@@ -35,7 +35,7 @@ export default function Page() {
       <Global styles={comboboxStyle} />
       <controls.ui />
 
-      <div className="combobox">
+      <div>
         <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
 
         <br />

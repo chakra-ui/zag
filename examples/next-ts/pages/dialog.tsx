@@ -34,7 +34,7 @@ export default function Page() {
           <Portal>
             <div {...parentDialog.backdropProps} />
             <div data-testid="underlay-1" {...parentDialog.underlayProps}>
-              <div className="dialog__content" {...parentDialog.contentProps}>
+              <div {...parentDialog.contentProps}>
                 <h2 {...parentDialog.titleProps}>Edit profile</h2>
                 <p {...parentDialog.descriptionProps}>
                   Make changes to your profile here. Click save when you are done.

@@ -7,7 +7,7 @@ describe("dialog", () => {
 
   it("should have no accessibility violation", () => {
     cy.injectAxe()
-    cy.checkA11y(".dialog__content")
+    cy.checkA11y("[data-part=content]")
   })
 
   it("should focus on close button when dialog is open", () => {
