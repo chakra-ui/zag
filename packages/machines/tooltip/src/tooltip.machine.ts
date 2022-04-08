@@ -137,7 +137,7 @@ export const machine = createMachine<MachineContext, MachineState>(
     activities: {
       computePlacement(ctx) {
         ctx.currentPlacement = ctx.positioning.placement
-        let cleanup: VoidFunction
+        let cleanup: VoidFunction | undefined
         raf(() => {
           cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
             ...ctx.positioning,
@@ -149,7 +149,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
           })
         })
-        return () => cleanup?.()
+        return cleanup
       },
       trackPointerlockChange(ctx, _evt, { send }) {
         return addPointerlockChangeListener(dom.getDoc(ctx), () => {
@@ -187,7 +187,7 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!ctx.closeOnEsc) return
         const doc = dom.getDoc(ctx)
         return addDomEvent(doc, "keydown", (event) => {
-          if (event.key === "Escape" || event.key === "Esc") {
+          if (event.key === "Escape") {
             send("ESCAPE")
           }
         })
