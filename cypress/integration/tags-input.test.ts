@@ -7,7 +7,7 @@ describe("tags input", () => {
   })
 
   it("should in the dom", () => {
-    cy.findByTestId("[data-part=control]").should("be.visible")
+    cy.findByPart("control").should("be.visible")
   })
 
   it("should add new tag value", () => {

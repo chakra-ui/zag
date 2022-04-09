@@ -88,6 +88,7 @@ export const tagsInputControls = defineControls({
   blurBehavior: { type: "select", options: ["add", "clear"] as const, defaultValue: "---" },
   max: { type: "number", defaultValue: 6 },
   allowOverflow: { type: "boolean", defaultValue: false },
+  autoFocus: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
