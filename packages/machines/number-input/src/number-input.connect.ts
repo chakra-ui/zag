@@ -25,7 +25,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value: value.toString() })
     },
     clearValue() {
-      send("CLEAR_VALUE")
+      send({ type: "SET_VALUE", value: "" })
     },
     increment() {
       send("INCREMENT")
@@ -34,10 +34,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("DECREMENT")
     },
     setToMax() {
-      send("SET_TO_MAX")
+      send({ type: "SET_VALUE", value: state.context.max })
     },
     setToMin() {
-      send("SET_TO_MIN")
+      send({ type: "SET_VALUE", value: state.context.min })
     },
     focus() {
       nextTick(() => {

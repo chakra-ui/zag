@@ -58,6 +58,8 @@ export const machine = createMachine<MachineContext, MachineState>(
       SET_VALUE: {
         actions: ["setValue", "setHintToSet"],
       },
+      INCREMENT: { actions: ["increment"] },
+      DECREMENT: { actions: ["decrement"] },
     },
 
     states: {
