@@ -18,7 +18,7 @@ export default function Page() {
       onOpen() {
         setOptions(comboboxData)
       },
-      onInputChange(value) {
+      onInputChange({ value }) {
         const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
