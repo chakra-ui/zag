@@ -7,7 +7,7 @@ describe("tags input", () => {
   })
 
   it("should in the dom", () => {
-    cy.findByTestId("[data-part=control]").should("be.visible")
+    cy.findByPart("control").should("be.visible")
   })
 
   it("should add new tag value", () => {
@@ -73,6 +73,10 @@ describe("tags input", () => {
     cy.get("@input").paste("Github, Jenkins")
     cy.findByTestId("github-tag").should("be.visible")
     cy.findByTestId("jenkins-tag").should("be.visible")
+  })
+
+  it("autofocus input on load", () => {
+    cy.get("@input").should("have.focus")
   })
 
   it("clears highlighted tag on escape press", () => {
