@@ -8,9 +8,9 @@ import { utils } from "./number-input.utils"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isFocused = state.hasTag("focus")
-  const isInvalid = state.context.isOutOfRange || Boolean(state.context.invalid)
+  const isInvalid = state.context.isOutOfRange || !!state.context.invalid
 
-  const isDisabled = state.context.disabled
+  const isDisabled = !!state.context.disabled
   const isIncrementDisabled = isDisabled || !state.context.canIncrement
   const isDecrementDisabled = isDisabled || !state.context.canDecrement
 
@@ -71,8 +71,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-invalid": dataAttr(isInvalid),
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: state.context.readonly,
-      "aria-readonly": state.context.readonly || undefined,
+      readOnly: !!state.context.readonly,
       autoComplete: "off",
       autoCorrect: "off",
       spellCheck: "false",
@@ -81,7 +80,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
-      "aria-valuetext": state.context.valueText || undefined,
+      "aria-valuetext": state.context.valueText,
       onFocus() {
         send("FOCUS")
       },

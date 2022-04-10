@@ -155,7 +155,7 @@ export type MachineContext = Context<{
   /**
    * @computed The `aria-valuetext` attribute of the input
    */
-  readonly valueText: string
+  readonly valueText: string | undefined
   /**
    * @computed The formatted value of the input
    */

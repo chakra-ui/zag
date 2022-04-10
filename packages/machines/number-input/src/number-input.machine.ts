@@ -43,7 +43,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
       canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
       canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
-      valueText: (ctx) => ctx.messages.valueText?.(ctx.value) ?? ctx.value,
+      valueText: (ctx) => ctx.messages.valueText?.(ctx.value),
       formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
     },
 
@@ -211,7 +211,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       isInRange: (ctx) => !ctx.isOutOfRange,
       isDecrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
       isIncrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
-      isInvalidExponential: (ctx) => ctx.value.startsWith("e"),
+      isInvalidExponential: (ctx) => ctx.value.toString().startsWith("e"),
     },
 
     activities: {
