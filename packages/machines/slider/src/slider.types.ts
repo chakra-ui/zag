@@ -14,7 +14,7 @@ export type MachineContext = Context<{
   /**
    * The ids of the elements in the slider. Useful for composition.
    */
-  ids: IdMap
+  ids?: IdMap
   /**
    * The value of the slider
    */

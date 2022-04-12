@@ -15,7 +15,7 @@ export type MachineContext = Context<{
   /**
    * The ids of the elements in the range slider. Useful for composition.
    */
-  ids: IdMap
+  ids?: IdMap
   /**
    * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */
