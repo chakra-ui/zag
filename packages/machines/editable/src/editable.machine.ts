@@ -67,7 +67,7 @@ export const machine = createMachine<MachineContext, MachineState>(
           FOCUS: {
             guard: "activateOnFocus",
             target: "edit",
-            actions: ["setPreviousValue"],
+            actions: "setPreviousValue",
           },
         },
       },
@@ -88,7 +88,7 @@ export const machine = createMachine<MachineContext, MachineState>(
             },
             {
               target: "preview",
-              actions: ["revertValue", "focusEditButton"],
+              actions: ["revertValue", "focusEditButton", "invokeOnCancel"],
             },
           ],
           CANCEL: {
