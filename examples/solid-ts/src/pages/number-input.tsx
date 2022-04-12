@@ -20,7 +20,7 @@ export default function Page() {
   return (
     <div>
       <controls.ui />
-      <div className="root">
+      <div {...number().rootProps}>
         <div
           data-testid="scrubber"
           {...mergeProps(number().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
