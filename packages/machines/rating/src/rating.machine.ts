@@ -5,7 +5,7 @@ import { dom } from "./rating.dom"
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "rating-machine",
+    id: "rating",
     initial: "unknown",
     context: {
       name: "rating",

@@ -12,7 +12,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 ) {
   const isOpen = state.matches("open")
   const pointerdownNode = state.context.pointerdownNode
-  const popperStyles = getPlacementStyles({ measured: !!state.context.isPlacementComplete })
+  const popperStyles = getPlacementStyles({
+    measured: !!state.context.isPlacementComplete,
+  })
 
   return {
     portalled: state.context.currentPortalled,

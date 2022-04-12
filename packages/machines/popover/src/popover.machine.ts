@@ -18,13 +18,13 @@ const { and, or } = guards
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "popover-machine",
+    id: "popover",
     initial: "unknown",
     context: {
       isTitleRendered: true,
       isDescriptionRendered: true,
       isAnchorRendered: false,
-      uid: "popover",
+      uid: "",
       closeOnBlur: true,
       closeOnEsc: true,
       autoFocus: true,
@@ -35,7 +35,6 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     computed: {
       currentPortalled: (ctx) => !!ctx.modal || !!ctx.portalled,
-      isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
     states: {
@@ -120,9 +119,11 @@ export const machine = createMachine<MachineContext, MachineState>(
           ...ctx.positioning,
           onComplete(data) {
             ctx.currentPlacement = data.placement
+            ctx.isPlacementComplete = true
           },
           onCleanup() {
             ctx.currentPlacement = undefined
+            ctx.isPlacementComplete = false
           },
         })
       },

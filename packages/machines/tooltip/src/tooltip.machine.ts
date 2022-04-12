@@ -31,7 +31,6 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     computed: {
       hasAriaLabel: (ctx) => !!ctx["aria-label"],
-      isPlacementComplete: (ctx) => !!ctx.currentPlacement,
     },
 
     on: {
@@ -143,9 +142,11 @@ export const machine = createMachine<MachineContext, MachineState>(
             ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement
+              ctx.isPlacementComplete = true
             },
             onCleanup() {
               ctx.currentPlacement = undefined
+              ctx.isPlacementComplete = false
             },
           })
         })

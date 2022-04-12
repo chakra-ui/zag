@@ -9,7 +9,7 @@ const MULTIPLE_AND_VALUE_MISMATCH_WARNING = `[accordion/invalid-value] Expected 
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "accordion-machine",
+    id: "accordion",
     initial: "unknown",
 
     context: {

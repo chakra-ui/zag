@@ -18,7 +18,7 @@ export const machine = createMachine<MachineContext, MachineState>(
       role: "dialog",
       isTitleRendered: true,
       isDescriptionRendered: true,
-      uid: "234",
+      uid: "",
       trapFocus: true,
       preventScroll: true,
       isTopMostDialog: true,

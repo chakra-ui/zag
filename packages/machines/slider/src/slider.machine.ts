@@ -6,7 +6,7 @@ import { utils } from "./slider.utils"
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "slider-machine",
+    id: "slider",
     initial: "unknown",
     context: {
       thumbSize: null,

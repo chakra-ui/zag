@@ -20,7 +20,7 @@ const suggestEntry = ["focusInput", "focusMatchingOption", "invokeOnOpen"]
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "combobox-machine",
+    id: "combobox",
     initial: "unknown",
     context: {
       uid: "",

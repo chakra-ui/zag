@@ -81,9 +81,9 @@ export type MachineContext = Context<{
    */
   currentPlacement?: Placement
   /**
-   * @computed Whether the dynamic placement has been computed
+   * @internal Whether the dynamic placement has been computed
    */
-  readonly isPlacementComplete?: boolean
+  isPlacementComplete?: boolean
 }>
 
 export type MachineState = {

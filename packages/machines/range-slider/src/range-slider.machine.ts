@@ -14,7 +14,7 @@ export const machine = createMachine<MachineContext, MachineState>(
 
     context: {
       thumbSize: null,
-      uid: "48",
+      uid: "",
       threshold: 5,
       activeIndex: -1,
       min: 0,

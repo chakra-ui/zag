@@ -7,7 +7,7 @@ const { not } = guards
 
 export const machine = createMachine<MachineContext, MachineState>(
   {
-    id: "editable-machine",
+    id: "editable",
     initial: "unknown",
     context: {
       startWithEditView: false,
