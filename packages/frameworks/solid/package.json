@@ -1,20 +1,22 @@
 {
   "name": "@zag-js/solid",
   "version": "0.0.0",
-  "description": "The solid.js wrapper for ui-machines",
+  "description": "The solid.js wrapper for zag",
   "keywords": [
     "ui-machines",
+    "state-machines",
+    "zag",
     "solid",
     "use-machine",
     "hook"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
-  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/frameworks/solid",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/frameworks/solid",
   "sideEffects": false,
   "files": [
     "dist"
@@ -23,7 +25,7 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/chakra-ui/ui-machines/issues"
+    "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
     "@zag-js/core": "0.0.0",

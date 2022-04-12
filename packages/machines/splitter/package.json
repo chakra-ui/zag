@@ -13,12 +13,12 @@
     "split view"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
-  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/splitter",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/splitter",
   "sideEffects": false,
   "files": [
     "dist"
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/chakra-ui/ui-machines/issues"
+    "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
     "@zag-js/core": "^0.0.0",

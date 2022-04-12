@@ -4,6 +4,8 @@
   "description": "A minimal implementation of xstate fsm for UI machines",
   "keywords": [
     "ui-machines",
+    "state-machines",
+    "zag",
     "fsm",
     "xstate",
     "finite state machine"

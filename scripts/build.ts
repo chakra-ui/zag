@@ -52,9 +52,6 @@ export function reportBundleSize(dir: string, name: string) {
  * ESM and CJS build scripts (Powered by esbuild)
  * -----------------------------------------------------------------------------*/
 
-// we'll bundle all utilities and types (instead of marking them as external)
-const isUtil = (pkgName: string) => /(utils|types)$/.test(pkgName)
-
 function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions) {
   const { dev } = opts
 
@@ -62,12 +59,9 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
     minify: process.env.NODE_ENV === "production",
     bundle: true,
     sourcemap: true,
-    target: "es6",
     absWorkingDir: dir,
     entryPoints: ["src/index.ts"],
-    external: Object.keys(pkg.dependencies ?? {})
-      .concat(Object.keys(pkg.peerDependencies ?? {}))
-      .filter((pkg) => !isUtil(pkg)),
+    external: Object.keys(pkg.peerDependencies ?? {}),
   }
 
   esbuild.buildSync({

@@ -4,7 +4,7 @@
   "description": "UI machines monorepo root package",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chakra-ui/ui-machines.git"
+    "url": "git+https://github.com/chakra-ui/zag.git"
   },
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
@@ -60,7 +60,7 @@
     "cypress-axe": "^0.14.0",
     "cypress-plugin-tab": "^1.0.5",
     "cypress-real-events": "^1.6.0",
-    "esbuild": "^0.14.11",
+    "esbuild": "^0.14.36",
     "esbuild-runner": "^2.2.1",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
