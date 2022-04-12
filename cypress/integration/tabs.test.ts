@@ -70,7 +70,7 @@ describe("tabs", () => {
     })
 
     it("should have no accessibility violation", () => {
-      cy.findByPart("tabs").then(cy.checkA11y)
+      cy.findByPart("root").then(cy.checkA11y)
     })
 
     it("on `ArrowRight`: should select & focus the next tab", () => {
