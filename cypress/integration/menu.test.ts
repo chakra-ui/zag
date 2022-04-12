@@ -4,19 +4,21 @@ describe("dropdown menu", () => {
   beforeEach(() => {
     cy.visit("/nested-menu")
     cy.injectAxe()
-    cy.findByTestId("trigger").as("rootTrigger").click()
+    cy.findByTestId("trigger").as("rootTrigger")
   })
 
   describe("When using keyboard", () => {
     it("should not open submenu when moving focus to trigger", () => {
+      cy.get("@rootTrigger").click()
       cy.findByTestId("menu").type("{downarrow}{downarrow}{downarrow}")
       cy.findByTestId("save-page").should("not.be.visible")
     })
 
     it("should open submenu and focus first item when pressing right arrow, enter or space key", () => {
+      cy.get("@rootTrigger").click()
       // Space key
       cy.findByTestId("menu").type("{downarrow}{downarrow}{downarrow}").type(" ")
-      cy.findByTestId("more-tools").should("have.attr", "data-selected")
+      cy.findByTestId("more-tools").should("have.attr", "data-focus")
       cy.findByTestId("more-tools-submenu").should("have.focus").type("{leftarrow}")
 
       // Enter key to reveal submenu
@@ -29,6 +31,7 @@ describe("dropdown menu", () => {
     })
 
     it("should close only the focused submenu when pressing left arrow key", () => {
+      cy.get("@rootTrigger").click()
       cy.findByTestId("menu").type("{downarrow}{downarrow}{downarrow}{enter}")
       cy.findByTestId("more-tools-submenu").type("{downarrow}{downarrow}{downarrow}{enter}")
       cy.findByTestId("open-nested-submenu").type("{leftarrow}")
@@ -39,23 +42,25 @@ describe("dropdown menu", () => {
     })
 
     it("should scope typeahead behaviour to the active menu", () => {
+      cy.get("@rootTrigger").click()
       // root menu typeahead
       cy.findByTestId("menu").type("n")
-      cy.findByTestId("new-tab").should("have.attr", "data-selected")
+      cy.findByTestId("new-tab").should("have.attr", "data-focus")
       cy.findByTestId("menu").type("n")
-      cy.findByTestId("new-win").should("have.attr", "data-selected")
+      cy.findByTestId("new-win").should("have.attr", "data-focus")
 
       // open submenu and typeahead
       cy.findByTestId("menu").type("{downarrow}{rightarrow}")
       cy.findByTestId("more-tools-submenu").should("be.visible").type("n")
-      cy.findByTestId("name-win").should("have.attr", "data-selected")
+      cy.findByTestId("name-win").should("have.attr", "data-focus")
       cy.findByTestId("more-tools-submenu").type("n")
-      cy.findByTestId("new-term").should("have.attr", "data-selected")
+      cy.findByTestId("new-term").should("have.attr", "data-focus")
     })
   })
 
   describe("selecting nested menu item should close all menus", () => {
     it("with keyboard", () => {
+      cy.get("@rootTrigger").click()
       cy.findByTestId("menu").type("{downarrow}{downarrow}{downarrow}{enter}")
       cy.findByTestId("more-tools-submenu").type("{downarrow}{downarrow}{downarrow}{enter}")
       cy.findByTestId("open-nested-submenu").type("{enter}")
@@ -64,7 +69,8 @@ describe("dropdown menu", () => {
       cy.findByTestId("menu").should("not.be.visible")
     })
 
-    it("with pointer", () => {
+    it("with pointer", { scrollBehavior: false }, () => {
+      cy.get("@rootTrigger").click()
       pointerOver("more-tools")
       pointerOver("open-nested")
       pointerOver("playground").click()
@@ -76,12 +82,14 @@ describe("dropdown menu", () => {
 
   describe("when using pointer", () => {
     it("should open submenu and not focus first item when moving pointer over trigger", () => {
+      cy.get("@rootTrigger").click()
       pointerOver("more-tools")
       cy.findByTestId("more-tools-submenu").should("be.visible")
       cy.findByTestId("more-tools-submenu").should("have.focus")
     })
 
     it("should not close when moving pointer to submenu and back to parent trigger", () => {
+      cy.get("@rootTrigger").click()
       pointerOver("more-tools")
       pointerOver("save-page")
       pointerOver("more-tools")
@@ -89,6 +97,7 @@ describe("dropdown menu", () => {
     })
 
     it("should close submenu when moving pointer away but remain open when moving towards", () => {
+      cy.get("@rootTrigger").click()
       pointerOver("more-tools")
       cy.findByTestId("save-page").should("be.visible")
       pointerExitRightToLeft("more-tools")
@@ -96,6 +105,7 @@ describe("dropdown menu", () => {
     })
 
     it("should close open submenu when moving pointer to any item in parent menu", () => {
+      cy.get("@rootTrigger").click()
       pointerOver("more-tools")
       pointerOver("save-page")
       pointerOver("new-tab")
@@ -103,6 +113,7 @@ describe("dropdown menu", () => {
     })
 
     it("should close all menus when clicking item in any menu, or clicking outside", () => {
+      cy.get("@rootTrigger").click()
       // Root menu
       cy.findByTestId("new-tab").click()
       cy.findByTestId("new-tab").should("not.be.visible")
@@ -113,9 +124,11 @@ describe("dropdown menu", () => {
       cy.findByTestId("save-page").click()
       cy.findByTestId("save-page").should("not.be.visible")
       cy.findByTestId("more-tools").should("not.be.visible")
+    })
 
-      // Click outside
+    it("should close all menus when clicking outside", () => {
       cy.get("@rootTrigger").click()
+      pointerOver("more-tools")
       cy.clickOutside()
       cy.findByTestId("new-tab").should("not.be.visible")
     })
