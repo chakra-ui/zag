@@ -53,16 +53,7 @@ describe("slider", () => {
     })
 
     it("should set the value on drag", () => {
-      cy.get("@track").then((el) => {
-        let width = el.width()
-        const midY = el.height() / 2
-        const point = { x: width * 0.8, y: midY }
-        cy.get("@track").realMouseDown({ position: point, pointer: "mouse" })
-        point.x += 10
-        cy.document().trigger("mousemove", point)
-        cy.document().trigger("pointerup")
-        cy.get("@output").should("have.text", "90")
-      })
+      cy.get("@track").pan({ x: 0.8, y: 0.5 }, { x: 0.9, y: 0.5 })
     })
   })
 })

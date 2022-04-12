@@ -1,3 +1,4 @@
+import { transform } from "@zag-js/number-utils"
 import "cypress-axe"
 
 const COMMAND_DELAY = 500
@@ -30,6 +31,18 @@ Cypress.Commands.add("clickOutside", () => {
 
 Cypress.Commands.add("findByPart", (label) => {
   return cy.get(`[data-part=${label}]`)
+})
+
+Cypress.Commands.add("pan", { prevSubject: true }, (subject, from, to, range = [0, 1]) => {
+  const el = subject[0]
+  const rect = el.getBoundingClientRect()
+  const getX = transform(range, [rect.left, rect.width + rect.left])
+  const getY = transform(range, [rect.top, rect.height + rect.top])
+
+  cy.wrap(el)
+    .trigger("pointerdown", { button: 0, pageX: getX(from.x), pageY: getY(from.y) })
+    .trigger("pointermove", { pageX: getX(to.x), pageY: getY(to.y) })
+    .trigger("pointerup")
 })
 
 Cypress.Commands.add("realInput", { prevSubject: "element" }, (subject, value, options = {}) => {

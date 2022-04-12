@@ -65,7 +65,7 @@
       }
     },
     {
-      "files": ["cypress/**/*.test.ts"],
+      "files": ["cypress/**/*.ts"],
       "extends": ["plugin:cypress/recommended"],
       "plugins": ["cypress"],
       "parserOptions": {
