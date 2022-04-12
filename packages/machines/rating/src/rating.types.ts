@@ -7,7 +7,19 @@ type IntlMessages = {
   ratingValueText(index: number): string
 }
 
+type IdMap = Partial<{
+  root: string
+  label: string
+  input: string
+  itemGroup: string
+  item(id: string): string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the rating. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */

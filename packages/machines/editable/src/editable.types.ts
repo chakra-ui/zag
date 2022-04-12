@@ -12,7 +12,23 @@ type IntlMessages = {
   input: string
 }
 
+type IdMap = Partial<{
+  root: string
+  area: string
+  label: string
+  preview: string
+  input: string
+  controlGroup: string
+  submitBtn: string
+  cancelBtn: string
+  editBtn: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the editable. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Whether the input's value is invalid.
    */

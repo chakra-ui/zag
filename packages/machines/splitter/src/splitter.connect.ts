@@ -92,7 +92,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
     labelProps: normalize.element<T>({
       "data-part": "label",
-      id: dom.getSplitterLabelId(state.context),
+      id: dom.getLabelId(state.context),
     }),
 
     splitterProps: normalize.element<T>({
@@ -104,7 +104,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
       "aria-valuemin": min,
       "aria-valuemax": max,
       "aria-orientation": state.context.orientation,
-      "aria-labelledby": dom.getSplitterLabelId(state.context),
+      "aria-labelledby": dom.getLabelId(state.context),
       "aria-controls": dom.getPrimaryPaneId(state.context),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),

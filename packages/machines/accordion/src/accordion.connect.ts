@@ -35,7 +35,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const { isOpen, isFocused } = api.getItemState(props)
       return normalize.element<T>({
         "data-part": "item",
-        id: dom.getGroupId(state.context, props.value),
+        id: dom.getItemId(state.context, props.value),
         "data-expanded": dataAttr(isOpen),
         "data-focus": dataAttr(isFocused),
       })

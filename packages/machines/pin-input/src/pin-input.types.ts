@@ -4,7 +4,16 @@ type IntlMessages = {
   inputLabel: (index: number, length: number) => string
 }
 
+type IdMap = Partial<{
+  root: string
+  input(id: string): string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the pin input. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Whether the inputs are disabled
    */

@@ -1,6 +1,20 @@
 import { Context } from "@zag-js/types"
 
+type IdMap = Partial<{
+  root: string
+  thumb: string
+  control: string
+  track: string
+  range: string
+  label: string
+  output: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the slider. Useful for composition.
+   */
+  ids: IdMap
   /**
    * The value of the slider
    */

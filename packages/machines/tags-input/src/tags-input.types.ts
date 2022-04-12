@@ -25,7 +25,22 @@ type Log =
   | { type: "paste"; values: string[] }
   | { type: "set"; values: string[] }
 
+type IdMap = Partial<{
+  root: string
+  input: string
+  clearBtn: string
+  label: string
+  control: string
+  tag(opts: TagProps): string
+  tagDeleteBtn(opts: TagProps): string
+  tagInput(opts: TagProps): string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the tags input. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * The output log for the screen reader to speak
    */

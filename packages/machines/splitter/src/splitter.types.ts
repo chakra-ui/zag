@@ -1,6 +1,19 @@
 import { Context } from "@zag-js/types"
 
+type IdMap = Partial<{
+  root: string
+  splitter: string
+  label: string
+  toggleBtn: string
+  primaryPane: string
+  secondaryPane: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the splitter. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Whether to allow the separator to be dragged.
    */

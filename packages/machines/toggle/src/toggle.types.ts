@@ -1,7 +1,16 @@
 import type { StateMachine as S } from "@zag-js/core"
 import { Context } from "@zag-js/types"
 
+type IdMap = Partial<{
+  root: string
+  button: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the toggle. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */

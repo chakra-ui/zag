@@ -6,6 +6,15 @@ type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 type InputSelection = Record<"start" | "end", number | null>
 
+type IdMap = Partial<{
+  root: string
+  label: string
+  input: string
+  incBtn: string
+  decBtn: string
+  scrubber: string
+}>
+
 type IntlMessages = {
   /**
    * Function that returns the human-readable value.
@@ -23,6 +32,10 @@ type IntlMessages = {
 }
 
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the number input. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * The name attribute of the number input. Useful for form submission.
    */

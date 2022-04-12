@@ -83,7 +83,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
 
       return normalize.element<T>({
         "data-part": "item",
-        id: dom.getItemId(state.context, index),
+        id: dom.getItemId(state.context, index.toString()),
         role: "radio",
         tabIndex: isDisabled ? undefined : isChecked ? 0 : -1,
         "aria-roledescription": "rating",

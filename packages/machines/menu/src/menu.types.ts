@@ -10,7 +10,19 @@ export type MachineState = {
   tags: "visible"
 }
 
+type IdMap = Partial<{
+  trigger: string
+  contextTrigger: string
+  content: string
+  label(id: string): string
+  group(id: string): string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the menu. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * The values of radios and checkboxes in the menu.
    */

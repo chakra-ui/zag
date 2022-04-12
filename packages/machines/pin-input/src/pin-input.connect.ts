@@ -53,7 +53,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(
         disabled: state.context.disabled,
         "data-disabled": dataAttr(state.context.disabled),
         "data-complete": dataAttr(isValueComplete),
-        id: dom.getInputId(state.context, index),
+        id: dom.getInputId(state.context, index.toString()),
         "data-ownedby": dom.getRootId(state.context),
         "aria-label": messages.inputLabel(index, state.context.valueLength),
         inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",

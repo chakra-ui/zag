@@ -1,6 +1,20 @@
 import type { Context, MaybeElement } from "@zag-js/types"
 
+type IdMap = Partial<{
+  trigger: string
+  underlay: string
+  backdrop: string
+  content: string
+  closeBtn: string
+  title: string
+  description: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the dialog. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * @internal Whether the dialog title is rendered
    */

@@ -1,7 +1,21 @@
 import type { StateMachine as S } from "@zag-js/core"
 import { Context } from "@zag-js/types"
 
+type IdMap = Partial<{
+  root: string
+  thumb(index: number): string
+  control: string
+  track: string
+  range: string
+  label: string
+  output: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the range slider. Useful for composition.
+   */
+  ids: IdMap
   /**
    * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */

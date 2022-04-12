@@ -1,6 +1,15 @@
 import { Placement, PositioningOptions } from "@zag-js/popper"
 
+type IdMap = Partial<{
+  trigger: string
+  content: string
+}>
+
 export type MachineContext = {
+  /**
+   * The ids of the elements in the tooltip. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * @internal The owner document of the tooltip.
    */

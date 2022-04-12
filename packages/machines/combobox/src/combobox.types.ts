@@ -15,7 +15,22 @@ type IntlMessages = {
   navigationHint?: string
 }
 
+type IdMap = Partial<{
+  root: string
+  label: string
+  control: string
+  input: string
+  listbox: string
+  toggleBtn: string
+  clearBtn: string
+  option(id: string, index?: number): string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the combobox. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * The current value of the combobox's input
    */

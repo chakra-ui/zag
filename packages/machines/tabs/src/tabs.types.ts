@@ -5,7 +5,19 @@ type IntlMessages = {
   deleteLabel?(value: string): string
 }
 
+type IdMap = Partial<{
+  root: string
+  trigger: string
+  triggerGroup: string
+  contentGroup: string
+  content: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the tabs. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */

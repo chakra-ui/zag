@@ -1,7 +1,20 @@
 import type { PositioningOptions, Placement } from "@zag-js/popper"
 import type { Context, MaybeElement } from "@zag-js/types"
 
+type IdMap = Partial<{
+  anchor: string
+  trigger: string
+  content: string
+  title: string
+  description: string
+  closeBtn: string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the popover. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * @internal Whether the dialog title is rendered
    */
@@ -10,6 +23,12 @@ export type MachineContext = Context<{
    * @internal Whether the dialog description is rendered
    */
   isDescriptionRendered: boolean
+  /**
+   *
+   * @internal Whether the reference element is rendered to be used as the
+   * positioning reference
+   */
+  isAnchorRendered: boolean
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
@@ -53,12 +72,6 @@ export type MachineContext = Context<{
    * Function invoked when the popover is closed.
    */
   onClose?: () => void
-  /**
-   *
-   * @internal Whether the reference element is rendered to be used as the
-   * positioning reference
-   */
-  isAnchorRendered: boolean
   /**
    * The user provided options used to position the popover content
    */

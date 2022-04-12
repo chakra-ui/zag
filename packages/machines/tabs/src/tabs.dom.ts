@@ -5,11 +5,11 @@ import { MachineContext as Ctx } from "./tabs.types"
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  getRootId: (ctx: Ctx) => `tabs-${ctx.uid}`,
-  getTriggerGroupId: (ctx: Ctx) => `tabs-${ctx.uid}-trigger-group`,
-  getContentId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-content-${id}`,
-  getContentGroupId: (ctx: Ctx) => `tabs-${ctx.uid}-content-group`,
-  getTriggerId: (ctx: Ctx, id: string) => `tabs-${ctx.uid}-trigger-${id}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs-${ctx.uid}`,
+  getTriggerGroupId: (ctx: Ctx) => ctx.ids?.triggerGroup ?? `tabs-${ctx.uid}-trigger-group`,
+  getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs-${ctx.uid}-content-${id}`,
+  getContentGroupId: (ctx: Ctx) => ctx.ids?.contentGroup ?? `tabs-${ctx.uid}-content-group`,
+  getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs-${ctx.uid}-trigger-${id}`,
   getIndicatorId: (ctx: Ctx) => `tabs-${ctx.uid}-indicator`,
 
   getTriggerGroupEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerGroupId(ctx)),

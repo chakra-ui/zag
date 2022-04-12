@@ -1,7 +1,18 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context } from "@zag-js/types"
 
+type IdMap = Partial<{
+  root: string
+  item(value: string): string
+  content(value: string): string
+  trigger(value: string): string
+}>
+
 export type MachineContext = Context<{
+  /**
+   * The ids of the elements in the accordion. Useful for composition.
+   */
+  ids?: IdMap
   /**
    * Whether multple accordion items can be open at the same time.
    * @default false
