@@ -12,7 +12,7 @@ describe("number input", () => {
   })
 
   it("should have not accessibility voilations", () => {
-    cy.checkA11y(".root")
+    cy.findByPart("root").then(cy.checkA11y)
   })
 
   describe("when typing into the input", () => {

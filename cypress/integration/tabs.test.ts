@@ -14,7 +14,7 @@ describe("tabs", () => {
   })
 
   it("should have no accessibility violation", () => {
-    cy.checkA11y("[data-part=root]")
+    cy.findByPart("root").then(cy.checkA11y)
   })
 
   describe("in automatic mode", () => {
@@ -70,7 +70,7 @@ describe("tabs", () => {
     })
 
     it("should have no accessibility violation", () => {
-      cy.checkA11y(".tabs")
+      cy.findByPart("root").then(cy.checkA11y)
     })
 
     it("on `ArrowRight`: should select & focus the next tab", () => {
