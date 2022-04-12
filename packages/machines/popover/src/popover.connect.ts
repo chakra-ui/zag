@@ -1,5 +1,5 @@
 import { StateMachine as S } from "@zag-js/core"
-import { dataAttr, EventKeyMap, isFocusable, isTabbable, validateBlur } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, isFocusable, validateBlur } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
@@ -92,11 +92,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(
           fallback: pointerdownNode,
         })
 
-        const el = (event.relatedTarget ?? pointerdownNode) as HTMLElement
-        const focusable = isTabbable(el) || isFocusable(el)
-
         if (isValidBlur) {
-          send({ type: "INTERACT_OUTSIDE", focusable })
+          const el = (event.relatedTarget ?? pointerdownNode) as HTMLElement
+          send({ type: "INTERACT_OUTSIDE", focusable: isFocusable(el) })
         }
       },
     }),
