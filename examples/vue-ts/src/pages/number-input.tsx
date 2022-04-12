@@ -21,12 +21,13 @@ export default defineComponent({
     const numberInputRef = computed(() => NumberInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
-      const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps } = numberInputRef.value
+      const { decrementButtonProps, incrementButtonProps, inputProps, scrubberProps, labelProps, rootProps } =
+        numberInputRef.value
 
       return (
         <>
           <controls.ui />
-          <div class="root" ref={ref}>
+          <div {...rootProps} ref={ref}>
             <div
               data-testid="scrubber"
               {...mergeProps(scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}

@@ -15,15 +15,13 @@ export default function Page() {
 
   const ref = useSetup<HTMLInputElement>({ send, id: "1" })
 
-  const { inputProps, decrementButtonProps, incrementButtonProps, scrubberProps, labelProps } = NumberInput.connect(
-    state,
-    send,
-  )
+  const { inputProps, decrementButtonProps, incrementButtonProps, scrubberProps, labelProps, rootProps } =
+    NumberInput.connect(state, send)
 
   return (
     <div>
       <controls.ui />
-      <div className="root">
+      <div {...rootProps}>
         <div
           data-testid="scrubber"
           {...mergeProps(scrubberProps, { style: { width: 32, height: 32, background: "red" } })}
