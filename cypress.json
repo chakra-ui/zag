@@ -4,5 +4,6 @@
   "viewportHeight": 768,
   "fixturesFolder": false,
   "pluginsFile": false,
-  "videoUploadOnPasses": false
+  "videoUploadOnPasses": false,
+  "scrollBehavior": false
 }
