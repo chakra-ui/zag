@@ -1,20 +1,9 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 10,
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "project": "tsconfig.json"
-  },
   "extends": ["plugin:import/recommended", "plugin:import/typescript", "prettier"],
   "plugins": ["jest", "@typescript-eslint/eslint-plugin", "testing-library"],
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true
-  },
+  "env": { "node": true },
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-use-before-define": "off",
@@ -76,16 +65,6 @@
       },
       "rules": {
         "jest/expect-expect": "off"
-      }
-    },
-    {
-      "files": ["*.test.*", "*.test.*"],
-      "extends": ["plugin:jest/recommended", "plugin:jest/style"],
-      "excludedFiles": ["cypress/**/*.test.ts"],
-      "rules": {
-        "jsx-a11y/label-has-associated-control": "off",
-        "global-require": "off",
-        "no-new": "off"
       }
     }
   ]

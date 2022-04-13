@@ -1,0 +1,15 @@
+{
+  "name": "@zag-js/scripts",
+  "version": "1.0.0",
+  "private": true,
+  "bin": {
+    "zag": "index.js"
+  },
+  "dependencies": {
+    "esbuild-plugin-alias": "^0.2.1",
+    "@swc-node/register": "1.4.2",
+    "commander": "8.3.0",
+    "signale": "^1.4.0",
+    "@types/signale": "^1.4.4"
+  }
+}

@@ -58,10 +58,10 @@ function buildPackage(dir: string, pkg: Record<string, any>, opts: BuildOptions)
   const common: esbuild.BuildOptions = {
     minify: process.env.NODE_ENV === "production",
     bundle: true,
-    sourcemap: true,
+    sourcemap: "inline",
     absWorkingDir: dir,
     entryPoints: ["src/index.ts"],
-    external: Object.keys(pkg.peerDependencies ?? {}),
+    external: ["valtio"].concat(Object.keys(pkg.peerDependencies ?? {})),
   }
 
   esbuild.buildSync({

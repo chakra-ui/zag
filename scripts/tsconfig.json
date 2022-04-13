@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "jsx": "react"
+  },
+  "include": ["src"]
+}

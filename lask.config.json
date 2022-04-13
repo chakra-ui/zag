@@ -1,0 +1,13 @@
+{
+  "entryPoints": ["./src/index.ts"],
+  "clean": true,
+  "outDir": "dist",
+  "external": {
+    "dependencies": true,
+    "peerDependencies": true
+  },
+  "devConfig": "tsconfig.json",
+  "buildConfig": "tsconfig.json",
+  "format": ["cjs", "esm"],
+  "calculateSize": true
+}

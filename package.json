@@ -1,19 +1,25 @@
 {
   "name": "zag",
   "private": true,
-  "description": "UI machines monorepo root package",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chakra-ui/zag.git"
   },
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
+  "workspaces": {
+    "packages": [
+      "packages/**/*",
+      "scripts",
+      "examples/*"
+    ]
+  },
   "scripts": {
     "build:module": "esr scripts/build.ts",
     "build:prod": "NODE_ENV=production yarn build:module",
     "dev": "yarn build:module --dev",
     "watch": "yarn build:module --dev --watch",
-    "prepare": "husky install && yarn dev",
+    "prepare": "husky install",
     "clean": "esr scripts/generate-typings.ts",
     "build:types": "ultra -r --silent --concurrency 20 --filter \"@zag-js/*\" \"tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false\"",
     "prebuild": "yarn build:types",
@@ -35,7 +41,7 @@
     "test": "jest --maxWorkers=50%",
     "test:ci": "jest --runInBand"
   },
-  "dependencies": {
+  "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.19.0",
     "@commitlint/cli": "^16.0.2",
@@ -84,26 +90,13 @@
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.5",
     "start-server-and-test": "^1.14.0",
-    "typescript": "4.5.4",
+    "typescript": "^4.6.3",
+    "turbo": "^1.2.2",
+    "lask": "^0.1.0",
     "ultra-runner": "^3.10.5"
   },
-  "workspaces": {
-    "packages": [
-      "packages/core",
-      "packages/machines/*",
-      "packages/frameworks/*",
-      "packages/types",
-      "packages/utilities/*",
-      "examples/*"
-    ]
-  },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx}": [
-      "prettier --write"
-    ],
-    "**/*.{md,yml,json,babelrc,eslintrc,prettierrc}": [
-      "prettier --write"
-    ]
+    "**/*.{ts,tsx,js,jsx}": "prettier --write"
   },
   "commitlint": {
     "extends": [
