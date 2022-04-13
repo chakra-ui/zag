@@ -29,7 +29,7 @@ module.exports = function main(plop) {
         templateFiles: "machine/**",
         destination: `../packages/machines/{{dashCase machine}}`,
         base: "machine/",
-        data: { machine, packageName: machine },
+        data: { machine, name: machine },
         abortOnFail: true,
       })
 
@@ -60,13 +60,10 @@ module.exports = function main(plop) {
 
       actions.push({
         type: "addMany",
-        templateFiles: "util-template/**",
+        templateFiles: "utility/**",
         destination: `../packages/utilities/${name}`,
-        base: "util-template/",
-        data: {
-          description,
-          packageName: name,
-        },
+        base: "utility/",
+        data: { description, name },
         abortOnFail: true,
       })
 
