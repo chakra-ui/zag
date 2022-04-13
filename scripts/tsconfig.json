@@ -2,8 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
-    "downlevelIteration": true,
-    "jsx": "react"
+    "downlevelIteration": true
   },
   "include": ["src"]
 }

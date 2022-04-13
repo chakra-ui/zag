@@ -2,7 +2,7 @@ import * as esbuild from "esbuild"
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
-import { logger } from "../utilities/log"
+import { createLogger } from "../utilities/log"
 import { getBundleSize } from "../utilities/bundle-size"
 
 function getPackageJson(dir: string) {
@@ -19,7 +19,9 @@ type BuildArgs = {
 
 const EXCLUDES = ["valtio"]
 
-export async function build(opts: BuildArgs) {
+const logger = createLogger("build")
+
+export default async function build(opts: BuildArgs) {
   const { report, watch, prod } = opts
 
   const cwd = process.cwd()
@@ -30,7 +32,6 @@ export async function build(opts: BuildArgs) {
     minify: false,
     bundle: true,
     treeShaking: true,
-    platform: "neutral",
     sourcemap: true,
     absWorkingDir: cwd,
     entryPoints: ["src/index.ts"],

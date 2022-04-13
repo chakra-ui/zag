@@ -19,7 +19,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/core/svelte",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist/**/*"
   ],
   "publishConfig": {
     "access": "public"
@@ -35,5 +35,14 @@
   },
   "peerDependencies": {
     "svelte": "^3.38.2"
+  },
+  "scripts": {
+    "build:fast": "yarn zag build",
+    "start": "yarn zag build --watch",
+    "build": "yarn zag build --prod",
+    "test": "jest --config ../../../jest.config.js --rootDir tests --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test:ci": "yarn test --ci --runInBand --maxWorkers=50%",
+    "test:watch": "yarn test --watch --updateSnapshot"
   }
 }
