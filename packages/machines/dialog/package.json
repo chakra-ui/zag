@@ -37,10 +37,10 @@
     "scroll-into-view-if-needed": "^2.2.28"
   },
   "scripts": {
-    "build:fast": "yarn zag build",
-    "start": "yarn zag build --watch",
-    "build": "yarn zag build --prod",
-    "test": "jest --config ../../../jest.config.js --rootDir tests --passWithNoTests",
+    "build:fast": "zag build",
+    "start": "zag build --watch",
+    "build": "zag build --prod",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test:ci": "yarn test --ci --runInBand --maxWorkers=50%",
     "test:watch": "yarn test --watch --updateSnapshot"

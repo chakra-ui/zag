@@ -10,10 +10,10 @@ export default async function modify() {
     const patch = {
       files: ["dist/**/*"],
       scripts: {
-        "build:fast": "yarn zag build",
-        start: "yarn zag build --watch",
-        build: "yarn zag build --prod",
-        test: `jest --config ${jestConfig} --rootDir tests --passWithNoTests`,
+        "build:fast": "zag build",
+        start: "zag build --watch",
+        build: "zag build --prod",
+        test: `jest --config ${jestConfig} --rootDir . --passWithNoTests`,
         lint: "eslint src --ext .ts,.tsx",
         "test:ci": "yarn test --ci --runInBand --maxWorkers=50%",
         "test:watch": "yarn test --watch --updateSnapshot",
