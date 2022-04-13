@@ -15,10 +15,10 @@ const patch = {
 
 async function main() {
   const pkgs = await getWorkspacePkgs()
-  for (const { pkg } of pkgs) {
+  for (const { pkg, dir } of pkgs) {
     if (pkg.name === "@zag-js/scripts") continue
     Object.assign(pkg, patch)
-    fs.writeFileSync(`${pkg.dir}/package.json`, JSON.stringify(pkg, null, 2))
+    fs.writeFileSync(`${dir}/package.json`, JSON.stringify(pkg, null, 2))
   }
 }
 
