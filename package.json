@@ -34,8 +34,7 @@
     "lint": "turbo run lint --stream --parallel",
     "version": "changeset version",
     "release": "changeset publish",
-    "test": "turbo run test --stream",
-    "test:ci": "turbo run test:ci --stream"
+    "test": "jest"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",

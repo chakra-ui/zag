@@ -43,7 +43,7 @@ jobs:
         run: yarn build
 
       - name: Run tests
-        run: yarn test:ci
+        run: yarn test
 
       - name: Publish packages
         id: changesets
