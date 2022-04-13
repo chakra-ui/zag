@@ -80,7 +80,7 @@ export function requestPointerLock(doc: Document, handlers: PointerLockHandlers 
   }
 
   function setup() {
-    if (!isSupported()) return
+    if (!isSupported() || !hasLockElement()) return
     body.requestPointerLock = getPointerlockFunc(body)
     body.requestPointerLock()
     addEventListeners()
