@@ -29,4 +29,4 @@
 "@zag-js/rect-utils": patch
 ---
 
-Initial release
+Initial release and test
