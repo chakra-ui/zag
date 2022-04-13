@@ -1,15 +1,12 @@
-import { createMachine, preserve } from "@zag-js/core"
-import { Context } from "../type-utils"
-import { {{capitalize machine}}MachineContext, {{capitalize machine}}MachineState } from "./{{machine}}.types"
+import { createMachine, ref } from "@zag-js/core"
+import { MachineContext, MachineState } from "./{{machine}}.types"
 
-export const {{machine}}Machine = createMachine<
-  {{capitalize machine}}MachineContext,
-  {{capitalize machine}}MachineState
->(
+export const machine = createMachine<MachineContext, MachineState>(
   {
     id: "{{machine}}-machine",
     initial: "unknown",
     context: {
+      uid: "",
     },
     states: {
       unknown: {
@@ -28,7 +25,7 @@ export const {{machine}}Machine = createMachine<
     actions: {
       setupDocument(ctx, evt) {
         ctx.uid = evt.id
-        ctx.doc = preserve(evt.doc)
+        if (evt.doc) ctx.doc = ref(evt.doc)
       },
     },
   },

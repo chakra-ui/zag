@@ -1,9 +1,3 @@
-import { {{machine}}Connect } from "./{{machine}}.connect"
-import { {{machine}}Machine } from "./{{machine}}.machine"
-
-export const {{machine}} = {
-  machine: {{machine}}Machine,
-  connect: {{machine}}Connect,
-}
-
-export type { {{capitalize machine}}MachineContext, {{capitalize machine}}MachineState } from "./{{machine}}.types"
+export { connect } from "./{{machine}}.connect"
+export { machine } from "./{{machine}}.machine"
+export type { MachineContext, MachineState } from "./{{machine}}.types"
