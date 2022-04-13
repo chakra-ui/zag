@@ -15,7 +15,7 @@ export default async function modify() {
         build: "zag build --prod",
         test: `jest --config ${jestConfig} --rootDir . --passWithNoTests`,
         lint: "eslint src --ext .ts,.tsx",
-        "test:ci": "yarn test --ci --runInBand --maxWorkers=50%",
+        "test:ci": "yarn test --ci --runInBand",
         "test:watch": "yarn test --watch --updateSnapshot",
       },
     }
