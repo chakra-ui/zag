@@ -10,7 +10,7 @@ export function {{capitalize machine}}connect<T extends PropTypes = ReactPropTyp
 ) {
   const { context: ctx } = state
   return {
-    elProps: normalize.element<T>({
+    rootProps: normalize.element<T>({
     }),
   }
 }

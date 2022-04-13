@@ -11,16 +11,20 @@
   "module": "dist/index.mjs",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/{{machine}}",
   "sideEffects": false,
-  "files": [
-    "dist" 
-  ],
+  "files": ["dist/**/*"],
+  "scripts": {
+    "build:fast": "yarn zag build",
+    start: "yarn zag build --watch",
+    build: "yarn zag build --prod",
+    test: "jest --config ../../jest.config.js --rootDir tests",
+    lint: "eslint src --ext .ts,.tsx",
+    "test:ci": "yarn test --ci --runInBand --updateSnapshot",
+    "test:watch": "yarn test --watch",
+  },
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
-  },
-  "scripts": {
-    "build": "tsc src/index.ts --declaration --emitDeclarationOnly --target es2018 --outDir dist --skipLibCheck --moduleResolution node --strict false"
   }
 }
