@@ -15,8 +15,8 @@
     ]
   },
   "scripts": {
-    "build:fast": "yarn turbo run build:fast --filter=./packages/**/*",
-    "build": "turbo run build --filter=./packages/**/*",
+    "build:fast": "turbo run build:fast --filter=./packages/**/* --concurrency=50%",
+    "build": "turbo run build --filter=./packages/**/* --concurrency=50%",
     "start": "turbo run start --stream --parallel --filter=./packages/**/*",
     "postinstall": "husky install && patch-package",
     "clean": "manypkg exec rm -rf dist .turbo .swc",

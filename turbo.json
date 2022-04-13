@@ -12,15 +12,6 @@
     "start": {
       "dependsOn": ["^start"],
       "outputs": ["dist/**"]
-    },
-    "test": {
-      "cache": false
-    },
-    "test:ci": {
-      "cache": false
-    },
-    "lint": {
-      "cache": false
     }
   }
 }
