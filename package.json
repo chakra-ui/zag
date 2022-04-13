@@ -31,7 +31,7 @@
     "fix:pkgs": "manypkg fix",
     "gen:machine": "plop machine",
     "gen:util": "plop utility",
-    "lint": "turbo run lint --stream --parallel",
+    "lint": "eslint packages --ext .ts",
     "version": "changeset version",
     "release": "changeset publish",
     "test": "jest"
