@@ -2,11 +2,16 @@ const camelCase = (str) => {
   return str.replace(/[-_]([a-z])/g, (g) => g[1].toUpperCase())
 }
 
+const capitalize = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 /**
  * @param {import("plop").NodePlopAPI} plop
  */
 module.exports = function main(plop) {
   plop.setHelper("camelize", camelCase)
+  plop.setHelper("capitalize", capitalize)
 
   plop.setGenerator("machine", {
     description: "Generates a new ui machine",
@@ -26,9 +31,9 @@ module.exports = function main(plop) {
 
       actions.push({
         type: "addMany",
-        templateFiles: "machine/**",
-        destination: `../packages/machines/{{dashCase machine}}`,
-        base: "machine/",
+        templateFiles: "plop/machine/**",
+        destination: `packages/machines/{{dashCase machine}}`,
+        base: "plop/machine/",
         data: { machine, name: machine },
         abortOnFail: true,
       })
@@ -60,9 +65,9 @@ module.exports = function main(plop) {
 
       actions.push({
         type: "addMany",
-        templateFiles: "utility/**",
-        destination: `../packages/utilities/${name}`,
-        base: "utility/",
+        templateFiles: "plop/utility/**",
+        destination: `packages/utilities/{{dashCase name}}`,
+        base: "plop/utility/",
         data: { description, name },
         abortOnFail: true,
       })
