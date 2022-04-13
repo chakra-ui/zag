@@ -97,11 +97,9 @@ describe("number input", () => {
     })
   })
 
-  describe("when using scrubber", () => {
-    beforeEach(() => {
-      cy.get("@scrubber").realMouseDown({ pointer: "mouse", position: "center" })
-    })
+  describe.skip("when using scrubber", () => {
     it("should increment on left mouse movement", () => {
+      cy.get("@scrubber").realMouseDown({ pointer: "mouse", position: "center" })
       for (let i = 0; i <= 10; i++) {
         cy.document().trigger("mousemove", { movementX: i * 2, movementY: 0 })
       }
