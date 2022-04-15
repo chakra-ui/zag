@@ -135,14 +135,10 @@ export type GroupMachineContext = SharedContext &
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
-export type PromiseMessages<Value = any> = {
-  loading: Value
-  success: MaybeFunction<Value, Options>
-  error: MaybeFunction<Value, Options>
-}
-
-export type PromiseOptions = Options & {
-  [key in "success" | "loading" | "error"]?: Options
+export type PromiseOptions<Value> = {
+  loading: Options
+  success: MaybeFunction<Options, Value>
+  error: MaybeFunction<Options, any>
 }
 
 export type GroupProps = {
@@ -160,5 +156,5 @@ export type Toaster = {
   loading(options: Options): string | undefined
   dismiss(id?: string | undefined): void
   remove(id?: string | undefined): void
-  promise<T>(promise: Promise<T>, msgs: PromiseMessages, opts?: PromiseOptions): Promise<T>
+  promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared?: Options): Promise<T>
 }

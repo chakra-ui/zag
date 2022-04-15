@@ -2,15 +2,7 @@ import { StateMachine as S, subscribe } from "@zag-js/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { runIfFn } from "@zag-js/utils"
 import { dom } from "./toast.dom"
-import {
-  Toaster,
-  GroupProps,
-  GroupMachineContext,
-  Options,
-  Placement,
-  PromiseMessages,
-  PromiseOptions,
-} from "./toast.types"
+import { Toaster, GroupProps, GroupMachineContext, Options, Placement, PromiseOptions } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export let toaster: Toaster = {} as any
@@ -94,17 +86,17 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
       return group.upsert(options)
     },
 
-    promise<T>(promise: Promise<T>, msgs: PromiseMessages, opts: PromiseOptions = {}) {
-      const id = group.loading({ ...opts, ...opts?.loading, type: "loading", title: msgs.loading })
+    promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared: Options = {}) {
+      const id = group.loading({ ...shared, ...options.loading })
 
       promise
         .then((response) => {
-          const message = runIfFn(msgs.loading, response)
-          group.success({ ...opts, ...opts?.success, id, title: message })
+          const successOptions = runIfFn(options.success, response)
+          group.success({ ...shared, ...successOptions, id })
         })
         .catch((error) => {
-          const message = runIfFn(msgs.error, error)
-          group.error({ ...opts, ...opts?.error, id, title: message })
+          const errorOptions = runIfFn(options.error, error)
+          group.error({ ...shared, ...errorOptions, id })
         })
 
       return promise
