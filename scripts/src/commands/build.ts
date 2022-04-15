@@ -1,9 +1,9 @@
+import { spawn } from "child_process"
 import * as esbuild from "esbuild"
 import fs from "fs"
 import path from "path"
-import { spawn } from "child_process"
-import { createLogger } from "../utilities/log"
 import { getBundleSize } from "../utilities/bundle-size"
+import { createLogger } from "../utilities/log"
 
 function getPackageJson(dir: string) {
   const pkgPath = path.join(dir, "package.json")
@@ -15,16 +15,14 @@ type BuildArgs = {
   watch?: boolean
   prod?: boolean
   clean?: boolean
+  cwd?: string
 }
-
-const EXCLUDES = ["valtio"]
 
 const logger = createLogger("build")
 
 export default async function build(opts: BuildArgs) {
-  const { report, watch, prod } = opts
+  const { report, watch, prod, cwd = process.cwd() } = opts
 
-  const cwd = process.cwd()
   const pkgJson = getPackageJson(cwd)
 
   const common: esbuild.BuildOptions = {
@@ -34,26 +32,18 @@ export default async function build(opts: BuildArgs) {
     treeShaking: true,
     sourcemap: true,
     absWorkingDir: cwd,
+    platform: "browser",
     entryPoints: ["src/index.ts"],
     define: {
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
     },
-    external: EXCLUDES.concat(Object.keys(pkgJson.peerDependencies ?? {})),
-    plugins: [
-      {
-        name: "resolve",
-        setup(builder) {
-          builder.onResolve({ filter: /^@zag-js/ }, (args) => {
-            const root = args.resolveDir.split("packages")[0]
-            const _path = path.resolve(path.join(root, "node_modules", args.path, "src", "index.ts"))
-            return { path: _path }
-          })
-        },
-      },
-    ],
+    external: Object.keys(pkgJson.dependencies ?? {})
+      .concat(Object.keys(pkgJson.peerDependencies ?? {}))
+      .filter((pkg) => !/(utils|types)$/.test(pkg)),
   }
 
   if (watch) {
+    common.incremental = true
     common.watch = {
       onRebuild(err) {
         if (err) {
@@ -81,7 +71,7 @@ export default async function build(opts: BuildArgs) {
 
   if (!prod) {
     const dist = path.join(cwd, "dist", "index.d.ts")
-    fs.writeFileSync(dist, 'export * from "../src"')
+    await fs.promises.writeFile(dist, 'export * from "../src"')
   } else {
     spawn("tsc", [
       "src/index.ts",

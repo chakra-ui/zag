@@ -34,5 +34,5 @@ program
 program.parse(process.argv)
 
 process.on("uncaughtException", (error) => {
-  logger.error(error.message)
+  logger.error(error)
 })
