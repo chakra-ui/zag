@@ -2,8 +2,14 @@
 
 Finite state machines for accessible JavaScript components
 
-- ✅ **Framework Agnostic:** Reuse component logic in any JavaScript framework
-- ✅ **Accessible:** Components come with built-in accessibility considerations for DOM frameworks
+- **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
+  adapters for JS frameworks like React, Solid, or Vue.
+- **Focus on accessibility ♿️**: Zag is built with accessibility in mind. We handle many details related to keyboard
+  interactions, focus management, aria roles and attributes.
+- **Headless ✨**: The machine APIs are completely unstyled and gives you the control to use any styling solution you
+  prefer.
+- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCMXL
+  specifications, but we've created an API that we think will help us build more complex components fast.
 
 ## The problem
 
@@ -18,15 +24,17 @@ understand, debug, improve or test.
 
 **Zag** is a JavaScript API that implements common component patterns using the state machine methodology.
 
-## Installation
+### Installation
 
 ```sh
-npm i --save @zag-js/<component>
+npm i --save @zag-js/{component}
 
 # or
 
-yarn add @zag-js/<component>
+yarn add @zag-js/{component}
 ```
+
+> `{component}` represents any component machine like dialog (`@zag-js/dialog`), tooltip (`@zag-js/tooltip`) , etc.
 
 For framework specific solutions, we provide simple wrappers to help you consume the component state machines.
 
@@ -34,9 +42,7 @@ For framework specific solutions, we provide simple wrappers to help you consume
 - 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
 - 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
 
-## Examples
-
-### React
+### Usage
 
 ```jsx
 import * as toggle from "@zag-js/toggle"
@@ -63,11 +69,61 @@ function Example() {
 - All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
   nested states, etc.
 
-## Development Plans
+## Commands
 
-The components to be built come from the the
-[Aria Practices Design Patterns and Widgets](https://www.w3.org/TR/wai-aria-practices-1.2) and common application
-widgets in the industry.
+### Build commands
+
+Our build is managed with esbuild and turborepo to provide fast, concurrent builds across the packages.
+
+- `build:fast` : Build the CJS and ESM versions, without the types.
+- `build` : Build the CJS, ESM and DTS files. This is the actual production build that we run in the CI.
+- `start` : The command to run when developing for Zag. It runs the `build:fast` command, watches for changes and
+  rebuilds as needed.
+
+### Examples
+
+Since zag is framework agnostic, we need a way to test it within a framework. The `examples/` directory includes starter
+projects for the frameworks we support.
+
+- `start:react` : Starts the Next.js TypeScript project
+- `start:vue` : Starts the Vue 3 TypeScript project
+- `start:solid` : Starts the Solid TypeScript project
+
+### E2E Tests
+
+We've setup end-to-end tests for every machine we built. We use Cypress for testing and we ensure that the component
+works the same way regardless of the framework.
+
+- `cypress:react` : Starts the E2E tests for the React project
+- `cypress:vue` : Starts the E2E tests for the Vue project
+- `cypress:solid` : Starts the E2E tests for the Solid project
+
+### Contributing new machines/features
+
+- `gen:machine` : Generates a new machine package in the `packages/` directory. It sets up the required files and
+  structure for new machine.
+- `gen:util` : Generates a new utility package in the `packages/utilities` directory.
+
+### Other commands
+
+- `test` : Run the tests for all packages
+- `lint` : Lint all packages
+
+## Fun Facts
+
+**Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
+power the logic behind UI components.
+
+### Teasers
+
+- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
+  them to **"zag it!"** ⚡️
+
+- Anyone using Zag will be called a **"zagger"** 💥
+
+- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
+
+- The Zag community will be called **"zag nation"** 🔥
 
 ## Inspirations
 
@@ -76,7 +132,7 @@ widgets in the industry.
 - [Material Components Web](https://github.com/material-components/material-components-web)
 - Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
 
-## Issues
+## Contributions
 
 Looking to contribute? Look for the **Good First Issue** label.
 
@@ -88,3 +144,7 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 
 Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
 what to work on.
+
+## License
+
+MIT © [Segun Adebayo](https://github.com/segunadebayo)
