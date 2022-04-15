@@ -5,9 +5,14 @@ type Fn = (rect: DOMRect) => void
 type ObservedData = { rect: DOMRect; callbacks: Fn[] }
 export type Measurable = { getBoundingClientRect(): DOMRect }
 
-const observedElements: Map<Measurable, ObservedData> = new Map()
+function getObservedElements(): Map<Measurable, ObservedData> {
+  ;(globalThis as any).__rectObserverMap__ = (globalThis as any).__rectObserverMap__ || new Map()
+  return (globalThis as any).__rectObserverMap__
+}
 
 export function observeElementRect(el: Measurable, fn: Fn) {
+  const observedElements = getObservedElements()
+
   const data = observedElements.get(el)
 
   if (!data) {
@@ -43,6 +48,8 @@ export function observeElementRect(el: Measurable, fn: Fn) {
 let rafId: number
 
 function runLoop() {
+  const observedElements = getObservedElements()
+
   const changedRectsData: Array<ObservedData> = []
 
   observedElements.forEach((data, element) => {
