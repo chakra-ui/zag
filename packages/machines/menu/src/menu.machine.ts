@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { addPointerEvent, contains, isFocusable, nextTick, trackPointerDown } from "@zag-js/dom-utils"
+import { addPointerEvent, contains, isFocusable, nextTick, raf, trackPointerDown } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
@@ -366,8 +366,10 @@ export const machine = createMachine<MachineContext, MachineState>(
         if (!pt) return
         const el = dom.getPositionerEl(ctx)
         if (!el) return
-        Object.assign(el.style, { left: `${pt.x}px`, top: `${pt.y}px`, position: "absolute" })
-        ctx.isPlacementComplete = true
+        raf(() => {
+          Object.assign(el.style, { left: `${pt.x}px`, top: `${pt.y}px`, position: "absolute" })
+          ctx.isPlacementComplete = true
+        })
       },
       setSubmenuPlacement(ctx) {
         if (ctx.isSubmenu) {
