@@ -1,7 +1,7 @@
 import { Global } from "@emotion/react"
 import { useActor, useMachine, useSetup } from "@zag-js/react"
 import * as toast from "@zag-js/toast"
-import { useRef } from "react"
+import { useId, useRef } from "react"
 import { BeatLoader } from "react-spinners"
 import { toastControls } from "../../../shared/controls"
 import { toastStyle } from "../../../shared/style"
@@ -29,7 +29,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
   const api = toast.group.connect(state, send)
 
   const id = useRef<string>()

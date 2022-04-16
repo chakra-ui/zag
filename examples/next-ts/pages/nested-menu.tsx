@@ -2,22 +2,22 @@ import { Global } from "@emotion/react"
 import { Portal } from "@reach/portal"
 import * as menu from "@zag-js/menu"
 import { useMachine, useSetup } from "@zag-js/react"
-import { useEffect } from "react"
+import { useEffect, useId } from "react"
 import { menuData } from "../../../shared/data"
 import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine)
-  const rootRef = useSetup<HTMLUListElement>({ send, id: "1" })
+  const rootRef = useSetup<HTMLUListElement>({ send, id: useId() })
   const root = menu.connect(state, send)
 
   const [subState, subSend, subMachine] = useMachine(menu.machine)
-  const subRef = useSetup<HTMLUListElement>({ send: subSend, id: "2" })
+  const subRef = useSetup<HTMLUListElement>({ send: subSend, id: useId() })
   const sub = menu.connect(subState, subSend)
 
   const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
-  const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: "3" })
+  const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: useId() })
   const sub2 = menu.connect(sub2State, sub2Send)
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
 import * as TagsInput from "@zag-js/tags-input"
+import { useId } from "react"
 import { tagsInputControls } from "../../../shared/controls"
 import { tagsInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -22,7 +23,7 @@ export default function Page() {
     },
   )
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
 
   const api = TagsInput.connect(state, send)
 

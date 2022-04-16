@@ -1,6 +1,7 @@
 import { Global } from "@emotion/react"
 import * as accordion from "@zag-js/accordion"
 import { useMachine, useSetup } from "@zag-js/react"
+import { useId } from "react"
 import { accordionControls } from "../../../shared/controls"
 import { accordionData } from "../../../shared/data"
 import { accordionStyle } from "../../../shared/style"
@@ -14,7 +15,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
 
   const api = accordion.connect(state, send)
 

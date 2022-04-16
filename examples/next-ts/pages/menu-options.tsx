@@ -4,6 +4,7 @@ import { useMachine, useSetup } from "@zag-js/react"
 import { menuStyle } from "../../../shared/style"
 import { menuOptionData as data } from "../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useId } from "react"
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -12,7 +13,7 @@ export default function Page() {
       onValuesChange: console.log,
     }),
   )
-  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
   const api = menu.connect(state, send)
 
   return (

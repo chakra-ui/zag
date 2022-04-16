@@ -1,7 +1,7 @@
 import { Global } from "@emotion/react"
 import * as combobox from "@zag-js/combobox"
 import { useMachine, useSetup } from "@zag-js/react"
-import { useState } from "react"
+import { useId, useState } from "react"
 import { comboboxControls } from "../../../shared/controls"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
@@ -26,7 +26,7 @@ export default function Page() {
     { context: controls.context },
   )
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
 
   const api = combobox.connect(state, send)
 

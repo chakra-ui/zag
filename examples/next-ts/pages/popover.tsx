@@ -15,7 +15,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: React.useId() })
 
   const api = popover.connect(state, send)
 

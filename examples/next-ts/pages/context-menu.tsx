@@ -1,6 +1,7 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { useMachine, useSetup } from "@zag-js/react"
+import { useId } from "react"
 import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -13,7 +14,7 @@ export default function Page() {
 
   const api = menu.connect(state, send)
 
-  const ref = useSetup<HTMLUListElement>({ send, id: "1" })
+  const ref = useSetup<HTMLUListElement>({ send, id: useId() })
 
   return (
     <>
