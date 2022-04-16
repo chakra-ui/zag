@@ -21,13 +21,26 @@ export type PositioningOptions = {
    */
   gutter?: number
   /**
+   * The virtual padding around the viewport edges to check for overflow
+   */
+  overflowPadding?: number
+  /**
    * Whether to flip the placement
    */
   flip?: boolean
   /**
+   * Whether the floating element can overlap the reference element
+   * @default false
+   */
+  overlap?: boolean
+  /**
    * Whether to make the floating element same width as the reference element
    */
   sameWidth?: boolean
+  /**
+   * Whether the popover should fit the viewport.
+   */
+  fitViewport?: boolean
   /**
    * The overflow boundary of the reference element
    */

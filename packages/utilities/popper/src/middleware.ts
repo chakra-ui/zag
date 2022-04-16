@@ -1,4 +1,4 @@
-import { Middleware, Placement } from "@floating-ui/dom"
+import { Middleware } from "@floating-ui/dom"
 
 /* -----------------------------------------------------------------------------
  * Shared middleware utils
@@ -7,13 +7,11 @@ import { Middleware, Placement } from "@floating-ui/dom"
 const toVar = (value: string) => ({ variable: value, reference: `var(${value})` })
 
 export const cssVars = {
-  arrowShadowColor: toVar("--arrow-shadow-color"),
   arrowSize: toVar("--arrow-size"),
   arrowSizeHalf: toVar("--arrow-size-half"),
   arrowBg: toVar("--arrow-background"),
   transformOrigin: toVar("--transform-origin"),
   arrowOffset: toVar("--arrow-offset"),
-  boxShadow: toVar("--arrow-box-shadow"),
 }
 
 /* -----------------------------------------------------------------------------
@@ -58,7 +56,7 @@ export const shiftArrow = (opts: ArrowOptions): Middleware => ({
     const { element: arrow } = opts
     const { x, y } = middlewareData.arrow ?? { x: 0, y: 0 }
 
-    const staticSide = {
+    const dir = {
       top: "bottom",
       right: "left",
       bottom: "top",
@@ -68,17 +66,9 @@ export const shiftArrow = (opts: ArrowOptions): Middleware => ({
     Object.assign(arrow.style, {
       top: `${y}px`,
       left: `${x}px`,
-      [staticSide]: cssVars.arrowOffset.reference,
-      [cssVars.boxShadow.variable]: getBoxShadow(placement)!,
+      [dir]: cssVars.arrowOffset.reference,
     })
 
     return {}
   },
 })
-
-export function getBoxShadow(placement: Placement) {
-  if (placement.includes("top")) return `1px 1px 1px 0 ${cssVars.arrowShadowColor.reference}`
-  if (placement.includes("bottom")) return `-1px -1px 1px 0 ${cssVars.arrowShadowColor.reference}`
-  if (placement.includes("right")) return `-1px 1px 1px 0 ${cssVars.arrowShadowColor.reference}`
-  if (placement.includes("left")) return `1px -1px 1px 0 ${cssVars.arrowShadowColor.reference}`
-}

@@ -1,6 +1,5 @@
 import type { VirtualElement } from "@floating-ui/dom"
 import { arrow, computePosition, flip, Middleware, offset, shift, size } from "@floating-ui/dom"
-import { getOwnerDocument } from "@zag-js/dom-utils"
 import { noop, pipe } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
@@ -13,6 +12,7 @@ const defaultOptions: PositioningOptions = {
   gutter: 8,
   flip: true,
   sameWidth: false,
+  overflowPadding: 8,
 }
 
 export function getPlacement(
@@ -29,30 +29,57 @@ export function getPlacement(
    * -----------------------------------------------------------------------------*/
 
   const middleware: Middleware[] = [transformOrigin]
+  const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
 
   if (options.flip) {
-    middleware.push(flip({ boundary: options.boundary, padding: 8 }))
+    middleware.push(
+      flip({
+        boundary: options.boundary,
+        padding: options.overflowPadding,
+      }),
+    )
   }
 
   if (options.gutter || options.offset) {
+    const arrowOffset = arrowEl ? arrowEl.offsetHeight / 2 : 0
     const data = options.gutter ? { mainAxis: options.gutter } : options.offset
+    if (data?.mainAxis != null) data.mainAxis += arrowOffset
     middleware.push(offset(data))
   }
 
-  middleware.push(shift({ boundary: options.boundary }))
+  middleware.push(
+    shift({
+      boundary: options.boundary,
+      crossAxis: options.overlap,
+      padding: options.overflowPadding,
+    }),
+  )
 
-  const doc = getOwnerDocument(floating)
-  const arrowEl = doc.querySelector<HTMLElement>("[data-part=arrow]")
   if (arrowEl) {
-    middleware.push(arrow({ element: arrowEl, padding: 8 }), shiftArrow({ element: arrowEl }))
+    // prettier-ignore
+    middleware.push(
+      arrow({ element: arrowEl, padding: 8 }),
+      shiftArrow({ element: arrowEl })
+    )
   }
 
-  if (options.sameWidth) {
+  if (options.sameWidth || options.fitViewport) {
     middleware.push(
       size({
+        padding: options.overflowPadding,
         apply(data) {
-          const { width } = data.reference
-          Object.assign(floating.style, { width: `${width}px`, minWidth: "unset" })
+          const { reference, height, width } = data
+
+          if (options.sameWidth) {
+            Object.assign(floating.style, { width: `${reference.width}px` })
+          }
+
+          if (options.fitViewport) {
+            Object.assign(floating.style, {
+              maxWidth: `${width}px`,
+              maxHeight: `${height}px`,
+            })
+          }
         },
       }),
     )
@@ -66,10 +93,22 @@ export function getPlacement(
     if (reference == null || floating == null) return
     const { placement, strategy } = options
 
-    computePosition(reference, floating, { placement, middleware, strategy })
+    computePosition(reference, floating, {
+      placement,
+      middleware,
+      strategy,
+    })
       .then((data) => {
-        const { x, y, strategy } = data
-        Object.assign(floating.style, { left: `${x}px`, top: `${y}px`, position: strategy })
+        const x = Math.round(data.x)
+        const y = Math.round(data.y)
+
+        Object.assign(floating.style, {
+          position: data.strategy,
+          top: "0",
+          left: "0",
+          transform: `translate3d(${x}px, ${y}px, 0)`,
+        })
+
         return data
       })
       .then((data) => {
