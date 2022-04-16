@@ -57,15 +57,15 @@ export function getRangeStyle(ctx: Ctx): Style {
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider-${ctx.uid}`,
-  getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider-thumb-${ctx.uid}-${index}`,
-  getInputId: (ctx: Ctx, index: number) => `slider-input-${ctx.uid}-${index}`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider-${ctx.uid}-root`,
-  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider-${ctx.uid}-track`,
-  getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider-${ctx.uid}-range`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider-${ctx.uid}-label`,
-  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider-${ctx.uid}-output`,
-  getMarkerId: (ctx: Ctx, value: number) => `slider-marker-${ctx.uid}-${value}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.uid}`,
+  getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.uid}:thumb:${index}`,
+  getInputId: (ctx: Ctx, index: number) => `slider:${ctx.uid}:input:${index}`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.uid}:control`,
+  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.uid}:track`,
+  getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.uid}:range`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.uid}:label`,
+  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider-${ctx.uid}:marker:${value}`,
 
   getThumbEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx, index)),
   getInputEl: (ctx: Ctx, index: number) =>

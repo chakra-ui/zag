@@ -3,12 +3,12 @@ import { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement } fro
 export const dom = {
   getDoc: (ctx: Ctx | GroupCtx) => ctx.doc ?? document,
 
-  getGroupId: (placement: Placement) => `toast-group--${placement}`,
-  getContainerId: (ctx: Ctx) => `toast--${ctx.id}`,
-  getTitleId: (ctx: Ctx) => `toast-title--${ctx.id}`,
-  getCloseButtonId: (ctx: Ctx) => `toast-close-button--${ctx.id}`,
+  getGroupId: (placement: Placement) => `toast-group:${placement}`,
+  getContainerId: (ctx: Ctx) => `toast:${ctx.id}`,
+  getTitleId: (ctx: Ctx) => `toast-title:${ctx.id}`,
+  getCloseButtonId: (ctx: Ctx) => `toast-close-button:${ctx.id}`,
 
-  getPortalId: (ctx: GroupCtx) => `toast-portal--${ctx.uid}`,
+  getPortalId: (ctx: GroupCtx) => `toast-portal:${ctx.uid}`,
   getPortalEl: (ctx: GroupCtx) => dom.getDoc(ctx).getElementById(dom.getPortalId(ctx)),
 
   createPortalEl: (ctx: GroupCtx) => {

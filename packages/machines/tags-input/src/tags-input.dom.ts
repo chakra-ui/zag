@@ -4,16 +4,16 @@ import { MachineContext as Ctx, TagProps } from "./tags-input.types"
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input-${ctx.uid}-root`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input-${ctx.uid}-input`,
-  getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input-${ctx.uid}-clear-btn`,
-  getHiddenInputId: (ctx: Ctx) => `tags-input-${ctx.uid}-hidden-input`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `tags-input-${ctx.uid}-label`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `tags-input-${ctx.uid}-control`,
-  getTagId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tag?.(opt) ?? `tags-input-${ctx.uid}-tag-${opt.value}-${opt.index}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.uid}:root`,
+  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.uid}:input`,
+  getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.uid}:clear-btn`,
+  getHiddenInputId: (ctx: Ctx) => `tags-input:${ctx.uid}:hidden-input`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `tags-input:${ctx.uid}:label`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `tags-input:${ctx.uid}:control`,
+  getTagId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tag?.(opt) ?? `tags-input:${ctx.uid}:tag:${opt.value}:${opt.index}`,
   getTagDeleteBtnId: (ctx: Ctx, opt: TagProps) =>
-    ctx.ids?.tagDeleteBtn?.(opt) ?? `${dom.getTagId(ctx, opt)}-delete-btn`,
-  getTagInputId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tagInput?.(opt) ?? `${dom.getTagId(ctx, opt)}-input`,
+    ctx.ids?.tagDeleteBtn?.(opt) ?? `${dom.getTagId(ctx, opt)}:delete-btn`,
+  getTagInputId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tagInput?.(opt) ?? `${dom.getTagId(ctx, opt)}:input`,
 
   getTagInputEl: (ctx: Ctx, opt: TagProps) =>
     dom.getDoc(ctx)?.getElementById(dom.getTagInputId(ctx, opt)) as HTMLInputElement | null,
@@ -21,7 +21,7 @@ export const dom = {
   getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
   getHiddenInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getHiddenInputId(ctx)) as HTMLInputElement | null,
 
-  getEditInputId: (ctx: Ctx) => `${ctx.editedId}-input`,
+  getEditInputId: (ctx: Ctx) => `${ctx.editedId}:input`,
   getEditInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getEditInputId(ctx)) as HTMLInputElement | null,
 
   getElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=tag]:not([data-disabled])`),

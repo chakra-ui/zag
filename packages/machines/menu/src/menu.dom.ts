@@ -7,13 +7,13 @@ type HTMLEl = HTMLElement | null
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu-${ctx.uid}-trigger`,
-  getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu-${ctx.uid}-context-trigger`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu-${ctx.uid}-menulist`,
-  getArrowId: (ctx: Ctx) => `menu-${ctx.uid}--arrow`,
-  getPositionerId: (ctx: Ctx) => `menu-${ctx.uid}--popper`,
-  getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu-${ctx.uid}-group-${id}`,
-  getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu-${ctx.uid}-label-${id}`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.uid}:trigger`,
+  getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.uid}:ctx-trigger`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.uid}:content`,
+  getArrowId: (ctx: Ctx) => `menu:${ctx.uid}:arrow`,
+  getPositionerId: (ctx: Ctx) => `menu:${ctx.uid}:popper`,
+  getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.uid}:group:${id}`,
+  getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.uid}:label:${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
   getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
