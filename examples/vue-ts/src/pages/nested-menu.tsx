@@ -5,6 +5,7 @@ import { computed, defineComponent, onMounted, Teleport, Fragment, h } from "vue
 import { menuData } from "../../../../shared/data"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(menuStyle)
 
@@ -12,15 +13,15 @@ export default defineComponent({
   name: "NestedMenu",
   setup() {
     const [state, send, machine] = useMachine(menu.machine)
-    const rootRef = useSetup({ send, id: "1" })
+    const rootRef = useSetup({ send, id: useId() })
     const root = computed(() => menu.connect<PropTypes>(state.value, send, normalizeProps))
 
     const [subState, subSend, subMachine] = useMachine(menu.machine)
-    const subRef = useSetup({ send: subSend, id: "2" })
+    const subRef = useSetup({ send: subSend, id: useId() })
     const sub = computed(() => menu.connect<PropTypes>(subState.value, subSend, normalizeProps))
 
     const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
-    const sub2Ref = useSetup({ send: sub2Send, id: "3" })
+    const sub2Ref = useSetup({ send: sub2Send, id: useId() })
     const sub2 = computed(() => menu.connect<PropTypes>(sub2State.value, sub2Send, normalizeProps))
 
     onMounted(() => {

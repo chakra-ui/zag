@@ -7,6 +7,7 @@ import { computed, h, Fragment } from "vue"
 import { pinInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { pinInputControls } from "../../../../shared/controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(pinInputStyle)
 
@@ -19,7 +20,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => pinInput.connect<PropTypes>(state.value, send, normalizeProps))
 

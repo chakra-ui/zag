@@ -8,6 +8,7 @@ import { computed, h, Fragment } from "vue"
 import { sliderControls } from "../../../../shared/controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(sliderStyle)
 
@@ -25,7 +26,7 @@ export default defineComponent({
       },
     )
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => Slider.connect<PropTypes>(state.value, send, normalizeProps))
 

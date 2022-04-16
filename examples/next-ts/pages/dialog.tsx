@@ -1,9 +1,8 @@
 import { Global } from "@emotion/react"
-import { useId } from "@reach/auto-id"
 import { Portal } from "@reach/portal"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, useSetup } from "@zag-js/react"
-import { useRef } from "react"
+import { useId, useRef } from "react"
 import { dialogStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 

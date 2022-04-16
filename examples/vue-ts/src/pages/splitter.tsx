@@ -7,6 +7,7 @@ import { splitterControls } from "../../../../shared/controls"
 import { splitterStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(splitterStyle)
 
@@ -19,7 +20,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => splitter.connect<PropTypes>(state.value, send, normalizeProps))
 
