@@ -3,12 +3,12 @@ import { MachineContext as Ctx } from "./splitter.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `${ctx.uid}:root`,
-  getSplitterId: (ctx: Ctx) => ctx.ids?.splitter ?? `${ctx.uid}:splitter`,
-  getToggleButtonId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `${ctx.uid}:toggle-button`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `${ctx.uid}:splitter-label`,
-  getPrimaryPaneId: (ctx: Ctx) => ctx.ids?.primaryPane ?? `${ctx.uid}:primary-pane`,
-  getSecondaryPaneId: (ctx: Ctx) => ctx.ids?.secondaryPane ?? `${ctx.uid}:secondary-pane`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `splitter:${ctx.uid}`,
+  getSplitterId: (ctx: Ctx) => ctx.ids?.splitter ?? `splitter:${ctx.uid}:splitter`,
+  getToggleButtonId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `splitter:${ctx.uid}:toggle-btn`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `splitter:${ctx.uid}:label`,
+  getPrimaryPaneId: (ctx: Ctx) => ctx.ids?.primaryPane ?? `splitter:${ctx.uid}:primary`,
+  getSecondaryPaneId: (ctx: Ctx) => ctx.ids?.secondaryPane ?? `splitter:${ctx.uid}:secondary`,
 
   getSplitterEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getSplitterId(ctx)),
   getPrimaryPaneEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPrimaryPaneId(ctx)),

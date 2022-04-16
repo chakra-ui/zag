@@ -4,7 +4,7 @@ import { MachineContext as Ctx, TagProps } from "./tags-input.types"
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.uid}:root`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.uid}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.uid}:input`,
   getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.uid}:clear-btn`,
   getHiddenInputId: (ctx: Ctx) => `tags-input:${ctx.uid}:hidden-input`,

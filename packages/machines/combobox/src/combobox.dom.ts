@@ -6,7 +6,7 @@ import type { MachineContext as Ctx } from "./combobox.types"
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.uid}:root`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.uid}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.uid}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.uid}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.uid}:input`,
