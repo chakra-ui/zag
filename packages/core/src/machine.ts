@@ -324,18 +324,8 @@ export class Machine<
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 
-  withOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
-    this.detachComputed()
-    return new Machine(this.config, { ...this.options, ...options })
-  }
-
   setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
     this.actionMap = { ...this.actionMap, ...actions }
-  }
-
-  clone = () => {
-    this.detachComputed()
-    return new Machine(this.config, this.options)
   }
 
   private getStateNode = (state: TState["value"] | null) => {
