@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
-import * as Tabs from "@zag-js/tabs"
+import * as tabs from "@zag-js/tabs"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tabsControls } from "../../../../shared/controls"
 import { tabsData } from "../../../../shared/data"
@@ -13,13 +13,13 @@ injectGlobal(tabsStyle)
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(Tabs.machine({ value: "nils" }), {
+  const [state, send] = useMachine(tabs.machine({ value: "nils" }), {
     context: controls.context,
   })
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => Tabs.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => tabs.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

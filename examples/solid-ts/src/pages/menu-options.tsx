@@ -4,7 +4,7 @@ import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { menuStyle } from "../../../../shared/style"
 import { menuOptionData as data } from "../../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
-import { createMemo, For } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 
 injectGlobal(menuStyle)
 
@@ -15,7 +15,7 @@ export default function Page() {
       onValuesChange: console.log,
     }),
   )
-  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
   const api = createMemo(() => menu.connect<PropTypes>(state, send, normalizeProps))
 
   return (

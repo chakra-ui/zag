@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
-import * as TagsInput from "@zag-js/tags-input"
+import * as tagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tagsInputControls } from "../../../../shared/controls"
 import { tagsInputStyle } from "../../../../shared/style"
@@ -17,7 +17,7 @@ export default function Page() {
   const controls = useControls(tagsInputControls)
 
   const [state, send] = useMachine(
-    TagsInput.machine({
+    tagsInput.machine({
       value: ["React", "Vue"],
     }),
     { context: controls.context },
@@ -25,7 +25,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => TagsInput.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => tagsInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>
