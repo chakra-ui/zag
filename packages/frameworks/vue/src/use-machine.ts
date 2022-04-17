@@ -13,8 +13,7 @@ export function useMachine<
 ) {
   const { actions, state: hydratedState, context } = options ?? {}
 
-  const resolvedMachine = typeof machine === "function" ? machine() : machine
-  const service = options ? resolvedMachine.withOptions(options) : resolvedMachine
+  const service = typeof machine === "function" ? machine() : machine
 
   const state = shallowRef<S.State<TContext, TState>>(service.state)
   const consumableState = computed({

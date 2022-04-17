@@ -20,8 +20,7 @@ export function useService<
   const { actions, state: hydratedState, context } = options ?? {}
 
   const service = useConstant(() => {
-    const resolvedMachine = typeof machine === "function" ? machine() : machine
-    return options ? resolvedMachine.withOptions(options) : resolvedMachine
+    return typeof machine === "function" ? machine() : machine
   })
 
   useSafeLayoutEffect(() => {

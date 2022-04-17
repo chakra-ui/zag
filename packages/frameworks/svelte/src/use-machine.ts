@@ -14,10 +14,7 @@ export function useMachine<
 ) {
   const { actions, state: hydratedState } = options ?? {}
 
-  const _machine = (() => {
-    const m = typeof machine === "function" ? machine() : machine
-    return options ? m.withOptions(options) : m
-  })()
+  const _machine = typeof machine === "function" ? machine() : machine
 
   const service = _machine.start(hydratedState)
 
