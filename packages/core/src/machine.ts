@@ -448,7 +448,6 @@ export class Machine<
       state: this.stateSnapshot,
       guards: this.guardMap,
       send: this.send.bind(this),
-      listen: this.onEvent.bind(this),
       self: this.self,
       getState: () => this.stateSnapshot,
     }
