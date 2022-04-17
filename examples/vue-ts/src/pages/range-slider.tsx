@@ -18,7 +18,7 @@ export default defineComponent({
     const controls = useControls(rangeSliderControls)
 
     const [state, send] = useMachine(
-      RangeSlider.machine.withContext({
+      RangeSlider.machine({
         name: "quantity",
         value: [10, 60],
       }),

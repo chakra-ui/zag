@@ -11,7 +11,7 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(tabs.machine.withContext({ value: "nils" }), {
+  const [state, send] = useMachine(tabs.machine({ value: "nils" }), {
     context: controls.context,
   })
 

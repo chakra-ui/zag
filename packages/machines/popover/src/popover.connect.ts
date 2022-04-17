@@ -1,15 +1,10 @@
-import { StateMachine as S } from "@zag-js/core"
 import { dataAttr, EventKeyMap, isFocusable, validateBlur } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
-import type { MachineContext, MachineState } from "./popover.types"
+import type { Send, State } from "./popover.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isOpen = state.matches("open")
   const pointerdownNode = state.context.pointerdownNode
   const popperStyles = getPlacementStyles({

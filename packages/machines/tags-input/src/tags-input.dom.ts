@@ -1,5 +1,5 @@
 import { dispatchInputValueEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
-import { MachineContext as Ctx, TagProps } from "./tags-input.types"
+import type { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

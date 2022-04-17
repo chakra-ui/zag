@@ -11,9 +11,9 @@ export function useMachine<
     context?: Ref<S.UserContext<TContext>> | ComputedRef<S.UserContext<TContext>>
   },
 ) {
-  const { actions, state: hydratedState, context, preserve } = options ?? {}
+  const { actions, state: hydratedState, context } = options ?? {}
 
-  const resolvedMachine = typeof machine === "function" ? machine() : preserve ? machine : machine.clone()
+  const resolvedMachine = typeof machine === "function" ? machine() : machine
   const service = options ? resolvedMachine.withOptions(options) : resolvedMachine
 
   const state = shallowRef<S.State<TContext, TState>>(service.state)

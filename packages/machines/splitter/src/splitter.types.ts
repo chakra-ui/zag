@@ -1,6 +1,9 @@
-import { Context } from "@zag-js/types"
+import { StateMachine as S } from "@zag-js/core"
+import { Context, DirectionProperty } from "@zag-js/types"
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   splitter: string
   label: string
@@ -9,11 +12,13 @@ type IdMap = Partial<{
   secondaryPane: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the splitter. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * Whether to allow the separator to be dragged.
    */
@@ -59,21 +64,47 @@ export type MachineContext = Context<{
    * The minimum offset needed to snap the primary pane to its minimum or maximum size.
    */
   snapOffset: number
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @computed Whether the primary pane is at its minimum size.
+   * @computed
+   * Whether the primary pane is at its minimum size.
    */
-  readonly isAtMin: boolean
+  isAtMin: boolean
   /**
-   * @computed Whether the primary pane is at its maximum size.
+   * @computed
+   * Whether the primary pane is at its maximum size.
    */
-  readonly isAtMax: boolean
+  isAtMax: boolean
   /**
-   * @computed Whether the orientation is horizontal.
+   * @computed
+   * Whether the orientation is horizontal.
    */
-  readonly isHorizontal: boolean
+  isHorizontal: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "idle" | "hover:temp" | "hover" | "dragging" | "focused"
   tags: "focus"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>

@@ -1,9 +1,13 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Context } from "@zag-js/types"
+import type { Context, DirectionProperty } from "@zag-js/types"
+
+/////////////////////////////////////////////////////////////////////////
 
 export type ActivationMode = "focus" | "dblclick" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
+
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
   edit: string
@@ -12,7 +16,9 @@ type IntlMessages = {
   input: string
 }
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   area: string
   label: string
@@ -24,11 +30,13 @@ type IdMap = Partial<{
   editBtn: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the editable. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * Whether the input's value is invalid.
    */
@@ -75,10 +83,6 @@ export type MachineContext = Context<{
    */
   value: string
   /**
-   * @internal The previous value of the editable. Used to revert in case of cancel/escape
-   */
-  previousValue: string
-  /**
    * The maximum number of characters allowed in the editable
    */
   maxLength?: number
@@ -114,32 +118,62 @@ export type MachineContext = Context<{
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
   messages: IntlMessages
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @computed Whether the editable can be interacted with
+   * @computed
+   * Whether the editable can be interacted with
    */
-  readonly isInteractive: boolean
+  isInteractive: boolean
   /**
-   * @computed Whether value is empty
+   * @computed
+   * Whether value is empty
    */
-  readonly isValueEmpty: boolean
+  isValueEmpty: boolean
   /**
-   * @computed Whether the preview element is focusable
+   * @computed
+   * Whether the preview element is focusable
    */
-  readonly isPreviewFocusable: boolean
+  isPreviewFocusable: boolean
   /**
-   * @computed Whether to submit on enter press
+   * @computed
+   * Whether to submit on enter press
    */
-  readonly submitOnEnter: boolean
+  submitOnEnter: boolean
   /**
-   * @computed Whether to submit on blur
+   * @computed
+   * Whether to submit on blur
    */
-  readonly submitOnBlur: boolean
+  submitOnBlur: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The previous value of the editable. Used to revert in case of cancel/escape
+   */
+  previousValue: string
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "preview" | "edit"
 }
 
 export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type Send = S.Send<S.AnyEventObject>

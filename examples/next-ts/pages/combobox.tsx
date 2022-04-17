@@ -14,7 +14,7 @@ export default function Page() {
   const [options, setOptions] = useState(comboboxData)
 
   const [state, send] = useMachine(
-    combobox.machine.withContext({
+    combobox.machine({
       onOpen() {
         setOptions(comboboxData)
       },

@@ -1,9 +1,10 @@
 import { createMachine, ref } from "@zag-js/core"
-import { MachineContext, MachineState } from "./{{machine}}.types"
+import { MachineContext, MachineState, UserDefinedContext } from "./{{machine}}.types"
 
-export const machine = createMachine<MachineContext, MachineState>(
+export function machine(ctx: UserDefinedContext = {}){ 
+  return createMachine<MachineContext, MachineState>(
   {
-    id: "{{machine}}-machine",
+    id: "{{machine}}",
     initial: "unknown",
     context: {
       uid: "",
@@ -20,7 +21,6 @@ export const machine = createMachine<MachineContext, MachineState>(
   },
   {
     guards: {
-   
     },
     actions: {
       setupDocument(ctx, evt) {
@@ -29,4 +29,5 @@ export const machine = createMachine<MachineContext, MachineState>(
       },
     },
   },
+ }
 )

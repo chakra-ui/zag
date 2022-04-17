@@ -6,11 +6,7 @@ import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    menu.machine.withContext({
-      onSelect: console.log,
-    }),
-  )
+  const [state, send] = useMachine(menu.machine({ onSelect: console.log }))
   const ref = useSetup({ send, id: useId() })
 
   const api = menu.connect(state, send)

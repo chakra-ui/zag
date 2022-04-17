@@ -16,7 +16,7 @@ export default function Page() {
   const [options, setOptions] = createSignal(comboboxData)
 
   const [state, send] = useMachine(
-    combobox.machine.withContext({
+    combobox.machine({
       onOpen() {
         setOptions(comboboxData)
       },

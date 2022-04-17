@@ -13,7 +13,7 @@ injectGlobal(tabsStyle)
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
+  const [state, send] = useMachine(Tabs.machine({ value: "nils" }), {
     context: controls.context,
   })
 

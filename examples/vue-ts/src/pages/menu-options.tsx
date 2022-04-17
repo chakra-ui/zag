@@ -13,7 +13,7 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const [state, send] = useMachine(
-      menu.machine.withContext({
+      menu.machine({
         values: { order: "", type: [] },
         onValuesChange: console.log,
       }),

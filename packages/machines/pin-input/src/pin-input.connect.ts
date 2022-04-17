@@ -1,15 +1,10 @@
-import { StateMachine as S } from "@zag-js/core"
 import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { invariant, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
-import { MachineContext, MachineState } from "./pin-input.types"
+import { Send, State } from "./pin-input.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isValueComplete = state.context.isValueComplete
   const isInvalid = state.context.invalid
   const focusedIndex = state.context.focusedIndex

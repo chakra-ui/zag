@@ -1,6 +1,9 @@
-import { Context } from "@zag-js/types"
+import type { StateMachine as S } from "@zag-js/core"
+import type { Context, DirectionProperty } from "@zag-js/types"
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   thumb: string
   control: string
@@ -10,11 +13,13 @@ type IdMap = Partial<{
   output: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the slider. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * The value of the slider
    */
@@ -41,10 +46,6 @@ export type MachineContext = Context<{
    */
   invalid?: boolean
   /**
-   * @computed Whether the slider is interactive
-   */
-  readonly isInteractive: boolean
-  /**
    * The minimum value of the slider
    */
   min: number
@@ -56,10 +57,6 @@ export type MachineContext = Context<{
    * The step value of the slider
    */
   step: number
-  /**
-   * @internal The move threshold of the slider thumb before it is considered to be moved
-   */
-  threshold: number
   /**
    * The orientation of the slider
    */
@@ -97,27 +94,68 @@ export type MachineContext = Context<{
    * Function invoked when the slider value change is started
    */
   onChangeStart?(details: { value: number }): void
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the slider is interactive
+   */
+  readonly isInteractive: boolean
+  /**
+   * @computed
+   * Whether the thumb size has been measured
+   */
+  readonly hasMeasuredThumbSize: boolean
+  /**
+   * @computed
+   * Whether the slider is horizontal
+   */
+  readonly isHorizontal: boolean
+  /**
+   * @computed
+   * Whether the slider is vertical
+   */
+  readonly isVertical: boolean
+  /**
+   * @computed
+   * Whether the slider is in RTL mode
+   */
+  readonly isRtl: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal The move threshold of the slider thumb before it is considered to be moved
+   */
+  threshold: number
   /**
    * @internal The slider thumb dimensions
    */
   thumbSize: { width: number; height: number } | null
-  /**
-   * @internal Whether the thumb size has been measured
-   */
-  readonly hasMeasuredThumbSize: boolean
-  /**
-   * @computed Whether the slider is horizontal
-   */
-  readonly isHorizontal: boolean
-  /**
-   * @computed Whether the slider is vertical
-   */
-  readonly isVertical: boolean
-  /**
-   * @computed Whether the slider is in RTL mode
-   */
-  readonly isRtl: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineState = {
+  value: "unknown" | "idle" | "dragging" | "focus"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type SharedContext = {
   min: number
@@ -131,8 +169,4 @@ export type SharedContext = {
   thumbSize: { width: number; height: number } | null
   orientation?: "horizontal" | "vertical"
   readonly hasMeasuredThumbSize: boolean
-}
-
-export type MachineState = {
-  value: "unknown" | "idle" | "dragging" | "focus"
 }

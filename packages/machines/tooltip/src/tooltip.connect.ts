@@ -1,16 +1,11 @@
-import { StateMachine as S } from "@zag-js/core"
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import { MachineContext, MachineState } from "./tooltip.types"
+import { Send, State } from "./tooltip.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const id = state.context.id
   const hasAriaLabel = state.context.hasAriaLabel
 

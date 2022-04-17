@@ -12,7 +12,7 @@ injectGlobal(toggleStyle)
 export default defineComponent({
   name: "Toggle",
   setup() {
-    const [state, send] = useMachine(toggle.machine.withContext({ label: "Toggle italic" }))
+    const [state, send] = useMachine(toggle.machine({ label: "Toggle italic" }))
     const ref = useSetup({ send, id: useId() })
     const apiRef = computed(() => toggle.connect<PropTypes>(state.value, send, normalizeProps))
 

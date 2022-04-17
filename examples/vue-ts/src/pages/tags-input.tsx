@@ -21,7 +21,7 @@ export default defineComponent({
     const controls = useControls(tagsInputControls)
 
     const [state, send] = useMachine(
-      tagsInput.machine.withContext({
+      tagsInput.machine({
         value: ["React", "Vue"],
       }),
       {

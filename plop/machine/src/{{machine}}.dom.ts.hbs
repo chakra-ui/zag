@@ -2,5 +2,5 @@ import type { MachineContext as Ctx } from "./{{machine}}.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootId: (ctx: Ctx) => `{{machine}}-${ctx.uid}`,
+  getRootId: (ctx: Ctx) => `{{machine}}:${ctx.uid}`,
 }

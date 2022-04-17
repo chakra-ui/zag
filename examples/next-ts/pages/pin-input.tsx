@@ -11,7 +11,7 @@ export default function Page() {
   const controls = useControls(pinInputControls)
 
   const [state, send] = useMachine(
-    pinInput.machine.withContext({
+    pinInput.machine({
       onComplete(val) {
         console.log("onComplete", val)
       },

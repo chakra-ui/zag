@@ -16,8 +16,8 @@ export function useMachine<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: HookOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, preserve, context } = options ?? {}
-  const service = typeof machine === "function" ? machine() : preserve ? machine : machine.clone()
+  const { actions, state: hydratedState, context } = options ?? {}
+  const service = typeof machine === "function" ? machine() : machine
 
   const [state, setState] = createStore<any>(unwrap(service.state))
 

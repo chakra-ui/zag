@@ -1,15 +1,24 @@
-import { StateMachine as S, subscribe } from "@zag-js/core"
+import { subscribe } from "@zag-js/core"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
-import { runIfFn } from "@zag-js/utils"
+import { runIfFn, uuid } from "@zag-js/utils"
 import { dom } from "./toast.dom"
-import { Toaster, GroupProps, GroupMachineContext, Options, Placement, PromiseOptions } from "./toast.types"
+import {
+  GroupMachineContext,
+  GroupProps,
+  GroupSend,
+  GroupState,
+  Placement,
+  PromiseOptions,
+  Toaster,
+  Options,
+} from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export let toaster: Toaster = {} as any
 
 export function groupConnect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<GroupMachineContext>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
+  state: GroupState,
+  send: GroupSend,
   normalize = normalizeProp,
 ) {
   const group = {
@@ -23,7 +32,7 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
     },
 
     create(options: Options) {
-      const uid = "toast-" + Math.random().toString(36).substring(2, 9)
+      const uid = `toast:${uuid()}`
       const id = options.id ? options.id : uid
 
       if (group.isVisible(id)) return

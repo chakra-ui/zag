@@ -320,7 +320,6 @@ export declare namespace StateMachine {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
     context?: UserContext<TContext>
-    preserve?: boolean
   }
 
   export type Self<TContext, TState extends StateSchema, TEvent extends EventObject> = {

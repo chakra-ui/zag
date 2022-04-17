@@ -1,16 +1,11 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { PositioningOptions, Placement } from "@zag-js/popper"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { Context } from "@zag-js/types"
+import type { Context, DirectionProperty } from "@zag-js/types"
 
-export type Service = Machine<MachineContext, MachineState>
+/////////////////////////////////////////////////////////////////////////
 
-export type MachineState = {
-  value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
-  tags: "visible"
-}
-
-type IdMap = Partial<{
+type ElementIds = Partial<{
   trigger: string
   contextTrigger: string
   content: string
@@ -18,11 +13,13 @@ type IdMap = Partial<{
   group(id: string): string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the menu. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * The values of radios and checkboxes in the menu.
    */
@@ -40,54 +37,17 @@ export type MachineContext = Context<{
    */
   onSelect?: (value: string) => void
   /**
-   * @internal The menu's parent. Used for submenus.
-   */
-  parent: Service | null
-  /**
-   * @internal The child menus. Used for submenus.
-   */
-  children: Record<string, Service>
-  /**
-   * @internal The polygon tells us if the pointer is moving toward the submenu
-   */
-  intentPolygon: Point[] | null
-  /**
    * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
    */
   anchorPoint: Point | null
-  /**
-   * @internal Whether to suspend listening to pointer-over events on a submenu.
-   * This is used to prevent the menu from closing when the user is hovering to a submenu.
-   */
-  suspendPointer: boolean
-  /**
-   * @internal The `id` of the menu item that is currently being hovered.
-   */
-  hoverId: string | null
   /**
    * Whether to loop the keyboard navigation.
    */
   loop: boolean
   /**
-   * @computed Whether the menu is a submenu (has a parent menu)
-   */
-  readonly isSubmenu: boolean
-  /**
-   * @computed Whether the writing direction is rtl
-   */
-  readonly isRtl: boolean
-  /**
    * The options used to dynamically position the menu
    */
   positioning: PositioningOptions
-  /**
-   * @internal The computed placement (maybe different from initial placement)
-   */
-  currentPlacement?: Placement
-  /**
-   *  @internal Whether the dynamic placement has been computed
-   */
-  isPlacementComplete: boolean
   /**
    * Whether to close the menu when an option is selected
    */
@@ -96,16 +56,95 @@ export type MachineContext = Context<{
    * The accessibility label for the menu
    */
   "aria-label"?: string
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the menu is a submenu (has a parent menu)
+   */
+  isSubmenu: boolean
+  /**
+   * @computed
+   * Whether the writing direction is rtl
+   */
+  isRtl: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The menu's parent. Used for submenus.
+   */
+  parent: Service | null
+  /**
+   * @internal
+   * The child menus. Used for submenus.
+   */
+  children: Record<string, Service>
+  /**
+   * @internal
+   * The polygon tells us if the pointer is moving toward the submenu
+   */
+  intentPolygon: Point[] | null
+  /**
+   * @internal
+   * Whether to suspend listening to pointer-over events on a submenu.
+   * This is used to prevent the menu from closing when the user is hovering to a submenu.
+   */
+  suspendPointer: boolean
+  /**
+   * @internal
+   * The `id` of the menu item that is currently being hovered.
+   */
+  hoverId: string | null
+  /**
+   * @internal
+   * The computed placement (maybe different from initial placement)
+   */
+  currentPlacement?: Placement
+  /**
+   * @internal
+   * Whether the dynamic placement has been computed
+   */
+  isPlacementComplete: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineState = {
+  value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+  tags: "visible"
+}
 
 export type State = S.State<MachineContext, MachineState>
 
-export type Send = (event: S.Event<S.AnyEventObject>) => void
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Service = Machine<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type Api = {
   getItemProps: (opts: ItemProps) => Record<string, any>
   triggerProps: Record<string, any>
 }
+
+/////////////////////////////////////////////////////////////////////////
 
 export type ItemProps = {
   /**
@@ -127,6 +166,8 @@ export type ItemProps = {
   closeOnSelect?: boolean
 }
 
+/////////////////////////////////////////////////////////////////////////
+
 export type OptionItemProps = Partial<ItemProps> & {
   /**
    * The option's name as specified in menu's `context.values` object
@@ -145,6 +186,8 @@ export type OptionItemProps = Partial<ItemProps> & {
    */
   onCheckedChange?: (checked: boolean) => void
 }
+
+/////////////////////////////////////////////////////////////////////////
 
 export type GroupProps = {
   /**

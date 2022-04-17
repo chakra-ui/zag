@@ -6,6 +6,13 @@ export type Orientation = "horizontal" | "vertical"
 
 export type MaybeElement<T extends HTMLElement = HTMLElement> = T | null
 
+export type DirectionProperty = {
+  /**
+   * The document's text/writing direction.
+   */
+  dir?: Direction
+}
+
 export type Context<T> = T & {
   /**
    * @internal
@@ -23,10 +30,6 @@ export type Context<T> = T & {
    * Used as a polyfill for `e.relatedTarget`
    */
   pointerdownNode?: HTMLElement | null
-  /**
-   * The document's text/writing direction.
-   */
-  dir?: Direction
 }
 
 export type Style = React.CSSProperties & {

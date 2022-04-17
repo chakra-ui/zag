@@ -12,7 +12,7 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const [state, send] = useMachine(
-      menu.machine.withContext({
+      menu.machine({
         onSelect: console.log,
       }),
     )

@@ -11,11 +11,7 @@ injectGlobal(menuStyle)
 export default defineComponent({
   name: "Menu",
   setup() {
-    const [state, send] = useMachine(
-      menu.machine.withContext({
-        onSelect: console.log,
-      }),
-    )
+    const [state, send] = useMachine(menu.machine({ onSelect: console.log }))
 
     const ref = useSetup({ send, id: useId() })
 

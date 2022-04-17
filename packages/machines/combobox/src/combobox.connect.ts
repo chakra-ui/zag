@@ -2,7 +2,7 @@ import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateB
 import { getPlacementStyles } from "@zag-js/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./combobox.dom"
-import { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
+import type { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode

@@ -6,7 +6,7 @@ import { toggleStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
-  const [state, send] = useMachine(Toggle.machine.withContext({ label: "Toggle italic" }))
+  const [state, send] = useMachine(Toggle.machine({ label: "Toggle italic" }))
 
   const ref = useSetup({ send, id: useId() })
 

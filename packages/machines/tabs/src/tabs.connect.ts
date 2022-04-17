@@ -1,15 +1,10 @@
-import { StateMachine as S } from "@zag-js/core"
 import { dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isSafari } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
-import { MachineContext, MachineState, TabProps } from "./tabs.types"
+import type { Send, State, TabProps } from "./tabs.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const messages = state.context.messages
   const isFocused = state.matches("focused")
 

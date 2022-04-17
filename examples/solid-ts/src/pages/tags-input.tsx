@@ -17,7 +17,7 @@ export default function Page() {
   const controls = useControls(tagsInputControls)
 
   const [state, send] = useMachine(
-    TagsInput.machine.withContext({
+    TagsInput.machine({
       value: ["React", "Vue"],
     }),
     { context: controls.context },

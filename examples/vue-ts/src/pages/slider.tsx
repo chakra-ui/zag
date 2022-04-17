@@ -18,7 +18,7 @@ export default defineComponent({
     const controls = useControls(sliderControls)
 
     const [state, send] = useMachine(
-      Slider.machine.withContext({
+      Slider.machine({
         name: "quantity",
       }),
       {

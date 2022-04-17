@@ -1,14 +1,9 @@
-import type { StateMachine as S } from "@zag-js/core"
 import { ariaAttr } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./dialog.dom"
-import { MachineContext, MachineState } from "./dialog.types"
+import type { Send, State } from "./dialog.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const ariaLabel = state.context["aria-label"]
   const isOpen = state.matches("open")
 

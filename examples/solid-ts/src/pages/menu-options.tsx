@@ -10,7 +10,7 @@ injectGlobal(menuStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
-    menu.machine.withContext({
+    menu.machine({
       values: { order: "", type: [] },
       onValuesChange: console.log,
     }),
