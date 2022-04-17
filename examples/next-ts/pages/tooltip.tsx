@@ -1,12 +1,12 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
-import * as Tooltip from "@zag-js/tooltip"
+import * as tooltip from "@zag-js/tooltip"
 import { tooltipStyles } from "../../../shared/style"
 
 function TooltipComponent({ id }: { id?: string }) {
-  const [state, send] = useMachine(Tooltip.machine)
+  const [state, send] = useMachine(tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id })
-  const api = Tooltip.connect(state, send)
+  const api = tooltip.connect(state, send)
 
   return (
     <div>

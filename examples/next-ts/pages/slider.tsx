@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
-import * as Slider from "@zag-js/slider"
+import * as slider from "@zag-js/slider"
 import serialize from "form-serialize"
 import { useId } from "react"
 import { sliderControls } from "../../../shared/controls"
@@ -12,7 +12,7 @@ export default function Page() {
   const controls = useControls(sliderControls)
 
   const [state, send] = useMachine(
-    Slider.machine({
+    slider.machine({
       name: "quantity",
     }),
     {
@@ -22,7 +22,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = Slider.connect(state, send)
+  const api = slider.connect(state, send)
 
   return (
     <>
