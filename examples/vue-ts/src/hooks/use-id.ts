@@ -9,7 +9,7 @@ const genId = () => ++_id
  */
 export const useId = () => {
   const initialId = serverHandoffComplete ? genId() : null
-  const uid = ref(initialId)
+  const idRef = ref(initialId)
 
   onBeforeMount(() => {
     if (serverHandoffComplete === false) {
@@ -18,13 +18,13 @@ export const useId = () => {
   })
 
   onMounted(() => {
-    if (uid.value === null) {
-      uid.value = genId()
+    if (idRef.value === null) {
+      idRef.value = genId()
     }
   })
 
   return computed(() => {
-    const __id__ = uid.value !== null ? uid.value.toString() : undefined
-    return `v:${__id__}`
+    const id = idRef.value !== null ? idRef.value.toString() : undefined
+    return `v:${id}`
   })
 }
