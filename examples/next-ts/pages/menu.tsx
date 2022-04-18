@@ -18,20 +18,21 @@ export default function Page() {
     <>
       <Global styles={menuStyle} />
 
-      <div ref={ref}>
-        <button {...api.triggerProps}>
-          Actions <span aria-hidden>▾</span>
-        </button>
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
-            <li {...api.getItemProps({ id: "edit" })}>Edit</li>
-            <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
-            <li {...api.getItemProps({ id: "delete" })}>Delete</li>
-            <li {...api.getItemProps({ id: "export" })}>Export...</li>
-          </ul>
+      <main>
+        <div ref={ref}>
+          <button {...api.triggerProps}>
+            Actions <span aria-hidden>▾</span>
+          </button>
+          <div {...api.positionerProps}>
+            <ul {...api.contentProps}>
+              <li {...api.getItemProps({ id: "edit" })}>Edit</li>
+              <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
+              <li {...api.getItemProps({ id: "delete" })}>Delete</li>
+              <li {...api.getItemProps({ id: "export" })}>Export...</li>
+            </ul>
+          </div>
         </div>
-      </div>
-
+      </main>
       <StateVisualizer state={state} />
     </>
   )

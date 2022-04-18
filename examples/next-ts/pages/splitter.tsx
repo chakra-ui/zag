@@ -20,21 +20,21 @@ export default function Page() {
   return (
     <>
       <Global styles={splitterStyle} />
-      <controls.ui />
-
-      <div ref={ref} {...api.rootProps}>
-        <div {...api.primaryPaneProps}>
-          <div>
-            <small {...api.labelProps}>Table of Contents</small>
-            <p>Primary Pane</p>
+      <main>
+        <controls.ui />
+        <div ref={ref} {...api.rootProps}>
+          <div {...api.primaryPaneProps}>
+            <div>
+              <small {...api.labelProps}>Table of Contents</small>
+              <p>Primary Pane</p>
+            </div>
           </div>
+          <div {...api.splitterProps}>
+            <div className="splitter-bar" />
+          </div>
+          <div {...api.secondaryPaneProps}>Secondary Pane</div>
         </div>
-        <div {...api.splitterProps}>
-          <div className="splitter-bar" />
-        </div>
-        <div {...api.secondaryPaneProps}>Secondary Pane</div>
-      </div>
-
+      </main>
       <StateVisualizer state={state} />
     </>
   )

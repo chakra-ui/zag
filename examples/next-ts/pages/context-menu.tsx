@@ -19,19 +19,19 @@ export default function Page() {
     <>
       <Global styles={menuStyle} />
 
-      <div {...api.contextTriggerProps}>
-        <div style={{ border: "solid 1px red" }}>Open context menu</div>
-      </div>
-
-      <div {...api.positionerProps}>
-        <ul ref={ref} {...api.contentProps}>
-          <li {...api.getItemProps({ id: "edit" })}>Edit</li>
-          <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
-          <li {...api.getItemProps({ id: "delete" })}>Delete</li>
-          <li {...api.getItemProps({ id: "export" })}>Export...</li>
-        </ul>
-      </div>
-
+      <main>
+        <div {...api.contextTriggerProps}>
+          <div style={{ border: "solid 1px red" }}>Open context menu</div>
+        </div>
+        <div {...api.positionerProps}>
+          <ul ref={ref} {...api.contentProps}>
+            <li {...api.getItemProps({ id: "edit" })}>Edit</li>
+            <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
+            <li {...api.getItemProps({ id: "delete" })}>Delete</li>
+            <li {...api.getItemProps({ id: "export" })}>Export...</li>
+          </ul>
+        </div>
+      </main>
       <StateVisualizer state={state} />
     </>
   )

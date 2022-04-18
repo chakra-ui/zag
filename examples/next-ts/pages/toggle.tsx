@@ -12,12 +12,12 @@ export default function Page() {
   const { buttonProps } = Toggle.connect(state, send)
 
   return (
-    <div ref={ref}>
+    <main ref={ref}>
       <Global styles={toggleStyle} />
       <button className="toggle" {...buttonProps}>
         B
       </button>
       <StateVisualizer state={state} />
-    </div>
+    </main>
   )
 }

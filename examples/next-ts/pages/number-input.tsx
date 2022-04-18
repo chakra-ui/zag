@@ -19,28 +19,29 @@ export default function Page() {
     NumberInput.connect(state, send)
 
   return (
-    <div>
-      <controls.ui />
-      <div {...rootProps}>
-        <div
-          data-testid="scrubber"
-          {...mergeProps(scrubberProps, { style: { width: 32, height: 32, background: "red" } })}
-        />
-        <label data-testid="label" {...labelProps}>
-          Enter number:
-        </label>
-        <div>
-          <button data-testid="dec-button" {...decrementButtonProps}>
-            DEC
-          </button>
-          <input data-testid="input" ref={ref} {...inputProps} />
-          <button data-testid="inc-button" {...incrementButtonProps}>
-            INC
-          </button>
+    <>
+      <main>
+        <div {...rootProps}>
+          <div
+            data-testid="scrubber"
+            {...mergeProps(scrubberProps, { style: { width: 32, height: 32, background: "red" } })}
+          />
+          <label data-testid="label" {...labelProps}>
+            Enter number:
+          </label>
+          <div>
+            <button data-testid="dec-button" {...decrementButtonProps}>
+              DEC
+            </button>
+            <input data-testid="input" ref={ref} {...inputProps} />
+            <button data-testid="inc-button" {...incrementButtonProps}>
+              INC
+            </button>
+          </div>
         </div>
-      </div>
-
+        <controls.ui />
+      </main>
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }
