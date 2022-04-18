@@ -71,7 +71,10 @@ export function getPlacement(
           const { reference, height, width } = data
 
           if (options.sameWidth) {
-            Object.assign(floating.style, { width: `${reference.width}px` })
+            Object.assign(floating.style, {
+              width: `${reference.width}px`,
+              minWidth: "unset",
+            })
           }
 
           if (options.fitViewport) {
