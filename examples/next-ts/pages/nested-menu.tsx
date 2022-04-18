@@ -1,10 +1,10 @@
 import { Global } from "@emotion/react"
-import { Portal } from "@reach/portal"
 import * as menu from "@zag-js/menu"
 import { useMachine, useSetup } from "@zag-js/react"
 import { useEffect, useId } from "react"
 import { menuData } from "../../../shared/data"
 import { menuStyle } from "../../../shared/style"
+import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {

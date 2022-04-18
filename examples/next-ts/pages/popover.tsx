@@ -1,10 +1,10 @@
 import { Global } from "@emotion/react"
-import { Portal } from "@reach/portal"
 import * as popover from "@zag-js/popover"
 import { useMachine, useSetup } from "@zag-js/react"
 import * as React from "react"
 import { popoverControls } from "../../../shared/controls"
 import { popoverStyle } from "../../../shared/style"
+import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 

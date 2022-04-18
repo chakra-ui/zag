@@ -1,9 +1,9 @@
 import { Global } from "@emotion/react"
-import { Portal } from "@reach/portal"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, useSetup } from "@zag-js/react"
 import { useId, useRef } from "react"
 import { dialogStyle } from "../../../shared/style"
+import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
