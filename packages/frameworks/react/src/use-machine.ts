@@ -1,4 +1,4 @@
-import { MachineSrc, StateMachine as S } from "@zag-js/core"
+import type { MachineSrc, StateMachine as S } from "@zag-js/core"
 import { cast } from "@zag-js/utils"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
@@ -57,8 +57,6 @@ type SyncOption = {
  * - `state`: the current state of the machine
  * - `send`: function to send events to the machine
  * - `service`: the machine instance or service
- *
- * **NOTE**: For context usage, we recommend using `useService` and `useActor` hooks instead.
  */
 export function useMachine<
   TContext extends Record<string, any>,
