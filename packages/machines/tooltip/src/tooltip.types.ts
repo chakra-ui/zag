@@ -1,19 +1,20 @@
+import type { StateMachine as S } from "@zag-js/core"
 import { Placement, PositioningOptions } from "@zag-js/popper"
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   trigger: string
   content: string
 }>
 
-export type MachineContext = {
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = {
   /**
    * The ids of the elements in the tooltip. Useful for composition.
    */
-  ids?: IdMap
-  /**
-   * @internal The owner document of the tooltip.
-   */
-  doc?: Document
+  ids?: ElementIds
   /**
    * The `id` of the tooltip.
    */
@@ -53,24 +54,57 @@ export type MachineContext = {
    */
   "aria-label"?: string
   /**
-   * @computed Whether an `aria-label` is set.
-   */
-  readonly hasAriaLabel: boolean
-  /**
    * The user provided options used to position the popover content
    */
   positioning: PositioningOptions
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @internal The computed placement of the tooltip.
+   * @computed Whether an `aria-label` is set.
+   */
+  readonly hasAriaLabel: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = {
+  /**
+   * @internal
+   * The owner document of the tooltip.
+   */
+  doc?: Document
+  /**
+   * @internal
+   * The computed placement of the tooltip.
    */
   currentPlacement?: Placement
   /**
-   * @computed Whether the dynamic placement has been computed
+   * @internal
+   * Whether the dynamic placement has been computed
    */
-  readonly isPlacementComplete?: boolean
+  isPlacementComplete?: boolean
 }
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "opening" | "open" | "closing" | "closed"
   tags: "open" | "closed"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////

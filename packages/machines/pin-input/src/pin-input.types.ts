@@ -1,19 +1,26 @@
-import type { Context } from "@zag-js/types"
+import type { StateMachine as S } from "@zag-js/core"
+import type { Context, DirectionProperty } from "@zag-js/types"
+
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
   inputLabel: (index: number, length: number) => string
 }
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   input(id: string): string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the pin input. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * Whether the inputs are disabled
    */
@@ -44,10 +51,6 @@ export type MachineContext = Context<{
    */
   type?: "alphanumeric" | "numeric" | "alphabetic"
   /**
-   * @internal The index of the input field that has focus
-   */
-  focusedIndex: number
-  /**
    * Function called when all inputs have valid values
    */
   onComplete?: (details: { value: string[]; valueAsString: string }) => void
@@ -71,24 +74,59 @@ export type MachineContext = Context<{
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
   messages: IntlMessages
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @computed the number of inputs
+   * @computed
+   * The number of inputs
    */
-  readonly valueLength: number
+  valueLength: number
   /**
-   * @computed the number of inputs that are not empty
+   * @computed
+   * The number of inputs that are not empty
    */
-  readonly filledValueLength: number
+  filledValueLength: number
   /**
-   * @computed Whether all input values are valid
+   * @computed
+   * Whether all input values are valid
    */
-  readonly isValueComplete: boolean
+  isValueComplete: boolean
   /**
-   * @computed The string representation of the input values
+   * @computed
+   * The string representation of the input values
    */
-  readonly valueAsString: string
+  valueAsString: string
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The index of the input field that has focus
+   */
+  focusedIndex: number
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////

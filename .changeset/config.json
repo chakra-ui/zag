@@ -1,9 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.4.0/schema.json",
-  "changelog": [
-    "@changesets/changelog-github",
-    { "repo": "chakra-ui/ui-machines" }
-  ],
+  "changelog": ["@changesets/changelog-github", { "repo": "chakra-ui/zag" }],
   "commit": false,
   "linked": [],
   "access": "public",

@@ -11,6 +11,7 @@ export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetup
   const ref = useRef<T>(null)
 
   useEffect(() => {
+    if (!id) return
     Promise.resolve().then(() => {
       const doc = ref.current?.ownerDocument
       send({ type: "SETUP", doc, id })

@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as TagsInput from "@zag-js/tags-input"
+import * as tagsInput from "@zag-js/tags-input"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
@@ -7,6 +7,7 @@ import { tagsInputControls } from "../../../../shared/controls"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(tagsInputStyle)
 
@@ -20,7 +21,7 @@ export default defineComponent({
     const controls = useControls(tagsInputControls)
 
     const [state, send] = useMachine(
-      TagsInput.machine.withContext({
+      tagsInput.machine({
         value: ["React", "Vue"],
       }),
       {
@@ -28,9 +29,9 @@ export default defineComponent({
       },
     )
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => TagsInput.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => tagsInput.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

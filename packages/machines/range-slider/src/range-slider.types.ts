@@ -1,7 +1,9 @@
 import type { StateMachine as S } from "@zag-js/core"
-import { Context } from "@zag-js/types"
+import type { Context, DirectionProperty } from "@zag-js/types"
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   thumb(index: number): string
   control: string
@@ -11,11 +13,13 @@ type IdMap = Partial<{
   output: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the range slider. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */
@@ -25,14 +29,6 @@ export type MachineContext = Context<{
    */
   "aria-labelledby"?: string[]
   /**
-   * @internal The slider thumbs dimensions
-   */
-  thumbSize: Array<{ width: number; height: number }> | null
-  /**
-   * @computed Whether the slider thumb has been measured
-   */
-  readonly hasMeasuredThumbSize: boolean
-  /**
    * The name associated with each slider thumb (when used in a form)
    */
   name?: string
@@ -40,11 +36,6 @@ export type MachineContext = Context<{
    * The move threshold of the slider thumb before it is considered to be moved
    */
   threshold: number
-  /**
-   * @internal The active index of the range slider. This represents
-   * the currently dragged/focused thumb.
-   */
-  activeIndex: number
   /**
    * The value of the range slider
    */
@@ -62,10 +53,6 @@ export type MachineContext = Context<{
    * Whether the slider is read-only
    */
   readonly?: boolean
-  /**
-   * @computed Whether the slider is interactive
-   */
-  readonly isInteractive: boolean
   /**
    * Function invoked when the value of the slider changes
    */
@@ -99,31 +86,76 @@ export type MachineContext = Context<{
    */
   minStepsBetweenThumbs: number
   /**
+   * The orientation of the slider
+   */
+  orientation: "vertical" | "horizontal"
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the slider thumb has been measured
+   */
+  readonly hasMeasuredThumbSize: boolean
+  /**
+   * @computed
+   * Whether the slider is interactive
+   */
+  readonly isInteractive: boolean
+  /**
+   * @computed
    * The raw value of the space between each thumb
    */
   readonly spacing: number
   /**
-   * The orientation of the slider
-   */
-  orientation: "vertical" | "horizontal"
-  /**
-   * @computed Whether the slider is vertical
+   * @computed
+   * Whether the slider is vertical
    */
   readonly isVertical: boolean
   /**
-   * @computed Whether the slider is horizontal
+   * @computed
+   * Whether the slider is horizontal
    */
   readonly isHorizontal: boolean
   /**
-   * @computed Whether the slider is in RTL mode
+   * @computed
+   * Whether the slider is in RTL mode
    */
   readonly isRtl: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The slider thumbs dimensions
+   */
+  thumbSize: Array<{ width: number; height: number }> | null
+  /**
+   * @internal
+   * The active index of the range slider. This represents
+   * the currently dragged/focused thumb.
+   */
+  activeIndex: number
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
 }
 
 export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type Send = S.Send<S.AnyEventObject>

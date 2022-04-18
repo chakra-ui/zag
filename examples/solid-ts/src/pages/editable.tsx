@@ -13,7 +13,7 @@ export default function Page() {
   const controls = useControls(editableControls)
 
   const [state, send] = useMachine(
-    editable.machine.withContext({
+    editable.machine({
       placeholder: "Edit me...",
     }),
     { context: controls.context },

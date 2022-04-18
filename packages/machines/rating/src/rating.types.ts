@@ -1,13 +1,15 @@
-import { Context } from "@zag-js/types"
+import { StateMachine as S } from "@zag-js/core"
+import { Context, DirectionProperty } from "@zag-js/types"
+
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
-  /**
-   * Returns a human readable value for the rating.
-   */
   ratingValueText(index: number): string
 }
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   label: string
   input: string
@@ -15,11 +17,13 @@ type IdMap = Partial<{
   item(id: string): string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the rating. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -40,10 +44,6 @@ export type MachineContext = Context<{
    * The initial rating value.
    */
   initialValue: number
-  /**
-   * @internal The value of the hovered rating.
-   */
-  hoveredValue: number
   /**
    * Whether the rating is readonly.
    */
@@ -68,6 +68,13 @@ export type MachineContext = Context<{
    * Function to be called when the rating value is hovered.
    */
   onHover?: (details: { value: number }) => void
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
    * @computed Whether the rating is interactive
    */
@@ -78,6 +85,27 @@ export type MachineContext = Context<{
   readonly isHovering: boolean
 }>
 
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal The value of the hovered rating.
+   */
+  hoveredValue: number
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
+
 export type MachineState = {
   value: "unknown" | "idle" | "hover" | "focus"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>

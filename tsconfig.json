@@ -1,4 +1,6 @@
 {
+  "exclude": ["node_modules"],
+  "include": ["packages", "scripts", "shared", "scripts", "examples/misc"],
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
@@ -7,14 +9,13 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "isolatedModules": true,
+    "incremental": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
     "noEmit": true,
     "lib": ["dom", "esnext"],
     "module": "esnext",
-    "pretty": true,
     "moduleResolution": "node",
-    // "incremental": true,
     "noFallthroughCasesInSwitch": false,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -28,7 +29,5 @@
     "strictPropertyInitialization": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es2018"
-  },
-  "exclude": ["node_modules"],
-  "include": ["packages", "scripts", "shared", "examples/misc"]
+  }
 }

@@ -1,16 +1,16 @@
 import { injectGlobal } from "@emotion/css"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
-import * as Tooltip from "@zag-js/tooltip"
+import * as tooltip from "@zag-js/tooltip"
 import { createMemo } from "solid-js"
 import { tooltipStyles } from "../../../../shared/style"
 
 injectGlobal(tooltipStyles)
 
 function TooltipComponent(props: { id?: string }) {
-  const [state, send] = useMachine(Tooltip.machine)
+  const [state, send] = useMachine(tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
 
-  const api = createMemo(() => Tooltip.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => tooltip.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div>

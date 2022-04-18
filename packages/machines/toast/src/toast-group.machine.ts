@@ -1,106 +1,109 @@
 import { createMachine, ref } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { createToastMachine } from "./toast.machine"
-import { GroupMachineContext } from "./toast.types"
+import type { GroupMachineContext, UserDefinedGroupContext } from "./toast.types"
 
-export const groupMachine = createMachine<GroupMachineContext>({
-  id: "toaster",
-  initial: "active",
-  context: {
-    dir: "ltr",
-    max: Number.MAX_SAFE_INTEGER,
-    uid: "",
-    toasts: [],
-    gutter: "1rem",
-    zIndex: MAX_Z_INDEX,
-    pauseOnPageIdle: false,
-    pauseOnInteraction: true,
-    offsets: { left: "0px", right: "0px", top: "0px", bottom: "0px" },
-  },
-
-  computed: {
-    count: (ctx) => ctx.toasts.length,
-  },
-
-  on: {
-    SETUP: {
-      actions: (ctx, evt) => {
-        ctx.uid = evt.id
-        if (evt.doc) ctx.doc = ref(evt.doc)
-      },
+export function groupMachine(ctx: Partial<UserDefinedGroupContext> = {}) {
+  return createMachine<GroupMachineContext>({
+    id: "toaster",
+    initial: "active",
+    context: {
+      dir: "ltr",
+      max: Number.MAX_SAFE_INTEGER,
+      uid: "",
+      toasts: [],
+      gutter: "1rem",
+      zIndex: MAX_Z_INDEX,
+      pauseOnPageIdle: false,
+      pauseOnInteraction: true,
+      offsets: { left: "0px", right: "0px", top: "0px", bottom: "0px" },
+      ...ctx,
     },
 
-    PAUSE_TOAST: {
-      actions: (_ctx, evt, { self }) => {
-        self.sendChild("PAUSE", evt.id)
-      },
+    computed: {
+      count: (ctx) => ctx.toasts.length,
     },
 
-    PAUSE_ALL: {
-      actions: (ctx) => {
-        ctx.toasts.forEach((toast) => toast.send("PAUSE"))
+    on: {
+      SETUP: {
+        actions: (ctx, evt) => {
+          ctx.uid = evt.id
+          if (evt.doc) ctx.doc = ref(evt.doc)
+        },
       },
-    },
 
-    RESUME_TOAST: {
-      actions: (_ctx, evt, { self }) => {
-        self.sendChild("RESUME", evt.id)
+      PAUSE_TOAST: {
+        actions: (_ctx, evt, { self }) => {
+          self.sendChild("PAUSE", evt.id)
+        },
       },
-    },
 
-    RESUME_ALL: {
-      actions: (ctx) => {
-        ctx.toasts.forEach((toast) => toast.send("RESUME"))
+      PAUSE_ALL: {
+        actions: (ctx) => {
+          ctx.toasts.forEach((toast) => toast.send("PAUSE"))
+        },
       },
-    },
 
-    ADD_TOAST: {
-      guard: (ctx) => ctx.toasts.length < ctx.max,
-      actions: (ctx, evt, { self }) => {
-        const options = {
-          ...evt.toast,
-          pauseOnPageIdle: ctx.pauseOnPageIdle,
-          pauseOnInteraction: ctx.pauseOnInteraction,
-          dir: ctx.dir,
-          doc: ref(ctx.doc ?? document),
-        }
-        const toast = createToastMachine(options)
-        const actor = self.spawn(toast)
-        ctx.toasts.push(actor)
+      RESUME_TOAST: {
+        actions: (_ctx, evt, { self }) => {
+          self.sendChild("RESUME", evt.id)
+        },
       },
-    },
 
-    UPDATE_TOAST: {
-      actions: (_ctx, evt, { self }) => {
-        self.sendChild({ type: "UPDATE", toast: evt.toast }, evt.id)
+      RESUME_ALL: {
+        actions: (ctx) => {
+          ctx.toasts.forEach((toast) => toast.send("RESUME"))
+        },
       },
-    },
 
-    DISMISS_TOAST: {
-      actions: (_ctx, evt, { self }) => {
-        self.sendChild("DISMISS", evt.id)
+      ADD_TOAST: {
+        guard: (ctx) => ctx.toasts.length < ctx.max,
+        actions: (ctx, evt, { self }) => {
+          const options = {
+            ...evt.toast,
+            pauseOnPageIdle: ctx.pauseOnPageIdle,
+            pauseOnInteraction: ctx.pauseOnInteraction,
+            dir: ctx.dir,
+            doc: ref(ctx.doc ?? document),
+          }
+          const toast = createToastMachine(options)
+          const actor = self.spawn(toast)
+          ctx.toasts.push(actor)
+        },
       },
-    },
 
-    DISMISS_ALL: {
-      actions: (ctx) => {
-        ctx.toasts.forEach((toast) => toast.send("DISMISS"))
+      UPDATE_TOAST: {
+        actions: (_ctx, evt, { self }) => {
+          self.sendChild({ type: "UPDATE", toast: evt.toast }, evt.id)
+        },
       },
-    },
 
-    REMOVE_TOAST: {
-      actions: (ctx, evt, { self }) => {
-        self.stopChild(evt.id)
-        const index = ctx.toasts.findIndex((toast) => toast.id === evt.id)
-        ctx.toasts.splice(index, 1)
+      DISMISS_TOAST: {
+        actions: (_ctx, evt, { self }) => {
+          self.sendChild("DISMISS", evt.id)
+        },
       },
-    },
 
-    REMOVE_ALL: {
-      actions: (ctx, _evt, { self }) => {
-        ctx.toasts.forEach((toast) => self.stopChild(toast.id))
-        while (ctx.toasts.length) ctx.toasts.pop()
+      DISMISS_ALL: {
+        actions: (ctx) => {
+          ctx.toasts.forEach((toast) => toast.send("DISMISS"))
+        },
+      },
+
+      REMOVE_TOAST: {
+        actions: (ctx, evt, { self }) => {
+          self.stopChild(evt.id)
+          const index = ctx.toasts.findIndex((toast) => toast.id === evt.id)
+          ctx.toasts.splice(index, 1)
+        },
+      },
+
+      REMOVE_ALL: {
+        actions: (ctx, _evt, { self }) => {
+          ctx.toasts.forEach((toast) => self.stopChild(toast.id))
+          while (ctx.toasts.length) ctx.toasts.pop()
+        },
       },
     },
-  },
-})
+  })
+}

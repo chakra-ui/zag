@@ -1,12 +1,9 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/dom-utils"
 import type { Placement } from "@zag-js/popper"
-import type { Context } from "@zag-js/types"
+import type { DirectionProperty, Context } from "@zag-js/types"
 
-export type MachineState = {
-  value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
-  tags: "expanded" | "focused" | "idle"
-}
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
   toggleButtonLabel?: string
@@ -15,7 +12,9 @@ type IntlMessages = {
   navigationHint?: string
 }
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   label: string
   control: string
@@ -26,28 +25,21 @@ type IdMap = Partial<{
   option(id: string, index?: number): string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the combobox. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * The current value of the combobox's input
    */
   inputValue: string
   /**
-   * @computed Whether the input's value is empty
-   */
-  readonly isInputValueEmpty: boolean
-  /**
    * The selected option's value
    */
   selectedValue: string
-  /**
-   * @internal
-   * The value of the option when the user hovers/navigates with keyboard
-   */
-  navigationValue: string
   /**
    * The active option's id. Used to set the `aria-activedescendant` attribute
    */
@@ -65,10 +57,6 @@ export type MachineContext = Context<{
    * but the user can still interact with it
    */
   readonly?: boolean
-  /**
-   * Whether the combobox is interactive
-   */
-  readonly isInteractive: boolean
   /**
    * Whether the combobox is required
    */
@@ -136,6 +124,40 @@ export type MachineContext = Context<{
    */
   onClose?: () => void
   /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  messages: IntlMessages
+}
+
+/**
+ * This is the actual context exposed to the user.
+ */
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the input's value is empty
+   */
+  isInputValueEmpty: boolean
+  /**
+   * @computed
+   * Whether the combobox is interactive
+   */
+  isInteractive: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The value of the option when the user hovers/navigates with keyboard
+   */
+  navigationValue: string
+  /**
    * @internal
    * The live region used to announce changes in the combobox
    */
@@ -145,10 +167,6 @@ export type MachineContext = Context<{
    * Whether the pointer is hovering the combobox input. Used to show/hide the clear button
    */
   isHoveringInput: boolean
-  /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
-   */
-  messages: IntlMessages
   /**
    * @internal
    * Whether the combobox popover is rendered. We use this to dynamically position
@@ -161,6 +179,25 @@ export type MachineContext = Context<{
    */
   currentPlacement?: Placement
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineState = {
+  value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
+  tags: "expanded" | "focused" | "idle"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type OptionData = {
   /**
@@ -195,7 +232,3 @@ export type OptionGroupProps = {
    */
   label: string
 }
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>

@@ -5,8 +5,15 @@ type Handler = (event: Event) => void
 type Group = Map<string, Set<Handler>>
 type Option = boolean | AddEventListenerOptions
 
-const listenerElements: Map<El, Group> = new Map()
-const listenerCache: Map<El, Map<string, Handler>> = new Map()
+function getListenerElements(): Map<El, Group> {
+  ;(globalThis as any).__listenerElements__ = (globalThis as any).__listenerElements__ || new Map()
+  return (globalThis as any).__listenerElements__
+}
+
+function getListenerCache(): Map<El, Map<string, Handler>> {
+  ;(globalThis as any).__listenerCache__ = (globalThis as any).__listenerCache__ || new Map()
+  return (globalThis as any).__listenerCache__
+}
 
 /**
  * The global event bus for managing event listeners attached to DOM elements.
@@ -22,6 +29,8 @@ export function globalEventBus(node: El | null, type: string, handler: Handler, 
   const hash = JSON.stringify({ type, options })
 
   // Subscribe pattern
+  const listenerElements = getListenerElements()
+  const listenerCache = getListenerCache()
 
   const group = listenerElements.get(node)
 

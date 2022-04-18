@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as RangeSlider from "@zag-js/range-slider"
+import * as slider from "@zag-js/range-slider"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
@@ -8,6 +8,7 @@ import { rangeSliderControls } from "../../../../shared/controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(sliderStyle)
 
@@ -17,16 +18,16 @@ export default defineComponent({
     const controls = useControls(rangeSliderControls)
 
     const [state, send] = useMachine(
-      RangeSlider.machine.withContext({
+      slider.machine({
         name: "quantity",
         value: [10, 60],
       }),
       { context: controls.context },
     )
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => RangeSlider.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => slider.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

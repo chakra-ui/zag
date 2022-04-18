@@ -1,6 +1,7 @@
 import { Global } from "@emotion/react"
 import * as rating from "@zag-js/rating"
 import { useMachine, useSetup } from "@zag-js/react"
+import { useId } from "react"
 import { ratingControls } from "../../../shared/controls"
 import { ratingStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -43,7 +44,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
 
   const api = rating.connect(state, send)
 

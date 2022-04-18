@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Accordion from "@zag-js/accordion"
+import * as accordion from "@zag-js/accordion"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { accordionControls } from "../../../../shared/controls"
@@ -13,12 +13,12 @@ injectGlobal(accordionStyle)
 export default function Page() {
   const controls = useControls(accordionControls)
 
-  const [state, send] = useMachine(Accordion.machine, {
+  const [state, send] = useMachine(accordion.machine, {
     context: controls.context,
   })
 
   const ref = useSetup({ send, id: createUniqueId() })
-  const api = createMemo(() => Accordion.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => accordion.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

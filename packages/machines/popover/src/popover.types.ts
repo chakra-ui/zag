@@ -1,7 +1,10 @@
+import type { StateMachine as S } from "@zag-js/core"
 import type { PositioningOptions, Placement } from "@zag-js/popper"
 import type { Context, MaybeElement } from "@zag-js/types"
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   anchor: string
   trigger: string
   content: string
@@ -10,25 +13,13 @@ type IdMap = Partial<{
   closeBtn: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
-  ids?: IdMap
-  /**
-   * @internal Whether the dialog title is rendered
-   */
-  isTitleRendered: boolean
-  /**
-   * @internal Whether the dialog description is rendered
-   */
-  isDescriptionRendered: boolean
-  /**
-   *
-   * @internal Whether the reference element is rendered to be used as the
-   * positioning reference
-   */
-  isAnchorRendered: boolean
+  ids?: ElementIds
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
@@ -43,10 +34,6 @@ export type MachineContext = Context<{
    * Whether the popover is rendered in a portal
    */
   portalled?: boolean
-  /**
-   * @computed The computed value of `portalled`
-   */
-  readonly currentPortalled: boolean
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
@@ -76,16 +63,63 @@ export type MachineContext = Context<{
    * The user provided options used to position the popover content
    */
   positioning: PositioningOptions
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @internal The computed placement (maybe different from initial placement)
+   * @computed
+   * The computed value of `portalled`
+   */
+  currentPortalled: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * Whether the dialog title is rendered
+   */
+  isTitleRendered: boolean
+  /**
+   * @internal
+   * Whether the dialog description is rendered
+   */
+  isDescriptionRendered: boolean
+  /**
+   *
+   * @internal
+   * Whether the reference element is rendered to be used as the positioning reference
+   */
+  isAnchorRendered: boolean
+  /**
+   * @internal
+   * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
   /**
-   * @computed Whether the dynamic placement has been computed
+   * @internal
+   * Whether the dynamic placement has been computed
    */
-  readonly isPlacementComplete?: boolean
+  isPlacementComplete?: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "open" | "closed"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>

@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true
+  },
+  "include": ["src"]
+}

@@ -14,12 +14,9 @@ export function useMachine<
 ) {
   const { actions, state: hydratedState } = options ?? {}
 
-  const resolvedMachine = (() => {
-    const m = typeof machine === "function" ? machine() : machine.clone()
-    return options ? m.withOptions(options) : m
-  })()
+  const _machine = typeof machine === "function" ? machine() : machine
 
-  const service = resolvedMachine.start(hydratedState)
+  const service = _machine.start(hydratedState)
 
   const state = readable(service.state, (set) => {
     service.subscribe((state) => {

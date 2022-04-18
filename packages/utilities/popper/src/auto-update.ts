@@ -5,12 +5,21 @@ import { isBoolean, pipe } from "@zag-js/utils"
 
 export type { Placement }
 
-export type AutoUpdateOptions = { ancestorScroll?: boolean; ancestorResize?: boolean; referenceResize?: boolean }
+export type AutoUpdateOptions = {
+  ancestorScroll?: boolean
+  ancestorResize?: boolean
+  referenceResize?: boolean
+}
+
 type Ancestors = ReturnType<typeof getOverflowAncestors>
 
 function resolveOptions(option: boolean | AutoUpdateOptions) {
-  if (isBoolean(option)) return { ancestorResize: option, ancestorScroll: option, referenceResize: option }
-  return Object.assign({ ancestorResize: true, ancestorScroll: true, referenceResize: true }, option)
+  const bool = isBoolean(option)
+  return {
+    ancestorResize: bool ? option : option.ancestorResize ?? true,
+    ancestorScroll: bool ? option : option.ancestorScroll ?? true,
+    referenceResize: bool ? option : option.referenceResize ?? true,
+  }
 }
 
 export function autoUpdate(

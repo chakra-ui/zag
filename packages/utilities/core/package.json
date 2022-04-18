@@ -8,20 +8,29 @@
     "core"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
-  "homepage": "https://github.com/chakra-ui/ui-machines#readme",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/chakra-ui/ui-machines/tree/main/packages/utilities/core",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/core",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist/**/*"
   ],
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/chakra-ui/ui-machines/issues"
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "scripts": {
+    "build:fast": "zag build",
+    "start": "zag build --watch",
+    "build": "zag build --prod",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test:ci": "yarn test --ci --runInBand",
+    "test:watch": "yarn test --watch --updateSnapshot"
   }
 }

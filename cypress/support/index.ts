@@ -22,9 +22,12 @@ import "cypress-real-events/support"
 import "cypress-plugin-tab"
 import "./commands"
 
+type Point = { x: number; y: number }
+
 declare global {
   namespace Cypress {
     interface Chainable {
+      pan(from: Point, to: Point, range?: [number, number]): Chainable<Element>
       paste(text: string): Chainable<Element>
       clickOutside(): Chainable<Element>
       findByPart(label: string): Chainable<Element>

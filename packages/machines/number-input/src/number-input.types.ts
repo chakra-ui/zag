@@ -1,12 +1,16 @@
-import { StateMachine as S } from "@zag-js/core"
-import { Context } from "@zag-js/types"
-import { Point } from "@zag-js/rect-utils"
+import type { StateMachine as S } from "@zag-js/core"
+import type { Point } from "@zag-js/rect-utils"
+import type { Context, DirectionProperty } from "@zag-js/types"
+
+/////////////////////////////////////////////////////////////////////////
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 type InputSelection = Record<"start" | "end", number | null>
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   label: string
   input: string
@@ -14,6 +18,8 @@ type IdMap = Partial<{
   decBtn: string
   scrubber: string
 }>
+
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
   /**
@@ -31,11 +37,13 @@ type IntlMessages = {
   decrementLabel: string
 }
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the number input. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * The name attribute of the number input. Useful for form submission.
    */
@@ -67,10 +75,6 @@ export type MachineContext = Context<{
    * The value of the input
    */
   value: string
-  /**
-   * @computed the value of the input as a number
-   */
-  readonly valueAsNumber: number
   /**
    * The minimum value of the number input
    */
@@ -120,10 +124,6 @@ export type MachineContext = Context<{
    */
   format?: (value: string) => string | number
   /**
-   * @internal The hint that determines if we're incrementing or decrementing
-   */
-  hint: "increment" | "decrement" | "set" | null
-  /**
    * Hints at the type of data that might be entered by the user. It also determines
    * the type of keyboard shown to the user on mobile devices
    * @default "decimal"
@@ -141,43 +141,80 @@ export type MachineContext = Context<{
    * Function invoked when the value overflows or underflows the min/max range
    */
   onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @internal The selection range of the input
+   * @computed
+   * The value of the input as a number
+   */
+  valueAsNumber: number
+  /**
+   * @computed
+   * Whether the value is at the min
+   */
+  isAtMin: boolean
+  /**
+   * @computed
+   * Whether the value is at the max
+   */
+  isAtMax: boolean
+  /**
+   * @computed
+   * Whether the value is out of the min/max range
+   */
+  isOutOfRange: boolean
+  /**
+   * @computed
+   * Whether the increment button is enabled
+   */
+  canIncrement: boolean
+  /**
+   * @computed
+   * Whether the decrement button is enabled
+   */
+  canDecrement: boolean
+  /**
+   * @computed
+   * The `aria-valuetext` attribute of the input
+   */
+  valueText: string | undefined
+  /**
+   * @computed
+   * The formatted value of the input
+   */
+  formattedValue: string
+  /**
+   * @computed
+   * Whether the writing direction is RTL
+   */
+  isRtl: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The hint that determines if we're incrementing or decrementing
+   */
+  hint: "increment" | "decrement" | "set" | null
+  /**
+   * @internal
+   * The selection range of the input
    */
   inputSelection: InputSelection | null
-  /**
-   * @computed Whehter the value is at the min
-   */
-  readonly isAtMin: boolean
-  /**
-   * @computed Whether the value is at the max
-   */
-  readonly isAtMax: boolean
-  /**
-   * @computed Whether the value is out of the min/max range
-   */
-  readonly isOutOfRange: boolean
-  /**
-   * @computed Whether the increment button is enabled
-   */
-  readonly canIncrement: boolean
-  /**
-   * @computed Whether the decrement button is enabled
-   */
-  readonly canDecrement: boolean
-  /**
-   * @computed The `aria-valuetext` attribute of the input
-   */
-  readonly valueText: string | undefined
-  /**
-   * @computed The formatted value of the input
-   */
-  readonly formattedValue: string
-  /**
-   * @computed Whether the writing direction is RTL
-   */
-  readonly isRtl: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
@@ -186,4 +223,8 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-export type Send = (event: S.Event<S.AnyEventObject>) => void
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////

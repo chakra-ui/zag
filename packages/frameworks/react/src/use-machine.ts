@@ -1,4 +1,4 @@
-import { MachineSrc, StateMachine as S } from "@zag-js/core"
+import type { MachineSrc, StateMachine as S } from "@zag-js/core"
 import { cast } from "@zag-js/utils"
 import { useEffect, useLayoutEffect } from "react"
 import { useSnapshot } from "valtio"
@@ -17,11 +17,10 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, context, preserve } = options ?? {}
+  const { actions, state: hydratedState, context } = options ?? {}
 
   const service = useConstant(() => {
-    const resolvedMachine = typeof machine === "function" ? machine() : preserve ? machine : machine.clone()
-    return options ? resolvedMachine.withOptions(options) : resolvedMachine
+    return typeof machine === "function" ? machine() : machine
   })
 
   useSafeLayoutEffect(() => {
@@ -58,8 +57,6 @@ type SyncOption = {
  * - `state`: the current state of the machine
  * - `send`: function to send events to the machine
  * - `service`: the machine instance or service
- *
- * **NOTE**: For context usage, we recommend using `useService` and `useActor` hooks instead.
  */
 export function useMachine<
   TContext extends Record<string, any>,

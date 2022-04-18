@@ -1,6 +1,4 @@
-import { dom as unstable__dom } from "./slider.dom"
-
+export { dom as unstable__dom } from "./slider.dom"
 export { connect } from "./slider.connect"
 export { machine } from "./slider.machine"
-export type { MachineContext, MachineState } from "./slider.types"
-export { unstable__dom }
+export type { UserDefinedContext as Context } from "./slider.types"

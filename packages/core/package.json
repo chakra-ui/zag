@@ -4,29 +4,37 @@
   "description": "A minimal implementation of xstate fsm for UI machines",
   "keywords": [
     "ui-machines",
+    "state-machines",
+    "zag",
     "fsm",
     "xstate",
     "finite state machine"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
-  "homepage": "https://github.com/chakra-ui/core#readme",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/chakra-ui/core/tree/main/packages/machine",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machine",
   "sideEffects": false,
   "files": [
-    "src",
-    "dist",
-    "package.json",
-    "README.md"
+    "dist/**/*"
   ],
+  "scripts": {
+    "build:fast": "zag build",
+    "start": "zag build --watch",
+    "build": "zag build --prod",
+    "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test:ci": "yarn test --ci --runInBand",
+    "test:watch": "yarn test --watch --updateSnapshot"
+  },
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/chakra-ui/core/issues"
+    "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
     "@zag-js/utils": "^0.0.0",

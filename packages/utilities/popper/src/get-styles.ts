@@ -11,6 +11,7 @@ const UNMEASURED_FLOATING_STYLE = {
   left: 0,
   opacity: 0,
   transform: "translate3d(0, -200%, 0)",
+  pointerEvents: "none",
 } as const
 
 export function getPlacementStyles(options: Options) {

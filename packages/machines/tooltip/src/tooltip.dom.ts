@@ -5,10 +5,10 @@ export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc || document,
   getWin: (ctx: Ctx) => ctx.doc?.defaultView || window,
 
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `tooltip-${ctx.id}--trigger`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `tooltip-${ctx.id}--content`,
-  getArrowId: (ctx: Ctx) => `tooltip-${ctx.id}--arrow`,
-  getPositionerId: (ctx: Ctx) => `tooltip-${ctx.id}--popper`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `tooltip:${ctx.id}:trigger`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `tooltip:${ctx.id}:content`,
+  getArrowId: (ctx: Ctx) => `tooltip:${ctx.id}:arrow`,
+  getPositionerId: (ctx: Ctx) => `tooltip:${ctx.id}:popper`,
   portalId: "tooltip-portal",
 
   getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)),
@@ -19,7 +19,7 @@ export const dom = {
   getPortalEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.portalId),
 
   createPortalEl: (ctx: Ctx) => {
-    const portal = dom.getDoc(ctx).createElement("tooltip-portal")
+    const portal = dom.getDoc(ctx).createElement(dom.portalId)
     portal.id = dom.portalId
     return portal
   },

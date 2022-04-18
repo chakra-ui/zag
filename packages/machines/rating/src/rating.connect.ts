@@ -1,16 +1,11 @@
-import { StateMachine as S } from "@zag-js/core"
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
 import { getEventPoint, relativeToNode } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { cast, isLeftClick } from "@zag-js/utils"
 import { dom } from "./rating.dom"
-import { MachineContext, MachineState } from "./rating.types"
+import { Send, State } from "./rating.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isInteractive = state.context.isInteractive
   const value = state.context.value
   const isDisabled = state.context.disabled

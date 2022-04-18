@@ -1,9 +1,10 @@
 import { injectGlobal } from "@emotion/css"
-import * as Dialog from "@zag-js/dialog"
+import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, ref as vueRef, Teleport } from "vue"
 import { dialogStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(dialogStyle)
 
@@ -13,14 +14,14 @@ export default defineComponent({
     const inputRef = vueRef<HTMLInputElement | null>(null)
 
     // Dialog 1
-    const [state, send] = useMachine(Dialog.machine)
-    const ref = useSetup({ send, id: "1" })
-    const parentDialogRef = computed(() => Dialog.connect<PropTypes>(state.value, send, normalizeProps))
+    const [state, send] = useMachine(dialog.machine)
+    const ref = useSetup({ send, id: useId() })
+    const parentDialogRef = computed(() => dialog.connect<PropTypes>(state.value, send, normalizeProps))
 
     // Dialog 2
-    const [state2, send2] = useMachine(Dialog.machine)
-    const ref2 = useSetup({ send: send2, id: "2" })
-    const childDialogRef = computed(() => Dialog.connect<PropTypes>(state2.value, send2, normalizeProps))
+    const [state2, send2] = useMachine(dialog.machine)
+    const ref2 = useSetup({ send: send2, id: useId() })
+    const childDialogRef = computed(() => dialog.connect<PropTypes>(state2.value, send2, normalizeProps))
 
     return () => {
       const parentDialog = parentDialogRef.value

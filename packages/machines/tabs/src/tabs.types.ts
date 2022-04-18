@@ -1,11 +1,16 @@
-import { Context } from "@zag-js/types"
+import { StateMachine as S } from "@zag-js/core"
+import { Context, DirectionProperty } from "@zag-js/types"
+
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
   tablistLabel?: string
   deleteLabel?(value: string): string
 }
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   trigger: string
   triggerGroup: string
@@ -13,11 +18,13 @@ type IdMap = Partial<{
   content: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the tabs. Useful for composition.
    */
-  ids?: IdMap
+  ids?: ElementIds
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -32,10 +39,6 @@ export type MachineContext = Context<{
    */
   isIndicatorRendered: boolean
   /**
-   * @internal The focused tab id
-   */
-  focusedValue: string | null
-  /**
    * The selected tab id
    */
   value: string | null
@@ -48,28 +51,12 @@ export type MachineContext = Context<{
    */
   orientation?: "horizontal" | "vertical"
   /**
-   * @computed Whether the tab is in the horizontal orientation
-   */
-  readonly isHorizontal: boolean
-  /**
-   * @computed Whether the tab is in the vertical orientation
-   */
-  readonly isVertical: boolean
-  /**
    * The activation mode of the tabs. Can be `manual` or `automatic`
    * - `manual`: Tabs are activated when clicked or press `enter` key.
    * - `automatic`: Tabs are activated when receiving focus
    * @default "automatic"
    */
   activationMode?: "manual" | "automatic"
-  /**
-   * @internal The active tab indicator's dom rect
-   */
-  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
-  /**
-   * @internal Whether the active tab indicator's rect has been measured
-   */
-  hasMeasuredRect?: boolean
   /**
    * Callback to be called when the selected/active tab changes
    */
@@ -82,15 +69,67 @@ export type MachineContext = Context<{
    * Callback to be called when a tab's close button is clicked
    */
   onDelete?: (details: { value: string }) => void
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @internal The previously selected tab ids. This is useful for performance optimization
+   * @computed
+   * Whether the tab is in the horizontal orientation
+   */
+  isHorizontal: boolean
+  /**
+   * @computed
+   * Whether the tab is in the vertical orientation
+   */
+  isVertical: boolean
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The focused tab id
+   */
+  focusedValue: string | null
+  /**
+   * @internal
+   * The active tab indicator's dom rect
+   */
+  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
+  /**
+   * @internal
+   * Whether the active tab indicator's rect has been measured
+   */
+  hasMeasuredRect?: boolean
+  /**
+   * @internal
+   * The previously selected tab ids. This is useful for performance optimization
    */
   previousValues: string[]
 }>
 
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
+
 export type MachineState = {
   value: "unknown" | "idle" | "focused"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type TabProps = {
   value: string

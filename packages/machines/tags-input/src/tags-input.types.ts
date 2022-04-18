@@ -1,10 +1,8 @@
-import { LiveRegion } from "@zag-js/dom-utils"
-import type { Context } from "@zag-js/types"
+import type { StateMachine as S } from "@zag-js/core"
+import type { LiveRegion } from "@zag-js/dom-utils"
+import type { Context, DirectionProperty } from "@zag-js/types"
 
-export type ValidateDetails = {
-  inputValue: string
-  values: string[]
-}
+/////////////////////////////////////////////////////////////////////////
 
 type IntlMessages = {
   clearButtonLabel: string
@@ -19,13 +17,17 @@ type IntlMessages = {
   inputLabel?(count: number): string
 }
 
+/////////////////////////////////////////////////////////////////////////
+
 type Log =
   | { type: "add" | "update" | "delete" | "select"; value: string }
   | { type: "clear" }
   | { type: "paste"; values: string[] }
   | { type: "set"; values: string[] }
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   root: string
   input: string
   clearBtn: string
@@ -36,15 +38,13 @@ type IdMap = Partial<{
   tagInput(opts: TagProps): string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the tags input. Useful for composition.
    */
-  ids?: IdMap
-  /**
-   * The output log for the screen reader to speak
-   */
-  log: { current: Log | null; prev: Log | null }
+  ids?: ElementIds
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -83,26 +83,6 @@ export type MachineContext = Context<{
    */
   allowEditTag?: boolean
   /**
-   * @internal The live region to announce messages to the user
-   */
-  liveRegion: LiveRegion | null
-  /**
-   * @internal The `id` of the currently focused tag
-   */
-  focusedId: string | null
-  /**
-   * @internal The index of the deleted tag. Used to determine the next tag to focus.
-   */
-  __index?: number
-  /**
-   * @internal The `id` of the currently edited tag
-   */
-  editedId: string | null
-  /**
-   * @internal The value of the currently edited tag
-   */
-  editedTagValue?: string
-  /**
    * The tag input's value
    */
   inputValue: string
@@ -134,7 +114,7 @@ export type MachineContext = Context<{
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validate?(details: ValidateDetails): boolean
+  validate?(details: { inputValue: string; values: string[] }): boolean
   /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
@@ -161,36 +141,98 @@ export type MachineContext = Context<{
    * The name attribute for the input. Useful for form submissions
    */
   name?: string
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{
   /**
-   * @computed the string value of the tags input
+   * @computed
+   * The string value of the tags input
    */
   readonly valueAsString: string
   /**
-   * @computed the trimmed value of the input
+   * @computed
+   * The trimmed value of the input
    */
   readonly trimmedInputValue: string
   /**
-   * @computed whether the tags input is interactive
+   * @computed
+   * Whether the tags input is interactive
    */
   readonly isInteractive: boolean
   /**
-   * @computed whether the tags input is at the maximum allowed number of tags
+   * @computed
+   * Whether the tags input is at the maximum allowed number of tags
    */
   readonly isAtMax: boolean
   /**
-   * @computed the total number of tags
+   * @computed
+   * The total number of tags
    */
   readonly count: number
   /**
-   * @computed whether the tags input is exceeding the max number of tags
+   * @computed
+   * Whether the tags input is exceeding the max number of tags
    */
   readonly isOverflowing: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The output log for the screen reader to speak
+   */
+  log: { current: Log | null; prev: Log | null }
+  /**
+   * @internal
+   * The live region to announce messages to the user
+   */
+  liveRegion: LiveRegion | null
+  /**
+   * @internal
+   * The `id` of the currently focused tag
+   */
+  focusedId: string | null
+  /**
+   * @internal
+   * The index of the deleted tag. Used to determine the next tag to focus.
+   */
+  __index?: number
+  /**
+   * @internal
+   * The `id` of the currently edited tag
+   */
+  editedId: string | null
+  /**
+   * @internal
+   * The value of the currently edited tag
+   */
+  editedTagValue?: string
+}>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
   tags: "focused" | "editing"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>
+
+/////////////////////////////////////////////////////////////////////////
 
 export type ValidityState = "rangeOverflow" | "invalidTag"
 

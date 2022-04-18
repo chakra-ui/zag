@@ -1,10 +1,10 @@
 import { Global } from "@emotion/react"
-import { Portal } from "@reach/portal"
 import * as popover from "@zag-js/popover"
 import { useMachine, useSetup } from "@zag-js/react"
 import * as React from "react"
 import { popoverControls } from "../../../shared/controls"
 import { popoverStyle } from "../../../shared/style"
+import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
@@ -15,7 +15,7 @@ export default function Page() {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: React.useId() })
 
   const api = popover.connect(state, send)
 
@@ -28,10 +28,13 @@ export default function Page() {
       <main>
         <div data-part="root" ref={ref}>
           <button data-testid="button-before">Button :before</button>
+
           <button data-testid="popover-trigger" {...api.triggerProps}>
             Click me
           </button>
+
           <div {...api.anchorProps}>anchor</div>
+
           <Wrapper>
             <div {...api.positionerProps}>
               <div data-testid="popover-content" {...api.contentProps}>
@@ -41,7 +44,7 @@ export default function Page() {
                 <div data-testid="popover-title" {...api.titleProps}>
                   Popover Title
                 </div>
-                <div data-testid="popover-body">
+                <div data-part="body" data-testid="popover-body">
                   <a>Non-focusable Link</a>
                   <a href="#" data-testid="focusable-link">
                     Focusable Link

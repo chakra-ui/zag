@@ -158,10 +158,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     positionerProps: normalize.element<T>({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
-      style: {
-        ...popperStyles.floating,
-        pointerEvents: !state.context.isPlacementComplete ? "none" : undefined,
-      },
+      style: popperStyles.floating,
     }),
 
     arrowProps: normalize.element<T>({

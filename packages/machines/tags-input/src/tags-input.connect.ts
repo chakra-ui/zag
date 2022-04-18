@@ -1,14 +1,9 @@
-import { StateMachine as S } from "@zag-js/core"
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./tags-input.dom"
-import { MachineContext, MachineState, TagProps } from "./tags-input.types"
+import type { Send, State, TagProps } from "./tags-input.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
   const isReadonly = state.context.readonly

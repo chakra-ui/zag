@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as RangeSlider from "@zag-js/range-slider"
+import * as slider from "@zag-js/range-slider"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, For, createUniqueId } from "solid-js"
@@ -14,7 +14,7 @@ export default function Page() {
   const controls = useControls(rangeSliderControls)
 
   const [state, send] = useMachine(
-    RangeSlider.machine.withContext({
+    slider.machine({
       name: "quantity",
       value: [10, 60],
     }),
@@ -23,7 +23,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => RangeSlider.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => slider.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <>

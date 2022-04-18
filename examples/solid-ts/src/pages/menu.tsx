@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -10,7 +10,7 @@ injectGlobal(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(menu.machine)
 
-  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
+  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
 
   const api = createMemo(() => menu.connect<PropTypes>(state, send, normalizeProps))
 

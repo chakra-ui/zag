@@ -42,7 +42,6 @@ export declare namespace StateMachine {
     send: Send<TEvent>
     self: Self<TContext, TState, TEvent>
     getState: () => State<TContext, TState, TEvent>
-    listen: (fn: EventListener<TEvent>) => void
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
@@ -320,7 +319,6 @@ export declare namespace StateMachine {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
     context?: UserContext<TContext>
-    preserve?: boolean
   }
 
   export type Self<TContext, TState extends StateSchema, TEvent extends EventObject> = {

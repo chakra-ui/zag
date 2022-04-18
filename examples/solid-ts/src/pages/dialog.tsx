@@ -1,23 +1,23 @@
 import { injectGlobal } from "@emotion/css"
 import { Portal } from "solid-js/web"
-import * as Dialog from "@zag-js/dialog"
+import * as dialog from "@zag-js/dialog"
 import { useMachine, useSetup, normalizeProps, PropTypes } from "@zag-js/solid"
 import { StateVisualizer } from "../components/state-visualizer"
 import { dialogStyle } from "../../../../shared/style"
-import { createMemo } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 
 injectGlobal(dialogStyle)
 
 export default function Page() {
-  // Dialog 1
-  const [state, send] = useMachine(Dialog.machine)
-  const ref = useSetup<HTMLButtonElement>({ send, id: "1" })
-  const parentDialog = createMemo(() => Dialog.connect<PropTypes>(state, send, normalizeProps))
+  // dialog 1
+  const [state, send] = useMachine(dialog.machine)
+  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
+  const parentDialog = createMemo(() => dialog.connect<PropTypes>(state, send, normalizeProps))
 
-  // Dialog 2
-  const [state2, send2] = useMachine(Dialog.machine)
-  const ref2 = useSetup({ send: send2, id: "2" })
-  const childDialog = createMemo(() => Dialog.connect<PropTypes>(state2, send2, normalizeProps))
+  // dialog 2
+  const [state2, send2] = useMachine(dialog.machine)
+  const ref2 = useSetup({ send: send2, id: createUniqueId() })
+  const childDialog = createMemo(() => dialog.connect<PropTypes>(state2, send2, normalizeProps))
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
+import { useId } from "react"
 import { tabsControls } from "../../../shared/controls"
 import { tabsData } from "../../../shared/data"
 import { tabsStyle } from "../../../shared/style"
@@ -10,11 +11,11 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(tabs.machine.withContext({ value: "nils" }), {
+  const [state, send] = useMachine(tabs.machine({ value: "nils" }), {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
 
   const api = tabs.connect(state, send)
 

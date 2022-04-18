@@ -1,5 +1,5 @@
 import { createApp } from "vue"
-import App from "./App.vue"
+import App from "./App"
 import { createRouter, createWebHistory } from "vue-router"
 import routes from "pages-generated"
 import "../../../shared/reset"

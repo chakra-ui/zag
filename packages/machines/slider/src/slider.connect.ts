@@ -1,17 +1,12 @@
-import type { StateMachine as S } from "@zag-js/core"
 import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
 import { multiply, percentToValue, valueToPercent } from "@zag-js/number-utils"
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./slider.dom"
-import type { MachineContext, MachineState } from "./slider.types"
+import type { Send, State } from "./slider.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const ariaValueText = state.context.getAriaValueText?.(state.context.value)

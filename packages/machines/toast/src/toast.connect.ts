@@ -1,14 +1,9 @@
-import { StateMachine as S } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./toast.dom"
-import { MachineContext, MachineState } from "./toast.types"
+import type { Send, State } from "./toast.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(
-  state: S.State<MachineContext, MachineState>,
-  send: (event: S.Event<S.AnyEventObject>) => void,
-  normalize = normalizeProp,
-) {
+export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
   const isUpdating = state.hasTag("updating")

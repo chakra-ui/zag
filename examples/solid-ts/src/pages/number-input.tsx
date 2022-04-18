@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/core"
-import * as NumberInput from "@zag-js/number-input"
+import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { useControls } from "../hooks/use-controls"
@@ -9,13 +9,13 @@ import { numberInputControls } from "../../../../shared/controls"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const [state, send] = useMachine(NumberInput.machine, {
+  const [state, send] = useMachine(numberInput.machine, {
     context: controls.context,
   })
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const number = createMemo(() => NumberInput.connect<PropTypes>(state, send, normalizeProps))
+  const number = createMemo(() => numberInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
     <div>

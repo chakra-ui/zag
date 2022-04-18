@@ -7,6 +7,7 @@ import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(comboboxStyle)
 
@@ -17,7 +18,7 @@ export default defineComponent({
     const options = ref(comboboxData)
 
     const [state, send] = useMachine(
-      combobox.machine.withContext({
+      combobox.machine({
         onOpen() {
           options.value = comboboxData
         },
@@ -29,7 +30,7 @@ export default defineComponent({
       { context: controls.context },
     )
 
-    const nodeRef = useSetup({ send, id: "1" })
+    const nodeRef = useSetup({ send, id: useId() })
     const apiRef = computed(() => combobox.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {

@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import * as Tabs from "@zag-js/tabs"
+import * as tabs from "@zag-js/tabs"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
@@ -8,6 +8,7 @@ import { tabsData } from "../../../../shared/data"
 import { tabsStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(tabsStyle)
 
@@ -16,12 +17,12 @@ export default defineComponent({
   setup() {
     const controls = useControls(tabsControls)
 
-    const [state, send] = useMachine(Tabs.machine.withContext({ value: "nils" }), {
+    const [state, send] = useMachine(tabs.machine({ value: "nils" }), {
       context: controls.context,
     })
 
-    const ref = useSetup({ send, id: "1" })
-    const apiRef = computed(() => Tabs.connect<PropTypes>(state.value, send, normalizeProps))
+    const ref = useSetup({ send, id: useId() })
+    const apiRef = computed(() => tabs.connect<PropTypes>(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

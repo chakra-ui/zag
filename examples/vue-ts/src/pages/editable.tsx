@@ -6,6 +6,7 @@ import { editableControls } from "../../../../shared/controls"
 import { editableStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(editableStyle)
 
@@ -18,7 +19,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => editable.connect<PropTypes>(state.value, send, normalizeProps))
 

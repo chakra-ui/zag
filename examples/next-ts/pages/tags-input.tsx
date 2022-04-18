@@ -1,6 +1,7 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
-import * as TagsInput from "@zag-js/tags-input"
+import * as tagsInput from "@zag-js/tags-input"
+import { useId } from "react"
 import { tagsInputControls } from "../../../shared/controls"
 import { tagsInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -14,7 +15,7 @@ export default function Page() {
   const controls = useControls(tagsInputControls)
 
   const [state, send] = useMachine(
-    TagsInput.machine.withContext({
+    tagsInput.machine({
       value: ["React", "Vue"],
     }),
     {
@@ -22,9 +23,9 @@ export default function Page() {
     },
   )
 
-  const ref = useSetup({ send, id: "1" })
+  const ref = useSetup({ send, id: useId() })
 
-  const api = TagsInput.connect(state, send)
+  const api = tagsInput.connect(state, send)
 
   return (
     <>

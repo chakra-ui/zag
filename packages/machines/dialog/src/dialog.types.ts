@@ -1,6 +1,9 @@
-import type { Context, MaybeElement } from "@zag-js/types"
+import type { StateMachine as S } from "@zag-js/core"
+import type { Context, DirectionProperty, MaybeElement } from "@zag-js/types"
 
-type IdMap = Partial<{
+/////////////////////////////////////////////////////////////////////////
+
+type ElementIds = Partial<{
   trigger: string
   underlay: string
   backdrop: string
@@ -10,19 +13,13 @@ type IdMap = Partial<{
   description: string
 }>
 
-export type MachineContext = Context<{
+/////////////////////////////////////////////////////////////////////////
+
+type PublicContext = DirectionProperty & {
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */
-  ids?: IdMap
-  /**
-   * @internal Whether the dialog title is rendered
-   */
-  isTitleRendered: boolean
-  /**
-   * @internal Whether the dialog description is rendered
-   */
-  isDescriptionRendered: boolean
+  ids?: ElementIds
   /**
    * Whether to trap focus inside the dialog when it's opened
    */
@@ -39,10 +36,6 @@ export type MachineContext = Context<{
    * Element to receive focus when the dialog is closed
    */
   finalFocusEl?: MaybeElement | (() => MaybeElement)
-  /**
-   * @internal Whether the dialog is the topmost dialog (in a nested dialog scenario)
-   */
-  isTopMostDialog: boolean
   /**
    * Whether to restore focus to the element that had focus before the dialog was opened
    */
@@ -76,8 +69,46 @@ export type MachineContext = Context<{
    * @default "dialog"
    */
   role: "dialog" | "alertdialog"
+}
+
+export type UserDefinedContext = Partial<PublicContext>
+
+/////////////////////////////////////////////////////////////////////////
+
+type ComputedContext = Readonly<{}>
+
+/////////////////////////////////////////////////////////////////////////
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * Whether the dialog title is rendered
+   */
+  isTitleRendered: boolean
+  /**
+   * @internal
+   * Whether the dialog description is rendered
+   */
+  isDescriptionRendered: boolean
+  /**
+   * @internal
+   * Whether the dialog is the topmost dialog (in a nested dialog scenario)
+   */
+  isTopMostDialog: boolean
 }>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+/////////////////////////////////////////////////////////////////////////
 
 export type MachineState = {
   value: "unknown" | "open" | "closed"
 }
+
+export type State = S.State<MachineContext, MachineState>
+
+/////////////////////////////////////////////////////////////////////////
+
+export type Send = S.Send<S.AnyEventObject>

@@ -1,16 +1,13 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { useMachine, useSetup } from "@zag-js/react"
+import { useId } from "react"
 import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    menu.machine.withContext({
-      onSelect: console.log,
-    }),
-  )
-  const ref = useSetup({ send, id: "1" })
+  const [state, send] = useMachine(menu.machine({ onSelect: console.log }))
+  const ref = useSetup({ send, id: useId() })
 
   const api = menu.connect(state, send)
 

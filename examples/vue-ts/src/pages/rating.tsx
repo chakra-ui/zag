@@ -7,6 +7,7 @@ import { ratingControls } from "../../../../shared/controls"
 import { ratingStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(ratingStyle)
 
@@ -54,7 +55,7 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const ref = useSetup({ send, id: "1" })
+    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => rating.connect<PropTypes>(state.value, send, normalizeProps))
 
