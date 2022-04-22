@@ -131,7 +131,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
         if (prevent) {
           event.preventDefault()
-          event.stopPropagation()
         }
       },
       style: dom.getThumbStyle(state.context),
