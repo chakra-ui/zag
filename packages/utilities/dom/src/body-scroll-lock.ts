@@ -22,14 +22,20 @@ export function preventBodyScroll(opts?: PreventScrollOptions) {
   const docEl = doc.documentElement
 
   function preventScrollStandard() {
+    if (docEl.getAttribute("data-prevent-scroll") === "true") return
+
     const fn = pipe(
       setStyle(docEl, "paddingRight", `${win.innerWidth - docEl.clientWidth}px`),
       setStyle(docEl, "overflow", "hidden"),
+      () => docEl.setAttribute("data-prevent-scroll", "true"),
     )
+
     return () => fn?.()
   }
 
   function preventScrollMobileSafari() {
+    if (docEl.getAttribute("data-prevent-scroll") === "true") return
+
     let scrollable: HTMLElement | undefined
     let lastY = 0
 
@@ -115,6 +121,7 @@ export function preventBodyScroll(opts?: PreventScrollOptions) {
       addDomEvent(doc, "touchend", onTouchEnd, { passive: false, capture: true }),
       addDomEvent(doc, "focus", onFocus, true),
       addDomEvent(win, "scroll", onWindowScroll),
+      () => docEl.setAttribute("data-prevent-scroll", "true"),
     )
 
     return () => {
