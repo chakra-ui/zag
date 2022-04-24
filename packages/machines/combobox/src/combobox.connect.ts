@@ -1,6 +1,7 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { isLeftClick } from "@zag-js/utils"
 import { dom } from "./combobox.dom"
 import type { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
@@ -13,21 +14,24 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isInvalid = state.context.invalid
   const isReadonly = state.context.readonly
 
-  const isExpanded = state.hasTag("expanded")
+  const isOpen = state.hasTag("open")
   const isFocused = state.hasTag("focused")
   const isIdle = state.hasTag("idle")
 
-  const autoFill = isExpanded && state.context.navigationValue && state.context.autoComplete
-  const showClearButton = (!isIdle || state.context.isHoveringInput) && !state.context.isInputValueEmpty
+  const autofill = isOpen && state.context.navigationValue && state.context.autoComplete
+  const showClearButton = (!isIdle || state.context.isHovering) && !state.context.isInputValueEmpty
 
   const popperStyles = getPlacementStyles({
     measured: !!state.context.currentPlacement,
   })
 
-  return {
+  const api = {
     isFocused,
-    isExpanded,
+    isOpen,
+    isInputValueEmpty: state.context.isInputValueEmpty,
     inputValue: state.context.inputValue,
+    activeOption: state.context.activeOptionData,
+    selectedValue: state.context.selectedValue,
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
@@ -59,7 +63,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     controlProps: normalize.element<T>({
       "data-part": "control",
       id: dom.getControlId(state.context),
-      "data-expanded": dataAttr(isExpanded),
+      "data-expanded": dataAttr(isOpen),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -76,8 +80,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     positionerProps: normalize.element<T>({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
-      "data-expanded": dataAttr(isExpanded),
-      hidden: !isExpanded,
+      "data-expanded": dataAttr(isOpen),
+      hidden: !isOpen,
       style: popperStyles.floating,
     }),
 
@@ -97,10 +101,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      value: autoFill ? state.context.navigationValue : state.context.inputValue,
+      value: autofill ? state.context.navigationValue : state.context.inputValue,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-      "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
-      "aria-expanded": isExpanded,
+      "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
+      "aria-expanded": isOpen,
       "aria-activedescendant": state.context.activeId ?? undefined,
       onPointerDown() {
         if (!isInteractive) return
@@ -135,32 +139,24 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
         const keymap: EventKeyMap = {
           ArrowDown(event) {
-            send(event.altKey ? "ALT_DOWN" : "ARROW_DOWN")
+            send(event.altKey ? "ALT_ARROW_DOWN" : "ARROW_DOWN")
             preventDefault = true
           },
-          ArrowUp(event) {
-            send(event.altKey ? "ALT_UP" : "ARROW_UP")
+          ArrowUp() {
+            send("ARROW_UP")
             preventDefault = true
-          },
-          ArrowLeft() {
-            send("CLEAR_FOCUS")
-          },
-          ArrowRight() {
-            send("CLEAR_FOCUS")
           },
           Home(event) {
             const isCtrlKey = event.ctrlKey || event.metaKey
-            if (!isCtrlKey) {
-              send("HOME")
-              preventDefault = true
-            }
+            if (isCtrlKey) return
+            send("HOME")
+            preventDefault = true
           },
           End(event) {
             const isCtrlKey = event.ctrlKey || event.metaKey
-            if (!isCtrlKey) {
-              send("END")
-              preventDefault = true
-            }
+            if (isCtrlKey) return
+            send("END")
+            preventDefault = true
           },
           Enter() {
             send("ENTER")
@@ -171,10 +167,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
             preventDefault = true
           },
           Backspace() {
-            send("BACKSPACE")
+            send("CLEAR_FOCUS")
           },
           Delete() {
-            send("DELETE")
+            send("CLEAR_FOCUS")
           },
           Tab() {
             send("TAB")
@@ -183,10 +179,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
         const key = getEventKey(event, state.context)
         const exec = keymap[key]
-
-        if (exec) {
-          exec(event)
-        }
+        exec?.(event)
 
         if (preventDefault) {
           event.preventDefault()
@@ -201,13 +194,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       type: "button",
       tabIndex: -1,
       "aria-label": messages.toggleButtonLabel,
-      "aria-expanded": isExpanded,
-      "aria-controls": isExpanded ? dom.getListboxId(state.context) : undefined,
+      "aria-expanded": isOpen,
+      "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
       disabled: isDisabled,
       "data-readonly": dataAttr(isReadonly),
       "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
-        if (!isInteractive) return
+        const evt = getNativeEvent(event)
+        if (!isInteractive || !isLeftClick(evt)) return
         send("CLICK_BUTTON")
         event.preventDefault()
       },
@@ -217,7 +211,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "listbox",
       id: dom.getListboxId(state.context),
       role: "listbox",
-      hidden: !isExpanded,
+      hidden: !isOpen,
       "aria-labelledby": dom.getLabelId(state.context),
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus
@@ -234,47 +228,55 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-label": messages.clearButtonLabel,
       hidden: !showClearButton,
       onPointerDown(event) {
-        if (!isInteractive) return
+        const evt = getNativeEvent(event)
+        if (!isInteractive || !isLeftClick(evt)) return
         send("CLEAR_VALUE")
         event.preventDefault()
       },
     }),
 
-    getOptionProps(props: OptionProps) {
-      const { value, label, index, count, disabled } = props
+    getOptionState(props: OptionProps) {
+      const { value, index, disabled } = props
       const id = dom.getOptionId(state.context, value, index)
       const focused = state.context.activeId === id
       const checked = state.context.selectedValue === value
+      return { disabled, focused, checked }
+    },
+
+    getOptionProps(props: OptionProps) {
+      const { value, label, index, count } = props
+      const id = dom.getOptionId(state.context, value, index)
+      const _state = api.getOptionState(props)
 
       return normalize.element<T>({
         "data-part": "option",
         id,
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(focused),
-        "data-disabled": dataAttr(disabled),
-        "data-checked": dataAttr(checked),
-        "aria-selected": focused,
-        "aria-disabled": disabled,
+        "data-highlighted": dataAttr(_state.focused),
+        "data-disabled": dataAttr(_state.disabled),
+        "data-checked": dataAttr(_state.checked),
+        "aria-selected": _state.focused,
+        "aria-disabled": _state.disabled,
         "aria-posinset": count && index != null ? index + 1 : undefined,
         "aria-setsize": count,
         "data-value": value,
         "data-label": label,
-        // Prefer pointermove to pointerenter to avoid interrupting the keyboard navigation
+        // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
         onPointerMove() {
-          if (disabled) return
-          send({ type: "POINTEROVER_OPTION", id, value: label })
+          if (_state.disabled) return
+          send({ type: "POINTEROVER_OPTION", id, value: label, data: { label, value } })
         },
         onPointerUp(event) {
-          if (disabled) return
+          if (_state.disabled) return
           event.currentTarget.click()
         },
         onClick() {
-          if (disabled) return
+          if (_state.disabled) return
           send({ type: "CLICK_OPTION", id, value: label })
         },
         onAuxClick(event) {
-          if (disabled) return
+          if (_state.disabled) return
           event.preventDefault()
           event.currentTarget.click()
         },
@@ -290,4 +292,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
   }
+
+  return api
 }

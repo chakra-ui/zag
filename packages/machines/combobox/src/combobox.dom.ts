@@ -71,8 +71,14 @@ export const dom = {
     if (dom.getDoc(ctx).activeElement !== input) {
       input?.focus()
     }
-    if (ctx.selectOnFocus) {
+    if (ctx.selectInputOnFocus) {
       input?.select()
     }
+  },
+
+  getClosestSectionLabel(ctx: Ctx) {
+    if (!ctx.activeId) return
+    const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
+    return group?.getAttribute("aria-label")
   },
 }

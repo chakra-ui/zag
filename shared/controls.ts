@@ -7,12 +7,21 @@ export const accordionControls = defineControls({
 })
 
 export const comboboxControls = defineControls({
-  autoComplete: { type: "boolean", defaultValue: true },
-  selectOnFocus: { type: "boolean", defaultValue: false },
+  inputBehavior: {
+    type: "select",
+    defaultValue: "autohighlight",
+    options: ["autohighlight", "autocomplete", "none"] as const,
+  },
+  selectionBehavior: {
+    type: "select",
+    defaultValue: "set",
+    options: ["set", "clear", "none"] as const,
+  },
   allowCustomValue: { type: "boolean", defaultValue: false },
-  autoHighlight: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: true },
+  openOnClick: { type: "boolean", defaultValue: false },
+  blurOnSelect: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({
