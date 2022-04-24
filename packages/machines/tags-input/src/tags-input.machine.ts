@@ -307,7 +307,10 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.uid = evt.id
           if (evt.doc) ctx.doc = ref(evt.doc)
           nextTick(() => {
-            ctx.liveRegion = createLiveRegion({ level: "assertive", doc: ctx.doc })
+            ctx.liveRegion = createLiveRegion({
+              level: "assertive",
+              document: ctx.doc,
+            })
           })
         },
         focusNextTag(ctx) {
