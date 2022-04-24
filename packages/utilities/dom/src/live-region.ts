@@ -2,7 +2,7 @@ import { setVisuallyHidden } from "./visually-hidden"
 
 export type LiveRegionOptions = {
   level: "polite" | "assertive"
-  doc?: Document
+  document?: Document
   root?: HTMLElement | null
   delay?: number
 }
@@ -10,30 +10,27 @@ export type LiveRegionOptions = {
 export type LiveRegion = ReturnType<typeof createLiveRegion>
 
 export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
-  const { level = "polite", doc: ownerDocument, root, delay: rootDelay = 0 } = opts
+  const { level = "polite", document: doc = document, root, delay: _delay = 0 } = opts
 
-  const doc = ownerDocument ?? document
   const win = doc.defaultView ?? window
-
   const parent = root ?? doc.body
 
-  function announce(msg: string, delay?: number) {
+  function announce(message: string, delay?: number) {
     const oldRegion = doc.getElementById("__live-region__")
 
     // remove old region
-    if (!!oldRegion) {
-      parent.removeChild(oldRegion)
-    }
+    oldRegion?.remove()
 
     // Did an override level get set?
-    delay = delay ?? rootDelay
+    delay = delay ?? _delay
 
     // create fresh region
     const region = doc.createElement("span")
     region.id = "__live-region__"
+    region.dataset.liveAnnouncer = "true"
 
     // Determine redundant role
-    var role = level !== "assertive" ? "status" : "alert"
+    const role = level !== "assertive" ? "status" : "alert"
 
     // add role and attributes
     region.setAttribute("aria-live", level)
@@ -46,15 +43,13 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
 
     // populate region to trigger it
     win.setTimeout(() => {
-      region!.textContent = msg
+      region.textContent = message
     }, delay)
   }
 
   function destroy() {
     const oldRegion = doc.getElementById("__live-region__")
-    if (oldRegion) {
-      parent.removeChild(oldRegion)
-    }
+    oldRegion?.remove()
   }
 
   return { announce, destroy }
