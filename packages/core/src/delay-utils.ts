@@ -1,4 +1,4 @@
-import { isFunction, isNumber, isString } from "@zag-js/utils"
+import { invariant, isFunction, isNumber, isString } from "@zag-js/utils"
 import { StateMachine as S } from "./types"
 
 /**
@@ -29,10 +29,12 @@ export function determineDelayFn<TContext, TEvent extends S.EventObject>(
 
       if (delaysMap) {
         const valueOrFn = delaysMap?.[delay]
-        if (valueOrFn == null) {
-          const msg = `[machine] Cannot determine delay for ${delay}. It doesn't exist in options.delays`
-          throw new Error(msg)
-        }
+
+        invariant(
+          valueOrFn == null,
+          `[@zag-js/core > determine-delay] Cannot determine delay for \`${delay}\`. It doesn't exist in \`options.delays\``,
+        )
+
         return isFunction(valueOrFn) ? valueOrFn(context, event) : valueOrFn
       }
     }

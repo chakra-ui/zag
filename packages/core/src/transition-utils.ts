@@ -21,8 +21,8 @@ export function toTarget<TContext, TState extends S.StateSchema, TEvent extends 
 }
 
 export function determineTransitionFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
-  transitions?: S.Transitions<TContext, TState, TEvent>,
-  guardMap?: S.GuardMap<TContext, TEvent>,
+  transitions: S.Transitions<TContext, TState, TEvent> | undefined,
+  guardMap: S.GuardMap<TContext, TEvent>,
 ) {
   return (context: TContext, event: TEvent) => {
     return toArray(transitions)
