@@ -135,42 +135,24 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         const evt = getNativeEvent(event)
         if (evt.ctrlKey || evt.shiftKey || evt.isComposing) return
 
-        let preventDefault = false
+        let prevent = false
 
         const keymap: EventKeyMap = {
           ArrowDown(event) {
             send(event.altKey ? "ALT_ARROW_DOWN" : "ARROW_DOWN")
-            preventDefault = true
+            prevent = true
           },
           ArrowUp() {
-            send("ARROW_UP")
-            preventDefault = true
-          },
-          Home(event) {
-            const isCtrlKey = event.ctrlKey || event.metaKey
-            if (isCtrlKey) return
-            send("HOME")
-            preventDefault = true
-          },
-          End(event) {
-            const isCtrlKey = event.ctrlKey || event.metaKey
-            if (isCtrlKey) return
-            send("END")
-            preventDefault = true
+            send(event.altKey ? "ALT_ARROW_UP" : "ARROW_UP")
+            prevent = true
           },
           Enter() {
             send("ENTER")
-            preventDefault = true
+            prevent = true
           },
           Escape() {
             send("ESCAPE")
-            preventDefault = true
-          },
-          Backspace() {
-            send("CLEAR_FOCUS")
-          },
-          Delete() {
-            send("CLEAR_FOCUS")
+            prevent = true
           },
           Tab() {
             send("TAB")
@@ -181,7 +163,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         const exec = keymap[key]
         exec?.(event)
 
-        if (preventDefault) {
+        if (prevent) {
           event.preventDefault()
         }
       },

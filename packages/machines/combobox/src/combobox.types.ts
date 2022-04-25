@@ -115,12 +115,12 @@ type PublicContext = DirectionProperty & {
   /**
    * Function called when a new option is selected
    */
-  onSelect?: (details: { value: string }) => void
+  onSelect?: (details: { value: string; relatedTarget: HTMLElement | null }) => void
   /**
    * Function called when an options is highlighted using the pointer
    * or keyboard navigation.
    */
-  onHighlight?: (details: { value: string }) => void
+  onHighlight?: (details: { value: string; relatedTarget: HTMLElement | null }) => void
   /**
    * Function called when the popup is opened
    */
