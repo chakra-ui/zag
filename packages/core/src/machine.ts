@@ -453,6 +453,8 @@ export class Machine<
       send: this.send.bind(this),
       self: this.self,
       getState: () => this.stateSnapshot,
+      getAction: (key) => this.actionMap[key],
+      getGuard: (key) => this.guardMap[key],
     }
   }
 

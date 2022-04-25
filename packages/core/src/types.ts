@@ -42,6 +42,8 @@ export declare namespace StateMachine {
     send: Send<TEvent>
     self: Self<TContext, TState, TEvent>
     getState: () => State<TContext, TState, TEvent>
+    getAction: (key: string) => ExpressionWithMeta<TContext, TState, TEvent, void>
+    getGuard: (key: string) => GuardExpression<TContext, TEvent>
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
