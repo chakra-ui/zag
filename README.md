@@ -8,7 +8,7 @@ Finite state machines for accessible JavaScript components
   interactions, focus management, aria roles and attributes.
 - **Headless ✨**: The machine APIs are completely unstyled and gives you the control to use any styling solution you
   prefer.
-- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCMXL
+- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCXML
   specifications, but we've created an API that we think will help us build more complex components fast.
 
 ## The problem
