@@ -19,7 +19,7 @@ export function observeAttributes(node: Element | null, attributes: string | str
   return () => obs.disconnect()
 }
 
-export function observeChildren(node: Element | null, fn: Callback, subtree = false) {
+export function observeChildren(node: Element | null, fn: Callback) {
   if (!node) return noop
   const win = node.ownerDocument.defaultView || window
   const obs = new win.MutationObserver((changes) => {
@@ -30,7 +30,7 @@ export function observeChildren(node: Element | null, fn: Callback, subtree = fa
     }
   })
 
-  obs.observe(node, { childList: true, subtree })
+  obs.observe(node, { childList: true, subtree: true })
 
   return () => obs.disconnect()
 }
