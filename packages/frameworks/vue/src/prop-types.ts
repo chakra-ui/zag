@@ -1,14 +1,16 @@
-import type { ElementAttrs, HTMLAttributes, NativeElements } from "@vue/runtime-dom"
+import * as Vue from "vue"
+
+type ReservedProps = {
+  key?: string | number | symbol
+  ref?: string | Vue.Ref | ((ref: Element | Vue.ComponentPublicInstance | null) => void)
+}
+
+type Attrs<T> = T & ReservedProps
 
 export type PropTypes = {
-  button: NativeElements["button"]
-  input: NativeElements["input"]
-  output: NativeElements["output"]
-  textarea: NativeElements["textarea"]
-  label: NativeElements["label"]
-  p: NativeElements["p"]
-  ul: NativeElements["ul"]
-  ol: NativeElements["ol"]
-  li: NativeElements["li"]
-  element: ElementAttrs<HTMLAttributes>
+  button: Attrs<Vue.ButtonHTMLAttributes>
+  input: Attrs<Vue.InputHTMLAttributes>
+  output: Attrs<Vue.OutputHTMLAttributes>
+  label: Attrs<Vue.LabelHTMLAttributes>
+  element: Attrs<Vue.HTMLAttributes>
 }

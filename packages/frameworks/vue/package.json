@@ -32,11 +32,9 @@
     "valtio": "^1.6.0"
   },
   "devDependencies": {
-    "@vue/runtime-dom": "^3.2.21",
     "vue": "^3.0.5"
   },
   "peerDependencies": {
-    "@vue/runtime-dom": ">=3.2.0",
     "vue": ">=3.0.0"
   },
   "scripts": {
