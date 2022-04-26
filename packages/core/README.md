@@ -14,7 +14,7 @@ machines** with addition of extra features we need for our components.
 - Delayed timeout actions (basically `setTimeout`)
 - Delayed interval actions (basically `setInterval`)
 - Transition actions
-- Boolean guard helpers
+- Boolean guard helpers (`and`, `or`, `not`)
 - Basic spawn helpers
 - Activities (for state nodes)
 
@@ -27,6 +27,8 @@ machines** with addition of extra features we need for our components.
 
 ```bash
 npm i @zag-js/core
+# or
+yarn add @zag-js/core
 ```
 
 **Usage (machine):**
@@ -130,9 +132,9 @@ String syntax:
 
 Object syntax:
 
-- `target?` (string) - the state name to transition to.
-- `actions?` (Action | Action[]) - the [action(s)](#action-config) to execute when this transition is taken.
-- `guard?` (Guard) - the condition (predicate function) to test. If it returns `true`, the transition will be taken.
+- `target` (string) - the state name to transition to.
+- `actions` (Action | Action[]) - the [action(s)](#action-config) to execute when this transition is taken.
+- `guard` (Guard) - the condition (predicate function) to test. If it returns `true`, the transition will be taken.
 
 ### Machine options
 
@@ -143,20 +145,7 @@ Object syntax:
 
 ### Action config
 
-Function syntax:
+The action function to execute while transitioning from one state to another. It takes the following arguments:
 
-- (function) - the action function to execute. Resolves to `{ type: actionFn.name, exec: actionFn }` and the function
-  takes the following arguments:
-  1. `context` (any) - the machine's current `context`.
-  2. `event` (object) - the event that caused the action to be executed.
-
-Object syntax:
-
-- `type` (string) - the action type.
-- `exec?` (function) - the action function to execute.
-
-String syntax:
-
-- (string) - the action type.
-  - By default it resolves to `{ type: actionType, exec: undefined }`. It can resolve to resolved function or resolved
-    object action **if** the action can be looked up in the `options.actions` object.
+- `context` (any) - the machine's current `context`.
+- `event` (object) - the event that caused the action to be executed.
