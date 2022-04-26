@@ -69,6 +69,22 @@ function Example() {
 - All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
   nested states, etc.
 
+## Fun Facts
+
+**Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
+power the logic behind UI components.
+
+### Teasers
+
+- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
+  them to **"zag it!"** ⚡️
+
+- Anyone using Zag will be called a **"zagger"** 💥
+
+- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
+
+- The Zag community will be called **"zag nation"** 🔥
+
 ## Commands
 
 ### Build commands
@@ -108,22 +124,6 @@ works the same way regardless of the framework.
 
 - `test` : Run the tests for all packages
 - `lint` : Lint all packages
-
-## Fun Facts
-
-**Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
-power the logic behind UI components.
-
-### Teasers
-
-- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
-  them to **"zag it!"** ⚡️
-
-- Anyone using Zag will be called a **"zagger"** 💥
-
-- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
-
-- The Zag community will be called **"zag nation"** 🔥
 
 ## Inspirations
 
