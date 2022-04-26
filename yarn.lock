@@ -10176,10 +10176,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valtio@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.5.2.tgz#8dbd3e08e23891713fd55ac1a7b1e91f14cfab47"
-  integrity sha512-4oqGO+7xSKZJJgLsfwRdzQxxy4hiOjiE0IZv0xoNNLtJQ+Y6mtWoEl0Y0JyUCrU/HBmY+0W/yL3lwjrpTBCJ/w==
+valtio@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.6.0.tgz#37332b2a937ceab4cb8a500c50063add600032b8"
+  integrity sha512-I/AUMRGlGpskbTdwYbiJutMKq4AHPgV8GWMwvPPQ6jdAhlWO4gheK4bTKZ22Ff5ONXjjZE8mQ0vL5l0em4wJGg==
   dependencies:
     proxy-compare "2.1.0"
     use-sync-external-store "1.0.0"

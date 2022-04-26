@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@zag-js/core": "0.0.0",
-    "valtio": "^1.5.2"
+    "valtio": "^1.6.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
