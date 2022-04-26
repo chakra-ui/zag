@@ -372,7 +372,7 @@ export declare namespace StateMachine {
      *
      * @see Valtio https://github.com/pmndrs/valtio#update-synchronously
      */
-    __hookSync?: boolean
+    hookSync?: boolean
   }
 
   export type HookOptions<TContext, TState extends StateSchema, TEvent extends EventObject> = {

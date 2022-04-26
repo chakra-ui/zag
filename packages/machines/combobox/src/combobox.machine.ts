@@ -553,7 +553,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
       },
 
-      __hookSync: true,
+      hookSync: true,
     },
   )
 }

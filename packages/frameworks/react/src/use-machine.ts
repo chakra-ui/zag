@@ -59,7 +59,7 @@ export function useMachine<
 
   const state = cast<S.State<TContext, TState, TEvent>>(
     useSnapshot(service.state, {
-      sync: service.options.__hookSync,
+      sync: service.options.hookSync,
     }),
   )
 
