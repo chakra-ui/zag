@@ -552,6 +552,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.sectionLabel = label
         },
       },
+
+      __hookSync: true,
     },
   )
 }

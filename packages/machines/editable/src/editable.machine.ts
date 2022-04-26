@@ -172,6 +172,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.pointerdownNode = null
         },
       },
+
+      __hookSync: true,
     },
   )
 }

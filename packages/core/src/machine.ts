@@ -46,7 +46,7 @@ export class Machine<
   private delayMap: S.DelayMap<TContext, TEvent>
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
   private sync: boolean
-  public options?: S.MachineOptions<TContext, TState, TEvent>
+  public options: S.MachineOptions<TContext, TState, TEvent>
 
   // Let's get started!
   constructor(
@@ -54,7 +54,7 @@ export class Machine<
     options?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
     // deep clone the config
-    this.options = klona(options)
+    this.options = klona(options ?? {})
     this.id = config.id ?? `machine-${uuid()}`
 
     // maps
@@ -235,7 +235,7 @@ export class Machine<
   /**
    * Function to send event to spawned child machine or actor
    */
-  sendChild = (evt: S.Event<S.AnyEventObject>, to: string | ((ctx: TContext) => string)) => {
+  public sendChild = (evt: S.Event<S.AnyEventObject>, to: string | ((ctx: TContext) => string)) => {
     const event = toEvent(evt)
     const id = runIfFn(to, this.contextSnapshot)
     const child = this.children.get(id)
@@ -248,7 +248,7 @@ export class Machine<
   /**
    * Function to stop a running child machine or actor
    */
-  stopChild = (id: string) => {
+  public stopChild = (id: string) => {
     if (!this.children.has(id)) {
       invariant(`[@zag-js/core > stop-child] Cannot stop unknown child ${id}`)
     }
@@ -256,7 +256,7 @@ export class Machine<
     this.children.delete(id)
   }
 
-  removeChild = (id: string) => {
+  public removeChild = (id: string) => {
     this.children.delete(id)
   }
 
@@ -266,7 +266,7 @@ export class Machine<
     this.children.clear()
   }
 
-  setParent = (parent: any) => {
+  private setParent = (parent: any) => {
     this.parent = parent
   }
 
@@ -315,19 +315,19 @@ export class Machine<
   /**
    * To used within side effects for React or Vue to update context
    */
-  setContext = (context: Partial<Writable<TContext>>) => {
+  public setContext = (context: Partial<Writable<TContext>>) => {
     for (const key in context) {
       this.state.context[<keyof TContext>key] = context[key]!
     }
   }
 
-  withContext = (context: Partial<Writable<TContext>>) => {
+  public withContext = (context: Partial<Writable<TContext>>) => {
     this.detachComputed()
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 
-  setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
+  public setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
     this.actionMap = { ...this.actionMap, ...actions }
   }
 
@@ -677,7 +677,7 @@ export class Machine<
   /**
    * Function to send event to parent machine from spawned child
    */
-  sendParent = (evt: S.Event<S.AnyEventObject>) => {
+  public sendParent = (evt: S.Event<S.AnyEventObject>) => {
     if (!this.parent) {
       invariant("[@zag-js/core > send-parent] Cannot send event to an unknown parent")
     }
@@ -688,12 +688,12 @@ export class Machine<
   /**
    * Function to send an event to current machine
    */
-  send = (evt: S.Event<TEvent>) => {
+  public send = (evt: S.Event<TEvent>) => {
     const event = toEvent<TEvent>(evt)
     this.transition(this.state.value, event)
   }
 
-  transition = (state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null, evt: S.Event<TEvent>) => {
+  public transition = (state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null, evt: S.Event<TEvent>) => {
     const stateNode = isString(state) ? this.getStateNode(state) : state?.stateNode
 
     const event = toEvent(evt)

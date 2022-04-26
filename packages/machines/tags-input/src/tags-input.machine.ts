@@ -508,6 +508,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (msg) region.announce(msg)
         },
       },
+
+      __hookSync: true,
     },
   )
 }
