@@ -1,3 +1,4 @@
+import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards, ref } from "@zag-js/core"
 import {
   createLiveRegion,
@@ -22,6 +23,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         uid: "",
         loop: true,
         openOnClick: false,
+        ariaHidden: true,
         activeId: null,
         activeOptionData: null,
         inputValue: "",
@@ -165,7 +167,13 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         suggesting: {
           tags: ["open", "focused"],
-          activities: ["trackPointerDown", "scrollOptionIntoView", "computePlacement", "trackOptionNodes"],
+          activities: [
+            "trackPointerDown",
+            "scrollOptionIntoView",
+            "computePlacement",
+            "trackOptionNodes",
+            "ariaHideOutside",
+          ],
           entry: ["focusInput", "invokeOnOpen"],
           on: {
             ARROW_DOWN: {
@@ -226,7 +234,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         interacting: {
           tags: ["open", "focused"],
-          activities: ["scrollOptionIntoView", "trackPointerDown", "computePlacement"],
+          activities: ["scrollOptionIntoView", "trackPointerDown", "computePlacement", "ariaHideOutside"],
           entry: "focusMatchingOption",
           on: {
             ARROW_DOWN: [
@@ -319,6 +327,10 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       activities: {
+        ariaHideOutside(ctx) {
+          if (!ctx.ariaHidden) return
+          return ariaHidden([dom.getInputEl(ctx), dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)])
+        },
         computePlacement(ctx) {
           return getPlacement(dom.getControlEl(ctx), dom.getPositionerEl(ctx), {
             placement: "bottom",
@@ -367,7 +379,10 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (evt.doc) ctx.doc = ref(evt.doc)
           ctx.uid = evt.id
           nextTick(() => {
-            ctx.liveRegion = createLiveRegion({ level: "assertive", document: ctx.doc })
+            ctx.liveRegion = createLiveRegion({
+              level: "assertive",
+              document: ctx.doc,
+            })
           })
         },
         setActiveId(ctx, evt) {

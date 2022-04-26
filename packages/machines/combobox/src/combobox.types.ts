@@ -101,6 +101,10 @@ type PublicContext = DirectionProperty & {
    */
   allowCustomValue?: boolean
   /**
+   * Whether to hide all elements besides the combobox parts. Useful for accessibility
+   */
+  ariaHidden?: boolean
+  /**
    * Function called to validate the input value
    */
   isCustomValue?: (details: { inputValue: string; previousValue: string }) => boolean

@@ -34,7 +34,7 @@
     "@zag-js/types": "^0.0.0",
     "@zag-js/popper": "^0.0.0",
     "@zag-js/utils": "^0.0.0",
-    "aria-hidden": "^1.1.3",
+    "@zag-js/aria-hidden": "^0.0.0",
     "focus-trap": "^6.7.1"
   },
   "scripts": {

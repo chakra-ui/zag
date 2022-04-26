@@ -1,7 +1,7 @@
 import { createMachine, guards, ref, subscribe } from "@zag-js/core"
 import { addDomEvent, nextTick, preventBodyScroll, trackPointerDown } from "@zag-js/dom-utils"
 import { runIfFn } from "@zag-js/utils"
-import { hideOthers } from "aria-hidden"
+import { ariaHidden } from "@zag-js/aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
 import { store } from "./dialog.store"
@@ -126,12 +126,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           }
         },
         hideContentBelow(ctx) {
-          let unhide: VoidFunction
+          let unhide: VoidFunction | undefined
           nextTick(() => {
-            const el = dom.getUnderlayEl(ctx)
-            try {
-              unhide = hideOthers(el)
-            } catch {}
+            unhide = ariaHidden([dom.getUnderlayEl(ctx)])
           })
           return () => unhide?.()
         },

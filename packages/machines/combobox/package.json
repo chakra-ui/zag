@@ -32,6 +32,7 @@
     "@zag-js/core": "^0.0.0",
     "@zag-js/popper": "^0.0.0",
     "@zag-js/dom-utils": "^0.0.0",
+    "@zag-js/aria-hidden": "^0.0.0",
     "@zag-js/types": "^0.0.0",
     "scroll-into-view-if-needed": "^2.2.28"
   },

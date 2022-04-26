@@ -1,24 +1,27 @@
 // Credits: https://github.com/adobe/react-spectrum/blob/main/packages/@react-aria/overlays/src/ariaHideOutside.ts
 
-let map = new WeakMap<Element, number>()
+const elementCountMap = new WeakMap<Element, number>()
 
-export type AriaHiddenOptions = {
-  exclude: HTMLElement[]
-  document: Document
-  root?: HTMLElement
+function isLiveRegion(node: Node, win: typeof window): node is HTMLElement {
+  return node instanceof win.HTMLElement && node.dataset.liveAnnouncer === "true"
 }
 
-export function ariaHidden(options: AriaHiddenOptions) {
-  const { exclude, document: doc, root = doc.body } = options
+export function ariaHidden(targets: Array<HTMLElement | null>, rootEl?: HTMLElement) {
+  const exclude = targets.filter(Boolean) as HTMLElement[]
+  if (exclude.length === 0) return
+
+  const doc = exclude[0].ownerDocument || document
   const win = doc.defaultView ?? window
 
   const visibleNodes = new Set<Element>(exclude)
   const hiddenNodes = new Set<Element>()
 
+  const root = rootEl ?? doc.body
+
   const walker = doc.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, {
     acceptNode(node) {
       // If this node is a live announcer, add it to the set of nodes to keep visible.
-      if (node instanceof win.HTMLElement && node.dataset.liveAnnouncer === "true") {
+      if (isLiveRegion(node, win)) {
         visibleNodes.add(node)
       }
 
@@ -44,7 +47,7 @@ export function ariaHidden(options: AriaHiddenOptions) {
   })
 
   const hide = (node: Element) => {
-    let refCount = map.get(node) ?? 0
+    let refCount = elementCountMap.get(node) ?? 0
 
     // If already aria-hidden, and the ref count is zero, then this element
     // was already hidden and there's nothing for us to do.
@@ -57,7 +60,7 @@ export function ariaHidden(options: AriaHiddenOptions) {
     }
 
     hiddenNodes.add(node)
-    map.set(node, refCount + 1)
+    elementCountMap.set(node, refCount + 1)
   }
 
   let node = walker.nextNode() as Element
@@ -76,7 +79,7 @@ export function ariaHidden(options: AriaHiddenOptions) {
       if (![...visibleNodes, ...hiddenNodes].some((node) => node.contains(change.target))) {
         //@ts-expect-error
         for (const node of change.addedNodes) {
-          if (node instanceof win.HTMLElement && node.dataset.liveAnnouncer === "true") {
+          if (isLiveRegion(node, win)) {
             visibleNodes.add(node)
           } else if (node instanceof win.Element) {
             hide(node)
@@ -92,16 +95,16 @@ export function ariaHidden(options: AriaHiddenOptions) {
     observer.disconnect()
 
     for (let node of hiddenNodes) {
-      let count = map.get(node)
+      let count = elementCountMap.get(node)
 
       if (count === 1) {
         node.removeAttribute("aria-hidden")
-        map.delete(node)
+        elementCountMap.delete(node)
         continue
       }
 
       if (count !== undefined) {
-        map.set(node, count - 1)
+        elementCountMap.set(node, count - 1)
       }
     }
   }
