@@ -104,6 +104,8 @@ Our build is managed with esbuild and turborepo to provide fast, concurrent buil
 Since zag is framework agnostic, we need a way to test it within a framework. The `examples/` directory includes starter
 projects for the frameworks we support.
 
+> Make sure to run the `build:fast` or `start` command before this.
+
 - `start:react` : Starts the Next.js TypeScript project
 - `start:vue` : Starts the Vue 3 TypeScript project
 - `start:solid` : Starts the Solid TypeScript project
