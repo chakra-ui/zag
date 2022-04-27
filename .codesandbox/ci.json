@@ -11,6 +11,7 @@
     "packages/utilities/rect",
     "packages/utilities/dom",
     "packages/utilities/popper",
+    "packages/utilities/aria-hidden",
     "packages/types",
     "packages/core",
     "packages/machines/tooltip",
