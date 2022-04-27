@@ -16,9 +16,9 @@ Finite state machines for accessible JavaScript components
 With the rise of design systems and component-driven development, there's an endless re-implementation of common
 component patterns (Tabs, Menu, Modal, etc.) in multiple frameworks.
 
-Most of these implementations seem to be fairly similar in spirit, the only difference is that they use framework
-specific idioms (like `useEffect` in React.js). They tend to grow in complexity over time and often become hard to
-understand, debug, improve or test.
+Most of these implementations seem to be fairly similar in spirit, the differences being around the reactivity and
+effects systems for the framework (e.g. `useState`, `useEffect` in React.js). Framework specific solutions tend to grow
+in complexity over time and often become hard to understand, debug, improve or test.
 
 ## Solution
 
