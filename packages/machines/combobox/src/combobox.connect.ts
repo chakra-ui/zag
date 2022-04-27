@@ -146,6 +146,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
             send(event.altKey ? "ALT_ARROW_UP" : "ARROW_UP")
             prevent = true
           },
+          Home(event) {
+            const isCtrlKey = event.ctrlKey || event.metaKey
+            if (isCtrlKey) return
+            send({ type: "HOME", preventDefault: () => event.preventDefault() })
+          },
+          End(event) {
+            const isCtrlKey = event.ctrlKey || event.metaKey
+            if (isCtrlKey) return
+            send({ type: "END", preventDefault: () => event.preventDefault() })
+          },
           Enter() {
             send("ENTER")
             prevent = true

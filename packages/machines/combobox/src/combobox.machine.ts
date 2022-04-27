@@ -58,7 +58,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       onEvent(ctx, evt) {
-        ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN)/.test(evt.type)
+        ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END)/.test(evt.type)
       },
 
       watch: {
@@ -185,6 +185,14 @@ export function machine(ctx: UserDefinedContext = {}) {
               actions: "focusPrevOption",
             },
             ALT_ARROW_UP: "focused",
+            HOME: {
+              target: "interacting",
+              actions: ["focusFirstOption", "preventDefault"],
+            },
+            END: {
+              target: "interacting",
+              actions: ["focusLastOption", "preventDefault"],
+            },
             ENTER: [
               {
                 guard: and("isOptionFocused", "autoComplete"),
@@ -237,6 +245,12 @@ export function machine(ctx: UserDefinedContext = {}) {
           activities: ["scrollOptionIntoView", "trackPointerDown", "computePlacement", "ariaHideOutside"],
           entry: "focusMatchingOption",
           on: {
+            HOME: {
+              actions: ["focusFirstOption", "preventDefault"],
+            },
+            END: {
+              actions: ["focusLastOption", "preventDefault"],
+            },
             ARROW_DOWN: [
               {
                 guard: and("autoComplete", "isLastOptionFocused"),
@@ -560,6 +574,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         removeLiveRegion(ctx) {
           ctx.liveRegion?.destroy()
+        },
+        preventDefault(_ctx, evt) {
+          evt.preventDefault()
         },
         setSectionLabel(ctx) {
           const label = dom.getClosestSectionLabel(ctx)
