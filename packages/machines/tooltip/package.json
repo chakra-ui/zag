@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tooltip",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Core logic for the tooltip widget implemented as a state machine",
   "keywords": [
     "js",
@@ -29,10 +29,10 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "^0.0.0",
-    "@zag-js/popper": "^0.0.0",
-    "@zag-js/dom-utils": "^0.0.0",
-    "@zag-js/types": "^0.0.0"
+    "@zag-js/core": "^0.1.0",
+    "@zag-js/popper": "^0.1.0",
+    "@zag-js/dom-utils": "^0.1.0",
+    "@zag-js/types": "^0.1.0"
   },
   "scripts": {
     "build:fast": "zag build",
