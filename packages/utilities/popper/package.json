@@ -26,8 +26,8 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^0.4.2",
-    "@zag-js/dom-utils": "^0.1.0",
-    "@zag-js/utils": "^0.1.0"
+    "@zag-js/dom-utils": "0.1.0",
+    "@zag-js/utils": "0.1.0"
   },
   "scripts": {
     "build:fast": "zag build",

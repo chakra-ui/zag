@@ -29,12 +29,12 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "^0.1.0",
-    "@zag-js/dom-utils": "^0.1.0",
-    "@zag-js/number-utils": "^0.1.0",
-    "@zag-js/rect-utils": "^0.1.0",
-    "@zag-js/types": "^0.1.0",
-    "@zag-js/utils": "^0.1.0"
+    "@zag-js/core": "0.1.0",
+    "@zag-js/dom-utils": "0.1.0",
+    "@zag-js/number-utils": "0.1.0",
+    "@zag-js/rect-utils": "0.1.0",
+    "@zag-js/types": "0.1.0",
+    "@zag-js/utils": "0.1.0"
   },
   "scripts": {
     "build:fast": "zag build",

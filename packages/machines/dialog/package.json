@@ -29,10 +29,10 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "^0.1.0",
-    "@zag-js/dom-utils": "^0.1.0",
-    "@zag-js/types": "^0.1.0",
-    "@zag-js/aria-hidden": "^0.1.0",
+    "@zag-js/core": "0.1.0",
+    "@zag-js/dom-utils": "0.1.0",
+    "@zag-js/types": "0.1.0",
+    "@zag-js/aria-hidden": "0.1.0",
     "focus-trap": "^6.7.1",
     "scroll-into-view-if-needed": "^2.2.28"
   },
