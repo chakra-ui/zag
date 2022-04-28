@@ -171,7 +171,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         if (exec) {
           exec(event)
           event.preventDefault()
-          event.stopPropagation()
         }
       },
     }),

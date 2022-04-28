@@ -1,4 +1,4 @@
-import { guards } from "../src/guard-utils"
+import { guards } from "../src"
 const { or, not, and } = guards
 
 const context = {

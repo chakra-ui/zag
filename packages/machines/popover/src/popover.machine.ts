@@ -9,7 +9,7 @@ import {
 } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { next, runIfFn } from "@zag-js/utils"
-import { hideOthers } from "aria-hidden"
+import { ariaHidden } from "@zag-js/aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
@@ -146,13 +146,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         hideContentBelow(ctx) {
           if (!ctx.modal) return
-          let unhide: VoidFunction
+          let unhide: VoidFunction | undefined
           nextTick(() => {
-            const el = dom.getContentEl(ctx)
-            if (!el) return
-            try {
-              unhide = hideOthers(el)
-            } catch {}
+            unhide = ariaHidden([dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
           })
           return () => unhide?.()
         },

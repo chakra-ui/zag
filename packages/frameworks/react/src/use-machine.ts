@@ -42,14 +42,6 @@ export function useService<
   return service
 }
 
-type SyncOption = {
-  /**
-   * Whether to execute state update synchronously within `valtio`
-   * @see Valtio https://github.com/pmndrs/valtio#update-synchronously
-   */
-  sync?: boolean
-}
-
 /**
  * General purpose hook for consuming UI machines within react.
  *
@@ -62,9 +54,14 @@ export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
->(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent> & SyncOption) {
-  const { sync, ...hookOptions } = options ?? {}
-  const service = useService(machine, hookOptions)
-  const state = cast<S.State<TContext, TState, TEvent>>(useSnapshot(service.state, { sync }))
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
+  const service = useService(machine, options)
+
+  const state = cast<S.State<TContext, TState, TEvent>>(
+    useSnapshot(service.state, {
+      sync: service.options.hookSync,
+    }),
+  )
+
   return [state, service.send, service] as const
 }

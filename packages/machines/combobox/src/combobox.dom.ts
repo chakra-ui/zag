@@ -44,18 +44,22 @@ export const dom = {
   }),
   getOptionCount: (ctx: Ctx) => {
     // if option has `aria-setsize`, announce the number of options
-    const listboxEl = dom.getListboxEl(ctx)
-    const setSize = listboxEl?.querySelector("[role-option]")?.getAttribute("aria-setsize")
-    if (setSize != null) {
-      return parseInt(setSize)
-    }
+    const listbox = dom.getListboxEl(ctx)
+    const count = listbox?.querySelector("[role-option]")?.getAttribute("aria-setsize")
+
+    if (count != null) return parseInt(count)
     // else announce the number of options by querying the listbox
-    return listboxEl?.querySelectorAll("[role=option]").length ?? 0
+    return listbox?.querySelectorAll("[role=option]").length ?? 0
   },
   getMatchingOptionEl: (ctx: Ctx, value = ctx.inputValue) => {
     if (!value) return null
+
     const selector = `[role=option][data-label="${CSS.escape(value)}"`
-    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(selector)
+
+    const listbox = dom.getListboxEl(ctx)
+    if (!listbox) return null
+
+    return listbox.querySelector<HTMLElement>(selector)
   },
 
   scrollIntoView: (ctx: Ctx, el: HTMLElement) => {
@@ -71,8 +75,14 @@ export const dom = {
     if (dom.getDoc(ctx).activeElement !== input) {
       input?.focus()
     }
-    if (ctx.selectOnFocus) {
+    if (ctx.selectInputOnFocus) {
       input?.select()
     }
+  },
+
+  getClosestSectionLabel(ctx: Ctx) {
+    if (!ctx.activeId) return
+    const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
+    return group?.getAttribute("aria-label")
   },
 }

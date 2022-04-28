@@ -41,10 +41,6 @@ type PublicContext = DirectionProperty & {
    */
   selectedValue: string
   /**
-   * The active option's id. Used to set the `aria-activedescendant` attribute
-   */
-  activeId: string | null
-  /**
    * The `name` attribute of the combobox's input. Useful for form submission
    */
   name?: string
@@ -66,14 +62,24 @@ type PublicContext = DirectionProperty & {
    */
   placeholder?: string
   /**
-   * Whether the combobox should automatically select the focused option.
+   * Defines the auto-completion behavior of the combobox.
+   *
+   * - `autohighlight`: The first focused option is highlighted as the user types
+   * - `autocomplete`: Navigating the listbox with the arrow keys selects the option and the input is updated
    */
-  autoComplete: boolean
+  inputBehavior: "autohighlight" | "autocomplete" | "none"
   /**
-   * Whether the combobox should automatically highlight the first option.
-   * This is useful when you have a static list of options.
+   * Whether to blur the input on select
    */
-  autoHighlight: boolean
+  blurOnSelect?: boolean
+  /**
+   * The behavior of the combobox when an option is selected
+   */
+  selectionBehavior?: "clear" | "set" | "none"
+  /**
+   * Whether to select the focused option when the `Tab` key is pressed
+   */
+  selectOnTab: boolean
   /**
    * Whether to autofocus the input on mount
    */
@@ -81,7 +87,7 @@ type PublicContext = DirectionProperty & {
   /**
    * Whether to select the input's text content on focus
    */
-  selectOnFocus?: boolean
+  selectInputOnFocus?: boolean
   /**
    * Whether to return focus to the input on click the clear button
    */
@@ -94,6 +100,10 @@ type PublicContext = DirectionProperty & {
    * Whether to allow custom values or free values in the input
    */
   allowCustomValue?: boolean
+  /**
+   * Whether to hide all elements besides the combobox parts. Useful for accessibility
+   */
+  ariaHidden?: boolean
   /**
    * Function called to validate the input value
    */
@@ -109,12 +119,12 @@ type PublicContext = DirectionProperty & {
   /**
    * Function called when a new option is selected
    */
-  onSelect?: (details: { value: string }) => void
+  onSelect?: (details: { value: string; relatedTarget: HTMLElement | null }) => void
   /**
    * Function called when an options is highlighted using the pointer
    * or keyboard navigation.
    */
-  onHighlight?: (details: { value: string }) => void
+  onHighlight?: (details: { value: string; relatedTarget: HTMLElement | null }) => void
   /**
    * Function called when the popup is opened
    */
@@ -147,11 +157,29 @@ type ComputedContext = Readonly<{
    * Whether the combobox is interactive
    */
   isInteractive: boolean
+  /**
+   * @computed
+   */
+  autoComplete: boolean
+  /**
+   * @computed
+   */
+  autoHighlight: boolean
 }>
 
 /////////////////////////////////////////////////////////////////////////
 
 type PrivateContext = Context<{
+  /**
+   * @internal
+   * The active option's id. Used to set the `aria-activedescendant` attribute
+   */
+  activeId: string | null
+  /**
+   * @internal
+   * The data associated with the focused option
+   */
+  activeOptionData: OptionData | null
   /**
    * @internal
    * The value of the option when the user hovers/navigates with keyboard
@@ -166,7 +194,7 @@ type PrivateContext = Context<{
    * @internal
    * Whether the pointer is hovering the combobox input. Used to show/hide the clear button
    */
-  isHoveringInput: boolean
+  isHovering: boolean
   /**
    * @internal
    * Whether the combobox popover is rendered. We use this to dynamically position
@@ -178,6 +206,16 @@ type PrivateContext = Context<{
    * The placement of the combobox popover.
    */
   currentPlacement?: Placement
+  /**
+   * @internal
+   * The label of the closest section to the focused option
+   */
+  sectionLabel?: string
+  /**
+   * @internal
+   * Whether the event source is a keyboard event
+   */
+  isKeyboardEvent?: boolean
 }>
 
 /////////////////////////////////////////////////////////////////////////
@@ -188,7 +226,7 @@ export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
-  tags: "expanded" | "focused" | "idle"
+  tags: "open" | "focused" | "idle"
 }
 
 export type State = S.State<MachineContext, MachineState>

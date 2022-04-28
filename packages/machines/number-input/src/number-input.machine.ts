@@ -383,6 +383,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           doc.documentElement.style.cursor = ""
         },
       },
+
+      hookSync: true,
     },
   )
 }

@@ -1,3 +1,7 @@
+/* -----------------------------------------------------------------------------
+ * General type utilities
+ * -----------------------------------------------------------------------------*/
+
 export type Dict<T = any> = Record<string, T>
 
 export type MaybeArray<T> = T | T[]
@@ -14,10 +18,29 @@ export type Writable<T> = Pick<T, WritableKey<T>>
 
 type Computed<T> = Omit<T, WritableKey<T>>
 
+/* -----------------------------------------------------------------------------
+ * Here comes the state machine interface
+ * -----------------------------------------------------------------------------*/
+
 export declare namespace StateMachine {
+  /* -----------------------------------------------------------------------------
+   * Context types
+   * -----------------------------------------------------------------------------*/
+
   export type Context<V, C> = V & Readonly<C>
 
-  // event sent can be either a string or object
+  export type TComputedContext<T> = {
+    [K in keyof Computed<T>]: (ctx: Omit<T, K>) => T[K]
+  }
+
+  export type UserContext<TContext> = Partial<Writable<TContext>>
+
+  export type ContextListener<TContext extends Dict> = (context: TContext) => void
+
+  /* -----------------------------------------------------------------------------
+   * Event types. Can be either a string or object
+   * -----------------------------------------------------------------------------*/
+
   export type EventObject = { type: string }
 
   export type Event<TEvent extends EventObject = EventObject> = TEvent["type"] | TEvent
@@ -26,15 +49,22 @@ export declare namespace StateMachine {
     [key: string]: any
   }
 
-  // expression is a generic function that takes context + event
+  export type Send<TEvent extends EventObject = AnyEventObject> = (event: Event<TEvent>) => void
+
+  export type EventListener<TEvent extends EventObject = AnyEventObject> = (event: TEvent) => void
+
+  export type ExtractEvent<TEvent extends EventObject, K> = K extends TEvent["type"]
+    ? Extract<TEvent, { type: K }>
+    : EventObject
+
+  /* -----------------------------------------------------------------------------
+   * Expression types. `actions` and `activities` are expressions.
+   * -----------------------------------------------------------------------------*/
+
   type Expression<TContext extends Dict, TEvent extends EventObject, TReturn> = (
     context: TContext,
     event: TEvent,
   ) => TReturn
-
-  export type Send<TEvent extends EventObject = AnyEventObject> = (event: Event<TEvent>) => void
-
-  export type EventListener<TEvent extends EventObject = AnyEventObject> = (event: TEvent) => void
 
   export type Meta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     state: State<TContext, TState>
@@ -42,6 +72,8 @@ export declare namespace StateMachine {
     send: Send<TEvent>
     self: Self<TContext, TState, TEvent>
     getState: () => State<TContext, TState, TEvent>
+    getAction: (key: string) => ExpressionWithMeta<TContext, TState, TEvent, void>
+    getGuard: (key: string) => GuardExpression<TContext, TEvent>
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
@@ -49,6 +81,10 @@ export declare namespace StateMachine {
     event: TEvent,
     meta: Meta<TContext, TState, TEvent>,
   ) => TReturn
+
+  /* -----------------------------------------------------------------------------
+   * Action types
+   * -----------------------------------------------------------------------------*/
 
   export type Action<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | string
@@ -62,6 +98,30 @@ export declare namespace StateMachine {
     Action<TContext, TState, TEvent>
   >
 
+  export type ActionMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    [action: string]: ExpressionWithMeta<TContext, TState, TEvent, void>
+  }
+
+  /* -----------------------------------------------------------------------------
+   * Activity types
+   * -----------------------------------------------------------------------------*/
+
+  export type Activity<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
+    | string
+    | ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | void | undefined>
+
+  export type Activities<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = MaybeArray<
+    Activity<TContext, TState, TEvent>
+  >
+
+  export type ActivityMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    [activity: string]: ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | void | undefined>
+  }
+
+  /* -----------------------------------------------------------------------------
+   * Transition types
+   * -----------------------------------------------------------------------------*/
+
   export type TransitionDefinition<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     target?: TState["value"]
     actions?: Actions<TContext, TState, TEvent>
@@ -74,6 +134,10 @@ export declare namespace StateMachine {
     | string
     | number
     | DelayExpression<TContext, TEvent>
+
+  export type DelayMap<TContext extends Dict, TEvent extends EventObject> = {
+    [delay: string]: number | DelayExpression<TContext, TEvent>
+  }
 
   // For transition definitions in `after` and `every`
   export type DelayedTransition<
@@ -91,36 +155,31 @@ export declare namespace StateMachine {
     | Record<string | number, TState["value"] | MaybeArray<TransitionDefinition<TContext, TState, TEvent>>>
     | Array<DelayedTransition<TContext, TState, TEvent>>
 
-  // a transition can be a string (e.g "off") or a full definition object
-  // { target: "off", actions: [...], guard: "isEmpty" }
+  /**
+   * a transition can be a string (e.g "off") or a full definition object
+   * { target: "off", actions: [...], guard: "isEmpty" }
+   */
   export type Transition<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | TState["value"]
     | TransitionDefinition<TContext, TState, TEvent>
 
-  // a transition can be a simple transition as described above
-  // or an array of possible transitions with `guard` to determine
-  // the selected transition
+  /**
+   * Transition can be a string (representing the `target`), an object or an array of possible
+   * transitions with `guard` to determine the selected transition
+   */
   export type Transitions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | Transition<TContext, TState, TEvent>
     | Array<TransitionDefinition<TContext, TState, TEvent>>
-
-  export type Activity<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
-    | string
-    | ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | void | undefined>
-
-  export type Activities<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = MaybeArray<
-    Activity<TContext, TState, TEvent>
-  >
-
-  export type ExtractEvent<TEvent extends EventObject, K> = K extends TEvent["type"]
-    ? Extract<TEvent, { type: K }>
-    : EventObject
 
   export type TransitionDefinitionMap<TContext, TState extends StateSchema, TEvent extends EventObject> = {
     [K in TEvent["type"]]?:
       | TState["value"]
       | MaybeArray<TransitionDefinition<TContext, TState, ExtractEvent<TEvent, K>>>
   }
+
+  /* -----------------------------------------------------------------------------
+   * State node definition
+   * -----------------------------------------------------------------------------*/
 
   export interface StateNode<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
@@ -170,6 +229,10 @@ export declare namespace StateMachine {
         }>
   }
 
+  /* -----------------------------------------------------------------------------
+   * Guard types
+   * -----------------------------------------------------------------------------*/
+
   export type GuardExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
 
   export type GuardHelper<TContext extends Dict, TEvent extends EventObject> = {
@@ -185,14 +248,41 @@ export declare namespace StateMachine {
     | GuardExpression<TContext, TEvent>
     | GuardHelper<TContext, TEvent>
 
+  export type GuardMap<TContext extends Dict, TEvent extends EventObject> = {
+    [guard: string]: GuardExpression<TContext, TEvent>
+  }
+
+  /* -----------------------------------------------------------------------------
+   * State types
+   * -----------------------------------------------------------------------------*/
+
   export type StateSchema = {
     value: string
     tags?: string
   }
 
-  export type TComputedContext<T> = {
-    [K in keyof Computed<T>]: (ctx: Omit<T, K>) => T[K]
+  export type StateInitObject<TContext, TState extends StateSchema> = {
+    context: TContext
+    value: TState["value"]
   }
+
+  export type StateInit<TContext, TState extends StateSchema> = TState["value"] | StateInitObject<TContext, TState>
+
+  export type StateListener<
+    TContext extends Dict,
+    TState extends StateSchema,
+    TEvent extends EventObject = EventObject,
+  > = (state: State<TContext, TState, TEvent>) => void
+
+  export interface StateInfo<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
+    transition: TransitionDefinition<TContext, TState, TEvent> | undefined
+    stateNode: StateNode<TContext, TState, TEvent> | undefined
+    target: TState["value"]
+  }
+
+  /* -----------------------------------------------------------------------------
+   * Machine configuration types
+   * -----------------------------------------------------------------------------*/
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
@@ -266,37 +356,9 @@ export declare namespace StateMachine {
     tags: TState["tags"][]
   }
 
-  export type StateListener<
-    TContext extends Dict,
-    TState extends StateSchema,
-    TEvent extends EventObject = EventObject,
-  > = (state: State<TContext, TState, TEvent>) => void
-
-  export type ContextListener<TContext extends Dict> = (context: TContext) => void
-
-  export interface StateInfo<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
-    transition: TransitionDefinition<TContext, TState, TEvent> | undefined
-    stateNode: StateNode<TContext, TState, TEvent> | undefined
-    target: TState["value"]
-  }
-
-  // Machine Options
-
-  export type ActionMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    [action: string]: ExpressionWithMeta<TContext, TState, TEvent, void>
-  }
-
-  export type GuardMap<TContext extends Dict, TEvent extends EventObject> = {
-    [guard: string]: GuardExpression<TContext, TEvent>
-  }
-
-  export type ActivityMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    [activity: string]: ExpressionWithMeta<TContext, TState, TEvent, VoidFunction | void | undefined>
-  }
-
-  export type DelayMap<TContext extends Dict, TEvent extends EventObject> = {
-    [delay: string]: number | DelayExpression<TContext, TEvent>
-  }
+  /* -----------------------------------------------------------------------------
+   * Machine options types
+   * -----------------------------------------------------------------------------*/
 
   export interface MachineOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     guards?: GuardMap<TContext, TEvent>
@@ -304,16 +366,14 @@ export declare namespace StateMachine {
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
     sync?: boolean
+    /**
+     * Notify `useSnapshot` to execute state update synchronously within `valtio`.
+     * Useful if this component has an input element.
+     *
+     * @see Valtio https://github.com/pmndrs/valtio#update-synchronously
+     */
+    hookSync?: boolean
   }
-
-  export type StateInitObject<TContext, TState extends StateSchema> = {
-    context: TContext
-    value: TState["value"]
-  }
-
-  export type StateInit<TContext, TState extends StateSchema> = TState["value"] | StateInitObject<TContext, TState>
-
-  export type UserContext<TContext> = Partial<Writable<TContext>>
 
   export type HookOptions<TContext, TState extends StateSchema, TEvent extends EventObject> = {
     actions?: ActionMap<TContext, TState, TEvent>

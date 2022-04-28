@@ -1,4 +1,12 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@zag-js/dom-utils"
+import {
+  dataAttr,
+  EventKeyMap,
+  getEventKey,
+  getNativeEvent,
+  matchAttr,
+  nextTick,
+  validateBlur,
+} from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./tags-input.dom"
 import type { Send, State, TagProps } from "./tags-input.types"
@@ -115,17 +123,25 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       onKeyDown(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing) return
+
+        // handle composition when used as combobox
+        const attr = matchAttr(event.currentTarget)
+        const isCombobox = attr.is("role", "combobox")
+        const isExpanded = attr.is("aria-expanded", "true")
+
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
           },
           ArrowLeft() {
+            if (isCombobox && isExpanded) return
             send("ARROW_LEFT")
           },
           ArrowRight() {
             if (state.context.focusedId) {
               event.preventDefault()
             }
+            if (isCombobox && isExpanded) return
             send("ARROW_RIGHT")
           },
           Escape(event) {
@@ -146,6 +162,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
         const key = getEventKey(event, state.context)
         const exec = keyMap[key]
+
         if (exec) {
           exec?.(event)
           return

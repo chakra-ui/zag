@@ -11,7 +11,6 @@ export default function Page() {
 
   const [state, send] = useMachine(numberInput.machine, {
     context: controls.context,
-    sync: true,
   })
 
   const ref = useSetup<HTMLInputElement>({ send, id: useId() })

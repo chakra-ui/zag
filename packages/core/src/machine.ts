@@ -2,10 +2,9 @@ import { cast, clear, invariant, isArray, isObject, isString, noop, runIfFn, uui
 import { klona } from "klona/json"
 import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
-import { determineActionsFn } from "./action-utils"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
-import { determineGuardFn } from "./guard-utils"
+import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
 import { toArray, toEvent } from "./utils"
@@ -47,7 +46,7 @@ export class Machine<
   private delayMap: S.DelayMap<TContext, TEvent>
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
   private sync: boolean
-  public options?: S.MachineOptions<TContext, TState, TEvent>
+  public options: S.MachineOptions<TContext, TState, TEvent>
 
   // Let's get started!
   constructor(
@@ -55,7 +54,7 @@ export class Machine<
     options?: S.MachineOptions<TContext, TState, TEvent>,
   ) {
     // deep clone the config
-    this.options = klona(options)
+    this.options = klona(options ?? {})
     this.id = config.id ?? `machine-${uuid()}`
 
     // maps
@@ -120,17 +119,19 @@ export class Machine<
       this.sync,
     )
 
-    // For some reason `subscribe(this.state.event)` doesn't work, so we use `subscribeKey`
-    this.removeEventListener = subscribeKey(this.state, "event", (value) => {
+    // subscribe to event changes
+    this.removeEventListener = subscribeKey(this.state, "event", (event) => {
       if (this.config.onEvent) {
-        this.executeActions(this.config.onEvent, value)
+        this.executeActions(this.config.onEvent, event)
       }
       for (const listener of this.eventListeners) {
-        listener(value)
+        listener(event)
       }
     })
 
     this.setupContextWatchers()
+
+    // execute initial actions and activities
     this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
     this.executeActions(this.config.entry, toEvent<TEvent>(ActionTypes.Start))
 
@@ -185,8 +186,10 @@ export class Machine<
     // cleanup `derive` subscriptions that was attached to the context
     this.detachComputed()
 
-    this.status = MachineStatus.Stopped
+    // execute stop or exit actions
     this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
+
+    this.status = MachineStatus.Stopped
     return this
   }
 
@@ -232,12 +235,12 @@ export class Machine<
   /**
    * Function to send event to spawned child machine or actor
    */
-  sendChild = (evt: S.Event<S.AnyEventObject>, to: string | ((ctx: TContext) => string)) => {
+  public sendChild = (evt: S.Event<S.AnyEventObject>, to: string | ((ctx: TContext) => string)) => {
     const event = toEvent(evt)
     const id = runIfFn(to, this.contextSnapshot)
     const child = this.children.get(id)
     if (!child) {
-      invariant(`[machine/send-child] Cannot send '${event.type}' event to unknown child`)
+      invariant(`[@zag-js/core] Cannot send '${event.type}' event to unknown child`)
     }
     child!.send(event)
   }
@@ -245,15 +248,15 @@ export class Machine<
   /**
    * Function to stop a running child machine or actor
    */
-  stopChild = (id: string) => {
+  public stopChild = (id: string) => {
     if (!this.children.has(id)) {
-      invariant("[machine/stop-child] Cannot stop unknown child")
+      invariant(`[@zag-js/core > stop-child] Cannot stop unknown child ${id}`)
     }
     this.children.get(id)!.stop()
     this.children.delete(id)
   }
 
-  removeChild = (id: string) => {
+  public removeChild = (id: string) => {
     this.children.delete(id)
   }
 
@@ -263,7 +266,7 @@ export class Machine<
     this.children.clear()
   }
 
-  setParent = (parent: any) => {
+  private setParent = (parent: any) => {
     this.parent = parent
   }
 
@@ -312,19 +315,19 @@ export class Machine<
   /**
    * To used within side effects for React or Vue to update context
    */
-  setContext = (context: Partial<Writable<TContext>>) => {
+  public setContext = (context: Partial<Writable<TContext>>) => {
     for (const key in context) {
       this.state.context[<keyof TContext>key] = context[key]!
     }
   }
 
-  withContext = (context: Partial<Writable<TContext>>) => {
+  public withContext = (context: Partial<Writable<TContext>>) => {
     this.detachComputed()
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 
-  setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
+  public setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
     this.actionMap = { ...this.actionMap, ...actions }
   }
 
@@ -450,6 +453,8 @@ export class Machine<
       send: this.send.bind(this),
       self: this.self,
       getState: () => this.stateSnapshot,
+      getAction: (key) => this.actionMap[key],
+      getGuard: (key) => this.guardMap[key],
     }
   }
 
@@ -461,7 +466,10 @@ export class Machine<
     const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event)
     for (const action of toArray(_actions)) {
       const fn = isString(action) ? this.actionMap?.[action] : action
-      warn(isString(action) && !fn, `[machine/exec-action] No implementation found for action: \`${action}\``)
+      warn(
+        isString(action) && !fn,
+        `[@zag-js/core > execute-actions] No implementation found for action: \`${action}\``,
+      )
       fn?.(this.state.context, event, this.meta)
     }
   }
@@ -479,7 +487,7 @@ export class Machine<
       const fn = isString(activity) ? this.activityMap?.[activity] : activity
 
       if (!fn) {
-        warn(`[machine/exec-activity] No implementation found for activity: \`${activity}\``)
+        warn(`[@zag-js/core > execute-activity] No implementation found for activity: \`${activity}\``)
         continue
       }
 
@@ -669,9 +677,9 @@ export class Machine<
   /**
    * Function to send event to parent machine from spawned child
    */
-  sendParent = (evt: S.Event<S.AnyEventObject>) => {
+  public sendParent = (evt: S.Event<S.AnyEventObject>) => {
     if (!this.parent) {
-      invariant("[machine/send-parent] Cannot send event to an unknown parent")
+      invariant("[@zag-js/core > send-parent] Cannot send event to an unknown parent")
     }
     const event = toEvent<S.AnyEventObject>(evt)
     this.parent?.send(event)
@@ -680,12 +688,12 @@ export class Machine<
   /**
    * Function to send an event to current machine
    */
-  send = (evt: S.Event<TEvent>) => {
+  public send = (evt: S.Event<TEvent>) => {
     const event = toEvent<TEvent>(evt)
     this.transition(this.state.value, event)
   }
 
-  transition = (state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null, evt: S.Event<TEvent>) => {
+  public transition = (state: TState["value"] | S.StateInfo<TContext, TState, TEvent> | null, evt: S.Event<TEvent>) => {
     const stateNode = isString(state) ? this.getStateNode(state) : state?.stateNode
 
     const event = toEvent(evt)
@@ -693,8 +701,8 @@ export class Machine<
     if (!stateNode && !this.config.on) {
       const msg =
         this.status === MachineStatus.Stopped
-          ? "[machine/transition] Cannot transition a stopped machine"
-          : "[machine/transition] State does not have a definition"
+          ? "[@zag-js/core > transition] Cannot transition a stopped machine"
+          : `[@zag-js/core > transition] State does not have a definition for \`state\`: ${state}, \`event\`: ${event.type}`
       warn(msg)
       return
     }

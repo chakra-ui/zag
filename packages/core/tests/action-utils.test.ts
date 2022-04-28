@@ -1,5 +1,4 @@
-import { choose } from "../src/action-utils"
-import { guards } from "../src/guard-utils"
+import { choose, guards } from "../src"
 
 const { not } = guards
 

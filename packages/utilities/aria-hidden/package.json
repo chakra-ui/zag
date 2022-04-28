@@ -1,0 +1,36 @@
+{
+  "name": "@zag-js/aria-hidden",
+  "version": "0.1.0",
+  "description": "Hide targets from screen readers",
+  "keywords": [
+    "js",
+    "utils",
+    "aria-hidden"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/aria-hidden",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build:fast": "yarn zag build",
+    "start": "yarn zag build --watch",
+    "build": "yarn zag build --prod",
+    "test": "jest --config ../../../jest.config.js --rootDir tests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test:ci": "yarn test --ci --runInBand --updateSnapshot",
+    "test:watch": "yarn test --watchAll"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  }
+}

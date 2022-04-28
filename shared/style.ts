@@ -18,13 +18,16 @@ export const comboboxStyle: CSSObject = {
     padding: "0",
     margin: "0",
     border: "1px solid lightgray",
-    maxHeight: "400px",
+    maxHeight: "240px",
     overflow: "auto",
   },
   "[data-part=option]": {
-    '&[aria-selected="true"], &[data-highlighted]': {
+    "&[data-highlighted]": {
       backgroundColor: "red",
       color: "white",
+    },
+    "&[data-disabled]": {
+      opacity: 0.5,
     },
   },
   "[data-part=label]": {

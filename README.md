@@ -8,7 +8,7 @@ Finite state machines for accessible JavaScript components
   interactions, focus management, aria roles and attributes.
 - **Headless ✨**: The machine APIs are completely unstyled and gives you the control to use any styling solution you
   prefer.
-- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCMXL
+- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCXML
   specifications, but we've created an API that we think will help us build more complex components fast.
 
 ## The problem
@@ -16,9 +16,9 @@ Finite state machines for accessible JavaScript components
 With the rise of design systems and component-driven development, there's an endless re-implementation of common
 component patterns (Tabs, Menu, Modal, etc.) in multiple frameworks.
 
-Most of these implementations seem to be fairly similar in spirit, the only difference is that they use framework
-specific idioms (like `useEffect` in React.js). They tend to grow in complexity over time and often become hard to
-understand, debug, improve or test.
+Most of these implementations seem to be fairly similar in spirit, the differences being around the reactivity and
+effects systems for the framework (e.g. `useState`, `useEffect` in React.js). Framework specific solutions tend to grow
+in complexity over time and often become hard to understand, debug, improve or test.
 
 ## Solution
 
@@ -46,17 +46,20 @@ For framework specific solutions, we provide simple wrappers to help you consume
 
 ```jsx
 import * as toggle from "@zag-js/toggle"
-import { useMachine } from "@zag-js/react"
+import { useMachine, useSetup } from "@zag-js/react"
 
 function Example() {
   // if you need access to `state` or `send` from machine
   const [state, send] = useMachine(toggle.machine)
 
+  // setup a unique id and ownerDocument for machine
+  const ref = useSetup({ send, id; "2" })
+
   // convert machine details into `DOM` props
   const api = toggle.connect(state, send)
 
   // consume into components
-  return <button {...api.buttonProps}>Toggle me</button>
+  return <button ref={ref} {...api.buttonProps}>Toggle me</button>
 }
 ```
 
@@ -68,6 +71,22 @@ function Example() {
   component patterns to work the same way!**
 - All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
   nested states, etc.
+
+## Fun Facts
+
+**Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
+power the logic behind UI components.
+
+### Teasers
+
+- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
+  them to **"zag it!"** ⚡️
+
+- Anyone using Zag will be called a **"zagger"** 💥
+
+- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
+
+- The Zag community will be called **"zag nation"** 🔥
 
 ## Commands
 
@@ -84,6 +103,8 @@ Our build is managed with esbuild and turborepo to provide fast, concurrent buil
 
 Since zag is framework agnostic, we need a way to test it within a framework. The `examples/` directory includes starter
 projects for the frameworks we support.
+
+> Make sure to run the `build:fast` or `start` command before this.
 
 - `start:react` : Starts the Next.js TypeScript project
 - `start:vue` : Starts the Vue 3 TypeScript project
@@ -109,28 +130,16 @@ works the same way regardless of the framework.
 - `test` : Run the tests for all packages
 - `lint` : Lint all packages
 
-## Fun Facts
-
-**Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
-power the logic behind UI components.
-
-### Teasers
-
-- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
-  them to **"zag it!"** ⚡️
-
-- Anyone using Zag will be called a **"zagger"** 💥
-
-- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
-
-- The Zag community will be called **"zag nation"** 🔥
-
 ## Inspirations
 
+- Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
 - [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
 - [Pure UI Control](https://asolove.medium.com/pure-ui-control-ac8d1be97a8d) - Adam Solve
-- [Material Components Web](https://github.com/material-components/material-components-web)
-- Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
+- [Material Components Web](https://github.com/material-components/material-components-web) for inspiring my first
+  prototype
+- [XState](https://xstate.js.org/) for inspiring the base implementation of the state machine
+- [Vue.js](https://vuejs.org/) and [Lit](https://lit-element.polymer-project.org/) for inspiring new patterns in the
+  machine (`computed` and `watch`)
 
 ## Contributions
 

@@ -51,7 +51,6 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         if (event.key == "Escape") {
           send("DISMISS")
           event.preventDefault()
-          event.stopPropagation()
         }
       },
       onFocus() {
