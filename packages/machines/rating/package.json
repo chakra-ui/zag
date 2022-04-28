@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/rating",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core logic for the rating widget implemented as a state machine",
   "keywords": [
     "js",
@@ -29,7 +29,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "0.1.0",
+    "@zag-js/core": "0.1.1",
     "@zag-js/dom-utils": "0.1.0",
     "@zag-js/rect-utils": "0.1.0",
     "@zag-js/types": "0.1.0",
