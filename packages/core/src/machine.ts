@@ -156,7 +156,7 @@ export class Machine<
     )
 
     // attach computed properties to the state's context
-    derive(deriveFns, { proxy: this.state.context })
+    derive(deriveFns, { proxy: this.state.context, sync: this.sync || this.options.hookSync })
   }
 
   private detachComputed = () => {
