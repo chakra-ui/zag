@@ -6,6 +6,7 @@ import { comboboxControls } from "../../../shared/controls"
 import { comboboxData } from "../../../shared/data"
 import { comboboxStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -63,9 +64,10 @@ export default function Page() {
             )}
           </div>
         </div>
-        <controls.ui />
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

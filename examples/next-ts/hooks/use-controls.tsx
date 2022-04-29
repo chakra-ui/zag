@@ -20,7 +20,6 @@ export function useControls<T extends ControlRecord>(config: T) {
     context: state,
     ui: () => (
       <div className={controlsContainer}>
-        <p>Property controls</p>
         {Object.keys(config).map((key) => {
           const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
           switch (type) {

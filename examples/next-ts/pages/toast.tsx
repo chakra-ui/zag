@@ -6,6 +6,7 @@ import { BeatLoader } from "react-spinners"
 import { toastControls } from "../../../shared/controls"
 import { toastStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function ToastItem({ actor }: { actor: toast.Service }) {
@@ -39,7 +40,6 @@ export default function Page() {
       <Global styles={toastStyle} />
 
       <main>
-        <controls.ui />
         <div ref={ref} style={{ display: "flex", gap: "16px" }}>
           <button
             onClick={() => {
@@ -83,7 +83,9 @@ export default function Page() {
           ))}
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

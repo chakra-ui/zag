@@ -5,6 +5,7 @@ import { menuStyle } from "../../../shared/style"
 import { menuOptionData as data } from "../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useId } from "react"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -48,7 +49,9 @@ export default function Page() {
           </div>
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={null}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

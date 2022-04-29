@@ -5,6 +5,7 @@ import { useId } from "react"
 import { ratingControls } from "../../../shared/controls"
 import { ratingStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function HalfStar() {
@@ -52,7 +53,6 @@ export default function Page() {
     <>
       <Global styles={ratingStyle} />
       <main>
-        <controls.ui />
         <div ref={ref} {...api.rootProps}>
           <label {...api.labelProps}>Rate:</label>
           <div {...api.itemGroupProps}>
@@ -68,7 +68,9 @@ export default function Page() {
           <input {...api.inputProps} />
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

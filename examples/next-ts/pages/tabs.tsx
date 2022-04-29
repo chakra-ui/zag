@@ -6,6 +6,7 @@ import { tabsControls } from "../../../shared/controls"
 import { tabsData } from "../../../shared/data"
 import { tabsStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -24,7 +25,6 @@ export default function Page() {
       <Global styles={tabsStyle} />
 
       <main>
-        <controls.ui />
         <div {...api.rootProps}>
           <div {...api.indicatorProps} />
           <div ref={ref} {...api.triggerGroupProps}>
@@ -44,7 +44,9 @@ export default function Page() {
           </div>
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

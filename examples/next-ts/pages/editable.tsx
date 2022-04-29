@@ -5,6 +5,7 @@ import { useId } from "react"
 import { editableControls } from "../../../shared/controls"
 import { editableStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -46,9 +47,10 @@ export default function Page() {
             )}
           </div>
         </div>
-        <controls.ui />
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

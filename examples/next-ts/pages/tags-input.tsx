@@ -5,6 +5,7 @@ import { useId } from "react"
 import { tagsInputControls } from "../../../shared/controls"
 import { tagsInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function toDashCase(str: string) {
@@ -32,7 +33,6 @@ export default function Page() {
       <Global styles={tagsInputStyle} />
 
       <main>
-        <controls.ui />
         <div ref={ref} {...api.rootProps}>
           <label {...api.labelProps}>Enter frameworks:</label>
           <div {...api.controlProps}>
@@ -55,7 +55,9 @@ export default function Page() {
           <input {...api.hiddenInputProps} />
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

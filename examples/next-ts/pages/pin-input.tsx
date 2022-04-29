@@ -5,6 +5,7 @@ import { useId } from "react"
 import { pinInputControls } from "../../../shared/controls"
 import { pinInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -33,7 +34,6 @@ export default function Page() {
       <Global styles={pinInputStyle} />
 
       <main>
-        <controls.ui />
         <div ref={ref} {...api.rootProps}>
           <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
           <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
@@ -43,7 +43,9 @@ export default function Page() {
           Clear
         </button>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

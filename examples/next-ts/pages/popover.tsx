@@ -6,6 +6,7 @@ import { popoverControls } from "../../../shared/controls"
 import { popoverStyle } from "../../../shared/style"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -60,9 +61,10 @@ export default function Page() {
           <span data-testid="plain-text">I am just text</span>
           <button data-testid="button-after">Button :after</button>
         </div>
-        <controls.ui />
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

@@ -5,6 +5,7 @@ import { useId } from "react"
 import { splitterControls } from "../../../shared/controls"
 import { splitterStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -22,7 +23,6 @@ export default function Page() {
     <>
       <Global styles={splitterStyle} />
       <main>
-        <controls.ui />
         <div ref={ref} {...api.rootProps}>
           <div {...api.primaryPaneProps}>
             <div>
@@ -36,7 +36,9 @@ export default function Page() {
           <div {...api.secondaryPaneProps}>Secondary Pane</div>
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

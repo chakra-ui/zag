@@ -4,6 +4,7 @@ import { useMachine, useSetup } from "@zag-js/react"
 import { useId } from "react"
 import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const [state, send] = useMachine(menu.machine({ onSelect: console.log }))
@@ -30,7 +31,9 @@ export default function Page() {
           </div>
         </div>
       </main>
-      <StateVisualizer state={state} />
+      <Toolbar controls={null}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

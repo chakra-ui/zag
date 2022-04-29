@@ -3,16 +3,12 @@ import { isDom } from "@zag-js/utils"
 import formatHighlight from "json-format-highlight"
 
 type StateVisualizerProps = {
-  offset?: string
-  placement?: "right" | "left"
   state: Record<string, any>
-  style?: Record<string, any>
-  reset?: boolean
   label?: string
 }
 
 export function StateVisualizer(props: StateVisualizerProps) {
-  const { state, style, reset, label, placement = "right", offset = "40px" } = props
+  const { state, label } = props
 
   const code = JSON.stringify(
     state,
@@ -34,26 +30,11 @@ export function StateVisualizer(props: StateVisualizerProps) {
 
   return (
     <div className="viz">
-      <pre
-        dir="ltr"
-        style={
-          reset
-            ? style
-            : {
-                float: "right",
-                position: "absolute",
-                overflow: "hidden",
-                top: 40,
-                [placement]: offset,
-                maxWidth: "320px",
-                width: "100%",
-                zIndex: -1,
-                ...style,
-              }
-        }
-      >
-        {label && <div style={{ marginBottom: 24, fontFamily: "monospace", fontWeight: "bold" }}>{label}</div>}
-        <div dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+      <pre dir="ltr">
+        <details open>
+          <summary> {label || "Visualizer"} </summary>
+          <div data-viz-content dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+        </details>
       </pre>
     </div>
   )
