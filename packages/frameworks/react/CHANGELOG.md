@@ -1,5 +1,12 @@
 # @zag-js/react
 
+## 0.1.3
+
+### Patch Changes
+
+- [`46ae0bb`](https://github.com/chakra-ui/zag/commit/46ae0bb7a520cb0ba04ff15fa8b202406d202eb1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where controlled context doesn't get initialized in ssr
+
 ## 0.1.2
 
 ### Patch Changes
