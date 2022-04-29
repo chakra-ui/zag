@@ -53,7 +53,7 @@ function Example() {
   const [state, send] = useMachine(toggle.machine)
 
   // setup a unique id and ownerDocument for machine
-  const ref = useSetup({ send, id; "2" })
+  const ref = useSetup({ send, id: "2" })
 
   // convert machine details into `DOM` props
   const api = toggle.connect(state, send)
