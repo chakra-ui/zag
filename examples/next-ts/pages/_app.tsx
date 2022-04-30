@@ -3,7 +3,7 @@ import Head from "next/head"
 import Link from "next/link"
 import { injectGlobal } from "@emotion/css"
 import "../../../shared/reset"
-import { navStyle, pageStyle } from "../styles"
+import { navStyle, pageStyle } from "../../../shared/style"
 
 injectGlobal`
   body {

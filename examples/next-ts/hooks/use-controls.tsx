@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import React, { useState } from "react"
 import { ControlRecord, ControlValue } from "@zag-js/types"
-import { controlsContainer } from "../styles"
+import { controlsContainer } from "../../../shared/style"
 
 function getDefaultValues<T extends ControlRecord>(obj: T) {
   return Object.keys(obj).reduce(
