@@ -1,5 +1,5 @@
 import { dataAttr } from "@zag-js/dom-utils"
-import { defineComponent, h, ref, defineProps } from "vue"
+import { defineComponent, h, ref } from "vue"
 import { getToolbarStyles } from "../../../../shared/style"
 
 type ToolbarProps = {
