@@ -5,6 +5,7 @@ import { createMemo, createUniqueId } from "solid-js"
 import { splitterControls } from "../../../../shared/controls"
 import { splitterStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(splitterStyle)
@@ -22,24 +23,24 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-
-      <div>
-        <div ref={ref} {...api().rootProps}>
-          <div {...api().primaryPaneProps}>
-            <div>
-              <small {...api().labelProps}>Table of Contents</small>
-              <p>Primary Pane</p>
+      <main>
+        <div>
+          <div ref={ref} {...api().rootProps}>
+            <div {...api().primaryPaneProps}>
+              <div>
+                <small {...api().labelProps}>Table of Contents</small>
+                <p>Primary Pane</p>
+              </div>
             </div>
+            <div {...api().splitterProps}>
+              <div className="splitter-bar" />
+            </div>
+            <div {...api().secondaryPaneProps}>Secondary Pane</div>
           </div>
-          <div {...api().splitterProps}>
-            <div className="splitter-bar" />
-          </div>
-          <div {...api().secondaryPaneProps}>Secondary Pane</div>
         </div>
-      </div>
+      </main>
 
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

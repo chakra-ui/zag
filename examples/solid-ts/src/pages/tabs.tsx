@@ -6,6 +6,7 @@ import { tabsControls } from "../../../../shared/controls"
 import { tabsData } from "../../../../shared/data"
 import { tabsStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(tabsStyle)
@@ -23,34 +24,34 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
+      <main>
+        <div {...api().rootProps}>
+          <div {...api().indicatorProps} />
 
-      <div {...api().rootProps}>
-        <div {...api().indicatorProps} />
+          <div ref={ref} {...api().triggerGroupProps}>
+            <For each={tabsData}>
+              {(item) => (
+                <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>
+                  {item.label}
+                </button>
+              )}
+            </For>
+          </div>
 
-        <div ref={ref} {...api().triggerGroupProps}>
-          <For each={tabsData}>
-            {(item) => (
-              <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>
-                {item.label}
-              </button>
-            )}
-          </For>
+          <div {...api().contentGroupProps}>
+            <For each={tabsData}>
+              {(item) => (
+                <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
+                  <p>{item.content}</p>
+                  {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
+                </div>
+              )}
+            </For>
+          </div>
         </div>
+      </main>
 
-        <div {...api().contentGroupProps}>
-          <For each={tabsData}>
-            {(item) => (
-              <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
-                <p>{item.content}</p>
-                {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
-              </div>
-            )}
-          </For>
-        </div>
-      </div>
-
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

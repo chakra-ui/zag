@@ -6,6 +6,7 @@ import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(comboboxStyle)
@@ -34,40 +35,37 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-
-      <div>
-        <button onClick={() => api().setValue("Togo")}>Set to Togo</button>
-        <br />
-
-        <div ref={ref} {...api().rootProps}>
-          <label {...api().labelProps}>Select country</label>
-
-          <div {...api().controlProps}>
-            <input {...api().inputProps} />
-            <button {...api().toggleButtonProps}>▼</button>
+      <main>
+        <div>
+          <button onClick={() => api().setValue("Togo")}>Set to Togo</button>
+          <br />
+          <div ref={ref} {...api().rootProps}>
+            <label {...api().labelProps}>Select country</label>
+            <div {...api().controlProps}>
+              <input {...api().inputProps} />
+              <button {...api().toggleButtonProps}>▼</button>
+            </div>
+          </div>
+          <div {...api().positionerProps}>
+            {options().length > 0 && (
+              <ul {...api().listboxProps}>
+                <For each={options()}>
+                  {(item, index) => {
+                    const options = { label: item.label, value: item.code, index: index(), disabled: item.disabled }
+                    return (
+                      <li className="combobox__option" {...api().getOptionProps(options)}>
+                        {item.label}
+                      </li>
+                    )
+                  }}
+                </For>
+              </ul>
+            )}
           </div>
         </div>
+      </main>
 
-        <div {...api().positionerProps}>
-          {options().length > 0 && (
-            <ul {...api().listboxProps}>
-              <For each={options()}>
-                {(item, index) => {
-                  const options = { label: item.label, value: item.code, index: index(), disabled: item.disabled }
-                  return (
-                    <li className="combobox__option" {...api().getOptionProps(options)}>
-                      {item.label}
-                    </li>
-                  )
-                }}
-              </For>
-            </ul>
-          )}
-        </div>
-      </div>
-
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }
