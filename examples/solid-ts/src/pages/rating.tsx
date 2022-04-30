@@ -5,13 +5,14 @@ import { createMemo, createUniqueId, For } from "solid-js"
 import { ratingControls } from "../../../../shared/controls"
 import { ratingStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(ratingStyle)
 
-function HalfStar(props: { className: string }) {
+function HalfStar() {
   return (
-    <svg viewBox="0 0 273 260" className={props.className}>
+    <svg viewBox="0 0 273 260" data-part="star">
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"
@@ -28,9 +29,9 @@ function HalfStar(props: { className: string }) {
   )
 }
 
-function Star(props: { className: string }) {
+function Star() {
   return (
-    <svg viewBox="0 0 273 260" className={props.className}>
+    <svg viewBox="0 0 273 260" data-part="star">
       <path
         d="M136.5 0L177.83 86.614L272.977 99.1561L203.374 165.229L220.847 259.594L136.5 213.815L52.1528 259.594L69.6265 165.229L0.0233917 99.1561L95.1699 86.614L136.5 0Z"
         fill="currentColor"
@@ -52,25 +53,24 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-
-      <div>
-        <div className="rating" ref={ref} {...api().rootProps}>
-          <For each={api().sizeArray}>
-            {(index) => {
-              const state = createMemo(() => api().getRatingState(index))
-              return (
-                <span className="rating__rate" {...api().getItemProps({ index })}>
-                  {state().isHalf ? <HalfStar className="rating__star" /> : <Star className="rating__star" />}
-                </span>
-              )
-            }}
-          </For>
+      <main>
+        <div>
+          <div ref={ref} {...api().rootProps}>
+            <label {...api().labelProps}>Rate:</label>
+            <div {...api().itemGroupProps}>
+              <For each={api().sizeArray}>
+                {(index) => {
+                  const state = createMemo(() => api().getRatingState(index))
+                  return <span {...api().getItemProps({ index })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
+                }}
+              </For>
+            </div>
+          </div>
+          <input {...api().inputProps} />
         </div>
-        <input {...api().inputProps} />
-      </div>
+      </main>
 
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }
