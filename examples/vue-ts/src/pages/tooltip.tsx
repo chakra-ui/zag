@@ -8,41 +8,6 @@ import { Toolbar } from "../components/toolbar"
 
 injectGlobal(tooltipStyles)
 
-const TooltipComponent = defineComponent({
-  name: "Tooltip",
-  props: {
-    id: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const [state, send] = useMachine(Tooltip.machine({ id: props.id }))
-    const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
-    const apiRef = computed(() => Tooltip.connect<PropTypes>(state.value, send, normalizeProps))
-
-    return () => {
-      const api = apiRef.value
-      return (
-        <>
-          <div>
-            <button ref={ref} {...api.triggerProps}>
-              Over me
-            </button>
-            {api.isOpen && (
-              <div {...api.positionerProps}>
-                <div data-testid={`${props.id}-tooltip`} {...api.contentProps}>
-                  Tooltip
-                </div>
-              </div>
-            )}
-          </div>
-        </>
-      )
-    }
-  },
-})
-
 export default defineComponent({
   name: "Tooltip",
   setup() {
