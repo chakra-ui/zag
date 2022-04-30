@@ -1,5 +1,13 @@
 # @zag-js/solid
 
+## 0.1.3
+
+### Patch Changes
+
+- [#62](https://github.com/chakra-ui/zag/pull/62)
+  [`e4441c6`](https://github.com/chakra-ui/zag/commit/e4441c6f1fae0f7d8391f0f1403138c70bbc6b1a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Widen type for `element` type in `PropTypes`
+
 ## 0.1.2
 
 ### Patch Changes
