@@ -4,6 +4,7 @@ import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useId } from "../hooks/use-id"
 
 injectGlobal(menuStyle)
@@ -21,22 +22,23 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <div ref={ref}>
-            <button {...api.triggerProps}>
-              Actions <span aria-hidden>▾</span>
-            </button>
-
-            <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
-                <li {...api.getItemProps({ id: "edit" })}>Edit</li>
-                <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
-                <li {...api.getItemProps({ id: "delete" })}>Delete</li>
-                <li {...api.getItemProps({ id: "export" })}>Export...</li>
-              </ul>
+          <main>
+            <div ref={ref}>
+              <button {...api.triggerProps}>
+                Actions <span aria-hidden>▾</span>
+              </button>
+              <div {...api.positionerProps}>
+                <ul {...api.contentProps}>
+                  <li {...api.getItemProps({ id: "edit" })}>Edit</li>
+                  <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
+                  <li {...api.getItemProps({ id: "delete" })}>Delete</li>
+                  <li {...api.getItemProps({ id: "export" })}>Export...</li>
+                </ul>
+              </div>
             </div>
-          </div>
+          </main>
 
-          <StateVisualizer state={state} />
+          <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }

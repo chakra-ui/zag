@@ -8,6 +8,7 @@ import { ratingStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 import { useId } from "../hooks/use-id"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(ratingStyle)
 
@@ -64,23 +65,23 @@ export default defineComponent({
 
       return (
         <>
-          <controls.ui />
-
-          <div ref={ref} {...api.rootProps}>
-            <div {...api.itemGroupProps}>
-              {api.sizeArray.map((index) => {
-                const state = api.getRatingState(index)
-                return (
-                  <span key={index} {...api.getItemProps({ index })}>
-                    {state.isHalf ? <HalfStar /> : <Star />}
-                  </span>
-                )
-              })}
+          <main>
+            <div ref={ref} {...api.rootProps}>
+              <div {...api.itemGroupProps}>
+                {api.sizeArray.map((index) => {
+                  const state = api.getRatingState(index)
+                  return (
+                    <span key={index} {...api.getItemProps({ index })}>
+                      {state.isHalf ? <HalfStar /> : <Star />}
+                    </span>
+                  )
+                })}
+              </div>
+              <input {...api.inputProps} />
             </div>
-            <input {...api.inputProps} />
-          </div>
+          </main>
 
-          <StateVisualizer state={state} />
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }
