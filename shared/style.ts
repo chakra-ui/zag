@@ -747,7 +747,7 @@ export const navStyle = css({
   "a:focus": {
     outline: "none",
   },
-  'a[data-active="true"]': {
+  "a[data-active]": {
     borderColor: "green",
     fontWeight: 500,
   },
