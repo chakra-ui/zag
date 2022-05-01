@@ -179,8 +179,8 @@ export const ratingStyle: CSSObject = {
 
 export const sliderStyle: CSSObject = {
   "[data-part=root]": {
-    margin: "45px",
     maxWidth: "320px",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     "&[data-orientation=vertical]": {
@@ -676,6 +676,11 @@ export const pageStyle = css({
     flex: "auto",
     display: "flex",
     flexDirection: "column",
+    alignItems: "flex-start",
+    padding: "40px",
+    "> *": {
+      width: "100%",
+    },
   },
 })
 
