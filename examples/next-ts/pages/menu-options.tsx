@@ -5,6 +5,7 @@ import { menuStyle } from "../../../shared/style"
 import { menuOptionData as data } from "../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useId } from "react"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -20,37 +21,37 @@ export default function Page() {
     <>
       <Global styles={menuStyle} />
 
-      <div>
-        <button ref={ref} {...api.triggerProps}>
-          Actions <span aria-hidden>▾</span>
-        </button>
-
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
-            {data.order.map((item) => {
-              const opts = { type: "radio", name: "order", value: item.id } as const
-              return (
-                <div key={item.id} {...api.getOptionItemProps(opts)}>
-                  {api.isOptionChecked(opts) ? "✅" : null} {item.label}
-                </div>
-              )
-            })}
-
-            <hr />
-
-            {data.type.map((item) => {
-              const opts = { type: "checkbox", name: "type", value: item.id } as const
-              return (
-                <div key={item.id} {...api.getOptionItemProps(opts)}>
-                  {api.isOptionChecked(opts) ? "✅" : null} {item.label}
-                </div>
-              )
-            })}
+      <main>
+        <div>
+          <button ref={ref} {...api.triggerProps}>
+            Actions <span aria-hidden>▾</span>
+          </button>
+          <div {...api.positionerProps}>
+            <div {...api.contentProps}>
+              {data.order.map((item) => {
+                const opts = { type: "radio", name: "order", value: item.id } as const
+                return (
+                  <div key={item.id} {...api.getOptionItemProps(opts)}>
+                    {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                  </div>
+                )
+              })}
+              <hr />
+              {data.type.map((item) => {
+                const opts = { type: "checkbox", name: "type", value: item.id } as const
+                return (
+                  <div key={item.id} {...api.getOptionItemProps(opts)}>
+                    {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
-      </div>
-
-      <StateVisualizer state={state} />
+      </main>
+      <Toolbar controls={null}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

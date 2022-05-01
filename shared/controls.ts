@@ -43,19 +43,19 @@ export const editableControls = defineControls({
 })
 
 export const numberInputControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
   step: { type: "number", defaultValue: 1 },
   precision: { type: "number", defaultValue: 0 },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
-  disabled: { type: "boolean", defaultValue: false },
 })
 
 export const pinInputControls = defineControls({
-  type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
   blurOnComplete: { type: "boolean", defaultValue: false },
+  type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
 })
 
 export const popoverControls = defineControls({
@@ -110,11 +110,11 @@ export const ratingControls = defineControls({
 
 export const splitterControls = defineControls({
   fixed: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 340 },
-  disabled: { type: "boolean", defaultValue: false },
   snapOffset: { type: "number", defaultValue: 0 },
-  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
 
 export const toastControls = defineControls({

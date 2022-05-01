@@ -5,6 +5,7 @@ import { useId } from "react"
 import { ratingControls } from "../../../shared/controls"
 import { ratingStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function HalfStar() {
@@ -51,26 +52,25 @@ export default function Page() {
   return (
     <>
       <Global styles={ratingStyle} />
-      <controls.ui />
-
-      <div ref={ref} {...api.rootProps}>
-        <label {...api.labelProps}>Rate:</label>
-
-        <div {...api.itemGroupProps}>
-          {api.sizeArray.map((index) => {
-            const state = api.getRatingState(index)
-            return (
-              <span key={index} {...api.getItemProps({ index })}>
-                {state.isHalf ? <HalfStar /> : <Star />}
-              </span>
-            )
-          })}
+      <main>
+        <div ref={ref} {...api.rootProps}>
+          <label {...api.labelProps}>Rate:</label>
+          <div {...api.itemGroupProps}>
+            {api.sizeArray.map((index) => {
+              const state = api.getRatingState(index)
+              return (
+                <span key={index} {...api.getItemProps({ index })}>
+                  {state.isHalf ? <HalfStar /> : <Star />}
+                </span>
+              )
+            })}
+          </div>
+          <input {...api.inputProps} />
         </div>
-
-        <input {...api.inputProps} />
-      </div>
-
-      <StateVisualizer state={state} />
+      </main>
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

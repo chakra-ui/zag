@@ -6,6 +6,7 @@ import { BeatLoader } from "react-spinners"
 import { toastControls } from "../../../shared/controls"
 import { toastStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function ToastItem({ actor }: { actor: toast.Service }) {
@@ -36,55 +37,55 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-
       <Global styles={toastStyle} />
 
-      <div ref={ref} style={{ display: "flex", gap: "16px" }}>
-        <button
-          onClick={() => {
-            id.current = api.create({
-              title: "Welcome",
-              description: "Welcome",
-              type: "info",
-            })
-          }}
-        >
-          Notify (Info)
-        </button>
-        <button
-          onClick={() => {
-            api.create({
-              title: "Ooops! Something was wrong",
-              type: "error",
-            })
-          }}
-        >
-          Notify (Error)
-        </button>
-        <button
-          onClick={() => {
-            if (!id.current) return
-            api.update(id.current, {
-              title: "Testing",
-              type: "loading",
-            })
-          }}
-        >
-          Update Child (info)
-        </button>
-        <button onClick={() => api.dismiss()}>Close all</button>
-        <button onClick={() => api.pause()}>Pause all</button>
-        <button onClick={() => api.resume()}>Resume all</button>
-      </div>
-
-      <div {...api.getGroupProps({ placement: "bottom" })}>
-        {api.toasts.map((actor) => (
-          <ToastItem key={actor.id} actor={actor} />
-        ))}
-      </div>
-
-      <StateVisualizer state={state} />
+      <main>
+        <div ref={ref} style={{ display: "flex", gap: "16px" }}>
+          <button
+            onClick={() => {
+              id.current = api.create({
+                title: "Welcome",
+                description: "Welcome",
+                type: "info",
+              })
+            }}
+          >
+            Notify (Info)
+          </button>
+          <button
+            onClick={() => {
+              api.create({
+                title: "Ooops! Something was wrong",
+                type: "error",
+              })
+            }}
+          >
+            Notify (Error)
+          </button>
+          <button
+            onClick={() => {
+              if (!id.current) return
+              api.update(id.current, {
+                title: "Testing",
+                type: "loading",
+              })
+            }}
+          >
+            Update Child (info)
+          </button>
+          <button onClick={() => api.dismiss()}>Close all</button>
+          <button onClick={() => api.pause()}>Pause all</button>
+          <button onClick={() => api.resume()}>Resume all</button>
+        </div>
+        <div {...api.getGroupProps({ placement: "bottom" })}>
+          {api.toasts.map((actor) => (
+            <ToastItem key={actor.id} actor={actor} />
+          ))}
+        </div>
+      </main>
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

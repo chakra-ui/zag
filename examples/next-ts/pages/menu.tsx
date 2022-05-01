@@ -4,6 +4,7 @@ import { useMachine, useSetup } from "@zag-js/react"
 import { useId } from "react"
 import { menuStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const [state, send] = useMachine(menu.machine({ onSelect: console.log }))
@@ -15,21 +16,24 @@ export default function Page() {
     <>
       <Global styles={menuStyle} />
 
-      <div ref={ref}>
-        <button {...api.triggerProps}>
-          Actions <span aria-hidden>▾</span>
-        </button>
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
-            <li {...api.getItemProps({ id: "edit" })}>Edit</li>
-            <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
-            <li {...api.getItemProps({ id: "delete" })}>Delete</li>
-            <li {...api.getItemProps({ id: "export" })}>Export...</li>
-          </ul>
+      <main>
+        <div ref={ref}>
+          <button {...api.triggerProps}>
+            Actions <span aria-hidden>▾</span>
+          </button>
+          <div {...api.positionerProps}>
+            <ul {...api.contentProps}>
+              <li {...api.getItemProps({ id: "edit" })}>Edit</li>
+              <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
+              <li {...api.getItemProps({ id: "delete" })}>Delete</li>
+              <li {...api.getItemProps({ id: "export" })}>Export...</li>
+            </ul>
+          </div>
         </div>
-      </div>
-
-      <StateVisualizer state={state} />
+      </main>
+      <Toolbar controls={null}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

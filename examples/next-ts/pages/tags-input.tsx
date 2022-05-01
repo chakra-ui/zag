@@ -5,6 +5,7 @@ import { useId } from "react"
 import { tagsInputControls } from "../../../shared/controls"
 import { tagsInputStyle } from "../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function toDashCase(str: string) {
@@ -30,31 +31,33 @@ export default function Page() {
   return (
     <>
       <Global styles={tagsInputStyle} />
-      <controls.ui />
 
-      <div ref={ref} {...api.rootProps}>
-        <label {...api.labelProps}>Enter frameworks:</label>
-        <div {...api.controlProps}>
-          {api.value.map((value, index) => (
-            <span key={`${toDashCase(value)}-tag-${index}`}>
-              <div data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
-                <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
-                <button
-                  data-testid={`${toDashCase(value)}-close-button`}
-                  {...api.getTagDeleteButtonProps({ index, value })}
-                >
-                  &#x2715;
-                </button>
-              </div>
-              <input data-testid={`${toDashCase(value)}-input`} {...api.getTagInputProps({ index, value })} />
-            </span>
-          ))}
-          <input data-testid="input" placeholder="add tag" {...api.inputProps} />
+      <main>
+        <div ref={ref} {...api.rootProps}>
+          <label {...api.labelProps}>Enter frameworks:</label>
+          <div {...api.controlProps}>
+            {api.value.map((value, index) => (
+              <span key={`${toDashCase(value)}-tag-${index}`}>
+                <div data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
+                  <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                  <button
+                    data-testid={`${toDashCase(value)}-close-button`}
+                    {...api.getTagDeleteButtonProps({ index, value })}
+                  >
+                    &#x2715;
+                  </button>
+                </div>
+                <input data-testid={`${toDashCase(value)}-input`} {...api.getTagInputProps({ index, value })} />
+              </span>
+            ))}
+            <input data-testid="input" placeholder="add tag" {...api.inputProps} />
+          </div>
+          <input {...api.hiddenInputProps} />
         </div>
-        <input {...api.hiddenInputProps} />
-      </div>
-
-      <StateVisualizer state={state} />
+      </main>
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

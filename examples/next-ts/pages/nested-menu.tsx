@@ -6,6 +6,7 @@ import { menuData } from "../../../shared/data"
 import { menuStyle } from "../../../shared/style"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine)
@@ -44,55 +45,55 @@ export default function Page() {
   return (
     <>
       <Global styles={menuStyle} />
-      <button data-testid="trigger" {...root.triggerProps}>
-        Click me
-      </button>
-
-      <Portal>
-        <div {...root.positionerProps}>
-          <ul data-testid="menu" ref={rootRef} {...root.contentProps}>
-            {level1.map((item) => {
-              const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
-              return (
-                <li key={item.id} data-testid={item.id} {...props}>
+      <main>
+        <button data-testid="trigger" {...root.triggerProps}>
+          Click me
+        </button>
+        <Portal>
+          <div {...root.positionerProps}>
+            <ul data-testid="menu" ref={rootRef} {...root.contentProps}>
+              {level1.map((item) => {
+                const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
+                return (
+                  <li key={item.id} data-testid={item.id} {...props}>
+                    {item.label}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </Portal>
+        <Portal>
+          <div {...sub.positionerProps}>
+            <ul ref={subRef} data-testid="more-tools-submenu" {...sub.contentProps}>
+              {level2.map((item) => {
+                const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
+                return (
+                  <li key={item.id} data-testid={item.id} {...props}>
+                    {item.label}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </Portal>
+        <Portal>
+          <div {...sub2.positionerProps}>
+            <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.contentProps}>
+              {level3.map((item) => (
+                <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
                   {item.label}
                 </li>
-              )
-            })}
-          </ul>
-        </div>
-      </Portal>
-
-      <Portal>
-        <div {...sub.positionerProps}>
-          <ul ref={subRef} data-testid="more-tools-submenu" {...sub.contentProps}>
-            {level2.map((item) => {
-              const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
-              return (
-                <li key={item.id} data-testid={item.id} {...props}>
-                  {item.label}
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </Portal>
-
-      <Portal>
-        <div {...sub2.positionerProps}>
-          <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.contentProps}>
-            {level3.map((item) => (
-              <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Portal>
-
-      <StateVisualizer state={state} label="Root Machine" placement="left" />
-      <StateVisualizer state={subState} label="Sub Machine" placement="left" offset="420px" />
-      <StateVisualizer state={sub2State} label="Sub2 Machine" placement="left" offset="800px" />
+              ))}
+            </ul>
+          </div>
+        </Portal>
+      </main>
+      <Toolbar controls={null} count={3}>
+        <StateVisualizer state={state} label="Root Machine" />
+        <StateVisualizer state={subState} label="Sub Machine" />
+        <StateVisualizer state={sub2State} label="Sub2 Machine" />
+      </Toolbar>
     </>
   )
 }
