@@ -633,6 +633,10 @@ export const tabsStyle: CSSObject = {
 }
 
 export const tooltipStyles: CSSObject = {
+  ".root": {
+    display: "flex",
+    gap: "20px",
+  },
   "[data-part=content]": {
     zIndex: 1,
     padding: "0.25em 0.5em",
