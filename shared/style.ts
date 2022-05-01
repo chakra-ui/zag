@@ -716,11 +716,15 @@ export const getToolbarStyles = (count: number) =>
     },
     ".viz": {
       fontSize: "13px",
+      "--viz-font": "SF Mono, Menlo, monospace",
       summary: {
         marginBottom: 24,
-        fontFamily: "monospace",
+        fontFamily: "var(--viz-font)",
         fontWeight: "bold",
         cursor: "pointer",
+        "& + div > *": {
+          fontFamily: "var(--viz-font)",
+        },
       },
       paddingLeft: "14px",
       maxHeight: `${100 / count}%`,
