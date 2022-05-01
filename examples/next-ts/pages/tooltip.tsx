@@ -2,6 +2,7 @@ import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { tooltipStyles } from "../../../shared/style"
+import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
@@ -23,22 +24,26 @@ export default function Page() {
             Over me
           </button>
           {api.isOpen && (
-            <div {...api.positionerProps}>
-              <div data-testid={`${id}-tooltip`} {...api.contentProps}>
-                Tooltip
+            <Portal>
+              <div {...api.positionerProps}>
+                <div data-testid={`${id}-tooltip`} {...api.contentProps}>
+                  Tooltip
+                </div>
               </div>
-            </div>
+            </Portal>
           )}
 
           <button data-testid={`${id2}-trigger`} ref={ref2} {...api2.triggerProps}>
             Over me
           </button>
           {api2.isOpen && (
-            <div {...api2.positionerProps}>
-              <div data-testid={`${id2}-tooltip`} {...api2.contentProps}>
-                Tooltip
+            <Portal>
+              <div {...api2.positionerProps}>
+                <div data-testid={`${id2}-tooltip`} {...api2.contentProps}>
+                  Tooltip
+                </div>
               </div>
-            </div>
+            </Portal>
           )}
         </div>
       </main>

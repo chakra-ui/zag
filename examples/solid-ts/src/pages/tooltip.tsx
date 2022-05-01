@@ -2,6 +2,7 @@ import { injectGlobal } from "@emotion/css"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { createMemo } from "solid-js"
+import { Portal } from "solid-js/web"
 import { tooltipStyles } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -25,22 +26,26 @@ export default function Page() {
             Over me
           </button>
           {api().isOpen && (
-            <div {...api().positionerProps}>
-              <div data-testid="tip-1-tooltip" {...api().contentProps}>
-                Tooltip
+            <Portal>
+              <div {...api().positionerProps}>
+                <div data-testid="tip-1-tooltip" {...api().contentProps}>
+                  Tooltip
+                </div>
               </div>
-            </div>
+            </Portal>
           )}
 
           <button data-testid="tip-2-trigger" ref={ref2} {...api2().triggerProps}>
             Over me
           </button>
           {api2().isOpen && (
-            <div {...api2().positionerProps}>
-              <div data-testid="tip-2-tooltip" {...api2().contentProps}>
-                Tooltip 2
+            <Portal>
+              <div {...api2().positionerProps}>
+                <div data-testid="tip-2-tooltip" {...api2().contentProps}>
+                  Tooltip 2
+                </div>
               </div>
-            </div>
+            </Portal>
           )}
         </div>
       </main>
