@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
+import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -27,14 +27,16 @@ export default defineComponent({
               <button {...api.triggerProps}>
                 Actions <span aria-hidden>▾</span>
               </button>
-              <div {...api.positionerProps}>
-                <ul {...api.contentProps}>
-                  <li {...api.getItemProps({ id: "edit" })}>Edit</li>
-                  <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
-                  <li {...api.getItemProps({ id: "delete" })}>Delete</li>
-                  <li {...api.getItemProps({ id: "export" })}>Export...</li>
-                </ul>
-              </div>
+              <Teleport to="body">
+                <div {...api.positionerProps}>
+                  <ul {...api.contentProps}>
+                    <li {...api.getItemProps({ id: "edit" })}>Edit</li>
+                    <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
+                    <li {...api.getItemProps({ id: "delete" })}>Delete</li>
+                    <li {...api.getItemProps({ id: "export" })}>Export...</li>
+                  </ul>
+                </div>
+              </Teleport>
             </div>
           </main>
 

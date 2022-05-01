@@ -62,6 +62,7 @@ export default function Page() {
           <button data-testid="button-after">Button :after</button>
         </div>
       </main>
+
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>

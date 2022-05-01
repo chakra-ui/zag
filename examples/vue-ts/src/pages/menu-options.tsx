@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
+import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { menuStyle } from "../../../../shared/style"
 import { menuOptionData as data } from "../../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -33,27 +33,29 @@ export default defineComponent({
               <button {...api.triggerProps}>
                 Actions <span aria-hidden>▾</span>
               </button>
-              <div {...api.positionerProps}>
-                <div {...api.contentProps}>
-                  {data.order.map((item) => {
-                    const opts = { type: "radio", name: "order", value: item.id } as const
-                    return (
-                      <div key={item.id} {...api.getOptionItemProps(opts)}>
-                        {api.isOptionChecked(opts) ? "✅" : null} {item.label}
-                      </div>
-                    )
-                  })}
-                  <hr />
-                  {data.type.map((item) => {
-                    const opts = { type: "checkbox", name: "type", value: item.id } as const
-                    return (
-                      <div key={item.id} {...api.getOptionItemProps(opts)}>
-                        {api.isOptionChecked(opts) ? "✅" : null} {item.label}
-                      </div>
-                    )
-                  })}
+              <Teleport to="body">
+                <div {...api.positionerProps}>
+                  <div {...api.contentProps}>
+                    {data.order.map((item) => {
+                      const opts = { type: "radio", name: "order", value: item.id } as const
+                      return (
+                        <div key={item.id} {...api.getOptionItemProps(opts)}>
+                          {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                        </div>
+                      )
+                    })}
+                    <hr />
+                    {data.type.map((item) => {
+                      const opts = { type: "checkbox", name: "type", value: item.id } as const
+                      return (
+                        <div key={item.id} {...api.getOptionItemProps(opts)}>
+                          {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
+              </Teleport>
             </div>
           </main>
 

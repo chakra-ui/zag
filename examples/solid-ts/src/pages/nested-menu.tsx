@@ -48,6 +48,7 @@ export default function Page() {
         <button data-testid="trigger" {...root().triggerProps}>
           Click me
         </button>
+
         <Portal>
           <div {...root().positionerProps}>
             <ul ref={rootRef} data-testid="menu" {...root().contentProps}>
@@ -66,6 +67,7 @@ export default function Page() {
             </ul>
           </div>
         </Portal>
+
         <Portal>
           <div {...sub().positionerProps}>
             <ul ref={subRef} data-testid="more-tools-submenu" {...sub().contentProps}>
@@ -84,6 +86,7 @@ export default function Page() {
             </ul>
           </div>
         </Portal>
+
         <Portal>
           <div {...sub2().positionerProps}>
             <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2().contentProps}>

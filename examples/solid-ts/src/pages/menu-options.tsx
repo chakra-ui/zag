@@ -6,6 +6,7 @@ import { menuOptionData as data } from "../../../../shared/data"
 import { StateVisualizer } from "../components/state-visualizer"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Toolbar } from "../components/toolbar"
+import { Portal } from "solid-js/web"
 
 injectGlobal(menuStyle)
 
@@ -26,31 +27,34 @@ export default function Page() {
           <button ref={ref} {...api().triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>
-          <div {...api().positionerProps}>
-            <div {...api().contentProps}>
-              <For each={data.order}>
-                {(item) => {
-                  const opts = { type: "radio", name: "order", value: item.id } as const
-                  return (
-                    <div {...api().getOptionItemProps(opts)}>
-                      {api().isOptionChecked(opts) ? "✅" : null} {item.label}
-                    </div>
-                  )
-                }}
-              </For>
-              <hr />
-              <For each={data.type}>
-                {(item) => {
-                  const opts = { type: "checkbox", name: "type", value: item.id } as const
-                  return (
-                    <div {...api().getOptionItemProps(opts)}>
-                      {api().isOptionChecked(opts) ? "✅" : null} {item.label}
-                    </div>
-                  )
-                }}
-              </For>
+
+          <Portal>
+            <div {...api().positionerProps}>
+              <div {...api().contentProps}>
+                <For each={data.order}>
+                  {(item) => {
+                    const opts = { type: "radio", name: "order", value: item.id } as const
+                    return (
+                      <div {...api().getOptionItemProps(opts)}>
+                        {api().isOptionChecked(opts) ? "✅" : null} {item.label}
+                      </div>
+                    )
+                  }}
+                </For>
+                <hr />
+                <For each={data.type}>
+                  {(item) => {
+                    const opts = { type: "checkbox", name: "type", value: item.id } as const
+                    return (
+                      <div {...api().getOptionItemProps(opts)}>
+                        {api().isOptionChecked(opts) ? "✅" : null} {item.label}
+                      </div>
+                    )
+                  }}
+                </For>
+              </div>
             </div>
-          </div>
+          </Portal>
         </div>
       </main>
 

@@ -45,10 +45,12 @@ export default function Page() {
   return (
     <>
       <Global styles={menuStyle} />
+
       <main>
         <button data-testid="trigger" {...root.triggerProps}>
           Click me
         </button>
+
         <Portal>
           <div {...root.positionerProps}>
             <ul data-testid="menu" ref={rootRef} {...root.contentProps}>
@@ -63,6 +65,7 @@ export default function Page() {
             </ul>
           </div>
         </Portal>
+
         <Portal>
           <div {...sub.positionerProps}>
             <ul ref={subRef} data-testid="more-tools-submenu" {...sub.contentProps}>
@@ -77,6 +80,7 @@ export default function Page() {
             </ul>
           </div>
         </Portal>
+
         <Portal>
           <div {...sub2.positionerProps}>
             <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.contentProps}>
@@ -89,6 +93,7 @@ export default function Page() {
           </div>
         </Portal>
       </main>
+
       <Toolbar controls={null} count={3}>
         <StateVisualizer state={state} label="Root Machine" />
         <StateVisualizer state={subState} label="Sub Machine" />
