@@ -8,6 +8,7 @@ import { pinInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { pinInputControls } from "../../../../shared/controls"
 import { useId } from "../hooks/use-id"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(pinInputStyle)
 
@@ -28,19 +29,18 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <controls.ui />
+          <main>
+            <div ref={ref} {...api.rootProps}>
+              <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
+              <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
+              <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+            </div>
+            <button data-testid="clear-button" onClick={api.clearValue}>
+              Clear
+            </button>
+          </main>
 
-          <div ref={ref} {...api.rootProps}>
-            <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
-            <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
-            <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
-          </div>
-
-          <button data-testid="clear-button" onClick={api.clearValue}>
-            Clear
-          </button>
-
-          <StateVisualizer state={state} />
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }

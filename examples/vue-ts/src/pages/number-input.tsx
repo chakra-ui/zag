@@ -7,6 +7,7 @@ import { computed, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { numberInputControls } from "../../../../shared/controls"
 import { useId } from "../hooks/use-id"
+import { Toolbar } from "../components/toolbar"
 
 export default defineComponent({
   name: "NumberInput",
@@ -26,26 +27,27 @@ export default defineComponent({
 
       return (
         <>
-          <controls.ui />
-          <div {...api.rootProps} ref={ref}>
-            <div
-              data-testid="scrubber"
-              {...mergeProps(api.scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
-            />
-            <label data-testid="label" {...api.labelProps}>
-              Enter number
-            </label>
-            <div>
-              <button data-testid="dec-button" {...api.decrementButtonProps}>
-                DEC
-              </button>
-              <input data-testid="input" {...api.inputProps} />
-              <button data-testid="inc-button" {...api.incrementButtonProps}>
-                INC
-              </button>
+          <main>
+            <div {...api.rootProps} ref={ref}>
+              <div
+                data-testid="scrubber"
+                {...mergeProps(api.scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
+              />
+              <label data-testid="label" {...api.labelProps}>
+                Enter number
+              </label>
+              <div>
+                <button data-testid="dec-button" {...api.decrementButtonProps}>
+                  DEC
+                </button>
+                <input data-testid="input" {...api.inputProps} />
+                <button data-testid="inc-button" {...api.incrementButtonProps}>
+                  INC
+                </button>
+              </div>
             </div>
-            <StateVisualizer state={state} />
-          </div>
+          </main>
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }

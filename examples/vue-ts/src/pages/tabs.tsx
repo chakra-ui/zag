@@ -9,6 +9,7 @@ import { tabsStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 import { useId } from "../hooks/use-id"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(tabsStyle)
 
@@ -28,30 +29,28 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <controls.ui />
-
-          <div ref={ref} {...api.rootProps}>
-            <div {...api.indicatorProps} />
-
-            <div {...api.triggerGroupProps}>
-              {tabsData.map((data) => (
-                <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
-                  {data.label}
-                </button>
-              ))}
+          <main>
+            <div ref={ref} {...api.rootProps}>
+              <div {...api.indicatorProps} />
+              <div {...api.triggerGroupProps}>
+                {tabsData.map((data) => (
+                  <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
+                    {data.label}
+                  </button>
+                ))}
+              </div>
+              <div {...api.contentGroupProps}>
+                {tabsData.map((data) => (
+                  <div {...api.getContentProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
+                    <p>{data.content}</p>
+                    {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
+                  </div>
+                ))}
+              </div>
             </div>
+          </main>
 
-            <div {...api.contentGroupProps}>
-              {tabsData.map((data) => (
-                <div {...api.getContentProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
-                  <p>{data.content}</p>
-                  {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <StateVisualizer state={state} />
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }

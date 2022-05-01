@@ -33,7 +33,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
       <pre dir="ltr">
         <details open>
           <summary> {label || "Visualizer"} </summary>
-          <div data-viz-content dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+          <div dangerouslySetInnerHTML={{ __html: highlightedCode }} />
         </details>
       </pre>
     </div>

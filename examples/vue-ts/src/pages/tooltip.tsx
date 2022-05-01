@@ -3,53 +3,67 @@ import * as Tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { computed, defineComponent, h, PropType, Fragment } from "vue"
 import { tooltipStyles } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(tooltipStyles)
 
-const TooltipComponent = defineComponent({
+export default defineComponent({
   name: "Tooltip",
-  props: {
-    id: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const [state, send] = useMachine(Tooltip.machine({ id: props.id }))
-    const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
+  setup() {
+    const [state, send] = useMachine(Tooltip.machine({ id: "tip-1" }))
+    const ref = useSetup<HTMLButtonElement>({ send, id: "tip-1" })
     const apiRef = computed(() => Tooltip.connect<PropTypes>(state.value, send, normalizeProps))
+
+    const [state2, send2] = useMachine(Tooltip.machine({ id: "tip-2" }))
+    const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: "tip-2" })
+    const apiRef2 = computed(() => Tooltip.connect<PropTypes>(state2.value, send2, normalizeProps))
 
     return () => {
       const api = apiRef.value
+      const api2 = apiRef2.value
       return (
         <>
-          <div>
-            <button ref={ref} {...api.triggerProps}>
-              Over me
-            </button>
-            {api.isOpen && (
-              <div {...api.positionerProps}>
-                <div data-testid={`${props.id}-tooltip`} {...api.contentProps}>
-                  Tooltip
+          <main style={{ gap: "12px", flexDirection: "row" }}>
+            <div>
+              <button ref={ref} {...api.triggerProps}>
+                Over me
+              </button>
+              {api.isOpen && (
+                <div {...api.positionerProps}>
+                  <div data-testid="tip-1-tooltip" {...api.contentProps}>
+                    Tooltip
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+
+            <div>
+              <button ref={ref2} {...api2.triggerProps}>
+                Over me
+              </button>
+              {api2.isOpen && (
+                <div {...api2.positionerProps}>
+                  <div data-testid="tip-2-tooltip" {...api2.contentProps}>
+                    Tooltip 2
+                  </div>
+                </div>
+              )}
+            </div>
+          </main>
+
+          <Toolbar
+            controls={null}
+            count={2}
+            visualizer={
+              <>
+                <StateVisualizer state={state} />
+                <StateVisualizer state={state2} />
+              </>
+            }
+          />
         </>
       )
     }
   },
-})
-
-export default defineComponent(() => {
-  return () => (
-    <>
-      <div style={{ display: "flex" }}>
-        <TooltipComponent id="tip-1" />
-        <div style={{ marginLeft: "20px" }}>
-          <TooltipComponent id="tip-2" />
-        </div>
-      </div>
-    </>
-  )
 })

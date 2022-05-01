@@ -6,6 +6,7 @@ import { comboboxControls } from "../../../../shared/controls"
 import { comboboxData } from "../../../../shared/data"
 import { comboboxStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 import { useId } from "../hooks/use-id"
 
@@ -38,9 +39,7 @@ export default defineComponent({
 
       return (
         <>
-          <controls.ui />
-
-          <div>
+          <main>
             <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
 
             <br />
@@ -68,9 +67,9 @@ export default defineComponent({
                 </ul>
               )}
             </div>
-          </div>
+          </main>
 
-          <StateVisualizer state={state} />
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }

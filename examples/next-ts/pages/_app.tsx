@@ -4,6 +4,7 @@ import Link from "next/link"
 import { injectGlobal } from "@emotion/css"
 import "../../../shared/reset"
 import { navStyle, pageStyle } from "../../../shared/style"
+import { dataAttr } from "@zag-js/dom-utils"
 
 injectGlobal`
   body {
@@ -23,7 +24,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
           const active = router.pathname === `/${navItem.path}`
           return (
             <Link href={navItem.path} key={navItem.label} passHref>
-              <a data-active={active}>{navItem.label}</a>
+              <a data-active={dataAttr(active)}>{navItem.label}</a>
             </Link>
           )
         })}

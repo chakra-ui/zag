@@ -9,6 +9,7 @@ import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 import { useId } from "../hooks/use-id"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(sliderStyle)
 
@@ -34,37 +35,36 @@ export default defineComponent({
 
       return (
         <>
-          <controls.ui />
-
-          <form
-            // ensure we can read the value within forms
-            onInput={(e) => {
-              const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
-              console.log(formData)
-            }}
-          >
-            <div ref={ref} {...api.rootProps}>
-              <div>
-                <label {...api.labelProps}>Quantity:</label>
-                <output {...api.outputProps}>{api.values.join(" - ")}</output>
-              </div>
-
-              <div class="control-area">
-                <div {...api.controlProps}>
-                  <div {...api.trackProps}>
-                    <div {...api.rangeProps} />
-                  </div>
-                  {api.values.map((_, index) => (
-                    <div key={index} {...api.getThumbProps(index)}>
-                      <input {...api.getInputProps(index)} />
+          <main>
+            <form
+              // ensure we can read the value within forms
+              onInput={(e) => {
+                const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+                console.log(formData)
+              }}
+            >
+              <div ref={ref} {...api.rootProps}>
+                <div>
+                  <label {...api.labelProps}>Quantity:</label>
+                  <output {...api.outputProps}>{api.values.join(" - ")}</output>
+                </div>
+                <div class="control-area">
+                  <div {...api.controlProps}>
+                    <div {...api.trackProps}>
+                      <div {...api.rangeProps} />
                     </div>
-                  ))}
+                    {api.values.map((_, index) => (
+                      <div key={index} {...api.getThumbProps(index)}>
+                        <input {...api.getInputProps(index)} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </main>
 
-          <StateVisualizer state={state} />
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }
