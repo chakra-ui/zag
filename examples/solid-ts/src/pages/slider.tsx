@@ -6,6 +6,7 @@ import { createMemo, createUniqueId } from "solid-js"
 import { sliderControls } from "../../../../shared/controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(sliderStyle)
@@ -23,43 +24,42 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-      <form
-        // ensure we can read the value within forms
-        onInput={(e) => {
-          const formData = serialize(e.currentTarget, { hash: true })
-          console.log(formData)
-        }}
-      >
-        <div ref={ref} {...api().rootProps}>
-          <div>
-            <label data-testid="label" {...api().labelProps}>
-              Slider Label
-            </label>
-            <output data-testid="output" {...api().outputProps}>
-              {api().value}
-            </output>
-          </div>
-
-          <div className="control-area">
-            <div {...api().controlProps}>
-              <div data-testid="track" {...api().trackProps}>
-                <div {...api().rangeProps} />
+      <main>
+        <form
+          // ensure we can read the value within forms
+          onInput={(e) => {
+            const formData = serialize(e.currentTarget, { hash: true })
+            console.log(formData)
+          }}
+        >
+          <div ref={ref} {...api().rootProps}>
+            <div>
+              <label data-testid="label" {...api().labelProps}>
+                Slider Label
+              </label>
+              <output data-testid="output" {...api().outputProps}>
+                {api().value}
+              </output>
+            </div>
+            <div className="control-area">
+              <div {...api().controlProps}>
+                <div data-testid="track" {...api().trackProps}>
+                  <div {...api().rangeProps} />
+                </div>
+                <div data-testid="thumb" {...api().thumbProps}>
+                  <input {...api().inputProps} />
+                </div>
               </div>
-              <div data-testid="thumb" {...api().thumbProps}>
-                <input {...api().inputProps} />
+              <div {...api().markerGroupProps}>
+                <span {...api().getMarkerProps({ value: 10 })}>*</span>
+                <span {...api().getMarkerProps({ value: 30 })}>*</span>
+                <span {...api().getMarkerProps({ value: 90 })}>*</span>
               </div>
             </div>
-
-            <div {...api().markerGroupProps}>
-              <span {...api().getMarkerProps({ value: 10 })}>*</span>
-              <span {...api().getMarkerProps({ value: 30 })}>*</span>
-              <span {...api().getMarkerProps({ value: 90 })}>*</span>
-            </div>
           </div>
-        </div>
-      </form>
-      <StateVisualizer state={state} />
+        </form>
+      </main>
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

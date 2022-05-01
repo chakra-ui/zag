@@ -5,6 +5,7 @@ import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { toastControls } from "../../../../shared/controls"
 import { toastStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(toastStyle)
@@ -50,52 +51,52 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
+      <main>
+        <div ref={ref} style={{ display: "flex", gap: "16px" }}>
+          <button
+            onClick={() => {
+              const toastId = api().create({
+                title: "Welcome",
+                description: "Welcome",
+                type: "info",
+              })
+              setId(toastId)
+            }}
+          >
+            Notify (Info)
+          </button>
+          <button
+            onClick={() => {
+              api().create({
+                title: "Ooops! Something was wrong",
+                type: "error",
+              })
+            }}
+          >
+            Notify (Error)
+          </button>
+          <button
+            onClick={() => {
+              if (!id()) return
+              api().update(id(), {
+                title: "Testing",
+                type: "loading",
+              })
+            }}
+          >
+            Update Child (info)
+          </button>
+          <button onClick={() => api().dismiss()}>Close all</button>
+          <button onClick={() => api().pause()}>Pause all</button>
+          <button onClick={() => api().resume()}>Resume all</button>
+        </div>
 
-      <div ref={ref} style={{ display: "flex", gap: "16px" }}>
-        <button
-          onClick={() => {
-            const toastId = api().create({
-              title: "Welcome",
-              description: "Welcome",
-              type: "info",
-            })
-            setId(toastId)
-          }}
-        >
-          Notify (Info)
-        </button>
-        <button
-          onClick={() => {
-            api().create({
-              title: "Ooops! Something was wrong",
-              type: "error",
-            })
-          }}
-        >
-          Notify (Error)
-        </button>
-        <button
-          onClick={() => {
-            if (!id()) return
-            api().update(id(), {
-              title: "Testing",
-              type: "loading",
-            })
-          }}
-        >
-          Update Child (info)
-        </button>
-        <button onClick={() => api().dismiss()}>Close all</button>
-        <button onClick={() => api().pause()}>Pause all</button>
-        <button onClick={() => api().resume()}>Resume all</button>
-      </div>
+        <div {...api().getGroupProps({ placement: "bottom" })}>
+          <For each={api().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
+        </div>
+      </main>
 
-      <div {...api().getGroupProps({ placement: "bottom" })}>
-        <For each={api().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
-      </div>
-
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

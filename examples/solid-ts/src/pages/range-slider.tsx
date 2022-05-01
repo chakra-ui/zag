@@ -6,6 +6,7 @@ import { createMemo, For, createUniqueId } from "solid-js"
 import { rangeSliderControls } from "../../../../shared/controls"
 import { sliderStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(sliderStyle)
@@ -27,39 +28,38 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-
-      <form
-        // ensure we can read the value within forms
-        onInput={(e) => {
-          const formData = serialize(e.currentTarget, { hash: true })
-          console.log(formData)
-        }}
-      >
-        <div ref={ref} {...api().rootProps}>
-          <div>
-            <label {...api().labelProps}>Quantity:</label>
-            <output {...api().outputProps}>{api().values.join(" - ")}</output>
-          </div>
-
-          <div className="control-area">
-            <div {...api().controlProps}>
-              <div {...api().trackProps}>
-                <div {...api().rangeProps} />
+      <main>
+        <form
+          // ensure we can read the value within forms
+          onInput={(e) => {
+            const formData = serialize(e.currentTarget, { hash: true })
+            console.log(formData)
+          }}
+        >
+          <div ref={ref} {...api().rootProps}>
+            <div>
+              <label {...api().labelProps}>Quantity:</label>
+              <output {...api().outputProps}>{api().values.join(" - ")}</output>
+            </div>
+            <div className="control-area">
+              <div {...api().controlProps}>
+                <div {...api().trackProps}>
+                  <div {...api().rangeProps} />
+                </div>
+                <For each={api().values}>
+                  {(_, index) => (
+                    <div className="slider__thumb" {...api().getThumbProps(index())}>
+                      <input {...api().getInputProps(index())} />
+                    </div>
+                  )}
+                </For>
               </div>
-              <For each={api().values}>
-                {(_, index) => (
-                  <div className="slider__thumb" {...api().getThumbProps(index())}>
-                    <input {...api().getInputProps(index())} />
-                  </div>
-                )}
-              </For>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </main>
 
-      <StateVisualizer state={state} />
+      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

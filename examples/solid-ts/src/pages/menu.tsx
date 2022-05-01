@@ -4,6 +4,7 @@ import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { menuStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(menuStyle)
 
@@ -16,21 +17,23 @@ export default function Page() {
 
   return (
     <>
-      <div>
-        <button ref={ref} {...api().triggerProps}>
-          Actions <span aria-hidden>▾</span>
-        </button>
-        <div {...api().positionerProps}>
-          <ul {...api().contentProps}>
-            <li {...api().getItemProps({ id: "edit" })}>Edit</li>
-            <li {...api().getItemProps({ id: "duplicate" })}>Duplicate</li>
-            <li {...api().getItemProps({ id: "delete" })}>Delete</li>
-            <li {...api().getItemProps({ id: "export" })}>Export...</li>
-          </ul>
+      <main>
+        <div>
+          <button ref={ref} {...api().triggerProps}>
+            Actions <span aria-hidden>▾</span>
+          </button>
+          <div {...api().positionerProps}>
+            <ul {...api().contentProps}>
+              <li {...api().getItemProps({ id: "edit" })}>Edit</li>
+              <li {...api().getItemProps({ id: "duplicate" })}>Duplicate</li>
+              <li {...api().getItemProps({ id: "delete" })}>Delete</li>
+              <li {...api().getItemProps({ id: "export" })}>Export...</li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </main>
 
-      <StateVisualizer state={state} />
+      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

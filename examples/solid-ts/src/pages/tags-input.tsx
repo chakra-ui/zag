@@ -5,6 +5,7 @@ import { createMemo, createUniqueId, For } from "solid-js"
 import { tagsInputControls } from "../../../../shared/controls"
 import { tagsInputStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 injectGlobal(tagsInputStyle)
@@ -29,36 +30,36 @@ export default function Page() {
 
   return (
     <>
-      <controls.ui />
-
-      <div ref={ref} {...api().rootProps}>
-        <label {...api().labelProps}>Enter frameworks:</label>
-        <div {...api().controlProps}>
-          <For each={api().value}>
-            {(value, index) => (
-              <span>
-                <div data-testid={`${toDashCase(value)}-tag`} {...api().getTagProps({ index: index(), value })}>
-                  <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
-                  <button
-                    data-testid={`${toDashCase(value)}-close-button`}
-                    {...api().getTagDeleteButtonProps({ index: index(), value })}
-                  >
-                    &#x2715;
-                  </button>
-                </div>
-                <input
-                  data-testid={`${toDashCase(value)}-input`}
-                  {...api().getTagInputProps({ index: index(), value })}
-                />
-              </span>
-            )}
-          </For>
-          <input data-testid="input" placeholder="add tag" {...api().inputProps} />
+      <main>
+        <div ref={ref} {...api().rootProps}>
+          <label {...api().labelProps}>Enter frameworks:</label>
+          <div {...api().controlProps}>
+            <For each={api().value}>
+              {(value, index) => (
+                <span>
+                  <div data-testid={`${toDashCase(value)}-tag`} {...api().getTagProps({ index: index(), value })}>
+                    <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                    <button
+                      data-testid={`${toDashCase(value)}-close-button`}
+                      {...api().getTagDeleteButtonProps({ index: index(), value })}
+                    >
+                      &#x2715;
+                    </button>
+                  </div>
+                  <input
+                    data-testid={`${toDashCase(value)}-input`}
+                    {...api().getTagInputProps({ index: index(), value })}
+                  />
+                </span>
+              )}
+            </For>
+            <input data-testid="input" placeholder="add tag" {...api().inputProps} />
+          </div>
+          <input {...api().hiddenInputProps} />
         </div>
-        <input {...api().hiddenInputProps} />
-      </div>
+      </main>
 
-      <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

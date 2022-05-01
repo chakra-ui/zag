@@ -3,36 +3,62 @@ import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { createMemo } from "solid-js"
 import { tooltipStyles } from "../../../../shared/style"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(tooltipStyles)
 
-function TooltipComponent(props: { id?: string }) {
+export default function Page() {
   const [state, send] = useMachine(tooltip.machine)
-  const ref = useSetup<HTMLButtonElement>({ send, id: props.id })
+  const ref = useSetup<HTMLButtonElement>({ send, id: "tip-1" })
 
   const api = createMemo(() => tooltip.connect<PropTypes>(state, send, normalizeProps))
 
-  return (
-    <div>
-      <button data-testid={`${props.id}-trigger`} ref={ref} {...api().triggerProps}>
-        Over me
-      </button>
-      {api().isOpen && (
-        <div {...api().positionerProps}>
-          <div data-testid={`${props.id}-tooltip`} {...api().contentProps}>
-            Tooltip
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+  const [state2, send2] = useMachine(tooltip.machine)
+  const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: "tip-1" })
 
-export default function Page() {
+  const api2 = createMemo(() => tooltip.connect<PropTypes>(state2, send2, normalizeProps))
+
   return (
-    <div style={{ display: "flex", gap: "20px", "min-height": "200vh" }}>
-      <TooltipComponent id="tip-1" />
-      <TooltipComponent id="tip-2" />
-    </div>
+    <>
+      <main style={{ gap: "12px", flexDirection: "row" }}>
+        <div>
+          <button data-testid="tip-1-trigger" ref={ref} {...api().triggerProps}>
+            Over me
+          </button>
+          {api().isOpen && (
+            <div {...api().positionerProps}>
+              <div data-testid="tip-1-tooltip" {...api().contentProps}>
+                Tooltip
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <button data-testid="tip-2-trigger" ref={ref2} {...api2().triggerProps}>
+            Over me
+          </button>
+          {api2().isOpen && (
+            <div {...api2().positionerProps}>
+              <div data-testid="tip-2-tooltip" {...api2().contentProps}>
+                Tooltip 2
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Toolbar
+        controls={null}
+        count={2}
+        visualizer={
+          <>
+            <StateVisualizer state={state} />
+            <StateVisualizer state={state2} />
+          </>
+        }
+      />
+    </>
   )
 }

@@ -5,6 +5,7 @@ import { createMemo, createUniqueId } from "solid-js"
 import { useControls } from "../hooks/use-controls"
 import { StateVisualizer } from "../components/state-visualizer"
 import { numberInputControls } from "../../../../shared/controls"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const controls = useControls(numberInputControls)
@@ -18,28 +19,29 @@ export default function Page() {
   const number = createMemo(() => numberInput.connect<PropTypes>(state, send, normalizeProps))
 
   return (
-    <div>
-      <controls.ui />
-      <div {...number().rootProps}>
-        <div
-          data-testid="scrubber"
-          {...mergeProps(number().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
-        />
-        <label data-testid="label" {...number().labelProps}>
-          Enter number:
-        </label>
-        <div>
-          <button data-testid="dec-button" {...number().decrementButtonProps}>
-            DEC
-          </button>
-          <input data-testid="input" ref={ref} {...number().inputProps} />
-          <button data-testid="inc-button" {...number().incrementButtonProps}>
-            INC
-          </button>
+    <>
+      <main>
+        <div {...number().rootProps}>
+          <div
+            data-testid="scrubber"
+            {...mergeProps(number().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
+          />
+          <label data-testid="label" {...number().labelProps}>
+            Enter number:
+          </label>
+          <div>
+            <button data-testid="dec-button" {...number().decrementButtonProps}>
+              DEC
+            </button>
+            <input data-testid="input" ref={ref} {...number().inputProps} />
+            <button data-testid="inc-button" {...number().incrementButtonProps}>
+              INC
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
 
-      <StateVisualizer state={state} />
-    </div>
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
+    </>
   )
 }
