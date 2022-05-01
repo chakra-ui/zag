@@ -160,7 +160,7 @@ export class Machine<
   }
 
   private detachComputed = () => {
-    underive(this.state.context, { delete: true })
+    underive(this.state.context)
   }
 
   // Stops the interpreted machine
