@@ -11,18 +11,16 @@ injectGlobal(tooltipStyles)
 export default function Page() {
   const [state, send] = useMachine(tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: "tip-1" })
-
   const api = createMemo(() => tooltip.connect<PropTypes>(state, send, normalizeProps))
 
   const [state2, send2] = useMachine(tooltip.machine)
-  const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: "tip-1" })
-
+  const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: "tip-2" })
   const api2 = createMemo(() => tooltip.connect<PropTypes>(state2, send2, normalizeProps))
 
   return (
     <>
       <main style={{ gap: "12px", flexDirection: "row" }}>
-        <div>
+        <div className="root">
           <button data-testid="tip-1-trigger" ref={ref} {...api().triggerProps}>
             Over me
           </button>
@@ -33,9 +31,7 @@ export default function Page() {
               </div>
             </div>
           )}
-        </div>
 
-        <div>
           <button data-testid="tip-2-trigger" ref={ref2} {...api2().triggerProps}>
             Over me
           </button>

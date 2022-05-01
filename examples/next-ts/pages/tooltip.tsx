@@ -17,8 +17,8 @@ export default function Page() {
   return (
     <>
       <Global styles={tooltipStyles} />
-      <main style={{ gap: "12px", flexDirection: "row" }}>
-        <div>
+      <main>
+        <div className="root">
           <button data-testid={`${id}-trigger`} ref={ref} {...api.triggerProps}>
             Over me
           </button>
@@ -29,8 +29,7 @@ export default function Page() {
               </div>
             </div>
           )}
-        </div>
-        <div>
+
           <button data-testid={`${id2}-trigger`} ref={ref2} {...api2.triggerProps}>
             Over me
           </button>

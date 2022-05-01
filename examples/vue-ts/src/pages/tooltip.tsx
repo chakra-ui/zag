@@ -25,7 +25,7 @@ export default defineComponent({
       return (
         <>
           <main style={{ gap: "12px", flexDirection: "row" }}>
-            <div>
+            <div class="root">
               <button ref={ref} {...api.triggerProps}>
                 Over me
               </button>
@@ -36,9 +36,7 @@ export default defineComponent({
                   </div>
                 </div>
               )}
-            </div>
 
-            <div>
               <button ref={ref2} {...api2.triggerProps}>
                 Over me
               </button>
