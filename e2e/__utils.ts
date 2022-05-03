@@ -66,4 +66,4 @@ export const nativeInput = (node: HTMLInputElement | HTMLTextAreaElement, value:
   node.dispatchEvent(event)
 }
 
-export const blur = (page: Page) => page.click("body", { force: true })
+export const clickOutside = (page: Page) => page.click("body", { force: true })

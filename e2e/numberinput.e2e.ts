@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, controls, testid, blur } from "./__utils"
+import { a11y, controls, testid, clickOutside } from "./__utils"
 
 const input = testid("input")
 const inc = testid("inc-button")
@@ -31,7 +31,7 @@ test.describe("number input", () => {
       await page.type(input, "200")
       await expect(page.locator(input)).toHaveAttribute("aria-invalid", "true")
 
-      await blur(page)
+      await clickOutside(page)
       await expect(page.locator(input)).toHaveValue("100")
     })
   })
@@ -86,11 +86,11 @@ test.describe("number input", () => {
 
     test("should clear input if invalid `e` is typed", async ({ page }) => {
       await page.type(input, "e")
-      await blur(page)
+      await clickOutside(page)
       await expect(page.locator(input)).toHaveValue("")
 
       await page.type(input, "1e20")
-      await blur(page)
+      await clickOutside(page)
       await expect(page.locator(input)).toHaveValue("100")
     })
   })
