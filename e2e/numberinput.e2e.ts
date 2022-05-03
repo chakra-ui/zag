@@ -117,7 +117,7 @@ test.describe("number input", () => {
       await page.waitForTimeout(tick(10))
       await dec_btn.dispatchEvent("pointerup")
 
-      await expect(page.locator(input)).toHaveValue("10")
+      await expect(page.locator(input)).toHaveValue("9")
     })
   })
 
@@ -130,9 +130,7 @@ test.describe("number input", () => {
 
       await scrubber_btn.dispatchEvent("mousedown")
 
-      for (let i = 0; i <= 10; i++) {
-        await page.mouse.move(midX + i, midY)
-      }
+      await page.mouse.move(midX + 10, midY, { steps: 11 })
 
       await expect(page.locator(input)).toHaveValue("10")
       await page.mouse.up()
