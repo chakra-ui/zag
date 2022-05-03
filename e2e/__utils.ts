@@ -17,7 +17,7 @@ export const controls = (page: Page) => {
       await el.type(value)
       await page.keyboard.press("Enter")
     },
-    bool: async (id: string, value: boolean) => {
+    bool: async (id: string, value = false) => {
       const el = page.locator(testid(id))
       if (value) await el.uncheck()
       else await el.check()
