@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { addPointerEvent, contains, isFocusable, nextTick, raf, trackPointerDown } from "@zag-js/dom-utils"
+import { addPointerEvent, contains, isFocusable, raf, trackPointerDown } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
@@ -129,13 +129,17 @@ export function machine(ctx: UserDefinedContext = {}) {
           after: {
             SUBMENU_CLOSE_DELAY: {
               target: "closed",
-              actions: ["resumePointer", "focusParentMenu", "restoreParentFocus"],
+              actions: ["focusParentMenu", "restoreParentFocus"],
             },
           },
           on: {
             MENU_POINTERENTER: {
               target: "open",
               actions: "clearIntentPolygon",
+            },
+            POINTER_MOVED_AWAY_FROM_SUBMENU: {
+              target: "closed",
+              actions: "focusParentMenu",
             },
           },
         },
@@ -357,7 +361,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           return addPointerEvent(doc, "pointermove", (e) => {
             const isMovingToSubmenu = isWithinPolygon(ctx, { point: getEventPoint(e) })
             if (!isMovingToSubmenu) {
-              send("CLOSE")
+              send("POINTER_MOVED_AWAY_FROM_SUBMENU")
               // NOTE: we're mutating parent context here. sending events to parent doesn't work
               ctx.parent!.state.context.suspendPointer = false
             }
@@ -373,12 +377,18 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.anchorPoint = null
         },
         applyAnchorPoint(ctx) {
-          const pt = ctx.anchorPoint
-          if (!pt) return
+          const point = ctx.anchorPoint
+          if (!point) return
+
           const el = dom.getPositionerEl(ctx)
           if (!el) return
+
           raf(() => {
-            Object.assign(el.style, { left: `${pt.x}px`, top: `${pt.y}px`, position: "absolute" })
+            Object.assign(el.style, {
+              left: `${point.x}px`,
+              top: `${point.y}px`,
+              position: "absolute",
+            })
             ctx.isPlacementComplete = true
           })
         },
@@ -411,10 +421,12 @@ export function machine(ctx: UserDefinedContext = {}) {
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
           if (!menu) return
-          let menuRect = getElementRect(menu)
+
+          let rect = getElementRect(menu)
           const BUFFER = 20
-          menuRect = inset(menuRect, { dx: -BUFFER, dy: -BUFFER })
-          const { top, right, left, bottom } = menuRect.corners
+
+          rect = inset(rect, { dx: -BUFFER, dy: -BUFFER })
+          const { top, right, left, bottom } = rect.corners
 
           let polygon = [evt.point, top, right, bottom, left]
           // NOTE: this might need to be changed to the current placement, not just rtl
@@ -447,7 +459,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           const menu = dom.getContentEl(ctx)
           const doc = dom.getDoc(ctx)
           if (menu && doc.activeElement !== menu) {
-            nextTick(() => menu.focus())
+            raf(() => menu.focus())
           }
         },
         focusFirstItem(ctx) {
@@ -481,7 +493,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           // menu was not manually positioned (e.g. context menu)
           if (ctx.parent || ctx.anchorPoint) return
           const trigger = dom.getTriggerEl(ctx)
-          nextTick(() => trigger?.focus())
+          raf(() => trigger?.focus())
         },
         focusMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
@@ -512,8 +524,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           child?.send("OPEN")
         },
         focusParentMenu(ctx) {
-          const { parent } = ctx
-          parent?.send("FOCUS_MENU")
+          ctx.parent?.send("FOCUS_MENU")
         },
         setHoveredItem(ctx, evt) {
           ctx.hoverId = evt.id
