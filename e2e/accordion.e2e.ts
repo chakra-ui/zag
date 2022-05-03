@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test"
-import { testid, a11y, setup } from "./test-utils"
+import { testid, a11y } from "./__utils"
 
 const item = (id: string) => ({
-  trigger: setup(`${id}:trigger`),
-  content: setup(`${id}:content`),
+  trigger: testid(`${id}:trigger`),
+  content: testid(`${id}:content`),
 })
 
 const home = item("home")
@@ -21,48 +21,48 @@ test.describe.parallel("accordion", () => {
 
   test.describe("single / keyboard", () => {
     test("on `ArrowDown`: should move focus to the next trigger", async ({ page }) => {
-      await page.focus(home.trigger.id)
+      await page.focus(home.trigger)
       await page.keyboard.press("ArrowDown")
-      await expect(about.trigger.el(page)).toBeFocused()
+      await expect(page.locator(about.trigger)).toBeFocused()
     })
 
     test("on `ArrowUp`: should move focus to the previous trigger", async ({ page }) => {
-      await page.focus(home.trigger.id)
+      await page.focus(home.trigger)
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowUp")
-      await expect(home.trigger.el(page)).toBeFocused()
+      await expect(page.locator(home.trigger)).toBeFocused()
     })
 
     test("on `Home`: should move focus to the first trigger", async ({ page }) => {
-      await page.focus(about.trigger.id)
+      await page.focus(about.trigger)
       await page.keyboard.press("Home")
-      await expect(home.trigger.el(page)).toBeFocused()
+      await expect(page.locator(home.trigger)).toBeFocused()
     })
 
     test("on `End`: should move focus to the last trigger", async ({ page }) => {
-      await page.focus(home.trigger.id)
+      await page.focus(home.trigger)
       await page.keyboard.press("End")
-      await expect(contact.trigger.el(page)).toBeFocused()
+      await expect(page.locator(contact.trigger)).toBeFocused()
     })
   })
 
   test.describe("single / pointer", () => {
     test("should show content", async ({ page }) => {
-      await page.click(home.trigger.id)
-      await expect(home.content.el(page)).toBeVisible()
+      await page.click(home.trigger)
+      await expect(page.locator(home.content)).toBeVisible()
     })
 
     test("then clicking the same trigger again: should not close the content", async ({ page }) => {
-      await page.click(home.trigger.id)
-      await page.click(home.trigger.id)
-      await expect(home.content.el(page)).toBeVisible()
+      await page.click(home.trigger)
+      await page.click(home.trigger)
+      await expect(page.locator(home.content)).toBeVisible()
     })
 
     test("then clicking another trigger: should close the previous content", async ({ page }) => {
-      await page.click(home.trigger.id)
-      await page.click(about.trigger.id)
-      await expect(about.content.el(page)).toBeVisible()
-      await expect(home.content.el(page)).not.toBeVisible()
+      await page.click(home.trigger)
+      await page.click(about.trigger)
+      await expect(page.locator(about.content)).toBeVisible()
+      await expect(page.locator(home.content)).not.toBeVisible()
     })
   })
 
@@ -72,14 +72,14 @@ test.describe.parallel("accordion", () => {
     })
 
     test("on `ArrowDown`: should move focus to the next trigger", async ({ page }) => {
-      await page.focus(home.trigger.id)
+      await page.focus(home.trigger)
       await page.keyboard.press("Enter")
 
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("Enter")
 
-      await expect(about.content.el(page)).toBeVisible()
-      await expect(home.content.el(page)).toBeVisible()
+      await expect(page.locator(about.content)).toBeVisible()
+      await expect(page.locator(home.content)).toBeVisible()
     })
   })
 
@@ -89,10 +89,10 @@ test.describe.parallel("accordion", () => {
     })
 
     test("then clicking another trigger: should close the previous content", async ({ page }) => {
-      await page.click(home.trigger.id)
-      await page.click(about.trigger.id)
-      await expect(about.content.el(page)).toBeVisible()
-      await expect(home.content.el(page)).toBeVisible()
+      await page.click(home.trigger)
+      await page.click(about.trigger)
+      await expect(page.locator(about.content)).toBeVisible()
+      await expect(page.locator(home.content)).toBeVisible()
     })
   })
 })

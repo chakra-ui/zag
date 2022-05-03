@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test"
-import { a11y, setup } from "./test-utils"
+import { a11y, testid } from "./__utils"
 
 const item = (id: string) => ({
-  tab: setup(`${id}-tab`),
-  panel: setup(`${id}-tab-panel`),
+  tab: testid(`${id}-tab`),
+  panel: testid(`${id}-tab-panel`),
 })
 
 const nils = item("nils")
@@ -21,62 +21,62 @@ test.describe("tabs", () => {
 
   test.describe("in automatic mode", () => {
     test("should select the correct tab on click", async ({ page }) => {
-      await page.click(nils.tab.id)
-      await expect(nils.panel.el(page)).toBeVisible()
+      await page.click(nils.tab)
+      await expect(page.locator(nils.panel)).toBeVisible()
 
-      await page.click(agnes.tab.id)
-      await expect(agnes.panel.el(page)).toBeVisible()
+      await page.click(agnes.tab)
+      await expect(page.locator(agnes.panel)).toBeVisible()
 
-      await page.click(joke.tab.id)
-      await expect(joke.panel.el(page)).toBeVisible()
+      await page.click(joke.tab)
+      await expect(page.locator(joke.panel)).toBeVisible()
     })
 
     test("on `ArrowRight`: should select & focus the next tab", async ({ page }) => {
-      await page.focus(nils.tab.id)
+      await page.focus(nils.tab)
       await page.keyboard.press("ArrowRight")
 
-      await expect(agnes.tab.el(page)).toBeFocused()
-      await expect(agnes.panel.el(page)).toBeVisible()
+      await expect(page.locator(agnes.tab)).toBeFocused()
+      await expect(page.locator(agnes.panel)).toBeVisible()
 
       await page.keyboard.press("ArrowRight")
-      await expect(joke.tab.el(page)).toBeFocused()
-      await expect(joke.panel.el(page)).toBeVisible()
+      await expect(page.locator(joke.tab)).toBeFocused()
+      await expect(page.locator(joke.panel)).toBeVisible()
 
       await page.keyboard.press("ArrowRight")
-      await expect(nils.tab.el(page)).toBeFocused()
-      await expect(nils.panel.el(page)).toBeVisible()
+      await expect(page.locator(nils.tab)).toBeFocused()
+      await expect(page.locator(nils.panel)).toBeVisible()
     })
 
     test("on `ArrowLeft`: should select & focus the previous tab", async ({ page }) => {
-      await page.focus(nils.tab.id)
+      await page.focus(nils.tab)
       await page.keyboard.press("ArrowLeft")
 
-      await expect(joke.tab.el(page)).toBeFocused()
-      await expect(joke.panel.el(page)).toBeVisible()
+      await expect(page.locator(joke.tab)).toBeFocused()
+      await expect(page.locator(joke.panel)).toBeVisible()
 
       await page.keyboard.press("ArrowLeft")
-      await expect(agnes.tab.el(page)).toBeFocused()
-      await expect(agnes.panel.el(page)).toBeVisible()
+      await expect(page.locator(agnes.tab)).toBeFocused()
+      await expect(page.locator(agnes.panel)).toBeVisible()
 
       await page.keyboard.press("ArrowLeft")
-      await expect(nils.tab.el(page)).toBeFocused()
-      await expect(nils.panel.el(page)).toBeVisible()
+      await expect(page.locator(nils.tab)).toBeFocused()
+      await expect(page.locator(nils.panel)).toBeVisible()
     })
 
     test("on `Home` should select first tab", async ({ page }) => {
-      await page.click(joke.tab.id)
+      await page.click(joke.tab)
       await page.keyboard.press("Home")
 
-      await expect(nils.tab.el(page)).toBeFocused()
-      await expect(nils.panel.el(page)).toBeVisible()
+      await expect(page.locator(nils.tab)).toBeFocused()
+      await expect(page.locator(nils.panel)).toBeVisible()
     })
 
     test("on `End` should select last tab", async ({ page }) => {
-      await page.focus(nils.tab.id)
+      await page.focus(nils.tab)
       await page.keyboard.press("End")
 
-      await expect(joke.tab.el(page)).toBeFocused()
-      await expect(joke.panel.el(page)).toBeVisible()
+      await expect(page.locator(joke.tab)).toBeFocused()
+      await expect(page.locator(joke.panel)).toBeVisible()
     })
   })
 })

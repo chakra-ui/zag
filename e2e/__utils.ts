@@ -12,12 +12,9 @@ export const part = (part: string) => `[data-part=${esc(part)}]`
 
 const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
 
-export const setup = (id: string) => ({
-  id: testid(id),
-  el: (page: Page) => page.locator(testid(id)),
-})
+export const clickViz = (page: Page) => page.locator("text=Visualizer").first().click()
 
-export const tick = async (page: Page) => await page.waitForTimeout(16.66667)
+export const clickControls = (page: Page) => page.locator("text=Controls").first().click()
 
 export const paste = (node: HTMLElement, value: string) => {
   const clipboardData = new DataTransfer()
@@ -27,5 +24,23 @@ export const paste = (node: HTMLElement, value: string) => {
     bubbles: true,
     cancelable: true,
   })
+  node.dispatchEvent(event)
+}
+
+export const nativeInput = (node: HTMLInputElement | HTMLTextAreaElement, value: string) => {
+  const event = new InputEvent("input", {
+    bubbles: true,
+    inputType: "insertFromPaste",
+  })
+
+  const __input__setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set
+  const __textarea__setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set
+
+  let textValue = value
+  textValue = `${node.value}${value}`
+
+  const set = node.localName === "input" ? __input__setter : __textarea__setter
+  set?.call(node, textValue)
+
   node.dispatchEvent(event)
 }

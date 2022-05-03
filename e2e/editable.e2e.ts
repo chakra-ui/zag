@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test"
-import { a11y, setup } from "./test-utils"
+import { a11y, testid } from "./__utils"
 
-const input = setup("input")
-const preview = setup("preview")
-const save = setup("save-button")
-const edit = setup("edit-button")
+const input = testid("input")
+const preview = testid("preview")
+const save = testid("save-button")
+const edit = testid("edit-button")
 
 test.describe("editable", () => {
   test.beforeEach(async ({ page }) => {
@@ -17,57 +17,57 @@ test.describe("editable", () => {
 
   test.describe.parallel("when in edit mode", () => {
     test("input should be visible", async ({ page }) => {
-      await page.focus(preview.id)
+      await page.focus(preview)
 
-      await expect(input.el(page)).toBeVisible()
-      await expect(input.el(page)).toBeFocused()
+      await expect(page.locator(input)).toBeVisible()
+      await expect(page.locator(input)).toBeFocused()
     })
 
     test("user can type and commit input value", async ({ page }) => {
-      await page.focus(preview.id)
-      await page.type(input.id, "Hello World")
-      await input.el(page).press("Enter")
+      await page.focus(preview)
+      await page.type(input, "Hello World")
+      await page.locator(input).press("Enter")
 
-      await expect(input.el(page)).toBeHidden()
-      await expect(preview.el(page)).toBeVisible()
-      await expect(preview.el(page)).toHaveText("Hello World")
+      await expect(page.locator(input)).toBeHidden()
+      await expect(page.locator(preview)).toBeVisible()
+      await expect(page.locator(preview)).toHaveText("Hello World")
     })
 
     test("user can type and revert value", async ({ page }) => {
-      await page.focus(preview.id)
-      await page.type(input.id, "Hello")
+      await page.focus(preview)
+      await page.type(input, "Hello")
       await page.keyboard.press("Enter")
 
-      await page.focus(preview.id)
-      await page.type(input.id, "Naruto")
+      await page.focus(preview)
+      await page.type(input, "Naruto")
       await page.keyboard.press("Escape")
 
-      await expect(preview.el(page)).toHaveText("Hello")
-      await expect(input.el(page)).toBeHidden()
+      await expect(page.locator(preview)).toHaveText("Hello")
+      await expect(page.locator(input)).toBeHidden()
     })
 
     test("clicking submit: user can type and submit value", async ({ page }) => {
-      await page.focus(preview.id)
-      await page.type(input.id, "Naruto")
-      await page.click(save.id)
+      await page.focus(preview)
+      await page.type(input, "Naruto")
+      await page.click(save)
 
-      await expect(preview.el(page)).toHaveText("Naruto")
+      await expect(page.locator(preview)).toHaveText("Naruto")
     })
 
     test("blur the input: user can type and submit value", async ({ page }) => {
-      await page.focus(preview.id)
-      await page.type(input.id, "Naruto")
+      await page.focus(preview)
+      await page.type(input, "Naruto")
       await page.click("body", { force: true })
 
-      await expect(preview.el(page)).toHaveText("Naruto")
+      await expect(page.locator(preview)).toHaveText("Naruto")
     })
   })
 
   test.describe("when in preview mode", () => {
     test("clicking edit button should enter edit mode", async ({ page }) => {
-      await page.click(edit.id)
-      await expect(input.el(page)).toBeVisible()
-      await expect(input.el(page)).toBeFocused()
+      await page.click(edit)
+      await expect(page.locator(input)).toBeVisible()
+      await expect(page.locator(input)).toBeFocused()
     })
   })
 })

@@ -1,11 +1,14 @@
 import { expect, test, Locator } from "@playwright/test"
-import { paste, setup, testid } from "./test-utils"
+import { paste, testid } from "./__utils"
 
-const input = setup("input")
+const input = testid("input")
 
-const getTag = (id: string) => setup(`${id}-tag`)
-const getClose = (id: string) => setup(`${id}-close-button`)
-const getInput = (id: string) => setup(`${id}-input`)
+const item = (id: string) => ({
+  text: id,
+  tag: testid(`${id.toLowerCase()}-tag`),
+  close: testid(`${id.toLowerCase()}-close-button`),
+  input: testid(`${id.toLowerCase()}-input`),
+})
 
 const expectToBeSelected = async (el: Locator) => {
   await expect(el).toHaveAttribute("data-selected", "")
@@ -17,102 +20,128 @@ test.describe("tags-input", () => {
   })
 
   test("should add new tag value", async ({ page }) => {
-    await page.type(input.id, "Svelte")
+    const svelte = item("Svelte")
+    await page.type(input, "Svelte")
     await page.keyboard.press("Enter")
-    await expect(getTag("svelte").el(page)).toBeVisible()
-    await expect(input.el(page)).toBeEmpty()
-    await expect(input.el(page)).toBeFocused()
+    await expect(page.locator(svelte.tag)).toBeVisible()
+    await expect(page.locator(input)).toBeEmpty()
+    await expect(page.locator(input)).toBeFocused()
   })
 
   test("deletes tag with backspace when input value is empty", async ({ page }) => {
-    await page.type(input.id, "Svelte")
+    const svelte = item("Svelte")
+    await page.type(input, svelte.text)
     await page.keyboard.press("Enter")
     await page.keyboard.press("Backspace")
 
-    await expectToBeSelected(getTag("svelte").el(page))
+    await expectToBeSelected(page.locator(svelte.tag))
 
     await page.keyboard.press("Backspace")
 
-    await expect(getTag("svelte").el(page)).toBeHidden()
-    await expect(input.el(page)).toBeFocused()
+    await expect(page.locator(svelte.tag)).toBeHidden()
+    await expect(page.locator(input)).toBeFocused()
   })
 
   test("should navigate tags with arrow keys", async ({ page }) => {
-    await page.type(input.id, "Svelte")
+    const svelte = item("Svelte")
+    await page.type(input, svelte.text)
     await page.keyboard.press("Enter")
 
-    await page.type(input.id, "Solid")
+    const solid = item("Solid")
+    await page.type(input, solid.text)
     await page.keyboard.press("Enter")
 
     await page.keyboard.press("ArrowLeft")
 
-    await expectToBeSelected(getTag("svelte").el(page))
+    await expectToBeSelected(page.locator(svelte.tag))
 
     await page.keyboard.press("ArrowLeft")
     await page.keyboard.press("ArrowLeft")
-    await expectToBeSelected(getTag("vue").el(page))
+
+    const vue = item("Vue")
+    await expectToBeSelected(page.locator(vue.tag))
 
     await page.keyboard.press("ArrowRight")
-    await expectToBeSelected(getTag("svelte").el(page))
+    await expectToBeSelected(page.locator(svelte.tag))
   })
 
   test("should clear focused tag on blur", async ({ page }) => {
-    await page.type(input.id, "Svelte")
+    const svelte = item("Svelte")
+    await page.type(input, svelte.text)
     await page.keyboard.press("Enter")
 
-    await page.type(input.id, "Solid")
+    const solid = item("Solid")
+    await page.type(input, solid.text)
     await page.keyboard.press("Enter")
 
     await page.keyboard.press("ArrowLeft")
     await page.click("body", { force: true })
 
-    const tags = await page.$$("[data-part=tag][data-selected]")
-    expect(tags).toHaveLength(0)
+    expect(await page.locator("[data-part=tag][data-selected]").count()).toBe(0)
   })
 
   test("removes tag on close button click", async ({ page }) => {
-    await page.type(input.id, "Svelte")
+    const svelte = item("Svelte")
+    await page.type(input, svelte.text)
     await page.keyboard.press("Enter")
 
-    await page.type(input.id, "Solid")
+    const solid = item("Solid")
+    await page.type(input, solid.text)
     await page.keyboard.press("Enter")
 
     await page.keyboard.press("ArrowLeft")
-    await page.click(getClose("svelte").id, { force: true })
+    await page.click(svelte.close, { force: true })
 
-    await expect(getTag("svelte").el(page)).toBeHidden()
+    await expect(page.locator(svelte.tag)).toBeHidden()
   })
 
   test("edit tag with enter key", async ({ page }) => {
-    await page.type(input.id, "Svelte")
+    const svelte = item("Svelte")
+    await page.type(input, svelte.text)
     await page.keyboard.press("Enter")
 
-    await page.type(input.id, "Solid")
+    const solid = item("Solid")
+    await page.type(input, solid.text)
     await page.keyboard.press("Enter")
 
     await page.keyboard.press("ArrowLeft")
     await page.keyboard.press("ArrowLeft")
     await page.keyboard.press("Enter")
 
-    await expect(getInput("svelte").el(page)).toBeFocused()
-    await expect(getInput("svelte").el(page)).toHaveValue("Svelte")
+    await expect(page.locator(svelte.input)).toBeFocused()
+    await expect(page.locator(svelte.input)).toHaveValue("Svelte")
 
-    await page.type(getInput("svelte").id, "Jenkins")
+    const jenkins = item("Jenkins")
+    await page.keyboard.type(jenkins.text)
     await page.keyboard.press("Enter")
 
-    await expectToBeSelected(getTag("jenkins").el(page))
-    await expect(getInput("jenkins").el(page)).toBeHidden()
+    await expectToBeSelected(page.locator(jenkins.tag))
+    await expect(page.locator(jenkins.input)).toBeHidden()
 
-    await expect(input.el(page)).toBeFocused()
+    await expect(page.locator(input)).toBeFocused()
   })
 
-  test.only("add tags from paste event", async ({ page }) => {
+  test("add tags from paste event", async ({ page }) => {
     await page.check(testid("addOnPaste"))
-    await page.focus(input.id)
+    await page.focus(input)
 
-    await page.$eval(input.id, paste, "Github, Jenkins")
+    await page.$eval(input, paste, "Github, Jenkins")
 
-    await expect(getTag("github").el(page)).toBeVisible()
-    await expect(getTag("jenkins").el(page)).toBeVisible()
+    const github = item("Github")
+    const jenkins = item("Jenkins")
+    await expect(page.locator(github.tag)).toBeVisible()
+    await expect(page.locator(jenkins.tag)).toBeVisible()
+  })
+
+  test("clears highlighted tag on escape press", async ({ page }) => {
+    const svelte = item("Svelte")
+    await page.type(input, "Svelte")
+
+    await page.keyboard.press("Enter")
+    await page.keyboard.press("ArrowLeft")
+    await page.keyboard.press("Escape")
+
+    const tag = page.locator(svelte.tag)
+    expect(await tag.getAttribute("data-selected")).toBeFalsy()
   })
 })
