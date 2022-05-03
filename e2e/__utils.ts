@@ -8,6 +8,27 @@ export async function a11y(page: Page, selector = "[data-part=root]") {
 
 export const testid = (part: string) => `[data-testid=${esc(part)}]`
 
+export const controls = (page: Page) => {
+  return {
+    num: async (id: string, value: string) => {
+      const el = page.locator(testid(id))
+      await el.selectText()
+      await page.keyboard.press("Backspace")
+      await el.type(value)
+      await page.keyboard.press("Enter")
+    },
+    bool: async (id: string, value: boolean) => {
+      const el = page.locator(testid(id))
+      if (value) await el.uncheck()
+      else await el.check()
+    },
+    select: async (id: string, value: string) => {
+      const el = page.locator(testid(id))
+      await el.selectOption(value)
+    },
+  }
+}
+
 export const part = (part: string) => `[data-part=${esc(part)}]`
 
 const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
@@ -44,3 +65,5 @@ export const nativeInput = (node: HTMLInputElement | HTMLTextAreaElement, value:
 
   node.dispatchEvent(event)
 }
+
+export const blur = (page: Page) => page.click("body", { force: true })
