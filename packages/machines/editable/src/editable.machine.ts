@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { nextTick, trackPointerDown } from "@zag-js/dom-utils"
+import { raf, trackPointerDown } from "@zag-js/dom-utils"
 import { dom } from "./editable.dom"
-import type { UserDefinedContext, MachineContext, MachineState } from "./editable.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./editable.types"
 
 const { not } = guards
 
@@ -135,12 +135,12 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.uid = evt.id
         },
         focusEditButton(ctx) {
-          nextTick(() => {
+          raf(() => {
             dom.getEditBtnEl(ctx)?.focus()
           })
         },
         focusInput(ctx) {
-          nextTick(() => {
+          raf(() => {
             const input = dom.getInputEl(ctx)
             if (!input) return
             if (ctx.selectOnFocus) input.select()
