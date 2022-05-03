@@ -24,6 +24,9 @@
     "start:vue": "cd examples/vue-ts && vite --port 3002 --clearScreen false",
     "start:solid": "cd examples/solid-ts && vite --port 3001 --clearScreen false",
     "cypress:react": "start-server-and-test start:react http://localhost:3000 cypress:dev",
+    "pw:test": "npx playwright test",
+    "pw:test:debug": "PWDEBUG=1 npx playwright test",
+    "e2e:react": "start-server-and-test start:react http://localhost:3000 playwright:dev",
     "cypress:vue": "start-server-and-test start:vue http-get://localhost:3000 cypress:dev",
     "cypress:solid": "start-server-and-test start:solid http-get://localhost:3000 cypress:dev",
     "cypress:run": "cypress run",
@@ -37,6 +40,7 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.4.2",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.19.0",
     "@commitlint/cli": "^16.0.2",
@@ -44,6 +48,7 @@
     "@emotion/css": "^11.9.0",
     "@lerna/package-graph": "^4.0.0",
     "@manypkg/cli": "^0.17.0",
+    "@playwright/test": "^1.21.1",
     "@swc-node/jest": "^1.4.3",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.12.0",
@@ -75,12 +80,13 @@
     "jest-watch-typeahead": "^0.6.3",
     "json-format-highlight": "^1.0.4",
     "lint-staged": "^11.0.0",
-    "plop": "^3.0.5",
     "patch-package": "^6.4.7",
+    "playwright": "^1.21.1",
+    "plop": "^3.0.5",
     "prettier": "^2.5.1",
     "start-server-and-test": "^1.14.0",
-    "typescript": "^4.6.3",
-    "turbo": "^1.2.2"
+    "turbo": "^1.2.2",
+    "typescript": "^4.6.3"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write"
