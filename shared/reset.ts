@@ -22,6 +22,8 @@ injectGlobal({
   },
   ".index-nav": {
     lineHeight: "1em",
+    flex: "1",
+    padding: "40px",
     ul: {
       listStyleType: "none",
       display: "grid",
