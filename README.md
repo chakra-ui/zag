@@ -59,7 +59,11 @@ function Example() {
   const api = toggle.connect(state, send)
 
   // consume into components
-  return <button ref={ref} {...api.buttonProps}>Toggle me</button>
+  return (
+    <button ref={ref} {...api.buttonProps}>
+      Toggle me
+    </button>
+  )
 }
 ```
 
@@ -67,7 +71,7 @@ function Example() {
 
 - All component machine and tests are modelled according to the
   [WAI-ARIA authoring practices](https://www.w3.org/TR/wai-aria-practices/)
-- Write cypress tests for every component based on the WAI-ARIA spec. **Regardless of the framework, users expect
+- Write end-to-end tests for every component based on the WAI-ARIA spec. **Regardless of the framework, users expect
   component patterns to work the same way!**
 - All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
   nested states, etc.
@@ -112,12 +116,12 @@ projects for the frameworks we support.
 
 ### E2E Tests
 
-We've setup end-to-end tests for every machine we built. We use Cypress for testing and we ensure that the component
-works the same way regardless of the framework.
+We've setup end-to-end tests for every machine we built. We use [Playwright](https://playwright.dev/) for testing and we
+ensure that the component works the same way regardless of the framework.
 
-- `cypress:react` : Starts the E2E tests for the React project
-- `cypress:vue` : Starts the E2E tests for the Vue project
-- `cypress:solid` : Starts the E2E tests for the Solid project
+- `e2e:react` : Starts the E2E tests for the React project
+- `e2e:vue` : Starts the E2E tests for the Vue project
+- `e2e:solid` : Starts the E2E tests for the Solid project
 
 ### Contributing new machines/features
 

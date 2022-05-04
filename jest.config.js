@@ -4,7 +4,7 @@ module.exports = {
   transform: {
     "^.+\\.(ts|tsx)?$": "@swc-node/jest",
   },
-  testPathIgnorePatterns: ["<rootDir>/cypress/"],
+  testPathIgnorePatterns: ["<rootDir>/e2e/"],
   transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"],
   setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
   watchPlugins: ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
