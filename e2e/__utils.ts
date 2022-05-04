@@ -57,8 +57,7 @@ export const nativeInput = (node: HTMLInputElement | HTMLTextAreaElement, value:
   const __input__setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set
   const __textarea__setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set
 
-  let textValue = value
-  textValue = `${node.value}${value}`
+  const textValue = `${node.value}${value}`
 
   const set = node.localName === "input" ? __input__setter : __textarea__setter
   set?.call(node, textValue)
