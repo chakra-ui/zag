@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, testid } from "./__utils"
+import { a11y, clickOutside, testid } from "./__utils"
 
 const input = testid("input")
 const preview = testid("preview")
@@ -15,16 +15,17 @@ test.describe("editable", () => {
     await a11y(page)
   })
 
-  test.describe.parallel("when in edit mode", () => {
+  test.describe("when in edit mode", () => {
     test("input should be visible", async ({ page }) => {
       await page.focus(preview)
-
       await expect(page.locator(input)).toBeVisible()
       await expect(page.locator(input)).toBeFocused()
     })
 
     test("user can type and commit input value", async ({ page }) => {
       await page.focus(preview)
+      await page.waitForSelector("input:focus")
+
       await page.type(input, "Hello World")
       await page.locator(input).press("Enter")
 
@@ -35,6 +36,8 @@ test.describe("editable", () => {
 
     test("user can type and revert value", async ({ page }) => {
       await page.focus(preview)
+      await page.waitForSelector("input:focus")
+
       await page.type(input, "Hello")
       await page.keyboard.press("Enter")
 
@@ -48,6 +51,8 @@ test.describe("editable", () => {
 
     test("clicking submit: user can type and submit value", async ({ page }) => {
       await page.focus(preview)
+      await page.waitForSelector("input:focus")
+
       await page.type(input, "Naruto")
       await page.click(save)
 
@@ -56,18 +61,18 @@ test.describe("editable", () => {
 
     test("blur the input: user can type and submit value", async ({ page }) => {
       await page.focus(preview)
+      await page.waitForSelector("input:focus")
+
       await page.type(input, "Naruto")
-      await page.click("body", { force: true })
+      await clickOutside(page)
 
       await expect(page.locator(preview)).toHaveText("Naruto")
     })
   })
 
-  test.describe("when in preview mode", () => {
-    test("clicking edit button should enter edit mode", async ({ page }) => {
-      await page.click(edit)
-      await expect(page.locator(input)).toBeVisible()
-      await expect(page.locator(input)).toBeFocused()
-    })
+  test("[preview mode] clicking edit button should enter edit mode", async ({ page }) => {
+    await page.click(edit)
+    await expect(page.locator(input)).toBeVisible()
+    await expect(page.locator(input)).toBeFocused()
   })
 })

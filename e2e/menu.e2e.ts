@@ -29,7 +29,7 @@ const navigateToSubmenu = async (page: Page) => {
   await page.keyboard.press("ArrowDown")
 }
 
-test.describe.parallel("menu", () => {
+test.describe("menu", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/nested-menu")
   })
@@ -110,16 +110,16 @@ test.describe.parallel("menu", () => {
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("Enter")
+      await page.keyboard.press("Enter", { delay: 10 })
 
       // open menu 3
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("Enter")
+      await page.keyboard.press("Enter", { delay: 10 })
 
       // select first item in menu 3
-      await page.keyboard.press("Enter")
+      await page.keyboard.press("Enter", { delay: 10 })
     })
 
     test("pointer click", async ({ page }) => {

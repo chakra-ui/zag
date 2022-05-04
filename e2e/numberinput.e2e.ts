@@ -95,7 +95,7 @@ test.describe("number input", () => {
     })
   })
 
-  test.describe("when using the spinner", () => {
+  test.describe.skip("when using the spinner", () => {
     const tick = (n: number) => 50 * n + 300
 
     test("should spin value on increment long press", async ({ page }) => {
@@ -117,7 +117,7 @@ test.describe("number input", () => {
       await page.waitForTimeout(tick(10))
       await dec_btn.dispatchEvent("pointerup")
 
-      await expect(page.locator(input)).toHaveValue("9")
+      await expect(page.locator(input)).toHaveValue("10")
     })
   })
 

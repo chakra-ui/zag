@@ -12,7 +12,7 @@ const expectToBeHighlighted = async (el: Locator) => {
   return await expect(el).toHaveAttribute("data-highlighted", "")
 }
 
-test.describe.parallel("combobox", () => {
+test.describe("combobox", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/combobox")
   })
@@ -137,7 +137,7 @@ test.describe.parallel("combobox", () => {
     await expect(page.locator(listbox)).toBeVisible()
   })
 
-  test.describe.parallel("[auto-complete]", () => {
+  test.describe("[auto-complete]", () => {
     test.beforeEach(async ({ page }) => {
       await controls(page).select("inputBehavior", "autocomplete")
     })
@@ -172,8 +172,7 @@ test.describe.parallel("combobox", () => {
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown") // reached the end
-      await page.pause()
+      await page.keyboard.press("ArrowDown", { delay: 10 }) // reached the end
 
       // at the end of the list, press arrow down to return to previous input value
       await page.keyboard.press("ArrowDown")

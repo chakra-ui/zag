@@ -10,7 +10,7 @@ const home = item("home")
 const about = item("about")
 const contact = item("contact")
 
-test.describe.parallel("accordion", () => {
+test.describe("accordion", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/accordion")
   })
