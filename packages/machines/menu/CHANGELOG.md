@@ -1,5 +1,17 @@
 # @zag-js/menu
 
+## 0.1.2
+
+### Patch Changes
+
+- [#70](https://github.com/chakra-ui/zag/pull/70)
+  [`599083c`](https://github.com/chakra-ui/zag/commit/599083c785be515aa02eeb9ece0c5591cb5bc701) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where immediately hovering out immediately after submenu
+  trigger causes focus to be lost.
+
+- Updated dependencies [[`3f715bd`](https://github.com/chakra-ui/zag/commit/3f715bdc4f52cdbf71ce9a22a3fc20d31c5fea89)]:
+  - @zag-js/core@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
