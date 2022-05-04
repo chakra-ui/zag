@@ -207,17 +207,17 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.pointerdownNode = null
         },
         focusContent(ctx) {
-          nextTick(() => {
+          raf(() => {
             dom.getContentEl(ctx)?.focus()
           })
         },
         setInitialFocus(ctx) {
-          nextTick(() => {
+          raf(() => {
             dom.getInitialFocusEl(ctx)?.focus()
           })
         },
         focusTrigger(ctx) {
-          nextTick(() => {
+          raf(() => {
             dom.getTriggerEl(ctx)?.focus()
           })
         },
@@ -254,7 +254,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
           // else focus the next element
           evt.preventDefault()
-          nextTick(() => elementAfterTrigger?.focus())
+          raf(() => elementAfterTrigger?.focus())
         },
       },
     },
