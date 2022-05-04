@@ -1,5 +1,12 @@
 # @zag-js/solid
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`3f715bd`](https://github.com/chakra-ui/zag/commit/3f715bdc4f52cdbf71ce9a22a3fc20d31c5fea89)]:
+  - @zag-js/core@0.1.2
+
 ## 0.1.3
 
 ### Patch Changes

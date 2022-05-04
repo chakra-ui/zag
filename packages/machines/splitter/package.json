@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/splitter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Core logic for the splitter widget implemented as a state machine",
   "keywords": [
     "js",
@@ -30,7 +30,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "0.1.1",
+    "@zag-js/core": "0.1.2",
     "@zag-js/dom-utils": "0.1.0",
     "@zag-js/number-utils": "0.1.0",
     "@zag-js/rect-utils": "0.1.0",
