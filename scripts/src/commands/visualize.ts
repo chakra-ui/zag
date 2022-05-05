@@ -1,3 +1,8 @@
+/**
+ * Test command
+ * zag visualize combobox --outFile output.js
+ */
+
 import fs from "fs"
 import generate from "@babel/generator"
 import traverse from "@babel/traverse"
