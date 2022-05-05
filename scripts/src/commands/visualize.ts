@@ -54,6 +54,10 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
       if (path.isIdentifier({ name: "guard" })) {
         path.replaceWithSourceString("cond")
       }
+
+      if (DISALLOWED_PROPERTIES.includes(path.node.name)) {
+        path.parentPath.remove()
+      }
     },
   })
 
