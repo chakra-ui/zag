@@ -59,6 +59,12 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
         path.parentPath.remove()
       }
     },
+
+    CallExpression: function (path) {
+      if (t.isIdentifier(path.node.callee) && path.node.callee.name === "createMachine") {
+        machineObj = path.node.arguments[0]
+      }
+    },
   })
 
   if (machineObj && outFile) {
