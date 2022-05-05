@@ -40,6 +40,17 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
     VariableDeclaration: function (path) {
       path.remove()
     },
+
+    Identifier: function (path) {
+      // transform instances of `every` to "invoke interval" object
+      if (path.isIdentifier({ name: "every" }) && path.parentPath.node.type === "ObjectProperty") {
+        path.node.name = "invoke"
+        path.parentPath.node.value = t.objectPattern([
+          t.objectProperty(t.identifier("src"), t.stringLiteral("interval")),
+          t.objectProperty(t.identifier("id"), t.stringLiteral("interval")),
+        ])
+      }
+    },
   })
 
   if (machineObj && outFile) {
