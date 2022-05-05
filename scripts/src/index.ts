@@ -2,6 +2,7 @@ import { Command } from "commander"
 import build from "./commands/build"
 import csb from "./commands/csb"
 import modify from "./commands/modify"
+import visualize from "./commands/visualize"
 import { createLogger } from "./utilities/log"
 
 const program = new Command()
@@ -30,6 +31,14 @@ program
   .command("modify")
   .description("Modify package.json for public packages")
   .action(modify)
+
+// prettier-ignore
+program
+  .command("visualize")
+  .description("Visualize package")
+  .argument('<component>', 'component machine to visualize')
+  .option("-0, --outFile <outFile>", "parse code to js file")
+  .action(visualize)
 
 program.parse(process.argv)
 
