@@ -50,6 +50,10 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
           t.objectProperty(t.identifier("id"), t.stringLiteral("interval")),
         ])
       }
+
+      if (path.isIdentifier({ name: "guard" })) {
+        path.replaceWithSourceString("cond")
+      }
     },
   })
 
