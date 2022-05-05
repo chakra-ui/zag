@@ -36,6 +36,10 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
     ImportDeclaration: function (path) {
       path.remove()
     },
+
+    VariableDeclaration: function (path) {
+      path.remove()
+    },
   })
 
   if (machineObj && outFile) {
