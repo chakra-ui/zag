@@ -63,11 +63,23 @@
           actions: ["setValue", "setSelectionRange", "setHint"]
         },
         BLUR: [{
-          cond: "isInvalidExponential",
+          cond: "!isInRange",
           target: "idle",
           actions: ["clearValue", "clearHint"]
         }, {
-          cond: and("clampOnBlur", not("isInRange")),
+          cond: "!isInRange && clampOnBlur",
+          target: "idle",
+          actions: ["clearValue", "clearHint"]
+        }, {
+          cond: "!clampOnBlur",
+          target: "idle",
+          actions: ["clearValue", "clearHint"]
+        }, {
+          cond: "clampOnBlur && !isInRange && clope",
+          target: "idle",
+          actions: ["clearValue", "clearHint"]
+        }, {
+          cond: "clampOnBlur && !isInRange",
           target: "idle",
           actions: ["clampValue", "clearHint"]
         }, {

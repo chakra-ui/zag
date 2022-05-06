@@ -118,7 +118,22 @@ export function machine(ctx: UserDefinedContext = {}) {
             },
             BLUR: [
               {
-                guard: "isInvalidExponential",
+                guard: not(and("isInRange")),
+                target: "idle",
+                actions: ["clearValue", "clearHint"],
+              },
+              {
+                guard: not(and("isInRange", "clampOnBlur")),
+                target: "idle",
+                actions: ["clearValue", "clearHint"],
+              },
+              {
+                guard: not("clampOnBlur"),
+                target: "idle",
+                actions: ["clearValue", "clearHint"],
+              },
+              {
+                guard: and("clampOnBlur", not("isInRange"), "clope"),
                 target: "idle",
                 actions: ["clearValue", "clearHint"],
               },

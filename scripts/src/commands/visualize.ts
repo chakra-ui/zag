@@ -66,6 +66,64 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
     },
 
     CallExpression: function (path) {
+      //
+      const traverseInnerPath = (outerPath: typeof path) => {
+        outerPath.traverse({
+          CallExpression(innerPath) {
+            handleGuards(innerPath)
+          },
+        })
+      }
+
+      const transformAndOr = (tPath: typeof path, separator: string) => {
+        const transformedArguments = tPath.node.arguments
+          .map((arg) => {
+            if (t.isStringLiteral(arg)) {
+              return arg.value
+            }
+          })
+          .join(` ${separator} `)
+        tPath.replaceWith(t.stringLiteral(transformedArguments))
+      }
+
+      const handleNot = (notPath: typeof path) => {
+        traverseInnerPath(notPath)
+
+        const notArguments = notPath.node.arguments
+        const transformedNotArguments = notArguments
+          .map((arg) => {
+            if (t.isStringLiteral(arg)) {
+              return `!${arg.value}`
+            }
+          })
+          .join(" ")
+        notPath.replaceWith(t.stringLiteral(transformedNotArguments))
+      }
+
+      const handleAnd = (andPath: typeof path) => {
+        traverseInnerPath(andPath)
+        transformAndOr(andPath, "&&")
+      }
+
+      const handleOr = (orPath: typeof path) => {
+        traverseInnerPath(orPath)
+        transformAndOr(orPath, "||")
+      }
+
+      const handleGuards = (guardPath: typeof path) => {
+        if (t.isIdentifier(guardPath.node.callee)) {
+          if (guardPath.node.callee.name === "not") {
+            handleNot(guardPath)
+          } else if (guardPath.node.callee.name === "and") {
+            handleAnd(guardPath)
+          } else if (guardPath.node.callee.name === "or") {
+            handleOr(guardPath)
+          }
+        }
+      }
+
+      handleGuards(path)
+
       if (t.isIdentifier(path.node.callee) && path.node.callee.name === "createMachine") {
         machineObj = path.node.arguments[0]
       }
