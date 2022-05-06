@@ -26,8 +26,7 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
   const modules = await getMachinePackages()
   const componentModule = modules.find((module) => module.dir.endsWith(component))
   const machineFile = `${componentModule?.dir}/src/${component}.machine.ts`
-  //   const code = fs.readFileSync(machineFile, "utf8")
-  const code = fs.readFileSync("./test.ts", "utf8")
+  const code = fs.readFileSync(machineFile, "utf8")
 
   const ast = parser.parse(code, {
     sourceType: "module",

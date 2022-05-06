@@ -1,145 +1,226 @@
 {
-  id: "number-input",
+  id: "combobox",
   initial: "unknown",
-  entry: ["syncInputValue"],
+  created: "setSelectedValueIfNeeded",
+  exit: "removeLiveRegion",
   on: {
     SET_VALUE: {
-      actions: ["setValue", "setHintToSet"]
+      actions: ["setInputValue", "setSelectedValue"]
     },
-    INCREMENT: {
-      actions: ["increment"]
-    },
-    DECREMENT: {
-      actions: ["decrement"]
-    }
+    CLEAR_VALUE: [{
+      cond: "focusOnClear",
+      target: "focused",
+      actions: "clearInputValue"
+    }, {
+      actions: "clearInputValue"
+    }]
   },
   states: {
     unknown: {
+      tags: ["idle"],
       on: {
-        SETUP: {
+        SETUP: [{
+          cond: "autoFocus",
+          target: "focused",
+          actions: "setupDocument"
+        }, {
           target: "idle",
           actions: "setupDocument"
-        }
+        }]
       }
     },
     idle: {
+      tags: ["idle"],
+      entry: ["scrollToTop", "clearFocusedOption", "clearPointerdownNode"],
       on: {
-        PRESS_DOWN: {
-          target: "before:spin",
-          actions: ["focusInput", "setHint"]
+        CLICK_BUTTON: {
+          target: "interacting",
+          actions: ["focusInput", "invokeOnOpen"]
         },
-        PRESS_DOWN_SCRUBBER: {
-          target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"]
+        POINTER_DOWN: {
+          cond: "openOnClick",
+          target: "interacting",
+          actions: ["focusInput", "invokeOnOpen"]
+        },
+        POINTER_OVER: {
+          actions: "setIsHovering"
+        },
+        POINTER_LEAVE: {
+          actions: "clearIsHovering"
         },
         FOCUS: "focused"
       }
     },
     focused: {
-      tags: ["focus"],
-      activities: "attachWheelListener",
+      tags: ["focused"],
+      entry: ["focusInput", "scrollToTop", "clearFocusedOption", "clearPointerdownNode"],
       on: {
-        PRESS_DOWN: {
-          target: "before:spin",
-          actions: ["focusInput", "setHint"]
+        CHANGE: {
+          target: "suggesting",
+          actions: "setInputValue"
         },
-        PRESS_DOWN_SCRUBBER: {
-          target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"]
+        BLUR: "idle",
+        ESCAPE: {
+          cond: "isCustomValue && !allowCustomValue",
+          actions: "revertInputValue"
+        },
+        CLICK_BUTTON: {
+          target: "interacting",
+          actions: ["focusInput", "invokeOnOpen"]
+        },
+        POINTER_OVER: {
+          actions: "setIsHovering"
+        },
+        ARROW_UP: [{
+          cond: "autoComplete",
+          target: "interacting",
+          actions: "invokeOnOpen"
+        }, {
+          target: "interacting",
+          actions: ["focusLastOption", "invokeOnOpen"]
+        }],
+        ARROW_DOWN: [{
+          cond: "autoComplete",
+          target: "interacting",
+          actions: "invokeOnOpen"
+        }, {
+          target: "interacting",
+          actions: ["focusFirstOption", "invokeOnOpen"]
+        }],
+        ALT_ARROW_DOWN: {
+          target: "interacting",
+          actions: ["focusInput", "invokeOnOpen"]
+        }
+      }
+    },
+    suggesting: {
+      tags: ["open", "focused"],
+      activities: ["trackPointerDown", "scrollOptionIntoView", "computePlacement", "trackOptionNodes", "ariaHideOutside"],
+      entry: ["focusInput", "invokeOnOpen"],
+      on: {
+        ARROW_DOWN: {
+          target: "interacting",
+          actions: "focusNextOption"
         },
         ARROW_UP: {
-          actions: "increment"
+          target: "interacting",
+          actions: "focusPrevOption"
         },
-        ARROW_DOWN: {
-          actions: "decrement"
-        },
+        ALT_ARROW_UP: "focused",
         HOME: {
-          actions: "setToMin"
+          target: "interacting",
+          actions: ["focusFirstOption", "preventDefault"]
         },
         END: {
-          actions: "setToMax"
+          target: "interacting",
+          actions: ["focusLastOption", "preventDefault"]
         },
-        CHANGE: {
-          actions: ["setValue", "setSelectionRange", "setHint"]
-        },
-        BLUR: [{
-          cond: "!isInRange",
-          target: "idle",
-          actions: ["clearValue", "clearHint"]
-        }, {
-          cond: "!(isInRange && clampOnBlur)",
-          target: "idle",
-          actions: ["clearValue", "clearHint"]
-        }, {
-          cond: "!clampOnBlur",
-          target: "idle",
-          actions: ["clearValue", "clearHint"]
-        }, {
-          cond: "clampOnBlur && !isInRange && clope",
-          target: "idle",
-          actions: ["clearValue", "clearHint"]
-        }, {
-          cond: "clampOnBlur && !isInRange",
-          target: "idle",
-          actions: ["clampValue", "clearHint"]
-        }, {
-          actions: ["roundValue"]
-        }]
-      }
-    },
-    "before:spin": {
-      tags: ["focus"],
-      entry: choose([{
-        cond: "isIncrementHint",
-        actions: "increment"
-      }, {
-        cond: "isDecrementHint",
-        actions: "decrement"
-      }]),
-      after: {
-        CHANGE_DELAY: {
-          target: "spinning",
-          cond: "isInRange"
-        }
-      },
-      on: {
-        PRESS_UP: {
+        ENTER: [{
+          cond: "isOptionFocused && autoComplete",
           target: "focused",
-          actions: ["clearHint", "restoreSelection"]
+          actions: "selectActiveOption"
+        }, {
+          cond: "isOptionFocused",
+          target: "focused",
+          actions: "selectOption"
+        }],
+        CHANGE: [{
+          cond: "autoHighlight",
+          actions: ["clearFocusedOption", "setInputValue", "focusFirstOption"]
+        }, {
+          actions: ["clearFocusedOption", "setInputValue"]
+        }],
+        ESCAPE: {
+          target: "focused",
+          actions: "invokeOnClose"
+        },
+        POINTEROVER_OPTION: [{
+          cond: "autoComplete",
+          target: "interacting",
+          actions: "setActiveId"
+        }, {
+          target: "interacting",
+          actions: ["setActiveId", "setNavigationValue"]
+        }],
+        BLUR: {
+          target: "idle",
+          actions: "invokeOnClose"
+        },
+        CLICK_BUTTON: {
+          target: "focused",
+          actions: "invokeOnClose"
         }
       }
     },
-    spinning: {
-      tags: ["focus"],
-      activities: "trackButtonDisabled",
-      invoke: {
-        src: "interval",
-        id: "interval"
-      },
+    interacting: {
+      tags: ["open", "focused"],
+      activities: ["scrollOptionIntoView", "trackPointerDown", "computePlacement", "ariaHideOutside"],
+      entry: "focusMatchingOption",
       on: {
-        PRESS_UP: {
-          target: "focused",
-          actions: ["clearHint", "restoreSelection"]
-        }
-      }
-    },
-    scrubbing: {
-      tags: ["focus"],
-      entry: ["addCustomCursor", "disableTextSelection"],
-      exit: ["removeCustomCursor", "restoreTextSelection"],
-      activities: ["activatePointerLock", "trackMousemove"],
-      on: {
-        POINTER_UP_SCRUBBER: {
-          target: "focused",
-          actions: ["clearCursorPoint"]
+        HOME: {
+          actions: ["focusFirstOption", "preventDefault"]
         },
-        POINTER_MOVE_SCRUBBER: [{
-          cond: "isIncrementHint",
-          actions: ["increment", "setCursorPoint", "updateCursor"]
+        END: {
+          actions: ["focusLastOption", "preventDefault"]
+        },
+        ARROW_DOWN: [{
+          cond: "autoComplete && isLastOptionFocused",
+          actions: ["clearFocusedOption", "scrollToTop"]
         }, {
-          cond: "isDecrementHint",
-          actions: ["decrement", "setCursorPoint", "updateCursor"]
-        }]
+          actions: "focusNextOption"
+        }],
+        ARROW_UP: [{
+          cond: "autoComplete && isFirstOptionFocused",
+          actions: "clearFocusedOption"
+        }, {
+          actions: "focusPrevOption"
+        }],
+        ALT_UP: {
+          target: "focused",
+          actions: ["selectOption", "invokeOnClose"]
+        },
+        CLEAR_FOCUS: {
+          actions: "clearFocusedOption"
+        },
+        TAB: {
+          cond: "selectOnTab",
+          target: "idle",
+          actions: ["selectOption", "invokeOnClose"]
+        },
+        ENTER: {
+          target: "focused",
+          actions: ["selectOption", "invokeOnClose"]
+        },
+        CHANGE: [{
+          cond: "autoComplete",
+          target: "suggesting",
+          actions: ["commitNavigationValue", "setInputValue"]
+        }, {
+          target: "suggesting",
+          actions: ["clearFocusedOption", "setInputValue"]
+        }],
+        POINTEROVER_OPTION: [{
+          cond: "autoComplete",
+          actions: "setActiveId"
+        }, {
+          actions: ["setActiveId", "setNavigationValue"]
+        }],
+        CLICK_OPTION: {
+          target: "focused",
+          actions: ["selectOption", "invokeOnClose"]
+        },
+        ESCAPE: {
+          target: "focused",
+          actions: "invokeOnClose"
+        },
+        CLICK_BUTTON: {
+          target: "focused",
+          actions: "invokeOnClose"
+        },
+        BLUR: {
+          target: "idle",
+          actions: "invokeOnClose"
+        }
       }
     }
   }
