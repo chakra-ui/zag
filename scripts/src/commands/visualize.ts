@@ -15,7 +15,7 @@ const parser = require("@babel/parser")
 
 const logger = createLogger("visualize")
 
-const DISALLOWED_PROPERTIES = ["context", "computed", "watch"]
+const DISALLOWED_PROPERTIES = ["context", "computed", "watch", "onEvent"]
 
 type VisualizeOpts = {
   outFile?: string
