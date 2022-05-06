@@ -93,7 +93,8 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
         const transformedNotArguments = notArguments
           .map((arg) => {
             if (t.isStringLiteral(arg)) {
-              return `!${arg.value}`
+              const hasMultipleArgs = arg.value.split(" ").length > 1
+              return hasMultipleArgs ? `!(${arg.value})` : `!${arg.value}`
             }
           })
           .join(" ")

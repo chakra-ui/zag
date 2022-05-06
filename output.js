@@ -67,7 +67,7 @@
           target: "idle",
           actions: ["clearValue", "clearHint"]
         }, {
-          cond: "!isInRange && clampOnBlur",
+          cond: "!(isInRange && clampOnBlur)",
           target: "idle",
           actions: ["clearValue", "clearHint"]
         }, {
