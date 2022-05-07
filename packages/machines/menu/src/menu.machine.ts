@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { addPointerEvent, contains, isFocusable, raf, trackPointerDown } from "@zag-js/dom-utils"
+import { addPointerEvent, contains, findByTypeahead, isFocusable, raf, trackPointerDown } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { getElementRect, getEventPoint, inset, withinPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
@@ -27,7 +27,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         closeOnSelect: true,
         isPlacementComplete: false,
         ...ctx,
-        typeahead: { keysSoFar: "", timer: -1 },
+        typeahead: findByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -44,8 +44,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         isSubmenu: ["setSubmenuPlacement"],
         anchorPoint: ["applyAnchorPoint"],
       },
-
-      exit: ["cleanupTypeahead"],
 
       on: {
         SET_PARENT: {
@@ -153,7 +151,6 @@ export function machine(ctx: UserDefinedContext = {}) {
             "focusTrigger",
             "clearAnchorPoint",
             "clearPointerDownNode",
-            "cleanupTypeahead",
             "resumePointer",
             "closeChildMenus",
           ],
@@ -540,10 +537,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         restoreParentFocus(ctx) {
           ctx.parent?.send("RESTORE_FOCUS")
-        },
-        cleanupTypeahead(ctx) {
-          clearTimeout(ctx.typeahead.timer)
-          ctx.typeahead.timer = -1
         },
       },
     },

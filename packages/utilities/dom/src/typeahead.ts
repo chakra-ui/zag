@@ -29,15 +29,29 @@ export function findByTypeahead<T extends HTMLElement>(_items: T[], options: Typ
 
   const next = findByText(items, query, activeId)
 
+  function cleanup() {
+    clearTimeout(state.timer)
+    state.timer = -1
+  }
+
   function update(value: string) {
     state.keysSoFar = value
     clearTimeout(state.timer)
+
     if (value !== "") {
-      state.timer = +setTimeout(() => update(""), 350)
+      state.timer = +setTimeout(() => {
+        update("")
+        cleanup()
+      }, 350)
     }
   }
 
   update(search)
 
   return next
+}
+
+findByTypeahead.defaultOptions = {
+  keysSoFar: "",
+  timer: -1,
 }
