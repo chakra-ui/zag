@@ -1,16 +1,10 @@
+import { dataAttr } from "@zag-js/dom-utils"
 import { AppProps } from "next/app"
 import Head from "next/head"
 import Link from "next/link"
-import { injectGlobal } from "@emotion/css"
 import "../../../shared/reset"
 import { navStyle, pageStyle } from "../../../shared/style"
-import { dataAttr } from "@zag-js/dom-utils"
 
-injectGlobal`
-  body {
-    margin: 0px;
-  }
-`
 export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <div className={pageStyle}>
