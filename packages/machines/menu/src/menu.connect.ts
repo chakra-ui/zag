@@ -244,6 +244,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         if (exec) {
           const allow = isLink && key === "Enter"
           if (!allow) event.preventDefault()
+          event.stopPropagation()
           exec(event)
         } else {
           // NOTE: we'll need to more robust isEditable(el) check
@@ -256,6 +257,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
           if (isSingleKey && !isModifierKey && isKeyDownInside && !editable) {
             event.preventDefault()
+            event.stopPropagation()
             send({ type: "TYPEAHEAD", key: event.key })
           }
         }
