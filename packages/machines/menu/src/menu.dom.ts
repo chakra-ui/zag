@@ -1,4 +1,4 @@
-import { findByText, isHTMLElement, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import { MachineContext as Ctx } from "./menu.types"
 
@@ -32,7 +32,13 @@ export const dom = {
   getNextEl: (ctx: Ctx) => nextById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
   getPrevEl: (ctx: Ctx) => prevById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
 
-  getElemByKey: (ctx: Ctx, key: string) => findByText(dom.getElements(ctx), key, ctx.activeId),
+  getElemByKey: (ctx: Ctx, key: string) => {
+    return findByTypeahead(dom.getElements(ctx), {
+      state: ctx.typeahead,
+      key,
+      activeId: ctx.activeId,
+    })
+  },
   getChildMenus: (ctx: Ctx) => {
     return Object.values(ctx.children)
       .map((child) => dom.getContentEl(child.state.context))
