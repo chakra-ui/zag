@@ -17,7 +17,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         {ITEMS.map((navItem) => {
           const active = router.pathname === `/${navItem.path}`
           return (
-            <Link href={navItem.path} key={navItem.label} passHref>
+            <Link href={`/${navItem.path}`} key={navItem.label} passHref>
               <a data-active={dataAttr(active)}>{navItem.label}</a>
             </Link>
           )
