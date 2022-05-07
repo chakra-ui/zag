@@ -35,7 +35,7 @@ export function findByText<T extends HTMLElement>(v: T[], text: string, currentI
     const str = item.dataset.valuetext ?? item.textContent
     return !!str?.toLowerCase().startsWith(text.toLowerCase())
   })
-  return currentId ? nextById(filtered, currentId) : null
+  return currentId ? nextById(filtered, currentId) : filtered[0]
 }
 
 export function sortByTreeOrder<T extends HTMLElement>(v: T[]) {
