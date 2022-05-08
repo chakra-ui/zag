@@ -12,6 +12,7 @@ import { createLogger } from "../utilities/log"
 import { getMachinePackages } from "../utilities/packages"
 
 const parser = require("@babel/parser")
+const babelCore = require("@babel/core")
 
 const logger = createLogger("visualize")
 
@@ -132,7 +133,17 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
 
   if (machineObj && outFile) {
     const machineObjOutput = generate(machineObj, {}, code)
-    fs.writeFileSync(outFile, machineObjOutput.code)
+
+    const machineWithImports = `import { createMachine, assign, actions } from 'xstate';
+
+const { choose } = actions;
+const fetchMachine = createMachine(${machineObjOutput.code})`
+
+    const commonJsMachine = babelCore.transformSync(machineWithImports, {
+      plugins: ["@babel/plugin-transform-modules-commonjs"],
+    })
+
+    fs.writeFileSync(outFile, commonJsMachine.code)
     logger.success(`${component} machine visualization complete. 😎`)
   }
 }
