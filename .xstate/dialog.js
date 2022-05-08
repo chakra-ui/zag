@@ -1,10 +1,12 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "dialog",
   initial: "unknown",
@@ -13,36 +15,29 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "closed",
-          actions: "setupDocument",
-        },
-      },
+          actions: "setupDocument"
+        }
+      }
     },
     open: {
       entry: ["checkRenderedElements"],
-      activities: [
-        "trapFocus",
-        "preventScroll",
-        "hideContentBelow",
-        "subscribeToStore",
-        "trackEscKey",
-        "trackPointerDown",
-      ],
+      activities: ["trapFocus", "preventScroll", "hideContentBelow", "subscribeToStore", "trackEscKey", "trackPointerDown"],
       on: {
         CLOSE: "closed",
         TRIGGER_CLICK: "closed",
         UNDERLAY_CLICK: {
           cond: "isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick",
           target: "closed",
-          actions: ["invokeOnOutsideClick"],
-        },
-      },
+          actions: ["invokeOnOutsideClick"]
+        }
+      }
     },
     closed: {
       entry: ["invokeOnClose", "clearPointerdownNode"],
       on: {
         OPEN: "open",
-        TRIGGER_CLICK: "open",
-      },
-    },
-  },
+        TRIGGER_CLICK: "open"
+      }
+    }
+  }
 })

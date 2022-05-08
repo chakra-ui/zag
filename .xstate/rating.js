@@ -1,10 +1,12 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "rating",
   initial: "unknown",
@@ -13,67 +15,64 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "checkValue"],
-        },
-      },
+          actions: ["setupDocument", "checkValue"]
+        }
+      }
     },
     idle: {
       entry: "clearHoveredValue",
       on: {
         GROUP_POINTER_OVER: "hover",
-        FOCUS: "focus",
-      },
+        FOCUS: "focus"
+      }
     },
     focus: {
       on: {
         POINTER_OVER: {
-          actions: "setHoveredValue",
+          actions: "setHoveredValue"
         },
         GROUP_POINTER_LEAVE: {
-          actions: "clearHoveredValue",
+          actions: "clearHoveredValue"
         },
         BLUR: "idle",
         SPACE: {
           cond: "isValueEmpty",
-          actions: ["setValue"],
+          actions: ["setValue"]
         },
         CLICK: {
-          actions: ["setValue", "focusActiveRadio"],
+          actions: ["setValue", "focusActiveRadio"]
         },
         ARROW_LEFT: {
-          actions: ["setPrevValue", "focusActiveRadio"],
+          actions: ["setPrevValue", "focusActiveRadio"]
         },
         ARROW_RIGHT: {
-          actions: ["setNextValue", "focusActiveRadio"],
+          actions: ["setNextValue", "focusActiveRadio"]
         },
         HOME: {
-          actions: ["setValueToMin", "focusActiveRadio"],
+          actions: ["setValueToMin", "focusActiveRadio"]
         },
         END: {
-          actions: ["setValueToMax", "focusActiveRadio"],
-        },
-      },
+          actions: ["setValueToMax", "focusActiveRadio"]
+        }
+      }
     },
     hover: {
       on: {
         POINTER_OVER: {
-          actions: "setHoveredValue",
+          actions: "setHoveredValue"
         },
-        GROUP_POINTER_LEAVE: [
-          {
-            cond: "isRadioFocused",
-            target: "focus",
-            actions: "clearHoveredValue",
-          },
-          {
-            target: "idle",
-            actions: "clearHoveredValue",
-          },
-        ],
+        GROUP_POINTER_LEAVE: [{
+          cond: "isRadioFocused",
+          target: "focus",
+          actions: "clearHoveredValue"
+        }, {
+          target: "idle",
+          actions: "clearHoveredValue"
+        }],
         CLICK: {
-          actions: ["setValue", "focusActiveRadio"],
-        },
-      },
-    },
-  },
+          actions: ["setValue", "focusActiveRadio"]
+        }
+      }
+    }
+  }
 })

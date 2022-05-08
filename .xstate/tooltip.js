@@ -1,47 +1,46 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "tooltip",
   initial: "unknown",
   on: {
     OPEN: "open",
-    CLOSE: "closed",
+    CLOSE: "closed"
   },
   states: {
     unknown: {
       on: {
         SETUP: {
           target: "closed",
-          actions: "setupDocument",
-        },
-      },
+          actions: "setupDocument"
+        }
+      }
     },
     closed: {
       tags: ["closed"],
       entry: ["clearGlobalId", "invokeOnClose"],
       on: {
         FOCUS: "open",
-        POINTER_ENTER: [
-          {
-            cond: "noVisibleTooltip",
-            target: "opening",
-          },
-          {
-            target: "open",
-          },
-        ],
-      },
+        POINTER_ENTER: [{
+          cond: "noVisibleTooltip",
+          target: "opening"
+        }, {
+          target: "open"
+        }]
+      }
     },
     opening: {
       tags: ["closed"],
       activities: ["trackScroll", "trackPointerlockChange"],
       after: {
-        OPEN_DELAY: "open",
+        OPEN_DELAY: "open"
       },
       on: {
         POINTER_LEAVE: "closed",
@@ -50,59 +49,50 @@ const fetchMachine = createMachine({
         POINTER_LOCK_CHANGE: "closed",
         POINTER_DOWN: {
           cond: "closeOnPointerDown",
-          target: "closed",
-        },
-      },
+          target: "closed"
+        }
+      }
     },
     open: {
       tags: ["open"],
-      activities: [
-        "trackEscapeKey",
-        "trackDisabledTriggerOnSafari",
-        "trackScroll",
-        "trackPointerlockChange",
-        "computePlacement",
-      ],
+      activities: ["trackEscapeKey", "trackDisabledTriggerOnSafari", "trackScroll", "trackPointerlockChange", "computePlacement"],
       entry: ["setGlobalId", "invokeOnOpen"],
       on: {
-        POINTER_LEAVE: [
-          {
-            cond: "isVisible",
-            target: "closing",
-          },
-          {
-            target: "closed",
-          },
-        ],
+        POINTER_LEAVE: [{
+          cond: "isVisible",
+          target: "closing"
+        }, {
+          target: "closed"
+        }],
         BLUR: "closed",
         ESCAPE: "closed",
         SCROLL: "closed",
         POINTER_LOCK_CHANGE: "closed",
         TOOLTIP_POINTER_LEAVE: {
           cond: "isInteractive",
-          target: "closing",
+          target: "closing"
         },
         POINTER_DOWN: {
           cond: "closeOnPointerDown",
-          target: "closed",
+          target: "closed"
         },
-        CLICK: "closed",
-      },
+        CLICK: "closed"
+      }
     },
     closing: {
       tags: ["open"],
       activities: ["trackStore", "computePlacement"],
       after: {
-        CLOSE_DELAY: "closed",
+        CLOSE_DELAY: "closed"
       },
       on: {
         FORCE_CLOSE: "closed",
         POINTER_ENTER: "open",
         TOOLTIP_POINTER_ENTER: {
           cond: "isInteractive",
-          target: "open",
-        },
-      },
-    },
-  },
+          target: "open"
+        }
+      }
+    }
+  }
 })

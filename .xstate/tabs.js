@@ -1,88 +1,87 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   initial: "unknown",
   on: {
     SET_VALUE: {
-      actions: "setValue",
+      actions: "setValue"
     },
     DELETE: {
-      actions: "deleteValue",
-    },
+      actions: "deleteValue"
+    }
   },
   states: {
     unknown: {
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
-        },
-      },
+          actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setContentTabIndex"]
+        }
+      }
     },
     idle: {
       on: {
         TAB_FOCUS: {
           cond: "selectOnFocus",
           target: "focused",
-          actions: ["setFocusedValue", "setValue"],
+          actions: ["setFocusedValue", "setValue"]
         },
         TAB_CLICK: {
           target: "focused",
-          actions: ["setFocusedValue", "setValue"],
-        },
-      },
+          actions: ["setFocusedValue", "setValue"]
+        }
+      }
     },
     focused: {
       on: {
         TAB_CLICK: {
           target: "focused",
-          actions: ["setFocusedValue", "setValue"],
+          actions: ["setFocusedValue", "setValue"]
         },
         ARROW_LEFT: {
           cond: "isHorizontal",
-          actions: "focusPrevTab",
+          actions: "focusPrevTab"
         },
         ARROW_RIGHT: {
           cond: "isHorizontal",
-          actions: "focusNextTab",
+          actions: "focusNextTab"
         },
         ARROW_UP: {
           cond: "isVertical",
-          actions: "focusPrevTab",
+          actions: "focusPrevTab"
         },
         ARROW_DOWN: {
           cond: "isVertical",
-          actions: "focusNextTab",
+          actions: "focusNextTab"
         },
         HOME: {
-          actions: "focusFirstTab",
+          actions: "focusFirstTab"
         },
         END: {
-          actions: "focusLastTab",
+          actions: "focusLastTab"
         },
         ENTER: {
           cond: "!selectOnFocus",
-          actions: "setValue",
+          actions: "setValue"
         },
-        TAB_FOCUS: [
-          {
-            cond: "selectOnFocus",
-            actions: ["setFocusedValue", "setValue"],
-          },
-          {
-            actions: "setFocusedValue",
-          },
-        ],
+        TAB_FOCUS: [{
+          cond: "selectOnFocus",
+          actions: ["setFocusedValue", "setValue"]
+        }, {
+          actions: "setFocusedValue"
+        }],
         TAB_BLUR: {
           target: "idle",
-          actions: "clearFocusedValue",
-        },
-      },
-    },
-  },
+          actions: "clearFocusedValue"
+        }
+      }
+    }
+  }
 })

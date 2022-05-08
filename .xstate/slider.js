@@ -1,80 +1,82 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "slider",
   initial: "unknown",
   activities: ["trackFormReset", "trackScriptedUpdate"],
   on: {
     SET_VALUE: {
-      actions: "setValue",
+      actions: "setValue"
     },
     INCREMENT: {
-      actions: "increment",
+      actions: "increment"
     },
     DECREMENT: {
-      actions: "decrement",
-    },
+      actions: "decrement"
+    }
   },
   states: {
     unknown: {
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "setThumbSize", "checkValue"],
-        },
-      },
+          actions: ["setupDocument", "setThumbSize", "checkValue"]
+        }
+      }
     },
     idle: {
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
+          actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"]
         },
-        FOCUS: "focus",
-      },
+        FOCUS: "focus"
+      }
     },
     focus: {
       entry: "focusThumb",
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
+          actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"]
         },
         ARROW_LEFT: {
           cond: "isHorizontal",
-          actions: "decrement",
+          actions: "decrement"
         },
         ARROW_RIGHT: {
           cond: "isHorizontal",
-          actions: "increment",
+          actions: "increment"
         },
         ARROW_UP: {
           cond: "isVertical",
-          actions: "increment",
+          actions: "increment"
         },
         ARROW_DOWN: {
           cond: "isVertical",
-          actions: "decrement",
+          actions: "decrement"
         },
         PAGE_UP: {
-          actions: "increment",
+          actions: "increment"
         },
         PAGE_DOWN: {
-          actions: "decrement",
+          actions: "decrement"
         },
         HOME: {
-          actions: "setToMin",
+          actions: "setToMin"
         },
         END: {
-          actions: "setToMax",
+          actions: "setToMax"
         },
-        BLUR: "idle",
-      },
+        BLUR: "idle"
+      }
     },
     dragging: {
       entry: "focusThumb",
@@ -82,12 +84,12 @@ const fetchMachine = createMachine({
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: "invokeOnChangeEnd",
+          actions: "invokeOnChangeEnd"
         },
         POINTER_MOVE: {
-          actions: "setPointerValue",
-        },
-      },
-    },
-  },
+          actions: "setPointerValue"
+        }
+      }
+    }
+  }
 })

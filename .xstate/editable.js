@@ -1,33 +1,32 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "editable",
   initial: "unknown",
   on: {
     SET_VALUE: {
-      actions: ["setValue", "invokeOnChange"],
-    },
+      actions: ["setValue", "invokeOnChange"]
+    }
   },
   states: {
     unknown: {
       on: {
-        SETUP: [
-          {
-            cond: "startWithEditView",
-            target: "edit",
-            actions: "setupDocument",
-          },
-          {
-            target: "preview",
-            actions: "setupDocument",
-          },
-        ],
-      },
+        SETUP: [{
+          cond: "startWithEditView",
+          target: "edit",
+          actions: "setupDocument"
+        }, {
+          target: "preview",
+          actions: "setupDocument"
+        }]
+      }
     },
     preview: {
       entry: "clearPointerdownNode",
@@ -35,14 +34,14 @@ const fetchMachine = createMachine({
         EDIT: "edit",
         DBLCLICK: {
           cond: "activateOnDblClick",
-          target: "edit",
+          target: "edit"
         },
         FOCUS: {
           cond: "activateOnFocus",
           target: "edit",
-          actions: "setPreviousValue",
-        },
-      },
+          actions: "setPreviousValue"
+        }
+      }
     },
     edit: {
       activities: "trackPointerDown",
@@ -50,33 +49,30 @@ const fetchMachine = createMachine({
       on: {
         TYPE: {
           cond: "!isAtMaxLength",
-          actions: ["setValue", "invokeOnChange"],
+          actions: ["setValue", "invokeOnChange"]
         },
-        BLUR: [
-          {
-            cond: "submitOnBlur",
-            target: "preview",
-            actions: ["focusEditButton", "invokeOnSubmit"],
-          },
-          {
-            target: "preview",
-            actions: ["revertValue", "focusEditButton", "invokeOnCancel"],
-          },
-        ],
+        BLUR: [{
+          cond: "submitOnBlur",
+          target: "preview",
+          actions: ["focusEditButton", "invokeOnSubmit"]
+        }, {
+          target: "preview",
+          actions: ["revertValue", "focusEditButton", "invokeOnCancel"]
+        }],
         CANCEL: {
           target: "preview",
-          actions: ["focusEditButton", "revertValue", "invokeOnCancel"],
+          actions: ["focusEditButton", "revertValue", "invokeOnCancel"]
         },
         ENTER: {
           cond: "submitOnEnter",
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"],
+          actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"]
         },
         SUBMIT: {
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"],
-        },
-      },
-    },
-  },
+          actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"]
+        }
+      }
+    }
+  }
 })

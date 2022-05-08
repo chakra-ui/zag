@@ -1,64 +1,63 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "accordion",
   initial: "unknown",
   on: {
     SET_VALUE: {
-      actions: "setValue",
-    },
+      actions: "setValue"
+    }
   },
   states: {
     unknown: {
       on: {
         SETUP: {
           target: "idle",
-          actions: "setupDocument",
-        },
-      },
+          actions: "setupDocument"
+        }
+      }
     },
     idle: {
       on: {
         FOCUS: {
           target: "focused",
-          actions: "setFocusedValue",
-        },
-      },
+          actions: "setFocusedValue"
+        }
+      }
     },
     focused: {
       on: {
         ARROW_DOWN: {
-          actions: "focusNext",
+          actions: "focusNext"
         },
         ARROW_UP: {
-          actions: "focusPrev",
+          actions: "focusPrev"
         },
-        CLICK: [
-          {
-            cond: "isExpanded && canToggle",
-            actions: "collapse",
-          },
-          {
-            cond: "!isExpanded",
-            actions: "expand",
-          },
-        ],
+        CLICK: [{
+          cond: "isExpanded && canToggle",
+          actions: "collapse"
+        }, {
+          cond: "!isExpanded",
+          actions: "expand"
+        }],
         HOME: {
-          actions: "focusFirst",
+          actions: "focusFirst"
         },
         END: {
-          actions: "focusLast",
+          actions: "focusLast"
         },
         BLUR: {
           target: "idle",
-          actions: "clearFocusedValue",
-        },
-      },
-    },
-  },
+          actions: "clearFocusedValue"
+        }
+      }
+    }
+  }
 })

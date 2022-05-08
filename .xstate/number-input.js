@@ -1,46 +1,48 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "number-input",
   initial: "unknown",
   entry: ["syncInputValue"],
   on: {
     SET_VALUE: {
-      actions: ["setValue", "setHintToSet"],
+      actions: ["setValue", "setHintToSet"]
     },
     INCREMENT: {
-      actions: ["increment"],
+      actions: ["increment"]
     },
     DECREMENT: {
-      actions: ["decrement"],
-    },
+      actions: ["decrement"]
+    }
   },
   states: {
     unknown: {
       on: {
         SETUP: {
           target: "idle",
-          actions: "setupDocument",
-        },
-      },
+          actions: "setupDocument"
+        }
+      }
     },
     idle: {
       on: {
         PRESS_DOWN: {
           target: "before:spin",
-          actions: ["focusInput", "setHint"],
+          actions: ["focusInput", "setHint"]
         },
         PRESS_DOWN_SCRUBBER: {
           target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"],
+          actions: ["focusInput", "setHint", "setCursorPoint"]
         },
-        FOCUS: "focused",
-      },
+        FOCUS: "focused"
+      }
     },
     focused: {
       tags: ["focus"],
@@ -48,82 +50,75 @@ const fetchMachine = createMachine({
       on: {
         PRESS_DOWN: {
           target: "before:spin",
-          actions: ["focusInput", "setHint"],
+          actions: ["focusInput", "setHint"]
         },
         PRESS_DOWN_SCRUBBER: {
           target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"],
+          actions: ["focusInput", "setHint", "setCursorPoint"]
         },
         ARROW_UP: {
-          actions: "increment",
+          actions: "increment"
         },
         ARROW_DOWN: {
-          actions: "decrement",
+          actions: "decrement"
         },
         HOME: {
-          actions: "setToMin",
+          actions: "setToMin"
         },
         END: {
-          actions: "setToMax",
+          actions: "setToMax"
         },
         CHANGE: {
-          actions: ["setValue", "setSelectionRange", "setHint"],
+          actions: ["setValue", "setSelectionRange", "setHint"]
         },
-        BLUR: [
-          {
-            cond: "isInvalidExponential",
-            target: "idle",
-            actions: ["clearValue", "clearHint"],
-          },
-          {
-            cond: "clampOnBlur && !isInRange",
-            target: "idle",
-            actions: ["clampValue", "clearHint"],
-          },
-          {
-            actions: ["roundValue"],
-          },
-        ],
-      },
+        BLUR: [{
+          cond: "isInvalidExponential",
+          target: "idle",
+          actions: ["clearValue", "clearHint"]
+        }, {
+          cond: "clampOnBlur && !isInRange",
+          target: "idle",
+          actions: ["clampValue", "clearHint"]
+        }, {
+          actions: ["roundValue"]
+        }]
+      }
     },
     "before:spin": {
       tags: ["focus"],
-      entry: choose([
-        {
-          cond: "isIncrementHint",
-          actions: "increment",
-        },
-        {
-          cond: "isDecrementHint",
-          actions: "decrement",
-        },
-      ]),
+      entry: choose([{
+        cond: "isIncrementHint",
+        actions: "increment"
+      }, {
+        cond: "isDecrementHint",
+        actions: "decrement"
+      }]),
       after: {
         CHANGE_DELAY: {
           target: "spinning",
-          cond: "isInRange",
-        },
+          cond: "isInRange"
+        }
       },
       on: {
         PRESS_UP: {
           target: "focused",
-          actions: ["clearHint", "restoreSelection"],
-        },
-      },
+          actions: ["clearHint", "restoreSelection"]
+        }
+      }
     },
     spinning: {
       tags: ["focus"],
       activities: "trackButtonDisabled",
       invoke: {
         src: "interval",
-        id: "interval",
+        id: "interval"
       },
       on: {
         PRESS_UP: {
           target: "focused",
-          actions: ["clearHint", "restoreSelection"],
-        },
-      },
+          actions: ["clearHint", "restoreSelection"]
+        }
+      }
     },
     scrubbing: {
       tags: ["focus"],
@@ -133,19 +128,16 @@ const fetchMachine = createMachine({
       on: {
         POINTER_UP_SCRUBBER: {
           target: "focused",
-          actions: ["clearCursorPoint"],
+          actions: ["clearCursorPoint"]
         },
-        POINTER_MOVE_SCRUBBER: [
-          {
-            cond: "isIncrementHint",
-            actions: ["increment", "setCursorPoint", "updateCursor"],
-          },
-          {
-            cond: "isDecrementHint",
-            actions: ["decrement", "setCursorPoint", "updateCursor"],
-          },
-        ],
-      },
-    },
-  },
+        POINTER_MOVE_SCRUBBER: [{
+          cond: "isIncrementHint",
+          actions: ["increment", "setCursorPoint", "updateCursor"]
+        }, {
+          cond: "isDecrementHint",
+          actions: ["decrement", "setCursorPoint", "updateCursor"]
+        }]
+      }
+    }
+  }
 })

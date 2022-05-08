@@ -1,37 +1,35 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id,
   entry: "invokeOnOpen",
   initial: type === "loading" ? "persist" : "active",
   on: {
-    UPDATE: [
-      {
-        cond: "hasTypeChanged && isChangingToLoading",
-        target: "persist",
-        actions: ["setContext", "invokeOnUpdate"],
-      },
-      {
-        cond: "hasDurationChanged || hasTypeChanged",
-        target: "active:temp",
-        actions: ["setContext", "invokeOnUpdate"],
-      },
-      {
-        actions: ["setContext", "invokeOnUpdate"],
-      },
-    ],
+    UPDATE: [{
+      cond: "hasTypeChanged && isChangingToLoading",
+      target: "persist",
+      actions: ["setContext", "invokeOnUpdate"]
+    }, {
+      cond: "hasDurationChanged || hasTypeChanged",
+      target: "active:temp",
+      actions: ["setContext", "invokeOnUpdate"]
+    }, {
+      actions: ["setContext", "invokeOnUpdate"]
+    }]
   },
   states: {
     "active:temp": {
       tags: ["visible", "updating"],
       after: {
-        0: "active",
-      },
+        0: "active"
+      }
     },
     persist: {
       tags: ["visible", "paused"],
@@ -40,37 +38,37 @@ const fetchMachine = createMachine({
         RESUME: {
           cond: "!isLoadingType",
           target: "active",
-          actions: ["setCreatedAt"],
+          actions: ["setCreatedAt"]
         },
-        DISMISS: "dismissing",
-      },
+        DISMISS: "dismissing"
+      }
     },
     active: {
       tags: ["visible"],
       activities: "trackDocumentVisibility",
       after: {
-        VISIBLE_DURATION: "dismissing",
+        VISIBLE_DURATION: "dismissing"
       },
       on: {
         DISMISS: "dismissing",
         PAUSE: {
           target: "persist",
-          actions: "setRemainingDuration",
-        },
-      },
+          actions: "setRemainingDuration"
+        }
+      }
     },
     dismissing: {
       entry: "invokeOnClosing",
       after: {
         REMOVE_DELAY: {
           target: "inactive",
-          actions: "notifyParentToRemove",
-        },
-      },
+          actions: "notifyParentToRemove"
+        }
+      }
     },
     inactive: {
       entry: "invokeOnClose",
-      type: "final",
-    },
-  },
+      type: "final"
+    }
+  }
 })

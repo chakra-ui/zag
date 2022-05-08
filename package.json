@@ -83,7 +83,7 @@
     "**/*.{ts,tsx,js,jsx}": "prettier --write",
     "**/*.machine.ts": [
       "yarn zag visualize --all",
-      "git commit -m 'chore': visualize machine"
+      "git add .xstate/*.js"
     ]
   },
   "commitlint": {
