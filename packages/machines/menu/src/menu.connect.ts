@@ -259,13 +259,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           if (!allow) event.preventDefault()
           event.stopPropagation()
           exec(event)
+          //
         } else {
-          const editable = isElementEditable(activeItem)
+          //
+          const isEditable = isElementEditable(activeItem)
           const isKeyDownInside = contains(event.currentTarget, event.target)
           const isModified = isModifiedEvent(event)
           const isSingleKey = event.key.length === 1
 
-          if (isSingleKey && !isModified && isKeyDownInside && !editable) {
+          if (isSingleKey && !isModified && isKeyDownInside && !isEditable) {
             event.preventDefault()
             event.stopPropagation()
             send({ type: "TYPEAHEAD", key: event.key })
