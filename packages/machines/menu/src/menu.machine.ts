@@ -92,7 +92,6 @@ export function machine(ctx: UserDefinedContext = {}) {
             TRIGGER_CLICK: {
               guard: not("isSubmenu"),
               target: "open",
-              actions: "focusFirstItem",
             },
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
@@ -163,10 +162,10 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "open",
               actions: "setAnchorPoint",
             },
-            TRIGGER_CLICK: {
-              target: "open",
-              actions: "focusFirstItem",
-            },
+            TRIGGER_CLICK: [
+              { guard: "isKeyboardEvent", target: "open", actions: "focusFirstItem" },
+              { target: "open" },
+            ],
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
@@ -330,6 +329,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (!ctx.intentPolygon) return false
           return withinPolygon(ctx.intentPolygon, evt.point)
         },
+        isKeyboardEvent: (_ctx, evt) => /^(ARROW_DOWN|ARROW_UP|HOME|END)/.test(evt.type) || Boolean(evt.key),
       },
 
       activities: {
@@ -484,7 +484,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.activeId = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
-          ctx.onSelect?.(ctx.activeId ?? "")
+          if (ctx.activeId) {
+            ctx.onSelect?.(ctx.activeId)
+          }
         },
         focusItem(ctx, event) {
           ctx.activeId = event.id

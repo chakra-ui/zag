@@ -1,9 +1,17 @@
 import { mergeProps } from "@zag-js/core"
-import { contains, dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@zag-js/dom-utils"
+import {
+  contains,
+  dataAttr,
+  EventKeyMap,
+  getEventKey,
+  getNativeEvent,
+  isElementEditable,
+  validateBlur,
+} from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
-import { isLeftClick } from "@zag-js/utils"
+import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import { Api, ItemProps, OptionItemProps, Send, Service, State, GroupProps, LabelProps } from "./menu.types"
 
@@ -11,6 +19,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const pointerdownNode = state.context.pointerdownNode
   const isSubmenu = state.context.isSubmenu
   const values = state.context.values
+  const isTypingAhead = state.context.typeahead.keysSoFar !== ""
 
   const isOpen = state.hasTag("visible")
 
@@ -137,10 +146,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
             send("ARROW_UP")
           },
           Enter() {
-            send("TRIGGER_CLICK")
+            send({ type: "TRIGGER_CLICK", key: "Enter" })
           },
           Space() {
-            send("TRIGGER_CLICK")
+            send({ type: "TRIGGER_CLICK", key: "Space" })
           },
         }
 
@@ -227,7 +236,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
             send("ENTER")
           },
           Space(event) {
-            keyMap.Enter?.(event)
+            if (isTypingAhead) {
+              send({ type: "TYPEAHEAD", key: event.key })
+            } else {
+              keyMap.Enter?.(event)
+            }
           },
           Home() {
             send("HOME")
@@ -247,15 +260,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           event.stopPropagation()
           exec(event)
         } else {
-          // NOTE: we'll need to more robust isEditable(el) check
-          const editable = activeItem?.matches("input, textarea, [contenteditable], select")
-          const isKeyDownInside = event.currentTarget.contains(event.target as HTMLElement)
-          const isModifierKey = event.ctrlKey || event.altKey || event.metaKey
-
-          // NOTE: we'll need to support full text search typeahead, not just single key
+          const editable = isElementEditable(activeItem)
+          const isKeyDownInside = contains(event.currentTarget, event.target)
+          const isModified = isModifiedEvent(event)
           const isSingleKey = event.key.length === 1
 
-          if (isSingleKey && !isModifierKey && isKeyDownInside && !editable) {
+          if (isSingleKey && !isModified && isKeyDownInside && !editable) {
             event.preventDefault()
             event.stopPropagation()
             send({ type: "TYPEAHEAD", key: event.key })
