@@ -326,14 +326,20 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getOptionItemProps(options: OptionItemProps) {
-      const { type, disabled, onCheckedChange } = options
-      options.id = options.id ?? options.value
+      const { name, type, disabled, onCheckedChange } = options
+
+      options.id ??= options.value
+      options.valueText ??= options.value
+
       const checked = api.isOptionChecked(options)
+
       return Object.assign(
-        api.getItemProps(options as any),
+        api.getItemProps(options as ItemProps),
         normalize.element<T>({
-          "data-name": options.name,
+          "data-type": type,
+          "data-name": name,
           "data-part": "option-item",
+          "data-value": options.value,
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           "data-checked": dataAttr(checked),

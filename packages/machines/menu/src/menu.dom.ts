@@ -24,7 +24,7 @@ export const dom = {
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getContentId(ctx))
-    const selector = `[role=menuitem][data-ownedby=${ownerId}]:not([data-disabled])`
+    const selector = `[role^="menuitem"][data-ownedby=${ownerId}]:not([data-disabled])`
     return queryAll(dom.getContentEl(ctx), selector)
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
