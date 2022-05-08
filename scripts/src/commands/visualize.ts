@@ -70,7 +70,8 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
         const transformedArguments = tPath.node.arguments
           .map((arg) => {
             if (t.isStringLiteral(arg)) {
-              return arg.value
+              const hasMultipleArgs = arg.value.split(" ").length > 1
+              return hasMultipleArgs ? `(${arg.value})` : arg.value
             }
           })
           .join(` ${separator} `)
