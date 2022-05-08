@@ -8,7 +8,7 @@ export const dom = {
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.uid}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.uid}:label`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.uid}`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.uid}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.uid}:input`,
   getListboxId: (ctx: Ctx) => ctx.ids?.listbox ?? `combobox:${ctx.uid}:listbox`,
   getPositionerId: (ctx: Ctx) => `combobox:${ctx.uid}:popper`,

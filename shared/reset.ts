@@ -1,6 +1,9 @@
 import { injectGlobal } from "@emotion/css"
 
 injectGlobal({
+  body: {
+    margin: 0,
+  },
   ":root": {
     "--ring-color": "blue",
   },
@@ -22,6 +25,8 @@ injectGlobal({
   },
   ".index-nav": {
     lineHeight: "1em",
+    flex: "1",
+    padding: "40px",
     ul: {
       listStyleType: "none",
       display: "grid",

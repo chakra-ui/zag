@@ -1,5 +1,16 @@
 # @zag-js/popover
 
+## 0.1.2
+
+### Patch Changes
+
+- [#70](https://github.com/chakra-ui/zag/pull/70)
+  [`29691a7`](https://github.com/chakra-ui/zag/commit/29691a7151047bf4a62474c2be64acfc18d827ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prefer `raf` over `nextTick` for focus management
+
+- Updated dependencies [[`3f715bd`](https://github.com/chakra-ui/zag/commit/3f715bdc4f52cdbf71ce9a22a3fc20d31c5fea89)]:
+  - @zag-js/core@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

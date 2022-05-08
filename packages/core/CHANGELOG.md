@@ -1,5 +1,12 @@
 # @zag-js/core
 
+## 0.1.2
+
+### Patch Changes
+
+- [`3f715bd`](https://github.com/chakra-ui/zag/commit/3f715bdc4f52cdbf71ce9a22a3fc20d31c5fea89) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where computed properties are delete on fast-refresh
+
 ## 0.1.1
 
 ### Patch Changes
