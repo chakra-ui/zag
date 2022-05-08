@@ -136,4 +136,16 @@ test.describe("number input", () => {
       await page.mouse.up()
     })
   })
+
+  test.only("should clamp to precision", async ({ page }) => {
+    // set precision to 2
+    await controls(page).num("precision", "2")
+
+    await page.type(input, "12.345678")
+
+    // blur the input
+    await clickOutside(page)
+
+    await expect(page.locator(input)).toHaveValue("12.35")
+  })
 })
