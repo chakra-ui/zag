@@ -52,3 +52,14 @@ export function getNativeEvent<E>(
 ): React.ChangeEvent<any> extends E ? InputEvent : E extends React.SyntheticEvent<any, infer T> ? T : never {
   return (event as any).nativeEvent ?? event
 }
+
+export function isElementEditable(el: HTMLElement | null) {
+  if (el == null) return false
+  const selectors = [
+    "input:not([readonly])",
+    "textarea:not([readonly])",
+    "[contenteditable]",
+    "select:not([readonly])",
+  ].join(", ")
+  return el.matches(selectors) || el.isContentEditable
+}
