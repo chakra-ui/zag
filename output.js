@@ -2,8 +2,10 @@
 
 var _xstate = require("xstate")
 
-const { choose } = _xstate.actions
-const fetchMachine = (0, _xstate.createMachine)({
+const { actions, createMachine } = _xstate
+
+const { choose } = actions
+const fetchMachine = createMachine({
   id: "number-input",
   initial: "unknown",
   entry: ["syncInputValue"],

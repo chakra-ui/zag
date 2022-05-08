@@ -134,16 +134,22 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
   if (machineObj && outFile) {
     const machineObjOutput = generate(machineObj, {}, code)
 
-    const machineWithImports = `import { createMachine, assign, actions } from 'xstate';
+    const machineWithImports = `"use strict";
 
+var _xstate = require("xstate");
+
+const {
+  actions, createMachine
+} = _xstate;
+  
 const { choose } = actions;
 const fetchMachine = createMachine(${machineObjOutput.code})`
 
-    const commonJsMachine = babelCore.transformSync(machineWithImports, {
-      plugins: ["@babel/plugin-transform-modules-commonjs"],
-    })
+    // const commonJsMachine = babelCore.transformSync(machineWithImports, {
+    //   plugins: ["@babel/plugin-transform-modules-commonjs"],
+    // })
 
-    fs.writeFileSync(outFile, commonJsMachine.code)
+    fs.writeFileSync(outFile, machineWithImports)
     logger.success(`${component} machine visualization complete. 😎`)
   }
 }
