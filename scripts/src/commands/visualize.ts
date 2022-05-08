@@ -32,20 +32,11 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
     sourceType: "module",
     plugins: ["typescript"],
   })
-  logger.success(component)
 
   //store machine config so we can ignore all other keys
   let machineObj = null
 
   traverse(ast, {
-    ImportDeclaration: function (path) {
-      path.remove()
-    },
-
-    VariableDeclaration: function (path) {
-      path.remove()
-    },
-
     Identifier: function (path) {
       // transform instances of `every` to "invoke interval" object
       if (path.isIdentifier({ name: "every" }) && path.parentPath.node.type === "ObjectProperty") {
@@ -60,7 +51,7 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
         path.replaceWithSourceString("cond")
       }
 
-      if (DISALLOWED_PROPERTIES.includes(path.node.name)) {
+      if (DISALLOWED_PROPERTIES.includes(path.node.name) && t.isObjectProperty(path.parentPath.node)) {
         path.parentPath.remove()
       }
     },
