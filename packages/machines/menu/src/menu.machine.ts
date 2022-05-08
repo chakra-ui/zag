@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { addPointerEvent, contains, isFocusable, raf, trackPointerDown } from "@zag-js/dom-utils"
+import { addPointerEvent, contains, findByTypeahead, isFocusable, raf, trackPointerDown } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
-import { getElementRect, getEventPoint, inset, withinPolygon } from "@zag-js/rect-utils"
+import { getEventPoint, inset, Rect, withinPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
@@ -27,6 +27,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         closeOnSelect: true,
         isPlacementComplete: false,
         ...ctx,
+        typeahead: findByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -40,8 +41,8 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       watch: {
-        isSubmenu: ["setSubmenuPlacement"],
-        anchorPoint: ["applyAnchorPoint"],
+        isSubmenu: "setSubmenuPlacement",
+        anchorPoint: "applyAnchorPoint",
       },
 
       on: {
@@ -91,7 +92,6 @@ export function machine(ctx: UserDefinedContext = {}) {
             TRIGGER_CLICK: {
               guard: not("isSubmenu"),
               target: "open",
-              actions: "focusFirstItem",
             },
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
@@ -162,10 +162,10 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "open",
               actions: "setAnchorPoint",
             },
-            TRIGGER_CLICK: {
-              target: "open",
-              actions: "focusFirstItem",
-            },
+            TRIGGER_CLICK: [
+              { guard: "isKeyboardEvent", target: "open", actions: "focusFirstItem" },
+              { target: "open" },
+            ],
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
@@ -196,18 +196,14 @@ export function machine(ctx: UserDefinedContext = {}) {
                 guard: "hasActiveId",
                 actions: ["focusPrevItem", "focusMenu"],
               },
-              {
-                actions: ["focusLastItem"],
-              },
+              { actions: "focusLastItem" },
             ],
             ARROW_DOWN: [
               {
                 guard: "hasActiveId",
                 actions: ["focusNextItem", "focusMenu"],
               },
-              {
-                actions: ["focusFirstItem"],
-              },
+              { actions: "focusFirstItem" },
             ],
             ARROW_LEFT: {
               guard: "isSubmenu",
@@ -235,7 +231,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnSelect", "closeParentMenus"],
+                actions: ["invokeOnSelect", "clickActiveOptionIfNeeded", "closeParentMenus"],
               },
             ],
             ESCAPE: [
@@ -329,6 +325,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (!ctx.intentPolygon) return false
           return withinPolygon(ctx.intentPolygon, evt.point)
         },
+        isKeyboardEvent: (_ctx, evt) => /^(ARROW_DOWN|ARROW_UP|HOME|END)/.test(evt.type) || Boolean(evt.key),
       },
 
       activities: {
@@ -400,9 +397,13 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         invokeOnValueChange(ctx, evt) {
           if (!ctx.values) return
-          const name = evt.name ?? evt.option.name
+          const name = evt.name ?? evt.option?.name
+          if (!name) return
           const values = ctx.values[name]
-          return ctx.onValuesChange?.({ name, value: isArray(values) ? Array.from(values) : values })
+          ctx.onValuesChange?.({
+            name,
+            value: isArray(values) ? Array.from(values) : values,
+          })
         },
         setOptionValue(ctx, evt) {
           if (!ctx.values) return
@@ -418,11 +419,16 @@ export function machine(ctx: UserDefinedContext = {}) {
             ctx.values[name] = value
           }
         },
+        clickActiveOptionIfNeeded(ctx) {
+          const option = dom.getActiveItemEl(ctx)
+          if (!option || option.dataset.part !== "option-item") return
+          option.click()
+        },
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
           if (!menu) return
 
-          let rect = getElementRect(menu)
+          let rect = Rect.create(menu.getBoundingClientRect())
           const BUFFER = 20
 
           rect = inset(rect, { dx: -BUFFER, dy: -BUFFER })
@@ -483,7 +489,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.activeId = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
-          ctx.onSelect?.(ctx.activeId ?? "")
+          if (ctx.activeId) {
+            ctx.onSelect?.(ctx.activeId)
+          }
         },
         focusItem(ctx, event) {
           ctx.activeId = event.id

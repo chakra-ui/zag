@@ -19,11 +19,12 @@ const menu_3 = {
 }
 
 const expectToBeFocused = async (page: Page, id: string) => {
-  return await expect(page.locator(id)).toHaveAttribute("data-focus", "")
+  return await expect(page.locator(id).first()).toHaveAttribute("data-focus", "")
 }
 
-const navigateToSubmenu = async (page: Page) => {
+const navigateToSubmenuTrigger = async (page: Page) => {
   await page.click(menu_1.trigger)
+  await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
@@ -35,13 +36,13 @@ test.describe("menu", () => {
   })
 
   test("[keyboard] should not open submenu when moving focus to trigger", async ({ page }) => {
-    await navigateToSubmenu(page)
+    await navigateToSubmenuTrigger(page)
     await expect(page.locator(menu_2.menu)).toBeHidden()
   })
 
   test.describe("[keyboard / submenu trigger] should open submenu and focus first item", () => {
     test.beforeEach(async ({ page }) => {
-      await navigateToSubmenu(page)
+      await navigateToSubmenuTrigger(page)
     })
 
     test.afterEach(async ({ page }) => {
@@ -64,31 +65,44 @@ test.describe("menu", () => {
   })
 
   test("[keyboard / hide submenu]", async ({ page }) => {
-    await navigateToSubmenu(page)
+    await navigateToSubmenuTrigger(page)
     await page.keyboard.press("Enter", { delay: 20 })
     await page.keyboard.press("ArrowLeft")
     await expect(page.locator(menu_2.menu)).toBeHidden()
   })
 
-  test("[keyboard / typeahead] should scope typeahead behaviour to the active menu", async ({ page }) => {
-    await page.click(menu_1.trigger)
+  test.describe("[keyboard / typeahead]", () => {
+    test("without active item", async ({ page }) => {
+      await page.click(menu_1.trigger)
 
-    await page.keyboard.type("n")
-    await expectToBeFocused(page, testid("new-tab"))
+      await page.keyboard.type("n")
+      await expectToBeFocused(page, testid("new-file"))
 
-    await page.keyboard.type("n")
-    await expectToBeFocused(page, testid("new-win"))
+      await page.keyboard.type("n")
+      await expectToBeFocused(page, testid("new-tab"))
 
-    await page.keyboard.press("ArrowDown")
+      await page.keyboard.type("e")
+      await expectToBeFocused(page, testid("export"))
 
-    // open submenu
-    await page.keyboard.press("ArrowRight")
-    await expect(page.locator(menu_2.menu)).toBeVisible()
+      await page.keyboard.type("new w")
+      await expectToBeFocused(page, testid("new-win"))
+    })
 
-    await page.keyboard.type("n")
-    await expectToBeFocused(page, testid("name-win"))
-    await page.keyboard.type("n")
-    await expectToBeFocused(page, testid("new-term"))
+    test("[submenu] focus closest item", async ({ page }) => {
+      await page.click(menu_1.trigger)
+
+      await page.keyboard.type("m")
+      await expectToBeFocused(page, testid("more-tools"))
+
+      // open submenu
+      await page.keyboard.press("Enter")
+      await expect(page.locator(menu_2.menu)).toBeVisible()
+
+      await page.keyboard.type("s")
+      await expectToBeFocused(page, testid("switch-win"))
+      await page.keyboard.type("n")
+      await expectToBeFocused(page, testid("new-term"))
+    })
   })
 
   test.describe("[select submenu item]", () => {
@@ -103,13 +117,7 @@ test.describe("menu", () => {
     })
 
     test("keyboard select", async ({ page }) => {
-      // open menu 1
-      await page.click(menu_1.trigger)
-
-      // open menu 2
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown")
+      await navigateToSubmenuTrigger(page)
       await page.keyboard.press("Enter", { delay: 10 })
 
       // open menu 3

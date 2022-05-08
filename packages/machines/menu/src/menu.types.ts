@@ -1,4 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { TypeaheadState } from "@zag-js/dom-utils"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
@@ -114,6 +115,11 @@ type PrivateContext = Context<{
    * Whether the dynamic placement has been computed
    */
   isPlacementComplete: boolean
+  /**
+   * @internal
+   * The typeahead state for faster keyboard navigation
+   */
+  typeahead: TypeaheadState
 }>
 
 /////////////////////////////////////////////////////////////////////////
