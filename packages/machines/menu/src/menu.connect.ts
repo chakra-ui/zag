@@ -145,11 +145,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           ArrowUp() {
             send("ARROW_UP")
           },
-          Enter() {
-            send({ type: "TRIGGER_CLICK", key: "Enter" })
+          Enter(event) {
+            send({ type: "TRIGGER_CLICK", key: event.key })
           },
-          Space() {
-            send({ type: "TRIGGER_CLICK", key: "Space" })
+          Space(event) {
+            send({ type: "TRIGGER_CLICK", key: event.key })
           },
         }
 
