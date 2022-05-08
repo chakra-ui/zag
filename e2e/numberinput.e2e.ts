@@ -137,7 +137,7 @@ test.describe("number input", () => {
     })
   })
 
-  test.only("should clamp to precision", async ({ page }) => {
+  test("should clamp to precision", async ({ page }) => {
     // set precision to 2
     await controls(page).num("precision", "2")
 
