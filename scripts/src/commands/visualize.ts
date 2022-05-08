@@ -18,20 +18,21 @@ const logger = createLogger("visualize")
 const DISALLOWED_PROPERTIES = ["context", "computed", "created", "onEvent", "watch"]
 
 type VisualizeOpts = {
-  outFile?: string
+  outDir?: string
+  all?: boolean
 }
 
-export default async function visualize(component: string, opts: VisualizeOpts) {
-  const { outFile } = opts
+const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
+  const { outDir = ".xstate" } = opts
   const modules = await getMachinePackages()
   const componentModule = modules.find((module) => module.dir.endsWith(component))
   const machineFile = `${componentModule?.dir}/src/${component}.machine.ts`
   const code = fs.readFileSync(machineFile, "utf8")
-
   const ast = parser.parse(code, {
     sourceType: "module",
     plugins: ["typescript"],
   })
+  logger.success(component)
 
   //store machine config so we can ignore all other keys
   let machineObj = null
@@ -130,7 +131,7 @@ export default async function visualize(component: string, opts: VisualizeOpts) 
     },
   })
 
-  if (machineObj && outFile) {
+  if (machineObj) {
     const machineObjOutput = generate(machineObj, {}, code)
 
     const machineWithImports = `"use strict";
@@ -144,11 +145,21 @@ const {
 const { choose } = actions;
 const fetchMachine = createMachine(${machineObjOutput.code})`
 
-    // const commonJsMachine = babelCore.transformSync(machineWithImports, {
-    //   plugins: ["@babel/plugin-transform-modules-commonjs"],
-    // })
-
-    fs.writeFileSync(outFile, machineWithImports)
+    fs.writeFileSync(`${outDir}/${component}.js`, machineWithImports)
     logger.success(`${component} machine visualization complete. 😎`)
+  }
+}
+
+export default async function visualize(component: string, opts: VisualizeOpts) {
+  const { all: shouldVisualizeAll } = opts
+  const modules = await getMachinePackages()
+
+  if (shouldVisualizeAll) {
+    modules.forEach(async (machine) => {
+      const machineName = machine.dir.split("/")[2]
+      await visualizeComponent(machineName, opts)
+    })
+  } else {
+    await visualizeComponent(component, opts)
   }
 }

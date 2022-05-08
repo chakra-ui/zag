@@ -36,8 +36,9 @@ program
 program
   .command("visualize")
   .description("Visualize package")
-  .argument('<component>', 'component machine to visualize')
-  .option("-0, --outFile <outFile>", "parse code to js file")
+  .argument('[component]', 'component machine to visualize')
+  .option("-o, --outDir <outDir>", "folder to store visualized machines")
+  .option("--all", "visualize all components")
   .action(visualize)
 
 program.parse(process.argv)
