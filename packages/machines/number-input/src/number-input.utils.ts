@@ -1,13 +1,14 @@
 import { clamp, decrement, increment, roundToPrecision } from "@zag-js/number-utils"
+import { isModifiedEvent } from "@zag-js/utils"
 import type { KeyboardEvent } from "react"
 import { MachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
   isValidNumericEvent: (ctx: Ctx, event: KeyboardEvent) => {
     if (event.key == null) return true
-    const isModifierKey = event.ctrlKey || event.altKey || event.metaKey
-    const isSingleCharacterKey = event.key.length === 1
-    if (isModifierKey || !isSingleCharacterKey) return true
+    const isModifier = isModifiedEvent(event)
+    const isSingleKey = event.key.length === 1
+    if (isModifier || !isSingleKey) return true
     return ctx.validateCharacter?.(event.key) ?? utils.isFloatingPoint(event.key)
   },
   isFloatingPoint: (v: string) => /^[Ee0-9+\-.]$/.test(v),
