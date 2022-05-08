@@ -32,13 +32,9 @@ export const dom = {
   getNextEl: (ctx: Ctx) => nextById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
   getPrevEl: (ctx: Ctx) => prevById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
 
-  getElemByKey: (ctx: Ctx, key: string) => {
-    return findByTypeahead(dom.getElements(ctx), {
-      state: ctx.typeahead,
-      key,
-      activeId: ctx.activeId,
-    })
-  },
+  getElemByKey: (ctx: Ctx, key: string) =>
+    findByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.activeId }),
+
   getChildMenus: (ctx: Ctx) => {
     return Object.values(ctx.children)
       .map((child) => dom.getContentEl(child.state.context))
