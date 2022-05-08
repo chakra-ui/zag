@@ -1,4 +1,4 @@
-import { formatter, nf } from "./number-format"
+import { formatter } from "./number-format"
 
 export type Num<T extends string> = Record<T, number>
 
@@ -28,8 +28,16 @@ export function clamp(v: number | string, o: Num<"min" | "max">) {
   return Math.min(Math.max(valueOf(v), o.min), o.max)
 }
 
-export function countDecimals(v: number | undefined) {
-  return nf.formatToParts(v).find((p) => p.type === "fraction")?.value.length ?? 0
+export function countDecimals(value: number) {
+  if (!Number.isFinite(value)) return 0
+
+  let e = 1
+  let p = 0
+  while (Math.round(value * e) / e !== value) {
+    e *= 10
+    p += 1
+  }
+  return p
 }
 
 export const increment = (v: number | string, s: number) => formatter(valueOf(v) + s)
@@ -59,9 +67,7 @@ type PrecisionOptions = {
 
 export function getMaxPrecision(o: PrecisionOptions) {
   const stepPrecision = countDecimals(o.step)
-  const val = valueOf(o.value)
-  const valuePrecision = Number.isNaN(val) ? stepPrecision : Math.max(countDecimals(val), stepPrecision)
-  return Math.max(valuePrecision, o.precision ?? 0)
+  return Math.max(stepPrecision, o.precision ?? 0)
 }
 
 export function roundToPrecision(v: number | string, o: Omit<PrecisionOptions, "value">) {
