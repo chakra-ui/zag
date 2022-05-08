@@ -1,0 +1,29 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "[Jest] Debug tests",
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "request": "launch",
+      "args": ["test", "--runInBand", "--no-cache"],
+      "env": { "CI": "true" },
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "[Jest] Debug tests (watch)",
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "request": "launch",
+      "args": ["test", "${fileBasenameNoExtension}", "--runInBand", "--no-cache", "--watch"],
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "console": "integratedTerminal"
+    }
+  ]
+}
