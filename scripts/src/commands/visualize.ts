@@ -12,7 +12,6 @@ import { createLogger } from "../utilities/log"
 import { getMachinePackages } from "../utilities/packages"
 
 const parser = require("@babel/parser")
-const babelCore = require("@babel/core")
 
 const logger = createLogger("visualize")
 

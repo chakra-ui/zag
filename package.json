@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.4.2",
-    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.19.0",
     "@commitlint/cli": "^16.0.2",
