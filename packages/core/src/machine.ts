@@ -155,10 +155,6 @@ export class Machine<
     this.setState(null)
     this.setEvent(ActionTypes.Stop)
 
-    if (this.config.context) {
-      this.setContext(this.config.context as Partial<TContext>)
-    }
-
     // cleanups
     this.stopStateListeners()
     this.stopChildren()
