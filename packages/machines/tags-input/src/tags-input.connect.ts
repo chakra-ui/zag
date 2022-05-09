@@ -1,12 +1,4 @@
-import {
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getNativeEvent,
-  matchAttr,
-  nextTick,
-  validateBlur,
-} from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, matchAttr, validateBlur } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dom } from "./tags-input.dom"
 import type { Send, State, TagProps } from "./tags-input.types"
