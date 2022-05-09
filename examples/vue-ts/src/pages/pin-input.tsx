@@ -30,14 +30,16 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
-              <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
-              <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
-              <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+            <div>
+              <div ref={ref} {...api.rootProps}>
+                <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
+                <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
+                <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+              </div>
+              <button data-testid="clear-button" onClick={api.clearValue}>
+                Clear
+              </button>
             </div>
-            <button data-testid="clear-button" onClick={api.clearValue}>
-              Clear
-            </button>
           </main>
 
           <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />

@@ -40,32 +40,34 @@ export default defineComponent({
       return (
         <>
           <main>
-            <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
+            <div>
+              <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
 
-            <br />
+              <br />
 
-            <div ref={nodeRef} {...api.rootProps}>
-              <label {...api.labelProps}>Select country</label>
+              <div ref={nodeRef} {...api.rootProps}>
+                <label {...api.labelProps}>Select country</label>
 
-              <div {...api.controlProps}>
-                <input {...api.inputProps} />
-                <button {...api.toggleButtonProps}>▼</button>
+                <div {...api.controlProps}>
+                  <input {...api.inputProps} />
+                  <button {...api.toggleButtonProps}>▼</button>
+                </div>
               </div>
-            </div>
 
-            <div {...api.positionerProps}>
-              {options.value.length > 0 && (
-                <ul {...api.listboxProps}>
-                  {options.value.map((item, index) => (
-                    <li
-                      key={`${item.code}:${index}`}
-                      {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
-                    >
-                      {item.label}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <div {...api.positionerProps}>
+                {options.value.length > 0 && (
+                  <ul {...api.listboxProps}>
+                    {options.value.map((item, index) => (
+                      <li
+                        key={`${item.code}:${index}`}
+                        {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
+                      >
+                        {item.label}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </main>
 
