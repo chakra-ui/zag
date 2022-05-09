@@ -128,6 +128,7 @@ export function machine(ctx: UserDefinedContext = {}) {
                 actions: ["clampValue", "clearHint"],
               },
               {
+                target: "idle",
                 actions: ["roundValue"],
               },
             ],
