@@ -1,4 +1,5 @@
 import { isArray, isObject, isString } from "@zag-js/utils"
+import { snapshot, subscribe } from "valtio/vanilla"
 import type { StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
@@ -13,4 +14,24 @@ export function toArray<T>(value: T | T[] | undefined): T[] {
 
 export function isGuardHelper(value: any): value is { predicate: Function } {
   return isObject(value) && value.predicate != null
+}
+
+export function subscribeKey<T extends object, K extends keyof T>(
+  obj: T,
+  key: K,
+  fn: (value: T[K]) => void,
+  sync?: boolean,
+) {
+  let prev = Reflect.get(snapshot(obj), key)
+  return subscribe(
+    obj,
+    () => {
+      const __obj = snapshot(obj) as T
+      if (!Object.is(prev, __obj[key])) {
+        fn(__obj[key])
+        prev = Reflect.get(__obj, key)
+      }
+    },
+    sync,
+  )
 }

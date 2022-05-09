@@ -1,13 +1,12 @@
 import { cast, clear, invariant, isArray, isObject, isString, noop, runIfFn, uuid, warn } from "@zag-js/utils"
 import { klona } from "klona/json"
-import { derive, subscribeKey, underive } from "valtio/utils"
 import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn, toTransition } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
-import { toArray, toEvent } from "./utils"
+import { subscribeKey, toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -67,7 +66,6 @@ export class Machine<
 
     // create mutatable state
     this.state = createProxy(klona(config))
-    this.setupComputed()
 
     // created actions
     const event = toEvent<TEvent>(ActionTypes.Created)
@@ -89,11 +87,6 @@ export class Machine<
     // Don't start if it's already running
     if (this.status === MachineStatus.Running) {
       return this
-    }
-
-    // fixes a symmetry issue when the machine is started and stopped multiple times
-    if (!this.deriving) {
-      this.setupComputed()
     }
 
     this.status = MachineStatus.Running
@@ -154,23 +147,6 @@ export class Machine<
     }
   }
 
-  private setupComputed = () => {
-    // convert computed properties to valtio getters format
-    const computed = cast<S.TComputedContext<TContext>>(this.config.computed ?? {})
-    const deriveFns = Object.fromEntries(
-      Object.entries(computed).map(([key, fn]: any) => [key, (get: any) => fn(get(this.state.context))]),
-    )
-
-    // attach computed properties to the state's context
-    derive(deriveFns, { proxy: this.state.context, sync: this.sync || this.options.hookSync })
-    this.deriving = true
-  }
-
-  private detachComputed = () => {
-    underive(this.state.context, { delete: true })
-    this.deriving = false
-  }
-
   // Stops the interpreted machine
   stop = () => {
     // No need to call if already stopped
@@ -190,9 +166,6 @@ export class Machine<
     this.stopDelayedEvents()
     this.stopContextWatchers()
     this.stopEventListeners()
-
-    // cleanup `derive` subscriptions that was attached to the context
-    this.detachComputed()
 
     // execute stop or exit actions
     this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
@@ -330,7 +303,6 @@ export class Machine<
   }
 
   public withContext = (context: Partial<Writable<TContext>>) => {
-    this.detachComputed()
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
