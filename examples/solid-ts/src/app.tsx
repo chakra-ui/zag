@@ -2,13 +2,7 @@ import { Link, useMatch, useRoutes } from "solid-app-router"
 import { Component, For } from "solid-js"
 import { navStyle, pageStyle } from "../../../shared/style"
 import { routes } from "./routes"
-import { injectGlobal } from "@emotion/css"
 import { dataAttr } from "@zag-js/dom-utils"
-
-injectGlobal`
-  body {
-    margin: 0px;
-  }`
 
 const App: Component = () => {
   const Route = useRoutes(routes)
@@ -39,7 +33,6 @@ const ITEMS = [
   { label: "Accordion", path: "accordion" },
   { label: "Combobox", path: "combobox" },
   { label: "Editable", path: "editable" },
-
   { label: "Dialog", path: "dialog" },
   { label: "Menu", path: "menu" },
   { label: "Nested Menu", path: "nested-menu" },

@@ -32,7 +32,6 @@ const ITEMS = [
   { label: "Accordion", path: "accordion" },
   { label: "Combobox", path: "combobox" },
   { label: "Editable", path: "editable" },
-
   { label: "Dialog", path: "dialog" },
   { label: "Menu", path: "menu" },
   { label: "Nested Menu", path: "nested-menu" },
