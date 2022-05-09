@@ -13,7 +13,6 @@ export function machine(ctx: UserDefinedContext = {}) {
     {
       id: "menu",
       initial: "unknown",
-
       context: {
         uid: "",
         pointerdownNode: null,
