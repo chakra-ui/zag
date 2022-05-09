@@ -1,8 +1,9 @@
+import { dataAttr } from "@zag-js/dom-utils"
 import { Link, useMatch, useRoutes } from "solid-app-router"
 import { Component, For } from "solid-js"
+import { routesData } from "../../../shared/routes"
 import { navStyle, pageStyle } from "../../../shared/style"
 import { routes } from "./routes"
-import { dataAttr } from "@zag-js/dom-utils"
 
 const App: Component = () => {
   const Route = useRoutes(routes)
@@ -11,12 +12,12 @@ const App: Component = () => {
     <div className={pageStyle}>
       <aside className={navStyle}>
         <header>Zagjs</header>
-        <For each={ITEMS} fallback={<div>Loading...</div>}>
-          {(item) => {
-            const match = useMatch(() => item.path)
+        <For each={routesData} fallback={<div>Loading...</div>}>
+          {(route) => {
+            const match = useMatch(() => route.path)
             return (
-              <Link data-active={dataAttr(!!match())} href={`/${item.path}`}>
-                {item.label}
+              <Link data-active={dataAttr(!!match())} href={route.path}>
+                {route.label}
               </Link>
             )
           }}
@@ -28,25 +29,3 @@ const App: Component = () => {
 }
 
 export default App
-
-const ITEMS = [
-  { label: "Accordion", path: "accordion" },
-  { label: "Combobox", path: "combobox" },
-  { label: "Editable", path: "editable" },
-  { label: "Dialog", path: "dialog" },
-  { label: "Menu", path: "menu" },
-  { label: "Nested Menu", path: "nested-menu" },
-  { label: "Menu With options", path: "menu-options" },
-  { label: "Context Menu", path: "context-menu" },
-  { label: "Number Input", path: "number-input" },
-  { label: "Pin Input", path: "pin-input" },
-  { label: "Popover", path: "popover" },
-  { label: "Range Slider", path: "range-slider" },
-  { label: "Rating", path: "rating" },
-  { label: "Slider", path: "slider" },
-  { label: "Tabs", path: "tabs" },
-  { label: "Tags Input", path: "tags-input" },
-  { label: "Toast", path: "toast" },
-  { label: "Tooltip", path: "tooltip" },
-  { label: "Splitter", path: "splitter" },
-]
