@@ -1,10 +1,12 @@
-"use strict"
+"use strict";
 
-var _xstate = require("xstate")
+var _xstate = require("xstate");
 
-const { actions, createMachine } = _xstate
-
-const { choose } = actions
+const {
+  actions, createMachine
+} = _xstate;
+  
+const { choose } = actions;
 const fetchMachine = createMachine({
   id: "tags-input",
   initial: "unknown",
@@ -14,153 +16,137 @@ const fetchMachine = createMachine({
     DOUBLE_CLICK_TAG: {
       cond: "allowEditTag",
       target: "editing:tag",
-      actions: ["setEditedId", "initializeEditedTagValue"],
+      actions: ["setEditedId", "initializeEditedTagValue"]
     },
     POINTER_DOWN_TAG: {
       cond: "!isTagFocused",
       target: "navigating:tag",
-      actions: ["focusTag", "focusInput"],
+      actions: ["focusTag", "focusInput"]
     },
     SET_INPUT_VALUE: {
-      actions: ["setInputValue"],
+      actions: ["setInputValue"]
     },
     SET_VALUE: {
-      actions: ["setValue"],
+      actions: ["setValue"]
     },
     DELETE_TAG: {
-      actions: ["deleteTag"],
+      actions: ["deleteTag"]
     },
     CLEAR_ALL: {
-      actions: ["clearTags", "focusInput"],
+      actions: ["clearTags", "focusInput"]
     },
     ADD_TAG: {
       // (!isAtMax || allowOverflow) && !inputValueIsEmpty
       cond: "(!isAtMax || allowOverflow) && !isInputValueEmpty",
-      actions: ["addTag", "clearInputValue"],
+      actions: ["addTag", "clearInputValue"]
     },
-    EXT_BLUR: [
-      {
-        cond: "addOnBlur",
-        actions: "raiseAddTagEvent",
-      },
-      {
-        cond: "clearOnBlur",
-        actions: "clearInputValue",
-      },
-    ],
+    EXT_BLUR: [{
+      cond: "addOnBlur",
+      actions: "raiseAddTagEvent"
+    }, {
+      cond: "clearOnBlur",
+      actions: "clearInputValue"
+    }]
   },
   states: {
     unknown: {
       on: {
-        SETUP: [
-          {
-            cond: "autoFocus",
-            target: "focused:input",
-            actions: ["setupDocument", "checkValue"],
-          },
-          {
-            target: "idle",
-            actions: ["setupDocument", "checkValue"],
-          },
-        ],
-      },
+        SETUP: [{
+          cond: "autoFocus",
+          target: "focused:input",
+          actions: ["setupDocument", "checkValue"]
+        }, {
+          target: "idle",
+          actions: ["setupDocument", "checkValue"]
+        }]
+      }
     },
     idle: {
       on: {
         FOCUS: "focused:input",
         POINTER_DOWN: {
           cond: "!hasFocusedId",
-          target: "focused:input",
-        },
-      },
+          target: "focused:input"
+        }
+      }
     },
     "focused:input": {
       tags: ["focused"],
       entry: ["focusInput", "clearFocusedId"],
       on: {
         TYPE: {
-          actions: "setInputValue",
+          actions: "setInputValue"
         },
-        BLUR: [
-          {
-            cond: "addOnBlur",
-            target: "idle",
-            actions: "raiseAddTagEvent",
-          },
-          {
-            cond: "clearOnBlur",
-            target: "idle",
-            actions: "clearInputValue",
-          },
-          {
-            target: "idle",
-          },
-        ],
+        BLUR: [{
+          cond: "addOnBlur",
+          target: "idle",
+          actions: "raiseAddTagEvent"
+        }, {
+          cond: "clearOnBlur",
+          target: "idle",
+          actions: "clearInputValue"
+        }, {
+          target: "idle"
+        }],
         ENTER: {
-          actions: ["raiseAddTagEvent"],
+          actions: ["raiseAddTagEvent"]
         },
         DELIMITER_KEY: {
-          actions: ["raiseAddTagEvent"],
+          actions: ["raiseAddTagEvent"]
         },
         ARROW_LEFT: {
           cond: "hasTags && isInputCaretAtStart",
           target: "navigating:tag",
-          actions: "focusLastTag",
+          actions: "focusLastTag"
         },
         BACKSPACE: {
           target: "navigating:tag",
           cond: "hasTags && isInputCaretAtStart",
-          actions: "focusLastTag",
+          actions: "focusLastTag"
         },
         PASTE: {
           cond: "addOnPaste",
-          actions: ["setInputValue", "addTagFromPaste"],
-        },
-      },
+          actions: ["setInputValue", "addTagFromPaste"]
+        }
+      }
     },
     "navigating:tag": {
       tags: ["focused"],
       on: {
-        ARROW_RIGHT: [
-          {
-            cond: "hasTags && isInputCaretAtStart && !isLastTagFocused",
-            actions: "focusNextTag",
-          },
-          {
-            target: "focused:input",
-          },
-        ],
+        ARROW_RIGHT: [{
+          cond: "hasTags && isInputCaretAtStart && !isLastTagFocused",
+          actions: "focusNextTag"
+        }, {
+          target: "focused:input"
+        }],
         ARROW_LEFT: {
-          actions: "focusPrevTag",
+          actions: "focusPrevTag"
         },
         BLUR: {
           target: "idle",
-          actions: "clearFocusedId",
+          actions: "clearFocusedId"
         },
         ENTER: {
           cond: "allowEditTag",
           target: "editing:tag",
-          actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"],
+          actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"]
         },
         ARROW_DOWN: "focused:input",
         ESCAPE: "focused:input",
         TYPE: {
           target: "focused:input",
-          actions: "setInputValue",
+          actions: "setInputValue"
         },
-        BACKSPACE: [
-          {
-            cond: "isFirstTagFocused",
-            actions: ["deleteFocusedTag", "focusFirstTag"],
-          },
-          {
-            actions: ["deleteFocusedTag", "focusPrevTag"],
-          },
-        ],
+        BACKSPACE: [{
+          cond: "isFirstTagFocused",
+          actions: ["deleteFocusedTag", "focusFirstTag"]
+        }, {
+          actions: ["deleteFocusedTag", "focusPrevTag"]
+        }],
         DELETE: {
-          actions: ["deleteFocusedTag", "focusTagAtIndex"],
-        },
-      },
+          actions: ["deleteFocusedTag", "focusTagAtIndex"]
+        }
+      }
     },
     "editing:tag": {
       tags: ["editing", "focused"],
@@ -168,28 +154,25 @@ const fetchMachine = createMachine({
       activities: ["autoResizeTagInput"],
       on: {
         TAG_INPUT_TYPE: {
-          actions: "setEditedTagValue",
+          actions: "setEditedTagValue"
         },
         TAG_INPUT_ESCAPE: {
           target: "navigating:tag",
-          actions: ["clearEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
+          actions: ["clearEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"]
         },
-        TAG_INPUT_BLUR: [
-          {
-            cond: "isInputRelatedTarget",
-            target: "navigating:tag",
-            actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"],
-          },
-          {
-            target: "idle",
-            actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExtBlurEvent"],
-          },
-        ],
+        TAG_INPUT_BLUR: [{
+          cond: "isInputRelatedTarget",
+          target: "navigating:tag",
+          actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"]
+        }, {
+          target: "idle",
+          actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExtBlurEvent"]
+        }],
         TAG_INPUT_ENTER: {
           target: "navigating:tag",
-          actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"],
-        },
-      },
-    },
-  },
+          actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"]
+        }
+      }
+    }
+  }
 })
