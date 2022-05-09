@@ -58,3 +58,9 @@ export async function getWorkspacePackages() {
   const pkgs = getPublicPackages(packages)
   return toposort(pkgs)
 }
+
+export async function getMachinePackages() {
+  const workspacePackages = await getWorkspacePackages()
+  const machinePkgs = workspacePackages.filter(({ dir }) => dir.indexOf("machines/") !== -1)
+  return machinePkgs
+}
