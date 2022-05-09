@@ -21,6 +21,7 @@ export class Machine<
   public id: string
 
   public type: MachineType = MachineType.Machine
+  private deriving = false
 
   // Cleanup function map (per state)
   private activityEvents = new Map<string, Set<VoidFunction>>()
@@ -90,6 +91,11 @@ export class Machine<
       return this
     }
 
+    // fixes a symmetry issue when the machine is started and stopped multiple times
+    if (!this.deriving) {
+      this.setupComputed()
+    }
+
     this.status = MachineStatus.Running
     const event = toEvent<TEvent>(ActionTypes.Init)
 
@@ -157,10 +163,12 @@ export class Machine<
 
     // attach computed properties to the state's context
     derive(deriveFns, { proxy: this.state.context, sync: this.sync || this.options.hookSync })
+    this.deriving = true
   }
 
   private detachComputed = () => {
-    underive(this.state.context)
+    underive(this.state.context, { delete: true })
+    this.deriving = false
   }
 
   // Stops the interpreted machine
