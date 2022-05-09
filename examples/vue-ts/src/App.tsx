@@ -6,7 +6,7 @@ import { dataAttr } from "@zag-js/dom-utils"
 
 export default function App() {
   const router = useRouter()
-  let pathname = router.currentRoute.value.name
+  let pathname = router.currentRoute.value.path
 
   return (
     <div class={pageStyle}>
@@ -16,7 +16,7 @@ export default function App() {
           const active = pathname === route.path
           return (
             <RouterLink data-active={dataAttr(active)} to={route.path} key={route.label}>
-              {route.label}
+              {() => route.label}
             </RouterLink>
           )
         })}
