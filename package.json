@@ -80,7 +80,11 @@
     "typescript": "^4.6.3"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx}": "prettier --write"
+    "**/*.{ts,tsx,js,jsx}": "prettier --write",
+    "**/*.machine.ts": [
+      "yarn zag visualize --all",
+      "git add .xstate/*.js"
+    ]
   },
   "commitlint": {
     "extends": [
