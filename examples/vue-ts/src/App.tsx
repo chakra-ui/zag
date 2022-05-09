@@ -1,14 +1,7 @@
 import { RouterView, RouterLink, useRouter } from "vue-router"
 import { h, Fragment } from "vue"
 import { navStyle, pageStyle } from "../../../shared/style"
-import { injectGlobal } from "@emotion/css"
 import { dataAttr } from "@zag-js/dom-utils"
-
-injectGlobal`
-  body {
-    margin: 0px;
-  }
-`
 
 export default function App() {
   const router = useRouter()
