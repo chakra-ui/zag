@@ -39,9 +39,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("CLEAR_VALUE")
     },
     focus() {
-      nextTick(() => {
-        dom.getInputEl(state.context)?.focus()
-      })
+      dom.getInputEl(state.context)?.focus()
     },
 
     rootProps: normalize.element<T>({

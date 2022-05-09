@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { nextTick } from "@zag-js/dom-utils"
+import { nextTick, raf } from "@zag-js/dom-utils"
 import { fromLength } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
@@ -162,7 +162,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         focusInput: (ctx) => {
-          nextTick(() => {
+          raf(() => {
             if (ctx.focusedIndex === -1) return
             dom.getFocusedEl(ctx)?.focus()
           })
@@ -197,7 +197,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value[ctx.focusedIndex] = evt.value.replace(val, "").charAt(0)
         },
         setPastedValue(ctx, evt) {
-          nextTick(() => {
+          raf(() => {
             const value = (evt.value as string).substr(0, ctx.valueLength)
             assign(ctx, value.split("").filter(Boolean))
           })
@@ -230,7 +230,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         blurFocusedInputIfNeeded(ctx) {
           if (!ctx.blurOnComplete) return
-          nextTick(() => {
+          raf(() => {
             dom.getFocusedEl(ctx)?.blur()
           })
         },

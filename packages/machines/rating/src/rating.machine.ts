@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { nextTick } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-utils"
 import { dom } from "./rating.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
 
@@ -128,7 +128,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.hoveredValue = -1
         },
         focusActiveRadio(ctx) {
-          nextTick(() => dom.getRadioEl(ctx)?.focus())
+          raf(() => dom.getRadioEl(ctx)?.focus())
         },
         setPrevValue(ctx) {
           const factor = ctx.allowHalf ? 0.5 : 1

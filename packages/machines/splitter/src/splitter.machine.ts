@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { nextTick, trackPointerMove } from "@zag-js/dom-utils"
+import { raf, trackPointerMove } from "@zag-js/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
 import { relativeToNode } from "@zag-js/rect-utils"
 import { dom } from "./splitter.dom"
@@ -209,7 +209,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value = clamp(decrement(ctx.value, evt.step), ctx)
         },
         focusSplitter(ctx) {
-          nextTick(() => dom.getSplitterEl(ctx)?.focus())
+          raf(() => dom.getSplitterEl(ctx)?.focus())
         },
         setPointerValue(ctx, evt) {
           const primaryPane = dom.getPrimaryPaneEl(ctx)

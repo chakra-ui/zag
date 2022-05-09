@@ -267,7 +267,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       activities: {
         trackFormReset(ctx) {
           let cleanup: VoidFunction | undefined
-          nextTick(() => {
+          raf(() => {
             cleanup = trackFormReset(dom.getHiddenInputEl(ctx), () => {
               ctx.value = ctx.initialValue
             })
@@ -395,7 +395,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.editedTagValue = ctx.value[index]
         },
         focusEditedTagInput(ctx) {
-          nextTick(() => {
+          raf(() => {
             dom.getEditInputEl(ctx)?.select()
           })
         },
@@ -406,7 +406,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.focusedId = null
         },
         focusInput(ctx) {
-          nextTick(() => {
+          raf(() => {
             dom.getInputEl(ctx)?.focus()
           })
         },
@@ -426,7 +426,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           }
         },
         addTagFromPaste(ctx) {
-          nextTick(() => {
+          raf(() => {
             const value = ctx.trimmedInputValue
             const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
             if (guard) {

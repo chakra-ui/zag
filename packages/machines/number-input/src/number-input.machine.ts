@@ -1,5 +1,5 @@
 import { choose, createMachine, guards, ref } from "@zag-js/core"
-import { addDomEvent, nextTick, observeAttributes, requestPointerLock } from "@zag-js/dom-utils"
+import { addDomEvent, nextTick, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-utils"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
 import { isSafari, pipe, supportsPointerEvent } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
@@ -114,7 +114,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               actions: "setToMax",
             },
             CHANGE: {
-              actions: ["setValue", "setSelectionRange", "setHint"],
+              actions: ["setValue", "setHint"],
             },
             BLUR: [
               {
@@ -150,7 +150,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             PRESS_UP: {
               target: "focused",
-              actions: ["clearHint", "restoreSelection"],
+              actions: "clearHint",
             },
           },
         },
@@ -173,7 +173,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             PRESS_UP: {
               target: "focused",
-              actions: ["clearHint", "restoreSelection"],
+              actions: "clearHint",
             },
           },
         },
@@ -287,7 +287,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         focusInput(ctx) {
           if (!ctx.focusInputOnChange) return
           const input = dom.getInputEl(ctx)
-          nextTick(() => input?.focus())
+          raf(() => input?.focus())
         },
         increment(ctx, evt) {
           ctx.value = utils.increment(ctx, evt.step)
@@ -323,18 +323,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         setHintToSet(ctx) {
           ctx.hint = "set"
         },
-        setSelectionRange(ctx, evt) {
-          ctx.inputSelection = {
-            start: evt.target.selectionStart,
-            end: evt.target.selectionEnd,
-          }
-        },
-        restoreSelection(ctx) {
-          const input = dom.getInputEl(ctx)
-          if (!input || !ctx.inputSelection) return
-          input.selectionStart = ctx.inputSelection.start ?? input.value?.length
-          input.selectionEnd = ctx.inputSelection.end ?? input.selectionStart
-        },
+
         invokeOnChange(ctx) {
           ctx.onChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
         },

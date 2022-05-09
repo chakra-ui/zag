@@ -1,5 +1,5 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { getFocusables, nextTick } from "@zag-js/dom-utils"
+import { getFocusables, nextTick, raf } from "@zag-js/dom-utils"
 import { dom } from "./tabs.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
 
@@ -141,20 +141,20 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.onDelete?.({ value: evt.value })
         },
         focusFirstTab(ctx) {
-          nextTick(() => dom.getFirstEl(ctx)?.focus())
+          raf(() => dom.getFirstEl(ctx)?.focus())
         },
         focusLastTab(ctx) {
-          nextTick(() => dom.getLastEl(ctx)?.focus())
+          raf(() => dom.getLastEl(ctx)?.focus())
         },
         focusNextTab(ctx) {
           if (!ctx.focusedValue) return
           const next = dom.getNextEl(ctx, ctx.focusedValue)
-          nextTick(() => next?.focus())
+          raf(() => next?.focus())
         },
         focusPrevTab(ctx) {
           if (!ctx.focusedValue) return
           const prev = dom.getPrevEl(ctx, ctx.focusedValue)
-          nextTick(() => prev?.focus())
+          raf(() => prev?.focus())
         },
         setIndicatorRect(ctx) {
           nextTick(() => {
@@ -188,7 +188,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         // if tab panel contains focusable elements, remove the tabindex attribute
         setContentTabIndex(ctx) {
-          nextTick(() => {
+          raf(() => {
             const panel = dom.getActiveContentEl(ctx)
             if (!panel) return
             const focusables = getFocusables(panel)

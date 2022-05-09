@@ -57,8 +57,7 @@ const fetchMachine = createMachine({
         },
         TRIGGER_CLICK: {
           cond: "!isSubmenu",
-          target: "open",
-          actions: "focusFirstItem"
+          target: "open"
         },
         TRIGGER_FOCUS: {
           cond: "!isSubmenu",
@@ -118,10 +117,13 @@ const fetchMachine = createMachine({
           target: "open",
           actions: "setAnchorPoint"
         },
-        TRIGGER_CLICK: {
+        TRIGGER_CLICK: [{
+          cond: "isKeyboardEvent",
           target: "open",
           actions: "focusFirstItem"
-        },
+        }, {
+          target: "open"
+        }],
         TRIGGER_POINTERMOVE: {
           cond: "isTriggerItem",
           target: "opening"
@@ -150,13 +152,13 @@ const fetchMachine = createMachine({
           cond: "hasActiveId",
           actions: ["focusPrevItem", "focusMenu"]
         }, {
-          actions: ["focusLastItem"]
+          actions: "focusLastItem"
         }],
         ARROW_DOWN: [{
           cond: "hasActiveId",
           actions: ["focusNextItem", "focusMenu"]
         }, {
-          actions: ["focusFirstItem"]
+          actions: "focusFirstItem"
         }],
         ARROW_LEFT: {
           cond: "isSubmenu",
@@ -182,7 +184,7 @@ const fetchMachine = createMachine({
           actions: "openSubmenu"
         }, {
           target: "closed",
-          actions: ["invokeOnSelect", "closeParentMenus"]
+          actions: ["invokeOnSelect", "clickActiveOptionIfNeeded", "closeParentMenus"]
         }],
         ESCAPE: [{
           cond: "isSubmenu",

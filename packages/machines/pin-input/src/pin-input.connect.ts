@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { invariant, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
@@ -27,9 +27,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value, index })
     },
     focus() {
-      nextTick(() => {
-        dom.getFirstInputEl(state.context)?.focus()
-      })
+      dom.getFirstInputEl(state.context)?.focus()
     },
 
     rootProps: normalize.element<T>({

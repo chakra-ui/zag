@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventStep, getNativeEvent, nextTick } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
 import { multiply, roundToPx } from "@zag-js/number-utils"
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
@@ -40,9 +40,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value: state.context.min })
     },
     focus() {
-      nextTick(() => {
-        dom.getInputEl(state.context)?.focus()
-      })
+      dom.getInputEl(state.context)?.focus()
     },
 
     rootProps: normalize.element<T>({

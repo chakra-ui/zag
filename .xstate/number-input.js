@@ -69,7 +69,7 @@ const fetchMachine = createMachine({
           actions: "setToMax"
         },
         CHANGE: {
-          actions: ["setValue", "setSelectionRange", "setHint"]
+          actions: ["setValue", "setHint"]
         },
         BLUR: [{
           cond: "isInvalidExponential",
@@ -80,6 +80,7 @@ const fetchMachine = createMachine({
           target: "idle",
           actions: ["clampValue", "clearHint"]
         }, {
+          target: "idle",
           actions: ["roundValue"]
         }]
       }
@@ -102,7 +103,7 @@ const fetchMachine = createMachine({
       on: {
         PRESS_UP: {
           target: "focused",
-          actions: ["clearHint", "restoreSelection"]
+          actions: "clearHint"
         }
       }
     },
@@ -116,7 +117,7 @@ const fetchMachine = createMachine({
       on: {
         PRESS_UP: {
           target: "focused",
-          actions: ["clearHint", "restoreSelection"]
+          actions: "clearHint"
         }
       }
     },
