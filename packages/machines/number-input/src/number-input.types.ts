@@ -130,10 +130,6 @@ type PublicContext = DirectionProperty & {
    */
   inputMode: "text" | "tel" | "numeric" | "decimal"
   /**
-   * The scrubber cursor position
-   */
-  scrubberCursorPoint: Point | null
-  /**
    * Function invoked when the value changes
    */
   onChange?: (details: { value: string; valueAsNumber: number }) => void
@@ -208,6 +204,11 @@ type PrivateContext = Context<{
    * The selection range of the input
    */
   inputSelection: InputSelection | null
+  /**
+   * @internal
+   * The scrubber cursor position
+   */
+  scrubberCursorPoint: Point | null
 }>
 
 /////////////////////////////////////////////////////////////////////////
