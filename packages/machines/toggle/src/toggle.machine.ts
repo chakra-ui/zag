@@ -4,14 +4,23 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./toggle.
 export function machine(ctx: UserDefinedContext = {}) {
   return createMachine<MachineContext, MachineState>(
     {
-      id: "toggle-machine",
+      id: "toggle",
       initial: "unknown",
+
       context: {
         uid: "",
         disabled: false,
         label: "toggle",
         ...ctx,
       },
+
+      on: {
+        SET_STATE: [
+          { guard: "isPressed", target: "pressed", actions: ["invokeOnChange"] },
+          { target: "unpressed", actions: ["invokeOnChange"] },
+        ],
+      },
+
       states: {
         unknown: {
           on: {
@@ -19,14 +28,17 @@ export function machine(ctx: UserDefinedContext = {}) {
           },
         },
         pressed: {
-          on: { CLICK: "unpressed" },
+          on: { TOGGLE: "unpressed" },
         },
         unpressed: {
-          on: { CLICK: "pressed" },
+          on: { TOGGLE: "pressed" },
         },
       },
     },
     {
+      guards: {
+        isPressed: (_ctx, evt) => evt.pressed,
+      },
       actions: {
         setupDocument(ctx, evt) {
           ctx.uid = evt.id

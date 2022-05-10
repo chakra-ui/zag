@@ -5,20 +5,24 @@ import { Send, State } from "./toggle.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isPressed = state.matches("pressed")
-  const isDisabled = state.context.disabled
+  const disabled = state.context.disabled
 
   return {
     isPressed,
+    setPressed(value: boolean) {
+      send({ type: "SET_STATE", pressed: value })
+    },
     buttonProps: normalize.button<T>({
       id: dom.getButtonId(state.context),
       type: "button",
+      disabled,
       "aria-label": state.context.label,
       "aria-pressed": isPressed,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-pressed": dataAttr(isPressed),
       onClick() {
-        if (isDisabled) return
-        send({ type: "CLICK", pressed: isPressed })
+        if (disabled) return
+        send({ type: "TOGGLE", pressed: isPressed })
       },
     }),
   }

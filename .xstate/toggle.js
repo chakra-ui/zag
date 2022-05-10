@@ -8,8 +8,18 @@ const {
   
 const { choose } = actions;
 const fetchMachine = createMachine({
-  id: "toggle-machine",
+  id: "toggle",
   initial: "unknown",
+  on: {
+    SET_STATE: [{
+      cond: "isPressed",
+      target: "pressed",
+      actions: ["invokeOnChange"]
+    }, {
+      target: "unpressed",
+      actions: ["invokeOnChange"]
+    }]
+  },
   states: {
     unknown: {
       on: {
@@ -21,12 +31,12 @@ const fetchMachine = createMachine({
     },
     pressed: {
       on: {
-        CLICK: "unpressed"
+        TOGGLE: "unpressed"
       }
     },
     unpressed: {
       on: {
-        CLICK: "pressed"
+        TOGGLE: "pressed"
       }
     }
   }
