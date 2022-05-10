@@ -3,19 +3,17 @@
  * zag visualize combobox --outFile output.js
  */
 
-import fs from "fs"
 import generate from "@babel/generator"
+import * as parser from "@babel/parser"
 import traverse from "@babel/traverse"
 import * as t from "@babel/types"
-
+import fs from "fs"
 import { createLogger } from "../utilities/log"
 import { getMachinePackages } from "../utilities/packages"
 
-const parser = require("@babel/parser")
-
 const logger = createLogger("visualize")
 
-const DISALLOWED_PROPERTIES = ["context", "computed", "created", "onEvent", "watch"]
+const EXCLUDE = new Set(["context", "computed", "created", "onEvent", "watch"])
 
 type VisualizeOpts = {
   outDir?: string
@@ -51,7 +49,7 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
         path.replaceWithSourceString("cond")
       }
 
-      if (DISALLOWED_PROPERTIES.includes(path.node.name) && t.isObjectProperty(path.parentPath.node)) {
+      if (EXCLUDE.has(path.node.name) && t.isObjectProperty(path.parentPath.node)) {
         path.parentPath.remove()
       }
     },
