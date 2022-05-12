@@ -55,8 +55,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         isOutOfRange: ["invokeOnInvalid"],
       },
 
-      entry: ["syncInputValue"],
-
       on: {
         SET_VALUE: {
           actions: ["setValue", "setHintToSet"],
@@ -70,7 +68,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: "idle",
-              actions: "setupDocument",
+              actions: ["setupDocument", "syncInputValue"],
             },
           },
         },

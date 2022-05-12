@@ -10,7 +10,6 @@ const { choose } = actions;
 const fetchMachine = createMachine({
   id: "number-input",
   initial: "unknown",
-  entry: ["syncInputValue"],
   on: {
     SET_VALUE: {
       actions: ["setValue", "setHintToSet"]
@@ -27,7 +26,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: "setupDocument"
+          actions: ["setupDocument", "syncInputValue"]
         }
       }
     },
