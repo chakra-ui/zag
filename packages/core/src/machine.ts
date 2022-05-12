@@ -47,15 +47,15 @@ export class Machine<
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
   private sync: boolean
   public options: S.MachineOptions<TContext, TState, TEvent>
+  public config: S.MachineConfig<TContext, TState, TEvent>
 
   // Let's get started!
-  constructor(
-    public config: S.MachineConfig<TContext, TState, TEvent>,
-    options?: S.MachineOptions<TContext, TState, TEvent>,
-  ) {
-    // deep clone the config
+  constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
+    // clone the config and options
+    this.config = klona(config)
     this.options = klona(options ?? {})
-    this.id = config.id ?? `machine-${uuid()}`
+
+    this.id = this.config.id ?? `machine-${uuid()}`
 
     // maps
     this.guardMap = this.options?.guards ?? {}
@@ -65,11 +65,11 @@ export class Machine<
     this.sync = this.options?.sync ?? false
 
     // create mutatable state
-    this.state = createProxy(klona(config))
+    this.state = createProxy(this.config)
 
     // created actions
     const event = toEvent<TEvent>(ActionTypes.Created)
-    this.executeActions(config?.created, event)
+    this.executeActions(this.config?.created, event)
   }
 
   // immutable state value
