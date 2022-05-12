@@ -12,7 +12,7 @@ export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetup
 
   onMount(() => {
     Promise.resolve().then(() => {
-      send({ type: "SETUP", doc: el()?.ownerDocument, id })
+      send({ type: "SETUP", doc: el()?.getRootNode(), id })
     })
   })
 
