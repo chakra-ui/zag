@@ -15,7 +15,7 @@ export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetup
 
   onMounted(() => {
     Promise.resolve().then(() => {
-      const doc = nodeRef.value?.getRootNode() ?? document
+      const doc = nodeRef.value?.ownerDocument ?? document
       send({ type: "SETUP", doc, id: isRef(id) ? id.value : id })
     })
   })
