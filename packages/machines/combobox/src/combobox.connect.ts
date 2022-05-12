@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, nextTick, validateBlur } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isLeftClick } from "@zag-js/utils"
