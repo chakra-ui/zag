@@ -13,11 +13,24 @@ import { getMachinePackages } from "../utilities/packages"
 
 const logger = createLogger("visualize")
 
-const EXCLUDE = new Set(["context", "computed", "created", "onEvent", "watch"])
+const EXCLUDE = new Set(["computed", "created", "onEvent", "watch"])
 
 type VisualizeOpts = {
   outDir?: string
   all?: boolean
+}
+
+const fillVariables = (code: string) => {
+  return `"use strict";
+    
+var _xstate = require("xstate");
+
+const {
+  actions, createMachine
+} = _xstate;
+
+const { choose } = actions;
+const fetchMachine = createMachine(${code})`
 }
 
 const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
@@ -33,6 +46,8 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
 
   //store machine config so we can ignore all other keys
   let machineObj = null
+  let directGuards: string[] = []
+  // let coupleGuards: string[][] = []
 
   traverse(ast, {
     Identifier: function (path) {
@@ -123,19 +138,54 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
 
   if (machineObj) {
     const machineObjOutput = generate(machineObj, {}, code)
+    const machineWithImports = fillVariables(machineObjOutput.code)
 
-    const machineWithImports = `"use strict";
+    const outputAst = parser.parse(machineWithImports, {})
+    traverse(outputAst, {
+      Identifier(path) {
+        if (
+          t.isObjectProperty(path.parentPath.parentPath?.parentPath?.node) &&
+          t.isIdentifier(path.parentPath.parentPath?.parentPath?.node?.key, { name: "on" }) &&
+          t.isObjectProperty(path.parentPath.node)
+        ) {
+          const parentNode = path.parentPath.node
 
-var _xstate = require("xstate");
+          const guardFilter = (valueProp: t.ObjectProperty | t.ObjectMethod | t.SpreadElement) =>
+            t.isObjectProperty(valueProp) && t.isIdentifier(valueProp.key) && valueProp.key.name === "cond"
 
-const {
-  actions, createMachine
-} = _xstate;
-  
-const { choose } = actions;
-const fetchMachine = createMachine(${machineObjOutput.code})`
+          if (t.isArrayExpression(parentNode.value) && parentNode.value.elements.length > 0) {
+            const eventTargets = parentNode.value.elements
+            // let eventGuards: string[] = []
+            eventTargets.forEach((target) => {
+              if (t.isObjectExpression(target)) {
+                const guard = target.properties.find(guardFilter)
+                if (t.isObjectProperty(guard) && t.isStringLiteral(guard.value)) {
+                  // eventGuards.push(guard.value.value)
+                  directGuards.push(guard.value.value)
+                }
+              }
+            })
+            // coupleGuards.push(eventGuards)
+          } else if (t.isObjectExpression(parentNode.value)) {
+            const guard = parentNode.value.properties.find(guardFilter)
+            if (t.isObjectProperty(guard) && t.isStringLiteral(guard.value)) {
+              directGuards.push(guard.value.value)
+            }
+          }
+        }
+      },
+    })
 
-    fs.writeFileSync(`${outDir}/${component}.js`, machineWithImports)
+    const guardsWithoutDuplicates = [...new Set(directGuards)]
+    const guardsCode = `{
+  guards: {
+${guardsWithoutDuplicates.map((gua) => `  "${gua}": (ctx) => ctx["${gua}"],`).join("    \n")}
+  },
+}`
+
+    const codeWithGuards = fillVariables(`${machineObjOutput.code}, \n${guardsCode}`)
+
+    fs.writeFileSync(`${outDir}/${component}.js`, codeWithGuards)
     logger.success(`${component} machine visualization complete. 😎`)
   }
 }
