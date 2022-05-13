@@ -1,4 +1,4 @@
-import { h, Fragment, isRef, SetupContext } from "vue"
+import { h, isRef } from "vue"
 import { stringifyState } from "../../../../shared/visualizer"
 
 type StateVisualizerProps = {
@@ -6,7 +6,7 @@ type StateVisualizerProps = {
   label?: string
 }
 
-export function StateVisualizer(props: StateVisualizerProps, { attrs }: SetupContext) {
+export function StateVisualizer(props: StateVisualizerProps) {
   const { state: _state, label } = props
   const state = isRef(_state) ? _state.value : _state
 
