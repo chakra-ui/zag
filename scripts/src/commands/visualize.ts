@@ -193,7 +193,6 @@ ${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).
           path.parentPath.node.value = t.objectPattern(
             machineGuards.map((gua) => t.objectProperty(t.stringLiteral(gua), t.booleanLiteral(false))),
           )
-          logger.success(path.parentPath.node)
           path.stop()
         }
       },
