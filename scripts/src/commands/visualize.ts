@@ -46,8 +46,7 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
 
   //store machine config so we can ignore all other keys
   let machineObj = null
-  let directGuards: string[] = []
-  // let coupleGuards: string[][] = []
+  let machineGuards: string[] = []
 
   traverse(ast, {
     Identifier: function (path) {
@@ -161,7 +160,7 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
                 const guard = target.properties.find(guardFilter)
                 if (t.isObjectProperty(guard) && t.isStringLiteral(guard.value)) {
                   // eventGuards.push(guard.value.value)
-                  directGuards.push(guard.value.value)
+                  machineGuards.push(guard.value.value)
                 }
               }
             })
@@ -169,23 +168,39 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
           } else if (t.isObjectExpression(parentNode.value)) {
             const guard = parentNode.value.properties.find(guardFilter)
             if (t.isObjectProperty(guard) && t.isStringLiteral(guard.value)) {
-              directGuards.push(guard.value.value)
+              machineGuards.push(guard.value.value)
             }
           }
         }
       },
     })
 
-    const guardsWithoutDuplicates = [...new Set(directGuards)]
+    const guardsWithoutDuplicates = [...new Set(machineGuards)]
     const guardsCode = `{
   guards: {
-${guardsWithoutDuplicates.map((gua) => `  "${gua}": (ctx) => ctx["${gua}"],`).join("    \n")}
+${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).join("    \n")}
   },
 }`
 
     const codeWithGuards = fillVariables(`${machineObjOutput.code}, \n${guardsCode}`)
 
-    fs.writeFileSync(`${outDir}/${component}.js`, codeWithGuards)
+    const codeWithGuardsAst = parser.parse(codeWithGuards, {})
+
+    //Add guards to context
+    traverse(codeWithGuardsAst, {
+      Identifier(path) {
+        if (path.node.name === "context" && t.isObjectProperty(path.parentPath.node)) {
+          path.parentPath.node.value = t.objectPattern(
+            machineGuards.map((gua) => t.objectProperty(t.stringLiteral(gua), t.booleanLiteral(false))),
+          )
+          logger.success(path.parentPath.node)
+          path.stop()
+        }
+      },
+    })
+    const codeWithContext = generate(codeWithGuardsAst, {}, codeWithGuards)
+
+    fs.writeFileSync(`${outDir}/${component}.js`, codeWithContext.code)
     logger.success(`${component} machine visualization complete. 😎`)
   }
 }
