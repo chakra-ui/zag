@@ -56,6 +56,7 @@ export function getRangeStyle(ctx: Ctx): Style {
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.uid}`,
   getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.uid}:thumb:${index}`,
@@ -67,13 +68,13 @@ export const dom = {
   getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
   getMarkerId: (ctx: Ctx, value: number) => `slider-${ctx.uid}:marker:${value}`,
 
-  getThumbEl: (ctx: Ctx, index: number) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx, index)),
+  getThumbEl: (ctx: Ctx, index: number) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx, index)),
   getInputEl: (ctx: Ctx, index: number) =>
-    dom.getDoc(ctx).getElementById(dom.getInputId(ctx, index)) as HTMLInputElement | null,
-  getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
+    dom.getRootNode(ctx).getElementById(dom.getInputId(ctx, index)) as HTMLInputElement | null,
+  getControlEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getRangeEl: (ctx: Ctx) => dom.getDoc(ctx)?.getElementById(dom.getRangeId(ctx)),
+  getRangeEl: (ctx: Ctx) => dom.getRootNode(ctx)?.getElementById(dom.getRangeId(ctx)),
 
   getValueFromPoint,
   dispatchChangeEvent(ctx: Ctx) {

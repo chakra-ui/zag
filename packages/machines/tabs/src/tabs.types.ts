@@ -1,14 +1,14 @@
 import { StateMachine as S } from "@zag-js/core"
 import { Context, DirectionProperty } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type IntlMessages = {
   tablistLabel?: string
   deleteLabel?(value: string): string
 }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   root: string
@@ -18,7 +18,7 @@ type ElementIds = Partial<{
   content: string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -73,7 +73,7 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -88,7 +88,7 @@ type ComputedContext = Readonly<{
   isVertical: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{
   /**
@@ -113,11 +113,11 @@ type PrivateContext = Context<{
   previousValues: string[]
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused"
@@ -125,11 +125,11 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type TabProps = {
   value: string

@@ -3,7 +3,7 @@ import type { LiveRegion } from "@zag-js/dom-utils"
 import type { Placement } from "@zag-js/popper"
 import type { DirectionProperty, Context } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type IntlMessages = {
   toggleButtonLabel?: string
@@ -12,7 +12,7 @@ type IntlMessages = {
   navigationHint?: string
 }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   root: string
@@ -25,7 +25,7 @@ type ElementIds = Partial<{
   option(id: string, index?: number): string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -144,7 +144,7 @@ type PublicContext = DirectionProperty & {
  */
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -167,7 +167,7 @@ type ComputedContext = Readonly<{
   autoHighlight: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{
   /**
@@ -218,11 +218,11 @@ type PrivateContext = Context<{
   isKeyboardEvent?: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "suggesting" | "interacting"
@@ -231,11 +231,11 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type OptionData = {
   /**

@@ -92,6 +92,7 @@ function getControlStyle(ctx: Pick<Ctx, "isVertical">): Style {
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.uid}`,
   getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `slider:${ctx.uid}:thumb`,
@@ -103,9 +104,9 @@ export const dom = {
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.uid}:label`,
   getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.uid}:marker:${value}`,
 
-  getThumbEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getThumbId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
+  getThumbEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getControlId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
 
   getControlStyle,
   getThumbStyle,

@@ -1,13 +1,13 @@
 import { StateMachine as S } from "@zag-js/core"
 import { Context, DirectionProperty } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type IntlMessages = {
   ratingValueText(index: number): string
 }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   root: string
@@ -17,7 +17,7 @@ type ElementIds = Partial<{
   item(id: string): string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -72,7 +72,7 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -85,7 +85,7 @@ type ComputedContext = Readonly<{
   readonly isHovering: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{
   /**
@@ -94,11 +94,11 @@ type PrivateContext = Context<{
   hoveredValue: number
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "idle" | "hover" | "focus"
@@ -106,6 +106,6 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>

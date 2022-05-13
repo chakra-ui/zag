@@ -5,6 +5,7 @@ import { MachineContext as Ctx } from "./popover.types"
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
   getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.uid}:anchor`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `popover:${ctx.uid}:trigger`,
@@ -15,12 +16,12 @@ export const dom = {
   getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `popover:${ctx.uid}:desc`,
   getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `popover:${ctx.uid}:close-button`,
 
-  getAnchorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getAnchorId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)),
-  getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)),
-  getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
-  getTitleEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTitleId(ctx)),
-  getDescriptionEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getDescriptionId(ctx)),
+  getAnchorEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getAnchorId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)),
+  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
+  getTitleEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTitleId(ctx)),
+  getDescriptionEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getDescriptionId(ctx)),
 
   getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx)),
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],

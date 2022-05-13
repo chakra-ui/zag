@@ -29,6 +29,7 @@ export function groupMachine(ctx: Partial<UserDefinedGroupContext> = {}) {
         actions: (ctx, evt) => {
           ctx.uid = evt.id
           if (evt.doc) ctx.doc = ref(evt.doc)
+          if (evt.root) ctx.rootNode = ref(evt.root)
         },
       },
 

@@ -3,6 +3,8 @@ import { MachineContext as Ctx } from "./splitter.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `splitter:${ctx.uid}`,
   getSplitterId: (ctx: Ctx) => ctx.ids?.splitter ?? `splitter:${ctx.uid}:splitter`,
   getToggleButtonId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `splitter:${ctx.uid}:toggle-btn`,
@@ -10,8 +12,8 @@ export const dom = {
   getPrimaryPaneId: (ctx: Ctx) => ctx.ids?.primaryPane ?? `splitter:${ctx.uid}:primary`,
   getSecondaryPaneId: (ctx: Ctx) => ctx.ids?.secondaryPane ?? `splitter:${ctx.uid}:secondary`,
 
-  getSplitterEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getSplitterId(ctx)),
-  getPrimaryPaneEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPrimaryPaneId(ctx)),
+  getSplitterEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getSplitterId(ctx)),
+  getPrimaryPaneEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPrimaryPaneId(ctx)),
 
   getCursor(ctx: Ctx) {
     if (ctx.disabled || ctx.fixed) return "default"

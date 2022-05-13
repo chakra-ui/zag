@@ -726,6 +726,10 @@ export class Machine<
     this.eventListeners.add(listener)
     return this
   }
+
+  get [Symbol.toStringTag]() {
+    return "Machine"
+  }
 }
 
 export type MachineSrc<

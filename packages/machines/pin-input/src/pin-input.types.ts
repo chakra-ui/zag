@@ -1,20 +1,20 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type IntlMessages = {
   inputLabel: (index: number, length: number) => string
 }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   root: string
   input(id: string): string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -78,7 +78,7 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -103,7 +103,7 @@ type ComputedContext = Readonly<{
   valueAsString: string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{
   /**
@@ -113,11 +113,11 @@ type PrivateContext = Context<{
   focusedIndex: number
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused"
@@ -125,8 +125,8 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>
 
-/////////////////////////////////////////////////////////////////////////
+//

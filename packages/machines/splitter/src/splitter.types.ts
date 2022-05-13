@@ -1,7 +1,7 @@
 import { StateMachine as S } from "@zag-js/core"
 import { Context, DirectionProperty } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   root: string
@@ -12,7 +12,7 @@ type ElementIds = Partial<{
   secondaryPane: string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -68,7 +68,7 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -88,15 +88,15 @@ type ComputedContext = Readonly<{
   isHorizontal: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{}>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "idle" | "hover:temp" | "hover" | "dragging" | "focused"
@@ -105,6 +105,6 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>

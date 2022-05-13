@@ -6,6 +6,7 @@ type HTMLEl = HTMLElement | null
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.uid}:trigger`,
   getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.uid}:ctx-trigger`,
@@ -15,11 +16,11 @@ export const dom = {
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.uid}:group:${id}`,
   getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.uid}:label:${id}`,
 
-  getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
-  getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
-  getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
-  getArrowEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getArrowId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
+  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
+  getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
+  getArrowEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getArrowId(ctx)),
 
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,
   getElements: (ctx: Ctx) => {

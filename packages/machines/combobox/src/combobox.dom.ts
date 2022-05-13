@@ -5,6 +5,7 @@ import type { MachineContext as Ctx } from "./combobox.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.uid}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.uid}:label`,
@@ -17,13 +18,13 @@ export const dom = {
   getOptionId: (ctx: Ctx, id: string, index?: number) =>
     ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.uid}:option:${id}`, index].filter((v) => v != null).join(":"),
 
-  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getDoc(ctx).getElementById(ctx.activeId) : null),
-  getListboxEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getListboxId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
-  getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getControlId(ctx)),
-  getToggleBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getToggleBtnId(ctx)),
-  getClearBtnEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getClearBtnId(ctx)),
+  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
+  getListboxEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getListboxId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
+  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getControlId(ctx)),
+  getToggleBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getToggleBtnId(ctx)),
+  getClearBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getClearBtnId(ctx)),
 
   getElements: (ctx: Ctx) => queryAll(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {

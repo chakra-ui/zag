@@ -2,7 +2,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/dom-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type IntlMessages = {
   clearButtonLabel: string
@@ -17,7 +17,7 @@ type IntlMessages = {
   inputLabel?(count: number): string
 }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type Log =
   | { type: "add" | "update" | "delete" | "select"; value: string }
@@ -25,7 +25,7 @@ type Log =
   | { type: "paste"; values: string[] }
   | { type: "set"; values: string[] }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   root: string
@@ -38,7 +38,7 @@ type ElementIds = Partial<{
   tagInput(opts: TagProps): string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -145,7 +145,7 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -180,7 +180,7 @@ type ComputedContext = Readonly<{
   readonly isOverflowing: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{
   /**
@@ -215,11 +215,11 @@ type PrivateContext = Context<{
   editedTagValue?: string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
@@ -228,11 +228,11 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type ValidityState = "rangeOverflow" | "invalidTag"
 

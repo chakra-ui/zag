@@ -2,8 +2,9 @@ import { getScrollParent } from "@zag-js/dom-utils"
 import { MachineContext as Ctx } from "./tooltip.types"
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc || document,
-  getWin: (ctx: Ctx) => ctx.doc?.defaultView || window,
+  getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getWin: (ctx: Ctx) => ctx.doc?.defaultView ?? window,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `tooltip:${ctx.id}:trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `tooltip:${ctx.id}:content`,
@@ -11,11 +12,12 @@ export const dom = {
   getPositionerId: (ctx: Ctx) => `tooltip:${ctx.id}:popper`,
   portalId: "tooltip-portal",
 
-  getTriggerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx)),
-  getContentEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx)),
-  getPositionerEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getPositionerId(ctx)),
-  getArrowEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getArrowId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)),
+  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
+  getArrowEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getArrowId(ctx)),
   getScrollParent: (ctx: Ctx) => getScrollParent(dom.getTriggerEl(ctx)!),
+  // using `getDoc` instead of `getRootNode` since the portal is not a child of the root node
   getPortalEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.portalId),
 
   createPortalEl: (ctx: Ctx) => {

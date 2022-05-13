@@ -451,6 +451,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         setupDocument(ctx, evt) {
           ctx.uid = evt.id
           if (evt.doc) ctx.doc = ref(evt.doc)
+          if (evt.root) ctx.rootNode = ref(evt.root)
         },
         setActiveId(ctx, evt) {
           ctx.activeId = evt.id
