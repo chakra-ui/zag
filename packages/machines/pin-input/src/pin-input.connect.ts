@@ -60,7 +60,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         onChange(event) {
           const evt = getNativeEvent(event)
           if (evt.isComposing) return
-          const value = event.target.value
+          const { value } = event.currentTarget
 
           if (evt.inputType === "insertFromPaste" || value.length > 2) {
             send({ type: "PASTE", value })
