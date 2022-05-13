@@ -89,10 +89,6 @@ export function machine(ctx: UserDefinedContext = {}) {
                 actions: "setFocusedValue",
               },
               {
-                guard: and("hasValue", "isValidValue"),
-                actions: ["replaceFocusedValue", "setNextFocusedIndex"],
-              },
-              {
                 guard: "isValidValue",
                 actions: ["setFocusedValue", "setNextFocusedIndex"],
               },
@@ -183,27 +179,23 @@ export function machine(ctx: UserDefinedContext = {}) {
         clearFocusedIndex: (ctx) => {
           ctx.focusedIndex = -1
         },
-        setValue: (ctx, event) => {
-          assign(ctx, event.value)
+        setValue: (ctx, evt) => {
+          assign(ctx, evt.value)
         },
-        setFocusedIndex: (ctx, event) => {
-          ctx.focusedIndex = event.index
+        setFocusedIndex: (ctx, evt) => {
+          ctx.focusedIndex = evt.index
         },
-        setFocusedValue: (ctx, event) => {
-          ctx.value[ctx.focusedIndex] = event.value
-        },
-        replaceFocusedValue: (ctx, evt) => {
-          const val = ctx.value[ctx.focusedIndex]
-          ctx.value[ctx.focusedIndex] = evt.value.replace(val, "").charAt(0)
+        setFocusedValue: (ctx, evt) => {
+          ctx.value[ctx.focusedIndex] = lastChar(evt.value)
         },
         setPastedValue(ctx, evt) {
           raf(() => {
-            const value = (evt.value as string).substr(0, ctx.valueLength)
+            const value = evt.value.substring(0, ctx.valueLength)
             assign(ctx, value.split("").filter(Boolean))
           })
         },
         setValueAtIndex: (ctx, evt) => {
-          ctx.value[evt.index] = evt.value
+          ctx.value[evt.index] = lastChar(evt.value)
         },
         clearValue: (ctx) => {
           assign(ctx, "")
@@ -221,7 +213,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.focusedIndex = Math.max(ctx.focusedIndex - 1, 0)
         },
         setLastValueFocusIndex: (ctx) => {
-          nextTick(() => {
+          raf(() => {
             ctx.focusedIndex = Math.min(ctx.filledValueLength, ctx.valueLength - 1)
           })
         },
@@ -251,7 +243,8 @@ function isValidType(value: string, type: MachineContext["type"]) {
 }
 
 function assign(ctx: MachineContext, value: string | string[]) {
-  for (let i = 0; i < ctx.value.length; i++) {
+  const len = ctx.value.length
+  for (let i = 0; i < len; i++) {
     if (Array.isArray(value)) {
       if (!value[i]) continue
       ctx.value[i] = value[i]
@@ -259,4 +252,8 @@ function assign(ctx: MachineContext, value: string | string[]) {
       ctx.value[i] = value
     }
   }
+}
+
+function lastChar(value: string) {
+  return value.charAt(value.length - 1)
 }

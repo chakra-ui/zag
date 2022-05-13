@@ -51,9 +51,6 @@ const fetchMachine = createMachine({
           cond: "isFinalValue && isValidValue",
           actions: "setFocusedValue"
         }, {
-          cond: "hasValue && isValidValue",
-          actions: ["replaceFocusedValue", "setNextFocusedIndex"]
-        }, {
           cond: "isValidValue",
           actions: ["setFocusedValue", "setNextFocusedIndex"]
         }],
