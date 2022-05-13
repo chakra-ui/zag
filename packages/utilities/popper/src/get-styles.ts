@@ -1,8 +1,10 @@
+import { Placement } from "@floating-ui/dom"
 import { cssVars } from "./middleware"
 
 type Options = {
   measured: boolean
   strategy?: "absolute" | "fixed"
+  placement?: Placement
 }
 
 const UNMEASURED_FLOATING_STYLE = {
@@ -14,8 +16,15 @@ const UNMEASURED_FLOATING_STYLE = {
   pointerEvents: "none",
 } as const
 
+const ARROW_FLOATING_STYLE = {
+  bottom: "rotate(45deg)",
+  left: "rotate(135deg)",
+  top: "rotate(225deg)",
+  right: "rotate(315deg)",
+} as const
+
 export function getPlacementStyles(options: Options) {
-  const { measured, strategy = "absolute" } = options
+  const { measured, strategy = "absolute", placement = "bottom" } = options
 
   return {
     arrow: {
@@ -28,7 +37,7 @@ export function getPlacementStyles(options: Options) {
     } as const,
 
     innerArrow: {
-      transform: "rotate(45deg)",
+      transform: ARROW_FLOATING_STYLE[placement.split("-")[0]],
       background: cssVars.arrowBg.reference,
       top: "0",
       left: "0",
