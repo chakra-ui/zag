@@ -1,6 +1,4 @@
-import { isDom } from "@zag-js/utils"
-import { Machine } from "@zag-js/core"
-import formatHighlight from "json-format-highlight"
+import { stringifyState } from "../../../../shared/visualizer"
 
 type StateVisualizerProps = {
   state: Record<string, any>
@@ -15,23 +13,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
       <pre dir="ltr">
         <details open>
           <summary> {label || "Visualizer"} </summary>
-
-          <div
-            innerHTML={formatHighlight(
-              JSON.stringify(
-                state,
-                (_k, v) => {
-                  if (v instanceof Machine) {
-                    const id = v.state.context.uid ?? v.id
-                    return `Machine: ${id}`
-                  }
-                  if (v instanceof Document) return "doc:loaded"
-                  return isDom() && v instanceof HTMLElement ? v.tagName : v
-                },
-                4,
-              ),
-            )}
-          />
+          <div innerHTML={stringifyState(state)} />
         </details>
       </pre>
     </div>
