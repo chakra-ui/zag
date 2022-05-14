@@ -2,7 +2,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { PositioningOptions, Placement } from "@zag-js/popper"
 import type { Context, MaybeElement } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   anchor: string
@@ -13,7 +13,7 @@ type ElementIds = Partial<{
   closeBtn: string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = {
   /**
@@ -67,7 +67,7 @@ type PublicContext = {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -77,7 +77,7 @@ type ComputedContext = Readonly<{
   currentPortalled: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PrivateContext = Context<{
   /**
@@ -108,11 +108,11 @@ type PrivateContext = Context<{
   isPlacementComplete?: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "open" | "closed"
@@ -120,6 +120,6 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>

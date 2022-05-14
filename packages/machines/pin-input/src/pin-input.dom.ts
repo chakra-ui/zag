@@ -3,11 +3,12 @@ import { MachineContext as Ctx } from "./pin-input.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `pin-input:${ctx.uid}`,
   getInputId: (ctx: Ctx, id: string) => ctx.ids?.input?.(id) ?? `pin-input:${ctx.uid}:${id}`,
 
-  getRootEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getRootId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `input[data-ownedby=${ownerId}]`

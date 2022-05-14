@@ -8,6 +8,7 @@ type ButtonEl = HTMLButtonElement | null
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
   getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.uid}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.uid}:input`,
@@ -17,11 +18,11 @@ export const dom = {
   getCursorId: (ctx: Ctx) => `number-input:${ctx.uid}:cursor`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `number-input:${ctx.uid}:label`,
 
-  getInputEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getInputId(ctx)) as InputEl,
-  getIncButtonEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getIncButtonId(ctx)) as ButtonEl,
-  getDecButtonEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getDecButtonId(ctx)) as ButtonEl,
-  getScrubberEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getScrubberId(ctx)),
-  getCursorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCursorId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as InputEl,
+  getIncButtonEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getIncButtonId(ctx)) as ButtonEl,
+  getDecButtonEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getDecButtonId(ctx)) as ButtonEl,
+  getScrubberEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getScrubberId(ctx)),
+  getCursorEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getCursorId(ctx)),
 
   getMousementValue(ctx: Ctx, event: MouseEvent) {
     const x = roundToPx(event.movementX)

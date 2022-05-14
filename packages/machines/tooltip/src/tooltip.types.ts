@@ -1,14 +1,15 @@
 import type { StateMachine as S } from "@zag-js/core"
 import { Placement, PositioningOptions } from "@zag-js/popper"
+import { RootProperties } from "@zag-js/types"
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ElementIds = Partial<{
   trigger: string
   content: string
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type PublicContext = {
   /**
@@ -61,7 +62,7 @@ type PublicContext = {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 type ComputedContext = Readonly<{
   /**
@@ -70,14 +71,9 @@ type ComputedContext = Readonly<{
   readonly hasAriaLabel: boolean
 }>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
-type PrivateContext = {
-  /**
-   * @internal
-   * The owner document of the tooltip.
-   */
-  doc?: Document
+type PrivateContext = RootProperties & {
   /**
    * @internal
    * The computed placement of the tooltip.
@@ -90,11 +86,11 @@ type PrivateContext = {
   isPlacementComplete?: boolean
 }
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type MachineState = {
   value: "unknown" | "opening" | "open" | "closing" | "closed"
@@ -103,8 +99,8 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-/////////////////////////////////////////////////////////////////////////
+//
 
 export type Send = S.Send<S.AnyEventObject>
 
-/////////////////////////////////////////////////////////////////////////
+//

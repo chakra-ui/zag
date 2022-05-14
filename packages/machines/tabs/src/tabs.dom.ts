@@ -4,6 +4,7 @@ import { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.uid}`,
   getTriggerGroupId: (ctx: Ctx) => ctx.ids?.triggerGroup ?? `tabs:${ctx.uid}:trigger-group`,
@@ -12,20 +13,27 @@ export const dom = {
   getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.uid}:trigger-${id}`,
   getIndicatorId: (ctx: Ctx) => `tabs:${ctx.uid}:indicator`,
 
-  getTriggerGroupEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getTriggerGroupId(ctx)),
-  getContentEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getContentId(ctx, id)),
-  getTriggerEl: (ctx: Ctx, id: string) => dom.getDoc(ctx).getElementById(dom.getTriggerId(ctx, id)),
-  getIndicatorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getIndicatorId(ctx)),
+  getTriggerGroupEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerGroupId(ctx)),
+  getContentEl: (ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx, id)),
+  getTriggerEl: (ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx, id)),
+  getIndicatorEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getIndicatorId(ctx)),
 
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getTriggerGroupId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
     return queryAll(dom.getTriggerGroupEl(ctx), selector)
   },
+
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
   getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loop),
   getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loop),
+  getActiveContentEl: (ctx: Ctx) => {
+    if (!ctx.value) return
+    const id = dom.getContentId(ctx, ctx.value)
+    return dom.getRootNode(ctx).getElementById(id)
+  },
+
   getRectById: (ctx: Ctx, id: string) => {
     const empty = {
       offsetLeft: 0,
@@ -47,10 +55,5 @@ export const dom = {
       left: `${tab.offsetLeft}px`,
       width: `${tab.offsetWidth}px`,
     }
-  },
-  getActiveContentEl: (ctx: Ctx) => {
-    if (!ctx.value) return
-    const id = dom.getContentId(ctx, ctx.value)
-    return dom.getDoc(ctx).getElementById(id)
   },
 }

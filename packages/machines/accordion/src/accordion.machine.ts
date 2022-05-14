@@ -125,6 +125,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         setupDocument(ctx, evt) {
           if (evt.doc) ctx.doc = ref(evt.doc)
+          if (evt.root) ctx.rootNode = ref(evt.root)
           ctx.uid = evt.id
         },
         setValue(ctx, evt) {

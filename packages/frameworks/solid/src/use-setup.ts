@@ -8,13 +8,18 @@ export type UseSetupProps = {
 
 export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetupProps) {
   const { send, id } = props
-  const [el, setEl] = createSignal<T>()
+  const [node, setNode] = createSignal<T>()
 
   onMount(() => {
     Promise.resolve().then(() => {
-      send({ type: "SETUP", doc: el()?.ownerDocument, id })
+      const el = node()
+
+      const doc = el?.ownerDocument
+      const root = el?.getRootNode()
+
+      send({ type: "SETUP", doc, root, id })
     })
   })
 
-  return setEl
+  return setNode
 }

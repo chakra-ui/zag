@@ -13,24 +13,33 @@ export type DirectionProperty = {
   dir?: Direction
 }
 
-export type Context<T> = T & {
+export type RootProperties = {
   /**
    * @internal
-   * The unique identifier of the accordion.
-   */
-  uid: string
-  /**
-   * @internal
-   * The owner document of the accordion widget.
+   * The owner document of the machine.
    */
   doc?: Document
   /**
    * @internal
-   * The related target when the element is blurred.
-   * Used as a polyfill for `e.relatedTarget`
+   * The root node of the machine. Useful for shadow DOM.
    */
-  pointerdownNode?: HTMLElement | null
+  rootNode?: ShadowRoot
 }
+
+export type Context<T> = T &
+  RootProperties & {
+    /**
+     * @internal
+     * The unique identifier of the machine.
+     */
+    uid: string
+    /**
+     * @internal
+     * The related target when the element is blurred.
+     * Used as a polyfill for `e.relatedTarget`
+     */
+    pointerdownNode?: HTMLElement | null
+  }
 
 export type Style = React.CSSProperties & {
   [prop: string]: string | number | undefined
