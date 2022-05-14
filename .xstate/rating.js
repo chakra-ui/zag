@@ -2,7 +2,7 @@
 
 var _xstate = require("xstate")
 
-const { actions, createMachine } = _xstate
+const { actions, createMachine, assign } = _xstate
 const { choose } = actions
 const fetchMachine = createMachine(
   {
@@ -11,6 +11,11 @@ const fetchMachine = createMachine(
     context: {
       isValueEmpty: false,
       isRadioFocused: false,
+    },
+    on: {
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
+      },
     },
     states: {
       unknown: {
@@ -82,6 +87,13 @@ const fetchMachine = createMachine(
     },
   },
   {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
+        }
+      }),
+    },
     guards: {
       isValueEmpty: (ctx) => ctx["isValueEmpty"],
       isRadioFocused: (ctx) => ctx["isRadioFocused"],

@@ -2,7 +2,7 @@
 
 var _xstate = require("xstate")
 
-const { actions, createMachine } = _xstate
+const { actions, createMachine, assign } = _xstate
 const { choose } = actions
 const fetchMachine = createMachine(
   {
@@ -30,6 +30,9 @@ const fetchMachine = createMachine(
           actions: ["setContext", "invokeOnUpdate"],
         },
       ],
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
+      },
     },
     states: {
       "active:temp": {
@@ -80,6 +83,13 @@ const fetchMachine = createMachine(
     },
   },
   {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
+        }
+      }),
+    },
     guards: {
       "hasTypeChanged && isChangingToLoading": (ctx) => ctx["hasTypeChanged && isChangingToLoading"],
       "hasDurationChanged || hasTypeChanged": (ctx) => ctx["hasDurationChanged || hasTypeChanged"],

@@ -2,7 +2,7 @@
 
 var _xstate = require("xstate")
 
-const { actions, createMachine } = _xstate
+const { actions, createMachine, assign } = _xstate
 const { choose } = actions
 const fetchMachine = createMachine(
   {
@@ -19,6 +19,9 @@ const fetchMachine = createMachine(
     on: {
       SET_VALUE: {
         actions: ["setValue", "invokeOnChange"],
+      },
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
       },
     },
     states: {
@@ -89,6 +92,13 @@ const fetchMachine = createMachine(
     },
   },
   {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
+        }
+      }),
+    },
     guards: {
       startWithEditView: (ctx) => ctx["startWithEditView"],
       activateOnDblClick: (ctx) => ctx["activateOnDblClick"],

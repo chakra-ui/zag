@@ -2,7 +2,7 @@
 
 var _xstate = require("xstate")
 
-const { actions, createMachine } = _xstate
+const { actions, createMachine, assign } = _xstate
 const { choose } = actions
 const fetchMachine = createMachine(
   {
@@ -24,6 +24,9 @@ const fetchMachine = createMachine(
       },
       DECREMENT: {
         actions: "decrementAtIndex",
+      },
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
       },
     },
     states: {
@@ -104,6 +107,13 @@ const fetchMachine = createMachine(
     },
   },
   {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
+        }
+      }),
+    },
     guards: {
       isHorizontal: (ctx) => ctx["isHorizontal"],
       isVertical: (ctx) => ctx["isVertical"],

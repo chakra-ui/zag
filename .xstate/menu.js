@@ -2,7 +2,7 @@
 
 var _xstate = require("xstate")
 
-const { actions, createMachine } = _xstate
+const { actions, createMachine, assign } = _xstate
 const { choose } = actions
 const fetchMachine = createMachine(
   {
@@ -53,6 +53,9 @@ const fetchMachine = createMachine(
       },
       SET_ACTIVE_ID: {
         actions: "setActiveId",
+      },
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
       },
     },
     states: {
@@ -278,6 +281,13 @@ const fetchMachine = createMachine(
     },
   },
   {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
+        }
+      }),
+    },
     guards: {
       isTriggerItem: (ctx) => ctx["isTriggerItem"],
       "!isSubmenu": (ctx) => ctx["!isSubmenu"],

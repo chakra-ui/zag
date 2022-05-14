@@ -2,7 +2,7 @@
 
 var _xstate = require("xstate")
 
-const { actions, createMachine } = _xstate
+const { actions, createMachine, assign } = _xstate
 const { choose } = actions
 const fetchMachine = createMachine(
   {
@@ -22,6 +22,9 @@ const fetchMachine = createMachine(
       },
       DELETE: {
         actions: "deleteValue",
+      },
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
       },
     },
     states: {
@@ -96,6 +99,13 @@ const fetchMachine = createMachine(
     },
   },
   {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
+        }
+      }),
+    },
     guards: {
       selectOnFocus: (ctx) => ctx["selectOnFocus"],
       isHorizontal: (ctx) => ctx["isHorizontal"],
