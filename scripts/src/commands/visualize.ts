@@ -1,6 +1,7 @@
 /**
  * Test command
- * zag visualize combobox --outFile output.js
+ * zag visualize combobox
+ * zag visualize --all
  */
 
 import generate from "@babel/generator"
@@ -25,9 +26,7 @@ const fillVariables = (code: string) => {
     
 var _xstate = require("xstate");
 
-const {
-  actions, createMachine
-} = _xstate;
+const { actions, createMachine, assign } = _xstate;
 
 const { choose } = actions;
 const fetchMachine = createMachine(${code})`
@@ -176,28 +175,73 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
     })
 
     const guardsWithoutDuplicates = [...new Set(machineGuards)]
-    const guardsCode = `{
-  guards: {
+    const actionsCode = `actions: {
+  updateContext: assign((context, event) => {
+    return {
+      [event.contextKey]: true,
+    }
+  })
+}`
+    const guardsCode = `  guards: {
 ${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).join("    \n")}
-  },
+  }`
+
+    const optionsCode = `{
+  ${actionsCode}, \n${guardsCode}
 }`
 
-    const codeWithGuards = fillVariables(`${machineObjOutput.code}, \n${guardsCode}`)
+    const codeWithOptions = fillVariables(`${machineObjOutput.code}, \n${optionsCode}`)
 
-    const codeWithGuardsAst = parser.parse(codeWithGuards, {})
+    const codeWithOptionsAst = parser.parse(codeWithOptions, {})
 
-    //Add guards to context
-    traverse(codeWithGuardsAst, {
+    let hasGlobalEvents = false
+
+    const updateContextNode = t.objectProperty(
+      t.identifier("UPDATE_CONTEXT"),
+      t.objectPattern([t.objectProperty(t.identifier("actions"), t.stringLiteral("updateContext"))]),
+    )
+
+    traverse(codeWithOptionsAst, {
       Identifier(path) {
+        //Add guards to context
         if (path.node.name === "context" && t.isObjectProperty(path.parentPath.node)) {
           path.parentPath.node.value = t.objectPattern(
             machineGuards.map((gua) => t.objectProperty(t.stringLiteral(gua), t.booleanLiteral(false))),
           )
           path.stop()
         }
+        //Check for gobal events so we can add the `UPDATE_CONTEXT` event
+        if (
+          path.node.name === "on" &&
+          t.isObjectProperty(path.parentPath.node) &&
+          t.isObjectExpression(path.parentPath.node.value) &&
+          t.isCallExpression(path.parentPath?.parentPath?.parentPath?.node) &&
+          t.isIdentifier(path.parentPath?.parentPath?.parentPath?.node.callee, { name: "createMachine" })
+        ) {
+          hasGlobalEvents = true
+          path.parentPath.node.value.properties = [...path.parentPath.node.value.properties, updateContextNode]
+        }
       },
     })
-    const codeWithContext = generate(codeWithGuardsAst, {}, codeWithGuards)
+
+    if (!hasGlobalEvents) {
+      //If there's no global events previously, we have to add it for the `UPDATE_CONTEXT` event's sake
+      traverse(codeWithOptionsAst, {
+        Identifier(path) {
+          //Insert the global events right before states
+          if (
+            path.node.name === "states" &&
+            t.isCallExpression(path.parentPath?.parentPath?.parentPath?.node) &&
+            t.isIdentifier(path.parentPath?.parentPath?.parentPath?.node.callee, { name: "createMachine" })
+          ) {
+            const globalEventNode = t.objectProperty(t.identifier("on"), t.objectPattern([updateContextNode]))
+            path.parentPath.insertBefore(globalEventNode)
+          }
+        },
+      })
+    }
+
+    const codeWithContext = generate(codeWithOptionsAst, {}, codeWithOptions)
 
     fs.writeFileSync(`${outDir}/${component}.js`, codeWithContext.code)
     logger.success(`${component} machine visualization complete. 😎`)
