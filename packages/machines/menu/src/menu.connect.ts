@@ -25,6 +25,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   const popperStyles = getPlacementStyles({
     measured: !!state.context.anchorPoint || !!state.context.currentPlacement,
+    placement: state.context.currentPlacement,
   })
 
   const api = {
