@@ -149,34 +149,11 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
     traverse(outputAst, {
       Identifier(path) {
         if (
-          t.isObjectProperty(path.parentPath.parentPath?.parentPath?.node) &&
-          t.isIdentifier(path.parentPath.parentPath?.parentPath?.node?.key, { name: "on" }) &&
-          t.isObjectProperty(path.parentPath.node)
+          path.node.name === "cond" &&
+          t.isObjectProperty(path.parentPath.node) &&
+          t.isStringLiteral(path.parentPath.node.value)
         ) {
-          const parentNode = path.parentPath.node
-
-          const guardFilter = (valueProp: t.ObjectProperty | t.ObjectMethod | t.SpreadElement) =>
-            t.isObjectProperty(valueProp) && t.isIdentifier(valueProp.key) && valueProp.key.name === "cond"
-
-          if (t.isArrayExpression(parentNode.value) && parentNode.value.elements.length > 0) {
-            const eventTargets = parentNode.value.elements
-            // let eventGuards: string[] = []
-            eventTargets.forEach((target) => {
-              if (t.isObjectExpression(target)) {
-                const guard = target.properties.find(guardFilter)
-                if (t.isObjectProperty(guard) && t.isStringLiteral(guard.value)) {
-                  // eventGuards.push(guard.value.value)
-                  machineGuards.push(guard.value.value)
-                }
-              }
-            })
-            // coupleGuards.push(eventGuards)
-          } else if (t.isObjectExpression(parentNode.value)) {
-            const guard = parentNode.value.properties.find(guardFilter)
-            if (t.isObjectProperty(guard) && t.isStringLiteral(guard.value)) {
-              machineGuards.push(guard.value.value)
-            }
-          }
+          machineGuards.push(path.parentPath.node.value.value)
         }
       },
     })
