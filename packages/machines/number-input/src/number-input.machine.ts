@@ -26,8 +26,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         step: 1,
         min: Number.MIN_SAFE_INTEGER,
         max: Number.MAX_SAFE_INTEGER,
-        precision: 0,
-        inputSelection: null,
         scrubberCursorPoint: null,
         invalid: false,
         ...ctx,
@@ -59,8 +57,15 @@ export function machine(ctx: UserDefinedContext = {}) {
         SET_VALUE: {
           actions: ["setValue", "setHintToSet"],
         },
-        INCREMENT: { actions: ["increment"] },
-        DECREMENT: { actions: ["decrement"] },
+        CLEAR_VALUE: {
+          actions: ["clearValue"],
+        },
+        INCREMENT: {
+          actions: ["increment"],
+        },
+        DECREMENT: {
+          actions: ["decrement"],
+        },
       },
 
       states: {
@@ -242,8 +247,11 @@ export function machine(ctx: UserDefinedContext = {}) {
                 event.preventDefault()
 
                 const dir = Math.sign(event.deltaY) * -1
-                if (dir === 1) ctx.value = utils.increment(ctx)
-                else if (dir === -1) ctx.value = utils.decrement(ctx)
+                if (dir === 1) {
+                  ctx.value = utils.increment(ctx)
+                } else if (dir === -1) {
+                  ctx.value = utils.decrement(ctx)
+                }
               }
               cleanups.push(addDomEvent(input, "wheel", onWheel, { passive: false }))
             }),
@@ -262,7 +270,11 @@ export function machine(ctx: UserDefinedContext = {}) {
             if (!ctx.scrubberCursorPoint) return
             const value = dom.getMousementValue(ctx, event)
             if (!value.hint) return
-            send({ type: "POINTER_MOVE_SCRUBBER", hint: value.hint, point: value.point })
+            send({
+              type: "POINTER_MOVE_SCRUBBER",
+              hint: value.hint,
+              point: value.point,
+            })
           }
 
           function onMouseup() {
@@ -298,7 +310,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value = utils.clamp(ctx)
         },
         roundValue(ctx) {
-          ctx.value = utils.round(ctx)
+          if (ctx.value !== "") {
+            ctx.value = utils.round(ctx)
+          }
         },
         setValue(ctx, evt) {
           const value = evt.target?.value ?? evt.value
@@ -347,7 +361,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         updateCursor(ctx) {
           const cursor = dom.getCursorEl(ctx)
           if (!cursor || !ctx.scrubberCursorPoint) return
-          cursor.style.transform = `translate3d(${ctx.scrubberCursorPoint.x}px, ${ctx.scrubberCursorPoint.y}px, 0px)`
+          const { x, y } = ctx.scrubberCursorPoint
+          cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
         },
         addCustomCursor(ctx) {
           if (isSafari() || !supportsPointerEvent()) return
