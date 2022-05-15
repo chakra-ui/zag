@@ -1,12 +1,11 @@
 import type { StateMachine as S } from "@zag-js/core"
+import { PrecisionOptions } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
 //
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
-
-type InputSelection = Record<"start" | "end", number | null>
 
 //
 
@@ -39,105 +38,98 @@ type IntlMessages = {
 
 //
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the number input. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * The name attribute of the number input. Useful for form submission.
-   */
-  name?: string
-  /**
-   * Whether the number input is disabled.
-   */
-  disabled?: boolean
-  /**
-   * Whether the number input is readonly
-   */
-  readonly?: boolean
-  /**
-   * Whether the number input value is invalid.
-   */
-  invalid?: boolean
-  /**
-   * The number of decimal points used to round the value
-   */
-  precision?: number
-  /**
-   * The pattern used to check the <input> element's value against
-   *
-   * @default
-   * "[0-9]*(.[0-9]+)?"
-   */
-  pattern: string
-  /**
-   * The value of the input
-   */
-  value: string
-  /**
-   * The minimum value of the number input
-   */
-  min: number
-  /**
-   * The maximum value of the number input
-   */
-  max: number
-  /**
-   * The step value of the number input
-   */
-  step: number
-  /**
-   * Whether to allow mouse wheel to change the value
-   */
-  allowMouseWheel?: boolean
-  /**
-   * Whether to allow the value overflow the min/max range
-   * @default true
-   */
-  allowOverflow: boolean
-  /**
-   * Whether the pressed key should be allowed in the input.
-   * The default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\-.]$/
-   */
-  validateCharacter?: (char: string) => boolean
-  /**
-   * Whether to clamp the value when the input loses focus (blur)
-   * @default true
-   */
-  clampValueOnBlur: boolean
-  /**
-   * Whether to focus input when the value changes
-   * @default true
-   */
-  focusInputOnChange: boolean
-  /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
-   */
-  messages: IntlMessages
-  /**
-   * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
-   */
-  parse?: (value: string) => string
-  /**
-   * If using a custom display format, this converts the default format to the custom format.
-   */
-  format?: (value: string) => string | number
-  /**
-   * Hints at the type of data that might be entered by the user. It also determines
-   * the type of keyboard shown to the user on mobile devices
-   * @default "decimal"
-   */
-  inputMode: "text" | "tel" | "numeric" | "decimal"
-  /**
-   * Function invoked when the value changes
-   */
-  onChange?: (details: { value: string; valueAsNumber: number }) => void
-  /**
-   * Function invoked when the value overflows or underflows the min/max range
-   */
-  onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
-}
+type PublicContext = DirectionProperty &
+  PrecisionOptions & {
+    /**
+     * The ids of the elements in the number input. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * The name attribute of the number input. Useful for form submission.
+     */
+    name?: string
+    /**
+     * Whether the number input is disabled.
+     */
+    disabled?: boolean
+    /**
+     * Whether the number input is readonly
+     */
+    readonly?: boolean
+    /**
+     * Whether the number input value is invalid.
+     */
+    invalid?: boolean
+    /**
+     * The pattern used to check the <input> element's value against
+     *
+     * @default
+     * "[0-9]*(.[0-9]+)?"
+     */
+    pattern: string
+    /**
+     * The value of the input
+     */
+    value: string
+    /**
+     * The minimum value of the number input
+     */
+    min: number
+    /**
+     * The maximum value of the number input
+     */
+    max: number
+    /**
+     * Whether to allow mouse wheel to change the value
+     */
+    allowMouseWheel?: boolean
+    /**
+     * Whether to allow the value overflow the min/max range
+     * @default true
+     */
+    allowOverflow: boolean
+    /**
+     * Whether the pressed key should be allowed in the input.
+     * The default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\-.]$/
+     */
+    validateCharacter?: (char: string) => boolean
+    /**
+     * Whether to clamp the value when the input loses focus (blur)
+     * @default true
+     */
+    clampValueOnBlur: boolean
+    /**
+     * Whether to focus input when the value changes
+     * @default true
+     */
+    focusInputOnChange: boolean
+    /**
+     * Specifies the localized strings that identifies the accessibility elements and their states
+     */
+    messages: IntlMessages
+    /**
+     * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
+     */
+    parse?: (value: string) => string
+    /**
+     * If using a custom display format, this converts the default format to the custom format.
+     */
+    format?: (value: string) => string | number
+    /**
+     * Hints at the type of data that might be entered by the user. It also determines
+     * the type of keyboard shown to the user on mobile devices
+     * @default "decimal"
+     */
+    inputMode: "text" | "tel" | "numeric" | "decimal"
+    /**
+     * Function invoked when the value changes
+     */
+    onChange?: (details: { value: string; valueAsNumber: number }) => void
+    /**
+     * Function invoked when the value overflows or underflows the min/max range
+     */
+    onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
+  }
 
 export type UserDefinedContext = Partial<PublicContext>
 
@@ -199,11 +191,6 @@ type PrivateContext = Context<{
    * The hint that determines if we're incrementing or decrementing
    */
   hint: "increment" | "decrement" | "set" | null
-  /**
-   * @internal
-   * The selection range of the input
-   */
-  inputSelection: InputSelection | null
   /**
    * @internal
    * The scrubber cursor position
