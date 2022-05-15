@@ -16,6 +16,13 @@ const logger = createLogger("visualize")
 
 const EXCLUDE = new Set(["computed", "created", "onEvent", "watch"])
 
+const delays: Record<string, any> = {
+  menu: { LONG_PRESS_DELAY: 700, SUBMENU_OPEN_DELAY: 100, SUBMENU_CLOSE_DELAY: 200 },
+  "number-input": { CHANGE_DELAY: 300, CHANGE_INTERVAL: 50 },
+  splitter: { HOVER_DELAY: 250 },
+  tooltip: { OPEN_DELAY: 1000, CLOSE_DELAY: 500 },
+}
+
 type VisualizeOpts = {
   outDir?: string
   all?: boolean
@@ -175,19 +182,26 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
     })
 
     const guardsWithoutDuplicates = [...new Set(machineGuards)]
-    const actionsCode = `actions: {
+    const actionsCode = `\nactions: {
   updateContext: assign((context, event) => {
     return {
       [event.contextKey]: true,
     }
   })
-}`
-    const guardsCode = `  guards: {
+},`
+
+    const delaysCode = delays[component]
+      ? `\n  delays: {
+  ${Object.entries(delays[component]).map(([key, delay]) => `${key}: ${delay}`)}
+    },`
+      : ""
+
+    const guardsCode = `\n  guards: {
 ${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).join("    \n")}
-  }`
+  },`
 
     const optionsCode = `{
-  ${actionsCode}, \n${guardsCode}
+  ${actionsCode} ${delaysCode} ${guardsCode}
 }`
 
     const codeWithOptions = fillVariables(`${machineObjOutput.code}, \n${optionsCode}`)
