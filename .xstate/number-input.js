@@ -18,6 +18,9 @@ const fetchMachine = createMachine(
       SET_VALUE: {
         actions: ["setValue", "setHintToSet"],
       },
+      CLEAR_VALUE: {
+        actions: ["clearValue"],
+      },
       INCREMENT: {
         actions: ["increment"],
       },

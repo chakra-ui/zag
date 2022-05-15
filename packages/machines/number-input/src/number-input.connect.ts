@@ -1,7 +1,8 @@
-import { dataAttr, EventKeyMap, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
-import { multiply, roundToPx } from "@zag-js/number-utils"
+import { ariaAttr, dataAttr, EventKeyMap, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
+import { roundToDevicePixel } from "@zag-js/number-utils"
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { isIos } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -25,7 +26,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value: value.toString() })
     },
     clearValue() {
-      send({ type: "SET_VALUE", value: "" })
+      send("CLEAR_VALUE")
     },
     increment() {
       send("INCREMENT")
@@ -57,6 +58,15 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       htmlFor: dom.getInputId(state.context),
     }),
 
+    groupProps: normalize.element<T>({
+      "data-part": "group",
+      role: "group",
+      "aria-disabled": isDisabled,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "aria-invalid": ariaAttr(state.context.invalid),
+    }),
+
     inputProps: normalize.input<T>({
       "data-part": "input",
       name: state.context.name,
@@ -74,7 +84,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       autoCorrect: "off",
       spellCheck: "false",
       type: "text",
-      "aria-roledescription": "number field",
+      "aria-roledescription": !isIos() ? "number field" : undefined,
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
@@ -98,7 +108,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
           event.preventDefault()
         }
 
-        const step = multiply(getEventStep(event), state.context.step)
+        const step = getEventStep(event) * state.context.step
 
         const keyMap: EventKeyMap = {
           ArrowUp() {
@@ -180,8 +190,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         event.preventDefault()
         const point = getEventPoint(evt)
 
-        point.x = point.x - roundToPx(7.5)
-        point.y = point.y - roundToPx(7.5)
+        point.x = point.x - roundToDevicePixel(7.5)
+        point.y = point.y - roundToDevicePixel(7.5)
 
         send({ type: "PRESS_DOWN_SCRUBBER", point })
       },

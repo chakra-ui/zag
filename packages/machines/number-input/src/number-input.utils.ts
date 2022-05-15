@@ -1,7 +1,7 @@
-import { clamp, decrement, increment, roundToPrecision } from "@zag-js/number-utils"
+import { clamp, decrement, increment, formatDecimal } from "@zag-js/number-utils"
 import { isModifiedEvent } from "@zag-js/utils"
 import type { KeyboardEvent } from "react"
-import { MachineContext as Ctx } from "./number-input.types"
+import type { MachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
   isValidNumericEvent: (ctx: Ctx, event: KeyboardEvent) => {
@@ -19,18 +19,15 @@ export const utils = {
       .join("")
   },
   increment: (ctx: Ctx, step?: number) => {
-    let value: string | number = increment(ctx.value, step ?? ctx.step)
-    value = clamp(value, ctx)
-    return roundToPrecision(value, ctx)
+    const value = increment(ctx.value, step ?? ctx.step)
+    return formatDecimal(clamp(value, ctx), ctx)
   },
   decrement: (ctx: Ctx, step?: number) => {
-    let value: string | number = decrement(ctx.value, step ?? ctx.step)
-    value = clamp(value, ctx)
-    return roundToPrecision(value, ctx)
+    const value = decrement(ctx.value, step ?? ctx.step)
+    return formatDecimal(clamp(value, ctx), ctx)
   },
   clamp: (ctx: Ctx) => {
-    let value: string | number = clamp(ctx.value, ctx)
-    return roundToPrecision(value, ctx)
+    return formatDecimal(clamp(ctx.value, ctx), ctx)
   },
   parse: (ctx: Ctx, value: string) => {
     return ctx.parse?.(value) ?? value
@@ -40,6 +37,6 @@ export const utils = {
     return ctx.format?.(_val) ?? _val
   },
   round: (ctx: Ctx) => {
-    return roundToPrecision(ctx.value, ctx)
+    return formatDecimal(ctx.value, ctx)
   },
 }

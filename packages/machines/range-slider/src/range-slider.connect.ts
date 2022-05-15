@@ -1,5 +1,5 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
-import { multiply, percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
+import { percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
@@ -132,7 +132,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         },
         onKeyDown(event) {
           if (!isInteractive) return
-          const step = multiply(getEventStep(event), state.context.step)
+          const step = getEventStep(event) * state.context.step
           let prevent = true
           const keyMap: EventKeyMap = {
             ArrowUp() {
