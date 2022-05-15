@@ -1,6 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
 import { nextTick, raf, trackFormReset, trackInputPropertyMutation, trackPointerMove } from "@zag-js/dom-utils"
-import { multiply } from "@zag-js/number-utils"
 import { getElementRect } from "@zag-js/rect-utils"
 import { isNumber } from "@zag-js/utils"
 import { dom, getClosestIndex } from "./range-slider.dom"
@@ -34,7 +33,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         isVertical: (ctx) => ctx.orientation === "vertical",
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
-        spacing: (ctx) => multiply(ctx.minStepsBetweenThumbs, ctx.step),
+        spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
         hasMeasuredThumbSize: (ctx) => ctx.thumbSize != null,
       },
 
