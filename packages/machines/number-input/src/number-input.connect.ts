@@ -25,7 +25,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value: value.toString() })
     },
     clearValue() {
-      send({ type: "SET_VALUE", value: "" })
+      send("CLEAR_VALUE")
     },
     increment() {
       send("INCREMENT")
