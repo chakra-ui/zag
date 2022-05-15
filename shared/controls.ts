@@ -45,8 +45,10 @@ export const editableControls = defineControls({
 export const numberInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
-  step: { type: "number", defaultValue: 1 },
-  precision: { type: "number", defaultValue: 0 },
+  allowMouseWheel: { type: "boolean", defaultValue: false },
+  step: { type: "number", defaultValue: 0.05 },
+  minFractionDigits: { type: "number", defaultValue: 0 },
+  maxFractionDigits: { type: "number", defaultValue: 3 },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
 })

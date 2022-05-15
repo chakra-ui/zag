@@ -72,7 +72,7 @@ test.describe("number input", () => {
 
     test("should change for 0.1 steps", async ({ page }) => {
       await controls(page).num("step", "0.1")
-      await controls(page).num("precision", "2")
+      await controls(page).num("minFractionDigits", "2")
 
       await page.type(input, "0.10")
       await page.keyboard.press("Control+ArrowUp")
@@ -137,9 +137,9 @@ test.describe("number input", () => {
     })
   })
 
-  test("should clamp to precision", async ({ page }) => {
-    // set precision to 2
-    await controls(page).num("precision", "2")
+  test.only("should clamp to max fraction digit", async ({ page }) => {
+    // set `maxFractionDigits` to 2
+    await controls(page).num("maxFractionDigits", "2")
 
     await page.type(input, "12.345678")
 

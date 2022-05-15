@@ -1,5 +1,5 @@
 import { MAX_Z_INDEX } from "@zag-js/dom-utils"
-import { roundToPx, wrap } from "@zag-js/number-utils"
+import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
 import { MachineContext as Ctx } from "./number-input.types"
 
 type InputEl = HTMLInputElement | null
@@ -22,11 +22,11 @@ export const dom = {
   getIncButtonEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getIncButtonId(ctx)) as ButtonEl,
   getDecButtonEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getDecButtonId(ctx)) as ButtonEl,
   getScrubberEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getScrubberId(ctx)),
-  getCursorEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getCursorId(ctx)),
+  getCursorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCursorId(ctx)),
 
   getMousementValue(ctx: Ctx, event: MouseEvent) {
-    const x = roundToPx(event.movementX)
-    const y = roundToPx(event.movementY)
+    const x = roundToDevicePixel(event.movementX)
+    const y = roundToDevicePixel(event.movementY)
 
     let hint = x > 0 ? "increment" : x < 0 ? "decrement" : null
 
@@ -40,7 +40,7 @@ export const dom = {
 
     const win = dom.getWin(ctx)
     const width = win.innerWidth
-    const half = roundToPx(7.5)
+    const half = roundToDevicePixel(7.5)
     point.x = wrap(point.x + half, width) - half
 
     return { hint, point }

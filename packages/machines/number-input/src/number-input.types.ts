@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import { PrecisionOptions } from "@zag-js/number-utils"
+import { FormatDecimalOptions } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
@@ -39,7 +39,7 @@ type IntlMessages = {
 //
 
 type PublicContext = DirectionProperty &
-  PrecisionOptions & {
+  FormatDecimalOptions & {
     /**
      * The ids of the elements in the number input. Useful for composition.
      */
@@ -79,6 +79,10 @@ type PublicContext = DirectionProperty &
      * The maximum value of the number input
      */
     max: number
+    /**
+     * The amount to increment or decrement the value by
+     */
+    step: number
     /**
      * Whether to allow mouse wheel to change the value
      */

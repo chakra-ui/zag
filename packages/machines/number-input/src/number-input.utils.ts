@@ -1,4 +1,4 @@
-import { clamp, decrement, increment, roundToPrecision } from "@zag-js/number-utils"
+import { clamp, decrement, increment, formatDecimal } from "@zag-js/number-utils"
 import { isModifiedEvent } from "@zag-js/utils"
 import type { KeyboardEvent } from "react"
 import type { MachineContext as Ctx } from "./number-input.types"
@@ -20,14 +20,14 @@ export const utils = {
   },
   increment: (ctx: Ctx, step?: number) => {
     const value = increment(ctx.value, step ?? ctx.step)
-    return roundToPrecision(clamp(value, ctx), ctx)
+    return formatDecimal(clamp(value, ctx), ctx)
   },
   decrement: (ctx: Ctx, step?: number) => {
     const value = decrement(ctx.value, step ?? ctx.step)
-    return roundToPrecision(clamp(value, ctx), ctx)
+    return formatDecimal(clamp(value, ctx), ctx)
   },
   clamp: (ctx: Ctx) => {
-    return roundToPrecision(clamp(ctx.value, ctx), ctx)
+    return formatDecimal(clamp(ctx.value, ctx), ctx)
   },
   parse: (ctx: Ctx, value: string) => {
     return ctx.parse?.(value) ?? value
@@ -37,6 +37,6 @@ export const utils = {
     return ctx.format?.(_val) ?? _val
   },
   round: (ctx: Ctx) => {
-    return roundToPrecision(ctx.value, ctx)
+    return formatDecimal(ctx.value, ctx)
   },
 }
