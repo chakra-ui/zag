@@ -13,6 +13,9 @@ const fetchMachine = createMachine(
       "clampOnBlur && !isInRange": false,
       isIncrementHint: false,
       isDecrementHint: false,
+      isInRange: false,
+      isIncrementHint: false,
+      isDecrementHint: false,
     },
     on: {
       SET_VALUE: {
@@ -175,6 +178,7 @@ const fetchMachine = createMachine(
       "clampOnBlur && !isInRange": (ctx) => ctx["clampOnBlur && !isInRange"],
       isIncrementHint: (ctx) => ctx["isIncrementHint"],
       isDecrementHint: (ctx) => ctx["isDecrementHint"],
+      isInRange: (ctx) => ctx["isInRange"],
     },
   },
 )
