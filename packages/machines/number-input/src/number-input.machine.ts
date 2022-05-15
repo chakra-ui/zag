@@ -1,5 +1,5 @@
 import { choose, createMachine, guards, ref } from "@zag-js/core"
-import { addDomEvent, nextTick, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-utils"
+import { addDomEvent, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-utils"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
 import { isSafari, pipe, supportsPointerEvent } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
@@ -26,8 +26,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         step: 1,
         min: Number.MIN_SAFE_INTEGER,
         max: Number.MAX_SAFE_INTEGER,
-        precision: 0,
-        inputSelection: null,
         scrubberCursorPoint: null,
         invalid: false,
         ...ctx,
@@ -59,8 +57,15 @@ export function machine(ctx: UserDefinedContext = {}) {
         SET_VALUE: {
           actions: ["setValue", "setHintToSet"],
         },
-        INCREMENT: { actions: ["increment"] },
-        DECREMENT: { actions: ["decrement"] },
+        CLEAR_VALUE: {
+          actions: ["clearValue"],
+        },
+        INCREMENT: {
+          actions: ["increment"],
+        },
+        DECREMENT: {
+          actions: ["decrement"],
+        },
       },
 
       states: {
@@ -229,27 +234,23 @@ export function machine(ctx: UserDefinedContext = {}) {
             send("PRESS_UP")
           })
         },
-        attachWheelListener(ctx) {
-          const cleanups: VoidFunction[] = []
-          cleanups.push(
-            nextTick(() => {
-              const input = dom.getInputEl(ctx)
-              if (!input) return
+        attachWheelListener(ctx, _evt, { send }) {
+          const input = dom.getInputEl(ctx)
+          if (!input) return
 
-              function onWheel(event: WheelEvent) {
-                const isInputFocused = dom.getDoc(ctx).activeElement === input
-                if (!ctx.allowMouseWheel || !isInputFocused) return
-                event.preventDefault()
+          function onWheel(event: WheelEvent) {
+            const isInputFocused = dom.getDoc(ctx).activeElement === input
+            if (!ctx.allowMouseWheel || !isInputFocused) return
+            event.preventDefault()
 
-                const dir = Math.sign(event.deltaY) * -1
-                if (dir === 1) ctx.value = utils.increment(ctx)
-                else if (dir === -1) ctx.value = utils.decrement(ctx)
-              }
-              cleanups.push(addDomEvent(input, "wheel", onWheel, { passive: false }))
-            }),
-          )
-
-          return () => cleanups.forEach((c) => c())
+            const dir = Math.sign(event.deltaY) * -1
+            if (dir === 1) {
+              send("INCREMENT")
+            } else if (dir === -1) {
+              send("DECREMENT")
+            }
+          }
+          return addDomEvent(input, "wheel", onWheel, { passive: false })
         },
         activatePointerLock(ctx) {
           if (isSafari() || !supportsPointerEvent()) return
@@ -262,7 +263,11 @@ export function machine(ctx: UserDefinedContext = {}) {
             if (!ctx.scrubberCursorPoint) return
             const value = dom.getMousementValue(ctx, event)
             if (!value.hint) return
-            send({ type: "POINTER_MOVE_SCRUBBER", hint: value.hint, point: value.point })
+            send({
+              type: "POINTER_MOVE_SCRUBBER",
+              hint: value.hint,
+              point: value.point,
+            })
           }
 
           function onMouseup() {
@@ -298,7 +303,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value = utils.clamp(ctx)
         },
         roundValue(ctx) {
-          ctx.value = utils.round(ctx)
+          if (ctx.value !== "") {
+            ctx.value = utils.round(ctx)
+          }
         },
         setValue(ctx, evt) {
           const value = evt.target?.value ?? evt.value
@@ -324,12 +331,19 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
 
         invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
+          ctx.onChange?.({
+            value: ctx.value,
+            valueAsNumber: ctx.valueAsNumber,
+          })
         },
         invokeOnInvalid(ctx) {
           if (!ctx.isOutOfRange) return
           const reason = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
-          ctx.onInvalid?.({ reason, value: ctx.formattedValue, valueAsNumber: ctx.valueAsNumber })
+          ctx.onInvalid?.({
+            reason,
+            value: ctx.formattedValue,
+            valueAsNumber: ctx.valueAsNumber,
+          })
         },
         // sync input value, in event it was set from form libraries via `ref`, `bind:this`, etc.
         syncInputValue(ctx) {
@@ -347,7 +361,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         updateCursor(ctx) {
           const cursor = dom.getCursorEl(ctx)
           if (!cursor || !ctx.scrubberCursorPoint) return
-          cursor.style.transform = `translate3d(${ctx.scrubberCursorPoint.x}px, ${ctx.scrubberCursorPoint.y}px, 0px)`
+          const { x, y } = ctx.scrubberCursorPoint
+          cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
         },
         addCustomCursor(ctx) {
           if (isSafari() || !supportsPointerEvent()) return
@@ -355,9 +370,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         removeCustomCursor(ctx) {
           if (isSafari() || !supportsPointerEvent()) return
-          const doc = dom.getDoc(ctx)
-          const el = doc.getElementById(dom.getCursorId(ctx))
-          el?.remove()
+          dom.getCursorEl(ctx)?.remove()
         },
         disableTextSelection(ctx) {
           const doc = dom.getDoc(ctx)
