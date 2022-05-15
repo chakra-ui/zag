@@ -28,7 +28,13 @@ export function clamp(v: number | string, o: Num<"min" | "max">) {
 
 export function countDecimals(value: number) {
   if (!Number.isFinite(value)) return 0
-  return value.toString().split(".")[1]?.length ?? 0
+  let e = 1,
+    p = 0
+  while (Math.round(value * e) / e !== value) {
+    e *= 10
+    p += 1
+  }
+  return p
 }
 
 export const increment = (v: number | string, s: number) => decimalOperation(valueOf(v), "+", s)
