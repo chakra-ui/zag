@@ -288,6 +288,11 @@ const fetchMachine = createMachine(
         }
       }),
     },
+    delays: {
+      LONG_PRESS_DELAY: 700,
+      SUBMENU_OPEN_DELAY: 100,
+      SUBMENU_CLOSE_DELAY: 200,
+    },
     guards: {
       isTriggerItem: (ctx) => ctx["isTriggerItem"],
       "!isSubmenu": (ctx) => ctx["!isSubmenu"],

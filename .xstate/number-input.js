@@ -166,6 +166,10 @@ const fetchMachine = createMachine(
         }
       }),
     },
+    delays: {
+      CHANGE_DELAY: 300,
+      CHANGE_INTERVAL: 50,
+    },
     guards: {
       isInvalidExponential: (ctx) => ctx["isInvalidExponential"],
       "clampOnBlur && !isInRange": (ctx) => ctx["clampOnBlur && !isInRange"],

@@ -153,6 +153,9 @@ const fetchMachine = createMachine(
         }
       }),
     },
+    delays: {
+      HOVER_DELAY: 250,
+    },
     guards: {
       isCollapsed: (ctx) => ctx["isCollapsed"],
       "!isFixed": (ctx) => ctx["!isFixed"],

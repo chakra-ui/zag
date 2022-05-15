@@ -125,6 +125,10 @@ const fetchMachine = createMachine(
         }
       }),
     },
+    delays: {
+      OPEN_DELAY: 1000,
+      CLOSE_DELAY: 500,
+    },
     guards: {
       noVisibleTooltip: (ctx) => ctx["noVisibleTooltip"],
       closeOnPointerDown: (ctx) => ctx["closeOnPointerDown"],
