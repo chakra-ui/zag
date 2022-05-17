@@ -1,5 +1,13 @@
 # @zag-js/popper
 
+## 0.1.2
+
+### Patch Changes
+
+- [#88](https://github.com/chakra-ui/zag/pull/88)
+  [`f19a0f0b`](https://github.com/chakra-ui/zag/commit/f19a0f0b2917525f114d305a8e83196a2fc56003) Thanks
+  [@xylophonehero](https://github.com/xylophonehero)! - Improve popper arrow rotation based on placement
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @zag-js/popover
 
+## 0.1.4
+
+### Patch Changes
+
+- [#88](https://github.com/chakra-ui/zag/pull/88)
+  [`f19a0f0b`](https://github.com/chakra-ui/zag/commit/f19a0f0b2917525f114d305a8e83196a2fc56003) Thanks
+  [@xylophonehero](https://github.com/xylophonehero)! - Improve popper arrow rotation based on placement
+
+* [#89](https://github.com/chakra-ui/zag/pull/89)
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add incremental support for shadow root in machines
+
+* Updated dependencies [[`f19a0f0b`](https://github.com/chakra-ui/zag/commit/f19a0f0b2917525f114d305a8e83196a2fc56003),
+  [`bcf247f1`](https://github.com/chakra-ui/zag/commit/bcf247f18afa5413a7b008f5ab5cbd3665350cb9),
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0)]:
+  - @zag-js/popper@0.1.2
+  - @zag-js/core@0.1.4
+  - @zag-js/types@0.1.1
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @zag-js/pin-input
 
+## 0.1.4
+
+### Patch Changes
+
+- [#86](https://github.com/chakra-ui/zag/pull/86)
+  [`d393adf8`](https://github.com/chakra-ui/zag/commit/d393adf85f536bae8b0c9c3d508833e1b4ce32ee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pin input allowed double characters when pressing
+  two numbers at the same time
+
+* [#89](https://github.com/chakra-ui/zag/pull/89)
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add incremental support for shadow root in machines
+
+* Updated dependencies [[`bcf247f1`](https://github.com/chakra-ui/zag/commit/bcf247f18afa5413a7b008f5ab5cbd3665350cb9),
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0)]:
+  - @zag-js/core@0.1.4
+  - @zag-js/types@0.1.1
+
 ## 0.1.3
 
 ### Patch Changes

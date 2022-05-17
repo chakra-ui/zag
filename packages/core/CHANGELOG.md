@@ -1,5 +1,17 @@
 # @zag-js/core
 
+## 0.1.4
+
+### Patch Changes
+
+- [#83](https://github.com/chakra-ui/zag/pull/83)
+  [`bcf247f1`](https://github.com/chakra-ui/zag/commit/bcf247f18afa5413a7b008f5ab5cbd3665350cb9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to ensure that the config points to unique references
+
+* [#89](https://github.com/chakra-ui/zag/pull/89)
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add incremental support for shadow root in machines
+
 ## 0.1.3
 
 ### Patch Changes

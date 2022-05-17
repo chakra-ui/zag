@@ -1,5 +1,13 @@
 # @zag-js/number-utils
 
+## 0.1.2
+
+### Patch Changes
+
+- [`65df1e9a`](https://github.com/chakra-ui/zag/commit/65df1e9ad8948ee6e09519d1136f8178b693f277) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Replace `toPrecision` function with `formatDecimal` to allow user
+  control the min or max fractional digits of a number.
+
 ## 0.1.1
 
 ### Patch Changes
