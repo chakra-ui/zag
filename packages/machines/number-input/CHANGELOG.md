@@ -1,5 +1,28 @@
 # @zag-js/number-input
 
+## 0.1.4
+
+### Patch Changes
+
+- [#83](https://github.com/chakra-ui/zag/pull/83)
+  [`bcf247f1`](https://github.com/chakra-ui/zag/commit/bcf247f18afa5413a7b008f5ab5cbd3665350cb9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple number input rendered on page causes them
+  to the initial value of the first input
+
+* [`f4d2cf6d`](https://github.com/chakra-ui/zag/commit/f4d2cf6d603268adc0ab5d99ffacc5cba6906a65) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Make the `scrubberPoint` type internal
+
+- [#89](https://github.com/chakra-ui/zag/pull/89)
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add incremental support for shadow root in machines
+
+- Updated dependencies [[`bcf247f1`](https://github.com/chakra-ui/zag/commit/bcf247f18afa5413a7b008f5ab5cbd3665350cb9),
+  [`a71d5d2a`](https://github.com/chakra-ui/zag/commit/a71d5d2a984e4293ebeb55944e27df20492ad1c0),
+  [`65df1e9a`](https://github.com/chakra-ui/zag/commit/65df1e9ad8948ee6e09519d1136f8178b693f277)]:
+  - @zag-js/core@0.1.4
+  - @zag-js/types@0.1.1
+  - @zag-js/number-utils@0.1.2
+
 ## 0.1.3
 
 ### Patch Changes
