@@ -6,4 +6,4 @@
 "@zag-js/popper": patch
 ---
 
-feat: arrow rotation based on placement
+Improve popper arrow rotation based on placement
