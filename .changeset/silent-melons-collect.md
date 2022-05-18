@@ -4,7 +4,7 @@
 
 Add support for different placeholders in preview and edit mode.
 
-The `placeholder` can be either a `string` or an object containing `edit` and `preview`.
+The `placeholder` can be a `string` or an object containing `edit` and `preview`.
 
 ```js
 const [state, send] = useMachine(
