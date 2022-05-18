@@ -15,6 +15,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const messages = state.context.messages
 
   const isEditing = state.matches("edit")
+  const _placeholder = state.context.placeholder
+  const placeholder = typeof _placeholder === "string" ? { edit: _placeholder, preview: _placeholder } : _placeholder
 
   return {
     isEditing,
@@ -73,7 +75,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       name: state.context.name,
       id: dom.getInputId(state.context),
       hidden: autoResize ? undefined : !isEditing,
-      placeholder: state.context.placeholder,
+      placeholder: placeholder?.edit,
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
       readOnly: isReadonly,
@@ -132,7 +134,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-disabled": ariaAttr(isDisabled),
       "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
-      children: isValueEmpty ? state.context.placeholder : state.context.value,
+      children: isValueEmpty ? placeholder?.preview : state.context.value,
       hidden: autoResize ? undefined : isEditing,
       tabIndex: isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {

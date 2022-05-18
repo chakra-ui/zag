@@ -113,7 +113,7 @@ type PublicContext = DirectionProperty & {
   /**
    * The placeholder value to show when the `value` is empty
    */
-  placeholder?: string
+  placeholder?: string | { edit: string; preview: string }
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
