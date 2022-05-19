@@ -47,12 +47,6 @@ export const isDisabled = (el: HTMLElement | null): boolean => {
   return el?.getAttribute("disabled") != null || !!el?.getAttribute("aria-disabled") === true
 }
 
-export function getNativeEvent<E>(
-  event: E,
-): React.ChangeEvent<any> extends E ? InputEvent : E extends React.SyntheticEvent<any, infer T> ? T : never {
-  return (event as any).nativeEvent ?? event
-}
-
 export function isElementEditable(el: HTMLElement | null) {
   if (el == null) return false
   const selectors = [
