@@ -18,25 +18,28 @@ export const cssVars = {
  * Transform Origin Middleware
  * -----------------------------------------------------------------------------*/
 
-const transforms = {
-  top: "bottom center",
-  "top-start": "bottom left",
-  "top-end": "bottom right",
-  bottom: "top center",
-  "bottom-start": "top left",
-  "bottom-end": "top right",
-  left: "right center",
-  "left-start": "right top",
-  "left-end": "right bottom",
-  right: "left center",
-  "right-start": "left top",
-  "right-end": "left bottom",
-}
-
 export const transformOrigin: Middleware = {
   name: "transformOrigin",
   fn({ placement, elements }) {
-    const { floating } = elements
+    const { floating, reference } = elements
+    const { height: triggerHeight, width: triggerWidth } = reference.getBoundingClientRect()
+    const { height: floatingHeight, width: floatingWidth } = floating.getBoundingClientRect()
+
+    const transforms = {
+      top: "bottom center",
+      "top-start": `${triggerWidth / 2}px bottom`,
+      "top-end": `${floatingWidth - triggerWidth / 2}px bottom`,
+      bottom: "top center",
+      "bottom-start": `${triggerWidth / 2}px top`,
+      "bottom-end": `${floatingWidth - triggerWidth / 2}px top`,
+      left: "right center",
+      "left-start": `right ${triggerHeight / 2}px`,
+      "left-end": `right ${floatingHeight - triggerHeight / 2}px`,
+      right: "left center",
+      "right-start": `left ${triggerHeight / 2}px`,
+      "right-end": `left ${floatingHeight - triggerHeight / 2}px`,
+    }
+
     floating.style.setProperty(cssVars.transformOrigin.variable, transforms[placement])
     return {
       data: { transformOrigin: transforms[placement] },
