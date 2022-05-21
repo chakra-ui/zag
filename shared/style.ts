@@ -106,6 +106,11 @@ export const menuStyle: CSSObject = {
   },
 }
 
+const scale = keyframes({
+  from: { transform: "scale(0.9)", opacity: 0 },
+  to: { transform: "scale(1)", opacity: 1 },
+})
+
 export const popoverStyle: CSSObject = {
   "[data-part=root]": {
     display: "flex",
@@ -124,6 +129,10 @@ export const popoverStyle: CSSObject = {
     position: "relative",
     filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))",
     width: "260px",
+    transformOrigin: "var(--transform-origin)",
+    "&[data-expanded]": {
+      animation: `${scale} 0.1s ease-out`,
+    },
   },
   "[data-part=title]": {
     fontSize: "15px",
