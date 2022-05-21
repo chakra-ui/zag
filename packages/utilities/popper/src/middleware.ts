@@ -1,4 +1,4 @@
-import { Middleware } from "@floating-ui/dom"
+import { Coords, Middleware } from "@floating-ui/dom"
 
 /* -----------------------------------------------------------------------------
  * Shared middleware utils
@@ -18,28 +18,32 @@ export const cssVars = {
  * Transform Origin Middleware
  * -----------------------------------------------------------------------------*/
 
-const transforms = {
+const getTransformOrigin = (arrow?: Partial<Coords>) => ({
   top: "bottom center",
-  "top-start": "bottom left",
-  "top-end": "bottom right",
+  "top-start": arrow ? `${arrow.x}px bottom` : "left bottom",
+  "top-end": arrow ? `${arrow.x}px bottom` : "right bottom",
   bottom: "top center",
-  "bottom-start": "top left",
-  "bottom-end": "top right",
+  "bottom-start": arrow ? `${arrow.x}px top` : "top left",
+  "bottom-end": arrow ? `${arrow.x}px top` : "top right",
   left: "right center",
-  "left-start": "right top",
-  "left-end": "right bottom",
+  "left-start": arrow ? `right ${arrow.y}px` : "right top",
+  "left-end": arrow ? `right ${arrow.y}px` : "right bottom",
   right: "left center",
-  "right-start": "left top",
-  "right-end": "left bottom",
-}
+  "right-start": arrow ? `left ${arrow.y}px` : "left top",
+  "right-end": arrow ? `left ${arrow.y}px` : "left bottom",
+})
 
 export const transformOrigin: Middleware = {
   name: "transformOrigin",
-  fn({ placement, elements }) {
+  fn({ placement, elements, middlewareData }) {
+    const { arrow } = middlewareData
+    const transformOrigin = getTransformOrigin(arrow)[placement]
+
     const { floating } = elements
-    floating.style.setProperty(cssVars.transformOrigin.variable, transforms[placement])
+    floating.style.setProperty(cssVars.transformOrigin.variable, transformOrigin)
+
     return {
-      data: { transformOrigin: transforms[placement] },
+      data: { transformOrigin },
     }
   },
 }

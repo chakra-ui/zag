@@ -28,8 +28,8 @@ export function getPlacement(
    * The middleware stack
    * -----------------------------------------------------------------------------*/
 
-  const middleware: Middleware[] = [transformOrigin]
   const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
+  const middleware: Middleware[] = []
 
   if (options.flip) {
     middleware.push(
@@ -59,9 +59,11 @@ export function getPlacement(
     // prettier-ignore
     middleware.push(
       arrow({ element: arrowEl, padding: 8 }),
-      shiftArrow({ element: arrowEl })
+      shiftArrow({ element: arrowEl }),
     )
   }
+
+  middleware.push(transformOrigin)
 
   if (options.sameWidth || options.fitViewport) {
     middleware.push(

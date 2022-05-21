@@ -7,6 +7,7 @@ import type { Send, State } from "./popover.types"
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isOpen = state.matches("open")
   const pointerdownNode = state.context.pointerdownNode
+
   const popperStyles = getPlacementStyles({
     measured: !!state.context.isPlacementComplete,
     placement: state.context.currentPlacement,
@@ -64,6 +65,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
+      "data-expanded": dataAttr(isOpen),
       "aria-labelledby": state.context.isTitleRendered ? dom.getTitleId(state.context) : undefined,
       "aria-describedby": state.context.isDescriptionRendered ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": state.context.currentPlacement,
