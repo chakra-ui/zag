@@ -1,5 +1,30 @@
 # @zag-js/number-input
 
+## 0.1.5
+
+### Patch Changes
+
+- [#101](https://github.com/chakra-ui/zag/pull/101)
+  [`d0b26765`](https://github.com/chakra-ui/zag/commit/d0b26765f9771de12064104caea540131ad19e77) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add additional `data-type` attribute to identify the spin buttons.
+
+  ```css
+  [data-part="spin-button"] {
+    /* shared styles for spin buttons */
+  }
+
+  [data-part="spin-button"][data-type="increment"] {
+    /* styles for increment button */
+  }
+
+  [data-part="spin-button"][data-type="decrement"] {
+    /* styles for decrement button */
+  }
+  ```
+
+- Updated dependencies [[`1274891d`](https://github.com/chakra-ui/zag/commit/1274891dc06ea869dd2db78685aab252b7baec91)]:
+  - @zag-js/dom-utils@0.1.2
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @zag-js/range-slider
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`1274891d`](https://github.com/chakra-ui/zag/commit/1274891dc06ea869dd2db78685aab252b7baec91)]:
+  - @zag-js/dom-utils@0.1.2
+  - @zag-js/slider@0.1.5
+
 ## 0.1.4
 
 ### Patch Changes

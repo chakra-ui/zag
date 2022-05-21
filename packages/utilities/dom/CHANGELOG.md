@@ -1,5 +1,12 @@
 # @zag-js/dom-utils
 
+## 0.1.2
+
+### Patch Changes
+
+- [`1274891d`](https://github.com/chakra-ui/zag/commit/1274891dc06ea869dd2db78685aab252b7baec91) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add utility to detect keyboard click
+
 ## 0.1.1
 
 ### Patch Changes
