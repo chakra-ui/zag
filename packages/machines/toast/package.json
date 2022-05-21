@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/toast",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Core logic for the toast widget implemented as a state machine",
   "keywords": [
     "js",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@zag-js/core": "0.1.4",
-    "@zag-js/dom-utils": "0.1.1",
+    "@zag-js/dom-utils": "0.1.2",
     "@zag-js/types": "0.1.1",
     "@zag-js/utils": "0.1.1"
   },

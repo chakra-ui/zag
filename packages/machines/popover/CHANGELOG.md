@@ -1,5 +1,18 @@
 # @zag-js/popover
 
+## 0.1.5
+
+### Patch Changes
+
+- [#100](https://github.com/chakra-ui/zag/pull/100)
+  [`3fe2db54`](https://github.com/chakra-ui/zag/commit/3fe2db5482de26cfa0406e32f9a1c768f56b0002) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-expanded` to popover content props
+
+- Updated dependencies [[`3fe2db54`](https://github.com/chakra-ui/zag/commit/3fe2db5482de26cfa0406e32f9a1c768f56b0002),
+  [`1274891d`](https://github.com/chakra-ui/zag/commit/1274891dc06ea869dd2db78685aab252b7baec91)]:
+  - @zag-js/popper@0.1.3
+  - @zag-js/dom-utils@0.1.2
+
 ## 0.1.4
 
 ### Patch Changes
