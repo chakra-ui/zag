@@ -136,6 +136,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     decrementButtonProps: normalize.button<T>({
       "data-part": "spin-button",
+      "data-type": "decrement",
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
@@ -159,6 +160,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     incrementButtonProps: normalize.button<T>({
       "data-part": "spin-button",
+      "data-type": "increment",
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
