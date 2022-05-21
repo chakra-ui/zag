@@ -2,4 +2,4 @@
 "@zag-js/popover": patch
 ---
 
-Add data-expanded to popover content props
+Add `data-expanded` to popover content props
