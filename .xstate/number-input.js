@@ -104,6 +104,7 @@ const fetchMachine = createMachine({
     },
     "before:spin": {
       tags: ["focus"],
+      activities: "trackButtonDisabled",
       entry: choose([{
         cond: "isIncrementHint",
         actions: "increment"

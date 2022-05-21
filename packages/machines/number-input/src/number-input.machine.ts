@@ -140,6 +140,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         "before:spin": {
           tags: ["focus"],
+          activities: "trackButtonDisabled",
           entry: choose([
             { guard: "isIncrementHint", actions: "increment" },
             { guard: "isDecrementHint", actions: "decrement" },
