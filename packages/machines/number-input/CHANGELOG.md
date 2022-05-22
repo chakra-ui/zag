@@ -1,5 +1,13 @@
 # @zag-js/number-input
 
+## 0.1.7
+
+### Patch Changes
+
+- [`0369e964`](https://github.com/chakra-ui/zag/commit/0369e9649ac68637a29e617bf58672ef70aa399f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where machine transitions to `spinning` state on right
+  clicking the spinner buttons.
+
 ## 0.1.6
 
 ### Patch Changes
