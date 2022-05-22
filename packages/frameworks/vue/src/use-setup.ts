@@ -14,16 +14,13 @@ export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetup
   const nodeRef = ref<MaybeElementRef<T>>(null)
 
   onMounted(() => {
-    Promise.resolve().then(() => {
-      const el = nodeRef.value
+    const el = nodeRef.value
 
-      const doc = el?.ownerDocument
-      const root = el?.getRootNode()
+    const doc = el?.ownerDocument
+    const root = el?.getRootNode()
+    const uid = isRef(id) ? id.value : id
 
-      const uid = isRef(id) ? id.value : id
-
-      send({ type: "SETUP", doc, root, id: uid })
-    })
+    send({ type: "SETUP", doc, root, id: uid })
   })
 
   return nodeRef

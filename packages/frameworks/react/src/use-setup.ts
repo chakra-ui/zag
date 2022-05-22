@@ -12,14 +12,12 @@ export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetup
 
   useEffect(() => {
     if (!id) return
-    Promise.resolve().then(() => {
-      const el = ref.current
 
-      const doc = el?.ownerDocument
-      const root = el?.getRootNode()
+    const el = ref.current
+    const doc = el?.ownerDocument
+    const root = el?.getRootNode()
 
-      send({ type: "SETUP", doc, root, id })
-    })
+    send({ type: "SETUP", doc, root, id })
   }, [id])
 
   return ref

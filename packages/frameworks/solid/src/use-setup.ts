@@ -11,14 +11,12 @@ export function useSetup<T extends HTMLElement = HTMLDivElement>(props: UseSetup
   const [node, setNode] = createSignal<T>()
 
   onMount(() => {
-    Promise.resolve().then(() => {
-      const el = node()
+    const el = node()
 
-      const doc = el?.ownerDocument
-      const root = el?.getRootNode()
+    const doc = el?.ownerDocument
+    const root = el?.getRootNode()
 
-      send({ type: "SETUP", doc, root, id })
-    })
+    send({ type: "SETUP", doc, root, id })
   })
 
   return setNode
