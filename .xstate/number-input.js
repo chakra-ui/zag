@@ -63,6 +63,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["focus"],
+      entry: "focusInput",
       activities: "attachWheelListener",
       on: {
         PRESS_DOWN: {
@@ -98,7 +99,7 @@ const fetchMachine = createMachine({
           actions: ["clampValue", "clearHint"]
         }, {
           target: "idle",
-          actions: ["roundValue"]
+          actions: "roundValue"
         }]
       }
     },
@@ -147,7 +148,7 @@ const fetchMachine = createMachine({
       on: {
         POINTER_UP_SCRUBBER: {
           target: "focused",
-          actions: ["clearCursorPoint"]
+          actions: "clearCursorPoint"
         },
         POINTER_MOVE_SCRUBBER: [{
           cond: "isIncrementHint",

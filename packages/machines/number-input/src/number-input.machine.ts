@@ -94,6 +94,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         focused: {
           tags: ["focus"],
+          entry: "focusInput",
           activities: "attachWheelListener",
           on: {
             PRESS_DOWN: {
@@ -132,7 +133,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               },
               {
                 target: "idle",
-                actions: ["roundValue"],
+                actions: "roundValue",
               },
             ],
           },
@@ -190,7 +191,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             POINTER_UP_SCRUBBER: {
               target: "focused",
-              actions: ["clearCursorPoint"],
+              actions: "clearCursorPoint",
             },
             POINTER_MOVE_SCRUBBER: [
               {
@@ -330,7 +331,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         setHintToSet(ctx) {
           ctx.hint = "set"
         },
-
         invokeOnChange(ctx) {
           ctx.onChange?.({
             value: ctx.value,

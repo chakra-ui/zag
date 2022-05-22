@@ -2,7 +2,7 @@ import { ariaAttr, dataAttr, EventKeyMap, getEventStep, getNativeEvent } from "@
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
-import { isIos } from "@zag-js/utils"
+import { isIos, isLeftClick } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -146,7 +146,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         if (isDecrementDisabled) return
-        send({ type: "PRESS_DOWN", hint: "decrement" })
+        send(isLeftClick(event) ? { type: "PRESS_DOWN", hint: "decrement" } : { type: "FOCUS" })
         event.preventDefault()
       },
       onPointerUp() {
@@ -169,9 +169,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
-        event.preventDefault()
         if (isIncrementDisabled) return
-        send({ type: "PRESS_DOWN", hint: "increment" })
+        send(isLeftClick(event) ? { type: "PRESS_DOWN", hint: "increment" } : { type: "FOCUS" })
+        event.preventDefault()
       },
       onPointerUp() {
         send({ type: "PRESS_UP", hint: "increment" })
