@@ -25,11 +25,6 @@ type PublicContext = DirectionProperty & {
    */
   value: number
   /**
-   * The value of the slider when it was initially rendered.
-   * Used when the `form.reset(...)` is called.
-   */
-  initialValue: number | null
-  /**
    * The name associated with the slider (when used in a form)
    */
   name?: string
@@ -139,6 +134,12 @@ type PrivateContext = Context<{
    * @internal The slider thumb dimensions
    */
   thumbSize: { width: number; height: number } | null
+  /**
+   * @internal
+   * The value of the slider when it was initially rendered.
+   * Used when the `form.reset(...)` is called.
+   */
+  initialValue: number | null
 }>
 
 //

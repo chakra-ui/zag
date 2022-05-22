@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { nextTick, raf, trackFormReset, trackInputPropertyMutation, trackPointerMove } from "@zag-js/dom-utils"
+import { nextTick, raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
 import { dom } from "./slider.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import { utils } from "./slider.utils"
@@ -37,7 +37,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
-      activities: ["trackFormReset", "trackScriptedUpdate"],
+      activities: ["trackFormReset", "trackFieldsetDisabled"],
 
       on: {
         SET_VALUE: {
@@ -132,17 +132,13 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       activities: {
-        trackScriptedUpdate(ctx, _, { send }) {
+        trackFieldsetDisabled(ctx) {
           let cleanup: VoidFunction | undefined
           nextTick(() => {
-            const el = dom.getInputEl(ctx)
-            if (!el) return
-            cleanup = trackInputPropertyMutation(el, {
-              type: "input",
-              property: "value",
-              fn(value) {
-                send({ type: "SET_VALUE", value: parseFloat(value) })
-              },
+            cleanup = trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
+              if (disabled != ctx.disabled) {
+                ctx.disabled = disabled
+              }
             })
           })
           return () => cleanup?.()
@@ -150,13 +146,13 @@ export function machine(ctx: UserDefinedContext = {}) {
         trackFormReset(ctx) {
           let cleanup: VoidFunction | undefined
           nextTick(() => {
-            const el = dom.getInputEl(ctx)
-            if (!el) return
-            cleanup = trackFormReset(el, () => {
-              if (ctx.initialValue != null) ctx.value = ctx.initialValue
+            cleanup = trackFormReset(dom.getInputEl(ctx), () => {
+              if (ctx.initialValue != null) {
+                ctx.value = ctx.initialValue
+              }
             })
           })
-          return cleanup
+          return () => cleanup?.()
         },
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove({
@@ -206,7 +202,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value = utils.clamp(ctx, value)
         },
         focusThumb(ctx) {
-          nextTick(() => dom.getThumbEl(ctx)?.focus())
+          raf(() => dom.getThumbEl(ctx)?.focus())
         },
         decrement(ctx, evt) {
           ctx.value = utils.decrement(ctx, evt.step)

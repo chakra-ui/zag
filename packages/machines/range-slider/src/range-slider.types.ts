@@ -33,18 +33,9 @@ type PublicContext = DirectionProperty & {
    */
   name?: string
   /**
-   * The move threshold of the slider thumb before it is considered to be moved
-   */
-  threshold: number
-  /**
    * The value of the range slider
    */
   value: number[]
-  /**
-   * The value of the slider when it was initially rendered.
-   * Used when the `form.reset(...)` is called.
-   */
-  initialValue: number[]
   /**
    * Whether the slider is disabled
    */
@@ -142,6 +133,17 @@ type PrivateContext = Context<{
    * the currently dragged/focused thumb.
    */
   activeIndex: number
+  /**
+   * @internal
+   * The move threshold of the slider thumb before it is considered to be moved
+   */
+  threshold: number
+  /**
+   * @internal
+   * The value of the slider when it was initially rendered.
+   * Used when the `form.reset(...)` is called.
+   */
+  initialValue: number[]
 }>
 
 //

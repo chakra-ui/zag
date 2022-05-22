@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { nextTick, raf, trackFormReset, trackInputPropertyMutation, trackPointerMove } from "@zag-js/dom-utils"
+import { nextTick, raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
 import { getElementRect } from "@zag-js/rect-utils"
 import { isNumber } from "@zag-js/utils"
 import { dom, getClosestIndex } from "./range-slider.dom"
@@ -41,7 +41,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
-      activities: ["trackFormReset", "trackScriptedUpdate"],
+      activities: ["trackFormReset", "trackFieldsetDisabled"],
 
       on: {
         SET_VALUE: {
@@ -138,40 +138,30 @@ export function machine(ctx: UserDefinedContext = {}) {
         isVertical: (ctx) => ctx.isVertical,
       },
       activities: {
-        trackScriptedUpdate(ctx, _, { send }) {
-          let cleanup: Array<VoidFunction | undefined> = []
+        trackFieldsetDisabled(ctx) {
+          let cleanup: VoidFunction | undefined
           nextTick(() => {
-            for (let i = 0; i < ctx.value.length; i++) {
-              const el = dom.getInputEl(ctx, i)
-              if (!el) return
-              cleanup.push(
-                trackInputPropertyMutation(el, {
-                  type: "input",
-                  property: "value",
-                  fn(value) {
-                    send({ type: "SET_VALUE", value: parseFloat(value), index: i })
-                  },
-                }),
-              )
-            }
+            cleanup = trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
+              if (ctx.disabled != disabled) {
+                ctx.disabled = disabled
+              }
+            })
           })
-          return () => cleanup.forEach((fn) => fn?.())
+          return () => cleanup?.()
         },
         trackFormReset(ctx) {
-          let cleanup: Array<VoidFunction | undefined> = []
+          if (!ctx.name) return
+          let cleanup: VoidFunction | undefined
           nextTick(() => {
-            for (let i = 0; i < ctx.value.length; i++) {
-              const el = dom.getInputEl(ctx, i)
-              cleanup.push(
-                trackFormReset(el, () => {
-                  if (ctx.initialValue[i] != null) {
-                    ctx.value[i] = ctx.initialValue[i]
-                  }
-                }),
-              )
-            }
+            cleanup = trackFormReset(dom.getRootEl(ctx), () => {
+              for (let i = 0; i < ctx.value.length; i++) {
+                if (ctx.initialValue[i] != null) {
+                  ctx.value[i] = ctx.initialValue[i]
+                }
+              }
+            })
           })
-          return () => cleanup.forEach((fn) => fn?.())
+          return () => cleanup?.()
         },
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove({
@@ -228,7 +218,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
         },
         focusActiveThumb(ctx) {
-          nextTick(() => {
+          raf(() => {
             const thumb = dom.getThumbEl(ctx, ctx.activeIndex)
             thumb?.focus()
           })

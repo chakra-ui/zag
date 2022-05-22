@@ -68,6 +68,7 @@ export const dom = {
   getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
   getMarkerId: (ctx: Ctx, value: number) => `slider-${ctx.uid}:marker:${value}`,
 
+  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx, index)),
   getInputEl: (ctx: Ctx, index: number) =>
     dom.getRootNode(ctx).getElementById(dom.getInputId(ctx, index)) as HTMLInputElement | null,

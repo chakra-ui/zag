@@ -19,7 +19,7 @@ const fetchMachine = createMachine({
     "isVertical": false,
     "isVertical": false
   },
-  activities: ["trackFormReset", "trackScriptedUpdate"],
+  activities: ["trackFormReset", "trackFieldsetDisabled"],
   on: {
     SET_VALUE: {
       actions: "setValue"
