@@ -1,10 +1,6 @@
 {
   "node": "14",
-  "sandboxes": [
-    "/examples/next-ts",
-    "/examples/vue-ts",
-    "/examples/solid-ts"
-  ],
+  "sandboxes": [],
   "packages": [
     "packages/utilities/number",
     "packages/utilities/core",
