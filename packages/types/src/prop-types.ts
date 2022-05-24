@@ -1,4 +1,4 @@
-import type * as React from "react"
+import type { HTMLAttributes } from "react"
 
 type Dict<T = any> = Record<string, T>
 
@@ -12,7 +12,7 @@ type WithStyle<T extends { style?: any }> = Omit<T, "style"> & {
   }
 }
 
-type DataAttr = {
+type WithDataset<T> = T & {
   "data-uid"?: string
   "data-name"?: string
   "data-ownedby"?: string
@@ -45,32 +45,36 @@ type DataAttr = {
   "data-placeholder-shown"?: Booleanish
 }
 
-type JSXElementAttributes = DataAttr & React.HTMLAttributes<HTMLElement>
-type JSXButtonAttributes = DataAttr & React.ButtonHTMLAttributes<HTMLButtonElement>
-type JSXInputAttributes = DataAttr & React.InputHTMLAttributes<HTMLInputElement>
-type JSXLabelAttributes = DataAttr & React.LabelHTMLAttributes<HTMLLabelElement>
-type JSXOutputAttributes = DataAttr & React.OutputHTMLAttributes<HTMLOutputElement>
+type MergeProps<T> = WithDataset<WithStyle<T>>
 
-export type PropTypes = Record<"button" | "label" | "input" | "output" | "element", Dict>
-
-export type ReactPropTypes = {
-  button: JSXButtonAttributes
-  label: JSXLabelAttributes
-  input: JSXInputAttributes
-  output: JSXOutputAttributes
-  element: JSXElementAttributes
+type GenericElement = {
+  element<T extends PropTypes>(props: MergeProps<JSX.IntrinsicElements["div"]>): T["element"]
 }
 
-export type NormalizeProps = {
-  button<T extends PropTypes>(props: WithStyle<JSXButtonAttributes>): T["button"]
-  label<T extends PropTypes>(props: WithStyle<JSXLabelAttributes>): T["label"]
-  input<T extends PropTypes>(props: WithStyle<JSXInputAttributes>): T["input"]
-  output<T extends PropTypes>(props: WithStyle<JSXOutputAttributes>): T["output"]
-  element<T extends PropTypes>(props: WithStyle<JSXElementAttributes>): T["element"]
+type GenericAttributes = {
+  element: HTMLAttributes<HTMLElement>
+}
+
+type Types = "template" | "webview" | "feDropShadow" | "mpath"
+
+export type PropTypes = {
+  [K in Exclude<keyof JSX.IntrinsicElements, Types>]: Dict
+} & {
+  element: Dict
+}
+
+export type ReactPropTypes = GenericAttributes & JSX.IntrinsicElements
+
+export type NormalizeProps = GenericElement & {
+  [K in keyof JSX.IntrinsicElements]: <T extends PropTypes>(props: MergeProps<JSX.IntrinsicElements[K]>) => T[K]
 }
 
 export function createNormalizer(fn: (props: Dict) => Dict): NormalizeProps {
-  return { button: fn, label: fn, input: fn, output: fn, element: fn }
+  return new Proxy({} as any, {
+    get() {
+      return fn
+    },
+  })
 }
 
 export const normalizeProp = createNormalizer((v) => v)
