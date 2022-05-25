@@ -105,7 +105,8 @@ export const ratingControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readonly: { type: "boolean", defaultValue: false },
   allowHalf: { type: "boolean", defaultValue: true },
-  value: { type: "number", defaultValue: 3.5 },
+  value: { type: "number", defaultValue: 2.5 },
+  max: { type: "number", defaultValue: 5 },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
