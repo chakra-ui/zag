@@ -70,7 +70,11 @@ export type NormalizeProps = {
 }
 
 export function createNormalizer(fn: (props: Dict) => Dict): NormalizeProps {
-  return { button: fn, label: fn, input: fn, output: fn, element: fn }
+  return new Proxy({} as any, {
+    get() {
+      return fn
+    },
+  })
 }
 
 export const normalizeProp = createNormalizer((v) => v)
