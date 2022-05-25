@@ -56,7 +56,7 @@ have one in mind. -->
 
 | Software         | Version(s) |
 | ---------------- | ---------- |
-| Chakra UI Core   |            |
+| Zag Version      |            |
 | Browser          |            |
 | Operating System |            |
 
