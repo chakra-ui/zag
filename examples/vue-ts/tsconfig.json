@@ -6,11 +6,11 @@
     "strict": true,
     "jsx": "preserve",
     "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    // "baseUrl": ".",
     "types": ["vite-plugin-pages/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
