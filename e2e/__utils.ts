@@ -17,10 +17,10 @@ export const controls = (page: Page) => {
       await el.type(value)
       await page.keyboard.press("Enter")
     },
-    bool: async (id: string, value = false) => {
+    bool: async (id: string, value = true) => {
       const el = page.locator(testid(id))
-      if (value) await el.uncheck()
-      else await el.check()
+      if (value) await el.check()
+      else await el.uncheck()
     },
     select: async (id: string, value: string) => {
       const el = page.locator(testid(id))

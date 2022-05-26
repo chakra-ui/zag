@@ -86,6 +86,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         "aria-disabled": isDisabled,
         "data-disabled": dataAttr(isDisabled),
         "aria-readonly": state.context.readonly,
+        "data-readonly": dataAttr(state.context.readonly),
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
         "aria-posinset": index,
@@ -141,7 +142,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         },
         onClick() {
           if (!isInteractive) return
-          send("CLICK")
+          send({ type: "CLICK", value: index })
         },
         onFocus() {
           if (!isInteractive) return

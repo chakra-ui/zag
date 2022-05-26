@@ -137,7 +137,7 @@ test.describe("number input", () => {
     })
   })
 
-  test.only("should clamp to max fraction digit", async ({ page }) => {
+  test("should clamp to max fraction digit", async ({ page }) => {
     // set `maxFractionDigits` to 2
     await controls(page).num("maxFractionDigits", "2")
 
