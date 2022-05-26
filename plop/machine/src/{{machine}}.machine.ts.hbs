@@ -3,32 +3,32 @@ import { MachineContext, MachineState, UserDefinedContext } from "./{{machine}}.
 
 export function machine(ctx: UserDefinedContext = {}){ 
   return createMachine<MachineContext, MachineState>(
-  {
-    id: "{{machine}}",
-    initial: "unknown",
-    context: {
-      uid: "",
-    },
-    states: {
-      unknown: {
-        on: {
-          SETUP: {
-            actions: ["setupDocument"],
-          },
-      }
-     },
-    },
-  },
-  {
-    guards: {
-    },
-    actions: {
-      setupDocument(ctx, evt) {
-        ctx.uid = evt.id
-        if (evt.doc) ctx.doc = ref(evt.doc)
-        if (evt.root) ctx.rootNode = ref(evt.root)
+    {
+      id: "{{machine}}",
+      initial: "unknown",
+      context: {
+        uid: "",
+      },
+      states: {
+        unknown: {
+          on: {
+            SETUP: {
+              actions: ["setupDocument"],
+            },
+          }
+        },
       },
     },
-  },
- }
-)
+    {
+      guards: {
+      },
+      actions: {
+        setupDocument(ctx, evt) {
+          ctx.uid = evt.id
+          if (evt.doc) ctx.doc = ref(evt.doc)
+          if (evt.root) ctx.rootNode = ref(evt.root)
+        },
+      },
+    },
+  )
+}
