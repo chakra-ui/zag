@@ -20,7 +20,6 @@ export class Machine<
   public id: string
 
   public type: MachineType = MachineType.Machine
-  private deriving = false
 
   // Cleanup function map (per state)
   private activityEvents = new Map<string, Set<VoidFunction>>()

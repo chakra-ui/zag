@@ -1,5 +1,6 @@
 export { proxy, ref, snapshot, subscribe } from "valtio/vanilla"
-export { guards, choose } from "./guard-utils"
+export { choose, guards } from "./guard-utils"
 export * from "./machine"
 export { mergeProps } from "./merge-props"
+export type { StateFrom, ContextFrom, ServiceFrom, EventFrom } from "./type-utils"
 export type { StateMachine } from "./types"
