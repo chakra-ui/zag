@@ -5,4 +5,4 @@
 "@zag-js/vue": patch
 ---
 
-Expose type utils to frameworks
+Expose type utilities to frameworks
