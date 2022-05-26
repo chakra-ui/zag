@@ -22,15 +22,15 @@ export function toTarget<TContext, TState extends S.StateSchema, TEvent extends 
 
 export function determineTransitionFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   transitions: S.Transitions<TContext, TState, TEvent> | undefined,
-  guardMap: S.GuardMap<TContext, TEvent>,
+  guardMap: S.GuardMap<TContext, TState, TEvent>,
 ) {
-  return (context: TContext, event: TEvent) => {
+  return (context: TContext, event: TEvent, meta: S.GuardMeta<TContext, TState, TEvent>) => {
     return toArray(transitions)
       .map(toTarget)
       .find((transition) => {
         // get condition function
         const determineGuard = determineGuardFn(transition.guard, guardMap)
-        const guard = determineGuard(context, event)
+        const guard = determineGuard(context, event, meta)
         return guard ?? transition.target ?? transition.actions
       })
   }

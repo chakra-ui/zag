@@ -73,7 +73,7 @@ export declare namespace StateMachine {
     self: Self<TContext, TState, TEvent>
     getState: () => State<TContext, TState, TEvent>
     getAction: (key: string) => ExpressionWithMeta<TContext, TState, TEvent, void>
-    getGuard: (key: string) => GuardExpression<TContext, TEvent>
+    getGuard: (key: string) => GuardExpression<TContext, TState, TEvent>
   }
 
   type ExpressionWithMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject, TReturn> = (
@@ -125,7 +125,7 @@ export declare namespace StateMachine {
   export type TransitionDefinition<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     target?: TState["value"]
     actions?: Actions<TContext, TState, TEvent>
-    guard?: Guard<TContext, TEvent>
+    guard?: Guard<TContext, TState, TEvent>
   }
 
   export type DelayExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, number>
@@ -225,7 +225,7 @@ export declare namespace StateMachine {
       | Array<{
           delay?: number | string | Expression<TContext, TEvent, number>
           actions: Actions<TContext, TState, TEvent>
-          guard?: Guard<TContext, TEvent>
+          guard?: Guard<TContext, TState, TEvent>
         }>
   }
 
@@ -233,23 +233,33 @@ export declare namespace StateMachine {
    * Guard types
    * -----------------------------------------------------------------------------*/
 
-  export type GuardExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, boolean>
+  export type GuardMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    state: State<TContext, TState, TEvent>
+  }
 
-  export type GuardHelper<TContext extends Dict, TEvent extends EventObject> = {
-    predicate: (guards: Dict) => GuardExpression<TContext, TEvent>
+  export type GuardExpression<TContext, TState extends StateSchema, TEvent extends EventObject, TReturn = boolean> = (
+    context: TContext,
+    event: TEvent,
+    guardMeta: GuardMeta<TContext, TState, TEvent>,
+  ) => TReturn
+
+  export type GuardHelper<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    predicate: (guards: Dict) => GuardExpression<TContext, TState, TEvent>
   }
 
   export type ChooseHelper<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    predicate: (guards: Dict) => Expression<TContext, TEvent, PureActions<TContext, TState, TEvent> | undefined>
+    predicate: (
+      guards: Dict,
+    ) => GuardExpression<TContext, TState, TEvent, PureActions<TContext, TState, TEvent> | undefined>
   }
 
-  export type Guard<TContext extends Dict, TEvent extends EventObject> =
+  export type Guard<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | string
-    | GuardExpression<TContext, TEvent>
-    | GuardHelper<TContext, TEvent>
+    | GuardExpression<TContext, TState, TEvent>
+    | GuardHelper<TContext, TState, TEvent>
 
-  export type GuardMap<TContext extends Dict, TEvent extends EventObject> = {
-    [guard: string]: GuardExpression<TContext, TEvent>
+  export type GuardMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    [guard: string]: GuardExpression<TContext, TState, TEvent>
   }
 
   /* -----------------------------------------------------------------------------
@@ -361,7 +371,7 @@ export declare namespace StateMachine {
    * -----------------------------------------------------------------------------*/
 
   export interface MachineOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
-    guards?: GuardMap<TContext, TEvent>
+    guards?: GuardMap<TContext, TState, TEvent>
     actions?: ActionMap<TContext, TState, TEvent>
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>

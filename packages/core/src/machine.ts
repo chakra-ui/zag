@@ -40,7 +40,7 @@ export class Machine<
   private children = new Map<string, AnyMachine>()
 
   // A map of guard, action, delay implementations
-  private guardMap: S.GuardMap<TContext, TEvent>
+  private guardMap: S.GuardMap<TContext, TState, TEvent>
   private actionMap: S.ActionMap<TContext, TState, TEvent>
   private delayMap: S.DelayMap<TContext, TEvent>
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
@@ -433,12 +433,18 @@ export class Machine<
     }
   }
 
+  private get guardMeta(): S.GuardMeta<TContext, TState, TEvent> {
+    return {
+      state: this.stateSnapshot,
+    }
+  }
+
   /**
    * Function to executes defined actions. It can accept actions as string
    * (referencing `options.actions`) or actual functions.
    */
   private executeActions = (actions: S.Actions<TContext, TState, TEvent> | undefined, event: TEvent) => {
-    const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event)
+    const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
     for (const action of toArray(_actions)) {
       const fn = isString(action) ? this.actionMap?.[action] : action
       warn(
@@ -494,7 +500,7 @@ export class Machine<
         t.delay = determineDelay(this.contextSnapshot, event)
 
         const determineGuard = determineGuardFn(t.guard, this.guardMap)
-        const guard = determineGuard(this.contextSnapshot, event)
+        const guard = determineGuard(this.contextSnapshot, event, this.guardMeta)
 
         return guard ?? t.delay
       })
@@ -549,7 +555,7 @@ export class Machine<
     this.stopActivities(currentState)
 
     // get explicit exit and implicit "after.exit" actions for current state
-    const _exit = determineActionsFn(stateNode?.exit, this.guardMap)(this.contextSnapshot, event)
+    const _exit = determineActionsFn(stateNode?.exit, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
     const exitActions = toArray(_exit)
 
     const afterExitActions = this.delayedEvents.get(currentState)
@@ -580,7 +586,7 @@ export class Machine<
     }
 
     // get all entry actions
-    const _entry = determineActionsFn(stateNode?.entry, this.guardMap)(this.contextSnapshot, event)
+    const _entry = determineActionsFn(stateNode?.entry, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
     const entryActions = toArray(_entry)
     const afterActions = this.getDelayedEventActions(next)
 
@@ -646,7 +652,7 @@ export class Machine<
 
   private determineTransition = (transition: S.Transitions<TContext, TState, TEvent> | undefined, event: TEvent) => {
     const fn = determineTransitionFn(transition, this.guardMap)
-    return fn?.(this.contextSnapshot, event)
+    return fn?.(this.contextSnapshot, event, this.guardMeta)
   }
 
   /**

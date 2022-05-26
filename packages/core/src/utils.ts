@@ -1,6 +1,6 @@
 import { isArray, isObject, isString } from "@zag-js/utils"
 import { snapshot, subscribe } from "valtio/vanilla"
-import type { StateMachine as S } from "./types"
+import type { Dict, StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
   const obj = isString(event) ? { type: event } : event
@@ -12,7 +12,7 @@ export function toArray<T>(value: T | T[] | undefined): T[] {
   return isArray(value) ? value : [value]
 }
 
-export function isGuardHelper(value: any): value is { predicate: Function } {
+export function isGuardHelper(value: any): value is { predicate: (guards: Dict) => any } {
   return isObject(value) && value.predicate != null
 }
 
