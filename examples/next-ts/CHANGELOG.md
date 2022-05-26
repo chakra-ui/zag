@@ -1,5 +1,16 @@
 # next-ts
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`0d3065e9`](https://github.com/chakra-ui/zag/commit/0d3065e94d707d3161d901576421beae66c32aba),
+  [`3e920136`](https://github.com/chakra-ui/zag/commit/3e920136c537445a36cf0d04045de1d8ff037ecf),
+  [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018),
+  [`9ebe6b45`](https://github.com/chakra-ui/zag/commit/9ebe6b455bfc1b7bf1ad8f770d70ea7656b6c1fe)]:
+  - @zag-js/core@0.1.5
+  - @zag-js/react@0.1.7
+
 ## 0.0.7
 
 ### Patch Changes

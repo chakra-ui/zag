@@ -1,5 +1,41 @@
 # @zag-js/core
 
+## 0.1.5
+
+### Patch Changes
+
+- [`0d3065e9`](https://github.com/chakra-ui/zag/commit/0d3065e94d707d3161d901576421beae66c32aba) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Extend guard expression to support in guards. In Guards are guards
+  that asserts that a machine is in a given state before excusing the transition.
+  [Learn more](https://statecharts.dev/glossary/guard.html#in-and-not-in-guards)
+
+  This helper can be used in inline guards or the gaurds options.
+
+  ```js
+  import { guards } from "@zag-js/core"
+
+  const { isIn } = gaurds
+
+  const machine = createMachine({
+    on: {
+      CLICK: {
+        guard: isIn("open"),
+      },
+    },
+    states: {
+      open: {},
+      closed: {},
+    },
+  })
+  ```
+
+* [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add the following type utilities:
+
+  - `StateFrom`: To infer the state information from any machine
+  - `ContextFrom`: To infer the context information from any machine
+  - `EventFrom`: To infer the event types from any machine
+
 ## 0.1.4
 
 ### Patch Changes

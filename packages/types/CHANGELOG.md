@@ -1,5 +1,12 @@
 # @zag-js/types
 
+## 0.1.2
+
+### Patch Changes
+
+- [`cf14f6e9`](https://github.com/chakra-ui/zag/commit/cf14f6e971460bed8a65ae061492446cd47d41c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor `createNormalizer` function
+
 ## 0.1.1
 
 ### Patch Changes

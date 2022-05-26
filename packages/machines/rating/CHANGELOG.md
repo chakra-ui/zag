@@ -1,5 +1,21 @@
 # @zag-js/rating
 
+## 0.1.6
+
+### Patch Changes
+
+- [#110](https://github.com/chakra-ui/zag/pull/110)
+  [`e9c3d036`](https://github.com/chakra-ui/zag/commit/e9c3d03608c8389cf5537ffd2eeda459c58ed76e) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add `data-readonly` to `itemProps`
+
+- Updated dependencies [[`cf14f6e9`](https://github.com/chakra-ui/zag/commit/cf14f6e971460bed8a65ae061492446cd47d41c0),
+  [`0d3065e9`](https://github.com/chakra-ui/zag/commit/0d3065e94d707d3161d901576421beae66c32aba),
+  [`eafec246`](https://github.com/chakra-ui/zag/commit/eafec246b5dfb0c9f4cc421974a8bfa651fe81f0),
+  [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018)]:
+  - @zag-js/types@0.1.2
+  - @zag-js/core@0.1.5
+  - @zag-js/dom-utils@0.1.3
+
 ## 0.1.5
 
 ### Patch Changes
