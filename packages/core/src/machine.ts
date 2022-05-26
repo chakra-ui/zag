@@ -320,6 +320,7 @@ export class Machine<
     const stateNode = this.getStateNode(target)
 
     return {
+      isTargetless: !transition,
       transition,
       stateNode,
       target: target!,

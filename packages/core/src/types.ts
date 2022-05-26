@@ -285,6 +285,7 @@ export declare namespace StateMachine {
   > = (state: State<TContext, TState, TEvent>) => void
 
   export interface StateInfo<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
+    isTargetless: boolean
     transition: TransitionDefinition<TContext, TState, TEvent> | undefined
     stateNode: StateNode<TContext, TState, TEvent> | undefined
     target: TState["value"]
