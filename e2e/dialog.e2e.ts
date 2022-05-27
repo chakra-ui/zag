@@ -80,3 +80,13 @@ test.describe("dialog", () => {
     })
   })
 })
+
+test.describe("dialog default open", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/dialog-default-open")
+  })
+
+  test("should be open and focus on close button", async ({ page }) => {
+    await expect(page.locator(dialog_1.close)).toBeFocused()
+  })
+})
