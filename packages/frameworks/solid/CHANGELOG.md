@@ -1,5 +1,19 @@
 # @zag-js/solid
 
+## 0.1.7
+
+### Patch Changes
+
+- [`3e920136`](https://github.com/chakra-ui/zag/commit/3e920136c537445a36cf0d04045de1d8ff037ecf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose type utilities to frameworks
+
+* [`9ebe6b45`](https://github.com/chakra-ui/zag/commit/9ebe6b455bfc1b7bf1ad8f770d70ea7656b6c1fe) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove unneeded `Promise.resolve(...)`
+
+* Updated dependencies [[`0d3065e9`](https://github.com/chakra-ui/zag/commit/0d3065e94d707d3161d901576421beae66c32aba),
+  [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018)]:
+  - @zag-js/core@0.1.5
+
 ## 0.1.6
 
 ### Patch Changes
