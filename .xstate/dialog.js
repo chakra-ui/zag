@@ -24,15 +24,10 @@ const fetchMachine = createMachine({
   states: {
     unknown: {
       on: {
-        SETUP: [{
-          target: "closed",
-          cond: ctx => !ctx.defaultIsOpen,
+        SETUP: {
+          target: ctx.isOpen ? "open" : "closed",
           actions: "setupDocument"
-        }, {
-          target: "open",
-          cond: ctx => !!ctx.defaultIsOpen,
-          actions: "setupDocument"
-        }]
+        }
       }
     },
     open: {

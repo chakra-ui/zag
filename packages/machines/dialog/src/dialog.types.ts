@@ -73,7 +73,7 @@ type PublicContext = DirectionProperty & {
    * Whether to open or close the dialog on setup
    * @default false
    */
-  defaultIsOpen?: boolean
+  isOpen?: boolean
 }
 
 export type UserDefinedContext = Partial<PublicContext>
