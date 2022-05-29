@@ -22,7 +22,7 @@ function getListenerCache(): Map<El, Map<string, Handler>> {
  * regardless of the number of times `addEventListener` is called.
  */
 
-export function globalEventBus(node: El | null, type: string, handler: Handler, options?: Option) {
+export function addGlobalEventListener(node: El | null, type: string, handler: Handler, options?: Option) {
   if (!node) return noop
 
   // unique identifier for the event listener
