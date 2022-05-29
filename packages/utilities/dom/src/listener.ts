@@ -1,4 +1,12 @@
-import { globalEventBus } from "./event-bus"
+import {
+  supportsMouseEvent,
+  supportsPointerEvent,
+  supportsTouchEvent,
+  runIfFn,
+  hasProp,
+  isTouchEvent,
+} from "@zag-js/utils"
+import { addGlobalEventListener } from "./global-listener"
 import {
   AnyPointerEvent,
   DOMEventTarget,
@@ -8,10 +16,7 @@ import {
   RefTarget,
 } from "./listener.types"
 
-const t = (v: any) => Object.prototype.toString.call(v).slice(8, -1)
-const isRef = (v: any): v is RefTarget => t(v) === "Object" && "current" in v
-const runIfFn = (fn: any): HTMLElement | null => (t(fn) === "Function" ? fn() : fn)
-const isTouchEvent = (v: Event): v is TouchEvent => t(v) === "Object" && !!(v as TouchEvent).touches
+const isRef = (v: any): v is RefTarget => hasProp(v, "current")
 
 const fallback = { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }
 
@@ -32,7 +37,7 @@ export function addDomEvent<K extends keyof EventMap>(
   options?: boolean | AddEventListenerOptions,
 ) {
   const node = isRef(target) ? target.current : runIfFn(target)
-  return globalEventBus(node, event, listener as any, options)
+  return addGlobalEventListener(node as HTMLElement | null, event, listener as any, options)
 }
 
 export function addPointerEvent<K extends keyof EventMap>(
@@ -67,10 +72,6 @@ function filterPrimaryPointer(fn: EventListener): EventListener {
 export function extractClientInfo(event: AnyPointerEvent) {
   return extractInfo(event, "client")
 }
-
-const supportsPointerEvent = () => typeof window !== "undefined" && window.onpointerdown === null
-const supportsTouchEvent = () => typeof window !== "undefined" && window.ontouchstart === null
-const supportsMouseEvent = () => typeof window !== "undefined" && window.onmousedown === null
 
 const mouseEventNames: PointerNameMap = {
   pointerdown: "mousedown",
