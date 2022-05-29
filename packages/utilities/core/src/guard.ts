@@ -2,7 +2,7 @@ const platform = (v: RegExp) => isDom() && v.test(navigator.platform)
 const ua = (v: RegExp) => isDom() && v.test(navigator.userAgent)
 
 export const isDev = () => process.env.NODE_ENV !== "production"
-export const isDom = () => !!(typeof window !== "undefined")
+export const isDom = () => typeof window !== "undefined"
 export const isMac = () => platform(/^Mac/)
 export const isIPhone = () => platform(/^iPhone/)
 export const isIPad = () => platform(/^iPad/) || (isMac() && navigator.maxTouchPoints > 1)
@@ -19,12 +19,15 @@ export const isNumber = (v: any): v is number => typeof v === "number" && !Numbe
 export const isString = (v: any): v is string => typeof v === "string"
 export const isFunction = (v: any): v is Function => typeof v === "function"
 
+export const hasProp = <T extends string>(obj: any, prop: T): obj is Record<T, any> =>
+  Object.prototype.hasOwnProperty.call(obj, prop)
+
 export const supportsPointerEvent = () => isDom() && window.onpointerdown === null
 export const supportsTouchEvent = () => isDom() && window.ontouchstart === null
 export const supportsMouseEvent = () => isDom() && window.onmousedown === null
 
-export const isMouseEvent = (v: any): v is MouseEvent => isObject(v) && "button" in v
-export const isTouchEvent = (v: any): v is TouchEvent => isObject(v) && "touches" in v
+export const isMouseEvent = (v: any): v is MouseEvent => isObject(v) && hasProp(v, "button")
+export const isTouchEvent = (v: any): v is TouchEvent => isObject(v) && hasProp(v, "touches")
 export const isLeftClick = (v: { button: number }) => v.button === 0
 export const isRightClick = (v: { button: number }) => v.button === 2
 export const isModifiedEvent = (v: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "altKey">) =>
