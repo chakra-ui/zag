@@ -1,13 +1,9 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 export type ActivationMode = "focus" | "dblclick" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
-
-//
 
 type IntlMessages = {
   edit: string
@@ -15,8 +11,6 @@ type IntlMessages = {
   cancel: string
   input: string
 }
-
-//
 
 type ElementIds = Partial<{
   root: string
@@ -29,8 +23,6 @@ type ElementIds = Partial<{
   cancelBtn: string
   editBtn: string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -122,8 +114,6 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{
   /**
    * @computed
@@ -152,8 +142,6 @@ type ComputedContext = Readonly<{
   submitOnBlur: boolean
 }>
 
-//
-
 type PrivateContext = Context<{
   /**
    * @internal
@@ -162,18 +150,12 @@ type PrivateContext = Context<{
   previousValue: string
 }>
 
-//
-
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "preview" | "edit"
 }
 
 export type State = S.State<MachineContext, MachineState>
-
-//
 
 export type Send = S.Send<S.AnyEventObject>

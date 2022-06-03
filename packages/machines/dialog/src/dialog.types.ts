@@ -1,8 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context, DirectionProperty, MaybeElement } from "@zag-js/types"
 
-//
-
 type ElementIds = Partial<{
   trigger: string
   underlay: string
@@ -12,8 +10,6 @@ type ElementIds = Partial<{
   title: string
   description: string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -73,11 +69,7 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{}>
-
-//
 
 type PrivateContext = Context<{
   /**
@@ -97,18 +89,12 @@ type PrivateContext = Context<{
   isTopMostDialog: boolean
 }>
 
-//
-
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "open" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>
-
-//
 
 export type Send = S.Send<S.AnyEventObject>

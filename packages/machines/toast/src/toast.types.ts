@@ -1,13 +1,9 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { Context, Direction, DirectionProperty, RootProperties } from "@zag-js/types"
 
-//
-
 export type Type = "success" | "error" | "loading" | "info" | "custom"
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
-
-//
 
 type SharedContext = {
   /**
@@ -19,8 +15,6 @@ type SharedContext = {
    */
   pauseOnInteraction?: boolean
 }
-
-//
 
 export type ToastOptions = {
   /**
@@ -80,8 +74,6 @@ export type RenderOptions = Omit<ToastOptions, "render"> & {
   dismiss(): void
 }
 
-//
-
 export type MachineContext = SharedContext &
   RootProperties &
   Omit<ToastOptions, "removeDelay"> & {
@@ -109,17 +101,11 @@ export type MachineState = {
   tags: "visible" | "paused" | "updating"
 }
 
-//
-
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send
 
-//
-
 export type Service = Machine<MachineContext, MachineState>
-
-//
 
 type GroupPublicContext = SharedContext &
   DirectionProperty & {
@@ -143,8 +129,6 @@ type GroupPublicContext = SharedContext &
 
 export type UserDefinedGroupContext = Partial<GroupPublicContext>
 
-//
-
 type GroupComputedContext = Readonly<{
   /**
    * @computed
@@ -152,8 +136,6 @@ type GroupComputedContext = Readonly<{
    */
   readonly count: number
 }>
-
-//
 
 type GroupPrivateContext = Context<{
   /**
@@ -163,19 +145,11 @@ type GroupPrivateContext = Context<{
   toasts: Service[]
 }>
 
-//
-
 export type GroupMachineContext = GroupPublicContext & GroupComputedContext & GroupPrivateContext
-
-//
 
 export type GroupState = S.State<GroupMachineContext>
 
-//
-
 export type GroupSend = (event: S.Event<S.AnyEventObject>) => void
-
-//
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
@@ -185,14 +159,10 @@ export type PromiseOptions<Value> = {
   error: MaybeFunction<ToastOptions, Error>
 }
 
-//
-
 export type GroupProps = {
   placement: Placement
   label?: string
 }
-
-//
 
 export type Toaster = {
   count: number

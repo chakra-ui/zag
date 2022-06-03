@@ -4,8 +4,6 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 type ElementIds = Partial<{
   trigger: string
   contextTrigger: string
@@ -13,8 +11,6 @@ type ElementIds = Partial<{
   label(id: string): string
   group(id: string): string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -61,8 +57,6 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{
   /**
    * @computed
@@ -75,8 +69,6 @@ type ComputedContext = Readonly<{
    */
   isRtl: boolean
 }>
-
-//
 
 type PrivateContext = Context<{
   /**
@@ -122,11 +114,7 @@ type PrivateContext = Context<{
   typeahead: TypeaheadState
 }>
 
-//
-
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
@@ -135,22 +123,14 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-//
-
 export type Send = S.Send<S.AnyEventObject>
 
-//
-
 export type Service = Machine<MachineContext, MachineState>
-
-//
 
 export type Api = {
   getItemProps: (opts: ItemProps) => Record<string, any>
   triggerProps: Record<string, any>
 }
-
-//
 
 export type ItemProps = {
   /**
@@ -172,8 +152,6 @@ export type ItemProps = {
   closeOnSelect?: boolean
 }
 
-//
-
 export type OptionItemProps = Partial<ItemProps> & {
   /**
    * The option's name as specified in menu's `context.values` object
@@ -192,8 +170,6 @@ export type OptionItemProps = Partial<ItemProps> & {
    */
   onCheckedChange?: (checked: boolean) => void
 }
-
-//
 
 export type GroupProps = {
   /**

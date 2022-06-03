@@ -1,13 +1,9 @@
 import { StateMachine as S } from "@zag-js/core"
 import { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 type IntlMessages = {
   ratingValueText(index: number): string
 }
-
-//
 
 type ElementIds = Partial<{
   root: string
@@ -16,8 +12,6 @@ type ElementIds = Partial<{
   itemGroup: string
   item(id: string): string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -72,8 +66,6 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{
   /**
    * @computed Whether the rating is interactive
@@ -85,8 +77,6 @@ type ComputedContext = Readonly<{
   readonly isHovering: boolean
 }>
 
-//
-
 type PrivateContext = Context<{
   /**
    * @internal The value of the hovered rating.
@@ -94,18 +84,12 @@ type PrivateContext = Context<{
   hoveredValue: number
 }>
 
-//
-
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "idle" | "hover" | "focus"
 }
 
 export type State = S.State<MachineContext, MachineState>
-
-//
 
 export type Send = S.Send<S.AnyEventObject>

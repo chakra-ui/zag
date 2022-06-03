@@ -3,11 +3,7 @@ import { FormatDecimalOptions } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
-
-//
 
 type ElementIds = Partial<{
   root: string
@@ -17,8 +13,6 @@ type ElementIds = Partial<{
   decBtn: string
   scrubber: string
 }>
-
-//
 
 type IntlMessages = {
   /**
@@ -35,8 +29,6 @@ type IntlMessages = {
    */
   decrementLabel: string
 }
-
-//
 
 type PublicContext = DirectionProperty &
   FormatDecimalOptions & {
@@ -137,8 +129,6 @@ type PublicContext = DirectionProperty &
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{
   /**
    * @computed
@@ -187,8 +177,6 @@ type ComputedContext = Readonly<{
   isRtl: boolean
 }>
 
-//
-
 type PrivateContext = Context<{
   /**
    * @internal
@@ -202,11 +190,7 @@ type PrivateContext = Context<{
   scrubberCursorPoint: Point | null
 }>
 
-//
-
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
@@ -215,8 +199,4 @@ export type MachineState = {
 
 export type State = S.State<MachineContext, MachineState>
 
-//
-
 export type Send = S.Send<S.AnyEventObject>
-
-//

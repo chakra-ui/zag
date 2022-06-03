@@ -1,8 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 type ElementIds = Partial<{
   root: string
   thumb(index: number): string
@@ -12,8 +10,6 @@ type ElementIds = Partial<{
   label: string
   output: string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -84,8 +80,6 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{
   /**
    * @computed
@@ -119,8 +113,6 @@ type ComputedContext = Readonly<{
   readonly isRtl: boolean
 }>
 
-//
-
 type PrivateContext = Context<{
   /**
    * @internal
@@ -146,18 +138,12 @@ type PrivateContext = Context<{
   initialValue: number[]
 }>
 
-//
-
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
 }
 
 export type State = S.State<MachineContext, MachineState>
-
-//
 
 export type Send = S.Send<S.AnyEventObject>

@@ -1,8 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 type ElementIds = Partial<{
   root: string
   thumb: string
@@ -12,8 +10,6 @@ type ElementIds = Partial<{
   label: string
   output: string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -93,8 +89,6 @@ type PublicContext = DirectionProperty & {
 
 export type UserDefinedContext = Partial<PublicContext>
 
-//
-
 type ComputedContext = Readonly<{
   /**
    * @computed
@@ -123,8 +117,6 @@ type ComputedContext = Readonly<{
   readonly isRtl: boolean
 }>
 
-//
-
 type PrivateContext = Context<{
   /**
    * @internal The move threshold of the slider thumb before it is considered to be moved
@@ -142,11 +134,7 @@ type PrivateContext = Context<{
   initialValue: number | null
 }>
 
-//
-
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "idle" | "dragging" | "focus"
@@ -155,8 +143,6 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
-
-//
 
 export type SharedContext = {
   min: number
