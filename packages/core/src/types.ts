@@ -286,6 +286,7 @@ export declare namespace StateMachine {
 
   export interface StateInfo<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     isTargetless: boolean
+    changed: boolean
     transition: TransitionDefinition<TContext, TState, TEvent> | undefined
     stateNode: StateNode<TContext, TState, TEvent> | undefined
     target: TState["value"]
@@ -372,6 +373,7 @@ export declare namespace StateMachine {
    * -----------------------------------------------------------------------------*/
 
   export interface MachineOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
+    debug?: boolean
     guards?: GuardMap<TContext, TState, TEvent>
     actions?: ActionMap<TContext, TState, TEvent>
     delays?: DelayMap<TContext, TEvent>

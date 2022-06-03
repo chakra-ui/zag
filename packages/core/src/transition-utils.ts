@@ -37,22 +37,22 @@ export function determineTransitionFn<TContext, TState extends S.StateSchema, TE
 }
 
 export function toTransition<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
-  transition: S.Transitions<TContext, TState, TEvent> | undefined,
+  transitions: S.Transitions<TContext, TState, TEvent> | undefined,
   current?: TState["value"] | null,
-) {
-  const _transition = isString(transition) ? toTarget(transition) : transition
+): S.Transitions<TContext, TState, TEvent> | undefined {
+  const dfn = isString(transitions) ? toTarget(transitions) : transitions
 
-  const fn = (t: S.TransitionDefinition<TContext, TState, TEvent>) => {
-    const isTargetless = t.actions && !t.target
-    if (isTargetless && current) t.target = current
-    return t
+  const fn = (transition: S.TransitionDefinition<TContext, TState, TEvent>) => {
+    const next = { ...transition, isTargetless: !transition.target }
+    if (!next.target && current) next.target = current
+    return next
   }
 
-  if (isArray(_transition)) {
-    return _transition.map(fn)
+  if (isArray(dfn)) {
+    return dfn.map(fn)
   }
 
-  if (isObject(_transition)) {
-    return fn(cast(_transition))
+  if (isObject(dfn)) {
+    return fn(cast(dfn))
   }
 }
