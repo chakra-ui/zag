@@ -1,4 +1,4 @@
-import { cast, isArray, isObject, isString } from "@zag-js/utils"
+import { isString } from "@zag-js/utils"
 import { determineGuardFn } from "./guard-utils"
 import type { StateMachine as S } from "./types"
 import { toArray } from "./utils"
@@ -33,26 +33,5 @@ export function determineTransitionFn<TContext, TState extends S.StateSchema, TE
         const guard = determineGuard(context, event, meta)
         return guard ?? transition.target ?? transition.actions
       })
-  }
-}
-
-export function toTransition<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
-  transitions: S.Transitions<TContext, TState, TEvent> | undefined,
-  current?: TState["value"] | null,
-): S.Transitions<TContext, TState, TEvent> | undefined {
-  const dfn = isString(transitions) ? toTarget(transitions) : transitions
-
-  const fn = (transition: S.TransitionDefinition<TContext, TState, TEvent>) => {
-    const next = { ...transition, isTargetless: !transition.target }
-    if (!next.target && current) next.target = current
-    return next
-  }
-
-  if (isArray(dfn)) {
-    return dfn.map(fn)
-  }
-
-  if (isObject(dfn)) {
-    return fn(cast(dfn))
   }
 }

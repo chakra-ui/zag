@@ -4,7 +4,7 @@ import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
-import { determineTransitionFn, toTransition } from "./transition-utils"
+import { determineTransitionFn, toTarget } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
 import { subscribeKey, toArray, toEvent } from "./utils"
 
@@ -340,17 +340,19 @@ export class Machine<
     transitions: S.Transitions<TContext, TState, TEvent>,
     event: TEvent,
   ): S.StateInfo<TContext, TState, TEvent> => {
-    const _transitions = toTransition(transitions, this.state.value)
+    const _transitions: S.Transitions<TContext, TState, TEvent> = isString(transitions)
+      ? toTarget(transitions)
+      : transitions
+
     const transition = this.determineTransition(_transitions, event)
 
-    //@ts-ignore
-    const isTargetless = !!transition?.isTargetless
-    const target = transition?.target!
+    const isTargetless = !transition?.target
+    const target = transition?.target ?? this.state.value
     const changed = this.state.value !== target
 
     const stateNode = this.getStateNode(target)
 
-    const info = { isTargetless, transition, stateNode, target, changed }
+    const info = { isTargetless, transition, stateNode, target: target!, changed }
 
     this.log("NextState:", `[${event.type}]`, this.state.value, "---->", info.target)
 
@@ -665,17 +667,20 @@ export class Machine<
     // update event
     this.setEvent(event)
 
-    if (next.changed) {
+    const reEnter = !next.isTargetless && !next.changed
+    const changed = next.changed || reEnter
+
+    if (changed) {
       this.performExitEffects(current, event)
     }
 
     // execute transition actions
-    this.performTransitionEffects(next?.transition, event)
+    this.performTransitionEffects(next.transition, event)
 
     // go to next state
     this.setState(next.target)
 
-    if (next.changed) {
+    if (changed) {
       this.performEntryEffects(next.target, event)
     }
   }
