@@ -14,7 +14,6 @@ const fetchMachine = createMachine({
   id: "popover",
   initial: "unknown",
   context: {
-    "autoFocus": false,
     "closeOnEsc": false,
     "isLastTabbableElement && closeOnBlur && portalled": false,
     "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled": false,
@@ -44,12 +43,7 @@ const fetchMachine = createMachine({
     },
     open: {
       activities: ["trackPointerDown", "trapFocus", "preventScroll", "hideContentBelow", "disableOutsidePointerEvents", "computePlacement"],
-      entry: choose([{
-        cond: "autoFocus",
-        actions: ["setInitialFocus", "invokeOnOpen"]
-      }, {
-        actions: ["focusContent", "invokeOnOpen"]
-      }]),
+      entry: ["setInitialFocus", "invokeOnOpen"],
       on: {
         CLOSE: {
           target: "closed",
@@ -94,7 +88,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "autoFocus": ctx => ctx["autoFocus"],
     "closeOnEsc": ctx => ctx["closeOnEsc"],
     "isLastTabbableElement && closeOnBlur && portalled": ctx => ctx["isLastTabbableElement && closeOnBlur && portalled"],
     "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled": ctx => ctx["(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled"],

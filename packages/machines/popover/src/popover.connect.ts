@@ -7,10 +7,11 @@ import type { Send, State } from "./popover.types"
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isOpen = state.matches("open")
   const pointerdownNode = state.context.pointerdownNode
+  const currentPlacement = state.context.currentPlacement
 
   const popperStyles = getPlacementStyles({
     measured: !!state.context.isPlacementComplete,
-    placement: state.context.currentPlacement,
+    placement: currentPlacement,
   })
 
   return {
@@ -42,7 +43,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     triggerProps: normalize.button<T>({
       "data-part": "trigger",
       type: "button",
-      "data-placement": state.context.currentPlacement,
+      "data-placement": currentPlacement,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
@@ -50,6 +51,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-controls": dom.getContentId(state.context),
       onClick() {
         send("TRIGGER_CLICK")
+      },
+      onKeyDown(event) {
+        if (event.key === "Escape") {
+          send("ESCAPE")
+        }
       },
     }),
 
@@ -66,9 +72,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       role: "dialog",
       hidden: !isOpen,
       "data-expanded": dataAttr(isOpen),
-      "aria-labelledby": state.context.isTitleRendered ? dom.getTitleId(state.context) : undefined,
-      "aria-describedby": state.context.isDescriptionRendered ? dom.getDescriptionId(state.context) : undefined,
-      "data-placement": state.context.currentPlacement,
+      "aria-labelledby": state.context.renderedElements.title ? dom.getTitleId(state.context) : undefined,
+      "aria-describedby": state.context.renderedElements.description ? dom.getDescriptionId(state.context) : undefined,
+      "data-placement": currentPlacement,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           Escape(event) {

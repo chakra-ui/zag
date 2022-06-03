@@ -27,11 +27,14 @@ export const dom = {
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
 
   getDocTabbableEls: (ctx: Ctx) => getTabbables(cast(dom.getDoc(ctx))),
-  getTabbableEls: (ctx: Ctx) => {
-    const el = dom.getContentEl(ctx)
-    return el ? getTabbables(el) : []
-  },
+  getTabbableEls: (ctx: Ctx) => getTabbables(dom.getContentEl(ctx), "if-empty"),
   getFirstTabbableEl: (ctx: Ctx) => first(dom.getTabbableEls(ctx)),
   getLastTabbableEl: (ctx: Ctx) => last(dom.getTabbableEls(ctx)),
-  getInitialFocusEl: (ctx: Ctx) => runIfFn(ctx.initialFocusEl) ?? dom.getFirstFocusableEl(ctx),
+
+  getInitialFocusEl: (ctx: Ctx) => {
+    let el: HTMLElement | null = runIfFn(ctx.initialFocusEl)
+    if (!el && ctx.autoFocus) el = dom.getFirstFocusableEl(ctx)
+    if (!el) el = dom.getContentEl(ctx)
+    return el
+  },
 }

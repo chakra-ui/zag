@@ -82,20 +82,13 @@ type ComputedContext = Readonly<{
 type PrivateContext = Context<{
   /**
    * @internal
-   * Whether the dialog title is rendered
+   * The elements that are rendered on mount
    */
-  isTitleRendered: boolean
-  /**
-   * @internal
-   * Whether the dialog description is rendered
-   */
-  isDescriptionRendered: boolean
-  /**
-   *
-   * @internal
-   * Whether the reference element is rendered to be used as the positioning reference
-   */
-  isAnchorRendered: boolean
+  renderedElements: {
+    title: boolean
+    description: boolean
+    anchor: boolean
+  }
   /**
    * @internal
    * The computed placement (maybe different from initial placement)

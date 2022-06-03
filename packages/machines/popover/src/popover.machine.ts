@@ -1,4 +1,5 @@
-import { choose, createMachine, guards, ref } from "@zag-js/core"
+import { ariaHidden } from "@zag-js/aria-hidden"
+import { createMachine, guards, ref } from "@zag-js/core"
 import {
   contains,
   nextTick,
@@ -9,7 +10,6 @@ import {
 } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { next, runIfFn } from "@zag-js/utils"
-import { ariaHidden } from "@zag-js/aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
@@ -22,9 +22,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       id: "popover",
       initial: "unknown",
       context: {
-        isTitleRendered: true,
-        isDescriptionRendered: true,
-        isAnchorRendered: false,
         uid: "",
         closeOnBlur: true,
         closeOnEsc: true,
@@ -36,6 +33,11 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         currentPlacement: undefined,
         ...ctx,
+        renderedElements: {
+          title: true,
+          description: true,
+          anchor: false,
+        },
       },
 
       computed: {
@@ -69,13 +71,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             "disableOutsidePointerEvents",
             "computePlacement",
           ],
-          entry: choose([
-            {
-              guard: "autoFocus",
-              actions: ["setInitialFocus", "invokeOnOpen"],
-            },
-            { actions: ["focusContent", "invokeOnOpen"] },
-          ]),
+          entry: ["setInitialFocus", "invokeOnOpen"],
           on: {
             CLOSE: {
               target: "closed",
@@ -119,7 +115,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       activities: {
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
-          const anchorEl = ctx.isAnchorRendered ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
+          const anchorEl = ctx.renderedElements.anchor ? dom.getAnchorEl(ctx) : dom.getTriggerEl(ctx)
           return getPlacement(anchorEl, dom.getPositionerEl(ctx), {
             ...ctx.positioning,
             onComplete(data) {
@@ -194,9 +190,11 @@ export function machine(ctx: UserDefinedContext = {}) {
       actions: {
         checkRenderedElements(ctx) {
           raf(() => {
-            ctx.isAnchorRendered = !!dom.getAnchorEl(ctx)
-            ctx.isTitleRendered = !!dom.getTitleEl(ctx)
-            ctx.isDescriptionRendered = !!dom.getDescriptionEl(ctx)
+            Object.assign(ctx.renderedElements, {
+              title: !!dom.getTitleEl(ctx),
+              description: !!dom.getDescriptionEl(ctx),
+              anchor: !!dom.getAnchorEl(ctx),
+            })
           })
         },
         setupDocument(ctx, evt) {
@@ -206,11 +204,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         clearPointerDown(ctx) {
           ctx.pointerdownNode = null
-        },
-        focusContent(ctx) {
-          raf(() => {
-            dom.getContentEl(ctx)?.focus()
-          })
         },
         setInitialFocus(ctx) {
           raf(() => {

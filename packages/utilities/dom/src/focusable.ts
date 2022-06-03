@@ -33,12 +33,16 @@ export function isHidden(el: HTMLElement | null, until?: HTMLElement) {
 /**
  * Returns the focusable elements within the element
  */
-export const getFocusables = (el: HTMLElement | Document | null, includeContainer = false) => {
+export const getFocusables = (el: HTMLElement | Document | null, includeContainer: boolean | "if-empty" = false) => {
   if (!el) return []
   let els = Array.from(el.querySelectorAll<HTMLElement>(focusableSelector))
-  if (includeContainer && isHTMLElement(el)) {
+
+  const shouldAddContainer = includeContainer == true || (includeContainer == "if-empty" && els.length === 0)
+
+  if (shouldAddContainer && isHTMLElement(el)) {
     els.unshift(el)
   }
+
   return els.filter((el) => isFocusable(el) && !isHidden(el))
 }
 
@@ -53,7 +57,8 @@ export const isFocusable = (el: HTMLElement | null) => {
 /**
  * Returns the tabbable elements within the element
  */
-export const getTabbables = (el: HTMLElement | Document, includeContainer = false) => {
+export const getTabbables = (el: HTMLElement | Document | null, includeContainer: boolean | "if-empty" = false) => {
+  if (!el) return []
   return getFocusables(el, includeContainer).filter(isTabbable)
 }
 
