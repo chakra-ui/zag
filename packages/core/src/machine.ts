@@ -537,7 +537,7 @@ export class Machine<
         const determineGuard = determineGuardFn(transition.guard, this.guardMap)
         const guard = determineGuard(this.contextSnapshot, event, this.guardMeta)
 
-        return guard || delay != null
+        return guard ?? delay != null
       })
 
       if (!picked) return
