@@ -26,14 +26,13 @@ export function machine(ctx: UserDefinedContext = {}) {
         closeOnOutsideClick: true,
         closeOnEsc: true,
         restoreFocus: true,
-        isOpen: false,
         ...ctx,
       },
       states: {
         unknown: {
           on: {
             SETUP: {
-              target: ctx.isOpen ? "open" : "closed",
+              target: ctx.open ? "open" : "closed",
               actions: "setupDocument",
             },
           },

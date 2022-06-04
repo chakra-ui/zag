@@ -48,7 +48,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         unknown: {
           on: {
             SETUP: {
-              target: "closed",
+              target: ctx.open ? "open" : "closed",
               actions: ["setupDocument", "checkRenderedElements"],
             },
           },

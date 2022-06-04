@@ -1,5 +1,6 @@
 ---
 "@zag-js/dialog": patch
+"@zag-js/popover": patch
 ---
 
-Add `isOpen` to dialog context to specify default open state
+Add `open` to dialog context to allow user open dialog initially

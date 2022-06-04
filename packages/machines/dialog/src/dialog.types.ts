@@ -67,9 +67,8 @@ type PublicContext = DirectionProperty & {
   role: "dialog" | "alertdialog"
   /**
    * Whether to open or close the dialog on setup
-   * @default false
    */
-  isOpen?: boolean
+  open?: boolean
 }
 
 export type UserDefinedContext = Partial<PublicContext>

@@ -29,7 +29,7 @@ const fetchMachine = createMachine({
     unknown: {
       on: {
         SETUP: {
-          target: "closed",
+          target: ctx.open ? "open" : "closed",
           actions: ["setupDocument", "checkRenderedElements"]
         }
       }

@@ -25,7 +25,7 @@ const fetchMachine = createMachine({
     unknown: {
       on: {
         SETUP: {
-          target: ctx.isOpen ? "open" : "closed",
+          target: ctx.open ? "open" : "closed",
           actions: "setupDocument"
         }
       }

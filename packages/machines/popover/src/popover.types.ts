@@ -59,6 +59,10 @@ type PublicContext = {
    * The user provided options used to position the popover content
    */
   positioning: PositioningOptions
+  /**
+   * Whether to open the popover on page load
+   */
+  open?: boolean
 }
 
 export type UserDefinedContext = Partial<PublicContext>
