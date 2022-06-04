@@ -170,6 +170,12 @@ export class Machine<
     // No need to call if already stopped
     if (this.status === MachineStatus.Stopped) return
 
+    // exit current state
+    this.performExitEffects(this.state.value!, toEvent<TEvent>(ActionTypes.Stop))
+
+    // execute root stop or exit actions
+    this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
+
     this.setState(null)
     this.setEvent(ActionTypes.Stop)
 
@@ -181,9 +187,6 @@ export class Machine<
     this.stopContextWatchers()
     this.stopEventListeners()
     this.stopContextListeners()
-
-    // execute stop or exit actions
-    this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
 
     this.status = MachineStatus.Stopped
     return this
