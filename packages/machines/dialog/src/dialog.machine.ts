@@ -1,5 +1,6 @@
 import { createMachine, guards, ref, subscribe } from "@zag-js/core"
-import { addDomEvent, nextTick, preventBodyScroll, trackPointerDown } from "@zag-js/dom-utils"
+import { addDomEvent, nextTick, trackPointerDown } from "@zag-js/dom-utils"
+import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { runIfFn } from "@zag-js/utils"
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
@@ -88,7 +89,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         preventScroll(ctx) {
           return preventBodyScroll({
-            allowPinchZoom: true,
             disabled: !ctx.preventScroll,
             document: dom.getDoc(ctx),
           })

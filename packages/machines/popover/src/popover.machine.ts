@@ -1,14 +1,8 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards, ref } from "@zag-js/core"
-import {
-  contains,
-  nextTick,
-  preventBodyPointerEvents,
-  preventBodyScroll,
-  raf,
-  trackPointerDown,
-} from "@zag-js/dom-utils"
+import { contains, nextTick, preventBodyPointerEvents, raf, trackPointerDown } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
+import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { next, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
@@ -150,7 +144,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         preventScroll(ctx) {
           return preventBodyScroll({
-            allowPinchZoom: true,
             disabled: !ctx.modal,
             document: dom.getDoc(ctx),
           })

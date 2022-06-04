@@ -26,8 +26,7 @@
   },
   "dependencies": {
     "@types/react": "^18.0.0",
-    "@zag-js/utils": "0.1.1",
-    "scroll-into-view-if-needed": "^2.2.29"
+    "@zag-js/utils": "0.1.1"
   },
   "scripts": {
     "build:fast": "zag build",
