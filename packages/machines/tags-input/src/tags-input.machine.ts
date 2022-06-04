@@ -64,11 +64,13 @@ export function machine(ctx: UserDefinedContext = {}) {
 
       on: {
         DOUBLE_CLICK_TAG: {
+          internal: true,
           guard: "allowEditTag",
           target: "editing:tag",
           actions: ["setEditedId", "initializeEditedTagValue"],
         },
         POINTER_DOWN_TAG: {
+          internal: true,
           guard: not("isTagFocused"),
           target: "navigating:tag",
           actions: ["focusTag", "focusInput"],

@@ -42,6 +42,7 @@ const fetchMachine = createMachine({
       actions: "setChildMenu"
     },
     OPEN: {
+      internal: true,
       target: "open",
       actions: "focusFirstItem"
     },

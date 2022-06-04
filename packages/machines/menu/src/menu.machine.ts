@@ -53,6 +53,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           actions: "setChildMenu",
         },
         OPEN: {
+          internal: true,
           target: "open",
           actions: "focusFirstItem",
         },
