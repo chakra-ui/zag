@@ -154,7 +154,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         const exec = keyMap[key]
 
         if (exec) {
-          exec?.(event)
+          exec(event)
           return
         }
 
