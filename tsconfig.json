@@ -5,7 +5,6 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "declarationMap": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
     "isolatedModules": true,
