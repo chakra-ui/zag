@@ -35,11 +35,13 @@ const fetchMachine = createMachine({
   exit: ["removeLiveRegion", "clearLog"],
   on: {
     DOUBLE_CLICK_TAG: {
+      internal: true,
       cond: "allowEditTag",
       target: "editing:tag",
       actions: ["setEditedId", "initializeEditedTagValue"]
     },
     POINTER_DOWN_TAG: {
+      internal: true,
       cond: "!isTagFocused",
       target: "navigating:tag",
       actions: ["focusTag", "focusInput"]
