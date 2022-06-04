@@ -84,6 +84,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         DELETE_TAG: {
           actions: ["deleteTag"],
         },
+        EDIT_TAG: {
+          actions: ["editTag"],
+        },
         CLEAR_ALL: {
           actions: ["clearTags", "focusInput"],
         },
@@ -391,6 +394,12 @@ export function machine(ctx: UserDefinedContext = {}) {
           // log
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "update", value: ctx.editedTagValue! }
+        },
+        editTag(ctx, evt) {
+          ctx.value[evt.index] = evt.value ?? ""
+          // log
+          ctx.log.prev = ctx.log.current
+          ctx.log.current = { type: "update", value: evt.value! }
         },
         initializeEditedTagValue(ctx) {
           if (!ctx.editedId) return

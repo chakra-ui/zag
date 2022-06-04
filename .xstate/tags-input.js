@@ -55,6 +55,9 @@ const fetchMachine = createMachine({
     DELETE_TAG: {
       actions: ["deleteTag"]
     },
+    EDIT_TAG: {
+      actions: ["editTag"]
+    },
     CLEAR_ALL: {
       actions: ["clearTags", "focusInput"]
     },
