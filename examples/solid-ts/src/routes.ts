@@ -25,6 +25,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/dialog")),
   },
   {
+    path: "/dialog-default-open",
+    component: lazy(() => import("./pages/dialog-default-open")),
+  },
+  {
     path: "/menu",
     component: lazy(() => import("./pages/menu")),
   },
