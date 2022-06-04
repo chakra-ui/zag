@@ -105,10 +105,10 @@ export class Machine<
       target: initTarget ?? this.config.initial,
     }
 
-    const info = this.getNextStateInfo(transition, event)
+    const next = this.getNextStateInfo(transition, event)
+    this.initialState = next
 
-    this.initialState = info
-    this.performStateChangeEffects(info.target, info, event)
+    this.performStateChangeEffects(this.state.value!, next, event)
 
     // subscribe to state changes
     this.removeStateListener = subscribe(
@@ -340,6 +340,7 @@ export class Machine<
     transitions: S.Transitions<TContext, TState, TEvent>,
     event: TEvent,
   ): S.StateInfo<TContext, TState, TEvent> => {
+    //
     const _transitions: S.Transitions<TContext, TState, TEvent> = isString(transitions)
       ? toTarget(transitions)
       : transitions
@@ -351,8 +352,15 @@ export class Machine<
     const changed = this.state.value !== target
 
     const stateNode = this.getStateNode(target)
+    const reenter = !isTargetless && !changed && !transition?.internal
 
-    const info = { isTargetless, transition, stateNode, target: target!, changed }
+    const info = {
+      reenter,
+      transition,
+      stateNode,
+      target: target!,
+      changed,
+    }
 
     this.log("NextState:", `[${event.type}]`, this.state.value, "---->", info.target)
 
@@ -667,8 +675,7 @@ export class Machine<
     // update event
     this.setEvent(event)
 
-    const reEnter = !next.isTargetless && !next.changed
-    const changed = next.changed || reEnter
+    const changed = next.changed || next.reenter
 
     if (changed) {
       this.performExitEffects(current, event)
@@ -732,11 +739,11 @@ export class Machine<
     const transitions: S.Transitions<TContext, TState, TEvent> =
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
-    const info = this.getNextStateInfo(transitions, event)
+    const next = this.getNextStateInfo(transitions, event)
 
-    this.performStateChangeEffects(this.state.value!, info, event)
+    this.performStateChangeEffects(this.state.value!, next, event)
 
-    return info.stateNode
+    return next.stateNode
   }
 
   subscribe = (listener: S.StateListener<TContext, TState, TEvent>) => {

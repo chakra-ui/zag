@@ -126,6 +126,7 @@ export declare namespace StateMachine {
     target?: TState["value"]
     actions?: Actions<TContext, TState, TEvent>
     guard?: Guard<TContext, TState, TEvent>
+    internal?: boolean
   }
 
   export type DelayExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, number>
@@ -285,7 +286,7 @@ export declare namespace StateMachine {
   > = (state: State<TContext, TState, TEvent>) => void
 
   export interface StateInfo<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
-    isTargetless: boolean
+    reenter: boolean
     changed: boolean
     transition: TransitionDefinition<TContext, TState, TEvent> | undefined
     stateNode: StateNode<TContext, TState, TEvent> | undefined
