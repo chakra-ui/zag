@@ -1,6 +1,6 @@
 import { createMachine, guards } from "../src"
 
-const { isIn } = guards
+const { stateIn } = guards
 
 type Context = {
   count: number
@@ -14,7 +14,7 @@ const service = createMachine<Context, State>({
   context: { count: 0 },
   on: {
     CHECK: {
-      guard: isIn("open"),
+      guard: stateIn("open"),
       actions: (ctx) => ctx.count++,
     },
   },

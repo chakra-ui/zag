@@ -18,34 +18,36 @@ const guardMap = {
   isDisabled: (ctx: Context) => !ctx.focusable && ctx.disabled,
 }
 
+const meta = { state: { matches: () => true } }
+
 describe("guard helpers - strings", () => {
   it("or", () => {
     const getResult = or("isEmpty", "isDisabled").predicate(guardMap)
-    expect(getResult(context, event)).toBeTruthy()
+    expect(getResult(context, event, meta)).toBeTruthy()
   })
 
   it("not", () => {
     const getResult = not("isEmpty").predicate(guardMap)
-    expect(getResult(context, event)).toBeFalsy()
+    expect(getResult(context, event, meta)).toBeFalsy()
   })
 
   it("and", () => {
     const getResult = and("isEmpty", "isDisabled").predicate(guardMap)
-    expect(getResult(context, event)).toBeFalsy()
+    expect(getResult(context, event, meta)).toBeFalsy()
   })
 
   it("combinations", () => {
     const getResult = and("isEmpty", not("isDisabled")).predicate(guardMap)
-    expect(getResult(context, event)).toBeTruthy()
+    expect(getResult(context, event, meta)).toBeTruthy()
 
     const getResult2 = not(and("isEmpty", "isDisabled")).predicate(guardMap)
-    expect(getResult2(context, event)).toBeTruthy()
+    expect(getResult2(context, event, meta)).toBeTruthy()
   })
 })
 
 describe("guard helpers - inline functions", () => {
   it("or", () => {
     const getResult = or(guardMap.isEmpty, guardMap.isDisabled).predicate(guardMap)
-    expect(getResult(context, event)).toBeTruthy()
+    expect(getResult(context, event, meta)).toBeTruthy()
   })
 })

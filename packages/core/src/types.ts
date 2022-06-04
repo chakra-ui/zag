@@ -235,7 +235,7 @@ export declare namespace StateMachine {
    * -----------------------------------------------------------------------------*/
 
   export type GuardMeta<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
-    state: State<TContext, TState, TEvent>
+    state: Pick<State<TContext, TState, TEvent>, "matches">
   }
 
   export type GuardExpression<TContext, TState extends StateSchema, TEvent extends EventObject, TReturn = boolean> = (

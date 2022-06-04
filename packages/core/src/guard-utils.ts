@@ -57,13 +57,13 @@ function not<TContext, TState extends S.StateSchema, TEvent extends S.EventObjec
   }
 }
 
-function isIn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+function stateIn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
   ...values: TState["value"][]
 ): S.GuardExpression<TContext, TState, TEvent> {
   return (_ctx, _evt, meta) => meta.state.matches(...values)
 }
 
-export const guards = { or, and, not, isIn }
+export const guards = { or, and, not, stateIn }
 
 /* -----------------------------------------------------------------------------
  * Action guard helper. Used to determie the action to be taken
