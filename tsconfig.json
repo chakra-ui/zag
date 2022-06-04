@@ -5,10 +5,12 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "declarationMap": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "incremental": true,
+    "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
     "noEmit": true,
     "lib": ["dom", "esnext"],
@@ -17,6 +19,7 @@
     "noImplicitReturns": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true
   }
 }
