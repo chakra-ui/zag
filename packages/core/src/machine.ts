@@ -4,7 +4,7 @@ import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
-import { determineTransitionFn, toTarget } from "./transition-utils"
+import { determineTransitionFn } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
 import { subscribeKey, toArray, toEvent } from "./utils"
 
@@ -340,12 +340,8 @@ export class Machine<
     transitions: S.Transitions<TContext, TState, TEvent>,
     event: TEvent,
   ): S.StateInfo<TContext, TState, TEvent> => {
-    //
-    const _transitions: S.Transitions<TContext, TState, TEvent> = isString(transitions)
-      ? toTarget(transitions)
-      : transitions
-
-    const transition = this.determineTransition(_transitions, event)
+    // pick transition
+    const transition = this.determineTransition(transitions, event)
 
     const isTargetless = !transition?.target
     const target = transition?.target ?? this.state.value
@@ -379,9 +375,8 @@ export class Machine<
     return {
       entry: () => {
         id = globalThis.setTimeout(() => {
-          const current = this.state.value!
           const next = this.getNextStateInfo(transition, event)
-          this.performStateChangeEffects(current, next, event)
+          this.performStateChangeEffects(this.state.value!, next, event)
         }, delay)
       },
       exit: () => {
@@ -740,7 +735,6 @@ export class Machine<
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
     const next = this.getNextStateInfo(transitions, event)
-
     this.performStateChangeEffects(this.state.value!, next, event)
 
     return next.stateNode
