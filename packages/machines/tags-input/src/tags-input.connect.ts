@@ -34,8 +34,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     deleteValue(id: string) {
       send({ type: "DELETE_TAG", id })
     },
-    editValue(index: number, value: string) {
-      send({ type: "EDIT_TAG", index, value })
+    setValueAtIndex(index: number, value: string) {
+      send({ type: "SET_VALUE_AT_INDEX", index, value })
     },
     setInputValue(value: string) {
       send({ type: "SET_INPUT_VALUE", value })

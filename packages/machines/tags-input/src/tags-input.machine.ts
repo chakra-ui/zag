@@ -84,8 +84,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         DELETE_TAG: {
           actions: ["deleteTag"],
         },
-        EDIT_TAG: {
-          actions: ["editTag"],
+        SET_VALUE_AT_INDEX: {
+          actions: ["setValueAtIndex"],
         },
         CLEAR_ALL: {
           actions: ["clearTags", "focusInput"],
@@ -395,7 +395,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "update", value: ctx.editedTagValue! }
         },
-        editTag(ctx, evt) {
+        setValueAtIndex(ctx, evt) {
           ctx.value[evt.index] = evt.value ?? ""
           // log
           ctx.log.prev = ctx.log.current
