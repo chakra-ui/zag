@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@zag-js/core": "0.1.5",
-    "@zag-js/popper": "0.1.4",
     "@zag-js/dom-utils": "0.1.3",
+    "@zag-js/popper": "0.1.4",
     "@zag-js/types": "0.1.2"
   },
   "scripts": {

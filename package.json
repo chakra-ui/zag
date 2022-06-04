@@ -36,7 +36,19 @@
     "release": "changeset publish",
     "test": "jest"
   },
-  "devDependencies": {
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": "prettier --write",
+    "**/*.machine.ts": [
+      "yarn zag visualize --all",
+      "git add .xstate/*.js"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "dependencies": {
     "@axe-core/playwright": "^4.4.2",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.19.0",
@@ -78,17 +90,5 @@
     "start-server-and-test": "^1.14.0",
     "turbo": "^1.2.2",
     "typescript": "^4.6.3"
-  },
-  "lint-staged": {
-    "**/*.{ts,tsx,js,jsx}": "prettier --write",
-    "**/*.machine.ts": [
-      "yarn zag visualize --all",
-      "git add .xstate/*.js"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
   }
 }
