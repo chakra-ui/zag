@@ -767,12 +767,10 @@ export class Machine<
 
   public onChange = (listener: S.ContextListener<TContext>) => {
     this.contextListeners.add(listener)
-    listener(this.contextSnapshot)
     return this
   }
 
   public onEvent = (listener: S.EventListener<TEvent>) => {
-    listener(this.state.event)
     this.eventListeners.add(listener)
     return this
   }
