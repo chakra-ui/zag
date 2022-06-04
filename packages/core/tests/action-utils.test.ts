@@ -12,6 +12,8 @@ const event = {
   type: "testing",
 }
 
+const meta = { state: { matches: () => true } }
+
 type Context = typeof context
 
 const guardMap = {
@@ -30,7 +32,7 @@ it("resolve choose action - false", () => {
     },
   ])
   const getResult = actions.predicate(guardMap)
-  expect(getResult(context, event)).toMatchObject(["test"])
+  expect(getResult(context, event, meta)).toMatchObject(["test"])
 })
 
 it("resolve choose action - true", () => {
@@ -44,5 +46,5 @@ it("resolve choose action - true", () => {
     },
   ])
   const getResult = actions.predicate(guardMap)
-  expect(getResult(context, event)).toMatchObject(["log"])
+  expect(getResult(context, event, meta)).toMatchObject(["log"])
 })
