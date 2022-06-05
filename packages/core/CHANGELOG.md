@@ -1,5 +1,19 @@
 # @zag-js/core
 
+## 0.1.6
+
+### Patch Changes
+
+- [#118](https://github.com/chakra-ui/zag/pull/118)
+  [`5982d826`](https://github.com/chakra-ui/zag/commit/5982d826126a7b83252fcd0b0479079fccb62189) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where transition object gets mutated
+  - Add `onChange` method to machine to listen for context changes
+  - Add support for `debug: true` to visualize state transitions
+  - Add support for explicit state re-entry (to get rid of the `after: 0` hack)
+- Updated dependencies [[`e2f62c7a`](https://github.com/chakra-ui/zag/commit/e2f62c7a30266e7e2c8b1b10b55a22fb979199ed),
+  [`ef2872d7`](https://github.com/chakra-ui/zag/commit/ef2872d7b291fa39c6b6293ae12f522d811a2190)]:
+  - @zag-js/utils@0.1.2
+
 ## 0.1.5
 
 ### Patch Changes

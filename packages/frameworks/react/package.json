@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/react",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -28,7 +28,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "0.1.5",
+    "@zag-js/core": "0.1.6",
     "valtio": "^1.6.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/editable",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Core logic for the editable widget implemented as a state machine",
   "keywords": [
     "js",
@@ -29,8 +29,8 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "0.1.5",
-    "@zag-js/dom-utils": "0.1.3",
+    "@zag-js/core": "0.1.6",
+    "@zag-js/dom-utils": "0.1.4",
     "@zag-js/types": "0.1.2"
   },
   "scripts": {
