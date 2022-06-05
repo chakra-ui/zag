@@ -401,7 +401,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             ctx.value[evt.index] = evt.value
             // log
             ctx.log.prev = ctx.log.current
-            ctx.log.current = { type: "update", value: evt.value! }
+            ctx.log.current = { type: "update", value: evt.value }
           } else {
             warn("You need to provide a value for the tag")
           }
