@@ -106,5 +106,7 @@ export function trackFocusVisible(fn: FocusVisibleCallback) {
   const handler = () => fn(isFocusVisible())
 
   handlers.add(handler)
-  return () => handlers.delete(handler)
+  return () => {
+    handlers.delete(handler)
+  }
 }

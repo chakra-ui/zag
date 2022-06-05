@@ -2,4 +2,4 @@
 "@zag-js/remove-scroll": minor
 ---
 
-Initial release
+Introduce new remove scroll package
