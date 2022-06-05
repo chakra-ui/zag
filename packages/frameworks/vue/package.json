@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/vue",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "The vue wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -28,7 +28,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "0.1.5",
+    "@zag-js/core": "0.1.6",
     "valtio": "^1.6.0"
   },
   "devDependencies": {

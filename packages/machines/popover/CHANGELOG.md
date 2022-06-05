@@ -1,5 +1,35 @@
 # @zag-js/popover
 
+## 0.1.7
+
+### Patch Changes
+
+- [`e2f62c7a`](https://github.com/chakra-ui/zag/commit/e2f62c7a30266e7e2c8b1b10b55a22fb979199ed) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update to use local remove scroll package
+
+* [`dfae8e35`](https://github.com/chakra-ui/zag/commit/dfae8e351f1851d91a2d5508bd1a875be180c73d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Cleanup types
+
+- [`f0fb09f9`](https://github.com/chakra-ui/zag/commit/f0fb09f9bfa6a7919d078c66cf14930acab6bdfd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where focus doesn't get set on the content when the
+  popover includes non-focusable descendants
+
+* [#114](https://github.com/chakra-ui/zag/pull/114)
+  [`86b8600e`](https://github.com/chakra-ui/zag/commit/86b8600e4996386a21700deb5b04d9b82e8525eb) Thanks
+  [@alexluong](https://github.com/alexluong)! - Add `open` to dialog context to allow user open dialog initially
+
+* Updated dependencies [[`f0fb09f9`](https://github.com/chakra-ui/zag/commit/f0fb09f9bfa6a7919d078c66cf14930acab6bdfd),
+  [`5982d826`](https://github.com/chakra-ui/zag/commit/5982d826126a7b83252fcd0b0479079fccb62189),
+  [`e2f62c7a`](https://github.com/chakra-ui/zag/commit/e2f62c7a30266e7e2c8b1b10b55a22fb979199ed),
+  [`ef2872d7`](https://github.com/chakra-ui/zag/commit/ef2872d7b291fa39c6b6293ae12f522d811a2190),
+  [`63c1e3a9`](https://github.com/chakra-ui/zag/commit/63c1e3a996832ccf55e9a3cc1015d05b6ba927e2),
+  [`e2f62c7a`](https://github.com/chakra-ui/zag/commit/e2f62c7a30266e7e2c8b1b10b55a22fb979199ed)]:
+  - @zag-js/dom-utils@0.1.4
+  - @zag-js/core@0.1.6
+  - @zag-js/utils@0.1.2
+  - @zag-js/remove-scroll@0.1.0
+  - @zag-js/popper@0.1.5
+
 ## 0.1.6
 
 ### Patch Changes
