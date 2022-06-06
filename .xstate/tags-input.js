@@ -55,6 +55,9 @@ const fetchMachine = createMachine({
     DELETE_TAG: {
       actions: ["deleteTag"]
     },
+    SET_VALUE_AT_INDEX: {
+      actions: ["setValueAtIndex"]
+    },
     CLEAR_ALL: {
       actions: ["clearTags", "focusInput"]
     },

@@ -1,5 +1,6 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { autoResizeInput, createLiveRegion, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
+import { warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tags-input.types"
 
@@ -83,6 +84,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         DELETE_TAG: {
           actions: ["deleteTag"],
+        },
+        SET_VALUE_AT_INDEX: {
+          actions: ["setValueAtIndex"],
         },
         CLEAR_ALL: {
           actions: ["clearTags", "focusInput"],
@@ -391,6 +395,16 @@ export function machine(ctx: UserDefinedContext = {}) {
           // log
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "update", value: ctx.editedTagValue! }
+        },
+        setValueAtIndex(ctx, evt) {
+          if (evt.value) {
+            ctx.value[evt.index] = evt.value
+            // log
+            ctx.log.prev = ctx.log.current
+            ctx.log.current = { type: "update", value: evt.value }
+          } else {
+            warn("You need to provide a value for the tag")
+          }
         },
         initializeEditedTagValue(ctx) {
           if (!ctx.editedId) return
