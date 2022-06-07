@@ -39,7 +39,7 @@ export const dom = {
   getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.uid}:range`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.uid}:label`,
   getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
-  getMarkerId: (ctx: Ctx, value: number) => `slider-${ctx.uid}:marker:${value}`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.uid}:marker:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx, index)),
