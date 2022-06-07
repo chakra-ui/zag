@@ -3,8 +3,6 @@ name: Add Visualizer Link
 on:
   pull_request:
     types: [opened]
-    branches:
-      - main
 
 jobs:
   build:
