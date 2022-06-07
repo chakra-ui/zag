@@ -10,7 +10,7 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [state, send] = useMachine(dialog.machine({ isOpen: true }))
+  const [state, send] = useMachine(dialog.machine({ open: true }))
   const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
   const parentDialog = dialog.connect(state, send)
 

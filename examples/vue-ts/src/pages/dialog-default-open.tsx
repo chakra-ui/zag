@@ -14,7 +14,7 @@ export default defineComponent({
   setup() {
     const inputRef = vueRef<HTMLInputElement | null>(null)
 
-    const [state, send] = useMachine(dialog.machine({ isOpen: true }))
+    const [state, send] = useMachine(dialog.machine({ open: true }))
     const ref = useSetup({ send, id: useId() })
     const parentDialogRef = computed(() => dialog.connect<PropTypes>(state.value, send, normalizeProps))
 

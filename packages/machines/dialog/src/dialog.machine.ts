@@ -32,10 +32,17 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: ctx.open ? "open" : "closed",
-              actions: "setupDocument",
-            },
+            SETUP: [
+              {
+                guard: "isOpen",
+                target: "open",
+                actions: "setupDocument",
+              },
+              {
+                target: "closed",
+                actions: "setupDocument",
+              },
+            ],
           },
         },
         open: {
@@ -72,6 +79,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         isTopMostDialog: (ctx) => ctx.isTopMostDialog,
         closeOnOutsideClick: (ctx) => ctx.closeOnOutsideClick,
         isValidUnderlayClick: (ctx, evt) => evt.target === ctx.pointerdownNode,
+        isOpen: (ctx) => !!ctx.open,
       },
       activities: {
         trackPointerDown(ctx, _evt) {
