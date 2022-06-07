@@ -20,6 +20,6 @@ jobs:
         uses: thollander/actions-comment-pull-request@v1
         with:
           message: |
-            Visualizer can be found [here](https://state-machine-viz.vercel.app/pr/${{ github.event.number }}) :confetti_ball:
+            Visualize the logic of the machines [here](https://state-machine-viz.vercel.app/pr/${{ github.event.number }}) :confetti_ball:
           comment_includes: "Visualizer can be found"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
