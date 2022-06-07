@@ -10,6 +10,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const ariaValueText = state.context.getAriaValueText?.(state.context.value)
+
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
   const isDisabled = state.context.disabled
@@ -43,6 +44,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-orientation": state.context.orientation,
       id: dom.getRootId(state.context),
       dir: state.context.dir,
+      style: dom.getRootStyle(state.context),
     }),
 
     labelProps: normalize.label<T>({
@@ -56,9 +58,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         event.preventDefault()
         dom.getThumbEl(state.context)?.focus()
       },
-      style: {
-        userSelect: "none",
-      },
+      style: dom.getLabelStyle(),
     }),
 
     thumbProps: normalize.element<T>({
@@ -161,7 +161,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      style: { position: "relative" },
+      style: dom.getTrackStyle(),
     }),
 
     rangeProps: normalize.element<T>({
@@ -192,7 +192,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         event.preventDefault()
         event.stopPropagation()
       },
-      style: dom.getControlStyle(state.context),
+      style: dom.getControlStyle(),
     }),
 
     markerGroupProps: normalize.element<T>({
@@ -200,11 +200,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       role: "presentation",
       "aria-hidden": true,
       "data-orientation": state.context.orientation,
-      style: {
-        userSelect: "none",
-        pointerEvents: "none",
-        position: "relative",
-      },
+      style: dom.getMarkerGroupStyle(),
     }),
 
     getMarkerProps({ value }: { value: number }) {
