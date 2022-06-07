@@ -41,10 +41,17 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: ctx.open ? "open" : "closed",
-              actions: ["setupDocument", "checkRenderedElements"],
-            },
+            SETUP: [
+              {
+                guard: "isOpen",
+                target: "open",
+                actions: "setupDocument",
+              },
+              {
+                target: "closed",
+                actions: "setupDocument",
+              },
+            ],
           },
         },
 
@@ -105,6 +112,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
       },
     },
+
     {
       activities: {
         computePlacement(ctx) {
@@ -179,6 +187,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         isContentFocused: (ctx) => dom.getContentEl(ctx) === dom.getActiveEl(ctx),
         isFirstTabbableElement: (ctx) => dom.getFirstTabbableEl(ctx) === dom.getActiveEl(ctx),
         isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
+        isOpen: (ctx) => !!ctx.open,
       },
       actions: {
         checkRenderedElements(ctx) {

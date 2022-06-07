@@ -14,6 +14,7 @@ const fetchMachine = createMachine({
   id: "popover",
   initial: "unknown",
   context: {
+    "isOpen": false,
     "closeOnEsc": false,
     "isLastTabbableElement && closeOnBlur && portalled": false,
     "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled": false,
@@ -28,10 +29,14 @@ const fetchMachine = createMachine({
   states: {
     unknown: {
       on: {
-        SETUP: {
-          target: ctx.open ? "open" : "closed",
-          actions: ["setupDocument", "checkRenderedElements"]
-        }
+        SETUP: [{
+          cond: "isOpen",
+          target: "open",
+          actions: "setupDocument"
+        }, {
+          target: "closed",
+          actions: "setupDocument"
+        }]
       }
     },
     closed: {
@@ -88,6 +93,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isOpen": ctx => ctx["isOpen"],
     "closeOnEsc": ctx => ctx["closeOnEsc"],
     "isLastTabbableElement && closeOnBlur && portalled": ctx => ctx["isLastTabbableElement && closeOnBlur && portalled"],
     "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled": ctx => ctx["(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled"],
