@@ -21,6 +21,5 @@ jobs:
         with:
           message: |
             Visualizer can be found [here](https://state-machine-viz.vercel.app/pr/${{ github.event.number }}) :confetti_ball:
-          comment_includes: 'Visualizer can be found'
+          comment_includes: "Visualizer can be found"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          reactions: "+1, laugh, hooray, heart, rocket"
