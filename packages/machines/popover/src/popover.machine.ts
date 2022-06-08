@@ -45,11 +45,11 @@ export function machine(ctx: UserDefinedContext = {}) {
               {
                 guard: "isOpen",
                 target: "open",
-                actions: "setupDocument",
+                actions: ["setupDocument", "checkRenderedElements"],
               },
               {
                 target: "closed",
-                actions: "setupDocument",
+                actions: ["setupDocument", "checkRenderedElements"],
               },
             ],
           },
