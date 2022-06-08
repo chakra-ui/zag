@@ -3,6 +3,8 @@ name: Add Visualizer Link
 on:
   pull_request:
     types: [opened]
+    paths:
+      - .xstate/**
 
 jobs:
   build:
