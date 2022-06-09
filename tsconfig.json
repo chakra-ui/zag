@@ -12,13 +12,14 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
     "noEmit": true,
-    "lib": ["dom", "esnext"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "target": "esnext",
     "moduleResolution": "node",
     "noImplicitReturns": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
+    "stripInternal": true,
     "suppressImplicitAnyIndexErrors": true
   }
 }
