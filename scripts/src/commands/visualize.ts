@@ -39,6 +39,10 @@ const { choose } = actions;
 const fetchMachine = createMachine(${code})`
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
   const { outDir = ".xstate" } = opts
   const modules = await getMachinePackages()
@@ -53,6 +57,59 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
   //store machine config so we can ignore all other keys
   let machineObj = null
   let machineGuards: string[] = []
+
+  traverse(ast, {
+    ObjectExpression(path) {
+      const targetConditions: ((node: t.ObjectProperty) => boolean)[] = [
+        (el) => t.isObjectProperty(el),
+        (el) => t.isIdentifier(el.key, { name: "target" }),
+        (el) => t.isConditionalExpression(el.value),
+      ]
+
+      const isTargetWithConditionalExpression = (el: t.ObjectMethod | t.ObjectProperty | t.SpreadElement) =>
+        targetConditions.every((cond) => cond(el as t.ObjectProperty))
+
+      const targetWithConditionalExpression = path.node.properties.find(isTargetWithConditionalExpression)
+
+      if (
+        !!targetWithConditionalExpression &&
+        t.isObjectProperty(targetWithConditionalExpression) &&
+        t.isConditionalExpression(targetWithConditionalExpression.value) &&
+        t.isStringLiteral(targetWithConditionalExpression.value.consequent) &&
+        t.isStringLiteral(targetWithConditionalExpression.value.alternate) &&
+        t.isMemberExpression(targetWithConditionalExpression.value.test) &&
+        t.isIdentifier(targetWithConditionalExpression.value.test.property)
+      ) {
+        const testName = targetWithConditionalExpression.value.test.property.name
+
+        const guardName = `is${capitalizeFirstLetter(testName)}`
+
+        const otherProperties = path.node.properties.filter(
+          (n) => !isTargetWithConditionalExpression(n) && (t.isObjectProperty(n) || t.isRestElement(n)),
+        ) as (t.ObjectProperty | t.RestElement)[]
+
+        const alternateTarget = t.objectPattern([
+          t.objectProperty(
+            t.identifier("target"),
+            t.stringLiteral(targetWithConditionalExpression.value.alternate.value),
+          ),
+          ...otherProperties,
+        ])
+
+        const consequentTarget = t.objectPattern([
+          t.objectProperty(
+            t.identifier("target"),
+            t.stringLiteral(targetWithConditionalExpression.value.consequent.value),
+          ),
+          t.objectProperty(t.identifier("guard"), t.stringLiteral(guardName)),
+          ...otherProperties,
+        ])
+
+        const newPathNode = t.arrayPattern([consequentTarget, alternateTarget])
+        path.replaceWith(newPathNode)
+      }
+    },
+  })
 
   traverse(ast, {
     Identifier: function (path) {
