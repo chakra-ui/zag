@@ -77,7 +77,6 @@ export function ariaHidden(targets: Array<HTMLElement | null>, rootEl?: HTMLElem
       // If the parent element of the added nodes is not within one of the targets,
       // and not already inside a hidden node, hide all of the new children.
       if (![...visibleNodes, ...hiddenNodes].some((node) => node.contains(change.target))) {
-        //@ts-expect-error
         for (const node of change.addedNodes) {
           if (isLiveRegion(node, win)) {
             visibleNodes.add(node)
