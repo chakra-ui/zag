@@ -3,8 +3,7 @@ import { dispatchInputValueEvent, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { closest, getElementRect, relativeToNode } from "@zag-js/rect-utils"
-import { unstable__dom } from "@zag-js/slider"
-import type { Style } from "@zag-js/types"
+import { styles } from "./range-slider.style"
 import type { MachineContext as Ctx } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
 
@@ -27,34 +26,8 @@ function getValueFromPoint(ctx: Ctx, point: Point) {
   return utils.fromPercent(ctx, percent)
 }
 
-export function getRangeStyle(ctx: Ctx): Style {
-  const { orientation, value: values, max } = ctx
-
-  const startValue = (values[0] / max) * 100
-  const endValue = 100 - (values[values.length - 1] / max) * 100
-
-  const style: Style = {
-    position: "absolute",
-    "--slider-range-start": `${startValue}%`,
-    "--slider-range-end": `${endValue}%`,
-  }
-
-  if (orientation === "vertical") {
-    return {
-      ...style,
-      bottom: "var(--slider-range-start)",
-      top: "var(--slider-range-end)",
-    }
-  }
-
-  return {
-    ...style,
-    [ctx.isRtl ? "right" : "left"]: "var(--slider-range-start)",
-    [ctx.isRtl ? "left" : "right"]: "var(--slider-range-end)",
-  }
-}
-
 export const dom = {
+  ...styles,
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
   getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
@@ -66,7 +39,7 @@ export const dom = {
   getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.uid}:range`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.uid}:label`,
   getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
-  getMarkerId: (ctx: Ctx, value: number) => `slider-${ctx.uid}:marker:${value}`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.uid}:marker:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx, index)),
@@ -85,29 +58,6 @@ export const dom = {
       if (!input) return
       dispatchInputValueEvent(input, value)
     })
-  },
-
-  getControlStyle: unstable__dom.getControlStyle,
-  getThumbStyle(ctx: Ctx, index: number) {
-    const value = ctx.value[index]
-    const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
-    return unstable__dom.getThumbStyle({ ...ctx, value, thumbSize })
-  },
-  getRangeStyle,
-  getMarkerStyle(ctx: Ctx, percent: number): Style {
-    const style: Style = {
-      position: "absolute",
-      pointerEvents: "none",
-    }
-
-    if (ctx.isHorizontal) {
-      percent = ctx.isRtl ? 100 - percent : percent
-      style.left = `${percent}%`
-    } else {
-      style.bottom = `${percent}%`
-    }
-
-    return style
   },
 }
 

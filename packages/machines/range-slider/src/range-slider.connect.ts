@@ -78,6 +78,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-orientation": state.context.orientation,
       id: dom.getRootId(state.context),
       dir: state.context.dir,
+      style: dom.getRootStyle(state.context),
     }),
 
     outputProps: normalize.output<T>({
@@ -204,7 +205,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
-      style: dom.getControlStyle(state.context),
+      style: dom.getControlStyle(),
       onPointerDown(event) {
         if (!isInteractive) return
 
@@ -223,11 +224,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       role: "presentation",
       "aria-hidden": true,
       "data-orientation": state.context.orientation,
-      style: {
-        userSelect: "none",
-        pointerEvents: "none",
-        position: "relative",
-      },
+      style: dom.getMarkerGroupStyle(),
     }),
 
     getMarkerProps({ value }: { value: number }) {
