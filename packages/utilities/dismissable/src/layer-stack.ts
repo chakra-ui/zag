@@ -1,71 +1,72 @@
-import { proxy, subscribe } from "valtio"
+import { contains } from "@zag-js/dom-utils"
+import { proxy, ref } from "valtio"
 
-export type LayerType = "popup" | "dialog"
-
-type Layer = {
-  type: LayerType
-  id: string
-  close: VoidFunction
-  ref: HTMLElement
+export type Layer = {
+  dismiss: VoidFunction
+  node: HTMLElement
+  pointerBlocking?: boolean
 }
 
 export const layerStack = proxy({
   layers: [] as Layer[],
-  isTopMost(id: string) {
-    const layer = this.layers[this.layers.length - 1]
-    return layer?.id === id
+  branches: [] as HTMLElement[],
+  get count(): number {
+    return this.layers.length
   },
-  // a layer is stacked if the topmost layer "type" is the previous layer's "type"
-  isNested(id: string) {
-    const idx = this.indexOf(id)
-    const layer = this.layers[idx]
-    const prevLayer = this.layers[idx - 1]
-    return layer?.type === prevLayer?.type
+  get pointerBlockingLayers(): Layer[] {
+    return this.layers.filter((layer) => layer.pointerBlocking)
   },
-  // a parent is a layer preceding the specified layer and has the same "type"
-  getParentRefs(id: string) {
-    const idx = this.indexOf(id)
-    const layer = this.layers[idx]
-    return this.layers
-      .slice(0, idx)
-      .filter((_layer) => _layer.type === layer.type)
-      .map((_layer) => _layer.ref)
+  get topMostPointerBlockingLayer(): Layer | undefined {
+    return [...this.pointerBlockingLayers].slice(-1)[0]
+  },
+  get hasPointerBlockingLayer(): boolean {
+    return this.pointerBlockingLayers.length > 0
+  },
+  isBelowPointerBlockingLayer(node: HTMLElement) {
+    const index = this.indexOf(node)
+    const highestBlockingIndex = this.topMostPointerBlockingLayer
+      ? this.indexOf(this.topMostPointerBlockingLayer.node)
+      : -1
+    return index < highestBlockingIndex
+  },
+  isTopMost(node: HTMLElement) {
+    const layer = this.layers[this.count - 1]
+    return layer?.node === node
+  },
+  getChildLayers(node: HTMLElement) {
+    return this.layers.slice(this.indexOf(node))
+  },
+  isInChildLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
+    return this.getChildLayers(node).some((layer) => contains(layer.node, target))
+  },
+  isInBranch(target: HTMLElement | EventTarget | null) {
+    return [...this.branches].some((branch) => contains(branch, target))
   },
   add(layer: Layer) {
-    this.layers.push(layer)
+    this.layers.push(ref(layer))
   },
-  remove(id: string) {
-    const index = this.layers.findIndex((item) => item.id === id)
-    if (index < this.layers.length - 1) {
-      this.layers.splice(index).forEach((item) => item.close())
+  addBranch(node: HTMLElement) {
+    this.branches.push(node)
+  },
+  remove(node: HTMLElement) {
+    const index = this.indexOf(node)
+    if (index < this.count - 1) {
+      this.layers.splice(index).forEach((item) => item.dismiss())
     } else {
-      this.layers = this.layers.filter((item) => item.id !== id)
+      this.layers = this.layers.filter((item) => item.node !== node)
     }
   },
-  indexOf(id: string) {
-    return this.layers.findIndex((layer) => layer.id === id)
+  removeBranch(node: HTMLElement) {
+    const index = this.branches.indexOf(node)
+    if (index >= 0) this.branches.splice(index, 1)
   },
-  close(id: string) {
-    const layer = this.layers.find((layer) => layer.id === id)
-    if (!layer) return
-    layer.close()
+  indexOf(node: HTMLElement) {
+    return this.layers.findIndex((layer) => layer.node === node)
+  },
+  dismiss(node: HTMLElement) {
+    this.layers[this.indexOf(node)]?.dismiss()
   },
   clear() {
-    this.layers.forEach((layer) => {
-      layer.close()
-      this.remove(layer.id)
-    })
+    this.remove(this.layers[0].node)
   },
 })
-
-export function subscribeToLayerStack(fn: (data: { isTopMost: boolean; layer: Layer; index: number }) => void) {
-  return subscribe(layerStack, () => {
-    layerStack.layers.forEach((layer, index) => {
-      fn({ isTopMost: layerStack.isTopMost(layer.id), layer, index })
-    })
-  })
-}
-
-export function getLayerStack() {
-  return Array.from(layerStack.layers)
-}

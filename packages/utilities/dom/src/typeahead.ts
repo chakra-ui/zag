@@ -12,7 +12,7 @@ export type TypeaheadOptions = {
   timeout?: number
 }
 
-export function findByTypeahead<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {
+function findByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {
   const { state, activeId, key, timeout = 350 } = options
 
   const search = state.keysSoFar + key
@@ -45,8 +45,9 @@ export function findByTypeahead<T extends HTMLElement>(_items: T[], options: Typ
 
   return next
 }
-
-findByTypeahead.defaultOptions = {
-  keysSoFar: "",
-  timer: -1,
-}
+export const findByTypeahead = /*#__PURE__*/ Object.assign(findByTypeaheadImpl, {
+  defaultOptions: {
+    keysSoFar: "",
+    timer: -1,
+  },
+})

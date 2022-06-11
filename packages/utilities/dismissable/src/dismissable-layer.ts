@@ -1,60 +1,72 @@
+import { contains } from "@zag-js/dom-utils"
 import { trackEscapeKeydown } from "./escape-keydown"
 import { InteractOutsideOptions, trackInteractOutside } from "./interact-outside"
-import { layerStack, LayerType } from "./layer-stack"
-import { disablePointerEventsOutside } from "./pointer-event-outside"
-import { trackFocusedDescendantRemoval } from "./track-mutation-within"
+import { Layer, layerStack } from "./layer-stack"
+import { assignPointerEvent, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
-export type DismissableElementOptions = InteractOutsideOptions & {
-  type: LayerType
-  id: string
-  closeOnEscape?: boolean
-  closeOnInteractOutside?: boolean
-  disableOutsidePointerEvents?: boolean
+type Container = HTMLElement | HTMLElement[]
+
+export type DismissableElementOptions = Omit<InteractOutsideOptions, "exclude"> & {
+  pointerBlocking?: boolean
   onDismiss: () => void
   onEscapeKeyDown?: (event: KeyboardEvent) => void
   onInteractOutside?: (event: Event) => void
+  excludeContainers?: Container | (() => Container)
 }
 
-export function trackDismissableElement(el: HTMLElement | null, options: DismissableElementOptions) {
-  if (!el) return null
+export function trackDismissableElement(node: HTMLElement | null, options: DismissableElementOptions) {
+  if (!node) return
 
-  const { id, type, onDismiss, disableOutsidePointerEvents } = options
+  const { onDismiss, pointerBlocking, excludeContainers } = options
 
-  layerStack.add({ id, close: onDismiss, ref: el, type })
+  const layer: Layer = { dismiss: onDismiss, node, pointerBlocking }
 
-  const onPointerDownOutside = (event: Event) => {
+  layerStack.add(layer)
+  assignPointerEvent()
+
+  function onPointerDownOutside(event: Event) {
+    if (layerStack.isBelowPointerBlockingLayer(node!) || layerStack.isInBranch(event.target)) return
     options.onPointerDownOutside?.(event)
     options.onInteractOutside?.(event)
-    if (!event.defaultPrevented) onDismiss?.()
+    if (event.defaultPrevented) return
+    onDismiss?.()
   }
 
-  const onFocusOutside = (event: Event) => {
+  function onFocusOutside(event: Event) {
+    if (layerStack.isInBranch(event.target)) return
     options.onFocusOutside?.(event)
     options.onInteractOutside?.(event)
-    if (!event.defaultPrevented) onDismiss?.()
+    if (event.defaultPrevented) return
+    onDismiss?.()
   }
 
-  const onEscapeKeyDown = (event: KeyboardEvent) => {
-    if (!layerStack.isTopMost(id)) return
+  function onEscapeKeyDown(event: KeyboardEvent) {
+    if (!layerStack.isTopMost(node!)) return
     options.onEscapeKeyDown?.(event)
-    if (!event.defaultPrevented) {
-      layerStack.close(id)
+    if (!event.defaultPrevented && onDismiss) {
+      event.preventDefault()
+      onDismiss()
     }
   }
 
-  const exclude = (target: Element) => {
-    return layerStack.getParentRefs(id).some((ref) => ref === target)
+  function exclude(target: Element) {
+    const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
+    const inContainers = Array.isArray(containers) ? containers : [containers]
+    return inContainers.some((node) => contains(node, target)) || layerStack.isInChildLayer(node!, target)
   }
 
   const cleanups = [
-    disableOutsidePointerEvents ? disablePointerEventsOutside([el], exclude) : undefined,
-    trackFocusedDescendantRemoval(el),
+    pointerBlocking ? disablePointerEventsOutside(node) : undefined,
     trackEscapeKeydown(onEscapeKeyDown),
-    trackInteractOutside(el, { onFocusOutside, onPointerDownOutside, exclude }),
+    trackInteractOutside(node, { onFocusOutside, onPointerDownOutside, exclude }),
   ]
 
   return () => {
-    layerStack.remove(id)
+    layerStack.remove(node!)
+    // re-assign pointer event to remaining layers
+    assignPointerEvent()
+    // remove pointer event from removed layer
+    clearPointerEvent(node!)
     cleanups.forEach((fn) => fn?.())
   }
 }

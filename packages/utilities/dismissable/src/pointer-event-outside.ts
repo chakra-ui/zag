@@ -1,24 +1,33 @@
-import { isHTMLElement, walkTreeOutside } from "@zag-js/dom-utils"
+import { getOwnerDocument } from "@zag-js/dom-utils"
+import { layerStack } from "./layer-stack"
 
-function disableElement(el: Element) {
-  if (!isHTMLElement(el)) return
-  const previousPointerEvents = el.style.pointerEvents
-  el.style.pointerEvents = "none"
-  return () => {
-    el.style.pointerEvents = previousPointerEvents ?? ""
-  }
+let originalBodyPointerEvents: string
+
+export function assignPointerEvent() {
+  layerStack.layers.forEach(({ node }) => {
+    node.style.pointerEvents = layerStack.isBelowPointerBlockingLayer(node) ? "none" : "auto"
+  })
 }
 
-export function disablePointerEventsOutside(els: Array<Element | null>, exclude?: (target: Element) => boolean) {
-  const cleanups: Array<() => void> = []
+export function clearPointerEvent(node: HTMLElement) {
+  node.style.pointerEvents = ""
+}
 
-  walkTreeOutside(els, (el) => {
-    if (exclude?.(el)) return
-    const fn = disableElement(el)
-    if (fn) cleanups.unshift(fn)
-  })
+const DATA_ATTR = "data-inert"
+
+export function disablePointerEventsOutside(node: HTMLElement) {
+  const doc = getOwnerDocument(node)
+
+  if (layerStack.hasPointerBlockingLayer && !doc.body.hasAttribute(DATA_ATTR)) {
+    originalBodyPointerEvents = document.body.style.pointerEvents
+    doc.body.style.pointerEvents = "none"
+    doc.body.setAttribute(DATA_ATTR, "")
+  }
 
   return () => {
-    cleanups.forEach((fn) => fn())
+    if (layerStack.hasPointerBlockingLayer) return
+    doc.body.style.pointerEvents = originalBodyPointerEvents
+    doc.body.removeAttribute(DATA_ATTR)
+    if (doc.body.style.length === 0) doc.body.removeAttribute("style")
   }
 }
