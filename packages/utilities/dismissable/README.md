@@ -1,11 +1,11 @@
-# @zag-js/interact-outside
+# @zag-js/dismissable
 
 ## Installation
 
 ```sh
-yarn add  @zag-js/interact-outside
+yarn add  @zag-js/dismissable
 # or
-npm i  @zag-js/interact-outside
+npm i  @zag-js/dismissable
 ```
 
 ## Features
