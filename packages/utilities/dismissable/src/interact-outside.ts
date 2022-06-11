@@ -1,4 +1,4 @@
-import { addDomEvent, contains } from "@zag-js/dom-utils"
+import { addDomEvent, contains, getEventTarget } from "@zag-js/dom-utils"
 
 export type InteractOutsideOptions = {
   exclude?: (target: HTMLElement) => boolean
@@ -15,14 +15,12 @@ export function trackInteractOutside(el: HTMLElement | null, options: InteractOu
   const win = doc.defaultView || window
 
   function isEventOutside(event: Event): boolean {
-    if (!(event.target instanceof win.HTMLElement)) return false
-
-    const doc = event.target.ownerDocument
-    if (!contains(doc.documentElement, event.target)) return false
-
-    if (contains(el, event.target)) return false
-
-    return !exclude?.(event.target)
+    const target = getEventTarget(event)
+    if (!(target instanceof win.HTMLElement)) return false
+    const doc = target.ownerDocument
+    if (!contains(doc.documentElement, target)) return false
+    if (contains(el, target)) return false
+    return !exclude?.(target)
   }
 
   function onPointerDown(event: PointerEvent) {

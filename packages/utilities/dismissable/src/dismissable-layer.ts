@@ -1,4 +1,4 @@
-import { contains } from "@zag-js/dom-utils"
+import { contains, getEventTarget } from "@zag-js/dom-utils"
 import { trackEscapeKeydown } from "./escape-keydown"
 import { InteractOutsideOptions, trackInteractOutside } from "./interact-outside"
 import { Layer, layerStack } from "./layer-stack"
@@ -25,7 +25,8 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
   assignPointerEvent()
 
   function onPointerDownOutside(event: Event) {
-    if (layerStack.isBelowPointerBlockingLayer(node!) || layerStack.isInBranch(event.target)) return
+    const target = getEventTarget(event)
+    if (layerStack.isBelowPointerBlockingLayer(node!) || layerStack.isInBranch(target)) return
     options.onPointerDownOutside?.(event)
     options.onInteractOutside?.(event)
     if (event.defaultPrevented) return
@@ -33,7 +34,8 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
   }
 
   function onFocusOutside(event: Event) {
-    if (layerStack.isInBranch(event.target)) return
+    const target = getEventTarget(event)
+    if (layerStack.isInBranch(target)) return
     options.onFocusOutside?.(event)
     options.onInteractOutside?.(event)
     if (event.defaultPrevented) return
