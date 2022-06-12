@@ -31,6 +31,8 @@ function onPointerEvent(event: PointerEvent | MouseEvent) {
   modality = "pointer"
   if (event.type === "mousedown" || event.type === "pointerdown") {
     hasEventBeforeFocus = true
+    const target = event.composedPath ? event.composedPath()[0] : event.target
+    if ((target as HTMLElement).matches(":focus-visible")) return
     trigger("pointer", event)
   }
 }
@@ -60,7 +62,7 @@ function onWindowBlur() {
 }
 
 function isFocusVisible() {
-  return modality !== "pointer"
+  return modality === "keyboard"
 }
 
 function setupGlobalFocusEvents() {
