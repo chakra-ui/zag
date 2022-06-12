@@ -1,5 +1,6 @@
 ---
 "@zag-js/dimissable": minor
+"@zag-js/interact-outside": minor
 ---
 
-Initial Release for dismissable package
+Initial release
