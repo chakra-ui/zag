@@ -1,8 +1,9 @@
 import { spawn } from "child_process"
 import * as esbuild from "esbuild"
 import fs from "fs"
+import gzipSize from "gzip-size"
 import path from "path"
-import { getBundleSize } from "../utilities/bundle-size"
+import pretty from "pretty-bytes"
 import { createLogger } from "../utilities/log"
 
 function getPackageJson(dir: string) {
@@ -11,7 +12,6 @@ function getPackageJson(dir: string) {
 }
 
 type BuildArgs = {
-  report?: boolean
   watch?: boolean
   prod?: boolean
   clean?: boolean
@@ -20,17 +20,26 @@ type BuildArgs = {
 
 const logger = createLogger("build")
 
+function getBundleSize(dir: string) {
+  return pretty(gzipSize.fileSync(`${dir}/dist/index.mjs`))
+}
+
 export default async function build(opts: BuildArgs) {
-  const { report, watch, prod, cwd = process.cwd() } = opts
+  const { watch, prod, cwd = process.cwd(), clean } = opts
 
   const pkgJson = getPackageJson(cwd)
+
+  // clean the dist folder
+  if (clean) {
+    logger.info("Cleaning dist folder")
+    fs.rmSync(path.join(cwd, "dist"), { recursive: true })
+  }
 
   const common: esbuild.BuildOptions = {
     target: "es6",
     minify: false,
     bundle: true,
-    treeShaking: true,
-    sourcemap: true,
+    // sourcemap: true,
     absWorkingDir: cwd,
     platform: "browser",
     entryPoints: ["src/index.ts"],
@@ -49,7 +58,7 @@ export default async function build(opts: BuildArgs) {
         if (err) {
           throw Error(`${err.name}: Rebuild failed`)
         }
-        logger.buildComplete(pkgJson.name + " [cjs/esm]")
+        logger.buildComplete(pkgJson.name + " [cjs/esm]", getBundleSize(cwd))
       },
     }
   }
@@ -67,7 +76,7 @@ export default async function build(opts: BuildArgs) {
     }),
   ])
 
-  logger.buildComplete(pkgJson.name + " [cjs/esm]")
+  logger.buildComplete(pkgJson.name + " [cjs/esm]", getBundleSize(cwd))
 
   if (!prod) {
     const dist = path.join(cwd, "dist", "index.d.ts")
@@ -88,8 +97,4 @@ export default async function build(opts: BuildArgs) {
   }
 
   logger.typesGenerated(pkgJson.name + " [d.ts]")
-
-  if (report) {
-    logger.info(getBundleSize(cwd, pkgJson.name))
-  }
 }
