@@ -77,7 +77,6 @@ export default async function build(opts: BuildArgs) {
       "src/index.ts",
       "--declaration",
       "--emitDeclarationOnly",
-      "--declarationMap",
       "--skipLibCheck",
       "--target",
       "es2018",
