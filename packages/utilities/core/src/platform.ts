@@ -9,7 +9,7 @@ const pt = (v: RegExp) => isDom() && v.test(getPlatform())
 const ua = (v: RegExp) => isDom() && v.test(navigator.userAgent)
 const vn = (v: RegExp) => isDom() && v.test(navigator.vendor)
 
-export const isTouchDevice = isDom() && !!navigator.maxTouchPoints
+export const isTouchDevice = () => isDom() && !!navigator.maxTouchPoints
 export const isMac = () => pt(/^Mac/) && !isTouchDevice
 export const isIPhone = () => pt(/^iPhone/)
 export const isSafari = () => isApple() && vn(/apple/i)

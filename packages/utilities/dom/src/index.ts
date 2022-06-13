@@ -1,5 +1,4 @@
 export * from "./attrs"
-export * from "./auto-resize"
 export * from "./body-pointer-event"
 export * from "./computed-style"
 export * from "./constants"
