@@ -9,6 +9,9 @@ const IndexPage = () => {
           <Link href="/accordion">Accordion </Link>
         </li>
         <li>
+          <Link href="/checkbox">Checkbox </Link>
+        </li>
+        <li>
           <Link href="/combobox">Combobox </Link>
         </li>
         <li>

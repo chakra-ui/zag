@@ -8,6 +8,85 @@ export const accordionStyle: CSSObject = {
   },
 }
 
+export const checkboxStyle: CSSObject = {
+  "[data-focus]": {
+    outline: "2px solid royalblue",
+  },
+
+  /* Customize the label (the root) */
+  '[data-part="root"]': {
+    display: "block",
+    position: "relative",
+    paddingLeft: "35px",
+    marginBottom: "12px",
+    cursor: "pointer",
+    fontSize: "22px",
+    "-webkit-user-select": "none",
+    "-moz-user-select": "none",
+    "-ms-user-select": "none",
+    userSelect: "none",
+    width: "fit-content",
+  },
+
+  /* Create a custom checkbox */
+  '[data-part="control"]': {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: "25px",
+    width: "25px",
+    backgroundColor: "#eee",
+  },
+
+  /* On mouse-over, add a grey background color */
+  '[data-part="control"][data-hover]': {
+    backgroundColor: "#ccc",
+  },
+
+  /* When the checkbox is checked, add a blue background */
+  '[data-part="control"][data-checked]': {
+    backgroundColor: "#2196f3",
+  },
+
+  /* Show the checkmark when checked */
+  '[data-part="control"][data-checked]:after': {
+    display: "block",
+  },
+
+  /* Style the checkmark/indicator (hidden when not checked) */
+  '[data-part="control"]:after': {
+    content: '""',
+    position: "absolute",
+    display: "none",
+    left: "9px",
+    top: "5px",
+    width: "5px",
+    height: "10px",
+    border: "solid white",
+    "border-width": "0 3px 3px 0",
+    "-webkit-transform": "rotate(45deg)",
+    "-ms-transform": "rotate(45deg)",
+    transform: "rotate(45deg)",
+  },
+
+  /* When the checkbox is indeterminate, add a blue background */
+  '[data-part="control"][data-indeterminate]': {
+    backgroundColor: "#2196f3",
+  },
+
+  /* Style the checkmark/indicator */
+  '[data-part="control"][data-indeterminate]:after': {
+    display: "block",
+    left: "50%",
+    top: "50%",
+    width: "13px",
+    height: "3px",
+    border: "none",
+    backgroundColor: "white",
+    transform: "translate(-50%, -50%)",
+  },
+}
+
 export const comboboxStyle: CSSObject = {
   "[data-part=root]": {
     display: "inline-flex",

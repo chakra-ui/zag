@@ -1,5 +1,5 @@
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { State, Send } from "./checkbox.types"
 import { dom } from "./checkbox.dom"
 import { utils } from "./checkbox.utils"
