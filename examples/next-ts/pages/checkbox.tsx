@@ -22,7 +22,7 @@ export default function Page() {
 
   const inputProps = mergeProps(api.inputProps, {
     onChange() {
-      if (api.isIndeterminate) {
+      if (api.isIndeterminate && !api.isReadOnly) {
         api.setIndeterminate(false)
         api.setChecked(true)
       }
@@ -51,14 +51,6 @@ export default function Page() {
             </button>
             <button type="button" disabled={!api.isChecked} onClick={() => api.setChecked(false)}>
               UnCheck
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                api.setIndeterminate(!api.isIndeterminate)
-              }}
-            >
-              Toggle Indeterminate
             </button>
             <button type="reset">Reset Form</button>
           </fieldset>

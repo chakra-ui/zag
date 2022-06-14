@@ -14,15 +14,19 @@ const fetchMachine = createMachine({
   id: "checkbox",
   initial: "unknown",
   context: {
-    "shouldCheck": false,
-    "isDefaultChecked": false
+    "shouldCheck && canToggle": false,
+    "canToggle": false,
+    "isDefaultChecked": false,
+    "canToggle": false,
+    "canToggle": false
   },
   on: {
     SET_STATE: [{
-      cond: "shouldCheck",
+      cond: "shouldCheck && canToggle",
       target: "checked",
       actions: ["dispatchChangeEvent"]
     }, {
+      cond: "canToggle",
       target: "unchecked",
       actions: ["dispatchChangeEvent"]
     }],
@@ -59,6 +63,7 @@ const fetchMachine = createMachine({
       on: {
         TOGGLE: {
           target: "unchecked",
+          cond: "canToggle",
           actions: ["invokeOnChange"]
         }
       }
@@ -67,6 +72,7 @@ const fetchMachine = createMachine({
       on: {
         TOGGLE: {
           target: "checked",
+          cond: "canToggle",
           actions: ["invokeOnChange"]
         }
       }
@@ -82,7 +88,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "shouldCheck": ctx => ctx["shouldCheck"],
+    "shouldCheck && canToggle": ctx => ctx["shouldCheck && canToggle"],
+    "canToggle": ctx => ctx["canToggle"],
     "isDefaultChecked": ctx => ctx["isDefaultChecked"]
   }
 });

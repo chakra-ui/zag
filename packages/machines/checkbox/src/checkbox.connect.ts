@@ -1,5 +1,5 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { State, Send } from "./checkbox.types"
 import { dom } from "./checkbox.dom"
 import { utils } from "./checkbox.utils"
@@ -34,10 +34,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const view = state.context.indeterminate ? "mixed" : stateView
 
   return {
-    view,
     isChecked,
+    isDisabled,
     isIndeterminate,
     isFocused,
+    isReadOnly,
+    view,
     setChecked(checked: boolean) {
       send({ type: "SET_STATE", checked, manual: true })
     },
@@ -61,11 +63,11 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         if (!isInteractive) return
         send({ type: "SET_HOVERED", hovered: false })
       },
-      onPointerDown() {
+      onPointerDown(event) {
         if (!isInteractive) return
         // On mousedown, the input blurs and returns focus to the `body`,
         // we need to prevent this. Native checkboxes keeps focus on `input`
-        // event.preventDefault();
+        event.preventDefault()
         send({ type: "SET_ACTIVE", active: true })
       },
       onPointerUp() {

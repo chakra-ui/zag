@@ -1,8 +1,10 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine, ref, guards } from "@zag-js/core"
 import { dispatchInputCheckedEvent, nextTick, trackFieldsetDisabled, trackFormReset } from "@zag-js/dom-utils"
 
 import { dom } from "./checkbox.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
+
+const { and } = guards
 
 export function machine(ctx: UserDefinedContext = {}) {
   return createMachine<MachineContext, MachineState>(
@@ -21,7 +23,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       watch: {
-        indeterminate: ["syncInputIndeterminate"],
+        indeterminate: ["syncInputIndetermine"],
       },
 
       computed: {
@@ -32,11 +34,12 @@ export function machine(ctx: UserDefinedContext = {}) {
       on: {
         SET_STATE: [
           {
-            guard: "shouldCheck",
+            guard: and("shouldCheck", "canToggle"),
             target: "checked",
             actions: ["dispatchChangeEvent"],
           },
           {
+            guard: "canToggle",
             target: "unchecked",
             actions: ["dispatchChangeEvent"],
           },
@@ -69,6 +72,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             TOGGLE: {
               target: "unchecked",
+              guard: "canToggle",
               actions: ["invokeOnChange"],
             },
           },
@@ -77,6 +81,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             TOGGLE: {
               target: "checked",
+              guard: "canToggle",
               actions: ["invokeOnChange"],
             },
           },
@@ -87,7 +92,8 @@ export function machine(ctx: UserDefinedContext = {}) {
     },
     {
       guards: {
-        shouldCheck: (ctx, evt) => evt.checked,
+        shouldCheck: (_, evt) => evt.checked,
+        canToggle: (ctx) => !ctx.readonly,
       },
 
       activities: {
@@ -137,7 +143,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         setIndeterminate(ctx, evt) {
           ctx.indeterminate = evt.indeterminate
         },
-        syncInputIndeterminate(ctx) {
+        syncInputIndetermine(ctx) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
           inputEl.indeterminate = Boolean(ctx.indeterminate)
