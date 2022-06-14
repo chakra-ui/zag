@@ -112,6 +112,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       required: isRequired,
       checked: isChecked,
       disabled: trulyDisabled,
+      "data-disabled": dataAttr(isDisabled),
       readOnly: isReadOnly,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,

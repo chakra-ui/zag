@@ -48,9 +48,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         SET_ACTIVE: {
           actions: "setActive",
         },
-        SET_DISABLED: {
-          actions: "setDisabled",
-        },
         SET_HOVERED: {
           actions: "setHovered",
         },
@@ -59,9 +56,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         SET_INDETERMINATE: {
           actions: "setIndeterminate",
-        },
-        SET_READONLY: {
-          actions: "setReadOnly",
         },
       },
 

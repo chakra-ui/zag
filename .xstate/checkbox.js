@@ -33,9 +33,6 @@ const fetchMachine = createMachine({
     SET_ACTIVE: {
       actions: "setActive"
     },
-    SET_DISABLED: {
-      actions: "setDisabled"
-    },
     SET_HOVERED: {
       actions: "setHovered"
     },
@@ -44,9 +41,6 @@ const fetchMachine = createMachine({
     },
     SET_INDETERMINATE: {
       actions: "setIndeterminate"
-    },
-    SET_READONLY: {
-      actions: "setReadOnly"
     },
     UPDATE_CONTEXT: {
       actions: "updateContext"
