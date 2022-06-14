@@ -50,6 +50,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rootProps: normalize.element<T>({
       "data-part": "root",
       id: dom.getRootId(state.context),
+      "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-checked": dataAttr(isChecked),
       "data-hover": dataAttr(isHovered),
@@ -80,6 +81,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
+      "data-focus": dataAttr(isFocused),
       "data-hover": dataAttr(isHovered),
       "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
