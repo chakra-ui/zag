@@ -21,7 +21,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       watch: {
-        indeterminate: ["syncInputIndetermine"],
+        indeterminate: ["syncInputIndeterminate"],
       },
 
       computed: {
@@ -137,7 +137,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         setIndeterminate(ctx, evt) {
           ctx.indeterminate = evt.indeterminate
         },
-        syncInputIndetermine(ctx) {
+        syncInputIndeterminate(ctx) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
           inputEl.indeterminate = Boolean(ctx.indeterminate)
