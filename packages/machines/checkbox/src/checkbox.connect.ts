@@ -43,8 +43,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     setChecked(checked: boolean) {
       send({ type: "SET_STATE", checked, manual: true })
     },
+    setDisabled(disabled: boolean) {
+      send({ type: "SET_DISABLED", disabled })
+    },
     setIndeterminate(indeterminate: boolean) {
       send({ type: "SET_INDETERMINATE", indeterminate })
+    },
+    setReadOnly(readonly: boolean) {
+      send({ type: "SET_READONLY", readonly })
     },
 
     rootProps: normalize.element<T>({

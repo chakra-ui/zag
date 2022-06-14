@@ -48,6 +48,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         SET_ACTIVE: {
           actions: "setActive",
         },
+        SET_DISABLED: {
+          actions: "setDisabled",
+        },
         SET_HOVERED: {
           actions: "setHovered",
         },
@@ -56,6 +59,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         SET_INDETERMINATE: {
           actions: "setIndeterminate",
+        },
+        SET_READONLY: {
+          actions: "setReadOnly",
         },
       },
 
@@ -134,6 +140,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         setActive(ctx, evt) {
           ctx.active = evt.active
         },
+        setDisabled(ctx, evt) {
+          ctx.disabled = evt.disabled
+        },
         setHovered(ctx, evt) {
           ctx.hovered = evt.hovered
         },
@@ -142,6 +151,9 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         setIndeterminate(ctx, evt) {
           ctx.indeterminate = evt.indeterminate
+        },
+        setReadOnly(ctx, evt) {
+          ctx.readonly = evt.readonly
         },
         syncInputIndetermine(ctx) {
           const inputEl = dom.getInputEl(ctx)
