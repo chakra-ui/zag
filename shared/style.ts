@@ -36,6 +36,8 @@ export const checkboxStyle: CSSObject = {
     height: "25px",
     width: "25px",
     backgroundColor: "#eee",
+    border: "solid 2px grey",
+    borderRadius: "4px",
   },
 
   /* On mouse-over, add a grey background color */
@@ -46,6 +48,7 @@ export const checkboxStyle: CSSObject = {
   /* When the checkbox is checked, add a blue background */
   '[data-part="control"][data-checked]': {
     backgroundColor: "#2196f3",
+    borderColor: "#2196f3",
   },
 
   /* Show the checkmark when checked */
@@ -71,7 +74,8 @@ export const checkboxStyle: CSSObject = {
 
   /* When the checkbox is indeterminate, add a blue background */
   '[data-part="control"][data-indeterminate]': {
-    backgroundColor: "#2196f3",
+    backgroundColor: "white",
+    borderColor: "grey",
   },
 
   /* Style the checkmark/indicator */
@@ -82,7 +86,7 @@ export const checkboxStyle: CSSObject = {
     width: "13px",
     height: "3px",
     border: "none",
-    backgroundColor: "white",
+    backgroundColor: "grey",
     transform: "translate(-50%, -50%)",
   },
 }
