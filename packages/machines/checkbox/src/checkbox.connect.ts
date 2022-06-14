@@ -68,7 +68,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         if (!isInteractive) return
         // On mousedown, the input blurs and returns focus to the `body`,
         // we need to prevent this. Native checkboxes keeps focus on `input`
-        event.preventDefault()
+        if (isFocused) {
+          event.preventDefault()
+        }
         send({ type: "SET_ACTIVE", active: true })
       },
       onPointerUp() {
