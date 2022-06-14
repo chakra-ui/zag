@@ -1,0 +1,30 @@
+{
+  "name": "@zag-js/checkbox",
+  "version": "0.0.0",
+  "description": "Core logic for the checkbox widget implemented as a state machine",
+  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "checkbox"],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/checkbox",
+  "sideEffects": false,
+  "files": ["dist/**/*"],
+  "scripts": {
+    "build:fast": "yarn zag build",
+    "start": "yarn zag build --watch",
+    "build": "yarn zag build --prod",
+    "test": "jest --config ../../jest.config.js --rootDir tests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test:ci": "yarn test --ci --runInBand --updateSnapshot",
+    "test:watch": "yarn test --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  }
+}
