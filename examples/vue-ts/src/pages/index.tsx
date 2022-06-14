@@ -10,6 +10,9 @@ export default function Page() {
           <RouterLink to="/accordion">Accordion </RouterLink>
         </li>
         <li>
+          <RouterLink to="/checkbox">Checkbox </RouterLink>
+        </li>
+        <li>
           <RouterLink to="/combobox">Combobox </RouterLink>
         </li>
         <li>
