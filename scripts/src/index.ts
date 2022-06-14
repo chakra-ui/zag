@@ -15,9 +15,9 @@ program.name("zag-cli")
 program
   .command("build")
   .description("Build a package")
-  .option("-r, --report", "report bundle size")
   .option("-w, --watch", "watch for changes")
   .option("-p, --prod", "minify for production")
+  .option("--clean", "clean dist folder")
   .action(build)
 
 // prettier-ignore

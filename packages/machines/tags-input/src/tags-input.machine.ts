@@ -1,5 +1,6 @@
+import { autoResizeInput } from "@zag-js/auto-resize"
 import { createMachine, guards, ref } from "@zag-js/core"
-import { autoResizeInput, createLiveRegion, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
+import { createLiveRegion, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
 import { warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tags-input.types"

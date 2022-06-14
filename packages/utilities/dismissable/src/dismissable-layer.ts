@@ -1,8 +1,8 @@
 import { contains, getEventTarget } from "@zag-js/dom-utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { InteractOutsideOptions, trackInteractOutside } from "./interact-outside"
+import { InteractOutsideOptions, trackInteractOutside } from "@zag-js/interact-outside"
 import { Layer, layerStack } from "./layer-stack"
-import { assignPointerEvent, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
+import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type Container = HTMLElement | HTMLElement[]
 
@@ -22,7 +22,7 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
   const layer: Layer = { dismiss: onDismiss, node, pointerBlocking }
 
   layerStack.add(layer)
-  assignPointerEvent()
+  assignPointerEventToLayers()
 
   function onPointerDownOutside(event: Event) {
     const target = getEventTarget(event)
@@ -66,7 +66,7 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
   return () => {
     layerStack.remove(node!)
     // re-assign pointer event to remaining layers
-    assignPointerEvent()
+    assignPointerEventToLayers()
     // remove pointer event from removed layer
     clearPointerEvent(node!)
     cleanups.forEach((fn) => fn?.())

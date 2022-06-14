@@ -3,7 +3,7 @@ import { layerStack } from "./layer-stack"
 
 let originalBodyPointerEvents: string
 
-export function assignPointerEvent() {
+export function assignPointerEventToLayers() {
   layerStack.layers.forEach(({ node }) => {
     node.style.pointerEvents = layerStack.isBelowPointerBlockingLayer(node) ? "none" : "auto"
   })

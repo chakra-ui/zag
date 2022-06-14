@@ -1,4 +1,4 @@
-import { addDomEvent, contains, getEventTarget } from "@zag-js/dom-utils"
+import { addDomEvent, contains, getEventTarget, getOwnerDocument, getOwnerWindow } from "@zag-js/dom-utils"
 
 export type InteractOutsideOptions = {
   exclude?: (target: HTMLElement) => boolean
@@ -6,20 +6,31 @@ export type InteractOutsideOptions = {
   onFocusOutside?: (event: Event) => void
 }
 
-export function trackInteractOutside(el: HTMLElement | null, options: InteractOutsideOptions) {
+export function trackInteractOutside(node: HTMLElement | null, options: InteractOutsideOptions) {
   const { exclude, onPointerDownOutside, onFocusOutside } = options
 
-  if (!el) return
+  if (!node) return
 
-  const doc = el.ownerDocument
-  const win = doc.defaultView || window
+  const doc = getOwnerDocument(node)
+  const win = getOwnerWindow(node)
 
   function isEventOutside(event: Event): boolean {
     const target = getEventTarget(event)
-    if (!(target instanceof win.HTMLElement)) return false
+
+    if (!(target instanceof win.HTMLElement)) {
+      return false
+    }
+
     const doc = target.ownerDocument
-    if (!contains(doc.documentElement, target)) return false
-    if (contains(el, target)) return false
+
+    if (!contains(doc.documentElement, target)) {
+      return false
+    }
+
+    if (contains(node, target)) {
+      return false
+    }
+
     return !exclude?.(target)
   }
 

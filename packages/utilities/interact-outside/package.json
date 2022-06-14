@@ -1,15 +1,11 @@
 {
-  "name": "@zag-js/dimissable",
+  "name": "@zag-js/interact-outside",
   "version": "0.0.0",
-  "description": "Dismissable layer utilities for the DOM",
+  "description": "Track interations or focus outside an element",
   "keywords": [
     "js",
     "utils",
-    "dimissable",
-    "layer",
-    "close",
-    "signal",
-    "outside-click"
+    "interact-outside"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
@@ -31,13 +27,11 @@
     "test:ci": "yarn test --ci --runInBand --updateSnapshot",
     "test:watch": "yarn test --watchAll"
   },
+  "dependencies": {
+    "@zag-js/dom-utils": "0.1.4"
+  },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@zag-js/dom-utils": "0.1.4",
-    "@zag-js/interact-outside": "0.0.0",
-    "valtio": "^1.6.0"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"

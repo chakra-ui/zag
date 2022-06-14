@@ -1,15 +1,11 @@
 {
-  "name": "@zag-js/dimissable",
+  "name": "@zag-js/auto-resize",
   "version": "0.0.0",
-  "description": "Dismissable layer utilities for the DOM",
+  "description": "Autoresize utilities for the web",
   "keywords": [
     "js",
     "utils",
-    "dimissable",
-    "layer",
-    "close",
-    "signal",
-    "outside-click"
+    "auto-resize"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
@@ -17,7 +13,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/interact-outside",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/auto-resize",
   "sideEffects": false,
   "files": [
     "dist/**/*"
@@ -34,12 +30,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@zag-js/dom-utils": "0.1.4",
-    "@zag-js/interact-outside": "0.0.0",
-    "valtio": "^1.6.0"
-  },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "devDependencies": {
+    "@zag-js/dom-utils": "0.1.4"
   }
 }
