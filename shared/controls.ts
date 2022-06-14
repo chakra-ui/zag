@@ -8,7 +8,6 @@ export const accordionControls = defineControls({
 
 export const checkboxControls = defineControls({
   indeterminate: { type: "boolean", defaultValue: false, label: "Indeterminate" },
-  defaultChecked: { type: "boolean", defaultValue: false, label: "Default checked" },
   disabled: { type: "boolean", defaultValue: false, label: "disabled" },
   readonly: { type: "boolean", defaultValue: false, label: "readonly" },
 })
