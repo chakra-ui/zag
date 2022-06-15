@@ -20,6 +20,7 @@ type DataAttr = {
   "data-expanded"?: Booleanish
   "data-highlighted"?: Booleanish
   "data-readonly"?: Booleanish
+  "data-indeterminate"?: Booleanish
   "data-invalid"?: Booleanish
   "data-hover"?: Booleanish
   "data-active"?: Booleanish
