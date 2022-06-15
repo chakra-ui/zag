@@ -19,7 +19,7 @@
     "build": "turbo run build --filter=./packages/**/* --concurrency=50%",
     "start": "turbo run start --stream --parallel --filter=./packages/**/*",
     "postinstall": "husky install && patch-package",
-    "clean": "manypkg exec rm -rf dist .turbo .swc",
+    "clean": "manypkg exec rm -rf dist .turbo .swc node_modules",
     "start:react": "cd examples/next-ts && yarn dev",
     "start:vue": "cd examples/vue-ts && vite --port 3002 --clearScreen false",
     "start:solid": "cd examples/solid-ts && vite --port 3001 --clearScreen false",
