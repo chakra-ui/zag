@@ -1,6 +1,5 @@
 import { Command } from "commander"
 import build from "./commands/build"
-import csb from "./commands/csb"
 import modify from "./commands/modify"
 import visualize from "./commands/visualize"
 import { createLogger } from "./utilities/log"
@@ -19,12 +18,6 @@ program
   .option("-p, --prod", "minify for production")
   .option("--clean", "clean dist folder")
   .action(build)
-
-// prettier-ignore
-program
-  .command("csb")
-  .description("Patch .codesandbox json")
-  .action(csb)
 
 // prettier-ignore
 program
