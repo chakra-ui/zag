@@ -13,13 +13,9 @@
   "sideEffects": false,
   "files": ["dist/**/*"],
   "scripts": {
-    "build:fast": "yarn zag build",
-    "start": "yarn zag build --watch",
-    "build": "yarn zag build --prod",
-    "test": "jest --config ../../jest.config.js --rootDir tests",
-    "lint": "eslint src --ext .ts,.tsx",
-    "test:ci": "yarn test --ci --runInBand --updateSnapshot",
-    "test:watch": "yarn test --watch"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --onSuccess 'yarn zag types'",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "publishConfig": {
     "access": "public"

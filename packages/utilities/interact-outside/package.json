@@ -19,21 +19,17 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build:fast": "yarn zag build",
-    "start": "yarn zag build --watch",
-    "build": "yarn zag build --prod",
-    "test": "jest --config ../../../jest.config.js --rootDir tests",
-    "lint": "eslint src --ext .ts,.tsx",
-    "test:ci": "yarn test --ci --runInBand --updateSnapshot",
-    "test:watch": "yarn test --watchAll"
-  },
-  "dependencies": {
-    "@zag-js/dom-utils": "0.1.4"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --onSuccess 'yarn zag types'",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "devDependencies": {
+    "@zag-js/dom-utils": "0.1.4"
   }
 }

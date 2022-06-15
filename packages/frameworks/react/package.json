@@ -39,12 +39,8 @@
     "react": ">=16.8.6"
   },
   "scripts": {
-    "build:fast": "zag build",
-    "start": "zag build --watch",
-    "build": "zag build --prod",
-    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
-    "lint": "eslint src --ext .ts,.tsx",
-    "test:ci": "yarn test --ci --runInBand",
-    "test:watch": "yarn test --watch --updateSnapshot"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --onSuccess 'yarn zag types'",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   }
 }

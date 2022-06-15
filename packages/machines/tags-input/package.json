@@ -30,17 +30,15 @@
   },
   "dependencies": {
     "@zag-js/auto-resize": "0.0.0",
-    "@zag-js/core": "0.1.6",
-    "@zag-js/dom-utils": "0.1.4",
-    "@zag-js/types": "0.1.2"
+    "@zag-js/core": "0.1.6"
   },
   "scripts": {
-    "build:fast": "zag build",
-    "start": "zag build --watch",
-    "build": "zag build --prod",
-    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
-    "lint": "eslint src --ext .ts,.tsx",
-    "test:ci": "yarn test --ci --runInBand",
-    "test:watch": "yarn test --watch --updateSnapshot"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --onSuccess 'yarn zag types'",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "devDependencies": {
+    "@zag-js/dom-utils": "0.1.4",
+    "@zag-js/types": "0.1.2"
   }
 }

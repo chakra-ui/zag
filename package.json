@@ -16,9 +16,8 @@
     ]
   },
   "scripts": {
-    "build:fast": "turbo run build:fast --filter=./packages/**/* --concurrency=50%",
-    "build": "turbo run build --filter=./packages/**/* --concurrency=50%",
-    "start": "turbo run start --stream --parallel --filter=./packages/**/*",
+    "build": "turbo run build --filter=./packages/**/*",
+    "dev": "turbo run dev --no-cache --parallel --continue --filter=./packages/**/*",
     "postinstall": "husky install && patch-package",
     "clean": "manypkg exec rm -rf dist .turbo .swc node_modules",
     "start:react": "cd examples/next-ts && yarn dev",
@@ -32,6 +31,7 @@
     "fix:pkgs": "manypkg fix",
     "gen:machine": "plop machine",
     "gen:util": "plop utility",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint packages --ext .ts",
     "version": "changeset version",
     "release": "changeset publish",
@@ -89,6 +89,7 @@
     "plop": "^3.0.5",
     "prettier": "^2.5.1",
     "start-server-and-test": "^1.14.0",
+    "tsup": "^6.1.2",
     "turbo": "^1.2.2",
     "typescript": "^4.6.3"
   }

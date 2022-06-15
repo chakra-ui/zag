@@ -6,11 +6,8 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "build:fast": {
-      "cache": false
-    },
-    "start": {
-      "dependsOn": ["^start"],
+    "dev": {
+      "dependsOn": ["^dev"],
       "outputs": ["dist/**"]
     }
   }
