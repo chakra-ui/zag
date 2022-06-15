@@ -1,5 +1,5 @@
 import { expect, Page, test } from "@playwright/test"
-import { clickOutside, testid } from "./__utils"
+import { clickOutside, rect, testid } from "./__utils"
 
 const menu_1 = {
   trigger: testid("trigger"),
@@ -176,7 +176,7 @@ test.describe("menu", () => {
       await page.hover(menu_2.trigger)
 
       const menu_el = page.locator(menu_2.trigger)
-      const bbox = await menu_el.boundingBox()
+      const bbox = await rect(menu_el)
 
       await page.hover("body", { position: { x: bbox.x - 20, y: bbox.height / 2 + bbox.y } })
       await expect(page.locator(menu_2.menu)).toBeHidden()

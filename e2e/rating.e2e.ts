@@ -18,15 +18,11 @@ test.describe("rating", () => {
     await page.goto("/rating")
   })
 
-  test("should have no accessibility violation", async ({ page }) => {
-    // await a11y(page)
-  })
-
   test("should have right number of items provided by max", async ({ page }) => {
     await controls(page).num("max", "6")
-    const items = await page.locator('[data-part="item"]')
+    const items = page.locator('[data-part="item"]')
     const itemCount = await items.count()
-    await expect(itemCount).toBe(6)
+    expect(itemCount).toBe(6)
   })
 
   test("should set value when item is clicked", async ({ page }) => {
@@ -47,7 +43,7 @@ test.describe("rating", () => {
 
     const items = page.locator(item)
     const isAllItemsDisabled = await items.evaluateAll((items) => items.every((item) => item.dataset.disabled === ""))
-    await expect(isAllItemsDisabled).toBeTruthy()
+    expect(isAllItemsDisabled).toBeTruthy()
   })
 
   test("should not be selectable when is readonly", async ({ page }) => {
@@ -55,6 +51,6 @@ test.describe("rating", () => {
 
     const items = page.locator(item)
     const isAllItemsReadonly = await items.evaluateAll((items) => items.every((item) => item.dataset.readonly === ""))
-    await expect(isAllItemsReadonly).toBeTruthy()
+    expect(isAllItemsReadonly).toBeTruthy()
   })
 })
