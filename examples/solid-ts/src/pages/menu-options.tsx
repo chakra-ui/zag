@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
+import { menuOptionData as data, menuStyle } from "@zag-js/shared"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
-import { menuStyle } from "../../../../shared/style"
-import { menuOptionData as data } from "../../../../shared/data"
-import { StateVisualizer } from "../components/state-visualizer"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { Toolbar } from "../components/toolbar"
 import { Portal } from "solid-js/web"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 injectGlobal(menuStyle)
 

@@ -1,7 +1,7 @@
 import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
+import { tooltipStyles } from "@zag-js/shared"
 import * as tooltip from "@zag-js/tooltip"
-import { tooltipStyles } from "../../../shared/style"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"

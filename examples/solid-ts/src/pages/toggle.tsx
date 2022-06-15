@@ -2,7 +2,7 @@ import { injectGlobal } from "@emotion/css"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import * as toggle from "@zag-js/toggle"
 import { createMemo, createUniqueId } from "solid-js"
-import { toggleStyle } from "../../../../shared/style"
+import { toggleStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 
 injectGlobal(toggleStyle)

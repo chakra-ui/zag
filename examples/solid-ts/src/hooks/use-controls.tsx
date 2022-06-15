@@ -1,7 +1,7 @@
 import { createMutable } from "solid-js/store"
 import { For } from "solid-js"
 import { ControlRecord, ControlValue } from "@zag-js/types"
-import { controlsContainer } from "../../../../shared/style"
+import { controlsContainerStyle } from "@zag-js/shared"
 
 function getDefaultValues<T extends ControlRecord>(obj: T): ControlValue<T> {
   return Object.keys(obj).reduce(
@@ -19,7 +19,7 @@ export function useControls<T extends ControlRecord>(config: T) {
   return {
     context: state,
     ui: () => (
-      <div className={controlsContainer}>
+      <div className={controlsContainerStyle}>
         <For each={Object.keys(config)}>
           {(key) => {
             const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any

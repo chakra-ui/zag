@@ -1,12 +1,11 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { useMachine, useSetup } from "@zag-js/react"
-import { menuStyle } from "../../../shared/style"
-import { menuOptionData as data } from "../../../shared/data"
-import { StateVisualizer } from "../components/state-visualizer"
+import { menuOptionData as data, menuStyle } from "@zag-js/shared"
 import { useId } from "react"
-import { Toolbar } from "../components/toolbar"
 import { Portal } from "../components/portal"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const [state, send] = useMachine(

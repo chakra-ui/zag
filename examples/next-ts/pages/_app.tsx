@@ -1,10 +1,10 @@
 import { dataAttr } from "@zag-js/dom-utils"
+import { navStyle, pageStyle, resetCss, routesData } from "@zag-js/shared"
 import { AppProps } from "next/app"
 import Head from "next/head"
 import Link from "next/link"
-import "../../../shared/reset"
-import { routesData } from "../../../shared/routes"
-import { navStyle, pageStyle } from "../../../shared/style"
+
+resetCss()
 
 export default function App({ Component, pageProps, router }: AppProps) {
   return (

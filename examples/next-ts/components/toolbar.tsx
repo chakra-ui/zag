@@ -1,6 +1,6 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { ReactNode, useState } from "react"
-import { getToolbarStyles } from "../../../shared/style"
+import { getToolbarStyles } from "@zag-js/shared"
 
 type ToolbarProps = {
   controls: null | (() => JSX.Element)

@@ -2,7 +2,7 @@ import { Global } from "@emotion/react"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, useSetup } from "@zag-js/react"
 import { useId, useRef } from "react"
-import { dialogStyle } from "../../../shared/style"
+import { dialogStyle } from "@zag-js/shared"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -10,7 +10,7 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [state, send] = useMachine(dialog.machine({ isOpen: true }))
+  const [state, send] = useMachine(dialog.machine({ open: true }))
   const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
   const parentDialog = dialog.connect(state, send)
 
