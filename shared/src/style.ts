@@ -9,7 +9,7 @@ export const accordionStyle: CSSObject = {
 }
 
 export const checkboxStyle: CSSObject = {
-  "[data-focus]": {
+  '[data-part="control"][data-focus]': {
     outline: "2px solid royalblue",
   },
 
