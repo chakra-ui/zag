@@ -1,7 +1,7 @@
 import { RouterView, RouterLink, useRouter } from "vue-router"
 import { h, Fragment } from "vue"
-import { routesData } from "../../../shared/routes"
-import { navStyle, pageStyle } from "../../../shared/style"
+import { routesData } from "@zag-js/shared"
+import { navStyle, pageStyle } from "@zag-js/shared"
 import { dataAttr } from "@zag-js/dom-utils"
 
 export default function App() {

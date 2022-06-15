@@ -1,6 +1,6 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { createSignal, JSX } from "solid-js"
-import { getToolbarStyles } from "../../../../shared/style"
+import { getToolbarStyles } from "@zag-js/shared"
 
 type ToolbarProps = {
   controls: null | (() => JSX.Element)

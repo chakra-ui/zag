@@ -3,7 +3,7 @@ import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { createMemo } from "solid-js"
 import { Portal } from "solid-js/web"
-import { tooltipStyles } from "../../../../shared/style"
+import { tooltipStyles } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
