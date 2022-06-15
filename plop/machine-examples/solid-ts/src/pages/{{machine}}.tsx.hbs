@@ -1,0 +1,33 @@
+import { injectGlobal } from "@emotion/css"
+import * as {{machine}} from "@zag-js/{{machine}}"
+import { normalizeProps, PropTypes, useMachine, useSetup, mergeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+import { {{machine}}Controls, {{machine}}Style } from "@zag-js/shared"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
+
+injectGlobal({{machine}}Style)
+
+export default function Page() {
+  const controls = useControls({{machine}}Controls)
+
+  const [state, send] = useMachine({{machine}}.machine, {
+    context: controls.context,
+  })
+
+  const ref = useSetup({ send, id: createUniqueId() })
+  const api = createMemo(() => {{machine}}.connect<PropTypes>(state, send, normalizeProps))
+
+  return (
+    <>
+      <main> 
+        <div ref={ref} {...api().rootProps}> 
+            
+        </div>
+      </main>
+
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
+    </>
+  )
+}

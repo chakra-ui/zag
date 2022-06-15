@@ -1,9 +1,23 @@
-const camelCase = (str) => {
+const camelCase = (/** @type string */ str) => {
   return str.replace(/[-_]([a-z])/g, (g) => g[1].toUpperCase())
 }
 
-const capitalize = (str) => {
+const capitalize = (/** @type string */ str) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+function sortLines(/** @type string */ file) {
+  let fileArr = file.split("\n")
+  const newMachine = fileArr[fileArr.length - 1].match("/(.+?)")[1]
+  const lineAfter = fileArr
+    .filter((_, i, a) => i !== a.length - 1)
+    .findIndex((l) => {
+      const machine = l.match("/(.+?)")
+      return machine && machine[1] > newMachine
+    })
+  const newFile = fileArr.filter((_, i, a) => i !== a.length - 1)
+  newFile.splice(lineAfter, 0, fileArr[fileArr.length - 1])
+  return `${newFile.join("\n")}\n`
 }
 
 /**
@@ -36,6 +50,23 @@ module.exports = function main(plop) {
         base: "plop/machine/",
         data: { machine, name: machine },
         abortOnFail: true,
+      })
+
+      actions.push({
+        type: "addMany",
+        templateFiles: "plop/machine-examples/**",
+        destination: `examples`,
+        base: "plop/machine-examples/",
+        data: { machine, name: machine },
+        abortOnFail: true,
+      })
+
+      actions.push({
+        type: "modify",
+        path: "shared/src/routes.ts",
+        transform: sortLines,
+        pattern: /$/,
+        template: `  { label: "{{capitalize machine}}", path: "/{{machine}}" },`,
       })
 
       return actions
