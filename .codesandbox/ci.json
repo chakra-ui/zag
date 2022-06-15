@@ -1,5 +1,5 @@
 {
   "node": "16",
-  "sandboxes": ["examples/next-ts"],
+  "sandboxes": ["/examples/next-ts"],
   "packages": ["packages/**/*"]
 }
