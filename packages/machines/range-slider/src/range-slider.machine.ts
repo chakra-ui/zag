@@ -142,7 +142,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           let cleanup: VoidFunction | undefined
           nextTick(() => {
             cleanup = trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-              if (ctx.disabled != disabled) {
+              if (disabled) {
                 ctx.disabled = disabled
               }
             })
