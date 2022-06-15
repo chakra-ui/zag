@@ -19,14 +19,16 @@ export default function Page() {
   const ref = useSetup({ send, id: createUniqueId() })
   const api = createMemo(() => checkbox.connect<PropTypes>(state, send, normalizeProps))
 
-  const inputProps = mergeProps(api().inputProps, {
-    onChange() {
-      if (api().isIndeterminate && !api().isReadOnly) {
-        api().setIndeterminate(false)
-        api().setChecked(true)
-      }
-    },
-  })
+  const inputProps = createMemo(() =>
+    mergeProps(api().inputProps, {
+      onChange() {
+        if (api().isIndeterminate && !api().isReadOnly) {
+          api().setIndeterminate(false)
+          api().setChecked(true)
+        }
+      },
+    }),
+  )
 
   return (
     <>
