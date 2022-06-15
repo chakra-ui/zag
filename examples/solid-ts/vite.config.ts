@@ -1,18 +1,19 @@
 import { defineConfig } from "vite"
-import solidPlugin from "vite-plugin-solid"
-import { resolve } from "path"
+import solid from "vite-plugin-solid"
+import path from "path"
 
 export default defineConfig({
-  plugins: [solidPlugin() as any],
+  plugins: [solid()],
   build: {
     target: "esnext",
     polyfillDynamicImport: false,
   },
   resolve: {
-    alias: {
-      "@zag-js/vue": `${resolve(__dirname, "../../packages/frameworks/vue/src")}`,
-      "@zag-js/core": `${resolve(__dirname, "../../packages/core/src")}`,
-      "@zag-js/web": `${resolve(__dirname, "../../packages/machines/src")}`,
-    },
+    alias: [
+      {
+        find: /^@zag-js\/(.*)$/,
+        replacement: path.resolve(process.cwd(), "..", "..", "node_modules/@zag-js/$1/src"),
+      },
+    ],
   },
 })
