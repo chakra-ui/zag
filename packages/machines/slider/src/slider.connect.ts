@@ -41,7 +41,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rootProps: normalize.element<T>({
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(isFocused),
       "data-orientation": state.context.orientation,
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getRootId(state.context),
       dir: state.context.dir,
       style: dom.getRootStyle(state.context),
@@ -51,6 +53,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
       onClick(event) {
@@ -158,15 +161,16 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "track",
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(isFocused),
       style: dom.getTrackStyle(),
     }),
 
     rangeProps: normalize.element<T>({
       "data-part": "range",
       id: dom.getRangeId(state.context),
+      "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -211,6 +215,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
       return normalize.element<T>({
         "data-part": "marker",
+        role: "presentation",
         "data-orientation": state.context.orientation,
         id: dom.getMarkerId(state.context, value),
         "data-value": value,

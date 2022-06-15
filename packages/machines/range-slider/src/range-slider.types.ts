@@ -41,6 +41,10 @@ type PublicContext = DirectionProperty & {
    */
   readonly?: boolean
   /**
+   * Whether the slider is invalid
+   */
+  invalid?: boolean
+  /**
    * Function invoked when the value of the slider changes
    */
   onChange?(details: { value: number[] }): void
