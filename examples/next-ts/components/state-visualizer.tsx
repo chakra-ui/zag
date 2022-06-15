@@ -1,4 +1,4 @@
-import { stringifyState } from "../../../shared/visualizer"
+import { stringifyState } from "@zag-js/shared"
 
 type StateVisualizerProps = {
   state: Record<string, any>

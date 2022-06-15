@@ -1,6 +1,6 @@
 import { dataAttr } from "@zag-js/dom-utils"
-import { defineComponent, h, ref } from "vue"
-import { getToolbarStyles } from "../../../../shared/style"
+import { getToolbarStyles } from "@zag-js/shared"
+import { defineComponent, ref, h } from "vue"
 
 type ToolbarProps = {
   controls: null | (() => JSX.Element)

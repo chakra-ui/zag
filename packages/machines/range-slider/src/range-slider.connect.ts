@@ -15,6 +15,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
   const isDisabled = state.context.disabled
+  const isInvalid = state.context.invalid
 
   const isInteractive = state.context.isInteractive
 
@@ -60,6 +61,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     labelProps: normalize.label<T>({
       "data-part": "label",
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context, 0),
       onClick(event) {
@@ -76,6 +80,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getRootId(state.context),
       dir: state.context.dir,
       style: dom.getRootStyle(state.context),
@@ -83,6 +88,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     outputProps: normalize.output<T>({
       "data-part": "output",
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
       htmlFor: values.map((v, i) => dom.getInputId(state.context, i)).join(" "),
       "aria-live": "off",
@@ -92,6 +99,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-part": "track",
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       style: { position: "relative" },
@@ -194,6 +202,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     rangeProps: normalize.element<T>({
       id: dom.getRangeId(state.context),
       "data-part": "range",
+      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
@@ -204,6 +214,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
+      "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
       style: dom.getControlStyle(),
       onPointerDown(event) {

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, controls, testid, clickOutside } from "./__utils"
+import { a11y, controls, testid, clickOutside, rect } from "./__utils"
 
 const input = testid("input")
 const inc = testid("inc-button")
@@ -124,7 +124,7 @@ test.describe("number input", () => {
   test.describe("when using scrubber", () => {
     test("should increment on left mouse movement", async ({ page }) => {
       const scrubber_btn = page.locator(scrubber)
-      const bbox = await scrubber_btn.boundingBox()
+      const bbox = await rect(scrubber_btn)
       const midX = bbox.x + bbox.width / 2
       const midY = bbox.y + bbox.height / 2
 

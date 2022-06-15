@@ -5,7 +5,7 @@ import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
-import { numberInputControls } from "../../../../shared/controls"
+import { numberInputControls } from "@zag-js/shared"
 import { useId } from "../hooks/use-id"
 import { Toolbar } from "../components/toolbar"
 

@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as popover from "@zag-js/popover"
+import { popoverStyle, popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"
-import { popoverStyle } from "../../../../shared/style"
 import { StateVisualizer } from "../components/state-visualizer"
-import { popoverControls } from "../../../../shared/controls"
 import { useId } from "../hooks/use-id"
 import { Toolbar } from "../components/toolbar"
 

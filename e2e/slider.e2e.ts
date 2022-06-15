@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { testid, a11y } from "./__utils"
+import { testid, a11y, rect } from "./__utils"
 
 const output = testid("output")
 const thumb = testid("thumb")
@@ -58,8 +58,9 @@ test.describe("slider", () => {
   })
 
   test("[pointer] should set value on click track", async ({ page }) => {
-    const bbox = await page.locator(track).boundingBox()
-    await page.locator(track).dispatchEvent("pointerdown", {
+    const el = page.locator(track)
+    const bbox = await rect(el)
+    await el.dispatchEvent("pointerdown", {
       button: 0,
       clientY: bbox.y + bbox.height / 2,
       clientX: bbox.x + bbox.width * 0.8,
@@ -69,7 +70,7 @@ test.describe("slider", () => {
 
   test("[pointer] should set the value on drag", async ({ page }) => {
     const el = page.locator(track)
-    const bbox = await el.boundingBox()
+    const bbox = await rect(el)
     await el.dispatchEvent("pointerdown", {
       button: 0,
       clientY: bbox.y + bbox.height / 2,

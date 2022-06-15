@@ -741,7 +741,7 @@ export const tooltipStyles: CSSObject = {
   },
 }
 
-export const controlsContainer = css({
+export const controlsContainerStyle = css({
   display: "flex",
   flexDirection: "column",
   gap: "14px",

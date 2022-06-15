@@ -2,7 +2,7 @@ import { Global } from "@emotion/react"
 import { useMachine, useSetup } from "@zag-js/react"
 import * as toggle from "@zag-js/toggle"
 import { useId } from "react"
-import { toggleStyle } from "../../../shared/style"
+import { toggleStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {

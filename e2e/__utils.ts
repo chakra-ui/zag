@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright"
-import { expect, Page } from "@playwright/test"
+import { expect, Locator, Page } from "@playwright/test"
 
 export async function a11y(page: Page, selector = "[data-part=root]") {
   const results = await new AxeBuilder({ page }).include(selector).analyze()
@@ -66,3 +66,8 @@ export const nativeInput = (node: HTMLInputElement | HTMLTextAreaElement, value:
 }
 
 export const clickOutside = (page: Page) => page.click("body", { force: true })
+
+export const rect = async (el: Locator) => {
+  const bbox = await el.boundingBox()
+  return bbox ?? { x: 0, y: 0, width: 0, height: 0 }
+}

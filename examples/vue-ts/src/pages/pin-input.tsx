@@ -1,14 +1,13 @@
 import { injectGlobal } from "@emotion/css"
-import * as pinInput from "@zag-js/pin-input"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
-import { useControls } from "../hooks/use-controls"
-import { computed, h, Fragment } from "vue"
-import { pinInputStyle } from "../../../../shared/style"
+import * as pinInput from "@zag-js/pin-input"
+import { pinInputControls, pinInputStyle } from "@zag-js/shared"
+import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/vue"
+import { computed } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
-import { pinInputControls } from "../../../../shared/controls"
-import { useId } from "../hooks/use-id"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
+import { useId } from "../hooks/use-id"
 
 injectGlobal(pinInputStyle)
 

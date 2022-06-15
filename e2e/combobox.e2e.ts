@@ -42,7 +42,9 @@ test.describe("combobox", () => {
     await expectToBeHighlighted(option)
 
     await page.keyboard.press("Enter")
-    await expect(page.locator(input)).toHaveValue(await option.textContent())
+    const textValue = await option.textContent()
+    await expect(page.locator(input)).toHaveValue(textValue!)
+
     await expect(page.locator(listbox)).toBeHidden()
   })
 
@@ -58,7 +60,8 @@ test.describe("combobox", () => {
     const option = option_els.nth(3)
     option.click()
 
-    await expect(page.locator(input)).toHaveValue(await option.textContent())
+    const textValue = await option.textContent()
+    await expect(page.locator(input)).toHaveValue(textValue!)
     await expect(page.locator(listbox)).toBeHidden()
   })
 
@@ -155,11 +158,11 @@ test.describe("combobox", () => {
 
       await expectToBeHighlighted(option_els.first())
       const textValue = await option_els.first().textContent()
-      await expect(page.locator(input)).toHaveValue(textValue)
+      await expect(page.locator(input)).toHaveValue(textValue!)
 
       await page.keyboard.press("Enter")
 
-      await expect(page.locator(input)).toHaveValue(textValue)
+      await expect(page.locator(input)).toHaveValue(textValue!)
       await expect(page.locator(listbox)).toBeHidden()
       await expect(page.locator(input)).toBeFocused()
     })

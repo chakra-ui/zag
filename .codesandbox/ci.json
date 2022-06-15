@@ -1,35 +1,5 @@
 {
-  "node": "14",
-  "sandboxes": [],
-  "packages": [
-    "packages/utilities/number",
-    "packages/utilities/core",
-    "packages/utilities/rect",
-    "packages/utilities/dom",
-    "packages/utilities/popper",
-    "packages/utilities/aria-hidden",
-    "packages/types",
-    "packages/core",
-    "packages/machines/tooltip",
-    "packages/machines/toggle",
-    "packages/machines/toast",
-    "packages/machines/tags-input",
-    "packages/machines/tabs",
-    "packages/machines/splitter",
-    "packages/machines/slider",
-    "packages/machines/rating",
-    "packages/machines/range-slider",
-    "packages/machines/popover",
-    "packages/machines/pin-input",
-    "packages/machines/number-input",
-    "packages/machines/menu",
-    "packages/machines/editable",
-    "packages/machines/dialog",
-    "packages/machines/combobox",
-    "packages/machines/accordion",
-    "packages/frameworks/vue",
-    "packages/frameworks/svelte",
-    "packages/frameworks/solid",
-    "packages/frameworks/react"
-  ]
+  "node": "16",
+  "sandboxes": ["/examples/next-ts"],
+  "packages": ["packages/**/*"]
 }

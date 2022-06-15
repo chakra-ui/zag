@@ -1,5 +1,5 @@
-import { h, isRef } from "vue"
-import { stringifyState } from "../../../../shared/visualizer"
+import { h, Fragment, isRef } from "vue"
+import { stringifyState } from "@zag-js/shared"
 
 type StateVisualizerProps = {
   state: Record<string, any>

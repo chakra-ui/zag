@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, useSetup, normalizeProps, PropTypes } from "@zag-js/solid"
 import { StateVisualizer } from "../components/state-visualizer"
-import { dialogStyle } from "../../../../shared/style"
+import { dialogStyle } from "@zag-js/shared"
 import { createMemo, createUniqueId } from "solid-js"
 import { Toolbar } from "../components/toolbar"
 

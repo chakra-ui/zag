@@ -1,6 +1,6 @@
 import { h, Fragment, Ref, ref, inject, provide } from "vue"
 import { ControlRecord, ControlValue } from "@zag-js/types"
-import { controlsContainer } from "../../../../shared/style"
+import { controlsContainerStyle } from "@zag-js/shared"
 
 const ControlsSymbol = Symbol("use-controls")
 
@@ -30,7 +30,7 @@ export function useControls<T extends ControlRecord>(config: T) {
     ui: () => {
       const state = useControlsState()
       return (
-        <div class={controlsContainer}>
+        <div class={controlsContainerStyle}>
           {Object.keys(config).map((key: keyof ControlValue<T>) => {
             const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
             switch (type) {

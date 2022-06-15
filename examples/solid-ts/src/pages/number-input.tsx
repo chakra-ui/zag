@@ -1,11 +1,11 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
+import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { useControls } from "../hooks/use-controls"
 import { StateVisualizer } from "../components/state-visualizer"
-import { numberInputControls } from "../../../../shared/controls"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(numberInputControls)
