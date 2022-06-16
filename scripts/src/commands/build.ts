@@ -1,10 +1,9 @@
 import { spawn } from "child_process"
 import * as esbuild from "esbuild"
 import fs from "fs"
-import gzipSize from "gzip-size"
 import path from "path"
-import pretty from "pretty-bytes"
 import { createLogger } from "../utilities/log"
+import { getBundleSize } from "../utilities/report-size"
 
 function getPackageJson(dir: string) {
   const pkgPath = path.join(dir, "package.json")
@@ -19,10 +18,6 @@ type BuildArgs = {
 }
 
 const logger = createLogger("build")
-
-function getBundleSize(dir: string) {
-  return pretty(gzipSize.fileSync(`${dir}/dist/index.mjs`))
-}
 
 export default async function build(opts: BuildArgs) {
   const { watch, prod, cwd = process.cwd(), clean } = opts
@@ -39,7 +34,6 @@ export default async function build(opts: BuildArgs) {
     target: "es6",
     minify: false,
     bundle: true,
-    // sourcemap: true,
     absWorkingDir: cwd,
     platform: "browser",
     entryPoints: ["src/index.ts"],
