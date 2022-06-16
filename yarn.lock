@@ -1051,17 +1051,17 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@floating-ui/core@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.6.1.tgz#aed861a1b6dbebadf14a9dd829ba67f4f3ae795c"
-  integrity sha512-Y30eVMcZva8o84c0HcXAtDO4BEzPJMvF6+B7x7urL2xbAqVsGJhojOyHLaoQHQYjb6OkqRq5kO+zeySycQwKqg==
+"@floating-ui/core@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.7.3.tgz#d274116678ffae87f6b60e90f88cc4083eefab86"
+  integrity sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==
 
-"@floating-ui/dom@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.4.2.tgz#5c34a19f23a0d72af564e45e5af8000b45318e60"
-  integrity sha512-2/4vOhMAujkMmGqGX1Gut84phe5MNfk1kGeM+RSTJCpeR0SWR2/RR+/f1r1msOvTQa28wn7HEhxGe71CjYY/vw==
+"@floating-ui/dom@^0.5.0":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.5.3.tgz#ade192cf9a911fc3e95fb614fe281658b654043c"
+  integrity sha512-vpjWB1uC7rajvgA58uzlJZgtWqrdDQLw+XVA3w63ZTmsWwRmVd0Gl5Dy9VMAViI9cP7hBWaJt23Jy3AVgVYnoQ==
   dependencies:
-    "@floating-ui/core" "^0.6.1"
+    "@floating-ui/core" "^0.7.3"
 
 "@hapi/hoek@^9.0.0":
   version "9.2.1"

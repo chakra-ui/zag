@@ -25,7 +25,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@floating-ui/dom": "^0.4.2",
+    "@floating-ui/dom": "^0.5.0",
     "@zag-js/dom-utils": "0.1.4",
     "@zag-js/utils": "0.1.2"
   },
