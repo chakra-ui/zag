@@ -46,7 +46,9 @@ const fetchMachine = createMachine({
       actions: "clearInputValue"
     }, {
       actions: "clearInputValue"
-    }],
+    }]
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

@@ -59,7 +59,9 @@ const fetchMachine = createMachine({
     },
     SET_ACTIVE_ID: {
       actions: "setActiveId"
-    },
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

@@ -35,7 +35,9 @@ const fetchMachine = createMachine({
       actions: "setToMax"
     }, {
       actions: "setToMin"
-    }],
+    }]
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

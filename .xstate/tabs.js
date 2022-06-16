@@ -27,7 +27,9 @@ const fetchMachine = createMachine({
     },
     DELETE: {
       actions: "deleteValue"
-    },
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

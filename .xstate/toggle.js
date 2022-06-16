@@ -24,7 +24,9 @@ const fetchMachine = createMachine({
     }, {
       target: "unpressed",
       actions: ["invokeOnChange"]
-    }],
+    }]
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

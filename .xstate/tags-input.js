@@ -72,7 +72,9 @@ const fetchMachine = createMachine({
     }, {
       cond: "clearOnBlur",
       actions: "clearInputValue"
-    }],
+    }]
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

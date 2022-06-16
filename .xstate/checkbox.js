@@ -20,6 +20,7 @@ const fetchMachine = createMachine({
     "canToggle": false,
     "canToggle": false
   },
+  activities: ["trackFormReset", "trackFieldsetDisabled"],
   on: {
     SET_STATE: [{
       cond: "shouldCheck && canToggle",
@@ -41,7 +42,9 @@ const fetchMachine = createMachine({
     },
     SET_INDETERMINATE: {
       actions: "setIndeterminate"
-    },
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
@@ -77,8 +80,7 @@ const fetchMachine = createMachine({
         }
       }
     }
-  },
-  activities: ["trackFormReset", "trackFieldsetDisabled"]
+  }
 }, {
   actions: {
     updateContext: assign((context, event) => {

@@ -20,7 +20,9 @@ const fetchMachine = createMachine({
   on: {
     SET_VALUE: {
       actions: "setValue"
-    },
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

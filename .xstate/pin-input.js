@@ -36,7 +36,9 @@ const fetchMachine = createMachine({
       actions: "clearValue"
     }, {
       actions: ["clearValue", "setFocusIndexToFirst"]
-    }],
+    }]
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

@@ -23,7 +23,9 @@ const fetchMachine = createMachine({
   },
   on: {
     OPEN: "open",
-    CLOSE: "closed",
+    CLOSE: "closed"
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

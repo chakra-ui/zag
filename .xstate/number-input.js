@@ -34,7 +34,9 @@ const fetchMachine = createMachine({
     },
     DECREMENT: {
       actions: ["decrement"]
-    },
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

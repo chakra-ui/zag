@@ -1,6 +1,5 @@
-import { createMachine, ref, guards } from "@zag-js/core"
+import { createMachine, guards, ref } from "@zag-js/core"
 import { dispatchInputCheckedEvent, nextTick, trackFieldsetDisabled, trackFormReset } from "@zag-js/dom-utils"
-
 import { dom } from "./checkbox.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
 
@@ -23,13 +22,16 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       watch: {
-        indeterminate: ["syncInputIndetermine"],
+        indeterminate: ["syncInputIndeterminate"],
+        disabled: ["removeFocusIfNeeded"],
       },
 
       computed: {
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
         isRtl: (ctx) => ctx.dir === "rtl",
       },
+
+      activities: ["trackFormReset", "trackFieldsetDisabled"],
 
       on: {
         SET_STATE: [
@@ -87,8 +89,6 @@ export function machine(ctx: UserDefinedContext = {}) {
           },
         },
       },
-
-      activities: ["trackFormReset", "trackFieldsetDisabled"],
     },
     {
       guards: {
@@ -127,9 +127,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (evt.doc) ctx.doc = ref(evt.doc)
           if (evt.root) ctx.rootNode = ref(evt.root)
         },
-        invokeOnChange(ctx, _, { state }) {
+        invokeOnChange(ctx, _evt, { state }) {
           const checked = state.matches("checked")
-          ctx.onChange?.({ checked })
+          ctx.onChange?.({ checked: ctx.indeterminate ? "indeterminate" : checked })
         },
         setActive(ctx, evt) {
           ctx.active = evt.active
@@ -149,7 +149,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         setReadOnly(ctx, evt) {
           ctx.readonly = evt.readonly
         },
-        syncInputIndetermine(ctx) {
+        syncInputIndeterminate(ctx) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
           inputEl.indeterminate = Boolean(ctx.indeterminate)
@@ -159,6 +159,11 @@ export function machine(ctx: UserDefinedContext = {}) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
           dispatchInputCheckedEvent(inputEl, evt.checked)
+        },
+        removeFocusIfNeeded(ctx) {
+          if (ctx.disabled && ctx.focused) {
+            ctx.focused = false
+          }
         },
       },
     },
