@@ -37,7 +37,7 @@
   "dependencies": {
     "@zag-js/dom-utils": "0.1.4",
     "@zag-js/interact-outside": "0.0.0",
-    "valtio": "^1.6.0"
+    "valtio": "^1.6.1"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
