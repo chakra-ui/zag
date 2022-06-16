@@ -38,6 +38,22 @@ module.exports = function main(plop) {
         abortOnFail: true,
       })
 
+      actions.push({
+        type: "addMany",
+        templateFiles: "plop/machine-examples/**",
+        destination: `examples`,
+        base: "plop/machine-examples/",
+        data: { machine, name: machine },
+        abortOnFail: true,
+      })
+
+      actions.push({
+        type: "modify",
+        path: "shared/src/routes.ts",
+        pattern: /\= \[/,
+        template: '= [\n  { label: "{{capitalize machine}}", path: "/{{machine}}" },',
+      })
+
       return actions
     },
   })
