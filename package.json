@@ -68,7 +68,6 @@
     "@typescript-eslint/eslint-plugin": "5.28.0",
     "@typescript-eslint/parser": "5.28.0",
     "axe-core": "4.4.2",
-    "chalk": "5.0.1",
     "commitlint": "17.0.2",
     "esbuild": "0.14.44",
     "esbuild-runner": "2.2.1",
