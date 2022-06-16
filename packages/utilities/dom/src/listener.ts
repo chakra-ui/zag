@@ -6,7 +6,6 @@ import {
   hasProp,
   isTouchEvent,
 } from "@zag-js/utils"
-import { addGlobalEventListener } from "./global-listener"
 import {
   AnyPointerEvent,
   DOMEventTarget,
@@ -32,12 +31,15 @@ export function extractInfo<T extends AnyPointerEvent = AnyPointerEvent>(event: 
 
 export function addDomEvent<K extends keyof EventMap>(
   target: DOMEventTarget,
-  event: K,
-  listener: (event: EventMap[K]) => void,
+  eventName: K,
+  handler: (event: EventMap[K]) => void,
   options?: boolean | AddEventListenerOptions,
 ) {
   const node = isRef(target) ? target.current : runIfFn(target)
-  return addGlobalEventListener(node as HTMLElement | null, event, listener as any, options)
+  node?.addEventListener(eventName, handler as any, options)
+  return () => {
+    node?.removeEventListener(eventName, handler as any, options)
+  }
 }
 
 export function addPointerEvent<K extends keyof EventMap>(

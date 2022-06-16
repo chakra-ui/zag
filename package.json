@@ -61,8 +61,6 @@
     "@manypkg/cli": "0.19.1",
     "@playwright/test": "1.22.2",
     "@swc-node/jest": "1.5.2",
-    "@testing-library/dom": "8.13.0",
-    "@testing-library/jest-dom": "5.16.4",
     "@types/form-serialize": "0.7.2",
     "@types/jest": "27.5.2",
     "@typescript-eslint/eslint-plugin": "5.28.0",
