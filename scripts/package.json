@@ -6,13 +6,13 @@
     "zag": "index.js"
   },
   "dependencies": {
-    "@lerna/package-graph": "^4.0.0",
+    "@lerna/package-graph": "4.0.0",
     "@swc-node/register": "1.4.2",
-    "@types/signale": "^1.4.4",
+    "@types/signale": "1.4.4",
     "commander": "8.3.0",
     "gzip-size": "6.0.0",
-    "pretty-bytes": "^5.6.0",
-    "relative": "^3.0.2",
-    "signale": "^1.4.0"
+    "pretty-bytes": "5.6.0",
+    "relative": "3.0.2",
+    "signale": "1.4.0"
   }
 }
