@@ -70,19 +70,17 @@ export function getPlacement(
       size({
         padding: options.overflowPadding,
         apply(data) {
-          const { reference, height, width } = data
-
           if (options.sameWidth) {
             Object.assign(floating.style, {
-              width: `${reference.width}px`,
+              width: `${data.rects.reference.width}px`,
               minWidth: "unset",
             })
           }
 
           if (options.fitViewport) {
             Object.assign(floating.style, {
-              maxWidth: `${width}px`,
-              maxHeight: `${height}px`,
+              maxWidth: `${data.availableWidth}px`,
+              maxHeight: `${data.availableHeight}px`,
             })
           }
         },
