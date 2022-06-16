@@ -1,12 +1,12 @@
-const camelCase = (/** @type string */ str) => {
+const camelCase = (str) => {
   return str.replace(/[-_]([a-z])/g, (g) => g[1].toUpperCase())
 }
 
-const capitalize = (/** @type string */ str) => {
+const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-function sortLines(/** @type string */ file) {
+function sortLines(file) {
   let fileArr = file.split("\n")
   const newMachine = fileArr[fileArr.length - 1].match("/(.+?)")[1]
   const lineAfter = fileArr
