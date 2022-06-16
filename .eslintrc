@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "extends": ["plugin:import/recommended", "plugin:import/typescript", "prettier"],
-  "plugins": ["jest", "@typescript-eslint/eslint-plugin", "testing-library"],
+  "plugins": ["jest", "@typescript-eslint/eslint-plugin"],
   "env": { "node": true },
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
