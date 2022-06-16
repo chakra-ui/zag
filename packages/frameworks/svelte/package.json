@@ -31,7 +31,7 @@
     "@zag-js/core": "0.1.6"
   },
   "devDependencies": {
-    "svelte": "3.44.2"
+    "svelte": "3.48.0"
   },
   "peerDependencies": {
     "svelte": "^3.38.2"
