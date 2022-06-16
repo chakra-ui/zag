@@ -33,7 +33,7 @@
     "valtio": "^1.6.1"
   },
   "devDependencies": {
-    "solid-js": "1.2.5"
+    "solid-js": "1.4.4"
   },
   "peerDependencies": {
     "solid-js": ">=1.1.3"
