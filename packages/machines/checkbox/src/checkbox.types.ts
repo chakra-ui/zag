@@ -1,16 +1,12 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
-//
-
 type ElementIds = Partial<{
   root: string
   input: string
   control: string
   label: string
 }>
-
-//
 
 type PublicContext = DirectionProperty & {
   /**
@@ -71,11 +67,7 @@ type PublicContext = DirectionProperty & {
   "aria-describedby"?: string
 }
 
-//
-
 export type UserDefinedContext = Partial<PublicContext>
-
-//
 
 type ComputedContext = Readonly<{
   /**
@@ -90,26 +82,18 @@ type ComputedContext = Readonly<{
   isRtl: boolean
 }>
 
-//
-
 type PrivateContext = Context<{
   active: boolean
   focused: boolean
   hovered: boolean
 }>
 
-//
-
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-//
 
 export type MachineState = {
   value: "unknown" | "checked" | "unchecked"
 }
 
 export type State = S.State<MachineContext, MachineState>
-
-//
 
 export type Send = S.Send<S.AnyEventObject>
