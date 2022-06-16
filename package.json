@@ -83,7 +83,7 @@
     "jest": "26.6.3",
     "jest-watch-typeahead": "0.6.5",
     "json-format-highlight": "1.0.4",
-    "lint-staged": "11.2.6",
+    "lint-staged": "13.0.1",
     "playwright": "1.22.2",
     "plop": "3.1.1",
     "prettier": "2.7.1",
