@@ -63,7 +63,7 @@ type PublicContext = DirectionProperty & {
    */
   "aria-label"?: string
   "aria-labelledby"?: string
-  "aria-invalid"?: true | undefined
+  "aria-invalid"?: boolean
   "aria-describedby"?: string
 }
 
@@ -79,12 +79,24 @@ type ComputedContext = Readonly<{
    * @computed
    * Whether the writing direction is RTL
    */
-  isRtl: boolean
+  readonly isRtl: boolean
 }>
 
 type PrivateContext = Context<{
+  /**
+   * @internal
+   * Whether the checkbox is pressed
+   */
   active: boolean
+  /**
+   * @internal
+   * Whether the checkbox has focus
+   */
   focused: boolean
+  /**
+   * @internal
+   * Whether the checkbox is hovered
+   */
   hovered: boolean
 }>
 
