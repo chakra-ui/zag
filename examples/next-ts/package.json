@@ -10,22 +10,22 @@
     "lint": "tsc"
   },
   "dependencies": {
-    "@emotion/core": "^11.0.0",
-    "@emotion/styled": "^11.6.0",
+    "@emotion/core": "11.0.0",
+    "@emotion/styled": "11.9.3",
     "@zag-js/core": "0.1.6",
     "@zag-js/react": "0.1.8",
-    "next": "^12.1.4",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-spinners": "^0.11.0"
+    "next": "12.1.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-spinners": "0.12.0"
   },
   "devDependencies": {
     "@types/node": "16.11.11",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.4.0",
-    "typescript": "^4.6.3"
+    "@types/react": "18.0.13",
+    "@types/react-dom": "18.0.5",
+    "eslint-plugin-react": "7.30.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "typescript": "4.7.3"
   },
   "license": "MIT"
 }
