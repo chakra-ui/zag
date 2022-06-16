@@ -32,7 +32,7 @@
     "valtio": "^1.6.1"
   },
   "devDependencies": {
-    "vue": "3.2.22"
+    "vue": "3.2.37"
   },
   "peerDependencies": {
     "vue": ">=3.0.0"
