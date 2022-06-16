@@ -14,7 +14,7 @@
     "@zag-js/vue": "0.1.7",
     "epic-spinners": "^1.1.0",
     "vite": "^2.6.4",
-    "vue": "3.2.22",
+    "vue": "3.2.27",
     "vue-router": "^4.0.8"
   },
   "devDependencies": {
