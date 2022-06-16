@@ -6,20 +6,6 @@ const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-function sortLines(file) {
-  let fileArr = file.split("\n")
-  const newMachine = fileArr[fileArr.length - 1].match("/(.+?)")[1]
-  const lineAfter = fileArr
-    .filter((_, i, a) => i !== a.length - 1)
-    .findIndex((l) => {
-      const machine = l.match("/(.+?)")
-      return machine && machine[1] > newMachine
-    })
-  const newFile = fileArr.filter((_, i, a) => i !== a.length - 1)
-  newFile.splice(lineAfter, 0, fileArr[fileArr.length - 1])
-  return `${newFile.join("\n")}\n`
-}
-
 /**
  * @param {import("plop").NodePlopAPI} plop
  */
@@ -64,9 +50,8 @@ module.exports = function main(plop) {
       actions.push({
         type: "modify",
         path: "shared/src/routes.ts",
-        transform: sortLines,
-        pattern: /$/,
-        template: `  { label: "{{capitalize machine}}", path: "/{{machine}}" },`,
+        pattern: /\= \[/,
+        template: `= [\n  { label: "{{capitalize machine}}", path: "/{{machine}}" },`,
       })
 
       return actions
