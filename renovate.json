@@ -1,5 +1,26 @@
 {
-  "extends": [
-    "config:base"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "automerge": false,
+  "dependencyDashboard": true,
+  "extends": ["config:base"],
+  "labels": ["dependencies"],
+  "rebaseWhen": "conflicted",
+  "timezone": "UTC",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": "before 6:00am on the first day of the month"
+  },
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "prConcurrentLimit": 30,
+  "prHourlyLimit": 0,
+  "packageRules": [
+    {
+      "groupName": "react",
+      "matchPackageNames": ["react", "react-dom"]
+    },
+    {
+      "groupName": "eslint",
+      "matchPackagePatterns": ["eslint*"]
+    }
   ]
 }
