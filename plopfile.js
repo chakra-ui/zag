@@ -51,7 +51,7 @@ module.exports = function main(plop) {
         type: "modify",
         path: "shared/src/routes.ts",
         pattern: /\= \[/,
-        template: `= [\n  { label: "{{capitalize machine}}", path: "/{{machine}}" },`,
+        template: '= [\n  { label: "{{capitalize machine}}", path: "/{{machine}}" },',
       })
 
       return actions
