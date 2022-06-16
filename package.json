@@ -56,7 +56,7 @@
     "@commitlint/cli": "16.3.0",
     "@commitlint/config-conventional": "16.2.4",
     "@emotion/css": "11.9.0",
-    "@lerna/package-graph": "4.0.0",
+    "@lerna/package-graph": "5.1.4",
     "@manypkg/cli": "0.19.1",
     "@playwright/test": "1.22.2",
     "@swc-node/jest": "1.5.2",
