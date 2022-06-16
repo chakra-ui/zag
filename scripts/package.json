@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@lerna/package-graph": "4.0.0",
-    "@swc-node/register": "1.4.2",
+    "@swc-node/register": "1.5.1",
     "@types/signale": "1.4.4",
     "commander": "8.3.0",
     "gzip-size": "6.0.0",
