@@ -1,4 +1,4 @@
-import { unstable__dom } from "@zag-js/slider"
+import { unstable__dom as sliderDom } from "@zag-js/slider"
 import type { Style } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./range-slider.types"
 
@@ -33,10 +33,10 @@ function getThumbStyle(ctx: Ctx, index: number): Style {
 function getRootStyle(ctx: Ctx): Style {
   const range = getRangeOffsets(ctx)
 
-  const offsetStyles = ctx.value.reduce((acc, value, index) => {
+  const offsetStyles = ctx.value.reduce((styles, value, index) => {
     const thumbSize = ctx.thumbSize?.[index] ?? { width: 0, height: 0 }
-    const offset = unstable__dom.getThumbOffset({ ...ctx, value, thumbSize })
-    return { ...acc, [`--slider-thumb-offset-${index}`]: offset }
+    const offset = sliderDom.getThumbOffset({ ...ctx, value, thumbSize })
+    return { ...styles, [`--slider-thumb-offset-${index}`]: offset }
   }, {} as Style)
 
   return {
@@ -49,9 +49,9 @@ function getRootStyle(ctx: Ctx): Style {
 
 export const styles = {
   getRootStyle,
-  getControlStyle: unstable__dom.getControlStyle,
+  getControlStyle: sliderDom.getControlStyle,
   getThumbStyle,
-  getRangeStyle: unstable__dom.getRangeStyle,
-  getMarkerStyle: unstable__dom.getMarkerStyle,
-  getMarkerGroupStyle: unstable__dom.getMarkerGroupStyle,
+  getRangeStyle: sliderDom.getRangeStyle,
+  getMarkerStyle: sliderDom.getMarkerStyle,
+  getMarkerGroupStyle: sliderDom.getMarkerGroupStyle,
 }

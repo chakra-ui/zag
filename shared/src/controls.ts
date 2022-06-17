@@ -77,6 +77,7 @@ export const sliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readonly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+  thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },
   step: { type: "number", defaultValue: 1 },
@@ -86,6 +87,7 @@ export const rangeSliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readonly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+  thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   step: { type: "number", defaultValue: 1 },
 })

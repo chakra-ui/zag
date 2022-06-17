@@ -85,6 +85,12 @@ type PublicContext = DirectionProperty & {
    * Function invoked when the slider value change is started
    */
   onChangeStart?(details: { value: number }): void
+  /**
+   * The alignment of the slider thumb relative to the track
+   * - `center`: the thumb will extend beyond the bounds of the slider track.
+   * - `contain`: the thumb will be contained within the bounds of the track.
+   */
+  thumbAlignment?: "contain" | "center"
 }
 
 export type UserDefinedContext = Partial<PublicContext>
@@ -154,6 +160,7 @@ export type SharedContext = {
   isHorizontal: boolean
   value: number
   thumbSize: { width: number; height: number } | null
+  thumbAlignment?: "contain" | "center"
   orientation?: "horizontal" | "vertical"
   readonly hasMeasuredThumbSize: boolean
 }

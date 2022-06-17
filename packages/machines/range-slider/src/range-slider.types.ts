@@ -80,6 +80,12 @@ type PublicContext = DirectionProperty & {
    * The orientation of the slider
    */
   orientation: "vertical" | "horizontal"
+  /**
+   * The alignment of the slider thumb relative to the track
+   * - `center`: the thumb will extend beyond the bounds of the slider track.
+   * - `contain`: the thumb will be contained within the bounds of the track.
+   */
+  thumbAlignment?: "contain" | "center"
 }
 
 export type UserDefinedContext = Partial<PublicContext>

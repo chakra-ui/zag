@@ -14,6 +14,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
       context: {
         thumbSize: null,
+        thumbAlignment: "contain",
         uid: "",
         threshold: 5,
         activeIndex: -1,

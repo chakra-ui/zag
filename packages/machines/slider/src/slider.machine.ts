@@ -11,6 +11,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       initial: "unknown",
       context: {
         thumbSize: null,
+        thumbAlignment: "contain",
         uid: "",
         disabled: false,
         threshold: 5,
@@ -190,6 +191,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           dom.dispatchChangeEvent(ctx)
         },
         setThumbSize(ctx) {
+          if (ctx.thumbAlignment !== "contain") return
           raf(() => {
             const el = dom.getThumbEl(ctx)
             if (!el) return

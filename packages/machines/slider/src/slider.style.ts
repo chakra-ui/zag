@@ -26,6 +26,7 @@ function getHorizontalThumbOffset(ctx: SharedContext) {
 
 function getThumbOffset(ctx: SharedContext) {
   const percent = valueToPercent(ctx.value, ctx)
+  if (ctx.thumbAlignment === "center") return `${percent}%`
   const offset = ctx.isVertical ? getVerticalThumbOffset(ctx) : getHorizontalThumbOffset(ctx)
   return `calc(${percent}% - ${offset}px)`
 }
