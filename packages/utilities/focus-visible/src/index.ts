@@ -1,4 +1,4 @@
-type Modality = "keyboard" | "pointer"
+type Modality = "keyboard" | "pointer" | "virtual"
 type HandlerEvent = PointerEvent | MouseEvent | KeyboardEvent | FocusEvent
 type Handler = (modality: Modality, e: HandlerEvent) => void
 type FocusVisibleCallback = (isFocusVisible: boolean) => void
@@ -6,17 +6,25 @@ type FocusVisibleCallback = (isFocusVisible: boolean) => void
 let hasSetup = false
 let modality: Modality | null = null
 let hasEventBeforeFocus = false
+let hasBlurredWindowRecently = false
 
 const handlers = new Set<Handler>()
 
-const isMac = typeof window !== "undefined" && window.navigator != null ? /^Mac/.test(window.navigator.platform) : false
-
-function isValidKey(event: KeyboardEvent) {
-  return !(event.metaKey || (!isMac && event.altKey) || event.ctrlKey)
-}
-
 function trigger(modality: Modality, event: HandlerEvent) {
   handlers.forEach((handler) => handler(modality, event))
+}
+
+const isMac = typeof window !== "undefined" && window.navigator != null ? /^Mac/.test(window.navigator.platform) : false
+
+function isValidKey(e: KeyboardEvent) {
+  return !(
+    e.metaKey ||
+    (!isMac && e.altKey) ||
+    e.ctrlKey ||
+    e.key === "Control" ||
+    e.key === "Shift" ||
+    e.key === "Meta"
+  )
 }
 
 function onKeyboardEvent(event: KeyboardEvent) {
@@ -37,6 +45,19 @@ function onPointerEvent(event: PointerEvent | MouseEvent) {
   }
 }
 
+function isVirtualClick(event: MouseEvent | PointerEvent): boolean {
+  // JAWS/NVDA with Firefox.
+  if ((event as any).mozInputSource === 0 && event.isTrusted) return true
+  return event.detail === 0 && !(event as PointerEvent).pointerType
+}
+
+function onClickEvent(e: MouseEvent) {
+  if (isVirtualClick(e)) {
+    hasEventBeforeFocus = true
+    modality = "virtual"
+  }
+}
+
 function onWindowFocus(event: FocusEvent) {
   // Firefox fires two extra focus events when the user first clicks into an iframe:
   // first on the window, then on the document. We ignore these events so they don't
@@ -47,22 +68,24 @@ function onWindowFocus(event: FocusEvent) {
 
   // If a focus event occurs without a preceding keyboard or pointer event, switch to keyboard modality.
   // This occurs, for example, when navigating a form with the next/previous buttons on iOS.
-  if (!hasEventBeforeFocus) {
-    modality = "keyboard"
-    trigger("keyboard", event)
+  if (!hasEventBeforeFocus && !hasBlurredWindowRecently) {
+    modality = "virtual"
+    trigger("virtual", event)
   }
 
   hasEventBeforeFocus = false
+  hasBlurredWindowRecently = false
 }
 
 function onWindowBlur() {
   // When the window is blurred, reset state. This is necessary when tabbing out of the window,
   // for example, since a subsequent focus event won't be fired.
   hasEventBeforeFocus = false
+  hasBlurredWindowRecently = true
 }
 
 function isFocusVisible() {
-  return modality === "keyboard"
+  return modality != null && modality !== "pointer"
 }
 
 function setupGlobalFocusEvents() {
@@ -82,6 +105,7 @@ function setupGlobalFocusEvents() {
 
   document.addEventListener("keydown", onKeyboardEvent, true)
   document.addEventListener("keyup", onKeyboardEvent, true)
+  document.addEventListener("click", onClickEvent, true)
 
   // Register focus events on the window so they are sure to happen
   // before React's event listeners (registered on the document).
@@ -106,6 +130,18 @@ export function trackFocusVisible(fn: FocusVisibleCallback) {
 
   fn(isFocusVisible())
   const handler = () => fn(isFocusVisible())
+
+  handlers.add(handler)
+  return () => {
+    handlers.delete(handler)
+  }
+}
+
+export function trackInteractionModality(fn: (v: Modality | null) => void) {
+  setupGlobalFocusEvents()
+
+  fn(modality)
+  const handler = () => fn(modality)
 
   handlers.add(handler)
   return () => {
