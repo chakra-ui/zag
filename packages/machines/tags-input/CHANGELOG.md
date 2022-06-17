@@ -1,5 +1,22 @@
 # @zag-js/tags-input
 
+## 0.2.0
+
+### Minor Changes
+
+- [#120](https://github.com/chakra-ui/zag/pull/120)
+  [`360ef655`](https://github.com/chakra-ui/zag/commit/360ef6551e7363e6fb71f75711ee79b4153ac008) Thanks
+  [@anubra266](https://github.com/anubra266)! - added `setValueAtIndex` to the API to set the value of a specific tag
+
+### Patch Changes
+
+- Updated dependencies [[`01a4a520`](https://github.com/chakra-ui/zag/commit/01a4a520abdc2ec88b205acee6d1b25265d5fd3f),
+  [`0d2911af`](https://github.com/chakra-ui/zag/commit/0d2911af381bacc9151845e5312f62a5aa2999b2),
+  [`01a4a520`](https://github.com/chakra-ui/zag/commit/01a4a520abdc2ec88b205acee6d1b25265d5fd3f)]:
+  - @zag-js/dom-utils@0.1.5
+  - @zag-js/types@0.2.0
+  - @zag-js/auto-resize@0.1.0
+
 ## 0.1.7
 
 ### Patch Changes

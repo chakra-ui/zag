@@ -1,5 +1,13 @@
 # @zag-js/dom-utils
 
+## 0.1.5
+
+### Patch Changes
+
+- [#127](https://github.com/chakra-ui/zag/pull/127)
+  [`01a4a520`](https://github.com/chakra-ui/zag/commit/01a4a520abdc2ec88b205acee6d1b25265d5fd3f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add helpers for events and shadow root
+
 ## 0.1.4
 
 ### Patch Changes

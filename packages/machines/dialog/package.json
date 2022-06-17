@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dialog",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Core logic for the dialog widget implemented as a state machine",
   "keywords": [
     "js",
@@ -31,9 +31,9 @@
   "dependencies": {
     "@zag-js/aria-hidden": "0.1.0",
     "@zag-js/core": "0.1.6",
-    "@zag-js/dom-utils": "0.1.4",
+    "@zag-js/dom-utils": "0.1.5",
     "@zag-js/remove-scroll": "0.1.0",
-    "@zag-js/types": "0.1.2",
+    "@zag-js/types": "0.2.0",
     "focus-trap": "^6.7.1",
     "scroll-into-view-if-needed": "^2.2.28"
   },

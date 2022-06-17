@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/auto-resize",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Autoresize utilities for the web",
   "keywords": [
     "js",
@@ -34,6 +34,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "0.1.4"
+    "@zag-js/dom-utils": "0.1.5"
   }
 }

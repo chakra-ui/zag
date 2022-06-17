@@ -1,5 +1,12 @@
 # vue-ts
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`8681f47a`](https://github.com/chakra-ui/zag/commit/8681f47a733152e3952ada7f7b66f768e13e2b10)]:
+  - @zag-js/vue@0.1.8
+
 ## 0.0.8
 
 ### Patch Changes

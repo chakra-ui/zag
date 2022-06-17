@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dimissable",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Dismissable layer utilities for the DOM",
   "keywords": [
     "js",
@@ -35,8 +35,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@zag-js/dom-utils": "0.1.4",
-    "@zag-js/interact-outside": "0.0.0",
+    "@zag-js/dom-utils": "0.1.5",
+    "@zag-js/interact-outside": "0.1.0",
     "valtio": "^1.6.1"
   },
   "bugs": {

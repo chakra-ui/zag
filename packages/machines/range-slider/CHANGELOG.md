@@ -1,5 +1,37 @@
 # @zag-js/range-slider
 
+## 0.1.8
+
+### Patch Changes
+
+- [#132](https://github.com/chakra-ui/zag/pull/132)
+  [`d31abf77`](https://github.com/chakra-ui/zag/commit/d31abf770c0a718a5cd2a81dec6aea256b762185) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix issue where `disabled` is always false by default
+
+* [#122](https://github.com/chakra-ui/zag/pull/122)
+  [`8f27a2af`](https://github.com/chakra-ui/zag/commit/8f27a2af2fd9d976178fdd2b78e925bf11ad9458) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor styles and hoist CSS variables to `root` part
+
+- [`cc8c7ad9`](https://github.com/chakra-ui/zag/commit/cc8c7ad9c3c5a5b4d4cde114a666eab0685b0d34) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add missing attribute to slider and range slider components
+
+* [`49b666ad`](https://github.com/chakra-ui/zag/commit/49b666ad40b3a91057a9f8935c34a7edc5cc6b59) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for changing the slider thumb alignment via the
+  `thumbAlignment` context property. The value can be set to either `center` or `contain`.
+
+  - `center`: the thumb will extend beyond the bounds of the slider track.
+  - `contain`: the thumb will be contained within the bounds of the track.
+
+* Updated dependencies [[`d31abf77`](https://github.com/chakra-ui/zag/commit/d31abf770c0a718a5cd2a81dec6aea256b762185),
+  [`8f27a2af`](https://github.com/chakra-ui/zag/commit/8f27a2af2fd9d976178fdd2b78e925bf11ad9458),
+  [`cc8c7ad9`](https://github.com/chakra-ui/zag/commit/cc8c7ad9c3c5a5b4d4cde114a666eab0685b0d34),
+  [`01a4a520`](https://github.com/chakra-ui/zag/commit/01a4a520abdc2ec88b205acee6d1b25265d5fd3f),
+  [`0d2911af`](https://github.com/chakra-ui/zag/commit/0d2911af381bacc9151845e5312f62a5aa2999b2),
+  [`49b666ad`](https://github.com/chakra-ui/zag/commit/49b666ad40b3a91057a9f8935c34a7edc5cc6b59)]:
+  - @zag-js/slider@0.1.8
+  - @zag-js/dom-utils@0.1.5
+  - @zag-js/types@0.2.0
+
 ## 0.1.7
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @zag-js/popper
 
+## 0.1.6
+
+### Patch Changes
+
+- [#145](https://github.com/chakra-ui/zag/pull/145)
+  [`2cc4185f`](https://github.com/chakra-ui/zag/commit/2cc4185f25fffc2d20a2376e5b905ace80aa585a) Thanks
+  [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @floating-ui/dom to ^0.5.0
+
+- Updated dependencies [[`01a4a520`](https://github.com/chakra-ui/zag/commit/01a4a520abdc2ec88b205acee6d1b25265d5fd3f)]:
+  - @zag-js/dom-utils@0.1.5
+
 ## 0.1.5
 
 ### Patch Changes

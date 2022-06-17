@@ -1,5 +1,13 @@
 # @zag-js/react
 
+## 0.1.9
+
+### Patch Changes
+
+- [#142](https://github.com/chakra-ui/zag/pull/142)
+  [`ce2fbfb5`](https://github.com/chakra-ui/zag/commit/ce2fbfb527472d002af72ffdd27552df21733d59) Thanks
+  [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency react to v18.2.0
+
 ## 0.1.8
 
 ### Patch Changes
