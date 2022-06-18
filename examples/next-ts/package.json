@@ -1,6 +1,6 @@
 {
   "name": "next-ts",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": true,
   "scripts": {
     "clean": "echo clean",
@@ -13,7 +13,7 @@
     "@emotion/core": "11.0.0",
     "@emotion/styled": "11.9.3",
     "@zag-js/core": "0.1.6",
-    "@zag-js/react": "0.1.8",
+    "@zag-js/react": "0.1.9",
     "next": "12.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",

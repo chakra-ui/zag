@@ -1,5 +1,13 @@
 # @zag-js/types
 
+## 0.2.0
+
+### Minor Changes
+
+- [#130](https://github.com/chakra-ui/zag/pull/130)
+  [`0d2911af`](https://github.com/chakra-ui/zag/commit/0d2911af381bacc9151845e5312f62a5aa2999b2) Thanks
+  [@anubra266](https://github.com/anubra266)! - Added the `data-indeterminate` data attribute
+
 ## 0.1.2
 
 ### Patch Changes

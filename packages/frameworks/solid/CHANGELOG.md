@@ -1,5 +1,13 @@
 # @zag-js/solid
 
+## 0.1.9
+
+### Patch Changes
+
+- [#143](https://github.com/chakra-ui/zag/pull/143)
+  [`ea8c878f`](https://github.com/chakra-ui/zag/commit/ea8c878f8e6f8b09aed30d0284ada66aa5700761) Thanks
+  [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency solid-js to v1.4.4
+
 ## 0.1.8
 
 ### Patch Changes
