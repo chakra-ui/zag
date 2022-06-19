@@ -11,6 +11,7 @@ import {
 import { getPlacement } from "@zag-js/popper"
 import { dom } from "./combobox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
+import { utils } from "./combobox.utils"
 
 const { and, not } = guards
 
@@ -415,7 +416,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.navigationValue = ""
         },
         commitNavigationValue(ctx) {
-          ctx.inputValue = ctx.navigationValue
+          ctx.inputValue = utils.labelFromValue(ctx, ctx.navigationValue)
           ctx.navigationValue = ""
         },
         clearFocusedOption(ctx) {
@@ -426,13 +427,13 @@ export function machine(ctx: UserDefinedContext = {}) {
         selectActiveOption(ctx) {
           const option = dom.getActiveOptionEl(ctx)
           if (!option) return
-          ctx.selectedValue = dom.getOptionData(option).label
-          ctx.inputValue = ctx.selectedValue
+          ctx.selectedValue = dom.getOptionData(option).value
+          ctx.inputValue = utils.labelFromValue(ctx, ctx.selectedValue)
         },
         selectOption(ctx, evt) {
           ctx.selectedValue = evt.value || ctx.navigationValue
           let value: string | undefined
-          if (ctx.selectionBehavior === "set") value = ctx.selectedValue
+          if (ctx.selectionBehavior === "set") value = utils.labelFromValue(ctx, ctx.selectedValue)
           if (ctx.selectionBehavior === "clear") value = ""
           if (value != null) ctx.inputValue = value
         },
@@ -449,13 +450,13 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         setInputValue(ctx, evt) {
-          ctx.inputValue = evt.value
+          ctx.inputValue = evt.isOptionValue ? utils.labelFromValue(ctx, evt.value) : evt.value
         },
         clearInputValue(ctx) {
           ctx.inputValue = ""
         },
         revertInputValue(ctx) {
-          ctx.inputValue = ctx.selectedValue
+          ctx.inputValue = utils.labelFromValue(ctx, ctx.selectedValue)
         },
         setSelectedValue(ctx, evt) {
           ctx.selectedValue = evt.value
@@ -508,7 +509,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusLastOption(ctx) {
@@ -519,7 +520,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusNextOption(ctx) {
@@ -530,7 +531,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusPrevOption(ctx) {
@@ -541,7 +542,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusMatchingOption(ctx) {

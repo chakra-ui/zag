@@ -34,7 +34,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     activeOption: state.context.activeOptionData,
     selectedValue: state.context.selectedValue,
     setValue(value: string) {
-      send({ type: "SET_VALUE", value })
+      send({ type: "SET_VALUE", value, isOptionValue: true })
     },
     clearValue() {
       send("CLEAR_VALUE")
@@ -227,10 +227,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     }),
 
     getOptionState(props: OptionProps) {
-      const { value, label, index, disabled } = props
+      const { value, index, disabled } = props
       const id = dom.getOptionId(state.context, value, index)
       const focused = state.context.activeId === id
-      const checked = state.context.selectedValue === label
+      const checked = state.context.selectedValue === value
       return { disabled, focused, checked }
     },
 
@@ -256,7 +256,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
         onPointerMove() {
           if (_state.disabled) return
-          send({ type: "POINTEROVER_OPTION", id, value: label, data: { label, value } })
+          send({ type: "POINTEROVER_OPTION", id, value, data: { label, value } })
         },
         onPointerUp(event) {
           if (_state.disabled) return
@@ -264,7 +264,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         },
         onClick() {
           if (_state.disabled) return
-          send({ type: "CLICK_OPTION", id, value: label })
+          send({ type: "CLICK_OPTION", id, value })
         },
         onAuxClick(event) {
           if (_state.disabled) return

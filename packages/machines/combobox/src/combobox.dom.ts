@@ -55,7 +55,7 @@ export const dom = {
   getMatchingOptionEl: (ctx: Ctx, value = ctx.inputValue) => {
     if (!value) return null
 
-    const selector = `[role=option][data-label="${CSS.escape(value)}"`
+    const selector = `[role=option][data-value="${CSS.escape(value)}"`
 
     const listbox = dom.getListboxEl(ctx)
     if (!listbox) return null
