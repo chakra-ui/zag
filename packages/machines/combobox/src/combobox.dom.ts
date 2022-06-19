@@ -86,4 +86,10 @@ export const dom = {
     const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
     return group?.getAttribute("aria-label")
   },
+
+  getValueLabel: (ctx: Ctx, value: string) => {
+    const el = dom.getMatchingOptionEl(ctx, value)
+    const data = dom.getOptionData(el)
+    return data.label
+  },
 }
