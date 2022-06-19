@@ -227,10 +227,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     }),
 
     getOptionState(props: OptionProps) {
-      const { value, index, disabled } = props
+      const { value, label, index, disabled } = props
       const id = dom.getOptionId(state.context, value, index)
       const focused = state.context.activeId === id
-      const checked = state.context.selectedValue === value
+      const checked = state.context.selectedValue === label
       return { disabled, focused, checked }
     },
 
