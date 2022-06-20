@@ -62,7 +62,7 @@ type PublicContext = {
   /**
    * Whether to open the popover on page load
    */
-  open?: boolean
+  defaultOpen?: boolean
 }
 
 export type UserDefinedContext = Partial<PublicContext>

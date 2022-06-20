@@ -14,7 +14,7 @@ const fetchMachine = createMachine({
   id: "dialog",
   initial: "unknown",
   context: {
-    "isOpen": false,
+    "isDefaultOpen": false,
     "isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick": false
   },
   on: {
@@ -27,7 +27,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: [{
           target: "open",
-          cond: "isOpen",
+          cond: "isDefaultOpen",
           actions: "setupDocument"
         }, {
           target: "closed",
@@ -65,7 +65,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isOpen": ctx => ctx["isOpen"],
+    "isDefaultOpen": ctx => ctx["isDefaultOpen"],
     "isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick": ctx => ctx["isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick"]
   }
 });

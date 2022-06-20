@@ -11,7 +11,7 @@ injectGlobal(dialogStyle)
 
 export default function Page() {
   // dialog 1
-  const [state, send] = useMachine(dialog.machine({ open: true }))
+  const [state, send] = useMachine(dialog.machine({ defaultOpen: true }))
   const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
   const parentDialog = createMemo(() => dialog.connect<PropTypes>(state, send, normalizeProps))
 

@@ -33,7 +33,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         unknown: {
           on: {
             SETUP: {
-              target: ctx.open ? "open" : "closed",
+              target: ctx.defaultOpen ? "open" : "closed",
               actions: "setupDocument",
             },
           },

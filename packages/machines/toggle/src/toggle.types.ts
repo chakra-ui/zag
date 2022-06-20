@@ -23,6 +23,10 @@ type PublicContext = DirectionProperty & {
    * Function to call when the toggle is clicked.
    */
   onChange?: (details: { pressed: boolean }) => void
+  /**
+   * Whether the toggle is initially pressed.
+   */
+  defaultPressed?: boolean
 }
 
 export type UserDefinedContext = Partial<PublicContext>

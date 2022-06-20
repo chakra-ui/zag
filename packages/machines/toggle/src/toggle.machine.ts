@@ -24,7 +24,10 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: { target: "unpressed", actions: "setupDocument" },
+            SETUP: {
+              target: ctx.defaultPressed ? "pressed" : "unpressed",
+              actions: "setupDocument",
+            },
           },
         },
         pressed: {
