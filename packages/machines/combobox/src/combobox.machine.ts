@@ -80,6 +80,12 @@ export function machine(ctx: UserDefinedContext = {}) {
           { guard: "focusOnClear", target: "focused", actions: "clearInputValue" },
           { actions: "clearInputValue" },
         ],
+        POINTER_OVER: {
+          actions: "setIsHovering",
+        },
+        POINTER_LEAVE: {
+          actions: "clearIsHovering",
+        },
       },
 
       states: {
@@ -105,12 +111,6 @@ export function machine(ctx: UserDefinedContext = {}) {
               guard: "openOnClick",
               target: "interacting",
               actions: ["focusInput", "invokeOnOpen"],
-            },
-            POINTER_OVER: {
-              actions: "setIsHovering",
-            },
-            POINTER_LEAVE: {
-              actions: "clearIsHovering",
             },
             FOCUS: "focused",
           },
@@ -546,7 +546,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         focusMatchingOption(ctx) {
           raf(() => {
-            const option = dom.getMatchingOptionEl(ctx)
+            const option = dom.getMatchingOptionEl(ctx, ctx.selectedValue)
             if (!option || option.id === ctx.activeId) return
             // focus
             ctx.activeId = option.id

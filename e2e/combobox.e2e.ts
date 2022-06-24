@@ -1,5 +1,5 @@
 import { expect, Locator, test } from "@playwright/test"
-import { a11y, controls, testid } from "./__utils"
+import { a11y, controls, isInViewport, testid } from "./__utils"
 
 const input = testid("input")
 const button = testid("input-arrow")
@@ -9,7 +9,11 @@ const options = "[data-part=option]:not([data-disabled])"
 const highlighted_option = "[data-part=option][data-highlighted]"
 
 const expectToBeHighlighted = async (el: Locator) => {
-  return await expect(el).toHaveAttribute("data-highlighted", "")
+  await expect(el).toHaveAttribute("data-highlighted", "")
+}
+
+const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
+  expect(await isInViewport(viewport, option)).toBe(true)
 }
 
 test.describe("combobox", () => {
@@ -138,6 +142,16 @@ test.describe("combobox", () => {
     await controls(page).bool("openOnClick")
     await page.click(input, { force: true })
     await expect(page.locator(listbox)).toBeVisible()
+  })
+
+  test.only("should scroll selected option into view", async ({ page }) => {
+    await page.click(button)
+    const malta = page.locator(options).locator("text=Malta").first()
+    await malta.click()
+    await page.click(button)
+
+    await expectToBeHighlighted(malta)
+    await expectToBeInViewport(page.locator(listbox), malta)
   })
 
   test.describe("[auto-complete]", () => {

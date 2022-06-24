@@ -46,7 +46,13 @@ const fetchMachine = createMachine({
       actions: "clearInputValue"
     }, {
       actions: "clearInputValue"
-    }]
+    }],
+    POINTER_OVER: {
+      actions: "setIsHovering"
+    },
+    POINTER_LEAVE: {
+      actions: "clearIsHovering"
+    }
   },
   on: {
     UPDATE_CONTEXT: {
@@ -79,12 +85,6 @@ const fetchMachine = createMachine({
           cond: "openOnClick",
           target: "interacting",
           actions: ["focusInput", "invokeOnOpen"]
-        },
-        POINTER_OVER: {
-          actions: "setIsHovering"
-        },
-        POINTER_LEAVE: {
-          actions: "clearIsHovering"
         },
         FOCUS: "focused"
       }

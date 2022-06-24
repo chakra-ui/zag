@@ -52,7 +52,7 @@ export const dom = {
     // else announce the number of options by querying the listbox
     return listbox?.querySelectorAll("[role=option]").length ?? 0
   },
-  getMatchingOptionEl: (ctx: Ctx, value = ctx.inputValue) => {
+  getMatchingOptionEl: (ctx: Ctx, value: string | null | undefined) => {
     if (!value) return null
 
     const selector = `[role=option][data-value="${CSS.escape(value)}"`

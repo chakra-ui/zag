@@ -69,5 +69,16 @@ export const clickOutside = (page: Page) => page.click("body", { force: true })
 
 export const rect = async (el: Locator) => {
   const bbox = await el.boundingBox()
-  return bbox ?? { x: 0, y: 0, width: 0, height: 0 }
+  return bbox ?? { width: 0, height: 0, x: 0, y: 0 }
+}
+
+export async function isInViewport(viewport: Locator, el: Locator) {
+  const bbox = await rect(el)
+  const viewportBbox = await rect(viewport)
+  return (
+    bbox.x >= viewportBbox.x &&
+    bbox.y >= viewportBbox.y &&
+    bbox.x + bbox.width <= viewportBbox.x + viewportBbox.width &&
+    bbox.y + bbox.height <= viewportBbox.y + viewportBbox.height
+  )
 }
