@@ -44,7 +44,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_STATE", checked, manual: true })
     },
     setIndeterminate(indeterminate: boolean) {
-      send({ type: "SET_INDETERMINATE", indeterminate })
+      send({ type: "SET_INDETERMINATE", value: indeterminate })
     },
 
     rootProps: normalize.element<T>({
@@ -58,24 +58,22 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-readonly": dataAttr(isReadOnly),
       onPointerMove() {
         if (!isInteractive) return
-        send({ type: "SET_HOVERED", hovered: true })
+        send({ type: "SET_HOVERED", value: true })
       },
       onPointerLeave() {
         if (!isInteractive) return
-        send({ type: "SET_HOVERED", hovered: false })
+        send({ type: "SET_HOVERED", value: false })
       },
       onPointerDown(event) {
         if (!isInteractive) return
-        // On mousedown, the input blurs and returns focus to the `body`,
-        // we need to prevent this. Native checkboxes keeps focus on `input`
-        if (isFocused) {
-          event.preventDefault()
-        }
-        send({ type: "SET_ACTIVE", active: true })
+        // On pointerdown, the input blurs and returns focus to the `body`,
+        // we need to prevent this.
+        if (isFocused) event.preventDefault()
+        send({ type: "SET_ACTIVE", value: true })
       },
       onPointerUp() {
         if (!isInteractive) return
-        send({ type: "SET_ACTIVE", active: false })
+        send({ type: "SET_ACTIVE", value: false })
       },
     }),
 
@@ -127,23 +125,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       name,
       value,
       style: visuallyHiddenStyle,
-      onChange(event) {
-        send({ type: "TOGGLE", event })
+      onChange() {
+        send({ type: "TOGGLE" })
       },
       onBlur() {
-        send({ type: "SET_FOCUSED", focused: false })
+        send({ type: "SET_FOCUSED", value: false })
       },
       onFocus() {
-        send({ type: "SET_FOCUSED", focused: true })
+        send({ type: "SET_FOCUSED", value: true })
       },
       onKeyDown(event) {
         if (event.key === " ") {
-          send({ type: "SET_ACTIVE", active: true })
+          send({ type: "SET_ACTIVE", value: true })
         }
       },
       onKeyUp(event) {
         if (event.key === " ") {
-          send({ type: "SET_ACTIVE", active: false })
+          send({ type: "SET_ACTIVE", value: false })
         }
       },
     }),

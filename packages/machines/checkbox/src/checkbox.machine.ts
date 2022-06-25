@@ -28,7 +28,6 @@ export function machine(ctx: UserDefinedContext = {}) {
 
       computed: {
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
-        isRtl: (ctx) => ctx.dir === "rtl",
       },
 
       activities: ["trackFormReset", "trackFieldsetDisabled"],
@@ -36,14 +35,14 @@ export function machine(ctx: UserDefinedContext = {}) {
       on: {
         SET_STATE: [
           {
-            guard: and("shouldCheck", "canToggle"),
+            guard: and("shouldCheck", "isInteractive"),
             target: "checked",
-            actions: ["dispatchChangeEvent"],
+            actions: "dispatchChangeEvent",
           },
           {
-            guard: "canToggle",
+            guard: "isInteractive",
             target: "unchecked",
-            actions: ["dispatchChangeEvent"],
+            actions: "dispatchChangeEvent",
           },
         ],
 
@@ -74,7 +73,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             TOGGLE: {
               target: "unchecked",
-              guard: "canToggle",
+              guard: "isInteractive",
               actions: ["invokeOnChange"],
             },
           },
@@ -83,7 +82,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             TOGGLE: {
               target: "checked",
-              guard: "canToggle",
+              guard: "isInteractive",
               actions: ["invokeOnChange"],
             },
           },
@@ -93,7 +92,7 @@ export function machine(ctx: UserDefinedContext = {}) {
     {
       guards: {
         shouldCheck: (_, evt) => evt.checked,
-        canToggle: (ctx) => !ctx.readonly,
+        isInteractive: (ctx) => ctx.isInteractive,
       },
 
       activities: {
@@ -132,33 +131,27 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.onChange?.({ checked: ctx.indeterminate ? "indeterminate" : checked })
         },
         setActive(ctx, evt) {
-          ctx.active = evt.active
-        },
-        setDisabled(ctx, evt) {
-          ctx.disabled = evt.disabled
+          ctx.active = evt.value
         },
         setHovered(ctx, evt) {
-          ctx.hovered = evt.hovered
+          ctx.hovered = evt.value
         },
         setFocused(ctx, evt) {
-          ctx.focused = evt.focused
+          ctx.focused = evt.value
         },
         setIndeterminate(ctx, evt) {
-          ctx.indeterminate = evt.indeterminate
-        },
-        setReadOnly(ctx, evt) {
-          ctx.readonly = evt.readonly
+          ctx.indeterminate = evt.value
         },
         syncInputIndeterminate(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          if (!inputEl) return
-          inputEl.indeterminate = Boolean(ctx.indeterminate)
+          const el = dom.getInputEl(ctx)
+          if (!el) return
+          el.indeterminate = Boolean(ctx.indeterminate)
         },
         dispatchChangeEvent(ctx, evt) {
           if (!evt.manual) return
-          const inputEl = dom.getInputEl(ctx)
-          if (!inputEl) return
-          dispatchInputCheckedEvent(inputEl, evt.checked)
+          const el = dom.getInputEl(ctx)
+          if (!el) return
+          dispatchInputCheckedEvent(el, evt.checked)
         },
         removeFocusIfNeeded(ctx) {
           if (ctx.disabled && ctx.focused) {

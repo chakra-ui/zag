@@ -14,22 +14,22 @@ const fetchMachine = createMachine({
   id: "checkbox",
   initial: "unknown",
   context: {
-    "shouldCheck && canToggle": false,
-    "canToggle": false,
+    "shouldCheck && isInteractive": false,
+    "isInteractive": false,
     "isDefaultChecked": false,
-    "canToggle": false,
-    "canToggle": false
+    "isInteractive": false,
+    "isInteractive": false
   },
   activities: ["trackFormReset", "trackFieldsetDisabled"],
   on: {
     SET_STATE: [{
-      cond: "shouldCheck && canToggle",
+      cond: "shouldCheck && isInteractive",
       target: "checked",
-      actions: ["dispatchChangeEvent"]
+      actions: "dispatchChangeEvent"
     }, {
-      cond: "canToggle",
+      cond: "isInteractive",
       target: "unchecked",
-      actions: ["dispatchChangeEvent"]
+      actions: "dispatchChangeEvent"
     }],
     SET_ACTIVE: {
       actions: "setActive"
@@ -66,7 +66,7 @@ const fetchMachine = createMachine({
       on: {
         TOGGLE: {
           target: "unchecked",
-          cond: "canToggle",
+          cond: "isInteractive",
           actions: ["invokeOnChange"]
         }
       }
@@ -75,7 +75,7 @@ const fetchMachine = createMachine({
       on: {
         TOGGLE: {
           target: "checked",
-          cond: "canToggle",
+          cond: "isInteractive",
           actions: ["invokeOnChange"]
         }
       }
@@ -90,8 +90,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "shouldCheck && canToggle": ctx => ctx["shouldCheck && canToggle"],
-    "canToggle": ctx => ctx["canToggle"],
+    "shouldCheck && isInteractive": ctx => ctx["shouldCheck && isInteractive"],
+    "isInteractive": ctx => ctx["isInteractive"],
     "isDefaultChecked": ctx => ctx["isDefaultChecked"]
   }
 });
