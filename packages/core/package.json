@@ -37,8 +37,8 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/store": "0.0.0",
     "@zag-js/utils": "0.1.2",
-    "klona": "^2.0.5",
-    "valtio": "^1.6.1"
+    "klona": "2.0.5"
   }
 }

@@ -1,6 +1,6 @@
-export { proxy, ref, snapshot, subscribe } from "valtio/vanilla"
+export { proxy, ref, snapshot, subscribe } from "@zag-js/store"
 export { choose, guards } from "./guard-utils"
 export * from "./machine"
 export { mergeProps } from "./merge-props"
-export type { StateFrom, ContextFrom, EventFrom } from "./type-utils"
+export type { ContextFrom, EventFrom, StateFrom } from "./type-utils"
 export type { StateMachine } from "./types"

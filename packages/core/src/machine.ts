@@ -1,6 +1,6 @@
+import { ref, snapshot, subscribe } from "@zag-js/store"
 import { cast, clear, invariant, isArray, isDev, isObject, isString, noop, runIfFn, uuid, warn } from "@zag-js/utils"
 import { klona } from "klona/json"
-import { ref, snapshot, subscribe } from "valtio/vanilla"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"

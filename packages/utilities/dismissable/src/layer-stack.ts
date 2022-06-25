@@ -1,5 +1,5 @@
 import { contains } from "@zag-js/dom-utils"
-import { proxy, ref } from "valtio"
+import { proxy, ref } from "@zag-js/store"
 
 export type Layer = {
   dismiss: VoidFunction

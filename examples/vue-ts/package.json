@@ -45,9 +45,6 @@
         "merge-anything",
         "react",
         "scroll-into-view-if-needed",
-        "valtio",
-        "valtio/utils",
-        "valtio/vanilla",
         "vue",
         "vue-router"
       ]

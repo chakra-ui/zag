@@ -1,5 +1,4 @@
-import { proxy } from "valtio/vanilla"
-import { proxyWithComputed } from "valtio/utils"
+import { proxy, proxyWithComputed } from "@zag-js/store"
 import { cast } from "@zag-js/utils"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 

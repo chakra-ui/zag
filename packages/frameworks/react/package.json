@@ -29,10 +29,13 @@
   },
   "dependencies": {
     "@zag-js/core": "0.1.6",
-    "valtio": "^1.6.1"
+    "@zag-js/store": "0.0.0",
+    "proxy-compare": "2.2.0",
+    "use-sync-external-store": "1.2.0"
   },
   "devDependencies": {
     "@types/react": "18.0.13",
+    "@types/use-sync-external-store": "0.0.3",
     "react": "18.2.0"
   },
   "peerDependencies": {

@@ -1,15 +1,12 @@
 {
-  "name": "@zag-js/dimissable",
-  "version": "0.1.0",
-  "description": "Dismissable layer utilities for the DOM",
+  "name": "@zag-js/store",
+  "version": "0.0.0",
+  "description": "The reactive store package for zag machines",
   "keywords": [
     "js",
     "utils",
-    "dimissable",
-    "layer",
-    "close",
-    "signal",
-    "outside-click"
+    "store",
+    "reactivity"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
@@ -17,7 +14,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/interact-outside",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/store",
   "sideEffects": false,
   "files": [
     "dist/**/*"
@@ -34,14 +31,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@zag-js/interact-outside": "0.1.0",
-    "@zag-js/store": "0.0.0"
-  },
-  "devDependencies": {
-    "@zag-js/dom-utils": "0.1.5"
-  },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "proxy-compare": "2.2.0"
   }
 }

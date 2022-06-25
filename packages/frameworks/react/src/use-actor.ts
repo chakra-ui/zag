@@ -1,6 +1,6 @@
 import { Machine, StateMachine as S } from "@zag-js/core"
 import { cast } from "@zag-js/utils"
-import { useSnapshot } from "valtio"
+import { useSnapshot } from "./use-snapshot"
 
 export function useActor<
   TContext extends Record<string, any>,

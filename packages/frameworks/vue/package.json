@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@zag-js/core": "0.1.6",
-    "valtio": "^1.6.1"
+    "@zag-js/store": "0.0.0"
   },
   "devDependencies": {
     "vue": "3.2.27"

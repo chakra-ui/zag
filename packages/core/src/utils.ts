@@ -1,5 +1,5 @@
 import { isArray, isObject, isString } from "@zag-js/utils"
-import { snapshot, subscribe } from "valtio/vanilla"
+import { snapshot, subscribe } from "@zag-js/store"
 import type { Dict, StateMachine as S } from "./types"
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {

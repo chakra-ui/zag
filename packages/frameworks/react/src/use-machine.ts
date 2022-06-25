@@ -1,10 +1,15 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
 import { cast } from "@zag-js/utils"
-import { useEffect, useLayoutEffect } from "react"
-import { useSnapshot } from "valtio"
-import { useConstant } from "./use-constant"
+import { useEffect, useLayoutEffect, useRef } from "react"
+import { useSnapshot } from "./use-snapshot"
 
 const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
+
+function useConstant<T>(fn: () => T): T {
+  const ref = useRef<{ v: T }>()
+  if (!ref.current) ref.current = { v: fn() }
+  return ref.current.v
+}
 
 /**
  * Useful for `React.Context` consumers who need to start the machine at the root level
