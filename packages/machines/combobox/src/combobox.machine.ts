@@ -73,13 +73,14 @@ export function machine(ctx: UserDefinedContext = {}) {
       exit: "removeLiveRegion",
 
       on: {
-        SET_VALUE: {
-          actions: ["setInputValue", "setSelectedValue"],
-        },
+        SET_VALUE: { actions: ["setInputValue", "setSelectedValue"] },
+        SET_INPUT_VALUE: { actions: "setInputValue" },
         CLEAR_VALUE: [
           { guard: "focusOnClear", target: "focused", actions: "clearInputValue" },
           { actions: "clearInputValue" },
         ],
+        POINTER_OVER: { actions: "setIsHovering" },
+        POINTER_LEAVE: { actions: "clearIsHovering" },
       },
 
       states: {
@@ -105,12 +106,6 @@ export function machine(ctx: UserDefinedContext = {}) {
               guard: "openOnClick",
               target: "interacting",
               actions: ["focusInput", "invokeOnOpen"],
-            },
-            POINTER_OVER: {
-              actions: "setIsHovering",
-            },
-            POINTER_LEAVE: {
-              actions: "clearIsHovering",
             },
             FOCUS: "focused",
           },
@@ -361,8 +356,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         // in event the options are fetched (async), we still want to auto-highlight the first option
         trackOptionNodes(ctx, evt, meta) {
           if (!ctx.autoHighlight) return
-          const fn = meta.getAction("focusFirstOption")
-          const action = () => fn(ctx, evt, meta)
+          const focusFirstOption = meta.getAction("focusFirstOption")
+          const action = () => focusFirstOption(ctx, evt, meta)
           action()
           return observeChildren(dom.getListboxEl(ctx), action)
         },
@@ -415,7 +410,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.navigationValue = ""
         },
         commitNavigationValue(ctx) {
-          ctx.inputValue = ctx.navigationValue
+          ctx.inputValue = dom.getValueLabel(ctx, ctx.navigationValue)
           ctx.navigationValue = ""
         },
         clearFocusedOption(ctx) {
@@ -426,13 +421,13 @@ export function machine(ctx: UserDefinedContext = {}) {
         selectActiveOption(ctx) {
           const option = dom.getActiveOptionEl(ctx)
           if (!option) return
-          ctx.selectedValue = dom.getOptionData(option).label
-          ctx.inputValue = ctx.selectedValue
+          ctx.selectedValue = dom.getOptionData(option).value
+          ctx.inputValue = dom.getValueLabel(ctx, ctx.selectedValue)
         },
         selectOption(ctx, evt) {
           ctx.selectedValue = evt.value || ctx.navigationValue
           let value: string | undefined
-          if (ctx.selectionBehavior === "set") value = ctx.selectedValue
+          if (ctx.selectionBehavior === "set") value = dom.getValueLabel(ctx, ctx.selectedValue)
           if (ctx.selectionBehavior === "clear") value = ""
           if (value != null) ctx.inputValue = value
         },
@@ -449,13 +444,13 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         setInputValue(ctx, evt) {
-          ctx.inputValue = evt.value
+          ctx.inputValue = evt.type === "SET_INPUT_VALUE" ? evt.value : dom.getValueLabel(ctx, evt.value)
         },
         clearInputValue(ctx) {
           ctx.inputValue = ""
         },
         revertInputValue(ctx) {
-          ctx.inputValue = ctx.selectedValue
+          ctx.inputValue = dom.getValueLabel(ctx, ctx.selectedValue)
         },
         setSelectedValue(ctx, evt) {
           ctx.selectedValue = evt.value
@@ -508,7 +503,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusLastOption(ctx) {
@@ -519,7 +514,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusNextOption(ctx) {
@@ -530,7 +525,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusPrevOption(ctx) {
@@ -541,12 +536,12 @@ export function machine(ctx: UserDefinedContext = {}) {
             // focus
             ctx.activeId = option.id
             ctx.activeOptionData = data
-            ctx.navigationValue = data.label
+            ctx.navigationValue = data.value
           })
         },
         focusMatchingOption(ctx) {
           raf(() => {
-            const option = dom.getMatchingOptionEl(ctx)
+            const option = dom.getMatchingOptionEl(ctx, ctx.selectedValue)
             if (!option || option.id === ctx.activeId) return
             // focus
             ctx.activeId = option.id

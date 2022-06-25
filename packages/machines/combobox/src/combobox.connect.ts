@@ -36,6 +36,9 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
+    setInputValue(value: string) {
+      send({ type: "SET_INPUT_VALUE", value })
+    },
     clearValue() {
       send("CLEAR_VALUE")
     },
@@ -254,9 +257,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         "data-value": value,
         "data-label": label,
         // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
+        // NOTE: for perf, we may want to move these handlers to the listbox
         onPointerMove() {
           if (_state.disabled) return
-          send({ type: "POINTEROVER_OPTION", id, value: label, data: { label, value } })
+          send({ type: "POINTEROVER_OPTION", id, value, data: { label, value } })
         },
         onPointerUp(event) {
           if (_state.disabled) return
@@ -264,7 +268,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         },
         onClick() {
           if (_state.disabled) return
-          send({ type: "CLICK_OPTION", id, value: label })
+          send({ type: "CLICK_OPTION", id, value })
         },
         onAuxClick(event) {
           if (_state.disabled) return

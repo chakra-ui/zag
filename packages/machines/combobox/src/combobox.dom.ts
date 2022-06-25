@@ -52,10 +52,10 @@ export const dom = {
     // else announce the number of options by querying the listbox
     return listbox?.querySelectorAll("[role=option]").length ?? 0
   },
-  getMatchingOptionEl: (ctx: Ctx, value = ctx.inputValue) => {
+  getMatchingOptionEl: (ctx: Ctx, value: string | null | undefined) => {
     if (!value) return null
 
-    const selector = `[role=option][data-label="${CSS.escape(value)}"`
+    const selector = `[role=option][data-value="${CSS.escape(value)}"`
 
     const listbox = dom.getListboxEl(ctx)
     if (!listbox) return null
@@ -85,5 +85,10 @@ export const dom = {
     if (!ctx.activeId) return
     const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
     return group?.getAttribute("aria-label")
+  },
+
+  getValueLabel: (ctx: Ctx, value: string) => {
+    const el = dom.getMatchingOptionEl(ctx, value)
+    return dom.getOptionData(el).label
   },
 }

@@ -35,7 +35,7 @@ export default function Page() {
 
       <main>
         <div>
-          <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
+          <button onClick={() => api.setValue("TG")}>Set to Togo</button>
           <br />
           <div ref={ref} {...api.rootProps}>
             <label {...api.labelProps}>Select country</label>
