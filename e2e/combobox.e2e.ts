@@ -144,7 +144,7 @@ test.describe("combobox", () => {
     await expect(page.locator(listbox)).toBeVisible()
   })
 
-  test.only("should scroll selected option into view", async ({ page }) => {
+  test("should scroll selected option into view", async ({ page }) => {
     await page.click(button)
     const malta = page.locator(options).locator("text=Malta").first()
     await malta.click()
