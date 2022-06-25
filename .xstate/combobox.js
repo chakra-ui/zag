@@ -40,6 +40,9 @@ const fetchMachine = createMachine({
     SET_VALUE: {
       actions: ["setInputValue", "setSelectedValue"]
     },
+    SET_INPUT_VALUE: {
+      actions: "setInputValue"
+    },
     CLEAR_VALUE: [{
       cond: "focusOnClear",
       target: "focused",

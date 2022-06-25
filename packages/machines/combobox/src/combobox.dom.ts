@@ -89,7 +89,6 @@ export const dom = {
 
   getValueLabel: (ctx: Ctx, value: string) => {
     const el = dom.getMatchingOptionEl(ctx, value)
-    const data = dom.getOptionData(el)
-    return data.label
+    return dom.getOptionData(el).label
   },
 }

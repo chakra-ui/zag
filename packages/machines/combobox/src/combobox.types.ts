@@ -69,7 +69,7 @@ type PublicContext = DirectionProperty & {
   /**
    * The behavior of the combobox when an option is selected
    */
-  selectionBehavior?: "clear" | "set" | "none"
+  selectionBehavior?: "clear" | "set"
   /**
    * Whether to select the focused option when the `Tab` key is pressed
    */

@@ -73,19 +73,14 @@ export function machine(ctx: UserDefinedContext = {}) {
       exit: "removeLiveRegion",
 
       on: {
-        SET_VALUE: {
-          actions: ["setInputValue", "setSelectedValue"],
-        },
+        SET_VALUE: { actions: ["setInputValue", "setSelectedValue"] },
+        SET_INPUT_VALUE: { actions: "setInputValue" },
         CLEAR_VALUE: [
           { guard: "focusOnClear", target: "focused", actions: "clearInputValue" },
           { actions: "clearInputValue" },
         ],
-        POINTER_OVER: {
-          actions: "setIsHovering",
-        },
-        POINTER_LEAVE: {
-          actions: "clearIsHovering",
-        },
+        POINTER_OVER: { actions: "setIsHovering" },
+        POINTER_LEAVE: { actions: "clearIsHovering" },
       },
 
       states: {
@@ -361,8 +356,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         // in event the options are fetched (async), we still want to auto-highlight the first option
         trackOptionNodes(ctx, evt, meta) {
           if (!ctx.autoHighlight) return
-          const fn = meta.getAction("focusFirstOption")
-          const action = () => fn(ctx, evt, meta)
+          const focusFirstOption = meta.getAction("focusFirstOption")
+          const action = () => focusFirstOption(ctx, evt, meta)
           action()
           return observeChildren(dom.getListboxEl(ctx), action)
         },
@@ -449,7 +444,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         setInputValue(ctx, evt) {
-          ctx.inputValue = evt.isOptionValue ? dom.getValueLabel(ctx, evt.value) : evt.value
+          ctx.inputValue = evt.type === "SET_INPUT_VALUE" ? evt.value : dom.getValueLabel(ctx, evt.value)
         },
         clearInputValue(ctx) {
           ctx.inputValue = ""
