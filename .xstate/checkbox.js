@@ -51,6 +51,7 @@ const fetchMachine = createMachine({
   },
   states: {
     unknown: {
+      tags: ["unchecked"],
       on: {
         SETUP: [{
           target: "checked",
@@ -63,6 +64,7 @@ const fetchMachine = createMachine({
       }
     },
     checked: {
+      tags: ["checked"],
       on: {
         TOGGLE: {
           target: "unchecked",
@@ -72,6 +74,7 @@ const fetchMachine = createMachine({
       }
     },
     unchecked: {
+      tags: ["unchecked"],
       on: {
         TOGGLE: {
           target: "checked",

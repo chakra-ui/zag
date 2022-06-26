@@ -75,11 +75,6 @@ type ComputedContext = Readonly<{
    * Whether the slider is interactive
    */
   readonly isInteractive: boolean
-  /**
-   * @computed
-   * Whether the writing direction is RTL
-   */
-  readonly isRtl: boolean
 }>
 
 type PrivateContext = Context<{
@@ -104,6 +99,7 @@ export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
   value: "unknown" | "checked" | "unchecked"
+  tags: "checked" | "unchecked"
 }
 
 export type State = S.State<MachineContext, MachineState>

@@ -22,8 +22,8 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       watch: {
-        indeterminate: ["syncInputIndeterminate"],
-        disabled: ["removeFocusIfNeeded"],
+        indeterminate: "syncInputIndeterminate",
+        disabled: "removeFocusIfNeeded",
       },
 
       computed: {
@@ -62,6 +62,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
       states: {
         unknown: {
+          tags: ["unchecked"],
           on: {
             SETUP: {
               target: ctx.defaultChecked ? "checked" : "unchecked",
@@ -70,6 +71,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           },
         },
         checked: {
+          tags: ["checked"],
           on: {
             TOGGLE: {
               target: "unchecked",
@@ -79,6 +81,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           },
         },
         unchecked: {
+          tags: ["unchecked"],
           on: {
             TOGGLE: {
               target: "checked",

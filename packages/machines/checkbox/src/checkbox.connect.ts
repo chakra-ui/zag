@@ -30,7 +30,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
   const trulyDisabled = isDisabled && !isFocusable
 
-  const stateView = state.value && state.value !== "unknown" ? state.value : "unchecked"
+  const stateView = state.hasTag("checked") ? "checked" : "unchecked"
   const view = state.context.indeterminate ? "mixed" : stateView
 
   return {
@@ -112,7 +112,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       id: dom.getInputId(state.context),
       type: "checkbox",
       required: isRequired,
-      checked: isChecked,
+      defaultChecked: isChecked,
       disabled: trulyDisabled,
       "data-disabled": dataAttr(isDisabled),
       readOnly: isReadOnly,
