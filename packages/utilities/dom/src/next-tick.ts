@@ -26,3 +26,17 @@ export function queueMicrotask(fn: VoidFunction) {
     Promise.resolve().then(fn)
   }
 }
+
+export function queueBeforeEvent(el: Element, type: string, fn: VoidFunction) {
+  const cleanup = raf(() => {
+    el.removeEventListener(type, invoke, true)
+    fn()
+  })
+
+  const invoke = () => {
+    cleanup()
+    fn()
+  }
+
+  el.addEventListener(type, invoke, { once: true, capture: true })
+}

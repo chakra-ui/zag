@@ -18,22 +18,6 @@ export function getNativeEvent<E>(e: E): NativeEvent<E> {
   return (e as any).nativeEvent ?? e
 }
 
-export function queueBeforeEvent(el: Element, type: string, fn: VoidFunction) {
-  const raf = requestAnimationFrame(() => {
-    el.removeEventListener(type, invoke, true)
-    fn()
-  })
-
-  const invoke = () => {
-    cancelAnimationFrame(raf)
-    fn()
-  }
-
-  el.addEventListener(type, invoke, { once: true, capture: true })
-
-  return raf
-}
-
 export function isPortalEvent(event: Pick<Event, "currentTarget" | "target">): boolean {
   return !contains(event.currentTarget, event.target)
 }
