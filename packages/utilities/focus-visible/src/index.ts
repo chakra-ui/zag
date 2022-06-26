@@ -1,6 +1,6 @@
 type Modality = "keyboard" | "pointer" | "virtual"
 type HandlerEvent = PointerEvent | MouseEvent | KeyboardEvent | FocusEvent
-type Handler = (modality: Modality, e: HandlerEvent) => void
+type Handler = (modality: Modality, e: HandlerEvent | null) => void
 type FocusVisibleCallback = (isFocusVisible: boolean) => void
 
 let hasSetup = false
@@ -10,7 +10,7 @@ let hasBlurredWindowRecently = false
 
 const handlers = new Set<Handler>()
 
-function trigger(modality: Modality, event: HandlerEvent) {
+function trigger(modality: Modality, event: HandlerEvent | null) {
   handlers.forEach((handler) => handler(modality, event))
 }
 
@@ -85,7 +85,7 @@ function onWindowBlur() {
 }
 
 function isFocusVisible() {
-  return modality != null && modality !== "pointer"
+  return modality !== "pointer"
 }
 
 function setupGlobalFocusEvents() {
@@ -137,7 +137,7 @@ export function trackFocusVisible(fn: FocusVisibleCallback) {
   }
 }
 
-export function trackInteractionModality(fn: (v: Modality | null) => void) {
+export function trackInteractionModality(fn: (value: Modality | null) => void) {
   setupGlobalFocusEvents()
 
   fn(modality)
@@ -147,4 +147,13 @@ export function trackInteractionModality(fn: (v: Modality | null) => void) {
   return () => {
     handlers.delete(handler)
   }
+}
+
+export function setInteractionModality(value: Modality) {
+  modality = value
+  trigger(value, null)
+}
+
+export function getInteractionModality() {
+  return modality
 }
