@@ -7,6 +7,8 @@ const eventMap = {
   onBlur: "onFocusOut",
   onDoubleClick: "onDblClick",
   onChange: "onInput",
+  defaultChecked: "checked",
+  defaultValue: "value",
 }
 
 function toSolidProp(prop: string) {
