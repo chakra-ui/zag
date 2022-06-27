@@ -6,7 +6,7 @@
     "zag": "index.js"
   },
   "dependencies": {
-    "@lerna/package-graph": "5.1.4",
+    "@lerna/package-graph": "5.1.6",
     "@swc-node/register": "1.5.1",
     "@types/signale": "1.4.4",
     "commander": "9.3.0",

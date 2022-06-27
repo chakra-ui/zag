@@ -1218,28 +1218,28 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@lerna/package-graph@5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@lerna/package-graph/-/package-graph-5.1.4.tgz#df5910f588334284637a6a3cc24766806ba88f52"
-  integrity sha512-dP1gLcrqou5/8zef7u5ne4GTslNXULjpi3dDiljohKNR4XelsC4lkkF9m1Uzn9E1nAphHRhWXrRq40kqxmdYXg==
+"@lerna/package-graph@5.1.6":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@lerna/package-graph/-/package-graph-5.1.6.tgz#553edc82bc489449127386f420d0e0f78574b49b"
+  integrity sha512-kAmcZLbFcgzdwwEE34ls2hKKwLNXrp++Lb3QgLi5oZl95cGEXjhGNqECdY+hAgBxaSOAgrAd9dvxoR36zl5LJw==
   dependencies:
-    "@lerna/prerelease-id-from-version" "5.1.4"
-    "@lerna/validation-error" "5.1.4"
+    "@lerna/prerelease-id-from-version" "5.1.6"
+    "@lerna/validation-error" "5.1.6"
     npm-package-arg "^8.1.0"
     npmlog "^6.0.2"
     semver "^7.3.4"
 
-"@lerna/prerelease-id-from-version@5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@lerna/prerelease-id-from-version/-/prerelease-id-from-version-5.1.4.tgz#ea34adb5810622a656fa8dea17595d6b794e2872"
-  integrity sha512-kDcXKKFD6Ww/FinLEvsY1P3aIiuVLyonkttvfKJTJvm3ymz7/fBKz8GotFXuONVC1xSIK9Nrk3jGYs6ZGoha+w==
+"@lerna/prerelease-id-from-version@5.1.6":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@lerna/prerelease-id-from-version/-/prerelease-id-from-version-5.1.6.tgz#ce03815e967433784bbfe9b989e3368008684642"
+  integrity sha512-LJYIuxw9rpKkCWtE10gOOyqpcKRzV34Ljk0L0WSaXILlcWf5bAb0ZmF8t5UJ/MzhGklYwT/Fk0yPtVtu7GnBaA==
   dependencies:
     semver "^7.3.4"
 
-"@lerna/validation-error@5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@lerna/validation-error/-/validation-error-5.1.4.tgz#095d12367ec17a5fc00c0cf6cd8a83c3ddb9a9c3"
-  integrity sha512-wys9Fv/bUy7sYXOK9t+V3XSyEHK5tUXwY22nfIDYu416WcSkkE4DI8Q2nTv4nYYOmG2Y7IOhaSenbsPLQ0VqtQ==
+"@lerna/validation-error@5.1.6":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@lerna/validation-error/-/validation-error-5.1.6.tgz#12371dcc8dc610e04644b1bcf05535c6487755ca"
+  integrity sha512-6+rc1bGTqaRMvML8Qew+RoqZFxyESSX+GBCTv0pW1SBcNo/yC76fq9y/WSA3dn6GuqHWyX3H0Yki7HutezM7/A==
   dependencies:
     npmlog "^6.0.2"
 
