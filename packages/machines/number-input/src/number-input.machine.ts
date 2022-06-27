@@ -311,7 +311,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         setValue(ctx, evt) {
           const value = evt.target?.value ?? evt.value
-          ctx.value = utils.sanitize(ctx, utils.parse(ctx, value))
+          ctx.value = utils.sanitize(ctx, utils.parse(ctx, value.toString()))
         },
         clearValue(ctx) {
           ctx.value = ""
