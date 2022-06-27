@@ -1,6 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
 import { FormatDecimalOptions } from "@zag-js/number-utils"
-import type { Point } from "@zag-js/rect-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
@@ -187,7 +186,7 @@ type PrivateContext = Context<{
    * @internal
    * The scrubber cursor position
    */
-  scrubberCursorPoint: Point | null
+  scrubberCursorPoint: { x: number; y: number } | null
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext

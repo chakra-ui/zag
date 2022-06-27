@@ -2,7 +2,6 @@ import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { State, Send } from "./checkbox.types"
 import { dom } from "./checkbox.dom"
-import { utils } from "./checkbox.utils"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const isChecked = state.matches("checked")
@@ -89,7 +88,8 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-invalid": dataAttr(isInvalid),
       onPointerDown(event) {
         if (!isInteractive) return
-        utils.stopEvent(event)
+        event.preventDefault()
+        event.stopPropagation()
       },
     }),
 

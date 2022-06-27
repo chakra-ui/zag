@@ -2,18 +2,18 @@ import { mergeProps } from "@zag-js/core"
 import {
   contains,
   dataAttr,
-  EventKeyMap,
   getEventKey,
+  getEventPoint,
   getNativeEvent,
   isElementEditable,
   validateBlur,
+  type EventKeyMap,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./menu.dom"
-import { Api, ItemProps, OptionItemProps, Send, Service, State, GroupProps, LabelProps } from "./menu.types"
+import { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
   const pointerdownNode = state.context.pointerdownNode

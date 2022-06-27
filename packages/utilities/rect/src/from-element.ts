@@ -1,5 +1,5 @@
+import { getComputedStyle } from "@zag-js/dom-utils"
 import { Rect } from "./rect"
-import { getComputedStyle } from "./computed-style"
 
 export function getElementRect(el: HTMLElement, opts: ElementRectOptions = {}): Rect {
   return Rect.create(getClientRect(el, opts))

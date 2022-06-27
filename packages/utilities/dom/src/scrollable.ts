@@ -1,4 +1,4 @@
-import { getComputedStyle } from "./computed-style"
+import { getComputedStyle } from "./get-computed-style"
 import { getNodeName, getOwnerDocument, getOwnerWindow, getParent, isHTMLElement, isWindow } from "./query"
 
 export function isScrollParent(el: HTMLElement): boolean {

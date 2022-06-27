@@ -1,8 +1,6 @@
-import { dispatchInputValueEvent } from "@zag-js/dom-utils"
-import type { Point } from "@zag-js/rect-utils"
-import { relativeToNode } from "@zag-js/rect-utils"
+import { dispatchInputValueEvent, getPointRelativeToNode } from "@zag-js/dom-utils"
 import { styles } from "./slider.style"
-import type { MachineContext as Ctx } from "./slider.types"
+import type { MachineContext as Ctx, Point } from "./slider.types"
 import { utils } from "./slider.utils"
 
 export const dom = {
@@ -27,19 +25,21 @@ export const dom = {
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
     // get the slider root element
-    const control = dom.getControlEl(ctx)
-    if (!control) return
+    const el = dom.getControlEl(ctx)
+    if (!el) return
 
     // get the position/progress % of the point relative to the root's width/height
-    const { progress } = relativeToNode(point, control)
+    const relativePoint = getPointRelativeToNode(point, el)
+    const percentX = relativePoint.x / el.offsetWidth
+    const percentY = relativePoint.y / el.offsetHeight
 
     // get the progress % depending on the orientation
     let percent: number
 
     if (ctx.isHorizontal) {
-      percent = ctx.isRtl ? 1 - progress.x : progress.x
+      percent = ctx.isRtl ? 1 - percentX : percentX
     } else {
-      percent = 1 - progress.y
+      percent = 1 - percentY
     }
 
     return utils.fromPercent(ctx, percent)

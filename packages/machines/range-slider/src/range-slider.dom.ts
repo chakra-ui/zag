@@ -1,20 +1,24 @@
 import { StateMachine } from "@zag-js/core"
-import { dispatchInputValueEvent, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
-import { closest, getElementRect, relativeToNode } from "@zag-js/rect-utils"
+import { closest, getElementRect } from "@zag-js/rect-utils"
 import { styles } from "./range-slider.style"
 import type { MachineContext as Ctx } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
 
 function getPointProgress(ctx: Ctx, point: Point) {
-  const { progress } = relativeToNode(point, dom.getControlEl(ctx)!)
+  const el = dom.getControlEl(ctx)!
+  const relativePoint = getPointRelativeToNode(point, el)
+  const percentX = relativePoint.x / el.offsetWidth
+  const percentY = relativePoint.y / el.offsetHeight
+
   let percent: number
 
   if (ctx.isHorizontal) {
-    percent = ctx.isRtl ? 1 - progress.x : progress.x
+    percent = ctx.isRtl ? 1 - percentX : percentX
   } else {
-    percent = 1 - progress.y
+    percent = 1 - percentY
   }
 
   return utils.clampPercent(percent)

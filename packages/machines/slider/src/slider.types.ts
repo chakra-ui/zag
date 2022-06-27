@@ -164,3 +164,8 @@ export type SharedContext = {
   orientation?: "horizontal" | "vertical"
   readonly hasMeasuredThumbSize: boolean
 }
+
+export type Point = {
+  x: number
+  y: number
+}

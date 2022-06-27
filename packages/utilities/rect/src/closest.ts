@@ -1,5 +1,14 @@
+import { distance } from "./distance"
 import { Rect } from "./rect"
 import type { Point, RectSide } from "./types"
+
+export function closest(...pts: Point[]) {
+  return (a: Point): Point => {
+    const ds = pts.map((b) => distance(b, a))
+    const c = Math.min.apply(Math, ds)
+    return pts[ds.indexOf(c)]
+  }
+}
 
 export function closestSideToRect(ref: Rect, r: Rect): RectSide {
   if (r.maxX <= ref.minX) return "left"
