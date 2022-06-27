@@ -12,8 +12,10 @@ export const utils = {
     return ctx.validateCharacter?.(event.key) ?? utils.isFloatingPoint(event.key)
   },
   isFloatingPoint: (v: string) => /^[Ee0-9+\-.]$/.test(v),
-  sanitize: (ctx: Ctx, value: string) => {
+  sanitize: (ctx: Ctx, value: string | number) => {
+    console.log(value)
     return value
+      .toString()
       .split("")
       .filter(ctx.validateCharacter ?? utils.isFloatingPoint)
       .join("")
