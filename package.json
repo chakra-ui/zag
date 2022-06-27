@@ -67,7 +67,7 @@
     "@typescript-eslint/parser": "5.29.0",
     "axe-core": "4.4.2",
     "commitlint": "17.0.3",
-    "esbuild": "0.14.44",
+    "esbuild": "0.14.47",
     "esbuild-runner": "2.2.1",
     "eslint": "8.18.0",
     "eslint-config-prettier": "8.5.0",
