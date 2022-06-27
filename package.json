@@ -62,7 +62,7 @@
     "@playwright/test": "1.22.2",
     "@swc-node/jest": "1.5.2",
     "@types/form-serialize": "0.7.2",
-    "@types/jest": "28.1.1",
+    "@types/jest": "28.1.3",
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
     "axe-core": "4.4.2",
