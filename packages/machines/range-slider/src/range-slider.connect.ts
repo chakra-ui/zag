@@ -1,6 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent, getEventPoint } from "@zag-js/dom-utils"
 import { percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
-import { getEventPoint } from "@zag-js/rect-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./range-slider.dom"

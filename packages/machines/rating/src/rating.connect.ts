@@ -1,5 +1,11 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
-import { getEventPoint, relativeToNode } from "@zag-js/rect-utils"
+import {
+  dataAttr,
+  EventKeyMap,
+  getEventKey,
+  getNativeEvent,
+  getEventPoint,
+  getPointRelativeToNode,
+} from "@zag-js/dom-utils"
 import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { cast, isLeftClick } from "@zag-js/utils"
 import { dom } from "./rating.dom"
@@ -102,8 +108,10 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         onPointerMove(event) {
           if (!isInteractive) return
           const point = getEventPoint(cast(event))
-          const { progress } = relativeToNode(point, event.currentTarget)
-          const isMidway = progress.x < 0.5
+          const el = event.currentTarget
+          const relativePoint = getPointRelativeToNode(point, el)
+          const percentX = relativePoint.x / el.offsetWidth
+          const isMidway = percentX < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {

@@ -1,4 +1,4 @@
-import { getComputedStyle } from "./computed-style"
+import { getComputedStyle } from "./get-computed-style"
 import { isDisabled, isHTMLElement } from "./query"
 
 export const focusableSelector = /*#__PURE__*/ [

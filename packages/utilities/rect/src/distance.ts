@@ -1,10 +1,13 @@
 import { intersects } from "./intersection"
-import { distance } from "./point"
 import { Rect } from "./rect"
 import { Point, RectSide } from "./types"
 
 export type DistanceValue = Point & {
   value: number
+}
+
+export function distance(a: Point, b: Point = { x: 0, y: 0 }): number {
+  return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
 }
 
 export function distanceFromPoint(r: Rect, p: Point): DistanceValue {

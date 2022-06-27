@@ -1,7 +1,6 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { raf, trackPointerMove } from "@zag-js/dom-utils"
+import { raf, trackPointerMove, getPointRelativeToNode } from "@zag-js/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
-import { relativeToNode } from "@zag-js/rect-utils"
 import { dom } from "./splitter.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./splitter.types"
 
@@ -213,11 +212,11 @@ export function machine(ctx: UserDefinedContext = {}) {
           raf(() => dom.getSplitterEl(ctx)?.focus())
         },
         setPointerValue(ctx, evt) {
-          const primaryPane = dom.getPrimaryPaneEl(ctx)
-          if (!primaryPane) return
+          const el = dom.getPrimaryPaneEl(ctx)
+          if (!el) return
 
-          const { point } = relativeToNode(evt.point, primaryPane)
-          let currentPoint = ctx.isHorizontal ? point.x : point.y
+          const relativePoint = getPointRelativeToNode(evt.point, el)
+          let currentPoint = ctx.isHorizontal ? relativePoint.x : relativePoint.y
 
           let value = parseFloat(snapToStep(clamp(currentPoint, ctx), ctx.step))
 

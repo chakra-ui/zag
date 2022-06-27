@@ -1,9 +1,7 @@
-import { noop } from "@zag-js/utils"
-
 type Callback = (v: MutationRecord) => void
 
 export function observeAttributes(node: Element | null, attributes: string | string[], fn: Callback) {
-  if (!node) return noop
+  if (!node) return
   const attrs = Array.isArray(attributes) ? attributes : [attributes]
   const win = node.ownerDocument.defaultView || window
   const obs = new win.MutationObserver((changes) => {
@@ -20,7 +18,7 @@ export function observeAttributes(node: Element | null, attributes: string | str
 }
 
 export function observeChildren(node: Element | null, fn: Callback) {
-  if (!node) return noop
+  if (!node) return
   const win = node.ownerDocument.defaultView || window
   const obs = new win.MutationObserver((changes) => {
     for (const change of changes) {
