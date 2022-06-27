@@ -66,11 +66,11 @@ type PublicContext = DirectionProperty &
     /**
      * The minimum value of the number input
      */
-    min: number
+    min?: number
     /**
      * The maximum value of the number input
      */
-    max: number
+    max?: number
     /**
      * The amount to increment or decrement the value by
      */
@@ -135,6 +135,18 @@ type ComputedContext = Readonly<{
    * The value of the input as a number
    */
   valueAsNumber: number
+  /**
+   * @computed
+   * @default MIN_SAFE_INTEGER
+   * The minimum value of the input
+   */
+  minValue: number
+  /**
+   * @computed
+   * @default MAX_SAFE_INTEGER
+   * The maximum value of the input
+   */
+  maxValue: number
   /**
    * @computed
    * Whether the value is at the min
