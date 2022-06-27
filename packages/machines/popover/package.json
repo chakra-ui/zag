@@ -36,7 +36,7 @@
     "@zag-js/remove-scroll": "0.1.0",
     "@zag-js/types": "0.2.0",
     "@zag-js/utils": "0.1.2",
-    "focus-trap": "^6.7.1"
+    "focus-trap": "6.7.1"
   },
   "scripts": {
     "build:fast": "zag build",

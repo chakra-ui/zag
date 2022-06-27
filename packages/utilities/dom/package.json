@@ -25,7 +25,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@types/react": "18.0.13",
+    "@types/react": "18.0.14",
     "@zag-js/utils": "0.1.2"
   },
   "scripts": {

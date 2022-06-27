@@ -34,7 +34,7 @@
     "svelte": "3.48.0"
   },
   "peerDependencies": {
-    "svelte": "^3.38.2"
+    "svelte": ">=3.0.0"
   },
   "scripts": {
     "build:fast": "zag build",

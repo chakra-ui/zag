@@ -30,7 +30,7 @@
   "dependencies": {
     "@zag-js/core": "0.1.6",
     "@zag-js/store": "0.0.0",
-    "hyphenate-style-name": "^1.0.4"
+    "hyphenate-style-name": "1.0.4"
   },
   "devDependencies": {
     "solid-js": "1.4.4"

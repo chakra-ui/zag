@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "16.11.11",
-    "@types/react": "18.0.13",
+    "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",

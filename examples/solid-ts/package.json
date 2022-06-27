@@ -11,11 +11,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "vite": "^2.6.4",
-    "vite-plugin-solid": "^2.0.3"
+    "vite": "2.6.4",
+    "vite-plugin-solid": "2.0.3"
   },
   "dependencies": {
-    "solid-app-router": "^0.1.5",
+    "solid-app-router": "0.1.5",
     "solid-js": "1.4.4"
   }
 }
