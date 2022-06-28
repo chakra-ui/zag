@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { computed, defineComponent, onMounted, Teleport, Fragment, h } from "vue"
 import { menuData, menuStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -14,15 +14,15 @@ export default defineComponent({
   setup() {
     const [state, send, machine] = useMachine(menu.machine)
     const rootRef = useSetup({ send, id: useId() })
-    const root = computed(() => menu.connect<PropTypes>(state.value, send, normalizeProps))
+    const root = computed(() => menu.connect(state.value, send, normalizeProps))
 
     const [subState, subSend, subMachine] = useMachine(menu.machine)
     const subRef = useSetup({ send: subSend, id: useId() })
-    const sub = computed(() => menu.connect<PropTypes>(subState.value, subSend, normalizeProps))
+    const sub = computed(() => menu.connect(subState.value, subSend, normalizeProps))
 
     const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
     const sub2Ref = useSetup({ send: sub2Send, id: useId() })
-    const sub2 = computed(() => menu.connect<PropTypes>(sub2State.value, sub2Send, normalizeProps))
+    const sub2 = computed(() => menu.connect(sub2State.value, sub2Send, normalizeProps))
 
     onMounted(() => {
       setTimeout(() => {

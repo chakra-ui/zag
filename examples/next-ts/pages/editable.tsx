@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as editable from "@zag-js/editable"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { useId } from "react"
 import { editableControls, editableStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -16,7 +16,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = editable.connect(state, send)
+  const api = editable.connect(state, send, normalizeProps)
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as rating from "@zag-js/rating"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { ratingControls, ratingStyle } from "@zag-js/shared"
@@ -57,7 +57,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => rating.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => rating.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

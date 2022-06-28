@@ -1,10 +1,10 @@
 import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import { Send, State } from "./pin-input.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isValueComplete = state.context.isValueComplete
   const isInvalid = state.context.invalid
   const focusedIndex = state.context.focusedIndex
@@ -30,7 +30,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dom.getFirstInputEl(state.context)?.focus()
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       dir: state.context.dir,
       "data-part": "root",
       id: dom.getRootId(state.context),
@@ -41,7 +41,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getInputProps({ index }: { index: number }) {
       const inputType = state.context.type === "numeric" ? "tel" : "text"
-      return normalize.input<T>({
+      return normalize.input({
         "data-part": "input",
         disabled: state.context.disabled,
         "data-disabled": dataAttr(state.context.disabled),

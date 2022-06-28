@@ -1,10 +1,10 @@
 import { dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { isArray, isSafari } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const focusedValue = state.context.focusedValue
   const value = state.context.value
   const multiple = state.context.multiple
@@ -18,7 +18,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value })
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       id: dom.getRootId(state.context),
     }),
@@ -33,7 +33,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getItemProps(props: ItemProps) {
       const { isOpen, isFocused } = api.getItemState(props)
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "item",
         id: dom.getItemId(state.context, props.value),
         "data-expanded": dataAttr(isOpen),
@@ -43,7 +43,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getContentProps(props: ItemProps) {
       const { isOpen, isFocused, isDisabled } = api.getItemState(props)
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "content",
         role: "region",
         id: dom.getContentId(state.context, props.value),
@@ -58,7 +58,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     getTriggerProps(props: ItemProps) {
       const { value } = props
       const { isDisabled, isOpen } = api.getItemState(props)
-      return normalize.button<T>({
+      return normalize.button({
         "data-part": "trigger",
         type: "button",
         id: dom.getTriggerId(state.context, value),

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as combobox from "@zag-js/combobox"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -27,7 +27,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = combobox.connect(state, send)
+  const api = combobox.connect(state, send, normalizeProps)
 
   return (
     <>

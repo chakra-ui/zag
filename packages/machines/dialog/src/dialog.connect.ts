@@ -1,9 +1,9 @@
 import { ariaAttr } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./dialog.dom"
 import type { Send, State } from "./dialog.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
   const isOpen = state.matches("open")
 
@@ -16,7 +16,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("CLOSE")
     },
 
-    triggerProps: normalize.button<T>({
+    triggerProps: normalize.button({
       "data-part": "trigger",
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
@@ -28,12 +28,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    backdropProps: normalize.element<T>({
+    backdropProps: normalize.element({
       "data-part": "backdrop",
       id: dom.getBackdropId(state.context),
     }),
 
-    underlayProps: normalize.element<T>({
+    underlayProps: normalize.element({
       "data-part": "underlay",
       id: dom.getUnderlayId(state.context),
       onPointerDown(event) {
@@ -47,7 +47,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    contentProps: normalize.element<T>({
+    contentProps: normalize.element({
       "data-part": "content",
       role: state.context.role,
       id: dom.getContentId(state.context),
@@ -61,17 +61,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    titleProps: normalize.element<T>({
+    titleProps: normalize.element({
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
-    descriptionProps: normalize.element<T>({
+    descriptionProps: normalize.element({
       "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
 
-    closeButtonProps: normalize.button<T>({
+    closeButtonProps: normalize.button({
       "data-part": "close-button",
       id: dom.getCloseButtonId(state.context),
       type: "button",

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId, PropsWithChildren } from "solid-js"
 import { Portal } from "solid-js/web"
 import { popoverControls, popoverStyle } from "@zag-js/shared"
@@ -23,7 +23,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => popover.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => popover.connect(state, send, normalizeProps))
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { subscribe } from "@zag-js/core"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import {
@@ -16,11 +16,7 @@ import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export let toaster: Toaster = {} as any
 
-export function groupConnect<T extends PropTypes = ReactPropTypes>(
-  state: GroupState,
-  send: GroupSend,
-  normalize = normalizeProp,
-) {
+export function groupConnect<T extends PropTypes>(state: GroupState, send: GroupSend, normalize: NormalizeProps<T>) {
   const group = {
     count: state.context.count,
     toasts: state.context.toasts,
@@ -129,7 +125,7 @@ export function groupConnect<T extends PropTypes = ReactPropTypes>(
 
     getGroupProps(options: GroupProps) {
       const { placement, label = "Notifications" } = options
-      return normalize.element<T>({
+      return normalize.element({
         tabIndex: -1,
         "aria-label": label,
         id: dom.getGroupId(placement),

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as editable from "@zag-js/editable"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { editableControls, editableStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -21,7 +21,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => editable.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => editable.connect(state, send, normalizeProps))
 
   return (
     <>

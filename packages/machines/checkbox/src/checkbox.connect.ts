@@ -1,9 +1,9 @@
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
-import { State, Send } from "./checkbox.types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
+import type { Send, State } from "./checkbox.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isChecked = state.matches("checked")
 
   const isInteractive = state.context.isInteractive
@@ -46,7 +46,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_INDETERMINATE", value: indeterminate })
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -76,7 +76,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
@@ -93,7 +93,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    controlProps: normalize.element<T>({
+    controlProps: normalize.element({
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -107,7 +107,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-active": dataAttr(isActive),
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       id: dom.getInputId(state.context),
       type: "checkbox",

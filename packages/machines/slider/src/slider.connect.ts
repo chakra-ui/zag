@@ -1,11 +1,11 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent, getEventPoint } from "@zag-js/dom-utils"
 import { percentToValue, valueToPercent } from "@zag-js/number-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./slider.dom"
 import type { Send, State } from "./slider.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const ariaValueText = state.context.getAriaValueText?.(state.context.value)
@@ -37,7 +37,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("DECREMENT")
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isFocused),
@@ -48,7 +48,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getRootStyle(state.context),
     }),
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -63,7 +63,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getLabelStyle(),
     }),
 
-    thumbProps: normalize.element<T>({
+    thumbProps: normalize.element({
       "data-part": "thumb",
       id: dom.getThumbId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -138,7 +138,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getThumbStyle(state.context),
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       type: "text",
       defaultValue: state.context.value,
@@ -147,7 +147,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       hidden: true,
     }),
 
-    outputProps: normalize.output<T>({
+    outputProps: normalize.output({
       "data-part": "output",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -156,7 +156,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-live": "off",
     }),
 
-    trackProps: normalize.element<T>({
+    trackProps: normalize.element({
       "data-part": "track",
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -166,7 +166,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getTrackStyle(),
     }),
 
-    rangeProps: normalize.element<T>({
+    rangeProps: normalize.element({
       "data-part": "range",
       id: dom.getRangeId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -176,7 +176,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getRangeStyle(state.context),
     }),
 
-    controlProps: normalize.element<T>({
+    controlProps: normalize.element({
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -198,7 +198,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getControlStyle(),
     }),
 
-    markerGroupProps: normalize.element<T>({
+    markerGroupProps: normalize.element({
       "data-part": "marker-group",
       role: "presentation",
       "aria-hidden": true,
@@ -212,7 +212,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const markerState =
         value > state.context.value ? "over-value" : value < state.context.value ? "under-value" : "at-value"
 
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "marker",
         role: "presentation",
         "data-orientation": state.context.orientation,

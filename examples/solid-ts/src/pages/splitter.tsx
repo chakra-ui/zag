@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import * as splitter from "@zag-js/splitter"
 import { createMemo, createUniqueId } from "solid-js"
 import { splitterControls, splitterStyle } from "@zag-js/shared"
@@ -18,7 +18,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => splitter.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => splitter.connect(state, send, normalizeProps))
 
   return (
     <>

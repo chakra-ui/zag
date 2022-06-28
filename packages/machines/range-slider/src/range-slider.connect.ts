@@ -1,12 +1,12 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep, getNativeEvent, getEventPoint } from "@zag-js/dom-utils"
 import { percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./range-slider.dom"
 import { Send, State } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const values = state.context.value
@@ -58,7 +58,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "FOCUS", index })
     },
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -75,7 +75,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -85,7 +85,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getRootStyle(state.context),
     }),
 
-    outputProps: normalize.output<T>({
+    outputProps: normalize.output({
       "data-part": "output",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -94,7 +94,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-live": "off",
     }),
 
-    trackProps: normalize.element<T>({
+    trackProps: normalize.element({
       "data-part": "track",
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -111,7 +111,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "thumb",
         "data-index": index,
         id: dom.getThumbId(state.context, index),
@@ -188,7 +188,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getInputProps(index: number) {
-      return normalize.input<T>({
+      return normalize.input({
         "data-part": "input",
         name: `${state.context.name}[${index}]`,
         type: "text",
@@ -198,7 +198,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
 
-    rangeProps: normalize.element<T>({
+    rangeProps: normalize.element({
       id: dom.getRangeId(state.context),
       "data-part": "range",
       "data-focus": dataAttr(isFocused),
@@ -208,7 +208,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: dom.getRangeStyle(state.context),
     }),
 
-    controlProps: normalize.element<T>({
+    controlProps: normalize.element({
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -229,7 +229,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    markerGroupProps: normalize.element<T>({
+    markerGroupProps: normalize.element({
       "data-part": "marker-group",
       role: "presentation",
       "aria-hidden": true,
@@ -250,7 +250,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         markerState = "at-value"
       }
 
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "marker",
         id: dom.getMarkerId(state.context, value),
         role: "presentation",

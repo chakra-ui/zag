@@ -1,4 +1,4 @@
-import type * as React from "react"
+import type { JSX } from "./jsx"
 
 export type Direction = "ltr" | "rtl"
 
@@ -41,9 +41,7 @@ export type Context<T> = T &
     pointerdownNode?: HTMLElement | null
   }
 
-export type Style = React.CSSProperties & {
-  [prop: string]: string | number | undefined
-}
+export type Style = JSX.CSSProperties
 
 export * from "./prop-types"
-export * from "./controls"
+export type { JSX }

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as popover from "@zag-js/popover"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import * as React from "react"
 import { popoverControls, popoverStyle } from "@zag-js/shared"
 import { Portal } from "../components/portal"
@@ -17,7 +17,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: React.useId() })
 
-  const api = popover.connect(state, send)
+  const api = popover.connect(state, send, normalizeProps)
 
   const Wrapper = api.portalled ? Portal : React.Fragment
 

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, useMachine, useSetup, PropTypes, mergeProps } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup, mergeProps } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -21,7 +21,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => checkbox.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => checkbox.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

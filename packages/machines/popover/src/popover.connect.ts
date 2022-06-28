@@ -1,10 +1,10 @@
 import { dataAttr, EventKeyMap, isFocusable, validateBlur } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
 import type { Send, State } from "./popover.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.matches("open")
   const pointerdownNode = state.context.pointerdownNode
   const currentPlacement = state.context.currentPlacement
@@ -24,23 +24,23 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("CLOSE")
     },
 
-    arrowProps: normalize.element<T>({
+    arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
-    innerArrowProps: normalize.element<T>({
+    innerArrowProps: normalize.element({
       "data-part": "arrow-inner",
       style: popperStyles.innerArrow,
     }),
 
-    anchorProps: normalize.element<T>({
+    anchorProps: normalize.element({
       "data-part": "anchor",
       id: dom.getAnchorId(state.context),
     }),
 
-    triggerProps: normalize.button<T>({
+    triggerProps: normalize.button({
       "data-part": "trigger",
       type: "button",
       "data-placement": currentPlacement,
@@ -59,13 +59,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    positionerProps: normalize.element<T>({
+    positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
       "data-part": "positioner",
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element<T>({
+    contentProps: normalize.element({
       "data-part": "content",
       id: dom.getContentId(state.context),
       tabIndex: -1,
@@ -103,17 +103,17 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    titleProps: normalize.element<T>({
+    titleProps: normalize.element({
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
-    descriptionProps: normalize.element<T>({
+    descriptionProps: normalize.element({
       "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
 
-    closeButtonProps: normalize.button<T>({
+    closeButtonProps: normalize.button({
       "data-part": "close-button",
       id: dom.getCloseButtonId(state.context),
       type: "button",

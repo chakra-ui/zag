@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as accordion from "@zag-js/accordion"
-import { useMachine, useSetup } from "@zag-js/react"
+import { useMachine, useSetup, normalizeProps } from "@zag-js/react"
 import { accordionControls, accordionData, accordionStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -16,7 +16,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = accordion.connect(state, send)
+  const api = accordion.connect(state, send, normalizeProps)
 
   return (
     <>
@@ -39,6 +39,7 @@ export default function Page() {
           ))}
         </div>
       </main>
+
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>

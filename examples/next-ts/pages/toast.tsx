@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useActor, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useActor, useMachine, useSetup } from "@zag-js/react"
 import { toastControls, toastStyle } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { useId, useRef } from "react"
@@ -10,7 +10,7 @@ import { useControls } from "../hooks/use-controls"
 
 function ToastItem({ actor }: { actor: toast.Service }) {
   const [state, send] = useActor(actor)
-  const api = toast.connect(state, send)
+  const api = toast.connect(state, send, normalizeProps)
 
   return (
     <pre {...api.rootProps}>
@@ -30,7 +30,7 @@ export default function Page() {
   })
 
   const ref = useSetup({ send, id: useId() })
-  const api = toast.group.connect(state, send)
+  const api = toast.group.connect(state, send, normalizeProps)
 
   const id = useRef<string>()
 

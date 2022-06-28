@@ -1,12 +1,12 @@
 import { ariaAttr, dataAttr, EventKeyMap, getEventStep, getNativeEvent, getEventPoint } from "@zag-js/dom-utils"
 import { roundToDevicePixel } from "@zag-js/number-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isIos, isLeftClick } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isFocused = state.hasTag("focus")
   const isInvalid = state.context.isOutOfRange || !!state.context.invalid
 
@@ -43,13 +43,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dom.getInputEl(state.context)?.focus()
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       id: dom.getRootId(state.context),
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
     }),
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -57,7 +57,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       htmlFor: dom.getInputId(state.context),
     }),
 
-    groupProps: normalize.element<T>({
+    groupProps: normalize.element({
       "data-part": "group",
       role: "group",
       "aria-disabled": isDisabled,
@@ -66,7 +66,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "aria-invalid": ariaAttr(state.context.invalid),
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       name: state.context.name,
       id: dom.getInputId(state.context),
@@ -133,7 +133,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    decrementButtonProps: normalize.button<T>({
+    decrementButtonProps: normalize.button({
       "data-part": "spin-button",
       "data-type": "decrement",
       id: dom.getDecButtonId(state.context),
@@ -157,7 +157,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    incrementButtonProps: normalize.button<T>({
+    incrementButtonProps: normalize.button({
       "data-part": "spin-button",
       "data-type": "increment",
       id: dom.getIncButtonId(state.context),
@@ -180,7 +180,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    scrubberProps: normalize.element<T>({
+    scrubberProps: normalize.element({
       "data-disabled": dataAttr(isDisabled),
       "data-part": "scrubber",
       id: dom.getScrubberId(state.context),

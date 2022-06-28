@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId } from "react"
@@ -25,7 +25,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = tagsInput.connect(state, send)
+  const api = tagsInput.connect(state, send, normalizeProps)
 
   return (
     <>

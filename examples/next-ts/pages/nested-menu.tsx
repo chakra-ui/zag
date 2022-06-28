@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { menuData, menuStyle } from "@zag-js/shared"
 import { useEffect, useId } from "react"
 import { Portal } from "../components/portal"
@@ -10,15 +10,15 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine)
   const rootRef = useSetup<HTMLUListElement>({ send, id: useId() })
-  const root = menu.connect(state, send)
+  const root = menu.connect(state, send, normalizeProps)
 
   const [subState, subSend, subMachine] = useMachine(menu.machine)
   const subRef = useSetup<HTMLUListElement>({ send: subSend, id: useId() })
-  const sub = menu.connect(subState, subSend)
+  const sub = menu.connect(subState, subSend, normalizeProps)
 
   const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
   const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: useId() })
-  const sub2 = menu.connect(sub2State, sub2Send)
+  const sub2 = menu.connect(sub2State, sub2Send, normalizeProps)
 
   useEffect(() => {
     setTimeout(() => {

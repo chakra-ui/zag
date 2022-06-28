@@ -14,7 +14,7 @@ type TupleTypes<T extends any[]> = T[number]
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
 
-export function mergeProps<T extends Props[]>(...args: T): UnionToIntersection<TupleTypes<T>> {
+export function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<TupleTypes<T[]>> {
   let result: Props = {}
 
   for (let props of args) {
@@ -45,5 +45,5 @@ export function mergeProps<T extends Props[]>(...args: T): UnionToIntersection<T
     }
   }
 
-  return result as UnionToIntersection<TupleTypes<T>>
+  return result as any
 }

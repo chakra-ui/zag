@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { menuStyle } from "@zag-js/shared"
@@ -18,7 +18,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLUListElement>({ send, id: createUniqueId() })
 
-  const api = createMemo(() => menu.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => menu.connect(state, send, normalizeProps))
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as dialog from "@zag-js/dialog"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { useId, useRef } from "react"
 import { dialogStyle } from "@zag-js/shared"
 import { Portal } from "../components/portal"
@@ -12,7 +12,7 @@ export default function Page() {
 
   const [state, send] = useMachine(dialog.machine({ defaultOpen: true }))
   const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
-  const parentDialog = dialog.connect(state, send)
+  const api = dialog.connect(state, send, normalizeProps)
 
   return (
     <>
@@ -20,22 +20,20 @@ export default function Page() {
 
       <main>
         <div>
-          <button ref={ref} {...parentDialog.triggerProps} data-testid="trigger-1">
+          <button ref={ref} {...api.triggerProps} data-testid="trigger-1">
             Open Dialog
           </button>
 
           <div style={{ minHeight: "1200px" }} />
 
-          {parentDialog.isOpen && (
+          {api.isOpen && (
             <Portal>
-              <div {...parentDialog.backdropProps} />
-              <div data-testid="underlay-1" {...parentDialog.underlayProps}>
-                <div {...parentDialog.contentProps}>
-                  <h2 {...parentDialog.titleProps}>Edit profile</h2>
-                  <p {...parentDialog.descriptionProps}>
-                    Make changes to your profile here. Click save when you are done.
-                  </p>
-                  <button {...parentDialog.closeButtonProps} data-testid="close-1">
+              <div {...api.backdropProps} />
+              <div data-testid="underlay-1" {...api.underlayProps}>
+                <div {...api.contentProps}>
+                  <h2 {...api.titleProps}>Edit profile</h2>
+                  <p {...api.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
+                  <button {...api.closeButtonProps} data-testid="close-1">
                     X
                   </button>
                   <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />

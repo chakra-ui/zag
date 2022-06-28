@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
 import { menuData, menuStyle } from "@zag-js/shared"
@@ -12,15 +12,15 @@ injectGlobal(menuStyle)
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine)
   const rootRef = useSetup<HTMLUListElement>({ send, id: createUniqueId() })
-  const root = createMemo(() => menu.connect<PropTypes>(state, send, normalizeProps))
+  const root = createMemo(() => menu.connect(state, send, normalizeProps))
 
   const [subState, subSend, subMachine] = useMachine(menu.machine)
   const subRef = useSetup<HTMLUListElement>({ send: subSend, id: createUniqueId() })
-  const sub = createMemo(() => menu.connect<PropTypes>(subState, subSend, normalizeProps))
+  const sub = createMemo(() => menu.connect(subState, subSend, normalizeProps))
 
   const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
   const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: createUniqueId() })
-  const sub2 = createMemo(() => menu.connect<PropTypes>(sub2State, sub2Send, normalizeProps))
+  const sub2 = createMemo(() => menu.connect(sub2State, sub2Send, normalizeProps))
 
   onMount(() => {
     setTimeout(() => {

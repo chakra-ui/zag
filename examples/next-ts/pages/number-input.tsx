@@ -1,6 +1,6 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { numberInputControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -16,7 +16,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLInputElement>({ send, id: useId() })
 
-  const api = numberInput.connect(state, send)
+  const api = numberInput.connect(state, send, normalizeProps)
 
   return (
     <>
