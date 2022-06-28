@@ -1,10 +1,10 @@
 import { dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isSafari } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
 import type { Send, State, TabProps } from "./tabs.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const messages = state.context.messages
   const isFocused = state.matches("focused")
 
@@ -16,7 +16,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_VALUE", value })
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
@@ -24,7 +24,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dir: state.context.dir,
     }),
 
-    triggerGroupProps: normalize.element<T>({
+    triggerGroupProps: normalize.element({
       "data-part": "trigger-group",
       id: dom.getTriggerGroupId(state.context),
       role: "tablist",
@@ -71,7 +71,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const { value, disabled } = props
       const selected = state.context.value === value
 
-      return normalize.button<T>({
+      return normalize.button({
         "data-part": "trigger",
         role: "tab",
         type: "button",
@@ -105,7 +105,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
 
-    contentGroupProps: normalize.element<T>({
+    contentGroupProps: normalize.element({
       "data-part": "content-group",
       id: dom.getContentGroupId(state.context),
       "data-orientation": state.context.orientation,
@@ -113,7 +113,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getContentProps({ value }: { value: string }) {
       const selected = state.context.value === value
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "content",
         id: dom.getContentId(state.context, value),
         tabIndex: 0,
@@ -125,7 +125,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getDeleteButtonProps({ value, disabled }: TabProps) {
-      return normalize.button<T>({
+      return normalize.button({
         "data-part": "delete-button",
         type: "button",
         tabIndex: -1,
@@ -137,7 +137,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
 
-    indicatorProps: normalize.element<T>({
+    indicatorProps: normalize.element({
       id: dom.getIndicatorId(state.context),
       "data-part": "indicator",
       "data-orientation": state.context.orientation,

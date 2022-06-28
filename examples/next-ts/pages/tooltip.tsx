@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { tooltipStyles } from "@zag-js/shared"
 import * as tooltip from "@zag-js/tooltip"
 import { Portal } from "../components/portal"
@@ -13,8 +13,8 @@ export default function Page() {
   const id2 = "tip-2"
   const ref = useSetup<HTMLButtonElement>({ send, id })
   const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: id2 })
-  const api = tooltip.connect(state, send)
-  const api2 = tooltip.connect(state2, send2)
+  const api = tooltip.connect(state, send, normalizeProps)
+  const api2 = tooltip.connect(state2, send2, normalizeProps)
   return (
     <>
       <Global styles={tooltipStyles} />

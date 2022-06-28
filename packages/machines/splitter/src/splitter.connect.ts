@@ -1,9 +1,9 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./splitter.dom"
 import { Send, State } from "./splitter.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isHorizontal = state.context.isHorizontal
   const isDisabled = state.context.disabled
 
@@ -36,7 +36,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send({ type: "SET_SIZE", size })
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       "data-orientation": state.context.orientation,
       "data-disabled": dataAttr(isDisabled),
@@ -48,7 +48,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    secondaryPaneProps: normalize.element<T>({
+    secondaryPaneProps: normalize.element({
       "data-part": "secondary-pane",
       "data-disabled": dataAttr(isDisabled),
       id: dom.getSecondaryPaneId(state.context),
@@ -60,7 +60,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    primaryPaneProps: normalize.element<T>({
+    primaryPaneProps: normalize.element({
       "data-part": "primary-pane",
       id: dom.getPrimaryPaneId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -76,7 +76,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    toggleButtonProps: normalize.element<T>({
+    toggleButtonProps: normalize.element({
       "data-part": "toggle-button",
       id: dom.getToggleButtonId(state.context),
       "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
@@ -85,12 +85,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    labelProps: normalize.element<T>({
+    labelProps: normalize.element({
       "data-part": "label",
       id: dom.getLabelId(state.context),
     }),
 
-    splitterProps: normalize.element<T>({
+    splitterProps: normalize.element({
       "data-part": "splitter",
       id: dom.getSplitterId(state.context),
       role: "separator",

@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as slider from "@zag-js/range-slider"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { computed, h, Fragment } from "vue"
@@ -27,7 +27,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => slider.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => slider.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

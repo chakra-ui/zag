@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { useActor, useMachine, useSetup, normalizeProps, PropTypes } from "@zag-js/solid"
+import { useActor, useMachine, useSetup, normalizeProps } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { toastControls, toastStyle } from "@zag-js/shared"
@@ -27,7 +27,7 @@ function Loader() {
 
 function ToastItem(props: { actor: toast.Service }) {
   const [state, send] = useActor(props.actor)
-  const api = createMemo(() => toast.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
   return (
     <div {...api().rootProps}>
@@ -44,7 +44,7 @@ export default function Page() {
 
   const [state, send] = useMachine(toast.group.machine, { context: controls.context })
   const ref = useSetup({ send, id: createUniqueId() })
-  const api = createMemo(() => toast.group.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
 
   const [id, setId] = createSignal<string>()
 

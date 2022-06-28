@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { menuOptionData as data, menuStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -21,7 +21,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => menu.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => menu.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

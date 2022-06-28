@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as toast from "@zag-js/toast"
-import { normalizeProps, useActor, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useActor, useMachine, useSetup } from "@zag-js/vue"
 import { HollowDotsSpinner } from "epic-spinners"
 import { computed, defineComponent, h, PropType, ref, Fragment } from "vue"
 import { toastControls, toastStyle } from "@zag-js/shared"
@@ -19,7 +19,7 @@ const ToastItem = defineComponent({
   },
   setup(props) {
     const [state, send] = useActor(props.actor)
-    const apiRef = computed(() => toast.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => toast.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
@@ -46,7 +46,7 @@ export default defineComponent({
     })
 
     const toastRef = useSetup({ send, id: "1" })
-    const apiRef = computed(() => toast.group.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => toast.group.connect(state.value, send, normalizeProps))
 
     const id = ref<string>()
 

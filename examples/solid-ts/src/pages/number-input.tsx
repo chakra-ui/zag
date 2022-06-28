@@ -1,7 +1,7 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -16,7 +16,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const number = createMemo(() => numberInput.connect<PropTypes>(state, send, normalizeProps))
+  const number = createMemo(() => numberInput.connect(state, send, normalizeProps))
 
   return (
     <>

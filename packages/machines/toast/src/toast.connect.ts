@@ -1,9 +1,9 @@
 import { dataAttr } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./toast.dom"
 import type { Send, State } from "./toast.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
   const isUpdating = state.hasTag("updating")
@@ -30,7 +30,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("DISMISS")
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       dir: state.context.dir,
       id: dom.getContainerId(state.context),
@@ -75,7 +75,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    progressbarProps: normalize.element<T>({
+    progressbarProps: normalize.element({
       "data-part": "progressbar",
       "data-type": state.context.type,
       style: {
@@ -88,12 +88,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    titleProps: normalize.element<T>({
+    titleProps: normalize.element({
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
-    closeButtonProps: normalize.button<T>({
+    closeButtonProps: normalize.button({
       id: dom.getCloseButtonId(state.context),
       "data-part": "close-button",
       type: "button",

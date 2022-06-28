@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import { Portal } from "solid-js/web"
 import * as dialog from "@zag-js/dialog"
-import { useMachine, useSetup, normalizeProps, PropTypes } from "@zag-js/solid"
+import { useMachine, useSetup, normalizeProps } from "@zag-js/solid"
 import { StateVisualizer } from "../components/state-visualizer"
 import { dialogStyle } from "@zag-js/shared"
 import { createMemo, createUniqueId } from "solid-js"
@@ -13,7 +13,7 @@ export default function Page() {
   // dialog 1
   const [state, send] = useMachine(dialog.machine({ defaultOpen: true }))
   const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
-  const parentDialog = createMemo(() => dialog.connect<PropTypes>(state, send, normalizeProps))
+  const parentDialog = createMemo(() => dialog.connect(state, send, normalizeProps))
 
   return (
     <>

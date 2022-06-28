@@ -1,9 +1,9 @@
 import { ariaAttr, dataAttr, EventKeyMap, validateBlur } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./editable.dom"
 import { Send, State } from "./editable.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
   const isReadonly = state.context.readonly
@@ -41,12 +41,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       send("SUBMIT")
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       id: dom.getRootId(state.context),
     }),
 
-    areaProps: normalize.element<T>({
+    areaProps: normalize.element({
       "data-part": "area",
       id: dom.getAreaId(state.context),
       style: autoResize ? { display: "inline-grid" } : undefined,
@@ -55,7 +55,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-placeholder-shown": dataAttr(isValueEmpty),
     }),
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
@@ -69,7 +69,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       "aria-label": messages.input,
       name: state.context.name,
@@ -124,7 +124,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         : undefined,
     }),
 
-    previewProps: normalize.element<T>({
+    previewProps: normalize.element({
       id: dom.getPreviewId(state.context),
       "data-part": "preview",
       "data-placeholder-shown": dataAttr(isValueEmpty),
@@ -158,7 +158,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
         : undefined,
     }),
 
-    editButtonProps: normalize.button<T>({
+    editButtonProps: normalize.button({
       "data-part": "edit-button",
       id: dom.getEditBtnId(state.context),
       "aria-label": messages.edit,
@@ -170,12 +170,12 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    controlGroupProps: normalize.element<T>({
+    controlGroupProps: normalize.element({
       id: dom.getControlGroupId(state.context),
       "data-part": "control-group",
     }),
 
-    submitButtonProps: normalize.button<T>({
+    submitButtonProps: normalize.button({
       "data-part": "submit-button",
       id: dom.getSubmitBtnId(state.context),
       "aria-label": messages.submit,
@@ -187,7 +187,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    cancelButtonProps: normalize.button<T>({
+    cancelButtonProps: normalize.button({
       "data-part": "cancel-button",
       "aria-label": messages.cancel,
       id: dom.getCancelBtnId(state.context),

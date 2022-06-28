@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as editable from "@zag-js/editable"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { editableControls, editableStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -21,7 +21,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => editable.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => editable.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

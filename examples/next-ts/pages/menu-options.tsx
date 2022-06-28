@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { menuOptionData as data, menuStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
@@ -15,7 +15,7 @@ export default function Page() {
     }),
   )
   const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
-  const api = menu.connect(state, send)
+  const api = menu.connect(state, send, normalizeProps)
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { splitterControls, splitterStyle } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
 import { useId } from "react"
@@ -16,7 +16,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = splitter.connect(state, send)
+  const api = splitter.connect(state, send, normalizeProps)
 
   return (
     <>

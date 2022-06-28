@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import * as popover from "@zag-js/popover"
 import { popoverStyle, popoverControls } from "@zag-js/shared"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"
@@ -22,7 +22,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => popover.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => popover.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

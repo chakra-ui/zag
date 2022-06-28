@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as slider from "@zag-js/slider"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
 import { sliderControls, sliderStyle } from "@zag-js/shared"
@@ -19,7 +19,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => slider.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => slider.connect(state, send, normalizeProps))
 
   return (
     <>

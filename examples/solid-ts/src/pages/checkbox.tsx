@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, PropTypes, useMachine, useSetup, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup, mergeProps } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -17,7 +17,7 @@ export default function Page() {
   })
 
   const ref = useSetup({ send, id: createUniqueId() })
-  const api = createMemo(() => checkbox.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
 
   const inputProps = createMemo(() =>
     mergeProps(api().inputProps, {

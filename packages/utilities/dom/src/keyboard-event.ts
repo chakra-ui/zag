@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from "react"
+import type { JSX } from "@zag-js/types"
 
 type EventKey =
   | "ArrowDown"
@@ -18,7 +18,7 @@ type EventKey =
   | "PageDown"
   | (string & {})
 
-export type EventKeyMap = Partial<Record<EventKey, (event: React.KeyboardEvent) => void>>
+export type EventKeyMap = Partial<Record<EventKey, (event: JSX.KeyboardEvent) => void>>
 
 const rtlKeyMap = {
   ArrowLeft: "ArrowRight",
@@ -45,7 +45,7 @@ type EventKeyOptions = {
 /**
  * Determine the event key based on text direction.
  */
-export function getEventKey(event: KeyboardEvent, options: EventKeyOptions = {}) {
+export function getEventKey(event: Pick<KeyboardEvent, "key">, options: EventKeyOptions = {}) {
   const { dir = "ltr", orientation = "horizontal" } = options
 
   let { key } = event
@@ -66,7 +66,7 @@ const ARROW_KEYS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"])
 /**
  * Determine the step factor for keyboard events
  */
-export function getEventStep(event: KeyboardEvent) {
+export function getEventStep(event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "key" | "shiftKey">) {
   if (event.ctrlKey || event.metaKey) {
     return 0.1
   } else {

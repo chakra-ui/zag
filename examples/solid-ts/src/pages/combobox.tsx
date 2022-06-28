@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -29,7 +29,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => combobox.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => combobox.connect(state, send, normalizeProps))
 
   return (
     <>
@@ -51,7 +51,7 @@ export default function Page() {
                   {(item, index) => {
                     const options = { label: item.label, value: item.code, index: index(), disabled: item.disabled }
                     return (
-                      <li className="combobox__option" {...api().getOptionProps(options)}>
+                      <li class="combobox__option" {...api().getOptionProps(options)}>
                         {item.label}
                       </li>
                     )

@@ -1,11 +1,11 @@
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import { Send, State } from "./tooltip.types"
+import type { Send, State } from "./tooltip.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const id = state.context.id
   const hasAriaLabel = state.context.hasAriaLabel
 
@@ -34,7 +34,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       }
     },
 
-    triggerProps: normalize.button<T>({
+    triggerProps: normalize.button({
       "data-part": "trigger",
       id: triggerId,
       "data-expanded": dataAttr(isOpen),
@@ -66,24 +66,24 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    arrowProps: normalize.element<T>({
+    arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
-    innerArrowProps: normalize.element<T>({
+    innerArrowProps: normalize.element({
       "data-part": "arrow-inner",
       style: popperStyles.innerArrow,
     }),
 
-    positionerProps: normalize.element<T>({
+    positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
       "data-part": "positioner",
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element<T>({
+    contentProps: normalize.element({
       "data-part": "content",
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
@@ -99,7 +99,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    labelProps: normalize.element<T>({
+    labelProps: normalize.element({
       "data-part": "label",
       id: contentId,
       role: "tooltip",

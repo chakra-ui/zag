@@ -6,12 +6,12 @@ import {
   getEventPoint,
   getPointRelativeToNode,
 } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, isLeftClick } from "@zag-js/utils"
 import { dom } from "./rating.dom"
 import { Send, State } from "./rating.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
   const value = state.context.value
   const isDisabled = state.context.disabled
@@ -39,13 +39,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       }
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       dir: state.context.dir,
       "data-part": "root",
       id: dom.getRootId(state.context),
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       name: state.context.name,
       type: "text",
@@ -54,13 +54,13 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       value: state.context.value,
     }),
 
-    labelProps: normalize.element<T>({
+    labelProps: normalize.element({
       "data-part": "label",
       id: dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
     }),
 
-    itemGroupProps: normalize.element<T>({
+    itemGroupProps: normalize.element({
       id: dom.getItemGroupId(state.context),
       "data-part": "item-group",
       role: "radiogroup",
@@ -82,7 +82,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const { isHalf, isHighlighted, isChecked } = api.getRatingState(index)
       const valueText = messages.ratingValueText(index)
 
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "item",
         id: dom.getItemId(state.context, index.toString()),
         role: "radio",
