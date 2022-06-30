@@ -6,31 +6,35 @@ export function isWindow(value: any): value is Window {
   return value?.toString() === "[object Window]"
 }
 
+export function isFrame(element: Element): element is HTMLIFrameElement {
+  return element.localName === "iframe"
+}
+
 export const isWithinShadowRoot = (node: HTMLElement) => {
   return isShadowRoot(node.getRootNode())
 }
 
-export function getOwnerDocument(el: Element | Window | null) {
+export function getDocument(el: Element | Window | null) {
   if (isWindow(el)) return el.document
   return el?.ownerDocument ?? document
 }
 
-export function getOwnerWindow(el: HTMLElement) {
+export function getWindow(el: HTMLElement) {
   return el?.ownerDocument.defaultView ?? window
 }
 
 export function getDocumentElement(el: HTMLElement | Window): HTMLElement {
-  return getOwnerDocument(el).documentElement
+  return getDocument(el).documentElement
 }
 
-export function getNodeName(node: HTMLElement | Window): string {
-  return isWindow(node) ? "" : node ? node.localName || "" : ""
+export function getNodeName(node: HTMLElement | Window | null): string {
+  return isWindow(node) ? "" : node?.localName ?? ""
 }
 
 export function getEventWindow(event: UIEvent) {
   if (event.view) return event.view
   let target = event.currentTarget
-  if (target != null) return getOwnerWindow(target as HTMLElement)
+  if (target != null) return getWindow(target as HTMLElement)
   return window
 }
 
@@ -39,7 +43,7 @@ export function getEventTarget<T extends EventTarget>(event: Event): T | null {
 }
 
 export function getActiveElement(el: HTMLElement): HTMLElement | null {
-  let activeElement = getOwnerDocument(el).activeElement as HTMLElement | null
+  let activeElement = getDocument(el).activeElement as HTMLElement | null
 
   while (activeElement && activeElement.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
@@ -54,11 +58,11 @@ export function getActiveDescendant(node: HTMLElement | null): HTMLElement | nul
   if (!node) return null
   const id = node.getAttribute("aria-activedescendant")
   if (!id) return null
-  return getOwnerDocument(node).getElementById(id)
+  return getDocument(node).getElementById(id)
 }
 
 export function getParent(el: HTMLElement): HTMLElement {
-  const doc = getOwnerDocument(el)
+  const doc = getDocument(el)
   if (getNodeName(el) === "html") return el
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
@@ -83,11 +87,16 @@ export function isElementEditable(el: HTMLElement | null) {
   if (el == null) return false
   try {
     return (
-      (el instanceof getOwnerWindow(el).HTMLInputElement && el.selectionStart != null) ||
+      (el instanceof getWindow(el).HTMLInputElement && el.selectionStart != null) ||
       /(textarea|select)/.test(el.localName) ||
       el.isContentEditable
     )
-  } catch (error) {
+  } catch {
     return false
   }
+}
+
+export function isVisible(el: Element) {
+  if (!isHTMLElement(el)) return false
+  return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
 }

@@ -1,5 +1,5 @@
 import { getComputedStyle } from "./get-computed-style"
-import { getNodeName, getOwnerDocument, getOwnerWindow, getParent, isHTMLElement, isWindow } from "./query"
+import { getNodeName, getDocument, getWindow, getParent, isHTMLElement, isWindow } from "./query"
 
 export function isScrollParent(el: HTMLElement): boolean {
   const { overflow, overflowX, overflowY } = getComputedStyle(el)
@@ -8,7 +8,7 @@ export function isScrollParent(el: HTMLElement): boolean {
 
 export function getScrollParent(el: HTMLElement): HTMLElement {
   if (["html", "body", "#document"].includes(getNodeName(el))) {
-    return getOwnerDocument(el).body
+    return getDocument(el).body
   }
 
   if (isHTMLElement(el) && isScrollParent(el)) {
@@ -22,8 +22,8 @@ type Target = Array<VisualViewport | Window | HTMLElement>
 
 export function getScrollParents(el: HTMLElement, list: Target = []): Target {
   const scrollParent = getScrollParent(el)
-  const isBody = scrollParent === getOwnerDocument(el).body
-  const win = getOwnerWindow(scrollParent)
+  const isBody = scrollParent === getDocument(el).body
+  const win = getWindow(scrollParent)
 
   const target = isBody
     ? ([win] as Target).concat(win.visualViewport || [], isScrollParent(scrollParent) ? scrollParent : [])

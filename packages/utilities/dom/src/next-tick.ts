@@ -18,3 +18,17 @@ export function raf(fn: VoidFunction) {
     globalThis.cancelAnimationFrame(id)
   }
 }
+
+export function sandbox(type: typeof raf | undefined, fn: () => VoidFunction | undefined | void) {
+  let cleanup: VoidFunction | undefined | void
+  if (type) {
+    type(() => {
+      cleanup = fn()
+    })
+  } else {
+    cleanup = fn()
+  }
+  return () => {
+    cleanup?.()
+  }
+}

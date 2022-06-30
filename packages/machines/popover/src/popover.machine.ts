@@ -1,6 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards, ref } from "@zag-js/core"
-import { contains, nextTick, preventBodyPointerEvents, raf, trackPointerDown } from "@zag-js/dom-utils"
+import { trackDismissableElement } from "@zag-js/dimissable"
+import { addDomEvent, contains, nextTick, raf } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { next, runIfFn } from "@zag-js/utils"
@@ -8,7 +9,7 @@ import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
 
-const { and, or } = guards
+const { and, or, not } = guards
 
 export function machine(ctx: UserDefinedContext = {}) {
   return createMachine<MachineContext, MachineState>(
@@ -17,7 +18,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       initial: "unknown",
       context: {
         uid: "",
-        closeOnBlur: true,
+        closeOnInteractOutside: true,
         closeOnEsc: true,
         autoFocus: true,
         modal: false,
@@ -27,6 +28,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         currentPlacement: undefined,
         ...ctx,
+        preventReturnFocus: false,
         renderedElements: {
           title: true,
           description: true,
@@ -51,56 +53,47 @@ export function machine(ctx: UserDefinedContext = {}) {
         closed: {
           entry: ["clearPointerDown", "invokeOnClose"],
           on: {
-            TRIGGER_CLICK: "open",
+            TOGGLE: "open",
             OPEN: "open",
           },
         },
 
         open: {
           activities: [
-            "trackPointerDown",
             "trapFocus",
             "preventScroll",
             "hideContentBelow",
-            "disableOutsidePointerEvents",
             "computePlacement",
+            "trackInteractionOutside",
+            "trackTabKeyDown",
           ],
           entry: ["setInitialFocus", "invokeOnOpen"],
           on: {
-            CLOSE: {
+            CLOSE: "closed",
+            REQUEST_CLOSE: {
               target: "closed",
-              actions: "focusTrigger",
+              actions: "focusTriggerIfNeeded",
             },
-            TRIGGER_CLICK: {
+            TOGGLE: "closed",
+            TRIGGER_BLUR: {
+              guard: not("isRelatedTargetWithinContent"),
               target: "closed",
-              actions: "focusTrigger",
             },
-            ESCAPE: {
-              guard: "closeOnEsc",
-              target: "closed",
-              actions: "focusTrigger",
-            },
-            TAB: {
-              guard: and("isLastTabbableElement", "closeOnBlur", "portalled"),
-              target: "closed",
-              actions: "focusNextTabbableElementAfterTrigger",
-            },
-            SHIFT_TAB: {
-              guard: and(or("isFirstTabbableElement", "isContentFocused"), "closeOnBlur", "portalled"),
-              target: "closed",
-              actions: "focusTrigger",
-            },
-            INTERACT_OUTSIDE: [
+            TAB: [
               {
-                guard: and("closeOnBlur", "isRelatedTargetFocusable"),
-                target: "closed",
+                guard: and("isTriggerFocused", "portalled"),
+                actions: "focusFirstTabbableElement",
               },
               {
-                guard: "closeOnBlur",
+                guard: and("isLastTabbableElement", "closeOnInteractOutside", "portalled"),
                 target: "closed",
-                actions: "focusTrigger",
+                actions: "focusNextTabbableElementAfterTrigger",
               },
             ],
+            SHIFT_TAB: {
+              guard: and(or("isFirstTabbableElement", "isContentFocused"), "portalled"),
+              actions: "focusTriggerIfNeeded",
+            },
           },
         },
       },
@@ -122,25 +115,51 @@ export function machine(ctx: UserDefinedContext = {}) {
             },
           })
         },
-        trackPointerDown(ctx) {
-          return trackPointerDown(dom.getDoc(ctx), (el) => {
-            ctx.pointerdownNode = ref(el)
+        trackInteractionOutside(ctx, _evt, { send }) {
+          return trackDismissableElement(dom.getContentEl(ctx), {
+            pointerBlocking: ctx.modal,
+            excludeContainers: dom.getTriggerEl(ctx),
+            onEscapeKeyDown(event) {
+              if (ctx.closeOnEsc) return
+              event.preventDefault()
+            },
+            onInteractOutside(event) {
+              if (event.defaultPrevented) return
+              ctx.preventReturnFocus = event.detail.focusable || event.detail.contextmenu
+              if (ctx.closeOnInteractOutside) return
+              event.preventDefault()
+            },
+            onFocusOutside(event) {
+              if (!ctx.currentPortalled) return
+              event.preventDefault()
+            },
+            onDismiss() {
+              send({ type: "REQUEST_CLOSE", src: "#interact-outside" })
+            },
           })
         },
-        disableOutsidePointerEvents(ctx) {
-          const el = dom.getContentEl(ctx)
-          return preventBodyPointerEvents(el, {
-            document: dom.getDoc(ctx),
-            disabled: !ctx.modal,
-          })
+        trackTabKeyDown(ctx, _evt, { send }) {
+          if (ctx.modal) return
+          return addDomEvent(
+            dom.getWin(ctx),
+            "keydown",
+            (event) => {
+              if (event.key !== "Tab") return
+              send({
+                type: event.shiftKey ? "SHIFT_TAB" : "TAB",
+                preventDefault: () => event.preventDefault(),
+              })
+            },
+            true,
+          )
         },
         hideContentBelow(ctx) {
           if (!ctx.modal) return
-          let unhide: VoidFunction | undefined
+          let cleanup: VoidFunction | undefined
           nextTick(() => {
-            unhide = ariaHidden([dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
+            cleanup = ariaHidden([dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
           })
-          return () => unhide?.()
+          return () => cleanup?.()
         },
         preventScroll(ctx) {
           return preventBodyScroll({
@@ -150,7 +169,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         trapFocus(ctx) {
           if (!ctx.modal) return
-          let trap: FocusTrap
+          let trap: FocusTrap | undefined
           nextTick(() => {
             const el = dom.getContentEl(ctx)
             if (!el) return
@@ -170,18 +189,17 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
       },
       guards: {
-        closeOnEsc: (ctx) => !!ctx.closeOnEsc,
-        autoFocus: (ctx) => !!ctx.autoFocus,
-        modal: (ctx) => !!ctx.modal,
-        portalled: (ctx) => !!ctx.portalled,
-        isRelatedTargetFocusable: (_ctx, evt) => evt.focusable,
-        closeOnBlur: (ctx) => !!ctx.closeOnBlur,
+        portalled: (ctx) => ctx.currentPortalled,
+        isRelatedTargetWithinContent: (ctx, evt) => contains(dom.getContentEl(ctx), evt.target),
+        closeOnInteractOutside: (ctx) => !!ctx.closeOnInteractOutside,
         isContentFocused: (ctx) => dom.getContentEl(ctx) === dom.getActiveEl(ctx),
+        isTriggerFocused: (ctx) => dom.getTriggerEl(ctx) === dom.getActiveEl(ctx),
         isFirstTabbableElement: (ctx) => dom.getFirstTabbableEl(ctx) === dom.getActiveEl(ctx),
         isLastTabbableElement: (ctx) => dom.getLastTabbableEl(ctx) === dom.getActiveEl(ctx),
       },
       actions: {
         checkRenderedElements(ctx) {
+          // console.log(ctx.doc?.getElementById("popover:12"))
           raf(() => {
             Object.assign(ctx.renderedElements, {
               title: !!dom.getTitleEl(ctx),
@@ -203,29 +221,36 @@ export function machine(ctx: UserDefinedContext = {}) {
             dom.getInitialFocusEl(ctx)?.focus()
           })
         },
-        focusTrigger(ctx) {
+        focusTriggerIfNeeded(ctx) {
           raf(() => {
-            dom.getTriggerEl(ctx)?.focus()
+            if (!ctx.preventReturnFocus) {
+              dom.getTriggerEl(ctx)?.focus()
+            }
+            ctx.preventReturnFocus = false
           })
+        },
+        focusFirstTabbableElement(ctx, evt) {
+          evt.preventDefault()
+          dom.getFirstTabbableEl(ctx)?.focus()
         },
         invokeOnOpen(ctx, evt) {
           if (evt.type !== "SETUP") {
-            ctx.onOpen?.()
+            ctx.onOpenChange?.(true)
           }
         },
         invokeOnClose(ctx, evt) {
           if (evt.type !== "SETUP") {
-            ctx.onClose?.()
+            ctx.onOpenChange?.(false)
           }
         },
         focusNextTabbableElementAfterTrigger(ctx, evt) {
           const content = dom.getContentEl(ctx)
-          const doc = dom.getDoc(ctx)
           const button = dom.getTriggerEl(ctx)
+
           if (!content || !button) return
 
           const lastTabbable = dom.getLastTabbableEl(ctx)
-          if (lastTabbable !== doc.activeElement) return
+          if (lastTabbable !== dom.getActiveEl(ctx)) return
 
           let tabbables = dom.getDocTabbableEls(ctx)
           let elementAfterTrigger = next(tabbables, tabbables.indexOf(button), { loop: false })
@@ -239,7 +264,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           // if there's no next element, let the browser handle it
           if (!elementAfterTrigger || elementAfterTrigger === button) return
 
-          // else focus the next element
+          // else focus the next tabbable element after trigger (simulating native behavior)
           evt.preventDefault()
           raf(() => elementAfterTrigger?.focus())
         },

@@ -3,7 +3,8 @@ export function fireEvent(el: Element, type: string, init?: EventInit) {
   return el.dispatchEvent(event)
 }
 
-export function fireCustomEvent(el: Element, type: string, init?: CustomEventInit) {
+export function fireCustomEvent(el: Element | null, type: string, init?: CustomEventInit) {
+  if (!el) return
   const event = new CustomEvent(type, init)
   return el.dispatchEvent(event)
 }

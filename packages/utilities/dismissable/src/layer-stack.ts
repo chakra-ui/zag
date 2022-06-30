@@ -29,7 +29,7 @@ export const layerStack = proxy({
       : -1
     return index < highestBlockingIndex
   },
-  isTopMost(node: HTMLElement) {
+  isTopMost(node: HTMLElement | null) {
     const layer = this.layers[this.count - 1]
     return layer?.node === node
   },

@@ -1,4 +1,4 @@
-import { getOwnerDocument } from "@zag-js/dom-utils"
+import { getDocument } from "@zag-js/dom-utils"
 import { layerStack } from "./layer-stack"
 
 let originalBodyPointerEvents: string
@@ -16,7 +16,7 @@ export function clearPointerEvent(node: HTMLElement) {
 const DATA_ATTR = "data-inert"
 
 export function disablePointerEventsOutside(node: HTMLElement) {
-  const doc = getOwnerDocument(node)
+  const doc = getDocument(node)
 
   if (layerStack.hasPointerBlockingLayer && !doc.body.hasAttribute(DATA_ATTR)) {
     originalBodyPointerEvents = document.body.style.pointerEvents
