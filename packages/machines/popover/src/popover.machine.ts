@@ -122,6 +122,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             onEscapeKeyDown(event) {
               ctx.onEscapeKeyDown?.(event)
               if (ctx.closeOnEsc) return
+              ctx.preventReturnFocus = false
               event.preventDefault()
             },
             onInteractOutside(event) {
