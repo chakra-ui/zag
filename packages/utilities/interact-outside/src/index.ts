@@ -57,26 +57,41 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
     return !exclude?.(target)
   }
 
-  function onPointerDown(event: PointerEvent) {
-    if (!node || !isEventOutside(event)) return
-    if (onPointerDownOutside)
-      node.addEventListener(POINTER_OUTSIDE_EVENT, onPointerDownOutside as EventListener, { once: true })
-    fireCustomEvent(node, POINTER_OUTSIDE_EVENT, {
-      bubbles: false,
-      cancelable: true,
-      detail: {
-        originalEvent: event,
-        contextmenu: isContextMenuEvent(event),
-        focusable: isFocusable(getEventTarget(event)),
-      },
-    })
-  }
+  let clickHandler: VoidFunction
 
+  function onPointerDown(event: PointerEvent) {
+    //
+    function handler() {
+      if (!node || !isEventOutside(event)) return
+
+      if (onPointerDownOutside) {
+        node.addEventListener(POINTER_OUTSIDE_EVENT, onPointerDownOutside as EventListener, { once: true })
+      }
+
+      fireCustomEvent(node, POINTER_OUTSIDE_EVENT, {
+        bubbles: false,
+        cancelable: true,
+        detail: {
+          originalEvent: event,
+          contextmenu: isContextMenuEvent(event),
+          focusable: isFocusable(getEventTarget(event)),
+        },
+      })
+    }
+
+    if (event.pointerType === "touch") {
+      doc.removeEventListener("click", handler)
+      clickHandler = handler
+      doc.addEventListener("click", handler, { once: true })
+    } else {
+      handler()
+    }
+  }
   const cleanups = new Set<VoidFunction>()
 
   const timer = setTimeout(() => {
     cleanups.add(addDomEvent(doc, "pointerdown", onPointerDown, true))
-  })
+  }, 0)
 
   function onFocusin(event: FocusEvent) {
     if (!node || !isEventOutside(event)) return
@@ -96,6 +111,7 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
 
   return () => {
     clearTimeout(timer)
+    if (clickHandler) doc.removeEventListener("click", clickHandler)
     cleanups.forEach((fn) => fn())
   }
 }
