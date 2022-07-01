@@ -4,7 +4,7 @@ import { trackDismissableElement } from "@zag-js/dimissable"
 import { addDomEvent, contains, nextTick, raf } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { next, runIfFn } from "@zag-js/utils"
+import { isModifiedEvent, next, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
@@ -144,7 +144,8 @@ export function machine(ctx: UserDefinedContext = {}) {
             dom.getWin(ctx),
             "keydown",
             (event) => {
-              if (event.key !== "Tab") return
+              const isTabKey = event.key === "Tab" && !isModifiedEvent(event)
+              if (!isTabKey) return
               send({
                 type: event.shiftKey ? "SHIFT_TAB" : "TAB",
                 preventDefault: () => event.preventDefault(),
@@ -199,7 +200,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
       actions: {
         checkRenderedElements(ctx) {
-          // console.log(ctx.doc?.getElementById("popover:12"))
           raf(() => {
             Object.assign(ctx.renderedElements, {
               title: !!dom.getTitleEl(ctx),
