@@ -1,7 +1,6 @@
-import { dataAttr, isPortalEvent } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { isSafari } from "@zag-js/utils"
 import { dom } from "./popover.dom"
 import type { Send, State } from "./popover.types"
 
