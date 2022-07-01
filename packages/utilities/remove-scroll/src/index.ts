@@ -1,6 +1,6 @@
 import { isIos } from "@zag-js/utils"
 
-const identifier = "data-scroll-lock"
+const LOCK_CLASSNAME = "data-scroll-lock"
 
 function assignStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
   if (!el) return () => {}
@@ -31,24 +31,16 @@ function getPaddingProperty(documentElement: HTMLElement) {
   return scrollbarX ? "paddingLeft" : "paddingRight"
 }
 
-interface BodyScrollOptions {
-  disabled?: boolean
-  document?: Document
-}
+export function preventBodyScroll(_document?: Document) {
+  const doc = _document ?? document
+  const win = doc.defaultView ?? window
 
-export function preventBodyScroll(options: BodyScrollOptions = {}) {
-  const { document: docProp, disabled } = options
-
-  if (disabled) return
-
-  const doc = docProp ?? document
-  const win = doc?.defaultView ?? window
   const { documentElement, body } = doc
 
-  const locked = body.hasAttribute(identifier)
+  const locked = body.hasAttribute(LOCK_CLASSNAME)
   if (locked) return
 
-  body.setAttribute(identifier, "")
+  body.setAttribute(LOCK_CLASSNAME, "")
 
   const scrollbarWidth = win.innerWidth - documentElement.clientWidth
   const setScrollbarWidthProperty = () => setCSSProperty(documentElement, "--scrollbar-width", `${scrollbarWidth}px`)
@@ -87,6 +79,6 @@ export function preventBodyScroll(options: BodyScrollOptions = {}) {
 
   return () => {
     cleanups.forEach((cleanup) => cleanup())
-    body.removeAttribute(identifier)
+    body.removeAttribute(LOCK_CLASSNAME)
   }
 }

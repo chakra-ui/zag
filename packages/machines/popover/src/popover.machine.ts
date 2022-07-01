@@ -172,10 +172,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           return () => cleanup?.()
         },
         preventScroll(ctx) {
-          return preventBodyScroll({
-            disabled: !ctx.modal,
-            document: dom.getDoc(ctx),
-          })
+          if (!ctx.modal) return
+          return preventBodyScroll(dom.getDoc(ctx))
         },
         trapFocus(ctx) {
           if (!ctx.modal) return
