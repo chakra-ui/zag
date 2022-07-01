@@ -120,18 +120,26 @@ export function machine(ctx: UserDefinedContext = {}) {
             pointerBlocking: ctx.modal,
             excludeContainers: dom.getTriggerEl(ctx),
             onEscapeKeyDown(event) {
+              ctx.onEscapeKeyDown?.(event)
               if (ctx.closeOnEsc) return
               event.preventDefault()
             },
             onInteractOutside(event) {
+              ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
               ctx.preventReturnFocus = event.detail.focusable || event.detail.contextmenu
-              if (ctx.closeOnInteractOutside) return
-              event.preventDefault()
+              if (!ctx.closeOnInteractOutside) {
+                event.preventDefault()
+              }
+            },
+            onPointerDownOutside(event) {
+              ctx.onPointerDownOutside?.(event)
             },
             onFocusOutside(event) {
-              if (!ctx.currentPortalled) return
-              event.preventDefault()
+              ctx.onFocusOutside?.(event)
+              if (ctx.currentPortalled) {
+                event.preventDefault()
+              }
             },
             onDismiss() {
               send({ type: "REQUEST_CLOSE", src: "#interact-outside" })
@@ -222,11 +230,12 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         focusTriggerIfNeeded(ctx) {
+          const focus = () => dom.getTriggerEl(ctx)?.focus()
           raf(() => {
             if (!ctx.preventReturnFocus) {
-              dom.getTriggerEl(ctx)?.focus()
+              focus()
+              ctx.preventReturnFocus = false
             }
-            ctx.preventReturnFocus = false
           })
         },
         focusFirstTabbableElement(ctx, evt) {

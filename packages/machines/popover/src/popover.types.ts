@@ -1,4 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { DismissableElementHandlers } from "@zag-js/dimissable"
 import type { PositioningOptions, Placement } from "@zag-js/popper"
 import type { Context, MaybeElement } from "@zag-js/types"
 
@@ -11,7 +12,7 @@ type ElementIds = Partial<{
   closeBtn: string
 }>
 
-type PublicContext = {
+type PublicContext = DismissableElementHandlers & {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */

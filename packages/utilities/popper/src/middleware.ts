@@ -54,24 +54,24 @@ export const transformOrigin: Middleware = {
 
 type ArrowOptions = { element: HTMLElement }
 
+type BasePlacement = "top" | "bottom" | "left" | "right"
+
 export const shiftArrow = (opts: ArrowOptions): Middleware => ({
   name: "shiftArrow",
   fn({ placement, middlewareData }) {
     const { element: arrow } = opts
-    const { x, y } = middlewareData.arrow ?? { x: 0, y: 0 }
 
-    const dir = {
-      top: "bottom",
-      right: "left",
-      bottom: "top",
-      left: "right",
-    }[placement.split("-")[0]]!
+    if (middlewareData.arrow) {
+      const { x, y } = middlewareData.arrow
 
-    Object.assign(arrow.style, {
-      top: `${y}px`,
-      left: `${x}px`,
-      [dir]: cssVars.arrowOffset.reference,
-    })
+      const dir = placement.split("-")[0] as BasePlacement
+
+      Object.assign(arrow.style, {
+        left: x != null ? `${x}px` : "",
+        top: y != null ? `${y}px` : "",
+        [dir]: `calc(100% + ${cssVars.arrowOffset.reference})`,
+      })
+    }
 
     return {}
   },

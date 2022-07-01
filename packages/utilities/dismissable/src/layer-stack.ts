@@ -50,11 +50,10 @@ export const layerStack = proxy({
   },
   remove(node: HTMLElement) {
     const index = this.indexOf(node)
-    if (index < this.count - 1) {
-      this.layers.splice(index).forEach((item) => item.dismiss())
-    } else {
-      this.layers = this.layers.filter((item) => item.node !== node)
+    if (index + 1 < this.count - 1) {
+      this.layers.splice(index, this.count).forEach((item) => item.dismiss())
     }
+    this.layers = this.layers.filter((item) => item.node !== node)
   },
   removeBranch(node: HTMLElement) {
     const index = this.branches.indexOf(node)

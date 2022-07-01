@@ -65,28 +65,32 @@ export function getPlacement(
 
   middleware.push(transformOrigin)
 
-  if (options.sameWidth || options.fitViewport) {
-    middleware.push(
-      size({
-        padding: options.overflowPadding,
-        apply(data) {
-          if (options.sameWidth) {
-            Object.assign(floating.style, {
-              width: `${data.rects.reference.width}px`,
-              minWidth: "unset",
-            })
-          }
+  middleware.push(
+    size({
+      padding: options.overflowPadding,
+      apply({ rects, availableHeight, availableWidth }) {
+        const referenceWidth = Math.round(rects.reference.width)
 
-          if (options.fitViewport) {
-            Object.assign(floating.style, {
-              maxWidth: `${data.availableWidth}px`,
-              maxHeight: `${data.availableHeight}px`,
-            })
-          }
-        },
-      }),
-    )
-  }
+        floating.style.setProperty("--floating-anchor-width", `${referenceWidth}px`)
+        floating.style.setProperty("--floating-available-width", `${availableWidth}px`)
+        floating.style.setProperty("--floating-available-height", `${availableHeight}px`)
+
+        if (options.sameWidth) {
+          Object.assign(floating.style, {
+            width: `${referenceWidth}px`,
+            minWidth: "unset",
+          })
+        }
+
+        if (options.fitViewport) {
+          Object.assign(floating.style, {
+            maxWidth: `${availableWidth}px`,
+            maxHeight: `${availableHeight}px`,
+          })
+        }
+      },
+    }),
+  )
 
   /* -----------------------------------------------------------------------------
    * The actual positioning function

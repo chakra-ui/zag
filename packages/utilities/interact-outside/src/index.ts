@@ -94,8 +94,13 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
   }, 0)
 
   function onFocusin(event: FocusEvent) {
+    //
     if (!node || !isEventOutside(event)) return
-    if (onFocusOutside) node.addEventListener(FOCUS_OUTSIDE_EVENT, onFocusOutside as EventListener, { once: true })
+
+    if (onFocusOutside) {
+      node.addEventListener(FOCUS_OUTSIDE_EVENT, onFocusOutside as EventListener, { once: true })
+    }
+
     fireCustomEvent(node, FOCUS_OUTSIDE_EVENT, {
       bubbles: false,
       cancelable: true,
