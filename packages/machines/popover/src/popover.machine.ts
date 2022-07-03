@@ -118,7 +118,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         trackInteractionOutside(ctx, _evt, { send }) {
           return trackDismissableElement(dom.getContentEl(ctx), {
             pointerBlocking: ctx.modal,
-            excludeContainers: dom.getTriggerEl(ctx),
+            exclude: dom.getTriggerEl(ctx),
             onEscapeKeyDown(event) {
               ctx.onEscapeKeyDown?.(event)
               if (ctx.closeOnEsc) return

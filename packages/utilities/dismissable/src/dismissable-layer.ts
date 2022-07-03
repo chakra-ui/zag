@@ -20,13 +20,13 @@ export type DismissableElementHandlers = InteractOutsideHandlers & {
 export type DismissableElementOptions = DismissableElementHandlers & {
   pointerBlocking?: boolean
   onDismiss: () => void
-  excludeContainers?: Container | (() => Container)
+  exclude?: Container | (() => Container)
 }
 
 export function trackDismissableElement(node: HTMLElement | null, options: DismissableElementOptions) {
   if (!node) return
 
-  const { onDismiss, pointerBlocking, excludeContainers } = options
+  const { onDismiss, pointerBlocking, exclude: excludeContainers } = options
 
   const layer: Layer = { dismiss: onDismiss, node, pointerBlocking }
 
