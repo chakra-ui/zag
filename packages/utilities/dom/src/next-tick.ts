@@ -19,10 +19,14 @@ export function raf(fn: VoidFunction) {
   }
 }
 
-export function sandbox(type: typeof raf | undefined, fn: () => VoidFunction | undefined | void) {
+type SchedulerFn = (fn: VoidFunction) => VoidFunction
+type DisposableVoidFunction = () => VoidFunction | undefined | void
+
+export function disposable(type: SchedulerFn | undefined, fn: DisposableVoidFunction) {
   let cleanup: VoidFunction | undefined | void
+  let dispose: VoidFunction | undefined | void
   if (type) {
-    type(() => {
+    dispose = type(() => {
       cleanup = fn()
     })
   } else {
@@ -30,5 +34,14 @@ export function sandbox(type: typeof raf | undefined, fn: () => VoidFunction | u
   }
   return () => {
     cleanup?.()
+    dispose?.()
   }
+}
+
+export function disposableRaf(fn: DisposableVoidFunction) {
+  return disposable(raf, fn)
+}
+
+export function disposableNextTick(fn: DisposableVoidFunction) {
+  return disposable(nextTick, fn)
 }
