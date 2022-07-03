@@ -24,6 +24,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         hint: null,
         value: "",
         step: 1,
+        min: Number.MIN_SAFE_INTEGER,
+        max: Number.MAX_SAFE_INTEGER,
         scrubberCursorPoint: null,
         invalid: false,
         ...ctx,
@@ -39,8 +41,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         valueAsNumber: (ctx) => valueOf(ctx.value),
         isAtMin: (ctx) => isAtMin(ctx.value, ctx),
         isAtMax: (ctx) => isAtMax(ctx.value, ctx),
-        minValue: (ctx) => ctx.min ?? Number.MIN_SAFE_INTEGER,
-        maxValue: (ctx) => ctx.max ?? Number.MAX_SAFE_INTEGER,
         isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
         canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
         canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
@@ -317,10 +317,10 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.value = ""
         },
         setToMax(ctx) {
-          ctx.value = ctx.maxValue.toString()
+          ctx.value = ctx.max.toString()
         },
         setToMin(ctx) {
-          ctx.value = ctx.minValue.toString()
+          ctx.value = ctx.min.toString()
         },
         setHint(ctx, evt) {
           ctx.hint = evt.hint
@@ -339,7 +339,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         invokeOnInvalid(ctx) {
           if (!ctx.isOutOfRange) return
-          const reason = ctx.valueAsNumber > ctx.maxValue ? "rangeOverflow" : "rangeUnderflow"
+          const reason = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
           ctx.onInvalid?.({
             reason,
             value: ctx.formattedValue,

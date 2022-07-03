@@ -22,8 +22,8 @@ export const valueToPercent = (v: number | string, r: Num<"step" | "min" | "max"
 
 export const percentToValue = (v: number | string, r: Num<"min" | "max">) => r.min + (r.max - r.min) * valueOf(v)
 
-export function clamp(v: number | string, o: Num<"minValue" | "maxValue">) {
-  return Math.min(Math.max(valueOf(v), o.minValue), o.maxValue)
+export function clamp(v: number | string, o: Num<"min" | "max">) {
+  return Math.min(Math.max(valueOf(v), o.min), o.max)
 }
 
 export function countDecimals(value: number) {
@@ -74,19 +74,19 @@ export function formatDecimal(v: number | string, o: Omit<FormatDecimalOptions, 
   }).format(valueOf(v))
 }
 
-export function isAtMax(v: number | string, o: Num<"maxValue">) {
+export function isAtMax(v: number | string, o: Num<"max">) {
   const val = valueOf(v)
-  return val >= o.maxValue
+  return val >= o.max
 }
 
-export function isAtMin(v: number | string, o: Num<"minValue">) {
+export function isAtMin(v: number | string, o: Num<"min">) {
   const val = valueOf(v)
-  return val <= o.minValue
+  return val <= o.min
 }
 
-export function isWithinRange(v: number | string, o: Num<"minValue" | "maxValue">) {
+export function isWithinRange(v: number | string, o: Num<"min" | "max">) {
   const val = valueOf(v)
-  return val >= o.minValue && val <= o.maxValue
+  return val >= o.min && val <= o.max
 }
 
 function decimalOperation(a: number, op: "-" | "+", b: number): number {
