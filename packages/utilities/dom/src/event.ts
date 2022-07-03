@@ -9,6 +9,22 @@ export function isPrintableKey(e: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaK
   return e.key.length === 1 && !e.ctrlKey && !e.metaKey
 }
 
+export function isVirtualPointerEvent(event: PointerEvent) {
+  return (
+    (event.width === 0 && event.height === 0) ||
+    (event.width === 1 &&
+      event.height === 1 &&
+      event.pressure === 0 &&
+      event.detail === 0 &&
+      event.pointerType === "mouse")
+  )
+}
+
+export function isVirtualClick(event: MouseEvent | PointerEvent): boolean {
+  if ((event as any).mozInputSource === 0 && event.isTrusted) return true
+  return event.detail === 0 && !(event as PointerEvent).pointerType
+}
+
 type NativeEvent<E> = JSX.ChangeEvent<any> extends E
   ? InputEvent
   : E extends JSX.SyntheticEvent<any, infer T>
@@ -19,10 +35,6 @@ export function getNativeEvent<E>(e: E): NativeEvent<E> {
   return (e as any).nativeEvent ?? e
 }
 
-export function isPortalEvent(event: Pick<Event, "currentTarget" | "target">): boolean {
-  return !contains(event.currentTarget, event.target)
-}
-
-export function isSelfTarget(event: Pick<Event, "target" | "currentTarget">): boolean {
-  return event.target === event.currentTarget
+export function isSelfEvent(event: Pick<Event, "currentTarget" | "target">) {
+  return contains(event.currentTarget, event.target)
 }
