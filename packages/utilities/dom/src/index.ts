@@ -1,5 +1,4 @@
 export * from "./attrs"
-export * from "./body-pointer-event"
 export * from "./constants"
 export * from "./copy-visual-styles"
 export * from "./event"

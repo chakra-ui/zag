@@ -1,4 +1,4 @@
-import { pipe } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils"
 import { addDomEvent } from "./listener"
 
 type PointerLockHandlers = {
@@ -43,7 +43,7 @@ export function requestPointerLock(doc: Document, handlers: PointerLockHandlers 
 
   body.requestPointerLock()
 
-  const cleanup = pipe(
+  const cleanup = callAll(
     addPointerlockChangeListener(doc, onPointerChange),
     addPointerlockErrorListener(doc, onPointerError),
   )
