@@ -15,7 +15,7 @@ const fetchMachine = createMachine({
   initial: "unknown",
   context: {
     "isInvalidExponential": false,
-    "clampOnBlur && !isInRange": false,
+    "clampOnBlur && !isInRange && !isEmptyValue": false,
     "isIncrementHint": false,
     "isDecrementHint": false,
     "isInRange": false,
@@ -96,7 +96,7 @@ const fetchMachine = createMachine({
           target: "idle",
           actions: ["clearValue", "clearHint"]
         }, {
-          cond: "clampOnBlur && !isInRange",
+          cond: "clampOnBlur && !isInRange && !isEmptyValue",
           target: "idle",
           actions: ["clampValue", "clearHint"]
         }, {
@@ -176,7 +176,7 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isInvalidExponential": ctx => ctx["isInvalidExponential"],
-    "clampOnBlur && !isInRange": ctx => ctx["clampOnBlur && !isInRange"],
+    "clampOnBlur && !isInRange && !isEmptyValue": ctx => ctx["clampOnBlur && !isInRange && !isEmptyValue"],
     "isIncrementHint": ctx => ctx["isIncrementHint"],
     "isDecrementHint": ctx => ctx["isDecrementHint"],
     "isInRange": ctx => ctx["isInRange"]

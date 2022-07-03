@@ -127,7 +127,7 @@ export function machine(ctx: UserDefinedContext = {}) {
                 actions: ["clearValue", "clearHint"],
               },
               {
-                guard: and("clampOnBlur", not("isInRange")),
+                guard: and("clampOnBlur", not("isInRange"), not("isEmptyValue")),
                 target: "idle",
                 actions: ["clampValue", "clearHint"],
               },
@@ -219,6 +219,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         isAtMax: (ctx) => ctx.isAtMax,
         isInRange: (ctx) => !ctx.isOutOfRange,
         isDecrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
+        isEmptyValue: (ctx) => ctx.value == "",
         isIncrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
         isInvalidExponential: (ctx) => ctx.value.toString().startsWith("e"),
       },
