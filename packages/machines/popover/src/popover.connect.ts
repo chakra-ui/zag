@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, isFocusable, validateBlur } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
@@ -6,8 +6,10 @@ import type { Send, State } from "./popover.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.matches("open")
-  const pointerdownNode = state.context.pointerdownNode
+
   const currentPlacement = state.context.currentPlacement
+  const portalled = state.context.currentPortalled
+  const rendered = state.context.renderedElements
 
   const popperStyles = getPlacementStyles({
     measured: !!state.context.isPlacementComplete,
@@ -15,7 +17,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    portalled: state.context.currentPortalled,
+    portalled,
     isOpen,
     open() {
       send("OPEN")
@@ -50,12 +52,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-expanded": dataAttr(isOpen),
       "aria-controls": dom.getContentId(state.context),
       onClick() {
-        send("TRIGGER_CLICK")
+        send("TOGGLE")
       },
-      onKeyDown(event) {
-        if (event.key === "Escape") {
-          send("ESCAPE")
-        }
+      onBlur(event) {
+        send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
       },
     }),
 
@@ -72,35 +72,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "dialog",
       hidden: !isOpen,
       "data-expanded": dataAttr(isOpen),
-      "aria-labelledby": state.context.renderedElements.title ? dom.getTitleId(state.context) : undefined,
-      "aria-describedby": state.context.renderedElements.description ? dom.getDescriptionId(state.context) : undefined,
+      "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
+      "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": currentPlacement,
-      onKeyDown(event) {
-        const keyMap: EventKeyMap = {
-          Escape(event) {
-            send("ESCAPE")
-            event.stopPropagation()
-          },
-          Tab(event) {
-            const type = event.shiftKey ? "SHIFT_TAB" : "TAB"
-            send({ type, preventDefault: () => event.preventDefault() })
-          },
-        }
-
-        const exec = keyMap[event.key]
-        exec?.(event)
-      },
-      onBlur(event) {
-        const isValidBlur = validateBlur(event, {
-          exclude: [dom.getTriggerEl(state.context), dom.getContentEl(state.context)],
-          fallback: pointerdownNode,
-        })
-
-        if (isValidBlur) {
-          const el = (event.relatedTarget ?? pointerdownNode) as HTMLElement
-          send({ type: "INTERACT_OUTSIDE", focusable: isFocusable(el) })
-        }
-      },
     }),
 
     titleProps: normalize.element({
@@ -119,7 +93,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "aria-label": "close",
       onClick() {
-        send("CLOSE")
+        send("REQUEST_CLOSE")
       },
     }),
   }

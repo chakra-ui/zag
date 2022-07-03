@@ -157,10 +157,6 @@ export const menuStyle: CSSObject = {
     padding: "5px",
     border: "1px solid lightgray",
     listStyleType: "none",
-    "&:focus": {
-      outline: "2px dashed var(--ring-color)",
-      outlineOffset: "-5px",
-    },
   },
   "[data-part*=item]": {
     all: "unset",
@@ -183,10 +179,6 @@ export const menuStyle: CSSObject = {
       opacity: 0.4,
     },
   },
-  "[data-part=trigger]:focus": {
-    outline: "2px dashed var(--ring-color)",
-    outlineOffset: "-3px",
-  },
 }
 
 const scale = keyframes({
@@ -198,10 +190,6 @@ export const popoverStyle: CSSObject = {
   "[data-part=root]": {
     display: "flex",
     gap: "24px",
-  },
-  "*:focus": {
-    outline: "2px dashed blue",
-    outlineOffset: "2px",
   },
   "[data-part=content]": {
     "--arrow-background": "white",

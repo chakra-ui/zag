@@ -1,4 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { DismissableElementHandlers } from "@zag-js/dimissable"
 import type { PositioningOptions, Placement } from "@zag-js/popper"
 import type { Context, MaybeElement } from "@zag-js/types"
 
@@ -11,7 +12,7 @@ type ElementIds = Partial<{
   closeBtn: string
 }>
 
-type PublicContext = {
+type PublicContext = DismissableElementHandlers & {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
@@ -20,8 +21,8 @@ type PublicContext = {
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
    * - only popover content will be visible to screen readers
-   * - focus is trapped within the popover
    * - scrolling is blocked
+   * - focus is trapped within the popover
    *
    * @default false
    */
@@ -42,7 +43,7 @@ type PublicContext = {
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    */
-  closeOnBlur?: boolean
+  closeOnInteractOutside?: boolean
   /**
    * Whether to close the popover when the escape key is pressed.
    */
@@ -50,11 +51,7 @@ type PublicContext = {
   /**
    * Function invoked when the popover is opened.
    */
-  onOpen?: () => void
-  /**
-   * Function invoked when the popover is closed.
-   */
-  onClose?: () => void
+  onOpenChange?: (open: boolean) => void
   /**
    * The user provided options used to position the popover content
    */
@@ -95,6 +92,10 @@ type PrivateContext = Context<{
    * Whether the dynamic placement has been computed
    */
   isPlacementComplete?: boolean
+  /**
+   * Whether to prevent returning focus to the trigger
+   */
+  preventReturnFocus?: boolean
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

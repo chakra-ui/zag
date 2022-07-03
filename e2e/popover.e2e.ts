@@ -68,19 +68,12 @@ test.describe("popover", () => {
 
   test("[keyboard / non-modal] on shift-tab outside: should move focus to trigger", async ({ page }) => {
     await page.focus(trigger)
-    await page.keyboard.press("Enter")
 
+    await page.keyboard.press("Enter")
     await page.keyboard.press("Shift+Tab")
-    await expect(page.locator(trigger)).toBeFocused()
-    await expect(page.locator(content)).toBeHidden()
-  })
 
-  test("[keyboard] escape closes the popover", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-    await page.keyboard.press("Escape")
-    await expect(page.locator(content)).toBeHidden()
     await expect(page.locator(trigger)).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
   })
 
   test("[pointer] close the popover on click close button", async ({ page }) => {

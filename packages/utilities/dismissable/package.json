@@ -35,8 +35,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@zag-js/interact-outside": "0.1.0",
-    "@zag-js/store": "0.0.0"
+    "@zag-js/interact-outside": "0.1.0"
   },
   "devDependencies": {
     "@zag-js/dom-utils": "0.1.5"

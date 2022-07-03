@@ -17,7 +17,7 @@ function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: stri
       trackDismissableElement(ref.current, {
         pointerBlocking: inert,
         onDismiss: () => setOpen(false),
-        excludeContainers: [buttonRef.current],
+        exclude: [buttonRef.current],
       }),
     ]
     return () => {

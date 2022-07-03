@@ -1,9 +1,9 @@
-import type { VirtualElement } from "@floating-ui/dom"
-import { arrow, computePosition, flip, Middleware, offset, shift, size } from "@floating-ui/dom"
-import { noop, pipe } from "@zag-js/utils"
+import type { Middleware, VirtualElement } from "@floating-ui/dom"
+import { arrow, computePosition, ComputePositionConfig, flip, offset, shift, size } from "@floating-ui/dom"
+import { callAll } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
-import { PositioningOptions } from "./types"
+import type { PositioningOptions } from "./types"
 
 const defaultOptions: PositioningOptions = {
   strategy: "absolute",
@@ -18,11 +18,11 @@ const defaultOptions: PositioningOptions = {
 export function getPlacement(
   reference: HTMLElement | VirtualElement | null,
   floating: HTMLElement | null,
-  options: PositioningOptions = {},
+  opts: PositioningOptions = {},
 ) {
-  if (reference == null || floating == null) return noop
+  if (!floating || !reference) return
 
-  options = Object.assign({}, defaultOptions, options)
+  const options = Object.assign({}, defaultOptions, opts)
 
   /* -----------------------------------------------------------------------------
    * The middleware stack
@@ -65,41 +65,46 @@ export function getPlacement(
 
   middleware.push(transformOrigin)
 
-  if (options.sameWidth || options.fitViewport) {
-    middleware.push(
-      size({
-        padding: options.overflowPadding,
-        apply(data) {
-          if (options.sameWidth) {
-            Object.assign(floating.style, {
-              width: `${data.rects.reference.width}px`,
-              minWidth: "unset",
-            })
-          }
+  middleware.push(
+    size({
+      padding: options.overflowPadding,
+      apply({ rects, availableHeight, availableWidth }) {
+        const referenceWidth = Math.round(rects.reference.width)
 
-          if (options.fitViewport) {
-            Object.assign(floating.style, {
-              maxWidth: `${data.availableWidth}px`,
-              maxHeight: `${data.availableHeight}px`,
-            })
-          }
-        },
-      }),
-    )
-  }
+        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+        floating.style.setProperty("--available-width", `${availableWidth}px`)
+        floating.style.setProperty("--available-height", `${availableHeight}px`)
+
+        if (options.sameWidth) {
+          Object.assign(floating.style, {
+            width: `${referenceWidth}px`,
+            minWidth: "unset",
+          })
+        }
+
+        if (options.fitViewport) {
+          Object.assign(floating.style, {
+            maxWidth: `${availableWidth}px`,
+            maxHeight: `${availableHeight}px`,
+          })
+        }
+      },
+    }),
+  )
 
   /* -----------------------------------------------------------------------------
    * The actual positioning function
    * -----------------------------------------------------------------------------*/
 
-  function compute() {
-    if (reference == null || floating == null) return
+  function compute(config: Omit<ComputePositionConfig, "platform"> = {}) {
+    if (!reference || !floating) return
     const { placement, strategy } = options
 
     computePosition(reference, floating, {
       placement,
       middleware,
       strategy,
+      ...config,
     })
       .then((data) => {
         const x = Math.round(data.x)
@@ -115,15 +120,14 @@ export function getPlacement(
         return data
       })
       .then((data) => {
-        options.onComplete?.(data)
+        options.onComplete?.({ ...data, compute })
       })
   }
 
   compute()
 
-  // prettier-ignore
-  return pipe(
-      autoUpdate(reference, floating, compute, options.listeners),
-      options.onCleanup ?? noop
-    )
+  return callAll(
+    options.listeners ? autoUpdate(reference, floating, compute, options.listeners) : undefined,
+    options.onCleanup,
+  )
 }

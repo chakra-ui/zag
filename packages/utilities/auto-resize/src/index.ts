@@ -1,9 +1,9 @@
-import { getOwnerDocument, getOwnerWindow } from "@zag-js/dom-utils"
+import { getDocument, getWindow } from "@zag-js/dom-utils"
 
 function copyVisualStyles(fromEl: HTMLElement | null, toEl: HTMLElement) {
   if (!fromEl) return
 
-  const win = getOwnerWindow(fromEl)
+  const win = getWindow(fromEl)
   const el = win.getComputedStyle(fromEl)
 
   // prettier-ignore
@@ -43,8 +43,8 @@ function createGhostElement(doc: Document) {
 
 export function autoResizeInput(input: HTMLInputElement | null) {
   if (!input) return
-  const doc = getOwnerDocument(input)
-  const win = getOwnerWindow(input)
+  const doc = getDocument(input)
+  const win = getWindow(input)
 
   const ghost = createGhostElement(doc)
 
