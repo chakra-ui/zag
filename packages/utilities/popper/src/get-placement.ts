@@ -1,19 +1,9 @@
-import {
-  arrow,
-  autoUpdate,
-  AutoUpdateOptions,
-  computePosition,
-  ComputePositionConfig,
-  flip,
-  Middleware,
-  offset,
-  shift,
-  size,
-  VirtualElement,
-} from "@floating-ui/dom"
-import { callAll, isBoolean } from "@zag-js/utils"
+import type { Middleware, VirtualElement } from "@floating-ui/dom"
+import { arrow, computePosition, ComputePositionConfig, flip, offset, shift, size } from "@floating-ui/dom"
+import { callAll } from "@zag-js/utils"
+import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
-import { PositioningOptions } from "./types"
+import type { PositioningOptions } from "./types"
 
 const defaultOptions: PositioningOptions = {
   strategy: "absolute",
@@ -25,24 +15,14 @@ const defaultOptions: PositioningOptions = {
   overflowPadding: 8,
 }
 
-function getAutoUpdateOptions(option: boolean | AutoUpdateOptions | undefined) {
-  const opt = option == null ? false : option
-  const bool = isBoolean(opt)
-  return {
-    ancestorResize: bool ? opt : opt.ancestorResize ?? true,
-    ancestorScroll: bool ? opt : opt.ancestorScroll ?? true,
-    elementResize: bool ? opt : opt.elementResize ?? true,
-  }
-}
-
 export function getPlacement(
   reference: HTMLElement | VirtualElement | null,
   floating: HTMLElement | null,
-  _options: PositioningOptions = {},
+  opts: PositioningOptions = {},
 ) {
   if (!floating || !reference) return
 
-  const options = Object.assign({}, defaultOptions, _options)
+  const options = Object.assign({}, defaultOptions, opts)
 
   /* -----------------------------------------------------------------------------
    * The middleware stack
@@ -117,7 +97,7 @@ export function getPlacement(
    * -----------------------------------------------------------------------------*/
 
   function compute(config: Omit<ComputePositionConfig, "platform"> = {}) {
-    if (reference == null || floating == null) return
+    if (!reference || !floating) return
     const { placement, strategy } = options
 
     computePosition(reference, floating, {
@@ -146,10 +126,8 @@ export function getPlacement(
 
   compute()
 
-  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
-
   return callAll(
-    options.listeners ? autoUpdate(reference, floating, compute, autoUpdateOptions) : undefined,
+    options.listeners ? autoUpdate(reference, floating, compute, options.listeners) : undefined,
     options.onCleanup,
   )
 }
