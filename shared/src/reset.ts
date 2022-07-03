@@ -4,6 +4,7 @@ export const resetCss = () =>
   injectGlobal({
     body: {
       margin: 0,
+      fontSize: 14,
     },
     ":root": {
       "--ring-color": "blue",
@@ -13,7 +14,7 @@ export const resetCss = () =>
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",\n    "Helvetica Neue", sans-serif',
     },
     "*:focus": {
-      outline: "2px dashed var(--ring-color)",
+      outline: "2px solid var(--ring-color)",
       outlineOffset: "2px",
     },
     ".root": { margin: "24px" },
