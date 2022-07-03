@@ -1,5 +1,7 @@
 import {
   arrow,
+  autoUpdate,
+  AutoUpdateOptions,
   computePosition,
   ComputePositionConfig,
   flip,
@@ -9,8 +11,7 @@ import {
   size,
   VirtualElement,
 } from "@floating-ui/dom"
-import { noop, pipe } from "@zag-js/utils"
-import { autoUpdate } from "./auto-update"
+import { callAll, isBoolean } from "@zag-js/utils"
 import { shiftArrow, transformOrigin } from "./middleware"
 import { PositioningOptions } from "./types"
 
@@ -22,6 +23,16 @@ const defaultOptions: PositioningOptions = {
   flip: true,
   sameWidth: false,
   overflowPadding: 8,
+}
+
+function getAutoUpdateOptions(option: boolean | AutoUpdateOptions | undefined) {
+  const opt = option == null ? false : option
+  const bool = isBoolean(opt)
+  return {
+    ancestorResize: bool ? opt : opt.ancestorResize ?? true,
+    ancestorScroll: bool ? opt : opt.ancestorScroll ?? true,
+    elementResize: bool ? opt : opt.elementResize ?? true,
+  }
 }
 
 export function getPlacement(
@@ -135,9 +146,10 @@ export function getPlacement(
 
   compute()
 
-  // prettier-ignore
-  return pipe(
-      autoUpdate(reference, floating, compute, options.listeners),
-      options.onCleanup ?? noop
-    )
+  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
+
+  return callAll(
+    options.listeners ? autoUpdate(reference, floating, compute, autoUpdateOptions) : undefined,
+    options.onCleanup,
+  )
 }

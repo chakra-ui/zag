@@ -1,5 +1,10 @@
-import type { Boundary, Placement, ComputePositionReturn, ComputePositionConfig } from "@floating-ui/dom"
-import { AutoUpdateOptions } from "./auto-update"
+import type {
+  Boundary,
+  Placement,
+  ComputePositionReturn,
+  ComputePositionConfig,
+  AutoUpdateOptions,
+} from "@floating-ui/dom"
 
 export type { Placement }
 
