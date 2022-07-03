@@ -1,5 +1,14 @@
-import type { VirtualElement } from "@floating-ui/dom"
-import { arrow, computePosition, flip, Middleware, offset, shift, size } from "@floating-ui/dom"
+import {
+  arrow,
+  computePosition,
+  ComputePositionConfig,
+  flip,
+  Middleware,
+  offset,
+  shift,
+  size,
+  VirtualElement,
+} from "@floating-ui/dom"
 import { noop, pipe } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
@@ -18,11 +27,11 @@ const defaultOptions: PositioningOptions = {
 export function getPlacement(
   reference: HTMLElement | VirtualElement | null,
   floating: HTMLElement | null,
-  options: PositioningOptions = {},
+  _options: PositioningOptions = {},
 ) {
-  if (reference == null || floating == null) return noop
+  if (!floating || !reference) return
 
-  options = Object.assign({}, defaultOptions, options)
+  const options = Object.assign({}, defaultOptions, _options)
 
   /* -----------------------------------------------------------------------------
    * The middleware stack
@@ -71,9 +80,9 @@ export function getPlacement(
       apply({ rects, availableHeight, availableWidth }) {
         const referenceWidth = Math.round(rects.reference.width)
 
-        floating.style.setProperty("--floating-anchor-width", `${referenceWidth}px`)
-        floating.style.setProperty("--floating-available-width", `${availableWidth}px`)
-        floating.style.setProperty("--floating-available-height", `${availableHeight}px`)
+        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+        floating.style.setProperty("--available-width", `${availableWidth}px`)
+        floating.style.setProperty("--available-height", `${availableHeight}px`)
 
         if (options.sameWidth) {
           Object.assign(floating.style, {
@@ -96,7 +105,7 @@ export function getPlacement(
    * The actual positioning function
    * -----------------------------------------------------------------------------*/
 
-  function compute() {
+  function compute(config: Omit<ComputePositionConfig, "platform"> = {}) {
     if (reference == null || floating == null) return
     const { placement, strategy } = options
 
@@ -104,6 +113,7 @@ export function getPlacement(
       placement,
       middleware,
       strategy,
+      ...config,
     })
       .then((data) => {
         const x = Math.round(data.x)
@@ -119,7 +129,7 @@ export function getPlacement(
         return data
       })
       .then((data) => {
-        options.onComplete?.(data)
+        options.onComplete?.({ ...data, compute })
       })
   }
 
