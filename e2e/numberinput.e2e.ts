@@ -34,6 +34,14 @@ test.describe("number input", () => {
       await clickOutside(page)
       await expect(page.locator(input)).toHaveValue("100")
     })
+
+    test("should not clamp value when input is empty", async ({ page }) => {
+      await page.focus(input)
+      await page.type(input, "5")
+      await page.keyboard.press("Backspace")
+      await clickOutside(page)
+      await expect(page.locator(input)).toHaveValue("")
+    })
   })
 
   test.describe("when using keyboard arrow in the input", () => {
