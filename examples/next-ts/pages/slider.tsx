@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { sliderControls, sliderStyle } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import serialize from "form-serialize"
@@ -22,7 +22,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = slider.connect(state, send)
+  const api = slider.connect(state, send, normalizeProps)
 
   return (
     <>

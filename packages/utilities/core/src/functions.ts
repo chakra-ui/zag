@@ -10,11 +10,6 @@ export const cast = <T>(v: unknown): T => v as T
 
 export const noop = () => {}
 
-export const pipe =
-  <T>(...fns: Array<(a: T) => T>) =>
-  (v: T) =>
-    fns.reduce((a, b) => b(a), v)
-
 export const callAll =
   <T extends (...a: any[]) => void>(...fns: (T | undefined)[]) =>
   (...a: Parameters<T>) => {

@@ -1,9 +1,9 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, matchAttr, validateBlur } from "@zag-js/dom-utils"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./tags-input.dom"
 import type { Send, State, TagProps } from "./tags-input.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
   const isReadonly = state.context.readonly
@@ -47,7 +47,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dom.getInputEl(state.context)?.focus()
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       dir: state.context.dir,
       "data-part": "root",
       "data-invalid": dataAttr(isInvalid),
@@ -62,7 +62,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -71,7 +71,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       htmlFor: dom.getInputId(state.context),
     }),
 
-    controlProps: normalize.element<T>({
+    controlProps: normalize.element({
       id: dom.getControlId(state.context),
       "data-part": "control",
       tabIndex: isReadonly ? 0 : undefined,
@@ -81,7 +81,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-focus": dataAttr(isInputFocused),
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       "data-invalid": dataAttr(isInvalid),
       "aria-invalid": isInvalid,
@@ -169,7 +169,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    hiddenInputProps: normalize.input<T>({
+    hiddenInputProps: normalize.input({
       "data-part": "hidden-input",
       type: "text",
       hidden: true,
@@ -181,7 +181,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     getTagProps(options: TagProps) {
       const { value } = options
       const id = dom.getTagId(state.context, options)
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "tag",
         id,
         hidden: isEditingTag ? state.context.editedId === id : false,
@@ -203,7 +203,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     getTagInputProps(options: TagProps) {
       const id = dom.getTagId(state.context, options)
       const active = state.context.editedId === id
-      return normalize.input<T>({
+      return normalize.input({
         "data-part": "tag-input",
         "aria-label": messages.tagEdited(options.value),
         "aria-hidden": true,
@@ -241,7 +241,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getTagDeleteButtonProps(options: TagProps) {
       const id = dom.getTagId(state.context, options)
-      return normalize.button<T>({
+      return normalize.button({
         "data-part": "delete-button",
         id: dom.getTagDeleteBtnId(state.context, options),
         type: "button",
@@ -268,7 +268,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       })
     },
 
-    clearButtonProps: normalize.button<T>({
+    clearButtonProps: normalize.button({
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",

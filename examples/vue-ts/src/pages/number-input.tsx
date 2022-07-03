@@ -1,6 +1,6 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
@@ -20,7 +20,7 @@ export default defineComponent({
 
     const ref = useSetup({ send, id: useId() })
 
-    const apiRef = computed(() => numberInput.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => numberInput.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

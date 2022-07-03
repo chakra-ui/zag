@@ -1,7 +1,7 @@
 import { choose, createMachine, guards, ref } from "@zag-js/core"
 import { addDomEvent, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-utils"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
-import { isSafari, pipe, supportsPointerEvent } from "@zag-js/utils"
+import { callAll, isSafari, supportsPointerEvent } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -277,10 +277,9 @@ export function machine(ctx: UserDefinedContext = {}) {
             send("POINTER_UP_SCRUBBER")
           }
 
-          // prettier-ignore
-          return pipe(
+          return callAll(
             addDomEvent(doc, "mousemove", onMousemove, false),
-            addDomEvent(doc, "mouseup", onMouseup, false)
+            addDomEvent(doc, "mouseup", onMouseup, false),
           )
         },
       },

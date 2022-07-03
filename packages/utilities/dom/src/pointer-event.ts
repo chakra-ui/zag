@@ -1,4 +1,4 @@
-import { isLeftClick, isMouseEvent, pipe } from "@zag-js/utils"
+import { callAll, isLeftClick, isMouseEvent } from "@zag-js/utils"
 import { addDomEvent, addPointerEvent } from "./listener"
 import type { AnyPointerEvent, EventListenerWithPointInfo as Listener, PointerEventInfo } from "./listener.types"
 import { disableTextSelection } from "./text-selection"
@@ -37,7 +37,7 @@ export function trackPointerMove(opts: TrackPointerMoveOptions) {
     onPointerMove(info, event)
   }
 
-  return pipe(
+  return callAll(
     addPointerEvent(doc, "pointermove", handlePointerMove, false),
     addPointerEvent(doc, "pointerup", onPointerUp, false),
     addPointerEvent(doc, "pointercancel", onPointerUp, false),

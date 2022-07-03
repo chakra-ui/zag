@@ -10,12 +10,12 @@ import {
   type EventKeyMap,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const pointerdownNode = state.context.pointerdownNode
   const isSubmenu = state.context.isSubmenu
   const values = state.context.values
@@ -54,7 +54,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
     },
 
-    contextTriggerProps: normalize.element<T>({
+    contextTriggerProps: normalize.element({
       "data-part": "trigger",
       id: dom.getContextTriggerId(state.context),
       onPointerDown(event) {
@@ -93,7 +93,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       return mergeProps(api.getItemProps({ id: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
     },
 
-    triggerProps: normalize.button<T>({
+    triggerProps: normalize.button({
       "data-part": isSubmenu ? "trigger-item" : "trigger",
       "data-placement": state.context.currentPlacement,
       type: "button",
@@ -164,24 +164,24 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    positionerProps: normalize.element<T>({
+    positionerProps: normalize.element({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
-    arrowProps: normalize.element<T>({
+    arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
-    innerArrowProps: normalize.element<T>({
+    innerArrowProps: normalize.element({
       "data-part": "arrow-inner",
       style: popperStyles.innerArrow,
     }),
 
-    contentProps: normalize.element<T>({
+    contentProps: normalize.element({
       "data-part": "content",
       id: dom.getContentId(state.context),
       "aria-label": state.context["aria-label"],
@@ -277,7 +277,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    separatorProps: normalize.element<T>({
+    separatorProps: normalize.element({
       "data-part": "separator",
       role: "separator",
       "aria-orientation": "horizontal",
@@ -285,7 +285,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getItemProps(options: ItemProps) {
       const { id, disabled, valueText } = options
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "item",
         id,
         role: "menuitem",
@@ -338,7 +338,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
       return Object.assign(
         api.getItemProps(options as ItemProps),
-        normalize.element<T>({
+        normalize.element({
           "data-type": type,
           "data-name": name,
           "data-part": "option-item",
@@ -356,7 +356,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getLabelProps(options: LabelProps) {
-      return normalize.element<T>({
+      return normalize.element({
         id: dom.getLabelId(state.context, options.htmlFor),
         "data-part": "label",
         "aria-hidden": true,
@@ -364,7 +364,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
     },
 
     getGroupProps(options: GroupProps) {
-      return normalize.element<T>({
+      return normalize.element({
         id: dom.getGroupId(state.context, options.id),
         "data-part": "group",
         "aria-labelledby": options.id,

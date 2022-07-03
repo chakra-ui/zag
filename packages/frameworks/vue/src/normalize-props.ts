@@ -1,4 +1,20 @@
 import { createNormalizer } from "@zag-js/types"
+import * as Vue from "vue"
+
+type ReservedProps = {
+  key?: string | number | symbol
+  ref?: string | Vue.Ref | ((ref: Element | Vue.ComponentPublicInstance | null) => void)
+}
+
+type Attrs<T> = T & ReservedProps
+
+type PropTypes = {
+  button: Attrs<Vue.ButtonHTMLAttributes>
+  input: Attrs<Vue.InputHTMLAttributes>
+  output: Attrs<Vue.OutputHTMLAttributes>
+  label: Attrs<Vue.LabelHTMLAttributes>
+  element: Attrs<Vue.HTMLAttributes>
+}
 
 type Dict = Record<string, string>
 
@@ -25,7 +41,7 @@ function toVueProp(prop: string) {
   return prop.toLowerCase()
 }
 
-export const normalizeProps = createNormalizer((props: Dict) => {
+export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
     if (key === "children") {

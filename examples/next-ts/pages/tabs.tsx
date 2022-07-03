@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
 import { useId } from "react"
@@ -16,7 +16,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const api = tabs.connect(state, send)
+  const api = tabs.connect(state, send, normalizeProps)
 
   return (
     <>

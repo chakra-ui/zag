@@ -88,10 +88,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         preventScroll(ctx) {
-          return preventBodyScroll({
-            disabled: !ctx.preventScroll,
-            document: dom.getDoc(ctx),
-          })
+          if (!ctx.preventScroll) return
+          return preventBodyScroll(dom.getDoc(ctx))
         },
         trapFocus(ctx) {
           let trap: FocusTrap

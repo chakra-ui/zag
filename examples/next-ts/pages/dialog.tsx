@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as dialog from "@zag-js/dialog"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import { dialogStyle } from "@zag-js/shared"
 import { useId, useRef } from "react"
 import { Portal } from "../components/portal"
@@ -13,12 +13,12 @@ export default function Page() {
   // Dialog 1
   const [state, send] = useMachine(dialog.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
-  const parentDialog = dialog.connect(state, send)
+  const parentDialog = dialog.connect(state, send, normalizeProps)
 
   // Dialog 2
   const [state2, send2] = useMachine(dialog.machine)
   const ref2 = useSetup({ send: send2, id: useId() })
-  const childDialog = dialog.connect(state2, send2)
+  const childDialog = dialog.connect(state2, send2, normalizeProps)
 
   return (
     <>

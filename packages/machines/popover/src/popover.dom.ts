@@ -1,9 +1,10 @@
-import { getFocusables, getTabbables } from "@zag-js/dom-utils"
-import { cast, first, last, runIfFn } from "@zag-js/utils"
+import { getFirstTabbable, getFocusables, getLastTabbable, getTabbables } from "@zag-js/dom-utils"
+import { runIfFn } from "@zag-js/utils"
 import { MachineContext as Ctx } from "./popover.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,
+  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
   getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
   getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
@@ -26,10 +27,10 @@ export const dom = {
   getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx)),
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
 
-  getDocTabbableEls: (ctx: Ctx) => getTabbables(cast(dom.getDoc(ctx))),
+  getDocTabbableEls: (ctx: Ctx) => getTabbables(dom.getDoc(ctx).body),
   getTabbableEls: (ctx: Ctx) => getTabbables(dom.getContentEl(ctx), "if-empty"),
-  getFirstTabbableEl: (ctx: Ctx) => first(dom.getTabbableEls(ctx)),
-  getLastTabbableEl: (ctx: Ctx) => last(dom.getTabbableEls(ctx)),
+  getFirstTabbableEl: (ctx: Ctx) => getFirstTabbable(dom.getContentEl(ctx), "if-empty"),
+  getLastTabbableEl: (ctx: Ctx) => getLastTabbable(dom.getContentEl(ctx), "if-empty"),
 
   getInitialFocusEl: (ctx: Ctx) => {
     let el: HTMLElement | null = runIfFn(ctx.initialFocusEl)

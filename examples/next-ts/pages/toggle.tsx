@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
 import * as toggle from "@zag-js/toggle"
 import { useId } from "react"
 import { toggleStyle } from "@zag-js/shared"
@@ -10,7 +10,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: useId() })
 
-  const { buttonProps } = toggle.connect(state, send)
+  const { buttonProps } = toggle.connect(state, send, normalizeProps)
 
   return (
     <main ref={ref}>

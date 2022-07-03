@@ -1,4 +1,4 @@
-import { getOwnerWindow } from "./query"
+import { getWindow } from "./query"
 
 type DescriptorOptions = {
   type: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement"
@@ -7,12 +7,12 @@ type DescriptorOptions = {
 
 function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
   const { type, property } = options
-  const proto = getOwnerWindow(el)[type].prototype
+  const proto = getWindow(el)[type].prototype
   return Object.getOwnPropertyDescriptor(proto, property) ?? {}
 }
 
 export function dispatchInputValueEvent(el: HTMLElement, value: string | number) {
-  const win = getOwnerWindow(el)
+  const win = getWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
 
   // set property value
@@ -25,7 +25,7 @@ export function dispatchInputValueEvent(el: HTMLElement, value: string | number)
 }
 
 export function dispatchInputCheckedEvent(el: HTMLElement, checked: boolean) {
-  const win = getOwnerWindow(el)
+  const win = getWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
 
   // set property value

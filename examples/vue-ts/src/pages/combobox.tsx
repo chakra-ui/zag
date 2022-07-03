@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine, useSetup, PropTypes } from "@zag-js/vue"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
 import { computed, defineComponent, ref, h, Fragment } from "vue"
 import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -30,7 +30,7 @@ export default defineComponent({
     )
 
     const nodeRef = useSetup({ send, id: useId() })
-    const apiRef = computed(() => combobox.connect<PropTypes>(state.value, send, normalizeProps))
+    const apiRef = computed(() => combobox.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

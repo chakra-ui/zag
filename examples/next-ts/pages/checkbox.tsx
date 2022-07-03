@@ -1,9 +1,9 @@
 import { Global } from "@emotion/react"
 import * as checkbox from "@zag-js/checkbox"
-import { useMachine, useSetup, mergeProps } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
-import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -17,7 +17,7 @@ export default function Page() {
 
   const ref = useSetup<HTMLLabelElement>({ send, id: useId() })
 
-  const api = checkbox.connect(state, send)
+  const api = checkbox.connect(state, send, normalizeProps)
 
   const inputProps = mergeProps(api.inputProps, {
     onChange() {

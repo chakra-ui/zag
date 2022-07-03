@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { createMemo } from "solid-js"
 import { Portal } from "solid-js/web"
@@ -12,11 +12,11 @@ injectGlobal(tooltipStyles)
 export default function Page() {
   const [state, send] = useMachine(tooltip.machine)
   const ref = useSetup<HTMLButtonElement>({ send, id: "tip-1" })
-  const api = createMemo(() => tooltip.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => tooltip.connect(state, send, normalizeProps))
 
   const [state2, send2] = useMachine(tooltip.machine)
   const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: "tip-2" })
-  const api2 = createMemo(() => tooltip.connect<PropTypes>(state2, send2, normalizeProps))
+  const api2 = createMemo(() => tooltip.connect(state2, send2, normalizeProps))
 
   return (
     <>

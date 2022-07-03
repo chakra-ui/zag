@@ -1,11 +1,11 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import { normalizeProp, PropTypes, ReactPropTypes } from "@zag-js/types"
+import { PropTypes, NormalizeProps } from "@zag-js/types"
 import { isLeftClick } from "@zag-js/utils"
 import { dom } from "./combobox.dom"
 import type { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
-export function connect<T extends PropTypes = ReactPropTypes>(state: State, send: Send, normalize = normalizeProp) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const pointerdownNode = state.context.pointerdownNode
   const messages = state.context.messages
 
@@ -46,14 +46,14 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       dom.getInputEl(state.context)?.focus()
     },
 
-    rootProps: normalize.element<T>({
+    rootProps: normalize.element({
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
       "data-readonly": dataAttr(isReadonly),
     }),
 
-    labelProps: normalize.label<T>({
+    labelProps: normalize.label({
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
@@ -62,7 +62,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       "data-invalid": dataAttr(isInvalid),
     }),
 
-    controlProps: normalize.element<T>({
+    controlProps: normalize.element({
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-expanded": dataAttr(isOpen),
@@ -79,7 +79,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    positionerProps: normalize.element<T>({
+    positionerProps: normalize.element({
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
       "data-expanded": dataAttr(isOpen),
@@ -87,7 +87,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       style: popperStyles.floating,
     }),
 
-    inputProps: normalize.input<T>({
+    inputProps: normalize.input({
       "data-part": "input",
       "aria-invalid": isInvalid,
       "data-invalid": dataAttr(isInvalid),
@@ -181,7 +181,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    toggleButtonProps: normalize.button<T>({
+    toggleButtonProps: normalize.button({
       "data-part": "toggle-button",
       id: dom.getToggleBtnId(state.context),
       "aria-haspopup": "listbox",
@@ -201,7 +201,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    listboxProps: normalize.element<T>({
+    listboxProps: normalize.element({
       "data-part": "listbox",
       id: dom.getListboxId(state.context),
       role: "listbox",
@@ -213,7 +213,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       },
     }),
 
-    clearButtonProps: normalize.button<T>({
+    clearButtonProps: normalize.button({
       "data-part": "clear-button",
       id: dom.getClearBtnId(state.context),
       type: "button",
@@ -242,7 +242,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
       const id = dom.getOptionId(state.context, value, index)
       const _state = api.getOptionState(props)
 
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "option",
         id,
         role: "option",
@@ -280,7 +280,7 @@ export function connect<T extends PropTypes = ReactPropTypes>(state: State, send
 
     getOptionGroupProps(props: OptionGroupProps) {
       const { label } = props
-      return normalize.element<T>({
+      return normalize.element({
         "data-part": "option-group",
         role: "group",
         "aria-label": label,

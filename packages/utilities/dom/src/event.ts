@@ -1,3 +1,4 @@
+import { JSX } from "@zag-js/types"
 import { contains } from "./query"
 
 export function isKeyboardClick(e: Pick<MouseEvent, "detail" | "clientX" | "clientY">) {
@@ -8,9 +9,9 @@ export function isPrintableKey(e: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaK
   return e.key.length === 1 && !e.ctrlKey && !e.metaKey
 }
 
-type NativeEvent<E> = React.ChangeEvent<any> extends E
+type NativeEvent<E> = JSX.ChangeEvent<any> extends E
   ? InputEvent
-  : E extends React.SyntheticEvent<any, infer T>
+  : E extends JSX.SyntheticEvent<any, infer T>
   ? T
   : never
 

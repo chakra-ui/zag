@@ -15,11 +15,10 @@ const fetchMachine = createMachine({
   initial: "unknown",
   context: {
     "isDefaultOpen": false,
-    "closeOnEsc": false,
-    "isLastTabbableElement && closeOnBlur && portalled": false,
-    "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled": false,
-    "closeOnBlur && isRelatedTargetFocusable": false,
-    "closeOnBlur": false
+    "!isRelatedTargetWithinContent": false,
+    "isTriggerFocused && portalled": false,
+    "isLastTabbableElement && closeOnInteractOutside && portalled": false,
+    "(isFirstTabbableElement || isContentFocused) && portalled": false
   },
   on: {
     UPDATE_CONTEXT: {
@@ -42,45 +41,36 @@ const fetchMachine = createMachine({
     closed: {
       entry: ["clearPointerDown", "invokeOnClose"],
       on: {
-        TRIGGER_CLICK: "open",
+        TOGGLE: "open",
         OPEN: "open"
       }
     },
     open: {
-      activities: ["trackPointerDown", "trapFocus", "preventScroll", "hideContentBelow", "disableOutsidePointerEvents", "computePlacement"],
+      activities: ["trapFocus", "preventScroll", "hideContentBelow", "computePlacement", "trackInteractionOutside", "trackTabKeyDown"],
       entry: ["setInitialFocus", "invokeOnOpen"],
       on: {
-        CLOSE: {
+        CLOSE: "closed",
+        REQUEST_CLOSE: {
           target: "closed",
-          actions: "focusTrigger"
+          actions: "focusTriggerIfNeeded"
         },
-        TRIGGER_CLICK: {
-          target: "closed",
-          actions: "focusTrigger"
+        TOGGLE: "closed",
+        TRIGGER_BLUR: {
+          cond: "!isRelatedTargetWithinContent",
+          target: "closed"
         },
-        ESCAPE: {
-          cond: "closeOnEsc",
-          target: "closed",
-          actions: "focusTrigger"
-        },
-        TAB: {
-          cond: "isLastTabbableElement && closeOnBlur && portalled",
+        TAB: [{
+          cond: "isTriggerFocused && portalled",
+          actions: "focusFirstTabbableElement"
+        }, {
+          cond: "isLastTabbableElement && closeOnInteractOutside && portalled",
           target: "closed",
           actions: "focusNextTabbableElementAfterTrigger"
-        },
+        }],
         SHIFT_TAB: {
-          cond: "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled",
-          target: "closed",
-          actions: "focusTrigger"
-        },
-        INTERACT_OUTSIDE: [{
-          cond: "closeOnBlur && isRelatedTargetFocusable",
-          target: "closed"
-        }, {
-          cond: "closeOnBlur",
-          target: "closed",
-          actions: "focusTrigger"
-        }]
+          cond: "(isFirstTabbableElement || isContentFocused) && portalled",
+          actions: "focusTriggerIfNeeded"
+        }
       }
     }
   }
@@ -94,10 +84,9 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isDefaultOpen": ctx => ctx["isDefaultOpen"],
-    "closeOnEsc": ctx => ctx["closeOnEsc"],
-    "isLastTabbableElement && closeOnBlur && portalled": ctx => ctx["isLastTabbableElement && closeOnBlur && portalled"],
-    "(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled": ctx => ctx["(isFirstTabbableElement || isContentFocused) && closeOnBlur && portalled"],
-    "closeOnBlur && isRelatedTargetFocusable": ctx => ctx["closeOnBlur && isRelatedTargetFocusable"],
-    "closeOnBlur": ctx => ctx["closeOnBlur"]
+    "!isRelatedTargetWithinContent": ctx => ctx["!isRelatedTargetWithinContent"],
+    "isTriggerFocused && portalled": ctx => ctx["isTriggerFocused && portalled"],
+    "isLastTabbableElement && closeOnInteractOutside && portalled": ctx => ctx["isLastTabbableElement && closeOnInteractOutside && portalled"],
+    "(isFirstTabbableElement || isContentFocused) && portalled": ctx => ctx["(isFirstTabbableElement || isContentFocused) && portalled"]
   }
 });

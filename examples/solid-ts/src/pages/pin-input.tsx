@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as pinInput from "@zag-js/pin-input"
-import { normalizeProps, PropTypes, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { pinInputControls, pinInputStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -18,7 +18,7 @@ export default function Page() {
 
   const ref = useSetup({ send, id: createUniqueId() })
 
-  const api = createMemo(() => pinInput.connect<PropTypes>(state, send, normalizeProps))
+  const api = createMemo(() => pinInput.connect(state, send, normalizeProps))
 
   return (
     <>

@@ -13,6 +13,11 @@
       "scripts",
       "shared",
       "examples/*"
+    ],
+    "nohoist": [
+      "**/@types/react",
+      "**/@vue/**",
+      "**/vue"
     ]
   },
   "scripts": {
@@ -20,7 +25,7 @@
     "build": "turbo run build --filter=./packages/**/*",
     "start": "turbo run start --stream --parallel --filter=./packages/**/*",
     "prepare": "husky install && manypkg check",
-    "clean": "manypkg exec rm -rf dist .turbo .swc node_modules",
+    "clean": "manypkg exec rm -rf dist .turbo .swc node_modules && rm -rf node_modules",
     "start:react": "cd examples/next-ts && yarn dev",
     "start:vue": "cd examples/vue-ts && vite --port 3002 --clearScreen false",
     "start:solid": "cd examples/solid-ts && vite --port 3001 --clearScreen false",
@@ -81,6 +86,7 @@
     "jest-watch-typeahead": "1.1.0",
     "json-format-highlight": "1.0.4",
     "lint-staged": "13.0.3",
+    "patch-package": "6.4.7",
     "playwright": "1.22.2",
     "plop": "3.1.1",
     "prettier": "2.7.1",
