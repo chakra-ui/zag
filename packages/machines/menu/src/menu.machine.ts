@@ -9,7 +9,7 @@ import {
   trackPointerDown,
 } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
-import { inset, Rect, withinPolygon } from "@zag-js/rect-utils"
+import { createRect, getRectCorners, inset, withinPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
@@ -437,11 +437,11 @@ export function machine(ctx: UserDefinedContext = {}) {
           const menu = dom.getContentEl(ctx)
           if (!menu) return
 
-          let rect = Rect.create(menu.getBoundingClientRect())
+          let rect = createRect(menu.getBoundingClientRect())
           const BUFFER = 20
 
           rect = inset(rect, { dx: -BUFFER, dy: -BUFFER })
-          const { top, right, left, bottom } = rect.corners
+          const { top, right, left, bottom } = getRectCorners(rect)
 
           let polygon = [evt.point, top, right, bottom, left]
           // NOTE: this might need to be changed to the current placement, not just rtl
