@@ -2,7 +2,11 @@
   "name": "@zag-js/pressable",
   "version": "0.0.0",
   "description": "Handling press interactions across mouse, touch, keyboard, and screen readers.",
-  "keywords": ["js", "utils", "pressable"],
+  "keywords": [
+    "js",
+    "utils",
+    "pressable"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
@@ -11,7 +15,9 @@
   "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/pressable",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build:fast": "yarn zag build",
     "start": "yarn zag build --watch",

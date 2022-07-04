@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@zag-js/core": "0.1.6",
-    "@zag-js/interact-outside": "0.1.0",
     "@zag-js/dom-utils": "0.1.5",
+    "@zag-js/interact-outside": "0.1.0",
     "@zag-js/types": "0.2.0"
   },
   "scripts": {
