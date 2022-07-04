@@ -8425,10 +8425,10 @@ solid-js@1.4.4:
   resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.4.4.tgz#cf14c41f118d11ec2257e60a4d23d03575c7095d"
   integrity sha512-nf/cbRzMuhb5UjbRDNfSJPqHKzUxNb9YgCQwijPUbdA3koQ/hWrz/lj0ter3lvThgxinvGPtXofDGy9bsKrXqA==
 
-solid-js@^1.1.1:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.4.5.tgz#11083b273751b33cb766c22ad66001ed8daef239"
-  integrity sha512-32NGpuabEJDTeQ7fjaTR2TLC7R/X5hbqhYdEQ1e+GcIK8r8+/V0Nv17eZQii5Z/97/mtdt8yi63chzg73qnz/A==
+solid-js@1.4.6, solid-js@^1.1.1:
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.4.6.tgz#4f4ef0de22d2b1aece77028847420dd815a78872"
+  integrity sha512-vF0x5qbVCDi8zlEyN92y/i+pS7QNYh3uNvbSyUYDhLifKuYqGcJwGxbH9zzDX5sR8o1ijgzI6BEAXlcR7Mkkjw==
 
 solid-refresh@^0.2.2:
   version "0.2.2"
