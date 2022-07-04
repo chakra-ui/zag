@@ -16,7 +16,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       initial: "unknown",
       context: {
         uid: "",
-        pointerdownNode: null,
         activeId: null,
         hoverId: null,
         parent: null,
