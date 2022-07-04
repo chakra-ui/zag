@@ -17,6 +17,7 @@
     "nohoist": [
       "**/@types/react",
       "**/@vue/**",
+      "**/@vitejs/**",
       "**/vue"
     ]
   },
