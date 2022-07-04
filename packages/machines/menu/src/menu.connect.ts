@@ -1,15 +1,13 @@
 import { mergeProps } from "@zag-js/core"
 import {
-  contains,
   dataAttr,
+  EventKeyMap,
   getEventKey,
   getEventPoint,
   getNativeEvent,
   isElementEditable,
-  isLeftClick,
   isModifiedEvent,
-  validateBlur,
-  type EventKeyMap,
+  isSelfEvent,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -17,7 +15,6 @@ import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const pointerdownNode = state.context.pointerdownNode
   const isSubmenu = state.context.isSubmenu
   const values = state.context.values
   const isTypingAhead = state.context.typeahead.keysSoFar !== ""
@@ -130,7 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (!isLeftClick(evt) || disabled) return
+        if (!evt.isPrimary || disabled) return
         send({ type: "TRIGGER_CLICK", target: event.currentTarget })
       },
       onBlur() {
@@ -193,29 +190,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-activedescendant": state.context.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
       "data-placement": state.context.currentPlacement,
-      onBlur(event) {
-        const menu = dom.getContentEl(state.context)
-        const trigger = dom.getTriggerEl(state.context)
-
-        const exclude = dom.getChildMenus(state.context).concat(dom.getParentMenus(state.context))
-
-        if (trigger && !isSubmenu) {
-          exclude.push(trigger)
-        }
-        const isValidBlur = validateBlur(event, {
-          exclude,
-          fallback: pointerdownNode,
-        })
-        if (isValidBlur && !contains(menu, event.relatedTarget)) {
-          send("BLUR")
-        }
-      },
       onPointerEnter() {
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
-        const activeItem = dom.getActiveItemEl(state.context)
-        const isLink = !!activeItem?.matches("a[href]")
+        if (!isSelfEvent(event)) return
+
+        const item = dom.getActiveItemEl(state.context)
+        const isLink = !!item?.matches("a[href]")
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
@@ -230,11 +212,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ArrowRight() {
             send("ARROW_RIGHT")
           },
-          Escape() {
-            send("ESCAPE")
-          },
           Enter() {
-            if (isLink) activeItem?.click()
+            if (isLink) item?.click()
             send("ENTER")
           },
           Space(event) {
@@ -264,16 +243,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           //
         } else {
           //
-          const isEditable = isElementEditable(activeItem)
-          const isKeyDownInside = contains(event.currentTarget, event.target)
-          const isModified = isModifiedEvent(event)
           const isSingleKey = event.key.length === 1
+          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isElementEditable(item)
 
-          if (isSingleKey && !isModified && isKeyDownInside && !isEditable) {
-            event.preventDefault()
-            event.stopPropagation()
-            send({ type: "TYPEAHEAD", key: event.key })
-          }
+          if (!isValidTypeahead) return
+
+          event.preventDefault()
+          event.stopPropagation()
+          send({ type: "TYPEAHEAD", key: event.key })
         }
       },
     }),
@@ -301,8 +278,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
-          const isSameTarget = contains(pointerdownNode, event.currentTarget)
-          if (!isLeftClick(evt) || disabled || isSameTarget) return
+          if (!evt.isPrimary || disabled) return
           event.currentTarget.click()
         },
         onPointerLeave(event) {
@@ -360,7 +336,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getLabelId(state.context, options.htmlFor),
         "data-part": "label",
-        "aria-hidden": true,
       })
     },
 

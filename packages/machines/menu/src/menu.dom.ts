@@ -36,22 +36,6 @@ export const dom = {
   getElemByKey: (ctx: Ctx, key: string) =>
     findByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.activeId }),
 
-  getChildMenus: (ctx: Ctx) => {
-    return Object.values(ctx.children)
-      .map((child) => dom.getContentEl(child.state.context))
-      .filter(isHTMLElement)
-  },
-  getParentMenus: (ctx: Ctx) => {
-    const menus: HTMLElement[] = []
-    let parent = ctx.parent
-    while (parent) {
-      const menu = dom.getContentEl(parent.state.context)
-      if (menu) menus.push(menu)
-      parent = parent.state.context.parent
-    }
-    return menus
-  },
-
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && v.dataset.disabled === ""
   },

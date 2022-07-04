@@ -14,7 +14,6 @@ const fetchMachine = createMachine({
   id: "menu",
   initial: "unknown",
   context: {
-    "isTriggerItem": false,
     "!isSubmenu": false,
     "!isSubmenu": false,
     "isTriggerItem && isParentActiveItem": false,
@@ -26,7 +25,6 @@ const fetchMachine = createMachine({
     "isSubmenu": false,
     "isTriggerActiveItem": false,
     "isTriggerActiveItem": false,
-    "isSubmenu": false,
     "!isMenuFocused && !isTriggerActiveItem && !suspendPointer && !isActiveItem": false,
     "!suspendPointer && !isActiveItem": false,
     "!isActiveItem": false,
@@ -47,10 +45,6 @@ const fetchMachine = createMachine({
       actions: "focusFirstItem"
     },
     CLOSE: "closed",
-    SET_POINTER_EXIT: {
-      cond: "isTriggerItem",
-      actions: "setPointerExit"
-    },
     RESTORE_FOCUS: {
       actions: "restoreFocus"
     },
@@ -137,7 +131,7 @@ const fetchMachine = createMachine({
       }
     },
     closed: {
-      entry: ["clearActiveId", "focusTrigger", "clearAnchorPoint", "clearPointerDownNode", "resumePointer", "closeChildMenus"],
+      entry: ["clearActiveId", "focusTrigger", "clearAnchorPoint", "clearPointerDownNode", "resumePointer"],
       on: {
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
@@ -171,7 +165,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["visible"],
-      activities: ["trackPointerDown", "computePlacement"],
+      activities: ["trackInteractOutside", "computePlacement"],
       entry: ["focusMenu", "resumePointer"],
       on: {
         TRIGGER_CLICK: {
@@ -201,10 +195,7 @@ const fetchMachine = createMachine({
         END: {
           actions: ["focusLastItem", "focusMenu"]
         },
-        BLUR: {
-          target: "closed",
-          actions: "closeParentMenus"
-        },
+        REQUEST_CLOSE: "closed",
         ARROW_RIGHT: {
           cond: "isTriggerActiveItem",
           actions: "openSubmenu"
@@ -214,18 +205,11 @@ const fetchMachine = createMachine({
           actions: "openSubmenu"
         }, {
           target: "closed",
-          actions: ["invokeOnSelect", "clickActiveOptionIfNeeded", "closeParentMenus"]
-        }],
-        ESCAPE: [{
-          cond: "isSubmenu",
-          target: "closed",
-          actions: "closeParentMenus"
-        }, {
-          target: "closed"
+          actions: ["invokeOnSelect", "clickActiveOptionIfNeeded", "closeRootMenu"]
         }],
         ITEM_POINTERMOVE: [{
           cond: "!isMenuFocused && !isTriggerActiveItem && !suspendPointer && !isActiveItem",
-          actions: ["focusItem", "focusMenu", "closeChildMenus"]
+          actions: ["focusItem", "focusMenu"]
         }, {
           cond: "!suspendPointer && !isActiveItem",
           actions: "focusItem"
@@ -240,7 +224,7 @@ const fetchMachine = createMachine({
         ITEM_CLICK: [{
           cond: "!isTriggerActiveItem && !isActiveItemFocusable && closeOnSelect",
           target: "closed",
-          actions: ["invokeOnSelect", "closeParentMenus", "changeOptionValue", "invokeOnValueChange"]
+          actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"]
         }, {
           cond: "!isTriggerActiveItem && !isActiveItemFocusable",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"]
@@ -272,10 +256,10 @@ const fetchMachine = createMachine({
     SUBMENU_CLOSE_DELAY: 200
   },
   guards: {
-    "isTriggerItem": ctx => ctx["isTriggerItem"],
     "!isSubmenu": ctx => ctx["!isSubmenu"],
     "isTriggerItem && isParentActiveItem": ctx => ctx["isTriggerItem && isParentActiveItem"],
     "isKeyboardEvent": ctx => ctx["isKeyboardEvent"],
+    "isTriggerItem": ctx => ctx["isTriggerItem"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "hasActiveId": ctx => ctx["hasActiveId"],
     "isSubmenu": ctx => ctx["isSubmenu"],
