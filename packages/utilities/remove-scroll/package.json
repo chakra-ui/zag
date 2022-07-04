@@ -31,7 +31,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@zag-js/dom-utils": "0.1.2"
+    "@zag-js/dom-utils": "0.1.5"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
