@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr, EventKeyMap, validateBlur } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./editable.dom"
 import type { Send, State } from "./editable.types"
@@ -10,7 +10,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isValueEmpty = state.context.isValueEmpty
   const isInvalid = state.context.invalid
 
-  const pointerdownNode = state.context.pointerdownNode
   const autoResize = state.context.autoResize
   const messages = state.context.messages
 
@@ -84,15 +83,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       value: state.context.value,
       size: autoResize ? 1 : undefined,
-      onBlur(event) {
-        const isValidBlur = validateBlur(event, {
-          exclude: [dom.getCancelBtnEl(state.context), dom.getSubmitBtnEl(state.context)],
-          fallback: pointerdownNode,
-        })
-        if (isValidBlur) {
-          send("BLUR")
-        }
-      },
       onChange(event) {
         send({ type: "TYPE", value: event.currentTarget.value })
       },

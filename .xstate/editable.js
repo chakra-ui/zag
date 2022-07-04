@@ -60,7 +60,7 @@ const fetchMachine = createMachine({
       }
     },
     edit: {
-      activities: "trackPointerDown",
+      activities: ["trackInteractOutside"],
       entry: ["focusInput", "invokeOnEdit"],
       on: {
         TYPE: {

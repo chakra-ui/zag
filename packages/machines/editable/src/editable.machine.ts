@@ -1,5 +1,6 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import { raf, trackPointerDown } from "@zag-js/dom-utils"
+import { contains, raf } from "@zag-js/dom-utils"
+import { trackInteractOutside } from "@zag-js/interact-outside"
 import { dom } from "./editable.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./editable.types"
 
@@ -76,7 +77,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
 
         edit: {
-          activities: "trackPointerDown",
+          activities: ["trackInteractOutside"],
           entry: ["focusInput", "invokeOnEdit"],
           on: {
             TYPE: {
@@ -122,9 +123,15 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       activities: {
-        trackPointerDown(ctx) {
-          return trackPointerDown(dom.getDoc(ctx), (el) => {
-            ctx.pointerdownNode = ref(el)
+        trackInteractOutside(ctx, _evt, { send }) {
+          const onInteractOutside = () => send("BLUR")
+          return trackInteractOutside(dom.getInputEl(ctx), {
+            exclude(target) {
+              const ignore = [dom.getCancelBtnEl(ctx), dom.getSubmitBtnEl(ctx)]
+              return ignore.some((el) => contains(el, target))
+            },
+            onFocusOutside: onInteractOutside,
+            onPointerDownOutside: onInteractOutside,
           })
         },
       },
