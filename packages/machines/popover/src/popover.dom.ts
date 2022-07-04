@@ -1,6 +1,6 @@
 import { getFirstTabbable, getFocusables, getLastTabbable, getTabbables } from "@zag-js/dom-utils"
 import { runIfFn } from "@zag-js/utils"
-import { MachineContext as Ctx } from "./popover.types"
+import type { MachineContext as Ctx } from "./popover.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

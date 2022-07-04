@@ -2,7 +2,7 @@ import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@z
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
-import { Send, State } from "./pin-input.types"
+import type { Send, State } from "./pin-input.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isValueComplete = state.context.isValueComplete

@@ -1,5 +1,5 @@
-import { Style } from "@zag-js/types"
-import { MachineContext as Ctx } from "./splitter.types"
+import type { Style } from "@zag-js/types"
+import type { MachineContext as Ctx } from "./splitter.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

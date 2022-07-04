@@ -1,6 +1,6 @@
 import { itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
-import { MachineContext as Ctx } from "./tabs.types"
+import type { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

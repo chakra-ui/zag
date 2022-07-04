@@ -1,5 +1,5 @@
-import { StateMachine as S } from "@zag-js/core"
-import { Context, DirectionProperty } from "@zag-js/types"
+import type { StateMachine as S } from "@zag-js/core"
+import type { Context, DirectionProperty } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string

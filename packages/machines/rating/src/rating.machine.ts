@@ -1,7 +1,7 @@
 import { createMachine, ref } from "@zag-js/core"
 import { raf } from "@zag-js/dom-utils"
 import { dom } from "./rating.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
 
 export function machine(ctx: UserDefinedContext = {}) {
   return createMachine<MachineContext, MachineState>(

@@ -1,4 +1,4 @@
-import { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement } from "./toast.types"
+import type { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement } from "./toast.types"
 
 export const dom = {
   getDoc: (ctx: Ctx | GroupCtx) => ctx.doc ?? document,

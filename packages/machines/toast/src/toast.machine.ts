@@ -1,7 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackDocumentVisibility } from "@zag-js/dom-utils"
 import { dom } from "./toast.dom"
-import { MachineContext, MachineState, Options } from "./toast.types"
+import type { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
 const { not, and, or } = guards

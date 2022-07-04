@@ -1,4 +1,4 @@
-import { Placement } from "@floating-ui/dom"
+import type { Placement } from "@floating-ui/dom"
 import { cssVars } from "./middleware"
 
 type Options = {

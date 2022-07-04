@@ -1,5 +1,5 @@
 import { dispatchInputValueEvent } from "@zag-js/dom-utils"
-import { MachineContext as Ctx } from "./rating.types"
+import type { MachineContext as Ctx } from "./rating.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

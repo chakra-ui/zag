@@ -1,10 +1,10 @@
-import { clamp, decrement, increment, formatDecimal } from "@zag-js/number-utils"
+import { clamp, decrement, formatDecimal, increment } from "@zag-js/number-utils"
+import type { JSX } from "@zag-js/types"
 import { isModifiedEvent } from "@zag-js/utils"
-import type { KeyboardEvent } from "react"
 import type { MachineContext as Ctx } from "./number-input.types"
 
 export const utils = {
-  isValidNumericEvent: (ctx: Ctx, event: KeyboardEvent) => {
+  isValidNumericEvent: (ctx: Ctx, event: JSX.KeyboardEvent) => {
     if (event.key == null) return true
     const isModifier = isModifiedEvent(event)
     const isSingleKey = event.key.length === 1

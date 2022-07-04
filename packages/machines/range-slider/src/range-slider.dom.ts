@@ -1,4 +1,4 @@
-import { StateMachine } from "@zag-js/core"
+import type { StateMachine } from "@zag-js/core"
 import { dispatchInputValueEvent, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"

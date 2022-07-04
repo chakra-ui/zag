@@ -1,5 +1,5 @@
 import { getRectFromPoints } from "./from-points"
-import { Rect } from "./rect"
+import type { Rect } from "./rect"
 
 const { min, max } = Math
 

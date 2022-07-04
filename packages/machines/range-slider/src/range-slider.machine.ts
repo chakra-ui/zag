@@ -3,7 +3,7 @@ import { nextTick, raf, trackFieldsetDisabled, trackFormReset, trackPointerMove 
 import { getElementRect } from "@zag-js/rect-utils"
 import { isNumber } from "@zag-js/utils"
 import { dom, getClosestIndex } from "./range-slider.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
 
 export function machine(ctx: UserDefinedContext = {}) {

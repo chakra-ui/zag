@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { getFocusables, nextTick, raf } from "@zag-js/dom-utils"
 import { dom } from "./tabs.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
 
 const { not } = guards
 

@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import { FormatDecimalOptions } from "@zag-js/number-utils"
+import type { FormatDecimalOptions } from "@zag-js/number-utils"
 import type { Context, DirectionProperty } from "@zag-js/types"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"

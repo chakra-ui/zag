@@ -3,7 +3,7 @@ import { percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./range-slider.dom"
-import { Send, State } from "./range-slider.types"
+import type { Send, State } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {

@@ -1,4 +1,4 @@
-import { MachineSrc, StateMachine as S } from "@zag-js/core"
+import type { MachineSrc, StateMachine as S } from "@zag-js/core"
 import { createEffect, onCleanup, onMount } from "solid-js"
 import { createStore, reconcile, Store } from "solid-js/store"
 import { unwrap } from "./unwrap"

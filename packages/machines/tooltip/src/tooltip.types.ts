@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
-import { Placement, PositioningOptions } from "@zag-js/popper"
-import { RootProperties } from "@zag-js/types"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { RootProperties } from "@zag-js/types"
 
 type ElementIds = Partial<{
   trigger: string

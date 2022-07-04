@@ -1,4 +1,4 @@
-import { Rect } from "./rect"
+import type { Rect } from "./rect"
 
 function hAlign(a: Rect, ref: Rect, h: HAlign): Rect {
   let x = ref.minX

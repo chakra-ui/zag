@@ -1,5 +1,5 @@
 import { clamp, decrement, increment, percentToValue, snapToStep, toRanges } from "@zag-js/number-utils"
-import { MachineContext as Ctx } from "./range-slider.types"
+import type { MachineContext as Ctx } from "./range-slider.types"
 
 export const utils = {
   check(ctx: Ctx, values: number[]) {

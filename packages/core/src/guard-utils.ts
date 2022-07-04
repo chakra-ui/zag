@@ -1,5 +1,5 @@
 import { isFunction, isString } from "@zag-js/utils"
-import { Dict, StateMachine as S } from "./types"
+import type { Dict, StateMachine as S } from "./types"
 import { isGuardHelper } from "./utils"
 
 const Truthy = () => true

@@ -1,5 +1,5 @@
 import { getScrollParent } from "@zag-js/dom-utils"
-import { MachineContext as Ctx } from "./tooltip.types"
+import type { MachineContext as Ctx } from "./tooltip.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

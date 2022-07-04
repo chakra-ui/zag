@@ -3,7 +3,7 @@ import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isIos, isLeftClick } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
-import { Send, State } from "./number-input.types"
+import type { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {

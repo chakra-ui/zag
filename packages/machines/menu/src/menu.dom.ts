@@ -1,6 +1,6 @@
 import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
-import { MachineContext as Ctx } from "./menu.types"
+import type { MachineContext as Ctx } from "./menu.types"
 
 type HTMLEl = HTMLElement | null
 

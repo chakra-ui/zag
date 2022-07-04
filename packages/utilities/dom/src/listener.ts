@@ -6,7 +6,7 @@ import {
   hasProp,
   isTouchEvent,
 } from "@zag-js/utils"
-import {
+import type {
   AnyPointerEvent,
   DOMEventTarget,
   EventMap,

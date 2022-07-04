@@ -12,7 +12,7 @@ import { getPlacement } from "@zag-js/popper"
 import { inset, Rect, withinPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
 
 const { not, and } = guards
 

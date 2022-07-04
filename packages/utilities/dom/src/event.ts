@@ -1,4 +1,4 @@
-import { JSX } from "@zag-js/types"
+import type { JSX } from "@zag-js/types"
 import { contains } from "./query"
 
 export function isKeyboardClick(e: Pick<MouseEvent, "detail" | "clientX" | "clientY">) {

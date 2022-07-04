@@ -1,5 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
-import * as Vue from "vue"
+import type * as Vue from "vue"
 
 type ReservedProps = {
   key?: string | number | symbol

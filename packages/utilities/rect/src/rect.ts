@@ -1,4 +1,4 @@
-import { RectEdge, RectValue } from "./types"
+import type { RectEdge, RectValue } from "./types"
 
 const point = (x: number, y: number) => ({ x, y })
 

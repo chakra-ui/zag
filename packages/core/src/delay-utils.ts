@@ -1,5 +1,5 @@
 import { invariant, isFunction, isNumber, isString } from "@zag-js/utils"
-import { StateMachine as S } from "./types"
+import type { StateMachine as S } from "./types"
 
 /**
  * Delay can be specified as:

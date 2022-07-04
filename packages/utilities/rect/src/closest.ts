@@ -1,5 +1,5 @@
 import { distance } from "./distance"
-import { Rect } from "./rect"
+import type { Rect } from "./rect"
 import type { Point, RectSide } from "./types"
 
 export function closest(...pts: Point[]) {

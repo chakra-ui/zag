@@ -9,7 +9,7 @@ import {
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, isLeftClick } from "@zag-js/utils"
 import { dom } from "./rating.dom"
-import { Send, State } from "./rating.types"
+import type { Send, State } from "./rating.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive

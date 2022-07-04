@@ -1,5 +1,5 @@
 import { queryAll } from "@zag-js/dom-utils"
-import { MachineContext as Ctx } from "./pin-input.types"
+import type { MachineContext as Ctx } from "./pin-input.types"
 
 export const dom = {
   getDoc: (ctx: Ctx) => ctx.doc ?? document,

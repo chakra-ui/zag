@@ -1,4 +1,4 @@
-import { Point } from "./types"
+import type { Point } from "./types"
 
 export function withinPolygon(polygon: Point[], point: Point) {
   const { x, y } = point

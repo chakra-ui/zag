@@ -1,7 +1,7 @@
 import { ariaAttr, dataAttr, EventKeyMap, validateBlur } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./editable.dom"
-import { Send, State } from "./editable.types"
+import type { Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isDisabled = state.context.disabled

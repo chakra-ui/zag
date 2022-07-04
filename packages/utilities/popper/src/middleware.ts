@@ -1,4 +1,4 @@
-import { Coords, Middleware } from "@floating-ui/dom"
+import type { Coords, Middleware } from "@floating-ui/dom"
 
 /* -----------------------------------------------------------------------------
  * Shared middleware utils

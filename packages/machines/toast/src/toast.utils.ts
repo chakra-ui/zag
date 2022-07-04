@@ -1,5 +1,5 @@
-import { Style } from "@zag-js/types"
-import { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
+import type { Style } from "@zag-js/types"
+import type { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
 
 export function getToastsByPlacement(toasts: Service[]) {
   const result: Partial<Record<Placement, Service[]>> = {}

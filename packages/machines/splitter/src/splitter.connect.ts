@@ -1,7 +1,7 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./splitter.dom"
-import { Send, State } from "./splitter.types"
+import type { Send, State } from "./splitter.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isHorizontal = state.context.isHorizontal

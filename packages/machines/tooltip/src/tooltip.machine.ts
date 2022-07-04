@@ -11,7 +11,7 @@ import { getPlacement } from "@zag-js/popper"
 import { isSafari, noop } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import { UserDefinedContext, MachineContext, MachineState } from "./tooltip.types"
+import type { UserDefinedContext, MachineContext, MachineState } from "./tooltip.types"
 
 export function machine(ctx: UserDefinedContext = {}) {
   return createMachine<MachineContext, MachineState>(

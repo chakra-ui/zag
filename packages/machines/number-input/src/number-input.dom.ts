@@ -1,6 +1,6 @@
 import { MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
-import { MachineContext as Ctx } from "./number-input.types"
+import type { MachineContext as Ctx } from "./number-input.types"
 
 type InputEl = HTMLInputElement | null
 type ButtonEl = HTMLButtonElement | null

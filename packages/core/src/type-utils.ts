@@ -1,5 +1,5 @@
-import { Machine } from "./machine"
-import { StateMachine as S } from "./types"
+import type { Machine } from "./machine"
+import type { StateMachine as S } from "./types"
 
 type AnyFunction = (...args: any[]) => any
 type ReturnTypeOrValue<T> = T extends AnyFunction ? ReturnType<T> : T

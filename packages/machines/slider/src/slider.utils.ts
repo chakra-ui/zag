@@ -1,5 +1,5 @@
 import { clamp, decrement, increment, percentToValue, snapToStep } from "@zag-js/number-utils"
-import { MachineContext as Ctx } from "./slider.types"
+import type { MachineContext as Ctx } from "./slider.types"
 
 export const utils = {
   fromPercent(ctx: Ctx, percent: number) {

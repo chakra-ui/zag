@@ -2,7 +2,7 @@ import { createMachine, guards, ref } from "@zag-js/core"
 import { nextTick, raf } from "@zag-js/dom-utils"
 import { fromLength } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
 
 const { and, not } = guards
 

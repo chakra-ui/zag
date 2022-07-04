@@ -7,7 +7,7 @@ import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { isModifiedEvent, next, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
 
 const { and, or, not } = guards
 
