@@ -62,3 +62,5 @@ export type PositioningOptions = {
    */
   onCleanup?: VoidFunction
 }
+
+export type BasePlacement = "top" | "right" | "bottom" | "left"
