@@ -15,13 +15,21 @@ describe("@zag-js/rect-utils", () => {
     const r = getRectFromPoints({ x: 0, y: 0 }, { x: 0, y: 50 }, { x: 10, y: 50 }, { x: 10, y: 0 }, { x: 0, y: 0 })
     expect(r).toMatchObject({ width: 10, height: 50 })
     expect(r).toMatchInlineSnapshot(`
-      Rect {
-        "v": Object {
-          "height": 50,
-          "width": 10,
-          "x": 0,
-          "y": 0,
+      Object {
+        "center": Object {
+          "x": 5,
+          "y": 25,
         },
+        "height": 50,
+        "maxX": 10,
+        "maxY": 50,
+        "midX": 5,
+        "midY": 25,
+        "minX": 0,
+        "minY": 0,
+        "width": 10,
+        "x": 0,
+        "y": 0,
       }
     `)
 
