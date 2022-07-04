@@ -3,15 +3,19 @@ import type { RectEdge, RectValue } from "./types"
 
 const point = (x: number, y: number) => ({ x, y })
 
-export function createRect(v: RectValue) {
-  const midX = v.x + v.width / 2
-  const midY = v.y + v.height / 2
+export function createRect(r: RectValue) {
+  const { x, y, width, height } = r
+  const midX = x + width / 2
+  const midY = y + height / 2
   return {
-    ...v,
-    minX: v.x,
-    minY: v.y,
-    maxX: v.x + v.width,
-    maxY: v.y + v.height,
+    x,
+    y,
+    width,
+    height,
+    minX: x,
+    minY: y,
+    maxX: x + width,
+    maxY: y + height,
     midX,
     midY,
     center: point(midX, midY),
