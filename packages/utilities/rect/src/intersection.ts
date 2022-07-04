@@ -1,4 +1,4 @@
-import { Rect } from "./rect"
+import { createRect, Rect } from "./rect"
 import type { RectSide } from "./types"
 
 /**
@@ -16,7 +16,7 @@ export function intersection(a: Rect, b: Rect): Rect {
   const y = Math.max(a.y, b.y)
   const x2 = Math.min(a.x + a.width, b.x + b.width)
   const y2 = Math.min(a.y + a.height, b.y + b.height)
-  return Rect.create({ x, y, width: x2 - x, height: y2 - y })
+  return createRect({ x, y, width: x2 - x, height: y2 - y })
 }
 
 /**

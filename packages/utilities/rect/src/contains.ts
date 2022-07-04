@@ -1,4 +1,4 @@
-import { Rect } from "./rect"
+import { getRectCorners, isRect, Rect } from "./rect"
 import type { Point } from "./types"
 
 export function containsPoint(r: Rect, p: Point): boolean {
@@ -6,9 +6,9 @@ export function containsPoint(r: Rect, p: Point): boolean {
 }
 
 export function containsRect(a: Rect, b: Rect): boolean {
-  return Object.values(b.corners).every((c) => containsPoint(a, c))
+  return Object.values(getRectCorners(b)).every((c) => containsPoint(a, c))
 }
 
 export function contains(r: Rect, v: Rect | Point): boolean {
-  return v instanceof Rect ? containsRect(r, v) : containsPoint(r, v)
+  return isRect(v) ? containsRect(r, v) : containsPoint(r, v)
 }

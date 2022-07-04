@@ -1,4 +1,4 @@
-import { Rect } from "../src"
+import { createRect, getRectCorners } from "../src"
 import { containsPoint } from "../src/contains"
 import { getRectFromPoints } from "../src/from-points"
 import { collisions, intersection, intersects } from "../src/intersection"
@@ -7,7 +7,7 @@ import { union } from "../src/union"
 
 describe("@zag-js/rect-utils", () => {
   test("should create rect", () => {
-    const r = Rect.create({ x: 0, y: 0, width: 100, height: 100 })
+    const r = createRect({ x: 0, y: 0, width: 100, height: 100 })
     expect(r).toMatchObject({ x: 0, y: 0, width: 100, height: 100 })
   })
 
@@ -25,7 +25,7 @@ describe("@zag-js/rect-utils", () => {
       }
     `)
 
-    expect(r.corners).toMatchInlineSnapshot(`
+    expect(getRectCorners(r)).toMatchInlineSnapshot(`
       Object {
         "bottom": Object {
           "x": 10,
@@ -50,8 +50,8 @@ describe("@zag-js/rect-utils", () => {
   })
 
   test("should get the intersection of two rects", () => {
-    const rectA = Rect.create({ x: 0, y: 0, width: 80, height: 100 })
-    const rectB = Rect.create({ x: 60, y: 20, width: 50, height: 45 })
+    const rectA = createRect({ x: 0, y: 0, width: 80, height: 100 })
+    const rectB = createRect({ x: 60, y: 20, width: 50, height: 45 })
 
     const r = intersection(rectA, rectB)
 
@@ -66,8 +66,8 @@ describe("@zag-js/rect-utils", () => {
   })
 
   test("should get the collision edges between rects", () => {
-    const r = Rect.create({ x: 20, y: 10, width: 20, height: 20 })
-    const boundary = Rect.create({ x: 0, y: 0, width: 40, height: 30 })
+    const r = createRect({ x: 20, y: 10, width: 20, height: 20 })
+    const boundary = createRect({ x: 0, y: 0, width: 40, height: 30 })
     expect(intersects(r, boundary)).toBeTruthy()
     expect(collisions(r, boundary)).toMatchObject({
       right: true,
@@ -76,7 +76,7 @@ describe("@zag-js/rect-utils", () => {
   })
 
   describe("transformations", () => {
-    const r = Rect.create({ x: 0, y: 0, width: 40, height: 30 })
+    const r = createRect({ x: 0, y: 0, width: 40, height: 30 })
     test("grow rect", () => {
       const val = inset(r, { dx: -10 })
       expect(val).toMatchObject({ x: -10, y: 0, width: 60, height: 30 })
@@ -87,8 +87,8 @@ describe("@zag-js/rect-utils", () => {
     })
 
     test("merges rects", () => {
-      const rectA = Rect.create({ x: 0, y: 0, width: 40, height: 30 })
-      const rectB = Rect.create({ x: 20, y: 30, width: 20, height: 20 })
+      const rectA = createRect({ x: 0, y: 0, width: 40, height: 30 })
+      const rectB = createRect({ x: 20, y: 30, width: 20, height: 20 })
       expect(union(rectA, rectB)).toMatchObject({
         width: 40,
         height: 50,
