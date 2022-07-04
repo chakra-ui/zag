@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, matchAttr, validateBlur } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./tags-input.dom"
 import type { Send, State, TagProps } from "./tags-input.types"
@@ -118,9 +118,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (evt.isComposing) return
 
         // handle composition when used as combobox
-        const attr = matchAttr(event.currentTarget)
-        const isCombobox = attr.is("role", "combobox")
-        const isExpanded = attr.is("aria-expanded", "true")
+        const target = event.currentTarget as HTMLElement
+        const isCombobox = target.getAttribute("role") === "combobox"
+        const isExpanded = target.ariaExpanded === "true"
 
         const keyMap: EventKeyMap = {
           ArrowDown() {

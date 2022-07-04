@@ -1,7 +1,16 @@
-import { ariaAttr, dataAttr, EventKeyMap, getEventStep, getNativeEvent, getEventPoint } from "@zag-js/dom-utils"
+import {
+  ariaAttr,
+  dataAttr,
+  EventKeyMap,
+  getEventStep,
+  getNativeEvent,
+  getEventPoint,
+  isIos,
+  isLeftClick,
+} from "@zag-js/dom-utils"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { isIos, isLeftClick } from "@zag-js/utils"
+
 import { dom } from "./number-input.dom"
 import type { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"

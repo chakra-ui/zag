@@ -5,13 +5,14 @@ import {
   addPointerlockChangeListener,
   getScrollParents,
   isHTMLElement,
+  isSafari,
   raf,
 } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
-import { isSafari, noop } from "@zag-js/utils"
+import { noop } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { UserDefinedContext, MachineContext, MachineState } from "./tooltip.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./tooltip.types"
 
 export function machine(ctx: UserDefinedContext = {}) {
   return createMachine<MachineContext, MachineState>(

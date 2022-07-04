@@ -2,12 +2,13 @@ import {
   dataAttr,
   EventKeyMap,
   getEventKey,
-  getNativeEvent,
   getEventPoint,
+  getNativeEvent,
   getPointRelativeToNode,
+  isLeftClick,
 } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { cast, isLeftClick } from "@zag-js/utils"
+import { cast } from "@zag-js/utils"
 import { dom } from "./rating.dom"
 import type { Send, State } from "./rating.types"
 

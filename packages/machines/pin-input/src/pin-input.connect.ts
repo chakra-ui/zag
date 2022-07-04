@@ -1,6 +1,6 @@
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { invariant, isModifiedEvent } from "@zag-js/utils"
+import { invariant } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import type { Send, State } from "./pin-input.types"
 

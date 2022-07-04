@@ -1,6 +1,6 @@
 // Credits: https://github.com/adobe/react-spectrum/blob/e81cfec20056338c7987c513826dc45df32f3db4/packages/%40react-aria/interactions/src/textSelection.ts
-import { isIos } from "@zag-js/utils"
 import { nextTick } from "./next-tick"
+import { isIos } from "./platform"
 
 type State = "default" | "disabled" | "restoring"
 

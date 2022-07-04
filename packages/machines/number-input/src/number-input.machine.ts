@@ -1,7 +1,14 @@
 import { choose, createMachine, guards, ref } from "@zag-js/core"
-import { addDomEvent, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-utils"
+import {
+  addDomEvent,
+  observeAttributes,
+  raf,
+  requestPointerLock,
+  isSafari,
+  supportsPointerEvent,
+} from "@zag-js/dom-utils"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
-import { callAll, isSafari, supportsPointerEvent } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
 import { utils } from "./number-input.utils"

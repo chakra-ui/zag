@@ -5,9 +5,9 @@ import {
   getDocument,
   getEventTarget,
   getWindow,
+  isContextMenuEvent,
   isFocusable,
 } from "@zag-js/dom-utils"
-import { isContextMenuEvent } from "@zag-js/utils"
 
 export type InteractOutsideHandlers = {
   onPointerDownOutside?: (event: PointerDownOutsideEvent) => void

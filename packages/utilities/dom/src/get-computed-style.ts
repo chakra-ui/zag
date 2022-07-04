@@ -4,8 +4,8 @@ type El = HTMLElement | null | undefined
 
 function getCache(): WeakMap<HTMLElement, Styles> {
   const g = globalThis as any
-  g.__styleCache__ = g.__styleCache__ || new WeakMap()
-  return g.__styleCache__
+  g.__styleCache = g.__styleCache || new WeakMap()
+  return g.__styleCache
 }
 
 export function getComputedStyle(el: El): Styles {

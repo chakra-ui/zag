@@ -1,6 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { isSafari } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
 import type { Send, State, TabProps } from "./tabs.types"
 

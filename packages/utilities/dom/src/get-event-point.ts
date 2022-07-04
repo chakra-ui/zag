@@ -1,4 +1,4 @@
-import { isTouchEvent } from "@zag-js/utils"
+import { isTouchEvent } from "./event"
 
 type PointType = "page" | "client"
 

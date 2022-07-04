@@ -1,7 +1,6 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur, isLeftClick } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { PropTypes, NormalizeProps } from "@zag-js/types"
-import { isLeftClick } from "@zag-js/utils"
 import { dom } from "./combobox.dom"
 import type { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 

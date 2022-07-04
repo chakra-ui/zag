@@ -1,6 +1,4 @@
 export * from "./array"
-export * from "./events"
 export * from "./functions"
 export * from "./guard"
-export * from "./platform"
 export * from "./warning"

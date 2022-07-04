@@ -6,12 +6,13 @@ import {
   getEventPoint,
   getNativeEvent,
   isElementEditable,
+  isLeftClick,
+  isModifiedEvent,
   validateBlur,
   type EventKeyMap,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { isLeftClick, isModifiedEvent } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 

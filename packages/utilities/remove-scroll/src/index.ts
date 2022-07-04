@@ -1,4 +1,4 @@
-import { isIos } from "@zag-js/utils"
+import { isIos } from "@zag-js/dom-utils"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
 

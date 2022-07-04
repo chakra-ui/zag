@@ -1,4 +1,4 @@
-import { isDom } from "./guard"
+export const isDom = () => typeof window !== "undefined"
 
 export function getPlatform() {
   const agent = (navigator as any).userAgentData

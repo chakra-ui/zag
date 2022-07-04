@@ -1,4 +1,5 @@
-import { callAll, isLeftClick, isMouseEvent } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils"
+import { isLeftClick, isMouseEvent } from "./event"
 import { addDomEvent, addPointerEvent } from "./listener"
 import type { AnyPointerEvent, EventListenerWithPointInfo as Listener, PointerEventInfo } from "./listener.types"
 import { disableTextSelection } from "./text-selection"

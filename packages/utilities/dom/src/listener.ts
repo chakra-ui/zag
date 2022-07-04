@@ -1,11 +1,5 @@
-import {
-  supportsMouseEvent,
-  supportsPointerEvent,
-  supportsTouchEvent,
-  runIfFn,
-  hasProp,
-  isTouchEvent,
-} from "@zag-js/utils"
+import { hasProp, runIfFn } from "@zag-js/utils"
+import { isTouchEvent, supportsMouseEvent, supportsPointerEvent, supportsTouchEvent } from "./event"
 import type {
   AnyPointerEvent,
   DOMEventTarget,
