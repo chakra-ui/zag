@@ -95,7 +95,7 @@ type PrivateContext = Context<{
   /**
    * Whether to prevent returning focus to the trigger
    */
-  preventReturnFocus?: boolean
+  focusTriggerOnClose?: boolean
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

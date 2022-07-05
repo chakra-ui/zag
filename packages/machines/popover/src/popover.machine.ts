@@ -28,7 +28,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         currentPlacement: undefined,
         ...ctx,
-        preventReturnFocus: false,
+        focusTriggerOnClose: true,
         renderedElements: {
           title: true,
           description: true,
@@ -122,13 +122,13 @@ export function machine(ctx: UserDefinedContext = {}) {
             onEscapeKeyDown(event) {
               ctx.onEscapeKeyDown?.(event)
               if (ctx.closeOnEsc) return
-              ctx.preventReturnFocus = false
+              ctx.focusTriggerOnClose = true
               event.preventDefault()
             },
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
-              ctx.preventReturnFocus = event.detail.focusable || event.detail.contextmenu
+              ctx.focusTriggerOnClose = !(event.detail.focusable || event.detail.contextmenu)
               if (!ctx.closeOnInteractOutside) {
                 event.preventDefault()
               }
@@ -229,13 +229,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           })
         },
         focusTriggerIfNeeded(ctx) {
-          const focus = () => dom.getTriggerEl(ctx)?.focus()
-          raf(() => {
-            if (!ctx.preventReturnFocus) {
-              focus()
-              ctx.preventReturnFocus = false
-            }
-          })
+          if (!ctx.focusTriggerOnClose) return
+          raf(() => dom.getTriggerEl(ctx)?.focus())
         },
         focusFirstTabbableElement(ctx, evt) {
           evt.preventDefault()

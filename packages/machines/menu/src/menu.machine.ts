@@ -26,6 +26,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         anchorPoint: null,
         closeOnSelect: true,
         isPlacementComplete: false,
+        focusTriggerOnClose: true,
         ...ctx,
         typeahead: findByTypeahead.defaultOptions,
         positioning: {
@@ -86,10 +87,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "open",
               actions: "setAnchorPoint",
             },
-            TRIGGER_CLICK: {
-              guard: not("isSubmenu"),
-              target: "open",
-            },
+            TRIGGER_CLICK: "open",
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
               target: "closed",
@@ -122,7 +120,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         closing: {
           tags: ["visible"],
-          activities: ["trackPointerMove", "computePlacement"],
+          activities: ["trackPointerMove"],
           after: {
             SUBMENU_CLOSE_DELAY: {
               target: "closed",
@@ -136,7 +134,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             },
             POINTER_MOVED_AWAY_FROM_SUBMENU: {
               target: "closed",
-              actions: "focusParentMenu",
+              actions: ["focusParentMenu", "restoreParentFocus"],
             },
           },
         },
@@ -152,10 +150,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "open",
               actions: "setAnchorPoint",
             },
-            TRIGGER_CLICK: [
-              { guard: "isKeyboardEvent", target: "open", actions: "focusFirstItem" },
-              { target: "open" },
-            ],
+            TRIGGER_CLICK: "open",
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
@@ -270,7 +265,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       delays: {
         LONG_PRESS_DELAY: 700,
         SUBMENU_OPEN_DELAY: 100,
-        SUBMENU_CLOSE_DELAY: 200,
+        SUBMENU_CLOSE_DELAY: 100,
       },
 
       guards: {
@@ -322,6 +317,9 @@ export function machine(ctx: UserDefinedContext = {}) {
             onEscapeKeyDown(event) {
               if (ctx.isSubmenu) event.preventDefault()
               closeRootMenu(ctx)
+            },
+            onPointerDownOutside(event) {
+              ctx.focusTriggerOnClose = !event.detail.focusable
             },
             onDismiss() {
               send({ type: "REQUEST_CLOSE" })
@@ -375,25 +373,25 @@ export function machine(ctx: UserDefinedContext = {}) {
           }
         },
         invokeOnValueChange(ctx, evt) {
-          if (!ctx.values) return
+          if (!ctx.value) return
           const name = evt.name ?? evt.option?.name
           if (!name) return
-          const values = ctx.values[name]
+          const values = ctx.value[name]
           const valueAsArray = isArray(values) ? Array.from(values) : values
-          ctx.onValuesChange?.({ name, value: valueAsArray })
+          ctx.onValueChange?.({ name, value: valueAsArray })
         },
         setOptionValue(ctx, evt) {
-          if (!ctx.values) return
-          ctx.values[evt.name] = evt.value
+          if (!ctx.value) return
+          ctx.value[evt.name] = evt.value
         },
         changeOptionValue(ctx, evt) {
-          if (!evt.option || !ctx.values) return
+          if (!evt.option || !ctx.value) return
           const { value, type, name } = evt.option
-          const values = ctx.values[name]
+          const values = ctx.value[name]
           if (type === "checkbox" && isArray(values)) {
-            ctx.values[name] = values.includes(value) ? remove(values, value) : add(values, value)
+            ctx.value[name] = values.includes(value) ? remove(values, value) : add(values, value)
           } else {
-            ctx.values[name] = value
+            ctx.value[name] = value
           }
         },
         clickActiveOptionIfNeeded(ctx) {
@@ -469,11 +467,8 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.activeId = event.id
         },
         focusTrigger(ctx) {
-          // only want to re-focus trigger if it's not a submenu or the
-          // menu was not manually positioned (e.g. context menu)
-          if (ctx.parent || ctx.anchorPoint) return
-          const trigger = dom.getTriggerEl(ctx)
-          raf(() => trigger?.focus())
+          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
+          raf(() => dom.getTriggerEl(ctx)?.focus())
         },
         focusMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)

@@ -15,9 +15,7 @@ const fetchMachine = createMachine({
   initial: "unknown",
   context: {
     "!isSubmenu": false,
-    "!isSubmenu": false,
     "isTriggerItem && isParentActiveItem": false,
-    "isKeyboardEvent": false,
     "isTriggerItem": false,
     "!isTriggerItem": false,
     "hasActiveId": false,
@@ -79,10 +77,7 @@ const fetchMachine = createMachine({
           target: "open",
           actions: "setAnchorPoint"
         },
-        TRIGGER_CLICK: {
-          cond: "!isSubmenu",
-          target: "open"
-        },
+        TRIGGER_CLICK: "open",
         TRIGGER_FOCUS: {
           cond: "!isSubmenu",
           target: "closed"
@@ -112,7 +107,7 @@ const fetchMachine = createMachine({
     },
     closing: {
       tags: ["visible"],
-      activities: ["trackPointerMove", "computePlacement"],
+      activities: ["trackPointerMove"],
       after: {
         SUBMENU_CLOSE_DELAY: {
           target: "closed",
@@ -126,7 +121,7 @@ const fetchMachine = createMachine({
         },
         POINTER_MOVED_AWAY_FROM_SUBMENU: {
           target: "closed",
-          actions: "focusParentMenu"
+          actions: ["focusParentMenu", "restoreParentFocus"]
         }
       }
     },
@@ -141,13 +136,7 @@ const fetchMachine = createMachine({
           target: "open",
           actions: "setAnchorPoint"
         },
-        TRIGGER_CLICK: [{
-          cond: "isKeyboardEvent",
-          target: "open",
-          actions: "focusFirstItem"
-        }, {
-          target: "open"
-        }],
+        TRIGGER_CLICK: "open",
         TRIGGER_POINTERMOVE: {
           cond: "isTriggerItem",
           target: "opening"
@@ -258,7 +247,6 @@ const fetchMachine = createMachine({
   guards: {
     "!isSubmenu": ctx => ctx["!isSubmenu"],
     "isTriggerItem && isParentActiveItem": ctx => ctx["isTriggerItem && isParentActiveItem"],
-    "isKeyboardEvent": ctx => ctx["isKeyboardEvent"],
     "isTriggerItem": ctx => ctx["isTriggerItem"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "hasActiveId": ctx => ctx["hasActiveId"],

@@ -10,8 +10,8 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine({
-      values: { order: "", type: [] },
-      onValuesChange: console.log,
+      value: { order: "", type: [] },
+      onValueChange: console.log,
     }),
   )
   const ref = useSetup<HTMLButtonElement>({ send, id: useId() })

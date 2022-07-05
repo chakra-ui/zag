@@ -21,18 +21,14 @@ export default function Page() {
   const sub2 = menu.connect(sub2State, sub2Send, normalizeProps)
 
   useEffect(() => {
-    setTimeout(() => {
-      root.setChild(subMachine)
-      sub.setParent(machine)
-    })
+    root.setChild(subMachine)
+    sub.setParent(machine)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    setTimeout(() => {
-      sub.setChild(sub2Machine)
-      sub2.setParent(subMachine)
-    })
+    sub.setChild(sub2Machine)
+    sub2.setParent(subMachine)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -47,6 +43,7 @@ export default function Page() {
 
       <main>
         <div>
+          <button>Welcome</button>
           <button data-testid="trigger" {...root.triggerProps}>
             Click me
           </button>
