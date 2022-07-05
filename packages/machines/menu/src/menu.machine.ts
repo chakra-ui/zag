@@ -39,6 +39,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
         isRtl: (ctx) => ctx.dir === "rtl",
+        isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
       },
 
       watch: {
@@ -93,7 +94,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "closed",
             },
             TRIGGER_POINTERMOVE: {
-              guard: and("isTriggerItem", "isParentActiveItem"),
+              guard: "isSubmenu",
               target: "opening",
             },
           },
@@ -207,7 +208,10 @@ export function machine(ctx: UserDefinedContext = {}) {
               actions: "openSubmenu",
             },
             ENTER: [
-              { guard: "isTriggerActiveItem", actions: "openSubmenu" },
+              {
+                guard: "isTriggerActiveItem",
+                actions: "openSubmenu",
+              },
               {
                 target: "closed",
                 actions: ["invokeOnSelect", "clickActiveOptionIfNeeded", "closeRootMenu"],
@@ -246,6 +250,7 @@ export function machine(ctx: UserDefinedContext = {}) {
                 guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
+              { actions: ["focusItem"] },
             ],
             TRIGGER_POINTERLEAVE: {
               target: "closing",
@@ -271,14 +276,12 @@ export function machine(ctx: UserDefinedContext = {}) {
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
         hasActiveId: (ctx) => ctx.activeId !== null,
-        isRtl: (ctx) => ctx.isRtl,
         isMenuFocused: (ctx) => {
           const menu = dom.getContentEl(ctx)
           const activeElement = dom.getActiveElement(ctx)
           return contains(menu, activeElement)
         },
         isActiveItem: (ctx, evt) => ctx.activeId === evt.target.id,
-        isParentActiveItem: (ctx, evt) => ctx.parent?.state.context.activeId === evt.target.id,
         // whether the trigger is also a menu item
         isTriggerItem: (ctx, evt) => {
           const target = (evt.target ?? dom.getTriggerEl(ctx)) as HTMLElement | null
@@ -296,7 +299,6 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (!ctx.intentPolygon) return false
           return isPointInPolygon(ctx.intentPolygon, evt.point)
         },
-        isKeyboardEvent: (_ctx, evt) => /^(ARROW_DOWN|ARROW_UP|HOME|END)/.test(evt.type) || Boolean(evt.key),
       },
 
       activities: {

@@ -15,7 +15,7 @@ const fetchMachine = createMachine({
   initial: "unknown",
   context: {
     "!isSubmenu": false,
-    "isTriggerItem && isParentActiveItem": false,
+    "isSubmenu": false,
     "isTriggerItem": false,
     "!isTriggerItem": false,
     "hasActiveId": false,
@@ -83,7 +83,7 @@ const fetchMachine = createMachine({
           target: "closed"
         },
         TRIGGER_POINTERMOVE: {
-          cond: "isTriggerItem && isParentActiveItem",
+          cond: "isSubmenu",
           target: "opening"
         }
       }
@@ -217,6 +217,8 @@ const fetchMachine = createMachine({
         }, {
           cond: "!isTriggerActiveItem && !isActiveItemFocusable",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"]
+        }, {
+          actions: ["focusItem"]
         }],
         TRIGGER_POINTERLEAVE: {
           target: "closing",
@@ -246,11 +248,10 @@ const fetchMachine = createMachine({
   },
   guards: {
     "!isSubmenu": ctx => ctx["!isSubmenu"],
-    "isTriggerItem && isParentActiveItem": ctx => ctx["isTriggerItem && isParentActiveItem"],
+    "isSubmenu": ctx => ctx["isSubmenu"],
     "isTriggerItem": ctx => ctx["isTriggerItem"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "hasActiveId": ctx => ctx["hasActiveId"],
-    "isSubmenu": ctx => ctx["isSubmenu"],
     "isTriggerActiveItem": ctx => ctx["isTriggerActiveItem"],
     "!isMenuFocused && !isTriggerActiveItem && !suspendPointer && !isActiveItem": ctx => ctx["!isMenuFocused && !isTriggerActiveItem && !suspendPointer && !isActiveItem"],
     "!suspendPointer && !isActiveItem": ctx => ctx["!suspendPointer && !isActiveItem"],

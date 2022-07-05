@@ -9,16 +9,18 @@ import {
   isElementEditable,
   isModifiedEvent,
   isSelfEvent,
+  whenMouse,
+  whenTouchOrPen,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isSubmenu = state.context.isSubmenu
   const values = state.context.value
-  const isTypingAhead = state.context.typeahead.keysSoFar !== ""
+  const isTypingAhead = state.context.isTypingAhead
 
   const isOpen = state.hasTag("visible")
 
@@ -56,27 +58,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contextTriggerProps: normalize.element({
       "data-part": "trigger",
       id: dom.getContextTriggerId(state.context),
-      onPointerDown(event) {
+      onPointerDown: whenTouchOrPen((event) => {
         const evt = getNativeEvent(event)
-        if (event.pointerType !== "mouse") {
-          send({ type: "CONTEXT_MENU_START", point: getEventPoint(evt) })
-        }
-      },
-      onPointerCancel(event) {
-        if (event.pointerType !== "mouse") {
-          send("CONTEXT_MENU_CANCEL")
-        }
-      },
-      onPointerMove(event) {
-        if (event.pointerType !== "mouse") {
-          send("CONTEXT_MENU_CANCEL")
-        }
-      },
-      onPointerUp(event) {
-        if (event.pointerType !== "mouse") {
-          send("CONTEXT_MENU_CANCEL")
-        }
-      },
+        send({ type: "CONTEXT_MENU_START", point: getEventPoint(evt) })
+      }),
+      onPointerCancel: whenTouchOrPen(() => {
+        send("CONTEXT_MENU_CANCEL")
+      }),
+      onPointerMove: whenTouchOrPen(() => {
+        send("CONTEXT_MENU_CANCEL")
+      }),
+      onPointerUp: whenTouchOrPen(() => {
+        send("CONTEXT_MENU_CANCEL")
+      }),
       onContextMenu(event) {
         const evt = getNativeEvent(event)
         send({ type: "CONTEXT_MENU", point: getEventPoint(evt) })
@@ -122,14 +116,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           point: getEventPoint(evt),
         })
       }),
+      onClick(event) {
+        if (dom.isTriggerItem(event.currentTarget)) {
+          send({ type: "TRIGGER_CLICK", target: event.currentTarget })
+        }
+      },
       onPointerDown(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
         const evt = getNativeEvent(event)
         if (!evt.isPrimary || disabled || isContextMenuEvent(event)) return
         event.preventDefault()
-        send({ type: "TRIGGER_CLICK", target: event.currentTarget })
-        // if (!dom.isTriggerItem(event.currentTarget)) {
-        // }
+        if (!dom.isTriggerItem(event.currentTarget)) {
+          send({ type: "TRIGGER_CLICK", target: event.currentTarget })
+        }
       },
       onBlur() {
         send("TRIGGER_BLUR")
@@ -275,7 +274,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
-          send({ type: "ITEM_CLICK", target: event.currentTarget })
+          send({ type: "ITEM_CLICK", target: event.currentTarget, id })
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
@@ -302,27 +301,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getOptionItemProps(options: OptionItemProps) {
-      const { name, type, disabled, onCheckedChange } = options
+    getOptionItemProps(option: OptionItemProps) {
+      const { name, type, disabled, onCheckedChange } = option
 
-      options.id ??= options.value
-      options.valueText ??= options.value
+      option.id ??= option.value
+      option.valueText ??= option.value
 
-      const checked = api.isOptionChecked(options)
+      const checked = api.isOptionChecked(option)
 
       return Object.assign(
-        api.getItemProps(options as ItemProps),
+        api.getItemProps(option as ItemProps),
         normalize.element({
           "data-type": type,
           "data-name": name,
           "data-part": "option-item",
-          "data-value": options.value,
+          "data-value": option.value,
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           "data-checked": dataAttr(checked),
           onClick(event) {
             if (disabled) return
-            send({ type: "ITEM_CLICK", target: event.currentTarget, option: options })
+            send({ type: "ITEM_CLICK", target: event.currentTarget, option })
             onCheckedChange?.(!checked)
           },
         }),
@@ -347,8 +346,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return api
-}
-
-function whenMouse<E>(handler: JSX.PointerEventHandler<E>): JSX.PointerEventHandler<E> {
-  return (event) => (event.pointerType === "mouse" ? handler(event) : undefined)
 }
