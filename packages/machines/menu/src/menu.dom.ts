@@ -19,7 +19,7 @@ export const dom = {
   getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
   getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
-  getActiveItemEl: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
+  getFocusedItem: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
   getArrowEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getArrowId(ctx)),
 
   getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLEl,

@@ -196,7 +196,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         if (!isSelfEvent(event)) return
 
-        const item = dom.getActiveItemEl(state.context)
+        const item = dom.getFocusedItem(state.context)
         const isLink = !!item?.matches("a[href]")
 
         const keyMap: EventKeyMap = {
@@ -237,9 +237,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         if (exec) {
           const allow = isLink && key === "Enter"
-          if (!allow) event.preventDefault()
-          event.stopPropagation()
           exec(event)
+          if (!allow) event.preventDefault()
           //
         } else {
           //
@@ -248,9 +247,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           if (!isValidTypeahead) return
 
-          event.preventDefault()
-          event.stopPropagation()
           send({ type: "TYPEAHEAD", key: event.key })
+          event.preventDefault()
         }
       },
     }),
