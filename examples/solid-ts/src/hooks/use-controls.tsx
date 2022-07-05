@@ -1,7 +1,6 @@
-import { createMutable } from "solid-js/store"
 import { For } from "solid-js"
-import { ControlRecord, ControlValue } from "@zag-js/types"
-import { controlsContainerStyle } from "@zag-js/shared"
+import { createMutable } from "solid-js/store"
+import { ControlRecord, controlsContainerStyle, ControlValue } from "@zag-js/shared"
 
 function getDefaultValues<T extends ControlRecord>(obj: T): ControlValue<T> {
   return Object.keys(obj).reduce(
@@ -19,14 +18,14 @@ export function useControls<T extends ControlRecord>(config: T) {
   return {
     context: state,
     ui: () => (
-      <div className={controlsContainerStyle}>
+      <div class={controlsContainerStyle}>
         <For each={Object.keys(config)}>
           {(key) => {
             const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
             switch (type) {
               case "boolean":
                 return (
-                  <div className="checkbox">
+                  <div class="checkbox">
                     <input
                       data-testid={key}
                       id={label}
@@ -36,12 +35,12 @@ export function useControls<T extends ControlRecord>(config: T) {
                         state[key] = e.currentTarget.checked
                       }}
                     />
-                    <label htmlFor={label}>{label}</label>
+                    <label for={label}>{label}</label>
                   </div>
                 )
               case "string":
                 return (
-                  <div className="text">
+                  <div class="text">
                     <label style={{ "margin-right": "10px" }}>{label}</label>
                     <input
                       data-testid={key}
@@ -58,8 +57,8 @@ export function useControls<T extends ControlRecord>(config: T) {
                 )
               case "select":
                 return (
-                  <div className="text">
-                    <label htmlFor={label} style={{ "margin-right": "10px" }}>
+                  <div class="text">
+                    <label for={label} style={{ "margin-right": "10px" }}>
                       {label}
                     </label>
                     <select
@@ -77,8 +76,8 @@ export function useControls<T extends ControlRecord>(config: T) {
                 )
               case "number":
                 return (
-                  <div className="text">
-                    <label htmlFor={label} style={{ "margin-right": "10px" }}>
+                  <div class="text">
+                    <label for={label} style={{ "margin-right": "10px" }}>
                       {label}
                     </label>
                     <input
