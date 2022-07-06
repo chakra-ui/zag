@@ -20,6 +20,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInvalid = state.context.isOutOfRange || !!state.context.invalid
 
   const isDisabled = !!state.context.disabled
+  const isValueEmpty = state.context.isValueEmpty
   const isIncrementDisabled = isDisabled || !state.context.canIncrement
   const isDecrementDisabled = isDisabled || !state.context.canDecrement
 
@@ -28,6 +29,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     isFocused,
     isInvalid,
+    isValueEmpty,
     value: state.context.formattedValue,
     valueAsNumber: state.context.valueAsNumber,
     setValue(value: string | number) {

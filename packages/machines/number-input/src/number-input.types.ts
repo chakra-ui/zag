@@ -151,6 +151,11 @@ type ComputedContext = Readonly<{
   isOutOfRange: boolean
   /**
    * @computed
+   * Whether the value is empty
+   */
+  isValueEmpty: boolean
+  /**
+   * @computed
    * Whether the increment button is enabled
    */
   canIncrement: boolean
