@@ -194,7 +194,7 @@ const fetchMachine = createMachine({
           actions: "openSubmenu"
         }, {
           target: "closed",
-          actions: ["invokeOnSelect", "clickFocusedItem", "closeRootMenu"]
+          actions: "clickFocusedItem"
         }],
         ITEM_POINTERMOVE: [{
           cond: "!suspendPointer && !isTargetFocused",

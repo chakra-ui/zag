@@ -218,7 +218,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnSelect", "clickFocusedItem", "closeRootMenu"],
+                actions: "clickFocusedItem",
               },
             ],
             ITEM_POINTERMOVE: [
@@ -389,9 +389,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           }
         },
         clickFocusedItem(ctx) {
-          const item = dom.getFocusedItem(ctx)
-          if (item?.dataset.part !== "option-item") return
-          item.click()
+          dom.getFocusedItem(ctx)?.click()
         },
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
