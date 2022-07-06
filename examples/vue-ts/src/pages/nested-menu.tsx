@@ -25,17 +25,13 @@ export default defineComponent({
     const sub2 = computed(() => menu.connect(sub2State.value, sub2Send, normalizeProps))
 
     onMounted(() => {
-      setTimeout(() => {
-        root.value.setChild(subMachine)
-        sub.value.setParent(machine)
-      })
+      root.value.setChild(subMachine)
+      sub.value.setParent(machine)
     })
 
     onMounted(() => {
-      setTimeout(() => {
-        sub.value.setChild(sub2Machine)
-        sub2.value.setParent(subMachine)
-      })
+      sub.value.setChild(sub2Machine)
+      sub2.value.setParent(subMachine)
     })
 
     const triggerItemProps = computed(() => root.value.getTriggerItemProps(sub.value))
