@@ -321,9 +321,6 @@ export function machine(ctx: UserDefinedContext = {}) {
             onPointerDownOutside(event) {
               ctx.focusTriggerOnClose = !event.detail.focusable
             },
-            onFocusOutside(event) {
-              event.preventDefault()
-            },
             onDismiss() {
               send({ type: "REQUEST_CLOSE", src: "interact-outside" })
             },
