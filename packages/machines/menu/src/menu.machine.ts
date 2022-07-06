@@ -36,12 +36,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
       },
 
-      onEvent: (ctx, _evt) => {
-        if (!ctx.isSubmenu) {
-          console.log(_evt)
-        }
-      },
-
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
         isRtl: (ctx) => ctx.dir === "rtl",
@@ -224,7 +218,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnSelect", "clickFocusedItem"],
+                actions: ["invokeOnSelect", "clickFocusedItem", "closeRootMenu"],
               },
             ],
             ITEM_POINTERMOVE: [
