@@ -12,6 +12,7 @@ export function createProxy<TContext, TState extends S.StateSchema, TEvent exten
     value: "",
     previousValue: "",
     event: cast<Dict>({}),
+    previousEvent: cast<Dict>({}),
     context: proxyWithComputed(initialContext, computedContext),
     done: false,
     tags: [] as Array<TState["tags"]>,
