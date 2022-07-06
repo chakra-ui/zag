@@ -26,6 +26,7 @@ const fetchMachine = createMachine({
     "!suspendPointer && !isTargetFocused": false,
     "!isTargetFocused": false,
     "!suspendPointer && !isTriggerItem": false,
+    "!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect": false,
     "!isTriggerItemFocused && !isFocusedItemFocusable": false
   },
   on: {
@@ -207,6 +208,10 @@ const fetchMachine = createMachine({
           actions: "clearFocusedItem"
         },
         ITEM_CLICK: [{
+          cond: "!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect",
+          target: "closed",
+          actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"]
+        }, {
           cond: "!isTriggerItemFocused && !isFocusedItemFocusable",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"]
         }, {
@@ -248,6 +253,7 @@ const fetchMachine = createMachine({
     "!suspendPointer && !isTargetFocused": ctx => ctx["!suspendPointer && !isTargetFocused"],
     "!isTargetFocused": ctx => ctx["!isTargetFocused"],
     "!suspendPointer && !isTriggerItem": ctx => ctx["!suspendPointer && !isTriggerItem"],
+    "!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect": ctx => ctx["!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect"],
     "!isTriggerItemFocused && !isFocusedItemFocusable": ctx => ctx["!isTriggerItemFocused && !isFocusedItemFocusable"]
   }
 });

@@ -32,14 +32,14 @@ export const layerStack = {
     const layer = this.layers[this.count() - 1]
     return layer?.node === node
   },
-  getChildLayers(node: HTMLElement) {
-    return this.layers.slice(this.indexOf(node))
+  getNestedLayers(node: HTMLElement) {
+    return Array.from(this.layers).slice(this.indexOf(node) + 1)
   },
-  isInChildLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
-    return this.getChildLayers(node).some((layer) => contains(layer.node, target))
+  isInNestedLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
+    return this.getNestedLayers(node).some((layer) => contains(layer.node, target))
   },
   isInBranch(target: HTMLElement | EventTarget | null) {
-    return [...this.branches].some((branch) => contains(branch, target))
+    return Array.from(this.branches).some((branch) => contains(branch, target))
   },
   add(layer: Layer) {
     this.layers.push(layer)
@@ -49,10 +49,15 @@ export const layerStack = {
   },
   remove(node: HTMLElement) {
     const index = this.indexOf(node)
-    if (index + 1 < this.count() - 1) {
-      this.layers.splice(index, this.count()).forEach((item) => item.dismiss())
+    if (index < 0) return
+
+    // dismiss nested layers
+    if (index < this.count() - 1) {
+      const _layers = this.getNestedLayers(node)
+      _layers.forEach((layer) => layer.dismiss())
     }
-    this.layers = this.layers.filter((item) => item.node !== node)
+    // remove this layer
+    this.layers.splice(index, 1)
   },
   removeBranch(node: HTMLElement) {
     const index = this.branches.indexOf(node)

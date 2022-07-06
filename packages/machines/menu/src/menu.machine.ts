@@ -1,14 +1,6 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dimissable"
-import {
-  addPointerEvent,
-  contains,
-  findByTypeahead,
-  getEventPoint,
-  isFocusable,
-  queueMicrotask,
-  raf,
-} from "@zag-js/dom-utils"
+import { addPointerEvent, contains, findByTypeahead, getEventPoint, isFocusable, raf } from "@zag-js/dom-utils"
 import { getBasePlacement, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
@@ -42,6 +34,12 @@ export function machine(ctx: UserDefinedContext = {}) {
           gutter: 8,
           ...ctx.positioning,
         },
+      },
+
+      onEvent: (ctx, _evt) => {
+        if (!ctx.isSubmenu) {
+          console.log(_evt)
+        }
       },
 
       computed: {
@@ -245,6 +243,11 @@ export function machine(ctx: UserDefinedContext = {}) {
             },
             ITEM_CLICK: [
               {
+                guard: and(not("isTriggerItemFocused"), not("isFocusedItemFocusable"), "closeOnSelect"),
+                target: "closed",
+                actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"],
+              },
+              {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemFocusable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
@@ -318,8 +321,11 @@ export function machine(ctx: UserDefinedContext = {}) {
             onPointerDownOutside(event) {
               ctx.focusTriggerOnClose = !event.detail.focusable
             },
+            onFocusOutside(event) {
+              event.preventDefault()
+            },
             onDismiss() {
-              send({ type: "REQUEST_CLOSE" })
+              send({ type: "REQUEST_CLOSE", src: "interact-outside" })
             },
           })
         },
@@ -452,17 +458,9 @@ export function machine(ctx: UserDefinedContext = {}) {
           const prev = dom.getPrevEl(ctx)
           ctx.activeId = prev?.id ?? null
         },
-        invokeOnSelect(ctx, _evt, { send }) {
+        invokeOnSelect(ctx) {
           if (!ctx.activeId) return
           ctx.onSelect?.(ctx.activeId)
-          if (!ctx.closeOnSelect) return
-          queueMicrotask(() => {
-            if (ctx.isSubmenu) {
-              closeRootMenu(ctx)
-            } else {
-              send({ type: "REQUEST_CLOSE" })
-            }
-          })
         },
         focusItem(ctx, event) {
           ctx.activeId = event.id
