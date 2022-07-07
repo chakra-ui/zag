@@ -14,14 +14,13 @@ import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tooltip.types"
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "tooltip",
       initial: "unknown",
 
       context: {
-        id: "",
         openDelay: 1000,
         closeDelay: 500,
         closeOnPointerDown: true,
@@ -47,10 +46,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: "closed",
-              actions: "setupDocument",
-            },
+            SETUP: "closed",
           },
         },
 

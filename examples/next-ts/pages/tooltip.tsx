@@ -7,11 +7,19 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(tooltip.machine)
-  const [state2, send2] = useMachine(tooltip.machine)
   const id = "tip-1"
   const id2 = "tip-2"
-  const ref = useSetup<HTMLButtonElement>({ send, id })
+  const [state, send] = useMachine(
+    tooltip.machine({
+      id,
+    }),
+  )
+  const [state2, send2] = useMachine(
+    tooltip.machine({
+      id: id2,
+    }),
+  )
+
   const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: id2 })
   const api = tooltip.connect(state, send, normalizeProps)
   const api2 = tooltip.connect(state2, send2, normalizeProps)
@@ -20,7 +28,7 @@ export default function Page() {
       <Global styles={tooltipStyles} />
       <main>
         <div className="root">
-          <button data-testid={`${id}-trigger`} ref={ref} {...api.triggerProps}>
+          <button data-testid={`${id}-trigger`} {...api.triggerProps}>
             Over me
           </button>
           {api.isOpen && (
