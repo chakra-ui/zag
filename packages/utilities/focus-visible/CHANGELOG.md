@@ -1,5 +1,13 @@
 # @zag-js/focus-visible
 
+## 0.1.2
+
+### Patch Changes
+
+- [`99b93584`](https://github.com/chakra-ui/zag/commit/99b93584a653700612c2f9baee3ac83d3569f3d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export the `setInteractionModality` and `getInteractionModality`
+  functions
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,48 @@
 # @zag-js/tooltip
 
+## 0.1.9
+
+### Patch Changes
+
+- [#178](https://github.com/chakra-ui/zag/pull/178)
+  [`1abed11b`](https://github.com/chakra-ui/zag/commit/1abed11bda7fc56fd3f77c3b842e89a934ee3253) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING 💥: Refactor connect function in favor of uniform APIs
+  across frameworks
+
+  Due to the fact that we tried to make "React" the baseline, there was a lot of inherent complexity in how we managed
+  types in the codebase.
+
+  We've now removed the `PropTypes` export in favor of passing `normalizeProps` in the `api.connect` function. This is
+  now required for React as well.
+
+  You can remove the `<PropTypes>` generic and Zag will auto-infer the types from `normalizeProps`.
+
+  **For Vue and Solid**
+
+  ```diff
+  -api.connect<PropTypes>(state, send, normalizeProps)
+  +api.connect(state, send, normalizeProps)
+  ```
+
+  **For React**
+
+  ```diff
+  -api.connect(state, send)
+  +api.connect(state, send, normalizeProps)
+  ```
+
+- Updated dependencies [[`1abed11b`](https://github.com/chakra-ui/zag/commit/1abed11bda7fc56fd3f77c3b842e89a934ee3253),
+  [`ef0c29cf`](https://github.com/chakra-ui/zag/commit/ef0c29cfa874f2fc990872f319affae023bb7cd4),
+  [`86155fc0`](https://github.com/chakra-ui/zag/commit/86155fc039cc90fc05c9ce024f8c799e03fde11d),
+  [`664e61f9`](https://github.com/chakra-ui/zag/commit/664e61f94844f0405b7e646e4a30b8f0f737f21c),
+  [`3a53a1e9`](https://github.com/chakra-ui/zag/commit/3a53a1e97306a9fedf1706b95f8e38b03750c2f3),
+  [`664e61f9`](https://github.com/chakra-ui/zag/commit/664e61f94844f0405b7e646e4a30b8f0f737f21c),
+  [`b91a3a5c`](https://github.com/chakra-ui/zag/commit/b91a3a5cb56f4e25c46fdfcf8ff0fe0a41d75e66)]:
+  - @zag-js/core@0.1.7
+  - @zag-js/types@0.2.1
+  - @zag-js/dom-utils@0.1.6
+  - @zag-js/popper@0.1.7
+
 ## 0.1.8
 
 ### Patch Changes
