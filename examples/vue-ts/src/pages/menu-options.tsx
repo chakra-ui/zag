@@ -14,8 +14,8 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       menu.machine({
-        values: { order: "", type: [] },
-        onValuesChange: console.log,
+        value: { order: "", type: [] },
+        onValueChange: console.log,
       }),
     )
 

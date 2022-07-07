@@ -18,6 +18,7 @@ export type DismissableElementHandlers = InteractOutsideHandlers & {
 }
 
 export type DismissableElementOptions = DismissableElementHandlers & {
+  debug?: boolean
   pointerBlocking?: boolean
   onDismiss: () => void
   exclude?: Container | (() => Container)
@@ -26,7 +27,7 @@ export type DismissableElementOptions = DismissableElementHandlers & {
 export function trackDismissableElement(node: HTMLElement | null, options: DismissableElementOptions) {
   if (!node) return
 
-  const { onDismiss, pointerBlocking, exclude: excludeContainers } = options
+  const { onDismiss, pointerBlocking, exclude: excludeContainers, debug } = options
 
   const layer: Layer = { dismiss: onDismiss, node, pointerBlocking }
 
@@ -39,6 +40,9 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
     options.onPointerDownOutside?.(event)
     options.onInteractOutside?.(event)
     if (event.defaultPrevented) return
+    if (debug) {
+      console.log("onPointerDownOutside:", event.detail.originalEvent)
+    }
     onDismiss?.()
   }
 
@@ -48,6 +52,9 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
     options.onFocusOutside?.(event)
     options.onInteractOutside?.(event)
     if (event.defaultPrevented) return
+    if (debug) {
+      console.log("onFocusOutside:", event.detail.originalEvent)
+    }
     onDismiss?.()
   }
 
@@ -61,9 +68,10 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
   }
 
   function exclude(target: Element) {
+    if (!node) return false
     const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
-    const inContainers = Array.isArray(containers) ? containers : [containers]
-    return inContainers.some((node) => contains(node, target)) || layerStack.isInChildLayer(node!, target)
+    const _containers = Array.isArray(containers) ? containers : [containers]
+    return _containers.some((node) => contains(node, target)) || layerStack.isInNestedLayer(node, target)
   }
 
   const cleanups = [

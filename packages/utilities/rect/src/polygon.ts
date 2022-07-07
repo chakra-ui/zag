@@ -1,6 +1,6 @@
 import type { Point } from "./types"
 
-export function withinPolygon(polygon: Point[], point: Point) {
+export function isPointInPolygon(polygon: Point[], point: Point) {
   const { x, y } = point
   let c = false
 
@@ -46,4 +46,9 @@ export function debugPolygon(polygon: Point[]) {
   const el = createPolygonElement()
   const points = polygon.map((point) => `${point.x},${point.y}`).join(" ")
   el.setAttribute("points", points)
+}
+
+debugPolygon.remove = () => {
+  const el = document.getElementById("debug-polygon")
+  el?.remove()
 }

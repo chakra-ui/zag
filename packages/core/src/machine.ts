@@ -585,6 +585,7 @@ export class Machine<
   }
 
   private setEvent = (event: TEvent | TEvent["type"]) => {
+    this.state.previousEvent = this.state.event
     this.state.event = ref(toEvent(event))
   }
 

@@ -1,9 +1,9 @@
-import type { Middleware, VirtualElement } from "@floating-ui/dom"
+import type { Middleware, Placement, VirtualElement } from "@floating-ui/dom"
 import { arrow, computePosition, ComputePositionConfig, flip, offset, shift, size } from "@floating-ui/dom"
 import { callAll } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
-import type { PositioningOptions } from "./types"
+import type { BasePlacement, PositioningOptions } from "./types"
 
 const defaultOptions: PositioningOptions = {
   strategy: "absolute",
@@ -105,23 +105,19 @@ export function getPlacement(
       middleware,
       strategy,
       ...config,
+    }).then((data) => {
+      const x = Math.round(data.x)
+      const y = Math.round(data.y)
+
+      Object.assign(floating.style, {
+        position: data.strategy,
+        top: "0",
+        left: "0",
+        transform: `translate3d(${x}px, ${y}px, 0)`,
+      })
+
+      options.onComplete?.({ ...data, compute })
     })
-      .then((data) => {
-        const x = Math.round(data.x)
-        const y = Math.round(data.y)
-
-        Object.assign(floating.style, {
-          position: data.strategy,
-          top: "0",
-          left: "0",
-          transform: `translate3d(${x}px, ${y}px, 0)`,
-        })
-
-        return data
-      })
-      .then((data) => {
-        options.onComplete?.({ ...data, compute })
-      })
   }
 
   compute()
@@ -130,4 +126,8 @@ export function getPlacement(
     options.listeners ? autoUpdate(reference, floating, compute, options.listeners) : undefined,
     options.onCleanup,
   )
+}
+
+export function getBasePlacement(placement: Placement): BasePlacement {
+  return placement.split("-")[0] as BasePlacement
 }

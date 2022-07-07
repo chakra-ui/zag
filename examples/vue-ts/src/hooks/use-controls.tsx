@@ -1,6 +1,7 @@
-import { h, Fragment, Ref, ref, inject, provide } from "vue"
-import { ControlRecord, ControlValue } from "@zag-js/types"
+import { h, Fragment, ref, inject, provide } from "vue"
+import type { Ref } from "vue"
 import { controlsContainerStyle } from "@zag-js/shared"
+import type { ControlRecord, ControlValue } from "@zag-js/shared"
 
 const ControlsSymbol = Symbol("use-controls")
 

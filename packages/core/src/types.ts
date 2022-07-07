@@ -359,6 +359,7 @@ export declare namespace StateMachine {
     value: TState["value"] | null
     previousValue: TState["value"] | null
     event: TEvent
+    previousEvent: TEvent
     context: TContext
     done: boolean
     can(event: string): boolean

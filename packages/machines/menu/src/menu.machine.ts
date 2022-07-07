@@ -1,15 +1,8 @@
 import { createMachine, guards, ref } from "@zag-js/core"
-import {
-  addPointerEvent,
-  contains,
-  findByTypeahead,
-  getEventPoint,
-  isFocusable,
-  raf,
-  trackPointerDown,
-} from "@zag-js/dom-utils"
-import { getPlacement } from "@zag-js/popper"
-import { createRect, getRectCorners, inset, withinPolygon } from "@zag-js/rect-utils"
+import { trackDismissableElement } from "@zag-js/dimissable"
+import { addPointerEvent, contains, findByTypeahead, getEventPoint, isFocusable, raf } from "@zag-js/dom-utils"
+import { getBasePlacement, getPlacement } from "@zag-js/popper"
+import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
@@ -23,7 +16,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       initial: "unknown",
       context: {
         uid: "",
-        pointerdownNode: null,
         activeId: null,
         hoverId: null,
         parent: null,
@@ -34,6 +26,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         anchorPoint: null,
         closeOnSelect: true,
         isPlacementComplete: false,
+        focusTriggerOnClose: true,
         ...ctx,
         typeahead: findByTypeahead.defaultOptions,
         positioning: {
@@ -46,6 +39,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
         isRtl: (ctx) => ctx.dir === "rtl",
+        isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
       },
 
       watch: {
@@ -60,16 +54,13 @@ export function machine(ctx: UserDefinedContext = {}) {
         SET_CHILD: {
           actions: "setChildMenu",
         },
-        OPEN: {
+        OPEN: "open",
+        OPEN_AUTOFOCUS: {
           internal: true,
           target: "open",
           actions: "focusFirstItem",
         },
         CLOSE: "closed",
-        SET_POINTER_EXIT: {
-          guard: "isTriggerItem",
-          actions: "setPointerExit",
-        },
         RESTORE_FOCUS: {
           actions: "restoreFocus",
         },
@@ -77,14 +68,17 @@ export function machine(ctx: UserDefinedContext = {}) {
           actions: ["setOptionValue", "invokeOnValueChange"],
         },
         SET_ACTIVE_ID: {
-          actions: "setActiveId",
+          actions: "setFocusedItem",
         },
       },
 
       states: {
         unknown: {
           on: {
-            SETUP: { target: "idle", actions: "setupDocument" },
+            SETUP: {
+              target: "idle",
+              actions: "setupDocument",
+            },
           },
         },
 
@@ -98,16 +92,13 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "open",
               actions: "setAnchorPoint",
             },
-            TRIGGER_CLICK: {
-              guard: not("isSubmenu"),
-              target: "open",
-            },
+            TRIGGER_CLICK: "open",
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
               target: "closed",
             },
             TRIGGER_POINTERMOVE: {
-              guard: and("isTriggerItem", "isParentActiveItem"),
+              guard: "isSubmenu",
               target: "opening",
             },
           },
@@ -134,7 +125,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         closing: {
           tags: ["visible"],
-          activities: ["trackPointerMove", "computePlacement"],
+          activities: ["trackPointerMove", "trackInteractOutside"],
           after: {
             SUBMENU_CLOSE_DELAY: {
               target: "closed",
@@ -148,20 +139,13 @@ export function machine(ctx: UserDefinedContext = {}) {
             },
             POINTER_MOVED_AWAY_FROM_SUBMENU: {
               target: "closed",
-              actions: "focusParentMenu",
+              actions: ["focusParentMenu", "restoreParentFocus"],
             },
           },
         },
 
         closed: {
-          entry: [
-            "clearActiveId",
-            "focusTrigger",
-            "clearAnchorPoint",
-            "clearPointerDownNode",
-            "resumePointer",
-            "closeChildMenus",
-          ],
+          entry: ["clearFocusedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
           on: {
             CONTEXT_MENU_START: {
               target: "opening:contextmenu",
@@ -171,10 +155,7 @@ export function machine(ctx: UserDefinedContext = {}) {
               target: "open",
               actions: "setAnchorPoint",
             },
-            TRIGGER_CLICK: [
-              { guard: "isKeyboardEvent", target: "open", actions: "focusFirstItem" },
-              { target: "open" },
-            ],
+            TRIGGER_CLICK: "open",
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
@@ -193,7 +174,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         open: {
           tags: ["visible"],
-          activities: ["trackPointerDown", "computePlacement"],
+          activities: ["trackInteractOutside", "computePlacement"],
           entry: ["focusMenu", "resumePointer"],
           on: {
             TRIGGER_CLICK: {
@@ -202,14 +183,14 @@ export function machine(ctx: UserDefinedContext = {}) {
             },
             ARROW_UP: [
               {
-                guard: "hasActiveId",
+                guard: "hasFocusedItem",
                 actions: ["focusPrevItem", "focusMenu"],
               },
               { actions: "focusLastItem" },
             ],
             ARROW_DOWN: [
               {
-                guard: "hasActiveId",
+                guard: "hasFocusedItem",
                 actions: ["focusNextItem", "focusMenu"],
               },
               { actions: "focusFirstItem" },
@@ -225,65 +206,46 @@ export function machine(ctx: UserDefinedContext = {}) {
             END: {
               actions: ["focusLastItem", "focusMenu"],
             },
-            BLUR: {
-              target: "closed",
-              actions: "closeParentMenus",
-            },
+            REQUEST_CLOSE: "closed",
             ARROW_RIGHT: {
-              guard: "isTriggerActiveItem",
+              guard: "isTriggerItemFocused",
               actions: "openSubmenu",
             },
             ENTER: [
               {
-                guard: "isTriggerActiveItem",
+                guard: "isTriggerItemFocused",
                 actions: "openSubmenu",
               },
               {
                 target: "closed",
-                actions: ["invokeOnSelect", "clickActiveOptionIfNeeded", "closeParentMenus"],
+                actions: "clickFocusedItem",
               },
-            ],
-            ESCAPE: [
-              {
-                guard: "isSubmenu",
-                target: "closed",
-                actions: "closeParentMenus",
-              },
-              { target: "closed" },
             ],
             ITEM_POINTERMOVE: [
               {
-                guard: and(
-                  not("isMenuFocused"),
-                  not("isTriggerActiveItem"),
-                  not("suspendPointer"),
-                  not("isActiveItem"),
-                ),
-                actions: ["focusItem", "focusMenu", "closeChildMenus"],
+                guard: and(not("suspendPointer"), not("isTargetFocused")),
+                actions: ["focusItem", "focusMenu"],
               },
               {
-                guard: and(not("suspendPointer"), not("isActiveItem")),
-                actions: "focusItem",
-              },
-              {
-                guard: not("isActiveItem"),
+                guard: not("isTargetFocused"),
                 actions: "setHoveredItem",
               },
             ],
             ITEM_POINTERLEAVE: {
-              guard: and(not("isTriggerItem"), not("suspendPointer")),
-              actions: "clearActiveId",
+              guard: and(not("suspendPointer"), not("isTriggerItem")),
+              actions: "clearFocusedItem",
             },
             ITEM_CLICK: [
               {
-                guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable"), "closeOnSelect"),
+                guard: and(not("isTriggerItemFocused"), not("isFocusedItemFocusable"), "closeOnSelect"),
                 target: "closed",
-                actions: ["invokeOnSelect", "closeParentMenus", "changeOptionValue", "invokeOnValueChange"],
+                actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"],
               },
               {
-                guard: and(not("isTriggerActiveItem"), not("isActiveItemFocusable")),
+                guard: and(not("isTriggerItemFocused"), not("isFocusedItemFocusable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
+              { actions: ["focusItem"] },
             ],
             TRIGGER_POINTERLEAVE: {
               target: "closing",
@@ -303,38 +265,32 @@ export function machine(ctx: UserDefinedContext = {}) {
       delays: {
         LONG_PRESS_DELAY: 700,
         SUBMENU_OPEN_DELAY: 100,
-        SUBMENU_CLOSE_DELAY: 200,
+        SUBMENU_CLOSE_DELAY: 100,
       },
 
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
-        hasActiveId: (ctx) => ctx.activeId !== null,
-        isRtl: (ctx) => ctx.isRtl,
+        hasFocusedItem: (ctx) => ctx.activeId !== null,
         isMenuFocused: (ctx) => {
           const menu = dom.getContentEl(ctx)
           const activeElement = dom.getActiveElement(ctx)
           return contains(menu, activeElement)
         },
-        isActiveItem: (ctx, evt) => ctx.activeId === evt.target.id,
-        isParentActiveItem: (ctx, evt) => ctx.parent?.state.context.activeId === evt.target.id,
+        isTargetFocused: (ctx, evt) => ctx.activeId === evt.target.id,
         // whether the trigger is also a menu item
-        isTriggerItem: (ctx, evt) => {
-          const target = (evt.target ?? dom.getTriggerEl(ctx)) as HTMLElement | null
-          return dom.isTriggerItem(target)
-        },
+        isTriggerItem: (ctx, evt) => dom.isTriggerItem(evt.target),
         // whether the trigger item is the active item
-        isTriggerActiveItem: (ctx, evt) => {
-          const target = (evt.target ?? dom.getActiveItemEl(ctx)) as HTMLElement | null
+        isTriggerItemFocused: (ctx, evt) => {
+          const target = (evt.target ?? dom.getFocusedItem(ctx)) as HTMLElement | null
           return !!target?.hasAttribute("aria-controls")
         },
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
-        isActiveItemFocusable: (ctx) => isFocusable(dom.getActiveItemEl(ctx)),
+        isFocusedItemFocusable: (ctx) => isFocusable(dom.getFocusedItem(ctx)),
         isWithinPolygon: (ctx, evt) => {
           if (!ctx.intentPolygon) return false
-          return withinPolygon(ctx.intentPolygon, evt.point)
+          return isPointInPolygon(ctx.intentPolygon, evt.point)
         },
-        isKeyboardEvent: (_ctx, evt) => /^(ARROW_DOWN|ARROW_UP|HOME|END)/.test(evt.type) || Boolean(evt.key),
       },
 
       activities: {
@@ -347,15 +303,21 @@ export function machine(ctx: UserDefinedContext = {}) {
               ctx.currentPlacement = data.placement
               ctx.isPlacementComplete = true
             },
-            onCleanup() {
-              ctx.currentPlacement = undefined
-              ctx.isPlacementComplete = false
-            },
           })
         },
-        trackPointerDown(ctx) {
-          return trackPointerDown(dom.getDoc(ctx), (el) => {
-            ctx.pointerdownNode = ref(el)
+        trackInteractOutside(ctx, _evt, { send }) {
+          return trackDismissableElement(dom.getContentEl(ctx), {
+            exclude: [dom.getTriggerEl(ctx)],
+            onEscapeKeyDown(event) {
+              if (ctx.isSubmenu) event.preventDefault()
+              closeRootMenu(ctx)
+            },
+            onPointerDownOutside(event) {
+              ctx.focusTriggerOnClose = !event.detail.focusable
+            },
+            onDismiss() {
+              send({ type: "REQUEST_CLOSE", src: "interact-outside" })
+            },
           })
         },
         trackPointerMove(ctx, _evt, { guards, send }) {
@@ -391,64 +353,58 @@ export function machine(ctx: UserDefinedContext = {}) {
 
           raf(() => {
             Object.assign(el.style, {
-              left: `${point.x}px`,
-              top: `${point.y}px`,
               position: "absolute",
+              top: "0",
+              left: "0",
+              transform: `translate3d(${point.x}px, ${point.y}px, 0)`,
             })
             ctx.isPlacementComplete = true
           })
         },
         setSubmenuPlacement(ctx) {
-          if (ctx.isSubmenu) {
-            ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
-            ctx.positioning.gutter = 0
-          }
+          if (!ctx.isSubmenu) return
+          ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
+          ctx.positioning.gutter = 0
         },
         invokeOnValueChange(ctx, evt) {
-          if (!ctx.values) return
+          if (!ctx.value) return
           const name = evt.name ?? evt.option?.name
           if (!name) return
-          const values = ctx.values[name]
-          ctx.onValuesChange?.({
-            name,
-            value: isArray(values) ? Array.from(values) : values,
-          })
+          const values = ctx.value[name]
+          const valueAsArray = isArray(values) ? Array.from(values) : values
+          ctx.onValueChange?.({ name, value: valueAsArray })
         },
         setOptionValue(ctx, evt) {
-          if (!ctx.values) return
-          ctx.values[evt.name] = evt.value
+          if (!ctx.value) return
+          ctx.value[evt.name] = evt.value
         },
         changeOptionValue(ctx, evt) {
-          if (!evt.option || !ctx.values) return
+          if (!evt.option || !ctx.value) return
           const { value, type, name } = evt.option
-          const values = ctx.values[name]
+          const values = ctx.value[name]
           if (type === "checkbox" && isArray(values)) {
-            ctx.values[name] = values.includes(value) ? remove(values, value) : add(values, value)
+            ctx.value[name] = values.includes(value) ? remove(values, value) : add(values, value)
           } else {
-            ctx.values[name] = value
+            ctx.value[name] = value
           }
         },
-        clickActiveOptionIfNeeded(ctx) {
-          const option = dom.getActiveItemEl(ctx)
-          if (!option || option.dataset.part !== "option-item") return
-          option.click()
+        clickFocusedItem(ctx) {
+          dom.getFocusedItem(ctx)?.click()
         },
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
-          if (!menu) return
+          const placement = ctx.currentPlacement
 
-          let rect = createRect(menu.getBoundingClientRect())
-          const BUFFER = 20
+          if (!menu || !placement) return
 
-          rect = inset(rect, { dx: -BUFFER, dy: -BUFFER })
-          const { top, right, left, bottom } = getRectCorners(rect)
+          const rect = menu.getBoundingClientRect()
+          const polygon = getElementPolygon(rect, placement)
+          if (!polygon) return
 
-          let polygon = [evt.point, top, right, bottom, left]
-          // NOTE: this might need to be changed to the current placement, not just rtl
-          if (ctx.isRtl && ctx.isSubmenu) {
-            polygon = [evt.point, top, left, bottom, right]
-          }
-          ctx.intentPolygon = polygon
+          const rightSide = getBasePlacement(placement) === "right"
+          const bleed = rightSide ? -5 : +5
+
+          ctx.intentPolygon = [{ ...evt.point, x: evt.point.x + bleed }, ...polygon]
         },
         clearIntentPolygon(ctx) {
           ctx.intentPolygon = null
@@ -462,21 +418,14 @@ export function machine(ctx: UserDefinedContext = {}) {
           if (evt.doc) ctx.doc = ref(evt.doc)
           if (evt.root) ctx.rootNode = ref(evt.root)
         },
-        setActiveId(ctx, evt) {
+        setFocusedItem(ctx, evt) {
           ctx.activeId = evt.id
         },
-        clearActiveId(ctx) {
+        clearFocusedItem(ctx) {
           ctx.activeId = null
         },
-        clearPointerDownNode(ctx) {
-          ctx.pointerdownNode = null
-        },
         focusMenu(ctx) {
-          const menu = dom.getContentEl(ctx)
-          const doc = dom.getDoc(ctx)
-          if (menu && doc.activeElement !== menu) {
-            raf(() => menu.focus())
-          }
+          raf(() => dom.getContentEl(ctx)?.focus())
         },
         focusFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
@@ -499,19 +448,15 @@ export function machine(ctx: UserDefinedContext = {}) {
           ctx.activeId = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
-          if (ctx.activeId) {
-            ctx.onSelect?.(ctx.activeId)
-          }
+          if (!ctx.activeId) return
+          ctx.onSelect?.(ctx.activeId)
         },
         focusItem(ctx, event) {
           ctx.activeId = event.id
         },
         focusTrigger(ctx) {
-          // only want to re-focus trigger if it's not a submenu or the
-          // menu was not manually positioned (e.g. context menu)
-          if (ctx.parent || ctx.anchorPoint) return
-          const trigger = dom.getTriggerEl(ctx)
-          raf(() => trigger?.focus())
+          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
+          raf(() => dom.getTriggerEl(ctx)?.focus())
         },
         focusMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
@@ -523,23 +468,14 @@ export function machine(ctx: UserDefinedContext = {}) {
         setChildMenu(ctx, evt) {
           ctx.children[evt.id] = ref(evt.value)
         },
-        closeChildMenus(ctx) {
-          for (const child of Object.values(ctx.children)) {
-            child.send("CLOSE")
-          }
-        },
-        closeParentMenus(ctx) {
-          let parent = ctx.parent
-          while (parent) {
-            parent.send("CLOSE")
-            parent = parent.state.context.parent
-          }
+        closeRootMenu(ctx) {
+          closeRootMenu(ctx)
         },
         openSubmenu(ctx) {
-          const activeItem = dom.getActiveItemEl(ctx)
-          const id = activeItem?.getAttribute("data-uid")
+          const item = dom.getFocusedItem(ctx)
+          const id = item?.getAttribute("data-uid")
           const child = id ? ctx.children[id] : null
-          child?.send("OPEN")
+          child?.send("OPEN_AUTOFOCUS")
         },
         focusParentMenu(ctx) {
           ctx.parent?.send("FOCUS_MENU")
@@ -558,4 +494,12 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
     },
   )
+}
+
+function closeRootMenu(ctx: MachineContext) {
+  let parent = ctx.parent
+  while (parent && parent.state.context.isSubmenu) {
+    parent = parent.state.context.parent
+  }
+  parent?.send("CLOSE")
 }

@@ -18,6 +18,8 @@ const eventMap = {
   onChange: "onInput",
   defaultChecked: "checked",
   defaultValue: "value",
+  htmlFor: "for",
+  className: "class",
 }
 
 function toSolidProp(prop: string) {

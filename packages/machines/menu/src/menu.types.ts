@@ -20,11 +20,11 @@ type PublicContext = DirectionProperty & {
   /**
    * The values of radios and checkboxes in the menu.
    */
-  values?: Record<string, string | string[]>
+  value?: Record<string, string | string[]>
   /**
    * Callback to be called when the menu values change (for radios and checkboxes).
    */
-  onValuesChange?: (details: { name: string; value: string | string[] }) => void
+  onValueChange?: (details: { name: string; value: string | string[] }) => void
   /**
    * The `id` of the active menu item.
    */
@@ -62,12 +62,17 @@ type ComputedContext = Readonly<{
    * @computed
    * Whether the menu is a submenu (has a parent menu)
    */
-  isSubmenu: boolean
+  readonly isSubmenu: boolean
   /**
    * @computed
    * Whether the writing direction is rtl
    */
-  isRtl: boolean
+  readonly isRtl: boolean
+  /**
+   * @computed
+   * Whether a typeahead search is ongoing
+   */
+  readonly isTypingAhead: boolean
 }>
 
 type PrivateContext = Context<{
@@ -112,6 +117,11 @@ type PrivateContext = Context<{
    * The typeahead state for faster keyboard navigation
    */
   typeahead: TypeaheadState
+  /**
+   * @internal
+   * Whether to return focus to the trigger when the menu is closed
+   */
+  focusTriggerOnClose?: boolean
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext

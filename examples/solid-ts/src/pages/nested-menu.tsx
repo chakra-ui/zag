@@ -23,17 +23,13 @@ export default function Page() {
   const sub2 = createMemo(() => menu.connect(sub2State, sub2Send, normalizeProps))
 
   onMount(() => {
-    setTimeout(() => {
-      root().setChild(subMachine)
-      sub().setParent(machine)
-    })
+    root().setChild(subMachine)
+    sub().setParent(machine)
   })
 
   onMount(() => {
-    setTimeout(() => {
-      sub().setChild(sub2Machine)
-      sub2().setParent(subMachine)
-    })
+    sub().setChild(sub2Machine)
+    sub2().setParent(subMachine)
   })
 
   const triggerItemProps = createMemo(() => root().getTriggerItemProps(sub()))
