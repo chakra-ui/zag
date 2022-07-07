@@ -1,17 +1,16 @@
-import { itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { getRoots, itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.uid}`,
-  getTriggerGroupId: (ctx: Ctx) => ctx.ids?.triggerGroup ?? `tabs:${ctx.uid}:trigger-group`,
-  getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.uid}:content-${id}`,
-  getContentGroupId: (ctx: Ctx) => ctx.ids?.contentGroup ?? `tabs:${ctx.uid}:content-group`,
-  getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.uid}:trigger-${id}`,
-  getIndicatorId: (ctx: Ctx) => `tabs:${ctx.uid}:indicator`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.id}`,
+  getTriggerGroupId: (ctx: Ctx) => ctx.ids?.triggerGroup ?? `tabs:${ctx.id}:trigger-group`,
+  getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,
+  getContentGroupId: (ctx: Ctx) => ctx.ids?.contentGroup ?? `tabs:${ctx.id}:content-group`,
+  getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`,
+  getIndicatorId: (ctx: Ctx) => `tabs:${ctx.id}:indicator`,
 
   getTriggerGroupEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerGroupId(ctx)),
   getContentEl: (ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx, id)),

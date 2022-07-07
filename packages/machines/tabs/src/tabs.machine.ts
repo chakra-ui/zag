@@ -5,7 +5,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.ty
 
 const { not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       initial: "unknown",
@@ -16,7 +16,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         activationMode: "automatic",
         value: null,
         focusedValue: null,
-        uid: "",
         previousValues: [],
         indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
         hasMeasuredRect: false,
@@ -53,7 +52,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
+              actions: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
             },
           },
         },
@@ -124,11 +123,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         selectOnFocus: (ctx) => ctx.activationMode === "automatic",
       },
       actions: {
-        setupDocument(ctx, evt) {
-          ctx.uid = evt.id
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-        },
         setFocusedValue(ctx, evt) {
           ctx.focusedValue = evt.value
         },
