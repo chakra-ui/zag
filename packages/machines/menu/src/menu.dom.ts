@@ -1,20 +1,19 @@
-import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead } from "@zag-js/dom-utils"
+import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, getRoots } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./menu.types"
 
 type HTMLEl = HTMLElement | null
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.uid}:trigger`,
-  getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.uid}:ctx-trigger`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.uid}:content`,
-  getArrowId: (ctx: Ctx) => `menu:${ctx.uid}:arrow`,
-  getPositionerId: (ctx: Ctx) => `menu:${ctx.uid}:popper`,
-  getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.uid}:group:${id}`,
-  getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.uid}:label:${id}`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`,
+  getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.id}:content`,
+  getArrowId: (ctx: Ctx) => `menu:${ctx.id}:arrow`,
+  getPositionerId: (ctx: Ctx) => `menu:${ctx.id}:popper`,
+  getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
+  getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
   getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),

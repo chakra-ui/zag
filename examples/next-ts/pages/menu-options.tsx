@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { menuOptionData as data, menuStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
@@ -10,11 +10,11 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine({
+      id: useId(),
       value: { order: "", type: [] },
       onValueChange: console.log,
     }),
   )
-  const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
   const api = menu.connect(state, send, normalizeProps)
 
   return (
@@ -23,7 +23,7 @@ export default function Page() {
 
       <main>
         <div>
-          <button ref={ref} {...api.triggerProps}>
+          <button {...api.triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>
 

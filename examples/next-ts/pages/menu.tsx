@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { menuStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
@@ -8,8 +8,7 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(menu.machine({ onSelect: console.log }))
-  const ref = useSetup({ send, id: useId() })
+  const [state, send] = useMachine(menu.machine({ id: useId(), onSelect: console.log }))
 
   const api = menu.connect(state, send, normalizeProps)
 
@@ -18,7 +17,7 @@ export default function Page() {
       <Global styles={menuStyle} />
 
       <main>
-        <div ref={ref}>
+        <div>
           <button {...api.triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>

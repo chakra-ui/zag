@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { menuData, menuStyle } from "@zag-js/shared"
 import { useEffect, useId } from "react"
 import { Portal } from "../components/portal"
@@ -8,16 +8,25 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state, send, machine] = useMachine(menu.machine)
-  const rootRef = useSetup<HTMLUListElement>({ send, id: useId() })
+  const [state, send, machine] = useMachine(
+    menu.machine({
+      id: useId(),
+    }),
+  )
   const root = menu.connect(state, send, normalizeProps)
 
-  const [subState, subSend, subMachine] = useMachine(menu.machine)
-  const subRef = useSetup<HTMLUListElement>({ send: subSend, id: useId() })
+  const [subState, subSend, subMachine] = useMachine(
+    menu.machine({
+      id: useId(),
+    }),
+  )
   const sub = menu.connect(subState, subSend, normalizeProps)
 
-  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
-  const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: useId() })
+  const [sub2State, sub2Send, sub2Machine] = useMachine(
+    menu.machine({
+      id: useId(),
+    }),
+  )
   const sub2 = menu.connect(sub2State, sub2Send, normalizeProps)
 
   useEffect(() => {
@@ -43,14 +52,13 @@ export default function Page() {
 
       <main>
         <div>
-          <button>Welcome</button>
           <button data-testid="trigger" {...root.triggerProps}>
             Click me
           </button>
 
           <Portal>
             <div {...root.positionerProps}>
-              <ul data-testid="menu" ref={rootRef} {...root.contentProps}>
+              <ul data-testid="menu" {...root.contentProps}>
                 {level1.map((item) => {
                   const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
                   return (
@@ -65,7 +73,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub.positionerProps}>
-              <ul ref={subRef} data-testid="more-tools-submenu" {...sub.contentProps}>
+              <ul data-testid="more-tools-submenu" {...sub.contentProps}>
                 {level2.map((item) => {
                   const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
                   return (
@@ -80,7 +88,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub2.positionerProps}>
-              <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.contentProps}>
+              <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
                 {level3.map((item) => (
                   <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
                     {item.label}
