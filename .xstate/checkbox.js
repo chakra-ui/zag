@@ -16,7 +16,6 @@ const fetchMachine = createMachine({
   context: {
     "shouldCheck && isInteractive": false,
     "isInteractive": false,
-    "isDefaultChecked": false,
     "isInteractive": false,
     "isInteractive": false
   },
@@ -53,14 +52,7 @@ const fetchMachine = createMachine({
     unknown: {
       tags: ["unchecked"],
       on: {
-        SETUP: [{
-          target: "checked",
-          cond: "isDefaultChecked",
-          actions: ["setupDocument"]
-        }, {
-          target: "unchecked",
-          actions: ["setupDocument"]
-        }]
+        SETUP: ctx.defaultChecked ? "checked" : "unchecked"
       }
     },
     checked: {
@@ -94,7 +86,6 @@ const fetchMachine = createMachine({
   },
   guards: {
     "shouldCheck && isInteractive": ctx => ctx["shouldCheck && isInteractive"],
-    "isInteractive": ctx => ctx["isInteractive"],
-    "isDefaultChecked": ctx => ctx["isDefaultChecked"]
+    "isInteractive": ctx => ctx["isInteractive"]
   }
 });
