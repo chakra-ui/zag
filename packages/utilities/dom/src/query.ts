@@ -19,6 +19,10 @@ export function getDocument(el: Element | Window | null) {
   return el?.ownerDocument ?? document
 }
 
+export function getRootNode(el: Node) {
+  return el.getRootNode() as Document | ShadowRoot
+}
+
 export function getWindow(el: HTMLElement) {
   return el?.ownerDocument.defaultView ?? window
 }
