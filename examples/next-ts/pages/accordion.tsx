@@ -21,8 +21,6 @@ export default function Page() {
 
   const api = accordion.connect(state, send, normalizeProps)
 
-  console.log("state.context.value :>> ", state.context.value)
-
   return (
     <>
       <Global styles={accordionStyle} />
