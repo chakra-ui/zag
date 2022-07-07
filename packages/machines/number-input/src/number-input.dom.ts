@@ -1,4 +1,4 @@
-import { MAX_Z_INDEX } from "@zag-js/dom-utils"
+import { getRoots, MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
 import type { MachineContext as Ctx } from "./number-input.types"
 
@@ -6,17 +6,15 @@ type InputEl = HTMLInputElement | null
 type ButtonEl = HTMLButtonElement | null
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.uid}`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.uid}:input`,
-  getIncButtonId: (ctx: Ctx) => ctx.ids?.incBtn ?? `number-input:${ctx.uid}:inc-btn`,
-  getDecButtonId: (ctx: Ctx) => ctx.ids?.decBtn ?? `number-input:${ctx.uid}:dec-btn`,
-  getScrubberId: (ctx: Ctx) => ctx.ids?.scrubber ?? `number-input:${ctx.uid}:scrubber`,
-  getCursorId: (ctx: Ctx) => `number-input:${ctx.uid}:cursor`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `number-input:${ctx.uid}:label`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.id}`,
+  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.id}:input`,
+  getIncButtonId: (ctx: Ctx) => ctx.ids?.incBtn ?? `number-input:${ctx.id}:inc-btn`,
+  getDecButtonId: (ctx: Ctx) => ctx.ids?.decBtn ?? `number-input:${ctx.id}:dec-btn`,
+  getScrubberId: (ctx: Ctx) => ctx.ids?.scrubber ?? `number-input:${ctx.id}:scrubber`,
+  getCursorId: (ctx: Ctx) => `number-input:${ctx.id}:cursor`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `number-input:${ctx.id}:label`,
 
   getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as InputEl,
   getIncButtonEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getIncButtonId(ctx)) as ButtonEl,
