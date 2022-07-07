@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -11,10 +11,10 @@ export default function Page() {
   const controls = useControls(comboboxControls)
 
   const [options, setOptions] = useState(comboboxData)
-  const [options2, setOptions2] = useState(comboboxData)
 
   const [state, send] = useMachine(
     combobox.machine({
+      id: useId(),
       onOpen() {
         setOptions(comboboxData)
       },
@@ -26,26 +26,7 @@ export default function Page() {
     { context: controls.context },
   )
 
-  const ref = useSetup({ send, id: useId() })
-
   const api = combobox.connect(state, send, normalizeProps)
-
-  const [state2, send2] = useMachine(
-    combobox.machine({
-      onOpen() {
-        setOptions2(comboboxData)
-      },
-      onInputChange({ value }) {
-        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
-        setOptions2(filtered.length > 0 ? filtered : comboboxData)
-      },
-    }),
-    { context: controls.context },
-  )
-
-  const ref2 = useSetup({ send: send2, id: useId() })
-
-  const api2 = combobox.connect(state2, send2, normalizeProps)
 
   return (
     <>
@@ -55,7 +36,7 @@ export default function Page() {
         <div>
           <button onClick={() => api.setValue("TG")}>Set to Togo</button>
           <br />
-          <div ref={ref} {...api.rootProps}>
+          <div {...api.rootProps}>
             <label {...api.labelProps}>Select country</label>
             <div {...api.controlProps}>
               <input data-testid="input" {...api.inputProps} />
@@ -72,32 +53,6 @@ export default function Page() {
                     data-testid={item.code}
                     key={`${item.code}:${index}`}
                     {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
-                  >
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <br />
-          <div ref={ref2} {...api2.rootProps}>
-            <label {...api2.labelProps}>Select country</label>
-            <div {...api2.controlProps}>
-              <input data-testid="input" {...api2.inputProps} />
-              <button data-testid="input-arrow" {...api2.toggleButtonProps}>
-                ▼
-              </button>
-            </div>
-          </div>
-          <div {...api2.positionerProps}>
-            {options2.length > 0 && (
-              <ul data-testid="combobox-listbox" {...api2.listboxProps}>
-                {options2.map((item, index) => (
-                  <li
-                    data-testid={item.code}
-                    key={`${item.code}:${index}`}
-                    {...api2.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
                   >
                     {item.label}
                   </li>
