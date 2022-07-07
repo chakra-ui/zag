@@ -31,10 +31,10 @@ const fetchMachine = createMachine({
         SETUP: [{
           target: "open",
           cond: "isDefaultOpen",
-          actions: ["setupDocument", "checkRenderedElements"]
+          actions: "checkRenderedElements"
         }, {
           target: "closed",
-          actions: ["setupDocument", "checkRenderedElements"]
+          actions: "checkRenderedElements"
         }]
       }
     },

@@ -1,21 +1,19 @@
-import { getFirstTabbable, getFocusables, getLastTabbable, getTabbables } from "@zag-js/dom-utils"
+import { getFirstTabbable, getFocusables, getLastTabbable, getRoots, getTabbables } from "@zag-js/dom-utils"
 import { runIfFn } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./popover.types"
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
+  ...getRoots(),
   getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
-  getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.uid}:anchor`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `popover:${ctx.uid}:trigger`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `popover:${ctx.uid}:content`,
-  getPositionerId: (ctx: Ctx) => `popover:${ctx.uid}:popper`,
-  getArrowId: (ctx: Ctx) => `popover:${ctx.uid}:arrow`,
-  getTitleId: (ctx: Ctx) => ctx.ids?.title ?? `popover:${ctx.uid}:title`,
-  getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `popover:${ctx.uid}:desc`,
-  getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `popover:${ctx.uid}:close-button`,
+  getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.id}:anchor`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `popover:${ctx.id}:trigger`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `popover:${ctx.id}:content`,
+  getPositionerId: (ctx: Ctx) => `popover:${ctx.id}:popper`,
+  getArrowId: (ctx: Ctx) => `popover:${ctx.id}:arrow`,
+  getTitleId: (ctx: Ctx) => ctx.ids?.title ?? `popover:${ctx.id}:title`,
+  getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `popover:${ctx.id}:desc`,
+  getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `popover:${ctx.id}:close-button`,
 
   getAnchorEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getAnchorId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)),
