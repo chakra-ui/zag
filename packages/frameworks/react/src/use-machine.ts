@@ -31,6 +31,7 @@ export function useService<
 
   useSafeLayoutEffect(() => {
     service.start(hydratedState)
+    service.send("SETUP")
     return () => {
       service.stop()
     }
