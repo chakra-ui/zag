@@ -1,3 +1,4 @@
+import { getRoots } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./toggle.types"
 
 export const dom = {

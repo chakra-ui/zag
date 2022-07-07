@@ -76,6 +76,7 @@ export type RenderOptions = Omit<ToastOptions, "render"> & {
 
 export type MachineContext = SharedContext &
   RootProperties &
+  CommonProperties &
   Omit<ToastOptions, "removeDelay"> & {
     /**
      * The duration for the toast to kept alive before it is removed.
