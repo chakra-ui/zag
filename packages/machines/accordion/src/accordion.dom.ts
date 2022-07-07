@@ -1,10 +1,9 @@
-import { nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { getRoots, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./accordion.types"
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.uid}`,
   getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.uid}:item:${value}`,
