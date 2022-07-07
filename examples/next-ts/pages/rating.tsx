@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as rating from "@zag-js/rating"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { ratingControls, ratingStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -40,11 +40,14 @@ function Star() {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(rating.machine, {
-    context: controls.context,
-  })
-
-  const ref = useSetup({ send, id: useId() })
+  const [state, send] = useMachine(
+    rating.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = rating.connect(state, send, normalizeProps)
 
@@ -52,7 +55,7 @@ export default function Page() {
     <>
       <Global styles={ratingStyle} />
       <main>
-        <div ref={ref} {...api.rootProps}>
+        <div {...api.rootProps}>
           <label {...api.labelProps}>Rate:</label>
           <div {...api.itemGroupProps}>
             {api.sizeArray.map((index) => {

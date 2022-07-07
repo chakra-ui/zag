@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { splitterControls, splitterStyle } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
 import { useId } from "react"
@@ -10,11 +10,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(splitter.machine, {
-    context: controls.context,
-  })
-
-  const ref = useSetup({ send, id: useId() })
+  const [state, send] = useMachine(
+    splitter.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = splitter.connect(state, send, normalizeProps)
 
@@ -22,7 +25,7 @@ export default function Page() {
     <>
       <Global styles={splitterStyle} />
       <main>
-        <div ref={ref} {...api.rootProps}>
+        <div {...api.rootProps}>
           <div {...api.primaryPaneProps}>
             <div>
               <small {...api.labelProps}>Table of Contents</small>
