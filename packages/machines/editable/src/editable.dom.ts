@@ -4,18 +4,17 @@ type HTMLButtonEl = HTMLButtonElement | null
 type HTMLInputEl = HTMLInputElement | null
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `editable:${ctx.uid}`,
-  getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `editable:${ctx.uid}:area`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `editable:${ctx.uid}:label`,
-  getPreviewId: (ctx: Ctx) => ctx.ids?.preview ?? `editable:${ctx.uid}:preview`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `editable:${ctx.uid}:input`,
-  getControlGroupId: (ctx: Ctx) => ctx.ids?.controlGroup ?? `editable:${ctx.uid}:controls`,
-  getSubmitBtnId: (ctx: Ctx) => ctx.ids?.submitBtn ?? `editable:${ctx.uid}:submit-btn`,
-  getCancelBtnId: (ctx: Ctx) => ctx.ids?.cancelBtn ?? `editable:${ctx.uid}:cancel-btn`,
-  getEditBtnId: (ctx: Ctx) => ctx.ids?.editBtn ?? `editable:${ctx.uid}:edit-btn`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `editable:${ctx.id}`,
+  getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `editable:${ctx.id}:area`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `editable:${ctx.id}:label`,
+  getPreviewId: (ctx: Ctx) => ctx.ids?.preview ?? `editable:${ctx.id}:preview`,
+  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `editable:${ctx.id}:input`,
+  getControlGroupId: (ctx: Ctx) => ctx.ids?.controlGroup ?? `editable:${ctx.id}:controls`,
+  getSubmitBtnId: (ctx: Ctx) => ctx.ids?.submitBtn ?? `editable:${ctx.id}:submit-btn`,
+  getCancelBtnId: (ctx: Ctx) => ctx.ids?.cancelBtn ?? `editable:${ctx.id}:cancel-btn`,
+  getEditBtnId: (ctx: Ctx) => ctx.ids?.editBtn ?? `editable:${ctx.id}:edit-btn`,
 
   getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputEl,
   getPreviewEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPreviewId(ctx)) as HTMLInputEl,
