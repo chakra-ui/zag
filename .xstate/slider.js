@@ -41,7 +41,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "setThumbSize", "checkValue"]
+          actions: ["setThumbSize", "checkValue"]
         }
       }
     },

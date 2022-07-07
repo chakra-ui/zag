@@ -1,5 +1,5 @@
 import type { StateMachine } from "@zag-js/core"
-import { dispatchInputValueEvent, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, getPointRelativeToNode, getRoots, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { closest, getElementRect } from "@zag-js/rect-utils"
@@ -32,18 +32,17 @@ function getValueFromPoint(ctx: Ctx, point: Point) {
 
 export const dom = {
   ...styles,
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.uid}`,
-  getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.uid}:thumb:${index}`,
-  getInputId: (ctx: Ctx, index: number) => `slider:${ctx.uid}:input:${index}`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.uid}:control`,
-  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.uid}:track`,
-  getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.uid}:range`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.uid}:label`,
-  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
-  getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.uid}:marker:${value}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
+  getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,
+  getInputId: (ctx: Ctx, index: number) => `slider:${ctx.id}:input:${index}`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.id}:control`,
+  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}:track`,
+  getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.id}:range`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.id}:label`,
+  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.id}:output`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.id}:marker:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx, index)),

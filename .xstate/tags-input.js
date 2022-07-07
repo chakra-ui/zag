@@ -85,10 +85,10 @@ const fetchMachine = createMachine({
         SETUP: [{
           cond: "autoFocus",
           target: "focused:input",
-          actions: ["setupDocument", "checkValue"]
+          actions: ["checkValue"]
         }, {
           target: "idle",
-          actions: ["setupDocument", "checkValue"]
+          actions: ["checkValue"]
         }]
       }
     },

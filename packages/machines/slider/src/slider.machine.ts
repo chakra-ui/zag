@@ -4,7 +4,7 @@ import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import { utils } from "./slider.utils"
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "slider",
@@ -12,7 +12,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       context: {
         thumbSize: null,
         thumbAlignment: "contain",
-        uid: "",
         disabled: false,
         threshold: 5,
         dir: "ltr",
@@ -57,7 +56,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setupDocument", "setThumbSize", "checkValue"],
+              actions: ["setThumbSize", "checkValue"],
             },
           },
         },
@@ -169,11 +168,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       actions: {
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
         checkValue(ctx) {
           const value = utils.convert(ctx, ctx.value)
           Object.assign(ctx, { value, initialValue: value })
