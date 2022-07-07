@@ -1,5 +1,5 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dimissable"
 import { addDomEvent, contains, nextTick, raf, isModifiedEvent } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
