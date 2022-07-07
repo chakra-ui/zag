@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { menuStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
@@ -10,13 +10,12 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine({
+      id: useId(),
       onSelect: console.log,
     }),
   )
 
   const api = menu.connect(state, send, normalizeProps)
-
-  const ref = useSetup<HTMLUListElement>({ send, id: useId() })
 
   return (
     <>
@@ -29,7 +28,7 @@ export default function Page() {
 
         <Portal>
           <div {...api.positionerProps}>
-            <ul ref={ref} {...api.contentProps}>
+            <ul {...api.contentProps}>
               <li {...api.getItemProps({ id: "edit" })}>Edit</li>
               <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
               <li {...api.getItemProps({ id: "delete" })}>Delete</li>

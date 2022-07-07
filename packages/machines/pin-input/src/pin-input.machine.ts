@@ -1,4 +1,4 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { nextTick, raf } from "@zag-js/dom-utils"
 import { fromLength } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
@@ -6,13 +6,12 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./pin-inp
 
 const { and, not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "pin-input",
       initial: "unknown",
       context: {
-        uid: "pin-input",
         value: [],
         focusedIndex: -1,
         placeholder: "○",
@@ -64,11 +63,11 @@ export function machine(ctx: UserDefinedContext = {}) {
               {
                 guard: "autoFocus",
                 target: "focused",
-                actions: ["setupDocument", "setupValue", "setFocusIndexToFirst"],
+                actions: ["setupValue", "setFocusIndexToFirst"],
               },
               {
                 target: "idle",
-                actions: ["setupDocument", "setupValue"],
+                actions: "setupValue",
               },
             ],
           },
@@ -146,11 +145,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         isDisabled: (ctx) => !!ctx.disabled,
       },
       actions: {
-        setupDocument: (ctx, evt) => {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
         setupValue: (ctx) => {
           nextTick(() => {
             const inputs = dom.getElements(ctx)
