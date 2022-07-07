@@ -1,17 +1,16 @@
+import { getRoots } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./dialog.types"
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getUnderlayId: (ctx: Ctx) => ctx.ids?.underlay ?? `dialog:${ctx.uid}:underlay`,
-  getBackdropId: (ctx: Ctx) => ctx.ids?.backdrop ?? `dialog:${ctx.uid}:backdrop`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `dialog:${ctx.uid}:content`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `dialog:${ctx.uid}:trigger`,
-  getTitleId: (ctx: Ctx) => ctx.ids?.title ?? `dialog:${ctx.uid}:title`,
-  getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `dialog:${ctx.uid}:description`,
-  getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `dialog:${ctx.uid}:close-btn`,
+  getUnderlayId: (ctx: Ctx) => ctx.ids?.underlay ?? `dialog:${ctx.id}:underlay`,
+  getBackdropId: (ctx: Ctx) => ctx.ids?.backdrop ?? `dialog:${ctx.id}:backdrop`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `dialog:${ctx.id}:content`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `dialog:${ctx.id}:trigger`,
+  getTitleId: (ctx: Ctx) => ctx.ids?.title ?? `dialog:${ctx.id}:title`,
+  getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `dialog:${ctx.id}:description`,
+  getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `dialog:${ctx.id}:close-btn`,
 
   getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)) as HTMLElement,
   getUnderlayEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getUnderlayId(ctx)) as HTMLElement,
