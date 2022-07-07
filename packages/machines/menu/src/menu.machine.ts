@@ -125,7 +125,7 @@ export function machine(ctx: UserDefinedContext = {}) {
 
         closing: {
           tags: ["visible"],
-          activities: ["trackPointerMove"],
+          activities: ["trackPointerMove", "trackInteractOutside"],
           after: {
             SUBMENU_CLOSE_DELAY: {
               target: "closed",
