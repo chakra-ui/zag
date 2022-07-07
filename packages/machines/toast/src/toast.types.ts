@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { Context, Direction, DirectionProperty, RootProperties } from "@zag-js/types"
+import type { CommonProperties, Context, Direction, DirectionProperty, RequiredBy, RootProperties } from "@zag-js/types"
 
 export type Type = "success" | "error" | "loading" | "info" | "custom"
 
@@ -108,7 +108,8 @@ export type Send = S.Send
 export type Service = Machine<MachineContext, MachineState>
 
 type GroupPublicContext = SharedContext &
-  DirectionProperty & {
+  DirectionProperty &
+  CommonProperties & {
     /**
      * The gutter or spacing between toasts
      */
@@ -127,7 +128,7 @@ type GroupPublicContext = SharedContext &
     offsets: string | Record<"left" | "right" | "bottom" | "top", string>
   }
 
-export type UserDefinedGroupContext = Partial<GroupPublicContext>
+export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
 
 type GroupComputedContext = Readonly<{
   /**
