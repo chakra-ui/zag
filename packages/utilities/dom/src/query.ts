@@ -1,3 +1,9 @@
+import type { Dict } from "@zag-js/core/src/types"
+
+export function isDocument(el: any): el is Document {
+  return el.nodeType === Node.DOCUMENT_NODE
+}
+
 export function isShadowRoot(el: any): el is ShadowRoot {
   return el?.toString() === "[object ShadowRoot]"
 }
@@ -14,8 +20,9 @@ export const isWithinShadowRoot = (node: HTMLElement) => {
   return isShadowRoot(node.getRootNode())
 }
 
-export function getDocument(el: Element | Window | null) {
+export function getDocument(el: Element | Window | Node | Document | null) {
   if (isWindow(el)) return el.document
+  if (isDocument(el)) return el
   return el?.ownerDocument ?? document
 }
 
@@ -69,6 +76,18 @@ export function getParent(el: HTMLElement): HTMLElement {
   const doc = getDocument(el)
   if (getNodeName(el) === "html") return el
   return el.assignedSlot || el.parentElement || doc.documentElement
+}
+
+export function getRoots() {
+  const roots = {
+    getRootNode: (ctx: Dict) => {
+      console.log(ctx.getRootNode?.() ?? document)
+      return (ctx.getRootNode?.() ?? document) as Document | ShadowRoot
+    },
+    getDoc: (ctx: Dict) => getDocument(roots.getRootNode(ctx)),
+    getWin: (ctx: Dict) => roots.getDoc(ctx).defaultView ?? window,
+  }
+  return roots
 }
 
 export function contains(
