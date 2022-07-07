@@ -1,4 +1,4 @@
-import type { Dict } from "@zag-js/core/src/types"
+type Ctx<T extends string> = Partial<Record<T, () => Document | ShadowRoot | Node>>
 
 export function isDocument(el: any): el is Document {
   return el.nodeType === Node.DOCUMENT_NODE
@@ -80,9 +80,9 @@ export function getParent(el: HTMLElement): HTMLElement {
 
 export function getRoots() {
   const roots = {
-    getRootNode: (ctx: Dict) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
-    getDoc: (ctx: Dict) => getDocument(roots.getRootNode(ctx)),
-    getWin: (ctx: Dict) => roots.getDoc(ctx).defaultView ?? window,
+    getRootNode: (ctx: Ctx<"getRootNode">) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
+    getDoc: (ctx: Ctx<"getRootNode">) => getDocument(roots.getRootNode(ctx)),
+    getWin: (ctx: Ctx<"getRootNode">) => roots.getDoc(ctx).defaultView ?? window,
   }
   return roots
 }
