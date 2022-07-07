@@ -80,10 +80,7 @@ export function getParent(el: HTMLElement): HTMLElement {
 
 export function getRoots() {
   const roots = {
-    getRootNode: (ctx: Dict) => {
-      console.log(ctx.getRootNode?.() ?? document)
-      return (ctx.getRootNode?.() ?? document) as Document | ShadowRoot
-    },
+    getRootNode: (ctx: Dict) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
     getDoc: (ctx: Dict) => getDocument(roots.getRootNode(ctx)),
     getWin: (ctx: Dict) => roots.getDoc(ctx).defaultView ?? window,
   }
