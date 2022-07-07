@@ -13,6 +13,17 @@ export type DirectionProperty = {
   dir?: Direction
 }
 
+export type CommonProperties = {
+  /**
+   * The unique identifier of the machine.
+   */
+  uid: string
+  /**
+   * A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.
+   */
+  getRootNode?: () => ShadowRoot | Document
+}
+
 export type RootProperties = {
   /**
    * @internal
@@ -28,11 +39,6 @@ export type RootProperties = {
 
 export type Context<T> = T &
   RootProperties & {
-    /**
-     * @internal
-     * The unique identifier of the machine.
-     */
-    uid: string
     /**
      * @internal
      * The related target when the element is blurred.
