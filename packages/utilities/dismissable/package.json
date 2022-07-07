@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dimissable",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dismissable layer utilities for the DOM",
   "keywords": [
     "js",
@@ -35,10 +35,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@zag-js/interact-outside": "0.1.0"
+    "@zag-js/interact-outside": "0.1.1"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "0.1.5"
+    "@zag-js/dom-utils": "0.1.6"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/interact-outside",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Track interations or focus outside an element",
   "keywords": [
     "js",
@@ -28,7 +28,7 @@
     "test:watch": "yarn test --watchAll"
   },
   "dependencies": {
-    "@zag-js/dom-utils": "0.1.5"
+    "@zag-js/dom-utils": "0.1.6"
   },
   "publishConfig": {
     "access": "public"
