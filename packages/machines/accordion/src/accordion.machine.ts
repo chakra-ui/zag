@@ -34,9 +34,7 @@ export function machine(ctx: UserDefinedContext) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: "idle",
-            },
+            SETUP: "idle",
           },
         },
         idle: {

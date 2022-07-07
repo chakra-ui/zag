@@ -12,7 +12,7 @@ export default function Page() {
 
   const [state, send] = useMachine(
     accordion.machine({
-      uid: useId(),
+      id: useId(),
     }),
     {
       context: controls.context,

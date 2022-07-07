@@ -1,5 +1,7 @@
 import type { JSX } from "./jsx"
 
+export type RequiredBy<T, K extends keyof T> = Partial<Omit<T, K>> & Required<Pick<T, K>>
+
 export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"
@@ -17,11 +19,11 @@ export type CommonProperties = {
   /**
    * The unique identifier of the machine.
    */
-  uid: string
+  id: string
   /**
    * A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.
    */
-  getRootNode?: () => ShadowRoot | Document
+  getRootNode?: () => ShadowRoot | Document | Node
 }
 
 export type RootProperties = {

@@ -30,9 +30,7 @@ const fetchMachine = createMachine({
   states: {
     unknown: {
       on: {
-        SETUP: {
-          target: "idle"
-        }
+        SETUP: "idle"
       }
     },
     idle: {

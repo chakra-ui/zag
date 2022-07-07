@@ -5,10 +5,10 @@ import type { MachineContext as Ctx } from "./accordion.types"
 export const dom = {
   ...getRoots(),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.uid}`,
-  getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.uid}:item:${value}`,
-  getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.uid}:content:${value}`,
-  getTriggerId: (ctx: Ctx, value: string) => ctx.ids?.trigger?.(value) ?? `accordion:${ctx.uid}:trigger:${value}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.id}`,
+  getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.id}:item:${value}`,
+  getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
+  getTriggerId: (ctx: Ctx, value: string) => ctx.ids?.trigger?.(value) ?? `accordion:${ctx.id}:trigger:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getTriggers: (ctx: Ctx) => {
