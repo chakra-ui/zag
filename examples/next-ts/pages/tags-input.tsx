@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId } from "react"
@@ -16,14 +16,13 @@ export default function Page() {
 
   const [state, send] = useMachine(
     tagsInput.machine({
+      id: useId(),
       value: ["React", "Vue"],
     }),
     {
       context: controls.context,
     },
   )
-
-  const ref = useSetup({ send, id: useId() })
 
   const api = tagsInput.connect(state, send, normalizeProps)
 
@@ -32,7 +31,7 @@ export default function Page() {
       <Global styles={tagsInputStyle} />
 
       <main>
-        <div ref={ref} {...api.rootProps}>
+        <div {...api.rootProps}>
           <label {...api.labelProps}>Enter frameworks:</label>
           <div {...api.controlProps}>
             {api.value.map((value, index) => (

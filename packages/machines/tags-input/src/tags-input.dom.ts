@@ -1,17 +1,16 @@
-import { dispatchInputValueEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, getRoots, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
 export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
+  ...getRoots(),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.uid}`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.uid}:input`,
-  getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.uid}:clear-btn`,
-  getHiddenInputId: (ctx: Ctx) => `tags-input:${ctx.uid}:hidden-input`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `tags-input:${ctx.uid}:label`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `tags-input:${ctx.uid}:control`,
-  getTagId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tag?.(opt) ?? `tags-input:${ctx.uid}:tag:${opt.value}:${opt.index}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.id}`,
+  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.id}:input`,
+  getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.id}:clear-btn`,
+  getHiddenInputId: (ctx: Ctx) => `tags-input:${ctx.id}:hidden-input`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `tags-input:${ctx.id}:label`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `tags-input:${ctx.id}:control`,
+  getTagId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tag?.(opt) ?? `tags-input:${ctx.id}:tag:${opt.value}:${opt.index}`,
   getTagDeleteBtnId: (ctx: Ctx, opt: TagProps) =>
     ctx.ids?.tagDeleteBtn?.(opt) ?? `${dom.getTagId(ctx, opt)}:delete-btn`,
   getTagInputId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tagInput?.(opt) ?? `${dom.getTagId(ctx, opt)}:input`,
