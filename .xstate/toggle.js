@@ -14,8 +14,7 @@ const fetchMachine = createMachine({
   id: "toggle",
   initial: "unknown",
   context: {
-    "isPressed": false,
-    "isDefaultPressed": false
+    "isPressed": false
   },
   on: {
     SET_STATE: [{
@@ -35,14 +34,7 @@ const fetchMachine = createMachine({
   states: {
     unknown: {
       on: {
-        SETUP: [{
-          target: "pressed",
-          cond: "isDefaultPressed",
-          actions: "setupDocument"
-        }, {
-          target: "unpressed",
-          actions: "setupDocument"
-        }]
+        SETUP: ctx.defaultPressed ? "pressed" : "unpressed"
       }
     },
     pressed: {
@@ -65,7 +57,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isPressed": ctx => ctx["isPressed"],
-    "isDefaultPressed": ctx => ctx["isDefaultPressed"]
+    "isPressed": ctx => ctx["isPressed"]
   }
 });

@@ -1,35 +1,36 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
   button: string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the toggle. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
-   */
-  label: string
-  /**
-   * Whether the toggle is disabled.
-   */
-  disabled?: boolean
-  /**
-   * Function to call when the toggle is clicked.
-   */
-  onChange?: (details: { pressed: boolean }) => void
-  /**
-   * Whether the toggle is initially pressed.
-   */
-  defaultPressed?: boolean
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the toggle. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * Specifies the localized strings that identifies the accessibility elements and their states
+     */
+    label: string
+    /**
+     * Whether the toggle is disabled.
+     */
+    disabled?: boolean
+    /**
+     * Function to call when the toggle is clicked.
+     */
+    onChange?: (details: { pressed: boolean }) => void
+    /**
+     * Whether the toggle is initially pressed.
+     */
+    defaultPressed?: boolean
+  }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
 
