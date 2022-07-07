@@ -1,4 +1,4 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { nextTick, raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"

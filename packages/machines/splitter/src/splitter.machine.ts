@@ -1,4 +1,4 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { raf, trackPointerMove, getPointRelativeToNode } from "@zag-js/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
 import { dom } from "./splitter.dom"
