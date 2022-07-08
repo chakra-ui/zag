@@ -1,10 +1,8 @@
-import { getRoots, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { nextById, prevById, queryAll, withRootHelpers } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./accordion.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.id}`,
   getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.id}:item:${value}`,
   getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
@@ -21,4 +19,4 @@ export const dom = {
   getLastTriggerEl: (ctx: Ctx) => last(dom.getTriggers(ctx)),
   getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
   getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
-}
+})

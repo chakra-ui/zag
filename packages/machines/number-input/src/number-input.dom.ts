@@ -1,13 +1,11 @@
-import { getRoots, MAX_Z_INDEX } from "@zag-js/dom-utils"
+import { withRootHelpers, MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
 import type { MachineContext as Ctx } from "./number-input.types"
 
 type InputEl = HTMLInputElement | null
 type ButtonEl = HTMLButtonElement | null
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.id}:input`,
   getIncButtonId: (ctx: Ctx) => ctx.ids?.incBtn ?? `number-input:${ctx.id}:inc-btn`,
@@ -74,4 +72,4 @@ export const dom = {
 
     doc.body.appendChild(el)
   },
-}
+})

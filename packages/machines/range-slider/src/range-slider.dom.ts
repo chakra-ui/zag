@@ -1,5 +1,5 @@
 import type { StateMachine } from "@zag-js/core"
-import { dispatchInputValueEvent, getPointRelativeToNode, getRoots, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, getPointRelativeToNode, withRootHelpers, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { closest, getElementRect } from "@zag-js/rect-utils"
@@ -32,7 +32,7 @@ function getValueFromPoint(ctx: Ctx, point: Point) {
 
 export const dom = {
   ...styles,
-  ...getRoots(),
+  ...withRootHelpers(),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,

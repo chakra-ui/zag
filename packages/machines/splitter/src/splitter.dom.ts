@@ -1,10 +1,8 @@
-import { getRoots } from "@zag-js/dom-utils"
+import { withRootHelpers } from "@zag-js/dom-utils"
 import type { Style } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./splitter.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `splitter:${ctx.id}`,
   getSplitterId: (ctx: Ctx) => ctx.ids?.splitter ?? `splitter:${ctx.id}:splitter`,
   getToggleButtonId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `splitter:${ctx.id}:toggle-btn`,
@@ -23,4 +21,4 @@ export const dom = {
     if (ctx.isAtMax) cursor = x ? "w-resize" : "n-resize"
     return cursor
   },
-}
+})

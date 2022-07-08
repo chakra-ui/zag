@@ -78,13 +78,16 @@ export function getParent(el: HTMLElement): HTMLElement {
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
-export function getRoots() {
+export function withRootHelpers<T>(domUtils: T) {
   const roots = {
     getRootNode: (ctx: Ctx<"getRootNode">) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
     getDoc: (ctx: Ctx<"getRootNode">) => getDocument(roots.getRootNode(ctx)),
     getWin: (ctx: Ctx<"getRootNode">) => roots.getDoc(ctx).defaultView ?? window,
   }
-  return roots
+  return {
+    ...roots,
+    ...domUtils,
+  }
 }
 
 export function contains(

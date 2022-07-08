@@ -1,6 +1,4 @@
-import { getRoots } from "@zag-js/dom-utils"
+import { withRootHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./{{machine}}.types"
 
-export const dom = {
-  ...getRoots(),
-}
+export const dom = withRootHelpers({})

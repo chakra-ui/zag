@@ -1,9 +1,8 @@
-import { getFirstTabbable, getFocusables, getLastTabbable, getRoots, getTabbables } from "@zag-js/dom-utils"
+import { getFirstTabbable, getFocusables, getLastTabbable, withRootHelpers, getTabbables } from "@zag-js/dom-utils"
 import { runIfFn } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./popover.types"
 
-export const dom = {
-  ...getRoots(),
+export const dom = withRootHelpers({
   getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
 
   getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.id}:anchor`,
@@ -36,4 +35,4 @@ export const dom = {
     if (!el) el = dom.getContentEl(ctx)
     return el
   },
-}
+})

@@ -1,9 +1,7 @@
-import { getRoots, queryAll } from "@zag-js/dom-utils"
+import { withRootHelpers, queryAll } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./pin-input.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `pin-input:${ctx.id}`,
   getInputId: (ctx: Ctx, id: string) => ctx.ids?.input?.(id) ?? `pin-input:${ctx.id}:${id}`,
 
@@ -16,4 +14,4 @@ export const dom = {
   getFocusedEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
 
   getFirstInputEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-}
+})

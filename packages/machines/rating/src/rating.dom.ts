@@ -1,9 +1,7 @@
-import { dispatchInputValueEvent, getRoots } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, withRootHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./rating.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `rating:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `rating:${ctx.id}:label`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `rating:${ctx.id}:input`,
@@ -20,4 +18,4 @@ export const dom = {
     const input = dom.getInputEl(ctx)
     if (input) dispatchInputValueEvent(input, ctx.value)
   },
-}
+})

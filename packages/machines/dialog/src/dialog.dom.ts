@@ -1,9 +1,7 @@
-import { getRoots } from "@zag-js/dom-utils"
+import { withRootHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./dialog.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getUnderlayId: (ctx: Ctx) => ctx.ids?.underlay ?? `dialog:${ctx.id}:underlay`,
   getBackdropId: (ctx: Ctx) => ctx.ids?.backdrop ?? `dialog:${ctx.id}:backdrop`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `dialog:${ctx.id}:content`,
@@ -16,4 +14,4 @@ export const dom = {
   getUnderlayEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getUnderlayId(ctx)) as HTMLElement,
   getTitleEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTitleId(ctx)) as HTMLElement,
   getDescriptionEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getDescriptionId(ctx)) as HTMLElement,
-}
+})

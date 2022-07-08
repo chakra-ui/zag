@@ -1,12 +1,10 @@
-import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, getRoots } from "@zag-js/dom-utils"
+import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, withRootHelpers } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./menu.types"
 
 type HTMLEl = HTMLElement | null
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`,
   getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.id}:content`,
@@ -41,4 +39,4 @@ export const dom = {
   isTriggerItem: (el: HTMLElement | null) => {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
   },
-}
+})

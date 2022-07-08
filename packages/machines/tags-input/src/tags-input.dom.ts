@@ -1,9 +1,7 @@
-import { dispatchInputValueEvent, getRoots, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, withRootHelpers, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.id}:input`,
   getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.id}:clear-btn`,
@@ -54,4 +52,4 @@ export const dom = {
     if (!el) return
     dispatchInputValueEvent(el, ctx.valueAsString)
   },
-}
+})

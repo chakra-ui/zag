@@ -1,11 +1,9 @@
-import { getRoots, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { withRootHelpers, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import scrollIntoViewIfNeeded from "scroll-into-view-if-needed"
 import type { MachineContext as Ctx } from "./combobox.types"
 
-export const dom = {
-  ...getRoots(),
-
+export const dom = withRootHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
@@ -91,4 +89,4 @@ export const dom = {
     const el = dom.getMatchingOptionEl(ctx, value)
     return dom.getOptionData(el).label
   },
-}
+})
