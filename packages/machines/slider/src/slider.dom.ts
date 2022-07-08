@@ -3,9 +3,8 @@ import { styles } from "./slider.style"
 import type { MachineContext as Ctx, Point } from "./slider.types"
 import { utils } from "./slider.utils"
 
-export const dom = {
+export const dom = withRootHelpers({
   ...styles,
-  ...withRootHelpers(),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `slider:${ctx.id}:thumb`,
@@ -49,4 +48,4 @@ export const dom = {
     if (!input) return
     dispatchInputValueEvent(input, ctx.value)
   },
-}
+})

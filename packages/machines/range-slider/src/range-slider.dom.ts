@@ -30,9 +30,8 @@ function getValueFromPoint(ctx: Ctx, point: Point) {
   return utils.fromPercent(ctx, percent)
 }
 
-export const dom = {
+export const dom = withRootHelpers({
   ...styles,
-  ...withRootHelpers(),
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,
@@ -62,7 +61,7 @@ export const dom = {
       dispatchInputValueEvent(input, value)
     })
   },
-}
+})
 
 export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
   let index: number
