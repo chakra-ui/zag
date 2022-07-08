@@ -90,8 +90,9 @@ export const isDisabled = (el: HTMLElement | null): boolean => {
 export function isElementEditable(el: HTMLElement | null) {
   if (el == null) return false
   try {
+    const win = getWindow(el)
     return (
-      (el instanceof getWindow(el).HTMLInputElement && el.selectionStart != null) ||
+      (el instanceof win.HTMLInputElement && el.selectionStart != null) ||
       /(textarea|select)/.test(el.localName) ||
       el.isContentEditable
     )
