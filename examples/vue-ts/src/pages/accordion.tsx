@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as accordion from "@zag-js/accordion"
 import { accordionControls, accordionData, accordionStyle } from "@zag-js/shared"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(accordionStyle)
 
@@ -15,11 +14,9 @@ export default defineComponent({
   setup() {
     const controls = useControls(accordionControls)
 
-    const [state, send] = useMachine(accordion.machine, {
+    const [state, send] = useMachine(accordion.machine({ id: "accordion" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => accordion.connect(state.value, send, normalizeProps))
 
@@ -29,7 +26,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
+            <div {...api.rootProps}>
               {accordionData.map((item) => (
                 <div {...api.getItemProps({ value: item.id })}>
                   <h3>

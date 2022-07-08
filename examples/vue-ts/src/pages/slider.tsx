@@ -1,13 +1,13 @@
 import { injectGlobal } from "@emotion/css"
 import * as Slider from "@zag-js/slider"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { sliderControls, sliderStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 injectGlobal(sliderStyle)
@@ -25,8 +25,6 @@ export default defineComponent({
         context: controls.context,
       },
     )
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => Slider.connect(state.value, send, normalizeProps))
 
@@ -46,7 +44,7 @@ export default defineComponent({
                 }
               }}
             >
-              <div ref={ref} {...api.rootProps}>
+              <div {...api.rootProps}>
                 <div>
                   <label data-testid="label" {...api.labelProps}>
                     Slider Label

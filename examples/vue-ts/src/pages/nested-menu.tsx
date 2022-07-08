@@ -1,27 +1,26 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, onMounted, Teleport, Fragment, h } from "vue"
 import { menuData, menuStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(menuStyle)
 
 export default defineComponent({
   name: "NestedMenu",
   setup() {
-    const [state, send, machine] = useMachine(menu.machine)
-    const rootRef = useSetup({ send, id: useId() })
+    const [state, send, machine] = useMachine(menu.machine({ id: "menu-1" }))
+
     const root = computed(() => menu.connect(state.value, send, normalizeProps))
 
-    const [subState, subSend, subMachine] = useMachine(menu.machine)
-    const subRef = useSetup({ send: subSend, id: useId() })
+    const [subState, subSend, subMachine] = useMachine(menu.machine({ id: "menu-2" }))
+
     const sub = computed(() => menu.connect(subState.value, subSend, normalizeProps))
 
-    const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
-    const sub2Ref = useSetup({ send: sub2Send, id: useId() })
+    const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: "menu-3" }))
+
     const sub2 = computed(() => menu.connect(sub2State.value, sub2Send, normalizeProps))
 
     onMounted(() => {
@@ -50,7 +49,7 @@ export default defineComponent({
 
               <Teleport to="body">
                 <div {...root.value.positionerProps}>
-                  <ul data-testid="menu" ref={rootRef} {...root.value.contentProps}>
+                  <ul data-testid="menu" {...root.value.contentProps}>
                     {level1.map((item) => {
                       const props = item.trigger ? triggerItemProps.value : root.value.getItemProps({ id: item.id })
                       return (
@@ -65,7 +64,7 @@ export default defineComponent({
 
               <Teleport to="body">
                 <div {...sub.value.positionerProps}>
-                  <ul ref={subRef} data-testid="more-tools-submenu" {...sub.value.contentProps}>
+                  <ul data-testid="more-tools-submenu" {...sub.value.contentProps}>
                     {level2.map((item) => {
                       const props = item.trigger ? triggerItem2Props.value : sub.value.getItemProps({ id: item.id })
                       return (
@@ -80,7 +79,7 @@ export default defineComponent({
 
               <Teleport to="body">
                 <div {...sub2.value.positionerProps}>
-                  <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2.value.contentProps}>
+                  <ul data-testid="open-nested-submenu" {...sub2.value.contentProps}>
                     {level3.map((item) => (
                       <li key={item.id} data-testid={item.id} {...sub2.value.getItemProps({ id: item.id })}>
                         {item.label}

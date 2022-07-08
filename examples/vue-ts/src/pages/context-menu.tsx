@@ -1,11 +1,10 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { menuStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(menuStyle)
 
@@ -17,8 +16,6 @@ export default defineComponent({
         onSelect: console.log,
       }),
     )
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => menu.connect(state.value, send, normalizeProps))
 
@@ -32,7 +29,7 @@ export default defineComponent({
             </div>
             <Teleport to="body">
               <div {...api.positionerProps}>
-                <ul ref={ref} {...api.contentProps}>
+                <ul {...api.contentProps}>
                   <li {...api.getItemProps({ id: "edit" })}>Edit</li>
                   <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
                   <li {...api.getItemProps({ id: "delete" })}>Delete</li>

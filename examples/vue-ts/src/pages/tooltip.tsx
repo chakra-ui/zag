@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as Tooltip from "@zag-js/tooltip"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { tooltipStyles } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,11 +12,9 @@ export default defineComponent({
   name: "Tooltip",
   setup() {
     const [state, send] = useMachine(Tooltip.machine({ id: "tip-1" }))
-    const ref = useSetup<HTMLButtonElement>({ send, id: "tip-1" })
     const apiRef = computed(() => Tooltip.connect(state.value, send, normalizeProps))
 
     const [state2, send2] = useMachine(Tooltip.machine({ id: "tip-2" }))
-    const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: "tip-2" })
     const apiRef2 = computed(() => Tooltip.connect(state2.value, send2, normalizeProps))
 
     return () => {
@@ -26,9 +24,7 @@ export default defineComponent({
         <>
           <main style={{ gap: "12px", flexDirection: "row" }}>
             <div class="root">
-              <button ref={ref} {...api.triggerProps}>
-                Over me
-              </button>
+              <button {...api.triggerProps}>Over me</button>
               {api.isOpen && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>
@@ -39,9 +35,7 @@ export default defineComponent({
                 </Teleport>
               )}
 
-              <button ref={ref2} {...api2.triggerProps}>
-                Over me
-              </button>
+              <button {...api2.triggerProps}>Over me</button>
               {api2.isOpen && (
                 <Teleport to="body">
                   <div {...api2.positionerProps}>

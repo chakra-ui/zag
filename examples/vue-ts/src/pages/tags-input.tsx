@@ -1,12 +1,12 @@
 import { injectGlobal } from "@emotion/css"
 import * as tagsInput from "@zag-js/tags-input"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 injectGlobal(tagsInputStyle)
@@ -29,8 +29,6 @@ export default defineComponent({
       },
     )
 
-    const ref = useSetup({ send, id: useId() })
-
     const apiRef = computed(() => tagsInput.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -39,7 +37,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
+            <div {...api.rootProps}>
               <label {...api.labelProps}>Enter frameworks:</label>
               <div {...api.controlProps}>
                 {api.value.map((value, index) => (

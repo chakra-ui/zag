@@ -1,11 +1,10 @@
 import { injectGlobal } from "@emotion/css"
 import * as dialog from "@zag-js/dialog"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, ref as vueRef, Teleport } from "vue"
 import { dialogStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(dialogStyle)
 
@@ -15,13 +14,13 @@ export default defineComponent({
     const inputRef = vueRef<HTMLInputElement | null>(null)
 
     // Dialog 1
-    const [state, send] = useMachine(dialog.machine)
-    const ref = useSetup({ send, id: useId() })
+    const [state, send] = useMachine(dialog.machine({ id: "dialog-1" }))
+
     const parentDialogRef = computed(() => dialog.connect(state.value, send, normalizeProps))
 
     // Dialog 2
-    const [state2, send2] = useMachine(dialog.machine)
-    const ref2 = useSetup({ send: send2, id: useId() })
+    const [state2, send2] = useMachine(dialog.machine({ id: "dialog-2" }))
+
     const childDialogRef = computed(() => dialog.connect(state2.value, send2, normalizeProps))
 
     return () => {
@@ -31,8 +30,8 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref2}>
-              <div ref={ref}>
+            <div>
+              <div>
                 <button {...parentDialog.triggerProps} data-testid="trigger-1">
                   Open Dialog
                 </button>
@@ -49,7 +48,7 @@ export default defineComponent({
                         <button {...parentDialog.closeButtonProps} data-testid="close-1">
                           X
                         </button>
-                        <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
+                        <input type="text" placeholder="Enter name..." data-testid="input-1" />
                         <button data-testid="save-button-1">Save Changes</button>
                         <button {...childDialog.triggerProps} data-testid="trigger-2">
                           Open Nested
