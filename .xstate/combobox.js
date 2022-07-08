@@ -20,8 +20,8 @@ const fetchMachine = createMachine({
     "isCustomValue && !allowCustomValue": false,
     "autoComplete": false,
     "autoComplete": false,
-    "isOptionFocused && autoComplete": false,
-    "isOptionFocused": false,
+    "hasFocusedOption && autoComplete": false,
+    "hasFocusedOption": false,
     "autoHighlight": false,
     "autoComplete": false,
     "autoComplete && isLastOptionFocused": false,
@@ -32,13 +32,13 @@ const fetchMachine = createMachine({
   },
 
   onEvent(ctx, evt) {
-    ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END)/.test(evt.type);
+    ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type);
   },
 
   exit: "removeLiveRegion",
   on: {
     SET_VALUE: {
-      actions: ["setInputValue", "setSelectedValue"]
+      actions: ["setInputValue", "setSelectionData"]
     },
     SET_INPUT_VALUE: {
       actions: "setInputValue"
@@ -136,7 +136,7 @@ const fetchMachine = createMachine({
     },
     suggesting: {
       tags: ["open", "focused"],
-      activities: ["trackPointerDown", "scrollOptionIntoView", "computePlacement", "trackOptionNodes", "ariaHideOutside"],
+      activities: ["trackInteractOutside", "scrollOptionIntoView", "computePlacement", "trackOptionNodes", "ariaHideOutside"],
       entry: ["focusInput", "invokeOnOpen"],
       on: {
         ARROW_DOWN: {
@@ -157,11 +157,11 @@ const fetchMachine = createMachine({
           actions: ["focusLastOption", "preventDefault"]
         },
         ENTER: [{
-          cond: "isOptionFocused && autoComplete",
+          cond: "hasFocusedOption && autoComplete",
           target: "focused",
           actions: "selectActiveOption"
         }, {
-          cond: "isOptionFocused",
+          cond: "hasFocusedOption",
           target: "focused",
           actions: "selectOption"
         }],
@@ -178,10 +178,10 @@ const fetchMachine = createMachine({
         POINTEROVER_OPTION: [{
           cond: "autoComplete",
           target: "interacting",
-          actions: "setActiveId"
+          actions: "setActiveOption"
         }, {
           target: "interacting",
-          actions: ["setActiveId", "setNavigationValue"]
+          actions: ["setActiveOption", "setNavigationData"]
         }],
         BLUR: {
           target: "idle",
@@ -195,7 +195,7 @@ const fetchMachine = createMachine({
     },
     interacting: {
       tags: ["open", "focused"],
-      activities: ["scrollOptionIntoView", "trackPointerDown", "computePlacement", "ariaHideOutside"],
+      activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "ariaHideOutside"],
       entry: "focusMatchingOption",
       on: {
         HOME: {
@@ -235,16 +235,16 @@ const fetchMachine = createMachine({
         CHANGE: [{
           cond: "autoComplete",
           target: "suggesting",
-          actions: ["commitNavigationValue", "setInputValue"]
+          actions: ["commitNavigationData", "setInputValue"]
         }, {
           target: "suggesting",
           actions: ["clearFocusedOption", "setInputValue"]
         }],
         POINTEROVER_OPTION: [{
           cond: "autoComplete",
-          actions: "setActiveId"
+          actions: "setActiveOption"
         }, {
-          actions: ["setActiveId", "setNavigationValue"]
+          actions: ["setActiveOption", "setNavigationData"]
         }],
         CLICK_OPTION: {
           target: "focused",
@@ -279,8 +279,8 @@ const fetchMachine = createMachine({
     "openOnClick": ctx => ctx["openOnClick"],
     "isCustomValue && !allowCustomValue": ctx => ctx["isCustomValue && !allowCustomValue"],
     "autoComplete": ctx => ctx["autoComplete"],
-    "isOptionFocused && autoComplete": ctx => ctx["isOptionFocused && autoComplete"],
-    "isOptionFocused": ctx => ctx["isOptionFocused"],
+    "hasFocusedOption && autoComplete": ctx => ctx["hasFocusedOption && autoComplete"],
+    "hasFocusedOption": ctx => ctx["hasFocusedOption"],
     "autoHighlight": ctx => ctx["autoHighlight"],
     "autoComplete && isLastOptionFocused": ctx => ctx["autoComplete && isLastOptionFocused"],
     "autoComplete && isFirstOptionFocused": ctx => ctx["autoComplete && isFirstOptionFocused"],

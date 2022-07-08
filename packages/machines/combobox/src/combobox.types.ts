@@ -33,7 +33,7 @@ type PublicContext = DirectionProperty & {
   /**
    * The selected option's value
    */
-  selectedValue: string
+  selectionData: OptionData | null
   /**
    * The `name` attribute of the combobox's input. Useful for form submission
    */
@@ -101,7 +101,7 @@ type PublicContext = DirectionProperty & {
   /**
    * Function called to validate the input value
    */
-  isCustomValue?: (details: { inputValue: string; previousValue: string }) => boolean
+  isCustomValue?: (details: { inputValue: string; previousValue: string | undefined }) => boolean
   /**
    * Whether to loop the keyboard navigation through the options
    */
@@ -113,12 +113,12 @@ type PublicContext = DirectionProperty & {
   /**
    * Function called when a new option is selected
    */
-  onSelect?: (details: { value: string; relatedTarget: HTMLElement | null }) => void
+  onSelect?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
   /**
    * Function called when an options is highlighted using the pointer
    * or keyboard navigation.
    */
-  onHighlight?: (details: { value: string; relatedTarget: HTMLElement | null }) => void
+  onHighlight?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
   /**
    * Function called when the popup is opened
    */
@@ -174,7 +174,7 @@ type PrivateContext = Context<{
    * @internal
    * The value of the option when the user hovers/navigates with keyboard
    */
-  navigationValue: string
+  navigationData: OptionData | null
   /**
    * @internal
    * The live region used to announce changes in the combobox
