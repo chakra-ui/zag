@@ -62,7 +62,8 @@ export const dom = {
     return listbox.querySelector<HTMLElement>(selector)
   },
 
-  scrollIntoView: (ctx: Ctx, el: HTMLElement) => {
+  scrollIntoView: (ctx: Ctx, el: HTMLElement | null | undefined) => {
+    if (!el) return
     scrollIntoViewIfNeeded(el, {
       boundary: dom.getListboxEl(ctx),
       block: "nearest",

@@ -62,6 +62,7 @@ export default function Page() {
           </div>
         </div>
       </main>
+
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
