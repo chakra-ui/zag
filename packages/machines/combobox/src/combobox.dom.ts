@@ -1,6 +1,5 @@
 import { nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
-import scrollIntoViewIfNeeded from "scroll-into-view-if-needed"
 import type { MachineContext as Ctx } from "./combobox.types"
 
 export const dom = {
@@ -61,15 +60,6 @@ export const dom = {
     if (!listbox) return null
 
     return listbox.querySelector<HTMLElement>(selector)
-  },
-
-  scrollIntoView: (ctx: Ctx, el: HTMLElement | null | undefined) => {
-    if (!el) return
-    scrollIntoViewIfNeeded(el, {
-      boundary: dom.getListboxEl(ctx),
-      block: "nearest",
-      scrollMode: "if-needed",
-    })
   },
 
   focusInput: (ctx: Ctx) => {

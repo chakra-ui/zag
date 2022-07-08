@@ -395,9 +395,7 @@ export function machine(ctx: UserDefinedContext = {}) {
             if (!ctx.isKeyboardEvent) return
 
             const option = dom.getActiveOptionEl(ctx)
-            if (!option) return
-
-            dom.scrollIntoView(ctx, option)
+            option?.scrollIntoView({ block: "nearest" })
 
             if (ctx.autoComplete) {
               dom.focusInput(ctx)
@@ -543,8 +541,8 @@ export function machine(ctx: UserDefinedContext = {}) {
         focusMatchingOption(ctx) {
           raf(() => {
             const option = dom.getMatchingOptionEl(ctx, ctx.selectionData?.value)
+            option?.scrollIntoView({ block: "nearest" })
             setFocus(ctx, option)
-            dom.scrollIntoView(ctx, option)
           })
         },
         announceOptionCount(ctx) {
