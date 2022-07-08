@@ -11,8 +11,6 @@ injectGlobal(dialogStyle)
 export default defineComponent({
   name: "Dialog",
   setup() {
-    const inputRef = vueRef<HTMLInputElement | null>(null)
-
     const [state, send] = useMachine(dialog.machine({ id: "dialog", defaultOpen: true }))
 
     const parentDialogRef = computed(() => dialog.connect(state.value, send, normalizeProps))

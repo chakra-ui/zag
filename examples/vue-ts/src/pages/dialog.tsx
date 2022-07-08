@@ -11,8 +11,6 @@ injectGlobal(dialogStyle)
 export default defineComponent({
   name: "Dialog",
   setup() {
-    const inputRef = vueRef<HTMLInputElement | null>(null)
-
     // Dialog 1
     const [state, send] = useMachine(dialog.machine({ id: "dialog-1" }))
 
