@@ -19,6 +19,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       slider.machine({
+        id: "range-slider",
         name: "quantity",
         value: [10, 60],
       }),

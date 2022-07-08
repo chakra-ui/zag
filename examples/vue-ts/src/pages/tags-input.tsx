@@ -22,6 +22,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       tagsInput.machine({
+        id: "tags-input",
         value: ["React", "Vue"],
       }),
       {

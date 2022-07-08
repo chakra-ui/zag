@@ -17,6 +17,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       combobox.machine({
+        id: "combobox",
         onOpen() {
           options.value = comboboxData
         },
