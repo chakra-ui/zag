@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as dialog from "@zag-js/dialog"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useRef } from "react"
 import { dialogStyle } from "@zag-js/shared"
 import { Portal } from "../components/portal"
@@ -10,8 +10,12 @@ import { Toolbar } from "../components/toolbar"
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [state, send] = useMachine(dialog.machine({ defaultOpen: true }))
-  const ref = useSetup<HTMLButtonElement>({ send, id: useId() })
+  const [state, send] = useMachine(
+    dialog.machine({
+      id: useId(),
+      defaultOpen: true,
+    }),
+  )
   const api = dialog.connect(state, send, normalizeProps)
 
   return (
@@ -20,7 +24,7 @@ export default function Page() {
 
       <main>
         <div>
-          <button ref={ref} {...api.triggerProps} data-testid="trigger-1">
+          <button {...api.triggerProps} data-testid="trigger-1">
             Open Dialog
           </button>
 

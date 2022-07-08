@@ -1,18 +1,17 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { dispatchInputCheckedEvent, nextTick, trackFieldsetDisabled, trackFormReset } from "@zag-js/dom-utils"
 import { dom } from "./checkbox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
 
 const { and } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "checkbox",
       initial: "unknown",
 
       context: {
-        uid: "",
         active: false,
         hovered: false,
         focused: false,
@@ -64,10 +63,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         unknown: {
           tags: ["unchecked"],
           on: {
-            SETUP: {
-              target: ctx.defaultChecked ? "checked" : "unchecked",
-              actions: ["setupDocument"],
-            },
+            SETUP: ctx.defaultChecked ? "checked" : "unchecked",
           },
         },
         checked: {
@@ -124,11 +120,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       actions: {
-        setupDocument(ctx, evt) {
-          ctx.uid = evt.id
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-        },
         invokeOnChange(ctx, _evt, { state }) {
           const checked = state.matches("checked")
           ctx.onChange?.({ checked: ctx.indeterminate ? "indeterminate" : checked })

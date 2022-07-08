@@ -1,5 +1,5 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { createLiveRegion, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
 import { warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
@@ -7,7 +7,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./tags-in
 
 const { and, not, or } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "tags-input",
@@ -15,7 +15,6 @@ export function machine(ctx: UserDefinedContext = {}) {
 
       context: {
         log: { current: null, prev: null },
-        uid: "",
         inputValue: "",
         editedTagValue: "",
         focusedId: null,
@@ -310,10 +309,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         dispatchChangeEvent(ctx) {
           dom.dispatchInputEvent(ctx)
         },
-        setupDocument(ctx, evt) {
-          ctx.uid = evt.id
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
+        setupDocument(ctx) {
           nextTick(() => {
             ctx.liveRegion = createLiveRegion({
               level: "assertive",

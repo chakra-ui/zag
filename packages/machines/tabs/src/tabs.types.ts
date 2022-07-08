@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlMessages = {
   tablistLabel?: string
@@ -14,58 +14,59 @@ type ElementIds = Partial<{
   content: string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the tabs. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
-   */
-  messages: IntlMessages
-  /**
-   * Whether the keyboard navigation will loop from last tab to first, and vice versa.
-   * @default true
-   */
-  loop: boolean
-  /**
-   * Whether the indicator is rendered.
-   */
-  isIndicatorRendered: boolean
-  /**
-   * The selected tab id
-   */
-  value: string | null
-  /**
-   * The orientation of the tabs. Can be `horizontal` or `vertical`
-   * - `horizontal`: only left and right arrow key navigation will work.
-   * - `vertical`: only up and down arrow key navigation will work.
-   *
-   * @default "horizontal"
-   */
-  orientation?: "horizontal" | "vertical"
-  /**
-   * The activation mode of the tabs. Can be `manual` or `automatic`
-   * - `manual`: Tabs are activated when clicked or press `enter` key.
-   * - `automatic`: Tabs are activated when receiving focus
-   * @default "automatic"
-   */
-  activationMode?: "manual" | "automatic"
-  /**
-   * Callback to be called when the selected/active tab changes
-   */
-  onChange?: (details: { value: string | null }) => void
-  /**
-   * Callback to be called when the focused tab changes
-   */
-  onFocus?: (details: { value: string | null }) => void
-  /**
-   * Callback to be called when a tab's close button is clicked
-   */
-  onDelete?: (details: { value: string }) => void
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the tabs. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * Specifies the localized strings that identifies the accessibility elements and their states
+     */
+    messages: IntlMessages
+    /**
+     * Whether the keyboard navigation will loop from last tab to first, and vice versa.
+     * @default true
+     */
+    loop: boolean
+    /**
+     * Whether the indicator is rendered.
+     */
+    isIndicatorRendered: boolean
+    /**
+     * The selected tab id
+     */
+    value: string | null
+    /**
+     * The orientation of the tabs. Can be `horizontal` or `vertical`
+     * - `horizontal`: only left and right arrow key navigation will work.
+     * - `vertical`: only up and down arrow key navigation will work.
+     *
+     * @default "horizontal"
+     */
+    orientation?: "horizontal" | "vertical"
+    /**
+     * The activation mode of the tabs. Can be `manual` or `automatic`
+     * - `manual`: Tabs are activated when clicked or press `enter` key.
+     * - `automatic`: Tabs are activated when receiving focus
+     * @default "automatic"
+     */
+    activationMode?: "manual" | "automatic"
+    /**
+     * Callback to be called when the selected/active tab changes
+     */
+    onChange?: (details: { value: string | null }) => void
+    /**
+     * Callback to be called when the focused tab changes
+     */
+    onFocus?: (details: { value: string | null }) => void
+    /**
+     * Callback to be called when a tab's close button is clicked
+     */
+    onDelete?: (details: { value: string }) => void
+  }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

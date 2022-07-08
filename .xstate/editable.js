@@ -36,11 +36,9 @@ const fetchMachine = createMachine({
       on: {
         SETUP: [{
           cond: "startWithEditView",
-          target: "edit",
-          actions: "setupDocument"
+          target: "edit"
         }, {
-          target: "preview",
-          actions: "setupDocument"
+          target: "preview"
         }]
       }
     },

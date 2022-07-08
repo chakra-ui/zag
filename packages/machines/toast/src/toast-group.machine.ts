@@ -3,14 +3,13 @@ import { MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { createToastMachine } from "./toast.machine"
 import type { GroupMachineContext, UserDefinedGroupContext } from "./toast.types"
 
-export function groupMachine(ctx: Partial<UserDefinedGroupContext> = {}) {
+export function groupMachine(ctx: UserDefinedGroupContext) {
   return createMachine<GroupMachineContext>({
     id: "toaster",
     initial: "active",
     context: {
       dir: "ltr",
       max: Number.MAX_SAFE_INTEGER,
-      uid: "",
       toasts: [],
       gutter: "1rem",
       zIndex: MAX_Z_INDEX,
@@ -25,13 +24,7 @@ export function groupMachine(ctx: Partial<UserDefinedGroupContext> = {}) {
     },
 
     on: {
-      SETUP: {
-        actions: (ctx, evt) => {
-          ctx.uid = evt.id
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-        },
-      },
+      SETUP: {},
 
       PAUSE_TOAST: {
         actions: (_ctx, evt, { self }) => {

@@ -9,13 +9,12 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./menu.ty
 
 const { not, and } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "menu",
       initial: "unknown",
       context: {
-        uid: "",
         activeId: null,
         hoverId: null,
         parent: null,
@@ -75,10 +74,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: "idle",
-              actions: "setupDocument",
-            },
+            SETUP: "idle",
           },
         },
 
@@ -412,11 +408,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         resumePointer(ctx) {
           if (!ctx.parent) return
           ctx.parent.state.context.suspendPointer = false
-        },
-        setupDocument(ctx, evt) {
-          ctx.uid = evt.id
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
         },
         setFocusedItem(ctx, evt) {
           ctx.activeId = evt.id

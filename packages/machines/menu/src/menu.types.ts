@@ -2,7 +2,7 @@ import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-utils"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   trigger: string
@@ -12,50 +12,51 @@ type ElementIds = Partial<{
   group(id: string): string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the menu. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * The values of radios and checkboxes in the menu.
-   */
-  value?: Record<string, string | string[]>
-  /**
-   * Callback to be called when the menu values change (for radios and checkboxes).
-   */
-  onValueChange?: (details: { name: string; value: string | string[] }) => void
-  /**
-   * The `id` of the active menu item.
-   */
-  activeId: string | null
-  /**
-   * Function called when a menu item is selected.
-   */
-  onSelect?: (value: string) => void
-  /**
-   * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
-   */
-  anchorPoint: Point | null
-  /**
-   * Whether to loop the keyboard navigation.
-   */
-  loop: boolean
-  /**
-   * The options used to dynamically position the menu
-   */
-  positioning: PositioningOptions
-  /**
-   * Whether to close the menu when an option is selected
-   */
-  closeOnSelect: boolean
-  /**
-   * The accessibility label for the menu
-   */
-  "aria-label"?: string
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the menu. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * The values of radios and checkboxes in the menu.
+     */
+    value?: Record<string, string | string[]>
+    /**
+     * Callback to be called when the menu values change (for radios and checkboxes).
+     */
+    onValueChange?: (details: { name: string; value: string | string[] }) => void
+    /**
+     * The `id` of the active menu item.
+     */
+    activeId: string | null
+    /**
+     * Function called when a menu item is selected.
+     */
+    onSelect?: (value: string) => void
+    /**
+     * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
+     */
+    anchorPoint: Point | null
+    /**
+     * Whether to loop the keyboard navigation.
+     */
+    loop: boolean
+    /**
+     * The options used to dynamically position the menu
+     */
+    positioning: PositioningOptions
+    /**
+     * Whether to close the menu when an option is selected
+     */
+    closeOnSelect: boolean
+    /**
+     * The accessibility label for the menu
+     */
+    "aria-label"?: string
+  }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

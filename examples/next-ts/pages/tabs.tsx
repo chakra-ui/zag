@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
 import { useId } from "react"
@@ -10,11 +10,15 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(tabs.machine({ value: "nils" }), {
-    context: controls.context,
-  })
-
-  const ref = useSetup({ send, id: useId() })
+  const [state, send] = useMachine(
+    tabs.machine({
+      id: useId(),
+      value: "nils",
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = tabs.connect(state, send, normalizeProps)
 
@@ -25,7 +29,7 @@ export default function Page() {
       <main>
         <div {...api.rootProps}>
           <div {...api.indicatorProps} />
-          <div ref={ref} {...api.triggerGroupProps}>
+          <div {...api.triggerGroupProps}>
             {tabsData.map((data) => (
               <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                 {data.label}

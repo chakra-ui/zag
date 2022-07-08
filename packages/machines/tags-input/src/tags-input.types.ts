@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/dom-utils"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlMessages = {
   clearButtonLabel: string
@@ -32,110 +32,111 @@ type ElementIds = Partial<{
   tagInput(opts: TagProps): string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the tags input. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
-   */
-  messages: IntlMessages
-  /**
-   * The max length of the input.
-   */
-  maxLength?: number
-  /**
-   * The character that serves has:
-   * - event key to trigger the addition of a new tag
-   * - character used to split tags when pasting into the input
-   *
-   * @default "," (aka COMMA)
-   */
-  delimiter: string | null
-  /**
-   * Whether the input should be auto-focused
-   */
-  autoFocus?: boolean
-  /**
-   * Whether the tags input should be disabled
-   */
-  disabled?: boolean
-  /**
-   * Whether the tags input should be read-only
-   */
-  readonly?: boolean
-  /**
-   * Whether the tags input is invalid
-   */
-  invalid?: boolean
-  /**
-   * Whether a tag can be edited after creation.
-   * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
-   */
-  allowEditTag?: boolean
-  /**
-   * The tag input's value
-   */
-  inputValue: string
-  /**
-   * The tag values
-   */
-  value: string[]
-  /**
-   * The intial values of the tags input
-   */
-  initialValue: string[]
-  /**
-   * Callback fired when the tag values is updated
-   */
-  onChange?(details: { values: string[] }): void
-  /**
-   * Callback fired when a tag is focused by pointer or keyboard navigation
-   */
-  onHighlight?(details: { value: string | null }): void
-  /**
-   * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
-   */
-  onInvalid?: (details: { reason: ValidityState }) => void
-  /**
-   * Callback fired when a tag's value is updated
-   */
-  onTagUpdate?(details: { value: string; index: number }): void
-  /**
-   * Returns a boolean that determines whether a tag can be added.
-   * Useful for preventing duplicates or invalid tag values.
-   */
-  validate?(details: { inputValue: string; values: string[] }): boolean
-  /**
-   * The behavior of the tags input when the input is blurred
-   * - `"add"`: add the input value as a new tag
-   * - `"none"`: do nothing
-   * - `"clear"`: clear the input value
-   *
-   * @default "none"
-   */
-  blurBehavior?: "clear" | "add"
-  /**
-   * Whether to add a tag when you paste values into the tag input
-   */
-  addOnPaste?: boolean
-  /**
-   * The max number of tags
-   */
-  max: number
-  /**
-   * Whether to allow tags to exceed max. In this case,
-   * we'll attach `data-invalid` to the root
-   */
-  allowOverflow?: boolean
-  /**
-   * The name attribute for the input. Useful for form submissions
-   */
-  name?: string
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the tags input. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * Specifies the localized strings that identifies the accessibility elements and their states
+     */
+    messages: IntlMessages
+    /**
+     * The max length of the input.
+     */
+    maxLength?: number
+    /**
+     * The character that serves has:
+     * - event key to trigger the addition of a new tag
+     * - character used to split tags when pasting into the input
+     *
+     * @default "," (aka COMMA)
+     */
+    delimiter: string | null
+    /**
+     * Whether the input should be auto-focused
+     */
+    autoFocus?: boolean
+    /**
+     * Whether the tags input should be disabled
+     */
+    disabled?: boolean
+    /**
+     * Whether the tags input should be read-only
+     */
+    readonly?: boolean
+    /**
+     * Whether the tags input is invalid
+     */
+    invalid?: boolean
+    /**
+     * Whether a tag can be edited after creation.
+     * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
+     */
+    allowEditTag?: boolean
+    /**
+     * The tag input's value
+     */
+    inputValue: string
+    /**
+     * The tag values
+     */
+    value: string[]
+    /**
+     * The intial values of the tags input
+     */
+    initialValue: string[]
+    /**
+     * Callback fired when the tag values is updated
+     */
+    onChange?(details: { values: string[] }): void
+    /**
+     * Callback fired when a tag is focused by pointer or keyboard navigation
+     */
+    onHighlight?(details: { value: string | null }): void
+    /**
+     * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
+     */
+    onInvalid?: (details: { reason: ValidityState }) => void
+    /**
+     * Callback fired when a tag's value is updated
+     */
+    onTagUpdate?(details: { value: string; index: number }): void
+    /**
+     * Returns a boolean that determines whether a tag can be added.
+     * Useful for preventing duplicates or invalid tag values.
+     */
+    validate?(details: { inputValue: string; values: string[] }): boolean
+    /**
+     * The behavior of the tags input when the input is blurred
+     * - `"add"`: add the input value as a new tag
+     * - `"none"`: do nothing
+     * - `"clear"`: clear the input value
+     *
+     * @default "none"
+     */
+    blurBehavior?: "clear" | "add"
+    /**
+     * Whether to add a tag when you paste values into the tag input
+     */
+    addOnPaste?: boolean
+    /**
+     * The max number of tags
+     */
+    max: number
+    /**
+     * Whether to allow tags to exceed max. In this case,
+     * we'll attach `data-invalid` to the root
+     */
+    allowOverflow?: boolean
+    /**
+     * The name attribute for the input. Useful for form submissions
+     */
+    name?: string
+  }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

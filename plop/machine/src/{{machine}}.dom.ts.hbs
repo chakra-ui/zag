@@ -1,6 +1,4 @@
+import { withRootHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./{{machine}}.types"
 
-export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootId: (ctx: Ctx) => `{{machine}}:${ctx.uid}`,
-}
+export const dom = withRootHelpers({})

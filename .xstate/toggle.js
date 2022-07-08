@@ -37,11 +37,9 @@ const fetchMachine = createMachine({
       on: {
         SETUP: [{
           target: "pressed",
-          cond: "isDefaultPressed",
-          actions: "setupDocument"
+          cond: "isDefaultPressed"
         }, {
-          target: "unpressed",
-          actions: "setupDocument"
+          target: "unpressed"
         }]
       }
     },

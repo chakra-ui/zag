@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { FormatDecimalOptions } from "@zag-js/number-utils"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
@@ -30,6 +30,7 @@ type IntlMessages = {
 }
 
 type PublicContext = DirectionProperty &
+  CommonProperties &
   FormatDecimalOptions & {
     /**
      * The ids of the elements in the number input. Useful for composition.
@@ -126,7 +127,7 @@ type PublicContext = DirectionProperty &
     onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
   }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

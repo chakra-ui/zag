@@ -1,24 +1,28 @@
 import { Global } from "@emotion/react"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { popoverStyle } from "@zag-js/shared"
 import * as React from "react"
 import { Portal } from "../components/portal"
 
 function Popover({ children, nested, id }: any) {
-  const [state, send] = useMachine(popover.machine, {
-    context: {
-      portalled: true,
-      modal: false,
+  const [state, send] = useMachine(
+    popover.machine({
+      id,
+    }),
+    {
+      context: {
+        portalled: true,
+        modal: false,
+      },
     },
-  })
-  const ref = useSetup({ send, id })
+  )
   const api = popover.connect(state, send, normalizeProps)
   const Wrapper = api.portalled ? Portal : React.Fragment
 
   return (
     <>
-      <div data-part="root" ref={ref}>
+      <div data-part="root">
         {!nested && <button data-testid="button-before">Button :before</button>}
 
         <button data-testid="popover-trigger" {...api.triggerProps}>

@@ -1,11 +1,10 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur, isLeftClick } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { PropTypes, NormalizeProps } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./combobox.dom"
-import type { OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
+import type { OptionData, OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const pointerdownNode = state.context.pointerdownNode
   const messages = state.context.messages
 
   const isDisabled = state.context.disabled
@@ -17,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.hasTag("focused")
   const isIdle = state.hasTag("idle")
 
-  const autofill = isOpen && state.context.navigationValue && state.context.autoComplete
+  const autofill = isOpen && state.context.navigationData && state.context.autoComplete
   const showClearButton = (!isIdle || state.context.isHovering) && !state.context.isInputValueEmpty
 
   const popperStyles = getPlacementStyles({
@@ -31,9 +30,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isInputValueEmpty: state.context.isInputValueEmpty,
     inputValue: state.context.inputValue,
     activeOption: state.context.activeOptionData,
-    selectedValue: state.context.selectedValue,
-    setValue(value: string) {
-      send({ type: "SET_VALUE", value })
+    selectedValue: state.context.selectionData?.value,
+    setValue(value: string | OptionData) {
+      let data: OptionData
+      if (typeof value === "string") {
+        data = { value, label: dom.getValueLabel(state.context, value) }
+      } else {
+        data = value
+      }
+      send({ type: "SET_VALUE", ...data })
     },
     setInputValue(value: string) {
       send({ type: "SET_INPUT_VALUE", value })
@@ -102,7 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      value: autofill ? state.context.navigationValue : state.context.inputValue,
+      value: autofill ? state.context.navigationData?.label : state.context.inputValue,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
       "aria-expanded": isOpen,
@@ -110,16 +115,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown() {
         if (!isInteractive) return
         send("POINTER_DOWN")
-      },
-      onBlur(event) {
-        if (!isInteractive) return
-        const isValidBlur = validateBlur(event, {
-          exclude: [dom.getListboxEl(state.context), dom.getToggleBtnEl(state.context)],
-          fallback: pointerdownNode,
-        })
-        if (isValidBlur) {
-          send("BLUR")
-        }
       },
       onFocus() {
         if (!isInteractive) return
@@ -232,7 +227,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { value, index, disabled } = props
       const id = dom.getOptionId(state.context, value, index)
       const focused = state.context.activeId === id
-      const checked = state.context.selectedValue === value
+      const checked = state.context.selectionData?.value === value
       return { disabled, focused, checked }
     },
 
@@ -259,7 +254,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         // NOTE: for perf, we may want to move these handlers to the listbox
         onPointerMove() {
           if (_state.disabled) return
-          send({ type: "POINTEROVER_OPTION", id, value, data: { label, value } })
+          send({ type: "POINTEROVER_OPTION", id, value, label })
         },
         onPointerUp(event) {
           if (_state.disabled) return
@@ -267,7 +262,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick() {
           if (_state.disabled) return
-          send({ type: "CLICK_OPTION", id, value })
+          send({ type: "CLICK_OPTION", id, value, label })
         },
         onAuxClick(event) {
           if (_state.disabled) return

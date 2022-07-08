@@ -1,5 +1,7 @@
 import type { JSX } from "./jsx"
 
+export type RequiredBy<T, K extends keyof T> = Partial<Omit<T, K>> & Required<Pick<T, K>>
+
 export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"
@@ -11,6 +13,17 @@ export type DirectionProperty = {
    * The document's text/writing direction.
    */
   dir?: Direction
+}
+
+export type CommonProperties = {
+  /**
+   * The unique identifier of the machine.
+   */
+  id: string
+  /**
+   * A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.
+   */
+  getRootNode?: () => ShadowRoot | Document | Node
 }
 
 export type RootProperties = {
@@ -28,11 +41,6 @@ export type RootProperties = {
 
 export type Context<T> = T &
   RootProperties & {
-    /**
-     * @internal
-     * The unique identifier of the machine.
-     */
-    uid: string
     /**
      * @internal
      * The related target when the element is blurred.
