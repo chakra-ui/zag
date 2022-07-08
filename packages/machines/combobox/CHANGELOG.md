@@ -1,5 +1,12 @@
 # @zag-js/combobox
 
+## 0.1.10
+
+### Patch Changes
+
+- [`42bbd4a1`](https://github.com/chakra-ui/zag/commit/42bbd4a19d70f2066ac9b524d576bf1468fb6553) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression with input event
+
 ## 0.1.9
 
 ### Patch Changes
