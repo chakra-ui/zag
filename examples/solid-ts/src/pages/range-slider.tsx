@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as slider from "@zag-js/range-slider"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, For, createUniqueId } from "solid-js"
 import { rangeSliderControls, sliderStyle } from "@zag-js/shared"
@@ -15,13 +15,12 @@ export default function Page() {
 
   const [state, send] = useMachine(
     slider.machine({
+      id: createUniqueId(),
       name: "quantity",
       value: [10, 60],
     }),
     { context: controls.context as any },
   )
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => slider.connect(state, send, normalizeProps))
 
@@ -35,19 +34,19 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <div ref={ref} {...api().rootProps}>
+          <div {...api().rootProps}>
             <div>
               <label {...api().labelProps}>Quantity:</label>
               <output {...api().outputProps}>{api().values.join(" - ")}</output>
             </div>
-            <div className="control-area">
+            <div class="control-area">
               <div {...api().controlProps}>
                 <div {...api().trackProps}>
                   <div {...api().rangeProps} />
                 </div>
                 <For each={api().values}>
                   {(_, index) => (
-                    <div className="slider__thumb" {...api().getThumbProps(index())}>
+                    <div class="slider__thumb" {...api().getThumbProps(index())}>
                       <input {...api().getInputProps(index())} />
                     </div>
                   )}

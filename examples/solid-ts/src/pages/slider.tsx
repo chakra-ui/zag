@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as slider from "@zag-js/slider"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
 import { sliderControls, sliderStyle } from "@zag-js/shared"
@@ -13,11 +13,9 @@ injectGlobal(sliderStyle)
 export default function Page() {
   const controls = useControls(sliderControls)
 
-  const [state, send] = useMachine(slider.machine, {
+  const [state, send] = useMachine(slider.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => slider.connect(state, send, normalizeProps))
 
@@ -31,7 +29,7 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <div ref={ref} {...api().rootProps}>
+          <div {...api().rootProps}>
             <div>
               <label data-testid="label" {...api().labelProps}>
                 Slider Label
@@ -40,7 +38,7 @@ export default function Page() {
                 {api().value}
               </output>
             </div>
-            <div className="control-area">
+            <div class="control-area">
               <div {...api().controlProps}>
                 <div data-testid="track" {...api().trackProps}>
                   <div {...api().rangeProps} />

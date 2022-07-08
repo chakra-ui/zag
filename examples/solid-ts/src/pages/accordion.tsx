@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as accordion from "@zag-js/accordion"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { accordionControls, accordionData, accordionStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,17 +12,16 @@ injectGlobal(accordionStyle)
 export default function Page() {
   const controls = useControls(accordionControls)
 
-  const [state, send] = useMachine(accordion.machine, {
+  const [state, send] = useMachine(accordion.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: createUniqueId() })
   const api = createMemo(() => accordion.connect(state, send, normalizeProps))
 
   return (
     <>
       <main>
-        <div ref={ref} {...api().rootProps}>
+        <div {...api().rootProps}>
           <For each={accordionData}>
             {(item) => (
               <div {...api().getItemProps({ value: item.id })}>

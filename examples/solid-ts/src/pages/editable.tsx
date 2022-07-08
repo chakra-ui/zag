@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as editable from "@zag-js/editable"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { editableControls, editableStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -14,12 +14,11 @@ export default function Page() {
 
   const [state, send] = useMachine(
     editable.machine({
+      id: createUniqueId(),
       placeholder: "Edit me...",
     }),
     { context: controls.context },
   )
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => editable.connect(state, send, normalizeProps))
 
@@ -28,7 +27,7 @@ export default function Page() {
       <main>
         <div {...api().rootProps}>
           <div {...api().areaProps}>
-            <input data-testid="input" ref={ref} {...api().inputProps} />
+            <input data-testid="input" {...api().inputProps} />
             <span data-testid="preview" {...api().previewProps} />
           </div>
           <div {...api().controlGroupProps}>

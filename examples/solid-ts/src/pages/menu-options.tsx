@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { menuOptionData as data, menuStyle } from "@zag-js/shared"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,18 +12,19 @@ injectGlobal(menuStyle)
 export default function Page() {
   const [state, send] = useMachine(
     menu.machine({
+      id: createUniqueId(),
       value: { order: "", type: [] },
       onValueChange: console.log,
     }),
   )
-  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
+
   const api = createMemo(() => menu.connect(state, send, normalizeProps))
 
   return (
     <>
       <main>
         <div>
-          <button ref={ref} {...api().triggerProps}>
+          <button {...api().triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>
 

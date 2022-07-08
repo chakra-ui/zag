@@ -22,6 +22,7 @@ export function useMachine<
   const [state, setState] = createStore<any>(unwrap(service.state))
 
   service.start(hydratedState)
+  service.send("SETUP")
 
   createEffect(() => {
     if (context) {
