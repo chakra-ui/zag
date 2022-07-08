@@ -1,5 +1,3 @@
-type Ctx<T extends string> = Partial<Record<T, () => Document | ShadowRoot | Node>>
-
 export function isDocument(el: any): el is Document {
   return el.nodeType === Node.DOCUMENT_NODE
 }
@@ -78,11 +76,13 @@ export function getParent(el: HTMLElement): HTMLElement {
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
+type Ctx = { getRootNode?: () => Document | ShadowRoot | Node }
+
 export function withRootHelpers<T>(domUtils: T) {
   const roots = {
-    getRootNode: (ctx: Ctx<"getRootNode">) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
-    getDoc: (ctx: Ctx<"getRootNode">) => getDocument(roots.getRootNode(ctx)),
-    getWin: (ctx: Ctx<"getRootNode">) => roots.getDoc(ctx).defaultView ?? window,
+    getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
+    getDoc: (ctx: Ctx) => getDocument(roots.getRootNode(ctx)),
+    getWin: (ctx: Ctx) => roots.getDoc(ctx).defaultView ?? window,
   }
   return {
     ...roots,
