@@ -1,5 +1,5 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { contains, createLiveRegion, nextTick, observeAttributes, observeChildren, raf } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
@@ -8,13 +8,12 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./combobo
 
 const { and, not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",
       initial: "unknown",
       context: {
-        uid: "",
         loop: true,
         openOnClick: false,
         ariaHidden: true,
@@ -407,10 +406,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       actions: {
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
+        setupDocument(ctx) {
           nextTick(() => {
             ctx.liveRegion = createLiveRegion({
               level: "assertive",

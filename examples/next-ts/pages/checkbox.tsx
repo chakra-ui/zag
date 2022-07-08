@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as checkbox from "@zag-js/checkbox"
-import { mergeProps, normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
@@ -11,11 +11,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(checkboxControls)
 
-  const [state, send] = useMachine(checkbox.machine, {
-    context: controls.context,
-  })
-
-  const ref = useSetup<HTMLLabelElement>({ send, id: useId() })
+  const [state, send] = useMachine(
+    checkbox.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = checkbox.connect(state, send, normalizeProps)
 
@@ -39,7 +42,7 @@ export default function Page() {
           }}
         >
           <fieldset>
-            <label ref={ref} {...api.rootProps}>
+            <label {...api.rootProps}>
               <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
               <input {...inputProps} />
               <div {...api.controlProps} />

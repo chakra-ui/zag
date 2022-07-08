@@ -10,7 +10,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.
 
 const { and } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "dialog",
@@ -20,7 +20,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         role: "dialog",
         isTitleRendered: true,
         isDescriptionRendered: true,
-        uid: "",
         trapFocus: true,
         preventScroll: true,
         isTopMostDialog: true,
@@ -32,10 +31,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: ctx.defaultOpen ? "open" : "closed",
-              actions: "setupDocument",
-            },
+            SETUP: ctx.defaultOpen ? "open" : "closed",
           },
         },
         open: {
@@ -112,15 +108,15 @@ export function machine(ctx: UserDefinedContext = {}) {
           return () => trap?.deactivate()
         },
         subscribeToStore(ctx, _evt, { send }) {
-          const register = { id: ctx.uid, close: () => send("CLOSE") }
+          const register = { id: ctx.id, close: () => send("CLOSE") }
           store.add(register)
-          ctx.isTopMostDialog = store.isTopMost(ctx.uid)
+          ctx.isTopMostDialog = store.isTopMost(ctx.id)
           const unsubscribe = subscribe(store, () => {
-            ctx.isTopMostDialog = store.isTopMost(ctx.uid)
+            ctx.isTopMostDialog = store.isTopMost(ctx.id)
           })
           return () => {
             unsubscribe()
-            store.remove(ctx.uid)
+            store.remove(ctx.id)
           }
         },
         hideContentBelow(ctx) {
@@ -132,11 +128,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
       },
       actions: {
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
         checkRenderedElements(ctx) {
           nextTick(() => {
             ctx.isTitleRendered = !!dom.getTitleEl(ctx)

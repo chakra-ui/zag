@@ -27,7 +27,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "checkValue"]
+          actions: ["checkValue"]
         }
       }
     },

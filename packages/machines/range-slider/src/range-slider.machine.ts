@@ -1,4 +1,4 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { nextTick, raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
 import { getElementRect } from "@zag-js/rect-utils"
 import { isNumber } from "@zag-js/utils"
@@ -6,7 +6,7 @@ import { dom, getClosestIndex } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "range-slider",
@@ -15,7 +15,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       context: {
         thumbSize: null,
         thumbAlignment: "contain",
-        uid: "",
         threshold: 5,
         activeIndex: -1,
         min: 0,
@@ -61,7 +60,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setupDocument", "setThumbSize", "checkValue"],
+              actions: ["setThumbSize", "checkValue"],
             },
           },
         },
@@ -177,11 +176,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
       },
       actions: {
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
         invokeOnChangeStart(ctx) {
           ctx.onChangeStart?.({ value: ctx.value })
         },

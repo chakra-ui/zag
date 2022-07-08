@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as editable from "@zag-js/editable"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { editableControls, editableStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -10,11 +10,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(editableControls)
 
-  const [state, send] = useMachine(editable.machine, {
-    context: controls.context,
-  })
-
-  const ref = useSetup({ send, id: useId() })
+  const [state, send] = useMachine(
+    editable.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = editable.connect(state, send, normalizeProps)
 
@@ -23,7 +26,7 @@ export default function Page() {
       <Global styles={editableStyle} />
 
       <main>
-        <div ref={ref} {...api.rootProps}>
+        <div {...api.rootProps}>
           <div {...api.areaProps}>
             <input data-testid="input" {...api.inputProps} />
             <span data-testid="preview" {...api.previewProps} />

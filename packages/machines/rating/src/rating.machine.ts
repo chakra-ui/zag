@@ -1,9 +1,9 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-utils"
 import { dom } from "./rating.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "rating",
@@ -12,7 +12,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         name: "rating",
         max: 5,
         dir: "ltr",
-        uid: "",
         value: -1,
         initialValue: -1,
         hoveredValue: -1,
@@ -42,7 +41,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setupDocument", "checkValue"],
+              actions: ["checkValue"],
             },
           },
         },
@@ -120,11 +119,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         checkValue(ctx) {
           ctx.initialValue = ctx.value
         },
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
+
         clearHoveredValue(ctx) {
           ctx.hoveredValue = -1
         },

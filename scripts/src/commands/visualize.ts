@@ -59,6 +59,32 @@ const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
   let machineGuards: string[] = []
 
   traverse(ast, {
+    ConditionalExpression(path) {
+      if (
+        t.isObjectProperty(path.parentPath.node) &&
+        t.isIdentifier(path.parentPath.node.key, { name: "SETUP" }) &&
+        t.isStringLiteral(path.node.alternate) &&
+        t.isStringLiteral(path.node.consequent) &&
+        t.isMemberExpression(path.node.test) &&
+        t.isIdentifier(path.node.test.property)
+      ) {
+        const testName = path.node.test.property.name
+        const guardName = `is${capitalizeFirstLetter(testName)}`
+
+        const alternateTarget = t.objectPattern([
+          t.objectProperty(t.identifier("target"), t.stringLiteral(path.node.alternate.value)),
+        ])
+        const consequentTarget = t.objectPattern([
+          t.objectProperty(t.identifier("target"), t.stringLiteral(path.node.consequent.value)),
+          t.objectProperty(t.identifier("guard"), t.stringLiteral(guardName)),
+        ])
+        const newPathNode = t.arrayPattern([consequentTarget, alternateTarget])
+        path.replaceWith(newPathNode)
+      }
+    },
+  })
+
+  traverse(ast, {
     ObjectExpression(path) {
       const targetConditions: ((node: t.ObjectProperty) => boolean)[] = [
         (el) => t.isObjectProperty(el),

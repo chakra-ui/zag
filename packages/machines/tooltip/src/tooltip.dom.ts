@@ -1,11 +1,7 @@
-import { getScrollParent } from "@zag-js/dom-utils"
+import { withRootHelpers, getScrollParent } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./tooltip.types"
 
-export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getWin: (ctx: Ctx) => ctx.doc?.defaultView ?? window,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
-
+export const dom = withRootHelpers({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `tooltip:${ctx.id}:trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `tooltip:${ctx.id}:content`,
   getArrowId: (ctx: Ctx) => `tooltip:${ctx.id}:arrow`,
@@ -25,4 +21,4 @@ export const dom = {
     portal.id = dom.portalId
     return portal
   },
-}
+})

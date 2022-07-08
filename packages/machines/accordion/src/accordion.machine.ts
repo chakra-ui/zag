@@ -1,18 +1,17 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { add, isString, remove, toArray, warn } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./accordion.types"
 
 const { and, not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "accordion",
       initial: "unknown",
 
       context: {
-        uid: "",
         focusedValue: null,
         value: null,
         collapsible: false,
@@ -35,10 +34,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: "idle",
-              actions: "setupDocument",
-            },
+            SETUP: "idle",
           },
         },
         idle: {
@@ -122,11 +118,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         },
         clearFocusedValue(ctx) {
           ctx.focusedValue = null
-        },
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
         },
         setValue(ctx, evt) {
           ctx.value = evt.value

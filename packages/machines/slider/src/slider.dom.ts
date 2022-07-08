@@ -1,22 +1,20 @@
-import { dispatchInputValueEvent, getPointRelativeToNode } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, getPointRelativeToNode, withRootHelpers } from "@zag-js/dom-utils"
 import { styles } from "./slider.style"
 import type { MachineContext as Ctx, Point } from "./slider.types"
 import { utils } from "./slider.utils"
 
-export const dom = {
+export const dom = withRootHelpers({
   ...styles,
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
 
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.uid}`,
-  getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `slider:${ctx.uid}:thumb`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.uid}:control`,
-  getInputId: (ctx: Ctx) => `slider:${ctx.uid}:input`,
-  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.uid}:output`,
-  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.uid}track`,
-  getRangeId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.uid}:range`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.uid}:label`,
-  getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.uid}:marker:${value}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
+  getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `slider:${ctx.id}:thumb`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.id}:control`,
+  getInputId: (ctx: Ctx) => `slider:${ctx.id}:input`,
+  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.id}:output`,
+  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}track`,
+  getRangeId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}:range`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.id}:label`,
+  getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.id}:marker:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx)),
@@ -50,4 +48,4 @@ export const dom = {
     if (!input) return
     dispatchInputValueEvent(input, ctx.value)
   },
-}
+})

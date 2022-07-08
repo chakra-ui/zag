@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import * as React from "react"
 import { popoverControls, popoverStyle } from "@zag-js/shared"
 import { Portal } from "../components/portal"
@@ -11,11 +11,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(popoverControls)
 
-  const [state, send] = useMachine(popover.machine, {
-    context: controls.context,
-  })
-
-  const ref = useSetup({ send, id: React.useId() })
+  const [state, send] = useMachine(
+    popover.machine({
+      id: React.useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = popover.connect(state, send, normalizeProps)
 
@@ -26,7 +29,7 @@ export default function Page() {
       <Global styles={popoverStyle} />
 
       <main>
-        <div data-part="root" ref={ref}>
+        <div data-part="root">
           <button data-testid="button-before">Button :before</button>
 
           <button data-testid="popover-trigger" {...api.triggerProps}>

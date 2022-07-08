@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as slider from "@zag-js/range-slider"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { rangeSliderControls, sliderStyle } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
@@ -13,13 +13,12 @@ export default function Page() {
 
   const [state, send] = useMachine(
     slider.machine({
+      id: useId(),
       name: "quantity",
       value: [10, 60],
     }),
     { context: controls.context },
   )
-
-  const ref = useSetup({ send, id: useId() })
 
   const api = slider.connect(state, send, normalizeProps)
 
@@ -35,7 +34,7 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <div ref={ref} {...api.rootProps}>
+          <div {...api.rootProps}>
             <div>
               <label {...api.labelProps}>Quantity:</label>
               <output {...api.outputProps}>{api.values.join(" - ")}</output>

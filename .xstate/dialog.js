@@ -27,11 +27,9 @@ const fetchMachine = createMachine({
       on: {
         SETUP: [{
           target: "open",
-          cond: "isDefaultOpen",
-          actions: "setupDocument"
+          cond: "isDefaultOpen"
         }, {
-          target: "closed",
-          actions: "setupDocument"
+          target: "closed"
         }]
       }
     },

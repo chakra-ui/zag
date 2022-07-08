@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -14,6 +14,7 @@ export default function Page() {
 
   const [state, send] = useMachine(
     combobox.machine({
+      id: useId(),
       onOpen() {
         setOptions(comboboxData)
       },
@@ -25,8 +26,6 @@ export default function Page() {
     { context: controls.context },
   )
 
-  const ref = useSetup({ send, id: useId() })
-
   const api = combobox.connect(state, send, normalizeProps)
 
   return (
@@ -37,7 +36,7 @@ export default function Page() {
         <div>
           <button onClick={() => api.setValue("TG")}>Set to Togo</button>
           <br />
-          <div ref={ref} {...api.rootProps}>
+          <div {...api.rootProps}>
             <label {...api.labelProps}>Select country</label>
             <div {...api.controlProps}>
               <input data-testid="input" {...api.inputProps} />

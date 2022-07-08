@@ -1,4 +1,4 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { raf, trackPointerMove, getPointRelativeToNode } from "@zag-js/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
 import { dom } from "./splitter.dom"
@@ -6,13 +6,12 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./splitte
 
 const { not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "splitter",
       initial: "unknown",
       context: {
-        uid: "",
         orientation: "horizontal",
         min: 224,
         max: 340,
@@ -48,10 +47,7 @@ export function machine(ctx: UserDefinedContext = {}) {
       states: {
         unknown: {
           on: {
-            SETUP: {
-              target: "idle",
-              actions: "setupDocument",
-            },
+            SETUP: "idle",
           },
         },
 
@@ -191,11 +187,7 @@ export function machine(ctx: UserDefinedContext = {}) {
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.value })
         },
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
+
         setToMin(ctx) {
           ctx.value = ctx.min
         },

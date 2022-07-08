@@ -1,13 +1,13 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { RootProperties } from "@zag-js/types"
+import type { CommonProperties, RequiredBy, RootProperties } from "@zag-js/types"
 
 type ElementIds = Partial<{
   trigger: string
   content: string
 }>
 
-type PublicContext = {
+type PublicContext = CommonProperties & {
   /**
    * The ids of the elements in the tooltip. Useful for composition.
    */
@@ -56,7 +56,7 @@ type PublicContext = {
   positioning: PositioningOptions
 }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**
