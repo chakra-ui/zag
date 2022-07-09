@@ -1,7 +1,7 @@
-import { withRootHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./checkbox.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `checkbox:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `checkbox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `checkbox:${ctx.id}:control`,

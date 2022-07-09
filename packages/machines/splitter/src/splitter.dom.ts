@@ -1,8 +1,8 @@
-import { withRootHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers } from "@zag-js/dom-utils"
 import type { Style } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./splitter.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `splitter:${ctx.id}`,
   getSplitterId: (ctx: Ctx) => ctx.ids?.splitter ?? `splitter:${ctx.id}:splitter`,
   getToggleButtonId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `splitter:${ctx.id}:toggle-btn`,

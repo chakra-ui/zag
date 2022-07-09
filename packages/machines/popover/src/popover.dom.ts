@@ -1,8 +1,8 @@
-import { getFirstTabbable, getFocusables, getLastTabbable, withRootHelpers, getTabbables } from "@zag-js/dom-utils"
+import { getFirstTabbable, getFocusables, getLastTabbable, defineDomHelpers, getTabbables } from "@zag-js/dom-utils"
 import { runIfFn } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./popover.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
 
   getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.id}:anchor`,

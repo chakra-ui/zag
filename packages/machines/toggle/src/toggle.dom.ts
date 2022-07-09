@@ -1,7 +1,7 @@
-import { withRootHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./toggle.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `toggle:${ctx.id}`,
   getButtonId: (ctx: Ctx) => ctx.ids?.button ?? `toggle:${ctx.id}:button`,
 

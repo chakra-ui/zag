@@ -1,8 +1,8 @@
-import { withRootHelpers, itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { defineDomHelpers, itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./tabs.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.id}`,
   getTriggerGroupId: (ctx: Ctx) => ctx.ids?.triggerGroup ?? `tabs:${ctx.id}:trigger-group`,
   getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,

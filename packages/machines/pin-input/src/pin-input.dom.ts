@@ -1,7 +1,7 @@
-import { withRootHelpers, queryAll } from "@zag-js/dom-utils"
+import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./pin-input.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `pin-input:${ctx.id}`,
   getInputId: (ctx: Ctx, id: string) => ctx.ids?.input?.(id) ?? `pin-input:${ctx.id}:${id}`,
 

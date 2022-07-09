@@ -2,5 +2,5 @@
 "@zag-js/dom-utils": patch
 ---
 
-Add `isDocument` query and `withRootHelpers` method.
-Improve cases handled by `getDocument`
+- Add `isDocument` query and `defineDomHelpers` method.
+- Improve cases handled by `getDocument`

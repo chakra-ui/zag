@@ -1,7 +1,7 @@
-import { withRootHelpers, getScrollParent } from "@zag-js/dom-utils"
+import { defineDomHelpers, getScrollParent } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./tooltip.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `tooltip:${ctx.id}:trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `tooltip:${ctx.id}:content`,
   getArrowId: (ctx: Ctx) => `tooltip:${ctx.id}:arrow`,

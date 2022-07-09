@@ -1,5 +1,5 @@
 import type { StateMachine } from "@zag-js/core"
-import { dispatchInputValueEvent, getPointRelativeToNode, withRootHelpers, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent, getPointRelativeToNode, defineDomHelpers, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import type { Point } from "@zag-js/rect-utils"
 import { closest, getElementRect } from "@zag-js/rect-utils"
@@ -30,7 +30,7 @@ function getValueFromPoint(ctx: Ctx, point: Point) {
   return utils.fromPercent(ctx, percent)
 }
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   ...styles,
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,

@@ -1,7 +1,7 @@
-import { withRootHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers } from "@zag-js/dom-utils"
 import type { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement } from "./toast.types"
 
-export const dom = withRootHelpers({
+export const dom = defineDomHelpers({
   getGroupId: (placement: Placement) => `toast-group:${placement}`,
   getContainerId: (ctx: Ctx) => `toast:${ctx.id}`,
   getTitleId: (ctx: Ctx) => `toast-title:${ctx.id}`,

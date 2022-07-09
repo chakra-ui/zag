@@ -76,13 +76,16 @@ export function getParent(el: HTMLElement): HTMLElement {
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
-type Ctx = { getRootNode?: () => Document | ShadowRoot | Node }
+type Ctx = {
+  getRootNode?: () => Document | ShadowRoot | Node
+}
 
-export function withRootHelpers<T>(domUtils: T) {
+export function defineDomHelpers<T>(domUtils: T) {
   const roots = {
     getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
     getDoc: (ctx: Ctx) => getDocument(roots.getRootNode(ctx)),
     getWin: (ctx: Ctx) => roots.getDoc(ctx).defaultView ?? window,
+    getActiveElement: (ctx: Ctx) => roots.getDoc(ctx).activeElement as HTMLElement | null,
   }
   return {
     ...roots,
