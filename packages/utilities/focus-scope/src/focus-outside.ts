@@ -1,4 +1,4 @@
-import { addDomEvent, contains } from "@zag-js/dom-utils"
+import { addDomEvent, contains, getActiveElement, getEventTarget } from "@zag-js/dom-utils"
 import { callAll } from "@zag-js/utils"
 import type { FocusContext } from "./focus-context"
 
@@ -9,7 +9,7 @@ export function focusOutsideEffect(ctx: FocusContext) {
 
   function onFocusin(event: FocusEvent) {
     if (ctx.focusScope.paused) return
-    const target = event.target as HTMLElement | null
+    const target = getEventTarget(event) as HTMLElement | null
     if (contains(node, target)) {
       lastFocusedElement = target
     } else {
@@ -19,7 +19,7 @@ export function focusOutsideEffect(ctx: FocusContext) {
 
   function onFocusout(event: FocusEvent) {
     if (focusScope.paused) return
-    const target = event.relatedTarget ?? doc.activeElement
+    const target = event.relatedTarget ?? getActiveElement(node)
     if (!contains(node, target)) {
       lastFocusedElement?.focus({ preventScroll: true })
     }

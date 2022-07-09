@@ -1,3 +1,4 @@
+import { getActiveElement } from "@zag-js/dom-utils"
 import type { FocusContext } from "./focus-context"
 import { focusScopeStack } from "./focus-stack"
 
@@ -16,7 +17,7 @@ export function focusMoveEffect(ctx: FocusContext, options: FocusMoveEffectOptio
 
   focusScopeStack.add(focusScope)
 
-  const previouslyFocusedElement = doc.activeElement as HTMLElement | null
+  const previouslyFocusedElement = getActiveElement(node) as HTMLElement | null
   const hasFocusedCandidate = node.contains(previouslyFocusedElement)
 
   if (hasFocusedCandidate) return
@@ -34,7 +35,7 @@ export function focusMoveEffect(ctx: FocusContext, options: FocusMoveEffectOptio
   const first = firstTabbable()
   first?.focus({ preventScroll: true })
 
-  if (doc.activeElement === previouslyFocusedElement) {
+  if (getActiveElement(node) === previouslyFocusedElement) {
     node.focus()
   }
 
