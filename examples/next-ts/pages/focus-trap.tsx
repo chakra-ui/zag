@@ -33,10 +33,10 @@ function Page() {
           <button onClick={() => setOpen2(true)}>Open</button>
           {isOpen2 && (
             <FocusScope>
-              <label htmlFor="first-input">First Input</label>
-              <input id="first-input" />
-              <label htmlFor="second-input">Second Input</label>
-              <input id="second-input" />
+              <label htmlFor="first-input-2">First Input</label>
+              <input id="first-input-2" />
+              <label htmlFor="second-input-2">Second Input</label>
+              <input id="second-input-2" />
               <button onClick={() => setOpen2(false)}>Close</button>
             </FocusScope>
           )}
