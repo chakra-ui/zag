@@ -6,8 +6,8 @@ export type FocusMoveEffectOptions = {
   onUnmountAutoFocus?: EventListener
 }
 
-const MOUNT_EVENT = "focus-effect.mount"
-const UNMOUNT_EVENT = "focus-effect.unmount"
+const MOUNT_EVENT = "focusmove.mount"
+const UNMOUNT_EVENT = "focusmove.unmount"
 
 export function focusMoveEffect(ctx: FocusContext, options: FocusMoveEffectOptions) {
   const { onMountAutoFocus, onUnmountAutoFocus } = options
@@ -35,7 +35,7 @@ export function focusMoveEffect(ctx: FocusContext, options: FocusMoveEffectOptio
   first?.focus({ preventScroll: true })
 
   if (doc.activeElement === previouslyFocusedElement) {
-    node.focus({ preventScroll: true })
+    node.focus()
   }
 
   return () => {

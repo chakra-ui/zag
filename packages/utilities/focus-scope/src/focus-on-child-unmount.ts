@@ -8,7 +8,7 @@ export function focusOnChildUnmountEffect(ctx: FocusContext) {
     if (!mutation || mutation.target !== node) return
     const activeElement = getActiveElement(node)
     if (activeElement !== doc.body) return
-    node.focus()
+    node.focus({ preventScroll: true })
   })
 
   observer.observe(node, { childList: true, subtree: true })

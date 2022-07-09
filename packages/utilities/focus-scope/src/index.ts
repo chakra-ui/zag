@@ -7,28 +7,28 @@ import { focusOutsideEffect } from "./focus-outside"
 
 export type TrapFocusOptions = FocusMoveEffectOptions &
   FocusContainmentOptions & {
-    strict?: boolean
-    portalled?: boolean
+    contain?: boolean
+    guards?: boolean
   }
 
 export function trapFocus(node: HTMLElement | null, options: TrapFocusOptions = {}) {
   if (!node) return
 
-  const { strict = true, portalled, loop = true } = options
+  const { contain, guards, loop = true } = options
 
   const ctx = createFocusContext(node)
 
   const cleanups = new Set<VoidFunction | undefined>()
 
+  if (contain) {
+    cleanups.add(focusOnChildUnmountEffect(ctx))
+    cleanups.add(focusOutsideEffect(ctx))
+  }
+
   cleanups.add(focusMoveEffect(ctx, options))
   cleanups.add(focusContainmentEffect(ctx, { loop }))
 
-  if (strict) {
-    cleanups.add(focusOutsideEffect(ctx))
-    cleanups.add(focusOnChildUnmountEffect(ctx))
-  }
-
-  if (portalled) {
+  if (guards) {
     cleanups.add(focusGuardEffect(ctx))
   }
 
