@@ -8,8 +8,8 @@ const App: Component = () => {
   const Route = useRoutes(routes)
 
   return (
-    <div className={pageStyle}>
-      <aside className={navStyle}>
+    <div class={pageStyle}>
+      <aside class={navStyle}>
         <header>Zagjs</header>
         <For each={routesData} fallback={<div>Loading...</div>}>
           {(route) => {

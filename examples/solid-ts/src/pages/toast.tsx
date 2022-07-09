@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { useActor, useMachine, useSetup, normalizeProps } from "@zag-js/solid"
+import { useActor, useMachine, normalizeProps } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { toastControls, toastStyle } from "@zag-js/shared"
@@ -12,7 +12,7 @@ injectGlobal(toastStyle)
 function Loader() {
   return (
     <svg
-      className="spin"
+      class="spin"
       stroke="currentColor"
       fill="currentColor"
       stroke-width="0"
@@ -42,8 +42,8 @@ function ToastItem(props: { actor: toast.Service }) {
 export default function Page() {
   const controls = useControls(toastControls)
 
-  const [state, send] = useMachine(toast.group.machine, { context: controls.context })
-  const ref = useSetup({ send, id: createUniqueId() })
+  const [state, send] = useMachine(toast.group.machine({ id: createUniqueId() }), { context: controls.context })
+
   const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
 
   const [id, setId] = createSignal<string>()
@@ -51,7 +51,7 @@ export default function Page() {
   return (
     <>
       <main>
-        <div ref={ref} style={{ display: "flex", gap: "16px" }}>
+        <div style={{ display: "flex", gap: "16px" }}>
           <button
             onClick={() => {
               const toastId = api().create({

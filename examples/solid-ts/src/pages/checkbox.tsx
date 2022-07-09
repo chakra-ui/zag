@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, useMachine, useSetup, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,11 +12,10 @@ injectGlobal(checkboxStyle)
 export default function Page() {
   const controls = useControls(checkboxControls)
 
-  const [state, send] = useMachine(checkbox.machine, {
+  const [state, send] = useMachine(checkbox.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
 
-  const ref = useSetup({ send, id: createUniqueId() })
   const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
 
   const inputProps = createMemo(() =>
@@ -35,7 +34,7 @@ export default function Page() {
       <main>
         <form>
           <fieldset>
-            <label ref={ref} {...api().rootProps}>
+            <label {...api().rootProps}>
               <span {...api().labelProps}>Input {api().isChecked ? "Checked" : "Unchecked"}</span>
               <input {...inputProps} />
               <div {...api().controlProps} />

@@ -9,7 +9,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
   const { state, label } = props
 
   return (
-    <div className="viz">
+    <div class="viz">
       <pre dir="ltr">
         <details open>
           <summary> {label || "Visualizer"} </summary>

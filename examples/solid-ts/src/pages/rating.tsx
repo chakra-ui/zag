@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as rating from "@zag-js/rating"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { ratingControls, ratingStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -42,11 +42,9 @@ function Star() {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(rating.machine, {
+  const [state, send] = useMachine(rating.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => rating.connect(state, send, normalizeProps))
 
@@ -54,7 +52,7 @@ export default function Page() {
     <>
       <main>
         <div>
-          <div ref={ref} {...api().rootProps}>
+          <div {...api().rootProps}>
             <label {...api().labelProps}>Rate:</label>
             <div {...api().itemGroupProps}>
               <For each={api().sizeArray}>
