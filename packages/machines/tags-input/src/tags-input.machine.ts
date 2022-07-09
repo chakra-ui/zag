@@ -1,6 +1,7 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createMachine, guards } from "@zag-js/core"
-import { nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
+import { contains, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
+import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
@@ -130,6 +131,7 @@ export function machine(ctx: UserDefinedContext) {
         "focused:input": {
           tags: ["focused"],
           entry: ["focusInput", "clearFocusedId"],
+          activities: ["trackInteractOutside"],
           on: {
             TYPE: {
               actions: "setInputValue",
@@ -172,6 +174,7 @@ export function machine(ctx: UserDefinedContext) {
 
         "navigating:tag": {
           tags: ["focused"],
+          activities: ["trackInteractOutside"],
           on: {
             ARROW_RIGHT: [
               {
@@ -216,7 +219,7 @@ export function machine(ctx: UserDefinedContext) {
         "editing:tag": {
           tags: ["editing", "focused"],
           entry: "focusEditedTagInput",
-          activities: ["autoResizeTagInput"],
+          activities: ["autoResize"],
           on: {
             TAG_INPUT_TYPE: {
               actions: "setEditedTagValue",
@@ -272,6 +275,16 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       activities: {
+        trackInteractOutside(ctx, _evt, { send }) {
+          const blur = () => send({ type: "BLUR", src: "interact-outside" })
+          return trackInteractOutside(dom.getInputEl(ctx), {
+            exclude(target) {
+              return contains(dom.getRootEl(ctx), target)
+            },
+            onFocusOutside: blur,
+            onPointerDownOutside: blur,
+          })
+        },
         trackFormReset(ctx) {
           let cleanup: VoidFunction | undefined
           raf(() => {
@@ -281,9 +294,9 @@ export function machine(ctx: UserDefinedContext) {
           })
           return cleanup
         },
-        autoResizeTagInput(ctx) {
-          if (!ctx.editedTagValue || ctx.__index == null || !ctx.allowEditTag) return
-          const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.__index })
+        autoResize(ctx) {
+          if (!ctx.editedTagValue || ctx.idx == null || !ctx.allowEditTag) return
+          const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.idx })
           return autoResizeInput(input)
         },
       },
@@ -300,9 +313,9 @@ export function machine(ctx: UserDefinedContext) {
           ctx.onHighlight?.({ value })
         },
         invokeOnTagUpdate(ctx) {
-          if (!ctx.__index) return
-          const value = ctx.value[ctx.__index]
-          ctx.onTagUpdate?.({ value, index: ctx.__index })
+          if (!ctx.idx) return
+          const value = ctx.value[ctx.idx]
+          ctx.onTagUpdate?.({ value, index: ctx.idx })
         },
         invokeOnChange(ctx) {
           ctx.onChange?.({ values: ctx.value })
@@ -343,11 +356,11 @@ export function machine(ctx: UserDefinedContext) {
         },
         focusTagAtIndex(ctx) {
           raf(() => {
-            if (ctx.__index == null) return
-            const el = dom.getElAtIndex(ctx, ctx.__index)
+            if (ctx.idx == null) return
+            const el = dom.getElAtIndex(ctx, ctx.idx)
             if (el) {
               ctx.focusedId = el.id
-              ctx.__index = undefined
+              ctx.idx = undefined
             }
           })
         },
@@ -364,7 +377,7 @@ export function machine(ctx: UserDefinedContext) {
         deleteFocusedTag(ctx) {
           if (!ctx.focusedId) return
           const index = dom.getIndexOfId(ctx, ctx.focusedId)
-          ctx.__index = index
+          ctx.idx = index
           const value = ctx.value[index]
 
           // log
@@ -375,7 +388,7 @@ export function machine(ctx: UserDefinedContext) {
         },
         setEditedId(ctx, evt) {
           ctx.editedId = evt.id ?? ctx.focusedId
-          ctx.__index = dom.getIndexOfId(ctx, ctx.editedId!)
+          ctx.idx = dom.getIndexOfId(ctx, ctx.editedId!)
         },
         clearEditedId(ctx) {
           ctx.editedId = null

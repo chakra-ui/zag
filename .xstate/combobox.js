@@ -78,7 +78,7 @@ const fetchMachine = createMachine({
     },
     idle: {
       tags: ["idle"],
-      entry: ["scrollToTop", "clearFocusedOption", "clearPointerdownNode"],
+      entry: ["scrollToTop", "clearFocusedOption"],
       on: {
         CLICK_BUTTON: {
           target: "interacting",
@@ -94,7 +94,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["focused"],
-      entry: ["focusInput", "scrollToTop", "clearFocusedOption", "clearPointerdownNode"],
+      entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
       on: {
         CHANGE: {
           target: "suggesting",

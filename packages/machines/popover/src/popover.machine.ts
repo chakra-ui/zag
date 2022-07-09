@@ -50,7 +50,7 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         closed: {
-          entry: ["clearPointerDown", "invokeOnClose"],
+          entry: "invokeOnClose",
           on: {
             TOGGLE: "open",
             OPEN: "open",
@@ -213,9 +213,6 @@ export function machine(ctx: UserDefinedContext) {
               anchor: !!dom.getAnchorEl(ctx),
             })
           })
-        },
-        clearPointerDown(ctx) {
-          ctx.pointerdownNode = null
         },
         setInitialFocus(ctx) {
           raf(() => {

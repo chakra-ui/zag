@@ -104,6 +104,7 @@ const fetchMachine = createMachine({
     "focused:input": {
       tags: ["focused"],
       entry: ["focusInput", "clearFocusedId"],
+      activities: ["trackInteractOutside"],
       on: {
         TYPE: {
           actions: "setInputValue"
@@ -143,6 +144,7 @@ const fetchMachine = createMachine({
     },
     "navigating:tag": {
       tags: ["focused"],
+      activities: ["trackInteractOutside"],
       on: {
         ARROW_RIGHT: [{
           cond: "hasTags && isInputCaretAtStart && !isLastTagFocused",
@@ -182,7 +184,7 @@ const fetchMachine = createMachine({
     "editing:tag": {
       tags: ["editing", "focused"],
       entry: "focusEditedTagInput",
-      activities: ["autoResizeTagInput"],
+      activities: ["autoResize"],
       on: {
         TAG_INPUT_TYPE: {
           actions: "setEditedTagValue"

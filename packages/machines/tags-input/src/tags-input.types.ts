@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { LiveRegion } from "@zag-js/dom-utils"
+import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlMessages = {
@@ -191,7 +191,7 @@ type PrivateContext = Context<{
    * @internal
    * The index of the deleted tag. Used to determine the next tag to focus.
    */
-  __index?: number
+  idx?: number
   /**
    * @internal
    * The `id` of the currently edited tag

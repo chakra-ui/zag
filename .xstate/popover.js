@@ -39,7 +39,7 @@ const fetchMachine = createMachine({
       }
     },
     closed: {
-      entry: ["clearPointerDown", "invokeOnClose"],
+      entry: "invokeOnClose",
       on: {
         TOGGLE: "open",
         OPEN: "open"

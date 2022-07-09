@@ -43,7 +43,6 @@ const fetchMachine = createMachine({
       }
     },
     preview: {
-      entry: "clearPointerdownNode",
       on: {
         EDIT: "edit",
         DBLCLICK: {

@@ -27,7 +27,6 @@ export function machine(ctx: UserDefinedContext) {
         inputValue: "",
 
         liveRegion: null,
-        pointerdownNode: null,
         focusOnClear: true,
         selectInputOnFocus: false,
         selectOnTab: true,
@@ -112,7 +111,7 @@ export function machine(ctx: UserDefinedContext) {
 
         idle: {
           tags: ["idle"],
-          entry: ["scrollToTop", "clearFocusedOption", "clearPointerdownNode"],
+          entry: ["scrollToTop", "clearFocusedOption"],
           on: {
             CLICK_BUTTON: {
               target: "interacting",
@@ -129,7 +128,7 @@ export function machine(ctx: UserDefinedContext) {
 
         focused: {
           tags: ["focused"],
-          entry: ["focusInput", "scrollToTop", "clearFocusedOption", "clearPointerdownNode"],
+          entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
           on: {
             CHANGE: {
               target: "suggesting",
@@ -549,9 +548,6 @@ export function machine(ctx: UserDefinedContext) {
             const text = ctx.messages.countAnnouncement(count)
             ctx.liveRegion?.announce(text)
           })
-        },
-        clearPointerdownNode(ctx) {
-          ctx.pointerdownNode = null
         },
         setIsHovering(ctx) {
           ctx.isHovering = true

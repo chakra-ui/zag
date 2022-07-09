@@ -58,7 +58,6 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         preview: {
-          entry: "clearPointerdownNode",
           on: {
             EDIT: "edit",
             DBLCLICK: {
@@ -121,14 +120,14 @@ export function machine(ctx: UserDefinedContext) {
 
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {
-          const onInteractOutside = () => send("BLUR")
+          const blur = () => send("BLUR")
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
               const ignore = [dom.getCancelBtnEl(ctx), dom.getSubmitBtnEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
-            onFocusOutside: onInteractOutside,
-            onPointerDownOutside: onInteractOutside,
+            onFocusOutside: blur,
+            onPointerDownOutside: blur,
           })
         },
       },
@@ -167,9 +166,6 @@ export function machine(ctx: UserDefinedContext) {
         },
         revertValue(ctx) {
           ctx.value = ctx.previousValue
-        },
-        clearPointerdownNode(ctx) {
-          ctx.pointerdownNode = null
         },
       },
 

@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, validateBlur } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./tags-input.dom"
 import type { Send, State, TagProps } from "./tags-input.types"
@@ -100,14 +100,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onFocus() {
         send("FOCUS")
-      },
-      onBlur(event) {
-        const isValidBlur = validateBlur(event, {
-          exclude: dom.getRootEl(state.context),
-        })
-        if (isValidBlur) {
-          send("BLUR")
-        }
       },
       onPaste(event) {
         const value = event.clipboardData.getData("text/plain")
