@@ -45,7 +45,6 @@
         "merge-anything",
         "proxy-compare",
         "react",
-        "scroll-into-view-if-needed",
         "vue",
         "vue-router"
       ]
