@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tabs from "@zag-js/tabs"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
@@ -12,11 +12,9 @@ injectGlobal(tabsStyle)
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(tabs.machine({ value: "nils" }), {
+  const [state, send] = useMachine(tabs.machine({ id: createUniqueId(), value: "nils" }), {
     context: controls.context,
   })
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => tabs.connect(state, send, normalizeProps))
 
@@ -26,7 +24,7 @@ export default function Page() {
         <div {...api().rootProps}>
           <div {...api().indicatorProps} />
 
-          <div ref={ref} {...api().triggerGroupProps}>
+          <div {...api().triggerGroupProps}>
             <For each={tabsData}>
               {(item) => (
                 <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>

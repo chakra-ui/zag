@@ -1,4 +1,4 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { dom } from "./editable.dom"
@@ -6,7 +6,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./editabl
 
 const { not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "editable",
@@ -15,7 +15,6 @@ export function machine(ctx: UserDefinedContext = {}) {
         startWithEditView: false,
         activationMode: "focus",
         submitMode: "both",
-        uid: "",
         value: "",
         previousValue: "",
         selectOnFocus: true,
@@ -50,11 +49,9 @@ export function machine(ctx: UserDefinedContext = {}) {
               {
                 guard: "startWithEditView",
                 target: "edit",
-                actions: "setupDocument",
               },
               {
                 target: "preview",
-                actions: "setupDocument",
               },
             ],
           },
@@ -137,11 +134,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       actions: {
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
         focusEditButton(ctx) {
           raf(() => {
             dom.getEditBtnEl(ctx)?.focus()

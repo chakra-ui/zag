@@ -46,7 +46,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "syncInputValue"]
+          actions: "syncInputValue"
         }
       }
     },

@@ -1,21 +1,18 @@
-import { nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { withRootHelpers, nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./combobox.types"
 
-export const dom = {
-  getDoc: (ctx: Ctx) => ctx.doc ?? document,
-  getRootNode: (ctx: Ctx) => ctx.rootNode ?? dom.getDoc(ctx),
-
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.uid}`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.uid}:label`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.uid}:control`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.uid}:input`,
-  getListboxId: (ctx: Ctx) => ctx.ids?.listbox ?? `combobox:${ctx.uid}:listbox`,
-  getPositionerId: (ctx: Ctx) => `combobox:${ctx.uid}:popper`,
-  getToggleBtnId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `combobox:${ctx.uid}:toggle-btn`,
-  getClearBtnId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `combobox:${ctx.uid}:clear-btn`,
+export const dom = withRootHelpers({
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.id}`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
+  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.id}:input`,
+  getListboxId: (ctx: Ctx) => ctx.ids?.listbox ?? `combobox:${ctx.id}:listbox`,
+  getPositionerId: (ctx: Ctx) => `combobox:${ctx.id}:popper`,
+  getToggleBtnId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `combobox:${ctx.id}:toggle-btn`,
+  getClearBtnId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `combobox:${ctx.id}:clear-btn`,
   getOptionId: (ctx: Ctx, id: string, index?: number) =>
-    ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.uid}:option:${id}`, index].filter((v) => v != null).join(":"),
+    ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.id}:option:${id}`, index].filter((v) => v != null).join(":"),
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
   getListboxEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getListboxId(ctx)),
@@ -82,4 +79,4 @@ export const dom = {
     const el = dom.getMatchingOptionEl(ctx, value)
     return dom.getOptionData(el).label
   },
-}
+})

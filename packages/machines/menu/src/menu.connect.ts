@@ -42,10 +42,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_ACTIVE_ID", id })
     },
     setParent(parent: Service) {
-      send({ type: "SET_PARENT", value: parent, id: parent.state.context.uid })
+      send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
     },
     setChild(child: Service) {
-      send({ type: "SET_CHILD", value: child, id: child.state.context.uid })
+      send({ type: "SET_CHILD", value: child, id: child.state.context.id })
     },
     value: values,
     setValue(name: string, value: any) {
@@ -92,7 +92,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       dir: state.context.dir,
       id: dom.getTriggerId(state.context),
-      "data-uid": state.context.uid,
+      "data-uid": state.context.id,
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen || undefined,

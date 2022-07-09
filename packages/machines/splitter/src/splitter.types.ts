@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -10,59 +10,60 @@ type ElementIds = Partial<{
   secondaryPane: string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the splitter. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * Whether to allow the separator to be dragged.
-   */
-  fixed?: boolean
-  /**
-   * The orientation of the split view.
-   */
-  orientation: "horizontal" | "vertical"
-  /**
-   * The minimum size of the primary pane.
-   */
-  min: number
-  /**
-   * The maximum size of the primary pane.
-   */
-  max: number
-  /**
-   * The size of the primary pane.
-   */
-  value: number
-  /**
-   * The step increments of the primary pane when it is dragged
-   * or resized with keyboard.
-   */
-  step: number
-  /**
-   * Callback to be invoked when the primary pane is resized.
-   */
-  onChange?: (details: { value: number }) => void
-  /**
-   * Callback to be invoked when the primary pane's resize session starts
-   */
-  onChangeStart?: (details: { value: number }) => void
-  /**
-   * Callback to be invoked when the primary pane's resize session ends
-   */
-  onChangeEnd?: (details: { value: number }) => void
-  /**
-   * Whether the primary pane is disabled.
-   */
-  disabled?: boolean
-  /**
-   * The minimum offset needed to snap the primary pane to its minimum or maximum size.
-   */
-  snapOffset: number
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the splitter. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * Whether to allow the separator to be dragged.
+     */
+    fixed?: boolean
+    /**
+     * The orientation of the split view.
+     */
+    orientation: "horizontal" | "vertical"
+    /**
+     * The minimum size of the primary pane.
+     */
+    min: number
+    /**
+     * The maximum size of the primary pane.
+     */
+    max: number
+    /**
+     * The size of the primary pane.
+     */
+    value: number
+    /**
+     * The step increments of the primary pane when it is dragged
+     * or resized with keyboard.
+     */
+    step: number
+    /**
+     * Callback to be invoked when the primary pane is resized.
+     */
+    onChange?: (details: { value: number }) => void
+    /**
+     * Callback to be invoked when the primary pane's resize session starts
+     */
+    onChangeStart?: (details: { value: number }) => void
+    /**
+     * Callback to be invoked when the primary pane's resize session ends
+     */
+    onChangeEnd?: (details: { value: number }) => void
+    /**
+     * Whether the primary pane is disabled.
+     */
+    disabled?: boolean
+    /**
+     * The minimum offset needed to snap the primary pane to its minimum or maximum size.
+     */
+    snapOffset: number
+  }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

@@ -16,7 +16,7 @@ export function Toolbar(props: ToolbarProps) {
   const style = getToolbarStyles(count)
 
   return (
-    <div className={style}>
+    <div class={style}>
       <nav>
         {props.controls !== null && (
           <button data-active={dataAttr(active() === 0)} onClick={() => setActive(0)}>

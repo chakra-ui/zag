@@ -7,7 +7,7 @@ export function stringifyState(state: Record<string, any>) {
       try {
         switch (v?.toString()) {
           case "[object Machine]":
-            const id = v.state.context.uid ?? v.id
+            const id = v.state.context.id ?? v.id
             return `Machine: ${id}`
           case "[object ShadowRoot]":
             return "#shadow-root"

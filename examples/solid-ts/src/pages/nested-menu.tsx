@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
 import { menuData, menuStyle } from "@zag-js/shared"
@@ -10,16 +10,14 @@ import { Toolbar } from "../components/toolbar"
 injectGlobal(menuStyle)
 
 export default function Page() {
-  const [state, send, machine] = useMachine(menu.machine)
-  const rootRef = useSetup<HTMLUListElement>({ send, id: createUniqueId() })
+  const [state, send, machine] = useMachine(menu.machine({ id: createUniqueId() }))
+
   const root = createMemo(() => menu.connect(state, send, normalizeProps))
 
-  const [subState, subSend, subMachine] = useMachine(menu.machine)
-  const subRef = useSetup<HTMLUListElement>({ send: subSend, id: createUniqueId() })
+  const [subState, subSend, subMachine] = useMachine(menu.machine({ id: createUniqueId() }))
   const sub = createMemo(() => menu.connect(subState, subSend, normalizeProps))
 
-  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine)
-  const sub2Ref = useSetup<HTMLUListElement>({ send: sub2Send, id: createUniqueId() })
+  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: createUniqueId() }))
   const sub2 = createMemo(() => menu.connect(sub2State, sub2Send, normalizeProps))
 
   onMount(() => {
@@ -47,7 +45,7 @@ export default function Page() {
 
           <Portal>
             <div {...root().positionerProps}>
-              <ul ref={rootRef} data-testid="menu" {...root().contentProps}>
+              <ul data-testid="menu" {...root().contentProps}>
                 <For each={level1}>
                   {(item) => {
                     const props = createMemo(() =>
@@ -66,7 +64,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub().positionerProps}>
-              <ul ref={subRef} data-testid="more-tools-submenu" {...sub().contentProps}>
+              <ul data-testid="more-tools-submenu" {...sub().contentProps}>
                 <For each={level2}>
                   {(item) => {
                     const props = createMemo(() =>
@@ -85,7 +83,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub2().positionerProps}>
-              <ul ref={sub2Ref} data-testid="open-nested-submenu" {...sub2().contentProps}>
+              <ul data-testid="open-nested-submenu" {...sub2().contentProps}>
                 <For each={level3}>
                   {(item) => (
                     <li data-testid={item.id} {...sub2().getItemProps({ id: item.id })}>

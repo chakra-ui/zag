@@ -55,11 +55,9 @@ const fetchMachine = createMachine({
       on: {
         SETUP: [{
           target: "checked",
-          cond: "isDefaultChecked",
-          actions: ["setupDocument"]
+          cond: "isDefaultChecked"
         }, {
-          target: "unchecked",
-          actions: ["setupDocument"]
+          target: "unchecked"
         }]
       }
     },

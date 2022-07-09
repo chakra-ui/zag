@@ -33,10 +33,7 @@ const fetchMachine = createMachine({
   states: {
     unknown: {
       on: {
-        SETUP: {
-          target: "closed",
-          actions: "setupDocument"
-        }
+        SETUP: "closed"
       }
     },
     closed: {

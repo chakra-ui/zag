@@ -1,6 +1,6 @@
 import { injectGlobal } from "@emotion/css"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, PropsWithChildren } from "solid-js"
 import { Portal } from "solid-js/web"
 import { popoverControls, popoverStyle } from "@zag-js/shared"
@@ -17,18 +17,16 @@ function Wrapper(props: PropsWithChildren<{ guard: boolean }>) {
 export default function Page() {
   const controls = useControls(popoverControls)
 
-  const [state, send] = useMachine(popover.machine, {
+  const [state, send] = useMachine(popover.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => popover.connect(state, send, normalizeProps))
 
   return (
     <>
       <main>
-        <div data-part="root" ref={ref}>
+        <div data-part="root">
           <button data-testid="button-before">Button :before</button>
           <button data-testid="popover-trigger" {...api().triggerProps}>
             Click me

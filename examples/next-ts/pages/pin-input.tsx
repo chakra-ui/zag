@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 import * as pinInput from "@zag-js/pin-input"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { pinInputControls, pinInputStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,6 +12,7 @@ export default function Page() {
 
   const [state, send] = useMachine(
     pinInput.machine({
+      id: useId(),
       onComplete(val) {
         console.log("onComplete", val)
       },
@@ -24,8 +25,6 @@ export default function Page() {
     },
   )
 
-  const ref = useSetup({ send, id: useId() })
-
   const api = pinInput.connect(state, send, normalizeProps)
 
   return (
@@ -34,7 +33,7 @@ export default function Page() {
 
       <main>
         <div>
-          <div ref={ref} {...api.rootProps}>
+          <div {...api.rootProps}>
             <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
             <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
             <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />

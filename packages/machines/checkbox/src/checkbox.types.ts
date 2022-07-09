@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -8,66 +8,67 @@ type ElementIds = Partial<{
   label: string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the checkbox. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * If `true`, the checkbox will be indeterminate.
-   * This only affects the icon shown inside checkbox
-   * and does not modify the isChecked property.
-   */
-  indeterminate?: boolean
-  /**
-   * If `true`, the checkbox will be disabled
-   */
-  disabled?: boolean
-  /**
-   * If `true` and `disabled` is passed, the checkbox will
-   * remain tabbable but not interactive
-   */
-  focusable?: boolean
-  /**
-   * If `true`, the checkbox will be readonly
-   */
-  readonly?: boolean
-  /**
-   * If `true`, the checkbox is marked as invalid.
-   */
-  invalid?: boolean
-  /**
-   * If `true`, the checkbox input is marked as required,
-   */
-  required?: boolean
-  /**
-   * If `true`, the checkbox will be initially checked.
-   */
-  defaultChecked?: boolean
-  /**
-   * The callback invoked when the checked state of the `Checkbox` changes.
-   */
-  onChange?: (details: { checked: boolean | "indeterminate" }) => void
-  /**
-   * The name of the input field in a checkbox
-   * (Useful for form submission).
-   */
-  name?: string
-  /**
-   * The value to be used in the checkbox input.
-   * This is the value that will be returned on form submission.
-   */
-  value?: string | number
-  /**
-   * Defines the string that labels the checkbox element.
-   */
-  "aria-label"?: string
-  "aria-labelledby"?: string
-  "aria-invalid"?: boolean
-  "aria-describedby"?: string
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the checkbox. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * If `true`, the checkbox will be indeterminate.
+     * This only affects the icon shown inside checkbox
+     * and does not modify the isChecked property.
+     */
+    indeterminate?: boolean
+    /**
+     * If `true`, the checkbox will be disabled
+     */
+    disabled?: boolean
+    /**
+     * If `true` and `disabled` is passed, the checkbox will
+     * remain tabbable but not interactive
+     */
+    focusable?: boolean
+    /**
+     * If `true`, the checkbox will be readonly
+     */
+    readonly?: boolean
+    /**
+     * If `true`, the checkbox is marked as invalid.
+     */
+    invalid?: boolean
+    /**
+     * If `true`, the checkbox input is marked as required,
+     */
+    required?: boolean
+    /**
+     * If `true`, the checkbox will be initially checked.
+     */
+    defaultChecked?: boolean
+    /**
+     * The callback invoked when the checked state of the `Checkbox` changes.
+     */
+    onChange?: (details: { checked: boolean | "indeterminate" }) => void
+    /**
+     * The name of the input field in a checkbox
+     * (Useful for form submission).
+     */
+    name?: string
+    /**
+     * The value to be used in the checkbox input.
+     * This is the value that will be returned on form submission.
+     */
+    value?: string | number
+    /**
+     * Defines the string that labels the checkbox element.
+     */
+    "aria-label"?: string
+    "aria-labelledby"?: string
+    "aria-invalid"?: boolean
+    "aria-describedby"?: string
+  }
 
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

@@ -4,7 +4,7 @@ import { For } from "solid-js/web"
 
 export default function Home() {
   return (
-    <div className="index-nav">
+    <div class="index-nav">
       <h2>Zag.js + Solid</h2>
       <ul>
         <For each={routesData}>

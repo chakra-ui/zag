@@ -1,7 +1,7 @@
 import { injectGlobal } from "@emotion/css"
 import { Portal } from "solid-js/web"
 import * as dialog from "@zag-js/dialog"
-import { useMachine, useSetup, normalizeProps } from "@zag-js/solid"
+import { useMachine, normalizeProps } from "@zag-js/solid"
 import { StateVisualizer } from "../components/state-visualizer"
 import { dialogStyle } from "@zag-js/shared"
 import { createMemo, createUniqueId } from "solid-js"
@@ -11,20 +11,20 @@ injectGlobal(dialogStyle)
 
 export default function Page() {
   // dialog 1
-  const [state, send] = useMachine(dialog.machine)
-  const ref = useSetup<HTMLButtonElement>({ send, id: createUniqueId() })
+  const [state, send] = useMachine(dialog.machine({ id: createUniqueId() }))
+
   const parentDialog = createMemo(() => dialog.connect(state, send, normalizeProps))
 
   // dialog 2
-  const [state2, send2] = useMachine(dialog.machine)
-  const ref2 = useSetup({ send: send2, id: createUniqueId() })
+  const [state2, send2] = useMachine(dialog.machine({ id: createUniqueId() }))
+
   const childDialog = createMemo(() => dialog.connect(state2, send2, normalizeProps))
 
   return (
     <>
       <main>
-        <div ref={ref2}>
-          <button ref={ref} {...parentDialog().triggerProps} data-testid="trigger-1">
+        <div>
+          <button {...parentDialog().triggerProps} data-testid="trigger-1">
             Open Dialog
           </button>
           <div style={{ "min-height": "1200px" }} />

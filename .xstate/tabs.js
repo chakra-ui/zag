@@ -39,7 +39,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setupDocument", "checkRenderedElements", "setIndicatorRect", "setContentTabIndex"]
+          actions: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"]
         }
       }
     },

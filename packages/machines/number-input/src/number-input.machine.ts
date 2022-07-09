@@ -1,4 +1,4 @@
-import { choose, createMachine, guards, ref } from "@zag-js/core"
+import { choose, createMachine, guards } from "@zag-js/core"
 import {
   addDomEvent,
   observeAttributes,
@@ -15,13 +15,12 @@ import { utils } from "./number-input.utils"
 
 const { not, and } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "number-input",
       initial: "unknown",
       context: {
-        uid: "",
         dir: "ltr",
         focusInputOnChange: true,
         clampValueOnBlur: true,
@@ -81,7 +80,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setupDocument", "syncInputValue"],
+              actions: "syncInputValue",
             },
           },
         },
@@ -293,11 +292,6 @@ export function machine(ctx: UserDefinedContext = {}) {
       },
 
       actions: {
-        setupDocument: (ctx, evt) => {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
-        },
         focusInput(ctx) {
           if (!ctx.focusInputOnChange) return
           const input = dom.getInputEl(ctx)

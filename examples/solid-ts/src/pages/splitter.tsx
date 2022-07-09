@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as splitter from "@zag-js/splitter"
 import { createMemo, createUniqueId } from "solid-js"
 import { splitterControls, splitterStyle } from "@zag-js/shared"
@@ -12,11 +12,9 @@ injectGlobal(splitterStyle)
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(splitter.machine, {
+  const [state, send] = useMachine(splitter.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const api = createMemo(() => splitter.connect(state, send, normalizeProps))
 
@@ -24,7 +22,7 @@ export default function Page() {
     <>
       <main>
         <div>
-          <div ref={ref} {...api().rootProps}>
+          <div {...api().rootProps}>
             <div {...api().primaryPaneProps}>
               <div>
                 <small {...api().labelProps}>Table of Contents</small>
@@ -32,7 +30,7 @@ export default function Page() {
               </div>
             </div>
             <div {...api().splitterProps}>
-              <div className="splitter-bar" />
+              <div class="splitter-bar" />
             </div>
             <div {...api().secondaryPaneProps}>Secondary Pane</div>
           </div>

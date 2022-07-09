@@ -1,3 +1,7 @@
+export function isDocument(el: any): el is Document {
+  return el.nodeType === Node.DOCUMENT_NODE
+}
+
 export function isShadowRoot(el: any): el is ShadowRoot {
   return el?.toString() === "[object ShadowRoot]"
 }
@@ -14,8 +18,9 @@ export const isWithinShadowRoot = (node: HTMLElement) => {
   return isShadowRoot(node.getRootNode())
 }
 
-export function getDocument(el: Element | Window | null) {
+export function getDocument(el: Element | Window | Node | Document | null) {
   if (isWindow(el)) return el.document
+  if (isDocument(el)) return el
   return el?.ownerDocument ?? document
 }
 
@@ -69,6 +74,20 @@ export function getParent(el: HTMLElement): HTMLElement {
   const doc = getDocument(el)
   if (getNodeName(el) === "html") return el
   return el.assignedSlot || el.parentElement || doc.documentElement
+}
+
+type Ctx = { getRootNode?: () => Document | ShadowRoot | Node }
+
+export function withRootHelpers<T>(domUtils: T) {
+  const roots = {
+    getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
+    getDoc: (ctx: Ctx) => getDocument(roots.getRootNode(ctx)),
+    getWin: (ctx: Ctx) => roots.getDoc(ctx).defaultView ?? window,
+  }
+  return {
+    ...roots,
+    ...domUtils,
+  }
 }
 
 export function contains(

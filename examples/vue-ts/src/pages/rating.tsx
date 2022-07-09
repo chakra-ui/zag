@@ -1,12 +1,12 @@
 import { injectGlobal } from "@emotion/css"
 import * as rating from "@zag-js/rating"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { ratingControls, ratingStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 injectGlobal(ratingStyle)
@@ -51,11 +51,9 @@ export default defineComponent({
   name: "Rating",
   setup() {
     const controls = useControls(ratingControls)
-    const [state, send] = useMachine(rating.machine, {
+    const [state, send] = useMachine(rating.machine({ id: "rating" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => rating.connect(state.value, send, normalizeProps))
 
@@ -65,7 +63,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
+            <div {...api.rootProps}>
               <div {...api.itemGroupProps}>
                 {api.sizeArray.map((index) => {
                   const state = api.getRatingState(index)

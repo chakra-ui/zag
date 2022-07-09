@@ -1,7 +1,7 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -10,11 +10,9 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const [state, send] = useMachine(numberInput.machine, {
+  const [state, send] = useMachine(numberInput.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
-
-  const ref = useSetup({ send, id: createUniqueId() })
 
   const number = createMemo(() => numberInput.connect(state, send, normalizeProps))
 
@@ -33,7 +31,7 @@ export default function Page() {
             <button data-testid="dec-button" {...number().decrementButtonProps}>
               DEC
             </button>
-            <input data-testid="input" ref={ref} {...number().inputProps} />
+            <input data-testid="input" {...number().inputProps} />
             <button data-testid="inc-button" {...number().incrementButtonProps}>
               INC
             </button>

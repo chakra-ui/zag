@@ -1,12 +1,12 @@
 import { injectGlobal } from "@emotion/css"
 import * as popover from "@zag-js/popover"
 import { popoverStyle, popoverControls } from "@zag-js/shared"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 injectGlobal(popoverStyle)
@@ -16,11 +16,9 @@ export default defineComponent({
   setup() {
     const controls = useControls(popoverControls)
 
-    const [state, send] = useMachine(popover.machine, {
+    const [state, send] = useMachine(popover.machine({ id: "popover" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => popover.connect(state.value, send, normalizeProps))
 
@@ -32,7 +30,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div data-part="root" ref={ref}>
+            <div data-part="root">
               <button data-testid="button-before">Button :before</button>
               <button data-testid="popover-trigger" {...api.triggerProps}>
                 Click me

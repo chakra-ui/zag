@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/dom-utils"
 import type { Placement } from "@zag-js/popper"
-import type { DirectionProperty, Context } from "@zag-js/types"
+import type { DirectionProperty, Context, CommonProperties, RequiredBy } from "@zag-js/types"
 
 type IntlMessages = {
   toggleButtonLabel?: string
@@ -21,122 +21,123 @@ type ElementIds = Partial<{
   option(id: string, index?: number): string
 }>
 
-type PublicContext = DirectionProperty & {
-  /**
-   * The ids of the elements in the combobox. Useful for composition.
-   */
-  ids?: ElementIds
-  /**
-   * The current value of the combobox's input
-   */
-  inputValue: string
-  /**
-   * The selected option's value
-   */
-  selectionData: OptionData | null
-  /**
-   * The `name` attribute of the combobox's input. Useful for form submission
-   */
-  name?: string
-  /**
-   * Whether the combobox is disabled
-   */
-  disabled?: boolean
-  /**
-   * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
-   * but the user can still interact with it
-   */
-  readonly?: boolean
-  /**
-   * Whether the combobox is required
-   */
-  invalid?: boolean
-  /**
-   * The placeholder text of the combobox's input
-   */
-  placeholder?: string
-  /**
-   * Defines the auto-completion behavior of the combobox.
-   *
-   * - `autohighlight`: The first focused option is highlighted as the user types
-   * - `autocomplete`: Navigating the listbox with the arrow keys selects the option and the input is updated
-   */
-  inputBehavior: "autohighlight" | "autocomplete" | "none"
-  /**
-   * Whether to blur the input on select
-   */
-  blurOnSelect?: boolean
-  /**
-   * The behavior of the combobox when an option is selected
-   */
-  selectionBehavior?: "clear" | "set"
-  /**
-   * Whether to select the focused option when the `Tab` key is pressed
-   */
-  selectOnTab: boolean
-  /**
-   * Whether to autofocus the input on mount
-   */
-  autoFocus?: boolean
-  /**
-   * Whether to select the input's text content on focus
-   */
-  selectInputOnFocus?: boolean
-  /**
-   * Whether to return focus to the input on click the clear button
-   */
-  focusOnClear?: boolean
-  /**
-   * Whether to open the combobox popup on initial click on the input
-   */
-  openOnClick?: boolean
-  /**
-   * Whether to allow custom values or free values in the input
-   */
-  allowCustomValue?: boolean
-  /**
-   * Whether to hide all elements besides the combobox parts. Useful for accessibility
-   */
-  ariaHidden?: boolean
-  /**
-   * Function called to validate the input value
-   */
-  isCustomValue?: (details: { inputValue: string; previousValue: string | undefined }) => boolean
-  /**
-   * Whether to loop the keyboard navigation through the options
-   */
-  loop?: boolean
-  /**
-   * Function called when the input's value changes
-   */
-  onInputChange?: (details: { value: string }) => void
-  /**
-   * Function called when a new option is selected
-   */
-  onSelect?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
-  /**
-   * Function called when an options is highlighted using the pointer
-   * or keyboard navigation.
-   */
-  onHighlight?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
-  /**
-   * Function called when the popup is opened
-   */
-  onOpen?: () => void
-  /**
-   * Function called when the popup is closed
-   */
-  onClose?: () => void
-  /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
-   */
-  messages: IntlMessages
-}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the combobox. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * The current value of the combobox's input
+     */
+    inputValue: string
+    /**
+     * The selected option's value
+     */
+    selectionData: OptionData | null
+    /**
+     * The `name` attribute of the combobox's input. Useful for form submission
+     */
+    name?: string
+    /**
+     * Whether the combobox is disabled
+     */
+    disabled?: boolean
+    /**
+     * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
+     * but the user can still interact with it
+     */
+    readonly?: boolean
+    /**
+     * Whether the combobox is required
+     */
+    invalid?: boolean
+    /**
+     * The placeholder text of the combobox's input
+     */
+    placeholder?: string
+    /**
+     * Defines the auto-completion behavior of the combobox.
+     *
+     * - `autohighlight`: The first focused option is highlighted as the user types
+     * - `autocomplete`: Navigating the listbox with the arrow keys selects the option and the input is updated
+     */
+    inputBehavior: "autohighlight" | "autocomplete" | "none"
+    /**
+     * Whether to blur the input on select
+     */
+    blurOnSelect?: boolean
+    /**
+     * The behavior of the combobox when an option is selected
+     */
+    selectionBehavior?: "clear" | "set"
+    /**
+     * Whether to select the focused option when the `Tab` key is pressed
+     */
+    selectOnTab: boolean
+    /**
+     * Whether to autofocus the input on mount
+     */
+    autoFocus?: boolean
+    /**
+     * Whether to select the input's text content on focus
+     */
+    selectInputOnFocus?: boolean
+    /**
+     * Whether to return focus to the input on click the clear button
+     */
+    focusOnClear?: boolean
+    /**
+     * Whether to open the combobox popup on initial click on the input
+     */
+    openOnClick?: boolean
+    /**
+     * Whether to allow custom values or free values in the input
+     */
+    allowCustomValue?: boolean
+    /**
+     * Whether to hide all elements besides the combobox parts. Useful for accessibility
+     */
+    ariaHidden?: boolean
+    /**
+     * Function called to validate the input value
+     */
+    isCustomValue?: (details: { inputValue: string; previousValue: string | undefined }) => boolean
+    /**
+     * Whether to loop the keyboard navigation through the options
+     */
+    loop?: boolean
+    /**
+     * Function called when the input's value changes
+     */
+    onInputChange?: (details: { value: string }) => void
+    /**
+     * Function called when a new option is selected
+     */
+    onSelect?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
+    /**
+     * Function called when an options is highlighted using the pointer
+     * or keyboard navigation.
+     */
+    onHighlight?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
+    /**
+     * Function called when the popup is opened
+     */
+    onOpen?: () => void
+    /**
+     * Function called when the popup is closed
+     */
+    onClose?: () => void
+    /**
+     * Specifies the localized strings that identifies the accessibility elements and their states
+     */
+    messages: IntlMessages
+  }
 
 /**
  * This is the actual context exposed to the user.
  */
-export type UserDefinedContext = Partial<PublicContext>
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**

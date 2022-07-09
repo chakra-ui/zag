@@ -1,25 +1,24 @@
 import { injectGlobal } from "@emotion/css"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import * as toggle from "@zag-js/toggle"
 import { defineComponent } from "@vue/runtime-core"
 import { toggleStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { computed, h, Fragment } from "vue"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(toggleStyle)
 
 export default defineComponent({
   name: "Toggle",
   setup() {
-    const [state, send] = useMachine(toggle.machine({ label: "Toggle italic" }))
-    const ref = useSetup({ send, id: useId() })
+    const [state, send] = useMachine(toggle.machine({ id: "toggle", label: "Toggle italic" }))
+
     const apiRef = computed(() => toggle.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
       return (
-        <div ref={ref}>
+        <div>
           <button class="toggle" {...api.buttonProps}>
             B
           </button>

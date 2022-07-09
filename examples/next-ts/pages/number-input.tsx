@@ -1,6 +1,6 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { numberInputControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -10,11 +10,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const [state, send] = useMachine(numberInput.machine, {
-    context: controls.context,
-  })
-
-  const ref = useSetup<HTMLInputElement>({ send, id: useId() })
+  const [state, send] = useMachine(
+    numberInput.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = numberInput.connect(state, send, normalizeProps)
 
@@ -33,7 +36,7 @@ export default function Page() {
             <button data-testid="dec-button" {...api.decrementButtonProps}>
               DEC
             </button>
-            <input data-testid="input" ref={ref} {...api.inputProps} />
+            <input data-testid="input" {...api.inputProps} />
             <button data-testid="inc-button" {...api.incrementButtonProps}>
               INC
             </button>

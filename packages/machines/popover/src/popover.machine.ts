@@ -1,5 +1,5 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dimissable"
 import { addDomEvent, contains, nextTick, raf, isModifiedEvent } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
@@ -11,13 +11,12 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./popover
 
 const { and, or, not } = guards
 
-export function machine(ctx: UserDefinedContext = {}) {
+export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "popover",
       initial: "unknown",
       context: {
-        uid: "",
         closeOnInteractOutside: true,
         closeOnEsc: true,
         autoFocus: true,
@@ -45,7 +44,7 @@ export function machine(ctx: UserDefinedContext = {}) {
           on: {
             SETUP: {
               target: ctx.defaultOpen ? "open" : "closed",
-              actions: ["setupDocument", "checkRenderedElements"],
+              actions: "checkRenderedElements",
             },
           },
         },
@@ -214,11 +213,6 @@ export function machine(ctx: UserDefinedContext = {}) {
               anchor: !!dom.getAnchorEl(ctx),
             })
           })
-        },
-        setupDocument(ctx, evt) {
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-          ctx.uid = evt.id
         },
         clearPointerDown(ctx) {
           ctx.pointerdownNode = null
