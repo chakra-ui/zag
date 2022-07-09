@@ -1,12 +1,12 @@
 import { injectGlobal } from "@emotion/css"
 import * as splitter from "@zag-js/splitter"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { computed, h, Fragment } from "vue"
 import { splitterControls, splitterStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 injectGlobal(splitterStyle)
@@ -16,11 +16,9 @@ export default defineComponent({
   setup() {
     const controls = useControls(splitterControls)
 
-    const [state, send] = useMachine(splitter.machine, {
+    const [state, send] = useMachine(splitter.machine({ id: "splitter" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => splitter.connect(state.value, send, normalizeProps))
 
@@ -29,7 +27,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
+            <div {...api.rootProps}>
               <div {...api.primaryPaneProps}>
                 <div>
                   <small {...api.labelProps}>Table of Contents</small>

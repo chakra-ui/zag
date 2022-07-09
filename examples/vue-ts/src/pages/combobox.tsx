@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, ref, h, Fragment } from "vue"
 import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(comboboxStyle)
 
@@ -18,6 +17,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       combobox.machine({
+        id: "combobox",
         onOpen() {
           options.value = comboboxData
         },
@@ -29,7 +29,6 @@ export default defineComponent({
       { context: controls.context },
     )
 
-    const nodeRef = useSetup({ send, id: useId() })
     const apiRef = computed(() => combobox.connect(state.value, send, normalizeProps))
 
     return () => {
@@ -43,7 +42,7 @@ export default defineComponent({
 
               <br />
 
-              <div ref={nodeRef} {...api.rootProps}>
+              <div {...api.rootProps}>
                 <label {...api.labelProps}>Select country</label>
 
                 <div {...api.controlProps}>

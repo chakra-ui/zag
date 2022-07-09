@@ -1,12 +1,12 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
 import { computed, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { numberInputControls } from "@zag-js/shared"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 export default defineComponent({
@@ -14,11 +14,9 @@ export default defineComponent({
   setup() {
     const controls = useControls(numberInputControls)
 
-    const [state, send] = useMachine(numberInput.machine, {
+    const [state, send] = useMachine(numberInput.machine({ id: "numberInput" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => numberInput.connect(state.value, send, normalizeProps))
 
@@ -28,7 +26,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div {...api.rootProps} ref={ref}>
+            <div {...api.rootProps}>
               <div
                 data-testid="scrubber"
                 {...mergeProps(api.scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}

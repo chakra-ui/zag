@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, useMachine, useSetup, mergeProps } from "@zag-js/vue"
+import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { checkboxControls, checkboxStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(checkboxStyle)
 
@@ -15,11 +14,9 @@ export default defineComponent({
   setup() {
     const controls = useControls(checkboxControls)
 
-    const [state, send] = useMachine(checkbox.machine, {
+    const [state, send] = useMachine(checkbox.machine({ id: "checkbox" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => checkbox.connect(state.value, send, normalizeProps))
 
@@ -40,7 +37,7 @@ export default defineComponent({
           <main>
             <form>
               <fieldset>
-                <label ref={ref} {...api.rootProps}>
+                <label {...api.rootProps}>
                   <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
                   <input {...inputProps} />
                   <div {...api.controlProps} />

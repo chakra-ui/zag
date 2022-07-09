@@ -1,10 +1,10 @@
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { menuOptionData as data, menuStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
-import { useId } from "../hooks/use-id"
+
 import { Toolbar } from "../components/toolbar"
 
 injectGlobal(menuStyle)
@@ -14,12 +14,11 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       menu.machine({
+        id: "menu-options",
         value: { order: "", type: [] },
         onValueChange: console.log,
       }),
     )
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => menu.connect(state.value, send, normalizeProps))
 
@@ -28,7 +27,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref}>
+            <div>
               <button {...api.triggerProps}>
                 Actions <span aria-hidden>▾</span>
               </button>

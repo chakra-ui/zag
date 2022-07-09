@@ -28,6 +28,7 @@ export function useMachine<
   })
 
   service.start(hydratedState)
+  service.send("SETUP")
 
   let unsubscribe: VoidFunction
 

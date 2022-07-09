@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as editable from "@zag-js/editable"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { editableControls, editableStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
 
 injectGlobal(editableStyle)
 
@@ -15,11 +14,9 @@ export default defineComponent({
   setup() {
     const controls = useControls(editableControls)
 
-    const [state, send] = useMachine(editable.machine, {
+    const [state, send] = useMachine(editable.machine({ id: "editable" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => editable.connect(state.value, send, normalizeProps))
 
@@ -29,7 +26,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
+            <div {...api.rootProps}>
               <div {...api.areaProps}>
                 <input data-testid="input" {...api.inputProps} />
                 <span data-testid="preview" {...api.previewProps} />
