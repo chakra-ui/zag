@@ -33,6 +33,7 @@
     "@zag-js/core": "0.1.7",
     "@zag-js/dom-utils": "0.1.6",
     "@zag-js/interact-outside": "0.1.1",
+    "@zag-js/live-region": "0.0.1",
     "@zag-js/popper": "0.1.7",
     "@zag-js/types": "0.2.1"
   },

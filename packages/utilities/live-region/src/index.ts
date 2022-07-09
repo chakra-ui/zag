@@ -1,4 +1,4 @@
-import { setVisuallyHidden } from "./visually-hidden"
+import { setVisuallyHidden } from "@zag-js/dom-utils"
 
 export type LiveRegionOptions = {
   level: "polite" | "assertive"
@@ -9,7 +9,7 @@ export type LiveRegionOptions = {
 
 export type LiveRegion = ReturnType<typeof createLiveRegion>
 
-const LIVE_REGION_ID = "__live-region__"
+const ID = "__live-region__"
 
 export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const { level = "polite", document: doc = document, root, delay: _delay = 0 } = opts
@@ -18,7 +18,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const parent = root ?? doc.body
 
   function announce(message: string, delay?: number) {
-    const oldRegion = doc.getElementById(LIVE_REGION_ID)
+    const oldRegion = doc.getElementById(ID)
 
     // remove old region
     oldRegion?.remove()
@@ -28,7 +28,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
 
     // create fresh region
     const region = doc.createElement("span")
-    region.id = LIVE_REGION_ID
+    region.id = ID
     region.dataset.liveAnnouncer = "true"
 
     // Determine redundant role
@@ -50,7 +50,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   }
 
   function destroy() {
-    const oldRegion = doc.getElementById(LIVE_REGION_ID)
+    const oldRegion = doc.getElementById(ID)
     oldRegion?.remove()
   }
 
@@ -58,7 +58,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
     announce,
     destroy,
     toJSON() {
-      return LIVE_REGION_ID
+      return ID
     },
   }
 }
