@@ -1,5 +1,4 @@
 import { addDomEvent, setVisuallyHidden } from "@zag-js/dom-utils"
-import { callAll } from "@zag-js/utils"
 import type { FocusContext } from "./focus-context"
 
 export type FocusContainmentOptions = {
@@ -7,7 +6,7 @@ export type FocusContainmentOptions = {
 }
 
 export function focusContainmentEffect(ctx: FocusContext, options: FocusContainmentOptions = {}) {
-  const { doc, focusScope, firstTabbable, lastTabbable, node } = ctx
+  const { doc, win, focusScope, firstTabbable, lastTabbable, node } = ctx
 
   function createSentinel() {
     const element = doc.createElement("span")
@@ -35,12 +34,30 @@ export function focusContainmentEffect(ctx: FocusContext, options: FocusContainm
     }
   }
 
-  const removeFocusin = addDomEvent(startSentinel, "focusin", onFocus)
-  const removeFocusout = addDomEvent(endSentinel, "focusin", onFocus)
+  const removeStartFocusin = addDomEvent(startSentinel, "focusin", onFocus)
+  const removeEndFocusin = addDomEvent(endSentinel, "focusin", onFocus)
+
+  const obs = new win.MutationObserver((changes) => {
+    for (const change of changes) {
+      if (change.previousSibling === endSentinel) {
+        endSentinel.remove()
+        node.insertAdjacentElement("beforeend", endSentinel)
+      }
+
+      if (change.nextSibling === startSentinel) {
+        startSentinel.remove()
+        node.insertAdjacentElement("afterbegin", startSentinel)
+      }
+    }
+  })
+
+  obs.observe(node, { childList: true, subtree: false })
 
   return () => {
     startSentinel.remove()
     endSentinel.remove()
-    callAll(removeFocusin, removeFocusout)
+    removeStartFocusin()
+    removeEndFocusin()
+    obs.disconnect()
   }
 }
