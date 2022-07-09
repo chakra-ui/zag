@@ -82,3 +82,7 @@ export async function isInViewport(viewport: Locator, el: Locator) {
     bbox.y + bbox.height <= viewportBbox.y + viewportBbox.height
   )
 }
+
+export const repeat = async (fn: () => unknown, count: number) => {
+  await [...new Array(count)].reduce((p) => p.then(fn), Promise.resolve())
+}
