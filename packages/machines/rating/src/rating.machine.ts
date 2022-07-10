@@ -41,7 +41,7 @@ export function machine(ctx: UserDefinedContext) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["checkValue"],
+              actions: "checkValue",
             },
           },
         },

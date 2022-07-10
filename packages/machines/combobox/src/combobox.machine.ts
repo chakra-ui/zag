@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
-import { contains, nextTick, observeAttributes, observeChildren, raf } from "@zag-js/dom-utils"
+import { contains, observeAttributes, observeChildren, raf } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
@@ -182,7 +182,7 @@ export function machine(ctx: UserDefinedContext) {
             "scrollOptionIntoView",
             "computePlacement",
             "trackOptionNodes",
-            "ariaHideOutside",
+            "hideOtherElements",
           ],
           entry: ["focusInput", "invokeOnOpen"],
           on: {
@@ -252,7 +252,7 @@ export function machine(ctx: UserDefinedContext) {
 
         interacting: {
           tags: ["open", "focused"],
-          activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "ariaHideOutside"],
+          activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
           entry: "focusMatchingOption",
           on: {
             HOME: {
@@ -363,7 +363,7 @@ export function machine(ctx: UserDefinedContext) {
             },
           })
         },
-        ariaHideOutside(ctx) {
+        hideOtherElements(ctx) {
           if (!ctx.ariaHidden) return
           return ariaHidden([dom.getInputEl(ctx), dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)])
         },
@@ -405,11 +405,9 @@ export function machine(ctx: UserDefinedContext) {
 
       actions: {
         setupDocument(ctx) {
-          nextTick(() => {
-            ctx.liveRegion = createLiveRegion({
-              level: "assertive",
-              document: ctx.doc,
-            })
+          ctx.liveRegion = createLiveRegion({
+            level: "assertive",
+            document: dom.getDoc(ctx),
           })
         },
         setActiveOption(ctx, evt) {

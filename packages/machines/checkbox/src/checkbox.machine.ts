@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { dispatchInputCheckedEvent, nextTick, trackFieldsetDisabled, trackFormReset } from "@zag-js/dom-utils"
+import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/dom-utils"
 import { dom } from "./checkbox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
 
@@ -96,26 +96,18 @@ export function machine(ctx: UserDefinedContext) {
 
       activities: {
         trackFieldsetDisabled(ctx) {
-          let cleanup: VoidFunction | undefined
-          nextTick(() => {
-            cleanup = trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-              if (disabled) {
-                ctx.disabled = disabled
-              }
-            })
+          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
+            if (disabled) {
+              ctx.disabled = disabled
+            }
           })
-          return () => cleanup?.()
         },
         trackFormReset(ctx, _evt, { send }) {
-          let cleanup: VoidFunction | undefined
-          nextTick(() => {
-            cleanup = trackFormReset(dom.getInputEl(ctx), () => {
-              if (ctx.defaultChecked != null) {
-                send({ type: "SET_STATE", checked: ctx.defaultChecked })
-              }
-            })
+          return trackFormReset(dom.getInputEl(ctx), () => {
+            if (ctx.defaultChecked != null) {
+              send({ type: "SET_STATE", checked: ctx.defaultChecked })
+            }
           })
-          return () => cleanup?.()
         },
       },
 

@@ -162,9 +162,7 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         checkRenderedElements(ctx) {
-          nextTick(() => {
-            ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
-          })
+          ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
         },
         clearMeasured(ctx) {
           ctx.hasMeasuredRect = false

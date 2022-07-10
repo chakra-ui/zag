@@ -1,6 +1,6 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createMachine, guards } from "@zag-js/core"
-import { contains, nextTick, raf, trackFormReset } from "@zag-js/dom-utils"
+import { contains, raf, trackFormReset } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { warn } from "@zag-js/utils"
@@ -286,13 +286,9 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         trackFormReset(ctx) {
-          let cleanup: VoidFunction | undefined
-          raf(() => {
-            cleanup = trackFormReset(dom.getHiddenInputEl(ctx), () => {
-              ctx.value = ctx.initialValue
-            })
+          return trackFormReset(dom.getHiddenInputEl(ctx), () => {
+            ctx.value = ctx.initialValue
           })
-          return cleanup
         },
         autoResize(ctx) {
           if (!ctx.editedTagValue || ctx.idx == null || !ctx.allowEditTag) return
@@ -324,11 +320,9 @@ export function machine(ctx: UserDefinedContext) {
           dom.dispatchInputEvent(ctx)
         },
         setupDocument(ctx) {
-          nextTick(() => {
-            ctx.liveRegion = createLiveRegion({
-              level: "assertive",
-              document: ctx.doc,
-            })
+          ctx.liveRegion = createLiveRegion({
+            level: "assertive",
+            document: dom.getDoc(ctx),
           })
         },
         focusNextTag(ctx) {

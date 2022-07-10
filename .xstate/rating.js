@@ -27,7 +27,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["checkValue"]
+          actions: "checkValue"
         }
       }
     },

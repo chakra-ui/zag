@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { nextTick, raf } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-utils"
 import { fromLength } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
@@ -146,11 +146,9 @@ export function machine(ctx: UserDefinedContext) {
       },
       actions: {
         setupValue: (ctx) => {
-          nextTick(() => {
-            const inputs = dom.getElements(ctx)
-            const empty = fromLength(inputs.length).map(() => "")
-            ctx.value = Object.assign(empty, ctx.value)
-          })
+          const inputs = dom.getElements(ctx)
+          const empty = fromLength(inputs.length).map(() => "")
+          ctx.value = Object.assign(empty, ctx.value)
         },
         focusInput: (ctx) => {
           raf(() => {

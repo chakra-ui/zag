@@ -136,7 +136,7 @@ const fetchMachine = createMachine({
     },
     suggesting: {
       tags: ["open", "focused"],
-      activities: ["trackInteractOutside", "scrollOptionIntoView", "computePlacement", "trackOptionNodes", "ariaHideOutside"],
+      activities: ["trackInteractOutside", "scrollOptionIntoView", "computePlacement", "trackOptionNodes", "hideOtherElements"],
       entry: ["focusInput", "invokeOnOpen"],
       on: {
         ARROW_DOWN: {
@@ -195,7 +195,7 @@ const fetchMachine = createMachine({
     },
     interacting: {
       tags: ["open", "focused"],
-      activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "ariaHideOutside"],
+      activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
       entry: "focusMatchingOption",
       on: {
         HOME: {

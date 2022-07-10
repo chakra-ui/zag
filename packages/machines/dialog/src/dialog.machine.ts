@@ -13,6 +13,7 @@ export function machine(ctx: UserDefinedContext) {
     {
       id: "dialog",
       initial: "unknown",
+
       context: {
         pointerdownNode: null,
         role: "dialog",
@@ -28,6 +29,7 @@ export function machine(ctx: UserDefinedContext) {
         restoreFocus: true,
         ...ctx,
       },
+
       states: {
         unknown: {
           on: {
@@ -113,13 +115,9 @@ export function machine(ctx: UserDefinedContext) {
       },
       actions: {
         checkRenderedElements(ctx) {
-          nextTick(() => {
-            Object.assign(ctx, {
-              renderedElements: {
-                title: !!dom.getTitleEl(ctx),
-                description: !!dom.getDescriptionEl(ctx),
-              },
-            })
+          Object.assign(ctx.renderedElements, {
+            title: !!dom.getTitleEl(ctx),
+            description: !!dom.getDescriptionEl(ctx),
           })
         },
         invokeOnClose(ctx) {

@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { nextTick, raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
-import { getElementRect } from "@zag-js/rect-utils"
+import { raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
 import { isNumber } from "@zag-js/utils"
 import { dom, getClosestIndex } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
@@ -139,29 +138,21 @@ export function machine(ctx: UserDefinedContext) {
       },
       activities: {
         trackFieldsetDisabled(ctx) {
-          let cleanup: VoidFunction | undefined
-          nextTick(() => {
-            cleanup = trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-              if (disabled) {
-                ctx.disabled = disabled
-              }
-            })
+          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
+            if (disabled) {
+              ctx.disabled = disabled
+            }
           })
-          return () => cleanup?.()
         },
         trackFormReset(ctx) {
           if (!ctx.name) return
-          let cleanup: VoidFunction | undefined
-          nextTick(() => {
-            cleanup = trackFormReset(dom.getRootEl(ctx), () => {
-              for (let i = 0; i < ctx.value.length; i++) {
-                if (ctx.initialValue[i] != null) {
-                  ctx.value[i] = ctx.initialValue[i]
-                }
+          return trackFormReset(dom.getRootEl(ctx), () => {
+            for (let i = 0; i < ctx.value.length; i++) {
+              if (ctx.initialValue[i] != null) {
+                ctx.value[i] = ctx.initialValue[i]
               }
-            })
+            }
           })
-          return () => cleanup?.()
         },
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove({
@@ -193,13 +184,11 @@ export function machine(ctx: UserDefinedContext) {
           }
         },
         setThumbSize(ctx) {
-          raf(() => {
-            const thumbs = dom.getElements(ctx)
-            ctx.thumbSize = thumbs.map((thumb) => {
-              const { width, height } = getElementRect(thumb)
-              return { width, height }
-            })
-          })
+          const thumbs = dom.getElements(ctx)
+          ctx.thumbSize = thumbs.map((el) => ({
+            width: el.offsetWidth,
+            height: el.offsetHeight,
+          }))
         },
         setActiveIndex(ctx, evt) {
           ctx.activeIndex = evt.index ?? getClosestIndex(ctx, evt)
