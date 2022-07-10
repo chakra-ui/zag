@@ -56,11 +56,7 @@ function Example() {
   const api = toggle.connect(state, send)
 
   // consume into components
-  return (
-    <button ref={ref} {...api.buttonProps}>
-      Toggle me
-    </button>
-  )
+  return <button {...api.buttonProps}>Toggle me</button>
 }
 ```
 
