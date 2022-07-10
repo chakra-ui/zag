@@ -1,5 +1,4 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { FormatDecimalOptions } from "@zag-js/number-utils"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
@@ -30,8 +29,7 @@ type IntlMessages = {
 }
 
 type PublicContext = DirectionProperty &
-  CommonProperties &
-  FormatDecimalOptions & {
+  CommonProperties & {
     /**
      * The ids of the elements in the number input. Useful for composition.
      */
@@ -125,6 +123,14 @@ type PublicContext = DirectionProperty &
      * Function invoked when the value overflows or underflows the min/max range
      */
     onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
+    /**
+     * The minimum number of fraction digits to use. Possible values are from 0 to 20
+     */
+    minFractionDigits?: number
+    /**
+     * The maximum number of fraction digits to use. Possible values are from 0 to 20;
+     */
+    maxFractionDigits?: number
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

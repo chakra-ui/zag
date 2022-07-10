@@ -1,14 +1,12 @@
-import { createMachine, guards, ref, subscribe } from "@zag-js/core"
-import { addDomEvent, nextTick, trackPointerDown } from "@zag-js/dom-utils"
+import { ariaHidden } from "@zag-js/aria-hidden"
+import { createMachine } from "@zag-js/core"
+import { trackDismissableElement } from "@zag-js/dimissable"
+import { nextTick } from "@zag-js/dom-utils"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { runIfFn } from "@zag-js/utils"
-import { ariaHidden } from "@zag-js/aria-hidden"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
-import { store } from "./dialog.store"
 import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.types"
-
-const { and } = guards
 
 export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
@@ -18,11 +16,13 @@ export function machine(ctx: UserDefinedContext) {
       context: {
         pointerdownNode: null,
         role: "dialog",
-        isTitleRendered: true,
-        isDescriptionRendered: true,
+        renderedElements: {
+          title: true,
+          description: true,
+        },
+        modal: true,
         trapFocus: true,
         preventScroll: true,
-        isTopMostDialog: true,
         closeOnOutsideClick: true,
         closeOnEsc: true,
         restoreFocus: true,
@@ -36,61 +36,56 @@ export function machine(ctx: UserDefinedContext) {
         },
         open: {
           entry: ["checkRenderedElements"],
-          activities: [
-            "trapFocus",
-            "preventScroll",
-            "hideContentBelow",
-            "subscribeToStore",
-            "trackEscKey",
-            "trackPointerDown",
-          ],
+          activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
           on: {
             CLOSE: "closed",
-            TRIGGER_CLICK: "closed",
-            UNDERLAY_CLICK: {
-              guard: and("isTopMostDialog", "closeOnOutsideClick", "isValidUnderlayClick"),
-              target: "closed",
-              actions: ["invokeOnOutsideClick"],
-            },
+            TOGGLE: "closed",
           },
         },
         closed: {
-          entry: ["invokeOnClose", "clearPointerdownNode"],
+          entry: ["invokeOnClose"],
           on: {
             OPEN: "open",
-            TRIGGER_CLICK: "open",
+            TOGGLE: "open",
           },
         },
       },
     },
     {
-      guards: {
-        isTopMostDialog: (ctx) => ctx.isTopMostDialog,
-        closeOnOutsideClick: (ctx) => ctx.closeOnOutsideClick,
-        isValidUnderlayClick: (ctx, evt) => evt.target === ctx.pointerdownNode,
-      },
       activities: {
-        trackPointerDown(ctx, _evt) {
-          return trackPointerDown(dom.getDoc(ctx), (el) => {
-            ctx.pointerdownNode = ref(el)
+        trackDismissableElement(ctx, _evt, { send }) {
+          let cleanup: VoidFunction | undefined
+          nextTick(() => {
+            cleanup = trackDismissableElement(dom.getContentEl(ctx), {
+              pointerBlocking: ctx.modal,
+              exclude: [dom.getTriggerEl(ctx)],
+              onDismiss: () => send({ type: "CLOSE", src: "interact-outside" }),
+              onEscapeKeyDown(event) {
+                if (!ctx.closeOnEsc) {
+                  event.preventDefault()
+                } else {
+                  send({ type: "CLOSE", src: "escape-key" })
+                }
+                ctx.onEsc?.()
+              },
+              onPointerDownOutside(event) {
+                if (!ctx.closeOnOutsideClick) {
+                  event.preventDefault()
+                }
+                ctx.onOutsideClick?.()
+              },
+            })
           })
-        },
-        trackEscKey(ctx, _evt, { send }) {
-          return addDomEvent(dom.getWin(ctx), "keydown", (e) => {
-            if (ctx.closeOnEsc && e.key === "Escape" && ctx.isTopMostDialog) {
-              ctx.onEsc?.()
-              send("CLOSE")
-            }
-          })
+          return () => cleanup?.()
         },
         preventScroll(ctx) {
           if (!ctx.preventScroll) return
           return preventBodyScroll(dom.getDoc(ctx))
         },
         trapFocus(ctx) {
+          if (!ctx.trapFocus) return
           let trap: FocusTrap
           nextTick(() => {
-            if (!ctx.isTopMostDialog || !ctx.trapFocus) return
             const el = dom.getContentEl(ctx)
             trap = createFocusTrap(el, {
               document: dom.getDoc(ctx),
@@ -107,41 +102,28 @@ export function machine(ctx: UserDefinedContext) {
           })
           return () => trap?.deactivate()
         },
-        subscribeToStore(ctx, _evt, { send }) {
-          const register = { id: ctx.id, close: () => send("CLOSE") }
-          store.add(register)
-          ctx.isTopMostDialog = store.isTopMost(ctx.id)
-          const unsubscribe = subscribe(store, () => {
-            ctx.isTopMostDialog = store.isTopMost(ctx.id)
-          })
-          return () => {
-            unsubscribe()
-            store.remove(ctx.id)
-          }
-        },
         hideContentBelow(ctx) {
-          let unhide: VoidFunction | undefined
+          if (!ctx.modal) return
+          let cleanup: VoidFunction | undefined
           nextTick(() => {
-            unhide = ariaHidden([dom.getUnderlayEl(ctx)])
+            cleanup = ariaHidden([dom.getUnderlayEl(ctx)])
           })
-          return () => unhide?.()
+          return () => cleanup?.()
         },
       },
       actions: {
         checkRenderedElements(ctx) {
           nextTick(() => {
-            ctx.isTitleRendered = !!dom.getTitleEl(ctx)
-            ctx.isDescriptionRendered = !!dom.getDescriptionEl(ctx)
+            Object.assign(ctx, {
+              renderedElements: {
+                title: !!dom.getTitleEl(ctx),
+                description: !!dom.getDescriptionEl(ctx),
+              },
+            })
           })
-        },
-        invokeOnOutsideClick(ctx) {
-          ctx.onOutsideClick?.()
         },
         invokeOnClose(ctx) {
           ctx.onClose?.()
-        },
-        clearPointerdownNode(ctx) {
-          ctx.pointerdownNode = null
         },
       },
     },

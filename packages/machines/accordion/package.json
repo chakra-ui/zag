@@ -30,8 +30,10 @@
   },
   "dependencies": {
     "@zag-js/core": "0.1.7",
+    "@zag-js/types": "0.2.1"
+  },
+  "devDependencies": {
     "@zag-js/dom-utils": "0.1.6",
-    "@zag-js/types": "0.2.1",
     "@zag-js/utils": "0.1.2"
   },
   "scripts": {

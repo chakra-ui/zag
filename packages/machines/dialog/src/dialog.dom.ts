@@ -11,6 +11,7 @@ export const dom = defineDomHelpers({
   getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `dialog:${ctx.id}:close-btn`,
 
   getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)) as HTMLElement,
+  getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLElement,
   getUnderlayEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getUnderlayId(ctx)) as HTMLElement,
   getTitleEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTitleId(ctx)) as HTMLElement,
   getDescriptionEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getDescriptionId(ctx)) as HTMLElement,

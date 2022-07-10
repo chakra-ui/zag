@@ -9,7 +9,6 @@ import {
   raf,
 } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
-import { noop } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tooltip.types"
@@ -178,7 +177,7 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         trackDisabledTriggerOnSafari(ctx, _evt, { send }) {
-          if (!isSafari()) return noop
+          if (!isSafari()) return
           const doc = dom.getDoc(ctx)
           return addPointerEvent(doc, "pointermove", (event) => {
             const selector = "[data-part=trigger][data-expanded]"

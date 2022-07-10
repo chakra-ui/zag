@@ -1,11 +1,11 @@
 import { contains, getEventTarget } from "@zag-js/dom-utils"
 import {
-  trackInteractOutside,
   FocusOutsideEvent,
-  InteractOutsideEvent,
-  PointerDownOutsideEvent,
   InteractOutsideHandlers,
+  PointerDownOutsideEvent,
+  trackInteractOutside,
 } from "@zag-js/interact-outside"
+import { warn } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
 import { Layer, layerStack } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
@@ -14,7 +14,6 @@ type Container = HTMLElement | null | Array<HTMLElement | null>
 
 export type DismissableElementHandlers = InteractOutsideHandlers & {
   onEscapeKeyDown?: (event: KeyboardEvent) => void
-  onInteractOutside?: (event: InteractOutsideEvent) => void
 }
 
 export type DismissableElementOptions = DismissableElementHandlers & {
@@ -25,7 +24,10 @@ export type DismissableElementOptions = DismissableElementHandlers & {
 }
 
 export function trackDismissableElement(node: HTMLElement | null, options: DismissableElementOptions) {
-  if (!node) return
+  if (!node) {
+    warn("[@zag-js/dismissable] node is `null` or `undefined`")
+    return
+  }
 
   const { onDismiss, pointerBlocking, exclude: excludeContainers, debug } = options
 

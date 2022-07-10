@@ -86,6 +86,7 @@ export function defineDomHelpers<T>(domUtils: T) {
     getDoc: (ctx: Ctx) => getDocument(roots.getRootNode(ctx)),
     getWin: (ctx: Ctx) => roots.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => roots.getDoc(ctx).activeElement as HTMLElement | null,
+    getById: (ctx: Ctx, id: string) => roots.getRootNode(ctx).getElementById(id),
   }
   return {
     ...roots,

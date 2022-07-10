@@ -8,10 +8,12 @@ import {
   isContextMenuEvent,
   isFocusable,
 } from "@zag-js/dom-utils"
+import { callAll } from "@zag-js/utils"
 
 export type InteractOutsideHandlers = {
   onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
   onFocusOutside?: (event: FocusOutsideEvent) => void
+  onInteractOutside?: (event: InteractOutsideEvent) => void
 }
 
 export type InteractOutsideOptions = InteractOutsideHandlers & {
@@ -32,7 +34,7 @@ export type FocusOutsideEvent = CustomEvent<EventDetails<FocusEvent>>
 export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
 
 export function trackInteractOutside(node: HTMLElement | null, options: InteractOutsideOptions) {
-  const { exclude, onFocusOutside, onPointerDownOutside } = options
+  const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options
 
   if (!node) return
 
@@ -64,8 +66,9 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
     function handler() {
       if (!node || !isEventOutside(event)) return
 
-      if (onPointerDownOutside) {
-        node.addEventListener(POINTER_OUTSIDE_EVENT, onPointerDownOutside as EventListener, { once: true })
+      if (onPointerDownOutside || onInteractOutside) {
+        const handler = callAll(onPointerDownOutside, onInteractOutside) as EventListener
+        node.addEventListener(POINTER_OUTSIDE_EVENT, handler, { once: true })
       }
 
       fireCustomEvent(node, POINTER_OUTSIDE_EVENT, {
@@ -97,8 +100,9 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
     //
     if (!node || !isEventOutside(event)) return
 
-    if (onFocusOutside) {
-      node.addEventListener(FOCUS_OUTSIDE_EVENT, onFocusOutside as EventListener, { once: true })
+    if (onFocusOutside || onInteractOutside) {
+      const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
+      node.addEventListener(FOCUS_OUTSIDE_EVENT, handler, { once: true })
     }
 
     fireCustomEvent(node, FOCUS_OUTSIDE_EVENT, {

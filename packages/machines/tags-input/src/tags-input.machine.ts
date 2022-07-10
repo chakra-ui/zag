@@ -276,13 +276,13 @@ export function machine(ctx: UserDefinedContext) {
 
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {
-          const blur = () => send({ type: "BLUR", src: "interact-outside" })
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
               return contains(dom.getRootEl(ctx), target)
             },
-            onFocusOutside: blur,
-            onPointerDownOutside: blur,
+            onInteractOutside() {
+              send({ type: "BLUR", src: "interact-outside" })
+            },
           })
         },
         trackFormReset(ctx) {

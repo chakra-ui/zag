@@ -26,6 +26,10 @@ type PublicContext = DirectionProperty &
      */
     preventScroll: boolean
     /**
+     * Whether to prevent pointer interaction outside the element and hide all content below it
+     */
+    modal?: boolean
+    /**
      * Element to receive focus when the dialog is opened
      */
     initialFocusEl?: MaybeElement | (() => MaybeElement)
@@ -79,19 +83,12 @@ type ComputedContext = Readonly<{}>
 type PrivateContext = Context<{
   /**
    * @internal
-   * Whether the dialog title is rendered
+   * Whether some elements are rendered
    */
-  isTitleRendered: boolean
-  /**
-   * @internal
-   * Whether the dialog description is rendered
-   */
-  isDescriptionRendered: boolean
-  /**
-   * @internal
-   * Whether the dialog is the topmost dialog (in a nested dialog scenario)
-   */
-  isTopMostDialog: boolean
+  renderedElements: {
+    title: boolean
+    description: boolean
+  }
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext

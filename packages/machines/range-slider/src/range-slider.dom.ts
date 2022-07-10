@@ -1,8 +1,7 @@
 import type { StateMachine } from "@zag-js/core"
 import { dispatchInputValueEvent, getPointRelativeToNode, defineDomHelpers, queryAll } from "@zag-js/dom-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
-import type { Point } from "@zag-js/rect-utils"
-import { closest, getElementRect } from "@zag-js/rect-utils"
+import { closest, createRect, Point } from "@zag-js/rect-utils"
 import { styles } from "./range-slider.style"
 import type { MachineContext as Ctx } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
@@ -68,7 +67,10 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
 
   // get the center point of all thumbs
   const thumbs = dom.getElements(ctx)
-  const points = thumbs.map((el) => getElementRect(el)).map((rect) => rect.center)
+  const points = thumbs.map((el) => {
+    const { center } = createRect(el.getBoundingClientRect())
+    return center
+  })
 
   // get the closest center point from the event ("pointerdown") point
   const getClosest = closest(...points)

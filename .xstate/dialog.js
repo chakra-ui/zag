@@ -14,8 +14,7 @@ const fetchMachine = createMachine({
   id: "dialog",
   initial: "unknown",
   context: {
-    "isDefaultOpen": false,
-    "isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick": false
+    "isDefaultOpen": false
   },
   on: {
     UPDATE_CONTEXT: {
@@ -35,22 +34,17 @@ const fetchMachine = createMachine({
     },
     open: {
       entry: ["checkRenderedElements"],
-      activities: ["trapFocus", "preventScroll", "hideContentBelow", "subscribeToStore", "trackEscKey", "trackPointerDown"],
+      activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         CLOSE: "closed",
-        TRIGGER_CLICK: "closed",
-        UNDERLAY_CLICK: {
-          cond: "isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick",
-          target: "closed",
-          actions: ["invokeOnOutsideClick"]
-        }
+        TOGGLE: "closed"
       }
     },
     closed: {
-      entry: ["invokeOnClose", "clearPointerdownNode"],
+      entry: ["invokeOnClose"],
       on: {
         OPEN: "open",
-        TRIGGER_CLICK: "open"
+        TOGGLE: "open"
       }
     }
   }
@@ -63,7 +57,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isDefaultOpen": ctx => ctx["isDefaultOpen"],
-    "isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick": ctx => ctx["isTopMostDialog && closeOnOutsideClick && isValidUnderlayClick"]
+    "isDefaultOpen": ctx => ctx["isDefaultOpen"]
   }
 });

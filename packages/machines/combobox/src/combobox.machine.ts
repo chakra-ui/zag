@@ -353,14 +353,14 @@ export function machine(ctx: UserDefinedContext) {
 
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {
-          const exec = () => send({ type: "BLUR", src: "interact-outside" })
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
               const ignore = [dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
-            onFocusOutside: exec,
-            onPointerDownOutside: exec,
+            onInteractOutside() {
+              send({ type: "BLUR", src: "interact-outside" })
+            },
           })
         },
         ariaHideOutside(ctx) {
