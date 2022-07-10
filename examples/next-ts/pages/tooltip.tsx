@@ -1,5 +1,5 @@
 import { Global } from "@emotion/react"
-import { normalizeProps, useMachine, useSetup } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { tooltipStyles } from "@zag-js/shared"
 import * as tooltip from "@zag-js/tooltip"
 import { Portal } from "../components/portal"
@@ -20,7 +20,6 @@ export default function Page() {
     }),
   )
 
-  const ref2 = useSetup<HTMLButtonElement>({ send: send2, id: id2 })
   const api = tooltip.connect(state, send, normalizeProps)
   const api2 = tooltip.connect(state2, send2, normalizeProps)
   return (
@@ -41,7 +40,7 @@ export default function Page() {
             </Portal>
           )}
 
-          <button data-testid={`${id2}-trigger`} ref={ref2} {...api2.triggerProps}>
+          <button data-testid={`${id2}-trigger`} {...api2.triggerProps}>
             Over me
           </button>
           {api2.isOpen && (

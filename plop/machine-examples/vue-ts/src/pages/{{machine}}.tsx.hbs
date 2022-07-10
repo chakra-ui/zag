@@ -1,12 +1,11 @@
 import { injectGlobal } from "@emotion/css"
 import * as {{machine}} from "@zag-js/{{machine}}"
-import { normalizeProps, useMachine, useSetup, mergeProps } from "@zag-js/vue"
+import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { {{machine}}Controls, {{machine}}Style } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { useId } from "../hooks/use-id"
 
 injectGlobal({{machine}}Style)
 
@@ -15,11 +14,9 @@ export default defineComponent({
   setup() {
     const controls = useControls({{machine}}Controls)
 
-    const [state, send] = useMachine({{machine}}.machine, {
+    const [state, send] = useMachine({{machine}}.machine({ id: "1" }), {
       context: controls.context,
     })
-
-    const ref = useSetup({ send, id: useId() })
 
     const apiRef = computed(() => {{machine}}.connect(state.value, send, normalizeProps))
 
@@ -29,7 +26,7 @@ export default defineComponent({
       return (
         <>
           <main>
-            <div ref={ref} {...api.rootProps}>
+            <div {...api.rootProps}>
             
             </div>
           </main>

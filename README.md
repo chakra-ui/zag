@@ -46,14 +46,11 @@ For framework specific solutions, we provide simple wrappers to help you consume
 
 ```jsx
 import * as toggle from "@zag-js/toggle"
-import { useMachine, useSetup } from "@zag-js/react"
+import { useMachine } from "@zag-js/react"
 
 function Example() {
   // if you need access to `state` or `send` from machine
-  const [state, send] = useMachine(toggle.machine)
-
-  // setup a unique id and ownerDocument for machine
-  const ref = useSetup({ send, id: "2" })
+  const [state, send] = useMachine(toggle.machine({ id: "2" }))
 
   // convert machine details into `DOM` props
   const api = toggle.connect(state, send)
