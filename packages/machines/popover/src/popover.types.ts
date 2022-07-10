@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dimissable"
+import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions, Placement } from "@zag-js/popper"
 import type { CommonProperties, Context, MaybeElement, RequiredBy } from "@zag-js/types"
 

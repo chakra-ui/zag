@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dimissable"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { nextTick } from "@zag-js/dom-utils"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { runIfFn } from "@zag-js/utils"

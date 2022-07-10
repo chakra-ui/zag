@@ -1,4 +1,4 @@
-# @zag-js/dimissable
+# @zag-js/dismissable
 
 ## 0.1.1
 

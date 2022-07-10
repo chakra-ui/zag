@@ -1,4 +1,4 @@
-import { trackDismissableElement } from "@zag-js/dimissable"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
 import { useEffect, useRef, useState } from "react"
 import { Portal } from "../components/portal"

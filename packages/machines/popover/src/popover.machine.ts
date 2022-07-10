@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dimissable"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent, contains, nextTick, raf, isModifiedEvent } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"

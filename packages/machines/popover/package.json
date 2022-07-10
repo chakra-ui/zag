@@ -31,7 +31,7 @@
   "dependencies": {
     "@zag-js/aria-hidden": "0.1.0",
     "@zag-js/core": "0.1.7",
-    "@zag-js/dimissable": "0.1.1",
+    "@zag-js/dismissable": "0.1.1",
     "@zag-js/popper": "0.1.7",
     "@zag-js/remove-scroll": "0.1.1",
     "@zag-js/types": "0.2.1",
