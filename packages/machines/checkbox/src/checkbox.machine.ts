@@ -104,9 +104,7 @@ export function machine(ctx: UserDefinedContext) {
         },
         trackFormReset(ctx, _evt, { send }) {
           return trackFormReset(dom.getInputEl(ctx), () => {
-            if (ctx.defaultChecked != null) {
-              send({ type: "SET_STATE", checked: ctx.defaultChecked })
-            }
+            send({ type: "SET_STATE", checked: !!ctx.defaultChecked })
           })
         },
       },
