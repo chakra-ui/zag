@@ -17,18 +17,10 @@ export function observeAttributes(node: Element | null, attributes: string | str
   return () => obs.disconnect()
 }
 
-export function observeChildren(node: Element | null, fn: Callback) {
+export function observeChildren(node: Element | null, fn: (v: MutationRecord[]) => void) {
   if (!node) return
   const win = node.ownerDocument.defaultView || window
-  const obs = new win.MutationObserver((changes) => {
-    for (const change of changes) {
-      if (change.type === "childList") {
-        fn(change)
-      }
-    }
-  })
-
+  const obs = new win.MutationObserver(fn)
   obs.observe(node, { childList: true, subtree: true })
-
   return () => obs.disconnect()
 }
