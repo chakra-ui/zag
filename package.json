@@ -84,7 +84,7 @@
     "form-serialize": "0.7.2",
     "husky": "8.0.1",
     "jest": "28.1.2",
-    "jest-watch-typeahead": "1.1.0",
+    "jest-watch-typeahead": "2.0.0",
     "json-format-highlight": "1.0.4",
     "lint-staged": "13.0.3",
     "patch-package": "6.4.7",
