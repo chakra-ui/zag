@@ -32,6 +32,7 @@ function createPolygonElement() {
     opacity: "0.15",
     position: "fixed",
     pointerEvents: "none",
+    fill: "red",
   })
 
   const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon")
@@ -46,9 +47,7 @@ export function debugPolygon(polygon: Point[]) {
   const el = createPolygonElement()
   const points = polygon.map((point) => `${point.x},${point.y}`).join(" ")
   el.setAttribute("points", points)
-}
-
-debugPolygon.remove = () => {
-  const el = document.getElementById("debug-polygon")
-  el?.remove()
+  return () => {
+    el.remove()
+  }
 }
