@@ -91,24 +91,6 @@ export class Machine<
     }
 
     this.status = MachineStatus.Running
-    const event = toEvent<TEvent>(ActionTypes.Init)
-
-    const initTarget = isObject(init) ? init.value : init
-    const initContext = isObject(init) ? init.context : undefined
-
-    if (initContext) {
-      this.setContext(initContext as Partial<TContext>)
-    }
-
-    // start transition definition
-    const transition = {
-      target: initTarget ?? this.config.initial,
-    }
-
-    const next = this.getNextStateInfo(transition, event)
-    this.initialState = next
-
-    this.performStateChangeEffects(this.state.value!, next, event)
 
     // subscribe to state changes
     this.removeStateListener = subscribe(
@@ -152,6 +134,26 @@ export class Machine<
     this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
     this.executeActions(this.config.entry, toEvent<TEvent>(ActionTypes.Start))
 
+    // start transition
+    const event = toEvent<TEvent>(ActionTypes.Init)
+
+    const target = isObject(init) ? init.value : init
+    const context = isObject(init) ? init.context : undefined
+
+    if (context) {
+      this.setContext(context as Partial<TContext>)
+    }
+
+    // start transition definition
+    const transition = {
+      target: target ?? this.config.initial,
+    }
+
+    const next = this.getNextStateInfo(transition, event)
+    this.initialState = next
+
+    this.performStateChangeEffects(this.state.value!, next, event)
+
     return this
   }
 
@@ -176,7 +178,7 @@ export class Machine<
     // execute root stop or exit actions
     this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
 
-    this.setState(null)
+    this.setState("")
     this.setEvent(ActionTypes.Stop)
 
     // cleanups
@@ -591,6 +593,10 @@ export class Machine<
 
   private performExitEffects = (current: TState["value"] | undefined, event: TEvent) => {
     const currentState = this.state.value!
+
+    // don't clean up root state, it'll get cleaned up on stop()
+    if (currentState === "") return
+
     const stateNode = current ? this.getStateNode(current) : undefined
 
     // cleanup activities for current state
