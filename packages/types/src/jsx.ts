@@ -137,6 +137,11 @@ export namespace JSX {
     touches: TouchList
   }
 
+  export interface AbstractView {
+    document: Document
+    styleMedia: StyleMedia
+  }
+
   export interface UIEvent<T = Element, E = NativeUIEvent> extends SyntheticEvent<T, E> {
     detail: number
     view: AbstractView
