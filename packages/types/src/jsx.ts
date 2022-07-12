@@ -172,22 +172,22 @@ export namespace JSX {
 
   type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack(event: E): void }["bivarianceHack"]
 
-  type ReactEventHandler<T = Element> = EventHandler<SyntheticEvent<T>>
+  type ZagEventHandler<T = Element> = EventHandler<SyntheticEvent<T>>
 
-  type ClipboardEventHandler<T = Element> = EventHandler<ClipboardEvent<T>>
-  type CompositionEventHandler<T = Element> = EventHandler<CompositionEvent<T>>
-  type DragEventHandler<T = Element> = EventHandler<DragEvent<T>>
-  type FocusEventHandler<T = Element> = EventHandler<FocusEvent<T>>
-  type FormEventHandler<T = Element> = EventHandler<FormEvent<T>>
-  type ChangeEventHandler<T = Element> = EventHandler<ChangeEvent<T>>
-  type KeyboardEventHandler<T = Element> = EventHandler<KeyboardEvent<T>>
-  type MouseEventHandler<T = Element> = EventHandler<MouseEvent<T>>
-  type TouchEventHandler<T = Element> = EventHandler<TouchEvent<T>>
-  type PointerEventHandler<T = Element> = EventHandler<PointerEvent<T>>
-  type UIEventHandler<T = Element> = EventHandler<UIEvent<T>>
-  type WheelEventHandler<T = Element> = EventHandler<WheelEvent<T>>
-  type AnimationEventHandler<T = Element> = EventHandler<AnimationEvent<T>>
-  type TransitionEventHandler<T = Element> = EventHandler<TransitionEvent<T>>
+  export type ClipboardEventHandler<T = Element> = EventHandler<ClipboardEvent<T>>
+  export type CompositionEventHandler<T = Element> = EventHandler<CompositionEvent<T>>
+  export type DragEventHandler<T = Element> = EventHandler<DragEvent<T>>
+  export type FocusEventHandler<T = Element> = EventHandler<FocusEvent<T>>
+  export type FormEventHandler<T = Element> = EventHandler<FormEvent<T>>
+  export type ChangeEventHandler<T = Element> = EventHandler<ChangeEvent<T>>
+  export type KeyboardEventHandler<T = Element> = EventHandler<KeyboardEvent<T>>
+  export type MouseEventHandler<T = Element> = EventHandler<MouseEvent<T>>
+  export type TouchEventHandler<T = Element> = EventHandler<TouchEvent<T>>
+  export type PointerEventHandler<T = Element> = EventHandler<PointerEvent<T>>
+  export type UIEventHandler<T = Element> = EventHandler<UIEvent<T>>
+  export type WheelEventHandler<T = Element> = EventHandler<WheelEvent<T>>
+  export type AnimationEventHandler<T = Element> = EventHandler<AnimationEvent<T>>
+  export type TransitionEventHandler<T = Element> = EventHandler<TransitionEvent<T>>
 
   //
   // Props / DOM Attributes
@@ -220,34 +220,34 @@ export namespace JSX {
     onInvalid?: FormEventHandler<T> | undefined
 
     // Image Events
-    onLoad?: ReactEventHandler<T> | undefined
-    onError?: ReactEventHandler<T> | undefined
+    onLoad?: ZagEventHandler<T> | undefined
+    onError?: ZagEventHandler<T> | undefined
     onKeyDown?: KeyboardEventHandler<T> | undefined
     onKeyUp?: KeyboardEventHandler<T> | undefined
 
     // Media Events
-    onAbort?: ReactEventHandler<T> | undefined
-    onCanPlay?: ReactEventHandler<T> | undefined
-    onCanPlayThrough?: ReactEventHandler<T> | undefined
-    onDurationChange?: ReactEventHandler<T> | undefined
-    onEmptied?: ReactEventHandler<T> | undefined
-    onEncrypted?: ReactEventHandler<T> | undefined
-    onEnded?: ReactEventHandler<T> | undefined
-    onLoadedData?: ReactEventHandler<T> | undefined
-    onLoadedMetadata?: ReactEventHandler<T> | undefined
-    onLoadStart?: ReactEventHandler<T> | undefined
-    onPause?: ReactEventHandler<T> | undefined
-    onPlay?: ReactEventHandler<T> | undefined
-    onPlaying?: ReactEventHandler<T> | undefined
-    onProgress?: ReactEventHandler<T> | undefined
-    onRateChange?: ReactEventHandler<T> | undefined
-    onSeeked?: ReactEventHandler<T> | undefined
-    onSeeking?: ReactEventHandler<T> | undefined
-    onStalled?: ReactEventHandler<T> | undefined
-    onSuspend?: ReactEventHandler<T> | undefined
-    onTimeUpdate?: ReactEventHandler<T> | undefined
-    onVolumeChange?: ReactEventHandler<T> | undefined
-    onWaiting?: ReactEventHandler<T> | undefined
+    onAbort?: ZagEventHandler<T> | undefined
+    onCanPlay?: ZagEventHandler<T> | undefined
+    onCanPlayThrough?: ZagEventHandler<T> | undefined
+    onDurationChange?: ZagEventHandler<T> | undefined
+    onEmptied?: ZagEventHandler<T> | undefined
+    onEncrypted?: ZagEventHandler<T> | undefined
+    onEnded?: ZagEventHandler<T> | undefined
+    onLoadedData?: ZagEventHandler<T> | undefined
+    onLoadedMetadata?: ZagEventHandler<T> | undefined
+    onLoadStart?: ZagEventHandler<T> | undefined
+    onPause?: ZagEventHandler<T> | undefined
+    onPlay?: ZagEventHandler<T> | undefined
+    onPlaying?: ZagEventHandler<T> | undefined
+    onProgress?: ZagEventHandler<T> | undefined
+    onRateChange?: ZagEventHandler<T> | undefined
+    onSeeked?: ZagEventHandler<T> | undefined
+    onSeeking?: ZagEventHandler<T> | undefined
+    onStalled?: ZagEventHandler<T> | undefined
+    onSuspend?: ZagEventHandler<T> | undefined
+    onTimeUpdate?: ZagEventHandler<T> | undefined
+    onVolumeChange?: ZagEventHandler<T> | undefined
+    onWaiting?: ZagEventHandler<T> | undefined
 
     // MouseEvents
     onAuxClick?: MouseEventHandler<T> | undefined
@@ -271,7 +271,7 @@ export namespace JSX {
     onMouseUp?: MouseEventHandler<T> | undefined
 
     // Selection Events
-    onSelect?: ReactEventHandler<T> | undefined
+    onSelect?: ZagEventHandler<T> | undefined
 
     // Touch Events
     onTouchCancel?: TouchEventHandler<T> | undefined
@@ -841,7 +841,7 @@ export namespace JSX {
 
   export interface DetailsHTMLAttributes<T> extends HTMLAttributes<T> {
     open?: boolean | undefined
-    onToggle?: ReactEventHandler<T> | undefined
+    onToggle?: ZagEventHandler<T> | undefined
   }
 
   export interface DelHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -850,8 +850,8 @@ export namespace JSX {
   }
 
   export interface DialogHTMLAttributes<T> extends HTMLAttributes<T> {
-    onCancel?: ReactEventHandler<T> | undefined
-    onClose?: ReactEventHandler<T> | undefined
+    onCancel?: ZagEventHandler<T> | undefined
+    onClose?: ZagEventHandler<T> | undefined
     open?: boolean | undefined
   }
 
