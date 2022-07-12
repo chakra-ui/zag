@@ -22,7 +22,7 @@ test.describe("dialog", () => {
   })
 
   test("should have no accessibility violation", async ({ page }) => {
-    await a11y(page, "[data-part=underlay] > [role=dialog]")
+    await a11y(page, "[role=dialog]")
   })
 
   test("should focus on close button when dialog is open", async ({ page }) => {
@@ -68,8 +68,10 @@ test.describe("dialog", () => {
     })
 
     test("should close modal on underlay click", async ({ page }) => {
-      await page.click(dialog_2.underlay, { force: true, position: { x: 10, y: 10 } })
-      await expect(page.locator(dialog_2.trigger)).toBeFocused()
+      await Promise.all([
+        page.click(dialog_2.underlay, { force: true, position: { x: 10, y: 10 } }),
+        expect(page.locator(dialog_2.trigger)).toBeFocused(),
+      ])
     })
 
     test("should close parent modal from child", async ({ page }) => {

@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { nextTick } from "@zag-js/dom-utils"
+import { nextTick, raf } from "@zag-js/dom-utils"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { runIfFn } from "@zag-js/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
@@ -115,9 +115,9 @@ export function machine(ctx: UserDefinedContext) {
       },
       actions: {
         checkRenderedElements(ctx) {
-          Object.assign(ctx.renderedElements, {
-            title: !!dom.getTitleEl(ctx),
-            description: !!dom.getDescriptionEl(ctx),
+          raf(() => {
+            ctx.renderedElements.title = !!dom.getTitleEl(ctx)
+            ctx.renderedElements.description = !!dom.getDescriptionEl(ctx)
           })
         },
         invokeOnClose(ctx) {
