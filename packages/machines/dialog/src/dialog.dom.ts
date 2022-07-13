@@ -10,9 +10,9 @@ export const dom = defineDomHelpers({
   getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `dialog:${ctx.id}:description`,
   getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `dialog:${ctx.id}:close-btn`,
 
-  getContentEl: (ctx: Ctx) => dom.getById<HTMLElement>(ctx, dom.getContentId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById<HTMLElement>(ctx, dom.getTriggerId(ctx)),
-  getUnderlayEl: (ctx: Ctx) => dom.getById<HTMLElement>(ctx, dom.getUnderlayId(ctx)),
-  getTitleEl: (ctx: Ctx) => dom.getById<HTMLElement>(ctx, dom.getTitleId(ctx)),
-  getDescriptionEl: (ctx: Ctx) => dom.getById<HTMLElement>(ctx, dom.getDescriptionId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
+  getUnderlayEl: (ctx: Ctx) => dom.getById(ctx, dom.getUnderlayId(ctx)),
+  getTitleEl: (ctx: Ctx) => dom.getById(ctx, dom.getTitleId(ctx)),
+  getDescriptionEl: (ctx: Ctx) => dom.getById(ctx, dom.getDescriptionId(ctx)),
 })
