@@ -2,8 +2,6 @@ import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, defineDom
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./menu.types"
 
-type HTMLEl = HTMLElement | null
-
 export const dom = defineDomHelpers({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`,
   getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`,
@@ -13,9 +11,9 @@ export const dom = defineDomHelpers({
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
   getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
 
-  getContentEl: (ctx: Ctx) => dom.getById<HTMLEl>(ctx, dom.getContentId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById<HTMLEl>(ctx, dom.getTriggerId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getFocusedItem: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
   getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
 

@@ -2,9 +2,6 @@ import { defineDomHelpers, MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
 import type { MachineContext as Ctx } from "./number-input.types"
 
-type InputEl = HTMLInputElement | null
-type ButtonEl = HTMLButtonElement | null
-
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.id}:input`,
@@ -14,9 +11,9 @@ export const dom = defineDomHelpers({
   getCursorId: (ctx: Ctx) => `number-input:${ctx.id}:cursor`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `number-input:${ctx.id}:label`,
 
-  getInputEl: (ctx: Ctx) => dom.getById<InputEl>(ctx, dom.getInputId(ctx)),
-  getIncButtonEl: (ctx: Ctx) => dom.getById<ButtonEl>(ctx, dom.getIncButtonId(ctx)),
-  getDecButtonEl: (ctx: Ctx) => dom.getById<ButtonEl>(ctx, dom.getDecButtonId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)),
+  getIncButtonEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getIncButtonId(ctx)),
+  getDecButtonEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getDecButtonId(ctx)),
   getScrubberEl: (ctx: Ctx) => dom.getById(ctx, dom.getScrubberId(ctx)),
   getCursorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCursorId(ctx)),
 
