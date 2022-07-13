@@ -1,7 +1,6 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
 import { createEffect, onCleanup, onMount } from "solid-js"
 import { createStore, reconcile, Store } from "solid-js/store"
-import { unwrap } from "./unwrap"
 
 type HookOptions<
   TContext extends Record<string, any>,
@@ -52,7 +51,8 @@ export function useMachine<
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: HookOptions<TContext, TState, TEvent>) {
   const service = useService(machine, options)
-  const [state, setState] = createStore(unwrap(service.state))
+
+  const [state, setState] = createStore(service.getState())
 
   onMount(() => {
     const unsubscribe = service.subscribe((nextState) => {

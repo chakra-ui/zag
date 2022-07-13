@@ -78,6 +78,10 @@ export class Machine<
     return cast(snapshot(this.state))
   }
 
+  public getState(): S.State<TContext, TState, TEvent> {
+    return klona(this.stateSnapshot)
+  }
+
   // immutable context value
   private get contextSnapshot(): TContext {
     return this.stateSnapshot.context
