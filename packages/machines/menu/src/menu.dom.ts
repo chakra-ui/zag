@@ -13,11 +13,11 @@ export const dom = defineDomHelpers({
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
   getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
 
-  getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)) as HTMLEl,
-  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)) as HTMLEl,
-  getFocusedItem: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
-  getArrowEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getArrowId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)) as HTMLEl,
+  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)) as HTMLEl,
+  getFocusedItem: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
+  getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
 
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getContentId(ctx))

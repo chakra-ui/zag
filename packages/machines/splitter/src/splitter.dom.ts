@@ -10,8 +10,8 @@ export const dom = defineDomHelpers({
   getPrimaryPaneId: (ctx: Ctx) => ctx.ids?.primaryPane ?? `splitter:${ctx.id}:primary`,
   getSecondaryPaneId: (ctx: Ctx) => ctx.ids?.secondaryPane ?? `splitter:${ctx.id}:secondary`,
 
-  getSplitterEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getSplitterId(ctx)),
-  getPrimaryPaneEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPrimaryPaneId(ctx)),
+  getSplitterEl: (ctx: Ctx) => dom.getById(ctx, dom.getSplitterId(ctx)),
+  getPrimaryPaneEl: (ctx: Ctx) => dom.getById(ctx, dom.getPrimaryPaneId(ctx)),
 
   getCursor(ctx: Ctx) {
     if (ctx.disabled || ctx.fixed) return "default"

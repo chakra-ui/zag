@@ -8,10 +8,10 @@ export const dom = defineDomHelpers({
   getPositionerId: (ctx: Ctx) => `tooltip:${ctx.id}:popper`,
   portalId: "tooltip-portal",
 
-  getTriggerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx)),
-  getContentEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx)),
-  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
-  getArrowEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getArrowId(ctx)),
+  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
+  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
+  getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
   getScrollParent: (ctx: Ctx) => getScrollParent(dom.getTriggerEl(ctx)!),
   // using `getDoc` instead of `getRootNode` since the portal is not a child of the root node
   getPortalEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.portalId),

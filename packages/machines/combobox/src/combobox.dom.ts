@@ -14,13 +14,13 @@ export const dom = defineDomHelpers({
   getOptionId: (ctx: Ctx, id: string, index?: number) =>
     ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.id}:option:${id}`, index].filter((v) => v != null).join(":"),
 
-  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getRootNode(ctx).getElementById(ctx.activeId) : null),
-  getListboxEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getListboxId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
-  getPositionerEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPositionerId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getControlId(ctx)),
-  getToggleBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getToggleBtnId(ctx)),
-  getClearBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getClearBtnId(ctx)),
+  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
+  getListboxEl: (ctx: Ctx) => dom.getById(ctx, dom.getListboxId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)) as HTMLInputElement | null,
+  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
+  getToggleBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getToggleBtnId(ctx)),
+  getClearBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearBtnId(ctx)),
 
   getElements: (ctx: Ctx) => queryAll(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {

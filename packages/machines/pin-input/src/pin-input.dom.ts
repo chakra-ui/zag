@@ -6,7 +6,7 @@ export const dom = defineDomHelpers({
   getInputId: (ctx: Ctx, id: string) => ctx.ids?.input?.(id) ?? `pin-input:${ctx.id}:${id}`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `pin-input:${ctx.id}:hidden`,
 
-  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `input[data-ownedby=${ownerId}]`
@@ -14,6 +14,5 @@ export const dom = defineDomHelpers({
   },
   getFocusedEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
   getFirstInputEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getHiddenInputEl: (ctx: Ctx) =>
-    dom.getRootNode(ctx).getElementById(dom.getHiddenInputId(ctx)) as HTMLInputElement | null,
+  getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)) as HTMLInputElement | null,
 })
