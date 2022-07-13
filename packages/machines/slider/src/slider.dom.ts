@@ -19,7 +19,7 @@ export const dom = defineDomHelpers({
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getThumbId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)) as HTMLInputElement | null,
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
     // get the slider root element

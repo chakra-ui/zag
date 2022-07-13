@@ -15,9 +15,9 @@ export const dom = defineDomHelpers({
   getCancelBtnId: (ctx: Ctx) => ctx.ids?.cancelBtn ?? `editable:${ctx.id}:cancel-btn`,
   getEditBtnId: (ctx: Ctx) => ctx.ids?.editBtn ?? `editable:${ctx.id}:edit-btn`,
 
-  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)) as HTMLInputEl,
-  getPreviewEl: (ctx: Ctx) => dom.getById(ctx, dom.getPreviewId(ctx)) as HTMLInputEl,
-  getSubmitBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getSubmitBtnId(ctx)) as HTMLButtonEl,
-  getCancelBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getCancelBtnId(ctx)) as HTMLButtonEl,
-  getEditBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getEditBtnId(ctx)) as HTMLButtonEl,
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputEl>(ctx, dom.getInputId(ctx)),
+  getPreviewEl: (ctx: Ctx) => dom.getById<HTMLInputEl>(ctx, dom.getPreviewId(ctx)),
+  getSubmitBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonEl>(ctx, dom.getSubmitBtnId(ctx)),
+  getCancelBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonEl>(ctx, dom.getCancelBtnId(ctx)),
+  getEditBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonEl>(ctx, dom.getEditBtnId(ctx)),
 })

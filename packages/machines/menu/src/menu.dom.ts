@@ -13,9 +13,9 @@ export const dom = defineDomHelpers({
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
   getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
 
-  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)) as HTMLEl,
+  getContentEl: (ctx: Ctx) => dom.getById<HTMLEl>(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)) as HTMLEl,
+  getTriggerEl: (ctx: Ctx) => dom.getById<HTMLEl>(ctx, dom.getTriggerId(ctx)),
   getFocusedItem: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
   getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
 

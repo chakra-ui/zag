@@ -14,5 +14,5 @@ export const dom = defineDomHelpers({
   },
   getFocusedEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
   getFirstInputEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)) as HTMLInputElement | null,
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 })

@@ -8,5 +8,5 @@ export const dom = defineDomHelpers({
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `checkbox:${ctx.id}:input`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)) as HTMLInputElement | null,
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
 })

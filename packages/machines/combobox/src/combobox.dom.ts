@@ -16,7 +16,7 @@ export const dom = defineDomHelpers({
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
   getListboxEl: (ctx: Ctx) => dom.getById(ctx, dom.getListboxId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)) as HTMLInputElement | null,
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getToggleBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getToggleBtnId(ctx)),

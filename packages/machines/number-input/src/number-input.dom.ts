@@ -14,9 +14,9 @@ export const dom = defineDomHelpers({
   getCursorId: (ctx: Ctx) => `number-input:${ctx.id}:cursor`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `number-input:${ctx.id}:label`,
 
-  getInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getInputId(ctx)) as InputEl,
-  getIncButtonEl: (ctx: Ctx) => dom.getById(ctx, dom.getIncButtonId(ctx)) as ButtonEl,
-  getDecButtonEl: (ctx: Ctx) => dom.getById(ctx, dom.getDecButtonId(ctx)) as ButtonEl,
+  getInputEl: (ctx: Ctx) => dom.getById<InputEl>(ctx, dom.getInputId(ctx)),
+  getIncButtonEl: (ctx: Ctx) => dom.getById<ButtonEl>(ctx, dom.getIncButtonId(ctx)),
+  getDecButtonEl: (ctx: Ctx) => dom.getById<ButtonEl>(ctx, dom.getDecButtonId(ctx)),
   getScrubberEl: (ctx: Ctx) => dom.getById(ctx, dom.getScrubberId(ctx)),
   getCursorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCursorId(ctx)),
 

@@ -44,7 +44,7 @@ export const dom = defineDomHelpers({
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getThumbId(ctx, index)),
-  getInputEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getInputId(ctx, index)) as HTMLInputElement | null,
+  getInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx, index)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
