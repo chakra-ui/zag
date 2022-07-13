@@ -80,17 +80,18 @@ type Ctx = {
   getRootNode?: () => Document | ShadowRoot | Node
 }
 
-export function defineDomHelpers<T>(domUtils: T) {
-  const roots = {
+export function defineDomHelpers<T>(helpers: T) {
+  const dom = {
     getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
-    getDoc: (ctx: Ctx) => getDocument(roots.getRootNode(ctx)),
-    getWin: (ctx: Ctx) => roots.getDoc(ctx).defaultView ?? window,
-    getActiveElement: (ctx: Ctx) => roots.getDoc(ctx).activeElement as HTMLElement | null,
-    getById: (ctx: Ctx, id: string) => roots.getRootNode(ctx).getElementById(id),
+    getDoc: (ctx: Ctx) => getDocument(dom.getRootNode(ctx)),
+    getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
+    getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
+    getById: (ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id),
   }
+
   return {
-    ...roots,
-    ...domUtils,
+    ...dom,
+    ...helpers,
   }
 }
 

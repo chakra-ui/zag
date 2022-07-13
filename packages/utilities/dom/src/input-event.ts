@@ -11,7 +11,9 @@ function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
   return Object.getOwnPropertyDescriptor(proto, property) ?? {}
 }
 
-export function dispatchInputValueEvent(el: HTMLElement, value: string | number) {
+export function dispatchInputValueEvent(el: HTMLElement | null, value: string | number) {
+  if (!el) return
+
   const win = getWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
 
@@ -24,7 +26,9 @@ export function dispatchInputValueEvent(el: HTMLElement, value: string | number)
   el.dispatchEvent(event)
 }
 
-export function dispatchInputCheckedEvent(el: HTMLElement, checked: boolean) {
+export function dispatchInputCheckedEvent(el: HTMLElement | null, checked: boolean) {
+  if (!el) return
+
   const win = getWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
 
