@@ -11,39 +11,58 @@ type HookOptions<
   context?: Store<Partial<TContext>>
 }
 
-export function useMachine<
+export function useService<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: HookOptions<TContext, TState, TEvent>) {
   const { actions, state: hydratedState, context } = options ?? {}
-  const service = typeof machine === "function" ? machine() : machine
 
-  const [state, setState] = createStore<any>(unwrap(service.state))
-
-  service.start(hydratedState)
-  service.send("SETUP")
-
-  createEffect(() => {
-    if (context) {
-      service.setContext(context)
-    }
-  })
-
-  const unsubscribe = service.subscribe((s) => {
-    setState(reconcile(s))
-  })
-
-  onCleanup(() => {
-    unsubscribe()
-    service.stop()
-  })
+  const service = (() => {
+    const _machine = typeof machine === "function" ? machine() : machine
+    return context ? _machine.withContext(context) : _machine
+  })()
 
   onMount(() => {
+    service.start(hydratedState)
+
+    if (service.state.can("SETUP")) {
+      service.send("SETUP")
+    }
+
+    onCleanup(() => {
+      service.stop()
+    })
+  })
+
+  createEffect(() => {
+    service.setContext(context)
+  })
+
+  createEffect(() => {
     service.setActions(actions)
   })
 
-  const _state = <S.State<TContext, TState>>state
+  return service
+}
 
-  return [_state, service.send, service] as const
+export function useMachine<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: HookOptions<TContext, TState, TEvent>) {
+  const service = useService(machine, options)
+  const [state, setState] = createStore(unwrap(service.state))
+
+  onMount(() => {
+    const unsubscribe = service.subscribe((nextState) => {
+      setState(reconcile(nextState))
+    })
+
+    onCleanup(() => {
+      unsubscribe()
+    })
+  })
+
+  return [state, service.send, service] as const
 }

@@ -11,12 +11,6 @@ function useConstant<T>(fn: () => T): T {
   return ref.current.v
 }
 
-/**
- * Useful for `React.Context` consumers who need to start the machine at the root level
- * and propagate the `service` down to children.
- *
- * It returns a stable instance of the machine
- */
 export function useService<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
@@ -31,7 +25,11 @@ export function useService<
 
   useSafeLayoutEffect(() => {
     service.start(hydratedState)
-    service.send("SETUP")
+
+    if (service.state.can("SETUP")) {
+      service.send("SETUP")
+    }
+
     return () => {
       service.stop()
     }
@@ -42,21 +40,12 @@ export function useService<
   }, [actions])
 
   useSafeLayoutEffect(() => {
-    if (!context) return
     service.setContext(context)
   }, [context])
 
   return service
 }
 
-/**
- * General purpose hook for consuming UI machines within react.
- *
- * It returns a tuple that contains:
- * - `state`: the current state of the machine
- * - `send`: function to send events to the machine
- * - `service`: the machine instance or service
- */
 export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,

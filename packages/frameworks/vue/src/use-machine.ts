@@ -1,5 +1,44 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { computed, ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch } from "vue"
+import { ComputedRef, onBeforeUnmount, onMounted, readonly, Ref, shallowRef, watch } from "vue"
+
+type MachineOptions<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+> = Omit<S.HookOptions<TContext, TState, TEvent>, "context"> & {
+  context?: Ref<S.UserContext<TContext>> | ComputedRef<S.UserContext<TContext>>
+}
+
+export function useService<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: MachineOptions<TContext, TState, TEvent>) {
+  const { actions, state: hydratedState, context } = options ?? {}
+
+  const _machine = typeof machine === "function" ? machine() : machine
+  const service = context ? _machine.withContext(context.value) : _machine
+
+  onMounted(() => {
+    service.start(hydratedState)
+
+    if (service.state.can("SETUP")) {
+      service.send("SETUP")
+    }
+
+    onBeforeUnmount(() => {
+      service.stop()
+    })
+  })
+
+  watch(() => actions, service.setActions, { flush: "post", immediate: true })
+
+  if (context) {
+    watch(context, (ctx) => service.setContext(ctx), { deep: true })
+  }
+
+  return service
+}
 
 export function useMachine<
   TContext extends Record<string, any>,
@@ -11,49 +50,18 @@ export function useMachine<
     context?: Ref<S.UserContext<TContext>> | ComputedRef<S.UserContext<TContext>>
   },
 ) {
-  const { actions, state: hydratedState, context } = options ?? {}
-
-  const service = typeof machine === "function" ? machine() : machine
-
-  const state = shallowRef<S.State<TContext, TState>>(service.state)
-  const consumableState = computed({
-    get() {
-      return state.value
-    },
-    set(value: S.State<TContext, TState>) {
-      if (state.value !== value) {
-        state.value = value
-      }
-    },
-  })
-
-  service.start(hydratedState)
-  service.send("SETUP")
-
-  let unsubscribe: VoidFunction
+  const service = useService(machine, options)
+  const state = shallowRef(service.state)
 
   onMounted(() => {
-    unsubscribe = service.subscribe((nextState) => {
-      consumableState.value = nextState
+    const unsubscribe = service.subscribe((nextState) => {
+      state.value = nextState
+    })
+
+    onBeforeUnmount(() => {
+      unsubscribe?.()
     })
   })
 
-  onBeforeUnmount(() => {
-    unsubscribe?.()
-    service.stop()
-  })
-
-  watch(() => actions, service.setActions, { flush: "post", immediate: true })
-
-  if (context) {
-    watch(
-      context,
-      (ctx) => {
-        service.setContext(ctx)
-      },
-      { immediate: true, deep: true },
-    )
-  }
-
-  return [consumableState, service.send, service] as const
+  return [readonly(state), service.send, service] as const
 }

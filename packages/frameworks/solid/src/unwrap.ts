@@ -1,10 +1,13 @@
-const toPOJO = (v: any) => JSON.parse(JSON.stringify(v))
-
-export const unwrap = (state: any) => ({
-  value: String(state.value),
-  previousValue: String(state.previousValue),
-  context: toPOJO(state.context),
-  event: toPOJO(state.event),
-  done: Boolean(state.done),
-  tags: Array.from(state.tags),
-})
+export function unwrap<T extends Record<string, any>>(state: T, acc = {}): T {
+  for (const key of Reflect.ownKeys(state)) {
+    const value = Reflect.get(state, key)
+    if (key === "tags" || key === "nextEvents") {
+      acc[key] = Array.from(value)
+    } else if (typeof value === "object") {
+      acc[key] = unwrap(value) as any
+    } else {
+      acc[key] = value
+    }
+  }
+  return acc as T
+}
