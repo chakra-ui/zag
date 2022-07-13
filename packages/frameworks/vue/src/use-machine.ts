@@ -1,5 +1,5 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { ComputedRef, onBeforeUnmount, onMounted, readonly, Ref, shallowRef, watch } from "vue"
+import { ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch } from "vue"
 
 type MachineOptions<
   TContext extends Record<string, any>,
@@ -63,5 +63,5 @@ export function useMachine<
     })
   })
 
-  return [readonly(state), service.send, service] as const
+  return [state, service.send, service] as const
 }
