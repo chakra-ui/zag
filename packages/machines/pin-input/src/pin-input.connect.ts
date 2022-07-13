@@ -1,4 +1,12 @@
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-utils"
+import {
+  ariaAttr,
+  dataAttr,
+  EventKeyMap,
+  getEventKey,
+  getNativeEvent,
+  isModifiedEvent,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
@@ -37,6 +45,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(state.context.disabled),
       "data-complete": dataAttr(isValueComplete),
+    }),
+
+    hiddenInputProps: normalize.input({
+      "aria-hidden": true,
+      type: "text",
+      tabIndex: -1,
+      id: dom.getHiddenInputId(state.context),
+      name: state.context.name,
+      style: visuallyHiddenStyle,
+      maxLength: state.context.valueLength,
+      defaultValue: state.context.valueAsString,
     }),
 
     getInputProps({ index }: { index: number }) {
@@ -88,6 +107,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
             ArrowRight() {
               send("ARROW_RIGHT")
+            },
+            Enter() {
+              send("ENTER")
             },
           }
 

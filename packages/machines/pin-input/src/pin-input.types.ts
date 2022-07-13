@@ -7,11 +7,20 @@ type IntlMessages = {
 
 type ElementIds = Partial<{
   root: string
+  hiddenInput: string
   input(id: string): string
 }>
 
 type PublicContext = DirectionProperty &
   CommonProperties & {
+    /**
+     * The name of the input element. Useful for form submission.
+     */
+    name?: string
+    /**
+     * The regular expression that the user-entered input value is checked against.
+     */
+    pattern?: string
     /**
      * The ids of the elements in the pin input. Useful for composition.
      */

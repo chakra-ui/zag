@@ -22,6 +22,7 @@ const fetchMachine = createMachine({
     "isValidValue": false,
     "hasValue": false,
     "hasValue": false,
+    "isValueComplete": false,
     "!isValidValue": false
   },
   on: {
@@ -97,6 +98,10 @@ const fetchMachine = createMachine({
         }, {
           actions: ["setPrevFocusedIndex", "clearFocusedValue"]
         }],
+        ENTER: {
+          cond: "isValueComplete",
+          actions: "requestFormSubmit"
+        },
         KEY_DOWN: {
           cond: "!isValidValue",
           actions: ["preventDefault", "invokeOnInvalid"]
@@ -119,6 +124,7 @@ const fetchMachine = createMachine({
     "isFinalValue && isValidValue": ctx => ctx["isFinalValue && isValidValue"],
     "isValidValue": ctx => ctx["isValidValue"],
     "hasValue": ctx => ctx["hasValue"],
+    "isValueComplete": ctx => ctx["isValueComplete"],
     "!isValidValue": ctx => ctx["!isValidValue"]
   }
 });

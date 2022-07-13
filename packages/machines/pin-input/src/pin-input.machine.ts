@@ -1,6 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { raf } from "@zag-js/dom-utils"
-import { fromLength } from "@zag-js/utils"
+import { dispatchInputValueEvent, raf } from "@zag-js/dom-utils"
 import { dom } from "./pin-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
 
@@ -34,7 +33,7 @@ export function machine(ctx: UserDefinedContext) {
       watch: {
         focusedIndex: "focusInput",
         value: "invokeOnChange",
-        isValueComplete: ["invokeComplete", "blurFocusedInputIfNeeded"],
+        isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
       on: {
@@ -119,6 +118,10 @@ export function machine(ctx: UserDefinedContext) {
                 actions: ["setPrevFocusedIndex", "clearFocusedValue"],
               },
             ],
+            ENTER: {
+              guard: "isValueComplete",
+              actions: "requestFormSubmit",
+            },
             KEY_DOWN: {
               guard: not("isValidValue"),
               actions: ["preventDefault", "invokeOnInvalid"],
@@ -133,7 +136,11 @@ export function machine(ctx: UserDefinedContext) {
         isValueEmpty: (_ctx, evt) => evt.value === "",
         hasValue: (ctx) => ctx.value[ctx.focusedIndex] !== "",
         isValueComplete: (ctx) => ctx.isValueComplete,
-        isValidValue: (ctx, evt) => isValidType(evt.value, ctx.type),
+        isValidValue: (ctx, evt) => {
+          if (!ctx.pattern) return isValidType(evt.value, ctx.type)
+          const regex = new RegExp(ctx.pattern, "g")
+          return regex.test(evt.value)
+        },
         isFinalValue: (ctx) => {
           return (
             ctx.filledValueLength + 1 === ctx.valueLength &&
@@ -147,7 +154,7 @@ export function machine(ctx: UserDefinedContext) {
       actions: {
         setupValue: (ctx) => {
           const inputs = dom.getElements(ctx)
-          const empty = fromLength(inputs.length).map(() => "")
+          const empty = Array.from({ length: inputs.length }).map(() => "")
           ctx.value = Object.assign(empty, ctx.value)
         },
         focusInput: (ctx) => {
@@ -156,15 +163,14 @@ export function machine(ctx: UserDefinedContext) {
             dom.getFocusedEl(ctx)?.focus()
           })
         },
-        invokeComplete: (ctx) => {
-          if (ctx.isValueComplete) {
-            ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
-          }
+        invokeOnComplete: (ctx) => {
+          if (!ctx.isValueComplete) return
+          ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
         },
         invokeOnChange: (ctx, evt) => {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: Array.from(ctx.value) })
-          }
+          if (evt.type === "SETUP") return
+          ctx.onChange?.({ value: Array.from(ctx.value) })
+          dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
         },
         invokeOnInvalid: (ctx, evt) => {
           ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
@@ -218,6 +224,11 @@ export function machine(ctx: UserDefinedContext) {
           raf(() => {
             dom.getFocusedEl(ctx)?.blur()
           })
+        },
+        requestFormSubmit(ctx) {
+          if (!ctx.name) return
+          const input = dom.getHiddenInputEl(ctx)
+          input?.form?.requestSubmit()
         },
       },
     },
