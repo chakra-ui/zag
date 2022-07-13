@@ -3,11 +3,7 @@ import { isObject, isString } from "@zag-js/utils"
 import { cssify } from "./cssify"
 import type { JSX } from "solid-js"
 
-type PropTypes = {
-  button: JSX.IntrinsicElements["button"]
-  label: JSX.IntrinsicElements["label"]
-  input: JSX.IntrinsicElements["input"]
-  output: JSX.IntrinsicElements["output"]
+type PropTypes = JSX.IntrinsicElements & {
   element: JSX.HTMLAttributes<any>
 }
 

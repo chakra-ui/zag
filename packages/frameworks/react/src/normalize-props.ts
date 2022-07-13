@@ -1,11 +1,7 @@
 import { createNormalizer } from "@zag-js/types"
 import type { HTMLAttributes } from "react"
 
-type PropTypes = {
-  button: JSX.IntrinsicElements["button"]
-  label: JSX.IntrinsicElements["label"]
-  input: JSX.IntrinsicElements["input"]
-  output: JSX.IntrinsicElements["output"]
+type PropTypes = JSX.IntrinsicElements & {
   element: HTMLAttributes<HTMLElement>
 }
 

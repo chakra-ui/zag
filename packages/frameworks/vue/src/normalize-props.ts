@@ -8,11 +8,7 @@ type ReservedProps = {
 
 type Attrs<T> = T & ReservedProps
 
-type PropTypes = {
-  button: Attrs<Vue.ButtonHTMLAttributes>
-  input: Attrs<Vue.InputHTMLAttributes>
-  output: Attrs<Vue.OutputHTMLAttributes>
-  label: Attrs<Vue.LabelHTMLAttributes>
+type PropTypes = JSX.IntrinsicElements & {
   element: Attrs<Vue.HTMLAttributes>
 }
 
