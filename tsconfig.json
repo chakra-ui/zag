@@ -9,8 +9,6 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "incremental": true,
-    // Enforce using `import type` instead of `import` for types
-    "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
     "noEmit": true,
