@@ -321,7 +321,8 @@ export class Machine<
   /**
    * To used within side effects for React or Vue to update context
    */
-  public setContext = (context: Partial<Writable<TContext>>) => {
+  public setContext = (context: Partial<Writable<TContext>> | undefined) => {
+    if (!context) return
     for (const key in context) {
       this.state.context[<keyof TContext>key] = context[key]!
     }
