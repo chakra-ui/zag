@@ -3,15 +3,16 @@
   "baseBranch": "origin/main",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "node_modules/.cache/.tsbuildinfo"],
+      "dependsOn": ["^build"]
+    },
+    "build-fast": {
       "outputs": ["dist/**"]
     },
-    "build:fast": {
-      "cache": false
-    },
-    "start": {
-      "dependsOn": ["^start"],
-      "outputs": ["dist/**"]
+    "typecheck": {
+      "outputs": ["node_modules/.cache/.tsbuildinfo"],
+      "dependsOn": ["^typecheck"]
     }
-  }
+  },
+  "globalDependencies": ["tsconfig.json"]
 }
