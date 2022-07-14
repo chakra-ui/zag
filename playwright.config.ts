@@ -3,13 +3,14 @@ import { PlaywrightTestConfig, ReporterDescription } from "@playwright/test"
 const config: PlaywrightTestConfig = {
   testDir: "./e2e",
   outputDir: "./e2e/results",
-  testMatch: ["**/*.e2e.ts"],
+  testMatch: "*.e2e.ts",
   timeout: 30_000,
   fullyParallel: true,
   expect: {
     timeout: 5_000,
   },
   forbidOnly: !!process.env.CI,
+  workers: process.env.CI ? 1 : undefined,
   reporter: [
     process.env.CI ? ["list"] : ["line"],
     process.env.CI ? ["junit", { outputFile: "e2e/junit.xml" }] : null,
