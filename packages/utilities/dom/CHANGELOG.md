@@ -1,5 +1,23 @@
 # @zag-js/dom-utils
 
+## 0.1.7
+
+### Patch Changes
+
+- [`248a6a03`](https://github.com/chakra-ui/zag/commit/248a6a03d88cedb1f24b6b6cb4ac96444595878f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor live region to own package
+
+* [`0288c362`](https://github.com/chakra-ui/zag/commit/0288c36265fedb9aa77f52817d068bc6ad5723ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use interact outside instead of validate blur
+
+- [#191](https://github.com/chakra-ui/zag/pull/191)
+  [`66cb9c99`](https://github.com/chakra-ui/zag/commit/66cb9c998662fd049590d51cfdcd79f03e2f582b) Thanks
+  [@anubra266](https://github.com/anubra266)! - - Add `isDocument` query and `defineDomHelpers` method.
+  - Improve cases handled by `getDocument`
+- Updated dependencies [[`0e750fa1`](https://github.com/chakra-ui/zag/commit/0e750fa1e8d17f495f7d9fda10385819ac762c7b),
+  [`66cb9c99`](https://github.com/chakra-ui/zag/commit/66cb9c998662fd049590d51cfdcd79f03e2f582b)]:
+  - @zag-js/types@0.2.2
+
 ## 0.1.6
 
 ### Patch Changes

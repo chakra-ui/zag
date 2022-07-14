@@ -1,5 +1,20 @@
 # @zag-js/react
 
+## 0.1.12
+
+### Patch Changes
+
+- [#197](https://github.com/chakra-ui/zag/pull/197)
+  [`4ea550d9`](https://github.com/chakra-ui/zag/commit/4ea550d9983e0d20af123481f256cc5cf03d2358) Thanks
+  [@anubra266](https://github.com/anubra266)! - Remove `useSetup` hook
+
+* [#191](https://github.com/chakra-ui/zag/pull/191)
+  [`66cb9c99`](https://github.com/chakra-ui/zag/commit/66cb9c998662fd049590d51cfdcd79f03e2f582b) Thanks
+  [@anubra266](https://github.com/anubra266)! - Move setup step to `useService` hook
+
+* Updated dependencies [[`c5872be2`](https://github.com/chakra-ui/zag/commit/c5872be2fe057675fb8c7c64ed2c10b99daf697e)]:
+  - @zag-js/core@0.1.8
+
 ## 0.1.11
 
 ### Patch Changes
