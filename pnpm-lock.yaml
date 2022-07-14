@@ -797,6 +797,7 @@ importers:
       '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/types': link:../../types
+    devDependencies:
       '@zag-js/utils': link:../core
 
   packages/utilities/focus-scope:
@@ -845,6 +846,7 @@ importers:
       '@zag-js/utils': workspace:*
     dependencies:
       '@floating-ui/dom': 0.5.4
+    devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
 
@@ -860,14 +862,14 @@ importers:
     specifiers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
-    dependencies:
+    devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
 
   packages/utilities/remove-scroll:
     specifiers:
       '@zag-js/dom-utils': workspace:*
-    dependencies:
+    devDependencies:
       '@zag-js/dom-utils': link:../dom
 
   shared:
