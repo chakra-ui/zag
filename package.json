@@ -13,7 +13,7 @@
     "start": "turbo run start --filter=./packages/**/*",
     "prepare": "husky install",
     "swc": "node -r @swc-node/register",
-    "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc",
+    "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc *.log",
     "clean": "pnpm clean-pkgs && rm -rf node_modules",
     "start-react": "cd examples/next-ts && pnpm dev",
     "start-vue": "cd examples/vue-ts && vite --port 3002 --clearScreen false",
