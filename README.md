@@ -101,18 +101,18 @@ Our build is managed with esbuild and turborepo to provide fast, concurrent buil
 Since zag is framework agnostic, we need a way to test it within a framework. The `examples/` directory includes starter
 projects for the frameworks we support.
 
-- `start:react` : Starts the Next.js TypeScript project
-- `start:vue` : Starts the Vue 3 TypeScript project
-- `start:solid` : Starts the Solid TypeScript project
+- `start-react` : Starts the Next.js TypeScript project
+- `start-vue` : Starts the Vue 3 TypeScript project
+- `start-solid` : Starts the Solid TypeScript project
 
 ### E2E Tests
 
 We've setup end-to-end tests for every machine we built. We use [Playwright](https://playwright.dev/) for testing and we
 ensure that the component works the same way regardless of the framework.
 
-- `e2e:react` : Starts the E2E tests for the React project
-- `e2e:vue` : Starts the E2E tests for the Vue project
-- `e2e:solid` : Starts the E2E tests for the Solid project
+- `e2e-react` : Starts the E2E tests for the React project
+- `e2e-vue` : Starts the E2E tests for the Vue project
+- `e2e-solid` : Starts the E2E tests for the Solid project
 
 ### Contributing new machines/features
 
