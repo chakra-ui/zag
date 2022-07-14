@@ -1,0 +1,31 @@
+name: Playwright Tests
+
+on:
+  pull_request:
+    types: [opened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+
+        - name: Install
+            uses: ./.github/composite-actions/install
+
+        - name: Install Playwright
+            run: npx playwright install --with-deps
+
+        - name: Run your tests
+            run: pnpm e2e-react
+
+        - name: Upload test results
+            if: always()
+            uses: actions/upload-artifact@v2
+            with:
+            name: playwright-report
+            path: playwright-report
