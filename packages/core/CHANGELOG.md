@@ -1,5 +1,12 @@
 # @zag-js/core
 
+## 0.1.8
+
+### Patch Changes
+
+- [`c5872be2`](https://github.com/chakra-ui/zag/commit/c5872be2fe057675fb8c7c64ed2c10b99daf697e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix order of execution between root entry-exit and initial state
+
 ## 0.1.7
 
 ### Patch Changes

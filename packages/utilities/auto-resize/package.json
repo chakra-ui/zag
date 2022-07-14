@@ -34,6 +34,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "0.1.6"
+    "@zag-js/dom-utils": "0.1.7"
   }
 }

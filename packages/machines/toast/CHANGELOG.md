@@ -1,5 +1,19 @@
 # @zag-js/toast
 
+## 0.1.10
+
+### Patch Changes
+
+- [#191](https://github.com/chakra-ui/zag/pull/191)
+  [`66cb9c99`](https://github.com/chakra-ui/zag/commit/66cb9c998662fd049590d51cfdcd79f03e2f582b) Thanks
+  [@anubra266](https://github.com/anubra266)! - Improve SSR by omitting the setup step.
+
+- Updated dependencies [[`0e750fa1`](https://github.com/chakra-ui/zag/commit/0e750fa1e8d17f495f7d9fda10385819ac762c7b),
+  [`66cb9c99`](https://github.com/chakra-ui/zag/commit/66cb9c998662fd049590d51cfdcd79f03e2f582b),
+  [`c5872be2`](https://github.com/chakra-ui/zag/commit/c5872be2fe057675fb8c7c64ed2c10b99daf697e)]:
+  - @zag-js/types@0.2.2
+  - @zag-js/core@0.1.8
+
 ## 0.1.9
 
 ### Patch Changes

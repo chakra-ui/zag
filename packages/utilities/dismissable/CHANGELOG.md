@@ -1,5 +1,15 @@
 # @zag-js/dismissable
 
+## 0.1.2
+
+### Patch Changes
+
+- [`569d98e1`](https://github.com/chakra-ui/zag/commit/569d98e186dc95c97b1b897b6cc0183065646031) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename package to fix typo in package name
+
+- Updated dependencies []:
+  - @zag-js/interact-outside@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
