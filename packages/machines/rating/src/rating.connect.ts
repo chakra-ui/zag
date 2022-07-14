@@ -52,7 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "text",
       hidden: true,
       id: dom.getInputId(state.context),
-      value: state.context.value,
+      defaultValue: state.context.value,
     }),
 
     labelProps: normalize.element({
