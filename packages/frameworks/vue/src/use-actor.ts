@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import { onBeforeUnmount, onMounted, readonly, shallowRef } from "vue"
+import { onBeforeUnmount, onMounted, shallowRef } from "vue"
 
 export function useActor<
   TContext extends Record<string, any>,
@@ -18,5 +18,5 @@ export function useActor<
     })
   })
 
-  return [readonly(state), service.send] as const
+  return [state, service.send] as const
 }

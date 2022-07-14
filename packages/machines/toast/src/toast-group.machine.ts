@@ -1,4 +1,4 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-utils"
 import { createToastMachine } from "./toast.machine"
 import type { GroupMachineContext, UserDefinedGroupContext } from "./toast.types"
@@ -58,7 +58,7 @@ export function groupMachine(ctx: UserDefinedGroupContext) {
             pauseOnPageIdle: ctx.pauseOnPageIdle,
             pauseOnInteraction: ctx.pauseOnInteraction,
             dir: ctx.dir,
-            doc: ref(ctx.doc ?? document),
+            getRootNode: ctx.getRootNode,
           }
           const toast = createToastMachine(options)
           const actor = self.spawn(toast)

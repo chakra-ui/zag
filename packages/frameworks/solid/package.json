@@ -28,23 +28,26 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "0.1.8",
-    "@zag-js/store": "0.1.0",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/store": "workspace:*",
+    "@zag-js/types": "workspace:*",
     "hyphenate-style-name": "1.0.4"
   },
   "devDependencies": {
+    "@zag-js/utils": "workspace:*",
     "solid-js": "1.4.6"
   },
   "peerDependencies": {
     "solid-js": ">=1.1.3"
   },
   "scripts": {
-    "build:fast": "zag build",
-    "start": "zag build --watch",
-    "build": "zag build --prod",
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "start": "pnpm build --watch",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
-    "test:ci": "yarn test --ci --runInBand",
-    "test:watch": "yarn test --watch --updateSnapshot"
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit"
   }
 }

@@ -1,4 +1,4 @@
-name: Add Visualizer Link
+name: Visualize Logic
 
 on:
   pull_request:

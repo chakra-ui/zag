@@ -1,4 +1,4 @@
-import { createMachine, ref, subscribe } from "@zag-js/core"
+import { createMachine, subscribe } from "@zag-js/core"
 import {
   addDomEvent,
   addPointerEvent,
@@ -196,11 +196,6 @@ export function machine(ctx: UserDefinedContext) {
         },
       },
       actions: {
-        setupDocument(ctx, evt) {
-          ctx.id = evt.id
-          if (evt.doc) ctx.doc = ref(evt.doc)
-          if (evt.root) ctx.rootNode = ref(evt.root)
-        },
         setGlobalId(ctx) {
           store.setId(ctx.id)
         },

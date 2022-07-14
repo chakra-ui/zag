@@ -1,5 +1,4 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { cast } from "@zag-js/utils"
 import { useEffect, useLayoutEffect, useRef } from "react"
 import { useSnapshot } from "./use-snapshot"
 
@@ -53,11 +52,11 @@ export function useMachine<
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const service = useService(machine, options)
 
-  const state = cast<S.State<TContext, TState, TEvent>>(
-    useSnapshot(service.state, {
-      sync: service.options.hookSync,
-    }),
-  )
+  const state = useSnapshot(service.state, {
+    sync: service.options.hookSync,
+  })
 
-  return [state, service.send, service] as const
+  const typedState = state as unknown as S.State<TContext, TState, TEvent>
+
+  return [typedState, service.send, service] as const
 }

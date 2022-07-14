@@ -19,16 +19,17 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build:fast": "yarn zag build",
-    "start": "yarn zag build --watch",
-    "build": "yarn zag build --prod",
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "start": "pnpm build --watch",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
     "test": "jest --config ../../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
-    "test:ci": "yarn test --ci --runInBand --updateSnapshot",
-    "test:watch": "yarn test --watchAll"
+    "test-ci": "pnpm test --ci --runInBand -u",
+    "test-watch": "pnpm test --watchAll"
   },
-  "dependencies": {
-    "@zag-js/dom-utils": "0.1.7"
+  "devDependencies": {
+    "@zag-js/dom-utils": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

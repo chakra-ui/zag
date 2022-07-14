@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { LiveRegion } from "@zag-js/dom-utils"
+import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement } from "@zag-js/popper"
-import type { DirectionProperty, Context, CommonProperties, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlMessages = {
   toggleButtonLabel?: string
