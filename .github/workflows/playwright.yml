@@ -47,8 +47,13 @@ jobs:
         id: download
         uses: actions/download-artifact@v3
 
-      - name: Comment test summary
+      - name: Generate test summary
         uses: test-summary/action@v1
         with:
-          paths: '${{ steps.download.outputs.download-path }}/**/junit.xml'
-          output: 'summary.md'
+          paths: "${{ steps.download.outputs.download-path }}/**/junit.xml"
+          output: e2e/summary.md
+
+      - name: Add comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: e2e/summary.md
