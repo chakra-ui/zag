@@ -2,6 +2,7 @@ import { PlaywrightTestConfig, ReporterDescription } from "@playwright/test"
 
 const config: PlaywrightTestConfig = {
   testDir: "./e2e",
+  outputDir: "./e2e/results",
   testMatch: ["**/*.e2e.ts"],
   timeout: 30_000,
   fullyParallel: true,
