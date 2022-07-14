@@ -42,14 +42,13 @@ export const dom = defineDomHelpers({
   getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.id}:output`,
   getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.id}:marker:${value}`,
 
-  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
-  getThumbEl: (ctx: Ctx, index: number) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx, index)),
-  getInputEl: (ctx: Ctx, index: number) =>
-    dom.getRootNode(ctx).getElementById(dom.getInputId(ctx, index)) as HTMLInputElement | null,
-  getControlEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getControlId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
+  getThumbEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getThumbId(ctx, index)),
+  getInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx, index)),
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getRangeEl: (ctx: Ctx) => dom.getRootNode(ctx)?.getElementById(dom.getRangeId(ctx)),
+  getRangeEl: (ctx: Ctx) => dom.getById(ctx, dom.getRangeId(ctx)),
 
   getValueFromPoint,
   dispatchChangeEvent(ctx: Ctx) {

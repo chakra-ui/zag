@@ -16,10 +16,10 @@ export const dom = defineDomHelpers({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.id}:label`,
   getMarkerId: (ctx: Ctx, value: number) => `slider:${ctx.id}:marker:${value}`,
 
-  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
-  getThumbEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getThumbId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getControlId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
+  getThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getThumbId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
     // get the slider root element

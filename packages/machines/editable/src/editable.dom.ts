@@ -1,9 +1,6 @@
 import { defineDomHelpers } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./editable.types"
 
-type HTMLButtonEl = HTMLButtonElement | null
-type HTMLInputEl = HTMLInputElement | null
-
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `editable:${ctx.id}`,
   getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `editable:${ctx.id}:area`,
@@ -15,9 +12,9 @@ export const dom = defineDomHelpers({
   getCancelBtnId: (ctx: Ctx) => ctx.ids?.cancelBtn ?? `editable:${ctx.id}:cancel-btn`,
   getEditBtnId: (ctx: Ctx) => ctx.ids?.editBtn ?? `editable:${ctx.id}:edit-btn`,
 
-  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputEl,
-  getPreviewEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getPreviewId(ctx)) as HTMLInputEl,
-  getSubmitBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getSubmitBtnId(ctx)) as HTMLButtonEl,
-  getCancelBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getCancelBtnId(ctx)) as HTMLButtonEl,
-  getEditBtnEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getEditBtnId(ctx)) as HTMLButtonEl,
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getPreviewEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getPreviewId(ctx)),
+  getSubmitBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getSubmitBtnId(ctx)),
+  getCancelBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getCancelBtnId(ctx)),
+  getEditBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getEditBtnId(ctx)),
 })
