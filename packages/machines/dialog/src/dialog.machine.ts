@@ -88,10 +88,11 @@ export function machine(ctx: UserDefinedContext) {
           let trap: FocusTrap
           nextTick(() => {
             const el = dom.getContentEl(ctx)
+            if (!el) return
             trap = createFocusTrap(el, {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
-              fallbackFocus: dom.getContentEl(ctx),
+              fallbackFocus: el,
               allowOutsideClick: true,
               returnFocusOnDeactivate: ctx.restoreFocus,
               initialFocus: runIfFn(ctx.initialFocusEl),
