@@ -1,9 +1,8 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { defineComponent } from "@vue/runtime-core"
 import { useControls } from "../hooks/use-controls"
-import { computed, h, Fragment } from "vue"
+import { computed, defineComponent, h, Fragment } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { numberInputControls } from "@zag-js/shared"
 

@@ -1,10 +1,9 @@
 import { injectGlobal } from "@emotion/css"
 import * as Slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { defineComponent } from "@vue/runtime-core"
 import serialize from "form-serialize"
 import { useControls } from "../hooks/use-controls"
-import { computed, h, Fragment } from "vue"
+import { computed, defineComponent, h, Fragment } from "vue"
 import { sliderControls, sliderStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 
