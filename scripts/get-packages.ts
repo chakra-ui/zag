@@ -1,11 +1,11 @@
-import { findWorkspacePackagesNoCheck } from "@pnpm/find-workspace-packages"
+import findPkgs from "find-packages"
 
 export async function getWorkspacePackages() {
-  return findWorkspacePackagesNoCheck(process.cwd())
+  return findPkgs(process.cwd())
 }
 
 export async function getMachinePackages() {
-  return findWorkspacePackagesNoCheck(process.cwd(), {
+  return findPkgs(process.cwd(), {
     patterns: ["packages/machines/**/*"],
   })
 }

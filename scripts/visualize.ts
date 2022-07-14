@@ -3,6 +3,7 @@ import * as parser from "@babel/parser"
 import traverse from "@babel/traverse"
 import * as t from "@babel/types"
 import fs from "fs"
+import path from "path"
 import { getMachinePackages } from "./get-packages"
 import { createLogger } from "./logger"
 
@@ -34,12 +35,7 @@ function capitalizeFirstLetter(string: string) {
 
 const outDir = ".xstate"
 
-async function visualizeComponent(component: string) {
-  const modules = await getMachinePackages()
-
-  const componentModule = modules.find((module) => module.dir.endsWith(component))
-  const machineFile = `${componentModule?.dir}/src/${component}.machine.ts`
-
+async function visualizeComponent(component: string, machineFile: string) {
   const code = fs.readFileSync(machineFile, "utf8")
   const ast = parser.parse(code, {
     sourceType: "module",
@@ -314,12 +310,16 @@ ${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).
   }
 }
 
-export default async function visualize() {
+async function visualize() {
   const modules = await getMachinePackages()
-  modules.forEach(async (machine) => {
-    const machineName = machine.dir.split("/")[2]
-    await visualizeComponent(machineName)
-  })
+
+  await Promise.all([
+    modules.map((machine) => {
+      const component = machine.manifest.name!.replace("@zag-js/", "")
+      const machineFile = path.join(machine.dir, "src", `${component}.machine.ts`)
+      return visualizeComponent(component, machineFile)
+    }),
+  ])
 }
 
 visualize()
