@@ -51,9 +51,9 @@ jobs:
         uses: test-summary/action@v1
         with:
           paths: "${{ steps.download.outputs.download-path }}/**/junit.xml"
-          output: e2e/summary.md
+          output: summary.md
 
       - name: Add comment
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          path: e2e/summary.md
+          path: summary.md
