@@ -155,8 +155,7 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         trackPointerMove(ctx, _evt, { send }) {
-          return trackPointerMove({
-            ctx,
+          return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove(info) {
               send({ type: "POINTER_MOVE", point: info.point })
             },

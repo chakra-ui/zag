@@ -15,7 +15,6 @@ export function machine(ctx: UserDefinedContext) {
       initial: "unknown",
 
       context: {
-        pointerdownNode: null,
         role: "dialog",
         renderedElements: {
           title: true,

@@ -152,16 +152,15 @@ export function machine(ctx: UserDefinedContext) {
     {
       activities: {
         trackPointerMove: (ctx, _evt, { send }) => {
-          const el = dom.getDoc(ctx).documentElement
-          return trackPointerMove({
-            ctx,
+          const doc = dom.getDoc(ctx)
+          return trackPointerMove(doc, {
             onPointerMove(info) {
               send({ type: "POINTER_MOVE", point: info.point })
-              el.style.cursor = dom.getCursor(ctx)
+              doc.documentElement.style.cursor = dom.getCursor(ctx)
             },
             onPointerUp() {
               send("POINTER_UP")
-              el.style.cursor = ""
+              doc.documentElement.style.cursor = ""
             },
           })
         },

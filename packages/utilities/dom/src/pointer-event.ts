@@ -15,19 +15,19 @@ export function trackPointerDown(doc: Document, onPointerDown: (el: HTMLElement)
 }
 
 type TrackPointerMoveOptions = {
-  ctx: { doc?: Document; threshold?: number }
   onPointerUp: VoidFunction
   onPointerMove: (info: PointerEventInfo, event: AnyPointerEvent) => void
 }
 
-export function trackPointerMove(opts: TrackPointerMoveOptions) {
-  const { onPointerMove, onPointerUp, ctx } = opts
-  const { doc = document, threshold = 5 } = ctx
+const THRESHOLD = 5
+
+export function trackPointerMove(doc: Document, opts: TrackPointerMoveOptions) {
+  const { onPointerMove, onPointerUp } = opts
 
   const handlePointerMove: Listener = (event, info) => {
     const { point: p } = info
     const distance = Math.sqrt(p.x ** 2 + p.y ** 2)
-    if (distance < threshold) return
+    if (distance < THRESHOLD) return
 
     // Because Safari doesn't trigger mouseup events when it's above a `<select>`
     if (isMouseEvent(event) && isLeftClick(event)) {
