@@ -1,5 +1,12 @@
 # @zag-js/shared
 
+## 0.0.4
+
+### Patch Changes
+
+- [`2a2566b8`](https://github.com/chakra-ui/zag/commit/2a2566b8be1441ae98215bec594e4c996f3b8aaf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Trigger new version due to changes in build chain
+
 ## 0.0.3
 
 ### Patch Changes
