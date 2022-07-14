@@ -10,13 +10,14 @@ export default async function modify() {
     const patch = {
       files: ["dist/**/*"],
       scripts: {
-        "build:fast": "zag build",
-        start: "zag build --watch",
-        build: "zag build --prod",
+        "build-fast": "tsup src/index.ts --format=esm,cjs",
+        start: "pnpm build --watch",
+        build: "pnpm build-fast --dts",
         test: `jest --config ${jestConfig} --rootDir . --passWithNoTests`,
         lint: "eslint src --ext .ts,.tsx",
-        "test:ci": "yarn test --ci --runInBand",
-        "test:watch": "yarn test --watch --updateSnapshot",
+        "test-ci": "pnpm test --ci --runInBand",
+        "test-watch": "pnpm test --watch -u",
+        typecheck: "tsc --noEmit",
       },
     }
 
