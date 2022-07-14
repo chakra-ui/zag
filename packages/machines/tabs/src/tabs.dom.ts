@@ -10,10 +10,10 @@ export const dom = defineDomHelpers({
   getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`,
   getIndicatorId: (ctx: Ctx) => `tabs:${ctx.id}:indicator`,
 
-  getTriggerGroupEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getTriggerGroupId(ctx)),
-  getContentEl: (ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(dom.getContentId(ctx, id)),
-  getTriggerEl: (ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(dom.getTriggerId(ctx, id)),
-  getIndicatorEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getIndicatorId(ctx)),
+  getTriggerGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerGroupId(ctx)),
+  getContentEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getContentId(ctx, id)),
+  getTriggerEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getTriggerId(ctx, id)),
+  getIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx)),
 
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getTriggerGroupId(ctx))
@@ -28,7 +28,7 @@ export const dom = defineDomHelpers({
   getActiveContentEl: (ctx: Ctx) => {
     if (!ctx.value) return
     const id = dom.getContentId(ctx, ctx.value)
-    return dom.getRootNode(ctx).getElementById(id)
+    return dom.getById(ctx, id)
   },
 
   getRectById: (ctx: Ctx, id: string) => {

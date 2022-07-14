@@ -1,5 +1,20 @@
 # @zag-js/solid
 
+## 0.1.11
+
+### Patch Changes
+
+- [#195](https://github.com/chakra-ui/zag/pull/195)
+  [`90f2e443`](https://github.com/chakra-ui/zag/commit/90f2e44376f012d14e3703d6959392e4f3bdddd0) Thanks
+  [@anubra266](https://github.com/anubra266)! - Improve SSR by omitting `useSetup` step.
+
+* [#197](https://github.com/chakra-ui/zag/pull/197)
+  [`4ea550d9`](https://github.com/chakra-ui/zag/commit/4ea550d9983e0d20af123481f256cc5cf03d2358) Thanks
+  [@anubra266](https://github.com/anubra266)! - Remove `useSetup` hook
+
+* Updated dependencies [[`c5872be2`](https://github.com/chakra-ui/zag/commit/c5872be2fe057675fb8c7c64ed2c10b99daf697e)]:
+  - @zag-js/core@0.1.8
+
 ## 0.1.10
 
 ### Patch Changes

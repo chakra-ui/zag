@@ -14,13 +14,11 @@ export const dom = defineDomHelpers({
   getTagInputId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tagInput?.(opt) ?? `${dom.getTagId(ctx, opt)}:input`,
   getEditInputId: (ctx: Ctx) => `${ctx.editedId}:input`,
 
-  getTagInputEl: (ctx: Ctx, opt: TagProps) =>
-    dom.getRootNode(ctx).getElementById(dom.getTagInputId(ctx, opt)) as HTMLInputElement | null,
-  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getInputId(ctx)) as HTMLInputElement | null,
-  getHiddenInputEl: (ctx: Ctx) =>
-    dom.getRootNode(ctx).getElementById(dom.getHiddenInputId(ctx)) as HTMLInputElement | null,
-  getEditInputEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getEditInputId(ctx)) as HTMLInputElement | null,
+  getTagInputEl: (ctx: Ctx, opt: TagProps) => dom.getById<HTMLInputElement>(ctx, dom.getTagInputId(ctx, opt)),
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
+  getEditInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getEditInputId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=tag]:not([data-disabled])`),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
   getLastEl: (ctx: Ctx) => dom.getElements(ctx)[dom.getElements(ctx).length - 1],

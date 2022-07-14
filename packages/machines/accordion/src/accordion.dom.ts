@@ -8,7 +8,7 @@ export const dom = defineDomHelpers({
   getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
   getTriggerId: (ctx: Ctx, value: string) => ctx.ids?.trigger?.(value) ?? `accordion:${ctx.id}:trigger:${value}`,
 
-  getRootEl: (ctx: Ctx) => dom.getRootNode(ctx).getElementById(dom.getRootId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getTriggers: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `[aria-controls][data-ownedby='${ownerId}']:not([disabled])`

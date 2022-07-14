@@ -1,5 +1,20 @@
 # @zag-js/vue
 
+## 0.1.10
+
+### Patch Changes
+
+- [#197](https://github.com/chakra-ui/zag/pull/197)
+  [`4ea550d9`](https://github.com/chakra-ui/zag/commit/4ea550d9983e0d20af123481f256cc5cf03d2358) Thanks
+  [@anubra266](https://github.com/anubra266)! - Remove `useSetup` hook
+
+* [#196](https://github.com/chakra-ui/zag/pull/196)
+  [`146aa136`](https://github.com/chakra-ui/zag/commit/146aa1364dd83f197104fdb2ac27b5a7896b4c8f) Thanks
+  [@anubra266](https://github.com/anubra266)! - Improve SSR by omitting `useSetup` step.
+
+* Updated dependencies [[`c5872be2`](https://github.com/chakra-ui/zag/commit/c5872be2fe057675fb8c7c64ed2c10b99daf697e)]:
+  - @zag-js/core@0.1.8
+
 ## 0.1.9
 
 ### Patch Changes

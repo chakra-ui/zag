@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/slider",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Core logic for the slider widget implemented as a state machine",
   "keywords": [
     "js",

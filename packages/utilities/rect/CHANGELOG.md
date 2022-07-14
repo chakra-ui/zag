@@ -1,5 +1,17 @@
 # @zag-js/rect-utils
 
+## 0.1.4
+
+### Patch Changes
+
+- [`6e00c6c8`](https://github.com/chakra-ui/zag/commit/6e00c6c89a67f597871e13210ec2f5b752e1baf7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add fill to debug polygon
+
+- Updated dependencies [[`248a6a03`](https://github.com/chakra-ui/zag/commit/248a6a03d88cedb1f24b6b6cb4ac96444595878f),
+  [`0288c362`](https://github.com/chakra-ui/zag/commit/0288c36265fedb9aa77f52817d068bc6ad5723ce),
+  [`66cb9c99`](https://github.com/chakra-ui/zag/commit/66cb9c998662fd049590d51cfdcd79f03e2f582b)]:
+  - @zag-js/dom-utils@0.1.7
+
 ## 0.1.3
 
 ### Patch Changes
