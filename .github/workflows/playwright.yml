@@ -12,7 +12,9 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  build:
+  e2e:
+    name: End to End tests
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -34,3 +36,19 @@ jobs:
           path: |
             e2e/report
             e2e/junit.xml
+          retention-days: 15
+
+  report:
+    name: Get reports
+    needs: [e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        id: download
+        uses: actions/download-artifact@v3
+
+      - name: Comment test summary
+        uses: test-summary/action@v1
+        with:
+          paths: '${{ steps.download.outputs.download-path }}/**/junit.xml'
+          output: 'summary.md'
