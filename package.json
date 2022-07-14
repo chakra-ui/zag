@@ -1,5 +1,5 @@
 {
-  "name": "zag",
+  "name": "@zag-js/org",
   "private": true,
   "repository": {
     "type": "git",
@@ -12,6 +12,7 @@
     "build": "turbo run build --filter=./packages/**/*",
     "start": "turbo run start --filter=./packages/**/*",
     "prepare": "husky install",
+    "swc": "node -r @swc/register",
     "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc",
     "clean": "pnpm clean-pkgs && rm -rf node_modules",
     "start-react": "cd examples/next-ts && pnpm dev",
@@ -22,7 +23,6 @@
     "e2e-react": "start-server-and-test start-react http://localhost:3000 pw-test",
     "e2e-vue": "start-server-and-test start-vue http-get://localhost:3000 pw-test",
     "e2e-solid": "start-server-and-test start-solid http-get://localhost:3000 pw-test",
-    "fix-pkgs": "manypkg fix",
     "generate-machine": "plop machine",
     "generate-util": "plop utility",
     "typecheck": "turbo run typecheck --filter=./packages/**/*",
@@ -31,12 +31,13 @@
     "lint": "eslint packages --ext .ts",
     "version": "changeset version",
     "release": "changeset publish",
-    "test": "jest"
+    "test": "jest",
+    "visualize": "pnpm swc scripts/visualize.ts --all"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write",
     "**/*.machine.ts": [
-      "pnpm zag visualize --all",
+      "pnpm visualize",
       "git add .xstate/*.js"
     ]
   },
@@ -47,20 +48,23 @@
   },
   "dependencies": {
     "@axe-core/playwright": "4.4.3",
+    "@babel/generator": "7.18.7",
+    "@babel/parser": "7.18.8",
+    "@babel/traverse": "7.18.8",
+    "@babel/types": "7.18.8",
     "@changesets/changelog-github": "0.4.5",
     "@changesets/cli": "2.23.0",
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
     "@lerna/package-graph": "5.1.6",
-    "@manypkg/cli": "0.19.1",
     "@playwright/test": "1.23.1",
     "@pnpm/find-workspace-packages": "4.0.19",
     "@swc-node/jest": "1.5.2",
     "@swc-node/register": "1.5.1",
     "@types/jest": "28.1.4",
+    "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.30.4",
     "@typescript-eslint/parser": "5.30.4",
-    "@zag-js/cli": "workspace:*",
     "axe-core": "4.4.2",
     "commitlint": "17.0.3",
     "esbuild": "0.14.48",
@@ -78,6 +82,7 @@
     "plop": "3.1.1",
     "prettier": "2.7.1",
     "start-server-and-test": "1.14.0",
+    "signale": "1.4.0",
     "turbo": "1.3.1",
     "tsup": "6.1.3",
     "typescript": "4.7.4"

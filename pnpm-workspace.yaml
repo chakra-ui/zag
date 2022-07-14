@@ -1,5 +1,4 @@
 packages:
   - "packages/**"
-  - "scripts"
   - "shared"
   - "examples/**"

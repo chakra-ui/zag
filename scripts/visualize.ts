@@ -1,16 +1,10 @@
-/**
- * Test command
- * zag visualize combobox
- * zag visualize --all
- */
-
 import generate from "@babel/generator"
 import * as parser from "@babel/parser"
 import traverse from "@babel/traverse"
 import * as t from "@babel/types"
 import fs from "fs"
-import { createLogger } from "../utilities/log"
-import { getMachinePackages } from "../utilities/packages"
+import { getMachinePackages } from "./get-packages"
+import { createLogger } from "./logger"
 
 const logger = createLogger("visualize")
 
@@ -21,11 +15,6 @@ const delays: Record<string, any> = {
   "number-input": { CHANGE_DELAY: 300, CHANGE_INTERVAL: 50 },
   splitter: { HOVER_DELAY: 250 },
   tooltip: { OPEN_DELAY: 1000, CLOSE_DELAY: 500 },
-}
-
-type VisualizeOpts = {
-  outDir?: string
-  all?: boolean
 }
 
 const fillVariables = (code: string) => {
@@ -43,11 +32,14 @@ function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-const visualizeComponent = async (component: string, opts: VisualizeOpts) => {
-  const { outDir = ".xstate" } = opts
+const outDir = ".xstate"
+
+async function visualizeComponent(component: string) {
   const modules = await getMachinePackages()
+
   const componentModule = modules.find((module) => module.dir.endsWith(component))
   const machineFile = `${componentModule?.dir}/src/${component}.machine.ts`
+
   const code = fs.readFileSync(machineFile, "utf8")
   const ast = parser.parse(code, {
     sourceType: "module",
@@ -322,16 +314,16 @@ ${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).
   }
 }
 
-export default async function visualize(component: string, opts: VisualizeOpts) {
-  const { all: shouldVisualizeAll } = opts
+export default async function visualize() {
   const modules = await getMachinePackages()
-
-  if (shouldVisualizeAll) {
-    modules.forEach(async (machine) => {
-      const machineName = machine.dir.split("/")[2]
-      await visualizeComponent(machineName, opts)
-    })
-  } else {
-    await visualizeComponent(component, opts)
-  }
+  modules.forEach(async (machine) => {
+    const machineName = machine.dir.split("/")[2]
+    await visualizeComponent(machineName)
+  })
 }
+
+visualize()
+
+process.on("uncaughtException", (error) => {
+  logger.error(error)
+})
