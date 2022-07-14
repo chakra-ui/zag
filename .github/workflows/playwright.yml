@@ -1,8 +1,11 @@
 name: Playwright Tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,20 +15,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        - name: Install
-            uses: ./.github/composite-actions/install
+      - name: Install
+        uses: ./.github/composite-actions/install
 
-        - name: Install Playwright
-            run: npx playwright install --with-deps
+      - name: Install Playwright
+        run: npx playwright install --with-deps
 
-        - name: Run your tests
-            run: pnpm e2e-react
+      - name: Run your tests
+        run: pnpm e2e-react
 
-        - name: Upload test results
-            if: always()
-            uses: actions/upload-artifact@v2
-            with:
-            name: playwright-report
-            path: playwright-report
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-report
+          path: playwright-report
