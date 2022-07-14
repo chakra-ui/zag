@@ -16,7 +16,7 @@ const config: PlaywrightTestConfig = {
     process.env.CI ? ["junit", { outputFile: "e2e/junit.xml" }] : null,
     ["html", { outputFolder: "e2e/report", open: "never" }],
   ].filter(Boolean) as ReporterDescription[],
-  retries: 0,
+  retries: process.env.CI ? 2 : 0,
   use: {
     trace: "retain-on-failure",
     baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",

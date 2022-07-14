@@ -14,7 +14,6 @@ concurrency:
 jobs:
   e2e:
     name: End to End tests
-    continue-on-error: true
 
     runs-on: ubuntu-latest
     steps:
