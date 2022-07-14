@@ -27,9 +27,6 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Run tests
-        run: pnpm test
-
       - name: Publish packages
         id: changesets
         uses: changesets/action@v1
