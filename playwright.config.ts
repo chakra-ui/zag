@@ -1,5 +1,10 @@
 import { PlaywrightTestConfig, ReporterDescription } from "@playwright/test"
 
+function getBaseUrl() {
+  const port = process.env.PORT || "3000"
+  return `http://localhost:${port}`
+}
+
 const config: PlaywrightTestConfig = {
   testDir: "./e2e",
   outputDir: "./e2e/results",
@@ -19,7 +24,7 @@ const config: PlaywrightTestConfig = {
   retries: process.env.CI ? 2 : 0,
   use: {
     trace: "retain-on-failure",
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
+    baseURL: getBaseUrl(),
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     locale: "en-US",
