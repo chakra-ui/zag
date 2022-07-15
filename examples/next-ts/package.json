@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "echo clean",
     "dev": "next",
+    "test-dev": "next",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"

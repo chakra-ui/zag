@@ -7,6 +7,9 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "paths": {
+      "@zag-js/*": ["../../node_modules/@zag-js/*"]
+    }
   }
 }

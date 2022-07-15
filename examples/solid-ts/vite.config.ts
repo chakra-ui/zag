@@ -12,7 +12,7 @@ export default defineConfig({
     alias: [
       {
         find: /^@zag-js\/(.*)$/,
-        replacement: path.resolve(process.cwd(), "..", "..", "node_modules/@zag-js/$1/src"),
+        replacement: path.resolve("./node_modules/@zag-js/$1/src"),
       },
     ],
   },

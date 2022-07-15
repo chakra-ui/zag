@@ -167,3 +167,8 @@ temp/
 # System files
 .DS_Store
 .ultra.cache.json
+
+# Playwright
+e2e/report
+e2e/junit.xml
+e2e/results
