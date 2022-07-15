@@ -45,6 +45,7 @@ jobs:
           retention-days: 15
 
   report:
+    if: always()
     name: Get reports
     needs: [e2e]
     runs-on: ubuntu-latest
