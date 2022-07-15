@@ -1,5 +1,20 @@
 # @zag-js/popover
 
+## 0.1.11
+
+### Patch Changes
+
+- [`2a2566b8`](https://github.com/chakra-ui/zag/commit/2a2566b8be1441ae98215bec594e4c996f3b8aaf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Trigger new version due to changes in build chain
+
+- Updated dependencies [[`2a2566b8`](https://github.com/chakra-ui/zag/commit/2a2566b8be1441ae98215bec594e4c996f3b8aaf)]:
+  - @zag-js/core@0.1.9
+  - @zag-js/types@0.2.3
+  - @zag-js/aria-hidden@0.1.1
+  - @zag-js/dismissable@0.1.3
+  - @zag-js/popper@0.1.9
+  - @zag-js/remove-scroll@0.1.3
+
 ## 0.1.10
 
 ### Patch Changes
