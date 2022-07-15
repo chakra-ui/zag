@@ -56,11 +56,10 @@ test.describe("dialog", () => {
       await expect(page.locator(dialog_2.close)).toBeFocused()
     })
 
-    // CHANGE ME
     test("should trap focus", async ({ page }) => {
       await page.keyboard.press("Tab")
       await page.keyboard.press("Tab")
-      await expect(page.locator(dialog_2.close)).not.toBeFocused()
+      await expect(page.locator(dialog_2.close)).toBeFocused()
     })
 
     test("should focus on nested buttton on escape", async ({ page }) => {

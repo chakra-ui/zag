@@ -58,5 +58,5 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
           check_name: Playwright Tests
-          files: e2e/junit.xml
+          files: "test-results/**/*.xml"
           commit: ${{ github.event.workflow_run.head_sha }}
