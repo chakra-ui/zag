@@ -37,16 +37,14 @@ test.describe("dialog", () => {
     await expect(page.locator(dialog_1.close)).toBeFocused()
   })
 
-  // *
   test("should close modal on escape", async ({ page }) => {
     await page.keyboard.press("Escape")
-    await expect(page.locator(dialog_1.trigger)).not.toBeFocused()
+    await expect(page.locator(dialog_1.trigger)).toBeFocused()
   })
 
-  // *
   test("should close modal on underlay click", async ({ page }) => {
     await page.click(dialog_1.underlay, { force: true, position: { x: 10, y: 10 } })
-    await expect(page.locator(dialog_1.trigger)).not.toBeFocused()
+    await expect(page.locator(dialog_1.trigger)).toBeFocused()
   })
 
   test.describe("nested dialog", () => {
