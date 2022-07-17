@@ -16,16 +16,15 @@ jobs:
       ${{ github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'changeset-release/main' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.SAGE_PAT }}
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install
+        uses: ./.github/composite-actions/install
 
       - name: Update changelog
-        run: pnpm changelog --number={{ github.event.pull_request.number }}
-
-      - name: Commit updates
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: "chore: sync changelog"
-          author_name: Segun Adebayo
-          author_email: joseshegs@gmail.com
+        run: |
+          pnpm changelog --number={{ github.event.pull_request.number }}
+          git add .
+          git commit -m "chore: update changelog"
+          git push origin main
