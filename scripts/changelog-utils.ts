@@ -111,7 +111,7 @@ export const manifest = {
 
 export async function writeReadme() {
   const data = await manifest.read()
-  const sortedData = data.map((pr) => `### ${pr.date}: [#${pr.id}](pr-${pr.id}.md)`)
+  const sortedData = data.map((pr) => `### ${pr.date}: [#${pr.id}](/.changelog/pr-${pr.id}.md)`)
   const [latestRelease, ...otherReleases] = sortedData
 
   const readme = [
