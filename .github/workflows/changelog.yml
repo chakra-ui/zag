@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SAGE_PAT }}
 
       - name: Update changelog
         run: pnpm changelog --number={{ github.event.pull_request.number }}
