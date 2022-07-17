@@ -2,10 +2,11 @@
 
 
 ## Latest Release
-### July 15, 2022: [#204](/.changelog/pr-204.md)
+### July 17, 2022: [#208](/.changelog/pr-208.md)
 
 
 ## Previous Releases
+### July 15, 2022: [#204](/.changelog/pr-204.md)
 ### July 14, 2022: [#194](/.changelog/pr-194.md)
 ### July 8, 2022: [#193](/.changelog/pr-193.md)
 ### July 8, 2022: [#192](/.changelog/pr-192.md)
