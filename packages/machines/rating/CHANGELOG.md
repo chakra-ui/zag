@@ -1,5 +1,14 @@
 # @zag-js/rating
 
+## 0.1.12
+
+### Patch Changes
+
+- [#207](https://github.com/chakra-ui/zag/pull/207)
+  [`eb2872cd`](https://github.com/chakra-ui/zag/commit/eb2872cd83785be2c13ee7b9dfc651f75310f856) Thanks
+  [@anubra266](https://github.com/anubra266)! - Use `defaultValue` instead of `value` in hidden input to prevent react
+  controlled warning
+
 ## 0.1.11
 
 ### Patch Changes
