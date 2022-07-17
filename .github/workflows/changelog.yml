@@ -13,7 +13,7 @@ jobs:
   if_merged:
     # This job will only run if the PR is merged and head branch is changeset-release/main
     if:
-      ${{ github.event.pull_request.merged == true && github.event.pull_request.head.ref == "changeset-release/main" }}
+      ${{ github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'changeset-release/main' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
