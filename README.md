@@ -91,7 +91,7 @@ power the logic behind UI components.
 
 Our build is managed with esbuild and turborepo to provide fast, concurrent builds across the packages.
 
-- `build:fast` : Build the CJS and ESM versions, without the types.
+- `build-fast` : Build the CJS and ESM versions, without the types.
 - `build` : Build the CJS, ESM and DTS files. This is the actual production build that we run in the CI.
 - `start` : The command to run when developing for Zag. It runs the `build:fast` command, watches for changes and
   rebuilds as needed.
@@ -116,9 +116,9 @@ ensure that the component works the same way regardless of the framework.
 
 ### Contributing new machines/features
 
-- `gen:machine` : Generates a new machine package in the `packages/` directory. It sets up the required files and
+- `generate-machine` : Generates a new machine package in the `packages/` directory. It sets up the required files and
   structure for new machine.
-- `gen:util` : Generates a new utility package in the `packages/utilities` directory.
+- `generate-util` : Generates a new utility package in the `packages/utilities` directory.
 
 ### Other commands
 
