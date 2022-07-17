@@ -35,7 +35,8 @@
     "version": "changeset version",
     "release": "changeset publish",
     "test": "jest",
-    "visualize": "pnpm swc scripts/visualize.ts --all"
+    "visualize": "pnpm swc scripts/visualize.ts --all",
+    "changelog": "pnpm swc scripts/changelog.ts"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write",
@@ -60,6 +61,7 @@
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
     "@lerna/package-graph": "5.1.6",
+    "@octokit/rest": "19.0.3",
     "@playwright/test": "1.23.1",
     "@swc-node/jest": "1.5.2",
     "@swc-node/register": "1.5.1",
