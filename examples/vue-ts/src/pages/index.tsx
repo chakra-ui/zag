@@ -1,6 +1,5 @@
-import { RouterLink } from "vue-router"
-import { h, Fragment } from "vue"
 import { routesData } from "@zag-js/shared"
+import { RouterLink } from "vue-router"
 
 export default function Page() {
   return (

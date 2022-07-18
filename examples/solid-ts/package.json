@@ -14,8 +14,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "2.6.4",
-    "vite-plugin-solid": "2.0.3"
+    "vite": "3.0.1",
+    "vite-plugin-solid": "2.3.0"
   },
   "dependencies": {
     "@emotion/css": "11.9.0",
@@ -59,6 +59,6 @@
     "@zag-js/remove-scroll": "workspace:*",
     "form-serialize": "0.7.2",
     "solid-app-router": "0.4.1",
-    "solid-js": "1.4.6"
+    "solid-js": "1.4.7"
   }
 }

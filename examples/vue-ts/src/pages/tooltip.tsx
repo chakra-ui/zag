@@ -1,8 +1,8 @@
 import { injectGlobal } from "@emotion/css"
+import { tooltipStyles } from "@zag-js/shared"
 import * as Tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment, Teleport } from "vue"
-import { tooltipStyles } from "@zag-js/shared"
+import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 

@@ -1,21 +1,17 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "preserveValueImports": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": ["esnext", "dom"],
-    "types": ["vite-plugin-pages/client"],
+    "baseUrl": ".",
     "paths": {
+      "@/*": ["./src/*"],
       "@zag-js/*": ["../../node_modules/@zag-js/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "exclude": ["node_modules"]
+
+  "references": [
+    {
+      "path": "./tsconfig.config.json"
+    }
+  ]
 }

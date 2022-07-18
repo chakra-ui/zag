@@ -1,12 +1,6 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { getToolbarStyles } from "@zag-js/shared"
-import { defineComponent, ref, h } from "vue"
-
-type ToolbarProps = {
-  controls: null | (() => JSX.Element)
-  visualizer: null | JSX.Element
-  count?: number
-}
+import { defineComponent, ref } from "vue"
 
 export const Toolbar = defineComponent({
   props: ["count", "controls", "visualizer"],

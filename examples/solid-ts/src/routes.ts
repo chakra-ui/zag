@@ -11,7 +11,7 @@ export const routes: RouteDefinition[] = [
   },
   ...routesData.map((route) => ({
     path: route.path,
-    component: lazy(() => import(`./pages/${route.path}`)),
+    component: lazy(() => import(`./pages${route.path}`)),
   })),
   {
     path: "**",

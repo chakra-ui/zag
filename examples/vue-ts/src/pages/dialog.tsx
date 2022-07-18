@@ -1,8 +1,8 @@
 import { injectGlobal } from "@emotion/css"
 import * as dialog from "@zag-js/dialog"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment, ref as vueRef, Teleport } from "vue"
 import { dialogStyle } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 

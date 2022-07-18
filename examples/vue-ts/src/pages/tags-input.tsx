@@ -1,8 +1,8 @@
 import { injectGlobal } from "@emotion/css"
+import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
-import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
+import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 

@@ -52,17 +52,17 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "form-serialize": "0.7.2",
-    "next": "12.1.6",
+    "next": "12.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-spinners": "0.12.0"
+    "react-spinners": "0.13.3"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "16.11.11",
-    "@types/react": "18.0.14",
-    "@types/react-dom": "18.0.5",
-    "eslint-plugin-react": "7.30.0",
+    "@types/node": "18.0.6",
+    "@types/react": "18.0.15",
+    "@types/react-dom": "18.0.6",
+    "eslint-plugin-react": "7.30.1",
     "eslint-plugin-react-hooks": "4.6.0",
     "typescript": "4.7.4"
   },
