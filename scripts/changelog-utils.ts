@@ -78,7 +78,7 @@ export async function getMergedPrs(): Promise<PullRequests> {
 }
 
 export async function writePrFile(pr: PrData) {
-  return fs.writeFile(`.changelog/pr-${pr.id}.md`, pr.body)
+  return fs.writeFile(`.changelog/pr-${pr.id}.mdx`, pr.body)
 }
 
 /* -----------------------------------------------------------------------------
@@ -111,7 +111,7 @@ export const manifest = {
 
 export async function writeReadme() {
   const data = await manifest.read()
-  const sortedData = data.map((pr) => `### ${pr.date}: [#${pr.id}](/.changelog/pr-${pr.id}.md)`)
+  const sortedData = data.map((pr) => `### ${pr.date}: [#${pr.id}](/.changelog/pr-${pr.id}.mdx)`)
   const [latestRelease, ...otherReleases] = sortedData
 
   const readme = [
