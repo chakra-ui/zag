@@ -60,7 +60,7 @@
     "@changesets/cli": "2.23.0",
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
-    "@lerna/package-graph": "5.1.6",
+    "@lerna/package-graph": "5.1.8",
     "@octokit/rest": "19.0.3",
     "@playwright/test": "1.23.1",
     "@swc-node/jest": "1.5.2",
