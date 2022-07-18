@@ -1,5 +1,5 @@
-chakra-ui/zag:
-  - .changelog/
-
 chakra-ui/zag-docs:
-  - .changelog/
+  - source: .changelog/
+    dest: data/changelogs/
+    exclude: |
+      manifest.json
