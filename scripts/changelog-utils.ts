@@ -35,8 +35,8 @@ export function getPrData(pr: PullRequest): PrData {
 
   const body = [
     "---",
-    `Release PR: ${pr.html_url}`,
-    `Release Date: ${date}`,
+    `releaseUrl: ${pr.html_url}`,
+    `releaseDate: ${date}`,
     "---",
     "\n",
     `${content.split("# Releases\n")[1]}`,
