@@ -1,8 +1,8 @@
 import { injectGlobal } from "@emotion/css"
+import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
-import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
+import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 

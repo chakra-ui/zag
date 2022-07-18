@@ -1,15 +1,10 @@
 import vue from "@vitejs/plugin-vue"
-import { defineConfig } from "vite"
-import components from "vite-plugin-components"
-import pages from "vite-plugin-pages"
+import vueJsx from "@vitejs/plugin-vue-jsx"
 import path from "path"
+import { defineConfig } from "vite"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  esbuild: {
-    jsxFactory: "h",
-    jsxFragment: "Fragment",
-  },
   resolve: {
     alias: [
       {
@@ -18,15 +13,5 @@ export default defineConfig({
       },
     ],
   },
-  plugins: [
-    vue(),
-    pages({
-      pagesDir: "src/pages",
-      extensions: ["vue", "ts", "tsx"],
-    }),
-    components({
-      extensions: ["tsx", "vue", "ts"],
-      dirs: ["./src/components"],
-    }),
-  ],
+  plugins: [vue(), vueJsx()],
 })

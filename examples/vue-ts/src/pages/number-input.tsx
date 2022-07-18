@@ -1,10 +1,10 @@
 import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { useControls } from "../hooks/use-controls"
-import { computed, defineComponent, h, Fragment } from "vue"
-import { StateVisualizer } from "../components/state-visualizer"
 import { numberInputControls } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent } from "vue"
+import { StateVisualizer } from "../components/state-visualizer"
+import { useControls } from "../hooks/use-controls"
 
 import { Toolbar } from "../components/toolbar"
 
