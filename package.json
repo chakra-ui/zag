@@ -69,7 +69,7 @@
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.30.4",
     "@typescript-eslint/parser": "5.30.4",
-    "axe-core": "4.4.2",
+    "axe-core": "4.4.3",
     "commitlint": "17.0.3",
     "esbuild": "0.14.48",
     "eslint": "8.19.0",
