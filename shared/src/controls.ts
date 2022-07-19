@@ -52,6 +52,7 @@ export const numberInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
   allowMouseWheel: { type: "boolean", defaultValue: false },
+  spinOnPress: { type: "boolean", defaultValue: true },
   step: { type: "number", defaultValue: 1 },
   minFractionDigits: { type: "number", defaultValue: 0 },
   maxFractionDigits: { type: "number", defaultValue: 3 },

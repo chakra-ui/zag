@@ -53,6 +53,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
+    blur() {
+      dom.getInputEl(state.context)?.blur()
+    },
 
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
