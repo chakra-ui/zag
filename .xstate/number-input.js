@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
     "clampOnBlur && !isInRange && !isEmptyValue": false,
     "isIncrementHint": false,
     "isDecrementHint": false,
-    "isInRange": false,
+    "isInRange && spinOnPress": false,
     "isIncrementHint": false,
     "isDecrementHint": false
   },
@@ -51,6 +51,7 @@ const fetchMachine = createMachine({
       }
     },
     idle: {
+      exit: "invokeOnFocus",
       on: {
         PRESS_DOWN: {
           target: "before:spin",
@@ -64,7 +65,7 @@ const fetchMachine = createMachine({
       }
     },
     focused: {
-      tags: ["focus"],
+      tags: "focus",
       entry: "focusInput",
       activities: "attachWheelListener",
       on: {
@@ -94,19 +95,19 @@ const fetchMachine = createMachine({
         BLUR: [{
           cond: "isInvalidExponential",
           target: "idle",
-          actions: ["clearValue", "clearHint"]
+          actions: ["clearValue", "clearHint", "invokeOnBlur"]
         }, {
           cond: "clampOnBlur && !isInRange && !isEmptyValue",
           target: "idle",
-          actions: ["clampValue", "clearHint"]
+          actions: ["clampValue", "clearHint", "invokeOnBlur"]
         }, {
           target: "idle",
-          actions: "roundValue"
+          actions: ["roundValue", "invokeOnBlur"]
         }]
       }
     },
     "before:spin": {
-      tags: ["focus"],
+      tags: "focus",
       activities: "trackButtonDisabled",
       entry: choose([{
         cond: "isIncrementHint",
@@ -118,7 +119,7 @@ const fetchMachine = createMachine({
       after: {
         CHANGE_DELAY: {
           target: "spinning",
-          cond: "isInRange"
+          cond: "isInRange && spinOnPress"
         }
       },
       on: {
@@ -129,7 +130,7 @@ const fetchMachine = createMachine({
       }
     },
     spinning: {
-      tags: ["focus"],
+      tags: "focus",
       activities: "trackButtonDisabled",
       invoke: {
         src: "interval",
@@ -143,21 +144,17 @@ const fetchMachine = createMachine({
       }
     },
     scrubbing: {
-      tags: ["focus"],
-      entry: ["addCustomCursor", "disableTextSelection"],
-      exit: ["removeCustomCursor", "restoreTextSelection"],
-      activities: ["activatePointerLock", "trackMousemove"],
+      tags: "focus",
+      exit: "clearCursorPoint",
+      activities: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
       on: {
-        POINTER_UP_SCRUBBER: {
-          target: "focused",
-          actions: "clearCursorPoint"
-        },
+        POINTER_UP_SCRUBBER: "focused",
         POINTER_MOVE_SCRUBBER: [{
           cond: "isIncrementHint",
-          actions: ["increment", "setCursorPoint", "updateCursor"]
+          actions: ["increment", "setCursorPoint"]
         }, {
           cond: "isDecrementHint",
-          actions: ["decrement", "setCursorPoint", "updateCursor"]
+          actions: ["decrement", "setCursorPoint"]
         }]
       }
     }
@@ -179,6 +176,6 @@ const fetchMachine = createMachine({
     "clampOnBlur && !isInRange && !isEmptyValue": ctx => ctx["clampOnBlur && !isInRange && !isEmptyValue"],
     "isIncrementHint": ctx => ctx["isIncrementHint"],
     "isDecrementHint": ctx => ctx["isDecrementHint"],
-    "isInRange": ctx => ctx["isInRange"]
+    "isInRange && spinOnPress": ctx => ctx["isInRange && spinOnPress"]
   }
 });

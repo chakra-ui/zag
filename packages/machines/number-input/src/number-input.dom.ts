@@ -1,4 +1,4 @@
-import { defineDomHelpers, MAX_Z_INDEX } from "@zag-js/dom-utils"
+import { defineDomHelpers, isSafari, MAX_Z_INDEX, supportsPointerEvent } from "@zag-js/dom-utils"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
 import type { MachineContext as Ctx } from "./number-input.types"
 
@@ -16,6 +16,47 @@ export const dom = defineDomHelpers({
   getDecButtonEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getDecButtonId(ctx)),
   getScrubberEl: (ctx: Ctx) => dom.getById(ctx, dom.getScrubberId(ctx)),
   getCursorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCursorId(ctx)),
+
+  getActiveButton: (ctx: Ctx, hint = ctx.hint) => {
+    let btnEl: HTMLButtonElement | null = null
+    if (hint === "increment") {
+      btnEl = dom.getIncButtonEl(ctx)
+    }
+    if (hint === "decrement") {
+      btnEl = dom.getDecButtonEl(ctx)
+    }
+    return btnEl
+  },
+
+  setupVirtualCursor(ctx: Ctx) {
+    if (isSafari() || !supportsPointerEvent()) return
+    dom.createVirtualCursor(ctx)
+    return () => {
+      dom.getCursorEl(ctx)?.remove()
+    }
+  },
+
+  preventTextSelection(ctx: Ctx) {
+    const doc = dom.getDoc(ctx)
+    const html = doc.documentElement
+    const body = doc.body
+
+    body.style.pointerEvents = "none"
+    html.style.userSelect = "none"
+    html.style.cursor = "ew-resize"
+
+    return () => {
+      body.style.pointerEvents = ""
+      html.style.userSelect = ""
+      html.style.cursor = ""
+      if (!html.style.length) {
+        html.removeAttribute("style")
+      }
+      if (!body.style.length) {
+        body.removeAttribute("style")
+      }
+    }
+  },
 
   getMousementValue(ctx: Ctx, event: MouseEvent) {
     const x = roundToDevicePixel(event.movementX)
