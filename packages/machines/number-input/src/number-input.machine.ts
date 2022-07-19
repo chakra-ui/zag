@@ -34,6 +34,7 @@ export function machine(ctx: UserDefinedContext) {
         max: Number.MAX_SAFE_INTEGER,
         scrubberCursorPoint: null,
         invalid: false,
+        spinOnPress: true,
         ...ctx,
         messages: {
           incrementLabel: "increment value",
@@ -58,6 +59,7 @@ export function machine(ctx: UserDefinedContext) {
       watch: {
         value: ["invokeOnChange"],
         isOutOfRange: ["invokeOnInvalid"],
+        scrubberCursorPoint: ["setVirtualCursorPosition"],
       },
 
       on: {
@@ -86,6 +88,7 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         idle: {
+          exit: "invokeOnFocus",
           on: {
             PRESS_DOWN: {
               target: "before:spin",
@@ -100,7 +103,7 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         focused: {
-          tags: ["focus"],
+          tags: "focus",
           entry: "focusInput",
           activities: "attachWheelListener",
           on: {
@@ -131,23 +134,23 @@ export function machine(ctx: UserDefinedContext) {
               {
                 guard: "isInvalidExponential",
                 target: "idle",
-                actions: ["clearValue", "clearHint"],
+                actions: ["clearValue", "clearHint", "invokeOnBlur"],
               },
               {
                 guard: and("clampOnBlur", not("isInRange"), not("isEmptyValue")),
                 target: "idle",
-                actions: ["clampValue", "clearHint"],
+                actions: ["clampValue", "clearHint", "invokeOnBlur"],
               },
               {
                 target: "idle",
-                actions: "roundValue",
+                actions: ["roundValue", "invokeOnBlur"],
               },
             ],
           },
         },
 
         "before:spin": {
-          tags: ["focus"],
+          tags: "focus",
           activities: "trackButtonDisabled",
           entry: choose([
             { guard: "isIncrementHint", actions: "increment" },
@@ -156,7 +159,7 @@ export function machine(ctx: UserDefinedContext) {
           after: {
             CHANGE_DELAY: {
               target: "spinning",
-              guard: "isInRange",
+              guard: and("isInRange", "spinOnPress"),
             },
           },
           on: {
@@ -168,7 +171,7 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         spinning: {
-          tags: ["focus"],
+          tags: "focus",
           activities: "trackButtonDisabled",
           every: [
             {
@@ -191,23 +194,19 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         scrubbing: {
-          tags: ["focus"],
-          entry: ["addCustomCursor", "disableTextSelection"],
-          exit: ["removeCustomCursor", "restoreTextSelection"],
-          activities: ["activatePointerLock", "trackMousemove"],
+          tags: "focus",
+          exit: "clearCursorPoint",
+          activities: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
           on: {
-            POINTER_UP_SCRUBBER: {
-              target: "focused",
-              actions: "clearCursorPoint",
-            },
+            POINTER_UP_SCRUBBER: "focused",
             POINTER_MOVE_SCRUBBER: [
               {
                 guard: "isIncrementHint",
-                actions: ["increment", "setCursorPoint", "updateCursor"],
+                actions: ["increment", "setCursorPoint"],
               },
               {
                 guard: "isDecrementHint",
-                actions: ["decrement", "setCursorPoint", "updateCursor"],
+                actions: ["decrement", "setCursorPoint"],
               },
             ],
           },
@@ -223,6 +222,7 @@ export function machine(ctx: UserDefinedContext) {
       guards: {
         clampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
         isAtMin: (ctx) => ctx.isAtMin,
+        spinOnPress: (ctx) => !!ctx.spinOnPress,
         isAtMax: (ctx) => ctx.isAtMax,
         isInRange: (ctx) => !ctx.isOutOfRange,
         isDecrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
@@ -232,17 +232,15 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       activities: {
+        setupVirtualCursor(ctx) {
+          return dom.setupVirtualCursor(ctx)
+        },
+        preventTextSelection(ctx) {
+          return dom.preventTextSelection(ctx)
+        },
         trackButtonDisabled(ctx, _evt, { send }) {
-          let btnEl: HTMLButtonElement | null = null
-          if (ctx.hint === "increment") {
-            btnEl = dom.getIncButtonEl(ctx)
-          }
-          if (ctx.hint === "decrement") {
-            btnEl = dom.getDecButtonEl(ctx)
-          }
-          return observeAttributes(btnEl, "disabled", function onDisable() {
-            send("PRESS_UP")
-          })
+          const btn = dom.getActiveButton(ctx, ctx.hint)
+          return observeAttributes(btn, "disabled", () => send("PRESS_UP"))
         },
         attachWheelListener(ctx, _evt, { send }) {
           const input = dom.getInputEl(ctx)
@@ -339,6 +337,29 @@ export function machine(ctx: UserDefinedContext) {
             valueAsNumber: ctx.valueAsNumber,
           })
         },
+        invokeOnFocus(ctx, evt) {
+          let srcElement: HTMLElement | null = null
+
+          if (evt.type === "PRESS_DOWN") {
+            srcElement = dom.getActiveButton(ctx, evt.hint)
+          } else if (evt.type === "FOCUS") {
+            srcElement = dom.getInputEl(ctx)
+          } else if (evt.type === "PRESS_DOWN_SCRUBBER") {
+            srcElement = dom.getScrubberEl(ctx)
+          }
+
+          ctx.onFocus?.({
+            value: ctx.value,
+            valueAsNumber: ctx.valueAsNumber,
+            srcElement,
+          })
+        },
+        invokeOnBlur(ctx) {
+          ctx.onBlur?.({
+            value: ctx.value,
+            valueAsNumber: ctx.valueAsNumber,
+          })
+        },
         invokeOnInvalid(ctx) {
           if (!ctx.isOutOfRange) return
           const reason = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
@@ -361,31 +382,11 @@ export function machine(ctx: UserDefinedContext) {
         clearCursorPoint(ctx) {
           ctx.scrubberCursorPoint = null
         },
-        updateCursor(ctx) {
+        setVirtualCursorPosition(ctx) {
           const cursor = dom.getCursorEl(ctx)
           if (!cursor || !ctx.scrubberCursorPoint) return
           const { x, y } = ctx.scrubberCursorPoint
           cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
-        },
-        addCustomCursor(ctx) {
-          if (isSafari() || !supportsPointerEvent()) return
-          dom.createVirtualCursor(ctx)
-        },
-        removeCustomCursor(ctx) {
-          if (isSafari() || !supportsPointerEvent()) return
-          dom.getCursorEl(ctx)?.remove()
-        },
-        disableTextSelection(ctx) {
-          const doc = dom.getDoc(ctx)
-          doc.body.style.pointerEvents = "none"
-          doc.documentElement.style.userSelect = "none"
-          doc.documentElement.style.cursor = "ew-resize"
-        },
-        restoreTextSelection(ctx) {
-          const doc = dom.getDoc(ctx)
-          doc.body.style.pointerEvents = ""
-          doc.documentElement.style.userSelect = ""
-          doc.documentElement.style.cursor = ""
         },
       },
 

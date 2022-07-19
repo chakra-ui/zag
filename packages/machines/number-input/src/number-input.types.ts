@@ -28,6 +28,11 @@ type IntlMessages = {
   decrementLabel: string
 }
 
+type Value = {
+  value: string
+  valueAsNumber: number
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -118,11 +123,19 @@ type PublicContext = DirectionProperty &
     /**
      * Function invoked when the value changes
      */
-    onChange?: (details: { value: string; valueAsNumber: number }) => void
+    onChange?: (details: Value) => void
     /**
      * Function invoked when the value overflows or underflows the min/max range
      */
-    onInvalid?: (details: { reason: ValidityState; value: string; valueAsNumber: number }) => void
+    onInvalid?: (details: Value & { reason: ValidityState }) => void
+    /**
+     * Function invoked when the number input is focused
+     */
+    onFocus?: (details: Value & { srcElement: HTMLElement | null }) => void
+    /**
+     * The value of the input when it is blurred
+     */
+    onBlur?: (details: Value) => void
     /**
      * The minimum number of fraction digits to use. Possible values are from 0 to 20
      */
@@ -131,6 +144,10 @@ type PublicContext = DirectionProperty &
      * The maximum number of fraction digits to use. Possible values are from 0 to 20;
      */
     maxFractionDigits?: number
+    /**
+     * Whether to spin the value when the increment/decrement button is pressed
+     */
+    spinOnPress?: boolean
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
