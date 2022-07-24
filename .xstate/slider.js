@@ -21,6 +21,9 @@ const fetchMachine = createMachine({
   },
   activities: ["trackFormReset", "trackFieldsetDisabled"],
   on: {
+    SET_DISABLED: {
+      actions: "setDisabled"
+    },
     SET_VALUE: {
       actions: "setValue"
     },

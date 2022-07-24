@@ -40,6 +40,9 @@ export function machine(ctx: UserDefinedContext) {
       activities: ["trackFormReset", "trackFieldsetDisabled"],
 
       on: {
+        SET_DISABLED: {
+          actions: "setDisabled",
+        },
         SET_VALUE: {
           actions: "setValue",
         },
@@ -202,6 +205,9 @@ export function machine(ctx: UserDefinedContext) {
         },
         setToMax(ctx) {
           ctx.value = ctx.max
+        },
+        setDisabled(ctx, evt) {
+          ctx.disabled = evt.disabled
         },
         setValue(ctx, evt) {
           ctx.value = utils.convert(ctx, evt.value)

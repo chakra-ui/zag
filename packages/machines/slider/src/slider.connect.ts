@@ -32,6 +32,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
+    setDisabled(disabled: boolean) {
+      send({ type: "SET_DISABLED", disabled })
+    },
     getPercentValue(percent: number) {
       return percentToValue(percent, state.context)
     },

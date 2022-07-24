@@ -42,6 +42,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setChecked(checked: boolean) {
       send({ type: "SET_STATE", checked, manual: true })
     },
+    setDisabled(disabled: boolean) {
+      send({ type: "SET_DISABLED", disabled })
+    },
     setIndeterminate(indeterminate: boolean) {
       send({ type: "SET_INDETERMINATE", value: indeterminate })
     },

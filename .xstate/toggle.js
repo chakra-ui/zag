@@ -18,6 +18,9 @@ const fetchMachine = createMachine({
     "isDefaultPressed": false
   },
   on: {
+    SET_DISABLED: {
+      actions: "setDisabled"
+    },
     SET_STATE: [{
       cond: "isPressed",
       target: "pressed",

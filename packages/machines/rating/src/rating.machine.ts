@@ -24,6 +24,12 @@ export function machine(ctx: UserDefinedContext) {
         },
       },
 
+      on: {
+        SET_DISABLED: {
+          actions: "setDisabled",
+        },
+      },
+
       created: ["roundValueIfNeeded"],
 
       watch: {
@@ -152,6 +158,9 @@ export function machine(ctx: UserDefinedContext) {
           }
           let value = evt.index - factor
           ctx.hoveredValue = value
+        },
+        setDisabled(ctx, evt) {
+          ctx.disabled = evt.disabled
         },
         dispatchChangeEvent(ctx, evt) {
           if (evt.type !== "SETUP") {

@@ -39,6 +39,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isChecked: isEqual || (state.context.value === -1 && index === 1),
       }
     },
+    setDisabled(disabled: boolean) {
+      send({ type: "SET_DISABLED", disabled })
+    },
 
     rootProps: normalize.element({
       dir: state.context.dir,

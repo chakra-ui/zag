@@ -18,6 +18,11 @@ const fetchMachine = createMachine({
     "isRadioFocused": false
   },
   on: {
+    SET_DISABLED: {
+      actions: "setDisabled"
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

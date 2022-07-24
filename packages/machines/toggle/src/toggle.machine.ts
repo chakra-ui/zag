@@ -14,6 +14,9 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       on: {
+        SET_DISABLED: {
+          actions: "setDisabled",
+        },
         SET_STATE: [
           { guard: "isPressed", target: "pressed", actions: ["invokeOnChange"] },
           { target: "unpressed", actions: ["invokeOnChange"] },
@@ -41,6 +44,9 @@ export function machine(ctx: UserDefinedContext) {
       actions: {
         invokeOnChange(ctx, evt) {
           ctx.onChange?.({ pressed: evt.pressed })
+        },
+        setDisabled(ctx, evt) {
+          ctx.disabled = evt.disabled
         },
       },
     },

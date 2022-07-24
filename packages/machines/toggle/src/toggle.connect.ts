@@ -12,6 +12,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setPressed(value: boolean) {
       send({ type: "SET_STATE", pressed: value })
     },
+    setDisabled(disabled: boolean) {
+      send({ type: "SET_DISABLED", disabled })
+    },
     buttonProps: normalize.button({
       id: dom.getButtonId(state.context),
       type: "button",
