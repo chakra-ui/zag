@@ -6,7 +6,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["dom", "ES2019"],
+    "lib": ["dom", "esnext", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,

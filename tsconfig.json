@@ -20,6 +20,8 @@
     "skipLibCheck": true,
     "strict": true,
     "stripInternal": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "suppressImplicitAnyIndexErrors": true
   }
 }
