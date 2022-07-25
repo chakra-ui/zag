@@ -274,7 +274,7 @@ export function machine(ctx: UserDefinedContext) {
         },
         isTargetFocused: (ctx, evt) => ctx.activeId === evt.target.id,
         // whether the trigger is also a menu item
-        isTriggerItem: (ctx, evt) => dom.isTriggerItem(evt.target),
+        isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
         // whether the trigger item is the active item
         isTriggerItemFocused: (ctx, evt) => {
           const target = (evt.target ?? dom.getFocusedItem(ctx)) as HTMLElement | null

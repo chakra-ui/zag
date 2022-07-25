@@ -98,7 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
-      htmlFor: values.map((v, i) => dom.getInputId(state.context, i)).join(" "),
+      htmlFor: values.map((_v, i) => dom.getInputId(state.context, i)).join(" "),
       "aria-live": "off",
     }),
 
