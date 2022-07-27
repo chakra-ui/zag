@@ -11,10 +11,12 @@ injectGlobal(tooltipStyles)
 export default defineComponent({
   name: "Tooltip",
   setup() {
-    const [state, send] = useMachine(Tooltip.machine({ id: "tip-1" }))
+    const id = "tip-1"
+    const id2 = "tip-2"
+    const [state, send] = useMachine(Tooltip.machine({ id }))
     const apiRef = computed(() => Tooltip.connect(state.value, send, normalizeProps))
 
-    const [state2, send2] = useMachine(Tooltip.machine({ id: "tip-2" }))
+    const [state2, send2] = useMachine(Tooltip.machine({ id: id2 }))
     const apiRef2 = computed(() => Tooltip.connect(state2.value, send2, normalizeProps))
 
     return () => {
@@ -24,27 +26,31 @@ export default defineComponent({
         <>
           <main style={{ gap: "12px", flexDirection: "row" }}>
             <div class="root">
-              <button {...api.triggerProps}>Over me</button>
+              <button data-testid={`${id}-trigger`} {...api.triggerProps}>
+                Over me
+              </button>
               {api.isOpen && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>
-                    <div data-testid="tip-1-tooltip" {...api.contentProps}>
+                    <div data-testid={`${id}-tooltip`} {...api.contentProps}>
                       Tooltip
                     </div>
                   </div>
                 </Teleport>
               )}
-
-              <button {...api2.triggerProps}>Over me</button>
+              <button data-testid={`${id2}-trigger`} {...api2.triggerProps}>
+                Over me
+              </button>
               {api2.isOpen && (
                 <Teleport to="body">
                   <div {...api2.positionerProps}>
-                    <div data-testid="tip-2-tooltip" {...api2.contentProps}>
+                    <div data-testid={`${id2}-tooltip`} {...api2.contentProps}>
                       Tooltip 2
                     </div>
                   </div>
                 </Teleport>
-              )}
+              )}{" "}
+              data-testid={`${id2}-tooltip`}
             </div>
           </main>
 
