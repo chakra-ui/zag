@@ -213,7 +213,11 @@ export function machine(ctx: UserDefinedContext) {
                 actions: "openSubmenu",
               },
               {
+                guard: "closeOnSelect",
+                actions: "clickFocusedItem",
                 target: "closed",
+              },
+              {
                 actions: "clickFocusedItem",
               },
             ],

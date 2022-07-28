@@ -23,6 +23,7 @@ const fetchMachine = createMachine({
     "isSubmenu": false,
     "isTriggerItemFocused": false,
     "isTriggerItemFocused": false,
+    "closeOnSelect": false,
     "!suspendPointer && !isTargetFocused": false,
     "!isTargetFocused": false,
     "!suspendPointer && !isTriggerItem": false,
@@ -190,7 +191,10 @@ const fetchMachine = createMachine({
           cond: "isTriggerItemFocused",
           actions: "openSubmenu"
         }, {
-          target: "closed",
+          cond: "closeOnSelect",
+          actions: "clickFocusedItem",
+          target: "closed"
+        }, {
           actions: "clickFocusedItem"
         }],
         ITEM_POINTERMOVE: [{
@@ -247,6 +251,7 @@ const fetchMachine = createMachine({
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "hasFocusedItem": ctx => ctx["hasFocusedItem"],
     "isTriggerItemFocused": ctx => ctx["isTriggerItemFocused"],
+    "closeOnSelect": ctx => ctx["closeOnSelect"],
     "!suspendPointer && !isTargetFocused": ctx => ctx["!suspendPointer && !isTargetFocused"],
     "!isTargetFocused": ctx => ctx["!isTargetFocused"],
     "!suspendPointer && !isTriggerItem": ctx => ctx["!suspendPointer && !isTriggerItem"],
