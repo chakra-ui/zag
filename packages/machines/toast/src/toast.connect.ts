@@ -17,6 +17,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     type: state.context.type,
     title: state.context.title,
+    description: state.context.description,
     placement,
     isVisible,
     isPaused,
@@ -91,6 +92,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     titleProps: normalize.element({
       "data-part": "title",
       id: dom.getTitleId(state.context),
+    }),
+
+    descriptionProps: normalize.element({
+      "data-part": "description",
+      id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({

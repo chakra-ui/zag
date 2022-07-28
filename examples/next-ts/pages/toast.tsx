@@ -16,6 +16,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
     <pre {...api.rootProps}>
       <div {...api.progressbarProps} />
       <p {...api.titleProps}>{api.title}</p>
+      <p {...api.descriptionProps}>{api.description}</p>
       <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
       <button onClick={api.dismiss}>Close</button>
     </pre>
@@ -48,7 +49,7 @@ export default function Page() {
             onClick={() => {
               id.current = api.create({
                 title: "Welcome",
-                description: "Welcome",
+                description: "This a notification",
                 type: "info",
               })
             }}
