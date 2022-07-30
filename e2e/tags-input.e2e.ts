@@ -42,7 +42,7 @@ test.describe("tags-input", () => {
     await expect(page.locator(input)).toBeFocused()
   })
 
-  test.only("should not edit when no tag is focused", async ({ page }) => {
+  test("should not edit when no tag is focused", async ({ page }) => {
     await clickViz(page)
     //Focus input
     await page.locator(input).focus()
