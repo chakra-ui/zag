@@ -2,4 +2,4 @@
 "@zag-js/menu": patch
 ---
 
-Menu stays open when an item is selected with a keyboard interaction, if closeOnSelect is false.
+FIx issue where menu menu gets closed if item is selected with keyboard while closeOnSelect is set to true.
