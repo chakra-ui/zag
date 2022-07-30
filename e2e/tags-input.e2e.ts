@@ -1,5 +1,5 @@
 import { expect, test, Locator } from "@playwright/test"
-import { paste, testid } from "./__utils"
+import { clickViz, paste, testid } from "./__utils"
 
 const input = testid("input")
 
@@ -39,6 +39,27 @@ test.describe("tags-input", () => {
     await page.keyboard.press("Backspace")
 
     await expect(page.locator(svelte.tag)).toBeHidden()
+    await expect(page.locator(input)).toBeFocused()
+  })
+
+  test.only("should not edit when no tag is focused", async ({ page }) => {
+    await clickViz(page)
+    //Focus input
+    await page.locator(input).focus()
+    //Clear Vue
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Delete")
+    //Clear React
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Delete")
+
+    await page.keyboard.press("Enter")
+
+    const svelte = item("Svelte")
+    await page.type(input, "Svelte")
+    await page.keyboard.press("Enter")
+    await expect(page.locator(svelte.tag)).toBeVisible()
+    await expect(page.locator(input)).toBeEmpty()
     await expect(page.locator(input)).toBeFocused()
   })
 
