@@ -1,5 +1,31 @@
 # @zag-js/number-input
 
+## 0.1.14
+
+### Patch Changes
+
+- [#225](https://github.com/chakra-ui/zag/pull/225)
+  [`a85f7055`](https://github.com/chakra-ui/zag/commit/a85f70559ba58a5dcfa4ff9d5065c1e7a456b7af) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `spinOnPress` to allow user control whether to
+  spin the input's value when the decrement or increment button is pressed.
+
+  - Add support for `onFocus` and `onBlur` callbacks in the machine's context.
+
+  ```jsx
+  const [state, send] = useMachine(
+    numberInput.machine({
+      onFocus(details) {
+        // details => { value: string, valueAsNumber: number, srcElement: HTMLElement | null }
+      },
+      onBlur(details) {
+        // details => { value: string, valueAsNumber: number }
+      },
+    }),
+  )
+  ```
+
+  - Add `focus()` and `blur()` methods to the machine's `api`
+
 ## 0.1.13
 
 ### Patch Changes
