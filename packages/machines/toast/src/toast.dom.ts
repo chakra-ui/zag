@@ -5,6 +5,7 @@ export const dom = defineDomHelpers({
   getGroupId: (placement: Placement) => `toast-group:${placement}`,
   getContainerId: (ctx: Ctx) => `toast:${ctx.id}`,
   getTitleId: (ctx: Ctx) => `toast-title:${ctx.id}`,
+  getDescriptionId: (ctx: Ctx) => `toast-description:${ctx.id}`,
   getCloseButtonId: (ctx: Ctx) => `toast-close-button:${ctx.id}`,
 
   getPortalId: (ctx: GroupCtx) => `toast-portal:${ctx.id}`,
