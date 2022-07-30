@@ -191,7 +191,7 @@ export function machine(ctx: UserDefinedContext) {
               actions: "clearFocusedId",
             },
             ENTER: {
-              guard: "allowEditTag",
+              guard: and("allowEditTag", "hasFocusedId"),
               target: "editing:tag",
               actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"],
             },
@@ -343,7 +343,7 @@ export function machine(ctx: UserDefinedContext) {
         focusPrevTag(ctx) {
           if (!ctx.focusedId) return
           const prev = dom.getPrevEl(ctx, ctx.focusedId)
-          if (prev) ctx.focusedId = prev.id
+          ctx.focusedId = prev?.id || null
         },
         focusTag(ctx, evt) {
           ctx.focusedId = evt.id
