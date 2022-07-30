@@ -1,5 +1,13 @@
 # @zag-js/toast
 
+## 0.1.12
+
+### Patch Changes
+
+- [#236](https://github.com/chakra-ui/zag/pull/236)
+  [`bf75ad24`](https://github.com/chakra-ui/zag/commit/bf75ad2438bef4da3cbc42041844408d356091af) Thanks
+  [@anubra266](https://github.com/anubra266)! - Expose toast `description` in api.
+
 ## 0.1.11
 
 ### Patch Changes

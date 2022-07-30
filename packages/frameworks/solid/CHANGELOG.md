@@ -1,5 +1,13 @@
 # @zag-js/solid
 
+## 0.1.13
+
+### Patch Changes
+
+- [#224](https://github.com/chakra-ui/zag/pull/224)
+  [`b7eb3f20`](https://github.com/chakra-ui/zag/commit/b7eb3f204cda6ac913b66787c27942294abfb0ee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update framework dependencies
+
 ## 0.1.12
 
 ### Patch Changes
