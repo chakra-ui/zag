@@ -3,13 +3,15 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
-import { menuStyle } from "@zag-js/shared"
+import { menuControls, menuStyle } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 injectGlobal(menuStyle)
 
 export default function Page() {
+  const controls = useControls(menuControls)
   const [state, send] = useMachine(menu.machine({ id: createUniqueId() }))
 
   const api = createMemo(() => menu.connect(state, send, normalizeProps))
@@ -35,7 +37,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

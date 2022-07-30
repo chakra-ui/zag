@@ -1,14 +1,18 @@
 import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { menuStyle } from "@zag-js/shared"
+import { menuStyle, menuControls } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const [state, send] = useMachine(menu.machine({ id: useId(), onSelect: console.log }))
+  const controls = useControls(menuControls)
+  const [state, send] = useMachine(menu.machine({ id: useId(), onSelect: console.log }), {
+    context: controls.context,
+  })
 
   const api = menu.connect(state, send, normalizeProps)
 
@@ -18,12 +22,12 @@ export default function Page() {
 
       <main>
         <div>
-          <button {...api.triggerProps}>
+          <button data-testid="trigger" {...api.triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>
           <Portal>
             <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
+              <ul data-testid="menu" {...api.contentProps}>
                 <li {...api.getItemProps({ id: "edit" })}>Edit</li>
                 <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
                 <li {...api.getItemProps({ id: "delete" })}>Delete</li>
@@ -33,7 +37,7 @@ export default function Page() {
           </Portal>
         </div>
       </main>
-      <Toolbar controls={null}>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
