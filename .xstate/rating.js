@@ -35,7 +35,10 @@ const fetchMachine = createMachine({
       entry: "clearHoveredValue",
       on: {
         GROUP_POINTER_OVER: "hover",
-        FOCUS: "focus"
+        FOCUS: "focus",
+        CLICK: {
+          actions: ["setValue", "focusActiveRadio"]
+        }
       }
     },
     focus: {

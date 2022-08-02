@@ -51,6 +51,9 @@ export function machine(ctx: UserDefinedContext) {
           on: {
             GROUP_POINTER_OVER: "hover",
             FOCUS: "focus",
+            CLICK: {
+              actions: ["setValue", "focusActiveRadio"],
+            },
           },
         },
 
