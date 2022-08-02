@@ -27,7 +27,7 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart": false,
     "addOnPaste": false,
     "hasTags && isInputCaretAtStart && !isLastTagFocused": false,
-    "allowEditTag": false,
+    "allowEditTag && hasFocusedId": false,
     "isFirstTagFocused": false,
     "isInputRelatedTarget": false
   },
@@ -160,7 +160,7 @@ const fetchMachine = createMachine({
           actions: "clearFocusedId"
         },
         ENTER: {
-          cond: "allowEditTag",
+          cond: "allowEditTag && hasFocusedId",
           target: "editing:tag",
           actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"]
         },
@@ -227,6 +227,7 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart": ctx => ctx["hasTags && isInputCaretAtStart"],
     "addOnPaste": ctx => ctx["addOnPaste"],
     "hasTags && isInputCaretAtStart && !isLastTagFocused": ctx => ctx["hasTags && isInputCaretAtStart && !isLastTagFocused"],
+    "allowEditTag && hasFocusedId": ctx => ctx["allowEditTag && hasFocusedId"],
     "isFirstTagFocused": ctx => ctx["isFirstTagFocused"],
     "isInputRelatedTarget": ctx => ctx["isInputRelatedTarget"]
   }

@@ -1,6 +1,7 @@
+import { useControls } from "@/hooks/use-controls"
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { menuStyle } from "@zag-js/shared"
+import { menuControls, menuStyle } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -11,6 +12,7 @@ injectGlobal(menuStyle)
 export default defineComponent({
   name: "Menu",
   setup() {
+    const controls = useControls(menuControls)
     const [state, send] = useMachine(menu.machine({ id: "menu", onSelect: console.log }))
 
     const apiRef = computed(() => menu.connect(state.value, send, normalizeProps))
@@ -37,7 +39,7 @@ export default defineComponent({
             </div>
           </main>
 
-          <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
         </>
       )
     }

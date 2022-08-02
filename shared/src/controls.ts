@@ -48,6 +48,10 @@ export const editableControls = defineControls({
   },
 })
 
+export const menuControls = defineControls({
+  closeOnSelect: { type: "boolean", defaultValue: true, label: "Close on select" },
+})
+
 export const numberInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
