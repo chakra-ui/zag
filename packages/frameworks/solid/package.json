@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
-    "solid-js": "1.4.7"
+    "solid-js": "1.4.8"
   },
   "peerDependencies": {
     "solid-js": ">=1.1.3"
