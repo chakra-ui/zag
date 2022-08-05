@@ -9,7 +9,7 @@ importers:
       '@babel/parser': 7.18.9
       '@babel/traverse': 7.18.9
       '@babel/types': 7.18.9
-      '@changesets/changelog-github': 0.4.5
+      '@changesets/changelog-github': 0.4.6
       '@changesets/cli': 2.23.2
       '@commitlint/cli': 17.0.3
       '@commitlint/config-conventional': 17.0.3
@@ -48,7 +48,7 @@ importers:
       '@babel/parser': 7.18.9
       '@babel/traverse': 7.18.9
       '@babel/types': 7.18.9
-      '@changesets/changelog-github': 0.4.5
+      '@changesets/changelog-github': 0.4.6
       '@changesets/cli': 2.23.2
       '@commitlint/cli': 17.0.3
       '@commitlint/config-conventional': 17.0.3
@@ -1334,8 +1334,8 @@ packages:
       '@changesets/types': 5.1.0
     dev: false
 
-  /@changesets/changelog-github/0.4.5:
-    resolution: {integrity: sha512-J36QJml3mXYm88PLY2qGepmb7j6LA3NM/wuUy6XBwh14qzVTRek+3Xww5oqeZhpK5lK8ELxGahdhSdYQzMv0kA==}
+  /@changesets/changelog-github/0.4.6:
+    resolution: {integrity: sha512-ahR/+o3OPodzfG9kucEMU/tEtBgwy6QoJiWi1sDBPme8n3WjT6pBlbhqNYpWAJKilomwfjBGY0MTUTs6r9d1RQ==}
     dependencies:
       '@changesets/get-github-info': 0.5.1
       '@changesets/types': 5.1.0
