@@ -1,17 +1,23 @@
 {
-  "name": "@zag-js/{{machine}}",
+  "name": "@zag-js/element-size",
   "version": "0.0.0",
-  "description": "Core logic for the {{machine}} widget implemented as a state machine",
-  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "{{machine}}"],
+  "description": "Observer the size of an element over time",
+  "keywords": [
+    "js",
+    "utils",
+    "element-size"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/{{machine}}",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/element-size",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src/index.ts --format=esm,cjs",
     "start": "pnpm build --watch",

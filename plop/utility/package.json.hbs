@@ -13,13 +13,14 @@
   "sideEffects": false,
   "files": ["dist/**/*"],
   "scripts": {
-    "build-fast": "pnpm zag build",
-    "start": "pnpm zag build --watch",
-    "build": "pnpm zag build --prod",
-    "test": "jest --config ../../../jest.config.js --rootDir tests",
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "start": "pnpm build --watch",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
-    "test-ci": "pnpm test --ci --runInBand -u",
-    "test-watch": "pnpm test --watchAll"
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit"
   },
   "publishConfig": {
     "access": "public"
