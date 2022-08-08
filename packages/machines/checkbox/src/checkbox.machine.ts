@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/dom-utils"
+import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
 import { dom } from "./checkbox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
 

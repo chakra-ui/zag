@@ -1,4 +1,4 @@
-import { observeAttributes } from "./mutation-observer"
+import { observeAttributes } from "@zag-js/dom-utils/src/mutation-observer"
 
 export function getClosestForm(el: HTMLElement) {
   if (isFormElement(el)) return el.form

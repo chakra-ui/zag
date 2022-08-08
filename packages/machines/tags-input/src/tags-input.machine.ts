@@ -1,6 +1,7 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createMachine, guards } from "@zag-js/core"
-import { contains, raf, trackFormReset } from "@zag-js/dom-utils"
+import { contains, raf } from "@zag-js/dom-utils"
+import { trackFormReset } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { warn } from "@zag-js/utils"

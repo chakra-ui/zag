@@ -1,6 +1,6 @@
 {
   "extends": "../../../tsconfig.json",
-  "include": ["src", "index.ts", "../form-utils/src/input-event.ts", "../form-utils/src/form.ts"],
+  "include": ["src", "index.ts"],
   "compilerOptions": {
     "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
   }

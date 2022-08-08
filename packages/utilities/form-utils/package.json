@@ -1,0 +1,34 @@
+{
+  "name": "@zag-js/form-utils",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": ["js", "utils", "form-utils"],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/form-utils",
+  "sideEffects": false,
+  "files": ["dist/**/*"],
+  "devDependencies": {
+    "@zag-js/dom-utils": "workspace:*"
+  },
+  "scripts": {
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "start": "pnpm build --watch",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  }
+}

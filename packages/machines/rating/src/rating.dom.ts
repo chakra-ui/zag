@@ -1,4 +1,5 @@
-import { dispatchInputValueEvent, defineDomHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import type { MachineContext as Ctx } from "./rating.types"
 
 export const dom = defineDomHelpers({

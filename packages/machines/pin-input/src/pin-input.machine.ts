@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
-import { dispatchInputValueEvent, raf } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { dom } from "./pin-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
 
