@@ -1,5 +1,12 @@
 # @zag-js/tooltip
 
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies [[`33258f92`](https://github.com/chakra-ui/zag/commit/33258f92e3e1c9943a7507f252b40af2fd085788)]:
+  - @zag-js/popper@0.1.10
+
 ## 0.1.11
 
 ### Patch Changes

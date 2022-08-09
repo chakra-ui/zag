@@ -1,5 +1,18 @@
 # @zag-js/menu
 
+## 0.1.12
+
+### Patch Changes
+
+- [#234](https://github.com/chakra-ui/zag/pull/234)
+  [`c256c246`](https://github.com/chakra-ui/zag/commit/c256c24614d43042d445f110a740fd59c2a4e96c) Thanks
+  [@anilanar](https://github.com/anilanar)! - FIx issue where menu menu gets closed if item is selected with keyboard
+  while closeOnSelect is set to true.
+
+- Updated dependencies [[`33258f92`](https://github.com/chakra-ui/zag/commit/33258f92e3e1c9943a7507f252b40af2fd085788)]:
+  - @zag-js/popper@0.1.10
+  - @zag-js/dismissable@0.1.3
+
 ## 0.1.11
 
 ### Patch Changes
