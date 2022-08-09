@@ -36,10 +36,6 @@ type PublicContext = DirectionProperty &
      */
     value: number
     /**
-     * The initial rating value.
-     */
-    initialValue: number
-    /**
      * Whether the rating is readonly.
      */
     readonly?: boolean
@@ -83,6 +79,11 @@ type PrivateContext = Context<{
    * @internal The value of the hovered rating.
    */
   hoveredValue: number
+  /**
+   * @internal
+   * The initial rating value.
+   */
+  initialValue: number
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

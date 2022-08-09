@@ -84,10 +84,6 @@ type PublicContext = DirectionProperty &
      */
     value: string[]
     /**
-     * The intial values of the tags input
-     */
-    initialValue: string[]
-    /**
      * Callback fired when the tag values is updated
      */
     onChange?(details: { values: string[] }): void
@@ -172,6 +168,11 @@ type ComputedContext = Readonly<{
 }>
 
 type PrivateContext = Context<{
+  /**
+   * @internal
+   * The intial values of the tags input
+   */
+  initialValue: string[]
   /**
    * @internal
    * The output log for the screen reader to speak
