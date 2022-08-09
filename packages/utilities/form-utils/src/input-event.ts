@@ -1,4 +1,4 @@
-import { getWindow } from "./query"
+import { getWindow } from "@zag-js/dom-utils"
 
 type DescriptorOptions = {
   type: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement"

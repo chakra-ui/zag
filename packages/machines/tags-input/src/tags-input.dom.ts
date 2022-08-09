@@ -1,4 +1,5 @@
-import { dispatchInputValueEvent, defineDomHelpers, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { defineDomHelpers, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import type { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
 export const dom = defineDomHelpers({

@@ -1,4 +1,5 @@
-import { dispatchInputValueEvent, getPointRelativeToNode, defineDomHelpers } from "@zag-js/dom-utils"
+import { getPointRelativeToNode, defineDomHelpers } from "@zag-js/dom-utils"
+import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { styles } from "./slider.style"
 import type { MachineContext as Ctx, Point } from "./slider.types"
 import { utils } from "./slider.utils"

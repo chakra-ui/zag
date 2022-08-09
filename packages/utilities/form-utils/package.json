@@ -1,41 +1,25 @@
 {
-  "name": "@zag-js/rating",
-  "version": "0.1.12",
-  "description": "Core logic for the rating widget implemented as a state machine",
+  "name": "@zag-js/form-utils",
+  "version": "0.0.0",
+  "description": "",
   "keywords": [
     "js",
-    "machine",
-    "xstate",
-    "statechart",
-    "component",
-    "chakra-ui",
-    "rating"
+    "utils",
+    "form-utils"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/rating",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/form-utils",
   "sideEffects": false,
   "files": [
     "dist/**/*"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/chakra-ui/zag/issues"
-  },
-  "dependencies": {
-    "@zag-js/core": "workspace:*",
-    "@zag-js/types": "workspace:*"
-  },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*"
+    "@zag-js/dom-utils": "workspace:*"
   },
   "scripts": {
     "build-fast": "tsup src/index.ts --format=esm,cjs",
@@ -46,5 +30,11 @@
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
     "typecheck": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
   }
 }

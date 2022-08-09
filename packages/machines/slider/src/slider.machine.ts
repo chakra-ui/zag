@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { raf, trackFieldsetDisabled, trackFormReset, trackPointerMove } from "@zag-js/dom-utils"
+import { raf, trackPointerMove } from "@zag-js/dom-utils"
+import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import { utils } from "./slider.utils"
