@@ -243,8 +243,8 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       form-serialize: 0.7.2
-      solid-app-router: 0.4.1
-      solid-js: 1.4.7
+      solid-app-router: 0.4.2
+      solid-js: 1.4.8
       vite: 3.0.1
       vite-plugin-solid: 2.3.0
     dependencies:
@@ -291,12 +291,12 @@ importers:
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       form-serialize: 0.7.2
-      solid-app-router: 0.4.1_solid-js@1.4.7
-      solid-js: 1.4.7
+      solid-app-router: 0.4.2_solid-js@1.4.8
+      solid-js: 1.4.8
     devDependencies:
       '@types/form-serialize': 0.7.2
       vite: 3.0.1
-      vite-plugin-solid: 2.3.0_solid-js@1.4.7+vite@3.0.1
+      vite-plugin-solid: 2.3.0_solid-js@1.4.8+vite@3.0.1
 
   examples/vue-ts:
     specifiers:
@@ -7975,22 +7975,18 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /solid-app-router/0.4.1_solid-js@1.4.7:
-    resolution: {integrity: sha512-RKHyFQ+J5lXyE/SoyJVHgTBeBck2etYVJn1/9F7ehlzyD2pIOMqLpNXD1GfWQljHqNdXZBSyE+xB/Cck5l9Q/g==}
+  /solid-app-router/0.4.2_solid-js@1.4.8:
+    resolution: {integrity: sha512-+NrLcmqYssx8DcbpcLBaYPqfTRtS+rkfbxMhLH8MHfTcTkdZfrkWQK7lsUvuPCebGEzfaPZJvHqBwhPrCXAmxg==}
     peerDependencies:
       solid-js: ^1.3.5
     dependencies:
-      solid-js: 1.4.7
+      solid-js: 1.4.8
     dev: false
-
-  /solid-js/1.4.7:
-    resolution: {integrity: sha512-u3hoe5w3xseAc/8zLwYaQVGanWXknMMQkzryNz7lOPy2ygW6DhCtfMseun4kLflRNRzrUUpTV3W5p7j2SGcHCQ==}
 
   /solid-js/1.4.8:
     resolution: {integrity: sha512-XErZdnnYYXF7OwGSUAPcua2y5/ELB/c53zFCpWiEGqxTNoH1iQghzI8EsHJXk06sNn+Z/TGhb8bPDNNGSgimag==}
-    dev: true
 
-  /solid-refresh/0.4.1_solid-js@1.4.7:
+  /solid-refresh/0.4.1_solid-js@1.4.8:
     resolution: {integrity: sha512-v3tD/OXQcUyXLrWjPW1dXZyeWwP7/+GQNs8YTL09GBq+5FguA6IejJWUvJDrLIA4M0ho9/5zK2e9n+uy+4488g==}
     peerDependencies:
       solid-js: ^1.3
@@ -7998,7 +7994,7 @@ packages:
       '@babel/generator': 7.18.9
       '@babel/helper-module-imports': 7.18.6
       '@babel/types': 7.18.9
-      solid-js: 1.4.7
+      solid-js: 1.4.8
     dev: true
 
   /sort-keys/4.2.0:
@@ -8830,7 +8826,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: false
 
-  /vite-plugin-solid/2.3.0_solid-js@1.4.7+vite@3.0.1:
+  /vite-plugin-solid/2.3.0_solid-js@1.4.8+vite@3.0.1:
     resolution: {integrity: sha512-N2sa54C3UZC2nN5vpj5o6YP+XdIAZW6n6xv8OasxNAcAJPFeZT7EOVvumL0V4c8hBz1yuYniMWdESY8807fVSg==}
     peerDependencies:
       solid-js: ^1.3.17
@@ -8840,8 +8836,8 @@ packages:
       '@babel/preset-typescript': 7.18.6_@babel+core@7.18.9
       babel-preset-solid: 1.4.8_@babel+core@7.18.9
       merge-anything: 5.0.2
-      solid-js: 1.4.7
-      solid-refresh: 0.4.1_solid-js@1.4.7
+      solid-js: 1.4.8
+      solid-refresh: 0.4.1_solid-js@1.4.8
       vite: 3.0.1
     transitivePeerDependencies:
       - supports-color
