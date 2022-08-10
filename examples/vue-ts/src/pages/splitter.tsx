@@ -1,5 +1,4 @@
-import { injectGlobal } from "@emotion/css"
-import { splitterControls, splitterStyle } from "@zag-js/shared"
+import { splitterControls } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
@@ -7,8 +6,6 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(splitterStyle)
 
 export default defineComponent({
   name: "Splitter",
@@ -25,7 +22,7 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <main>
+          <main class="splitter">
             <div {...api.rootProps}>
               <div {...api.primaryPaneProps}>
                 <div>

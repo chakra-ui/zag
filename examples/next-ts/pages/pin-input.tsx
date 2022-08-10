@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { pinInputControls, pinInputStyle } from "@zag-js/shared"
+import { pinInputControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -25,9 +24,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={pinInputStyle} />
-
-      <main>
+      <main className="pin-input">
         <form
           onSubmit={(e) => {
             e.preventDefault()

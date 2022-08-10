@@ -1,21 +1,16 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { ReactNode, useState } from "react"
-import { getToolbarStyles } from "@zag-js/shared"
 
 type ToolbarProps = {
   controls: null | (() => JSX.Element)
   children: ReactNode
-  count?: number
 }
 
 export function Toolbar(props: ToolbarProps) {
   const [active, setActive] = useState(props.controls === null ? 1 : 0)
-  const { count = 1 } = props
-
-  const style = getToolbarStyles(count)
 
   return (
-    <div className={style}>
+    <div className="toolbar">
       <nav>
         {props.controls !== null && (
           <button data-active={dataAttr(active === 0)} onClick={() => setActive(0)}>

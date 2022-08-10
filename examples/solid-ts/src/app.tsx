@@ -1,15 +1,16 @@
 import { dataAttr } from "@zag-js/dom-utils"
-import { navStyle, pageStyle, routesData } from "@zag-js/shared"
+import { routesData } from "@zag-js/shared"
 import { Link, useMatch, useRoutes } from "solid-app-router"
 import { Component, For } from "solid-js"
 import { routes } from "./routes"
+import "../../../shared/src/style.css"
 
 const App: Component = () => {
   const Route = useRoutes(routes)
 
   return (
-    <div class={pageStyle}>
-      <aside class={navStyle}>
+    <div class="page">
+      <aside class="nav">
         <header>Zagjs</header>
         <For each={routesData} fallback={<div>Loading...</div>}>
           {(route) => {

@@ -1,4 +1,3 @@
-import { injectGlobal } from "@emotion/css"
 import * as {{machine}} from "@zag-js/{{machine}}"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
@@ -6,8 +5,6 @@ import { {{machine}}Controls, {{machine}}Style } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal({{machine}}Style)
 
 export default defineComponent({
   name: "{{machine}}",
@@ -25,7 +22,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="{{machine}}">
             <div {...api.rootProps}>
             
             </div>

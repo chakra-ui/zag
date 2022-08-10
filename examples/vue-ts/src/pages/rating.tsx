@@ -1,14 +1,11 @@
-import { injectGlobal } from "@emotion/css"
 import * as rating from "@zag-js/rating"
-import { ratingControls, ratingStyle } from "@zag-js/shared"
+import { ratingControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(ratingStyle)
 
 const HalfStar = defineComponent({
   name: "HalfStar",
@@ -61,7 +58,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="rating">
             <div {...api.rootProps}>
               <div {...api.itemGroupProps}>
                 {api.sizeArray.map((index) => {

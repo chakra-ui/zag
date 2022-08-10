@@ -1,12 +1,9 @@
-import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { menuData, menuStyle } from "@zag-js/shared"
+import { menuData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, onMounted, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(menuStyle)
 
 export default defineComponent({
   name: "NestedMenu",
@@ -49,7 +46,7 @@ export default defineComponent({
 
               <Teleport to="body">
                 <div {...root.value.positionerProps}>
-                  <ul data-testid="menu" {...root.value.contentProps}>
+                  <ul data-testid="menu" class="menu-content" {...root.value.contentProps}>
                     {level1.map((item) => {
                       const props = item.trigger ? triggerItemProps.value : root.value.getItemProps({ id: item.id })
                       return (
@@ -64,7 +61,7 @@ export default defineComponent({
 
               <Teleport to="body">
                 <div {...sub.value.positionerProps}>
-                  <ul data-testid="more-tools-submenu" {...sub.value.contentProps}>
+                  <ul data-testid="more-tools-submenu" class="menu-content" {...sub.value.contentProps}>
                     {level2.map((item) => {
                       const props = item.trigger ? triggerItem2Props.value : sub.value.getItemProps({ id: item.id })
                       return (
@@ -79,7 +76,7 @@ export default defineComponent({
 
               <Teleport to="body">
                 <div {...sub2.value.positionerProps}>
-                  <ul data-testid="open-nested-submenu" {...sub2.value.contentProps}>
+                  <ul data-testid="open-nested-submenu" class="menu-content" {...sub2.value.contentProps}>
                     {level3.map((item) => (
                       <li key={item.id} data-testid={item.id} {...sub2.value.getItemProps({ id: item.id })}>
                         {item.label}
@@ -93,7 +90,6 @@ export default defineComponent({
 
           <Toolbar
             controls={null}
-            count={3}
             visualizer={
               <>
                 <StateVisualizer state={state} />

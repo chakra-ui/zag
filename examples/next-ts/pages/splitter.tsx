@@ -1,6 +1,5 @@
-import { Global } from "@emotion/react"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { splitterControls, splitterStyle } from "@zag-js/shared"
+import { splitterControls } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -23,8 +22,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={splitterStyle} />
-      <main>
+      <main className="splitter">
         <div {...api.rootProps}>
           <div {...api.primaryPaneProps}>
             <div>

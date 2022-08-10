@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as radio from "@zag-js/radio"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
-import { radioControls, radioStyle, radioData } from "@zag-js/shared"
+import { radioControls, radioData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(radioStyle)
 
 export default defineComponent({
   name: "radio",
@@ -25,7 +22,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="radio">
             <form>
               <fieldset disabled={false}>
                 <div {...api.rootProps}>

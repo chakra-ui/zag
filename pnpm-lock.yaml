@@ -84,8 +84,6 @@ importers:
 
   examples/next-ts:
     specifiers:
-      '@emotion/react': 11.9.3
-      '@emotion/styled': 11.9.3
       '@types/form-serialize': 0.7.2
       '@types/node': 18.0.6
       '@types/react': 18.0.15
@@ -141,8 +139,6 @@ importers:
       react-spinners: 0.13.3
       typescript: 4.7.4
     dependencies:
-      '@emotion/react': 11.9.3_3hx2ussxxho4jajbwrd6gq34qe
-      '@emotion/styled': 11.9.3_t4da3hocwt6ljcf3o6em4qwqzm
       '@zag-js/accordion': link:../../packages/machines/accordion
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
@@ -201,7 +197,6 @@ importers:
 
   examples/solid-ts:
     specifiers:
-      '@emotion/css': 11.9.0
       '@types/form-serialize': 0.7.2
       '@zag-js/accordion': workspace:*
       '@zag-js/aria-hidden': workspace:*
@@ -251,7 +246,6 @@ importers:
       vite: 3.0.1
       vite-plugin-solid: 2.3.0
     dependencies:
-      '@emotion/css': 11.9.0
       '@zag-js/accordion': link:../../packages/machines/accordion
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
@@ -304,7 +298,6 @@ importers:
 
   examples/vue-ts:
     specifiers:
-      '@emotion/css': 11.9.0
       '@rushstack/eslint-patch': ^1.1.0
       '@types/form-serialize': 0.7.2
       '@types/node': 18.0.6
@@ -365,7 +358,6 @@ importers:
       vue-router: 4.1.2
       vue-tsc: 0.38.8
     dependencies:
-      '@emotion/css': 11.9.0
       '@zag-js/accordion': link:../../packages/machines/accordion
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
@@ -1777,37 +1769,8 @@ packages:
     resolution: {integrity: sha512-14FtKiHhy2QoPIzdTcvh//8OyBlknNs2nXRwIhG904opCby3l+9Xaf/wuPvICBF0rc1ZCNBd3nKe9cd2mecVkQ==}
     dev: false
 
-  /@emotion/is-prop-valid/1.2.0:
-    resolution: {integrity: sha512-3aDpDprjM0AwaxGE09bOPkNxHpBd+kA6jty3RnaEXdweX1DF1U3VQpPYb0g1IStAuK7SVQ1cy+bNBBKp4W3Fjg==}
-    dependencies:
-      '@emotion/memoize': 0.8.0
-    dev: false
-
   /@emotion/memoize/0.8.0:
     resolution: {integrity: sha512-G/YwXTkv7Den9mXDO7AhLWkE3q+I92B+VqAE+dYG4NGPaHZGvt3G8Q0p9vmE+sq7rTGphUbAvmQ9YpbfMQGGlA==}
-    dev: false
-
-  /@emotion/react/11.9.3_3hx2ussxxho4jajbwrd6gq34qe:
-    resolution: {integrity: sha512-g9Q1GcTOlzOEjqwuLF/Zd9LC+4FljjPjDfxSM7KmEakm+hsHXk+bYZ2q+/hTJzr0OUNkujo72pXLQvXj6H+GJQ==}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-      '@types/react': '*'
-      react: '>=16.8.0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.18.9
-      '@emotion/babel-plugin': 11.10.0
-      '@emotion/cache': 11.10.0
-      '@emotion/serialize': 1.1.0
-      '@emotion/utils': 1.2.0
-      '@emotion/weak-memoize': 0.2.5
-      '@types/react': 18.0.15
-      hoist-non-react-statics: 3.3.2
-      react: 18.2.0
     dev: false
 
   /@emotion/serialize/1.1.0:
@@ -1824,39 +1787,12 @@ packages:
     resolution: {integrity: sha512-OiTkRgpxescko+M51tZsMq7Puu/KP55wMT8BgpcXVG2hqXc0Vo0mfymJ/Uj24Hp0i083ji/o0aLddh08UEjq8w==}
     dev: false
 
-  /@emotion/styled/11.9.3_t4da3hocwt6ljcf3o6em4qwqzm:
-    resolution: {integrity: sha512-o3sBNwbtoVz9v7WB1/Y/AmXl69YHmei2mrVnK7JgyBJ//Rst5yqPZCecEJlMlJrFeWHp+ki/54uN265V2pEcXA==}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-      '@emotion/react': ^11.0.0-rc.0
-      '@types/react': '*'
-      react: '>=16.8.0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.18.9
-      '@emotion/babel-plugin': 11.10.0
-      '@emotion/is-prop-valid': 1.2.0
-      '@emotion/react': 11.9.3_3hx2ussxxho4jajbwrd6gq34qe
-      '@emotion/serialize': 1.1.0
-      '@emotion/utils': 1.2.0
-      '@types/react': 18.0.15
-      react: 18.2.0
-    dev: false
-
   /@emotion/unitless/0.8.0:
     resolution: {integrity: sha512-VINS5vEYAscRl2ZUDiT3uMPlrFQupiKgHz5AA4bCH1miKBg4qtwkim1qPmJj/4WG6TreYMY111rEFsjupcOKHw==}
     dev: false
 
   /@emotion/utils/1.2.0:
     resolution: {integrity: sha512-sn3WH53Kzpw8oQ5mgMmIzzyAaH2ZqFEbozVVBSYp538E06OSE6ytOp7pRAjNQR+Q/orwqdQYJSe2m3hCOeznkw==}
-    dev: false
-
-  /@emotion/weak-memoize/0.2.5:
-    resolution: {integrity: sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==}
     dev: false
 
   /@emotion/weak-memoize/0.3.0:
@@ -3010,6 +2946,7 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+    dev: true
 
   /@types/react-dom/18.0.6:
     resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
@@ -3023,9 +2960,11 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.0
+    dev: true
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+    dev: true
 
   /@types/semver/6.2.3:
     resolution: {integrity: sha512-KQf+QAMWKMrtBMsB8/24w53tEsxllMj6TuA80TT/5igJalLI/zm0L3oXRbIAl4Ohfc85gyHX/jhMwsVkmhLU4A==}
@@ -5566,12 +5505,6 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /hoist-non-react-statics/3.3.2:
-    resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
-    dependencies:
-      react-is: 16.13.1
-    dev: false
-
   /homedir-polyfill/1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
@@ -7637,6 +7570,7 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+    dev: true
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}

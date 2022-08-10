@@ -1,5 +1,4 @@
-import { injectGlobal } from "@emotion/css"
-import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
+import { tabsControls, tabsData } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
@@ -7,8 +6,6 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(tabsStyle)
 
 export default defineComponent({
   name: "Tabs",
@@ -25,7 +22,7 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <main>
+          <main class="tabs">
             <div {...api.rootProps}>
               <div {...api.indicatorProps} />
               <div {...api.triggerGroupProps}>

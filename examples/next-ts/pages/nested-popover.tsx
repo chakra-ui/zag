@@ -1,7 +1,5 @@
-import { Global } from "@emotion/react"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { popoverStyle } from "@zag-js/shared"
 import * as React from "react"
 import { Portal } from "../components/portal"
 
@@ -33,7 +31,7 @@ function Popover({ children, nested, id }: any) {
 
         <Wrapper>
           <div {...api.positionerProps}>
-            <div data-testid="popover-content" {...api.contentProps}>
+            <div data-testid="popover-content" className="popover-content" {...api.contentProps}>
               <div {...api.arrowProps}>
                 <div {...api.innerArrowProps} />
               </div>
@@ -64,8 +62,7 @@ function Popover({ children, nested, id }: any) {
 export default function Page() {
   return (
     <>
-      <Global styles={popoverStyle} />
-      <main>
+      <main className="popover">
         <Popover id="p1">
           <Popover nested id="p2">
             <Popover nested id="p3" />

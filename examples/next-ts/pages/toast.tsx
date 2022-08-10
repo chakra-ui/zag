@@ -1,6 +1,5 @@
-import { Global } from "@emotion/react"
 import { normalizeProps, useActor, useMachine } from "@zag-js/react"
-import { toastControls, toastStyle } from "@zag-js/shared"
+import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { useId, useRef } from "react"
 import { BeatLoader } from "react-spinners"
@@ -41,8 +40,6 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={toastStyle} />
-
       <main>
         <div style={{ display: "flex", gap: "16px" }}>
           <button
@@ -81,7 +78,7 @@ export default function Page() {
           <button onClick={() => api.pause()}>Pause all</button>
           <button onClick={() => api.resume()}>Resume all</button>
         </div>
-        <div {...api.getGroupProps({ placement: "bottom" })}>
+        <div className="toast-group" {...api.getGroupProps({ placement: "bottom" })}>
           {api.toasts.map((actor) => (
             <ToastItem key={actor.id} actor={actor} />
           ))}

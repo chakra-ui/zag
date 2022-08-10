@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as rating from "@zag-js/rating"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { ratingControls, ratingStyle } from "@zag-js/shared"
+import { ratingControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -53,8 +52,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={ratingStyle} />
-      <main>
+      <main className="rating">
         <div {...api.rootProps}>
           <label {...api.labelProps}>Rate:</label>
           <div {...api.itemGroupProps}>

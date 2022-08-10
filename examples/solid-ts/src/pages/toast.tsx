@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import { useActor, useMachine, normalizeProps } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
-import { toastControls, toastStyle } from "@zag-js/shared"
+import { toastControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(toastStyle)
 
 function Loader() {
   return (
@@ -90,7 +87,7 @@ export default function Page() {
           <button onClick={() => api().resume()}>Resume all</button>
         </div>
 
-        <div {...api().getGroupProps({ placement: "bottom" })}>
+        <div class="toast-group" {...api().getGroupProps({ placement: "bottom" })}>
           <For each={api().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
         </div>
       </main>

@@ -1,12 +1,8 @@
-import { injectGlobal } from "@emotion/css"
 import * as dialog from "@zag-js/dialog"
-import { dialogStyle } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(dialogStyle)
 
 export default defineComponent({
   name: "Dialog",
@@ -36,7 +32,7 @@ export default defineComponent({
                 <div style={{ minHeight: "1200px", pointerEvents: "none" }} />
                 {parentDialog.isOpen && (
                   <Teleport to="body">
-                    <div {...parentDialog.backdropProps} />
+                    <div class="dialog-backdrop" {...parentDialog.backdropProps} />
                     <div {...parentDialog.underlayProps} data-testid="underlay-1">
                       <div {...parentDialog.contentProps}>
                         <h2 {...parentDialog.titleProps}>Edit profile</h2>
@@ -74,7 +70,6 @@ export default defineComponent({
           </main>
           <Toolbar
             controls={null}
-            count={2}
             visualizer={
               <>
                 <StateVisualizer state={state} />

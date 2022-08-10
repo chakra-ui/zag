@@ -1,15 +1,12 @@
-import { injectGlobal } from "@emotion/css"
 import * as slider from "@zag-js/range-slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 import { computed, defineComponent, h, Fragment } from "vue"
-import { rangeSliderControls, sliderStyle } from "@zag-js/shared"
+import { rangeSliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(sliderStyle)
 
 export default defineComponent({
   name: "RangeSlider",
@@ -32,7 +29,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="slider">
             <form
               // ensure we can read the value within forms
               onInput={(e) => {

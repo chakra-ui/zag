@@ -1,14 +1,11 @@
-import { injectGlobal } from "@emotion/css"
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { pinInputControls, pinInputStyle } from "@zag-js/shared"
+import { pinInputControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 import serialize from "form-serialize"
-
-injectGlobal(pinInputStyle)
 
 export default function Page() {
   const controls = useControls(pinInputControls)
@@ -27,7 +24,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="pin-input">
         <form
           onSubmit={(e) => {
             e.preventDefault()

@@ -1,7 +1,5 @@
 export * from "./controls"
 export * from "./data"
-export * from "./reset"
 export * from "./routes"
 export * from "./stringify-state"
-export * from "./style"
 export * from "./define-controls"

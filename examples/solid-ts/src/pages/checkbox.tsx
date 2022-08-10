@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { checkboxControls, checkboxStyle } from "@zag-js/shared"
+import { checkboxControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(checkboxStyle)
 
 export default function Page() {
   const controls = useControls(checkboxControls)
@@ -31,7 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="checkbox">
         <form>
           <fieldset>
             <label {...api().rootProps}>

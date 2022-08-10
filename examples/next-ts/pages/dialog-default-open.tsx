@@ -1,8 +1,6 @@
-import { Global } from "@emotion/react"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useRef } from "react"
-import { dialogStyle } from "@zag-js/shared"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -20,8 +18,6 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={dialogStyle} />
-
       <main>
         <div>
           <button {...api.triggerProps} data-testid="trigger-1">
@@ -32,7 +28,7 @@ export default function Page() {
 
           {api.isOpen && (
             <Portal>
-              <div {...api.backdropProps} />
+              <div className="dialog-backdrop" {...api.backdropProps} />
               <div data-testid="underlay-1" {...api.underlayProps}>
                 <div {...api.contentProps}>
                   <h2 {...api.titleProps}>Edit profile</h2>

@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as radio from "@zag-js/radio"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { radioControls, radioData, radioStyle } from "@zag-js/shared"
+import { radioControls, radioData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -18,9 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={radioStyle} />
-
-      <main>
+      <main className="radio">
         <form
           onChange={(e) => {
             const form = new FormData(e.currentTarget)

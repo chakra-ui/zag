@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { menuOptionData as data, menuStyle } from "@zag-js/shared"
+import { menuOptionData as data } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -19,8 +18,6 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={menuStyle} />
-
       <main>
         <div>
           <button {...api.triggerProps}>
@@ -29,7 +26,7 @@ export default function Page() {
 
           <Portal>
             <div {...api.positionerProps}>
-              <div {...api.contentProps}>
+              <div className="menu-content" {...api.contentProps}>
                 {data.order.map((item) => {
                   const opts = { type: "radio", name: "order", value: item.id } as const
                   return (

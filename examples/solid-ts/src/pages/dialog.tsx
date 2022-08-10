@@ -1,13 +1,9 @@
-import { injectGlobal } from "@emotion/css"
 import { Portal } from "solid-js/web"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps } from "@zag-js/solid"
 import { StateVisualizer } from "../components/state-visualizer"
-import { dialogStyle } from "@zag-js/shared"
 import { createMemo, createUniqueId } from "solid-js"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(dialogStyle)
 
 export default function Page() {
   // dialog 1
@@ -30,7 +26,7 @@ export default function Page() {
           <div style={{ "min-height": "1200px" }} />
           {parentDialog().isOpen && (
             <Portal>
-              <div {...parentDialog().backdropProps} />
+              <div class="dialog-backdrop" {...parentDialog().backdropProps} />
               <div {...parentDialog().underlayProps} data-testid="underlay-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>
@@ -47,7 +43,7 @@ export default function Page() {
                   </button>
                   {childDialog().isOpen && (
                     <Portal>
-                      <div {...childDialog().backdropProps} />
+                      <div class="dialog-backdrop" {...childDialog().backdropProps} />
                       <div {...childDialog().underlayProps} data-testid="underlay-2">
                         <div {...childDialog().contentProps}>
                           <h2 {...childDialog().titleProps}>Nested</h2>
@@ -69,7 +65,6 @@ export default function Page() {
       </main>
       <Toolbar
         controls={null}
-        count={2}
         visualizer={
           <>
             <StateVisualizer state={state} />

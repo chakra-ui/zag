@@ -1,14 +1,11 @@
-import { injectGlobal } from "@emotion/css"
 import * as pinInput from "@zag-js/pin-input"
-import { pinInputControls, pinInputStyle } from "@zag-js/shared"
+import { pinInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(pinInputStyle)
 
 export default defineComponent({
   name: "PinInput",
@@ -31,7 +28,7 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <main>
+          <main class="pin-input">
             <form
               onSubmit={(e) => {
                 e.preventDefault()

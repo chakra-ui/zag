@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as {{machine}} from "@zag-js/{{machine}}"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { {{machine}}Controls, {{machine}}Data, {{machine}}Style } from "@zag-js/shared"
+import { {{machine}}Controls, {{machine}}Data } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -18,9 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={ {{machine}}Style } />
-
-      <main>
+      <main className="{{machine}}">
         <div {...api.rootProps}>
         </div>
       </main>

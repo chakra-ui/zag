@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as accordion from "@zag-js/accordion"
-import { accordionControls, accordionData, accordionStyle } from "@zag-js/shared"
+import { accordionControls, accordionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(accordionStyle)
 
 export default defineComponent({
   name: "Accordion",
@@ -25,7 +22,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="accordion">
             <div {...api.rootProps}>
               {accordionData.map((item) => (
                 <div {...api.getItemProps({ value: item.id })}>

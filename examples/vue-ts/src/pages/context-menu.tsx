@@ -1,12 +1,8 @@
-import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { menuStyle } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(menuStyle)
 
 export default defineComponent({
   name: "Menu",
@@ -30,7 +26,7 @@ export default defineComponent({
             </div>
             <Teleport to="body">
               <div {...api.positionerProps}>
-                <ul {...api.contentProps}>
+                <ul class="menu-content" {...api.contentProps}>
                   <li {...api.getItemProps({ id: "edit" })}>Edit</li>
                   <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
                   <li {...api.getItemProps({ id: "delete" })}>Delete</li>
