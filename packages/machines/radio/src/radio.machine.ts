@@ -52,9 +52,6 @@ export function machine(ctx: UserDefinedContext) {
     },
 
     {
-      guards: {
-        isManual: (_, evt) => !!evt.manual,
-      },
       activities: {
         trackFieldsetDisabled(ctx) {
           return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
