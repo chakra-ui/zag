@@ -1,5 +1,20 @@
 # @zag-js/rating
 
+## 0.1.13
+
+### Patch Changes
+
+- [#248](https://github.com/chakra-ui/zag/pull/248)
+  [`7d178325`](https://github.com/chakra-ui/zag/commit/7d178325d529b3d2a52691d70ecf438b5dfe8146) Thanks
+  [@anubra266](https://github.com/anubra266)! - move `initialValue` to private context
+
+* [`6484dc21`](https://github.com/chakra-ui/zag/commit/6484dc2150049e340586c7cdc3da835cf2bd4802) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the rating is unusable on touch devices
+
+- [#247](https://github.com/chakra-ui/zag/pull/247)
+  [`b3c768cd`](https://github.com/chakra-ui/zag/commit/b3c768cd8605c8964acc966d29075e1f845ee0ff) Thanks
+  [@anubra266](https://github.com/anubra266)! - Refactor form utilitities into new package
+
 ## 0.1.12
 
 ### Patch Changes

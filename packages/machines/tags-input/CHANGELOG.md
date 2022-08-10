@@ -1,5 +1,27 @@
 # @zag-js/tags-input
 
+## 0.2.4
+
+### Patch Changes
+
+- [#239](https://github.com/chakra-ui/zag/pull/239)
+  [`42ae5afa`](https://github.com/chakra-ui/zag/commit/42ae5afab386fe898fe7ab8beeac3d29859047f8) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fixed issue where input tried to edit a non existent tag after all tags
+  are deleted.
+
+* [#248](https://github.com/chakra-ui/zag/pull/248)
+  [`7d178325`](https://github.com/chakra-ui/zag/commit/7d178325d529b3d2a52691d70ecf438b5dfe8146) Thanks
+  [@anubra266](https://github.com/anubra266)! - move `initialValue` to private context
+
+- [#247](https://github.com/chakra-ui/zag/pull/247)
+  [`b3c768cd`](https://github.com/chakra-ui/zag/commit/b3c768cd8605c8964acc966d29075e1f845ee0ff) Thanks
+  [@anubra266](https://github.com/anubra266)! - Refactor form utilitities into new package
+
+- Updated dependencies []:
+  - @zag-js/auto-resize@0.1.1
+  - @zag-js/interact-outside@0.1.3
+  - @zag-js/live-region@0.1.1
+
 ## 0.2.3
 
 ### Patch Changes
