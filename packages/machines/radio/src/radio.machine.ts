@@ -78,7 +78,7 @@ export function machine(ctx: UserDefinedContext) {
           ctx.value = evt.value
         },
         setHovered(ctx, evt) {
-          ctx.hoveredId
+          ctx.hoveredId = evt.value
         },
         setActive(ctx, evt) {
           ctx.activeId = evt.value
