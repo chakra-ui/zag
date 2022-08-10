@@ -78,16 +78,13 @@ export function machine(ctx: UserDefinedContext) {
           ctx.value = evt.value
         },
         setHovered(ctx, evt) {
-          ctx.hovered = evt.value
-          // ctx.hovered[evt.value] = evt.hovered;
+          ctx.hoveredId
         },
         setActive(ctx, evt) {
-          ctx.active = evt.value
-          // ctx.active[evt.value] = evt.active;
+          ctx.activeId = evt.value
         },
         setFocused(ctx, evt) {
-          ctx.focused = evt.value
-          // ctx.focused[evt.value] = evt.focused;
+          ctx.focusedId = evt.value
         },
         invokeOnChange(ctx, evt) {
           ctx.onChange?.({ value: evt.value })
