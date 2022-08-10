@@ -1,12 +1,10 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
+import { tagsInputControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(tagsInputStyle)
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
@@ -27,7 +25,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="tags-input">
         <div {...api().rootProps}>
           <label {...api().labelProps}>Enter frameworks:</label>
           <div {...api().controlProps}>
