@@ -108,11 +108,4 @@ export type InputProps = ItemProps & {
    * If `true`, the radio input is marked as required,
    */
   required?: boolean
-  /**
-   * Defines the string that labels the checkbox element.
-   */
-  "aria-label"?: string
-  "aria-labelledby"?: string
-  "aria-invalid"?: boolean
-  "aria-describedby"?: string
 }

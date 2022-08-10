@@ -62,7 +62,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "root",
       role: "radiogroup",
       id: dom.getRootId(state.context),
-      "aria-labelledby": dom.getLabelId(state.context),
       "data-orientation": state.context.orientation,
       "aria-orientation": state.context.orientation,
       dir: state.context.dir,
@@ -130,8 +129,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const isRequired = props.required
       const trulyDisabled = inputState.isDisabled && !props.focusable
 
-      const ariaLabelledBy = props["aria-labelledby"] ?? dom.getItemLabelId(state.context, props.value)
-
       return normalize.input({
         "data-part": "item-input",
         "data-ownedby": dom.getRootId(state.context),
@@ -172,9 +169,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-invalid": ariaAttr(inputState.isInvalid),
         readOnly: inputState.isReadOnly,
         "data-readonly": dataAttr(inputState.isReadOnly),
-        "aria-label": props["aria-label"],
-        "aria-labelledby": ariaLabelledBy,
-        "aria-describedby": props["aria-describedby"],
         "aria-disabled": ariaAttr(trulyDisabled),
         "aria-checked": ariaAttr(inputState.isChecked),
         style: visuallyHiddenStyle,
