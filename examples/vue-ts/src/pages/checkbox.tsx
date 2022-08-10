@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as checkbox from "@zag-js/checkbox"
-import { checkboxControls, checkboxStyle } from "@zag-js/shared"
+import { checkboxControls } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(checkboxStyle)
 
 export default defineComponent({
   name: "Checkbox",
@@ -34,7 +31,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="checkbox">
             <form>
               <fieldset>
                 <label {...api.rootProps}>

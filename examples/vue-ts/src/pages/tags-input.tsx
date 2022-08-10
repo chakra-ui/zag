@@ -1,5 +1,4 @@
-import { injectGlobal } from "@emotion/css"
-import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
+import { tagsInputControls } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
@@ -7,8 +6,6 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(tagsInputStyle)
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
@@ -36,7 +33,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="tags-input">
             <div {...api.rootProps}>
               <label {...api.labelProps}>Enter frameworks:</label>
               <div {...api.controlProps}>

@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as editable from "@zag-js/editable"
-import { editableControls, editableStyle } from "@zag-js/shared"
+import { editableControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(editableStyle)
 
 export default defineComponent({
   name: "Editable",
@@ -25,7 +22,7 @@ export default defineComponent({
 
       return (
         <>
-          <main>
+          <main class="editable">
             <div {...api.rootProps}>
               <div {...api.areaProps}>
                 <input data-testid="input" {...api.inputProps} />

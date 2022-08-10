@@ -1,14 +1,11 @@
-import { injectGlobal } from "@emotion/css"
 import * as popover from "@zag-js/popover"
-import { popoverStyle, popoverControls } from "@zag-js/shared"
+import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { useControls } from "../hooks/use-controls"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(popoverStyle)
 
 export default defineComponent({
   name: "Popover",
@@ -36,7 +33,7 @@ export default defineComponent({
               </button>
               <Wrapper to="body">
                 <div {...api.positionerProps}>
-                  <div data-testid="popover-content" {...api.contentProps}>
+                  <div data-testid="popover-content" class="popover-content" {...api.contentProps}>
                     <div {...api.arrowProps}>
                       <div {...api.innerArrowProps} />
                     </div>

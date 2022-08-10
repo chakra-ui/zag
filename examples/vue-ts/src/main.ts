@@ -1,8 +1,6 @@
-import { resetCss } from "@zag-js/shared"
 import { createApp } from "vue"
 import App from "./App"
 import { router } from "./routes"
-
-resetCss()
+import "../../../shared/src/style.css"
 
 createApp(App).use(router).mount("#app")

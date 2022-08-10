@@ -1,5 +1,5 @@
 import { dataAttr } from "@zag-js/dom-utils"
-import { navStyle, pageStyle, routesData } from "@zag-js/shared"
+import { routesData } from "@zag-js/shared"
 import { computed, defineComponent } from "vue"
 import { RouterLink, RouterView, useRouter } from "vue-router"
 
@@ -21,8 +21,8 @@ const App = defineComponent({
     )
 
     return () => (
-      <div class={pageStyle}>
-        <aside class={navStyle}>
+      <div class="page">
+        <aside class="nav">
           <header>Zagjs</header>
           {items.value}
         </aside>

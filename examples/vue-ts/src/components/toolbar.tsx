@@ -1,17 +1,14 @@
 import { dataAttr } from "@zag-js/dom-utils"
-import { getToolbarStyles } from "@zag-js/shared"
 import { defineComponent, ref } from "vue"
 
 export const Toolbar = defineComponent({
-  props: ["count", "controls", "visualizer"],
+  props: ["controls", "visualizer"],
   setup(props) {
     const activeState = ref(props.controls === null ? 1 : 0)
 
-    const style = getToolbarStyles(props.count ?? 1)
-
     return () => {
       return (
-        <div class={style}>
+        <div class="toolbar">
           <nav>
             {props.controls !== null && (
               <button

@@ -1,5 +1,4 @@
-import { injectGlobal } from "@emotion/css"
-import { toastControls, toastStyle } from "@zag-js/shared"
+import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { normalizeProps, useActor, useMachine } from "@zag-js/vue"
 import { HollowDotsSpinner } from "epic-spinners"
@@ -8,8 +7,6 @@ import { computed, defineComponent, ref } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(toastStyle)
 
 const ToastItem = defineComponent({
   props: {
@@ -92,7 +89,7 @@ export default defineComponent({
               <button onClick={() => api.pause()}>Pause all</button>
               <button onClick={() => api.resume()}>Resume all</button>
             </div>
-            <div {...api.getGroupProps({ placement: "bottom" })}>
+            <div class="toast-group" {...api.getGroupProps({ placement: "bottom" })}>
               {api.toasts.map((actor) => (
                 <ToastItem key={actor.id} actor={actor} />
               ))}

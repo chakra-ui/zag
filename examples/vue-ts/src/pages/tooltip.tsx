@@ -1,12 +1,8 @@
-import { injectGlobal } from "@emotion/css"
-import { tooltipStyles } from "@zag-js/shared"
 import * as Tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(tooltipStyles)
 
 export default defineComponent({
   name: "Tooltip",
@@ -22,13 +18,13 @@ export default defineComponent({
       const api2 = apiRef2.value
       return (
         <>
-          <main style={{ gap: "12px", flexDirection: "row" }}>
+          <main class="tooltip" style={{ gap: "12px", flexDirection: "row" }}>
             <div class="root">
               <button {...api.triggerProps}>Over me</button>
               {api.isOpen && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>
-                    <div data-testid="tip-1-tooltip" {...api.contentProps}>
+                    <div class="tooltip-content" data-testid="tip-1-tooltip" {...api.contentProps}>
                       Tooltip
                     </div>
                   </div>
@@ -39,7 +35,7 @@ export default defineComponent({
               {api2.isOpen && (
                 <Teleport to="body">
                   <div {...api2.positionerProps}>
-                    <div data-testid="tip-2-tooltip" {...api2.contentProps}>
+                    <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2.contentProps}>
                       Tooltip 2
                     </div>
                   </div>
@@ -50,7 +46,6 @@ export default defineComponent({
 
           <Toolbar
             controls={null}
-            count={2}
             visualizer={
               <>
                 <StateVisualizer state={state} />
