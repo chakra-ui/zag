@@ -127,9 +127,9 @@ body {
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
-  --webkit-user-select: none;
-  --moz-user-select: none;
-  --ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   width: fit-content;
 }
@@ -167,8 +167,8 @@ body {
   height: 10px;
   border: solid white;
   border-width: 0 3px 3px 0;
-  --webkit-transform: rotate(45deg);
-  --ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 
@@ -652,7 +652,7 @@ body {
 }
 
 .toast-group [data-part="root"]:not([data-open]) {
-  animation-duration: var(--remove-delay);
+  animation-duration: var(--toast-remove-delay);
   animation-name: fadeOut;
 }
 
@@ -904,9 +904,9 @@ main > .toggle[data-pressed] {
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
-  --webkit-user-select: none;
-  --moz-user-select: none;
-  --ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   width: fit-content;
 }
@@ -948,8 +948,8 @@ main > .toggle[data-pressed] {
   height: 10px;
   border: solid white;
   border-width: 0 3px 3px 0;
-  --webkit-transform: rotate(45deg);
-  --ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 
