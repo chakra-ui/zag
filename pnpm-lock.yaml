@@ -100,8 +100,11 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
+      '@zag-js/element-rect': workspace:*
+      '@zag-js/element-size': workspace:*
       '@zag-js/focus-scope': workspace:*
       '@zag-js/focus-visible': workspace:*
+      '@zag-js/form-utils': workspace:*
       '@zag-js/hover-intent': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -149,8 +152,11 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
+      '@zag-js/element-rect': link:../../packages/utilities/element-rect
+      '@zag-js/element-size': link:../../packages/utilities/element-size
       '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
+      '@zag-js/form-utils': link:../../packages/utilities/form-utils
       '@zag-js/hover-intent': link:../../packages/utilities/hover-intent
       '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
       '@zag-js/live-region': link:../../packages/utilities/live-region
@@ -205,8 +211,11 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
+      '@zag-js/element-rect': workspace:*
+      '@zag-js/element-size': workspace:*
       '@zag-js/focus-scope': workspace:*
       '@zag-js/focus-visible': workspace:*
+      '@zag-js/form-utils': workspace:*
       '@zag-js/hover-intent': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -250,8 +259,11 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
+      '@zag-js/element-rect': link:../../packages/utilities/element-rect
+      '@zag-js/element-size': link:../../packages/utilities/element-size
       '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
+      '@zag-js/form-utils': link:../../packages/utilities/form-utils
       '@zag-js/hover-intent': link:../../packages/utilities/hover-intent
       '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
       '@zag-js/live-region': link:../../packages/utilities/live-region
@@ -307,8 +319,11 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
+      '@zag-js/element-rect': workspace:*
+      '@zag-js/element-size': workspace:*
       '@zag-js/focus-scope': workspace:*
       '@zag-js/focus-visible': workspace:*
+      '@zag-js/form-utils': workspace:*
       '@zag-js/hover-intent': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -356,8 +371,11 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
+      '@zag-js/element-rect': link:../../packages/utilities/element-rect
+      '@zag-js/element-size': link:../../packages/utilities/element-size
       '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
+      '@zag-js/form-utils': link:../../packages/utilities/form-utils
       '@zag-js/hover-intent': link:../../packages/utilities/hover-intent
       '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
       '@zag-js/live-region': link:../../packages/utilities/live-region
