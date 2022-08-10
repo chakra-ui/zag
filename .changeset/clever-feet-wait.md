@@ -2,4 +2,4 @@
 "@zag-js/element-size": patch
 ---
 
-Expose track element size types
+Expose `ElementSizeCallback` and `ElementSize` types
