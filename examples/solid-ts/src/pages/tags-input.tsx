@@ -1,4 +1,3 @@
-import { injectGlobal } from "@emotion/css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"

@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tabs from "@zag-js/tabs"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
+import { tabsControls, tabsData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(tabsStyle)
 
 export default function Page() {
   const controls = useControls(tabsControls)
@@ -20,7 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="tabs">
         <div {...api().rootProps}>
           <div {...api().indicatorProps} />
 

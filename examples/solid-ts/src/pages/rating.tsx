@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as rating from "@zag-js/rating"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { ratingControls, ratingStyle } from "@zag-js/shared"
+import { ratingControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(ratingStyle)
 
 function HalfStar() {
   return (
@@ -50,7 +47,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="rating">
         <div>
           <div {...api().rootProps}>
             <label {...api().labelProps}>Rate:</label>

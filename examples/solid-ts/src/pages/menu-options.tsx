@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
-import { menuOptionData as data, menuStyle } from "@zag-js/shared"
+import { menuOptionData as data } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(menuStyle)
 
 export default function Page() {
   const [state, send] = useMachine(
@@ -30,7 +27,7 @@ export default function Page() {
 
           <Portal>
             <div {...api().positionerProps}>
-              <div {...api().contentProps}>
+              <div class="menu-content" {...api().contentProps}>
                 <For each={data.order}>
                   {(item) => {
                     const opts = { type: "radio", name: "order", value: item.id } as const

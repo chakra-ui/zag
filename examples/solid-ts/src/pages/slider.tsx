@@ -1,14 +1,11 @@
-import { injectGlobal } from "@emotion/css"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { createMemo, createUniqueId } from "solid-js"
-import { sliderControls, sliderStyle } from "@zag-js/shared"
+import { sliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(sliderStyle)
 
 export default function Page() {
   const controls = useControls(sliderControls)
@@ -21,7 +18,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="slider">
         <form
           // ensure we can read the value within forms
           onInput={(e) => {

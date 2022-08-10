@@ -1,18 +1,15 @@
-import { injectGlobal } from "@emotion/css"
 import * as radio from "@zag-js/radio"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { radioControls, radioStyle, radioData } from "@zag-js/shared"
+import { radioControls, radioData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
-injectGlobal(radioStyle)
-
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(radio.machine({ id: createUniqueId(), }), {
+  const [state, send] = useMachine(radio.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
 
@@ -20,7 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="radio">
         <form>
           <fieldset disabled={false}>
             <div {...api().rootProps}>

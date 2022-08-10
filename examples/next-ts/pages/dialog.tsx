@@ -36,7 +36,7 @@ export default function Page() {
 
           {parentDialog.isOpen && (
             <Portal>
-              <div className="modal-backdrop" {...parentDialog.backdropProps} />
+              <div className="dialog-backdrop" {...parentDialog.backdropProps} />
               <div data-testid="underlay-1" {...parentDialog.underlayProps}>
                 <div {...parentDialog.contentProps}>
                   <h2 {...parentDialog.titleProps}>Edit profile</h2>
@@ -55,7 +55,7 @@ export default function Page() {
 
                   {childDialog.isOpen && (
                     <Portal>
-                      <div className="modal-backdrop" {...childDialog.backdropProps} />
+                      <div className="dialog-backdrop" {...childDialog.backdropProps} />
                       <div data-testid="underlay-2" {...childDialog.underlayProps}>
                         <div {...childDialog.contentProps}>
                           <h2 {...childDialog.titleProps}>Nested</h2>

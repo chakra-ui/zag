@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
-import { menuData, menuStyle } from "@zag-js/shared"
+import { menuData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-
-injectGlobal(menuStyle)
 
 export default function Page() {
   const [state, send, machine] = useMachine(menu.machine({ id: createUniqueId() }))
@@ -45,7 +42,7 @@ export default function Page() {
 
           <Portal>
             <div {...root().positionerProps}>
-              <ul data-testid="menu" {...root().contentProps}>
+              <ul data-testid="menu" class="menu-content" {...root().contentProps}>
                 <For each={level1}>
                   {(item) => {
                     const props = createMemo(() =>
@@ -64,7 +61,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub().positionerProps}>
-              <ul data-testid="more-tools-submenu" {...sub().contentProps}>
+              <ul data-testid="more-tools-submenu" class="menu-content" {...sub().contentProps}>
                 <For each={level2}>
                   {(item) => {
                     const props = createMemo(() =>
@@ -83,7 +80,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub2().positionerProps}>
-              <ul data-testid="open-nested-submenu" {...sub2().contentProps}>
+              <ul data-testid="open-nested-submenu" class="menu-content" {...sub2().contentProps}>
                 <For each={level3}>
                   {(item) => (
                     <li data-testid={item.id} {...sub2().getItemProps({ id: item.id })}>
@@ -99,7 +96,6 @@ export default function Page() {
 
       <Toolbar
         controls={null}
-        count={3}
         visualizer={
           <>
             <StateVisualizer state={state} />

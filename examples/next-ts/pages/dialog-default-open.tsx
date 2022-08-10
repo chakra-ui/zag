@@ -28,7 +28,7 @@ export default function Page() {
 
           {api.isOpen && (
             <Portal>
-              <div className="modal-backdrop" {...api.backdropProps} />
+              <div className="dialog-backdrop" {...api.backdropProps} />
               <div data-testid="underlay-1" {...api.underlayProps}>
                 <div {...api.contentProps}>
                   <h2 {...api.titleProps}>Edit profile</h2>

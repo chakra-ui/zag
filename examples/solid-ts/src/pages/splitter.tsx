@@ -1,13 +1,10 @@
-import { injectGlobal } from "@emotion/css"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as splitter from "@zag-js/splitter"
 import { createMemo, createUniqueId } from "solid-js"
-import { splitterControls, splitterStyle } from "@zag-js/shared"
+import { splitterControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-
-injectGlobal(splitterStyle)
 
 export default function Page() {
   const controls = useControls(splitterControls)
@@ -20,7 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <main>
+      <main class="splitter">
         <div>
           <div {...api().rootProps}>
             <div {...api().primaryPaneProps}>
