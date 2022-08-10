@@ -2,7 +2,15 @@
   "name": "@zag-js/radio",
   "version": "0.0.0",
   "description": "Core logic for the radio widget implemented as a state machine",
-  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "radio"],
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "radio"
+  ],
   "author": "Abraham Aremu <anubra266@gmail.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
@@ -11,7 +19,9 @@
   "module": "dist/index.mjs",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/radio",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src/index.ts --format=esm,cjs",
     "start": "pnpm build --watch",
