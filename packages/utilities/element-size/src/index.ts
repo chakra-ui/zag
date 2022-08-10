@@ -1,9 +1,9 @@
-type ElementSize = {
+export type ElementSize = {
   width: number
   height: number
 }
 
-type ElementSizeCallback = (size: ElementSize | undefined) => void
+export type ElementSizeCallback = (size: ElementSize | undefined) => void
 
 export function trackElementSize(element: HTMLElement | null, callback: ElementSizeCallback) {
   if (!element) {
