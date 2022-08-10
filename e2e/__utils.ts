@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright"
 import { expect, Locator, Page } from "@playwright/test"
 
 export async function a11y(page: Page, selector = "[data-part=root]") {
+  await page.waitForSelector(selector)
   const results = await new AxeBuilder({ page }).include(selector).analyze()
   expect(results.violations).toEqual([])
 }

@@ -138,7 +138,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getItemInputId(state.context, props.value),
 
         type: "radio",
-        name: state.context.name,
+        name: state.context.name || state.context.id,
         value: props.value,
         onChange(event) {
           if (inputState.isReadOnly || inputState.isDisabled) {
@@ -166,6 +166,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         disabled: trulyDisabled,
         required: isRequired,
+        defaultChecked: inputState.isChecked,
         "data-disabled": dataAttr(inputState.isDisabled),
         "aria-required": ariaAttr(isRequired),
         "aria-invalid": ariaAttr(inputState.isInvalid),
