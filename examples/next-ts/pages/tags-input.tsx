@@ -1,6 +1,5 @@
-import { Global } from "@emotion/react"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { tagsInputControls, tagsInputStyle } from "@zag-js/shared"
+import { tagsInputControls } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -28,9 +27,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={tagsInputStyle} />
-
-      <main>
+      <main className="tags-input">
         <div {...api.rootProps}>
           <label {...api.labelProps}>Enter frameworks:</label>
           <div {...api.controlProps}>

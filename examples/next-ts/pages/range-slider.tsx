@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as slider from "@zag-js/range-slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { rangeSliderControls, sliderStyle } from "@zag-js/shared"
+import { rangeSliderControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -24,9 +23,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={sliderStyle} />
-
-      <main>
+      <main className="slider">
         <form
           // ensure we can read the value within forms
           onChange={(e) => {

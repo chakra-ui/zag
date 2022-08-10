@@ -1,8 +1,7 @@
-import { Global } from "@emotion/react"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as React from "react"
-import { popoverControls, popoverStyle } from "@zag-js/shared"
+import { popoverControls } from "@zag-js/shared"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -26,9 +25,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={popoverStyle} />
-
-      <main>
+      <main className="popover">
         <div data-part="root">
           <button data-testid="button-before">Button :before</button>
 
@@ -40,7 +37,7 @@ export default function Page() {
 
           <Wrapper>
             <div {...api.positionerProps}>
-              <div data-testid="popover-content" {...api.contentProps}>
+              <div data-testid="popover-content" className="popover-content" {...api.contentProps}>
                 <div {...api.arrowProps}>
                   <div {...api.innerArrowProps} />
                 </div>

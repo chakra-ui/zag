@@ -1,7 +1,5 @@
-import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { menuStyle } from "@zag-js/shared"
 import { useId } from "react"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -19,8 +17,6 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={menuStyle} />
-
       <main>
         <div {...api.contextTriggerProps}>
           <div style={{ border: "solid 1px red" }}>Open context menu</div>
@@ -28,7 +24,7 @@ export default function Page() {
 
         <Portal>
           <div {...api.positionerProps}>
-            <ul {...api.contentProps}>
+            <ul className="menu-content" {...api.contentProps}>
               <li {...api.getItemProps({ id: "edit" })}>Edit</li>
               <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
               <li {...api.getItemProps({ id: "delete" })}>Delete</li>

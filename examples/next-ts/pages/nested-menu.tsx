@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { menuData, menuStyle } from "@zag-js/shared"
+import { menuData } from "@zag-js/shared"
 import { useEffect, useId } from "react"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -48,8 +47,6 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={menuStyle} />
-
       <main>
         <div>
           <button data-testid="trigger" {...root.triggerProps}>
@@ -58,7 +55,7 @@ export default function Page() {
 
           <Portal>
             <div {...root.positionerProps}>
-              <ul data-testid="menu" {...root.contentProps}>
+              <ul data-testid="menu" className="menu-content" {...root.contentProps}>
                 {level1.map((item) => {
                   const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
                   return (
@@ -73,7 +70,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub.positionerProps}>
-              <ul data-testid="more-tools-submenu" {...sub.contentProps}>
+              <ul data-testid="more-tools-submenu" className="menu-content" {...sub.contentProps}>
                 {level2.map((item) => {
                   const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
                   return (
@@ -88,7 +85,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub2.positionerProps}>
-              <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
+              <ul data-testid="open-nested-submenu" className="menu-content" {...sub2.contentProps}>
                 {level3.map((item) => (
                   <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
                     {item.label}
@@ -100,7 +97,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={null} count={3}>
+      <Toolbar controls={null}>
         <StateVisualizer state={state} label="Root Machine" />
         <StateVisualizer state={subState} label="Sub Machine" />
         <StateVisualizer state={sub2State} label="Sub2 Machine" />

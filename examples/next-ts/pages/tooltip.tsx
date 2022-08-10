@@ -1,6 +1,4 @@
-import { Global } from "@emotion/react"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { tooltipStyles } from "@zag-js/shared"
 import * as tooltip from "@zag-js/tooltip"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -24,8 +22,7 @@ export default function Page() {
   const api2 = tooltip.connect(state2, send2, normalizeProps)
   return (
     <>
-      <Global styles={tooltipStyles} />
-      <main>
+      <main className="tooltip">
         <div className="root">
           <button data-testid={`${id}-trigger`} {...api.triggerProps}>
             Over me
@@ -33,7 +30,7 @@ export default function Page() {
           {api.isOpen && (
             <Portal>
               <div {...api.positionerProps}>
-                <div data-testid={`${id}-tooltip`} {...api.contentProps}>
+                <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>
                   Tooltip
                 </div>
               </div>
@@ -46,7 +43,7 @@ export default function Page() {
           {api2.isOpen && (
             <Portal>
               <div {...api2.positionerProps}>
-                <div data-testid={`${id2}-tooltip`} {...api2.contentProps}>
+                <div className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.contentProps}>
                   Tooltip
                 </div>
               </div>
@@ -54,7 +51,7 @@ export default function Page() {
           )}
         </div>
       </main>
-      <Toolbar controls={null} count={2}>
+      <Toolbar controls={null}>
         <StateVisualizer state={state} label="Tooltip 1" />
         <StateVisualizer state={state2} label="Tooltip 2" />
       </Toolbar>

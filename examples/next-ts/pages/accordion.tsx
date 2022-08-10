@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as accordion from "@zag-js/accordion"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { accordionControls, accordionData, accordionStyle } from "@zag-js/shared"
+import { accordionControls, accordionData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -23,9 +22,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={accordionStyle} />
-
-      <main>
+      <main className="accordion">
         <div {...api.rootProps}>
           {accordionData.map((item) => (
             <div key={item.id} {...api.getItemProps({ value: item.id })}>

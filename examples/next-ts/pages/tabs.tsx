@@ -1,6 +1,5 @@
-import { Global } from "@emotion/react"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { tabsControls, tabsData, tabsStyle } from "@zag-js/shared"
+import { tabsControls, tabsData } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -24,9 +23,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={tabsStyle} />
-
-      <main>
+      <main className="tabs">
         <div {...api.rootProps}>
           <div {...api.indicatorProps} />
           <div {...api.triggerGroupProps}>

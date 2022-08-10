@@ -1,7 +1,5 @@
-import { Global } from "@emotion/react"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { dialogStyle } from "@zag-js/shared"
 import { useId, useRef } from "react"
 import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -28,8 +26,6 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={dialogStyle} />
-
       <main>
         <div>
           <button {...parentDialog.triggerProps} data-testid="trigger-1">
@@ -40,7 +36,7 @@ export default function Page() {
 
           {parentDialog.isOpen && (
             <Portal>
-              <div {...parentDialog.backdropProps} />
+              <div className="modal-backdrop" {...parentDialog.backdropProps} />
               <div data-testid="underlay-1" {...parentDialog.underlayProps}>
                 <div {...parentDialog.contentProps}>
                   <h2 {...parentDialog.titleProps}>Edit profile</h2>
@@ -59,7 +55,7 @@ export default function Page() {
 
                   {childDialog.isOpen && (
                     <Portal>
-                      <div {...childDialog.backdropProps} />
+                      <div className="modal-backdrop" {...childDialog.backdropProps} />
                       <div data-testid="underlay-2" {...childDialog.underlayProps}>
                         <div {...childDialog.contentProps}>
                           <h2 {...childDialog.titleProps}>Nested</h2>
@@ -79,7 +75,7 @@ export default function Page() {
           )}
         </div>
       </main>
-      <Toolbar controls={null} count={2}>
+      <Toolbar controls={null}>
         <StateVisualizer label="Dialog 1" state={state} />
         <StateVisualizer label="Dialog 2" state={state2} />
       </Toolbar>

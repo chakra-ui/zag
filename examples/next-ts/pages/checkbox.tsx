@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as checkbox from "@zag-js/checkbox"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
-import { checkboxControls, checkboxStyle } from "@zag-js/shared"
+import { checkboxControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -33,9 +32,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={checkboxStyle} />
-
-      <main>
+      <main className="checkbox">
         <form
           onChange={(e) => {
             console.log(serialize(e.currentTarget, { hash: true }))

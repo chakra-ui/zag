@@ -1,7 +1,6 @@
-import { Global } from "@emotion/react"
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { comboboxControls, comboboxData, comboboxStyle } from "@zag-js/shared"
+import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -30,9 +29,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={comboboxStyle} />
-
-      <main>
+      <main className="combobox">
         <div>
           <button onClick={() => api.setValue("TG")}>Set to Togo</button>
           <br />

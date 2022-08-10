@@ -1,8 +1,7 @@
-import { Global } from "@emotion/react"
 import * as editable from "@zag-js/editable"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
-import { editableControls, editableStyle } from "@zag-js/shared"
+import { editableControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -23,9 +22,7 @@ export default function Page() {
 
   return (
     <>
-      <Global styles={editableStyle} />
-
-      <main>
+      <main className="editable">
         <div {...api.rootProps}>
           <div {...api.areaProps}>
             <input data-testid="input" {...api.inputProps} />

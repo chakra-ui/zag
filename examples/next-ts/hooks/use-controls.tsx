@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import React, { useState } from "react"
-import { controlsContainerStyle, ControlRecord, ControlValue } from "@zag-js/shared"
+import { ControlRecord, ControlValue } from "@zag-js/shared"
 
 function getDefaultValues<T extends ControlRecord>(obj: T) {
   return Object.keys(obj).reduce(
@@ -18,7 +18,7 @@ export function useControls<T extends ControlRecord>(config: T) {
   return {
     context: state,
     ui: () => (
-      <div className={controlsContainerStyle}>
+      <div className="controls-container">
         {Object.keys(config).map((key) => {
           const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
           switch (type) {
