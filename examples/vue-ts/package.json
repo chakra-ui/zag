@@ -33,6 +33,7 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/radio": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",

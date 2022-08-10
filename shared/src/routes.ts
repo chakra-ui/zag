@@ -19,6 +19,7 @@ export const routesData: RouteData[] = [
   { label: "Popper", path: "/popper" },
   { label: "Popover", path: "/popover" },
   { label: "Nested Popover", path: "/nested-popover" },
+  { label: "Radio", path: "/radio" },
   { label: "Range Slider", path: "/range-slider" },
   { label: "Rating", path: "/rating" },
   { label: "Slider", path: "/slider" },

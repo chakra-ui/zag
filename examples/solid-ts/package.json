@@ -30,6 +30,7 @@
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
     "@zag-js/popover": "workspace:*",
+    "@zag-js/radio": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
     "@zag-js/rating": "workspace:*",
     "@zag-js/shared": "workspace:*",

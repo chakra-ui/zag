@@ -112,6 +112,7 @@ importers:
       '@zag-js/popover': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/pressable': workspace:*
+      '@zag-js/radio': workspace:*
       '@zag-js/range-slider': workspace:*
       '@zag-js/rating': workspace:*
       '@zag-js/react': workspace:*
@@ -161,6 +162,7 @@ importers:
       '@zag-js/popover': link:../../packages/machines/popover
       '@zag-js/popper': link:../../packages/utilities/popper
       '@zag-js/pressable': link:../../packages/utilities/pressable
+      '@zag-js/radio': link:../../packages/machines/radio
       '@zag-js/range-slider': link:../../packages/machines/range-slider
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/react': link:../../packages/frameworks/react
@@ -217,6 +219,7 @@ importers:
       '@zag-js/popover': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/pressable': workspace:*
+      '@zag-js/radio': workspace:*
       '@zag-js/range-slider': workspace:*
       '@zag-js/rating': workspace:*
       '@zag-js/rect-utils': workspace:*
@@ -262,6 +265,7 @@ importers:
       '@zag-js/popover': link:../../packages/machines/popover
       '@zag-js/popper': link:../../packages/utilities/popper
       '@zag-js/pressable': link:../../packages/utilities/pressable
+      '@zag-js/radio': link:../../packages/machines/radio
       '@zag-js/range-slider': link:../../packages/machines/range-slider
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/rect-utils': link:../../packages/utilities/rect
@@ -319,6 +323,7 @@ importers:
       '@zag-js/popover': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/pressable': workspace:*
+      '@zag-js/radio': workspace:*
       '@zag-js/range-slider': workspace:*
       '@zag-js/rating': workspace:*
       '@zag-js/rect-utils': workspace:*
@@ -368,6 +373,7 @@ importers:
       '@zag-js/popover': link:../../packages/machines/popover
       '@zag-js/popper': link:../../packages/utilities/popper
       '@zag-js/pressable': link:../../packages/utilities/pressable
+      '@zag-js/radio': link:../../packages/machines/radio
       '@zag-js/range-slider': link:../../packages/machines/range-slider
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/rect-utils': link:../../packages/utilities/rect
@@ -628,6 +634,19 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+
+  packages/machines/radio:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/form-utils': workspace:*
+      '@zag-js/types': workspace:*
+    dependencies:
+      '@zag-js/core': link:../../core
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/form-utils': link:../../utilities/form-utils
 
   packages/machines/range-slider:
     specifiers:

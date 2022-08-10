@@ -88,6 +88,11 @@ export const sliderControls = defineControls({
   step: { type: "number", defaultValue: 1 },
 })
 
+export const radioControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false, label: "Disabled" },
+  readonly: { type: "boolean", defaultValue: false, label: "Readonly" },
+})
+
 export const rangeSliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readonly: { type: "boolean", defaultValue: false },

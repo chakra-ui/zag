@@ -27,6 +27,7 @@
     "@zag-js/range-slider": "workspace:*",
     "@zag-js/rating": "workspace:*",
     "@zag-js/shared": "workspace:*",
+    "@zag-js/radio": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/tabs": "workspace:*",

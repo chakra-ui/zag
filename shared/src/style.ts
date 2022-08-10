@@ -845,3 +845,100 @@ export const navStyle = css({
     fontWeight: 500,
   },
 })
+
+export const radioStyle: CSSObject = {
+  '[data-part="item-control"][data-focus]': {
+    outline: "2px solid royalblue",
+  },
+
+  '[data-part="item-label"][data-disabled]': {
+    opacity: "0.4",
+  },
+
+  '[data-part="root"]': {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px",
+  },
+
+  /* Customize the label (the root) */
+  '[data-part="item"]': {
+    display: "block",
+    position: "relative",
+    paddingLeft: "35px",
+    marginBottom: "12px",
+    cursor: "pointer",
+    fontSize: "22px",
+    webkitUuserSelect: "none",
+    mozUuserSelect: "none",
+    msUuserSelect: "none",
+    userSelect: "none",
+    width: "fit-content",
+  },
+
+  '[data-part="item"][data-disabled]': {
+    cursor: "not-allowed",
+  },
+
+  /* Create a custom checkbox */
+  '[data-part="item-control"]': {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: "25px",
+    width: "25px",
+    backgroundColor: "#eee",
+    border: "solid 2px grey",
+    borderRadius: "50%",
+  },
+
+  /* On mouse-over, add a grey background color */
+  '[data-part="item-control"][data-hover]': {
+    backgroundColor: "#ccc",
+  },
+
+  /* When the checkbox is checked, add a blue background */
+  '[data-part="item-control"][data-checked]': {
+    backgroundColor: "#2196f3",
+    borderColor: "#2196f3",
+  },
+
+  /* Show the checkmark when checked */
+  '[data-part="item-control"][data-checked]:after': {
+    display: "block",
+  },
+
+  /* Style the checkmark/indicator (hidden when not checked) */
+  '[data-part="item-control"]:after': {
+    content: '""',
+    position: "absolute",
+    display: "none",
+    left: "9px",
+    top: "5px",
+    width: "5px",
+    height: "10px",
+    border: "solid white",
+    borderWidth: "0 3px 3px 0",
+    webkitTransform: "rotate(45deg)",
+    msTransform: "rotate(45deg)",
+    transform: "rotate(45deg)",
+  },
+
+  /* When the checkbox is indeterminate, add a blue background */
+  '[data-part="item-control"][data-indeterminate]': {
+    backgroundColor: "white",
+    borderColor: "grey",
+  },
+
+  /* Style the checkmark/indicator */
+  '[data-part="item-control"][data-indeterminate]:after': {
+    display: "block",
+    left: "50%",
+    top: "50%",
+    width: "13px",
+    height: "3px",
+    border: "none",
+    backgroundColor: "grey",
+    transform: "translate(-50%, -50%)",
+  },
+}
