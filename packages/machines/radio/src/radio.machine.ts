@@ -13,9 +13,9 @@ export function machine(ctx: UserDefinedContext) {
       context: {
         value: null,
         initialValue: null,
-        active: null,
-        focused: null,
-        hovered: null,
+        activeId: null,
+        focusedId: null,
+        hoveredId: null,
         ...ctx,
       },
 

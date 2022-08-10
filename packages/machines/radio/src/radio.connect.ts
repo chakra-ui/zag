@@ -13,9 +13,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       isInvalid: props.invalid,
       isDisabled: props.disabled || isGroupDisabled,
       isChecked: state.context.value === props.value,
-      isFocused: state.context.focused === props.value,
-      isHovered: state.context.hovered === props.value,
-      isActive: state.context.active === props.value,
+      isFocused: state.context.focusedId === props.value,
+      isHovered: state.context.hoveredId === props.value,
+      isActive: state.context.activeId === props.value,
     }
     return {
       ...itemState,

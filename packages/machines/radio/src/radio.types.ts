@@ -53,19 +53,19 @@ type PrivateContext = Context<{
   initialValue: string | null
   /**
    * @internal
-   * active state of radio items
+   * The id of the active radio item
    */
-  active: string | null
+  activeId: string | null
   /**
    * @internal
-   * focused state of radio items
+   * The id of the focused radio item
    */
-  focused: string | null
+  focusedId: string | null
   /**
    * @internal
-   * hovered state of radio items
+   * The id of the hovered radio item
    */
-  hovered: string | null
+  hoveredId: string | null
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
