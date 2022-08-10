@@ -1,4 +1,4 @@
-import { useControls } from "@/hooks/use-controls"
+import { useControls } from "../hooks/use-controls"
 import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { menuControls, menuStyle } from "@zag-js/shared"
