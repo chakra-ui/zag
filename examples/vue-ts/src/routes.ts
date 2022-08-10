@@ -1,6 +1,7 @@
 import { routesData } from "@zag-js/shared"
 import { createRouter, createWebHistory } from "vue-router"
 import Home from "./pages/index"
+import Radio from "./pages/radio"
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,7 @@ export const router = createRouter({
     { path: "/popover", component: () => import("./pages/popover") },
     // { path: "/nested-popover", component: () => import("./pages/nested-popover") },
     { path: "/range-slider", component: () => import("./pages/range-slider") },
+    { path: "/radio", component: () => import("./pages/radio") },
     { path: "/rating", component: () => import("./pages/rating") },
     { path: "/slider", component: () => import("./pages/slider") },
     { path: "/tabs", component: () => import("./pages/tabs") },

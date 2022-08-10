@@ -101,3 +101,10 @@ export const menuOptionData = {
     { label: "Address", id: "address" },
   ],
 }
+
+export const radioData = [
+  { id: "apple", label: "Apples" },
+  { id: "orange", label: "Oranges" },
+  { id: "mango", label: "Mangoes" },
+  { id: "grape", label: "Grapes" },
+]

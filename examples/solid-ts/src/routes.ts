@@ -24,6 +24,7 @@ export const routes: RouteDefinition[] = [
   // { path: "/popper", component: () => lazy(()=>import("./pages/popper")) },
   { path: "/popover", component: () => lazy(() => import("./pages/popover")) },
   // { path: "/nested-popover", component: () => lazy(()=>import("./pages/nested-popover")) },
+  { path: "/radio", component: () => lazy(() => import("./pages/radio")) },
   { path: "/range-slider", component: () => lazy(() => import("./pages/range-slider")) },
   { path: "/rating", component: () => lazy(() => import("./pages/rating")) },
   { path: "/slider", component: () => lazy(() => import("./pages/slider")) },
