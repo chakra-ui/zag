@@ -4,7 +4,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
       "@zag-js/*": ["../../node_modules/@zag-js/*"]
     }
   },
