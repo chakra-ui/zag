@@ -62,7 +62,7 @@ function Example() {
 
 ## Guiding Principles
 
-- All component machine and tests are modelled according to the
+- All component machines and tests are modelled according to the
   [WAI-ARIA authoring practices](https://www.w3.org/TR/wai-aria-practices/)
 - Write end-to-end tests for every component based on the WAI-ARIA spec. **Regardless of the framework, users expect
   component patterns to work the same way!**
