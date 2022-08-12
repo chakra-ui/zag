@@ -145,7 +145,7 @@ export function machine(ctx: UserDefinedContext) {
           ctx.value = ctx.max
         },
         setValue(ctx, evt) {
-          ctx.value = ctx.hoveredValue == -1 ? evt.value : ctx.hoveredValue
+          ctx.value = ctx.hoveredValue === -1 ? evt.value : ctx.hoveredValue
         },
         setHoveredValue(ctx, evt) {
           const half = ctx.allowHalf && evt.isMidway
