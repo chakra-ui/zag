@@ -53,20 +53,23 @@ export default function Page() {
   return (
     <>
       <main className="rating">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Rate:</label>
-          <div {...api.itemGroupProps}>
-            {api.sizeArray.map((index) => {
-              const state = api.getRatingState(index)
-              return (
-                <span key={index} {...api.getItemProps({ index })}>
-                  {state.isHalf ? <HalfStar /> : <Star />}
-                </span>
-              )
-            })}
+        <form action="">
+          <div {...api.rootProps}>
+            <label {...api.labelProps}>Rate:</label>
+            <div {...api.itemGroupProps}>
+              {api.sizeArray.map((index) => {
+                const state = api.getRatingState(index)
+                return (
+                  <span key={index} {...api.getItemProps({ index })}>
+                    {state.isHalf ? <HalfStar /> : <Star />}
+                  </span>
+                )
+              })}
+            </div>
+            <input {...api.inputProps} />
           </div>
-          <input {...api.inputProps} />
-        </div>
+          <button type="reset">Reset</button>
+        </form>
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
