@@ -151,7 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick() {
           if (!isInteractive) return
-          send({ type: "CLICK", value: index })
+          send({ type: "CLICK" })
         },
         onFocus() {
           if (!isInteractive) return
