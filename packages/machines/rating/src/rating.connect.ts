@@ -69,12 +69,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: state.context.readonly ? 0 : -1,
       "data-disabled": dataAttr(isDisabled),
-      onPointerMove() {
-        if (!isInteractive) return
+      onPointerMove(event) {
+        if (!isInteractive || event.pointerType === "touch") return
         send("GROUP_POINTER_OVER")
       },
-      onPointerLeave() {
-        if (!isInteractive) return
+      onPointerLeave(event) {
+        if (!isInteractive || event.pointerType === "touch") return
         send("GROUP_POINTER_LEAVE")
       },
     }),
