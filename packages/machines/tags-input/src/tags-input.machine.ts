@@ -1,7 +1,7 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createMachine, guards } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-utils"
-import { trackFormReset } from "@zag-js/form-utils"
+import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { warn } from "@zag-js/utils"
@@ -62,7 +62,7 @@ export function machine(ctx: UserDefinedContext) {
         log: "announceLog",
       },
 
-      activities: ["trackFormReset"],
+      activities: ["trackFormReset", "trackFieldsetDisabled"],
 
       exit: ["removeLiveRegion", "clearLog"],
 
@@ -284,6 +284,13 @@ export function machine(ctx: UserDefinedContext) {
             onInteractOutside() {
               send({ type: "BLUR", src: "interact-outside" })
             },
+          })
+        },
+        trackFieldsetDisabled(ctx) {
+          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
+            if (disabled) {
+              ctx.disabled = disabled
+            }
           })
         },
         trackFormReset(ctx) {

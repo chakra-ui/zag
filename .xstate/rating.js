@@ -17,6 +17,7 @@ const fetchMachine = createMachine({
     "isValueEmpty": false,
     "isRadioFocused": false
   },
+  activities: ["trackFormReset", "trackFieldsetDisabled"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

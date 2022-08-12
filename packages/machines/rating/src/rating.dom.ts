@@ -9,6 +9,7 @@ export const dom = defineDomHelpers({
   getItemGroupId: (ctx: Ctx) => ctx.ids?.itemGroup ?? `rating:${ctx.id}:item-group`,
   getItemId: (ctx: Ctx, id: string) => ctx.ids?.item?.(id) ?? `rating:${ctx.id}:star:${id}`,
 
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getItemGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getItemGroupId(ctx)),
   getRadioEl: (ctx: Ctx) =>
     dom.getItemGroupEl(ctx)?.querySelector<HTMLElement>(`[role=radio][aria-posinset='${Math.ceil(ctx.value)}']`),

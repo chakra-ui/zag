@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-utils"
+import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
 import { dom } from "./rating.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
 
@@ -35,6 +36,8 @@ export function machine(ctx: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
         isHovering: (ctx) => ctx.hoveredValue > -1,
       },
+
+      activities: ["trackFormReset", "trackFieldsetDisabled"],
 
       states: {
         unknown: {
@@ -117,6 +120,20 @@ export function machine(ctx: UserDefinedContext) {
         isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
         isValueEmpty: (ctx) => ctx.value <= 0,
         isRadioFocused: (ctx) => !!dom.getItemGroupEl(ctx)?.contains(dom.getActiveEl(ctx)),
+      },
+      activities: {
+        trackFieldsetDisabled(ctx) {
+          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
+            if (disabled) {
+              ctx.disabled = disabled
+            }
+          })
+        },
+        trackFormReset(ctx) {
+          return trackFormReset(dom.getInputEl(ctx), () => {
+            ctx.value = ctx.initialValue
+          })
+        },
       },
       actions: {
         checkValue(ctx) {
