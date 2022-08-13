@@ -11,7 +11,7 @@
     "build-fast": "turbo run build-fast --filter=./packages/**/*",
     "build": "turbo run build --filter=./packages/**/*",
     "start": "turbo run start --filter=./packages/**/*",
-    "prepare": "husky install && pnpm sync-pkgs",
+    "prepare": "husky install",
     "swc": "node -r @swc-node/register",
     "sync-pkgs": "pnpm swc scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc *.log",

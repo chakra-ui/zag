@@ -17,7 +17,7 @@ export default defineComponent({
       slider.machine({
         id: "range-slider",
         name: "quantity",
-        value: [10, 60],
+        values: [10, 60],
       }),
       { context: controls.context },
     )

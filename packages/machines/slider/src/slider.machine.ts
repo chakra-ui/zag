@@ -1,6 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
 import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { trackElementSize } from "@zag-js/element-size"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import { utils } from "./slider.utils"
@@ -38,7 +39,7 @@ export function machine(ctx: UserDefinedContext) {
         value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled"],
+      activities: ["trackFormReset", "trackFieldsetDisabled", "trackThumbSize"],
 
       on: {
         SET_VALUE: {
@@ -57,7 +58,7 @@ export function machine(ctx: UserDefinedContext) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setThumbSize", "checkValue"],
+              actions: ["checkValue"],
             },
           },
         },
@@ -157,12 +158,19 @@ export function machine(ctx: UserDefinedContext) {
             },
           })
         },
+        trackThumbSize(ctx, _evt) {
+          if (ctx.thumbAlignment !== "contain") return
+          return trackElementSize(dom.getThumbEl(ctx), (size) => {
+            if (size) ctx.thumbSize = size
+          })
+        },
       },
 
       actions: {
         checkValue(ctx) {
           const value = utils.convert(ctx, ctx.value)
-          Object.assign(ctx, { value, initialValue: value })
+          ctx.value = value
+          ctx.initialValue = value
         },
         invokeOnChangeStart(ctx) {
           ctx.onChangeStart?.({ value: ctx.value })
@@ -175,14 +183,6 @@ export function machine(ctx: UserDefinedContext) {
         },
         dispatchChangeEvent(ctx) {
           dom.dispatchChangeEvent(ctx)
-        },
-        setThumbSize(ctx) {
-          if (ctx.thumbAlignment !== "contain") return
-          raf(() => {
-            const el = dom.getThumbEl(ctx)
-            if (!el) return
-            ctx.thumbSize = { width: el.offsetWidth, height: el.offsetHeight }
-          })
         },
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)

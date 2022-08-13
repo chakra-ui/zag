@@ -14,7 +14,7 @@ export default function Page() {
     slider.machine({
       id: useId(),
       name: "quantity",
-      value: [10, 60],
+      values: [10, 60],
     }),
     { context: controls.context },
   )

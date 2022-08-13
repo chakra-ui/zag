@@ -12,11 +12,11 @@ export const transform = (a: [number, number], b: [number, number]) => {
   }
 }
 
-export function toRanges(o: Num<"min" | "max"> & { value: number[]; spacing: number }) {
+export function toRanges(o: Num<"min" | "max"> & { values: number[]; spacing: number }) {
   const spacing = o.spacing ?? 0
-  return o.value.map((v, i) => {
-    const min = i === 0 ? o.min : o.value[i - 1] + spacing
-    const max = i === o.value.length - 1 ? o.max : o.value[i + 1] - spacing
+  return o.values.map((v, i) => {
+    const min = i === 0 ? o.min : o.values[i - 1] + spacing
+    const max = i === o.values.length - 1 ? o.max : o.values[i + 1] - spacing
     return { min, max, value: v }
   })
 }

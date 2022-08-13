@@ -17,7 +17,7 @@ import { utils } from "./range-slider.utils"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
-  const values = state.context.value
+  const values = state.context.values
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInteractive = state.context.isInteractive
 
   return {
-    values: state.context.value,
+    values: state.context.values,
     isDragging,
     isFocused,
     setValue(values: number[]) {
@@ -201,7 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         name: `${state.context.name}[${index}]`,
         type: "text",
         hidden: true,
-        defaultValue: state.context.value[index],
+        defaultValue: state.context.values[index],
         id: dom.getInputId(state.context, index),
       })
     },
@@ -250,9 +250,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const style = dom.getMarkerStyle(state.context, percent)
       let markerState: "over-value" | "under-value" | "at-value"
 
-      if (Math.max(...state.context.value) < value) {
+      if (Math.max(...state.context.values) < value) {
         markerState = "over-value"
-      } else if (Math.min(...state.context.value) > value) {
+      } else if (Math.min(...state.context.values) > value) {
         markerState = "under-value"
       } else {
         markerState = "at-value"

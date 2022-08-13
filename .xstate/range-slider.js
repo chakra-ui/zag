@@ -19,7 +19,7 @@ const fetchMachine = createMachine({
     "isVertical": false,
     "isVertical": false
   },
-  activities: ["trackFormReset", "trackFieldsetDisabled"],
+  activities: ["trackFormReset", "trackFieldsetDisabled", "trackThumbsSize"],
   on: {
     SET_VALUE: {
       actions: "setValue"
@@ -41,7 +41,7 @@ const fetchMachine = createMachine({
       on: {
         SETUP: {
           target: "idle",
-          actions: ["setThumbSize", "checkValue"]
+          actions: "checkValue"
         }
       }
     },
