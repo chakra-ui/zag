@@ -50,13 +50,6 @@ export default function Page() {
             </div>
           </div>
         </form>
-        <button
-          onClick={() => {
-            api.setValue([10, 30, 60])
-          }}
-        >
-          Set
-        </button>
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
