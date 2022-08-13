@@ -1,5 +1,5 @@
 import type { StateMachine } from "@zag-js/core"
-import { getPointRelativeToNode, defineDomHelpers, queryAll, raf } from "@zag-js/dom-utils"
+import { getPointRelativeToNode, defineDomHelpers, queryAll } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import { closest, createRect, Point } from "@zag-js/rect-utils"
