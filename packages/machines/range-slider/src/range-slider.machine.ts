@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
 import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
-import { isNumber } from "@zag-js/utils"
+import { trackElementsSize } from "@zag-js/element-size"
 import { dom, getClosestIndex } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
@@ -13,15 +13,15 @@ export function machine(ctx: UserDefinedContext) {
       initial: "unknown",
 
       context: {
-        thumbSize: null,
+        thumbSizes: [],
         thumbAlignment: "contain",
         threshold: 5,
         activeIndex: -1,
         min: 0,
         max: 100,
         step: 1,
-        value: [0, 100],
-        initialValue: [],
+        values: [0, 100],
+        initialValues: [],
         orientation: "horizontal",
         dir: "ltr",
         minStepsBetweenThumbs: 0,
@@ -34,14 +34,14 @@ export function machine(ctx: UserDefinedContext) {
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
         spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
-        hasMeasuredThumbSize: (ctx) => ctx.thumbSize != null,
+        hasMeasuredThumbSize: (ctx) => ctx.thumbSizes.length !== 0,
       },
 
       watch: {
-        value: ["invokeOnChange", "dispatchChangeEvent"],
+        values: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled"],
+      activities: ["trackFormReset", "trackFieldsetDisabled", "trackThumbsSize"],
 
       on: {
         SET_VALUE: {
@@ -60,7 +60,7 @@ export function machine(ctx: UserDefinedContext) {
           on: {
             SETUP: {
               target: "idle",
-              actions: ["setThumbSize", "checkValue"],
+              actions: "checkValue",
             },
           },
         },
@@ -148,11 +148,11 @@ export function machine(ctx: UserDefinedContext) {
         trackFormReset(ctx) {
           if (!ctx.name) return
           return trackFormReset(dom.getRootEl(ctx), () => {
-            for (let i = 0; i < ctx.value.length; i++) {
-              if (ctx.initialValue[i] != null) {
-                ctx.value[i] = ctx.initialValue[i]
+            ctx.values.forEach((_value, index) => {
+              if (ctx.initialValues[index] != null) {
+                ctx.values[index] = ctx.initialValues[index]
               }
-            }
+            })
           })
         },
         trackPointerMove(ctx, _evt, { send }) {
@@ -165,30 +165,39 @@ export function machine(ctx: UserDefinedContext) {
             },
           })
         },
+        trackThumbsSize(ctx) {
+          if (ctx.thumbAlignment !== "contain") return
+          return trackElementsSize({
+            getNodes() {
+              return dom.getElements(ctx)
+            },
+            observeMutation: true,
+            callback(size, index) {
+              if (size) {
+                ctx.thumbSizes[index] = size
+              }
+            },
+          })
+        },
       },
       actions: {
         invokeOnChangeStart(ctx) {
-          ctx.onChangeStart?.({ value: ctx.value })
+          ctx.onChangeStart?.({ value: ctx.values })
         },
         invokeOnChangeEnd(ctx) {
-          ctx.onChangeEnd?.({ value: ctx.value })
+          ctx.onChangeEnd?.({ value: ctx.values })
         },
         invokeOnChange(ctx, evt) {
           if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
+            ctx.onChange?.({ value: ctx.values })
           }
         },
         dispatchChangeEvent(ctx, evt) {
           if (evt.type !== "SETUP") {
-            dom.dispatchChangeEvent(ctx)
+            raf(() => {
+              dom.dispatchChangeEvent(ctx)
+            })
           }
-        },
-        setThumbSize(ctx) {
-          const thumbs = dom.getElements(ctx)
-          ctx.thumbSize = thumbs.map((el) => ({
-            width: el.offsetWidth,
-            height: el.offsetHeight,
-          }))
         },
         setActiveIndex(ctx, evt) {
           ctx.activeIndex = evt.index ?? getClosestIndex(ctx, evt)
@@ -199,7 +208,7 @@ export function machine(ctx: UserDefinedContext) {
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
           if (value == null) return
-          ctx.value[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
+          ctx.values[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
         },
         focusActiveThumb(ctx) {
           raf(() => {
@@ -208,33 +217,34 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         decrementAtIndex(ctx, evt) {
-          ctx.value[ctx.activeIndex] = utils.decrement(ctx, evt.index, evt.step)
+          ctx.values[ctx.activeIndex] = utils.decrement(ctx, evt.index, evt.step)
         },
         incrementAtIndex(ctx, evt) {
-          ctx.value[ctx.activeIndex] = utils.increment(ctx, evt.index, evt.step)
+          ctx.values[ctx.activeIndex] = utils.increment(ctx, evt.index, evt.step)
         },
         setActiveThumbToMin(ctx) {
-          const { min } = utils.getRangeAtIndex(ctx)
-          ctx.value[ctx.activeIndex] = min
+          const { min } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
+          ctx.values[ctx.activeIndex] = min
         },
         setActiveThumbToMax(ctx) {
-          const { max } = utils.getRangeAtIndex(ctx)
-          ctx.value[ctx.activeIndex] = max
+          const { max } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
+          ctx.values[ctx.activeIndex] = max
         },
         checkValue(ctx) {
-          let value = utils.check(ctx, ctx.value)
-          Object.assign(ctx, { value, initialValue: value.slice() })
+          let values = utils.check(ctx, ctx.values)
+          ctx.values = values
+          ctx.initialValues = values.slice()
         },
         setValue(ctx, evt) {
           // set value at specified index
-          if (isNumber(evt.index) && isNumber(evt.value)) {
-            ctx.value[evt.index] = utils.convert(ctx, evt.value, evt.index)
+          if (typeof evt.index === "number" && typeof evt.value === "number") {
+            ctx.values[evt.index] = utils.convert(ctx, evt.value, evt.index)
             return
           }
 
           // set values
           if (Array.isArray(evt.value)) {
-            ctx.value = utils.check(ctx, evt.value)
+            ctx.values = utils.check(ctx, evt.value)
           }
         },
       },

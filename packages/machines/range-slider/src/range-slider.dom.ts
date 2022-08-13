@@ -1,5 +1,5 @@
 import type { StateMachine } from "@zag-js/core"
-import { getPointRelativeToNode, defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { getPointRelativeToNode, defineDomHelpers, queryAll, raf } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { clamp, percentToValue } from "@zag-js/number-utils"
 import { closest, createRect, Point } from "@zag-js/rect-utils"
@@ -53,8 +53,8 @@ export const dom = defineDomHelpers({
 
   getValueFromPoint,
   dispatchChangeEvent(ctx: Ctx) {
-    const _values = Array.from(ctx.value)
-    _values.forEach((value, index) => {
+    const valuesArray = Array.from(ctx.values)
+    valuesArray.forEach((value, index) => {
       const input = dom.getInputEl(ctx, index)
       if (!input) return
       dispatchInputValueEvent(input, value)
@@ -92,8 +92,8 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
 
   const isThumbStacked = new Set(axisPoints).size !== points.length
 
-  if (isThumbStacked && point > ctx.value[index]) {
-    index = clamp(index + 1, { min: 0, max: ctx.value.length - 1 })
+  if (isThumbStacked && point > ctx.values[index]) {
+    index = clamp(index + 1, { min: 0, max: ctx.values.length - 1 })
   }
 
   return index

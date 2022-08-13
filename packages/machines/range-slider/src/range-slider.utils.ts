@@ -3,16 +3,18 @@ import type { MachineContext as Ctx } from "./range-slider.types"
 
 export const utils = {
   check(ctx: Ctx, values: number[]) {
-    return values.map((value, index) => utils.convert(ctx, value, index))
+    return values.map((value, index, _values) => {
+      return utils.convert({ ...ctx, values: _values }, value, index)
+    })
   },
   clampPercent(value: number) {
     return clamp(value, { min: 0, max: 1 })
   },
-  getRangeAtIndex(ctx: Ctx, index = ctx.activeIndex) {
+  getRangeAtIndex(ctx: Ctx, index: number) {
     return toRanges(ctx)[index]
   },
   fromPercent(ctx: Ctx, percent: number) {
-    const range = utils.getRangeAtIndex(ctx)
+    const range = utils.getRangeAtIndex(ctx, ctx.activeIndex)
 
     const maxPercent = range.max / ctx.max
     const minPercent = range.min / ctx.max

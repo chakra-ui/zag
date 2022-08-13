@@ -14,7 +14,7 @@ export default function Page() {
     slider.machine({
       id: useId(),
       name: "quantity",
-      value: [10, 60],
+      values: [10, 60],
     }),
     { context: controls.context },
   )
@@ -50,6 +50,13 @@ export default function Page() {
             </div>
           </div>
         </form>
+        <button
+          onClick={() => {
+            api.setValue([10, 30, 60])
+          }}
+        >
+          Set
+        </button>
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />

@@ -32,7 +32,7 @@ type PublicContext = DirectionProperty &
     /**
      * The value of the range slider
      */
-    value: number[]
+    values: number[]
     /**
      * Whether the slider is disabled
      */
@@ -129,7 +129,7 @@ type PrivateContext = Context<{
    * @internal
    * The slider thumbs dimensions
    */
-  thumbSize: Array<{ width: number; height: number }> | null
+  thumbSizes: Array<{ width: number; height: number }>
   /**
    * @internal
    * The active index of the range slider. This represents
@@ -146,7 +146,7 @@ type PrivateContext = Context<{
    * The value of the slider when it was initially rendered.
    * Used when the `form.reset(...)` is called.
    */
-  initialValue: number[]
+  initialValues: number[]
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
