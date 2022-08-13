@@ -1,9 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "files.exclude": {
-    "{**/.turbo,**/.swc}": true,
-    "{**/.husky,**/.xstate}": true
-  },
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,
