@@ -241,7 +241,7 @@ body {
   gap: 0.5em;
 }
 
-.menu-content [data-part="content"] {
+.menu-content[data-part="content"] {
   margin: 0;
   width: 160px;
   background-color: white;
@@ -279,7 +279,7 @@ body {
   gap: 24px;
 }
 
-.popover-content [data-part="content"] {
+.popover-content[data-part="content"] {
   --arrow-background: white;
   --arrow-size: 10px;
   background: white;

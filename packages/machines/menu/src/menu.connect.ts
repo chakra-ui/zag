@@ -7,6 +7,7 @@ import {
   getNativeEvent,
   isContextMenuEvent,
   isElementEditable,
+  isLeftClick,
   isModifiedEvent,
   isSelfEvent,
   whenMouse,
@@ -124,7 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
         const evt = getNativeEvent(event)
-        if (!evt.isPrimary || disabled || isContextMenuEvent(event)) return
+        if (!isLeftClick(evt) || disabled || isContextMenuEvent(event)) return
         event.preventDefault()
         if (!dom.isTriggerItem(event.currentTarget)) {
           send({ type: "TRIGGER_CLICK", target: event.currentTarget })
@@ -274,9 +275,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled) return
           send({ type: "ITEM_CLICK", target: event.currentTarget, id })
         },
+        onPointerDown(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERDOWN", target: event.currentTarget })
+        },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
-          if (!evt.isPrimary || disabled) return
+          if (!isLeftClick(evt) || disabled || state.context.pointerdownNode === event.currentTarget) return
           event.currentTarget.click()
         },
         onPointerLeave: whenMouse((event) => {

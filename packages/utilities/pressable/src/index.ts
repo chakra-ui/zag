@@ -1,4 +1,11 @@
-import { addDomEvent, getDocument, isDisabled, isSelfEvent, isVirtualPointerEvent } from "@zag-js/dom-utils"
+import {
+  addDomEvent,
+  getDocument,
+  isDisabled,
+  isLeftClick,
+  isSelfEvent,
+  isVirtualPointerEvent,
+} from "@zag-js/dom-utils"
 import { callAll } from "@zag-js/utils"
 
 export type PressableOptions = {
@@ -51,7 +58,7 @@ export function trackPressable(el: HTMLElement | null, options: PressableOptions
   }
 
   const onPointerDown = (e: PointerEvent) => {
-    if (!e.isPrimary || !isSelfEvent(e)) {
+    if (!isLeftClick(e) || !isSelfEvent(e)) {
       return
     }
 

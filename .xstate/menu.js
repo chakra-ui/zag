@@ -154,6 +154,7 @@ const fetchMachine = createMachine({
       tags: ["visible"],
       activities: ["trackInteractOutside", "computePlacement"],
       entry: ["focusMenu", "resumePointer"],
+      exit: ["clearPointerdownNode"],
       on: {
         TRIGGER_CLICK: {
           cond: "!isTriggerItem",
@@ -221,6 +222,9 @@ const fetchMachine = createMachine({
         TRIGGER_POINTERLEAVE: {
           target: "closing",
           actions: "setIntentPolygon"
+        },
+        ITEM_POINTERDOWN: {
+          actions: ["setPointerdownNode"]
         },
         TYPEAHEAD: {
           actions: "focusMatchedItem"

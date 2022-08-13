@@ -27,6 +27,7 @@ export function machine(ctx: UserDefinedContext) {
         isPlacementComplete: false,
         focusTriggerOnClose: true,
         ...ctx,
+        pointerdownNode: null,
         typeahead: findByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
@@ -172,6 +173,7 @@ export function machine(ctx: UserDefinedContext) {
           tags: ["visible"],
           activities: ["trackInteractOutside", "computePlacement"],
           entry: ["focusMenu", "resumePointer"],
+          exit: ["clearPointerdownNode"],
           on: {
             TRIGGER_CLICK: {
               guard: not("isTriggerItem"),
@@ -250,6 +252,9 @@ export function machine(ctx: UserDefinedContext) {
             TRIGGER_POINTERLEAVE: {
               target: "closing",
               actions: "setIntentPolygon",
+            },
+            ITEM_POINTERDOWN: {
+              actions: ["setPointerdownNode"],
             },
             TYPEAHEAD: {
               actions: "focusMatchedItem",
@@ -445,6 +450,9 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnSelect(ctx) {
           if (!ctx.activeId) return
           ctx.onSelect?.(ctx.activeId)
+          if (!ctx.closeOnSelect) {
+            ctx.pointerdownNode = null
+          }
         },
         focusItem(ctx, event) {
           ctx.activeId = event.id
@@ -485,6 +493,12 @@ export function machine(ctx: UserDefinedContext) {
         },
         restoreParentFocus(ctx) {
           ctx.parent?.send("RESTORE_FOCUS")
+        },
+        setPointerdownNode(ctx, evt) {
+          ctx.pointerdownNode = ref(evt.target)
+        },
+        clearPointerdownNode(ctx) {
+          ctx.pointerdownNode = null
         },
       },
     },
