@@ -9,6 +9,7 @@ import {
 } from "@zag-js/dom-utils"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
 import { callAll } from "@zag-js/utils"
+import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -57,7 +58,7 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       watch: {
-        value: ["invokeOnChange"],
+        value: ["invokeOnChange", "dispatchChangeEvent"],
         isOutOfRange: ["invokeOnInvalid"],
         scrubberCursorPoint: ["setVirtualCursorPosition"],
       },
@@ -387,6 +388,9 @@ export function machine(ctx: UserDefinedContext) {
           if (!cursor || !ctx.scrubberCursorPoint) return
           const { x, y } = ctx.scrubberCursorPoint
           cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
+        },
+        dispatchChangeEvent(ctx) {
+          dispatchInputValueEvent(dom.getInputEl(ctx), ctx.formattedValue)
         },
       },
 
