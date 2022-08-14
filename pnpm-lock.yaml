@@ -596,6 +596,7 @@ importers:
     specifiers:
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
+      '@zag-js/form-utils': workspace:*
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
@@ -604,6 +605,7 @@ importers:
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/utils': link:../../utilities/core
 

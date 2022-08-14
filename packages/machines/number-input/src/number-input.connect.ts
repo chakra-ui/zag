@@ -5,7 +5,6 @@ import {
   getEventStep,
   getNativeEvent,
   getEventPoint,
-  isIos,
   isLeftClick,
 } from "@zag-js/dom-utils"
 import { roundToDevicePixel } from "@zag-js/number-utils"
@@ -85,7 +84,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       name: state.context.name,
       id: dom.getInputId(state.context),
       role: "spinbutton",
-      value: state.context.formattedValue,
+      defaultValue: state.context.formattedValue,
       pattern: state.context.pattern,
       inputMode: state.context.inputMode,
       "aria-invalid": isInvalid || undefined,
@@ -97,7 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoCorrect: "off",
       spellCheck: "false",
       type: "text",
-      "aria-roledescription": !isIos() ? "number field" : undefined,
+      "aria-roledescription": "numberfield",
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
       "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
