@@ -302,7 +302,7 @@ body {
   }
 }
 
-.popover-content [data-part="content"][data-expanded] {
+.popover-content[data-part="content"][data-expanded] {
   animation: scale 0.1s ease-out;
 }
 .popover-content [data-part="title"] {
