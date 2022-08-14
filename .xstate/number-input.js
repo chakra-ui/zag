@@ -14,6 +14,7 @@ const fetchMachine = createMachine({
   id: "number-input",
   initial: "unknown",
   context: {
+    "clampOnBlur": false,
     "isInvalidExponential": false,
     "clampOnBlur && !isInRange && !isEmptyValue": false,
     "isIncrementHint": false,
@@ -23,9 +24,12 @@ const fetchMachine = createMachine({
     "isDecrementHint": false
   },
   on: {
-    SET_VALUE: {
+    SET_VALUE: [{
+      cond: "clampOnBlur",
+      actions: ["setValue", "clampValue", "setHintToSet"]
+    }, {
       actions: ["setValue", "setHintToSet"]
-    },
+    }],
     CLEAR_VALUE: {
       actions: ["clearValue"]
     },
@@ -172,6 +176,7 @@ const fetchMachine = createMachine({
     CHANGE_INTERVAL: 50
   },
   guards: {
+    "clampOnBlur": ctx => ctx["clampOnBlur"],
     "isInvalidExponential": ctx => ctx["isInvalidExponential"],
     "clampOnBlur && !isInRange && !isEmptyValue": ctx => ctx["clampOnBlur && !isInRange && !isEmptyValue"],
     "isIncrementHint": ctx => ctx["isIncrementHint"],

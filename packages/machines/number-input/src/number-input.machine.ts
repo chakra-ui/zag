@@ -63,9 +63,15 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       on: {
-        SET_VALUE: {
-          actions: ["setValue", "setHintToSet"],
-        },
+        SET_VALUE: [
+          {
+            guard: "clampOnBlur",
+            actions: ["setValue", "clampValue", "setHintToSet"],
+          },
+          {
+            actions: ["setValue", "setHintToSet"],
+          },
+        ],
         CLEAR_VALUE: {
           actions: ["clearValue"],
         },
