@@ -1,5 +1,12 @@
 # @zag-js/types
 
+## 0.2.4
+
+### Patch Changes
+
+- [`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix types of root properties
+
 ## 0.2.3
 
 ### Patch Changes

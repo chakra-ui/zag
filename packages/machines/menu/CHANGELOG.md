@@ -1,5 +1,18 @@
 # @zag-js/menu
 
+## 0.1.13
+
+### Patch Changes
+
+- [`6399a7f2`](https://github.com/chakra-ui/zag/commit/6399a7f2bbb4b1926288652665d362a1fabc9714) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where menu triggers onclick twice when closeOnSelect is
+  set to false
+
+- Updated dependencies [[`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242)]:
+  - @zag-js/types@0.2.4
+  - @zag-js/dismissable@0.1.3
+  - @zag-js/popper@0.1.10
+
 ## 0.1.12
 
 ### Patch Changes

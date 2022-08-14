@@ -1,5 +1,19 @@
 # @zag-js/tags-input
 
+## 0.2.5
+
+### Patch Changes
+
+- [#257](https://github.com/chakra-ui/zag/pull/257)
+  [`60ea4059`](https://github.com/chakra-ui/zag/commit/60ea4059c6f21e65b087247f7b09ba0d556804a7) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add fieldset disabled tracker
+
+- Updated dependencies [[`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242)]:
+  - @zag-js/types@0.2.4
+  - @zag-js/auto-resize@0.1.1
+  - @zag-js/interact-outside@0.1.3
+  - @zag-js/live-region@0.1.1
+
 ## 0.2.4
 
 ### Patch Changes

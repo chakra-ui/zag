@@ -1,5 +1,12 @@
 # @zag-js/element-size
 
+## 0.2.0
+
+### Minor Changes
+
+- [`d81885dc`](https://github.com/chakra-ui/zag/commit/d81885dc1b4e8674d7be0801ee3ab8a55e3ffeb5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for tracking multiple items
+
 ## 0.1.1
 
 ### Patch Changes
