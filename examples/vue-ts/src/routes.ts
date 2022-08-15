@@ -6,6 +6,7 @@ import Radio from "./pages/radio"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/pressable", component: () => import("./pages/pressable") },
     {
       path: "/",
       component: Home,

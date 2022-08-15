@@ -5,6 +5,7 @@ import { lazy } from "solid-js"
 import Home from "./pages/home"
 
 export const routes: RouteDefinition[] = [
+  { path: "/pressable", component: () => lazy(() => import("./pages/pressable")) },
   {
     path: "/",
     component: Home,
