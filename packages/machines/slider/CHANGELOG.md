@@ -1,5 +1,18 @@
 # @zag-js/slider
 
+## 0.1.13
+
+### Patch Changes
+
+- [#261](https://github.com/chakra-ui/zag/pull/261)
+  [`16cf349c`](https://github.com/chakra-ui/zag/commit/16cf349c76271329f97fe81b81cde5914fddda2e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for observing slider thumb size
+
+- Updated dependencies [[`d81885dc`](https://github.com/chakra-ui/zag/commit/d81885dc1b4e8674d7be0801ee3ab8a55e3ffeb5),
+  [`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242)]:
+  - @zag-js/element-size@0.2.0
+  - @zag-js/types@0.2.4
+
 ## 0.1.12
 
 ### Patch Changes

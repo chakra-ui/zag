@@ -1,5 +1,20 @@
 # @zag-js/rating
 
+## 0.1.14
+
+### Patch Changes
+
+- [#257](https://github.com/chakra-ui/zag/pull/257)
+  [`60ea4059`](https://github.com/chakra-ui/zag/commit/60ea4059c6f21e65b087247f7b09ba0d556804a7) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add form reset listener and fieldset disabled tracker
+
+* [#255](https://github.com/chakra-ui/zag/pull/255)
+  [`44e10c9e`](https://github.com/chakra-ui/zag/commit/44e10c9e682c55d693fba26d1a8a95d8807bccdf) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fixed issue where rating could not be selected midway
+
+* Updated dependencies [[`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242)]:
+  - @zag-js/types@0.2.4
+
 ## 0.1.13
 
 ### Patch Changes

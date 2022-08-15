@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/toggle",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Core logic for the toggle widget implemented as a state machine",
   "keywords": [
     "js",

@@ -1,5 +1,22 @@
 # @zag-js/number-input
 
+## 0.1.15
+
+### Patch Changes
+
+- [#267](https://github.com/chakra-ui/zag/pull/267)
+  [`068883e2`](https://github.com/chakra-ui/zag/commit/068883e298610ad5d7ea623b73607ab306c6623e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where onChange doesn't get triggered when value
+  changes programmatically
+  - Fix SSR warning with `aria-roledescription` attribute on input
+
+* [#264](https://github.com/chakra-ui/zag/pull/264)
+  [`a2ccf08a`](https://github.com/chakra-ui/zag/commit/a2ccf08a6c6ddf27101b2025861710a3880c0359) Thanks
+  [@anubra266](https://github.com/anubra266)! - Clamp input when value is programmaticallt changed
+
+* Updated dependencies [[`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242)]:
+  - @zag-js/types@0.2.4
+
 ## 0.1.14
 
 ### Patch Changes

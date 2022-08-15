@@ -1,5 +1,12 @@
 # @zag-js/radio
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`1d30333e`](https://github.com/chakra-ui/zag/commit/1d30333e0d3011707950adab26878cde9ed1c242)]:
+  - @zag-js/types@0.2.4
+
 ## 0.0.1
 
 ### Patch Changes
