@@ -31,7 +31,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "proxy-compare": "2.2.0",
+    "proxy-compare": "2.3.0",
     "use-sync-external-store": "1.2.0"
   },
   "devDependencies": {

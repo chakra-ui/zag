@@ -35,6 +35,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "proxy-compare": "2.2.0"
+    "proxy-compare": "2.3.0"
   }
 }
