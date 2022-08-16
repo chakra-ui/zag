@@ -75,7 +75,7 @@ type PublicContext = DirectionProperty &
     onLongPress?: (e: PressEvent) => void
   }
 
-export interface FocusableElement extends Element, HTMLOrSVGElement {}
+export interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
 
 type PrivateContext = Context<{
   ignoreClickAfterPress: boolean

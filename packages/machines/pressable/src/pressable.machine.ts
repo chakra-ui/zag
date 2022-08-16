@@ -3,7 +3,7 @@ import { MachineContext, MachineState, UserDefinedContext } from "./pressable.ty
 
 import { dom } from "./pressable.dom"
 import { utils } from "./pressable.utils"
-import { getNativeEvent } from "@zag-js/dom-utils"
+import { disableTextSelection, getNativeEvent, restoreTextSelection } from "@zag-js/dom-utils"
 
 const { and, not } = guards
 
@@ -22,8 +22,7 @@ export function machine(ctx: UserDefinedContext) {
         pointerdownEvent: null,
         ...ctx,
       },
-      //TODO - restoreTextSelection
-      exit: ["restoreTextSelection", "removeDocumentListeners"],
+      exit: ["restoreTextSelectionIfNeeded", "removeDocumentListeners"],
       activities: ["attachElementListeners"],
       states: {
         unknown: {
@@ -32,7 +31,7 @@ export function machine(ctx: UserDefinedContext) {
 
         idle: {
           tags: ["unpressed"],
-          entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection"],
+          entry: ["removeDocumentListeners", "resetContext", "restoreTextSelectionIfNeeded"],
           on: {
             POINTER_DOWN: [
               {
@@ -182,10 +181,10 @@ export function machine(ctx: UserDefinedContext) {
           ctx.pointerType = null
           ctx.pointerdownEvent = null
         },
-        restoreTextSelection(ctx) {
-          if (ctx.allowTextSelectionOnPress) return
-          //TODO
-          // restoreTextSelection(ctx.target);
+        restoreTextSelectionIfNeeded({ target }) {
+          if (ctx.allowTextSelectionOnPress || !target) return
+          const doc = dom.getDoc(ctx)
+          restoreTextSelection({ target, doc })
         },
         setPointerToVirtual(ctx) {
           ctx.pointerType = "virtual"
@@ -224,10 +223,11 @@ export function machine(ctx: UserDefinedContext) {
             event.preventDefault()
           }
         },
-        disableTextSelectionIfNeeded(ctx) {
+        disableTextSelectionIfNeeded({ target }) {
+          if (!target) return
           if (!ctx.allowTextSelectionOnPress) {
-            //TODO
-            // disableTextSelection(ctx.target);
+            const doc = dom.getDoc(ctx)
+            disableTextSelection({ target, doc })
           }
         },
         invokeOnPressUp(ctx, { event, pointerType }) {
