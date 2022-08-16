@@ -310,11 +310,7 @@ export function machine(ctx: UserDefinedContext) {
           el.addEventListener("keyup", (event) => meta.send({ type: "KEYUP", event, pointerType: "keyboard" }), opts)
           el.addEventListener("click", (event) => meta.send({ type: "CLICK", event, pointerType: "virtual" }), opts)
           el.addEventListener("pointerdown", (event) => meta.send({ type: "POINTER_DOWN", event }), opts)
-          // el.addEventListener(
-          //   "mousedown",
-          //   (event) => meta.send({ type: "MOUSE_DOWN", event }),
-          //   opts
-          // );
+          el.addEventListener("mousedown", (event) => meta.send({ type: "MOUSE_DOWN", event }), opts)
           el.addEventListener("pointerup", (event) => meta.send({ type: "POINTER_UP", event }), opts)
           el.addEventListener("dragstart", (event) => meta.send({ type: "DRAG_START", event }), opts)
 
