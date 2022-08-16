@@ -3,6 +3,7 @@ import { MachineContext, MachineState, UserDefinedContext } from "./pressable.ty
 
 import { dom } from "./pressable.dom"
 import { utils } from "./pressable.utils"
+import { getNativeEvent } from "@zag-js/dom-utils"
 
 const { and, not } = guards
 
@@ -156,7 +157,7 @@ export function machine(ctx: UserDefinedContext) {
           return !!utils.isOverTarget(event, ctx.target)
         },
         isValidKeyboardEvent: (_, { event }) => {
-          return utils.isValidKeyboardEvent(event, event.currentTarget)
+          return utils.isValidKeyboardEvent(getNativeEvent<MouseEvent>(event), event.currentTarget)
         },
       },
 

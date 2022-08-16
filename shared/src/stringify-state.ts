@@ -1,10 +1,15 @@
 import formatHighlight from "json-format-highlight"
 
+const pick = (obj: Record<string, any>, keys: string[]) =>
+  Object.fromEntries(keys.filter((key) => key in obj).map((key) => [key, obj[key]]))
+
 export function stringifyState(state: Record<string, any>) {
   const code = JSON.stringify(
     state,
     (_k, v) => {
       try {
+        if (v.hasOwnProperty("target") && v.hasOwnProperty("timeStamp"))
+          return pick(v, ["type", "target", "currentTarget", "relatedTarget"])
         switch (v?.toString()) {
           case "[object Machine]":
             const id = v.state.context.id ?? v.id
@@ -13,6 +18,10 @@ export function stringifyState(state: Record<string, any>) {
             return "#shadow-root"
           case "[object HTMLDocument]":
             return "#document"
+          case "[object Window]":
+            return "#window"
+          case "[object AbortController]":
+            return "#abort-cntroller"
           default:
             return v !== null && typeof v === "object" && v.nodeType === 1 ? v.tagName : v
         }
