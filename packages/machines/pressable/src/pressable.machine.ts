@@ -63,11 +63,11 @@ export function machine(ctx: UserDefinedContext) {
                 guard: "shouldTriggerKeyboardClick",
                 actions: [
                   "preventDefaultIfNeeded",
+                  "focusIfNeeded",
                   "invokeOnPressStart",
                   "invokeOnPressUp",
                   "invokeOnPressEnd",
                   "invokeOnPress",
-                  "focusIfNeeded",
                   "resetIgnoreClick",
                 ],
               },
@@ -301,7 +301,6 @@ export function machine(ctx: UserDefinedContext) {
           const opts = {
             signal: abortController.signal,
           }
-
           el.addEventListener(
             "keydown",
             (event) => meta.send({ type: "KEYDOWN", event, pointerType: "keyboard" }),

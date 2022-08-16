@@ -9,17 +9,6 @@ export const utils = {
     return event && event.detail === 0 && !(event as PointerEvent).pointerType
   },
 
-  createEvent(target: Element | null, event: Event) {
-    const e = event as MouseEvent | PointerEvent
-    return {
-      currentTarget: target,
-      shiftKey: e.shiftKey,
-      ctrlKey: e.ctrlKey,
-      metaKey: e.metaKey,
-      altKey: e.altKey,
-    }
-  },
-
   isValidKeyboardEvent(event: KeyboardEvent, currentTarget: Element): boolean {
     const { key, code } = event
     const element = currentTarget as HTMLElement
