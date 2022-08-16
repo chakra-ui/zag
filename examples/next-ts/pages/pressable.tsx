@@ -34,6 +34,8 @@ export default function Page() {
         <button ref={buttonRef}>Get element Press</button>
         <br />
         <br />
+        <button>Just a button</button>
+        <br />
         <br />
         <button onClick={() => buttonRef.current?.click()}>Programmatic click me</button>
       </main>

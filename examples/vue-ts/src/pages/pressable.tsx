@@ -33,12 +33,10 @@ export default defineComponent({
       return (
         <>
           <main class="pressable">
-            {/* <button {...api.pressableProps}>Spread press</button> */}
-            <br />
-            <br />
-            <br />
             <button ref={buttonRef}>Get element Press</button>
             <br />
+            <br />
+            <button>Just a button</button>
             <br />
             <br />
             <button onClick={() => button?.click()}>Programmatic click me</button>

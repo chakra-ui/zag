@@ -54,6 +54,7 @@ export function machine(ctx: UserDefinedContext) {
               },
             ],
             KEYDOWN: {
+              guard: and("isValidTarget", "isValidKeyboardEvent"),
               target: "pressed",
               actions: ["setPressTarget", "invokeOnPressStart"],
             },
@@ -154,6 +155,9 @@ export function machine(ctx: UserDefinedContext) {
         isOverTarget: (ctx, { event }) => {
           return !!utils.isOverTarget(event, ctx.target)
         },
+        isValidKeyboardEvent: (_, { event }) => {
+          return utils.isValidKeyboardEvent(event, event.currentTarget)
+        },
       },
 
       actions: {
@@ -214,7 +218,7 @@ export function machine(ctx: UserDefinedContext) {
             })
           }
         },
-        preventDefaultIfNeeded(ctx, { event }) {
+        preventDefaultIfNeeded(_, { event }) {
           if (utils.shouldPreventDefault(event.currentTarget as Element)) {
             event.preventDefault()
           }
