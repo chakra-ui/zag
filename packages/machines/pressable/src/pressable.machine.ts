@@ -72,7 +72,7 @@ export function machine(ctx: UserDefinedContext) {
                 ],
               },
               {
-                actions: "preventDefaultIfNeeded",
+                actions: ["preventDefaultIfNeeded", "resetIgnoreClick"],
               },
             ],
             MOUSE_DOWN: {

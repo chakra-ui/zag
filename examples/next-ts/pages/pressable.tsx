@@ -1,6 +1,6 @@
 import * as pressable from "@zag-js/pressable"
 import { useMachine } from "@zag-js/react"
-import { useId, useRef } from "react"
+import { useRef } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
@@ -25,7 +25,6 @@ export default function Page() {
       },
     }),
   )
-
 
   const buttonRef = useRef<HTMLButtonElement | null>(null)
 
