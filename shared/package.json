@@ -2,8 +2,5 @@
   "name": "@zag-js/shared",
   "version": "0.0.4",
   "main": "src/index.ts",
-  "private": true,
-  "dependencies": {
-    "@emotion/css": "11.9.0"
-  }
+  "private": true
 }
