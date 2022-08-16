@@ -6,7 +6,6 @@ import Radio from "./pages/radio"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/pressable", component: () => import("./pages/pressable") },
     {
       path: "/",
       component: Home,
@@ -25,6 +24,8 @@ export const router = createRouter({
     { path: "/pin-input", component: () => import("./pages/pin-input") },
     // { path: "/popper", component: () => import("./pages/popper") },
     { path: "/popover", component: () => import("./pages/popover") },
+    { path: "/pressable", component: () => import("./pages/pressable") },
+    { path: "/pressable-spread", component: () => import("./pages/pressable-spread") },
     // { path: "/nested-popover", component: () => import("./pages/nested-popover") },
     { path: "/range-slider", component: () => import("./pages/range-slider") },
     { path: "/radio", component: () => import("./pages/radio") },

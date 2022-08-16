@@ -4,7 +4,6 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
-  { label: "Pressable", path: "/pressable" },
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
   { label: "Combobox", path: "/combobox" },
@@ -19,6 +18,8 @@ export const routesData: RouteData[] = [
   { label: "Pin Input", path: "/pin-input" },
   { label: "Popper", path: "/popper" },
   { label: "Popover", path: "/popover" },
+  { label: "Pressable", path: "/pressable" },
+  { label: "Pressable Spread", path: "/pressable-spread" },
   { label: "Nested Popover", path: "/nested-popover" },
   { label: "Radio", path: "/radio" },
   { label: "Range Slider", path: "/range-slider" },

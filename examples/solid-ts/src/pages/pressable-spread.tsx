@@ -1,13 +1,13 @@
 import * as pressable from "@zag-js/pressable"
-import { useMachine } from "@zag-js/react"
-import { useId, useRef } from "react"
+import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state] = useMachine(
+  const [state, send] = useMachine(
     pressable.machine({
-      getElement: () => buttonRef.current,
+      id: createUniqueId(),
       onPressStart() {
         console.log("press start")
       },
@@ -26,24 +26,23 @@ export default function Page() {
     }),
   )
 
+  const api = createMemo(() => pressable.connect(state, send, normalizeProps))
 
-  const buttonRef = useRef<HTMLButtonElement | null>(null)
-
+  let buttonRef
   return (
     <>
-      <main className="pressable">
-        <button ref={buttonRef}>Get element Press</button>
+      <main class="pressable">
+        <button ref={buttonRef} {...api().pressableProps}>
+          Get element Press
+        </button>
         <br />
         <br />
         <button>Just a button</button>
         <br />
         <br />
-        <button onClick={() => buttonRef.current?.click()}>Programmatic click me</button>
+        <button onClick={() => buttonRef?.click()}>Programmatic click me</button>
       </main>
-
-      <Toolbar controls={null}>
-        <StateVisualizer state={state} />
-      </Toolbar>
+      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
     </>
   )
 }

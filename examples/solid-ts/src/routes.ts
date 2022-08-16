@@ -5,7 +5,6 @@ import { lazy } from "solid-js"
 import Home from "./pages/home"
 
 export const routes: RouteDefinition[] = [
-  { path: "/pressable", component: () => lazy(() => import("./pages/pressable")) },
   {
     path: "/",
     component: Home,
@@ -24,6 +23,8 @@ export const routes: RouteDefinition[] = [
   { path: "/pin-input", component: () => lazy(() => import("./pages/pin-input")) },
   // { path: "/popper", component: () => lazy(()=>import("./pages/popper")) },
   { path: "/popover", component: () => lazy(() => import("./pages/popover")) },
+  { path: "/pressable", component: () => lazy(() => import("./pages/pressable")) },
+  { path: "/pressable-spread", component: () => lazy(() => import("./pages/pressable-spread")) },
   // { path: "/nested-popover", component: () => lazy(()=>import("./pages/nested-popover")) },
   { path: "/radio", component: () => lazy(() => import("./pages/radio")) },
   { path: "/range-slider", component: () => lazy(() => import("./pages/range-slider")) },
