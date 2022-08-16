@@ -25,9 +25,9 @@ export interface PressEvent {
   /** The pointer type that triggered the press event. */
   pointerType: PointerType
   /** The target element of the press event. */
-  target: Element
+  target: HTMLElement
   /** The original fired event */
-  originalEvent?: Event
+  originalEvent?: PointerEvent
 }
 
 type PublicContext = DirectionProperty &

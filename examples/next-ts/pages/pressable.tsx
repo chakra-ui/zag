@@ -15,7 +15,7 @@ export default function Page() {
         console.log("press end")
       },
       onPress(e) {
-        console.log("pressed with " + e.originalEvent.pointerType)
+        console.log("pressed with " + e.pointerType)
       },
       onPressUp() {
         console.log("press up")

@@ -110,7 +110,7 @@ export function machine(ctx: UserDefinedContext) {
             POINTER_CANCEL: "idle",
             KEYUP: {
               target: "idle",
-              actions: ["invokeOnPressEnd", "clickIfNeeded"],
+              actions: ["invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress", "clickIfNeeded"],
             },
             DRAG_START: "idle",
           },
@@ -213,7 +213,7 @@ export function machine(ctx: UserDefinedContext) {
             onPressStart({
               type: "pressstart",
               pointerType: pointerType || ctx.pointerType,
-              target: event.currentTarget as Element,
+              target: event.currentTarget,
               originalEvent: event,
             })
           }
@@ -239,7 +239,7 @@ export function machine(ctx: UserDefinedContext) {
             onPressUp({
               type: "pressup",
               pointerType: pointerType || ctx.pointerType,
-              target: event.currentTarget as Element,
+              target: event.currentTarget,
               originalEvent: event,
             })
           }
@@ -253,7 +253,7 @@ export function machine(ctx: UserDefinedContext) {
             onPressEnd({
               type: "pressend",
               pointerType: pointerType || ctx.pointerType,
-              target: event.currentTarget as Element,
+              target: event.currentTarget,
               originalEvent: event,
             })
           }
@@ -262,8 +262,8 @@ export function machine(ctx: UserDefinedContext) {
           if (ctx.disabled) return
           ctx.onPress?.({
             type: "press",
-            pointerType,
-            target: event.currentTarget as Element,
+            pointerType: pointerType || ctx.pointerType,
+            target: event.currentTarget,
             originalEvent: event,
           })
         },
@@ -308,7 +308,7 @@ export function machine(ctx: UserDefinedContext) {
             opts,
           )
           el.addEventListener("keyup", (event) => meta.send({ type: "KEYUP", event, pointerType: "keyboard" }), opts)
-          el.addEventListener("click", (event) => meta.send({ type: "CLICK", event }), opts)
+          el.addEventListener("click", (event) => meta.send({ type: "CLICK", event, pointerType: "virtual" }), opts)
           el.addEventListener("pointerdown", (event) => meta.send({ type: "POINTER_DOWN", event }), opts)
           // el.addEventListener(
           //   "mousedown",
