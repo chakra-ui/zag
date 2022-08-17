@@ -35,22 +35,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }
   }
 
+  const focus = () => {
+    const firstEnabledAndCheckedInput = dom.getFirstEnabledAndCheckedInputEl(state.context)
+
+    if (firstEnabledAndCheckedInput) {
+      firstEnabledAndCheckedInput.focus()
+      return
+    }
+
+    const firstEnabledInput = dom.getFirstEnabledInputEl(state.context)
+    firstEnabledInput?.focus()
+  }
+
   return {
     value: state.context.value,
     setValue(value: string) {
       send({ type: "SET_VALUE", value, manual: true })
     },
-    focus() {
-      const firstEnabledAndCheckedInput = dom.getFirstEnabledAndCheckedInputEl(state.context)
-
-      if (firstEnabledAndCheckedInput) {
-        firstEnabledAndCheckedInput.focus()
-        return
-      }
-
-      const firstEnabledInput = dom.getFirstEnabledInputEl(state.context)
-      firstEnabledInput?.focus()
-    },
+    focus,
     blur() {
       const focusedElement = dom.getActiveElement(state.context)
       const inputEls = dom.getInputEls(state.context)
@@ -70,6 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.element({
       "data-part": "label",
       id: dom.getLabelId(state.context),
+      onClick: focus,
     }),
 
     getItemProps(props: ItemProps) {
