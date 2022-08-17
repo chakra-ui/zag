@@ -23,8 +23,6 @@ export type EventKeyMap = Partial<Record<EventKey, (event: JSX.KeyboardEvent) =>
 const rtlKeyMap = {
   ArrowLeft: "ArrowRight",
   ArrowRight: "ArrowLeft",
-  Home: "End",
-  End: "Home",
 }
 
 const sameKeyMap = {
