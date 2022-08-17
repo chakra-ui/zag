@@ -2,4 +2,4 @@
 "@zag-js/radio": patch
 ---
 
-Clicking root label should focus right radio item
+Fix issue where clicking the radio group label doesn't focus the radio button
