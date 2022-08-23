@@ -437,14 +437,14 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
-      proxy-compare: 2.2.0
+      proxy-compare: 2.3.0
       react: 18.2.0
       use-sync-external-store: 1.2.0
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/store': link:../../store
       '@zag-js/types': link:../../types
-      proxy-compare: 2.2.0
+      proxy-compare: 2.3.0
       use-sync-external-store: 1.2.0_react@18.2.0
     devDependencies:
       '@types/react': 18.0.15
@@ -801,9 +801,9 @@ importers:
 
   packages/store:
     specifiers:
-      proxy-compare: 2.2.0
+      proxy-compare: 2.3.0
     dependencies:
-      proxy-compare: 2.2.0
+      proxy-compare: 2.3.0
 
   packages/types:
     specifiers:
@@ -7606,8 +7606,8 @@ packages:
       react-is: 16.13.1
     dev: true
 
-  /proxy-compare/2.2.0:
-    resolution: {integrity: sha512-hEtMJevUmOByZCTw1NRUVaWWHCGJLO0ogizpey8yX6zMPolDe8YVa+PHgMOTiZuyUkFj+hMKs/1UaM0+ZkuvgA==}
+  /proxy-compare/2.3.0:
+    resolution: {integrity: sha512-c3L2CcAi7f7pvlD0D7xsF+2CQIW8C3HaYx2Pfgq8eA4HAl3GAH6/dVYsyBbYF/0XJs2ziGLrzmz5fmzPm6A0pQ==}
     dev: false
 
   /ps-tree/1.2.0:
