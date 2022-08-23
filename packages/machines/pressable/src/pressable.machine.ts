@@ -144,7 +144,7 @@ export function machine(ctx: UserDefinedContext) {
             send({ type: "DOC_POINTER_UP", event })
           }
 
-          const onPointerCancel = (event: PointerEvent) => {
+          const onPointerCancel = (event: PointerEvent | MouseEvent) => {
             send({ type: "DOC_POINTER_CANCEL", event })
           }
 
@@ -153,6 +153,11 @@ export function machine(ctx: UserDefinedContext) {
             addDomEvent(doc, "pointerup", onPointerUp, false),
             addDomEvent(doc, "pointercancel", onPointerCancel, false),
           ]
+
+          // When user presses the left button and quickly presses the context menu button
+          if (ctx.pointerType !== "touch") {
+            cleanup.push(addDomEvent(doc, "contextmenu", onPointerCancel, false))
+          }
 
           ctx.cleanups.push(...cleanup)
         },
