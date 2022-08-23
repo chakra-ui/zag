@@ -1,5 +1,4 @@
 import { useControls } from "../hooks/use-controls"
-import { injectGlobal } from "@emotion/css"
 import * as menu from "@zag-js/menu"
 import { menuControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
