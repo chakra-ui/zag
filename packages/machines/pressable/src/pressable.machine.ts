@@ -17,6 +17,7 @@ export function machine(ctx: UserDefinedContext) {
         pointerType: null,
         pointerdownEvent: null,
         cleanups: ref([]),
+        wasPressedDown: false,
       },
 
       exit: ["restoreTextSelection", "removeDocumentListeners"],
@@ -29,16 +30,17 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         idle: {
-          entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection"],
+          entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection", "resetIgnoreClick"],
           on: {
             POINTER_DOWN: [
               {
                 guard: "isVirtualPointerEvent",
-                actions: "setPointerType",
+                actions: ["setPointerType"],
               },
               {
                 target: "pressed:in",
                 actions: [
+                  "setPressedDown",
                   "setPointerType",
                   "setPointerId",
                   "setTarget",
@@ -67,8 +69,11 @@ export function machine(ctx: UserDefinedContext) {
 
         "pressed:in": {
           tags: ["pressed"],
+          exit: ["clearPressedDown"],
+          entry: ["preventContextMenu"],
           after: {
             500: {
+              guard: "wasPressedDown",
               actions: "invokeOnLongPress",
             },
           },
@@ -105,6 +110,7 @@ export function machine(ctx: UserDefinedContext) {
           tags: ["pressed"],
           on: {
             POINTER_ENTER: {
+              target: "pressed:in",
               actions: ["invokeOnPressStart"],
             },
             DOC_POINTER_UP: {
@@ -122,6 +128,7 @@ export function machine(ctx: UserDefinedContext) {
       guards: {
         isVirtualPointerEvent: (_ctx, evt) => evt.pointerType === "virtual",
         cancelOnPointerExit: (ctx) => !!ctx.cancelOnPointerExit,
+        wasPressedDown: (ctx) => ctx.wasPressedDown,
       },
       actions: {
         trackDocumentPointerEvents(ctx, _evt, { send }) {
@@ -168,6 +175,7 @@ export function machine(ctx: UserDefinedContext) {
         },
         removeDocumentListeners(ctx) {
           ctx.cleanups.forEach((fn) => fn?.())
+          ctx.cleanups = ref([])
         },
         resetContext(ctx) {
           ctx.activePointerId = null
@@ -252,16 +260,43 @@ export function machine(ctx: UserDefinedContext) {
             ctx.target.click()
           }
         },
+        dispatchPointerCancel(ctx) {
+          if (!ctx.target) return
+          const win = dom.getWin(ctx)
+          // Prevent other pressable handlers from also handling this event.
+          const evt = new win.PointerEvent("pointercancel", { bubbles: true })
+          ctx.target.dispatchEvent(evt)
+        },
         invokeOnLongPress(ctx, { pointerType }) {
+          if (!ctx.target) return
+          console.log("-----longPress-----")
           ctx.onLongPress?.({
             type: "longpress",
             pointerType: pointerType || ctx.pointerType,
-            target: ctx.target as HTMLElement,
+            target: ctx.target,
             originalEvent: ctx.pointerdownEvent!,
           })
         },
         resetIgnoreClick(ctx) {
           ctx.ignoreClickAfterPress = false
+        },
+        setPressedDown(ctx) {
+          ctx.wasPressedDown = true
+        },
+        clearPressedDown(ctx) {
+          ctx.wasPressedDown = false
+        },
+        preventContextMenu(ctx) {
+          // Prevent context menu, which may be opened on long press on touch devices
+          if (ctx.pointerType !== "touch" || !ctx.onLongPress) return
+
+          const onContextMenu = (event: MouseEvent) => event.preventDefault()
+          const cleanup = addDomEvent(ctx.target, "contextmenu", onContextMenu, { once: true })
+
+          // If no contextmenu event is fired quickly after pointerup, remove the handler
+          // so future context menu events outside a long press are not prevented.
+          const onPointerUp = () => void setTimeout(cleanup, 30)
+          addDomEvent(dom.getWin(ctx), "pointerup", onPointerUp, { once: true })
         },
       },
     },

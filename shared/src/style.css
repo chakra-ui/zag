@@ -953,6 +953,10 @@ main > .toggle[data-pressed] {
   transform: rotate(45deg);
 }
 
+.pressable button[data-pressed] {
+  background: red;
+}
+
 .controls-container {
   display: flex;
   flex-direction: column;

@@ -45,7 +45,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.preventDefault()
         }
 
-        if (!ctx.ignoreClickAfterPress && (ctx.pointerType === "virtual" || isVirtualClick(evt))) {
+        const isVirtual = ctx.pointerType === "virtual" || isVirtualClick(evt)
+        if (!ctx.ignoreClickAfterPress && isVirtual) {
           send({ type: "CLICK", event, pointerType: "virtual" })
         }
       },

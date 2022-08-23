@@ -33,15 +33,12 @@ export default function Page() {
   return (
     <>
       <main className="pressable">
-        <button ref={buttonRef} {...api.pressableProps}>
-          Get element Press
-        </button>
-        <br />
-        <br />
-        <button>Just a button</button>
-        <br />
-        <br />
-        <button onClick={() => buttonRef.current?.click()}>Programmatic click me</button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", alignItems: "flex-start" }}>
+          <button ref={buttonRef} {...api.pressableProps}>
+            Get element Press
+          </button>
+          <button onClick={() => buttonRef.current?.click()}>Programmatic click me</button>
+        </div>
       </main>
 
       <Toolbar controls={null}>

@@ -15,6 +15,7 @@ const fetchMachine = createMachine({
   initial: "unknown",
   context: {
     "isVirtualPointerEvent": false,
+    "wasPressedDown": false,
     "cancelOnPointerExit": false
   },
   exit: ["restoreTextSelection", "removeDocumentListeners"],
@@ -30,14 +31,14 @@ const fetchMachine = createMachine({
       }
     },
     idle: {
-      entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection"],
+      entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection", "resetIgnoreClick"],
       on: {
         POINTER_DOWN: [{
           cond: "isVirtualPointerEvent",
-          actions: "setPointerType"
+          actions: ["setPointerType"]
         }, {
           target: "pressed:in",
-          actions: ["setPointerType", "setPointerId", "setTarget", "focusIfNeeded", "disableTextSelection", "invokeOnPressStart", "trackDocumentPointerEvents"]
+          actions: ["setPressedDown", "setPointerType", "setPointerId", "setTarget", "focusIfNeeded", "disableTextSelection", "invokeOnPressStart", "trackDocumentPointerEvents"]
         }],
         KEY_DOWN: {
           target: "pressed:in",
@@ -50,8 +51,11 @@ const fetchMachine = createMachine({
     },
     "pressed:in": {
       tags: ["pressed"],
+      exit: ["clearPressedDown"],
+      entry: ["preventContextMenu"],
       after: {
         500: {
+          cond: "wasPressedDown",
           actions: "invokeOnLongPress"
         }
       },
@@ -84,6 +88,7 @@ const fetchMachine = createMachine({
       tags: ["pressed"],
       on: {
         POINTER_ENTER: {
+          target: "pressed:in",
           actions: ["invokeOnPressStart"]
         },
         DOC_POINTER_UP: {
@@ -105,6 +110,7 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isVirtualPointerEvent": ctx => ctx["isVirtualPointerEvent"],
+    "wasPressedDown": ctx => ctx["wasPressedDown"],
     "cancelOnPointerExit": ctx => ctx["cancelOnPointerExit"]
   }
 });

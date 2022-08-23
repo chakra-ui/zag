@@ -42,25 +42,25 @@ export type PressHandlers = {
   /**
    * Handler that is called when the press is released over the target.
    */
-  onPress?: (e: PressEvent) => void
+  onPress?: (event: PressEvent) => void
   /**
    * Handler that is called when a press interaction starts.
    */
-  onPressStart?: (e: PressEvent) => void
+  onPressStart?: (event: PressEvent) => void
   /**
    * Handler that is called when a press interaction ends, either
    * over the target or when the pointer leaves the target.
    */
-  onPressEnd?: (e: PressEvent) => void
+  onPressEnd?: (event: PressEvent) => void
   /**
    * Handler that is called when a press is released over the target, regardless of
    * whether it started on the target or not.
    */
-  onPressUp?: (e: PressEvent) => void
+  onPressUp?: (event: PressEvent) => void
   /**
    * Handler that is called when the element has been pressed for 500 milliseconds
    */
-  onLongPress?: (e: PressEvent) => void
+  onLongPress?: (event: PressEvent) => void
 }
 
 type PublicContext = DirectionProperty &
@@ -76,9 +76,12 @@ type PublicContext = DirectionProperty &
     preventFocusOnPress?: boolean
     /**
      * Whether press events should be canceled when the pointer leaves the target while pressed.
+     *
      * By default, this is `false`, which means if the pointer returns back over the target while
-     * still pressed, onPressStart will be fired again. If set to `true`, the press is canceled
-     * when the pointer leaves the target and onPressStart will not be fired if the pointer returns.
+     * still pressed, onPressStart will be fired again.
+     *
+     * If set to `true`, the press is canceled when the pointer leaves the target and
+     * onPressStart will not be fired if the pointer returns.
      */
     cancelOnPointerExit?: boolean
     /**
@@ -87,7 +90,7 @@ type PublicContext = DirectionProperty &
     allowTextSelectionOnPress?: boolean
   }
 
-export interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
+interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
 
 type PrivateContext = Context<{
   ignoreClickAfterPress: boolean
@@ -96,6 +99,7 @@ type PrivateContext = Context<{
   pointerdownEvent: PointerEvent | null
   pointerType: PointerType | null
   cleanups: VoidFunction[]
+  wasPressedDown: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
