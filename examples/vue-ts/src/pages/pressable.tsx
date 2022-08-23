@@ -1,5 +1,5 @@
 import * as pressable from "@zag-js/pressable"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, ref } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -8,9 +8,9 @@ export default defineComponent({
   name: "pressable",
   setup() {
     const buttonRef = ref<HTMLButtonElement | null>(null)
-    const [state] = useMachine(
+    const [state, send] = useMachine(
       pressable.machine({
-        getElement: () => buttonRef.value,
+        id: "1",
         onPressStart() {
           console.log("press start")
         },
@@ -28,12 +28,18 @@ export default defineComponent({
         },
       }),
     )
+
+    const apiRef = computed(() => pressable.connect(state.value, send, normalizeProps))
     return () => {
       const button = buttonRef.value
+      const api = apiRef.value
+
       return (
         <>
           <main class="pressable">
-            <button ref={buttonRef}>Get element Press</button>
+            <button ref={buttonRef} {...api.pressableProps}>
+              Get element Press
+            </button>
             <br />
             <br />
             <button>Just a button</button>

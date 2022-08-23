@@ -14,18 +14,10 @@ const fetchMachine = createMachine({
   id: "pressable",
   initial: "unknown",
   context: {
-    "isValidTarget && isLeftButton && isVirtualPointerEvent": false,
-    "isValidTarget && isLeftButton": false,
-    "isValidTarget && isValidKeyboardEvent": false,
-    "shouldTriggerKeyboardClick": false,
-    "isLeftButton": false,
-    "!isOverTarget && cancelOnPointerExit": false,
-    "!isOverTarget": false,
-    "isOverTarget": false,
-    "isOverTarget": false
+    "isVirtualPointerEvent": false,
+    "cancelOnPointerExit": false
   },
-  exit: ["restoreTextSelectionIfNeeded", "removeDocumentListeners"],
-  activities: ["attachElementListeners"],
+  exit: ["restoreTextSelection", "removeDocumentListeners"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -38,80 +30,67 @@ const fetchMachine = createMachine({
       }
     },
     idle: {
-      tags: ["unpressed"],
-      entry: ["removeDocumentListeners", "resetContext", "restoreTextSelectionIfNeeded"],
+      entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection"],
       on: {
         POINTER_DOWN: [{
-          cond: "isValidTarget && isLeftButton && isVirtualPointerEvent",
-          actions: "setPointerToVirtual"
+          cond: "isVirtualPointerEvent",
+          actions: "setPointerType"
         }, {
-          cond: "isValidTarget && isLeftButton",
           target: "pressed:in",
-          actions: ["setPointerType", "setPointerId", "setPressTarget", "focusIfNeeded", "invokeOnPressStart", "preventDefaultIfNeeded", "disableTextSelectionIfNeeded", "attachDocumentListeners"]
+          actions: ["setPointerType", "setPointerId", "setTarget", "focusIfNeeded", "disableTextSelection", "invokeOnPressStart", "trackDocumentPointerEvents"]
         }],
-        KEYDOWN: {
-          cond: "isValidTarget && isValidKeyboardEvent",
+        KEY_DOWN: {
           target: "pressed:in",
-          actions: ["setPressTarget", "invokeOnPressStart"]
+          actions: ["setTarget", "invokeOnPressStart", "trackDocumentKeyup"]
         },
-        CLICK: [{
-          cond: "shouldTriggerKeyboardClick",
-          actions: ["preventDefaultIfNeeded", "focusIfNeeded", "invokeOnPressStart", "invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress", "resetIgnoreClick"]
-        }, {
-          actions: ["preventDefaultIfNeeded", "resetIgnoreClick"]
-        }],
-        MOUSE_DOWN: {
-          cond: "isLeftButton",
-          actions: "preventDefaultIfNeeded"
+        CLICK: {
+          actions: ["focusIfNeeded", "invokeOnPressStart", "invokeOnPressUp", "invokeOnPressEnd", "resetIgnoreClick"]
         }
       }
     },
     "pressed:in": {
       tags: ["pressed"],
-      on: {
-        POINTER_MOVE: [{
-          cond: "!isOverTarget && cancelOnPointerExit",
-          target: "idle",
-          actions: "invokeOnPressEnd"
-        }, {
-          cond: "!isOverTarget",
-          target: "pressed:out",
-          actions: "invokeOnPressEnd"
-        }],
-        POINTER_UP: [{
-          cond: "isOverTarget",
-          target: "idle",
-          actions: ["invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress"]
-        }, {
-          target: "idle",
-          actions: ["invokeOnPressEnd"]
-        }],
-        POINTER_CANCEL: "idle",
-        KEYUP: {
-          target: "idle",
-          actions: ["invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress", "clickIfNeeded"]
-        },
-        DRAG_START: "idle"
-      },
       after: {
         500: {
           actions: "invokeOnLongPress"
         }
+      },
+      on: {
+        POINTER_LEAVE: [{
+          cond: "cancelOnPointerExit",
+          target: "idle",
+          actions: ["invokeOnPressEnd"]
+        }, {
+          target: "pressed:out",
+          actions: "invokeOnPressEnd"
+        }],
+        DOC_POINTER_UP: {
+          target: "idle",
+          actions: ["invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress"]
+        },
+        DOC_KEY_UP: {
+          target: "idle",
+          actions: ["invokeOnPressEnd", "triggerClick"]
+        },
+        KEY_UP: {
+          target: "idle",
+          actions: ["invokeOnPressUp"]
+        },
+        DOC_POINTER_CANCEL: "idle",
+        DRAG_START: "idle"
       }
     },
     "pressed:out": {
       tags: ["pressed"],
       on: {
-        POINTER_MOVE: {
-          cond: "isOverTarget",
-          target: "pressed:in",
+        POINTER_ENTER: {
           actions: ["invokeOnPressStart"]
         },
-        POINTER_UP: {
+        DOC_POINTER_UP: {
           target: "idle",
           actions: "invokeOnPressEnd"
         },
-        POINTER_CANCEL: "idle",
+        DOC_POINTER_CANCEL: "idle",
         DRAG_START: "idle"
       }
     }
@@ -125,13 +104,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isValidTarget && isLeftButton && isVirtualPointerEvent": ctx => ctx["isValidTarget && isLeftButton && isVirtualPointerEvent"],
-    "isValidTarget && isLeftButton": ctx => ctx["isValidTarget && isLeftButton"],
-    "isValidTarget && isValidKeyboardEvent": ctx => ctx["isValidTarget && isValidKeyboardEvent"],
-    "shouldTriggerKeyboardClick": ctx => ctx["shouldTriggerKeyboardClick"],
-    "isLeftButton": ctx => ctx["isLeftButton"],
-    "!isOverTarget && cancelOnPointerExit": ctx => ctx["!isOverTarget && cancelOnPointerExit"],
-    "!isOverTarget": ctx => ctx["!isOverTarget"],
-    "isOverTarget": ctx => ctx["isOverTarget"]
+    "isVirtualPointerEvent": ctx => ctx["isVirtualPointerEvent"],
+    "cancelOnPointerExit": ctx => ctx["cancelOnPointerExit"]
   }
 });

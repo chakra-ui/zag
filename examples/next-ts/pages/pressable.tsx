@@ -1,13 +1,13 @@
 import * as pressable from "@zag-js/pressable"
-import { useMachine } from "@zag-js/react"
-import { useRef } from "react"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId, useRef } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state] = useMachine(
+  const [state, send] = useMachine(
     pressable.machine({
-      getElement: () => buttonRef.current,
+      id: useId(),
       onPressStart() {
         console.log("press start")
       },
@@ -26,12 +26,16 @@ export default function Page() {
     }),
   )
 
+  const api = pressable.connect(state, send, normalizeProps)
+
   const buttonRef = useRef<HTMLButtonElement | null>(null)
 
   return (
     <>
       <main className="pressable">
-        <button ref={buttonRef}>Get element Press</button>
+        <button ref={buttonRef} {...api.pressableProps}>
+          Get element Press
+        </button>
         <br />
         <br />
         <button>Just a button</button>

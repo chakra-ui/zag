@@ -64,13 +64,8 @@ export type PressHandlers = {
 }
 
 type PublicContext = DirectionProperty &
-  Omit<CommonProperties, "id"> &
+  CommonProperties &
   PressHandlers & {
-    id: string | null
-    /**
-     * The pressable element when we don't want to spread props
-     */
-    getElement?: () => HTMLElement | null
     /**
      * Whether the element is disabled
      */
@@ -85,7 +80,7 @@ type PublicContext = DirectionProperty &
      * still pressed, onPressStart will be fired again. If set to `true`, the press is canceled
      * when the pointer leaves the target and onPressStart will not be fired if the pointer returns.
      */
-    shouldCancelOnPointerExit?: boolean
+    cancelOnPointerExit?: boolean
     /**
      * Whether text selection should be enabled on the pressable element.
      */
@@ -96,15 +91,14 @@ export interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
 
 type PrivateContext = Context<{
   ignoreClickAfterPress: boolean
-  activePointerId: any
+  activePointerId: number | null
   target: FocusableElement | null
   pointerdownEvent: PointerEvent | null
   pointerType: PointerType | null
-  userSelect?: string
-  abortController: AbortController | null
+  cleanups: VoidFunction[]
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "getElement"> | RequiredBy<PublicContext, "id">
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
 
@@ -112,7 +106,7 @@ export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
   value: "unknown" | "idle" | "pressed:in" | "pressed:out"
-  tags: "pressed" | "unpressed"
+  tags: "pressed"
 }
 
 export type State = S.State<MachineContext, MachineState>
