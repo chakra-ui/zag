@@ -1,14 +1,6 @@
 import type { EventPoint, Rect } from "./pressable.types"
 
 export const utils = {
-  isVirtualClick(event: MouseEvent | PointerEvent): boolean {
-    // JAWS/NVDA with Firefox.
-    if (event && (event as any).mozInputSource === 0 && event.isTrusted) {
-      return true
-    }
-    return event && event.detail === 0 && !(event as PointerEvent).pointerType
-  },
-
   isValidKeyboardEvent(event: KeyboardEvent, currentTarget: Element): boolean {
     const { key, code } = event
     const element = currentTarget as HTMLElement

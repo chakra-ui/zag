@@ -20,18 +20,52 @@ export interface EventPoint {
 }
 
 export interface PressEvent {
-  /** The type of press event being fired. */
+  /**
+   * The type of press event being fired.
+   */
   type: "pressstart" | "pressend" | "pressup" | "press" | "longpress"
-  /** The pointer type that triggered the press event. */
+  /**
+   * The pointer type that triggered the press event.
+   */
   pointerType: PointerType
-  /** The target element of the press event. */
+  /**
+   * The target element of the press event.
+   */
   target: HTMLElement
-  /** The original fired event */
+  /**
+   * The original fired event
+   */
   originalEvent?: PointerEvent
 }
 
+export type PressHandlers = {
+  /**
+   * Handler that is called when the press is released over the target.
+   */
+  onPress?: (e: PressEvent) => void
+  /**
+   * Handler that is called when a press interaction starts.
+   */
+  onPressStart?: (e: PressEvent) => void
+  /**
+   * Handler that is called when a press interaction ends, either
+   * over the target or when the pointer leaves the target.
+   */
+  onPressEnd?: (e: PressEvent) => void
+  /**
+   * Handler that is called when a press is released over the target, regardless of
+   * whether it started on the target or not.
+   */
+  onPressUp?: (e: PressEvent) => void
+  /**
+   * Handler that is called when the element has been pressed for 500 milliseconds
+   */
+  onLongPress?: (e: PressEvent) => void
+}
+
 type PublicContext = DirectionProperty &
-  Omit<CommonProperties, "id"> & {
+  Omit<CommonProperties, "id"> &
+  PressHandlers & {
     id: string | null
     /**
      * The pressable element when we don't want to spread props
@@ -41,8 +75,9 @@ type PublicContext = DirectionProperty &
      * Whether the element is disabled
      */
     disabled?: boolean
-
-    /** Whether the target should not receive focus on press. */
+    /**
+     * Whether the target should not receive focus on press.
+     */
     preventFocusOnPress?: boolean
     /**
      * Whether press events should be canceled when the pointer leaves the target while pressed.
@@ -51,28 +86,10 @@ type PublicContext = DirectionProperty &
      * when the pointer leaves the target and onPressStart will not be fired if the pointer returns.
      */
     shouldCancelOnPointerExit?: boolean
-    /** Whether text selection should be enabled on the pressable element. */
+    /**
+     * Whether text selection should be enabled on the pressable element.
+     */
     allowTextSelectionOnPress?: boolean
-
-    /** Handler that is called when the press is released over the target. */
-    onPress?: (e: PressEvent) => void
-    /** Handler that is called when a press interaction starts. */
-    onPressStart?: (e: PressEvent) => void
-    /**
-     * Handler that is called when a press interaction ends, either
-     * over the target or when the pointer leaves the target.
-     */
-    onPressEnd?: (e: PressEvent) => void
-
-    /**
-     * Handler that is called when a press is released over the target, regardless of
-     * whether it started on the target or not.
-     */
-    onPressUp?: (e: PressEvent) => void
-    /**
-     * Handler that is called when the element has been pressed for 500 milliseconds
-     */
-    onLongPress?: (e: PressEvent) => void
   }
 
 export interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
@@ -94,7 +111,7 @@ type ComputedContext = Readonly<{}>
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "pressed" | "pressedout"
+  value: "unknown" | "idle" | "pressed:in" | "pressed:out"
   tags: "pressed" | "unpressed"
 }
 

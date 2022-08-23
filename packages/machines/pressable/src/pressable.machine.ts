@@ -3,7 +3,7 @@ import { MachineContext, MachineState, UserDefinedContext } from "./pressable.ty
 
 import { dom } from "./pressable.dom"
 import { utils } from "./pressable.utils"
-import { disableTextSelection, getNativeEvent, restoreTextSelection } from "@zag-js/dom-utils"
+import { disableTextSelection, getNativeEvent, isVirtualClick, restoreTextSelection } from "@zag-js/dom-utils"
 
 const { and, not } = guards
 
@@ -22,11 +22,16 @@ export function machine(ctx: UserDefinedContext) {
         pointerdownEvent: null,
         ...ctx,
       },
+
       exit: ["restoreTextSelectionIfNeeded", "removeDocumentListeners"],
+
       activities: ["attachElementListeners"],
+
       states: {
         unknown: {
-          on: { SETUP: "idle" },
+          on: {
+            SETUP: "idle",
+          },
         },
 
         idle: {
@@ -40,7 +45,7 @@ export function machine(ctx: UserDefinedContext) {
               },
               {
                 guard: and("isValidTarget", "isLeftButton"),
-                target: "pressed",
+                target: "pressed:in",
                 actions: [
                   "setPointerType",
                   "setPointerId",
@@ -55,7 +60,7 @@ export function machine(ctx: UserDefinedContext) {
             ],
             KEYDOWN: {
               guard: and("isValidTarget", "isValidKeyboardEvent"),
-              target: "pressed",
+              target: "pressed:in",
               actions: ["setPressTarget", "invokeOnPressStart"],
             },
             CLICK: [
@@ -81,7 +86,8 @@ export function machine(ctx: UserDefinedContext) {
             },
           },
         },
-        pressed: {
+
+        "pressed:in": {
           tags: ["pressed"],
           on: {
             POINTER_MOVE: [
@@ -92,7 +98,7 @@ export function machine(ctx: UserDefinedContext) {
               },
               {
                 guard: not("isOverTarget"),
-                target: "pressedout",
+                target: "pressed:out",
                 actions: "invokeOnPressEnd",
               },
             ],
@@ -120,12 +126,13 @@ export function machine(ctx: UserDefinedContext) {
             },
           },
         },
-        pressedout: {
+
+        "pressed:out": {
           tags: ["pressed"],
           on: {
             POINTER_MOVE: {
               guard: "isOverTarget",
-              target: "pressed",
+              target: "pressed:in",
               actions: ["invokeOnPressStart"],
             },
             POINTER_UP: {
@@ -147,9 +154,7 @@ export function machine(ctx: UserDefinedContext) {
         isLeftButton: (_, { event }) => event && event.button === 0,
         isVirtualPointerEvent: (_, { event }) => utils.isVirtualPointerEvent(event.nativeEvent),
         shouldTriggerKeyboardClick(ctx, { event }) {
-          return (
-            !ctx.ignoreClickAfterPress && (ctx.pointerType === "virtual" || utils.isVirtualClick(event.nativeEvent))
-          )
+          return !ctx.ignoreClickAfterPress && (ctx.pointerType === "virtual" || isVirtualClick(event.nativeEvent))
         },
         cancelOnPointerExit: (ctx) => !!ctx.shouldCancelOnPointerExit,
         isOverTarget: (ctx, { event }) => {
@@ -168,9 +173,7 @@ export function machine(ctx: UserDefinedContext) {
           const opts = { signal: controller.signal }
 
           doc.addEventListener("pointermove", (event) => send({ type: "POINTER_MOVE", event }), opts)
-
           doc.addEventListener("pointerup", (event) => send({ type: "POINTER_UP", event }), opts)
-
           doc.addEventListener("pointercancel", (event) => send({ type: "POINTER_CANCEL", event }), opts)
         },
         removeDocumentListeners(ctx) {
@@ -209,14 +212,13 @@ export function machine(ctx: UserDefinedContext) {
 
           if (disabled) return
           const event = pressEvent || originalEvent
-          if (onPressStart) {
-            onPressStart({
-              type: "pressstart",
-              pointerType: pointerType || ctx.pointerType,
-              target: event.currentTarget,
-              originalEvent: event,
-            })
-          }
+
+          onPressStart?.({
+            type: "pressstart",
+            pointerType: pointerType || ctx.pointerType,
+            target: event.currentTarget,
+            originalEvent: event,
+          })
         },
         preventDefaultIfNeeded(_, { event }) {
           if (utils.shouldPreventDefault(event.currentTarget as Element)) {
@@ -232,32 +234,23 @@ export function machine(ctx: UserDefinedContext) {
         },
         invokeOnPressUp(ctx, { event, pointerType }) {
           let { onPressUp, disabled } = ctx
-          if (disabled) {
-            return
-          }
-
-          if (onPressUp) {
-            onPressUp({
-              type: "pressup",
-              pointerType: pointerType || ctx.pointerType,
-              target: event.currentTarget,
-              originalEvent: event,
-            })
-          }
+          if (disabled) return
+          onPressUp?.({
+            type: "pressup",
+            pointerType: pointerType || ctx.pointerType,
+            target: event.currentTarget,
+            originalEvent: event,
+          })
         },
         invokeOnPressEnd(ctx, { event, pointerType }) {
           let { onPressEnd } = ctx
-
           ctx.ignoreClickAfterPress = true
-
-          if (onPressEnd) {
-            onPressEnd({
-              type: "pressend",
-              pointerType: pointerType || ctx.pointerType,
-              target: event.currentTarget,
-              originalEvent: event,
-            })
-          }
+          onPressEnd?.({
+            type: "pressend",
+            pointerType: pointerType || ctx.pointerType,
+            target: event.currentTarget,
+            originalEvent: event,
+          })
         },
         invokeOnPress(ctx, { event, pointerType }) {
           if (ctx.disabled) return

@@ -24,8 +24,7 @@ const fetchMachine = createMachine({
     "isOverTarget": false,
     "isOverTarget": false
   },
-  //TODO - restoreTextSelection
-  exit: ["restoreTextSelection", "removeDocumentListeners"],
+  exit: ["restoreTextSelectionIfNeeded", "removeDocumentListeners"],
   activities: ["attachElementListeners"],
   on: {
     UPDATE_CONTEXT: {
@@ -40,26 +39,26 @@ const fetchMachine = createMachine({
     },
     idle: {
       tags: ["unpressed"],
-      entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection"],
+      entry: ["removeDocumentListeners", "resetContext", "restoreTextSelectionIfNeeded"],
       on: {
         POINTER_DOWN: [{
           cond: "isValidTarget && isLeftButton && isVirtualPointerEvent",
           actions: "setPointerToVirtual"
         }, {
           cond: "isValidTarget && isLeftButton",
-          target: "pressed",
+          target: "pressed:in",
           actions: ["setPointerType", "setPointerId", "setPressTarget", "focusIfNeeded", "invokeOnPressStart", "preventDefaultIfNeeded", "disableTextSelectionIfNeeded", "attachDocumentListeners"]
         }],
         KEYDOWN: {
           cond: "isValidTarget && isValidKeyboardEvent",
-          target: "pressed",
+          target: "pressed:in",
           actions: ["setPressTarget", "invokeOnPressStart"]
         },
         CLICK: [{
           cond: "shouldTriggerKeyboardClick",
           actions: ["preventDefaultIfNeeded", "focusIfNeeded", "invokeOnPressStart", "invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress", "resetIgnoreClick"]
         }, {
-          actions: "preventDefaultIfNeeded"
+          actions: ["preventDefaultIfNeeded", "resetIgnoreClick"]
         }],
         MOUSE_DOWN: {
           cond: "isLeftButton",
@@ -67,7 +66,7 @@ const fetchMachine = createMachine({
         }
       }
     },
-    pressed: {
+    "pressed:in": {
       tags: ["pressed"],
       on: {
         POINTER_MOVE: [{
@@ -76,7 +75,7 @@ const fetchMachine = createMachine({
           actions: "invokeOnPressEnd"
         }, {
           cond: "!isOverTarget",
-          target: "pressedout",
+          target: "pressed:out",
           actions: "invokeOnPressEnd"
         }],
         POINTER_UP: [{
@@ -100,12 +99,12 @@ const fetchMachine = createMachine({
         }
       }
     },
-    pressedout: {
+    "pressed:out": {
       tags: ["pressed"],
       on: {
         POINTER_MOVE: {
           cond: "isOverTarget",
-          target: "pressed",
+          target: "pressed:in",
           actions: ["invokeOnPressStart"]
         },
         POINTER_UP: {

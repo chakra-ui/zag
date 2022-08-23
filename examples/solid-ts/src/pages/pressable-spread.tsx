@@ -1,5 +1,5 @@
 import * as pressable from "@zag-js/pressable"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
