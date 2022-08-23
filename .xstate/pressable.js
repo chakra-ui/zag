@@ -35,7 +35,7 @@ const fetchMachine = createMachine({
       on: {
         POINTER_DOWN: [{
           cond: "isVirtualPointerEvent",
-          actions: ["setPointerType"]
+          actions: "setPointerType"
         }, {
           target: "pressed:in",
           actions: ["setPressedDown", "setPointerType", "setPointerId", "setTarget", "focusIfNeeded", "disableTextSelection", "invokeOnPressStart", "trackDocumentPointerEvents"]
@@ -50,9 +50,9 @@ const fetchMachine = createMachine({
       }
     },
     "pressed:in": {
-      tags: ["pressed"],
-      exit: ["clearPressedDown"],
-      entry: ["preventContextMenu"],
+      tags: "pressed",
+      exit: "clearPressedDown",
+      entry: "preventContextMenu",
       after: {
         500: {
           cond: "wasPressedDown",
@@ -63,7 +63,7 @@ const fetchMachine = createMachine({
         POINTER_LEAVE: [{
           cond: "cancelOnPointerExit",
           target: "idle",
-          actions: ["invokeOnPressEnd"]
+          actions: "invokeOnPressEnd"
         }, {
           target: "pressed:out",
           actions: "invokeOnPressEnd"
@@ -78,7 +78,7 @@ const fetchMachine = createMachine({
         },
         KEY_UP: {
           target: "idle",
-          actions: ["invokeOnPressUp"]
+          actions: "invokeOnPressUp"
         },
         DOC_POINTER_CANCEL: "idle",
         DRAG_START: "idle"
@@ -88,7 +88,7 @@ const fetchMachine = createMachine({
       on: {
         POINTER_ENTER: {
           target: "pressed:in",
-          actions: ["invokeOnPressStart"]
+          actions: "invokeOnPressStart"
         },
         DOC_POINTER_UP: {
           target: "idle",

@@ -35,7 +35,7 @@ export function machine(ctx: UserDefinedContext) {
             POINTER_DOWN: [
               {
                 guard: "isVirtualPointerEvent",
-                actions: ["setPointerType"],
+                actions: "setPointerType",
               },
               {
                 target: "pressed:in",
@@ -68,9 +68,9 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         "pressed:in": {
-          tags: ["pressed"],
-          exit: ["clearPressedDown"],
-          entry: ["preventContextMenu"],
+          tags: "pressed",
+          exit: "clearPressedDown",
+          entry: "preventContextMenu",
           after: {
             500: {
               guard: "wasPressedDown",
@@ -82,7 +82,7 @@ export function machine(ctx: UserDefinedContext) {
               {
                 guard: "cancelOnPointerExit",
                 target: "idle",
-                actions: ["invokeOnPressEnd"],
+                actions: "invokeOnPressEnd",
               },
               {
                 target: "pressed:out",
@@ -99,7 +99,7 @@ export function machine(ctx: UserDefinedContext) {
             },
             KEY_UP: {
               target: "idle",
-              actions: ["invokeOnPressUp"],
+              actions: "invokeOnPressUp",
             },
             DOC_POINTER_CANCEL: "idle",
             DRAG_START: "idle",
@@ -110,7 +110,7 @@ export function machine(ctx: UserDefinedContext) {
           on: {
             POINTER_ENTER: {
               target: "pressed:in",
-              actions: ["invokeOnPressStart"],
+              actions: "invokeOnPressStart",
             },
             DOC_POINTER_UP: {
               target: "idle",
