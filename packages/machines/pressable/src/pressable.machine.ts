@@ -107,7 +107,6 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         "pressed:out": {
-          tags: ["pressed"],
           on: {
             POINTER_ENTER: {
               target: "pressed:in",
@@ -269,7 +268,6 @@ export function machine(ctx: UserDefinedContext) {
         },
         invokeOnLongPress(ctx, { pointerType }) {
           if (!ctx.target) return
-          console.log("-----longPress-----")
           ctx.onLongPress?.({
             type: "longpress",
             pointerType: pointerType || ctx.pointerType,

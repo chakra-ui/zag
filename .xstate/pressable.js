@@ -85,7 +85,6 @@ const fetchMachine = createMachine({
       }
     },
     "pressed:out": {
-      tags: ["pressed"],
       on: {
         POINTER_ENTER: {
           target: "pressed:in",
