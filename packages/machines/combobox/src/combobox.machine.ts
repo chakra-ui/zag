@@ -439,8 +439,18 @@ export function machine(ctx: UserDefinedContext) {
         },
         selectOption(ctx, evt) {
           const isOptionEvent = !!evt.value && !!evt.label
-          ctx.selectionData = isOptionEvent ? { label: evt.label, value: evt.value } : ctx.navigationData
+
+          ctx.selectionData = isOptionEvent
+            ? {
+                label: evt.label,
+                value: evt.value,
+              }
+            : ctx.navigationData
+
           let value: string | undefined
+
+          if (!ctx.selectionData) return
+
           if (ctx.selectionBehavior === "set") {
             value = ctx.selectionData!.label
           }
