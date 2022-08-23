@@ -163,7 +163,7 @@ importers:
       '@zag-js/pin-input': link:../../packages/machines/pin-input
       '@zag-js/popover': link:../../packages/machines/popover
       '@zag-js/popper': link:../../packages/utilities/popper
-      '@zag-js/pressable': link:../../packages/utilities/pressable
+      '@zag-js/pressable': link:../../packages/machines/pressable
       '@zag-js/radio': link:../../packages/machines/radio
       '@zag-js/range-slider': link:../../packages/machines/range-slider
       '@zag-js/rating': link:../../packages/machines/rating
@@ -270,7 +270,7 @@ importers:
       '@zag-js/pin-input': link:../../packages/machines/pin-input
       '@zag-js/popover': link:../../packages/machines/popover
       '@zag-js/popper': link:../../packages/utilities/popper
-      '@zag-js/pressable': link:../../packages/utilities/pressable
+      '@zag-js/pressable': link:../../packages/machines/pressable
       '@zag-js/radio': link:../../packages/machines/radio
       '@zag-js/range-slider': link:../../packages/machines/range-slider
       '@zag-js/rating': link:../../packages/machines/rating
@@ -382,7 +382,7 @@ importers:
       '@zag-js/pin-input': link:../../packages/machines/pin-input
       '@zag-js/popover': link:../../packages/machines/popover
       '@zag-js/popper': link:../../packages/utilities/popper
-      '@zag-js/pressable': link:../../packages/utilities/pressable
+      '@zag-js/pressable': link:../../packages/machines/pressable
       '@zag-js/radio': link:../../packages/machines/radio
       '@zag-js/range-slider': link:../../packages/machines/range-slider
       '@zag-js/rating': link:../../packages/machines/rating
@@ -647,6 +647,17 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
 
+  packages/machines/pressable:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/types': workspace:*
+    dependencies:
+      '@zag-js/core': link:../../core
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+
   packages/machines/radio:
     specifiers:
       '@zag-js/core': workspace:*
@@ -901,14 +912,6 @@ importers:
       '@zag-js/utils': workspace:*
     dependencies:
       '@floating-ui/dom': 1.0.1
-    devDependencies:
-      '@zag-js/dom-utils': link:../dom
-      '@zag-js/utils': link:../core
-
-  packages/utilities/pressable:
-    specifiers:
-      '@zag-js/dom-utils': workspace:*
-      '@zag-js/utils': workspace:*
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core

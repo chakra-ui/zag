@@ -1,13 +1,13 @@
 # @zag-js/pressable
 
-Handling press interactions across mouse, touch, keyboard, and screen readers.
+Core logic for the pressable widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add @zag-js/pressable
+yarn add  @zag-js/pressable
 # or
-npm i @zag-js/pressable
+npm i  @zag-js/pressable
 ```
 
 ## Contribution

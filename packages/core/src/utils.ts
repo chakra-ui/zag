@@ -9,7 +9,7 @@ export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
 
 export function toArray<T>(value: T | T[] | undefined): T[] {
   if (!value) return []
-  return isArray(value) ? value : [value]
+  return isArray(value) ? value.slice() : [value]
 }
 
 export function isGuardHelper(value: any): value is { predicate: (guards: Dict) => any } {
