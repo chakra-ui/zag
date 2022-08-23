@@ -14,7 +14,7 @@ importers:
       '@commitlint/cli': 17.0.3
       '@commitlint/config-conventional': 17.0.3
       '@octokit/rest': 19.0.3
-      '@playwright/test': 1.23.4
+      '@playwright/test': 1.25.0
       '@swc-node/jest': 1.5.2
       '@swc-node/register': 1.5.1
       '@types/jest': 28.1.6
@@ -34,7 +34,7 @@ importers:
       jest-watch-typeahead: 2.0.0
       json-format-highlight: 1.0.4
       lint-staged: 13.0.3
-      playwright: 1.23.4
+      playwright: 1.25.0
       plop: 3.1.1
       prettier: 2.7.1
       signale: 1.4.0
@@ -53,7 +53,7 @@ importers:
       '@commitlint/cli': 17.0.3
       '@commitlint/config-conventional': 17.0.3
       '@octokit/rest': 19.0.3
-      '@playwright/test': 1.23.4
+      '@playwright/test': 1.25.0
       '@swc-node/jest': 1.5.2_typescript@4.7.4
       '@swc-node/register': 1.5.1_typescript@4.7.4
       '@types/jest': 28.1.6
@@ -73,7 +73,7 @@ importers:
       jest-watch-typeahead: 2.0.0_jest@28.1.3
       json-format-highlight: 1.0.4
       lint-staged: 13.0.3
-      playwright: 1.23.4
+      playwright: 1.25.0
       plop: 3.1.1
       prettier: 2.7.1
       signale: 1.4.0
@@ -943,7 +943,7 @@ packages:
     resolution: {integrity: sha512-5H1uebutjeS8zV0klAifAsFxIOdAAF8AAGzfnC1twFY1h74TVISTDOtb+qyDzjjW3YAFd3FEbbasqS6ULcdkcQ==}
     dependencies:
       axe-core: 4.4.3
-      playwright: 1.23.4
+      playwright: 1.25.0
     dev: false
 
   /@babel/code-frame/7.18.6:
@@ -2510,13 +2510,13 @@ packages:
       '@octokit/openapi-types': 12.11.0
     dev: false
 
-  /@playwright/test/1.23.4:
-    resolution: {integrity: sha512-iIsoMJDS/lyuhw82FtcV/B3PXikgVD3hNe5hyvOpRM0uRr1OIpN3LgPeRbBjhzBWmyf6RgRg5fqK5sVcpA03yA==}
+  /@playwright/test/1.25.0:
+    resolution: {integrity: sha512-j4EZhTTQI3dBeWblE21EV//swwmBtOpIrLdOIJIRv4uqsLdHgBg1z+JtTg+AeC5o2bAXIE26kDNW5A0TimG8Bg==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@types/node': 18.7.2
-      playwright-core: 1.23.4
+      playwright-core: 1.25.0
     dev: false
 
   /@pnpm/constants/6.1.0:
@@ -7478,19 +7478,19 @@ packages:
       find-up: 4.1.0
     dev: false
 
-  /playwright-core/1.23.4:
-    resolution: {integrity: sha512-h5V2yw7d8xIwotjyNrkLF13nV9RiiZLHdXeHo+nVJIYGVlZ8U2qV0pMxNJKNTvfQVT0N8/A4CW6/4EW2cOcTiA==}
+  /playwright-core/1.25.0:
+    resolution: {integrity: sha512-kZ3Jwaf3wlu0GgU0nB8UMQ+mXFTqBIFz9h1svTlNduNKjnbPXFxw7mJanLVjqxHJRn62uBfmgBj93YHidk2N5Q==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
 
-  /playwright/1.23.4:
-    resolution: {integrity: sha512-NUPOLMpd8WydmwZFllST/YZ7cImgDDDrvcaq7Gj2vAjNg0jYCndFJt6HHtbkOPSIlRo4BaQYlbFx6meq1r1FXQ==}
+  /playwright/1.25.0:
+    resolution: {integrity: sha512-Z+pQNWI17Qx/tHhnmgMmPsptsisXpKgAnUvYv98kctlHUJaqMt2400P8kTw9vEPoC0xdxqu0JhxO7pDTmaaIKw==}
     engines: {node: '>=14'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      playwright-core: 1.23.4
+      playwright-core: 1.25.0
     dev: false
 
   /plop/3.1.1:
