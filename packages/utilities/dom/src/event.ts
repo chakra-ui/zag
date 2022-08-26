@@ -57,11 +57,3 @@ export const isModifiedEvent = (v: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "
 
 export const isCtrlKey = (v: Pick<KeyboardEvent, "ctrlKey" | "metaKey">) =>
   isMac() ? v.metaKey && !v.ctrlKey : v.ctrlKey && !v.metaKey
-
-export function whenMouse<E>(handler: JSX.PointerEventHandler<E>): JSX.PointerEventHandler<E> {
-  return (event) => (event.pointerType === "mouse" ? handler(event) : undefined)
-}
-
-export function whenTouchOrPen<E>(handler: JSX.PointerEventHandler<E>): JSX.PointerEventHandler<E> {
-  return (event) => (event.pointerType !== "mouse" ? handler(event) : undefined)
-}
