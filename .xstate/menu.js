@@ -224,7 +224,7 @@ const fetchMachine = createMachine({
           actions: "setIntentPolygon"
         },
         ITEM_POINTERDOWN: {
-          actions: ["setPointerdownNode"]
+          actions: ["setPointerdownNode", "focusItem"]
         },
         TYPEAHEAD: {
           actions: "focusMatchedItem"

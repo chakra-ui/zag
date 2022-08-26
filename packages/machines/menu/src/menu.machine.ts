@@ -254,7 +254,7 @@ export function machine(ctx: UserDefinedContext) {
               actions: "setIntentPolygon",
             },
             ITEM_POINTERDOWN: {
-              actions: ["setPointerdownNode"],
+              actions: ["setPointerdownNode", "focusItem"],
             },
             TYPEAHEAD: {
               actions: "focusMatchedItem",
