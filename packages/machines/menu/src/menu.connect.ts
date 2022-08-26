@@ -10,8 +10,6 @@ import {
   isLeftClick,
   isModifiedEvent,
   isSelfEvent,
-  whenMouse,
-  whenTouchOrPen,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -59,19 +57,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contextTriggerProps: normalize.element({
       "data-part": "trigger",
       id: dom.getContextTriggerId(state.context),
-      onPointerDown: whenTouchOrPen((event) => {
+      onPointerDown(event) {
+        if (event.pointerType === "mouse") return
         const evt = getNativeEvent(event)
         send({ type: "CONTEXT_MENU_START", point: getEventPoint(evt) })
-      }),
-      onPointerCancel: whenTouchOrPen(() => {
+      },
+      onPointerCancel(event) {
+        if (event.pointerType === "mouse") return
         send("CONTEXT_MENU_CANCEL")
-      }),
-      onPointerMove: whenTouchOrPen(() => {
+      },
+      onPointerMove(event) {
+        if (event.pointerType === "mouse") return
         send("CONTEXT_MENU_CANCEL")
-      }),
-      onPointerUp: whenTouchOrPen(() => {
+      },
+      onPointerUp(event) {
+        if (event.pointerType === "mouse") return
         send("CONTEXT_MENU_CANCEL")
-      }),
+      },
       onContextMenu(event) {
         const evt = getNativeEvent(event)
         send({ type: "CONTEXT_MENU", point: getEventPoint(evt) })
@@ -98,15 +100,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen || undefined,
       "data-expanded": dataAttr(isOpen),
-      onPointerMove: whenMouse((event) => {
+      onPointerMove(event) {
+        if (event.pointerType !== "mouse") return
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
         send({
           type: "TRIGGER_POINTERMOVE",
           target: event.currentTarget,
         })
-      }),
-      onPointerLeave: whenMouse((event) => {
+      },
+      onPointerLeave(event) {
         if (event.pointerType !== "mouse") return
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
@@ -116,7 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           target: event.currentTarget,
           point: getEventPoint(evt),
         })
-      }),
+      },
       onClick(event) {
         if (dom.isTriggerItem(event.currentTarget)) {
           send({ type: "TRIGGER_CLICK", target: event.currentTarget })
@@ -191,9 +194,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-activedescendant": state.context.activeId ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
       "data-placement": state.context.currentPlacement,
-      onPointerEnter: whenMouse(() => {
+      onPointerEnter(event) {
+        if (event.pointerType !== "mouse") return
         send("MENU_POINTERENTER")
-      }),
+      },
       onKeyDown(event) {
         if (!isSelfEvent(event)) return
 
@@ -277,21 +281,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerDown(event) {
           if (disabled) return
-          send({ type: "ITEM_POINTERDOWN", target: event.currentTarget })
+          send({ type: "ITEM_POINTERDOWN", target: event.currentTarget, id })
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || disabled || state.context.pointerdownNode === event.currentTarget) return
           event.currentTarget.click()
         },
-        onPointerLeave: whenMouse((event) => {
-          if (disabled) return
+        onPointerLeave(event) {
+          if (disabled || event.pointerType !== "mouse") return
           send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
-        }),
-        onPointerMove: whenMouse((event) => {
-          if (disabled) return
+        },
+        onPointerMove(event) {
+          if (disabled || event.pointerType !== "mouse") return
           send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
-        }),
+        },
         onDragStart(event) {
           const isLink = event.currentTarget.matches("a[href]")
           if (isLink) event.preventDefault()
