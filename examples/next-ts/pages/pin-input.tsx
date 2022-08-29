@@ -32,6 +32,7 @@ export default function Page() {
             console.log(formData)
           }}
         >
+          <span {...api.labelProps}>Enter Pin</span>
           <div {...api.rootProps}>
             <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
             <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
@@ -41,6 +42,7 @@ export default function Page() {
           <button data-testid="clear-button" onClick={api.clearValue}>
             Clear
           </button>
+          <button onClick={api.focus}>Focus</button>
         </form>
       </main>
 
