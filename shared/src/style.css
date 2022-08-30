@@ -352,7 +352,7 @@ body {
 .rating [data-part="item"][data-highlighted][data-disabled] [data-part="star"] {
   color: #a1a1a1;
 }
-.rating [data-part="item"][dir="rtl"] [data-half] [data-part="star"] {
+.rating [dir="rtl"] [data-half] [data-part="star"] {
   transform: scale(-1, 1);
 }
 

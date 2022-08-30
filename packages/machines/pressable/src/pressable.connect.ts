@@ -51,6 +51,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
       onPointerDown(event) {
+        if (state.context.disabled) {
+          return
+        }
+
         if (event.button !== 0 || !contains(event.currentTarget, event.target)) {
           return
         }
