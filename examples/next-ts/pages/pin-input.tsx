@@ -32,7 +32,7 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <span {...api.labelProps}>Enter Pin</span>
+          <label {...api.labelProps}>Enter Pin</label>
           <div {...api.rootProps}>
             <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
             <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />

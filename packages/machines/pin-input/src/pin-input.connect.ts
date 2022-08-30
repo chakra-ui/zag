@@ -56,7 +56,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(state.context.disabled),
       "data-complete": dataAttr(isValueComplete),
-      onClick: focus,
+      onClick: (event) => {
+        event.preventDefault()
+        focus()
+      },
     }),
 
     hiddenInputProps: normalize.input({
@@ -132,6 +135,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             exec(event)
             event.preventDefault()
           } else {
+            if (key === "Tab") return
             send({ type: "KEY_DOWN", value: key, preventDefault: () => event.preventDefault() })
           }
         },
