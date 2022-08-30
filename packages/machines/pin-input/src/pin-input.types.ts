@@ -8,6 +8,7 @@ type IntlMessages = {
 type ElementIds = Partial<{
   root: string
   hiddenInput: string
+  label: string
   input(id: string): string
 }>
 

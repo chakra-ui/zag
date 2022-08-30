@@ -18,6 +18,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const focusedIndex = state.context.focusedIndex
   const messages = state.context.messages
 
+  function focus() {
+    dom.getFirstInputEl(state.context)?.focus()
+  }
+
   return {
     value: state.context.value,
     valueAsString: state.context.valueAsString,
@@ -34,9 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValueAtIndex(index: number, value: string) {
       send({ type: "SET_VALUE", value, index })
     },
-    focus() {
-      dom.getFirstInputEl(state.context)?.focus()
-    },
+    focus,
 
     rootProps: normalize.element({
       dir: state.context.dir,
@@ -45,6 +47,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(state.context.disabled),
       "data-complete": dataAttr(isValueComplete),
+    }),
+
+    labelProps: normalize.label({
+      "data-part": "label",
+      htmlFor: dom.getHiddenInputId(state.context),
+      id: dom.getLabelId(state.context),
+      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(state.context.disabled),
+      "data-complete": dataAttr(isValueComplete),
+      onClick: (event) => {
+        event.preventDefault()
+        focus()
+      },
     }),
 
     hiddenInputProps: normalize.input({
@@ -120,6 +135,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             exec(event)
             event.preventDefault()
           } else {
+            if (key === "Tab") return
             send({ type: "KEY_DOWN", value: key, preventDefault: () => event.preventDefault() })
           }
         },
