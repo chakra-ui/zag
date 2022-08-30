@@ -1,5 +1,12 @@
 # @zag-js/element-size
 
+## 0.2.1
+
+### Patch Changes
+
+- [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump all packages
+
 ## 0.2.0
 
 ### Minor Changes

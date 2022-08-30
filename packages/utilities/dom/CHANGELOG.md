@@ -1,5 +1,26 @@
 # @zag-js/dom-utils
 
+## 0.1.11
+
+### Patch Changes
+
+- [`fc0e34e7`](https://github.com/chakra-ui/zag/commit/fc0e34e705cca1a11c91f46897c523350dfd6f1f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue with home and end keys in rtl
+
+* [#284](https://github.com/chakra-ui/zag/pull/284)
+  [`13461057`](https://github.com/chakra-ui/zag/commit/13461057eb161f3991085cd235d74c0857488509) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove redundant helper
+
+- [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump all packages
+
+* [#284](https://github.com/chakra-ui/zag/pull/284)
+  [`13461057`](https://github.com/chakra-ui/zag/commit/13461057eb161f3991085cd235d74c0857488509) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove unneeded utilities
+
+* Updated dependencies [[`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d)]:
+  - @zag-js/types@0.2.5
+
 ## 0.1.10
 
 ### Patch Changes
