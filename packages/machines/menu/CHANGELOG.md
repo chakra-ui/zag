@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.1.14
+
+### Patch Changes
+
+- [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump all packages
+
+* [#284](https://github.com/chakra-ui/zag/pull/284)
+  [`13461057`](https://github.com/chakra-ui/zag/commit/13461057eb161f3991085cd235d74c0857488509) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where menu doesn't trigger select on mobile
+
+* Updated dependencies [[`ce97956c`](https://github.com/chakra-ui/zag/commit/ce97956c0586ce842f7b082dd71cc6d68909ad58),
+  [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d)]:
+  - @zag-js/core@0.1.10
+  - @zag-js/types@0.2.5
+  - @zag-js/dismissable@0.1.4
+  - @zag-js/popper@0.1.11
+
 ## 0.1.13
 
 ### Patch Changes

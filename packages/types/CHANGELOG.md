@@ -1,5 +1,12 @@
 # @zag-js/types
 
+## 0.2.5
+
+### Patch Changes
+
+- [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump all packages
+
 ## 0.2.4
 
 ### Patch Changes

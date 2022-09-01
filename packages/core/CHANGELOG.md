@@ -1,5 +1,19 @@
 # @zag-js/core
 
+## 0.1.10
+
+### Patch Changes
+
+- [#269](https://github.com/chakra-ui/zag/pull/269)
+  [`ce97956c`](https://github.com/chakra-ui/zag/commit/ce97956c0586ce842f7b082dd71cc6d68909ad58) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix bug in exit effects for `after` transition
+
+* [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump all packages
+
+* Updated dependencies [[`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d)]:
+  - @zag-js/store@0.1.2
+
 ## 0.1.9
 
 ### Patch Changes

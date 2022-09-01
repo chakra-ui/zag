@@ -1,5 +1,15 @@
 # @zag-js/dismissable
 
+## 0.1.4
+
+### Patch Changes
+
+- [`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump all packages
+
+- Updated dependencies [[`55e6a55c`](https://github.com/chakra-ui/zag/commit/55e6a55c37a60eea5caa446270cd1f6012d7363d)]:
+  - @zag-js/interact-outside@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes
