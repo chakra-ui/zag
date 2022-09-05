@@ -7,6 +7,7 @@ export function machine(ctx: UserDefinedContext){
       id: "{{machine}}",
       initial: "unknown",
       context: {
+        ...ctx
       },
       states: {
         unknown: {
