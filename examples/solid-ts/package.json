@@ -33,6 +33,7 @@
     "@zag-js/focus-scope": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
+    "@zag-js/hover-card": "workspace:*",
     "@zag-js/hover-intent": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",

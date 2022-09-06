@@ -957,6 +957,21 @@ main > .toggle[data-pressed] {
   background: red;
 }
 
+.hover-card [data-part="trigger"] {
+  background: rgb(110, 86, 207);
+  color: white;
+  width: fit-content;
+  padding: 6px;
+}
+
+.hover-card-content {
+  background: rgb(95, 93, 99);
+  color: white;
+  padding: 6px;
+  height: 150px;
+  width: 300px;
+}
+
 .controls-container {
   display: flex;
   flex-direction: column;
