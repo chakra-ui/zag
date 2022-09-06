@@ -61,7 +61,7 @@
     "@changesets/cli": "2.24.3",
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
-    "@octokit/rest": "19.0.3",
+    "@octokit/rest": "19.0.4",
     "@playwright/test": "1.25.1",
     "@swc-node/jest": "1.5.2",
     "@swc-node/register": "1.5.1",

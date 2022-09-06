@@ -13,7 +13,7 @@ importers:
       '@changesets/cli': 2.24.3
       '@commitlint/cli': 17.0.3
       '@commitlint/config-conventional': 17.0.3
-      '@octokit/rest': 19.0.3
+      '@octokit/rest': 19.0.4
       '@playwright/test': 1.25.1
       '@swc-node/jest': 1.5.2
       '@swc-node/register': 1.5.1
@@ -52,7 +52,7 @@ importers:
       '@changesets/cli': 2.24.3
       '@commitlint/cli': 17.0.3
       '@commitlint/config-conventional': 17.0.3
-      '@octokit/rest': 19.0.3
+      '@octokit/rest': 19.0.4
       '@playwright/test': 1.25.1
       '@swc-node/jest': 1.5.2_typescript@4.7.4
       '@swc-node/register': 1.5.1_typescript@4.7.4
@@ -2461,14 +2461,18 @@ packages:
     resolution: {integrity: sha512-VsXyi8peyRq9PqIz/tpqiL2w3w80OgVMwBHltTml3LmVvXiphgeqmY9mvBw9Wu7e0QWk/fqD37ux8yP5uVekyQ==}
     dev: false
 
-  /@octokit/plugin-paginate-rest/3.1.0_@octokit+core@4.0.4:
-    resolution: {integrity: sha512-+cfc40pMzWcLkoDcLb1KXqjX0jTGYXjKuQdFQDc6UAknISJHnZTiBqld6HDwRJvD4DsouDKrWXNbNV0lE/3AXA==}
+  /@octokit/openapi-types/13.8.0:
+    resolution: {integrity: sha512-m1O4KSRRF5qieJ3MWuLrfseR9XHO0IxBsKVUbZMstbsghQlSPz/aHEgIqCWc4oj3+X/yFZXoXxGQcOhjcvQF1Q==}
+    dev: false
+
+  /@octokit/plugin-paginate-rest/4.2.0_@octokit+core@4.0.4:
+    resolution: {integrity: sha512-8otLCIK9esfmOCY14CBnG/xPqv0paf14rc+s9tHpbOpeFwrv5CnECKW1qdqMAT60ngAa9eB1bKQ+l2YCpi0HPQ==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@octokit/core': '>=4'
     dependencies:
       '@octokit/core': 4.0.4
-      '@octokit/types': 6.41.0
+      '@octokit/types': 7.2.0
     dev: false
 
   /@octokit/plugin-request-log/1.0.4_@octokit+core@4.0.4:
@@ -2513,12 +2517,12 @@ packages:
       - encoding
     dev: false
 
-  /@octokit/rest/19.0.3:
-    resolution: {integrity: sha512-5arkTsnnRT7/sbI4fqgSJ35KiFaN7zQm0uQiQtivNQLI8RQx8EHwJCajcTUwmaCMNDg7tdCvqAnc7uvHHPxrtQ==}
+  /@octokit/rest/19.0.4:
+    resolution: {integrity: sha512-LwG668+6lE8zlSYOfwPj4FxWdv/qFXYBpv79TWIQEpBLKA9D/IMcWsF/U9RGpA3YqMVDiTxpgVpEW3zTFfPFTA==}
     engines: {node: '>= 14'}
     dependencies:
       '@octokit/core': 4.0.4
-      '@octokit/plugin-paginate-rest': 3.1.0_@octokit+core@4.0.4
+      '@octokit/plugin-paginate-rest': 4.2.0_@octokit+core@4.0.4
       '@octokit/plugin-request-log': 1.0.4_@octokit+core@4.0.4
       '@octokit/plugin-rest-endpoint-methods': 6.2.0_@octokit+core@4.0.4
     transitivePeerDependencies:
@@ -2529,6 +2533,12 @@ packages:
     resolution: {integrity: sha512-eJ2jbzjdijiL3B4PrSQaSjuF2sPEQPVCPzBvTHJD9Nz+9dw2SGH4K4xeQJ77YfTq5bRQ+bD8wT11JbeDPmxmGg==}
     dependencies:
       '@octokit/openapi-types': 12.11.0
+    dev: false
+
+  /@octokit/types/7.2.0:
+    resolution: {integrity: sha512-pYQ/a1U6mHptwhGyp6SvsiM4bWP2s3V95olUeTxas85D/2kN78yN5C8cGN+P4LwJSWUqIEyvq0Qn2WUn6NQRjw==}
+    dependencies:
+      '@octokit/openapi-types': 13.8.0
     dev: false
 
   /@playwright/test/1.25.1:
