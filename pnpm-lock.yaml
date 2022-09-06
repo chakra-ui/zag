@@ -103,6 +103,7 @@ importers:
       '@zag-js/focus-scope': workspace:*
       '@zag-js/focus-visible': workspace:*
       '@zag-js/form-utils': workspace:*
+      '@zag-js/hover-card': workspace:*
       '@zag-js/hover-intent': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -154,6 +155,7 @@ importers:
       '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
       '@zag-js/form-utils': link:../../packages/utilities/form-utils
+      '@zag-js/hover-card': link:../../packages/machines/hover-card
       '@zag-js/hover-intent': link:../../packages/utilities/hover-intent
       '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
       '@zag-js/live-region': link:../../packages/utilities/live-region
@@ -213,6 +215,7 @@ importers:
       '@zag-js/focus-scope': workspace:*
       '@zag-js/focus-visible': workspace:*
       '@zag-js/form-utils': workspace:*
+      '@zag-js/hover-card': workspace:*
       '@zag-js/hover-intent': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -261,6 +264,7 @@ importers:
       '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
       '@zag-js/form-utils': link:../../packages/utilities/form-utils
+      '@zag-js/hover-card': link:../../packages/machines/hover-card
       '@zag-js/hover-intent': link:../../packages/utilities/hover-intent
       '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
       '@zag-js/live-region': link:../../packages/utilities/live-region
@@ -321,6 +325,7 @@ importers:
       '@zag-js/focus-scope': workspace:*
       '@zag-js/focus-visible': workspace:*
       '@zag-js/form-utils': workspace:*
+      '@zag-js/hover-card': workspace:*
       '@zag-js/hover-intent': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -373,6 +378,7 @@ importers:
       '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
       '@zag-js/form-utils': link:../../packages/utilities/form-utils
+      '@zag-js/hover-card': link:../../packages/machines/hover-card
       '@zag-js/hover-intent': link:../../packages/utilities/hover-intent
       '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
       '@zag-js/live-region': link:../../packages/utilities/live-region
@@ -569,6 +575,21 @@ importers:
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+
+  packages/machines/hover-card:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dismissable': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/popper': workspace:*
+      '@zag-js/types': workspace:*
+    dependencies:
+      '@zag-js/core': link:../../core
+      '@zag-js/dismissable': link:../../utilities/dismissable
+      '@zag-js/popper': link:../../utilities/popper
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom

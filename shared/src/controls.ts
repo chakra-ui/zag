@@ -53,6 +53,11 @@ export const menuControls = defineControls({
   closeOnSelect: { type: "boolean", defaultValue: true, label: "Close on select" },
 })
 
+export const hoverCardControls = defineControls({
+  openDelay: { type: "number", defaultValue: 700 },
+  closeDelay: { type: "number", defaultValue: 300 },
+})
+
 export const numberInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },

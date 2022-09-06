@@ -4,6 +4,7 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/hover-card", component: () => import("./pages/hover-card") },
     {
       path: "/",
       component: Home,
