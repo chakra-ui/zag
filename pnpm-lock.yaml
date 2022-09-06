@@ -17,7 +17,7 @@ importers:
       '@playwright/test': 1.25.1
       '@swc-node/jest': 1.5.2
       '@swc-node/register': 1.5.1
-      '@types/jest': 28.1.6
+      '@types/jest': 28.1.8
       '@types/signale': 1.4.4
       '@typescript-eslint/eslint-plugin': 5.30.6
       '@typescript-eslint/parser': 5.30.6
@@ -56,7 +56,7 @@ importers:
       '@playwright/test': 1.25.1
       '@swc-node/jest': 1.5.2_typescript@4.7.4
       '@swc-node/register': 1.5.1_typescript@4.7.4
-      '@types/jest': 28.1.6
+      '@types/jest': 28.1.8
       '@types/signale': 1.4.4
       '@typescript-eslint/eslint-plugin': 5.30.6_0fdbbf70c69f9dcbad46c3816b6de7dc
       '@typescript-eslint/parser': 5.30.6_eslint@8.20.0+typescript@4.7.4
@@ -2921,10 +2921,10 @@ packages:
       '@types/istanbul-lib-report': 3.0.0
     dev: false
 
-  /@types/jest/28.1.6:
-    resolution: {integrity: sha512-0RbGAFMfcBJKOmqRazM8L98uokwuwD5F8rHrv/ZMbrZBwVOWZUyPG6VFNscjYr/vjM3Vu4fRrCPbOs42AfemaQ==}
+  /@types/jest/28.1.8:
+    resolution: {integrity: sha512-8TJkV++s7B6XqnDrzR1m/TT0A0h948Pnl/097veySPN67VRAgQ4gZ7n2KfJo2rVq6njQjdxU3GCCyDvAeuHoiw==}
     dependencies:
-      jest-matcher-utils: 28.1.3
+      expect: 28.1.3
       pretty-format: 28.1.3
     dev: false
 
