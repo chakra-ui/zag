@@ -47,6 +47,18 @@ test("should be closed after blurring trigger", async ({ page }) => {
   await expect(page.locator(content)).not.toBeVisible()
 })
 
+test.only("should be closed after blurring trigger with keyboard", async ({ page }) => {
+  await page.click("main")
+  await page.keyboard.press("Tab")
+  await page.waitForSelector(content)
+  await expect(page.locator(content)).toBeVisible()
+
+  await page.keyboard.press("Tab")
+
+  await page.waitForTimeout(500)
+  await expect(page.locator(content)).not.toBeVisible()
+})
+
 test("should remain open after blurring trigger if pointer opens card", async ({ page }) => {
   await page.hover(trigger)
   await page.waitForSelector(content)
