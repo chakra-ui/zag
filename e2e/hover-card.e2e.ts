@@ -47,7 +47,7 @@ test("should be closed after blurring trigger", async ({ page }) => {
   await expect(page.locator(content)).not.toBeVisible()
 })
 
-test.only("should be closed after blurring trigger with keyboard", async ({ page }) => {
+test("should be closed after blurring trigger with keyboard", async ({ page }) => {
   await page.click("main")
   await page.keyboard.press("Tab")
   await page.waitForSelector(content)
