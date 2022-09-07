@@ -23,25 +23,29 @@ export default defineComponent({
       return (
         <>
           <main class="hover-card">
-            <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}>
-              Twitter
-            </a>
+            <div style={{ display: "flex", gap: "50px" }}>
+              <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}>
+                Twitter
+              </a>
 
-            {api.isOpen && (
-              <Teleport to="body">
-                <div {...api.positionerProps}>
-                  <div class="hover-card-content" {...api.contentProps}>
-                    <div {...api.arrowProps}>
-                      <div {...api.innerArrowProps} />
+              {api.isOpen && (
+                <Teleport to="body">
+                  <div {...api.positionerProps}>
+                    <div class="hover-card-content" {...api.contentProps}>
+                      <div {...api.arrowProps}>
+                        <div {...api.innerArrowProps} />
+                      </div>
+                      Twitter Preview
+                      <a href="https://twitter.com/zag_js" target="_blank">
+                        Twitter
+                      </a>
                     </div>
-                    Twitter Preview
-                    <a href="https://twitter.com/zag_js" target="_blank">
-                      Twitter
-                    </a>
                   </div>
-                </div>
-              </Teleport>
-            )}
+                </Teleport>
+              )}
+
+              <div data-part="test-text">Test text</div>
+            </div>
           </main>
 
           <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />

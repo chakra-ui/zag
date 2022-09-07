@@ -965,8 +965,7 @@ main > .toggle[data-pressed] {
 }
 
 .hover-card-content {
-  background: rgb(95, 93, 99);
-  color: white;
+  background: rgb(225, 223, 228);
   padding: 6px;
   height: 150px;
   width: 300px;
