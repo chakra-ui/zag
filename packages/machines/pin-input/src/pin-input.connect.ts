@@ -93,17 +93,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         placeholder: focusedIndex === index ? "" : state.context.placeholder,
         onChange(event) {
           const evt = getNativeEvent(event)
-          if (evt.isComposing) return
           const { value } = event.currentTarget
-
           if (evt.inputType === "insertFromPaste" || value.length > 2) {
             send({ type: "PASTE", value })
             event.preventDefault()
             return
           }
 
-          if (evt.inputType === "insertText") {
+          if (evt.inputType === "insertText" || evt.inputType === "insertCompositionText") {
             send({ type: "INPUT", value })
+            return
+          }
+
+          if (evt.inputType === "deleteContentBackward") {
+            send("BACKSPACE")
           }
         },
         onKeyDown(event) {
