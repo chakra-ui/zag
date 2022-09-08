@@ -95,8 +95,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: isDisabled || isReadonly,
       onChange(event) {
         const evt = getNativeEvent(event)
-        if (evt.isComposing || evt.inputType === "insertFromPaste") return
-        send({ type: "TYPE", value: event.target.value })
+
+        if (evt.inputType === "insertFromPaste") return
+        let value = event.target.value
+
+        if (evt.inputType === "insertCompositionText" && value.endsWith(state.context.delimiter!)) {
+          send("DELIMITER_KEY")
+        } else {
+          send({ type: "TYPE", value, key: evt.inputType })
+        }
       },
       onFocus() {
         send("FOCUS")
@@ -106,9 +113,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "PASTE", value })
       },
       onKeyDown(event) {
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
-
         // handle composition when used as combobox
         const target = event.currentTarget as HTMLElement
         const isCombobox = target.getAttribute("role") === "combobox"
