@@ -100,14 +100,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             return
           }
 
-          if (evt.inputType === "insertText" || evt.inputType === "insertCompositionText") {
-            send({ type: "INPUT", value })
-            return
-          }
-
           if (evt.inputType === "deleteContentBackward") {
             send("BACKSPACE")
+	    return
           }
+          send({ type: "INPUT", value })
         },
         onKeyDown(event) {
           const evt = getNativeEvent(event)
