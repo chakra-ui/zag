@@ -99,7 +99,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (evt.inputType === "insertFromPaste") return
         let value = event.target.value
 
-        if (evt.inputType === "insertCompositionText" && value.endsWith(state.context.delimiter!)) {
+        if (value.endsWith(state.context.delimiter!)) {
           send("DELIMITER_KEY")
         } else {
           send({ type: "TYPE", value, key: evt.inputType })
@@ -155,12 +155,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (exec) {
           exec(event)
           return
-        }
-
-        const isDelimiter = event.key === state.context.delimiter
-        if (isDelimiter) {
-          event.preventDefault()
-          send("DELIMITER_KEY")
         }
       },
     }),
