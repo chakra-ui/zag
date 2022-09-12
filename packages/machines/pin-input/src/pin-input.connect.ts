@@ -102,7 +102,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           if (evt.inputType === "deleteContentBackward") {
             send("BACKSPACE")
-	    return
+            return
           }
           send({ type: "INPUT", value })
         },
