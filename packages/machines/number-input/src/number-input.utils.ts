@@ -11,7 +11,7 @@ export const utils = {
     if (isModifier || !isSingleKey) return true
     return ctx.validateCharacter?.(event.key) ?? utils.isFloatingPoint(event.key)
   },
-  isFloatingPoint: (v: string) => /^[Ee0-9+\-.]$/.test(v),
+  isFloatingPoint: (v: string) => /^[0-9+\-.]$/.test(v),
   sanitize: (ctx: Ctx, value: string) => {
     return value
       .split("")
