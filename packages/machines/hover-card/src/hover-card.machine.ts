@@ -60,6 +60,7 @@ export function machine(ctx: UserDefinedContext) {
           activities: ["trackDismissableElement", "computePlacement"],
           entry: ["invokeOnOpen"],
           on: {
+            POINTER_ENTER: { actions: ["setIsPointer"] },
             POINTER_LEAVE: "closing",
             DISMISS: "closed",
             CLOSE: "closed",
