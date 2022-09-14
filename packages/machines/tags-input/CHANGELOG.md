@@ -1,5 +1,13 @@
 # @zag-js/tags-input
 
+## 0.2.7
+
+### Patch Changes
+
+- [#310](https://github.com/chakra-ui/zag/pull/310)
+  [`a220e93b`](https://github.com/chakra-ui/zag/commit/a220e93b04ab9ddfc9dc08bab7e60d4117f4043f) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix tags input on android
+
 ## 0.2.6
 
 ### Patch Changes
