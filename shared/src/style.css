@@ -82,6 +82,7 @@ body {
   flex-direction: column;
   width: 292px;
   border-right: solid 1px #d7e0da;
+  overflow-y: auto;
 }
 
 .nav header {
@@ -467,8 +468,7 @@ body {
 }
 
 .splitter [data-part="root"][data-orientation="vertical"] {
-  width: 800px;
-  height: 600px;
+  height: 100%;
 }
 
 .splitter [data-part="pane"] {

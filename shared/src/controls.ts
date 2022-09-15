@@ -135,12 +135,7 @@ export const ratingControls = defineControls({
 })
 
 export const splitterControls = defineControls({
-  fixed: { type: "boolean", defaultValue: false },
-  disabled: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
-  min: { type: "number", defaultValue: 0 },
-  max: { type: "number", defaultValue: 340 },
-  snapOffset: { type: "number", defaultValue: 0 },
 })
 
 export const toastControls = defineControls({

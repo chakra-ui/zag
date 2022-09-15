@@ -35,7 +35,13 @@ const fetchMachine = createMachine({
       actions: "setToMax"
     }, {
       actions: "setToMin"
-    }]
+    }],
+    SET_SIZE: {
+      actions: "setSize"
+    },
+    RESET: {
+      actions: "reset"
+    }
   },
   on: {
     UPDATE_CONTEXT: {
@@ -45,7 +51,10 @@ const fetchMachine = createMachine({
   states: {
     unknown: {
       on: {
-        SETUP: "idle"
+        SETUP: {
+          actions: ["setDefaultValues"],
+          target: "idle"
+        }
       }
     },
     idle: {
@@ -83,7 +92,10 @@ const fetchMachine = createMachine({
     focused: {
       tags: ["focus"],
       on: {
-        BLUR: "idle",
+        BLUR: {
+          actions: ["clearFocusedSeparator"],
+          target: "idle"
+        },
         POINTER_DOWN: {
           target: "dragging",
           actions: ["invokeOnChangeStart"]
@@ -126,7 +138,7 @@ const fetchMachine = createMachine({
     },
     dragging: {
       tags: ["focus"],
-      entry: "focusSplitter",
+      entry: "focusSeparator",
       activities: "trackPointerMove",
       on: {
         POINTER_UP: {
@@ -134,7 +146,7 @@ const fetchMachine = createMachine({
           actions: ["invokeOnChangeEnd"]
         },
         POINTER_MOVE: {
-          actions: "setPointerValue"
+          actions: ["setPrevPaneValues", "setPointerValue"]
         }
       }
     }

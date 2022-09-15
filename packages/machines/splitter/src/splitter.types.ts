@@ -3,12 +3,23 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 
 type ElementIds = Partial<{
   root: string
-  splitter: string
-  label: string
-  toggleBtn: string
-  primaryPane: string
-  secondaryPane: string
+  separator(index: number): string
+  pane(index: number): string
 }>
+
+export type PaneProps = {
+  index: number
+}
+
+export type SeparatorProps = {
+  index: number
+}
+
+type ChangeDetails = {
+  value: number
+  index: number
+  values: PublicContext["values"]
+}
 
 type PublicContext = DirectionProperty &
   CommonProperties & {
@@ -19,48 +30,44 @@ type PublicContext = DirectionProperty &
     /**
      * Whether to allow the separator to be dragged.
      */
-    fixed?: boolean
+    fixed?: boolean[]
     /**
      * The orientation of the split view.
      */
     orientation: "horizontal" | "vertical"
     /**
-     * The minimum size of the primary pane.
+     * The minimum size of a pane.
      */
-    min: number
+    min: number | number[]
     /**
-     * The maximum size of the primary pane.
+     * The maximum size of a pane.
      */
-    max: number
+    max: number | number[]
     /**
-     * The size of the primary pane.
+     * The size of the panes.
      */
-    value: number
+    values: number[]
     /**
-     * The step increments of the primary pane when it is dragged
+     * The step increments of a pane when it is dragged
      * or resized with keyboard.
      */
-    step: number
+    step: number | number[]
     /**
-     * Callback to be invoked when the primary pane is resized.
+     * Callback to be invoked when a pane is resized.
      */
-    onChange?: (details: { value: number }) => void
+    onChange?: (details: ChangeDetails) => void
     /**
-     * Callback to be invoked when the primary pane's resize session starts
+     * Callback to be invoked when a pane's resize session starts
      */
-    onChangeStart?: (details: { value: number }) => void
+    onChangeStart?: (details: ChangeDetails) => void
     /**
-     * Callback to be invoked when the primary pane's resize session ends
+     * Callback to be invoked when a pane's resize session ends
      */
-    onChangeEnd?: (details: { value: number }) => void
+    onChangeEnd?: (details: ChangeDetails) => void
     /**
-     * Whether the primary pane is disabled.
+     * The minimum offset needed to snap a pane to its minimum or maximum size.
      */
-    disabled?: boolean
-    /**
-     * The minimum offset needed to snap the primary pane to its minimum or maximum size.
-     */
-    snapOffset: number
+    snapOffset: number | number[]
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -68,22 +75,23 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 type ComputedContext = Readonly<{
   /**
    * @computed
-   * Whether the primary pane is at its minimum size.
-   */
-  isAtMin: boolean
-  /**
-   * @computed
-   * Whether the primary pane is at its maximum size.
-   */
-  isAtMax: boolean
-  /**
-   * @computed
    * Whether the orientation is horizontal.
    */
   isHorizontal: boolean
 }>
 
-type PrivateContext = Context<{}>
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The default values
+   */
+  defaultValues: PublicContext["values"]
+  /**
+   * @internal
+   * The focused spearator
+   */
+  focusedSeparator: number | null
+}>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 

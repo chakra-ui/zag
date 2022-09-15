@@ -23,7 +23,8 @@ export const valueToPercent = (v: number | string, r: Num<"step" | "min" | "max"
 export const percentToValue = (v: number | string, r: Num<"min" | "max">) => r.min + (r.max - r.min) * valueOf(v)
 
 export function clamp(v: number | string, o: Num<"min" | "max">) {
-  return Math.min(Math.max(valueOf(v), o.min), o.max)
+  const min = Math.max(valueOf(v), o.min)
+  return typeof o.max === "undefined" ? min : Math.min(min, o.max)
 }
 
 export function countDecimals(value: number) {

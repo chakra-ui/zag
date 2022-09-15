@@ -4,7 +4,6 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
-  { label: "Hover-card", path: "/hover-card" },
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
   { label: "Combobox", path: "/combobox" },
@@ -15,6 +14,7 @@ export const routesData: RouteData[] = [
   { label: "Nested Menu", path: "/nested-menu" },
   { label: "Menu With options", path: "/menu-options" },
   { label: "Context Menu", path: "/context-menu" },
+  { label: "Hover-card", path: "/hover-card" },
   { label: "Number Input", path: "/number-input" },
   { label: "Pin Input", path: "/pin-input" },
   { label: "Popper", path: "/popper" },
@@ -25,9 +25,9 @@ export const routesData: RouteData[] = [
   { label: "Range Slider", path: "/range-slider" },
   { label: "Rating", path: "/rating" },
   { label: "Slider", path: "/slider" },
+  { label: "Splitter", path: "/splitter" },
   { label: "Tabs", path: "/tabs" },
   { label: "Tags Input", path: "/tags-input" },
   { label: "Toast", path: "/toast" },
   { label: "Tooltip", path: "/tooltip" },
-  { label: "Splitter", path: "/splitter" },
 ]

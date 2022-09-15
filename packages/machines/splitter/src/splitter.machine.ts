@@ -3,6 +3,7 @@ import { raf, trackPointerMove, getPointRelativeToNode } from "@zag-js/dom-utils
 import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
 import { dom } from "./splitter.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./splitter.types"
+import { utils } from "./splitter.utils"
 
 const { not } = guards
 
@@ -13,18 +14,18 @@ export function machine(ctx: UserDefinedContext) {
       initial: "unknown",
       context: {
         orientation: "horizontal",
-        min: 224,
-        max: 340,
+        min: 30,
+        max: Infinity,
         step: 1,
-        value: 256,
-        snapOffset: 0,
+        values: [],
+        defaultValues: [],
+        snapOffset: 5,
+        focusedSeparator: null,
         ...ctx,
       },
 
       computed: {
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        isAtMin: (ctx) => ctx.value === ctx.min,
-        isAtMax: (ctx) => ctx.value === ctx.max,
       },
 
       on: {
@@ -43,11 +44,17 @@ export function machine(ctx: UserDefinedContext) {
             actions: "setToMin",
           },
         ],
+        SET_SIZE: {
+          actions: "setSize",
+        },
+        RESET: {
+          actions: "reset",
+        },
       },
       states: {
         unknown: {
           on: {
-            SETUP: "idle",
+            SETUP: { actions: ["setDefaultValues"], target: "idle" },
           },
         },
 
@@ -89,7 +96,7 @@ export function machine(ctx: UserDefinedContext) {
         focused: {
           tags: ["focus"],
           on: {
-            BLUR: "idle",
+            BLUR: { actions: ["clearFocusedSeparator"], target: "idle" },
             POINTER_DOWN: {
               target: "dragging",
               actions: ["invokeOnChangeStart"],
@@ -135,7 +142,7 @@ export function machine(ctx: UserDefinedContext) {
 
         dragging: {
           tags: ["focus"],
-          entry: "focusSplitter",
+          entry: "focusSeparator",
           activities: "trackPointerMove",
           on: {
             POINTER_UP: {
@@ -143,7 +150,7 @@ export function machine(ctx: UserDefinedContext) {
               actions: ["invokeOnChangeEnd"],
             },
             POINTER_MOVE: {
-              actions: "setPointerValue",
+              actions: ["setPrevPaneValues", "setPointerValue"],
             },
           },
         },
@@ -155,21 +162,25 @@ export function machine(ctx: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
           return trackPointerMove(doc, {
             onPointerMove(info) {
-              send({ type: "POINTER_MOVE", point: info.point })
-              doc.documentElement.style.cursor = dom.getCursor(ctx)
+              send({ type: "POINTER_MOVE", index: _evt.index, point: info.point })
+              doc.documentElement.style.cursor = dom.getCursor(ctx, _evt.index)
             },
             onPointerUp() {
-              send("POINTER_UP")
+              send({ type: "POINTER_UP", id: _evt.id })
               doc.documentElement.style.cursor = ""
             },
           })
         },
       },
       guards: {
-        isCollapsed: (ctx) => ctx.isAtMin,
+        isCollapsed: (ctx, evt) => {
+          const value = utils.getValueAtIndex(ctx.values, evt.index)
+          const min = utils.getValueAtIndex(ctx.min, evt.index)
+          return value === min
+        },
         isHorizontal: (ctx) => ctx.isHorizontal,
         isVertical: (ctx) => !ctx.isHorizontal,
-        isFixed: (ctx) => !!ctx.fixed,
+        isFixed: (ctx, evt) => !!ctx.fixed?.[evt.index],
       },
       delays: {
         HOVER_DELAY: 250,
@@ -177,47 +188,91 @@ export function machine(ctx: UserDefinedContext) {
       actions: {
         invokeOnChange(ctx, evt) {
           if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
+            const values = ctx.values
+            const value = utils.getValueAtIndex(values, evt.index)
+            ctx.onChange?.({ value, index: evt.index, values })
           }
         },
-        invokeOnChangeStart(ctx) {
-          ctx.onChangeStart?.({ value: ctx.value })
+        invokeOnChangeStart(ctx, evt) {
+          const values = ctx.values
+          const value = utils.getValueAtIndex(values, evt.index)
+          ctx.onChangeStart?.({ value, index: evt.index, values })
         },
-        invokeOnChangeEnd(ctx) {
-          ctx.onChangeEnd?.({ value: ctx.value })
+        invokeOnChangeEnd(ctx, evt) {
+          const values = ctx.values
+          const value = utils.getValueAtIndex(values, evt.index)
+          ctx.onChangeEnd?.({ value, index: evt.index, values })
         },
 
-        setToMin(ctx) {
-          ctx.value = ctx.min
+        setToMin(ctx, evt) {
+          const min = utils.getValueAtIndex(ctx.min, evt.index)
+          ctx.values[evt.index] = min
         },
-        setToMax(ctx) {
-          ctx.value = ctx.max
+        setToMax(ctx, evt) {
+          const max = utils.getValueAtIndex(ctx.max, evt.index)
+          console.log("max :>> ", max)
+          ctx.values[evt.index] = max
         },
         increment(ctx, evt) {
-          ctx.value = clamp(increment(ctx.value, evt.step), ctx)
+          const value = utils.getPaneValue(ctx, evt.index)
+          const max = clamp(increment(value, evt.step), {
+            min: utils.getValueAtIndex(ctx.min, evt.index),
+            max: utils.getValueAtIndex(ctx.max, evt.index),
+          })
+          ctx.values[evt.index] = max
         },
         decrement(ctx, evt) {
-          ctx.value = clamp(decrement(ctx.value, evt.step), ctx)
+          const value = utils.getPaneValue(ctx, evt.index)
+          const max = clamp(decrement(value, evt.step), {
+            min: utils.getValueAtIndex(ctx.min, evt.index),
+            max: utils.getValueAtIndex(ctx.max, evt.index),
+          })
+          ctx.values[evt.index] = max
         },
-        focusSplitter(ctx) {
-          raf(() => dom.getSplitterEl(ctx)?.focus())
+        focusSeparator(ctx, evt) {
+          raf(() => {
+            dom.getSeparatorEl(ctx, evt.index)?.focus()
+            ctx.focusedSeparator = evt.index
+          })
+        },
+        clearFocusedSeparator(ctx) {
+          ctx.focusedSeparator = null
+        },
+        setPrevPaneValues(ctx, evt) {
+          for (let i = 0; i < evt.index; i++) {
+            const value = ctx.values[i]
+            if (typeof value !== "undefined") return
+            const paneWidth = utils.computePaneWidth(ctx, i)
+            ctx.values[i] = paneWidth
+          }
         },
         setPointerValue(ctx, evt) {
-          const el = dom.getPrimaryPaneEl(ctx)
+          const el = dom.getPaneEl(ctx, evt.index)
           if (!el) return
 
           const relativePoint = getPointRelativeToNode(evt.point, el)
           let currentPoint = ctx.isHorizontal ? relativePoint.x : relativePoint.y
+          const min = utils.getValueAtIndex(ctx.min, evt.index)
+          const max = utils.getValueAtIndex(ctx.max, evt.index)
+          const step = utils.getValueAtIndex(ctx.step, evt.index)
 
-          let value = parseFloat(snapToStep(clamp(currentPoint, ctx), ctx.step))
+          let value = parseFloat(snapToStep(clamp(currentPoint, { min, max }), step))
 
-          if (Math.abs(value - ctx.min) <= ctx.snapOffset) {
-            value = ctx.min
-          } else if (Math.abs(value - ctx.max) <= ctx.snapOffset) {
-            value = ctx.max
+          if (Math.abs(value - min) <= ctx.snapOffset) {
+            value = min
+          } else if (Math.abs(value - max) <= ctx.snapOffset) {
+            value = max
           }
-
-          ctx.value = value
+          ctx.values[evt.index] = value
+        },
+        setSize(ctx, evt) {
+          ctx.values[evt.index] = evt.size
+        },
+        reset(ctx) {
+          ctx.values = ctx.defaultValues
+        },
+        setDefaultValues(ctx) {
+          ctx.defaultValues = ctx.values
         },
       },
     },
