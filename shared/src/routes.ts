@@ -14,7 +14,7 @@ export const routesData: RouteData[] = [
   { label: "Nested Menu", path: "/nested-menu" },
   { label: "Menu With options", path: "/menu-options" },
   { label: "Context Menu", path: "/context-menu" },
-  { label: "Hover-card", path: "/hover-card" },
+  { label: "Hover Card", path: "/hover-card" },
   { label: "Number Input", path: "/number-input" },
   { label: "Pin Input", path: "/pin-input" },
   { label: "Popper", path: "/popper" },
