@@ -1,5 +1,13 @@
 # @zag-js/pin-input
 
+## 0.1.15
+
+### Patch Changes
+
+- [#308](https://github.com/chakra-ui/zag/pull/308)
+  [`6786305c`](https://github.com/chakra-ui/zag/commit/6786305c75c115eea2d877b49c39d9264c652421) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix `insertCompositionText` issue in input
+
 ## 0.1.14
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @zag-js/number-input
 
+## 0.1.17
+
+### Patch Changes
+
+- [#314](https://github.com/chakra-ui/zag/pull/314)
+  [`2ed276d6`](https://github.com/chakra-ui/zag/commit/2ed276d6f634d195ebdfb0036c819a3ccdde3cc8) Thanks
+  [@anubra266](https://github.com/anubra266)! - Disallow `e` character
+
 ## 0.1.16
 
 ### Patch Changes
