@@ -129,7 +129,7 @@ export declare namespace StateMachine {
     internal?: boolean
   }
 
-  export type DelayExpression<TContext, TEvent extends EventObject> = Expression<TContext, TEvent, number>
+  export type DelayExpression<TContext extends Dict, TEvent extends EventObject> = Expression<TContext, TEvent, number>
 
   export type Delay<TContext extends Dict, TEvent extends EventObject> =
     | string
@@ -152,7 +152,7 @@ export declare namespace StateMachine {
     delay?: Delay<TContext, TEvent>
   }
 
-  export type DelayedTransitions<TContext, TState extends StateSchema, TEvent extends EventObject> =
+  export type DelayedTransitions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> =
     | Record<string | number, TState["value"] | MaybeArray<TransitionDefinition<TContext, TState, TEvent>>>
     | Array<DelayedTransition<TContext, TState, TEvent>>
 
@@ -172,7 +172,7 @@ export declare namespace StateMachine {
     | Transition<TContext, TState, TEvent>
     | Array<TransitionDefinition<TContext, TState, TEvent>>
 
-  export type TransitionDefinitionMap<TContext, TState extends StateSchema, TEvent extends EventObject> = {
+  export type TransitionDefinitionMap<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     [K in TEvent["type"]]?:
       | TState["value"]
       | MaybeArray<TransitionDefinition<TContext, TState, ExtractEvent<TEvent, K>>>
@@ -238,11 +238,12 @@ export declare namespace StateMachine {
     state: Pick<State<TContext, TState, TEvent>, "matches">
   }
 
-  export type GuardExpression<TContext, TState extends StateSchema, TEvent extends EventObject, TReturn = boolean> = (
-    context: TContext,
-    event: TEvent,
-    guardMeta: GuardMeta<TContext, TState, TEvent>,
-  ) => TReturn
+  export type GuardExpression<
+    TContext extends Dict,
+    TState extends StateSchema,
+    TEvent extends EventObject,
+    TReturn = boolean,
+  > = (context: TContext, event: TEvent, guardMeta: GuardMeta<TContext, TState, TEvent>) => TReturn
 
   export type GuardHelper<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     predicate: (guards: Dict) => GuardExpression<TContext, TState, TEvent>
@@ -390,13 +391,13 @@ export declare namespace StateMachine {
     hookSync?: boolean
   }
 
-  export type HookOptions<TContext, TState extends StateSchema, TEvent extends EventObject> = {
+  export type HookOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
     context?: UserContext<TContext>
   }
 
-  export type Self<TContext, TState extends StateSchema, TEvent extends EventObject> = {
+  export type Self<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
     id: string
     send: (event: Event<TEvent>) => void
     sendParent: (evt: AnyEventObject) => void

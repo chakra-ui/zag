@@ -1,5 +1,5 @@
 import { invariant, isFunction, isNumber, isString } from "@zag-js/utils"
-import type { StateMachine as S } from "./types"
+import type { Dict, StateMachine as S } from "./types"
 
 /**
  * Delay can be specified as:
@@ -9,7 +9,7 @@ import type { StateMachine as S } from "./types"
  *
  * Let's resolve this to a number
  */
-export function determineDelayFn<TContext, TEvent extends S.EventObject>(
+export function determineDelayFn<TContext extends Dict, TEvent extends S.EventObject>(
   delay: S.Delay<TContext, TEvent> | undefined,
   delaysMap: S.DelayMap<TContext, TEvent> | undefined,
 ) {

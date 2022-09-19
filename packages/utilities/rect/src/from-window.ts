@@ -20,8 +20,8 @@ export function getWindowRect(win: Window, opts: WindowRectOptions = {}): Rect {
 export function getViewportRect(win: Window, opts: WindowRectOptions) {
   const { excludeScrollbar = false } = opts
   const { innerWidth, innerHeight, document: doc, visualViewport } = win
-  const width = visualViewport.width || innerWidth
-  const height = visualViewport.height || innerHeight
+  const width = visualViewport?.width || innerWidth
+  const height = visualViewport?.height || innerHeight
   const rect = { x: 0, y: 0, width, height }
   if (excludeScrollbar) {
     const scrollbarWidth = innerWidth - doc.documentElement.clientWidth

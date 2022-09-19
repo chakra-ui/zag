@@ -1,6 +1,6 @@
 import { isString } from "@zag-js/utils"
 import { determineGuardFn } from "./guard-utils"
-import type { StateMachine as S } from "./types"
+import type { Dict, StateMachine as S } from "./types"
 import { toArray } from "./utils"
 
 /**
@@ -14,16 +14,17 @@ import { toArray } from "./utils"
  * depending on the `guard` specified
  */
 
-export function toTarget<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+export function toTarget<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   target: S.Transition<TContext, TState, TEvent>,
 ): S.TransitionDefinition<TContext, TState, TEvent> {
   return isString(target) ? { target } : target
 }
 
-export function determineTransitionFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
-  transitions: S.Transitions<TContext, TState, TEvent> | undefined,
-  guardMap: S.GuardMap<TContext, TState, TEvent>,
-) {
+export function determineTransitionFn<
+  TContext extends Dict,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject,
+>(transitions: S.Transitions<TContext, TState, TEvent> | undefined, guardMap: S.GuardMap<TContext, TState, TEvent>) {
   return (context: TContext, event: TEvent, meta: S.GuardMeta<TContext, TState, TEvent>) => {
     return toArray(transitions)
       .map(toTarget)

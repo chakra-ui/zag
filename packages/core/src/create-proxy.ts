@@ -2,10 +2,10 @@ import { proxy, proxyWithComputed } from "@zag-js/store"
 import { cast } from "@zag-js/utils"
 import { ActionTypes, Dict, StateMachine as S } from "./types"
 
-export function createProxy<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+export function createProxy<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   config: S.MachineConfig<TContext, TState, TEvent>,
 ) {
-  const computedContext = config.computed ?? cast<S.TComputedContext<TContext>>({})
+  const computedContext: Dict = config.computed ?? cast<S.TComputedContext<TContext>>({})
   const initialContext = config.context ?? cast<TContext>({})
 
   const state = proxy({

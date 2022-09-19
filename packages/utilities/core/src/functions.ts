@@ -25,16 +25,3 @@ export const uuid = /*#__PURE__*/ (() => {
     return id.toString(36)
   }
 })()
-
-export function merge<T, U>(origin: T, patch: U): T & U {
-  if (!(typeof patch === "object")) return patch as any
-  const result = !(typeof origin === "object") ? {} : Object.assign({}, origin)
-  for (const key of Object.keys(patch)) {
-    const value = patch[key]
-    const src = result[key]
-    if (value === null) delete result[key]
-    else if (Array.isArray(value) || Array.isArray(src)) result[key] = (src || []).concat(value || [])
-    else result[key] = merge(src, value)
-  }
-  return result as any
-}

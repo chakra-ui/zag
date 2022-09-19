@@ -8,7 +8,7 @@ const Truthy = () => true
  * The following functions are used to determine a guard's truthiness
  * -----------------------------------------------------------------------------*/
 
-function exec<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+function exec<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   guardMap: Dict,
   ctx: TContext,
   event: TEvent,
@@ -29,7 +29,7 @@ function exec<TContext, TState extends S.StateSchema, TEvent extends S.EventObje
  * Guard helpers (for combining guards)
  * -----------------------------------------------------------------------------*/
 
-function or<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+function or<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   ...conditions: Array<S.Guard<TContext, TState, TEvent>>
 ): S.GuardHelper<TContext, TState, TEvent> {
   return {
@@ -38,7 +38,7 @@ function or<TContext, TState extends S.StateSchema, TEvent extends S.EventObject
   }
 }
 
-function and<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+function and<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   ...conditions: Array<S.Guard<TContext, TState, TEvent>>
 ): S.GuardHelper<TContext, TState, TEvent> {
   return {
@@ -47,7 +47,7 @@ function and<TContext, TState extends S.StateSchema, TEvent extends S.EventObjec
   }
 }
 
-function not<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+function not<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   condition: S.Guard<TContext, TState, TEvent>,
 ): S.GuardHelper<TContext, TState, TEvent> {
   return {
@@ -57,7 +57,7 @@ function not<TContext, TState extends S.StateSchema, TEvent extends S.EventObjec
   }
 }
 
-function stateIn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+function stateIn<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   ...values: TState["value"][]
 ): S.GuardExpression<TContext, TState, TEvent> {
   return (_ctx, _evt, meta) => meta.state.matches(...values)
@@ -69,7 +69,11 @@ export const guards = { or, and, not, stateIn }
  * Action guard helper. Used to determie the action to be taken
  * -----------------------------------------------------------------------------*/
 
-export function choose<TContext, TState extends S.StateSchema, TEvent extends S.EventObject = S.AnyEventObject>(
+export function choose<
+  TContext extends Dict,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(
   actions: Array<{ guard?: S.Guard<TContext, TState, TEvent>; actions: S.PureActions<TContext, TState, TEvent> }>,
 ): S.ChooseHelper<TContext, TState, TEvent> {
   return {
@@ -85,7 +89,7 @@ export function choose<TContext, TState extends S.StateSchema, TEvent extends S.
  * Function to determine the guard to be used
  * -----------------------------------------------------------------------------*/
 
-export function determineGuardFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+export function determineGuardFn<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   guard: S.Guard<TContext, TState, TEvent> | undefined,
   guardMap: S.GuardMap<TContext, TState, TEvent>,
 ) {
@@ -108,7 +112,7 @@ export function determineGuardFn<TContext, TState extends S.StateSchema, TEvent 
  * Function to determine the actions to be taken
  * -----------------------------------------------------------------------------*/
 
-export function determineActionsFn<TContext, TState extends S.StateSchema, TEvent extends S.EventObject>(
+export function determineActionsFn<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   values: S.Actions<TContext, TState, TEvent> | undefined,
   guardMap: S.GuardMap<TContext, TState, TEvent>,
 ) {
