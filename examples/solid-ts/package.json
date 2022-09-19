@@ -63,6 +63,6 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "solid-app-router": "0.4.2",
-    "solid-js": "1.4.8"
+    "solid-js": "1.5.5"
   }
 }
