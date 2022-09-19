@@ -3,7 +3,7 @@ import type * as Vue from "vue"
 
 type ReservedProps = {
   key?: string | number | symbol
-  ref?: string | Vue.Ref | ((ref: Element | Vue.ComponentPublicInstance | null) => void)
+  ref?: Vue.VNodeRef
 }
 
 type Attrs<T> = T & ReservedProps
