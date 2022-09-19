@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/hover-intent",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Track interactions when user intends to hover an element",
   "keywords": [
     "js",

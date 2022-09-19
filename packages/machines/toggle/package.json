@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/toggle",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Core logic for the toggle widget implemented as a state machine",
   "keywords": [
     "js",
