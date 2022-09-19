@@ -12,8 +12,7 @@
     "build": "turbo run build --filter=./packages/**/*",
     "start": "turbo run start --filter=./packages/**/*",
     "prepare": "husky install",
-    "swc": "node -r @swc-node/register",
-    "sync-pkgs": "pnpm swc scripts/sync-packages.ts",
+    "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc *.log",
     "clean": "pnpm clean-pkgs && rm -rf node_modules",
     "react": "pnpm --filter \"./examples/next-ts\"",
@@ -36,8 +35,9 @@
     "version": "changeset version",
     "release": "changeset publish",
     "test": "jest",
-    "visualize": "pnpm swc scripts/visualize.ts --all",
-    "changelog": "pnpm swc scripts/changelog.ts"
+    "visualize": "tsx scripts/visualize.ts --all",
+    "changelog": "tsx scripts/changelog.ts",
+    "sandbox": "tsx scripts/sandbox.ts"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write",
@@ -64,7 +64,6 @@
     "@octokit/rest": "19.0.4",
     "@playwright/test": "1.25.2",
     "@swc-node/jest": "1.5.2",
-    "@swc-node/register": "1.5.1",
     "@types/jest": "28.1.8",
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.30.6",
@@ -88,6 +87,7 @@
     "signale": "1.4.0",
     "start-server-and-test": "1.14.0",
     "tsup": "6.2.3",
+    "tsx": "3.9.0",
     "turbo": "1.4.3",
     "typescript": "4.8.3"
   }

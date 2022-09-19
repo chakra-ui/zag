@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "@zag-js/hover-intent",
   "version": "0.0.3",
   "description": "Track interactions when user intends to hover an element",
@@ -11,7 +12,6 @@
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/hover-intent",
   "sideEffects": false,
@@ -19,9 +19,9 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src/index.ts --format=esm",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src/index.ts --format=esm --dts",
     "test": "jest --config ../../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand -u",
