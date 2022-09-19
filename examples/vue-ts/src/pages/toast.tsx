@@ -18,12 +18,24 @@ const ToastItem = defineComponent({
   setup(props) {
     const [state, send] = useActor(props.actor)
     const apiRef = computed(() => toast.connect(state.value, send, normalizeProps))
+    const progressbarProps = computed(() => ({
+      "data-part": "progressbar",
+      "data-type": state.value.context.type,
+      style: {
+        opacity: apiRef.value.isVisible ? 1 : 0,
+        transformOrigin: apiRef.value.isRtl ? "right" : "left",
+        animationName: apiRef.value.type === "loading" ? "none" : undefined,
+        animationPlayState: apiRef.value.isPaused ? "paused" : "running",
+        animationDuration: `${state.value.context.duration}ms`,
+      },
+    }))
 
     return () => {
       const api = apiRef.value
+
       return (
         <pre {...api.rootProps}>
-          <div {...api.progressbarProps} />
+          <div {...progressbarProps.value} />
           <p {...api.titleProps}>{api.title}</p>
           {/* @ts-ignore */}
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>

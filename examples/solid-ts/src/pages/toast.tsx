@@ -26,9 +26,21 @@ function ToastItem(props: { actor: toast.Service }) {
   const [state, send] = useActor(props.actor)
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
+  const progressbarProps = createMemo(() => ({
+    "data-part": "progressbar",
+    "data-type": state.context.type,
+    style: {
+      opacity: api().isVisible ? 1 : 0,
+      transformOrigin: api().isRtl ? "right" : "left",
+      animationName: api().type === "loading" ? "none" : undefined,
+      animationPlayState: api().isPaused ? "paused" : "running",
+      animationDuration: `${state.context.duration}ms`,
+    },
+  }))
+
   return (
     <div {...api().rootProps}>
-      <div {...api().progressbarProps} />
+      <div {...progressbarProps()} />
       <p {...api().titleProps}>{api().title}</p>
       <p>{api().type === "loading" ? <Loader /> : null}</p>
       <button onClick={api().dismiss}>Close</button>

@@ -6,10 +6,6 @@ import type { Send, State } from "./toast.types"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
-  const isUpdating = state.hasTag("updating")
-
-  const isRtl = state.context.dir === "rtl"
-  const type = state.context.type
 
   const pauseOnInteraction = state.context.pauseOnInteraction
   const placement = state.context.placement
@@ -21,6 +17,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement,
     isVisible,
     isPaused,
+    isRtl: state.context.dir === "rtl",
     pause() {
       send("PAUSE")
     },
@@ -73,19 +70,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (pauseOnInteraction) {
           send("RESUME")
         }
-      },
-    }),
-
-    progressbarProps: normalize.element({
-      "data-part": "progressbar",
-      "data-type": state.context.type,
-      style: {
-        opacity: isVisible ? 1 : 0,
-        transformOrigin: isRtl ? "right" : "left",
-        animationName: isUpdating || type === "loading" ? "none" : undefined,
-        animationPlayState: isPaused ? "paused" : "running",
-        animationDuration: `${state.context.duration}ms`,
-        animationFillMode: isUpdating ? undefined : "forwards",
       },
     }),
 
