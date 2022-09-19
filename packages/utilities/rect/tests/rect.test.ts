@@ -15,8 +15,8 @@ describe("@zag-js/rect-utils", () => {
     const r = getRectFromPoints({ x: 0, y: 0 }, { x: 0, y: 50 }, { x: 10, y: 50 }, { x: 10, y: 0 }, { x: 0, y: 0 })
     expect(r).toMatchObject({ width: 10, height: 50 })
     expect(r).toMatchInlineSnapshot(`
-      Object {
-        "center": Object {
+      {
+        "center": {
           "x": 5,
           "y": 25,
         },
@@ -34,20 +34,20 @@ describe("@zag-js/rect-utils", () => {
     `)
 
     expect(getRectCorners(r)).toMatchInlineSnapshot(`
-      Object {
-        "bottom": Object {
+      {
+        "bottom": {
           "x": 10,
           "y": 50,
         },
-        "left": Object {
+        "left": {
           "x": 0,
           "y": 50,
         },
-        "right": Object {
+        "right": {
           "x": 10,
           "y": 0,
         },
-        "top": Object {
+        "top": {
           "x": 0,
           "y": 0,
         },
