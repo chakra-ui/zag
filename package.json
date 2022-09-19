@@ -37,7 +37,8 @@
     "release": "changeset publish",
     "test": "jest",
     "visualize": "pnpm swc scripts/visualize.ts --all",
-    "changelog": "pnpm swc scripts/changelog.ts"
+    "changelog": "pnpm swc scripts/changelog.ts",
+    "sandbox": "pnpm swc scripts/sandbox.ts"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write",
