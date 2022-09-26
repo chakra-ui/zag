@@ -9,6 +9,8 @@ type ElementIds = Partial<{
   page(page: number): string
 }>
 
+type PaginationRange = ({ type: "dot" } | { type: "page"; value: number })[]
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -49,7 +51,17 @@ type ComputedContext = Readonly<{
    * @computed
    * Pages to render in pagination
    */
-  readonly paginationRange: any[]
+  readonly paginationRange: PaginationRange
+  /**
+   * @computed
+   * Index of first item of current page
+   */
+  readonly firstPageIndex: number
+  /**
+   * @computed
+   * Index of last item of current page
+   */
+  readonly lastPageIndex: number
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id" | "itemsCount">

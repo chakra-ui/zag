@@ -20,6 +20,8 @@ export function machine(ctx: UserDefinedContext) {
 
       computed: {
         totalPages: (ctx) => Math.ceil(ctx.itemsCount / ctx.pageSize),
+        firstPageIndex: (ctx) => (ctx.currentPage - 1) * ctx.pageSize,
+        lastPageIndex: (ctx) => ctx.firstPageIndex + ctx.pageSize,
         paginationRange: (ctx) => {
           const totalPageNumbers = ctx.siblingCount + 5
           if (totalPageNumbers >= ctx.totalPages) return utils.transform(utils.range(1, ctx.totalPages))
@@ -70,6 +72,9 @@ export function machine(ctx: UserDefinedContext) {
           actions: "setPage",
           guard: "isWithinBounds",
         },
+        SET_PAGE_SIZE: {
+          actions: "setPageSize",
+        },
         PREVIOUS_PAGE: {
           guard: "canGoToPrevPage",
           actions: "goToPrevPage",
@@ -105,6 +110,9 @@ export function machine(ctx: UserDefinedContext) {
         },
         setPage(ctx, evt) {
           ctx.currentPage = evt.page
+        },
+        setPageSize(ctx, evt) {
+          ctx.pageSize = evt.size
         },
         invokeOnChange(ctx) {
           ctx.onChange?.(ctx.currentPage)

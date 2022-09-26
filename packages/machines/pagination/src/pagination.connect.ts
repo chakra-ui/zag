@@ -13,19 +13,20 @@ type DotProps = {
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const pagesCount = state.context.totalPages
   const currentPage = state.context.currentPage
-  const firstPageIndex = (currentPage - 1) * state.context.pageSize
-  const lastPageIndex = firstPageIndex + state.context.pageSize
 
   return {
     currentPage,
     pagesCount,
     pages: state.context.paginationRange,
-    dataRange: [firstPageIndex, lastPageIndex],
+    dataRange: [state.context.firstPageIndex, state.context.lastPageIndex],
     updateItems(items: number) {
       send({ type: "UPDATE_ITEMS", items })
     },
     setPage(page: number) {
       send({ type: "SET_PAGE", page })
+    },
+    setPageSize(size: number) {
+      send({ type: "SET_PAGE_SIZE", size })
     },
 
     rootProps: normalize.element({

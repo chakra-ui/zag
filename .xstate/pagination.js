@@ -30,6 +30,9 @@ const fetchMachine = createMachine({
       actions: "setPage",
       cond: "isWithinBounds"
     },
+    SET_PAGE_SIZE: {
+      actions: "setPageSize"
+    },
     PREVIOUS_PAGE: {
       cond: "canGoToPrevPage",
       actions: "goToPrevPage"
