@@ -40,6 +40,7 @@
     "@zag-js/menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
+    "@zag-js/pagination": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
