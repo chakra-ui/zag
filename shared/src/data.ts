@@ -1,3 +1,5 @@
+import paginationDataJson from "./pagination-data.json"
+
 export const accordionData = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
@@ -108,3 +110,5 @@ export const radioData = [
   { id: "mango", label: "Mangoes" },
   { id: "grape", label: "Grapes" },
 ]
+
+export const paginationData = paginationDataJson

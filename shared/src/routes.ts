@@ -4,18 +4,19 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
-  { label: "Hover Card", path: "/hover-card" },
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
   { label: "Combobox", path: "/combobox" },
   { label: "Editable", path: "/editable" },
   { label: "Dialog", path: "/dialog" },
   { label: "Dialog Default Open", path: "/dialog-default-open" },
+  { label: "Hover Card", path: "/hover-card" },
   { label: "Menu", path: "/menu" },
   { label: "Nested Menu", path: "/nested-menu" },
   { label: "Menu With options", path: "/menu-options" },
   { label: "Context Menu", path: "/context-menu" },
   { label: "Number Input", path: "/number-input" },
+  { label: "Pagination", path: "/pagination" },
   { label: "Pin Input", path: "/pin-input" },
   { label: "Popper", path: "/popper" },
   { label: "Popover", path: "/popover" },

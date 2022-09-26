@@ -4,7 +4,6 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/hover-card", component: () => import("./pages/hover-card") },
     {
       path: "/",
       component: Home,
@@ -12,14 +11,16 @@ export const router = createRouter({
     { path: "/accordion", component: () => import("./pages/accordion") },
     { path: "/checkbox", component: () => import("./pages/checkbox") },
     { path: "/combobox", component: () => import("./pages/combobox") },
-    { path: "/editable", component: () => import("./pages/editable") },
     { path: "/dialog", component: () => import("./pages/dialog") },
     { path: "/dialog-default-open", component: () => import("./pages/dialog-default-open") },
+    { path: "/editable", component: () => import("./pages/editable") },
+    { path: "/hover-card", component: () => import("./pages/hover-card") },
     { path: "/menu", component: () => import("./pages/menu") },
     { path: "/nested-menu", component: () => import("./pages/nested-menu") },
     { path: "/menu-options", component: () => import("./pages/menu-options") },
     { path: "/context-menu", component: () => import("./pages/context-menu") },
     { path: "/number-input", component: () => import("./pages/number-input") },
+    { path: "/pagination", component: () => import("./pages/pagination") },
     { path: "/pin-input", component: () => import("./pages/pin-input") },
     // { path: "/popper", component: () => import("./pages/popper") },
     { path: "/popover", component: () => import("./pages/popover") },
