@@ -4,7 +4,6 @@ import { lazy } from "solid-js"
 import Home from "./pages/home"
 
 export const routes: RouteDefinition[] = [
-  { path: "/hover-card", component: () => lazy(() => import("./pages/hover-card")) },
   {
     path: "/",
     component: Home,
@@ -12,14 +11,16 @@ export const routes: RouteDefinition[] = [
   { path: "/accordion", component: () => lazy(() => import("./pages/accordion")) },
   { path: "/checkbox", component: () => lazy(() => import("./pages/checkbox")) },
   { path: "/combobox", component: () => lazy(() => import("./pages/combobox")) },
-  { path: "/editable", component: () => lazy(() => import("./pages/editable")) },
   { path: "/dialog", component: () => lazy(() => import("./pages/dialog")) },
   { path: "/dialog-default-open", component: () => lazy(() => import("./pages/dialog-default-open")) },
+  { path: "/editable", component: () => lazy(() => import("./pages/editable")) },
+  { path: "/hover-card", component: () => lazy(() => import("./pages/hover-card")) },
   { path: "/menu", component: () => lazy(() => import("./pages/menu")) },
   { path: "/nested-menu", component: () => lazy(() => import("./pages/nested-menu")) },
   { path: "/menu-options", component: () => lazy(() => import("./pages/menu-options")) },
   { path: "/context-menu", component: () => lazy(() => import("./pages/context-menu")) },
   { path: "/number-input", component: () => lazy(() => import("./pages/number-input")) },
+  { path: "/pagination", component: () => lazy(() => import("./pages/pagination")) },
   { path: "/pin-input", component: () => lazy(() => import("./pages/pin-input")) },
   // { path: "/popper", component: () => lazy(()=>import("./pages/popper")) },
   { path: "/popover", component: () => lazy(() => import("./pages/popover")) },

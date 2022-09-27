@@ -1,3 +1,5 @@
+export { paginationData } from "./pagination-data"
+
 export const accordionData = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },

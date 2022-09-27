@@ -115,6 +115,11 @@ export const tabsControls = defineControls({
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
 
+export const paginationControls = defineControls({
+  pageSize: { type: "number", defaultValue: 10 },
+  siblingCount: { type: "number", defaultValue: 1 },
+})
+
 export const tagsInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readonly: { type: "boolean", defaultValue: false },
