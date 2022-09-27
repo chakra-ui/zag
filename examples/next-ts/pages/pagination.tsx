@@ -13,8 +13,7 @@ export default function Page() {
   const [state, send] = useMachine(
     pagination.machine({
       id: useId(),
-      itemsCount: paginationData.length,
-      currentPage: 9,
+      count: paginationData.length,
       onChange: console.log,
     }),
 
@@ -24,7 +23,8 @@ export default function Page() {
   )
 
   const api = pagination.connect(state, send, normalizeProps)
-  const data = paginationData.slice(...api.dataRange)
+
+  const data = paginationData.slice(api.pageRange.start, api.pageRange.end)
 
   return (
     <>
@@ -53,28 +53,35 @@ export default function Page() {
             })}
           </tbody>
         </table>
-        {api.pagesCount > 1 && (
+        {api.totalPages > 1 && (
           <nav {...api.rootProps}>
             <ul>
-              <li {...api.prevButtonProps}>
-                <a>
+              <li>
+                <a href="#previous" {...api.prevButtonProps}>
                   Previous <span style={visuallyHiddenStyle}>Page</span>
                 </a>
               </li>
               {api.pages.map((page, i) => {
                 if (page.type === "page")
                   return (
-                    <li key={page.value} {...api.getPageProps({ page: page.value })}>
-                      <a>{page.value}</a>
+                    <li key={page.value}>
+                      <a href={`#${page.value}`} data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
+                        {page.value}
+                      </a>
                     </li>
                   )
                 else
                   return (
-                    <li key={`dot-${i}`} {...api.getDotProps({ index: i })}>
-                      &#8230;
+                    <li key={`ellipsis-${i}`}>
+                      <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
                     </li>
                   )
               })}
+              <li>
+                <a href="#next" {...api.nextButtonProps}>
+                  Next <span style={visuallyHiddenStyle}>Page</span>
+                </a>
+              </li>
             </ul>
           </nav>
         )}

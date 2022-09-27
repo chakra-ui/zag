@@ -10,71 +10,49 @@ export function machine(ctx: UserDefinedContext) {
       context: {
         pageSize: 10,
         siblingCount: 1,
-        currentPage: 0,
+        page: 1,
+        messages: {
+          rootLabel: "Pagination",
+          itemLabel({ page, totalPages }) {
+            const isLastPage = totalPages > 1 && page === totalPages
+            return `${isLastPage ? "last page, " : ""}page ${page}`
+          },
+        },
         ...ctx,
       },
 
       watch: {
-        currentPage: ["invokeOnChange"],
+        page: ["invokeOnChange"],
+        pageSize: ["setPageIfNeeded"],
       },
 
       computed: {
-        totalPages: (ctx) => Math.ceil(ctx.itemsCount / ctx.pageSize),
-        firstPageIndex: (ctx) => (ctx.currentPage - 1) * ctx.pageSize,
-        lastPageIndex: (ctx) => ctx.firstPageIndex + ctx.pageSize,
-        paginationRange: (ctx) => {
-          const totalPageNumbers = ctx.siblingCount + 5
-          if (totalPageNumbers >= ctx.totalPages) return utils.transform(utils.range(1, ctx.totalPages))
-
-          const DOT = "dot"
-
-          const leftSiblingIndex = Math.max(ctx.currentPage - ctx.siblingCount, 1)
-          const rightSiblingIndex = Math.min(ctx.currentPage + ctx.siblingCount, ctx.totalPages)
-
-          const shouldShowLeftDots = leftSiblingIndex > 2
-          const shouldShowRightDots = rightSiblingIndex < ctx.totalPages - 2
-
-          const firstPageIndex = 1
-          const lastPageIndex = ctx.totalPages
-
-          if (!shouldShowLeftDots && shouldShowRightDots) {
-            let leftItemCount = 3 + 2 * ctx.siblingCount
-            let leftRange = utils.range(1, leftItemCount)
-
-            return utils.transform([...leftRange, DOT, ctx.totalPages])
-          }
-
-          if (shouldShowLeftDots && !shouldShowRightDots) {
-            let rightItemCount = 3 + 2 * ctx.siblingCount
-            let rightRange = utils.range(ctx.totalPages - rightItemCount + 1, ctx.totalPages)
-            return utils.transform([firstPageIndex, DOT, ...rightRange])
-          }
-
-          if (shouldShowLeftDots && shouldShowRightDots) {
-            let middleRange = utils.range(leftSiblingIndex, rightSiblingIndex)
-            return utils.transform([firstPageIndex, DOT, ...middleRange, DOT, lastPageIndex])
-          }
-          return []
+        totalPages: (ctx) => Math.ceil(ctx.count / ctx.pageSize),
+        previousPage: (ctx) => (ctx.page === 1 ? null : ctx.page - 1),
+        nextPage: (ctx) => (ctx.page === ctx.totalPages ? null : ctx.page + 1),
+        pageRange: (ctx) => {
+          const start = (ctx.page - 1) * ctx.pageSize
+          const end = start + ctx.pageSize
+          return { start, end }
         },
+        paginationRange: (ctx) => utils.getPaginationRange(ctx),
       },
 
       on: {
-        UPDATE_ITEMS: [
+        SET_COUNT: [
           {
-            guard: "currentPageIsAboveNewItemsCount",
-            actions: ["updateItems", "goToFirstPage"],
+            guard: "countIsOutOfRange",
+            actions: ["setCount", "goToFirstPage"],
           },
           {
-            actions: "updateItems",
+            actions: "setCount",
           },
         ],
         SET_PAGE: {
-          actions: "setPage",
           guard: "isWithinBounds",
+          actions: "setPage",
         },
-        SET_PAGE_SIZE: {
-          actions: "setPageSize",
-        },
+        SET_PAGE_SIZE: { actions: "setPageSize" },
         PREVIOUS_PAGE: {
           guard: "canGoToPrevPage",
           actions: "goToPrevPage",
@@ -96,35 +74,40 @@ export function machine(ctx: UserDefinedContext) {
     {
       guards: {
         isWithinBounds: (ctx, evt) => evt.page >= 1 && evt.page <= ctx.totalPages,
-        currentPageIsAboveNewItemsCount: (ctx, evt) => ctx.currentPage > evt.items,
+        isPageWithinBounds: (ctx) => ctx.page >= 1 && ctx.page <= ctx.totalPages,
+        countIsOutOfRange: (ctx, evt) => ctx.page > evt.count,
         canGoToNextPage: (ctx) => {
-          return ctx.currentPage < ctx.totalPages
+          return ctx.page < ctx.totalPages
         },
         canGoToPrevPage: (ctx) => {
-          return ctx.currentPage > 1
+          return ctx.page > 1
         },
       },
       actions: {
-        updateItems(ctx, evt) {
-          ctx.itemsCount = evt.items
+        setCount(ctx, evt) {
+          ctx.count = evt.count
         },
         setPage(ctx, evt) {
-          ctx.currentPage = evt.page
+          ctx.page = evt.page
         },
         setPageSize(ctx, evt) {
           ctx.pageSize = evt.size
         },
-        invokeOnChange(ctx) {
-          ctx.onChange?.(ctx.currentPage)
+        invokeOnChange(ctx, evt) {
+          ctx.onChange?.({ page: ctx.page, srcElement: evt.srcElement || null })
         },
         goToFirstPage(ctx) {
-          ctx.currentPage = 1
+          ctx.page = 1
         },
         goToPrevPage(ctx) {
-          ctx.currentPage = ctx.currentPage - 1
+          ctx.page = ctx.page - 1
         },
         goToNextPage(ctx) {
-          ctx.currentPage = ctx.currentPage + 1
+          ctx.page = ctx.page + 1
+        },
+        setPageIfNeeded(ctx) {
+          if (ctx.page >= 1 && ctx.page <= ctx.totalPages) return
+          ctx.page = 1
         },
       },
     },

@@ -976,7 +976,7 @@ main > .toggle[data-pressed] {
   gap: 16px;
   list-style-type: none;
 }
-.pagination li {
+.pagination li a {
   padding: 0 12px;
   height: 32px;
   text-align: center;
@@ -991,18 +991,19 @@ main > .toggle[data-pressed] {
   font-size: 13px;
   min-width: 32px;
   user-select: none;
+  text-decoration: none;
 }
 
-.pagination li:not([data-part="dot"]):hover {
+.pagination li a:hover {
   background-color: rgba(0, 0, 0, 0.04);
   cursor: pointer;
 }
 
-.pagination li[data-active] {
+.pagination li a[data-selected] {
   background-color: rgba(0, 0, 0, 0.08);
 }
 
-.pagination li:focus {
+.pagination li a:focus {
   outline: 2px solid var(--ring-color);
   outline-offset: 1px;
 }
@@ -1011,7 +1012,7 @@ main > .toggle[data-pressed] {
   text-align: start;
 }
 
-.pagination [data-part="dot"] {
+.pagination [data-part="ellipsis"] {
   cursor: default;
 }
 

@@ -1,15 +1,20 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
+type IntlMessages = {
+  rootLabel?: string
+  itemLabel?(details: { page: number; totalPages: number }): string
+}
+
 type ElementIds = Partial<{
   root: string
-  dot(index: number): string
+  ellipsis(index: number): string
   prevButton: string
   nextButton: string
-  page(page: number): string
+  item(page: number): string
 }>
 
-type PaginationRange = ({ type: "dot" } | { type: "page"; value: number })[]
+export type PaginationRange = ({ type: "ellipsis" } | { type: "page"; value: number })[]
 
 type PublicContext = DirectionProperty &
   CommonProperties & {
@@ -18,9 +23,13 @@ type PublicContext = DirectionProperty &
      */
     ids?: ElementIds
     /**
+     * Specifies the localized strings that identifies the accessibility elements and their states
+     */
+    messages: IntlMessages
+    /**
      * Total number of data items
      */
-    itemsCount: number
+    count: number
     /**
      * Number of data items per page
      */
@@ -32,11 +41,11 @@ type PublicContext = DirectionProperty &
     /**
      * The active page
      */
-    currentPage: number
+    page: number
     /**
      * Called when the page number is changed, and it takes the resulting page number argument
      */
-    onChange?: (page: number) => void
+    onChange?: (details: { page: number; srcElement: HTMLElement | null }) => void
   }
 
 type PrivateContext = Context<{}>
@@ -54,17 +63,22 @@ type ComputedContext = Readonly<{
   readonly paginationRange: PaginationRange
   /**
    * @computed
-   * Index of first item of current page
+   * Index of first and last data items on current page
    */
-  readonly firstPageIndex: number
+  readonly pageRange: { start: number; end: number }
   /**
    * @computed
-   * Index of last item of current page
+   * The previous page
    */
-  readonly lastPageIndex: number
+  readonly previousPage: number | null
+  /**
+   * @computed
+   * The mext page
+   */
+  readonly nextPage: number | null
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id" | "itemsCount">
+export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
