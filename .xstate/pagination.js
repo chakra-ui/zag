@@ -52,7 +52,8 @@ const fetchMachine = createMachine({
       on: {
         SETUP: "idle"
       }
-    }
+    },
+    idle: {}
   }
 }, {
   actions: {

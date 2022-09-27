@@ -69,6 +69,7 @@ export function machine(ctx: UserDefinedContext) {
             SETUP: "idle",
           },
         },
+        idle: {},
       },
     },
     {
