@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/rating",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Core logic for the rating widget implemented as a state machine",
   "keywords": [
     "js",

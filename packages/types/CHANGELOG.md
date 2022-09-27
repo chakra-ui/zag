@@ -1,5 +1,13 @@
 # @zag-js/types
 
+## 0.2.6
+
+### Patch Changes
+
+- [#325](https://github.com/chakra-ui/zag/pull/325)
+  [`c0cc303e`](https://github.com/chakra-ui/zag/commit/c0cc303e9824ea395c06d9faa699d23e19ef6538) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch packages to use ESM and `type=module`
+
 ## 0.2.5
 
 ### Patch Changes

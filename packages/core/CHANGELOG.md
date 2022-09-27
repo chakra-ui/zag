@@ -1,5 +1,19 @@
 # @zag-js/core
 
+## 0.1.11
+
+### Patch Changes
+
+- [`61c11646`](https://github.com/chakra-ui/zag/commit/61c116467c1758bdda7efe1f27d4ed26e7d44624) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix TypeScript issues emitted by v4.8
+
+- [#325](https://github.com/chakra-ui/zag/pull/325)
+  [`c0cc303e`](https://github.com/chakra-ui/zag/commit/c0cc303e9824ea395c06d9faa699d23e19ef6538) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch packages to use ESM and `type=module`
+
+- Updated dependencies [[`c0cc303e`](https://github.com/chakra-ui/zag/commit/c0cc303e9824ea395c06d9faa699d23e19ef6538)]:
+  - @zag-js/store@0.1.3
+
 ## 0.1.10
 
 ### Patch Changes

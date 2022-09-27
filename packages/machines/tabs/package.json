@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/tabs",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Core logic for the tabs widget implemented as a state machine",
   "keywords": [
     "js",

@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/checkbox",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Core logic for the checkbox widget implemented as a state machine",
   "keywords": [
     "js",
