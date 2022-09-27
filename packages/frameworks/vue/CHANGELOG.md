@@ -1,5 +1,30 @@
 # @zag-js/vue
 
+## 0.1.15
+
+### Patch Changes
+
+- [#325](https://github.com/chakra-ui/zag/pull/325)
+  [`c0cc303e`](https://github.com/chakra-ui/zag/commit/c0cc303e9824ea395c06d9faa699d23e19ef6538) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch packages to use ESM and `type=module`
+
+- [`b43794b8`](https://github.com/chakra-ui/zag/commit/b43794b8146b21417d2cef0d4a73fda4c807de7f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Simplify TS type for `ref` in prop types.
+
+  ```ts
+  // Before
+  type Ref = string | Vue.Ref | ((ref: Element | Vue.ComponentPublicInstance | null) => void)
+
+  // After
+  type Ref = VNodeRef
+  ```
+
+- Updated dependencies [[`61c11646`](https://github.com/chakra-ui/zag/commit/61c116467c1758bdda7efe1f27d4ed26e7d44624),
+  [`c0cc303e`](https://github.com/chakra-ui/zag/commit/c0cc303e9824ea395c06d9faa699d23e19ef6538)]:
+  - @zag-js/core@0.1.11
+  - @zag-js/store@0.1.3
+  - @zag-js/types@0.2.6
+
 ## 0.1.14
 
 ### Patch Changes

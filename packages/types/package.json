@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/types",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "keywords": [
     "js",
     "utils",
