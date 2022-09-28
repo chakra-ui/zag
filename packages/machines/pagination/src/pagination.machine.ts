@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
 import { MachineContext, MachineState, UserDefinedContext } from "./pagination.types"
-import { utils } from "./pagination.utils"
 
 export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
@@ -12,7 +11,7 @@ export function machine(ctx: UserDefinedContext) {
         siblingCount: 1,
         page: 1,
         messages: {
-          rootLabel: "Pagination",
+          rootLabel: "pagination",
           itemLabel({ page, totalPages }) {
             const isLastPage = totalPages > 1 && page === totalPages
             return `${isLastPage ? "last page, " : ""}page ${page}`
@@ -35,13 +34,13 @@ export function machine(ctx: UserDefinedContext) {
           const end = start + ctx.pageSize
           return { start, end }
         },
-        paginationRange: (ctx) => utils.getPaginationRange(ctx),
+        isValidPage: (ctx) => ctx.page >= 1 && ctx.page <= ctx.totalPages,
       },
 
       on: {
         SET_COUNT: [
           {
-            guard: "countIsOutOfRange",
+            guard: "isValidCount",
             actions: ["setCount", "goToFirstPage"],
           },
           {
@@ -49,10 +48,12 @@ export function machine(ctx: UserDefinedContext) {
           },
         ],
         SET_PAGE: {
-          guard: "isWithinBounds",
+          guard: "isValidPage",
           actions: "setPage",
         },
-        SET_PAGE_SIZE: { actions: "setPageSize" },
+        SET_PAGE_SIZE: {
+          actions: "setPageSize",
+        },
         PREVIOUS_PAGE: {
           guard: "canGoToPrevPage",
           actions: "goToPrevPage",
@@ -74,15 +75,10 @@ export function machine(ctx: UserDefinedContext) {
     },
     {
       guards: {
-        isWithinBounds: (ctx, evt) => evt.page >= 1 && evt.page <= ctx.totalPages,
-        isPageWithinBounds: (ctx) => ctx.page >= 1 && ctx.page <= ctx.totalPages,
-        countIsOutOfRange: (ctx, evt) => ctx.page > evt.count,
-        canGoToNextPage: (ctx) => {
-          return ctx.page < ctx.totalPages
-        },
-        canGoToPrevPage: (ctx) => {
-          return ctx.page > 1
-        },
+        isValidPage: (ctx, evt) => evt.page >= 1 && evt.page <= ctx.totalPages,
+        isValidCount: (ctx, evt) => ctx.page > evt.count,
+        canGoToNextPage: (ctx) => ctx.page < ctx.totalPages,
+        canGoToPrevPage: (ctx) => ctx.page > 1,
       },
       actions: {
         setCount(ctx, evt) {
@@ -95,7 +91,10 @@ export function machine(ctx: UserDefinedContext) {
           ctx.pageSize = evt.size
         },
         invokeOnChange(ctx, evt) {
-          ctx.onChange?.({ page: ctx.page, srcElement: evt.srcElement || null })
+          ctx.onChange?.({
+            page: ctx.page,
+            srcElement: evt.srcElement || null,
+          })
         },
         goToFirstPage(ctx) {
           ctx.page = 1
@@ -106,8 +105,8 @@ export function machine(ctx: UserDefinedContext) {
         goToNextPage(ctx) {
           ctx.page = ctx.page + 1
         },
-        setPageIfNeeded(ctx) {
-          if (ctx.page >= 1 && ctx.page <= ctx.totalPages) return
+        setPageIfNeeded(ctx, _evt) {
+          if (ctx.isValidPage) return
           ctx.page = 1
         },
       },

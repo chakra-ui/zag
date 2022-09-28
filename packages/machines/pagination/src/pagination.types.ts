@@ -9,8 +9,8 @@ type IntlMessages = {
 type ElementIds = Partial<{
   root: string
   ellipsis(index: number): string
-  prevButton: string
-  nextButton: string
+  prevItem: string
+  nextItem: string
   item(page: number): string
 }>
 
@@ -60,7 +60,7 @@ type ComputedContext = Readonly<{
    * @computed
    * Pages to render in pagination
    */
-  readonly paginationRange: PaginationRange
+  readonly items: PaginationRange
   /**
    * @computed
    * Index of first and last data items on current page
@@ -68,14 +68,15 @@ type ComputedContext = Readonly<{
   readonly pageRange: { start: number; end: number }
   /**
    * @computed
-   * The previous page
+   * The previous page index
    */
   readonly previousPage: number | null
   /**
    * @computed
-   * The mext page
+   * The next page index
    */
   readonly nextPage: number | null
+  readonly isValidPage: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">

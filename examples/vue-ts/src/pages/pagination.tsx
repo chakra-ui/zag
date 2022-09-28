@@ -56,7 +56,7 @@ export default defineComponent({
               <nav {...api.rootProps}>
                 <ul>
                   <li>
-                    <a href="#previous" {...api.prevButtonProps}>
+                    <a href="#previous" {...api.prevItemProps}>
                       Previous <span style={visuallyHiddenStyle}>Page</span>
                     </a>
                   </li>
@@ -77,7 +77,7 @@ export default defineComponent({
                       )
                   })}
                   <li>
-                    <a href="#next" {...api.nextButtonProps}>
+                    <a href="#next" {...api.nextItemProps}>
                       Next <span style={visuallyHiddenStyle}>Page</span>
                     </a>
                   </li>

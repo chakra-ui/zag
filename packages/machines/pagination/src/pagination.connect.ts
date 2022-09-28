@@ -1,12 +1,14 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { dom } from "./pagination.dom"
-import { State, Send } from "./pagination.types"
+import { Send, State } from "./pagination.types"
+import { utils } from "./pagination.utils"
 
 type PageProps = {
   type: "page"
   value: number
 }
+
 type EllipsisProps = {
   index: number
 }
@@ -20,13 +22,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const nextPage = state.context.nextPage
   const pageRange = state.context.pageRange
 
+  const isFirstPage = page === 1
+  const isLastPage = page === totalPages
+
   return {
     page,
     totalPages,
-    pages: state.context.paginationRange,
+    pages: utils.getRange(state.context),
     previousPage,
     nextPage,
     pageRange,
+    isFirstPage,
+    isLastPage,
+
     setCount(count: number) {
       send({ type: "SET_COUNT", count })
     },
@@ -67,17 +75,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevButtonProps: normalize.element({
-      id: dom.getPrevButtonId(state.context),
-      "data-part": "prev-button",
+    prevItemProps: normalize.element({
+      id: dom.getPrevItemId(state.context),
+      "data-part": "prev-item",
+      "data-disabled": dataAttr(isFirstPage),
       onClick(evt) {
         send({ type: "PREVIOUS_PAGE", srcElement: evt.currentTarget })
       },
     }),
 
-    nextButtonProps: normalize.element({
-      id: dom.getNextButtonId(state.context),
-      "data-part": "next-button",
+    nextItemProps: normalize.element({
+      id: dom.getNextItemId(state.context),
+      "data-part": "next-item",
+      "data-disabled": dataAttr(isLastPage),
       onClick(evt) {
         send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
       },

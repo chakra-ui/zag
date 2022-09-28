@@ -14,20 +14,20 @@ const fetchMachine = createMachine({
   id: "pagination",
   initial: "unknown",
   context: {
-    "countIsOutOfRange": false,
-    "isWithinBounds": false,
+    "isValidCount": false,
+    "isValidPage": false,
     "canGoToPrevPage": false,
     "canGoToNextPage": false
   },
   on: {
     SET_COUNT: [{
-      cond: "countIsOutOfRange",
+      cond: "isValidCount",
       actions: ["setCount", "goToFirstPage"]
     }, {
       actions: "setCount"
     }],
     SET_PAGE: {
-      cond: "isWithinBounds",
+      cond: "isValidPage",
       actions: "setPage"
     },
     SET_PAGE_SIZE: {
@@ -64,8 +64,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "countIsOutOfRange": ctx => ctx["countIsOutOfRange"],
-    "isWithinBounds": ctx => ctx["isWithinBounds"],
+    "isValidCount": ctx => ctx["isValidCount"],
+    "isValidPage": ctx => ctx["isValidPage"],
     "canGoToPrevPage": ctx => ctx["canGoToPrevPage"],
     "canGoToNextPage": ctx => ctx["canGoToNextPage"]
   }

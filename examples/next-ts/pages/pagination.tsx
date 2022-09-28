@@ -57,7 +57,7 @@ export default function Page() {
           <nav {...api.rootProps}>
             <ul>
               <li>
-                <a href="#previous" {...api.prevButtonProps}>
+                <a href="#previous" {...api.prevItemProps}>
                   Previous <span style={visuallyHiddenStyle}>Page</span>
                 </a>
               </li>
@@ -78,7 +78,7 @@ export default function Page() {
                   )
               })}
               <li>
-                <a href="#next" {...api.nextButtonProps}>
+                <a href="#next" {...api.nextItemProps}>
                   Next <span style={visuallyHiddenStyle}>Page</span>
                 </a>
               </li>
