@@ -1,8 +1,10 @@
 {
-  "type": "module",
   "name": "@zag-js/pressable",
   "version": "0.2.1",
   "description": "Core logic for the pressable widget implemented as a state machine",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "keywords": [
     "js",
     "machine",
@@ -15,8 +17,6 @@
   "author": "Abraham Aremu <anubra266@gmail.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/pressable",
   "sideEffects": false,
   "files": [
@@ -30,9 +30,9 @@
     "@zag-js/dom-utils": "workspace:*"
   },
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm",
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm --dts",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",

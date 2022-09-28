@@ -13,9 +13,9 @@
   "sideEffects": false,
   "files": ["dist/**/*"],
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm",
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm --dts",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",

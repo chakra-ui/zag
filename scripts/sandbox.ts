@@ -12,13 +12,16 @@ async function main() {
     pkgs.map((pkg) => {
       const { dir, manifest } = pkg
 
-      delete manifest.module
-      delete manifest.main
+      const { module, main, type, types, name, version, description, ...rest } = manifest
 
       const data = {
-        type: "module",
-        main: "dist/index.mjs",
-        ...manifest,
+        name,
+        version,
+        description,
+        main: "dist/index.js",
+        module: "dist/index.mjs",
+        types,
+        ...rest,
       }
 
       return writeFile(join(dir, "package.json"), JSON.stringify(data, null, 2))
