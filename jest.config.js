@@ -1,6 +1,6 @@
 module.exports = {
   transform: {
-    "^.+\\.(ts|tsx)?$": "@swc-node/jest",
+    "^.+\\.(ts|tsx|js)?$": "@swc-node/jest",
   },
   testPathIgnorePatterns: ["<rootDir>/e2e/"],
   transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"],

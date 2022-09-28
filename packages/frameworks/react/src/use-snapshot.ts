@@ -1,11 +1,8 @@
 // Credits: https://github.com/pmndrs/valtio
 
-import { useCallback, useDebugValue, useEffect, useMemo, useRef } from "react"
+import { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 import { affectedToPathList, createProxy as createProxyToCompare, isChanged } from "proxy-compare"
-import useSyncExternalStoreExports from "use-sync-external-store/shim"
 import { snapshot, subscribe } from "@zag-js/store"
-
-const { useSyncExternalStore } = useSyncExternalStoreExports
 
 const __DEV__ = process.env.NODE_ENV !== "production"
 
