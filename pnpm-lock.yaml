@@ -445,7 +445,6 @@ importers:
   packages/frameworks/react:
     specifiers:
       '@types/react': 18.0.17
-      '@types/use-sync-external-store': 0.0.3
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
@@ -458,7 +457,6 @@ importers:
       proxy-compare: 2.3.0
     devDependencies:
       '@types/react': 18.0.17
-      '@types/use-sync-external-store': 0.0.3
       react: 18.2.0
 
   packages/frameworks/solid:
@@ -3335,10 +3333,6 @@ packages:
     dependencies:
       '@types/node': 18.7.2
     dev: false
-
-  /@types/use-sync-external-store/0.0.3:
-    resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
-    dev: true
 
   /@types/yargs-parser/21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
