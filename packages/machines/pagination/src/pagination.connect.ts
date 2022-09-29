@@ -10,7 +10,7 @@ type PageProps = {
 }
 
 type EllipsisProps = {
-  index: string | number
+  index: number
 }
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {

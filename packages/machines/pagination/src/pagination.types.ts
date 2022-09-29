@@ -8,7 +8,7 @@ type IntlMessages = {
 
 type ElementIds = Partial<{
   root: string
-  ellipsis(index: string | number): string
+  ellipsis(index: number): string
   prevItem: string
   nextItem: string
   item(page: number): string
