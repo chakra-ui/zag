@@ -93,6 +93,7 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange(ctx, evt) {
           ctx.onChange?.({
             page: ctx.page,
+            pageSize: ctx.pageSize,
             srcElement: evt.srcElement || null,
           })
         },

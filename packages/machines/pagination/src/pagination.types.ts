@@ -45,7 +45,7 @@ type PublicContext = DirectionProperty &
     /**
      * Called when the page number is changed, and it takes the resulting page number argument
      */
-    onChange?: (details: { page: number; srcElement: HTMLElement | null }) => void
+    onChange?: (details: { page: number; pageSize: number; srcElement: HTMLElement | null }) => void
   }
 
 type PrivateContext = Context<{}>
