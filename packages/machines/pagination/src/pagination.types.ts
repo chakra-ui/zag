@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zags-js/types"
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlMessages = {
   rootLabel?: string
