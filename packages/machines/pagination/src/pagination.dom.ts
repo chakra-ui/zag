@@ -6,6 +6,7 @@ export const dom = defineDomHelpers({
   getPrevItemId: (ctx: Ctx) => ctx.ids?.prevItem ?? `pagination:${ctx.id}:prev-item`,
   getNextItemId: (ctx: Ctx) => ctx.ids?.nextItem ?? `pagination:${ctx.id}:next-item`,
 
-  getEllipsisId: (ctx: Ctx, index: number) => ctx.ids?.ellipsis?.(index) ?? `pagination:${ctx.id}:ellipsis:${index}`,
+  getEllipsisId: (ctx: Ctx, index: string | number) =>
+    ctx.ids?.ellipsis?.(index) ?? `pagination:${ctx.id}:ellipsis:${index}`,
   getItemId: (ctx: Ctx, page: number) => ctx.ids?.item?.(page) ?? `pagination:${ctx.id}:item:${page}`,
 })
