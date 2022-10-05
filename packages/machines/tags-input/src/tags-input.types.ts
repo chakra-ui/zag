@@ -180,7 +180,7 @@ type PrivateContext = Context<{
   log: { current: Log | null; prev: Log | null }
   /**
    * @internal
-   * The live region to announce translations to the user
+   * The live region to announce changes to the user
    */
   liveRegion: LiveRegion | null
   /**
