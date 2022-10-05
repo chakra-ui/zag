@@ -81,6 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(isReadonly),
       "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
+      defaultValue: state.context.value,
       size: autoResize ? 1 : undefined,
       onChange(event) {
         send({ type: "TYPE", value: event.currentTarget.value })

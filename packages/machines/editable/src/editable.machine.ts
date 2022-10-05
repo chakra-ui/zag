@@ -30,7 +30,7 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       watch: {
-        value: ["invokeOnChange", "setInputValue"],
+        value: ["invokeOnChange", "syncInputValue"],
       },
 
       computed: {
@@ -163,7 +163,7 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange(ctx) {
           ctx.onChange?.({ value: ctx.value })
         },
-        setInputValue(ctx) {
+        syncInputValue(ctx) {
           const input = dom.getInputEl(ctx)
           setInputValue(input, ctx.value)
         },
