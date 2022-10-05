@@ -572,6 +572,7 @@ importers:
     specifiers:
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
+      '@zag-js/form-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/types': workspace:*
     dependencies:
@@ -580,6 +581,7 @@ importers:
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/form-utils': link:../../utilities/form-utils
 
   packages/machines/hover-card:
     specifiers:
