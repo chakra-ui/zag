@@ -37,6 +37,10 @@ export function machine(ctx: UserDefinedContext) {
         hasAriaLabel: (ctx) => !!ctx["aria-label"],
       },
 
+      watch: {
+        disabled: ["closeIfDisabled"],
+      },
+
       on: {
         OPEN: "open",
         CLOSE: "closed",
@@ -214,6 +218,11 @@ export function machine(ctx: UserDefinedContext) {
           const omit = ["SETUP"]
           if (!omit.includes(evt.type)) {
             ctx.onClose?.()
+          }
+        },
+        closeIfDisabled(ctx, _evt, { send }) {
+          if (ctx.disabled) {
+            send("CLOSE")
           }
         },
       },
