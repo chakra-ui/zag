@@ -19,9 +19,9 @@ export function machine(ctx: UserDefinedContext) {
         disabled: false,
         readonly: false,
         ...ctx,
-        messages: {
+        translations: {
           ratingValueText: (index) => `${index} stars`,
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
 

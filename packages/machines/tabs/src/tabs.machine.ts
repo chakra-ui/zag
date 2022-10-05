@@ -21,7 +21,7 @@ export function machine(ctx: UserDefinedContext) {
         hasMeasuredRect: false,
         isIndicatorRendered: false,
         loop: true,
-        messages: {},
+        translations: {},
         ...ctx,
       },
 

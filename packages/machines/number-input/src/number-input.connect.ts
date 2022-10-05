@@ -23,7 +23,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isIncrementDisabled = isDisabled || !state.context.canIncrement
   const isDecrementDisabled = isDisabled || !state.context.canDecrement
 
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   return {
     isFocused,
@@ -152,7 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
-      "aria-label": messages.decrementLabel,
+      "aria-label": translations.decrementLabel,
       type: "button",
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
@@ -176,7 +176,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
-      "aria-label": messages.incrementLabel,
+      "aria-label": translations.incrementLabel,
       type: "button",
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),

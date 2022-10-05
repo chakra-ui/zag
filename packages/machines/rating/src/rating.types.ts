@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type IntlMessages = {
+type IntlTranslations = {
   ratingValueText(index: number): string
 }
 
@@ -22,7 +22,7 @@ type PublicContext = DirectionProperty &
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    messages: IntlMessages
+    translations: IntlTranslations
     /**
      * The maximum rating value.
      */

@@ -12,7 +12,7 @@ type ElementIds = Partial<{
   scrubber: string
 }>
 
-type IntlMessages = {
+type IntlTranslations = {
   /**
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input
@@ -105,7 +105,7 @@ type PublicContext = DirectionProperty &
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    messages: IntlMessages
+    translations: IntlTranslations
     /**
      * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
      */

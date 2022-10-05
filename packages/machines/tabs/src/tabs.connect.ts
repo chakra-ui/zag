@@ -4,7 +4,7 @@ import { dom } from "./tabs.dom"
 import type { Send, State, TabProps } from "./tabs.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const messages = state.context.messages
+  const translations = state.context.translations
   const isFocused = state.matches("focused")
 
   return {
@@ -30,7 +30,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-focus": dataAttr(isFocused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
-      "aria-label": messages.tablistLabel,
+      "aria-label": translations.tablistLabel,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           ArrowDown() {
@@ -128,7 +128,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-part": "delete-button",
         type: "button",
         tabIndex: -1,
-        "aria-label": messages.deleteLabel?.(value),
+        "aria-label": translations.deleteLabel?.(value),
         disabled,
         onClick() {
           send({ type: "DELETE", value })

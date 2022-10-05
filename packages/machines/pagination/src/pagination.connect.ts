@@ -16,7 +16,7 @@ type EllipsisProps = {
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const totalPages = state.context.totalPages
   const page = state.context.page
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   const previousPage = state.context.previousPage
   const nextPage = state.context.nextPage
@@ -49,7 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
       "data-part": "root",
-      "aria-label": messages.rootLabel,
+      "aria-label": translations.rootLabel,
     }),
 
     getEllipsisProps(props: EllipsisProps) {
@@ -68,7 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-part": "item",
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
-        "aria-label": messages.itemLabel?.({ page: pageIndex, totalPages }),
+        "aria-label": translations.itemLabel?.({ page: pageIndex, totalPages }),
         onClick(evt) {
           send({ type: "SET_PAGE", page: pageIndex, srcElement: evt.currentTarget })
         },

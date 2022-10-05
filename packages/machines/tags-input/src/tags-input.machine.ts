@@ -33,7 +33,7 @@ export function machine(ctx: UserDefinedContext) {
         validate: () => true,
         delimiter: ",",
         ...ctx,
-        messages: {
+        translations: {
           clearButtonLabel: "Clear all tags",
           deleteTagButtonLabel: (value) => `Delete tag ${value}`,
           tagAdded: (value) => `Added tag ${value}`,
@@ -42,7 +42,7 @@ export function machine(ctx: UserDefinedContext) {
           tagUpdated: (value) => `Tag update to ${value}`,
           tagDeleted: (value) => `Tag ${value} deleted`,
           tagSelected: (value) => `Tag ${value} selected. Press enter to edit, delete or backspace to remove.`,
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
 
@@ -512,23 +512,23 @@ export function machine(ctx: UserDefinedContext) {
 
           switch (current.type) {
             case "add":
-              msg = ctx.messages.tagAdded(current.value)
+              msg = ctx.translations.tagAdded(current.value)
               break
             case "delete":
-              msg = ctx.messages.tagDeleted(current.value)
+              msg = ctx.translations.tagDeleted(current.value)
               break
             case "update":
-              msg = ctx.messages.tagUpdated(current.value)
+              msg = ctx.translations.tagUpdated(current.value)
               break
             case "paste":
-              msg = ctx.messages.tagsPasted(current.values)
+              msg = ctx.translations.tagsPasted(current.values)
               break
             case "select":
-              msg = ctx.messages.tagSelected(current.value)
+              msg = ctx.translations.tagSelected(current.value)
               if (prev?.type === "delete") {
-                msg = `${ctx.messages.tagDeleted(prev.value)}. ${msg}`
+                msg = `${ctx.translations.tagDeleted(prev.value)}. ${msg}`
               } else if (prev?.type === "update") {
-                msg = `${ctx.messages.tagUpdated(prev.value)}. ${msg}`
+                msg = `${ctx.translations.tagUpdated(prev.value)}. ${msg}`
               }
               break
             default:

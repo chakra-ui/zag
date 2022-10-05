@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type IntlMessages = {
+type IntlTranslations = {
   tablistLabel?: string
   deleteLabel?(value: string): string
 }
@@ -23,7 +23,7 @@ type PublicContext = DirectionProperty &
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    messages: IntlMessages
+    translations: IntlTranslations
     /**
      * Whether the keyboard navigation will loop from last tab to first, and vice versa.
      * @default true

@@ -11,7 +11,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInvalid = state.context.invalid
 
   const autoResize = state.context.autoResize
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   const isEditing = state.matches("edit")
   const _placeholder = state.context.placeholder
@@ -70,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       "data-part": "input",
-      "aria-label": messages.input,
+      "aria-label": translations.input,
       name: state.context.name,
       id: dom.getInputId(state.context),
       hidden: autoResize ? undefined : !isEditing,
@@ -151,7 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     editButtonProps: normalize.button({
       "data-part": "edit-button",
       id: dom.getEditBtnId(state.context),
-      "aria-label": messages.edit,
+      "aria-label": translations.edit,
       type: "button",
       disabled: isDisabled,
       onClick() {
@@ -168,7 +168,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     submitButtonProps: normalize.button({
       "data-part": "submit-button",
       id: dom.getSubmitBtnId(state.context),
-      "aria-label": messages.submit,
+      "aria-label": translations.submit,
       disabled: isDisabled,
       type: "button",
       onClick() {
@@ -179,7 +179,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     cancelButtonProps: normalize.button({
       "data-part": "cancel-button",
-      "aria-label": messages.cancel,
+      "aria-label": translations.cancel,
       id: dom.getCancelBtnId(state.context),
       type: "button",
       disabled: isDisabled,

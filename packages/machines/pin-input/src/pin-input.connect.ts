@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isValueComplete = state.context.isValueComplete
   const isInvalid = state.context.invalid
   const focusedIndex = state.context.focusedIndex
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   function focus() {
     dom.getFirstInputEl(state.context)?.focus()
@@ -82,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-complete": dataAttr(isValueComplete),
         id: dom.getInputId(state.context, index.toString()),
         "data-ownedby": dom.getRootId(state.context),
-        "aria-label": messages.inputLabel(index, state.context.valueLength),
+        "aria-label": translations.inputLabel(index, state.context.valueLength),
         inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(isInvalid),
         "data-invalid": dataAttr(isInvalid),

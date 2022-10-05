@@ -5,7 +5,7 @@ import { dom } from "./combobox.dom"
 import type { OptionData, OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
@@ -181,7 +181,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-haspopup": "listbox",
       type: "button",
       tabIndex: -1,
-      "aria-label": messages.toggleButtonLabel,
+      "aria-label": translations.toggleButtonLabel,
       "aria-expanded": isOpen,
       "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
       disabled: isDisabled,
@@ -213,7 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
-      "aria-label": messages.clearButtonLabel,
+      "aria-label": translations.clearButtonLabel,
       hidden: !showClearButton,
       onPointerDown(event) {
         const evt = getNativeEvent(event)

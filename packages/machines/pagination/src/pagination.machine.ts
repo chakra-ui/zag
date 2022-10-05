@@ -10,7 +10,7 @@ export function machine(ctx: UserDefinedContext) {
         pageSize: 10,
         siblingCount: 1,
         page: 1,
-        messages: {
+        translations: {
           rootLabel: "pagination",
           itemLabel({ page, totalPages }) {
             const isLastPage = totalPages > 1 && page === totalPages

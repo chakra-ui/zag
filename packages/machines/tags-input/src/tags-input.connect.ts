@@ -9,7 +9,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isReadonly = state.context.readonly
   const isInvalid = state.context.invalid || state.context.isOverflowing
 
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   const isInputFocused = state.hasTag("focused")
   const isEditingTag = state.matches("editing:tag")
@@ -195,7 +195,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const active = state.context.editedId === id
       return normalize.input({
         "data-part": "tag-input",
-        "aria-label": messages.tagEdited(options.value),
+        "aria-label": translations.tagEdited(options.value),
         "aria-hidden": true,
         disabled: isDisabled,
         id: dom.getTagInputId(state.context, options),
@@ -236,7 +236,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getTagDeleteBtnId(state.context, options),
         type: "button",
         disabled: isDisabled,
-        "aria-label": messages.deleteTagButtonLabel(options.value),
+        "aria-label": translations.deleteTagButtonLabel(options.value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isInteractive) {
@@ -264,7 +264,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "data-readonly": dataAttr(isReadonly),
       disabled: isDisabled,
-      "aria-label": messages.clearButtonLabel,
+      "aria-label": translations.clearButtonLabel,
       hidden: isEmpty,
       onClick() {
         if (!isInteractive) return

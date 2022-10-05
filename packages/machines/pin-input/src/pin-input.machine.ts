@@ -18,9 +18,9 @@ export function machine(ctx: UserDefinedContext) {
         otp: false,
         type: "numeric",
         ...ctx,
-        messages: {
+        translations: {
           inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
 

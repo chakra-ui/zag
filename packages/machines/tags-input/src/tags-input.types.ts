@@ -2,7 +2,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type IntlMessages = {
+type IntlTranslations = {
   clearButtonLabel: string
   deleteTagButtonLabel(value: string): string
   tagSelected(value: string): string
@@ -41,7 +41,7 @@ type PublicContext = DirectionProperty &
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    messages: IntlMessages
+    translations: IntlTranslations
     /**
      * The max length of the input.
      */
@@ -180,7 +180,7 @@ type PrivateContext = Context<{
   log: { current: Log | null; prev: Log | null }
   /**
    * @internal
-   * The live region to announce messages to the user
+   * The live region to announce translations to the user
    */
   liveRegion: LiveRegion | null
   /**

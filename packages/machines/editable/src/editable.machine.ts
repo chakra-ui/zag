@@ -19,12 +19,12 @@ export function machine(ctx: UserDefinedContext) {
         previousValue: "",
         selectOnFocus: true,
         ...ctx,
-        messages: {
+        translations: {
           input: "editable input",
           edit: "edit",
           submit: "submit",
           cancel: "cancel",
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
 
