@@ -1,5 +1,21 @@
 # @zag-js/editable
 
+## 0.1.16
+
+### Patch Changes
+
+- [#334](https://github.com/chakra-ui/zag/pull/334)
+  [`f81422e8`](https://github.com/chakra-ui/zag/commit/f81422e8bd6845cb2778eb4106a24a1f9ce1685a) Thanks
+  [@anubra266](https://github.com/anubra266)! - Renamed `messages` to `translations`
+
+- [`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Force new release
+
+- Updated dependencies [[`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7)]:
+  - @zag-js/core@0.1.12
+  - @zag-js/types@0.2.7
+  - @zag-js/interact-outside@0.1.6
+
 ## 0.1.15
 
 ### Patch Changes

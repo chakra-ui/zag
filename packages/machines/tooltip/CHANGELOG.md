@@ -1,5 +1,21 @@
 # @zag-js/tooltip
 
+## 0.1.16
+
+### Patch Changes
+
+- [#336](https://github.com/chakra-ui/zag/pull/336)
+  [`c4a4b8f8`](https://github.com/chakra-ui/zag/commit/c4a4b8f80caa4f0e204eb26012d47d77f97be027) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add `disabled` to context to allow disabling tooltips
+
+- [`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Force new release
+
+- Updated dependencies [[`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7)]:
+  - @zag-js/core@0.1.12
+  - @zag-js/types@0.2.7
+  - @zag-js/popper@0.1.13
+
 ## 0.1.15
 
 ### Patch Changes

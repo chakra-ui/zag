@@ -1,5 +1,21 @@
 # @zag-js/react
 
+## 0.1.18
+
+### Patch Changes
+
+- [`ca6c557c`](https://github.com/chakra-ui/zag/commit/ca6c557cacb9cf575187c2c0885d608c3f6d7b63) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Deprecate support for React 17 by switching to React 18's
+  `useSyncExternalStore`. This enables us to ship ES Module only.
+
+- [`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Force new release
+
+- Updated dependencies [[`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7)]:
+  - @zag-js/core@0.1.12
+  - @zag-js/store@0.1.4
+  - @zag-js/types@0.2.7
+
 ## 0.1.17
 
 ### Patch Changes
