@@ -64,7 +64,7 @@
     "@octokit/rest": "19.0.4",
     "@playwright/test": "1.25.2",
     "@swc-node/jest": "1.5.2",
-    "@types/jest": "28.1.8",
+    "@types/jest": "29.1.1",
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.30.6",
     "@typescript-eslint/parser": "5.30.6",
