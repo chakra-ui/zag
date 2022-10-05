@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test"
 import { a11y, part, testid } from "./__utils"
 
-const prevButton = part("prev-button")
-const nextButton = part("next-button")
+const prevButton = part("prev-item")
+const nextButton = part("next-item")
 const item = (page: number) => testid(`item-${page}`)
 
 const item2 = item(2)
