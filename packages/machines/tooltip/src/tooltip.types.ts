@@ -54,6 +54,10 @@ type PublicContext = CommonProperties & {
    * The user provided options used to position the popover content
    */
   positioning: PositioningOptions
+  /**
+   * Whether the tooltip is disabled
+   */
+  disabled?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

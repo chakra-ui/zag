@@ -14,6 +14,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const triggerId = dom.getTriggerId(state.context)
   const contentId = dom.getContentId(state.context)
 
+  const isDisabled = state.context.disabled
+
   const popperStyles = getPlacementStyles({
     measured: !!state.context.isPlacementComplete,
     placement: state.context.currentPlacement,
@@ -51,17 +53,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
       onPointerDown() {
+        if (isDisabled) return
         if (id === store.id) {
           send("POINTER_DOWN")
         }
       },
       onPointerMove() {
+        if (isDisabled) return
         send("POINTER_ENTER")
       },
       onPointerLeave() {
+        if (isDisabled) return
         send("POINTER_LEAVE")
       },
       onPointerCancel() {
+        if (isDisabled) return
         send("POINTER_LEAVE")
       },
     }),
