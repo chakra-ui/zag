@@ -37,12 +37,12 @@ export function machine(ctx: UserDefinedContext) {
         inputBehavior: "none",
         selectionBehavior: "set",
         ...ctx,
-        messages: {
+        translations: {
           toggleButtonLabel: "Toggle suggestions",
           clearButtonLabel: "Clear value",
           navigationHint: "use the up and down keys to navigate. Press the enter key to select",
           countAnnouncement: (count) => `${count} ${count === 1 ? "option" : "options"} available`,
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
 
@@ -553,7 +553,7 @@ export function machine(ctx: UserDefinedContext) {
           raf(() => {
             const count = dom.getOptionCount(ctx)
             if (!count) return
-            const text = ctx.messages.countAnnouncement(count)
+            const text = ctx.translations.countAnnouncement(count)
             ctx.liveRegion?.announce(text)
           })
         },

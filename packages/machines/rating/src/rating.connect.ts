@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInteractive = state.context.isInteractive
   const value = state.context.value
   const isDisabled = state.context.disabled
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   const api = {
     isHovering: state.context.isHovering,
@@ -81,7 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemProps({ index }: { index: number }) {
       const { isHalf, isHighlighted, isChecked } = api.getRatingState(index)
-      const valueText = messages.ratingValueText(index)
+      const valueText = translations.ratingValueText(index)
 
       return normalize.element({
         "data-part": "item",

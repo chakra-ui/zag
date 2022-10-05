@@ -3,7 +3,7 @@ import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type IntlMessages = {
+type IntlTranslations = {
   toggleButtonLabel?: string
   clearButtonLabel?: string
   countAnnouncement(count: number): string
@@ -131,7 +131,7 @@ type PublicContext = DirectionProperty &
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    messages: IntlMessages
+    translations: IntlTranslations
   }
 
 /**

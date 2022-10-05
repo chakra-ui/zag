@@ -5,7 +5,7 @@ export type ActivationMode = "focus" | "dblclick" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
-type IntlMessages = {
+type IntlTranslations = {
   edit: string
   submit: string
   cancel: string
@@ -110,7 +110,7 @@ type PublicContext = DirectionProperty &
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    messages: IntlMessages
+    translations: IntlTranslations
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

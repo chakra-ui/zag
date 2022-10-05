@@ -37,10 +37,10 @@ export function machine(ctx: UserDefinedContext) {
         invalid: false,
         spinOnPress: true,
         ...ctx,
-        messages: {
+        translations: {
           incrementLabel: "increment value",
           decrementLabel: "decrease value",
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
 
@@ -53,7 +53,7 @@ export function machine(ctx: UserDefinedContext) {
         isValueEmpty: (ctx) => ctx.value === "",
         canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
         canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
-        valueText: (ctx) => ctx.messages.valueText?.(ctx.value),
+        valueText: (ctx) => ctx.translations.valueText?.(ctx.value),
         formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
       },
 
