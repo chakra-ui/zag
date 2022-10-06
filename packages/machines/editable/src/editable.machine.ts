@@ -3,7 +3,6 @@ import { contains, raf } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { dom } from "./editable.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./editable.types"
-import { setInputValue } from "@zag-js/form-utils"
 
 const { not } = guards
 
@@ -165,7 +164,8 @@ export function machine(ctx: UserDefinedContext) {
         },
         syncInputValue(ctx) {
           const input = dom.getInputEl(ctx)
-          setInputValue(input, ctx.value)
+          if (!input) return
+          input.value = ctx.value
         },
         setValue(ctx, evt) {
           ctx.value = evt.value
