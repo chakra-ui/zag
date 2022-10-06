@@ -85,11 +85,11 @@ export function machine(ctx: UserDefinedContext) {
             INPUT: [
               {
                 guard: and("isFinalValue", "isValidValue"),
-                actions: "setFocusedValue",
+                actions: ["setFocusedValue", "dispatchInputEventIfNeeded"],
               },
               {
                 guard: "isValidValue",
-                actions: ["setFocusedValue", "setNextFocusedIndex"],
+                actions: ["setFocusedValue", "setNextFocusedIndex", "dispatchInputEventIfNeeded"],
               },
             ],
             PASTE: {
@@ -172,6 +172,11 @@ export function machine(ctx: UserDefinedContext) {
           if (evt.type === "SETUP") return
           ctx.onChange?.({ value: Array.from(ctx.value) })
           dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
+          const inputs = dom.getElements(ctx)
+          ctx.value.forEach((val, index) => {
+            const input = inputs[index]
+            dispatchInputValueEvent(input, val || "")
+          })
         },
         invokeOnInvalid: (ctx, evt) => {
           ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
@@ -187,6 +192,13 @@ export function machine(ctx: UserDefinedContext) {
         },
         setFocusedValue: (ctx, evt) => {
           ctx.value[ctx.focusedIndex] = lastChar(evt.value)
+        },
+        dispatchInputEventIfNeeded: (ctx, evt) => {
+          if (evt.value.length <= 1 || lastChar(evt.value) !== ctx.value[ctx.focusedIndex]) return
+
+          const inputs = dom.getElements(ctx)
+          const input = inputs[ctx.focusedIndex]
+          dispatchInputValueEvent(input, lastChar(evt.value))
         },
         setPastedValue(ctx, evt) {
           raf(() => {

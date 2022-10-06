@@ -87,7 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-invalid": ariaAttr(isInvalid),
         "data-invalid": dataAttr(isInvalid),
         type: state.context.mask ? "password" : inputType,
-        value: state.context.value[index] || "",
+        defaultValue: state.context.value[index] || "",
         autoCapitalize: "none",
         autoComplete: state.context.otp ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : state.context.placeholder,
