@@ -11,21 +11,15 @@ function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
   return Object.getOwnPropertyDescriptor(proto, property) ?? {}
 }
 
-export function setInputValue(el: HTMLInputElement | null, value: string | number) {
-  if (!el) return
-
-  // set property value
-  const desc = getDescriptor(el, { type: "HTMLInputElement", property: "value" })
-  desc.set?.call(el, value)
-}
-
 export function dispatchInputValueEvent(el: HTMLElement | null, value: string | number) {
   if (!el) return
 
   const win = getWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
 
-  setInputValue(el, value)
+  // set property value
+  const desc = getDescriptor(el, { type: "HTMLInputElement", property: "value" })
+  desc.set?.call(el, value)
 
   // dispatch input event
   const event = new win.Event("input", { bubbles: true })
