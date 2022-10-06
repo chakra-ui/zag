@@ -33,7 +33,7 @@ export function machine(ctx: UserDefinedContext) {
 
       watch: {
         focusedIndex: "focusInput",
-        value: "invokeOnChange",
+        value: ["invokeOnChange", "dispatchInputEvent"],
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
@@ -171,6 +171,9 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange: (ctx, evt) => {
           if (evt.type === "SETUP") return
           ctx.onChange?.({ value: Array.from(ctx.value) })
+        },
+        dispatchInputEvent: (ctx, evt) => {
+          if (evt.type === "SETUP") return
           dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
           const inputs = dom.getElements(ctx)
           ctx.value.forEach((val, index) => {
