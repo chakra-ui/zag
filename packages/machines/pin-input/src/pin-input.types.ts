@@ -76,6 +76,10 @@ type PublicContext = DirectionProperty &
      */
     blurOnComplete?: boolean
     /**
+     * Whether to select input value when input is focused
+     */
+    selectOnFocus?: boolean
+    /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
     translations: IntlTranslations
@@ -104,6 +108,11 @@ type ComputedContext = Readonly<{
    * The string representation of the input values
    */
   valueAsString: string
+  /**
+   * @computed
+   * The value at focused index
+   */
+  focusedValue: string
 }>
 
 type PrivateContext = Context<{

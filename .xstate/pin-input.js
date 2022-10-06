@@ -74,10 +74,12 @@ const fetchMachine = createMachine({
           cond: "isValidValue",
           actions: ["setFocusedValue", "setNextFocusedIndex", "dispatchInputEventIfNeeded"]
         }],
-        PASTE: {
+        PASTE: [{
           cond: "isValidValue",
           actions: ["setPastedValue", "setLastValueFocusIndex"]
-        },
+        }, {
+          actions: "resetFocusedValue"
+        }],
         BLUR: {
           target: "idle",
           actions: "clearFocusedIndex"
