@@ -88,7 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(isReadonly),
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
-      value: state.context.inputValue,
+      defaultValue: state.context.inputValue,
       autoComplete: "off",
       autoCorrect: "off",
       autoCapitalize: "none",
@@ -202,9 +202,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "text",
         tabIndex: -1,
         hidden: isEditingTag ? !active : true,
-        value: active ? state.context.editedTagValue : "",
+        defaultValue: active ? state.context.editedTagValue : "",
         onChange(event) {
-          send({ type: "TAG_INPUT_TYPE", value: event.target.value })
+          send({ type: "TAG_INPUT_TYPE", value: event.target.value, options })
         },
         onBlur(event) {
           send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget })

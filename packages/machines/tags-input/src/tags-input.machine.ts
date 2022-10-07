@@ -60,6 +60,7 @@ export function machine(ctx: UserDefinedContext) {
         isOverflowing: "invokeOnInvalid",
         value: ["invokeOnChange", "dispatchChangeEvent"],
         log: "announceLog",
+        inputValue: "syncInputValue",
       },
 
       activities: ["trackFormReset", "trackFieldsetDisabled"],
@@ -397,6 +398,9 @@ export function machine(ctx: UserDefinedContext) {
         },
         clearEditedTagValue(ctx) {
           ctx.editedTagValue = ""
+          const tagInp = dom.getEditInputEl(ctx)
+          if (!tagInp || typeof ctx.editedTagValue !== "string") return
+          tagInp.value = ctx.editedTagValue
         },
         setEditedTagValue(ctx, evt) {
           ctx.editedTagValue = evt.value
@@ -442,6 +446,11 @@ export function machine(ctx: UserDefinedContext) {
         },
         clearInputValue(ctx) {
           ctx.inputValue = ""
+        },
+        syncInputValue(ctx) {
+          const input = dom.getInputEl(ctx)
+          if (!input) return
+          input.value = ctx.inputValue
         },
         addTag(ctx, evt) {
           const value = evt.value ?? ctx.trimmedInputValue
