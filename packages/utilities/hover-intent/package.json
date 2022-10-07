@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/hover-intent",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Track interactions when user intends to hover an element",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

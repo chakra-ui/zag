@@ -1,5 +1,16 @@
 # @zag-js/toggle
 
+## 0.1.15
+
+### Patch Changes
+
+- [`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Force new release
+
+- Updated dependencies [[`52552156`](https://github.com/chakra-ui/zag/commit/52552156ded1b00f873576f52b11d0414f5dfee7)]:
+  - @zag-js/core@0.1.12
+  - @zag-js/types@0.2.7
+
 ## 0.1.14
 
 ### Patch Changes
