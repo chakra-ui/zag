@@ -63,7 +63,7 @@
     "@commitlint/config-conventional": "17.0.3",
     "@octokit/rest": "19.0.4",
     "@playwright/test": "1.25.2",
-    "@swc-node/jest": "1.5.2",
+    "@swc-node/jest": "1.5.5",
     "@types/jest": "29.1.2",
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.30.6",
