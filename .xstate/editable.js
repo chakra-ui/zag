@@ -23,7 +23,7 @@ const fetchMachine = createMachine({
   },
   on: {
     SET_VALUE: {
-      actions: ["setValue", "invokeOnChange"]
+      actions: "setValue"
     }
   },
   on: {
@@ -62,7 +62,7 @@ const fetchMachine = createMachine({
       on: {
         TYPE: {
           cond: "!isAtMaxLength",
-          actions: ["setValue", "invokeOnChange"]
+          actions: "setValue"
         },
         BLUR: [{
           cond: "submitOnBlur",

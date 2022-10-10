@@ -28,6 +28,10 @@ export function machine(ctx: UserDefinedContext) {
         },
       },
 
+      watch: {
+        value: ["invokeOnChange", "syncInputValue"],
+      },
+
       computed: {
         submitOnEnter: (ctx) => ["both", "enter"].includes(ctx.submitMode),
         submitOnBlur: (ctx) => ["both", "blur"].includes(ctx.submitMode),
@@ -38,7 +42,7 @@ export function machine(ctx: UserDefinedContext) {
 
       on: {
         SET_VALUE: {
-          actions: ["setValue", "invokeOnChange"],
+          actions: "setValue",
         },
       },
 
@@ -78,7 +82,7 @@ export function machine(ctx: UserDefinedContext) {
           on: {
             TYPE: {
               guard: not("isAtMaxLength"),
-              actions: ["setValue", "invokeOnChange"],
+              actions: "setValue",
             },
             BLUR: [
               {
@@ -157,6 +161,11 @@ export function machine(ctx: UserDefinedContext) {
         },
         invokeOnChange(ctx) {
           ctx.onChange?.({ value: ctx.value })
+        },
+        syncInputValue(ctx) {
+          const input = dom.getInputEl(ctx)
+          if (!input) return
+          input.value = ctx.value
         },
         setValue(ctx, evt) {
           ctx.value = evt.value
