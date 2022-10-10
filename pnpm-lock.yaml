@@ -444,7 +444,7 @@ importers:
 
   packages/frameworks/react:
     specifiers:
-      '@types/react': 18.0.17
+      '@types/react': 18.0.21
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
@@ -456,7 +456,7 @@ importers:
       '@zag-js/types': link:../../types
       proxy-compare: 2.3.0
     devDependencies:
-      '@types/react': 18.0.17
+      '@types/react': 18.0.21
       react: 18.2.0
 
   packages/frameworks/solid:
@@ -3236,8 +3236,8 @@ packages:
       csstype: 3.1.0
     dev: true
 
-  /@types/react/18.0.17:
-    resolution: {integrity: sha512-38ETy4tL+rn4uQQi7mB81G7V1g0u2ryquNmsVIOKUAEIDK+3CUjZ6rSRpdvS99dNBnkLFL83qfmtLacGOTIhwQ==}
+  /@types/react/18.0.21:
+    resolution: {integrity: sha512-7QUCOxvFgnD5Jk8ZKlUAhVcRj7GuJRjnjjiY/IUBWKgOlnvDvTMLD4RTF7NPyVmbRhNrbomZiOepg7M/2Kj1mA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
