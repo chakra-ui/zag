@@ -943,11 +943,11 @@ importers:
 
   packages/utilities/popper:
     specifiers:
-      '@floating-ui/dom': 1.0.1
+      '@floating-ui/dom': 1.0.2
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
-      '@floating-ui/dom': 1.0.1
+      '@floating-ui/dom': 1.0.2
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
@@ -2054,8 +2054,8 @@ packages:
     resolution: {integrity: sha512-bO37brCPfteXQfFY0DyNDGB3+IMe4j150KFQcgJ5aBP295p9nBGeHEs/p0czrRbtlHq4Px/yoPXO/+dOCcF4uA==}
     dev: false
 
-  /@floating-ui/dom/1.0.1:
-    resolution: {integrity: sha512-wBDiLUKWU8QNPNOTAFHiIAkBv1KlHauG2AhqjSeh2H+wR8PX+AArXfz8NkRexH5PgMJMmSOS70YS89AbWYh5dA==}
+  /@floating-ui/dom/1.0.2:
+    resolution: {integrity: sha512-5X9WSvZ8/fjy3gDu8yx9HAA4KG1lazUN2P4/VnaXLxTO9Dz53HI1oYoh1OlhqFNlHgGDiwFX5WhFCc2ljbW3yA==}
     dependencies:
       '@floating-ui/core': 1.0.1
     dev: false
