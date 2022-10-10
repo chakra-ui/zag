@@ -29,11 +29,12 @@ export function machine(ctx: UserDefinedContext) {
         filledValueLength: (ctx) => ctx.value.filter((v) => v?.trim() !== "").length,
         isValueComplete: (ctx) => ctx.valueLength === ctx.filledValueLength,
         valueAsString: (ctx) => ctx.value.join(""),
+        focusedValue: (ctx) => ctx.value[ctx.focusedIndex],
       },
 
       watch: {
-        focusedIndex: "focusInput",
-        value: "invokeOnChange",
+        focusedIndex: ["focusInput", "setInputSelection"],
+        value: ["invokeOnChange", "dispatchInputEvent"],
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
@@ -85,17 +86,20 @@ export function machine(ctx: UserDefinedContext) {
             INPUT: [
               {
                 guard: and("isFinalValue", "isValidValue"),
-                actions: "setFocusedValue",
+                actions: ["setFocusedValue", "dispatchInputEventIfNeeded"],
               },
               {
                 guard: "isValidValue",
-                actions: ["setFocusedValue", "setNextFocusedIndex"],
+                actions: ["setFocusedValue", "setNextFocusedIndex", "dispatchInputEventIfNeeded"],
               },
             ],
-            PASTE: {
-              guard: "isValidValue",
-              actions: ["setPastedValue", "setLastValueFocusIndex"],
-            },
+            PASTE: [
+              {
+                guard: "isValidValue",
+                actions: ["setPastedValue", "setLastValueFocusIndex"],
+              },
+              { actions: "resetFocusedValue" },
+            ],
             BLUR: {
               target: "idle",
               actions: "clearFocusedIndex",
@@ -164,6 +168,15 @@ export function machine(ctx: UserDefinedContext) {
             dom.getFocusedEl(ctx)?.focus()
           })
         },
+        setInputSelection: (ctx) => {
+          raf(() => {
+            if (ctx.focusedIndex === -1) return
+            const input = dom.getFocusedEl(ctx)
+            const length = input.value.length
+            input.selectionStart = ctx.selectOnFocus ? 0 : length
+            input.selectionEnd = length
+          })
+        },
         invokeOnComplete: (ctx) => {
           if (!ctx.isValueComplete) return
           ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
@@ -171,7 +184,15 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange: (ctx, evt) => {
           if (evt.type === "SETUP") return
           ctx.onChange?.({ value: Array.from(ctx.value) })
+        },
+        dispatchInputEvent: (ctx, evt) => {
+          if (evt.type === "SETUP") return
           dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
+          const inputs = dom.getElements(ctx)
+          ctx.value.forEach((val, index) => {
+            const input = inputs[index]
+            input.value = val || ""
+          })
         },
         invokeOnInvalid: (ctx, evt) => {
           ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
@@ -188,20 +209,33 @@ export function machine(ctx: UserDefinedContext) {
         setFocusedValue: (ctx, evt) => {
           ctx.value[ctx.focusedIndex] = lastChar(evt.value)
         },
+        dispatchInputEventIfNeeded: (ctx, evt) => {
+          const valueIsChanged = lastChar(evt.value) !== ctx.focusedValue
+          if (evt.value.length <= 1 || valueIsChanged) return
+
+          const inputs = dom.getElements(ctx)
+          const input = inputs[ctx.focusedIndex]
+          input.value = lastChar(evt.value)
+        },
         setPastedValue(ctx, evt) {
           raf(() => {
-            const value = evt.value.substring(0, ctx.valueLength)
-            assign(ctx, value.split("").filter(Boolean))
+            const startIndex = ctx.focusedValue ? 1 : 0
+            const value = evt.value.substring(startIndex, ctx.valueLength)
+            assign(ctx, value)
           })
         },
         setValueAtIndex: (ctx, evt) => {
           ctx.value[evt.index] = lastChar(evt.value)
         },
         clearValue: (ctx) => {
-          assign(ctx, "")
+          ctx.value = ctx.value.map(() => "")
         },
         clearFocusedValue: (ctx) => {
           ctx.value[ctx.focusedIndex] = ""
+        },
+        resetFocusedValue: (ctx) => {
+          const input = dom.getFocusedEl(ctx)
+          input.value = ctx.focusedValue
         },
         setFocusIndexToFirst: (ctx) => {
           ctx.focusedIndex = 0
@@ -247,16 +281,11 @@ function isValidType(value: string, type: MachineContext["type"]) {
   return !!REGEX[type]?.test(value)
 }
 
-function assign(ctx: MachineContext, value: string | string[]) {
-  const len = ctx.value.length
-  for (let i = 0; i < len; i++) {
-    if (Array.isArray(value)) {
-      if (!value[i]) continue
-      ctx.value[i] = value[i]
-    } else {
-      ctx.value[i] = value
-    }
-  }
+function assign(ctx: MachineContext, value: string) {
+  const valueArr = value.split("").filter(Boolean)
+  const valueObj = Object.assign({}, ctx.value, valueArr)
+  console.log("valueObj :>> ", valueObj)
+  ctx.value = Object.values(valueObj)
 }
 
 function lastChar(value: string) {
