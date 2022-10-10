@@ -4,7 +4,7 @@ importers:
 
   .:
     specifiers:
-      '@axe-core/playwright': 4.4.4
+      '@axe-core/playwright': 4.4.5
       '@babel/generator': 7.18.13
       '@babel/parser': 7.18.13
       '@babel/traverse': 7.18.13
@@ -43,7 +43,7 @@ importers:
       turbo: 1.4.3
       typescript: 4.8.3
     dependencies:
-      '@axe-core/playwright': 4.4.4
+      '@axe-core/playwright': 4.4.5_playwright@1.25.2
       '@babel/generator': 7.18.13
       '@babel/parser': 7.18.13
       '@babel/traverse': 7.18.13
@@ -978,8 +978,10 @@ packages:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.15
 
-  /@axe-core/playwright/4.4.4:
-    resolution: {integrity: sha512-VA7MR1WCqW5tFcUGCXDaaqV9pJUCdOGIR4DiZJrOxGjeRYxz3VwyMc1MDg/yiJ5fQA/QYMx+w0mvqYEr3CPx7w==}
+  /@axe-core/playwright/4.4.5_playwright@1.25.2:
+    resolution: {integrity: sha512-oyh8TuAjPc6GIut3E+BiJU19jAEuzhf1ZMB7nrJqfGWsU6kWP0ymRwuj6TX3JJTT5mL3m+yFhph5RhCr/MkQ1g==}
+    peerDependencies:
+      playwright: '>= 1.0.0'
     dependencies:
       axe-core: 4.4.3
       playwright: 1.25.2
