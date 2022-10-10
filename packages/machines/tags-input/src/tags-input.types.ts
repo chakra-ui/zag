@@ -202,7 +202,7 @@ type PrivateContext = Context<{
    * @internal
    * The value of the currently edited tag
    */
-  editedTagValue?: string
+  editedTagValue: string
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

@@ -60,6 +60,8 @@ export function machine(ctx: UserDefinedContext) {
         isOverflowing: "invokeOnInvalid",
         value: ["invokeOnChange", "dispatchChangeEvent"],
         log: "announceLog",
+        inputValue: "syncInputValue",
+        editedTagValue: "syncEditedTagValue",
       },
 
       activities: ["trackFormReset", "trackFieldsetDisabled"],
@@ -99,7 +101,7 @@ export function machine(ctx: UserDefinedContext) {
           guard: and(or(not("isAtMax"), "allowOverflow"), not("isInputValueEmpty")),
           actions: ["addTag", "clearInputValue"],
         },
-        EXT_BLUR: [
+        EXTERNAL_BLUR: [
           { guard: "addOnBlur", actions: "raiseAddTagEvent" },
           { guard: "clearOnBlur", actions: "clearInputValue" },
         ],
@@ -237,7 +239,7 @@ export function machine(ctx: UserDefinedContext) {
               },
               {
                 target: "idle",
-                actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExtBlurEvent"],
+                actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExternalBlurEvent"],
               },
             ],
             TAG_INPUT_ENTER: {
@@ -309,8 +311,8 @@ export function machine(ctx: UserDefinedContext) {
         raiseAddTagEvent(_, __, { self }) {
           self.send("ADD_TAG")
         },
-        raiseExtBlurEvent(_, __, { self }) {
-          self.send("EXT_BLUR")
+        raiseExternalBlurEvent(_, evt, { self }) {
+          self.send({ type: "EXTERNAL_BLUR", id: evt.id })
         },
         invokeOnHighlight(ctx) {
           const value = dom.getFocusedTagValue(ctx)
@@ -442,6 +444,18 @@ export function machine(ctx: UserDefinedContext) {
         },
         clearInputValue(ctx) {
           ctx.inputValue = ""
+        },
+        syncInputValue(ctx) {
+          const input = dom.getInputEl(ctx)
+          if (!input) return
+          input.value = ctx.inputValue
+        },
+        syncEditedTagValue(ctx, evt) {
+          const id = ctx.editedId || ctx.focusedId || evt.id
+          if (!id) return
+          const el = dom.getById(ctx, `${id}:input`) as HTMLInputElement | null
+          if (!el) return
+          el.value = ctx.editedTagValue
         },
         addTag(ctx, evt) {
           const value = evt.value ?? ctx.trimmedInputValue
