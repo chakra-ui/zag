@@ -66,7 +66,7 @@ const fetchMachine = createMachine({
       cond: "(!isAtMax || allowOverflow) && !isInputValueEmpty",
       actions: ["addTag", "clearInputValue"]
     },
-    EXT_BLUR: [{
+    EXTERNAL_BLUR: [{
       cond: "addOnBlur",
       actions: "raiseAddTagEvent"
     }, {
@@ -199,7 +199,7 @@ const fetchMachine = createMachine({
           actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId"]
         }, {
           target: "idle",
-          actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExtBlurEvent"]
+          actions: ["clearEditedTagValue", "clearFocusedId", "clearEditedId", "raiseExternalBlurEvent"]
         }],
         TAG_INPUT_ENTER: {
           target: "navigating:tag",
