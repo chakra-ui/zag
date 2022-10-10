@@ -30,6 +30,7 @@ const fetchMachine = createMachine({
     "autoComplete": false,
     "autoComplete": false
   },
+  activities: ["syncInputValue"],
 
   onEvent(ctx, evt) {
     ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type);

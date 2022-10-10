@@ -46,6 +46,8 @@ export function machine(ctx: UserDefinedContext) {
         },
       },
 
+      activities: ["syncInputValue"],
+
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
@@ -352,6 +354,16 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       activities: {
+        syncInputValue: (ctx) => {
+          const input = dom.getInputEl(ctx)
+          return observeAttributes(input, ["data-value"], () => {
+            if (!input) return
+            const value = input.dataset.value || ""
+            input.value = value
+            input.selectionStart = value.length
+            input.selectionEnd = value.length
+          })
+        },
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
