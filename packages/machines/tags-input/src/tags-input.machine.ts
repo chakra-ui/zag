@@ -398,9 +398,9 @@ export function machine(ctx: UserDefinedContext) {
         },
         clearEditedTagValue(ctx) {
           ctx.editedTagValue = ""
-          const tagInp = dom.getEditInputEl(ctx)
-          if (!tagInp || typeof ctx.editedTagValue !== "string") return
-          tagInp.value = ctx.editedTagValue
+          const editInput = dom.getEditInputEl(ctx)
+          if (!editInput || typeof ctx.editedTagValue !== "string") return
+          editInput.value = ctx.editedTagValue
         },
         setEditedTagValue(ctx, evt) {
           ctx.editedTagValue = evt.value

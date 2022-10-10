@@ -204,7 +204,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: isEditingTag ? !active : true,
         defaultValue: active ? state.context.editedTagValue : "",
         onChange(event) {
-          send({ type: "TAG_INPUT_TYPE", value: event.target.value, options })
+          send({ type: "TAG_INPUT_TYPE", value: event.target.value })
         },
         onBlur(event) {
           send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget })
