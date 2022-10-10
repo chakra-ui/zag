@@ -228,7 +228,7 @@ export function machine(ctx: UserDefinedContext) {
           ctx.value[evt.index] = lastChar(evt.value)
         },
         clearValue: (ctx) => {
-          assign(ctx, "")
+          ctx.value = ctx.value.map(() => "")
         },
         clearFocusedValue: (ctx) => {
           ctx.value[ctx.focusedIndex] = ""
@@ -284,6 +284,7 @@ function isValidType(value: string, type: MachineContext["type"]) {
 function assign(ctx: MachineContext, value: string) {
   const valueArr = value.split("").filter(Boolean)
   const valueObj = Object.assign({}, ctx.value, valueArr)
+  console.log("valueObj :>> ", valueObj)
   ctx.value = Object.values(valueObj)
 }
 
