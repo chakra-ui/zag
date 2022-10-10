@@ -7,7 +7,7 @@ type ToolbarProps = {
 }
 
 export function Toolbar(props: ToolbarProps) {
-  const [active, setActive] = useState(1)
+  const [active, setActive] = useState(props.controls === null ? 1 : 0)
 
   return (
     <div className="toolbar">
