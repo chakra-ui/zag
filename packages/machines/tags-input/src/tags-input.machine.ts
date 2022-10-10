@@ -61,6 +61,7 @@ export function machine(ctx: UserDefinedContext) {
         value: ["invokeOnChange", "dispatchChangeEvent"],
         log: "announceLog",
         inputValue: "syncInputValue",
+        editedTagValue: "syncEditedTagValue",
       },
 
       activities: ["trackFormReset", "trackFieldsetDisabled"],
@@ -398,9 +399,6 @@ export function machine(ctx: UserDefinedContext) {
         },
         clearEditedTagValue(ctx) {
           ctx.editedTagValue = ""
-          const editInput = dom.getEditInputEl(ctx)
-          if (!editInput || typeof ctx.editedTagValue !== "string") return
-          editInput.value = ctx.editedTagValue
         },
         setEditedTagValue(ctx, evt) {
           ctx.editedTagValue = evt.value
@@ -451,6 +449,13 @@ export function machine(ctx: UserDefinedContext) {
           const input = dom.getInputEl(ctx)
           if (!input) return
           input.value = ctx.inputValue
+        },
+        syncEditedTagValue(ctx) {
+          const id = ctx.editedId || ctx.focusedId
+          if (!id) return
+          const el = dom.getById(ctx, `${id}:input`) as HTMLInputElement | null
+          if (!el) return
+          el.value = ctx.editedTagValue
         },
         addTag(ctx, evt) {
           const value = evt.value ?? ctx.trimmedInputValue
