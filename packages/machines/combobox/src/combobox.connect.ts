@@ -19,6 +19,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const autofill = isOpen && state.context.navigationData && state.context.autoComplete
   const showClearButton = (!isIdle || state.context.isHovering) && !state.context.isInputValueEmpty
 
+  const value = autofill ? state.context.navigationData?.label : state.context.inputValue
+
   const popperStyles = getPlacementStyles({
     measured: !!state.context.currentPlacement,
     placement: state.context.currentPlacement,
@@ -107,7 +109,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      value: autofill ? state.context.navigationData?.label : state.context.inputValue,
+      defaultValue: value,
+      "data-value": value,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
       "aria-expanded": isOpen,
