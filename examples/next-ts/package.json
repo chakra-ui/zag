@@ -27,7 +27,6 @@
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
-    "@zag-js/hover-intent": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -56,19 +55,19 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "next": "12.2.2",
+    "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-spinners": "0.13.3"
+    "react-spinners": "0.13.6"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "18.0.6",
-    "@types/react": "18.0.15",
+    "@types/node": "18.8.3",
+    "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
-    "eslint-plugin-react": "7.30.1",
+    "eslint-plugin-react": "7.31.9",
     "eslint-plugin-react-hooks": "4.6.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.4"
   },
   "license": "MIT"
 }
