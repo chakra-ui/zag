@@ -30,6 +30,22 @@ const navigateToSubmenuTrigger = async (page: Page) => {
   await page.keyboard.press("ArrowDown")
 }
 
+async function expectSubmenuToBeFocused(page: Page) {
+  await expect(page.locator(menu_2.menu)).toBeVisible()
+  await expect(page.locator(menu_2.menu)).toBeFocused()
+  await expectToBeFocused(page, menu_2.trigger)
+}
+
+async function expectAllMenusToBeClosed(page: Page) {
+  // close all
+  await expect(page.locator(menu_1.menu)).toBeHidden()
+  await expect(page.locator(menu_2.menu)).toBeHidden()
+  await expect(page.locator(menu_3.menu)).toBeHidden()
+
+  // focus trigger
+  await expect(page.locator(menu_1.trigger)).toBeFocused()
+}
+
 test.describe("menu", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/nested-menu")
@@ -41,26 +57,22 @@ test.describe("menu", () => {
   })
 
   test.describe("[keyboard / submenu trigger] should open submenu and focus first item", () => {
-    test.beforeEach(async ({ page }) => {
-      await navigateToSubmenuTrigger(page)
-    })
-
-    test.afterEach(async ({ page }) => {
-      await expect(page.locator(menu_2.menu)).toBeVisible()
-      await expect(page.locator(menu_2.menu)).toBeFocused()
-      await expectToBeFocused(page, menu_2.trigger)
-    })
-
     test("with space", async ({ page }) => {
+      await navigateToSubmenuTrigger(page)
       await page.keyboard.press("Space")
+      await expectSubmenuToBeFocused(page)
     })
 
     test("with enter", async ({ page }) => {
+      await navigateToSubmenuTrigger(page)
       await page.keyboard.press("Enter")
+      await expectSubmenuToBeFocused(page)
     })
 
     test("with right arrow", async ({ page }) => {
+      await navigateToSubmenuTrigger(page)
       await page.keyboard.press("ArrowRight")
+      await expectSubmenuToBeFocused(page)
     })
   })
 
@@ -106,16 +118,6 @@ test.describe("menu", () => {
   })
 
   test.describe("[select submenu item]", () => {
-    test.afterEach(async ({ page }) => {
-      // close all
-      await expect(page.locator(menu_1.menu)).toBeHidden()
-      await expect(page.locator(menu_2.menu)).toBeHidden()
-      await expect(page.locator(menu_3.menu)).toBeHidden()
-
-      // focus trigger
-      await expect(page.locator(menu_1.trigger)).toBeFocused()
-    })
-
     test("keyboard select", async ({ page }) => {
       await navigateToSubmenuTrigger(page)
       await page.keyboard.press("Enter", { delay: 10 })
@@ -128,6 +130,7 @@ test.describe("menu", () => {
 
       // select first item in menu 3
       await page.keyboard.press("Enter", { delay: 10 })
+      await expectAllMenusToBeClosed(page)
     })
 
     test("pointer click", async ({ page }) => {
@@ -137,6 +140,7 @@ test.describe("menu", () => {
 
       await page.hover(testid("playground"))
       await page.click(testid("playground"))
+      await expectAllMenusToBeClosed(page)
     })
 
     test("outside click", async ({ page }) => {
@@ -144,6 +148,7 @@ test.describe("menu", () => {
       await page.hover(menu_2.trigger)
       await page.hover("body", { position: { x: 10, y: 10 } })
       await clickOutside(page)
+      await expectAllMenusToBeClosed(page)
     })
   })
 
