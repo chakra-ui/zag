@@ -14,8 +14,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "3.0.1",
-    "vite-plugin-solid": "2.3.0"
+    "vite": "3.1.7",
+    "vite-plugin-solid": "2.3.9"
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
@@ -34,7 +34,6 @@
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
-    "@zag-js/hover-intent": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -64,6 +63,6 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "solid-app-router": "0.4.2",
-    "solid-js": "1.5.5"
+    "solid-js": "1.5.7"
   }
 }
