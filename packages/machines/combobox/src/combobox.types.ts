@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { Placement } from "@zag-js/popper"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
@@ -107,6 +107,10 @@ type PublicContext = DirectionProperty &
      * Whether to loop the keyboard navigation through the options
      */
     loop?: boolean
+    /**
+     * The options used to dynamically position the menu
+     */
+    positioning: PositioningOptions
     /**
      * Function called when the input's value changes
      */

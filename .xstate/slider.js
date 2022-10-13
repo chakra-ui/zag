@@ -1,7 +1,6 @@
 "use strict";
 
 var _xstate = require("xstate");
-
 const {
   actions,
   createMachine,
