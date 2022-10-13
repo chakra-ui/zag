@@ -37,6 +37,12 @@ export function machine(ctx: UserDefinedContext) {
         inputBehavior: "none",
         selectionBehavior: "set",
         ...ctx,
+        positioning: {
+          placement: "bottom",
+          flip: false,
+          sameWidth: true,
+          ...ctx.positioning,
+        },
         translations: {
           toggleButtonLabel: "Toggle suggestions",
           clearButtonLabel: "Clear value",
@@ -380,10 +386,9 @@ export function machine(ctx: UserDefinedContext) {
           return ariaHidden([dom.getInputEl(ctx), dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)])
         },
         computePlacement(ctx) {
+          ctx.currentPlacement = ctx.positioning.placement
           return getPlacement(dom.getControlEl(ctx), dom.getPositionerEl(ctx), {
-            placement: "bottom",
-            flip: false,
-            sameWidth: true,
+            ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },

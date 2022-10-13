@@ -1,7 +1,6 @@
 "use strict";
 
 var _xstate = require("xstate");
-
 const {
   actions,
   createMachine,
@@ -31,11 +30,9 @@ const fetchMachine = createMachine({
     "autoComplete": false
   },
   activities: ["syncInputValue"],
-
   onEvent(ctx, evt) {
     ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type);
   },
-
   exit: "removeLiveRegion",
   on: {
     SET_VALUE: {
