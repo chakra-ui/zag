@@ -97,14 +97,12 @@ export function defineDomHelpers<T>(helpers: T) {
       return (
         evt: string,
         detail: CustomEventInit<EventInit>["detail"],
-        options: Omit<CustomEventInit<EventInit>, "detail">,
+        options?: Omit<CustomEventInit<EventInit>, "detail">,
       ) => {
-        const { bubbles = true, cancelable, composed } = options
         const event = new win.CustomEvent(`zag:${ns}:${evt}`, {
           detail,
-          bubbles,
-          cancelable,
-          composed,
+          bubbles: options?.bubbles || true,
+          cancelable: options?.cancelable,
         })
         target.dispatchEvent(event)
       }
