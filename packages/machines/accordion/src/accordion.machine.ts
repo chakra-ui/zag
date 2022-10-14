@@ -20,7 +20,7 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       watch: {
-        value: ["checkValue", "invokeOnChange"],
+        value: ["checkValue", "invokeOnChange", "dispatchCustomChangeEvent"],
       },
 
       created: ["checkValue"],
@@ -89,6 +89,12 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange(ctx, evt) {
           if (evt.type !== "SETUP") {
             ctx.onChange?.({ value: ctx.value })
+          }
+        },
+        dispatchCustomChangeEvent(ctx, evt) {
+          if (evt.type !== "SETUP") {
+            const rootEl = dom.getRootEl(ctx)
+            dom.dispatchEvent(ctx, "accordion", "change", ctx.value, rootEl)
           }
         },
         collapse(ctx, evt) {

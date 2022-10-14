@@ -1,7 +1,7 @@
 import * as accordion from "@zag-js/accordion"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { accordionControls, accordionData } from "@zag-js/shared"
-import { useId } from "react"
+import { useEffect, useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -19,6 +19,11 @@ export default function Page() {
   )
 
   const api = accordion.connect(state, send, normalizeProps)
+
+  useEffect(() => {
+    const root = document.getElementById(api.rootProps.id)
+    root.addEventListener("zag:accordion:change", (e) => console.log(e.detail))
+  }, [])
 
   return (
     <>
