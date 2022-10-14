@@ -93,8 +93,8 @@ export function machine(ctx: UserDefinedContext) {
         },
         dispatchCustomChangeEvent(ctx, evt) {
           if (evt.type !== "SETUP") {
-            const rootEl = dom.getRootEl(ctx)
-            dom.dispatchEvent(ctx, "accordion", "change", ctx.value, rootEl)
+            const emit = dom.emitter(ctx)
+            emit("change", { value: ctx.value })
           }
         },
         collapse(ctx, evt) {

@@ -22,7 +22,7 @@ export default function Page() {
 
   useEffect(() => {
     const root = document.getElementById(api.rootProps.id)
-    root.addEventListener("zag:accordion:change", (e) => console.log(e.detail))
+    root.addEventListener("zag:accordion:change", (e) => console.log(e.detail.value))
   }, [])
 
   return (

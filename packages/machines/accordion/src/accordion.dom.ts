@@ -19,4 +19,6 @@ export const dom = defineDomHelpers({
   getLastTriggerEl: (ctx: Ctx) => last(dom.getTriggers(ctx)),
   getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
   getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
+
+  emitter: (ctx: Ctx) => dom.createEmitter(ctx, "accordion", dom.getRootEl(ctx)),
 })
