@@ -94,12 +94,17 @@ export function defineDomHelpers<T>(helpers: T) {
         throw new Error("[dom/create-emit] Expected an element but got undefined")
       }
 
-      return (evt: string, detail: unknown, options: EventInit) => {
-        const { bubbles = true, cancelable } = options
+      return (
+        evt: string,
+        detail: CustomEventInit<EventInit>["detail"],
+        options: Omit<CustomEventInit<EventInit>, "detail">,
+      ) => {
+        const { bubbles = true, cancelable, composed } = options
         const event = new win.CustomEvent(`zag:${ns}:${evt}`, {
           detail,
           bubbles,
           cancelable,
+          composed,
         })
         target.dispatchEvent(event)
       }
