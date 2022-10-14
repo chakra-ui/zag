@@ -42,6 +42,8 @@ const fetchMachine = createMachine({
       }
     },
     preview: {
+      // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
+      entry: ["blurInputIfNeeded"],
       on: {
         EDIT: "edit",
         DBLCLICK: {

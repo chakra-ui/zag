@@ -62,6 +62,8 @@ export function machine(ctx: UserDefinedContext) {
         },
 
         preview: {
+          // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
+          entry: ["blurInputIfNeeded"],
           on: {
             EDIT: "edit",
             DBLCLICK: {
@@ -175,6 +177,9 @@ export function machine(ctx: UserDefinedContext) {
         },
         revertValue(ctx) {
           ctx.value = ctx.previousValue
+        },
+        blurInputIfNeeded(ctx) {
+          dom.getInputEl(ctx)?.blur()
         },
       },
 
