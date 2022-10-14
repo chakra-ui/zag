@@ -80,6 +80,10 @@ type Ctx = {
   getRootNode?: () => Document | ShadowRoot | Node
 }
 
+type EventDetail = {
+  value: any
+}
+
 export function defineDomHelpers<T>(helpers: T) {
   const dom = {
     getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
@@ -87,6 +91,15 @@ export function defineDomHelpers<T>(helpers: T) {
     getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
     getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
+    dispatchEvent: (ctx: Ctx, component: string, event: string, value: any, rootEl: HTMLElement | null) => {
+      if (!rootEl) return
+      const window = dom.getWin(ctx)
+      const evt = new window.CustomEvent<EventDetail>(`zag:${component}:${event}`, {
+        detail: { value },
+        bubbles: true,
+      })
+      rootEl.dispatchEvent(evt)
+    },
   }
 
   return {
