@@ -26,21 +26,38 @@ concurrency:
 
 jobs:
   e2e:
-    name: End to End tests
-    timeout-minutes: 30
-
+    name: 🧪 Test (${{ matrix.shard }}/${{ strategy.job-total }})
+    timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - uses: actions/checkout@v3
 
       - name: Install
         uses: ./.github/composite-actions/install
 
-      - name: Install Playwright
+      - name: Cache Playwright
+        uses: actions/cache@v2
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install Playwright (if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
+      - name: Install Playwright (with cached dependencies)
+        run: npx playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+
       - name: Run your tests
-        run: pnpm e2e-react
+        run: |
+          start-server-and-test \"pnpm react test-dev\" http://localhost:3000 \"playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}\"
 
       - name: Upload test results
         if: always()
@@ -52,20 +69,20 @@ jobs:
             e2e/junit.xml
           retention-days: 15
 
-  report:
-    if: always()
-    name: Get reports
-    needs: [e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        id: download
-        uses: actions/download-artifact@v3
+  # report:
+  #   if: always()
+  #   name: Get reports
+  #   needs: [e2e]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download artifacts
+  #       id: download
+  #       uses: actions/download-artifact@v3
 
-      - name: Generate test summary
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          check_name: Playwright Tests
-          files: "test-results/**/*.xml"
-          commit: ${{ github.event.workflow_run.head_sha }}
+  #     - name: Generate test summary
+  #       if: always()
+  #       uses: EnricoMi/publish-unit-test-result-action@v2
+  #       with:
+  #         check_name: Playwright Tests
+  #         files: "test-results/**/*.xml"
+  #         commit: ${{ github.event.workflow_run.head_sha }}
