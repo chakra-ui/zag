@@ -87,6 +87,22 @@ export function defineDomHelpers<T>(helpers: T) {
     getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
     getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
+    createEmitter: (ctx: Ctx, ns: string, target: HTMLElement | null) => {
+      const win = dom.getWin(ctx)
+
+      if (!target) {
+        throw new Error("[dom/create-emit] Expected an element but got undefined")
+      }
+
+      return (evt: string, detail: Record<string, any>, options?: Omit<CustomEventInit<EventInit>, "detail">) => {
+        const event = new win.CustomEvent(`zag:${ns}:${evt}`, {
+          detail,
+          bubbles: options?.bubbles || true,
+          cancelable: options?.cancelable,
+        })
+        target.dispatchEvent(event)
+      }
+    },
   }
 
   return {
