@@ -16,6 +16,7 @@ on:
       - "packages/**"
       - "e2e/**"
       - "playwright.config.ts"
+      - ".github/workflows/playwright.yml"
 
 env:
   CI: true
@@ -25,14 +26,10 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  e2e:
-    name: 🧪 Test (${{ matrix.shard }}/${{ strategy.job-total }})
+  install:
     timeout-minutes: 60
+    name: 🔍 Install
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - uses: actions/checkout@v3
 
@@ -55,15 +52,25 @@ jobs:
         run: npx playwright install-deps
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
+  e2e:
+    name: 🧪 Test (${{ matrix.shard }}/${{ strategy.job-total }})
+    timeout-minutes: 60
+    needs: install
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
       - name: Run your tests
         run: |
-          start-server-and-test \"pnpm react test-dev\" http://localhost:3000 \"playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}\"
+          npx start-server-and-test \"pnpm react test-dev\" http://localhost:3000 \"playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}\"
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: test-results
+          name: test-results/${{ matrix.shard }}_${{ strategy.job-total }}
           path: |
             e2e/report
             e2e/junit.xml
