@@ -1,4 +1,5 @@
 import {
+  ariaAttr,
   dataAttr,
   EventKeyMap,
   getEventKey,
@@ -92,7 +93,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": valueText,
         "aria-disabled": isDisabled,
         "data-disabled": dataAttr(isDisabled),
-        "aria-readonly": state.context.readonly,
+        "aria-readonly": ariaAttr(state.context.readonly),
         "data-readonly": dataAttr(state.context.readonly),
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
