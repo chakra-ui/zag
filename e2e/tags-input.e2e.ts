@@ -74,7 +74,7 @@ test.describe("tags-input", () => {
 
     await page.keyboard.press("ArrowLeft")
 
-    await expectToBeSelected(page.locator(svelte.tag))
+    await expectToBeSelected(page.locator(solid.tag))
 
     await page.keyboard.press("ArrowLeft")
     await page.keyboard.press("ArrowLeft")

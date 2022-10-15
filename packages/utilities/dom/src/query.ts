@@ -87,20 +87,22 @@ export function defineDomHelpers<T>(helpers: T) {
     getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
     getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
-    createEmitter: (ctx: Ctx, ns: string, target: HTMLElement | null) => {
+    createEmitter: (ctx: Ctx, target: HTMLElement) => {
       const win = dom.getWin(ctx)
-
-      if (!target) {
-        throw new Error("[dom/create-emit] Expected an element but got undefined")
-      }
-
-      return (evt: string, detail: Record<string, any>, options?: Omit<CustomEventInit<EventInit>, "detail">) => {
-        const event = new win.CustomEvent(`zag:${ns}:${evt}`, {
-          detail,
-          bubbles: options?.bubbles || true,
-          cancelable: options?.cancelable,
-        })
+      return function emit(evt: string, detail: Record<string, any>, options?: EventInit) {
+        const { bubbles = true, cancelable, composed = true } = options ?? {}
+        const eventName = `zag:${evt}`
+        const init: CustomEventInit = { bubbles, cancelable, composed, detail }
+        const event = new win.CustomEvent(eventName, init)
         target.dispatchEvent(event)
+      }
+    },
+    createListener: (target: HTMLElement) => {
+      return function listen<T = any>(evt: string, handler: (e: CustomEvent<T>) => void) {
+        const eventName = `zag:${evt}`
+        const listener: any = (e: CustomEvent) => handler(e)
+        target.addEventListener(eventName, listener)
+        return () => target.removeEventListener(eventName, listener)
       }
     },
   }

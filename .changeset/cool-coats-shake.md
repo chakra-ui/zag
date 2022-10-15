@@ -2,4 +2,4 @@
 "@zag-js/dom-utils": patch
 ---
 
-Add the `dispatchEvent` helper
+Add helper to dispatch and listen to custom event in machines

@@ -31,4 +31,5 @@ const config: PlaywrightTestConfig = {
     timezoneId: "GMT",
   },
 }
+
 export default config
