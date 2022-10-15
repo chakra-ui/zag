@@ -97,6 +97,14 @@ export function defineDomHelpers<T>(helpers: T) {
         target.dispatchEvent(event)
       }
     },
+    createListener: (target: HTMLElement) => {
+      return function listen<T = any>(evt: string, handler: (e: CustomEvent<T>) => void) {
+        const eventName = `zag:${evt}`
+        const listener: any = (e: CustomEvent) => handler(e)
+        target.addEventListener(eventName, listener)
+        return () => target.removeEventListener(eventName, listener)
+      }
+    },
   }
 
   return {
