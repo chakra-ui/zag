@@ -65,10 +65,10 @@ jobs:
 
       - name: Run your tests
         run: |
-          npx start-server-and-test \"pnpm react test-dev\" http://localhost:3000 \"npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}\"
+          pnpm start-server-and-test \"pnpm react test-dev\" http://localhost:3000 \"playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}\"
 
       - name: Upload test results
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: test-results-${{ matrix.shard }}
