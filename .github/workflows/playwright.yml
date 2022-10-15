@@ -1,13 +1,7 @@
 name: Playwright Tests
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "packages/**"
-      - "e2e/**"
-      - "playwright.config.ts"
+  workflow_dispatch:
   pull_request:
     branches-ignore:
       - "renovate/**"
