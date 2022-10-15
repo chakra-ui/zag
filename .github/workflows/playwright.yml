@@ -48,10 +48,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Install Playwright (with cached dependencies)
-        run: npx playwright install-deps
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-
   e2e:
     name: 🧪 Test (${{ matrix.shard }}/${{ strategy.job-total }})
     timeout-minutes: 60
@@ -60,7 +56,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@v3
 
