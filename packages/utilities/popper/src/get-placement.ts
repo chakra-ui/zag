@@ -31,10 +31,12 @@ export function getPlacement(
   const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
   const middleware: Middleware[] = []
 
+  const boundary = typeof options.boundary === "function" ? options.boundary() : options.boundary
+
   if (options.flip) {
     middleware.push(
       flip({
-        boundary: options.boundary,
+        boundary,
         padding: options.overflowPadding,
       }),
     )
@@ -49,7 +51,7 @@ export function getPlacement(
 
   middleware.push(
     shift({
-      boundary: options.boundary,
+      boundary,
       crossAxis: options.overlap,
       padding: options.overflowPadding,
     }),
