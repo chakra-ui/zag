@@ -20,7 +20,7 @@ export function machine(ctx: UserDefinedContext) {
       },
 
       watch: {
-        value: ["checkValue", "invokeOnChange", "dispatchCustomChangeEvent"],
+        value: ["checkValue", "invokeOnChange"],
       },
 
       created: ["checkValue"],
@@ -89,10 +89,7 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange(ctx, evt) {
           if (evt.type !== "SETUP") {
             ctx.onChange?.({ value: ctx.value })
-          }
-        },
-        dispatchCustomChangeEvent(ctx, evt) {
-          if (evt.type !== "SETUP") {
+
             const emit = dom.emitter(ctx)
             emit("change", { value: ctx.value })
           }

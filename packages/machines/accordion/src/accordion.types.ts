@@ -35,7 +35,7 @@ type PublicContext = DirectionProperty &
     /**
      * The callback fired when the state of opened/closed accordion items changes.
      */
-    onChange?: (details: { value: string | string[] | null }) => void
+    onChange?: (details: ChangeEventDetails) => void
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -64,3 +64,12 @@ export type ItemProps = {
   value: string
   disabled?: boolean
 }
+
+type ChangeEventDetails = { value: string | string[] | null }
+
+type ChangeEvent = {
+  type: "change"
+  value: CustomEvent<ChangeEventDetails>
+}
+
+export type EventMap = { change: ChangeEvent }

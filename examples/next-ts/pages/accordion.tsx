@@ -21,8 +21,11 @@ export default function Page() {
   const api = accordion.connect(state, send, normalizeProps)
 
   useEffect(() => {
-    const root = document.getElementById(api.rootProps.id)
-    root.addEventListener("zag:accordion:change", (e) => console.log(e.detail.value))
+    const cleanup = api.on("change", (evt) => {
+      console.log("Changed tab to: ", evt.detail.value)
+    })
+
+    return () => cleanup()
   }, [])
 
   return (

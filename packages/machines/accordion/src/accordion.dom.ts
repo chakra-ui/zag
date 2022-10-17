@@ -8,7 +8,11 @@ export const dom = defineDomHelpers({
   getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
   getTriggerId: (ctx: Ctx, value: string) => ctx.ids?.trigger?.(value) ?? `accordion:${ctx.id}:trigger:${value}`,
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
+  getRootEl: (ctx: Ctx) => {
+    const rootEl = dom.getById(ctx, dom.getRootId(ctx))
+    if (!rootEl) throw new Error("Root element does not exist")
+    return rootEl
+  },
   getTriggers: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `[aria-controls][data-ownedby='${ownerId}']:not([disabled])`
@@ -20,5 +24,6 @@ export const dom = defineDomHelpers({
   getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
   getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
 
-  emitter: (ctx: Ctx) => dom.createEmitter(ctx, "accordion", dom.getRootEl(ctx)),
+  emitter: (ctx: Ctx) => dom.createEmitter(ctx, dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener(dom.getRootEl(ctx)),
 })
