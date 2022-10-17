@@ -7,6 +7,13 @@ export const dom = defineDomHelpers({
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `checkbox:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `checkbox:${ctx.id}:input`,
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
+  getRootEl: (ctx: Ctx) => {
+    const rootEl = dom.getById(ctx, dom.getRootId(ctx))
+    if (!rootEl) throw new Error("Root element does not exist")
+    return rootEl
+  },
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+
+  emitter: (ctx: Ctx) => dom.createEmitter(ctx, dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener(dom.getRootEl(ctx)),
 })

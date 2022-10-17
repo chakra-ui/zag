@@ -48,7 +48,7 @@ type PublicContext = DirectionProperty &
     /**
      * The callback invoked when the checked state of the `Checkbox` changes.
      */
-    onChange?: (details: { checked: boolean | "indeterminate" }) => void
+    onChange?: (details: ChangeEventDetails) => void
     /**
      * The name of the input field in a checkbox
      * (Useful for form submission).
@@ -106,3 +106,12 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+type ChangeEventDetails = { checked: boolean | "indeterminate" }
+
+type ChangeEvent = {
+  type: "change"
+  value: CustomEvent<ChangeEventDetails>
+}
+
+export type EventMap = { change: ChangeEvent }

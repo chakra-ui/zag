@@ -113,6 +113,9 @@ export function machine(ctx: UserDefinedContext) {
         invokeOnChange(ctx, _evt, { state }) {
           const checked = state.matches("checked")
           ctx.onChange?.({ checked: ctx.indeterminate ? "indeterminate" : checked })
+
+          const emit = dom.emitter(ctx)
+          emit("change", { checked: ctx.indeterminate ? "indeterminate" : checked })
         },
         setActive(ctx, evt) {
           ctx.active = evt.value

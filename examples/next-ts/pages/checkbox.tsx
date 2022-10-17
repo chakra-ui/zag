@@ -2,7 +2,7 @@ import * as checkbox from "@zag-js/checkbox"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { checkboxControls } from "@zag-js/shared"
 import serialize from "form-serialize"
-import { useId } from "react"
+import { useEffect, useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -20,6 +20,14 @@ export default function Page() {
   )
 
   const api = checkbox.connect(state, send, normalizeProps)
+
+  useEffect(() => {
+    const cleanup = api.on("change", (evt) => {
+      console.log("Checkbox is: ", evt.detail.checked ? "checked" : "unchecked")
+    })
+
+    return () => cleanup()
+  }, [])
 
   const inputProps = mergeProps(api.inputProps, {
     onChange() {
