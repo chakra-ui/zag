@@ -88,10 +88,10 @@ export function machine(ctx: UserDefinedContext) {
       actions: {
         invokeOnChange(ctx, evt) {
           if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
+            ctx.onChange?.({ id: ctx.id, value: ctx.value })
 
             const emit = dom.emitter(ctx)
-            emit("change", { value: ctx.value })
+            emit("change", { id: ctx.id, value: ctx.value })
           }
         },
         collapse(ctx, evt) {

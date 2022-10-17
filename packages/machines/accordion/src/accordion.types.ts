@@ -65,7 +65,7 @@ export type ItemProps = {
   disabled?: boolean
 }
 
-type ChangeEventDetails = { value: string | string[] | null }
+type ChangeEventDetails = { id: string; value: string | string[] | null }
 
 type ChangeEvent = {
   type: "change"
