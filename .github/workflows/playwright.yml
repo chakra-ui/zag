@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/composite-actions/install
 
       - name: Cache Playwright
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: playwright-cache
         with:
           path: |
@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/composite-actions/install
 
       - name: Cache Playwright
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: playwright-cache
         with:
           path: |
