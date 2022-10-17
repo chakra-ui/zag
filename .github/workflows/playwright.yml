@@ -67,7 +67,7 @@ jobs:
 
       - name: Run your tests
         run: |
-          playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+          pnpm playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
         env:
           FRAMEWORK: react
 
