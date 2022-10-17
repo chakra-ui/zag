@@ -77,7 +77,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jest": "27.1.1",
     "eslint-plugin-prettier": "4.2.1",
-    "find-packages": "9.0.13",
+    "find-packages": "10.0.0",
     "husky": "8.0.1",
     "jest": "29.1.2",
     "jest-watch-typeahead": "2.2.0",
