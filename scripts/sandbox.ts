@@ -1,9 +1,9 @@
-import findPkgs from "find-packages"
+import { findPackages } from "find-packages"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 
 async function main() {
-  const pkgs = await findPkgs(process.cwd(), {
+  const pkgs = await findPackages(process.cwd(), {
     includeRoot: false,
     patterns: ["packages/**/*"],
   })
@@ -12,6 +12,7 @@ async function main() {
     pkgs.map((pkg) => {
       const { dir, manifest } = pkg
 
+      // @ts-ignore
       const { module, main, type, types, name, version, description, ...rest } = manifest
 
       const data = {
