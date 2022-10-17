@@ -107,7 +107,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-type ChangeEventDetails = { checked: boolean | "indeterminate" }
+type ChangeEventDetails = { id: string; checked: boolean | "indeterminate" }
 
 type ChangeEvent = {
   type: "change"
