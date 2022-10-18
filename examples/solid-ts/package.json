@@ -6,7 +6,6 @@
   "scripts": {
     "clean": "echo 'clean'",
     "dev": "vite --port 3000",
-    "test-dev": "vite --port 3002 --clearScreen false",
     "build": "vite build",
     "serve": "vite preview",
     "typecheck": "tsc --noEmit"
@@ -18,6 +17,7 @@
     "vite-plugin-solid": "2.3.9"
   },
   "dependencies": {
+    "@zag-js/dom-query": "workspace:*",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",

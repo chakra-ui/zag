@@ -1,20 +1,20 @@
-import findPkgs from "find-packages"
+import { findPackages } from "find-packages"
 
 export async function getWorkspacePackages() {
-  return findPkgs(process.cwd(), {
+  return findPackages(process.cwd(), {
     includeRoot: false,
     patterns: ["packages/**/*", "shared/*"],
   })
 }
 
 export async function getMachinePackages() {
-  return findPkgs(process.cwd(), {
+  return findPackages(process.cwd(), {
     patterns: ["packages/machines/**/*"],
   })
 }
 
 export async function getExamplePackages() {
-  return findPkgs(process.cwd(), {
+  return findPackages(process.cwd(), {
     patterns: ["examples/*"],
   })
 }
