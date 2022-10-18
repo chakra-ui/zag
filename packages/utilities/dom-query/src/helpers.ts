@@ -19,26 +19,24 @@ export interface CustomEventEmitter<EventMap extends BaseDetails> {
 }
 
 export function defineHelpers<T>(rest: T) {
-  return {
-    ...rest,
+  const dom = {
     getRootNode(ctx: BaseContext) {
       return (ctx.getRootNode?.() ?? document) as Document | ShadowRoot
     },
     getDoc(ctx: BaseContext) {
-      return getDocument(this.getRootNode(ctx))
+      return getDocument(dom.getRootNode(ctx))
     },
     getWin(ctx: BaseContext) {
-      return getWindow(this.getDoc(ctx))
+      return getWindow(dom.getDoc(ctx))
     },
     getActiveElement(ctx: BaseContext) {
-      return this.getDoc(ctx).activeElement as HTMLElement | null
+      return dom.getDoc(ctx).activeElement as HTMLElement | null
     },
     getById<T = HTMLElement>(ctx: BaseContext, id: string) {
-      return this.getRootNode(ctx).getElementById(id) as T | null
+      return dom.getRootNode(ctx).getElementById(id) as T | null
     },
     createEmitter<EventMap extends BaseDetails>(ctx: BaseContext, target: HTMLElement): CustomEventEmitter<EventMap> {
-      const win = this.getWin(ctx)
-      return function emit(evt, detail, options) {
+      return (evt, detail, options) => {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
         const eventName = `zag:${String(evt)}`
 
@@ -49,6 +47,7 @@ export function defineHelpers<T>(rest: T) {
           detail,
         }
 
+        const win = dom.getWin(ctx)
         const event = new win.CustomEvent(eventName, init)
         target.dispatchEvent(event)
       }
@@ -63,4 +62,6 @@ export function defineHelpers<T>(rest: T) {
       }
     },
   }
+
+  return { ...dom, ...rest }
 }
