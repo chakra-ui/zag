@@ -36,7 +36,7 @@ export function defineHelpers<T>(rest: T) {
       return dom.getRootNode(ctx).getElementById(id) as T | null
     },
     createEmitter<EventMap extends BaseDetails>(ctx: BaseContext, target: HTMLElement): CustomEventEmitter<EventMap> {
-      return (evt, detail, options) => {
+      return function emit(evt, detail, options) {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
         const eventName = `zag:${String(evt)}`
 
