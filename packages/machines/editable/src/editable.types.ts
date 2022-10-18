@@ -90,19 +90,19 @@ type PublicContext = DirectionProperty &
     /**
      * The callback that is called when the editable's value is changed
      */
-    onChange?: (details: { value: string }) => void
+    onChange?: (details: ChangeEventDetails) => void
     /**
      * The callback that is called when the esc key is pressed or the cancel button is clicked
      */
-    onCancel?: (details: { value: string }) => void
+    onCancel?: (details: CancelEventDetails) => void
     /**
      * The callback that is called when the editable's value is submitted.
      */
-    onSubmit?: (details: { value: string }) => void
+    onSubmit?: (details: SubmitEventDetails) => void
     /**
      * The callback that is called when in the edit mode.
      */
-    onEdit?: () => void
+    onEdit?: (details: EditEventDetails) => void
     /**
      * The placeholder value to show when the `value` is empty
      */
@@ -160,3 +160,15 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+type ChangeEventDetails = { id: string; value: string }
+type CancelEventDetails = { id: string; value: string }
+type SubmitEventDetails = { id: string; value: string }
+type EditEventDetails = { id: string }
+
+export type EventMap = {
+  change: ChangeEventDetails
+  cancel: CancelEventDetails
+  submit: SubmitEventDetails
+  edit: EditEventDetails
+}

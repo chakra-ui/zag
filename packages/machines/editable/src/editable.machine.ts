@@ -153,16 +153,28 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         invokeOnCancel(ctx) {
-          ctx.onCancel?.({ value: ctx.previousValue })
+          const details = { id: ctx.id, value: ctx.previousValue }
+          const emit = dom.emitter(ctx)
+          emit("cancel", details)
+          ctx.onCancel?.(details)
         },
         invokeOnSubmit(ctx) {
-          ctx.onSubmit?.({ value: ctx.value })
+          const details = { id: ctx.id, value: ctx.value }
+          const emit = dom.emitter(ctx)
+          emit("submit", details)
+          ctx.onSubmit?.(details)
         },
         invokeOnEdit(ctx) {
-          ctx.onEdit?.()
+          const details = { id: ctx.id }
+          const emit = dom.emitter(ctx)
+          emit("edit", details)
+          ctx.onEdit?.(details)
         },
         invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
+          const details = { id: ctx.id, value: ctx.value }
+          ctx.onChange?.(details)
+          const emit = dom.emitter(ctx)
+          emit("change", details)
         },
         syncInputValue(ctx) {
           const input = dom.getInputEl(ctx)

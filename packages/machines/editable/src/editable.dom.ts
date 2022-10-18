@@ -1,7 +1,7 @@
-import { defineDomHelpers } from "@zag-js/dom-utils"
-import type { MachineContext as Ctx } from "./editable.types"
+import { defineHelpers } from "@zag-js/dom-query"
+import type { EventMap, MachineContext as Ctx } from "./editable.types"
 
-export const dom = defineDomHelpers({
+export const dom = defineHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `editable:${ctx.id}`,
   getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `editable:${ctx.id}:area`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `editable:${ctx.id}:label`,
@@ -17,4 +17,12 @@ export const dom = defineDomHelpers({
   getSubmitBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getSubmitBtnId(ctx)),
   getCancelBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getCancelBtnId(ctx)),
   getEditBtnEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getEditBtnId(ctx)),
+  getRootEl: (ctx: Ctx) => {
+    const rootEl = dom.getById(ctx, dom.getRootId(ctx))
+    if (!rootEl) throw new Error("Root element does not exist")
+    return rootEl
+  },
+
+  emitter: (ctx: Ctx) => dom.createEmitter<EventMap>(ctx, () => dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener<EventMap>(() => dom.getRootEl(ctx)),
 })
