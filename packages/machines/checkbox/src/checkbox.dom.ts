@@ -1,5 +1,5 @@
 import { defineDomHelpers } from "@zag-js/dom-utils"
-import type { MachineContext as Ctx } from "./checkbox.types"
+import type { EventMap, MachineContext as Ctx } from "./checkbox.types"
 
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `checkbox:${ctx.id}`,
