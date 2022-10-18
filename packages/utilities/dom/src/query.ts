@@ -76,54 +76,6 @@ export function getParent(el: HTMLElement): HTMLElement {
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
-type Ctx = {
-  getRootNode?: () => Document | ShadowRoot | Node
-}
-
-export interface CustomEventListener<EventMap extends Record<string, any>> {
-  <E extends keyof EventMap>(event: E, cb: (evt: CustomEvent<EventMap[E]>) => void): VoidFunction
-}
-
-export interface CustomEventEmitter<EventMap extends Record<string, any>> {
-  <E extends keyof EventMap>(evt: E, detail: EventMap[E], options?: EventInit): void
-}
-
-export function defineDomHelpers<T>(helpers: T) {
-  const dom = {
-    getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
-    getDoc: (ctx: Ctx) => getDocument(dom.getRootNode(ctx)),
-    getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
-    getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
-    getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
-    createEmitter: <EventMap extends Record<string, any>>(
-      ctx: Ctx,
-      target: HTMLElement,
-    ): CustomEventEmitter<EventMap> => {
-      const win = dom.getWin(ctx)
-      return function emit(evt, detail, options) {
-        const { bubbles = true, cancelable, composed = true } = options ?? {}
-        const eventName = `zag:${String(evt)}`
-        const init: CustomEventInit = { bubbles, cancelable, composed, detail }
-        const event = new win.CustomEvent(eventName, init)
-        target.dispatchEvent(event)
-      }
-    },
-    createListener: <EventMap extends Record<string, any>>(target: HTMLElement): CustomEventListener<EventMap> => {
-      return function listen(evt, handler) {
-        const eventName = `zag:${String(evt)}`
-        const listener: any = (e: CustomEvent) => handler(e)
-        target.addEventListener(eventName, listener)
-        return () => target.removeEventListener(eventName, listener)
-      }
-    },
-  }
-
-  return {
-    ...dom,
-    ...helpers,
-  }
-}
-
 export function contains(
   parent: HTMLElement | EventTarget | null | undefined,
   child: HTMLElement | EventTarget | null,
