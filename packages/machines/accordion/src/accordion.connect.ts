@@ -2,7 +2,7 @@ import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isArray } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
-import type { EventMap, ItemProps, Send, State } from "./accordion.types"
+import type { ItemProps, Send, State } from "./accordion.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const focusedValue = state.context.focusedValue

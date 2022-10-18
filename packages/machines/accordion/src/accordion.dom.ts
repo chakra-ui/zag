@@ -1,8 +1,9 @@
-import { nextById, prevById, queryAll, defineDomHelpers } from "@zag-js/dom-utils"
+import { nextById, prevById, queryAll } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
 import type { EventMap, MachineContext as Ctx } from "./accordion.types"
+import { defineHelpers } from "@zag-js/dom-query"
 
-export const dom = defineDomHelpers({
+export const dom = defineHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.id}`,
   getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.id}:item:${value}`,
   getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
