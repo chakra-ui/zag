@@ -67,13 +67,19 @@ export function machine(ctx: UserDefinedContext) {
                 } else {
                   send({ type: "CLOSE", src: "escape-key" })
                 }
-                ctx.onEsc?.()
+                const details = { id: ctx.id }
+                ctx.onEsc?.(details)
+                const emit = dom.emitter(ctx)
+                emit("esc", details)
               },
               onPointerDownOutside(event) {
                 if (!ctx.closeOnOutsideClick) {
                   event.preventDefault()
                 }
-                ctx.onOutsideClick?.()
+                const details = { id: ctx.id }
+                ctx.onOutsideClick?.(details)
+                const emit = dom.emitter(ctx)
+                emit("outside:click", details)
               },
             })
           })
@@ -121,7 +127,10 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          const details = { id: ctx.id }
+          ctx.onClose?.(details)
+          const emit = dom.emitter(ctx)
+          emit("close", details)
         },
       },
     },

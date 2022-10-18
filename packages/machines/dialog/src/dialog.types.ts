@@ -44,7 +44,7 @@ type PublicContext = DirectionProperty &
     /**
      * Callback to be invoked when the dialog is closed
      */
-    onClose?: () => void
+    onClose?: (details: CloseEventDetails) => void
     /**
      * Whether to close the dialog when the outside is clicked
      */
@@ -52,7 +52,7 @@ type PublicContext = DirectionProperty &
     /**
      * Callback to be invoked when the outside is clicked
      */
-    onOutsideClick?: () => void
+    onOutsideClick?: (details: OutsideClickEventDetails) => void
     /**
      * Whether to close the dialog when the escape key is pressed
      */
@@ -60,7 +60,7 @@ type PublicContext = DirectionProperty &
     /**
      * Callback to be invoked when the escape key is pressed
      */
-    onEsc?: () => void
+    onEsc?: (details: EscEventDetails) => void
     /**
      * Human readable label for the dialog, in event the dialog title is not rendered
      */
@@ -100,3 +100,9 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+type CloseEventDetails = { id: string }
+type OutsideClickEventDetails = { id: string }
+type EscEventDetails = { id: string }
+
+export type EventMap = { close: CloseEventDetails; "outside:click": OutsideClickEventDetails; esc: EscEventDetails }

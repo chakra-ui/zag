@@ -32,6 +32,7 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/types": "workspace:*",
     "focus-trap": "7.0.0"
