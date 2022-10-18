@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@zag-js/dom-query": "workspace:*",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
