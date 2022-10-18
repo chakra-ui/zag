@@ -514,23 +514,38 @@ export function machine(ctx: UserDefinedContext) {
           listbox.scrollTop = 0
         },
         invokeOnInputChange(ctx) {
-          ctx.onInputChange?.({ value: ctx.inputValue })
+          const details = { value: ctx.inputValue, id: ctx.id }
+          ctx.onInputChange?.(details)
+          const emit = dom.emitter(ctx)
+          emit("open", details)
         },
         invokeOnHighlight(ctx) {
           const { label, value } = ctx.navigationData ?? {}
           const relatedTarget = dom.getMatchingOptionEl(ctx, value)
-          ctx.onHighlight?.({ label, value, relatedTarget })
+          const details = { label, value, relatedTarget, id: ctx.id }
+          ctx.onHighlight?.(details)
+          const emit = dom.emitter(ctx)
+          emit("highlight", details)
         },
         invokeOnSelect(ctx) {
           const { label, value } = ctx.selectionData ?? {}
           const relatedTarget = dom.getMatchingOptionEl(ctx, value)
-          ctx.onSelect?.({ label, value, relatedTarget })
+          const details = { label, value, relatedTarget, id: ctx.id }
+          ctx.onSelect?.(details)
+          const emit = dom.emitter(ctx)
+          emit("select", details)
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
+          const details = { id: ctx.id }
+          ctx.onOpen?.(details)
+          const emit = dom.emitter(ctx)
+          emit("open", details)
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          const details = { id: ctx.id }
+          ctx.onClose?.(details)
+          const emit = dom.emitter(ctx)
+          emit("close", details)
         },
         highlightFirstOption(ctx) {
           raf(() => {

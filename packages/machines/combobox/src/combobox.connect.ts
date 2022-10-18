@@ -283,6 +283,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": label,
       })
     },
+    on: dom.listener(state.context),
   }
 
   return api

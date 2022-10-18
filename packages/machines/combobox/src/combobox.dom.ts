@@ -1,8 +1,9 @@
-import { defineDomHelpers, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { defineHelpers } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
-import type { MachineContext as Ctx } from "./combobox.types"
+import { EventMap, MachineContext as Ctx } from "./combobox.types"
 
-export const dom = defineDomHelpers({
+export const dom = defineHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
@@ -21,6 +22,11 @@ export const dom = defineDomHelpers({
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getToggleBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getToggleBtnId(ctx)),
   getClearBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearBtnId(ctx)),
+  getRootEl: (ctx: Ctx) => {
+    const rootEl = dom.getById(ctx, dom.getRootId(ctx))
+    if (!rootEl) throw new Error("Root element does not exist")
+    return rootEl
+  },
 
   getElements: (ctx: Ctx) => queryAll(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {
@@ -79,4 +85,7 @@ export const dom = defineDomHelpers({
     const el = dom.getMatchingOptionEl(ctx, value)
     return dom.getOptionData(el).label
   },
+
+  emitter: (ctx: Ctx) => dom.createEmitter<EventMap>(ctx, dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener<EventMap>(dom.getRootEl(ctx)),
 })

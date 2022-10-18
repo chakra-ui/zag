@@ -114,24 +114,24 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when the input's value changes
      */
-    onInputChange?: (details: { value: string }) => void
+    onInputChange?: (details: InputChangeEventDetails) => void
     /**
      * Function called when a new option is selected
      */
-    onSelect?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
+    onSelect?: (details: SelectEventDetails) => void
     /**
      * Function called when an options is highlighted using the pointer
      * or keyboard navigation.
      */
-    onHighlight?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
+    onHighlight?: (details: HighlightEventDetails) => void
     /**
      * Function called when the popup is opened
      */
-    onOpen?: () => void
+    onOpen?: (details: OpenEventDetails) => void
     /**
      * Function called when the popup is closed
      */
-    onClose?: () => void
+    onClose?: (details: CloseEventDetails) => void
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
@@ -256,4 +256,18 @@ export type OptionGroupProps = {
    * The accessible label that describes the group
    */
   label: string
+}
+
+type InputChangeEventDetails = { id: string; value: string | null }
+type SelectEventDetails = Partial<OptionData> & { relatedTarget: HTMLElement | null; id: string }
+type HighlightEventDetails = Partial<OptionData> & { relatedTarget: HTMLElement | null; id: string }
+type OpenEventDetails = { id: string }
+type CloseEventDetails = { id: string }
+
+export type EventMap = {
+  "input:change": InputChangeEventDetails
+  select: SelectEventDetails
+  highlight: HighlightEventDetails
+  open: OpenEventDetails
+  close: CloseEventDetails
 }
