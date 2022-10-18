@@ -8,7 +8,7 @@ Dispatch custom events
 useEffect(() => {
   return () =>
     api.on("change", (evt) => {
-      console.log("Checkbox is: ", evt.detail.checked ? "checked" : "unchecked")
+      console.log("New value is: ", evt.detail.value)
     })
 }, [])
 ```
