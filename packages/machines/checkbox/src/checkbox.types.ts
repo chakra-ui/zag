@@ -109,9 +109,4 @@ export type Send = S.Send<S.AnyEventObject>
 
 type ChangeEventDetails = { id: string; checked: boolean | "indeterminate" }
 
-type ChangeEvent = {
-  type: "change"
-  value: CustomEvent<ChangeEventDetails>
-}
-
-export type EventMap = { change: ChangeEvent }
+export type EventMap = { change: ChangeEventDetails }

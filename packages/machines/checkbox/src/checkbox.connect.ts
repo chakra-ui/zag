@@ -146,8 +146,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    on<E extends keyof EventMap>(event: E, cb: (evt: EventMap[E]["value"]) => void) {
-      return dom.listener(state.context)(event, cb)
-    },
+    on: dom.listener(state.context),
   }
 }
