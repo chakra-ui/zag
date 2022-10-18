@@ -21,14 +21,6 @@ export default function Page() {
 
   const api = checkbox.connect(state, send, normalizeProps)
 
-  useEffect(() => {
-    const cleanup = api.on("change", (evt) => {
-      console.log("Checkbox is: ", evt.detail.checked ? "checked" : "unchecked")
-    })
-
-    return () => cleanup()
-  }, [])
-
   const inputProps = mergeProps(api.inputProps, {
     onChange() {
       if (api.isIndeterminate && !api.isReadOnly) {
