@@ -20,14 +20,6 @@ export default function Page() {
 
   const api = accordion.connect(state, send, normalizeProps)
 
-  useEffect(() => {
-    const cleanup = api.on("change", (evt) => {
-      console.log("Changed tab to: ", evt.detail.value)
-    })
-
-    return () => cleanup()
-  }, [])
-
   return (
     <>
       <main className="accordion">
