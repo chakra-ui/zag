@@ -24,6 +24,6 @@ export const dom = defineDomHelpers({
   getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
   getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
 
-  emitter: (ctx: Ctx) => dom.createEmitter(ctx, dom.getRootEl(ctx)),
-  listener: (ctx: Ctx) => dom.createListener(dom.getRootEl(ctx)),
+  emitter: (ctx: Ctx) => dom.createEmitter<EventMap>(ctx, dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener<EventMap>(dom.getRootEl(ctx)),
 })
