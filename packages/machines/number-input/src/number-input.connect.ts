@@ -213,5 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         cursor: isDisabled ? undefined : "ew-resize",
       },
     }),
+
+    on: dom.listener(state.context),
   }
 }

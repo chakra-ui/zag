@@ -1,8 +1,9 @@
-import { defineDomHelpers, isSafari, MAX_Z_INDEX, supportsPointerEvent } from "@zag-js/dom-utils"
+import { isSafari, MAX_Z_INDEX, supportsPointerEvent } from "@zag-js/dom-utils"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
-import type { MachineContext as Ctx } from "./number-input.types"
+import type { EventMap, MachineContext as Ctx } from "./number-input.types"
+import { defineHelpers } from "@zag-js/dom-query"
 
-export const dom = defineDomHelpers({
+export const dom = defineHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.id}:input`,
   getIncButtonId: (ctx: Ctx) => ctx.ids?.incBtn ?? `number-input:${ctx.id}:inc-btn`,
@@ -16,6 +17,15 @@ export const dom = defineDomHelpers({
   getDecButtonEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getDecButtonId(ctx)),
   getScrubberEl: (ctx: Ctx) => dom.getById(ctx, dom.getScrubberId(ctx)),
   getCursorEl: (ctx: Ctx) => dom.getDoc(ctx).getElementById(dom.getCursorId(ctx)),
+
+  getRootEl: (ctx: Ctx) => {
+    const rootEl = dom.getById(ctx, dom.getRootId(ctx))
+    if (!rootEl) throw new Error("Root element does not exist")
+    return rootEl
+  },
+
+  emitter: (ctx: Ctx) => dom.createEmitter<EventMap>(ctx, () => dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener<EventMap>(() => dom.getRootEl(ctx)),
 
   getActiveButton: (ctx: Ctx, hint = ctx.hint) => {
     let btnEl: HTMLButtonElement | null = null

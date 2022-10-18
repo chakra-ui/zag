@@ -339,10 +339,10 @@ export function machine(ctx: UserDefinedContext) {
           ctx.hint = "set"
         },
         invokeOnChange(ctx) {
-          ctx.onChange?.({
-            value: ctx.value,
-            valueAsNumber: ctx.valueAsNumber,
-          })
+          const details = { id: ctx.id, value: ctx.value, valueAsNumber: ctx.valueAsNumber }
+          const emit = dom.emitter(ctx)
+          emit("change", details)
+          ctx.onChange?.(details)
         },
         invokeOnFocus(ctx, evt) {
           let srcElement: HTMLElement | null = null
@@ -355,26 +355,25 @@ export function machine(ctx: UserDefinedContext) {
             srcElement = dom.getScrubberEl(ctx)
           }
 
-          ctx.onFocus?.({
-            value: ctx.value,
-            valueAsNumber: ctx.valueAsNumber,
-            srcElement,
-          })
+          const details = { id: ctx.id, value: ctx.value, valueAsNumber: ctx.valueAsNumber, srcElement }
+          const emit = dom.emitter(ctx)
+          emit("focus", details)
+          ctx.onFocus?.(details)
         },
         invokeOnBlur(ctx) {
-          ctx.onBlur?.({
-            value: ctx.value,
-            valueAsNumber: ctx.valueAsNumber,
-          })
+          const details = { id: ctx.id, value: ctx.value, valueAsNumber: ctx.valueAsNumber }
+          const emit = dom.emitter(ctx)
+          emit("blur", details)
+          ctx.onBlur?.(details)
         },
         invokeOnInvalid(ctx) {
           if (!ctx.isOutOfRange) return
-          const reason = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
-          ctx.onInvalid?.({
-            reason,
-            value: ctx.formattedValue,
-            valueAsNumber: ctx.valueAsNumber,
-          })
+          const reason = ctx.valueAsNumber > ctx.max ? ("rangeOverflow" as const) : ("rangeUnderflow" as const)
+
+          const details = { id: ctx.id, reason, value: ctx.formattedValue, valueAsNumber: ctx.valueAsNumber }
+          const emit = dom.emitter(ctx)
+          emit("change", details)
+          ctx.onInvalid?.(details)
         },
         // sync input value, in event it was set from form libraries via `ref`, `bind:this`, etc.
         syncInputValue(ctx) {

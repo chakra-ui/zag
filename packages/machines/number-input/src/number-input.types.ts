@@ -28,11 +28,6 @@ type IntlTranslations = {
   decrementLabel: string
 }
 
-type Value = {
-  value: string
-  valueAsNumber: number
-}
-
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -123,19 +118,19 @@ type PublicContext = DirectionProperty &
     /**
      * Function invoked when the value changes
      */
-    onChange?: (details: Value) => void
+    onChange?: (details: ChangeEventDetails) => void
     /**
      * Function invoked when the value overflows or underflows the min/max range
      */
-    onInvalid?: (details: Value & { reason: ValidityState }) => void
+    onInvalid?: (details: InvalidEventDetails) => void
     /**
      * Function invoked when the number input is focused
      */
-    onFocus?: (details: Value & { srcElement: HTMLElement | null }) => void
+    onFocus?: (details: FocusEventDetails) => void
     /**
      * The value of the input when it is blurred
      */
-    onBlur?: (details: Value) => void
+    onBlur?: (details: BlurEventDetails) => void
     /**
      * The minimum number of fraction digits to use. Possible values are from 0 to 20
      */
@@ -228,3 +223,20 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+type Value = {
+  value: string
+  valueAsNumber: number
+}
+
+type ChangeEventDetails = Value & { id: string }
+type InvalidEventDetails = Value & { id: string; reason: ValidityState }
+type FocusEventDetails = Value & { id: string; srcElement: HTMLElement | null }
+type BlurEventDetails = Value & { id: string }
+
+export type EventMap = {
+  change: ChangeEventDetails
+  invalid: InvalidEventDetails
+  focus: FocusEventDetails
+  blur: BlurEventDetails
+}
