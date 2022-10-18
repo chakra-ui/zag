@@ -18,6 +18,8 @@ export interface CustomEventEmitter<EventMap extends BaseDetails> {
   <E extends keyof EventMap>(evt: E, detail: EventMap[E], options?: EventInit): void
 }
 
+type Callable<T> = T | (() => T)
+
 export function defineHelpers<T>(rest: T) {
   const dom = {
     getRootNode(ctx: BaseContext) {
@@ -35,7 +37,10 @@ export function defineHelpers<T>(rest: T) {
     getById<T = HTMLElement>(ctx: BaseContext, id: string) {
       return dom.getRootNode(ctx).getElementById(id) as T | null
     },
-    createEmitter<EventMap extends BaseDetails>(ctx: BaseContext, target: HTMLElement): CustomEventEmitter<EventMap> {
+    createEmitter<EventMap extends BaseDetails>(
+      ctx: BaseContext,
+      target: Callable<HTMLElement>,
+    ): CustomEventEmitter<EventMap> {
       return function emit(evt, detail, options) {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
         const eventName = `zag:${String(evt)}`
@@ -49,15 +54,17 @@ export function defineHelpers<T>(rest: T) {
 
         const win = dom.getWin(ctx)
         const event = new win.CustomEvent(eventName, init)
-        target.dispatchEvent(event)
+        const node = typeof target === "function" ? target() : target
+        node.dispatchEvent(event)
       }
     },
-    createListener<EventMap extends BaseDetails>(target: HTMLElement): CustomEventListener<EventMap> {
+    createListener<EventMap extends BaseDetails>(target: Callable<HTMLElement>): CustomEventListener<EventMap> {
       return function on(evt, listener) {
         const eventName = `zag:${String(evt)}`
-        target.addEventListener(eventName, listener as EventListener)
+        const node = typeof target === "function" ? target() : target
+        node.addEventListener(eventName, listener as EventListener)
         return function off() {
-          return target.removeEventListener(eventName, listener as EventListener)
+          return node.removeEventListener(eventName, listener as EventListener)
         }
       }
     },
