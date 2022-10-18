@@ -1,7 +1,7 @@
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
-import type { EventMap, Send, State } from "./checkbox.types"
+import type { Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isChecked = state.matches("checked")
