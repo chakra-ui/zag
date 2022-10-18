@@ -1,6 +1,6 @@
 import { nextById, prevById, queryAll, defineDomHelpers } from "@zag-js/dom-utils"
 import { first, last } from "@zag-js/utils"
-import type { MachineContext as Ctx } from "./accordion.types"
+import type { EventMap, MachineContext as Ctx } from "./accordion.types"
 
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.id}`,
