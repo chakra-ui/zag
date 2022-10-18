@@ -80,6 +80,14 @@ type Ctx = {
   getRootNode?: () => Document | ShadowRoot | Node
 }
 
+export interface CustomEventListener<EventMap extends Record<string, any>> {
+  <E extends keyof EventMap>(event: E, cb: (evt: CustomEvent<EventMap[E]>) => void): VoidFunction
+}
+
+export interface CustomEventEmitter<EventMap extends Record<string, any>> {
+  <E extends keyof EventMap>(evt: E, detail: EventMap[E], options?: EventInit): void
+}
+
 export function defineDomHelpers<T>(helpers: T) {
   const dom = {
     getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
@@ -87,19 +95,22 @@ export function defineDomHelpers<T>(helpers: T) {
     getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
     getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
-    createEmitter: (ctx: Ctx, target: HTMLElement) => {
+    createEmitter: <EventMap extends Record<string, any>>(
+      ctx: Ctx,
+      target: HTMLElement,
+    ): CustomEventEmitter<EventMap> => {
       const win = dom.getWin(ctx)
-      return function emit(evt: string, detail: Record<string, any>, options?: EventInit) {
+      return function emit(evt, detail, options) {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
-        const eventName = `zag:${evt}`
+        const eventName = `zag:${String(evt)}`
         const init: CustomEventInit = { bubbles, cancelable, composed, detail }
         const event = new win.CustomEvent(eventName, init)
         target.dispatchEvent(event)
       }
     },
-    createListener: (target: HTMLElement) => {
-      return function listen<T = any>(evt: string, handler: (e: CustomEvent<T>) => void) {
-        const eventName = `zag:${evt}`
+    createListener: <EventMap extends Record<string, any>>(target: HTMLElement): CustomEventListener<EventMap> => {
+      return function listen(evt, handler) {
+        const eventName = `zag:${String(evt)}`
         const listener: any = (e: CustomEvent) => handler(e)
         target.addEventListener(eventName, listener)
         return () => target.removeEventListener(eventName, listener)
