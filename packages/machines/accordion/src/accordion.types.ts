@@ -67,9 +67,4 @@ export type ItemProps = {
 
 type ChangeEventDetails = { id: string; value: string | string[] | null }
 
-type ChangeEvent = {
-  type: "change"
-  value: CustomEvent<ChangeEventDetails>
-}
-
-export type EventMap = { change: ChangeEvent }
+export type EventMap = { change: ChangeEventDetails }
