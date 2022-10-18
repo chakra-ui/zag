@@ -14,6 +14,6 @@ export const dom = defineHelpers({
   },
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
 
-  emitter: (ctx: Ctx) => dom.createEmitter<EventMap>(ctx, dom.getRootEl(ctx)),
-  listener: (ctx: Ctx) => dom.createListener<EventMap>(dom.getRootEl(ctx)),
+  emitter: (ctx: Ctx) => dom.createEmitter<EventMap>(ctx, () => dom.getRootEl(ctx)),
+  listener: (ctx: Ctx) => dom.createListener<EventMap>(() => dom.getRootEl(ctx)),
 })
