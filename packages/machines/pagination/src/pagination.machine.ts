@@ -1,4 +1,5 @@
 import { createMachine } from "@zag-js/core"
+import { dom } from "./pagination.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./pagination.types"
 
 export function machine(ctx: UserDefinedContext) {
@@ -91,11 +92,15 @@ export function machine(ctx: UserDefinedContext) {
           ctx.pageSize = evt.size
         },
         invokeOnChange(ctx, evt) {
-          ctx.onChange?.({
+          const details = {
+            id: ctx.id,
             page: ctx.page,
             pageSize: ctx.pageSize,
             srcElement: evt.srcElement || null,
-          })
+          }
+          const emit = dom.emitter(ctx)
+          emit("change", details)
+          ctx.onChange?.(details)
         },
         goToFirstPage(ctx) {
           ctx.page = 1

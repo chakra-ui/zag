@@ -92,5 +92,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
       },
     }),
+
+    on: dom.listener(state.context),
   }
 }
