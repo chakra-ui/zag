@@ -21,6 +21,10 @@ export interface EventPoint {
 
 export interface PressEvent {
   /**
+   * The id of the pressable machine,
+   */
+  id: string
+  /**
    * The type of press event being fired.
    */
   type: "pressstart" | "pressend" | "pressup" | "press" | "longpress"
@@ -116,3 +120,5 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type EventMap = Record<"press" | "press:start" | "press:end" | "press:up" | "long:press", PressEvent>

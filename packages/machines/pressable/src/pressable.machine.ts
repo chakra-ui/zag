@@ -1,7 +1,7 @@
 import { createMachine, ref } from "@zag-js/core"
 import { addDomEvent, disableTextSelection, isHTMLElement, restoreTextSelection } from "@zag-js/dom-utils"
 import { dom } from "./pressable.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./pressable.types"
+import { MachineContext, MachineState, PressEvent, UserDefinedContext } from "./pressable.types"
 import { utils } from "./pressable.utils"
 
 export function machine(ctx: UserDefinedContext) {
@@ -213,12 +213,16 @@ export function machine(ctx: UserDefinedContext) {
           let { event: originalEvent, pressEvent, pointerType } = evt
           const event = pressEvent || originalEvent
 
-          ctx.onPressStart?.({
+          const details: PressEvent = {
+            id: ctx.id,
             type: "pressstart",
             pointerType: pointerType || ctx.pointerType,
             target: event.currentTarget,
             originalEvent: event,
-          })
+          }
+          const emit = dom.emitter(ctx)
+          emit("press:start", details)
+          ctx.onPressStart?.(details)
         },
         disableTextSelection(ctx) {
           if (!ctx.target || ctx.allowTextSelectionOnPress) return
@@ -226,30 +230,42 @@ export function machine(ctx: UserDefinedContext) {
         },
         invokeOnPressUp(ctx, { event, pointerType }) {
           if (ctx.disabled) return
-          ctx.onPressUp?.({
+          const details: PressEvent = {
+            id: ctx.id,
             type: "pressup",
             pointerType: pointerType || ctx.pointerType,
             target: event.currentTarget,
             originalEvent: event,
-          })
+          }
+          const emit = dom.emitter(ctx)
+          emit("press:up", details)
+          ctx.onPressUp?.(details)
         },
         invokeOnPressEnd(ctx, { event, pointerType }) {
           ctx.ignoreClickAfterPress = true
-          ctx.onPressEnd?.({
+          const details: PressEvent = {
+            id: ctx.id,
             type: "pressend",
             pointerType: pointerType || ctx.pointerType,
             target: event.currentTarget,
             originalEvent: event,
-          })
+          }
+          const emit = dom.emitter(ctx)
+          emit("press:end", details)
+          ctx.onPressEnd?.(details)
         },
         invokeOnPress(ctx, { event, pointerType }) {
           if (ctx.disabled) return
-          ctx.onPress?.({
+          const details: PressEvent = {
+            id: ctx.id,
             type: "press",
             pointerType: pointerType || ctx.pointerType,
             target: event.currentTarget,
             originalEvent: event,
-          })
+          }
+          const emit = dom.emitter(ctx)
+          emit("press", details)
+          ctx.onPress?.(details)
         },
         triggerClick(ctx, { event }) {
           let target = event.target as Element
@@ -273,12 +289,16 @@ export function machine(ctx: UserDefinedContext) {
         },
         invokeOnLongPress(ctx, { pointerType }) {
           if (!ctx.target) return
-          ctx.onLongPress?.({
+          const details: PressEvent = {
+            id: ctx.id,
             type: "longpress",
             pointerType: pointerType || ctx.pointerType,
             target: ctx.target,
             originalEvent: ctx.pointerdownEvent!,
-          })
+          }
+          const emit = dom.emitter(ctx)
+          emit("long:press", details)
+          ctx.onLongPress?.(details)
         },
         resetIgnoreClick(ctx) {
           ctx.ignoreClickAfterPress = false
