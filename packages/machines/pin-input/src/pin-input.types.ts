@@ -58,11 +58,11 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when all inputs have valid values
      */
-    onComplete?: (details: { value: string[]; valueAsString: string }) => void
+    onComplete?: (details: CompleteEventDetails) => void
     /**
      * Function called on input change
      */
-    onChange?: (details: { value: string[] }) => void
+    onChange?: (details: ChangeEventDetails) => void
     /**
      * Function called when an invalid value is entered
      */
@@ -132,3 +132,9 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+type CompleteEventDetails = { id: string; value: string[]; valueAsString: string }
+type ChangeEventDetails = { id: string; value: string[] }
+type InvalidEventDetails = { id: string; value: string; index: number }
+
+export type EventMap = { complete: CompleteEventDetails; change: ChangeEventDetails; invalid: InvalidEventDetails }

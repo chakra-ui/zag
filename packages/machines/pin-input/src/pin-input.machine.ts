@@ -179,11 +179,17 @@ export function machine(ctx: UserDefinedContext) {
         },
         invokeOnComplete: (ctx) => {
           if (!ctx.isValueComplete) return
-          ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
+          const details = { value: Array.from(ctx.value), valueAsString: ctx.valueAsString, id: ctx.id }
+          const emit = dom.emitter(ctx)
+          emit("complete", details)
+          ctx.onComplete?.(details)
         },
         invokeOnChange: (ctx, evt) => {
           if (evt.type === "SETUP") return
-          ctx.onChange?.({ value: Array.from(ctx.value) })
+          const details = { value: Array.from(ctx.value), id: ctx.id }
+          const emit = dom.emitter(ctx)
+          emit("change", details)
+          ctx.onChange?.(details)
         },
         dispatchInputEvent: (ctx, evt) => {
           if (evt.type === "SETUP") return
@@ -195,7 +201,10 @@ export function machine(ctx: UserDefinedContext) {
           })
         },
         invokeOnInvalid: (ctx, evt) => {
-          ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
+          const details = { value: evt.value, index: ctx.focusedIndex, id: ctx.id }
+          const emit = dom.emitter(ctx)
+          emit("invalid", details)
+          ctx.onInvalid?.(details)
         },
         clearFocusedIndex: (ctx) => {
           ctx.focusedIndex = -1
