@@ -1,5 +1,33 @@
 # @zag-js/combobox
 
+## 0.2.0
+
+### Minor Changes
+
+- [#375](https://github.com/chakra-ui/zag/pull/375)
+  [`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca) Thanks
+  [@darrylblake](https://github.com/darrylblake)! - Ensures code is transpiled with `es2019` target for environments
+  that don't support `es2020` and up, i.e. Cypress.
+
+### Patch Changes
+
+- [#352](https://github.com/chakra-ui/zag/pull/352)
+  [`76ede8c9`](https://github.com/chakra-ui/zag/commit/76ede8c9575ee16a470bb20af1967899d0119b56) Thanks
+  [@anubra266](https://github.com/anubra266)! - Make component uncontrolled
+
+- [#354](https://github.com/chakra-ui/zag/pull/354)
+  [`d0484fcb`](https://github.com/chakra-ui/zag/commit/d0484fcbea6f7a4cafa3aa9ec66415d8b841300c) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add `positioning` option to context to allow custom positioning.
+
+- Updated dependencies [[`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca),
+  [`f70dd580`](https://github.com/chakra-ui/zag/commit/f70dd5808ab576d33649e4497e0553c9eef12868)]:
+  - @zag-js/core@0.2.0
+  - @zag-js/types@0.3.0
+  - @zag-js/aria-hidden@0.2.0
+  - @zag-js/interact-outside@0.2.0
+  - @zag-js/live-region@0.2.0
+  - @zag-js/popper@0.2.0
+
 ## 0.1.17
 
 ### Patch Changes

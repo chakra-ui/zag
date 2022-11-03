@@ -1,5 +1,28 @@
 # @zag-js/editable
 
+## 0.2.0
+
+### Minor Changes
+
+- [#375](https://github.com/chakra-ui/zag/pull/375)
+  [`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca) Thanks
+  [@darrylblake](https://github.com/darrylblake)! - Ensures code is transpiled with `es2019` target for environments
+  that don't support `es2020` and up, i.e. Cypress.
+
+### Patch Changes
+
+- [#337](https://github.com/chakra-ui/zag/pull/337)
+  [`47daf930`](https://github.com/chakra-ui/zag/commit/47daf930462cab328c8e3411a154011d877c370e) Thanks
+  [@anubra266](https://github.com/anubra266)! - Make `editable` compononet uncontrolled
+
+- [`f9c5f074`](https://github.com/chakra-ui/zag/commit/f9c5f074b61970dff9a493a13a7c48185f40c9d0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Firefox where the input element doesn't get blurred
+  when hidden. This is a firefox related issue tracked [here](https://bugzilla.mozilla.org/show_bug.cgi?id=559561)
+- Updated dependencies [[`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca)]:
+  - @zag-js/core@0.2.0
+  - @zag-js/types@0.3.0
+  - @zag-js/interact-outside@0.2.0
+
 ## 0.1.16
 
 ### Patch Changes

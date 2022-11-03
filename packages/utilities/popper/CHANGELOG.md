@@ -1,5 +1,20 @@
 # @zag-js/popper
 
+## 0.2.0
+
+### Minor Changes
+
+- [#375](https://github.com/chakra-ui/zag/pull/375)
+  [`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca) Thanks
+  [@darrylblake](https://github.com/darrylblake)! - Ensures code is transpiled with `es2019` target for environments
+  that don't support `es2020` and up, i.e. Cypress.
+
+### Patch Changes
+
+- [`f70dd580`](https://github.com/chakra-ui/zag/commit/f70dd5808ab576d33649e4497e0553c9eef12868) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow `boundary` option to support functions for better
+  portability with JS frameworks
+
 ## 0.1.13
 
 ### Patch Changes

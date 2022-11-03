@@ -1,5 +1,23 @@
 # @zag-js/rating
 
+## 0.2.0
+
+### Minor Changes
+
+- [#375](https://github.com/chakra-ui/zag/pull/375)
+  [`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca) Thanks
+  [@darrylblake](https://github.com/darrylblake)! - Ensures code is transpiled with `es2019` target for environments
+  that don't support `es2020` and up, i.e. Cypress.
+
+### Patch Changes
+
+- [`5d92ebee`](https://github.com/chakra-ui/zag/commit/5d92ebee8ac7036e14b30b0cd357ff1177e94b85) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix accessibility issue with `aria-readonly`
+
+- Updated dependencies [[`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca)]:
+  - @zag-js/core@0.2.0
+  - @zag-js/types@0.3.0
+
 ## 0.1.17
 
 ### Patch Changes

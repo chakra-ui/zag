@@ -1,5 +1,24 @@
 # @zag-js/pin-input
 
+## 0.2.0
+
+### Minor Changes
+
+- [#375](https://github.com/chakra-ui/zag/pull/375)
+  [`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca) Thanks
+  [@darrylblake](https://github.com/darrylblake)! - Ensures code is transpiled with `es2019` target for environments
+  that don't support `es2020` and up, i.e. Cypress.
+
+### Patch Changes
+
+- [#338](https://github.com/chakra-ui/zag/pull/338)
+  [`f37ce88d`](https://github.com/chakra-ui/zag/commit/f37ce88dad6017ccd2f02fff65b96264ed04a28b) Thanks
+  [@anubra266](https://github.com/anubra266)! - Make `pin input` compononet uncontrolled
+
+- Updated dependencies [[`9cb4e9de`](https://github.com/chakra-ui/zag/commit/9cb4e9de28a3c6666860bc068c86be67a3b1a2ca)]:
+  - @zag-js/core@0.2.0
+  - @zag-js/types@0.3.0
+
 ## 0.1.17
 
 ### Patch Changes
