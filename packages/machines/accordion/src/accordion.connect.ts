@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return {
         isOpen: isArray(value) ? value.includes(props.value) : props.value === value,
         isFocused: focusedValue === props.value,
-        isDisabled: props.disabled ?? state.context.disabled,
+        isDisabled: Boolean(props.disabled ?? state.context.disabled),
       }
     },
 
