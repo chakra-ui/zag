@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/svelte",
-  "version": "0.1.15",
+  "version": "0.2.0",
   "description": "The svelte wrapper for zag",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/menu",
-  "version": "0.1.16",
+  "version": "0.2.0",
   "description": "Core logic for the menu widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
