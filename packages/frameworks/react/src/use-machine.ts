@@ -34,13 +34,8 @@ export function useService<
     }
   }, [])
 
-  useSafeLayoutEffect(() => {
-    service.setActions(actions)
-  }, [actions])
-
-  useSafeLayoutEffect(() => {
-    service.setContext(context)
-  }, [context])
+  service.setActions(actions)
+  service.setContext(context)
 
   return service
 }
