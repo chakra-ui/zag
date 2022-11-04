@@ -121,6 +121,7 @@ importers:
       '@zag-js/react': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
       '@zag-js/shared': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
@@ -174,6 +175,7 @@ importers:
       '@zag-js/react': link:../../packages/frameworks/react
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
       '@zag-js/shared': link:../../shared
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
@@ -234,6 +236,7 @@ importers:
       '@zag-js/rating': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
       '@zag-js/shared': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/solid': workspace:*
@@ -284,6 +287,7 @@ importers:
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
       '@zag-js/shared': link:../../shared
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/solid': link:../../packages/frameworks/solid
@@ -346,6 +350,7 @@ importers:
       '@zag-js/rating': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
       '@zag-js/shared': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
@@ -400,6 +405,7 @@ importers:
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
       '@zag-js/shared': link:../../shared
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
@@ -742,6 +748,17 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+
+  packages/machines/select:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/types': workspace:*
+    dependencies:
+      '@zag-js/core': link:../../core
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
 
   packages/machines/slider:
     specifiers:
