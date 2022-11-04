@@ -82,5 +82,60 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(_state.isDisabled),
       })
     },
+
+    listboxProps: normalize.element({
+      hidden: !isOpen,
+      id: dom.getListboxId(state.context),
+      role: "listbox",
+      "data-part": "listbox",
+      "aria-labelledby": dom.getLabelId(state.context),
+      tabIndex: 0,
+      onPointerMove(event) {
+        if (event.pointerType === "touch") return
+        const { target } = event
+        const option = target instanceof HTMLElement ? target.closest("[data-part=option]") : null
+
+        if (option) {
+          send({ type: "HOVER", id: option.id })
+        }
+      },
+      onClick(event) {
+        const { target } = event
+        const option = target instanceof HTMLElement ? target.closest("[data-part=option]") : null
+
+        if (option) {
+          send({ type: "OPTION_CLICK", id: option.id })
+        }
+      },
+      onKeyDown(event) {
+        const { key } = event
+        const keyMap: EventKeyMap = {
+          Escape() {
+            send({ type: "ESC_KEY" })
+          },
+          ArrowUp() {
+            send({ type: "ARROW_UP" })
+          },
+          ArrowDown() {
+            send({ type: "ARROW_DOWN" })
+          },
+          Tab() {
+            send({ type: "TAB" })
+          },
+          Enter() {
+            send({ type: "TRIGGER_KEY" })
+          },
+        }
+
+        const exec = keyMap[key]
+
+        if (exec) {
+          exec(event)
+          event.preventDefault()
+        } else {
+          send({ type: "TYPE_AHEAD", key })
+        }
+      },
+    }),
   }
 }
