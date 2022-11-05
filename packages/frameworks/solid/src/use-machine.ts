@@ -36,9 +36,7 @@ export function useService<
   })
 
   createEffect(() => {
-    if (context) {
-      service.setContext(compact(context))
-    }
+    service.setContext(compact(context))
   })
 
   createEffect(() => {
