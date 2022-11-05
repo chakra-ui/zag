@@ -45,6 +45,9 @@ export default function Page() {
     }),
     {
       context: controls.context,
+      onChange: (state) => {
+        controls.setContext(state.context)
+      },
     },
   )
 

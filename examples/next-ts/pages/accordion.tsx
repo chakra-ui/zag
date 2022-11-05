@@ -1,5 +1,5 @@
 import * as accordion from "@zag-js/accordion"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -15,6 +15,9 @@ export default function Page() {
     }),
     {
       context: controls.context,
+      onChange: (state) => {
+        controls.setContext(state.context)
+      },
     },
   )
 
