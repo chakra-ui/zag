@@ -31,8 +31,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "proxy-compare": "2.3.0",
-    "use-deep-compare-effect": "^1.8.1"
+    "proxy-compare": "2.3.0"
   },
   "devDependencies": {
     "@types/react": "18.0.21",
