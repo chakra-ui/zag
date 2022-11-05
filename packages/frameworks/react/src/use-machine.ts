@@ -15,7 +15,7 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, context } = options ?? {}
+  const { actions, state: hydratedState, context, onChange } = options ?? {}
 
   const service = useConstant(() => {
     const _machine = typeof machine === "function" ? machine() : machine
@@ -27,6 +27,10 @@ export function useService<
 
     if (service.state.can("SETUP")) {
       service.send("SETUP")
+    }
+
+    if (onChange) {
+      service.subscribe(onChange)
     }
 
     return () => {

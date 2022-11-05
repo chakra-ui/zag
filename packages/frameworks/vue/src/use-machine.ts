@@ -14,7 +14,7 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: MachineOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, context } = options ?? {}
+  const { actions, state: hydratedState, context, onChange } = options ?? {}
 
   const _machine = typeof machine === "function" ? machine() : machine
   const service = context ? _machine.withContext(context.value) : _machine
@@ -26,12 +26,17 @@ export function useService<
       service.send("SETUP")
     }
 
-    onBeforeUnmount(() => {
-      service.stop()
-    })
+    if (onChange) {
+      service.subscribe(onChange)
+    }
+
+    onBeforeUnmount(service.stop)
   })
 
-  watch(() => actions, service.setActions, { flush: "post", immediate: true })
+  watch(() => actions, service.setActions, {
+    flush: "post",
+    immediate: true,
+  })
 
   if (context) {
     watch(context, (ctx) => service.setContext(ctx), { deep: true })
