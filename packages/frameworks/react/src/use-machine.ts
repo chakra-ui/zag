@@ -1,4 +1,5 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
+import { compact } from "@zag-js/utils"
 import { useEffect, useLayoutEffect, useRef } from "react"
 import { useSnapshot } from "./use-snapshot"
 
@@ -15,7 +16,9 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, context } = options ?? {}
+  const { actions, state: hydratedState, context: _context } = options ?? {}
+
+  const context = _context ? compact(_context) : undefined
 
   const service = useConstant(() => {
     const _machine = typeof machine === "function" ? machine() : machine

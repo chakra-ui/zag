@@ -448,6 +448,7 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
       proxy-compare: 2.3.0
       react: 18.2.0
     dependencies:
@@ -457,6 +458,7 @@ importers:
       proxy-compare: 2.3.0
     devDependencies:
       '@types/react': 18.0.21
+      '@zag-js/utils': link:../../utilities/core
       react: 18.2.0
 
   packages/frameworks/solid:
@@ -490,12 +492,14 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
       vue: 3.2.40
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/store': link:../../store
       '@zag-js/types': link:../../types
     devDependencies:
+      '@zag-js/utils': link:../../utilities/core
       vue: 3.2.40
 
   packages/machines/accordion:

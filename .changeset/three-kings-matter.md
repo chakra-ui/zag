@@ -1,5 +1,7 @@
 ---
 "@zag-js/react": patch
+"@zag-js/solid": patch
+"@zag-js/vue": patch
 "@zag-js/accordion": patch
 "@zag-js/checkbox": patch
 "@zag-js/combobox": patch
