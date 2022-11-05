@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@types/react": "18.0.21",
+    "@zag-js/utils": "workspace:*",
     "react": "18.2.0"
   },
   "peerDependencies": {

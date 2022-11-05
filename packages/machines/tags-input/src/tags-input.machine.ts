@@ -4,13 +4,14 @@ import { contains, raf } from "@zag-js/dom-utils"
 import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
-import { warn } from "@zag-js/utils"
+import { compact, warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tags-input.types"
 
 const { and, not, or } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "tags-input",

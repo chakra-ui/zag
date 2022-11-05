@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackDocumentVisibility } from "@zag-js/dom-utils"
+import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import type { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
@@ -7,8 +8,10 @@ import { getToastDuration } from "./toast.utils"
 const { not, and, or } = guards
 
 export function createToastMachine(options: Options = {}) {
-  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 500, ...rest } = options
-  const __duration = getToastDuration(duration, type)
+  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 500, ...restProps } = options
+  const ctx = compact(restProps)
+
+  const computedDuration = getToastDuration(duration, type)
 
   return createMachine<MachineContext, MachineState>(
     {
@@ -18,12 +21,12 @@ export function createToastMachine(options: Options = {}) {
       context: {
         id,
         type,
-        remaining: __duration,
-        duration: __duration,
+        remaining: computedDuration,
+        duration: computedDuration,
         removeDelay,
         createdAt: Date.now(),
         placement,
-        ...rest,
+        ...ctx,
       },
 
       on: {

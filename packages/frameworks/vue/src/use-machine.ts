@@ -1,4 +1,5 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
+import { compact } from "@zag-js/utils"
 import { ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch } from "vue"
 
 type MachineOptions<
@@ -17,7 +18,7 @@ export function useService<
   const { actions, state: hydratedState, context } = options ?? {}
 
   const _machine = typeof machine === "function" ? machine() : machine
-  const service = context ? _machine.withContext(context.value) : _machine
+  const service = context ? _machine.withContext(compact(context.value)) : _machine
 
   onMounted(() => {
     service.start(hydratedState)
@@ -34,7 +35,7 @@ export function useService<
   watch(() => actions, service.setActions, { flush: "post", immediate: true })
 
   if (context) {
-    watch(context, (ctx) => service.setContext(ctx), { deep: true })
+    watch(context, (ctx) => service.setContext(compact(ctx)), { deep: true })
   }
 
   return service

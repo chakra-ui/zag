@@ -1,10 +1,12 @@
 import { createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-utils"
 import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { compact } from "@zag-js/utils"
 import { dom } from "./rating.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "rating",

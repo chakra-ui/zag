@@ -9,11 +9,13 @@ import {
   raf,
 } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
+import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tooltip.types"
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "tooltip",

@@ -2,11 +2,13 @@ import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
 import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
 import { trackElementSize } from "@zag-js/element-size"
+import { compact } from "@zag-js/utils"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import { utils } from "./slider.utils"
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "slider",

@@ -33,6 +33,7 @@
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
+    "@zag-js/utils": "workspace:*",
     "vue": "3.2.40"
   },
   "peerDependencies": {
