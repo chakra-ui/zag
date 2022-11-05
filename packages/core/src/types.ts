@@ -395,6 +395,7 @@ export declare namespace StateMachine {
     actions?: ActionMap<TContext, TState, TEvent>
     state?: StateInit<TContext, TState>
     context?: UserContext<TContext>
+    onChange?: StateListener<TContext, TState, TEvent>
   }
 
   export type Self<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
