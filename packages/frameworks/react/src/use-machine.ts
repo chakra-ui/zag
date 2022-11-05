@@ -16,13 +16,11 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { actions, state: hydratedState, context: _context } = options ?? {}
-
-  const context = _context ? compact(_context) : undefined
+  const { actions, state: hydratedState, context } = options ?? {}
 
   const service = useConstant(() => {
     const _machine = typeof machine === "function" ? machine() : machine
-    return context ? _machine.withContext(context) : _machine
+    return context ? _machine.withContext(compact(context)) : _machine
   })
 
   useSafeLayoutEffect(() => {
@@ -39,11 +37,8 @@ export function useService<
 
   useSafeLayoutEffect(() => {
     service.setActions(actions)
-  }, [actions])
-
-  useSafeLayoutEffect(() => {
-    service.setContext(context)
-  }, [context])
+    service.setContext(compact(context))
+  }, [context, actions])
 
   return service
 }
