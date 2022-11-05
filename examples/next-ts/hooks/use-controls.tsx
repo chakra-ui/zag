@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import { ControlRecord, ControlValue } from "@zag-js/shared"
+import { split } from "@zag-js/utils"
 import { useState } from "react"
 
 function getDefaultValues<T extends ControlRecord>(obj: T) {
@@ -19,7 +20,8 @@ export function useControls<T extends ControlRecord>(config: T) {
     context: state,
     setContext(value: any) {
       const pojo = JSON.parse(JSON.stringify(value))
-      setState(pojo)
+      const [filtered] = split(pojo, Object.keys(config)) as any
+      setState(filtered)
     },
     ui: () => (
       <div className="controls-container">
