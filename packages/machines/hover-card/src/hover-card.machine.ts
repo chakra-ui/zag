@@ -2,12 +2,14 @@ import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
+import { compact } from "@zag-js/utils"
 import { dom } from "./hover-card.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./hover-card.types"
 
 const { not } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "hover-card",

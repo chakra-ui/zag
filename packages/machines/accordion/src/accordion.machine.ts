@@ -1,11 +1,12 @@
 import { createMachine, guards } from "@zag-js/core"
-import { add, isString, remove, toArray, warn } from "@zag-js/utils"
+import { add, compact, isString, remove, toArray, warn } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./accordion.types"
 
 const { and, not } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "accordion",

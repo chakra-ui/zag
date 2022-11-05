@@ -4,14 +4,15 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent, contains, nextTick, raf, isModifiedEvent } from "@zag-js/dom-utils"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { next, runIfFn } from "@zag-js/utils"
+import { compact, next, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
 
 const { and, or, not } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "popover",

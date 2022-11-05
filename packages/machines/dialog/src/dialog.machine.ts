@@ -3,12 +3,13 @@ import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { nextTick, raf } from "@zag-js/dom-utils"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { runIfFn } from "@zag-js/utils"
+import { compact, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.types"
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "dialog",

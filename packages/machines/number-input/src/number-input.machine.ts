@@ -8,7 +8,7 @@ import {
   supportsPointerEvent,
 } from "@zag-js/dom-utils"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
-import { callAll } from "@zag-js/utils"
+import { callAll, compact } from "@zag-js/utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
@@ -16,7 +16,8 @@ import { utils } from "./number-input.utils"
 
 const { not, and } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "number-input",

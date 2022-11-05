@@ -1,7 +1,9 @@
 import { createMachine } from "@zag-js/core"
+import { compact } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./toggle.types"
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "toggle",

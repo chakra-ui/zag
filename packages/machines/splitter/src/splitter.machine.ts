@@ -1,12 +1,14 @@
 import { createMachine, guards } from "@zag-js/core"
-import { raf, trackPointerMove, getPointRelativeToNode } from "@zag-js/dom-utils"
+import { getPointRelativeToNode, raf, trackPointerMove } from "@zag-js/dom-utils"
 import { clamp, decrement, increment, snapToStep } from "@zag-js/number-utils"
+import { compact } from "@zag-js/utils"
 import { dom } from "./splitter.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./splitter.types"
 
 const { not } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "splitter",
