@@ -22,6 +22,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         value: ["checkValue", "invokeOnChange"],
+        multiple: ["checkValue"],
       },
 
       created: ["checkValue"],
