@@ -39,9 +39,15 @@ function Star() {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(rating.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    rating.machine({
+      id: createUniqueId(),
+      value: 2.5,
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = createMemo(() => rating.connect(state, send, normalizeProps))
 

@@ -1,5 +1,4 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
 import { useEffect, useLayoutEffect, useRef } from "react"
 import { useSnapshot } from "./use-snapshot"
 
@@ -20,7 +19,7 @@ export function useService<
 
   const service = useConstant(() => {
     const _machine = typeof machine === "function" ? machine() : machine
-    return context ? _machine.withContext(compact(context)) : _machine
+    return context ? _machine.withContext(context) : _machine
   })
 
   useSafeLayoutEffect(() => {
@@ -35,10 +34,8 @@ export function useService<
     }
   }, [])
 
-  useSafeLayoutEffect(() => {
-    service.setActions(actions)
-    service.setContext(compact(context))
-  }, [context, actions])
+  service.setOptions({ actions })
+  service.setContext(context)
 
   return service
 }

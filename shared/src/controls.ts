@@ -3,7 +3,6 @@ import { defineControls } from "./define-controls"
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
   multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
-  value: { type: "select", defaultValue: "", options: ["home", "about", "contact"], label: "Set value" },
 })
 
 export const checkboxControls = defineControls({
@@ -134,7 +133,6 @@ export const ratingControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readonly: { type: "boolean", defaultValue: false },
   allowHalf: { type: "boolean", defaultValue: true },
-  value: { type: "number", defaultValue: 2.5 },
   max: { type: "number", defaultValue: 5 },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
