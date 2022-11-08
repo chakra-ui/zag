@@ -47,9 +47,15 @@ export default defineComponent({
   name: "Rating",
   setup() {
     const controls = useControls(ratingControls)
-    const [state, send] = useMachine(rating.machine({ id: "rating" }), {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      rating.machine({
+        id: "rating",
+        value: 2.5,
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const apiRef = computed(() => rating.connect(state.value, send, normalizeProps))
 

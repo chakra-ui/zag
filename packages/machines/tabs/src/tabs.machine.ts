@@ -1,11 +1,13 @@
 import { createMachine, guards } from "@zag-js/core"
 import { getFocusables, nextTick, raf } from "@zag-js/dom-utils"
+import { compact } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
 
 const { not } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       initial: "unknown",

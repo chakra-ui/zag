@@ -45,6 +45,7 @@
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*"
+    "@zag-js/dom-utils": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   }
 }

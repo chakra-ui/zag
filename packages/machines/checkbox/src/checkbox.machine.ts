@@ -1,11 +1,13 @@
 import { createMachine, guards } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { compact } from "@zag-js/utils"
 import { dom } from "./checkbox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
 
 const { and } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "checkbox",

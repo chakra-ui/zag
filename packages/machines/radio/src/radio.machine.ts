@@ -1,11 +1,11 @@
 import { createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
-
+import { compact } from "@zag-js/utils"
+import { dom } from "./radio.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./radio.types"
 
-import { dom } from "./radio.dom"
-
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "radio",

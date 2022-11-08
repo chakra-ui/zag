@@ -42,6 +42,7 @@ export default function Page() {
   const [state, send] = useMachine(
     rating.machine({
       id: useId(),
+      value: 2.5,
     }),
     {
       context: controls.context,

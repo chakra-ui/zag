@@ -1,9 +1,11 @@
 import { createMachine } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-utils"
+import { compact } from "@zag-js/utils"
 import { createToastMachine } from "./toast.machine"
 import type { GroupMachineContext, UserDefinedGroupContext } from "./toast.types"
 
-export function groupMachine(ctx: UserDefinedGroupContext) {
+export function groupMachine(userContext: UserDefinedGroupContext) {
+  const ctx = compact(userContext)
   return createMachine<GroupMachineContext>({
     id: "toaster",
     initial: "active",

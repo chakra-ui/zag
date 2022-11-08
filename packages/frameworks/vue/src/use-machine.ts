@@ -1,5 +1,5 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch } from "vue"
+import { ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch, watchEffect } from "vue"
 
 type MachineOptions<
   TContext extends Record<string, any>,
@@ -31,10 +31,12 @@ export function useService<
     })
   })
 
-  watch(() => actions, service.setActions, { flush: "post", immediate: true })
+  watchEffect(() => {
+    service.setOptions({ actions })
+  })
 
   if (context) {
-    watch(context, (ctx) => service.setContext(ctx), { deep: true })
+    watch(context, service.setContext, { deep: true })
   }
 
   return service

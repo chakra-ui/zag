@@ -454,6 +454,7 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
       proxy-compare: 2.3.0
       react: 18.2.0
     dependencies:
@@ -463,6 +464,7 @@ importers:
       proxy-compare: 2.3.0
     devDependencies:
       '@types/react': 18.0.21
+      '@zag-js/utils': link:../../utilities/core
       react: 18.2.0
 
   packages/frameworks/solid:
@@ -496,12 +498,14 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
       vue: 3.2.40
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/store': link:../../store
       '@zag-js/types': link:../../types
     devDependencies:
+      '@zag-js/utils': link:../../utilities/core
       vue: 3.2.40
 
   packages/machines/accordion:
@@ -581,6 +585,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
@@ -588,6 +593,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/hover-card:
     specifiers:
@@ -596,6 +602,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
@@ -603,6 +610,7 @@ importers:
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/menu:
     specifiers:
@@ -645,11 +653,13 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/pin-input:
     specifiers:
@@ -694,11 +704,13 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/radio:
     specifiers:
@@ -706,12 +718,14 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/range-slider:
     specifiers:
@@ -723,6 +737,7 @@ importers:
       '@zag-js/rect-utils': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/element-size': link:../../utilities/element-size
@@ -733,6 +748,7 @@ importers:
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/rect-utils': link:../../utilities/rect
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/rating:
     specifiers:
@@ -768,6 +784,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/element-size': link:../../utilities/element-size
@@ -776,6 +793,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/number-utils': link:../../utilities/number
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/splitter:
     specifiers:
@@ -783,12 +801,14 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/number-utils': link:../../utilities/number
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/tabs:
     specifiers:
@@ -842,11 +862,13 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/tooltip:
     specifiers:

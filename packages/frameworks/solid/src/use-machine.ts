@@ -39,7 +39,7 @@ export function useService<
   })
 
   createEffect(() => {
-    service.setActions(actions)
+    service.setOptions({ actions })
   })
 
   return service

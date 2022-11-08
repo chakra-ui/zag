@@ -4,12 +4,14 @@ import { contains, observeAttributes, observeChildren, raf } from "@zag-js/dom-u
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
+import { compact } from "@zag-js/utils"
 import { dom } from "./combobox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
 
 const { and, not } = guards
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",

@@ -1,10 +1,12 @@
 import { createMachine, ref } from "@zag-js/core"
 import { addDomEvent, disableTextSelection, isHTMLElement, restoreTextSelection } from "@zag-js/dom-utils"
+import { compact } from "@zag-js/utils"
 import { dom } from "./pressable.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./pressable.types"
 import { utils } from "./pressable.utils"
 
-export function machine(ctx: UserDefinedContext) {
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "pressable",

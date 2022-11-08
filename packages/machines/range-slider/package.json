@@ -38,6 +38,7 @@
     "@zag-js/dom-utils": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@zag-js/rect-utils": "workspace:*"
   },
   "scripts": {

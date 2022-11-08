@@ -8,9 +8,10 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
   "scripts": {
-    "build-fast": "turbo run build-fast --filter=./packages/**/*",
-    "build": "turbo run build --filter=./packages/**/*",
-    "start": "turbo run start --filter=./packages/**/*",
+    "packages": "pnpm --filter=./packages/** -r",
+    "build-fast": "pnpm packages -- build-fast",
+    "build": "pnpm packages -- build",
+    "start": "pnpm packages -- start",
     "prepare": "husky install",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc *.log",
