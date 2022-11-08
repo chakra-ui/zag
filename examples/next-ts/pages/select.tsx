@@ -18,7 +18,23 @@ export default function Page() {
   return (
     <>
       <main className="select">
-        <div {...api.rootProps}></div>
+        <div className="control">
+          <label {...api.labelProps}>Label</label>
+          <button {...api.triggerProps}>
+            <span>{state.context.renderedValue}</span>
+          </button>
+        </div>
+
+        <div data-part="positioner">
+          <ul {...api.listboxProps}>
+            {selectData.map(({ label, value }) => (
+              <li key={value} {...api.getOptionProps({ label, value })}>
+                <span>{label}</span>
+                {value === api.selectedOption?.value && "✓"}
+              </li>
+            ))}
+          </ul>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

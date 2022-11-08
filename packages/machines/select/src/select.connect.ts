@@ -24,14 +24,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectedOption,
     renderedValue: state.context.renderedValue,
 
-    getLabelProps: normalize.label({
+    labelProps: normalize.label({
       id: dom.getLabelId(state.context),
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
     }),
 
-    getTriggerProps: normalize.button({
+    triggerProps: normalize.button({
       id: dom.getTriggerId(state.context),
       disabled,
       "aria-controls": "listbox",
