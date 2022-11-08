@@ -1,5 +1,4 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
 import { createEffect, onCleanup, onMount } from "solid-js"
 import { createStore, reconcile, Store } from "solid-js/store"
 
@@ -20,7 +19,7 @@ export function useService<
 
   const service = (() => {
     const _machine = typeof machine === "function" ? machine() : machine
-    return context ? _machine.withContext(compact(context)) : _machine
+    return context ? _machine.withContext(context) : _machine
   })()
 
   onMount(() => {
@@ -36,11 +35,11 @@ export function useService<
   })
 
   createEffect(() => {
-    service.setContext(compact(context))
+    service.setContext(context)
   })
 
   createEffect(() => {
-    service.setActions(actions)
+    service.setOptions({ actions })
   })
 
   return service

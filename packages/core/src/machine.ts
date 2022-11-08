@@ -1,5 +1,18 @@
 import { ref, snapshot, subscribe } from "@zag-js/store"
-import { cast, clear, invariant, isArray, isDev, isObject, isString, noop, runIfFn, uuid, warn } from "@zag-js/utils"
+import {
+  cast,
+  clear,
+  compact,
+  invariant,
+  isArray,
+  isDev,
+  isObject,
+  isString,
+  noop,
+  runIfFn,
+  uuid,
+  warn,
+} from "@zag-js/utils"
 import { klona } from "klona/json"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
@@ -327,18 +340,20 @@ export class Machine<
    */
   public setContext = (context: Partial<Writable<TContext>> | undefined) => {
     if (!context) return
-    for (const key in context) {
-      this.state.context[<keyof TContext>key] = context[key]!
-    }
+    Object.assign(this.state.context, compact(context))
   }
 
   public withContext = (context: Partial<Writable<TContext>>) => {
-    const newContext = { ...this.config.context, ...context } as TContext
+    const newContext = { ...this.config.context, ...compact(context) } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 
-  public setActions = (actions: Partial<S.MachineOptions<TContext, TState, TEvent>>["actions"]) => {
-    this.actionMap = { ...this.actionMap, ...actions }
+  public setOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
+    const opts = compact(options)
+    this.actionMap = { ...this.actionMap, ...opts.actions }
+    this.delayMap = { ...this.delayMap, ...opts.delays }
+    this.activityMap = { ...this.activityMap, ...opts.activities }
+    this.guardMap = { ...this.guardMap, ...opts.guards }
   }
 
   private getStateNode = (state: TState["value"] | null) => {
