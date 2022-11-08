@@ -769,12 +769,18 @@ importers:
     specifiers:
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
+      '@zag-js/interact-outside': workspace:*
+      '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
     dependencies:
       '@zag-js/core': link:../../core
+      '@zag-js/interact-outside': link:../../utilities/interact-outside
+      '@zag-js/popper': link:../../utilities/popper
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
 
   packages/machines/slider:
     specifiers:

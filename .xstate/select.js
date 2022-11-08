@@ -12,10 +12,8 @@ const {
 const fetchMachine = createMachine({
   id: "select",
   context: {
-    "isPrintableCharacter": false,
-    "hasFocusedOption": false,
-    "hasFocusedOption": false,
-    "isPrintableCharacter": false,
+    "hasHighlightedOption": false,
+    "hasHighlightedOption": false,
     "selectOnTab": false
   },
   initial: "idle",
@@ -26,84 +24,100 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
-      entry: ["clearFocusedOption"],
+      entry: ["clearHighlightedOption"],
       on: {
         TRIGGER_CLICK: {
           target: "open"
         },
-        FOCUS: {
+        TRIGGER_FOCUS: {
           target: "focused"
         }
       }
     },
     focused: {
-      entry: ["focusTrigger", "clearFocusedOption"],
+      entry: ["focusTrigger", "clearHighlightedOption"],
       on: {
         TRIGGER_CLICK: {
           target: "open"
         },
-        BLUR: {
+        TRIGGER_BLUR: {
           target: "idle"
         },
-        TYPE_AHEAD: {
-          cond: "isPrintableCharacter",
-          actions: ["selectMatchingOption"]
+        BLUR: {
+          target: "idle"
         },
         TRIGGER_KEY: {
           target: "open"
         },
         ARROW_UP: {
           target: "open",
-          actions: ["focusLastOption"]
+          actions: ["highlightLastOption"]
         },
         ARROW_DOWN: {
           target: "open",
-          actions: ["focusFirstOption"]
+          actions: ["highlightFirstOption"]
+        },
+        HOME: {
+          target: "open",
+          actions: ["highlightFirstOption"]
+        },
+        END: {
+          target: "open",
+          actions: ["highlightLastOption"]
+        },
+        TYPEAHEAD: {
+          actions: ["selectMatchingOption"]
         }
       }
     },
     open: {
-      entry: ["focusListbox", "focusSelectedOption"],
+      entry: ["focusListbox", "highlightSelectedOption"],
+      activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
       on: {
         TRIGGER_CLICK: {
           target: "focused"
         },
         OPTION_CLICK: {
           target: "focused",
-          actions: ["selectFocusedOption"]
+          actions: ["selectHighlightedOption"]
         },
         TRIGGER_KEY: {
           target: "focused",
-          actions: ["selectFocusedOption"]
+          actions: ["selectHighlightedOption"]
         },
         ESC_KEY: {
           target: "focused"
         },
         BLUR: {
-          target: "idle"
+          target: "focused"
+        },
+        HOME: {
+          actions: ["highlightFirstOption"]
+        },
+        END: {
+          actions: ["highlightLastOption"]
         },
         ARROW_DOWN: [{
-          cond: "hasFocusedOption",
-          actions: ["focusNextOption"]
+          cond: "hasHighlightedOption",
+          actions: ["highlightNextOption"]
         }, {
-          actions: ["focusFirstOption"]
+          actions: ["highlightFirstOption"]
         }],
         ARROW_UP: [{
-          cond: "hasFocusedOption",
+          cond: "hasHighlightedOption",
           actions: ["focusPreviousOption"]
         }, {
-          actions: ["focusLastOption"]
+          actions: ["highlightLastOption"]
         }],
-        TYPE_AHEAD: {
-          cond: "isPrintableCharacter",
-          actions: ["focusMatchingOption"]
+        TYPEAHEAD: {
+          actions: ["highlightMatchingOption"]
         },
         HOVER: {
-          actions: ["focusOption"]
+          actions: ["highlightOption"]
         },
         TAB: [{
           target: "idle",
-          actions: ["selectFocusedOption"],
+          actions: ["selectHighlightedOption"],
           cond: "selectOnTab"
         }, {
           target: "idle"
@@ -120,8 +134,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isPrintableCharacter": ctx => ctx["isPrintableCharacter"],
-    "hasFocusedOption": ctx => ctx["hasFocusedOption"],
+    "hasHighlightedOption": ctx => ctx["hasHighlightedOption"],
     "selectOnTab": ctx => ctx["selectOnTab"]
   }
 });

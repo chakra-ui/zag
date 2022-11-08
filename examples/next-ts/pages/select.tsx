@@ -9,9 +9,15 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const [state, send] = useMachine(select.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    select.machine({
+      id: useId(),
+      data: selectData,
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = select.connect(state, send, normalizeProps)
 
@@ -21,11 +27,11 @@ export default function Page() {
         <div className="control">
           <label {...api.labelProps}>Label</label>
           <button {...api.triggerProps}>
-            <span>{state.context.renderedValue}</span>
+            <span>{state.context.rendered}</span>
           </button>
         </div>
 
-        <div data-part="positioner">
+        <div {...api.positionerProps}>
           <ul {...api.listboxProps}>
             {selectData.map(({ label, value }) => (
               <li key={value} {...api.getOptionProps({ label, value })}>
@@ -38,7 +44,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={state} omit={["data"]} />
       </Toolbar>
     </>
   )

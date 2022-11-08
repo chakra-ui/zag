@@ -1,108 +1,147 @@
 import { createMachine } from "@zag-js/core"
+import { contains, findByTypeahead, observeAttributes } from "@zag-js/dom-utils"
+import { trackInteractOutside } from "@zag-js/interact-outside"
+import { getPlacement } from "@zag-js/popper"
+import { compact } from "@zag-js/utils"
 import { dom } from "./select.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./select.types"
 
 export function machine(userContext: UserDefinedContext) {
-  const ctx = userContext
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "select",
       context: {
+        data: [],
         placeholder: "Select...",
         selectedOption: null,
-        focusedId: null,
+        highlightedId: null,
         selectOnTab: true,
+        __itemCount: null,
+        isPlacementComplete: false,
+        typeahead: findByTypeahead.defaultOptions,
         ...ctx,
+        positioning: {
+          placement: "bottom-start",
+          gutter: 8,
+          ...ctx.positioning,
+        },
       },
       computed: {
-        renderedValue(ctx) {
+        rendered(ctx) {
           return !ctx.selectedOption ? ctx.placeholder : ctx.selectedOption.label
+        },
+        hasValue: (ctx) => Boolean(ctx.selectedOption),
+        isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
+        itemCount(ctx) {
+          let itemCount = ctx.data.length
+          if (ctx.__itemCount != null) {
+            itemCount = ctx.__itemCount
+          } else if (ctx.count !== undefined) {
+            itemCount = ctx.count
+          }
+          return itemCount
         },
       },
 
       initial: "idle",
       states: {
         idle: {
-          entry: ["clearFocusedOption"],
+          entry: ["clearHighlightedOption"],
           on: {
             TRIGGER_CLICK: {
               target: "open",
             },
-            FOCUS: {
+            TRIGGER_FOCUS: {
               target: "focused",
             },
           },
         },
+
         focused: {
-          entry: ["focusTrigger", "clearFocusedOption"],
+          entry: ["focusTrigger", "clearHighlightedOption"],
           on: {
             TRIGGER_CLICK: { target: "open" },
+            TRIGGER_BLUR: { target: "idle" },
             BLUR: { target: "idle" },
-            TYPE_AHEAD: {
-              guard: "isPrintableCharacter",
-              actions: ["selectMatchingOption"],
-            },
             TRIGGER_KEY: {
               target: "open",
             },
             ARROW_UP: {
               target: "open",
-              actions: ["focusLastOption"],
+              actions: ["highlightLastOption"],
             },
             ARROW_DOWN: {
               target: "open",
-              actions: ["focusFirstOption"],
+              actions: ["highlightFirstOption"],
+            },
+            HOME: {
+              target: "open",
+              actions: ["highlightFirstOption"],
+            },
+            END: {
+              target: "open",
+              actions: ["highlightLastOption"],
+            },
+            TYPEAHEAD: {
+              actions: ["selectMatchingOption"],
             },
           },
         },
 
         open: {
-          entry: ["focusListbox", "focusSelectedOption"],
+          entry: ["focusListbox", "highlightSelectedOption"],
+          activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
           on: {
             TRIGGER_CLICK: {
               target: "focused",
             },
             OPTION_CLICK: {
               target: "focused",
-              actions: ["selectFocusedOption"],
+              actions: ["selectHighlightedOption"],
             },
             TRIGGER_KEY: {
               target: "focused",
-              actions: ["selectFocusedOption"],
+              actions: ["selectHighlightedOption"],
             },
             ESC_KEY: {
               target: "focused",
             },
             BLUR: {
-              target: "idle",
+              target: "focused",
+            },
+            HOME: {
+              actions: ["highlightFirstOption"],
+            },
+            END: {
+              actions: ["highlightLastOption"],
             },
             ARROW_DOWN: [
               {
-                guard: "hasFocusedOption",
-                actions: ["focusNextOption"],
+                guard: "hasHighlightedOption",
+                actions: ["highlightNextOption"],
               },
-              { actions: ["focusFirstOption"] },
+              { actions: ["highlightFirstOption"] },
             ],
             ARROW_UP: [
               {
-                guard: "hasFocusedOption",
+                guard: "hasHighlightedOption",
                 actions: ["focusPreviousOption"],
               },
               {
-                actions: ["focusLastOption"],
+                actions: ["highlightLastOption"],
               },
             ],
-            TYPE_AHEAD: {
-              guard: "isPrintableCharacter",
-              actions: ["focusMatchingOption"],
+            TYPEAHEAD: {
+              actions: ["highlightMatchingOption"],
             },
             HOVER: {
-              actions: ["focusOption"],
+              actions: ["highlightOption"],
             },
             TAB: [
               {
                 target: "idle",
-                actions: ["selectFocusedOption"],
+                actions: ["selectHighlightedOption"],
                 guard: "selectOnTab",
               },
               {
@@ -115,48 +154,75 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        hasFocusedOption(context) {
-          return Boolean(context.focusedId)
+        hasHighlightedOption(context) {
+          return Boolean(context.highlightedId)
         },
         selectOnTab(context) {
           return Boolean(context.selectOnTab)
         },
-        isPrintableCharacter(_context, event) {
-          const { key } = event
-          return /[0-9a-zA-Z]/g.test(key)
+      },
+      activities: {
+        trackInteractOutside(ctx, _evt, { send }) {
+          return trackInteractOutside(dom.getListboxElement(ctx), {
+            exclude(target) {
+              const ignore = [dom.getTriggerElement(ctx)]
+              return ignore.some((el) => contains(el, target))
+            },
+            onInteractOutside() {
+              send({ type: "BLUR", src: "interact-outside" })
+            },
+          })
+        },
+        computePlacement(ctx) {
+          ctx.currentPlacement = ctx.positioning.placement
+          return getPlacement(dom.getTriggerElement(ctx), dom.getPositionerElement(ctx), {
+            ...ctx.positioning,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+              ctx.isPlacementComplete = true
+            },
+          })
+        },
+        scrollIntoView(ctx, _evt) {
+          const trigger = dom.getTriggerElement(ctx)
+          return observeAttributes(trigger, "aria-activedescendant", () => {
+            // if (!ctx.isKeyboardEvent) return
+            const option = dom.getHighlightedOption(ctx)
+            option?.scrollIntoView({ block: "nearest" })
+          })
         },
       },
       actions: {
         focusPreviousOption(context) {
-          if (!context.focusedId) {
+          if (!context.highlightedId) {
             console.warn("Cannot find previous option elment. Focused id is null")
             return
           }
-          const previousOption = dom.getPreviousOption(context, context.focusedId)
-          context.focusedId = previousOption.id
+          const previousOption = dom.getPreviousOption(context, context.highlightedId)
+          context.highlightedId = previousOption.id
         },
 
-        focusNextOption(context) {
-          if (!context.focusedId) {
+        highlightNextOption(context) {
+          if (!context.highlightedId) {
             console.warn("Cannot find next option elment. Focused id is null")
             return
           }
-          const nextOption = dom.getNextOption(context, context.focusedId)
-          context.focusedId = nextOption.id
+          const nextOption = dom.getNextOption(context, context.highlightedId)
+          context.highlightedId = nextOption.id
         },
 
-        focusFirstOption(context) {
+        highlightFirstOption(context) {
           const firstOption = dom.getFirstOption(context)
           if (firstOption) {
-            context.focusedId = firstOption.id
+            context.highlightedId = firstOption.id
           }
         },
 
-        focusLastOption(context) {
+        highlightLastOption(context) {
           const lastOption = dom.getLastOption(context)
 
           if (lastOption) {
-            context.focusedId = lastOption.id
+            context.highlightedId = lastOption.id
           }
         },
 
@@ -172,8 +238,8 @@ export function machine(userContext: UserDefinedContext) {
           }, 0)
         },
 
-        selectFocusedOption(context, event) {
-          const id = event.id ?? context.focusedId
+        selectHighlightedOption(context, event) {
+          const id = event.id ?? context.highlightedId
           if (!id) return
           const focusedOption = dom.getById(context, id)
 
@@ -184,23 +250,30 @@ export function machine(userContext: UserDefinedContext) {
           // invoke onSelect
         },
 
-        focusSelectedOption(context) {
+        highlightSelectedOption(context) {
           if (!context.selectedOption) return
-          context.focusedId = context.selectedOption.id
+          context.highlightedId = context.selectedOption.id
         },
 
-        focusOption(context, event) {
-          context.focusedId = event.id
+        highlightOption(context, event) {
+          context.highlightedId = event.id
         },
 
-        clearFocusedOption(context) {
-          context.focusedId = null
+        clearHighlightedOption(context) {
+          context.highlightedId = null
         },
 
-        focusMatchingOption(context, event) {
-          const matchingOption = dom.getMatchingOption(context, event.key)
-          if (matchingOption) {
-            context.focusedId = matchingOption.id
+        highlightMatchingOption(context, event) {
+          const node = dom.getMatchingOption(context, event.key)
+          if (node) {
+            context.highlightedId = node.id
+          }
+        },
+
+        selectMatchingOption(context, event) {
+          const node = dom.getMatchingOption(context, event.key)
+          if (node) {
+            context.selectedOption = dom.getOptionDetails(node)
           }
         },
       },

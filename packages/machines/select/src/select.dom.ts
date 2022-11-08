@@ -1,16 +1,28 @@
-import { defineDomHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers, findByTypeahead, nextById, prevById } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = defineDomHelpers({
   getListboxId: (ctx: Ctx) => `${ctx.id}:listbox`,
   getTriggerId: (ctx: Ctx) => `${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => `${ctx.id}:label`,
-  getOptionId: (ctx: Ctx, id: string) => `${ctx.id}:option:${id}`,
+  getOptionId: (ctx: Ctx, id: string | number) => `${ctx.id}:option:${id}`,
+  getSelectId: (ctx: Ctx) => `${ctx.id}:select`,
+  getPositionerId: (ctx: Ctx) => `${ctx.id}:positioner`,
 
   getListboxElement: (ctx: Ctx) => {
     const listbox = dom.getById(ctx, dom.getListboxId(ctx))
     if (!listbox) throw new Error("Could not find the listbox element.")
     return listbox
+  },
+
+  getTriggerElement: (ctx: Ctx) => {
+    const trigger = dom.getById(ctx, dom.getTriggerId(ctx))
+    if (!trigger) throw new Error("Could not find the trigger element.")
+    return trigger
+  },
+
+  getPositionerElement: (ctx: Ctx) => {
+    return dom.getById(ctx, dom.getPositionerId(ctx))
   },
 
   getOptionElements: (ctx: Ctx) => {
@@ -30,22 +42,12 @@ export const dom = defineDomHelpers({
 
   getNextOption: (ctx: Ctx, currentId: string) => {
     const options = dom.getOptionElements(ctx)
-    const currentIndex = options.findIndex((element) => element.id === currentId)
-    const nextIndex = currentIndex + 1 >= options.length ? 0 : currentIndex + 1
-    return options[nextIndex]
+    return nextById(options, currentId, false)
   },
 
   getPreviousOption: (ctx: Ctx, currentId: string) => {
     const options = dom.getOptionElements(ctx)
-    const currentIndex = options.findIndex((element) => element.id === currentId)
-    const nextIndex = currentIndex === 0 ? options.length - 1 : currentIndex - 1
-    return options[nextIndex]
-  },
-
-  getTriggerElement: (ctx: Ctx) => {
-    const trigger = dom.getById(ctx, "trigger")
-    if (!trigger) throw new Error("Could not find the trigger element.")
-    return trigger
+    return prevById(options, currentId, false)
   },
 
   getOptionDetails(option: HTMLElement) {
@@ -54,9 +56,14 @@ export const dom = defineDomHelpers({
   },
 
   getMatchingOption(ctx: Ctx, key: string) {
-    const normalizedKey = key.toLowerCase()
-    return dom
-      .getOptionElements(ctx)
-      .find((element) => element.dataset.label?.toLowerCase().includes(normalizedKey) && element.id !== ctx.focusedId)
+    return findByTypeahead(dom.getOptionElements(ctx), {
+      state: ctx.typeahead,
+      key,
+      activeId: ctx.highlightedId,
+    })
+  },
+
+  getHighlightedOption(ctx: Ctx) {
+    return ctx.highlightedId ? dom.getById(ctx, ctx.highlightedId) : null
   },
 })
