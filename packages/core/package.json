@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A minimal implementation of xstate fsm for UI machines",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
