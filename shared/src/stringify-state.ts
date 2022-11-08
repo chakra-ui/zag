@@ -3,13 +3,16 @@ import formatHighlight from "json-format-highlight"
 const pick = (obj: Record<string, any>, keys: string[]) =>
   Object.fromEntries(keys.filter((key) => key in obj).map((key) => [key, obj[key]]))
 
-export function stringifyState(state: Record<string, any>) {
+export function stringifyState(state: Record<string, any>, omit?: string[]) {
   const code = JSON.stringify(
     state,
-    (_k, v) => {
+    (key, v) => {
       try {
         if (v.hasOwnProperty("target") && v.hasOwnProperty("timeStamp"))
           return pick(v, ["type", "target", "currentTarget", "relatedTarget"])
+
+        if (omit?.includes(key)) return undefined
+
         switch (v?.toString()) {
           case "[object Machine]":
             const id = v.state.context.id ?? v.id
