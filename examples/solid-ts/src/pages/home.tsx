@@ -7,7 +7,7 @@ export default function Home() {
     <div class="index-nav">
       <h2>Zag.js + Solid</h2>
       <ul>
-        <For each={routesData}>
+        <For each={routesData.sort((a, b) => a.label.localeCompare(b.label))}>
           {(route) => (
             <li>
               <Link href={route.path}>{route.label}</Link>

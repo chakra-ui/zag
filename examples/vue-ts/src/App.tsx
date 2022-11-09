@@ -9,15 +9,17 @@ const App = defineComponent({
     const router = useRouter()
 
     const items = computed(() =>
-      routesData.map((route) => {
-        const pathname = router.currentRoute.value.path
-        const active = pathname === route.path
-        return (
-          <RouterLink data-active={dataAttr(active)} to={route.path} key={route.label}>
-            {() => route.label}
-          </RouterLink>
-        )
-      }),
+      routesData
+        .sort((a, b) => a.label.localeCompare(b.label))
+        .map((route) => {
+          const pathname = router.currentRoute.value.path
+          const active = pathname === route.path
+          return (
+            <RouterLink data-active={dataAttr(active)} to={route.path} key={route.label}>
+              {() => route.label}
+            </RouterLink>
+          )
+        }),
     )
 
     return () => (

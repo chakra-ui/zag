@@ -14,14 +14,16 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
       <aside className="nav">
         <header>Zagjs</header>
-        {routesData.map((route) => {
-          const active = router.pathname === route.path
-          return (
-            <Link href={route.path} key={route.label} passHref>
-              <a data-active={dataAttr(active)}>{route.label}</a>
-            </Link>
-          )
-        })}
+        {routesData
+          .sort((a, b) => a.label.localeCompare(b.label))
+          .map((route) => {
+            const active = router.pathname === route.path
+            return (
+              <Link href={route.path} key={route.label} passHref>
+                <a data-active={dataAttr(active)}>{route.label}</a>
+              </Link>
+            )
+          })}
       </aside>
       <Component {...pageProps} />
     </div>
