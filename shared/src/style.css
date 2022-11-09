@@ -1148,7 +1148,7 @@ main > .toggle[data-pressed] {
 }
 
 .select [data-part="option"] {
-  padding: 8px 12px;
+  padding: 4px 6px;
   cursor: default;
   background: #efefef;
   display: flex;
@@ -1160,7 +1160,6 @@ main > .toggle[data-pressed] {
 }
 
 .select [data-part="option"]:hover {
-  padding: 8px 12px;
   background: #dfdfdf;
 }
 
