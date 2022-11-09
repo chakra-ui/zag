@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { contains, findByTypeahead, observeAttributes } from "@zag-js/dom-utils"
+import { contains, findByTypeahead, observeAttributes, raf } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
@@ -109,6 +109,7 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: ["open"],
           entry: ["focusListbox", "highlightSelectedOption"],
+          exit: ["scrollToTop"],
           activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
           on: {
             CLOSE: {
@@ -209,12 +210,13 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         scrollIntoView(ctx, _evt) {
-          const trigger = dom.getTriggerElement(ctx)
-          return observeAttributes(trigger, "aria-activedescendant", () => {
-            // if (!ctx.isKeyboardEvent) return
+          const trigger = dom.getListboxElement(ctx)
+          const scrollIntoView = () => {
             const option = dom.getHighlightedOption(ctx)
             option?.scrollIntoView({ block: "nearest" })
-          })
+          }
+          scrollIntoView()
+          return observeAttributes(trigger, "aria-activedescendant", scrollIntoView)
         },
       },
       actions: {
@@ -318,6 +320,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         setHighlightOption(ctx, evt) {
           ctx.highlightedId = evt.id
+        },
+        scrollToTop(ctx) {
+          dom.getListboxElement(ctx)?.scrollTo(0, 0)
         },
       },
     },

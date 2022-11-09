@@ -81,7 +81,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-haspopup": "listbox",
       "aria-labelledby": "label",
       "data-part": "trigger",
-      "aria-activedescendant": state.context.highlightedId || "",
       "data-invalid": dataAttr(invalid),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasValue),
@@ -174,6 +173,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getListboxId(state.context),
       role: "listbox",
       "data-part": "listbox",
+      "aria-activedescendant": state.context.highlightedId || "",
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: -1,
       onPointerMove(event) {
