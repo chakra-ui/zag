@@ -1,5 +1,13 @@
 # @zag-js/utils
 
+## 0.3.0
+
+### Minor Changes
+
+- [`6092a10f`](https://github.com/chakra-ui/zag/commit/6092a10f51d2b7fabe503cf4bb3506c02d4ee201) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - `compact`: Add utility to deeply filter `undefined` value in
+  objects
+
 ## 0.2.0
 
 ### Minor Changes

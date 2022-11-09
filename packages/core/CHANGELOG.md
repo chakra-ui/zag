@@ -1,5 +1,15 @@
 # @zag-js/core
 
+## 0.2.1
+
+### Patch Changes
+
+- [#384](https://github.com/chakra-ui/zag/pull/384)
+  [`4aa6955f`](https://github.com/chakra-ui/zag/commit/4aa6955fab7ff6fee8545dcf491576640c69c64e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for updating the internal machine options.
+
+  Fix react controlled context.
+
 ## 0.2.0
 
 ### Minor Changes

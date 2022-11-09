@@ -1,5 +1,22 @@
 # @zag-js/solid
 
+## 0.2.1
+
+### Patch Changes
+
+- [#384](https://github.com/chakra-ui/zag/pull/384)
+  [`4aa6955f`](https://github.com/chakra-ui/zag/commit/4aa6955fab7ff6fee8545dcf491576640c69c64e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for updating the internal machine options.
+
+  Fix react controlled context.
+
+- [#381](https://github.com/chakra-ui/zag/pull/381)
+  [`21775db5`](https://github.com/chakra-ui/zag/commit/21775db5ac318b095f603e7030ec7645e104f663) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Omit undefined values passed in machine's context
+
+- Updated dependencies [[`4aa6955f`](https://github.com/chakra-ui/zag/commit/4aa6955fab7ff6fee8545dcf491576640c69c64e)]:
+  - @zag-js/core@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
