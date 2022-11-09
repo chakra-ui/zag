@@ -54,5 +54,5 @@ export const findByTypeahead = /*#__PURE__*/ Object.assign(findByTypeaheadImpl, 
 })
 
 function isValidTypeaheadEvent(event: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaKey">) {
-  return event.key.length === 1 && !/^[A-Z]/i.test(event.key) && !event.ctrlKey && !event.metaKey
+  return event.key.length === 1 && !event.ctrlKey && !event.metaKey
 }

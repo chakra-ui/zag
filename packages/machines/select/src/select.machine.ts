@@ -28,9 +28,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       computed: {
-        rendered(ctx) {
-          return !ctx.selectedOption ? ctx.placeholder : ctx.selectedOption.label
-        },
+        rendered: (ctx) => (!ctx.selectedOption ? ctx.placeholder : ctx.selectedOption.label),
         hasValue: (ctx) => Boolean(ctx.selectedOption),
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         itemCount(ctx) {
@@ -94,12 +92,10 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["selectNextOption"],
             },
             HOME: {
-              target: "open",
-              actions: ["highlightFirstOption"],
+              actions: ["selectFirstOption"],
             },
             END: {
-              target: "open",
-              actions: ["highlightLastOption"],
+              actions: ["selectLastOption"],
             },
             TYPEAHEAD: {
               actions: ["selectMatchingOption"],
@@ -161,7 +157,7 @@ export function machine(userContext: UserDefinedContext) {
             TYPEAHEAD: {
               actions: ["highlightMatchingOption"],
             },
-            HOVER: {
+            POINTER_MOVE: {
               actions: ["highlightOption"],
             },
             POINTER_LEAVE: {
@@ -183,11 +179,11 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        hasHighlightedOption(context) {
-          return Boolean(context.highlightedId)
+        hasHighlightedOption(ctx) {
+          return Boolean(ctx.highlightedId)
         },
-        selectOnTab(context) {
-          return Boolean(context.selectOnTab)
+        selectOnTab(ctx) {
+          return Boolean(ctx.selectOnTab)
         },
       },
       activities: {
@@ -222,104 +218,106 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        focusPreviousOption(context) {
-          if (!context.highlightedId) return
-          const previousOption = dom.getPreviousOption(context, context.highlightedId)
+        focusPreviousOption(ctx) {
+          if (!ctx.highlightedId) return
+          const previousOption = dom.getPreviousOption(ctx, ctx.highlightedId)
           if (previousOption) {
-            context.highlightedId = previousOption.id
+            ctx.highlightedId = previousOption.id
           }
         },
-        highlightNextOption(context) {
-          if (!context.highlightedId) return
-          const nextOption = dom.getNextOption(context, context.highlightedId)
+        highlightNextOption(ctx) {
+          if (!ctx.highlightedId) return
+          const nextOption = dom.getNextOption(ctx, ctx.highlightedId)
           if (nextOption) {
-            context.highlightedId = nextOption.id
+            ctx.highlightedId = nextOption.id
           }
         },
-        highlightFirstOption(context) {
-          const firstOption = dom.getFirstOption(context)
+        highlightFirstOption(ctx) {
+          const firstOption = dom.getFirstOption(ctx)
           if (firstOption) {
-            context.highlightedId = firstOption.id
+            ctx.highlightedId = firstOption.id
           }
         },
-        highlightLastOption(context) {
-          const lastOption = dom.getLastOption(context)
+        highlightLastOption(ctx) {
+          const lastOption = dom.getLastOption(ctx)
           if (lastOption) {
-            context.highlightedId = lastOption.id
+            ctx.highlightedId = lastOption.id
           }
         },
-        focusListbox(context) {
+        focusListbox(ctx) {
           setTimeout(() => {
-            dom.getListboxElement(context)?.focus()
+            dom.getListboxElement(ctx)?.focus({ preventScroll: true })
           }, 0)
         },
-        focusTrigger(context) {
+        focusTrigger(ctx) {
           setTimeout(() => {
-            dom.getTriggerElement(context).focus()
+            dom.getTriggerElement(ctx).focus({ preventScroll: true })
           }, 0)
         },
-        selectHighlightedOption(context, event) {
-          const id = event.id ?? context.highlightedId
+        selectHighlightedOption(ctx, evt) {
+          const id = evt.id ?? ctx.highlightedId
           if (!id) return
-          const focusedOption = dom.getById(context, id)
+          const focusedOption = dom.getById(ctx, id)
 
           if (!focusedOption) return
           const details = dom.getOptionDetails(focusedOption)
 
-          context.selectedOption = details
+          ctx.selectedOption = details
           // invoke onSelect
         },
-        selectFirstOption(context) {
-          const firstOption = dom.getFirstOption(context)
+        selectFirstOption(ctx) {
+          const firstOption = dom.getFirstOption(ctx)
           if (firstOption) {
             const details = dom.getOptionDetails(firstOption)
-            context.selectedOption = details
+            ctx.selectedOption = details
           }
         },
-        selectNextOption(context) {
-          if (!context.selectedOption) return
-          const nextOption = dom.getNextOption(context, context.selectedOption.id)
+        selectLastOption(ctx) {
+          const lastOption = dom.getLastOption(ctx)
+          if (lastOption) {
+            const details = dom.getOptionDetails(lastOption)
+            ctx.selectedOption = details
+          }
+        },
+        selectNextOption(ctx) {
+          if (!ctx.selectedOption) return
+          const nextOption = dom.getNextOption(ctx, ctx.selectedOption.id)
           console.log(nextOption)
           if (nextOption) {
-            context.selectedOption = dom.getOptionDetails(nextOption)
+            ctx.selectedOption = dom.getOptionDetails(nextOption)
           }
         },
-        selectPreviousOption(context) {
-          if (!context.selectedOption) return
-          const previousOption = dom.getPreviousOption(context, context.selectedOption.id)
+        selectPreviousOption(ctx) {
+          if (!ctx.selectedOption) return
+          const previousOption = dom.getPreviousOption(ctx, ctx.selectedOption.id)
           if (previousOption) {
-            context.selectedOption = dom.getOptionDetails(previousOption)
+            ctx.selectedOption = dom.getOptionDetails(previousOption)
           }
         },
-        highlightSelectedOption(context) {
-          if (!context.selectedOption) return
-          context.highlightedId = context.selectedOption.id
+        highlightSelectedOption(ctx) {
+          if (!ctx.selectedOption) return
+          ctx.highlightedId = ctx.selectedOption.id
         },
-
-        highlightOption(context, event) {
-          context.highlightedId = event.id
+        highlightOption(ctx, evt) {
+          ctx.highlightedId = evt.id
         },
-
-        clearHighlightedOption(context) {
-          context.highlightedId = null
+        clearHighlightedOption(ctx) {
+          ctx.highlightedId = null
         },
-
-        highlightMatchingOption(context, event) {
-          const node = dom.getMatchingOption(context, event.key)
+        highlightMatchingOption(ctx, evt) {
+          const node = dom.getMatchingOption(ctx, evt.key, ctx.highlightedId)
           if (node) {
-            context.highlightedId = node.id
+            ctx.highlightedId = node.id
           }
         },
-
-        selectMatchingOption(context, event) {
-          const node = dom.getMatchingOption(context, event.key)
+        selectMatchingOption(ctx, evt) {
+          const node = dom.getMatchingOption(ctx, evt.key, ctx.selectedOption?.id)
           if (node) {
-            context.selectedOption = dom.getOptionDetails(node)
+            ctx.selectedOption = dom.getOptionDetails(node)
           }
         },
-
-        setHighlightOption(context, event) {
-          context.highlightedId = event.id
+        setHighlightOption(ctx, evt) {
+          ctx.highlightedId = evt.id
         },
       },
     },

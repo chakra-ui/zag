@@ -74,12 +74,10 @@ const fetchMachine = createMachine({
           actions: ["selectNextOption"]
         },
         HOME: {
-          target: "open",
-          actions: ["highlightFirstOption"]
+          actions: ["selectFirstOption"]
         },
         END: {
-          target: "open",
-          actions: ["highlightLastOption"]
+          actions: ["selectLastOption"]
         },
         TYPEAHEAD: {
           actions: ["selectMatchingOption"]
@@ -136,7 +134,7 @@ const fetchMachine = createMachine({
         TYPEAHEAD: {
           actions: ["highlightMatchingOption"]
         },
-        HOVER: {
+        POINTER_MOVE: {
           actions: ["highlightOption"]
         },
         POINTER_LEAVE: {

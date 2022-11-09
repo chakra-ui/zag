@@ -1,7 +1,7 @@
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { State, Send, ItemProps, OptionProps, Option } from "./select.types"
 import { dom } from "./select.dom"
-import { dataAttr, EventKeyMap, findByTypeahead, getEventKey, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, EventKeyMap, findByTypeahead, getEventKey, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { isString } from "@zag-js/utils"
 
@@ -41,13 +41,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     closeMenu() {
       send("CLOSE")
     },
-    selectItem(item: string | null) {},
+    selectItem(item: string | null) {
+      send({ type: "SET_SELECTED", value: item })
+    },
     highlight(item: string | Option | null) {
       const id = isString(item) ? item : item?.value
       if (!id) return
       send({ type: "SET_HIGHLIGHT", id })
     },
-    reset() {},
+    reset() {
+      send("RESET")
+    },
 
     labelProps: normalize.label({
       id: dom.getLabelId(state.context),
@@ -106,6 +110,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ArrowRight() {
             send({ type: "ARROW_RIGHT" })
           },
+          Home() {
+            send({ type: "HOME" })
+          },
+          End() {
+            send({ type: "END" })
+          },
           Space(event) {
             if (isTypingAhead) {
               send({ type: "TYPEAHEAD", key: event.key })
@@ -133,7 +143,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOptionState,
     getOptionProps(props: OptionProps) {
       const { value, label } = props
-      const _state = getOptionState(props)
+      const optionState = getOptionState(props)
       return normalize.element({
         id: dom.getOptionId(state.context, value),
         role: "option",
@@ -141,10 +151,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-label": label,
         "data-value": value,
         "data-valuetext": label,
-        "aria-selected": _state.isSelected,
-        "data-selected": dataAttr(_state.isSelected),
-        "data-focus": dataAttr(_state.isHighlighted),
-        "data-disabled": dataAttr(_state.isDisabled),
+        "aria-selected": optionState.isSelected,
+        "data-selected": dataAttr(optionState.isSelected),
+        "data-focus": dataAttr(optionState.isHighlighted),
+        "data-disabled": dataAttr(optionState.isDisabled),
+        "aria-disabled": ariaAttr(optionState.isDisabled),
       })
     },
 
@@ -169,7 +180,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (disabled) return
         const option = dom.getClosestOption(event.target)
         if (option) {
-          send({ type: "HOVER", id: option.id })
+          send({ type: "POINTER_MOVE", id: option.id })
         }
       },
       onPointerLeave() {
@@ -193,6 +204,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
           ArrowDown() {
             send({ type: "ARROW_DOWN" })
+          },
+          Home() {
+            send({ type: "HOME" })
+          },
+          End() {
+            send({ type: "END" })
           },
           Tab() {
             send({ type: "TAB" })

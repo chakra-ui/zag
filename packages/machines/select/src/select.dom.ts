@@ -55,12 +55,8 @@ export const dom = defineDomHelpers({
     return { label, value, id: option.id } as Option
   },
 
-  getMatchingOption(ctx: Ctx, key: string) {
-    return findByTypeahead(dom.getOptionElements(ctx), {
-      state: ctx.typeahead,
-      key,
-      activeId: ctx.highlightedId,
-    })
+  getMatchingOption(ctx: Ctx, key: string, current: any) {
+    return findByTypeahead(dom.getOptionElements(ctx), { state: ctx.typeahead, key, activeId: current })
   },
 
   getHighlightedOption(ctx: Ctx) {
