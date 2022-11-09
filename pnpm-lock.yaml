@@ -767,6 +767,7 @@ importers:
 
   packages/machines/select:
     specifiers:
+      '@tanstack/virtual-core': v3.0.0-beta.22
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
@@ -774,6 +775,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@tanstack/virtual-core': 3.0.0-beta.22
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
       '@zag-js/popper': link:../../utilities/popper
@@ -2912,6 +2914,11 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@tanstack/virtual-core/3.0.0-beta.22:
+    resolution: {integrity: sha512-kMpEeXXxHXP3mmXmMwKJvCzsiGGRDK745EsOYCiBP9hER04kyPk89rOQIvXhIFBkSj+TjSNCovIIhEzqkpIDNw==}
+    engines: {node: '>=12'}
+    dev: false
 
   /@tsconfig/node10/1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}

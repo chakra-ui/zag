@@ -39,6 +39,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@tanstack/virtual-core": "v3.0.0-beta.22",
     "@zag-js/core": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
