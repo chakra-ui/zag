@@ -258,8 +258,6 @@ export function machine(userContext: UserDefinedContext) {
 
           const details = dom.getOptionDetails(option)
           ctx.selectedOption = details
-
-          // invoke onSelect
         },
         selectFirstOption(ctx) {
           const option = dom.getFirstOption(ctx)
