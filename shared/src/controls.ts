@@ -155,4 +155,5 @@ export const toastControls = defineControls({
 export const selectControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   selectOnTab: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

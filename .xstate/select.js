@@ -89,8 +89,8 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusListbox", "highlightSelectedOption"],
-      exit: ["scrollToTop"],
+      entry: ["focusMenu", "highlightSelectedOption"],
+      exit: ["scrollMenuToTop"],
       activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
       on: {
         CLOSE: {

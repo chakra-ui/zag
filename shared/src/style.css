@@ -1137,7 +1137,7 @@ main > .toggle[data-pressed] {
   width: max-content;
 }
 
-.select [data-part="listbox"] {
+.select [data-part="menu"] {
   padding: 0px;
   list-style: none;
   width: 240px;

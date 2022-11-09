@@ -35,6 +35,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectedOption,
     rendered: state.context.rendered,
 
+    focus() {
+      dom.getTriggerElement(state.context).focus()
+    },
+    blur() {
+      dom.getTriggerElement(state.context).blur()
+    },
+
     openMenu() {
       send("OPEN")
     },
@@ -54,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     labelProps: normalize.label({
+      dir: state.context.dir,
       id: dom.getLabelId(state.context),
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
@@ -75,7 +83,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled,
       dir: state.context.dir,
       role: "combobox",
-      "aria-controls": dom.getListboxId(state.context),
+      "aria-controls": dom.getMenuId(state.context),
       "aria-expanded": isOpen,
       "data-expanded": dataAttr(isOpen),
       "aria-haspopup": "listbox",
@@ -159,7 +167,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     selectProps: normalize.select({
+      "data-part": "select",
       name: state.context.name,
+      disabled,
       id: dom.getSelectId(state.context),
       defaultValue: state.context.selectedOption?.value,
       style: visuallyHiddenStyle,
@@ -167,12 +177,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
     }),
 
-    listboxProps: normalize.element({
+    menuProps: normalize.element({
       hidden: !isOpen,
       dir: state.context.dir,
-      id: dom.getListboxId(state.context),
+      id: dom.getMenuId(state.context),
       role: "listbox",
-      "data-part": "listbox",
+      "data-part": "menu",
       "aria-activedescendant": state.context.highlightedId || "",
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: -1,

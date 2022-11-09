@@ -2,17 +2,17 @@ import { defineDomHelpers, findByTypeahead, isHTMLElement, nextById, prevById } 
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = defineDomHelpers({
-  getListboxId: (ctx: Ctx) => `${ctx.id}:listbox`,
+  getMenuId: (ctx: Ctx) => `${ctx.id}:menu`,
   getTriggerId: (ctx: Ctx) => `${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => `${ctx.id}:label`,
   getOptionId: (ctx: Ctx, id: string | number) => `${ctx.id}:option:${id}`,
   getSelectId: (ctx: Ctx) => `${ctx.id}:select`,
   getPositionerId: (ctx: Ctx) => `${ctx.id}:positioner`,
 
-  getListboxElement: (ctx: Ctx) => {
-    const listbox = dom.getById(ctx, dom.getListboxId(ctx))
-    if (!listbox) throw new Error("Could not find the listbox element.")
-    return listbox
+  getMenuElement: (ctx: Ctx) => {
+    const menu = dom.getById(ctx, dom.getMenuId(ctx))
+    if (!menu) throw new Error("Could not find the menu element.")
+    return menu
   },
 
   getTriggerElement: (ctx: Ctx) => {
@@ -26,18 +26,18 @@ export const dom = defineDomHelpers({
   },
 
   getOptionElements: (ctx: Ctx) => {
-    const listbox = dom.getListboxElement(ctx)
-    return Array.from(listbox.querySelectorAll<HTMLElement>("[role=option]:not([data-disabled])") ?? [])
+    const menu = dom.getMenuElement(ctx)
+    return Array.from(menu.querySelectorAll<HTMLElement>("[role=option]:not([data-disabled])") ?? [])
   },
 
   getFirstOption: (ctx: Ctx) => {
-    const listbox = dom.getListboxElement(ctx)
-    return listbox.querySelector<HTMLElement>("[role=option]:not([data-disabled])")
+    const menu = dom.getMenuElement(ctx)
+    return menu.querySelector<HTMLElement>("[role=option]:not([data-disabled])")
   },
 
   getLastOption: (ctx: Ctx) => {
-    const listbox = dom.getListboxElement(ctx)
-    return listbox.querySelector<HTMLElement>("[role=option]:not([data-disabled]):last-of-type")
+    const menu = dom.getMenuElement(ctx)
+    return menu.querySelector<HTMLElement>("[role=option]:not([data-disabled]):last-of-type")
   },
 
   getNextOption: (ctx: Ctx, currentId: string) => {

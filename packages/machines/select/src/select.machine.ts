@@ -13,7 +13,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "select",
       context: {
         data: [],
-        placeholder: "Select...",
+        placeholder: "Select option",
         selectedOption: null,
         highlightedId: null,
         selectOnTab: true,
@@ -108,8 +108,8 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          entry: ["focusListbox", "highlightSelectedOption"],
-          exit: ["scrollToTop"],
+          entry: ["focusMenu", "highlightSelectedOption"],
+          exit: ["scrollMenuToTop"],
           activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
           on: {
             CLOSE: {
@@ -189,7 +189,7 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {
-          return trackInteractOutside(dom.getListboxElement(ctx), {
+          return trackInteractOutside(dom.getMenuElement(ctx), {
             exclude(target) {
               const ignore = [dom.getTriggerElement(ctx)]
               return ignore.some((el) => contains(el, target))
@@ -210,7 +210,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         scrollIntoView(ctx, _evt) {
-          const trigger = dom.getListboxElement(ctx)
+          const trigger = dom.getMenuElement(ctx)
           const scrollIntoView = () => {
             const option = dom.getHighlightedOption(ctx)
             option?.scrollIntoView({ block: "nearest" })
@@ -246,9 +246,9 @@ export function machine(userContext: UserDefinedContext) {
             ctx.highlightedId = lastOption.id
           }
         },
-        focusListbox(ctx) {
+        focusMenu(ctx) {
           setTimeout(() => {
-            dom.getListboxElement(ctx)?.focus({ preventScroll: true })
+            dom.getMenuElement(ctx)?.focus({ preventScroll: true })
           }, 0)
         },
         focusTrigger(ctx) {
@@ -321,8 +321,8 @@ export function machine(userContext: UserDefinedContext) {
         setHighlightOption(ctx, evt) {
           ctx.highlightedId = evt.id
         },
-        scrollToTop(ctx) {
-          dom.getListboxElement(ctx)?.scrollTo(0, 0)
+        scrollMenuToTop(ctx) {
+          dom.getMenuElement(ctx)?.scrollTo(0, 0)
         },
       },
     },

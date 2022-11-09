@@ -44,7 +44,7 @@ export default function Page() {
 
         {/* UI select */}
         <div {...api.positionerProps}>
-          <ul {...api.listboxProps}>
+          <ul {...api.menuProps}>
             {selectData.map(({ label, value }) => (
               <li key={value} {...api.getOptionProps({ label, value })}>
                 <span>{label}</span>
