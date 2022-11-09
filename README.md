@@ -147,7 +147,7 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 ### 💡 Feature Requests
 
 Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
-what to work on.
+what to work on
 
 ## License
 
