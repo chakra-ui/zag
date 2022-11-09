@@ -18,12 +18,18 @@ const fetchMachine = createMachine({
   },
   initial: "idle",
   on: {
+    SET_HIGHLIGHT: {
+      actions: ["setHighlightOption"]
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
     idle: {
+      tags: ["closed"],
       entry: ["clearHighlightedOption"],
       on: {
         TRIGGER_CLICK: {
@@ -31,10 +37,14 @@ const fetchMachine = createMachine({
         },
         TRIGGER_FOCUS: {
           target: "focused"
+        },
+        OPEN: {
+          target: "open"
         }
       }
     },
     focused: {
+      tags: ["closed"],
       entry: ["focusTrigger", "clearHighlightedOption"],
       on: {
         TRIGGER_CLICK: {
@@ -57,6 +67,12 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["highlightFirstOption"]
         },
+        ARROW_LEFT: {
+          actions: ["selectPreviousOption"]
+        },
+        ARROW_RIGHT: {
+          actions: ["selectNextOption"]
+        },
         HOME: {
           target: "open",
           actions: ["highlightFirstOption"]
@@ -67,13 +83,21 @@ const fetchMachine = createMachine({
         },
         TYPEAHEAD: {
           actions: ["selectMatchingOption"]
+        },
+        OPEN: {
+          target: "open"
         }
       }
     },
     open: {
+      tags: ["open"],
       entry: ["focusListbox", "highlightSelectedOption"],
       activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
       on: {
+        CLOSE: {
+          // should close go to idle?
+          target: "focused"
+        },
         TRIGGER_CLICK: {
           target: "focused"
         },
@@ -114,6 +138,9 @@ const fetchMachine = createMachine({
         },
         HOVER: {
           actions: ["highlightOption"]
+        },
+        POINTER_LEAVE: {
+          actions: ["clearHighlightedOption"]
         },
         TAB: [{
           target: "idle",

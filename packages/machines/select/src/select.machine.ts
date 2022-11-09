@@ -45,8 +45,16 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       initial: "idle",
+
+      on: {
+        SET_HIGHLIGHT: {
+          actions: ["setHighlightOption"],
+        },
+      },
+
       states: {
         idle: {
+          tags: ["closed"],
           entry: ["clearHighlightedOption"],
           on: {
             TRIGGER_CLICK: {
@@ -55,10 +63,14 @@ export function machine(userContext: UserDefinedContext) {
             TRIGGER_FOCUS: {
               target: "focused",
             },
+            OPEN: {
+              target: "open",
+            },
           },
         },
 
         focused: {
+          tags: ["closed"],
           entry: ["focusTrigger", "clearHighlightedOption"],
           on: {
             TRIGGER_CLICK: { target: "open" },
@@ -75,6 +87,12 @@ export function machine(userContext: UserDefinedContext) {
               target: "open",
               actions: ["highlightFirstOption"],
             },
+            ARROW_LEFT: {
+              actions: ["selectPreviousOption"],
+            },
+            ARROW_RIGHT: {
+              actions: ["selectNextOption"],
+            },
             HOME: {
               target: "open",
               actions: ["highlightFirstOption"],
@@ -86,13 +104,21 @@ export function machine(userContext: UserDefinedContext) {
             TYPEAHEAD: {
               actions: ["selectMatchingOption"],
             },
+            OPEN: {
+              target: "open",
+            },
           },
         },
 
         open: {
+          tags: ["open"],
           entry: ["focusListbox", "highlightSelectedOption"],
           activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
           on: {
+            CLOSE: {
+              // should close go to idle?
+              target: "focused",
+            },
             TRIGGER_CLICK: {
               target: "focused",
             },
@@ -137,6 +163,9 @@ export function machine(userContext: UserDefinedContext) {
             },
             HOVER: {
               actions: ["highlightOption"],
+            },
+            POINTER_LEAVE: {
+              actions: ["clearHighlightedOption"],
             },
             TAB: [
               {
@@ -194,50 +223,41 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         focusPreviousOption(context) {
-          if (!context.highlightedId) {
-            console.warn("Cannot find previous option elment. Focused id is null")
-            return
-          }
+          if (!context.highlightedId) return
           const previousOption = dom.getPreviousOption(context, context.highlightedId)
-          context.highlightedId = previousOption.id
-        },
-
-        highlightNextOption(context) {
-          if (!context.highlightedId) {
-            console.warn("Cannot find next option elment. Focused id is null")
-            return
+          if (previousOption) {
+            context.highlightedId = previousOption.id
           }
-          const nextOption = dom.getNextOption(context, context.highlightedId)
-          context.highlightedId = nextOption.id
         },
-
+        highlightNextOption(context) {
+          if (!context.highlightedId) return
+          const nextOption = dom.getNextOption(context, context.highlightedId)
+          if (nextOption) {
+            context.highlightedId = nextOption.id
+          }
+        },
         highlightFirstOption(context) {
           const firstOption = dom.getFirstOption(context)
           if (firstOption) {
             context.highlightedId = firstOption.id
           }
         },
-
         highlightLastOption(context) {
           const lastOption = dom.getLastOption(context)
-
           if (lastOption) {
             context.highlightedId = lastOption.id
           }
         },
-
         focusListbox(context) {
           setTimeout(() => {
             dom.getListboxElement(context)?.focus()
           }, 0)
         },
-
         focusTrigger(context) {
           setTimeout(() => {
             dom.getTriggerElement(context).focus()
           }, 0)
         },
-
         selectHighlightedOption(context, event) {
           const id = event.id ?? context.highlightedId
           if (!id) return
@@ -249,7 +269,28 @@ export function machine(userContext: UserDefinedContext) {
           context.selectedOption = details
           // invoke onSelect
         },
-
+        selectFirstOption(context) {
+          const firstOption = dom.getFirstOption(context)
+          if (firstOption) {
+            const details = dom.getOptionDetails(firstOption)
+            context.selectedOption = details
+          }
+        },
+        selectNextOption(context) {
+          if (!context.selectedOption) return
+          const nextOption = dom.getNextOption(context, context.selectedOption.id)
+          console.log(nextOption)
+          if (nextOption) {
+            context.selectedOption = dom.getOptionDetails(nextOption)
+          }
+        },
+        selectPreviousOption(context) {
+          if (!context.selectedOption) return
+          const previousOption = dom.getPreviousOption(context, context.selectedOption.id)
+          if (previousOption) {
+            context.selectedOption = dom.getOptionDetails(previousOption)
+          }
+        },
         highlightSelectedOption(context) {
           if (!context.selectedOption) return
           context.highlightedId = context.selectedOption.id
@@ -275,6 +316,10 @@ export function machine(userContext: UserDefinedContext) {
           if (node) {
             context.selectedOption = dom.getOptionDetails(node)
           }
+        },
+
+        setHighlightOption(context, event) {
+          context.highlightedId = event.id
         },
       },
     },

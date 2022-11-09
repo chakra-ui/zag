@@ -1,8 +1,9 @@
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { State, Send, ItemProps, OptionProps } from "./select.types"
+import { State, Send, ItemProps, OptionProps, Option } from "./select.types"
 import { dom } from "./select.dom"
-import { dataAttr, EventKeyMap, getEventKey, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { dataAttr, EventKeyMap, findByTypeahead, getEventKey, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
+import { isString } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const disabled = state.context.disabled
@@ -34,10 +35,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectedOption,
     rendered: state.context.rendered,
 
-    openMenu() {},
-    closeMenu() {},
+    openMenu() {
+      send("OPEN")
+    },
+    closeMenu() {
+      send("CLOSE")
+    },
     selectItem(item: string | null) {},
-    highlightItem(item: string | null) {},
+    highlight(item: string | Option | null) {
+      const id = isString(item) ? item : item?.value
+      if (!id) return
+      send({ type: "SET_HIGHLIGHT", id })
+    },
     reset() {},
 
     labelProps: normalize.label({
@@ -45,6 +54,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
+      onClick() {
+        if (disabled) return
+        dom.getTriggerElement(state.context)?.focus()
+      },
     }),
 
     positionerProps: normalize.element({
@@ -56,8 +69,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       id: dom.getTriggerId(state.context),
       disabled,
+      dir: state.context.dir,
       role: "combobox",
-      tabIndex: 0,
       "aria-controls": dom.getListboxId(state.context),
       "aria-expanded": isOpen,
       "data-expanded": dataAttr(isOpen),
@@ -87,6 +100,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ArrowDown() {
             send({ type: "ARROW_DOWN" })
           },
+          ArrowLeft() {
+            send({ type: "ARROW_LEFT" })
+          },
+          ArrowRight() {
+            send({ type: "ARROW_RIGHT" })
+          },
           Space(event) {
             if (isTypingAhead) {
               send({ type: "TYPEAHEAD", key: event.key })
@@ -96,14 +115,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
         }
 
-        const exec = keyMap[getEventKey(event)]
+        const exec = keyMap[getEventKey(event, state.context)]
 
         if (exec) {
           exec(event)
           event.preventDefault()
-        } else {
-          const isSingleKey = event.key.length === 1
-          if (!isSingleKey) return
+          return
+        }
+
+        if (findByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }
@@ -133,29 +153,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getSelectId(state.context),
       defaultValue: state.context.selectedOption?.value,
       style: visuallyHiddenStyle,
+      tabIndex: -1,
+      "aria-labelledby": dom.getLabelId(state.context),
     }),
 
     listboxProps: normalize.element({
       hidden: !isOpen,
+      dir: state.context.dir,
       id: dom.getListboxId(state.context),
       role: "listbox",
       "data-part": "listbox",
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: -1,
-      onMouseMove(event) {
+      onPointerMove(event) {
         if (disabled) return
-        const { target } = event
-        const option = target instanceof HTMLElement ? target.closest("[data-part=option]") : null
-
+        const option = dom.getClosestOption(event.target)
         if (option) {
           send({ type: "HOVER", id: option.id })
         }
       },
+      onPointerLeave() {
+        send({ type: "POINTER_LEAVE" })
+      },
       onClick(event) {
         if (disabled) return
-        const { target } = event
-        const option = target instanceof HTMLElement ? target.closest("[data-part=option]") : null
-
+        const option = dom.getClosestOption(event.target)
         if (option) {
           send({ type: "OPTION_CLICK", id: option.id })
         }
@@ -192,9 +214,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (exec) {
           exec(event)
           event.preventDefault()
-        } else {
-          const isSingleKey = event.key.length === 1
-          if (!isSingleKey) return
+          return
+        }
+
+        if (findByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }

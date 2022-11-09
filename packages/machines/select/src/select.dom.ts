@@ -1,4 +1,4 @@
-import { defineDomHelpers, findByTypeahead, nextById, prevById } from "@zag-js/dom-utils"
+import { defineDomHelpers, findByTypeahead, isHTMLElement, nextById, prevById } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = defineDomHelpers({
@@ -65,5 +65,9 @@ export const dom = defineDomHelpers({
 
   getHighlightedOption(ctx: Ctx) {
     return ctx.highlightedId ? dom.getById(ctx, ctx.highlightedId) : null
+  },
+
+  getClosestOption(target: EventTarget | HTMLElement | null) {
+    return isHTMLElement(target) ? target.closest("[data-part=option]") : null
   },
 })
