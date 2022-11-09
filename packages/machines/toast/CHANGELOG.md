@@ -1,5 +1,13 @@
 # @zag-js/toast
 
+## 0.2.2
+
+### Patch Changes
+
+- [#387](https://github.com/chakra-ui/zag/pull/387)
+  [`0ce6aaa7`](https://github.com/chakra-ui/zag/commit/0ce6aaa75cc854e164c4ec78e770fab77b95dc7f) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export `ToastOptions` type
+
 ## 0.2.1
 
 ### Patch Changes
