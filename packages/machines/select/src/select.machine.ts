@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { contains, findByTypeahead, observeAttributes, raf } from "@zag-js/dom-utils"
+import { contains, findByTypeahead, observeAttributes } from "@zag-js/dom-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
