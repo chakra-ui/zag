@@ -68,26 +68,26 @@ export function machine(userContext: UserDefinedContext) {
             },
             ARROW_UP: {
               target: "open",
-              actions: ["highlightLastOption"],
+              actions: ["highlightLastOption", "invokeOnHighlight"],
             },
             ARROW_DOWN: {
               target: "open",
-              actions: ["highlightFirstOption"],
+              actions: ["highlightFirstOption", "invokeOnHighlight"],
             },
             ARROW_LEFT: {
-              actions: ["selectPreviousOption"],
+              actions: ["selectPreviousOption", "invokeOnSelect"],
             },
             ARROW_RIGHT: {
-              actions: ["selectNextOption"],
+              actions: ["selectNextOption", "invokeOnSelect"],
             },
             HOME: {
-              actions: ["selectFirstOption"],
+              actions: ["selectFirstOption", "invokeOnSelect"],
             },
             END: {
-              actions: ["selectLastOption"],
+              actions: ["selectLastOption", "invokeOnSelect"],
             },
             TYPEAHEAD: {
-              actions: ["selectMatchingOption"],
+              actions: ["selectMatchingOption", "invokeOnSelect"],
             },
             OPEN: {
               target: "open",
@@ -111,11 +111,11 @@ export function machine(userContext: UserDefinedContext) {
             },
             OPTION_CLICK: {
               target: "focused",
-              actions: ["selectHighlightedOption", "invokeOnClose"],
+              actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
             },
             TRIGGER_KEY: {
               target: "focused",
-              actions: ["selectHighlightedOption", "invokeOnClose"],
+              actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
             },
             ESC_KEY: {
               target: "focused",
@@ -126,32 +126,34 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["invokeOnClose"],
             },
             HOME: {
-              actions: ["highlightFirstOption"],
+              actions: ["highlightFirstOption", "invokeOnHighlight"],
             },
             END: {
-              actions: ["highlightLastOption"],
+              actions: ["highlightLastOption", "invokeOnHighlight"],
             },
             ARROW_DOWN: [
               {
                 guard: "hasHighlightedOption",
-                actions: ["highlightNextOption"],
+                actions: ["highlightNextOption", "invokeOnHighlight"],
               },
-              { actions: ["highlightFirstOption"] },
+              {
+                actions: ["highlightFirstOption", "invokeOnHighlight"],
+              },
             ],
             ARROW_UP: [
               {
                 guard: "hasHighlightedOption",
-                actions: ["focusPreviousOption"],
+                actions: ["highlightPreviousOption", "invokeOnHighlight"],
               },
               {
-                actions: ["highlightLastOption"],
+                actions: ["highlightLastOption", "invokeOnHighlight"],
               },
             ],
             TYPEAHEAD: {
-              actions: ["highlightMatchingOption"],
+              actions: ["highlightMatchingOption", "invokeOnHighlight"],
             },
             POINTER_MOVE: {
-              actions: ["highlightOption"],
+              actions: ["highlightOption", "invokeOnHighlight"],
             },
             POINTER_LEAVE: {
               actions: ["clearHighlightedOption"],
@@ -159,7 +161,7 @@ export function machine(userContext: UserDefinedContext) {
             TAB: [
               {
                 target: "idle",
-                actions: ["selectHighlightedOption", "invokeOnClose"],
+                actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
                 guard: "selectOnTab",
               },
               {
@@ -211,7 +213,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        focusPreviousOption(ctx) {
+        highlightPreviousOption(ctx) {
           if (!ctx.highlightedId) return
           const option = dom.getPreviousOption(ctx, ctx.highlightedId)
           if (!option) return

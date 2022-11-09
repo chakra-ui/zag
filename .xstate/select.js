@@ -61,26 +61,26 @@ const fetchMachine = createMachine({
         },
         ARROW_UP: {
           target: "open",
-          actions: ["highlightLastOption"]
+          actions: ["highlightLastOption", "invokeOnHighlight"]
         },
         ARROW_DOWN: {
           target: "open",
-          actions: ["highlightFirstOption"]
+          actions: ["highlightFirstOption", "invokeOnHighlight"]
         },
         ARROW_LEFT: {
-          actions: ["selectPreviousOption"]
+          actions: ["selectPreviousOption", "invokeOnSelect"]
         },
         ARROW_RIGHT: {
-          actions: ["selectNextOption"]
+          actions: ["selectNextOption", "invokeOnSelect"]
         },
         HOME: {
-          actions: ["selectFirstOption"]
+          actions: ["selectFirstOption", "invokeOnSelect"]
         },
         END: {
-          actions: ["selectLastOption"]
+          actions: ["selectLastOption", "invokeOnSelect"]
         },
         TYPEAHEAD: {
-          actions: ["selectMatchingOption"]
+          actions: ["selectMatchingOption", "invokeOnSelect"]
         },
         OPEN: {
           target: "open"
@@ -103,11 +103,11 @@ const fetchMachine = createMachine({
         },
         OPTION_CLICK: {
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnClose"]
+          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"]
         },
         TRIGGER_KEY: {
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnClose"]
+          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"]
         },
         ESC_KEY: {
           target: "focused",
@@ -118,35 +118,35 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         },
         HOME: {
-          actions: ["highlightFirstOption"]
+          actions: ["highlightFirstOption", "invokeOnHighlight"]
         },
         END: {
-          actions: ["highlightLastOption"]
+          actions: ["highlightLastOption", "invokeOnHighlight"]
         },
         ARROW_DOWN: [{
           cond: "hasHighlightedOption",
-          actions: ["highlightNextOption"]
+          actions: ["highlightNextOption", "invokeOnHighlight"]
         }, {
-          actions: ["highlightFirstOption"]
+          actions: ["highlightFirstOption", "invokeOnHighlight"]
         }],
         ARROW_UP: [{
           cond: "hasHighlightedOption",
-          actions: ["focusPreviousOption"]
+          actions: ["highlightPreviousOption", "invokeOnHighlight"]
         }, {
-          actions: ["highlightLastOption"]
+          actions: ["highlightLastOption", "invokeOnHighlight"]
         }],
         TYPEAHEAD: {
-          actions: ["highlightMatchingOption"]
+          actions: ["highlightMatchingOption", "invokeOnHighlight"]
         },
         POINTER_MOVE: {
-          actions: ["highlightOption"]
+          actions: ["highlightOption", "invokeOnHighlight"]
         },
         POINTER_LEAVE: {
           actions: ["clearHighlightedOption"]
         },
         TAB: [{
           target: "idle",
-          actions: ["selectHighlightedOption", "invokeOnClose"],
+          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
           cond: "selectOnTab"
         }, {
           target: "idle",
