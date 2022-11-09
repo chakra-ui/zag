@@ -129,8 +129,11 @@ export const isDisabled = (el: HTMLElement | null): boolean => {
   return el?.getAttribute("disabled") != null || !!el?.getAttribute("aria-disabled") === true
 }
 
-export function isElementEditable(el: HTMLElement | null) {
-  if (el == null) return false
+export function isElementEditable(el: HTMLElement | EventTarget | null) {
+  if (el == null || !isHTMLElement(el)) {
+    return false
+  }
+
   try {
     const win = getWindow(el)
     return (

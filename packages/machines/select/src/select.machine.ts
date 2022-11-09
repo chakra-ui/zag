@@ -12,13 +12,11 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        data: [],
         placeholder: "Select option",
         selectedOption: null,
         highlightedId: null,
+        highlightedData: null,
         selectOnTab: true,
-        __itemCount: null,
-        isPlacementComplete: false,
         typeahead: findByTypeahead.defaultOptions,
         ...ctx,
         positioning: {
@@ -29,17 +27,8 @@ export function machine(userContext: UserDefinedContext) {
       },
       computed: {
         rendered: (ctx) => (!ctx.selectedOption ? ctx.placeholder : ctx.selectedOption.label),
-        hasValue: (ctx) => Boolean(ctx.selectedOption),
+        hasValue: (ctx) => !!ctx.selectedOption,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
-        itemCount(ctx) {
-          let itemCount = ctx.data.length
-          if (ctx.__itemCount != null) {
-            itemCount = ctx.__itemCount
-          } else if (ctx.count !== undefined) {
-            itemCount = ctx.count
-          }
-          return itemCount
-        },
       },
 
       initial: "idle",
@@ -108,30 +97,33 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          entry: ["focusMenu", "highlightSelectedOption"],
+          entry: ["focusMenu", "highlightSelectedOption", "invokeOnOpen"],
           exit: ["scrollMenuToTop"],
           activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
           on: {
             CLOSE: {
-              // should close go to idle?
               target: "focused",
+              actions: ["invokeOnClose"],
             },
             TRIGGER_CLICK: {
               target: "focused",
+              actions: ["invokeOnClose"],
             },
             OPTION_CLICK: {
               target: "focused",
-              actions: ["selectHighlightedOption"],
+              actions: ["selectHighlightedOption", "invokeOnClose"],
             },
             TRIGGER_KEY: {
               target: "focused",
-              actions: ["selectHighlightedOption"],
+              actions: ["selectHighlightedOption", "invokeOnClose"],
             },
             ESC_KEY: {
               target: "focused",
+              actions: ["invokeOnClose"],
             },
             BLUR: {
               target: "focused",
+              actions: ["invokeOnClose"],
             },
             HOME: {
               actions: ["highlightFirstOption"],
@@ -167,11 +159,12 @@ export function machine(userContext: UserDefinedContext) {
             TAB: [
               {
                 target: "idle",
-                actions: ["selectHighlightedOption"],
+                actions: ["selectHighlightedOption", "invokeOnClose"],
                 guard: "selectOnTab",
               },
               {
                 target: "idle",
+                actions: ["invokeOnClose"],
               },
             ],
           },
@@ -180,12 +173,8 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        hasHighlightedOption(ctx) {
-          return Boolean(ctx.highlightedId)
-        },
-        selectOnTab(ctx) {
-          return Boolean(ctx.selectOnTab)
-        },
+        hasHighlightedOption: (ctx) => ctx.highlightedId != null,
+        selectOnTab: (ctx) => !!ctx.selectOnTab,
       },
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {
@@ -205,13 +194,15 @@ export function machine(userContext: UserDefinedContext) {
             ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement
-              ctx.isPlacementComplete = true
             },
           })
         },
-        scrollIntoView(ctx, _evt) {
+        scrollIntoView(ctx, _evt, { getState }) {
           const trigger = dom.getMenuElement(ctx)
           const scrollIntoView = () => {
+            const state = getState()
+            // don't scroll into view if we're using the pointer
+            if (state.event.type === "POINTER_MOVE") return
             const option = dom.getHighlightedOption(ctx)
             option?.scrollIntoView({ block: "nearest" })
           }
@@ -222,29 +213,29 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         focusPreviousOption(ctx) {
           if (!ctx.highlightedId) return
-          const previousOption = dom.getPreviousOption(ctx, ctx.highlightedId)
-          if (previousOption) {
-            ctx.highlightedId = previousOption.id
-          }
+          const option = dom.getPreviousOption(ctx, ctx.highlightedId)
+          if (!option) return
+          ctx.highlightedId = option.id
+          ctx.highlightedData = dom.getOptionDetails(option)
         },
         highlightNextOption(ctx) {
           if (!ctx.highlightedId) return
-          const nextOption = dom.getNextOption(ctx, ctx.highlightedId)
-          if (nextOption) {
-            ctx.highlightedId = nextOption.id
-          }
+          const option = dom.getNextOption(ctx, ctx.highlightedId)
+          if (!option) return
+          ctx.highlightedId = option.id
+          ctx.highlightedData = dom.getOptionDetails(option)
         },
         highlightFirstOption(ctx) {
-          const firstOption = dom.getFirstOption(ctx)
-          if (firstOption) {
-            ctx.highlightedId = firstOption.id
-          }
+          const option = dom.getFirstOption(ctx)
+          if (!option) return
+          ctx.highlightedId = option.id
+          ctx.highlightedData = dom.getOptionDetails(option)
         },
         highlightLastOption(ctx) {
-          const lastOption = dom.getLastOption(ctx)
-          if (lastOption) {
-            ctx.highlightedId = lastOption.id
-          }
+          const option = dom.getLastOption(ctx)
+          if (!option) return
+          ctx.highlightedId = option.id
+          ctx.highlightedData = dom.getOptionDetails(option)
         },
         focusMenu(ctx) {
           setTimeout(() => {
@@ -259,70 +250,81 @@ export function machine(userContext: UserDefinedContext) {
         selectHighlightedOption(ctx, evt) {
           const id = evt.id ?? ctx.highlightedId
           if (!id) return
-          const focusedOption = dom.getById(ctx, id)
 
-          if (!focusedOption) return
-          const details = dom.getOptionDetails(focusedOption)
+          const option = dom.getById(ctx, id)
+          if (!option) return
 
+          const details = dom.getOptionDetails(option)
           ctx.selectedOption = details
+
           // invoke onSelect
         },
         selectFirstOption(ctx) {
-          const firstOption = dom.getFirstOption(ctx)
-          if (firstOption) {
-            const details = dom.getOptionDetails(firstOption)
-            ctx.selectedOption = details
-          }
+          const option = dom.getFirstOption(ctx)
+          if (!option) return
+          const details = dom.getOptionDetails(option)
+          ctx.selectedOption = details
         },
         selectLastOption(ctx) {
-          const lastOption = dom.getLastOption(ctx)
-          if (lastOption) {
-            const details = dom.getOptionDetails(lastOption)
-            ctx.selectedOption = details
-          }
+          const option = dom.getLastOption(ctx)
+          if (!option) return
+          const details = dom.getOptionDetails(option)
+          ctx.selectedOption = details
         },
         selectNextOption(ctx) {
           if (!ctx.selectedOption) return
-          const nextOption = dom.getNextOption(ctx, ctx.selectedOption.id)
-          console.log(nextOption)
-          if (nextOption) {
-            ctx.selectedOption = dom.getOptionDetails(nextOption)
-          }
+          const option = dom.getNextOption(ctx, ctx.selectedOption.id)
+          if (!option) return
+          ctx.selectedOption = dom.getOptionDetails(option)
         },
         selectPreviousOption(ctx) {
           if (!ctx.selectedOption) return
-          const previousOption = dom.getPreviousOption(ctx, ctx.selectedOption.id)
-          if (previousOption) {
-            ctx.selectedOption = dom.getOptionDetails(previousOption)
-          }
+          const option = dom.getPreviousOption(ctx, ctx.selectedOption.id)
+          if (!option) return
+          ctx.selectedOption = dom.getOptionDetails(option)
         },
         highlightSelectedOption(ctx) {
           if (!ctx.selectedOption) return
           ctx.highlightedId = ctx.selectedOption.id
+          ctx.highlightedData = ctx.selectedOption
         },
         highlightOption(ctx, evt) {
           ctx.highlightedId = evt.id
         },
         clearHighlightedOption(ctx) {
           ctx.highlightedId = null
+          ctx.highlightedData = null
         },
         highlightMatchingOption(ctx, evt) {
-          const node = dom.getMatchingOption(ctx, evt.key, ctx.highlightedId)
-          if (node) {
-            ctx.highlightedId = node.id
-          }
+          const option = dom.getMatchingOption(ctx, evt.key, ctx.highlightedId)
+          if (!option) return
+          ctx.highlightedId = option.id
+          ctx.highlightedData = dom.getOptionDetails(option)
         },
         selectMatchingOption(ctx, evt) {
-          const node = dom.getMatchingOption(ctx, evt.key, ctx.selectedOption?.id)
-          if (node) {
-            ctx.selectedOption = dom.getOptionDetails(node)
-          }
+          const option = dom.getMatchingOption(ctx, evt.key, ctx.selectedOption?.id)
+          if (!option) return
+          const details = dom.getOptionDetails(option)
+          ctx.selectedOption = details
+          ctx.highlightedData = details
         },
         setHighlightOption(ctx, evt) {
           ctx.highlightedId = evt.id
         },
         scrollMenuToTop(ctx) {
           dom.getMenuElement(ctx)?.scrollTo(0, 0)
+        },
+        invokeOnOpen(ctx) {
+          ctx.onOpen?.()
+        },
+        invokeOnClose(ctx) {
+          ctx.onClose?.()
+        },
+        invokeOnHighlight(ctx) {
+          ctx.onHighlight?.(ctx.highlightedData)
+        },
+        invokeOnSelect(ctx) {
+          ctx.onChange?.(ctx.selectedOption)
         },
       },
     },

@@ -1,7 +1,15 @@
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { State, Send, ItemProps, OptionProps, Option } from "./select.types"
+import { State, Send, ItemProps, OptionProps, Option, OptionGroupLabelProps, OptionGroupProps } from "./select.types"
 import { dom } from "./select.dom"
-import { ariaAttr, dataAttr, EventKeyMap, findByTypeahead, getEventKey, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import {
+  ariaAttr,
+  dataAttr,
+  EventKeyMap,
+  findByTypeahead,
+  getEventKey,
+  isElementEditable,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { isString } from "@zag-js/utils"
 
@@ -166,6 +174,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getOptionGroupLabelProps(props: OptionGroupLabelProps) {
+      const { htmlFor } = props
+      return normalize.element({
+        id: dom.getOptionGroupId(state.context, htmlFor),
+        role: "group",
+        "data-part": "option-group-label",
+      })
+    },
+
+    getOptionGroupProps(props: OptionGroupProps) {
+      const { id } = props
+      return normalize.element({
+        "data-disabled": dataAttr(disabled),
+        id: dom.getOptionGroupId(state.context, id),
+        "data-part": "option-group",
+        "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
+      })
+    },
+
     selectProps: normalize.select({
       "data-part": "select",
       name: state.context.name,
@@ -241,6 +268,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (exec) {
           exec(event)
           event.preventDefault()
+          return
+        }
+
+        if (isElementEditable(event.target)) {
           return
         }
 

@@ -89,30 +89,33 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusMenu", "highlightSelectedOption"],
+      entry: ["focusMenu", "highlightSelectedOption", "invokeOnOpen"],
       exit: ["scrollMenuToTop"],
       activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
       on: {
         CLOSE: {
-          // should close go to idle?
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnClose"]
         },
         TRIGGER_CLICK: {
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnClose"]
         },
         OPTION_CLICK: {
           target: "focused",
-          actions: ["selectHighlightedOption"]
+          actions: ["selectHighlightedOption", "invokeOnClose"]
         },
         TRIGGER_KEY: {
           target: "focused",
-          actions: ["selectHighlightedOption"]
+          actions: ["selectHighlightedOption", "invokeOnClose"]
         },
         ESC_KEY: {
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnClose"]
         },
         BLUR: {
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnClose"]
         },
         HOME: {
           actions: ["highlightFirstOption"]
@@ -143,10 +146,11 @@ const fetchMachine = createMachine({
         },
         TAB: [{
           target: "idle",
-          actions: ["selectHighlightedOption"],
+          actions: ["selectHighlightedOption", "invokeOnClose"],
           cond: "selectOnTab"
         }, {
-          target: "idle"
+          target: "idle",
+          actions: ["invokeOnClose"]
         }]
       }
     }

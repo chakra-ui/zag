@@ -1113,16 +1113,22 @@ main > .toggle[data-pressed] {
 }
 
 .select [data-part="trigger"] {
-  padding: 8px 12px;
+  padding: 4px 12px;
+  border-radius: 4px;
   border: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  column-gap: 16px;
+  column-gap: 6px;
   cursor: default;
   background: #eeeeee;
   font-size: 14px;
   border: 1px solid slategray;
+}
+
+.select svg {
+  position: relative;
+  top: 1px;
 }
 
 .select [data-part="trigger"]:disabled {
@@ -1145,6 +1151,12 @@ main > .toggle[data-pressed] {
   margin-top: 4px;
   max-height: 400px;
   overflow-y: auto;
+  position: relative;
+}
+
+.select input {
+  position: sticky;
+  top: 0;
 }
 
 .select [data-part="option"] {
