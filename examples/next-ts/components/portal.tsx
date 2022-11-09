@@ -5,18 +5,17 @@ export const useLayoutEffect = typeof document !== "undefined" ? React.useLayout
 
 type PortalProps = {
   children: React.ReactNode
+  target?: React.RefObject<HTMLElement>
 }
 
-export function Portal({ children }: PortalProps): JSX.Element {
+export function Portal({ children, target }: PortalProps): JSX.Element {
   const node = React.useRef<HTMLDivElement | null>(null)
   const portalNode = React.useRef<HTMLElement | null>(null)
   const [, forceUpdate] = React.useState({})
 
   useLayoutEffect(() => {
     if (!node.current) return
-
     const doc = node.current.ownerDocument
-
     portalNode.current = doc.createElement("zag-portal")
     doc.body.appendChild(portalNode.current)
 
@@ -29,8 +28,10 @@ export function Portal({ children }: PortalProps): JSX.Element {
     }
   }, [])
 
-  if (portalNode.current) {
-    return createPortal(children, portalNode.current) as any
+  const targetNode = target?.current ?? portalNode.current
+
+  if (targetNode) {
+    return createPortal(children, targetNode) as any
   }
 
   return React.createElement("span", { ref: node }) as any

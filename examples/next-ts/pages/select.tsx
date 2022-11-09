@@ -1,10 +1,11 @@
 import * as select from "@zag-js/select"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { selectControls, selectData } from "@zag-js/shared"
-import { useId } from "react"
+import { useId, useRef } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
+import { Portal } from "../components/portal"
 
 export default function Page() {
   const controls = useControls(selectControls)
@@ -20,6 +21,7 @@ export default function Page() {
   )
 
   const api = select.connect(state, send, normalizeProps)
+  const ref = useRef(null)
 
   return (
     <>
@@ -31,10 +33,15 @@ export default function Page() {
           </button>
         </div>
 
+        <select ref={ref} {...api.selectProps} />
+
         <div {...api.positionerProps}>
           <ul {...api.listboxProps}>
             {selectData.map(({ label, value }) => (
               <li key={value} {...api.getOptionProps({ label, value })}>
+                <Portal target={ref}>
+                  <option value={value}> {label}</option>
+                </Portal>
                 <span>{label}</span>
                 {value === api.selectedOption?.value && "✓"}
               </li>
