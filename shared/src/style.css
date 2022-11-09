@@ -1122,6 +1122,7 @@ main > .toggle[data-pressed] {
   cursor: default;
   background: #eeeeee;
   font-size: 14px;
+  border: 1px solid slategray;
 }
 
 .select [data-part="trigger"]:disabled {
@@ -1139,7 +1140,7 @@ main > .toggle[data-pressed] {
 .select [data-part="listbox"] {
   padding: 0px;
   list-style: none;
-  min-width: 160px;
+  width: 240px;
   margin: 0;
   margin-top: 4px;
   max-height: 400px;
@@ -1164,7 +1165,8 @@ main > .toggle[data-pressed] {
 }
 
 .select [data-part="option"][data-focus] {
-  background: #bfbfbf;
+  background: blue;
+  color: white;
 }
 
 /* -----------------------------------------------------------------------------
