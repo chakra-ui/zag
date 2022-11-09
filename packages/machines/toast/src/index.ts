@@ -5,7 +5,15 @@ import { groupMachine } from "./toast-group.machine"
 import { createToastMachine as createMachine } from "./toast.machine"
 
 export { connect } from "./toast.connect"
-export type { GroupMachineContext, MachineContext, MachineState, Placement, Service, Type } from "./toast.types"
+export type {
+  GroupMachineContext,
+  MachineContext,
+  MachineState,
+  Placement,
+  Service,
+  ToastOptions,
+  Type,
+} from "./toast.types"
 export { createMachine }
 
 export const group = {
