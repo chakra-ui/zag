@@ -10,3 +10,7 @@ export function compact<T extends Record<string, unknown> | undefined>(obj: T): 
       .map(([key, value]) => [key, isObject(value) ? compact(value) : value]),
   ) as T
 }
+
+export function json(value: any) {
+  return JSON.parse(JSON.stringify(value))
+}
