@@ -15,12 +15,16 @@ export function machine(userContext: UserDefinedContext) {
         placeholder: "Select option",
         selectOnTab: true,
         ...ctx,
+        // selection data
         selectedOption: null,
         previousSelectedId: null,
+        // highlight data
         highlightedId: null,
         previousHighlightedId: null,
         highlightedOption: null,
+        // typeahead
         typeahead: findByTypeahead.defaultOptions,
+        // positioning data
         positioning: {
           placement: "bottom-start",
           gutter: 8,

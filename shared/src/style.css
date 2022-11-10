@@ -1149,9 +1149,10 @@ main > .toggle[data-pressed] {
   width: 240px;
   margin: 0;
   margin-top: 4px;
-  max-height: 400px;
+  max-height: min(var(--available-height), 400px);
   overflow-y: auto;
   position: relative;
+  overscroll-behavior: contain;
 }
 
 .select input {

@@ -2,4 +2,4 @@
 "@zag-js/utils": patch
 ---
 
-Add function to get json from proxy
+Add function to convert `Proxy` to JS object

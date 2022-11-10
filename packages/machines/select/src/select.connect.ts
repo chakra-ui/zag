@@ -5,6 +5,7 @@ import {
   findByTypeahead,
   getEventKey,
   isElementEditable,
+  isLeftClick,
   visuallyHiddenStyle,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -102,8 +103,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasValue),
       onPointerDown(event) {
+        if (!isLeftClick(event)) return
+        event.currentTarget.dataset.pointerType = event.pointerType
         if (disabled || event.pointerType === "touch") return
         send({ type: "TRIGGER_CLICK" })
+      },
+      onClick(event) {
+        if (disabled || !isLeftClick(event)) return
+        if (event.currentTarget.dataset.pointerType === "touch") {
+          send({ type: "TRIGGER_CLICK" })
+        }
       },
       onFocus() {
         send("TRIGGER_FOCUS")
@@ -224,15 +233,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!option) return
         send({ type: "POINTER_MOVE", id: option.id, target: option })
       },
-      onPointerDown(event) {
-        if (disabled) return
-        const option = dom.getClosestOption(event.target)
-        if (option) option.dataset.down = ""
-      },
       onPointerUp(event) {
         if (disabled) return
         const option = dom.getClosestOption(event.target)
-        if (!option || option.hasAttribute("data-down")) return
         option?.click()
       },
       onPointerLeave() {
@@ -241,10 +244,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onClick(event) {
         if (disabled) return
         const option = dom.getClosestOption(event.target)
-        if (option) {
-          delete option.dataset.down
-          send({ type: "OPTION_CLICK", id: option.id })
-        }
+        if (!option) return
+        send({ type: "OPTION_CLICK", id: option.id })
       },
       onKeyDown(event) {
         if (disabled) return
