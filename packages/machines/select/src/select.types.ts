@@ -8,7 +8,7 @@ type PublicContext = DirectionProperty &
     name?: string
     selectedOption: Option | null
     highlightedId: string | null
-    highlightedData: Option | null
+    highlightedOption: Option | null
     placeholder: string
     disabled?: boolean
     invalid?: boolean
@@ -27,12 +27,17 @@ type PublicContext = DirectionProperty &
 type PrivateContext = Context<{
   typeahead: TypeaheadState
   currentPlacement?: Placement
+  // save the last value to avoid unnecessary renders
+  previousHighlightedId?: string | null
+  previousSelectedId?: string | null
 }>
 
 type ComputedContext = Readonly<{
   rendered: string
   hasValue: boolean
   isTypingAhead: boolean
+  fireOnChange: boolean
+  fireOnHighlight: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -52,6 +57,7 @@ export type ItemProps = {
 
 export type OptionProps = ItemProps & {
   label?: string
+  index?: number
 }
 
 export type MachineState = {

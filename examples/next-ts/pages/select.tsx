@@ -26,6 +26,18 @@ export default function Page() {
   const [state, send] = useMachine(
     select.machine({
       id: useId(),
+      onHighlight(details) {
+        console.log("onHighlight", details)
+      },
+      onChange(details) {
+        console.log("onChange", details)
+      },
+      onOpen() {
+        console.log("onOpen")
+      },
+      onClose() {
+        console.log("onClose")
+      },
     }),
     {
       context: controls.context,
@@ -59,8 +71,8 @@ export default function Page() {
         {/* UI select */}
         <div {...api.positionerProps}>
           <ul {...api.menuProps}>
-            {selectData.map(({ label, value }) => (
-              <li key={value} {...api.getOptionProps({ label, value })}>
+            {selectData.map(({ label, value }, index) => (
+              <li key={value} {...api.getOptionProps({ label, value, index })}>
                 <span>{label}</span>
                 {value === api.selectedOption?.value && "✓"}
               </li>

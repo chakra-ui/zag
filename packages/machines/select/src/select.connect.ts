@@ -1,6 +1,3 @@
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { State, Send, ItemProps, OptionProps, Option, OptionGroupLabelProps, OptionGroupProps } from "./select.types"
-import { dom } from "./select.dom"
 import {
   ariaAttr,
   dataAttr,
@@ -11,7 +8,10 @@ import {
   visuallyHiddenStyle,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
+import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { isString } from "@zag-js/utils"
+import { dom } from "./select.dom"
+import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const disabled = state.context.disabled
@@ -22,9 +22,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const selectedOption = state.context.selectedOption
   const isTypingAhead = state.context.isTypingAhead
 
-  function getOptionState(props: ItemProps) {
-    const { value, disabled } = props
-    const id = dom.getOptionId(state.context, value)
+  function getOptionState(props: OptionProps) {
+    const { value, disabled, index } = props
+    const uid = index != null ? `${value}-${index}` : value
+    const id = dom.getOptionId(state.context, uid)
     return {
       isDisabled: Boolean(props.disabled ?? disabled),
       isHighlighted: state.context.highlightedId === id,
@@ -56,15 +57,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     closeMenu() {
       send("CLOSE")
     },
-    selectItem(item: string | null) {
-      send({ type: "SET_SELECTED", value: item })
+    setValue(value: string | null) {
+      send({ type: "SET_VALUE", value })
     },
-    highlight(item: string | Option | null) {
+    setHighlighted(item: string | Option | null) {
       const id = isString(item) ? item : item?.value
       if (!id) return
       send({ type: "SET_HIGHLIGHT", id })
     },
-    reset() {
+    resetValue() {
       send("RESET")
     },
 
@@ -100,8 +101,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(invalid),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasValue),
-      onClick() {
-        if (disabled) return
+      onPointerDown(event) {
+        if (disabled || event.pointerType === "touch") return
         send({ type: "TRIGGER_CLICK" })
       },
       onFocus() {
@@ -127,6 +128,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
           Home() {
             send({ type: "HOME" })
+          },
+          Enter() {
+            send({ type: "TRIGGER_CLICK" })
           },
           End() {
             send({ type: "END" })
@@ -157,10 +161,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getOptionState,
     getOptionProps(props: OptionProps) {
-      const { value, label } = props
+      const { value, label, index } = props
       const optionState = getOptionState(props)
+      const uid = index != null ? `${value}-${index}` : value
       return normalize.element({
-        id: dom.getOptionId(state.context, value),
+        id: dom.getOptionId(state.context, uid),
         role: "option",
         "data-part": "option",
         "data-label": label,
@@ -216,9 +221,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerMove(event) {
         if (disabled) return
         const option = dom.getClosestOption(event.target)
-        if (option) {
-          send({ type: "POINTER_MOVE", id: option.id })
-        }
+        if (!option) return
+        send({ type: "POINTER_MOVE", id: option.id, target: option })
+      },
+      onPointerDown(event) {
+        if (disabled) return
+        const option = dom.getClosestOption(event.target)
+        if (option) option.dataset.down = ""
+      },
+      onPointerUp(event) {
+        if (disabled) return
+        const option = dom.getClosestOption(event.target)
+        if (!option || option.hasAttribute("data-down")) return
+        option?.click()
       },
       onPointerLeave() {
         send({ type: "POINTER_LEAVE" })
@@ -227,6 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (disabled) return
         const option = dom.getClosestOption(event.target)
         if (option) {
+          delete option.dataset.down
           send({ type: "OPTION_CLICK", id: option.id })
         }
       },
