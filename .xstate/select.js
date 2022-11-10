@@ -12,6 +12,8 @@ const {
 const fetchMachine = createMachine({
   id: "select",
   context: {
+    "hasValue": false,
+    "hasValue": false,
     "hasHighlightedOption": false,
     "hasHighlightedOption": false,
     "selectOnTab": false
@@ -19,7 +21,7 @@ const fetchMachine = createMachine({
   initial: "idle",
   on: {
     SET_HIGHLIGHT: {
-      actions: ["setHighlightOption"]
+      actions: ["setHighlighted"]
     }
   },
   on: {
@@ -67,12 +69,18 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["highlightFirstOption", "invokeOnHighlight"]
         },
-        ARROW_LEFT: {
+        ARROW_LEFT: [{
+          cond: "hasValue",
           actions: ["selectPreviousOption", "invokeOnSelect"]
-        },
-        ARROW_RIGHT: {
+        }, {
+          actions: ["selectLastOption", "invokeOnSelect"]
+        }],
+        ARROW_RIGHT: [{
+          cond: "hasValue",
           actions: ["selectNextOption", "invokeOnSelect"]
-        },
+        }, {
+          actions: ["selectFirstOption", "invokeOnSelect"]
+        }],
         HOME: {
           actions: ["selectFirstOption", "invokeOnSelect"]
         },
@@ -91,7 +99,7 @@ const fetchMachine = createMachine({
       tags: ["open"],
       entry: ["focusMenu", "highlightSelectedOption", "invokeOnOpen"],
       exit: ["scrollMenuToTop"],
-      activities: ["trackInteractOutside", "computePlacement", "scrollIntoView"],
+      activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption"],
       on: {
         CLOSE: {
           target: "focused",
@@ -164,6 +172,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "hasValue": ctx => ctx["hasValue"],
     "hasHighlightedOption": ctx => ctx["hasHighlightedOption"],
     "selectOnTab": ctx => ctx["selectOnTab"]
   }

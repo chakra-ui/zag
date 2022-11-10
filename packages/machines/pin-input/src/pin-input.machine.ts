@@ -286,7 +286,6 @@ function isValidType(value: string, type: MachineContext["type"]) {
 function assign(ctx: MachineContext, value: string) {
   const valueArr = value.split("").filter(Boolean)
   const valueObj = Object.assign({}, ctx.value, valueArr)
-  console.log("valueObj :>> ", valueObj)
   ctx.value = Object.values(valueObj)
 }
 
