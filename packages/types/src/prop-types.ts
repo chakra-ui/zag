@@ -41,7 +41,7 @@ type DataAttr = {
   "data-index"?: number
 }
 
-export type PropTypes = Record<"button" | "label" | "input" | "output" | "element", Dict>
+export type PropTypes = Record<"button" | "label" | "input" | "output" | "element" | "select", Dict>
 
 export type NormalizeProps<T extends PropTypes> = {
   [K in keyof T]: (props: K extends keyof JSX.IntrinsicElements ? DataAttr & JSX.IntrinsicElements[K] : never) => T[K]

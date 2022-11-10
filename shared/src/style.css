@@ -116,6 +116,10 @@ body {
   max-width: 40ch;
 }
 
+/* -----------------------------------------------------------------------------
+* Checkbox
+* -----------------------------------------------------------------------------*/
+
 .checkbox [data-part="control"][data-focus] {
   outline: 2px solid royalblue;
 }
@@ -188,6 +192,10 @@ body {
   transform: translate(-50%, -50%);
 }
 
+/* -----------------------------------------------------------------------------
+* Combobox
+* -----------------------------------------------------------------------------*/
+
 .combobox [data-part="root"] {
   display: inline-flex;
   flex-direction: column;
@@ -224,6 +232,10 @@ body {
   flex: 1;
 }
 
+/* -----------------------------------------------------------------------------
+* Editable
+* -----------------------------------------------------------------------------*/
+
 .editable [data-part="area"] {
   display: inline-block;
   margin-right: 0.5em;
@@ -241,6 +253,10 @@ body {
   gap: 0.5em;
 }
 
+/* -----------------------------------------------------------------------------
+* Menu
+* -----------------------------------------------------------------------------*/
+
 .menu-content[data-part="content"] {
   margin: 0;
   width: 160px;
@@ -251,6 +267,7 @@ body {
   list-style-type: none;
   padding-inline-start: 0;
 }
+
 .menu-content [data-part*="item"] {
   all: unset;
   font-size: 14px;
@@ -264,6 +281,7 @@ body {
   border-radius: 3px;
   padding: 0px 5px 0px 25px;
 }
+
 .menu-content [data-part*="item"][data-focus] {
   outline: none;
   background-color: rgb(110, 86, 207);
@@ -273,6 +291,10 @@ body {
 .menu-content [data-part*="item"][data-disabled] {
   opacity: 0.4;
 }
+
+/* -----------------------------------------------------------------------------
+* Popover
+* -----------------------------------------------------------------------------*/
 
 .popover [data-part="root"] {
   display: flex;
@@ -325,11 +347,16 @@ body {
   right: 0px;
   top: -20px;
 }
+
 .popover-content [data-part="arrow"] {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
 }
+
+/* -----------------------------------------------------------------------------
+* Rating
+* -----------------------------------------------------------------------------*/
 
 .rating [data-part="item-group"] {
   display: inline-flex;
@@ -355,6 +382,10 @@ body {
 .rating [dir="rtl"] [data-half] [data-part="star"] {
   transform: scale(-1, 1);
 }
+
+/* -----------------------------------------------------------------------------
+* Slider
+* -----------------------------------------------------------------------------*/
 
 .slider [data-part="root"] {
   max-width: 320px;
@@ -462,6 +493,10 @@ body {
   color: red;
 }
 
+/* -----------------------------------------------------------------------------
+* Splitter
+* -----------------------------------------------------------------------------*/
+
 .splitter [data-part="root"][data-orientation="horizontal"] {
   height: 300px;
 }
@@ -519,6 +554,10 @@ body {
   height: 2px;
   width: 40px;
 }
+
+/* -----------------------------------------------------------------------------
+* Tags Input
+* -----------------------------------------------------------------------------*/
 
 .tags-input [data-part="control"] {
   padding: 0 2px;
@@ -590,6 +629,10 @@ body {
   all: unset;
 }
 
+/* -----------------------------------------------------------------------------
+* Pin Input
+* -----------------------------------------------------------------------------*/
+
 .pin-input [data-part="root"] {
   width: 300px;
   display: flex;
@@ -603,6 +646,10 @@ body {
   text-align: center;
   font-size: 24px;
 }
+
+/* -----------------------------------------------------------------------------
+* Toast
+* -----------------------------------------------------------------------------*/
 
 @keyframes fadeIn {
   from {
@@ -685,6 +732,10 @@ body {
 .toast-group [data-part="progressbar"][data-type="loading"] {
   animation-name: none;
 }
+
+/* -----------------------------------------------------------------------------
+* Dialog
+* -----------------------------------------------------------------------------*/
 
 .dialog-backdrop {
   background-color: rgba(0, 0, 0, 0.44);
@@ -778,6 +829,10 @@ main > .toggle[data-pressed] {
   color: #444;
   border: solid 1px #ccc;
 }
+
+/* -----------------------------------------------------------------------------
+* Tabs
+* -----------------------------------------------------------------------------*/
 
 .tabs [data-part="root"] {
   max-width: 20em;
@@ -883,6 +938,10 @@ main > .toggle[data-pressed] {
   z-index: 10;
 }
 
+/* -----------------------------------------------------------------------------
+* Radio
+* -----------------------------------------------------------------------------*/
+
 .radio [data-part="item-control"][data-focus] {
   outline: 2px solid royalblue;
 }
@@ -953,9 +1012,17 @@ main > .toggle[data-pressed] {
   transform: rotate(45deg);
 }
 
+/* -----------------------------------------------------------------------------
+* Pressable
+* -----------------------------------------------------------------------------*/
+
 .pressable button[data-pressed] {
   background: red;
 }
+
+/* -----------------------------------------------------------------------------
+* Hover card
+* -----------------------------------------------------------------------------*/
 
 .hover-card [data-part="trigger"] {
   background: rgb(110, 86, 207);
@@ -970,6 +1037,10 @@ main > .toggle[data-pressed] {
   height: 150px;
   width: 300px;
 }
+
+/* -----------------------------------------------------------------------------
+* Pagination
+* -----------------------------------------------------------------------------*/
 
 .pagination ul {
   display: flex;
@@ -1016,6 +1087,104 @@ main > .toggle[data-pressed] {
   cursor: default;
 }
 
+/* -----------------------------------------------------------------------------
+* Select
+* -----------------------------------------------------------------------------*/
+
+.select .control {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  align-items: flex-start;
+}
+
+.select [data-part="label"] {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.select [data-part="label"][data-disabled] {
+  cursor: default;
+  color: gray;
+}
+
+.select [data-part="label"][data-invalid] {
+  color: red;
+}
+
+.select [data-part="trigger"] {
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 6px;
+  cursor: default;
+  background: #eeeeee;
+  font-size: 14px;
+  border: 1px solid slategray;
+}
+
+.select svg {
+  position: relative;
+  top: 1px;
+}
+
+.select [data-part="trigger"]:disabled {
+  cursor: default;
+}
+
+.select [data-part="trigger"][data-invalid] {
+  border: 2px solid red;
+}
+
+.select [data-part="positioner"] {
+  width: max-content;
+}
+
+.select [data-part="menu"] {
+  padding: 0px;
+  list-style: none;
+  width: 240px;
+  margin: 0;
+  margin-top: 4px;
+  max-height: min(var(--available-height), 400px);
+  overflow-y: auto;
+  position: relative;
+  overscroll-behavior: contain;
+}
+
+.select input {
+  position: sticky;
+  top: 0;
+}
+
+.select [data-part="option"] {
+  padding: 4px 6px;
+  cursor: default;
+  background: #efefef;
+  display: flex;
+  align-items: center;
+}
+
+.select [data-part="option"] > span {
+  flex: 1;
+}
+
+.select [data-part="option"]:hover {
+  background: #dfdfdf;
+}
+
+.select [data-part="option"][data-focus] {
+  background: blue;
+  color: white;
+}
+
+/* -----------------------------------------------------------------------------
+* Page Shell
+* -----------------------------------------------------------------------------*/
+
 .controls-container {
   display: flex;
   flex-direction: column;
@@ -1044,32 +1213,39 @@ main > .toggle[data-pressed] {
   display: flex;
   flex-direction: column;
 }
+
 .toolbar nav {
   padding: 16px;
   display: flex;
   gap: 24px;
   border-bottom: solid 1px #d7e0da;
 }
+
 .toolbar nav button {
   all: unset;
   cursor: pointer;
   font-weight: 500;
 }
+
 .toolbar nav button[data-active] {
   color: green;
 }
+
 .toolbar > div {
   max-height: 100%;
   overflow: hidden;
 }
+
 .toolbar [data-content] {
   display: none;
 }
+
 .toolbar [data-content][data-active] {
   display: flex;
   flex-direction: column;
   max-height: 100%;
 }
+
 .toolbar .viz {
   font-size: 13px;
   --viz-font: SF Mono, Menlo, monospace;
@@ -1078,12 +1254,14 @@ main > .toggle[data-pressed] {
   overflow: auto;
   border-bottom: solid 1px #d7e0da;
 }
+
 .toolbar .viz summary {
   margin-bottom: 24;
   font-family: var(--viz-font);
   font-weight: bold;
   cursor: pointer;
 }
+
 .toolbar .viz summary + div > * {
   font-family: var(--viz-font);
 }

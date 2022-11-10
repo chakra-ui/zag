@@ -121,6 +121,7 @@ importers:
       '@zag-js/react': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
       '@zag-js/shared': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
@@ -174,6 +175,7 @@ importers:
       '@zag-js/react': link:../../packages/frameworks/react
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
       '@zag-js/shared': link:../../shared
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
@@ -234,6 +236,7 @@ importers:
       '@zag-js/rating': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
       '@zag-js/shared': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/solid': workspace:*
@@ -284,6 +287,7 @@ importers:
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
       '@zag-js/shared': link:../../shared
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/solid': link:../../packages/frameworks/solid
@@ -346,6 +350,7 @@ importers:
       '@zag-js/rating': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
       '@zag-js/shared': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
@@ -400,6 +405,7 @@ importers:
       '@zag-js/rating': link:../../packages/machines/rating
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
       '@zag-js/shared': link:../../shared
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
@@ -759,6 +765,25 @@ importers:
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
 
+  packages/machines/select:
+    specifiers:
+      '@tanstack/virtual-core': v3.0.0-beta.22
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/interact-outside': workspace:*
+      '@zag-js/popper': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
+    dependencies:
+      '@tanstack/virtual-core': 3.0.0-beta.22
+      '@zag-js/core': link:../../core
+      '@zag-js/interact-outside': link:../../utilities/interact-outside
+      '@zag-js/popper': link:../../utilities/popper
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
+
   packages/machines/slider:
     specifiers:
       '@zag-js/core': workspace:*
@@ -981,7 +1006,13 @@ importers:
       '@zag-js/dom-utils': link:../dom
 
   shared:
-    specifiers: {}
+    specifiers:
+      '@types/country-list': ^2.1.1
+      country-list: ^2.2.0
+    dependencies:
+      country-list: 2.2.0
+    devDependencies:
+      '@types/country-list': 2.1.1
 
 packages:
 
@@ -2884,6 +2915,11 @@ packages:
     dev: false
     optional: true
 
+  /@tanstack/virtual-core/3.0.0-beta.22:
+    resolution: {integrity: sha512-kMpEeXXxHXP3mmXmMwKJvCzsiGGRDK745EsOYCiBP9hER04kyPk89rOQIvXhIFBkSj+TjSNCovIIhEzqkpIDNw==}
+    engines: {node: '>=12'}
+    dev: false
+
   /@tsconfig/node10/1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
     dev: false
@@ -2928,6 +2964,10 @@ packages:
     dependencies:
       '@babel/types': 7.19.4
     dev: false
+
+  /@types/country-list/2.1.1:
+    resolution: {integrity: sha512-maNkQzgLbyoi5mwwAL0KCb6l5/rn02N9y/CIBf4AYPrJ0pU2AvUTQ5LOw6GA4AAPrtiL44LWiwXzybUAUUYA3Q==}
+    dev: true
 
   /@types/fined/1.1.3:
     resolution: {integrity: sha512-CWYnSRnun3CGbt6taXeVo2lCbuaj4mchVJ4UF/BdU5TSuIn3AmS13pGMwCsBUoehGbhZrBrpNJZSZI5EVilXww==}
@@ -4328,6 +4368,10 @@ packages:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.2
+    dev: false
+
+  /country-list/2.2.0:
+    resolution: {integrity: sha512-AS21pllCp72LmUztqXPVKXK3TRyap1XlohGLqN04cXH2rFB9vo7SnH5sMnqltZPnu9ie/x1se3UuCZJbGXErfw==}
     dev: false
 
   /create-require/1.1.1:

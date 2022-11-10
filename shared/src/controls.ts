@@ -151,3 +151,9 @@ export const toastControls = defineControls({
   pauseOnPageIdle: { type: "boolean", defaultValue: false },
   pauseOnInteraction: { type: "boolean", defaultValue: true },
 })
+
+export const selectControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  selectOnTab: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})

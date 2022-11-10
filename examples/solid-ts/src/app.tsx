@@ -12,7 +12,7 @@ const App: Component = () => {
     <div class="page">
       <aside class="nav">
         <header>Zagjs</header>
-        <For each={routesData} fallback={<div>Loading...</div>}>
+        <For each={routesData.sort((a, b) => a.label.localeCompare(b.label))} fallback={<div>Loading...</div>}>
           {(route) => {
             const match = useMatch(() => route.path)
             return (

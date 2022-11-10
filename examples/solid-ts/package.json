@@ -17,7 +17,6 @@
     "vite-plugin-solid": "2.3.9"
   },
   "dependencies": {
-    "@zag-js/dom-query": "workspace:*",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
@@ -26,6 +25,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-utils": "workspace:*",
     "@zag-js/editable": "workspace:*",
     "@zag-js/element-rect": "workspace:*",
@@ -49,6 +49,7 @@
     "@zag-js/rating": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
+    "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/solid": "workspace:*",

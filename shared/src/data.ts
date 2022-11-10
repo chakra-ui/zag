@@ -1,4 +1,11 @@
+import { getData } from "country-list"
+
 export { paginationData } from "./pagination-data"
+
+export const selectData = getData().map((country) => ({
+  label: `${country.name} (${country.code})`,
+  value: country.code,
+}))
 
 export const accordionData = [
   { id: "home", label: "Home" },
