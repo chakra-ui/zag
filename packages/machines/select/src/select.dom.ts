@@ -10,10 +10,10 @@ import {
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = defineDomHelpers({
-  getMenuId: (ctx: Ctx) => `${ctx.id}:menu`,
-  getTriggerId: (ctx: Ctx) => `${ctx.id}:trigger`,
-  getLabelId: (ctx: Ctx) => `${ctx.id}:label`,
-  getOptionId: (ctx: Ctx, id: string | number) => `${ctx.id}:option:${id}`,
+  getMenuId: (ctx: Ctx) => ctx.ids?.menu ?? `${ctx.id}:menu`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `${ctx.id}:trigger`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `${ctx.id}:label`,
+  getOptionId: (ctx: Ctx, id: string | number) => ctx.ids?.option?.(id) ?? `${ctx.id}:option:${id}`,
   getSelectId: (ctx: Ctx) => `${ctx.id}:select`,
   getPositionerId: (ctx: Ctx) => `${ctx.id}:positioner`,
   getOptionGroupId: (ctx: Ctx, id: string | number) => `${ctx.id}:option-group:${id}`,
