@@ -29,7 +29,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const trulyDisabled = isDisabled && !isFocusable
 
-  const stateView = state.hasTag("checked") ? "checked" : "unchecked"
+  const stateView = state.matches("checked") ? "checked" : "unchecked"
   const view = state.context.indeterminate ? "mixed" : stateView
 
   return {

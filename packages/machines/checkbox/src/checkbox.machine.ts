@@ -11,7 +11,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "checkbox",
-      initial: "unknown",
+      initial: ctx.defaultChecked ? "checked" : "unchecked",
 
       context: {
         active: false,
@@ -62,14 +62,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          tags: ["unchecked"],
-          on: {
-            SETUP: ctx.defaultChecked ? "checked" : "unchecked",
-          },
-        },
         checked: {
-          tags: ["checked"],
           on: {
             TOGGLE: {
               target: "unchecked",
@@ -79,7 +72,6 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
         unchecked: {
-          tags: ["unchecked"],
           on: {
             TOGGLE: {
               target: "checked",

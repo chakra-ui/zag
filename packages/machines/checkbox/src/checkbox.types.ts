@@ -99,8 +99,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "checked" | "unchecked"
-  tags: "checked" | "unchecked"
+  value: "checked" | "unchecked"
 }
 
 export type State = S.State<MachineContext, MachineState>
