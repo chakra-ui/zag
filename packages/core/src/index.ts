@@ -1,4 +1,5 @@
 export { proxy, ref, snapshot, subscribe } from "@zag-js/store"
+export { deepMerge } from "./deep-merge"
 export { choose, guards } from "./guard-utils"
 export * from "./machine"
 export { mergeProps } from "./merge-props"

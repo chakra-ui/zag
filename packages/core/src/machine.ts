@@ -13,6 +13,7 @@ import {
   uuid,
   warn,
 } from "@zag-js/utils"
+import { deepMerge } from "./deep-merge"
 import { klona } from "klona/json"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
@@ -340,7 +341,7 @@ export class Machine<
    */
   public setContext = (context: Partial<Writable<TContext>> | undefined) => {
     if (!context) return
-    Object.assign(this.state.context, compact(context))
+    deepMerge(this.state.context, context)
   }
 
   public withContext = (context: Partial<Writable<TContext>>) => {
