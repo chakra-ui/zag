@@ -594,8 +594,6 @@ export function machine(userContext: UserDefinedContext) {
           ctx.sectionLabel = label
         },
       },
-
-      hookSync: true,
     },
   )
 }
