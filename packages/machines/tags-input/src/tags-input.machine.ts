@@ -553,8 +553,6 @@ export function machine(userContext: UserDefinedContext) {
           if (msg) region.announce(msg)
         },
       },
-
-      hookSync: true,
     },
   )
 }

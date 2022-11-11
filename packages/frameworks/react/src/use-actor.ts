@@ -6,11 +6,7 @@ export function useActor<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(service: Machine<TContext, TState, TEvent>) {
-  const current = useSnapshot(service.state, {
-    sync: service.options.hookSync,
-  })
-
+  const current = useSnapshot(service.state)
   const typedState = current as unknown as S.State<TContext, TState, TEvent>
-
   return [typedState, service.send] as const
 }

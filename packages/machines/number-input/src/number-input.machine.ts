@@ -400,8 +400,6 @@ export function machine(userContext: UserDefinedContext) {
           dispatchInputValueEvent(dom.getInputEl(ctx), ctx.formattedValue)
         },
       },
-
-      hookSync: true,
     },
   )
 }

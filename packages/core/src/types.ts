@@ -382,13 +382,6 @@ export declare namespace StateMachine {
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
     sync?: boolean
-    /**
-     * Notify `useSnapshot` to execute state update synchronously within `valtio`.
-     * Useful if this component has an input element.
-     *
-     * @see Valtio https://github.com/pmndrs/valtio#update-synchronously
-     */
-    hookSync?: boolean
   }
 
   export type HookOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {

@@ -184,8 +184,6 @@ export function machine(userContext: UserDefinedContext) {
           dom.getInputEl(ctx)?.blur()
         },
       },
-
-      hookSync: true,
     },
   )
 }
