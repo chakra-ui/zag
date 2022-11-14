@@ -71,11 +71,11 @@ const fetchMachine = createMachine({
           actions: ["focusEditButton", "invokeOnSubmit"]
         }, {
           target: "preview",
-          actions: ["revertValue", "focusEditButton", "invokeOnCancel"]
+          actions: ["resetValueIfNeeded", "focusEditButton", "invokeOnCancel"]
         }],
         CANCEL: {
           target: "preview",
-          actions: ["focusEditButton", "revertValue", "invokeOnCancel"]
+          actions: ["focusEditButton", "resetValueIfNeeded", "invokeOnCancel"]
         },
         ENTER: {
           cond: "submitOnEnter",

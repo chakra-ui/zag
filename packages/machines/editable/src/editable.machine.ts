@@ -96,12 +96,12 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "preview",
-                actions: ["revertValue", "focusEditButton", "invokeOnCancel"],
+                actions: ["resetValueIfNeeded", "focusEditButton", "invokeOnCancel"],
               },
             ],
             CANCEL: {
               target: "preview",
-              actions: ["focusEditButton", "revertValue", "invokeOnCancel"],
+              actions: ["focusEditButton", "resetValueIfNeeded", "invokeOnCancel"],
             },
             ENTER: {
               guard: "submitOnEnter",
@@ -177,7 +177,8 @@ export function machine(userContext: UserDefinedContext) {
         setPreviousValue(ctx) {
           ctx.previousValue = ctx.value
         },
-        revertValue(ctx) {
+        resetValueIfNeeded(ctx) {
+          if (!ctx.previousValue) return
           ctx.value = ctx.previousValue
         },
         blurInputIfNeeded(ctx) {
