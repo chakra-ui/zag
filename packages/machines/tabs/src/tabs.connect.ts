@@ -14,6 +14,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
+    clearValue() {
+      send({ type: "CLEAR_VALUE" })
+    },
 
     rootProps: normalize.element({
       "data-part": "root",

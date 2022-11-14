@@ -44,8 +44,8 @@ export function machine(userContext: UserDefinedContext) {
         SET_VALUE: {
           actions: "setValue",
         },
-        DELETE: {
-          actions: "deleteValue",
+        CLEAR_VALUE: {
+          actions: "clearValue",
         },
       },
 
@@ -134,6 +134,9 @@ export function machine(userContext: UserDefinedContext) {
         setValue(ctx, evt) {
           ctx.value = evt.value
         },
+        clearValue(ctx) {
+          ctx.value = null
+        },
         invokeOnDelete(ctx, evt) {
           ctx.onDelete?.({ value: evt.value })
         },
@@ -177,8 +180,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setPrevSelectedTabs(ctx) {
           if (ctx.value != null) {
-            const newSelected = Array.from(ctx.previousValues).concat(ctx.value)
-            ctx.previousValues = Array.from(new Set(newSelected))
+            ctx.previousValues = pushUnique(Array.from(ctx.previousValues), ctx.value)
           }
         },
         // if tab panel contains focusable elements, remove the tabindex attribute
@@ -197,4 +199,15 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+// function to push value array and remove previous instances of value
+function pushUnique(arr: any[], value: any) {
+  const newArr = arr.slice()
+  const index = newArr.indexOf(value)
+  if (index > -1) {
+    newArr.splice(index, 1)
+  }
+  newArr.push(value)
+  return newArr
 }

@@ -24,8 +24,8 @@ const fetchMachine = createMachine({
     SET_VALUE: {
       actions: "setValue"
     },
-    DELETE: {
-      actions: "deleteValue"
+    CLEAR_VALUE: {
+      actions: "clearValue"
     }
   },
   on: {
