@@ -53,13 +53,6 @@ type PublicContext = DirectionProperty &
      * The positioning options of the menu.
      */
     positioning: PositioningOptions
-    /**
-     * @experimental
-     * The virtualization options of the menu.
-     */
-    // virtualize?: {
-    //   count?: number
-    // }
   }
 
 type PrivateContext = Context<{

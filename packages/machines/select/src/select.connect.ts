@@ -76,6 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
+      htmlFor: dom.getSelectId(state.context),
       onClick() {
         if (disabled) return
         dom.getTriggerElement(state.context)?.focus()
@@ -92,7 +93,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       disabled,
       dir: state.context.dir,
-      role: "combobox",
       "aria-controls": dom.getMenuId(state.context),
       "aria-expanded": isOpen,
       "data-expanded": dataAttr(isOpen),

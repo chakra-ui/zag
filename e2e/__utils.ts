@@ -92,3 +92,16 @@ export async function isInViewport(viewport: Locator, el: Locator) {
 export const repeat = async (fn: () => unknown, count: number) => {
   await [...new Array(count)].reduce((p) => p.then(fn), Promise.resolve())
 }
+
+export const pointer = {
+  down(el: Locator) {
+    return el.dispatchEvent("pointerdown", { pointerType: "mouse", button: 0 })
+  },
+  up(el: Locator) {
+    return el.dispatchEvent("pointerup", { pointerType: "mouse", button: 0 })
+  },
+  async move(el: Locator) {
+    await el.hover()
+    return el.dispatchEvent("pointermove", { button: 0 })
+  },
+}
