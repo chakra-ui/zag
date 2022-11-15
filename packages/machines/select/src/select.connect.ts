@@ -216,7 +216,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.selectedOption?.value,
       style: visuallyHiddenStyle,
       tabIndex: -1,
-      // Some extensions (like Grammarly) will focus the hidden select.
+      // Some browser extensions will focus the hidden select.
       // Let's forward the focus to the trigger.
       onFocus() {
         dom.getTriggerElement(state.context)?.focus()
