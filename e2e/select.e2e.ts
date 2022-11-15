@@ -116,6 +116,34 @@ test.describe("select/ open / keyboard", () => {
   })
 })
 
+test.describe("select / keyboard / close", () => {
+  test("should close on escape", async ({ page }) => {
+    await page.click(trigger)
+    await page.keyboard.press("Escape")
+    await expect(page.locator(menu)).not.toBeVisible()
+  })
+})
+
+test.describe("select / keyboard / select", () => {
+  test("should select on enter", async ({ page }) => {
+    await page.click(trigger)
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("Enter")
+    const albania = page.locator(options.get("AL"))
+    await expectToBeSelected(albania)
+    await expect(page.locator(trigger)).toContainText("Albania")
+  })
+
+  test("should select on space", async ({ page }) => {
+    await page.click(trigger)
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press(" ")
+    const albania = page.locator(options.get("AL"))
+    await expectToBeSelected(albania)
+    await expect(page.locator(trigger)).toContainText("Albania")
+  })
+})
+
 test.describe("select / open / blur", () => {
   test("should close on outside click", async ({ page }) => {
     await page.click(trigger)
