@@ -11,6 +11,11 @@ function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
   return Object.getOwnPropertyDescriptor(proto, property) ?? {}
 }
 
+export function setElementValue(el: HTMLElement, value: string, option: DescriptorOptions) {
+  const descriptor = getDescriptor(el, option)
+  descriptor.set?.call(el, value)
+}
+
 export function dispatchInputValueEvent(el: HTMLElement | null, value: string | number) {
   if (!el) return
 
