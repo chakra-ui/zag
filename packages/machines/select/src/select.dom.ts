@@ -14,10 +14,12 @@ export const dom = defineDomHelpers({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `${ctx.id}:label`,
   getOptionId: (ctx: Ctx, id: string | number) => ctx.ids?.option?.(id) ?? `${ctx.id}:option:${id}`,
-  getSelectId: (ctx: Ctx) => `${ctx.id}:select`,
+  getHiddenSelectId: (ctx: Ctx) => `${ctx.id}:select`,
   getPositionerId: (ctx: Ctx) => `${ctx.id}:positioner`,
   getOptionGroupId: (ctx: Ctx, id: string | number) => `${ctx.id}:option-group:${id}`,
   getOptionGroupLabelId: (ctx: Ctx, id: string | number) => `${ctx.id}:option-group-label:${id}`,
+
+  getHiddenSelectElement: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
   getMenuElement: (ctx: Ctx) => {
     const menu = dom.getById(ctx, dom.getMenuId(ctx))
     if (!menu) throw new Error("Could not find the menu element.")

@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
-      htmlFor: dom.getSelectId(state.context),
+      htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (disabled) return
         dom.getTriggerElement(state.context)?.focus()
@@ -103,7 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasValue),
       onPointerDown(event) {
-        if (!isLeftClick(event)) return
+        if (event.button || event.ctrlKey || event.defaultPrevented) return
         event.currentTarget.dataset.pointerType = event.pointerType
         if (disabled || event.pointerType === "touch") return
         send({ type: "TRIGGER_CLICK" })
@@ -211,10 +211,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "select",
       name: state.context.name,
       disabled,
-      id: dom.getSelectId(state.context),
+      "aria-hidden": true,
+      id: dom.getHiddenSelectId(state.context),
       defaultValue: state.context.selectedOption?.value,
       style: visuallyHiddenStyle,
       tabIndex: -1,
+      // Some extensions (like Grammarly) will focus the hidden select.
+      // Let's forward the focus to the trigger.
+      onFocus() {
+        dom.getTriggerElement(state.context)?.focus()
+      },
       "aria-labelledby": dom.getLabelId(state.context),
     }),
 

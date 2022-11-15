@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { contains, findByTypeahead, observeAttributes } from "@zag-js/dom-utils"
+import { setElementValue } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
 import { compact, json } from "@zag-js/utils"
@@ -39,6 +40,10 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       initial: "idle",
+
+      watch: {
+        selectedOption: ["syncSelectElement"],
+      },
 
       on: {
         SET_HIGHLIGHT: {
@@ -326,6 +331,18 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnSelect(ctx) {
           if (ctx.previousSelectedId === ctx.selectedOption?.id) return
           ctx.onChange?.(json(ctx.selectedOption))
+        },
+        syncSelectElement(ctx) {
+          const selectedOption = ctx.selectedOption
+          const node = dom.getHiddenSelectElement(ctx)
+
+          if (!node || !selectedOption) return
+
+          setElementValue(node, selectedOption.value, { type: "HTMLSelectElement", property: "value" })
+
+          const win = dom.getWin(ctx)
+          const changeEvent = new win.Event("change", { bubbles: true })
+          node.dispatchEvent(changeEvent)
         },
       },
     },

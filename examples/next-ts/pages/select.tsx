@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import { useId, useRef } from "react"
+import serialize from "form-serialize"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -26,6 +27,7 @@ export default function Page() {
   const [state, send] = useMachine(
     select.machine({
       id: useId(),
+      name: "country",
       onHighlight(details) {
         console.log("onHighlight", details)
       },
@@ -59,14 +61,21 @@ export default function Page() {
           </button>
         </div>
 
-        {/* Hidden select */}
-        <select ref={ref} {...api.selectProps}>
-          {selectData.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <form
+          onChange={(e) => {
+            const formData = serialize(e.currentTarget, { hash: true })
+            console.log(formData)
+          }}
+        >
+          {/* Hidden select */}
+          <select ref={ref} {...api.selectProps}>
+            {selectData.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </form>
 
         {/* UI select */}
         <div {...api.positionerProps}>

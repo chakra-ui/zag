@@ -5,6 +5,7 @@ import { selectControls, selectData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
+import serialize from "form-serialize"
 
 const CaretIcon = () => (
   <svg
@@ -46,14 +47,22 @@ export default defineComponent({
               </button>
             </div>
 
-            {/* Hidden select */}
-            <select {...api.selectProps}>
-              {selectData.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <form
+              onInput={(e) => {
+                const form = e.currentTarget as HTMLFormElement
+                const formData = serialize(form, { hash: true })
+                console.log(formData)
+              }}
+            >
+              {/* Hidden select */}
+              <select {...api.selectProps}>
+                {selectData.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </form>
 
             {/* UI select */}
             <div {...api.positionerProps}>
