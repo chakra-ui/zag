@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { contains, findByTypeahead, observeAttributes } from "@zag-js/dom-utils"
+import { contains, findByTypeahead, observeAttributes, raf } from "@zag-js/dom-utils"
 import { setElementValue } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
@@ -15,17 +15,13 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         placeholder: "Select option",
         selectOnTab: true,
-        ...ctx,
-        // selection data
         selectedOption: null,
-        previousSelectedId: null,
-        // highlight data
-        highlightedId: null,
-        previousHighlightedId: null,
         highlightedOption: null,
-        // typeahead
+        highlightedId: null,
+        ...ctx,
+        previousSelectedId: null,
+        previousHighlightedId: null,
         typeahead: findByTypeahead.defaultOptions,
-        // positioning data
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -40,6 +36,12 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       initial: "idle",
+
+      // this doesn't need to query the DOM so we can it for better SSR support
+      created: ["validateSelectedOption"],
+
+      // we need to query the DOM, that's why we use the entry action (instead of the created action)
+      entry: ["validateHighlightedOption"],
 
       watch: {
         selectedOption: ["syncSelectElement"],
@@ -226,6 +228,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         scrollToHighlightedOption(ctx, _evt, { getState }) {
           const trigger = dom.getMenuElement(ctx)
+
           const exec = () => {
             const state = getState()
             // don't scroll into view if we're using the pointer
@@ -233,7 +236,11 @@ export function machine(userContext: UserDefinedContext) {
             const option = dom.getHighlightedOption(ctx)
             option?.scrollIntoView({ block: "nearest" })
           }
-          exec()
+
+          raf(() => {
+            exec()
+          })
+
           return observeAttributes(trigger, "aria-activedescendant", exec)
         },
       },
@@ -257,14 +264,14 @@ export function machine(userContext: UserDefinedContext) {
           highlightOption(ctx, option)
         },
         focusMenu(ctx) {
-          setTimeout(() => {
+          raf(() => {
             dom.getMenuElement(ctx)?.focus({ preventScroll: true })
-          }, 0)
+          })
         },
         focusTrigger(ctx) {
-          setTimeout(() => {
+          raf(() => {
             dom.getTriggerElement(ctx).focus({ preventScroll: true })
-          }, 0)
+          })
         },
         selectHighlightedOption(ctx, evt) {
           const id = evt.id ?? ctx.highlightedId
@@ -335,14 +342,27 @@ export function machine(userContext: UserDefinedContext) {
         syncSelectElement(ctx) {
           const selectedOption = ctx.selectedOption
           const node = dom.getHiddenSelectElement(ctx)
-
           if (!node || !selectedOption) return
-
           setElementValue(node, selectedOption.value, { type: "HTMLSelectElement", property: "value" })
-
           const win = dom.getWin(ctx)
           const changeEvent = new win.Event("change", { bubbles: true })
           node.dispatchEvent(changeEvent)
+        },
+        validateSelectedOption(ctx) {
+          if (!ctx.selectedOption) return
+          if (!ctx.selectedOption.id) {
+            ctx.selectedOption.id = dom.getOptionId(ctx, ctx.selectedOption.value)
+          }
+          ctx.previousSelectedId = ctx.selectedOption.id
+        },
+        validateHighlightedOption(ctx) {
+          if (ctx.highlightedOption && !ctx.highlightedOption.id) {
+            ctx.highlightedOption.id = dom.getOptionId(ctx, ctx.highlightedOption.value)
+          } else if (ctx.highlightedOption) {
+            ctx.highlightedId = ctx.highlightedOption.id
+          } else if (ctx.highlightedId) {
+            ctx.highlightedOption = dom.getById(ctx, ctx.highlightedId)
+          }
         },
       },
     },

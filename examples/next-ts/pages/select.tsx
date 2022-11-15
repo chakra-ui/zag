@@ -80,8 +80,8 @@ export default function Page() {
         {/* UI select */}
         <div {...api.positionerProps}>
           <ul {...api.menuProps}>
-            {selectData.map(({ label, value }, index) => (
-              <li key={value} {...api.getOptionProps({ label, value, index })}>
+            {selectData.map(({ label, value }) => (
+              <li key={value} {...api.getOptionProps({ label, value })}>
                 <span>{label}</span>
                 {value === api.selectedOption?.value && "✓"}
               </li>
