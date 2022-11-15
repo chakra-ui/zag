@@ -1,6 +1,6 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addPointerEvent, contains, findByTypeahead, getEventPoint, isFocusable, raf } from "@zag-js/dom-utils"
+import { addPointerEvent, contains, findByTypeahead, getEventPoint, isElementEditable, raf } from "@zag-js/dom-utils"
 import { getBasePlacement, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, compact, isArray, remove } from "@zag-js/utils"
@@ -240,12 +240,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             ITEM_CLICK: [
               {
-                guard: and(not("isTriggerItemFocused"), not("isFocusedItemFocusable"), "closeOnSelect"),
+                guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable"), "closeOnSelect"),
                 target: "closed",
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"],
               },
               {
-                guard: and(not("isTriggerItemFocused"), not("isFocusedItemFocusable")),
+                guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
               { actions: ["focusItem"] },
@@ -292,7 +292,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
-        isFocusedItemFocusable: (ctx) => isFocusable(dom.getFocusedItem(ctx)),
+        isFocusedItemEditable: (ctx) => isElementEditable(dom.getFocusedItem(ctx)),
         isWithinPolygon: (ctx, evt) => {
           if (!ctx.intentPolygon) return false
           return isPointInPolygon(ctx.intentPolygon, evt.point)

@@ -26,8 +26,8 @@ const fetchMachine = createMachine({
     "!suspendPointer && !isTargetFocused": false,
     "!isTargetFocused": false,
     "!suspendPointer && !isTriggerItem": false,
-    "!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect": false,
-    "!isTriggerItemFocused && !isFocusedItemFocusable": false
+    "!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect": false,
+    "!isTriggerItemFocused && !isFocusedItemEditable": false
   },
   on: {
     SET_PARENT: {
@@ -209,11 +209,11 @@ const fetchMachine = createMachine({
           actions: "clearFocusedItem"
         },
         ITEM_CLICK: [{
-          cond: "!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect",
+          cond: "!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect",
           target: "closed",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"]
         }, {
-          cond: "!isTriggerItemFocused && !isFocusedItemFocusable",
+          cond: "!isTriggerItemFocused && !isFocusedItemEditable",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"]
         }, {
           actions: ["focusItem"]
@@ -258,7 +258,7 @@ const fetchMachine = createMachine({
     "!suspendPointer && !isTargetFocused": ctx => ctx["!suspendPointer && !isTargetFocused"],
     "!isTargetFocused": ctx => ctx["!isTargetFocused"],
     "!suspendPointer && !isTriggerItem": ctx => ctx["!suspendPointer && !isTriggerItem"],
-    "!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect": ctx => ctx["!isTriggerItemFocused && !isFocusedItemFocusable && closeOnSelect"],
-    "!isTriggerItemFocused && !isFocusedItemFocusable": ctx => ctx["!isTriggerItemFocused && !isFocusedItemFocusable"]
+    "!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect": ctx => ctx["!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect"],
+    "!isTriggerItemFocused && !isFocusedItemEditable": ctx => ctx["!isTriggerItemFocused && !isFocusedItemEditable"]
   }
 });
