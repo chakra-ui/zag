@@ -283,8 +283,8 @@ function isValidType(value: string, type: MachineContext["type"]) {
   return !!REGEX[type]?.test(value)
 }
 
-function assign(ctx: MachineContext, value: string) {
-  const valueArr = value.split("").filter(Boolean)
+function assign(ctx: MachineContext, value: string | string[]) {
+  const valueArr = Array.isArray(value) ? value : value.split("").filter(Boolean)
   const valueObj = Object.assign({}, ctx.value, valueArr)
   ctx.value = Object.values(valueObj)
 }
