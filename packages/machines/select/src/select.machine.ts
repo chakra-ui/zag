@@ -344,7 +344,7 @@ export function machine(userContext: UserDefinedContext) {
           const selectedOption = ctx.selectedOption
           const node = dom.getHiddenSelectElement(ctx)
           if (!node || !selectedOption) return
-          setElementValue(node, selectedOption.value, { type: "HTMLSelectElement", property: "value" })
+          setElementValue(node, selectedOption.value, { type: "HTMLSelectElement" })
           const win = dom.getWin(ctx)
           const changeEvent = new win.Event("change", { bubbles: true })
           node.dispatchEvent(changeEvent)
