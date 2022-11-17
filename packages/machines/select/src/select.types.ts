@@ -29,6 +29,10 @@ type PublicContext = DirectionProperty &
      */
     invalid?: boolean
     /**
+     * Whether the select is read-only
+     */
+    readonly?: boolean
+    /**
      * Whether to select the highlighted option when the user presses Tab,
      * and the menu is open.
      */
@@ -108,6 +112,11 @@ type ComputedContext = Readonly<{
    * Whether a typeahead is currently active
    */
   isTypingAhead: boolean
+  /**
+   * @computed
+   * Whether the select is interactive
+   */
+  isInteractive: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

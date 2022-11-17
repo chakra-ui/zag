@@ -5,7 +5,6 @@ import {
   findByTypeahead,
   getEventKey,
   isElementEditable,
-  isLeftClick,
   visuallyHiddenStyle,
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -17,6 +16,8 @@ import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, Sta
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const disabled = state.context.disabled
   const invalid = state.context.invalid
+  const isInteractive = state.context.isInteractive
+
   const isOpen = state.matches("open")
 
   const highlightedId = state.context.highlightedId
@@ -76,6 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(state.context.readonly),
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (disabled) return
@@ -100,16 +102,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": "label",
       "data-part": "trigger",
       "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(state.context.readonly),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasValue),
       onPointerDown(event) {
-        if (event.button || event.ctrlKey || event.defaultPrevented) return
+        if (event.button || event.ctrlKey || !isInteractive) return
         event.currentTarget.dataset.pointerType = event.pointerType
         if (disabled || event.pointerType === "touch") return
         send({ type: "TRIGGER_CLICK" })
       },
       onClick(event) {
-        if (disabled || !isLeftClick(event)) return
+        if (!isInteractive || event.button) return
         if (event.currentTarget.dataset.pointerType === "touch") {
           send({ type: "TRIGGER_CLICK" })
         }
@@ -121,7 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("TRIGGER_BLUR")
       },
       onKeyDown(event) {
-        if (disabled) return
+        if (!isInteractive) return
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP" })
@@ -210,7 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectProps: normalize.select({
       "data-part": "select",
       name: state.context.name,
-      disabled,
+      disabled: !isInteractive,
       "aria-hidden": true,
       id: dom.getHiddenSelectId(state.context),
       defaultValue: state.context.selectedOption?.value,
@@ -234,13 +237,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: -1,
       onPointerMove(event) {
-        if (disabled) return
+        if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         if (!option) return
         send({ type: "POINTER_MOVE", id: option.id, target: option })
       },
       onPointerUp(event) {
-        if (disabled) return
+        if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         option?.click()
       },
@@ -248,13 +251,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "POINTER_LEAVE" })
       },
       onClick(event) {
-        if (disabled) return
+        if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         if (!option) return
         send({ type: "OPTION_CLICK", id: option.id })
       },
       onKeyDown(event) {
-        if (disabled) return
+        if (!isInteractive) return
         const keyMap: EventKeyMap = {
           Escape() {
             send({ type: "ESC_KEY" })

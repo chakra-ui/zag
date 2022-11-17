@@ -33,6 +33,7 @@ export function machine(userContext: UserDefinedContext) {
         rendered: (ctx) => (!ctx.selectedOption ? ctx.placeholder : ctx.selectedOption.label),
         hasValue: (ctx) => ctx.selectedOption != null,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
       },
 
       initial: "idle",
