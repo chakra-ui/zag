@@ -2,11 +2,11 @@ import { getWindow } from "@zag-js/dom-utils"
 
 type DescriptorOptions = {
   type: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement"
-  property: "value" | "checked"
+  property?: "value" | "checked"
 }
 
 function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
-  const { type, property } = options
+  const { type, property = "value" } = options
   const proto = getWindow(el)[type].prototype
   return Object.getOwnPropertyDescriptor(proto, property) ?? {}
 }
@@ -44,31 +44,4 @@ export function dispatchInputCheckedEvent(el: HTMLElement | null, checked: boole
   // dispatch click event
   const event = new win.Event("click", { bubbles: true })
   el.dispatchEvent(event)
-}
-
-export function trackInputPropertyMutation(
-  el: HTMLInputElement | null,
-  options: DescriptorOptions & { fn?: (value: string) => void },
-) {
-  const { fn, property, type } = options
-
-  if (!fn || !el) return
-
-  const { get, set } = getDescriptor(el, { property, type })
-
-  let run = true
-
-  Object.defineProperty(el, property, {
-    get() {
-      return get?.call(this)
-    },
-    set(value: string) {
-      if (run) fn(value)
-      return set?.call(this, value)
-    },
-  })
-
-  return () => {
-    run = false
-  }
 }
