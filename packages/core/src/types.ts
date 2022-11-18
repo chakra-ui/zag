@@ -30,7 +30,7 @@ export declare namespace StateMachine {
   export type Context<V, C> = V & Readonly<C>
 
   export type TComputedContext<T> = {
-    [K in keyof Computed<T>]: (ctx: Omit<T, K>) => T[K]
+    [K in keyof Computed<T>]: (ctx: T) => T[K]
   }
 
   export type UserContext<TContext> = Partial<Writable<TContext>>
