@@ -1,5 +1,13 @@
 # @zag-js/form-utils
 
+## 0.2.1
+
+### Patch Changes
+
+- [`47f9fab2`](https://github.com/chakra-ui/zag/commit/47f9fab26619474b371114d58b3257e9e9a28a18) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Export `setElementValue` function to sync dom form elements
+  - Add `trackFormControl` helper to integrate form related elements seamlessly
+
 ## 0.2.0
 
 ### Minor Changes
