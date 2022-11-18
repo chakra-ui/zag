@@ -42,7 +42,7 @@ export default defineComponent({
             <div class="control">
               <label {...api.labelProps}>Label</label>
               <button {...api.triggerProps}>
-                <span>{api.rendered}</span>
+                <span>{api.selectedOption?.label ?? "Select an option"}</span>
                 <CaretIcon />
               </button>
             </div>
