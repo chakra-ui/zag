@@ -73,10 +73,6 @@ type PublicContext = DirectionProperty &
 
 type PrivateContext = Context<{
   /**
-   * The placeholder of the select
-   */
-  placeholder: string
-  /**
    * Internal state of the typeahead
    */
   typeahead: TypeaheadState
@@ -99,14 +95,9 @@ type PrivateContext = Context<{
 type ComputedContext = Readonly<{
   /**
    * @computed
-   * The rendered value of the select
+   * Whether there's a selected option
    */
-  rendered: string
-  /**
-   * @computed
-   * Whether the select has a selected option
-   */
-  hasValue: boolean
+  hasSelectedOption: boolean
   /**
    * @computed
    * Whether a typeahead is currently active
