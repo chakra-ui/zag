@@ -63,6 +63,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setHighlightedOption(value: Option) {
       send({ type: "HIGHLIGHT_OPTION", value })
     },
+    clearSelectedOption() {
+      send({ type: "CLEAR_SELECTED" })
+    },
 
     labelProps: normalize.label({
       dir: state.context.dir,

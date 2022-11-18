@@ -21,10 +21,13 @@ const fetchMachine = createMachine({
   initial: "idle",
   on: {
     HIGHLIGHT_OPTION: {
-      actions: ["setHighlightedOption"]
+      actions: ["setHighlightedOption", "invokeOnHighlight"]
     },
     SELECT_OPTION: {
-      actions: ["setSelectedOption"]
+      actions: ["setSelectedOption", "invokeOnSelect"]
+    },
+    CLEAR_SELECTED: {
+      actions: ["clearSelectedOption", "invokeOnSelect"]
     }
   },
   on: {
@@ -114,11 +117,11 @@ const fetchMachine = createMachine({
         },
         OPTION_CLICK: {
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"]
+          actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"]
         },
         TRIGGER_KEY: {
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"]
+          actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"]
         },
         ESC_KEY: {
           target: "focused",

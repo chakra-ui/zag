@@ -47,10 +47,13 @@ export function machine(userContext: UserDefinedContext) {
 
       on: {
         HIGHLIGHT_OPTION: {
-          actions: ["setHighlightedOption"],
+          actions: ["setHighlightedOption", "invokeOnHighlight"],
         },
         SELECT_OPTION: {
-          actions: ["setSelectedOption"],
+          actions: ["setSelectedOption", "invokeOnSelect"],
+        },
+        CLEAR_SELECTED: {
+          actions: ["clearSelectedOption", "invokeOnSelect"],
         },
       },
 
@@ -138,11 +141,11 @@ export function machine(userContext: UserDefinedContext) {
             },
             OPTION_CLICK: {
               target: "focused",
-              actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
+              actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
             },
             TRIGGER_KEY: {
               target: "focused",
-              actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
+              actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
             },
             ESC_KEY: {
               target: "focused",
@@ -305,9 +308,6 @@ export function machine(userContext: UserDefinedContext) {
           const option = evt.target ?? dom.getById(ctx, evt.id)
           highlightOption(ctx, option)
         },
-        clearHighlightedOption(ctx) {
-          ctx.highlightedOption = null
-        },
         highlightMatchingOption(ctx, evt) {
           const option = dom.getMatchingOption(ctx, evt.key, ctx.highlightedId)
           highlightOption(ctx, option)
@@ -321,10 +321,16 @@ export function machine(userContext: UserDefinedContext) {
           ctx.prevHighlightedOption = ctx.highlightedOption
           ctx.highlightedOption = evt.value
         },
+        clearHighlightedOption(ctx) {
+          ctx.highlightedOption = null
+        },
         setSelectedOption(ctx, evt) {
           if (!evt.value) return
           ctx.prevSelectedOption = ctx.selectedOption
           ctx.selectedOption = evt.value
+        },
+        clearSelectedOption(ctx) {
+          ctx.selectedOption = null
         },
         scrollMenuToTop(ctx) {
           dom.getMenuElement(ctx)?.scrollTo(0, 0)
@@ -347,7 +353,9 @@ export function machine(userContext: UserDefinedContext) {
           const selectedOption = ctx.selectedOption
           const node = dom.getHiddenSelectElement(ctx)
           if (!node || !selectedOption) return
+          // set node's internal value
           setElementValue(node, selectedOption.value, { type: "HTMLSelectElement" })
+          // emit change event (for forms)
           const win = dom.getWin(ctx)
           const changeEvent = new win.Event("change", { bubbles: true })
           node.dispatchEvent(changeEvent)
