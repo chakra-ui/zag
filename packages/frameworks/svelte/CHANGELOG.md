@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.2.2
+
+### Patch Changes
+
+- [`44feef0b`](https://github.com/chakra-ui/zag/commit/44feef0bdf312e27d6faf1aa8ab0ecff0281108c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Provide deep merge utility for nested context values
+
+- Updated dependencies [[`44feef0b`](https://github.com/chakra-ui/zag/commit/44feef0bdf312e27d6faf1aa8ab0ecff0281108c),
+  [`810e7d85`](https://github.com/chakra-ui/zag/commit/810e7d85274a26e0fe76dbdb2829fd7ab7f982a6),
+  [`e328b306`](https://github.com/chakra-ui/zag/commit/e328b306bf06d151fff4907a7e8e1160f07af855)]:
+  - @zag-js/core@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

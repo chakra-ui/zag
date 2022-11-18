@@ -1,5 +1,16 @@
 # @zag-js/dom-utils
 
+## 0.2.1
+
+### Patch Changes
+
+- [#378](https://github.com/chakra-ui/zag/pull/378)
+  [`65976dd5`](https://github.com/chakra-ui/zag/commit/65976dd51902b1c4a4460cd196467156a705a999) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update typeahead utils to include `isValidEvent` method
+
+- Updated dependencies [[`65976dd5`](https://github.com/chakra-ui/zag/commit/65976dd51902b1c4a4460cd196467156a705a999)]:
+  - @zag-js/types@0.3.1
+
 ## 0.2.0
 
 ### Minor Changes
