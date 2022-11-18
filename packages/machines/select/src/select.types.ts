@@ -94,6 +94,10 @@ type PrivateContext = Context<{
    * Used to determine if the selected option has changed.
    */
   prevSelectedOption?: Option | null
+  /**
+   * The initial selected option. Used for form reset.
+   */
+  initialSelectedOption: Option | null
 }>
 
 type ComputedContext = Readonly<{

@@ -28,3 +28,25 @@ export function trackFieldsetDisabled(el: HTMLElement | null | undefined, callba
 export function isNativeDisabled(el: HTMLElement) {
   return el.matches(":disabled")
 }
+
+export type FormControlOptions = {
+  onFieldsetDisabled: () => void
+  onFormReset: () => void
+}
+
+export function trackFormControl(el: HTMLElement | null, options: FormControlOptions) {
+  if (!el) return
+
+  const { onFieldsetDisabled, onFormReset } = options
+
+  const cleanups = [
+    trackFormReset(el, onFormReset),
+    trackFieldsetDisabled(el, (disabled) => {
+      if (disabled) onFieldsetDisabled()
+    }),
+  ]
+
+  return () => {
+    cleanups.forEach((cleanup) => cleanup?.())
+  }
+}

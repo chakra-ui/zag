@@ -30,6 +30,8 @@ const fetchMachine = createMachine({
       actions: ["clearSelectedOption", "invokeOnSelect"]
     }
   },
+  entry: ["setInitialSelectedOption"],
+  activities: ["trackFormControlState"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

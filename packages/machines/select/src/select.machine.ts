@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { contains, findByTypeahead, observeAttributes, raf } from "@zag-js/dom-utils"
-import { setElementValue } from "@zag-js/form-utils"
+import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
 import { compact, json } from "@zag-js/utils"
@@ -17,6 +17,7 @@ export function machine(userContext: UserDefinedContext) {
         selectedOption: null,
         highlightedOption: null,
         ...ctx,
+        initialSelectedOption: null,
         prevSelectedOption: null,
         prevHighlightedOption: null,
         typeahead: findByTypeahead.defaultOptions,
@@ -40,7 +41,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
 
       watch: {
-        selectedOption: ["syncSelectElement"],
+        selectedOption: ["setSelectElementValue", "dispatchChangeEvent"],
       },
 
       on: {
@@ -54,6 +55,10 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["clearSelectedOption", "invokeOnSelect"],
         },
       },
+
+      entry: ["setInitialSelectedOption"],
+
+      activities: ["trackFormControlState"],
 
       states: {
         idle: {
@@ -211,6 +216,17 @@ export function machine(userContext: UserDefinedContext) {
         hasSelectedOption: (ctx) => ctx.hasSelectedOption,
       },
       activities: {
+        trackFormControlState(ctx) {
+          return trackFormControl(dom.getHiddenSelectElement(ctx), {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              ctx.prevSelectedOption = ctx.selectedOption
+              ctx.selectedOption = ctx.initialSelectedOption
+            },
+          })
+        },
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getMenuElement(ctx), {
             exclude(target) {
@@ -248,6 +264,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        setInitialSelectedOption(ctx) {
+          ctx.initialSelectedOption = ctx.selectedOption
+        },
         highlightPreviousOption(ctx) {
           if (!ctx.highlightedId) return
           const option = dom.getPreviousOption(ctx, ctx.highlightedId)
@@ -350,13 +369,15 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.hasSelectedChanged) return
           ctx.onChange?.(json(ctx.selectedOption))
         },
-        syncSelectElement(ctx) {
+        setSelectElementValue(ctx) {
           const selectedOption = ctx.selectedOption
           const node = dom.getHiddenSelectElement(ctx)
           if (!node || !selectedOption) return
-          // set node's internal value
           setElementValue(node, selectedOption.value, { type: "HTMLSelectElement" })
-          // emit change event (for forms)
+        },
+        dispatchChangeEvent(ctx) {
+          const node = dom.getHiddenSelectElement(ctx)
+          if (!node) return
           const win = dom.getWin(ctx)
           const changeEvent = new win.Event("change", { bubbles: true })
           node.dispatchEvent(changeEvent)
