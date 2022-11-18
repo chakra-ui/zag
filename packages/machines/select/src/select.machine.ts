@@ -58,7 +58,6 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           tags: ["closed"],
-          entry: ["clearHighlightedOption"],
           on: {
             TRIGGER_CLICK: {
               target: "open",
@@ -76,9 +75,13 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["closed"],
           entry: ["focusTrigger", "clearHighlightedOption"],
           on: {
-            TRIGGER_CLICK: { target: "open" },
-            TRIGGER_BLUR: { target: "idle" },
-            BLUR: { target: "idle" },
+            TRIGGER_CLICK: {
+              target: "open",
+            },
+            TRIGGER_BLUR: {
+              target: "idle",
+              actions: ["clearHighlightedOption"],
+            },
             TRIGGER_KEY: {
               target: "open",
             },
@@ -189,12 +192,12 @@ export function machine(userContext: UserDefinedContext) {
             TAB: [
               {
                 target: "idle",
-                actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
+                actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect", "clearHighlightedOption"],
                 guard: "selectOnTab",
               },
               {
                 target: "idle",
-                actions: ["invokeOnClose"],
+                actions: ["invokeOnClose", "clearHighlightedOption"],
               },
             ],
           },

@@ -38,7 +38,6 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       tags: ["closed"],
-      entry: ["clearHighlightedOption"],
       on: {
         TRIGGER_CLICK: {
           target: "open"
@@ -59,10 +58,8 @@ const fetchMachine = createMachine({
           target: "open"
         },
         TRIGGER_BLUR: {
-          target: "idle"
-        },
-        BLUR: {
-          target: "idle"
+          target: "idle",
+          actions: ["clearHighlightedOption"]
         },
         TRIGGER_KEY: {
           target: "open"
@@ -160,11 +157,11 @@ const fetchMachine = createMachine({
         },
         TAB: [{
           target: "idle",
-          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect"],
+          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect", "clearHighlightedOption"],
           cond: "selectOnTab"
         }, {
           target: "idle",
-          actions: ["invokeOnClose"]
+          actions: ["invokeOnClose", "clearHighlightedOption"]
         }]
       }
     }
