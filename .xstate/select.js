@@ -12,8 +12,8 @@ const {
 const fetchMachine = createMachine({
   id: "select",
   context: {
-    "hasValue": false,
-    "hasValue": false,
+    "hasSelectedOption": false,
+    "hasSelectedOption": false,
     "hasHighlightedOption": false,
     "hasHighlightedOption": false,
     "selectOnTab": false
@@ -76,13 +76,13 @@ const fetchMachine = createMachine({
           actions: ["highlightFirstOption", "invokeOnHighlight"]
         },
         ARROW_LEFT: [{
-          cond: "hasValue",
+          cond: "hasSelectedOption",
           actions: ["selectPreviousOption", "invokeOnSelect"]
         }, {
           actions: ["selectLastOption", "invokeOnSelect"]
         }],
         ARROW_RIGHT: [{
-          cond: "hasValue",
+          cond: "hasSelectedOption",
           actions: ["selectNextOption", "invokeOnSelect"]
         }, {
           actions: ["selectFirstOption", "invokeOnSelect"]
@@ -178,7 +178,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "hasValue": ctx => ctx["hasValue"],
+    "hasSelectedOption": ctx => ctx["hasSelectedOption"],
     "hasHighlightedOption": ctx => ctx["hasHighlightedOption"],
     "selectOnTab": ctx => ctx["selectOnTab"]
   }

@@ -13,7 +13,6 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        placeholder: "Select option",
         selectOnTab: true,
         selectedOption: null,
         highlightedOption: null,
@@ -29,8 +28,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        rendered: (ctx) => (!ctx.selectedOption ? ctx.placeholder : ctx.selectedOption.label),
-        hasValue: (ctx) => ctx.selectedOption != null,
+        hasSelectedOption: (ctx) => ctx.selectedOption != null,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
         selectedId: (ctx) => (ctx.selectedOption ? dom.getOptionId(ctx, ctx.selectedOption.value) : null),
@@ -94,7 +92,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             ARROW_LEFT: [
               {
-                guard: "hasValue",
+                guard: "hasSelectedOption",
                 actions: ["selectPreviousOption", "invokeOnSelect"],
               },
               {
@@ -103,7 +101,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
             ARROW_RIGHT: [
               {
-                guard: "hasValue",
+                guard: "hasSelectedOption",
                 actions: ["selectNextOption", "invokeOnSelect"],
               },
               {
@@ -207,7 +205,7 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         hasHighlightedOption: (ctx) => ctx.highlightedId != null,
         selectOnTab: (ctx) => !!ctx.selectOnTab,
-        hasValue: (ctx) => ctx.hasValue,
+        hasSelectedOption: (ctx) => ctx.hasSelectedOption,
       },
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {

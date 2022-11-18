@@ -11,6 +11,7 @@ import { getPlacementStyles } from "@zag-js/popper"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { dom } from "./select.dom"
 import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
+import * as utils from "./select.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const disabled = state.context.disabled
@@ -19,17 +20,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isOpen = state.matches("open")
 
-  const highlightedId = state.context.highlightedId
+  const highlightedOption = state.context.highlightedOption
   const selectedOption = state.context.selectedOption
   const isTypingAhead = state.context.isTypingAhead
 
   function getOptionState(props: OptionProps) {
-    const { value, disabled } = props
-    const id = dom.getOptionId(state.context, value)
+    const id = dom.getOptionId(state.context, props.value)
     return {
-      isDisabled: Boolean(props.disabled ?? disabled),
+      isDisabled: Boolean(props.disabled || disabled),
       isHighlighted: state.context.highlightedId === id,
-      isSelected: state.context.selectedOption?.value === value,
+      isSelected: state.context.selectedOption?.value === props.value,
     }
   }
 
@@ -40,10 +40,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isOpen,
-    highlightedId,
+    highlightedOption,
     selectedOption,
-    rendered: state.context.rendered,
-
     focus() {
       dom.getTriggerElement(state.context).focus()
     },
@@ -58,9 +56,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
     setSelectedOption(value: Option) {
+      utils.validateOptionData(value)
       send({ type: "SELECT_OPTION", value })
     },
     setHighlightedOption(value: Option) {
+      utils.validateOptionData(value)
       send({ type: "HIGHLIGHT_OPTION", value })
     },
     clearSelectedOption() {
@@ -98,9 +98,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": "label",
       "data-part": "trigger",
       "data-invalid": dataAttr(invalid),
+      "aria-invalid": invalid,
       "data-readonly": dataAttr(state.context.readonly),
       "data-placement": state.context.currentPlacement,
-      "data-placeholder-shown": dataAttr(!state.context.hasValue),
+      "data-placeholder-shown": dataAttr(!state.context.hasSelectedOption),
       onPointerDown(event) {
         if (event.button || event.ctrlKey || !isInteractive) return
         event.currentTarget.dataset.pointerType = event.pointerType
@@ -234,12 +235,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerMove(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
-        if (!option) return
-        send({ type: "POINTER_MOVE", id: option.id, target: option })
+        if (!option || option.hasAttribute("data-disabled")) {
+          send({ type: "POINTER_LEAVE" })
+        } else {
+          send({ type: "POINTER_MOVE", id: option.id, target: option })
+        }
       },
       onPointerUp(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
+        if (!option || option.hasAttribute("data-disabled")) return
         option?.click()
       },
       onPointerLeave() {
@@ -248,7 +253,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onClick(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
-        if (!option) return
+        if (!option || option.hasAttribute("data-disabled")) return
         send({ type: "OPTION_CLICK", id: option.id })
       },
       onKeyDown(event) {
