@@ -1168,6 +1168,10 @@ main > .toggle[data-pressed] {
   align-items: center;
 }
 
+.select [data-part="option"][data-disabled] {
+  color: #777;
+}
+
 .select [data-part="option"] > span {
   flex: 1;
 }
