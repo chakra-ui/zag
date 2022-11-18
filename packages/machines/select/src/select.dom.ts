@@ -52,7 +52,7 @@ export const dom = defineDomHelpers({
   },
   getOptionDetails(option: HTMLElement) {
     const { label, value } = option.dataset
-    return { label, value, id: option.id } as Option
+    return { label, value } as Option
   },
   getMatchingOption(ctx: Ctx, key: string, current: any) {
     return findByTypeahead(dom.getOptionElements(ctx), { state: ctx.typeahead, key, activeId: current })

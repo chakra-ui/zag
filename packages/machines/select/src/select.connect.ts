@@ -9,7 +9,6 @@ import {
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { isString } from "@zag-js/utils"
 import { dom } from "./select.dom"
 import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
 
@@ -25,9 +24,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isTypingAhead = state.context.isTypingAhead
 
   function getOptionState(props: OptionProps) {
-    const { value, disabled, index } = props
-    const uid = index != null ? `${value}-${index}` : value
-    const id = dom.getOptionId(state.context, uid)
+    const { value, disabled } = props
+    const id = dom.getOptionId(state.context, value)
     return {
       isDisabled: Boolean(props.disabled ?? disabled),
       isHighlighted: state.context.highlightedId === id,
@@ -59,16 +57,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     closeMenu() {
       send("CLOSE")
     },
-    setValue(value: string | null) {
-      send({ type: "SET_VALUE", value })
+    setSelectedOption(value: Option) {
+      send({ type: "SELECT_OPTION", value })
     },
-    setHighlighted(item: string | Option | null) {
-      const id = isString(item) ? item : item?.value
-      if (!id) return
-      send({ type: "SET_HIGHLIGHT", id })
-    },
-    resetValue() {
-      send("RESET")
+    setHighlightedOption(value: Option) {
+      send({ type: "HIGHLIGHT_OPTION", value })
     },
 
     labelProps: normalize.label({
@@ -173,16 +166,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getOptionState,
     getOptionProps(props: OptionProps) {
-      const { value, label, index } = props
+      const { value, label, valueText } = props
       const optionState = getOptionState(props)
-      const uid = index != null ? `${value}-${index}` : value
       return normalize.element({
-        id: dom.getOptionId(state.context, uid),
+        id: dom.getOptionId(state.context, value),
         role: "option",
         "data-part": "option",
         "data-label": label,
         "data-value": value,
-        "data-valuetext": label,
+        "data-valuetext": valueText ?? label,
         "aria-selected": optionState.isSelected,
         "data-selected": dataAttr(optionState.isSelected),
         "data-focus": dataAttr(optionState.isHighlighted),

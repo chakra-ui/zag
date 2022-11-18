@@ -57,21 +57,21 @@ type PublicContext = DirectionProperty &
      * The positioning options of the menu.
      */
     positioning: PositioningOptions
+    /**
+     * Whether multiple options can be selected.
+     */
+    multiple?: boolean
+    /**
+     * The selected option
+     */
+    selectedOption: Option | null
+    /**
+     * The highlighted option
+     */
+    highlightedOption: Option | null
   }
 
 type PrivateContext = Context<{
-  /**
-   * The data of the selected option
-   */
-  selectedOption: Option | null
-  /**
-   * The id of the highlighted option
-   */
-  highlightedId: string | null
-  /**
-   * The data of the highlighted option
-   */
-  highlightedOption: Option | null
   /**
    * The placeholder of the select
    */
@@ -85,15 +85,15 @@ type PrivateContext = Context<{
    */
   currentPlacement?: Placement
   /**
-   * The id of the previous highlighted option.
+   * The previous highlighted option.
    * Used to determine if the user has highlighted a new option.
    */
-  previousHighlightedId?: string | null
+  prevHighlightedOption?: Option | null
   /**
-   * The id of the previous selected option.
+   * The previous selected option.
    * Used to determine if the selected option has changed.
    */
-  previousSelectedId?: string | null
+  prevSelectedOption?: Option | null
 }>
 
 type ComputedContext = Readonly<{
@@ -117,6 +117,10 @@ type ComputedContext = Readonly<{
    * Whether the select is interactive
    */
   isInteractive: boolean
+  selectedId: string | null
+  highlightedId: string | null
+  hasSelectedChanged: boolean
+  hasHighlightedChanged: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -124,19 +128,15 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type Option = {
-  id: string
   label: string
   value: string
 }
 
-export type ItemProps = {
+export type OptionProps = {
+  label: string
   value: string
   disabled?: boolean
-}
-
-export type OptionProps = ItemProps & {
-  label?: string
-  index?: number
+  valueText?: string
 }
 
 export type MachineState = {

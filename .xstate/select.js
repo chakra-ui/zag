@@ -19,11 +19,12 @@ const fetchMachine = createMachine({
     "selectOnTab": false
   },
   initial: "idle",
-  // we need to query the DOM, that's why we use the entry action (instead of the created action)
-  entry: ["validateHighlightedOption"],
   on: {
-    SET_HIGHLIGHT: {
-      actions: ["setHighlighted"]
+    HIGHLIGHT_OPTION: {
+      actions: ["setHighlightedOption"]
+    },
+    SELECT_OPTION: {
+      actions: ["setSelectedOption"]
     }
   },
   on: {

@@ -17,10 +17,9 @@ export function machine(userContext: UserDefinedContext) {
         selectOnTab: true,
         selectedOption: null,
         highlightedOption: null,
-        highlightedId: null,
         ...ctx,
-        previousSelectedId: null,
-        previousHighlightedId: null,
+        prevSelectedOption: null,
+        prevHighlightedOption: null,
         typeahead: findByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
@@ -34,23 +33,24 @@ export function machine(userContext: UserDefinedContext) {
         hasValue: (ctx) => ctx.selectedOption != null,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+        selectedId: (ctx) => (ctx.selectedOption ? dom.getOptionId(ctx, ctx.selectedOption.value) : null),
+        highlightedId: (ctx) => (ctx.highlightedOption ? dom.getOptionId(ctx, ctx.highlightedOption.value) : null),
+        hasSelectedChanged: (ctx) => ctx.selectedOption?.value !== ctx.prevSelectedOption?.value,
+        hasHighlightedChanged: (ctx) => ctx.highlightedOption?.value !== ctx.prevHighlightedOption?.value,
       },
 
       initial: "idle",
-
-      // this doesn't need to query the DOM so we can it for better SSR support
-      created: ["validateSelectedOption"],
-
-      // we need to query the DOM, that's why we use the entry action (instead of the created action)
-      entry: ["validateHighlightedOption"],
 
       watch: {
         selectedOption: ["syncSelectElement"],
       },
 
       on: {
-        SET_HIGHLIGHT: {
-          actions: ["setHighlighted"],
+        HIGHLIGHT_OPTION: {
+          actions: ["setHighlightedOption"],
+        },
+        SELECT_OPTION: {
+          actions: ["setSelectedOption"],
         },
       },
 
@@ -228,8 +228,6 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         scrollToHighlightedOption(ctx, _evt, { getState }) {
-          const trigger = dom.getMenuElement(ctx)
-
           const exec = () => {
             const state = getState()
             // don't scroll into view if we're using the pointer
@@ -242,7 +240,7 @@ export function machine(userContext: UserDefinedContext) {
             exec()
           })
 
-          return observeAttributes(trigger, "aria-activedescendant", exec)
+          return observeAttributes(dom.getMenuElement(ctx), "aria-activedescendant", exec)
         },
       },
       actions: {
@@ -289,19 +287,18 @@ export function machine(userContext: UserDefinedContext) {
           selectOption(ctx, option)
         },
         selectNextOption(ctx) {
-          if (!ctx.selectedOption) return
-          const option = dom.getNextOption(ctx, ctx.selectedOption.id)
+          if (!ctx.selectedId) return
+          const option = dom.getNextOption(ctx, ctx.selectedId)
           selectOption(ctx, option)
         },
         selectPreviousOption(ctx) {
-          if (!ctx.selectedOption) return
-          const option = dom.getPreviousOption(ctx, ctx.selectedOption.id)
+          if (!ctx.selectedId) return
+          const option = dom.getPreviousOption(ctx, ctx.selectedId)
           selectOption(ctx, option)
         },
         highlightSelectedOption(ctx) {
           if (!ctx.selectedOption) return
-          ctx.previousHighlightedId = ctx.highlightedId
-          ctx.highlightedId = ctx.selectedOption.id
+          ctx.prevHighlightedOption = ctx.highlightedOption
           ctx.highlightedOption = ctx.selectedOption
         },
         highlightOption(ctx, evt) {
@@ -309,7 +306,6 @@ export function machine(userContext: UserDefinedContext) {
           highlightOption(ctx, option)
         },
         clearHighlightedOption(ctx) {
-          ctx.highlightedId = null
           ctx.highlightedOption = null
         },
         highlightMatchingOption(ctx, evt) {
@@ -317,11 +313,18 @@ export function machine(userContext: UserDefinedContext) {
           highlightOption(ctx, option)
         },
         selectMatchingOption(ctx, evt) {
-          const option = dom.getMatchingOption(ctx, evt.key, ctx.selectedOption?.id)
+          const option = dom.getMatchingOption(ctx, evt.key, ctx.selectedId)
           selectOption(ctx, option)
         },
-        setHighlighted(ctx, evt) {
-          ctx.highlightedId = evt.id
+        setHighlightedOption(ctx, evt) {
+          if (!evt.value) return
+          ctx.prevHighlightedOption = ctx.highlightedOption
+          ctx.highlightedOption = evt.value
+        },
+        setSelectedOption(ctx, evt) {
+          if (!evt.value) return
+          ctx.prevSelectedOption = ctx.selectedOption
+          ctx.selectedOption = evt.value
         },
         scrollMenuToTop(ctx) {
           dom.getMenuElement(ctx)?.scrollTo(0, 0)
@@ -333,11 +336,11 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onClose?.()
         },
         invokeOnHighlight(ctx) {
-          if (ctx.previousHighlightedId === ctx.highlightedId) return
+          if (!ctx.hasHighlightedChanged) return
           ctx.onHighlight?.(json(ctx.highlightedOption))
         },
         invokeOnSelect(ctx) {
-          if (ctx.previousSelectedId === ctx.selectedOption?.id) return
+          if (!ctx.hasSelectedChanged) return
           ctx.onChange?.(json(ctx.selectedOption))
         },
         syncSelectElement(ctx) {
@@ -349,22 +352,6 @@ export function machine(userContext: UserDefinedContext) {
           const changeEvent = new win.Event("change", { bubbles: true })
           node.dispatchEvent(changeEvent)
         },
-        validateSelectedOption(ctx) {
-          if (!ctx.selectedOption) return
-          if (!ctx.selectedOption.id) {
-            ctx.selectedOption.id = dom.getOptionId(ctx, ctx.selectedOption.value)
-          }
-          ctx.previousSelectedId = ctx.selectedOption.id
-        },
-        validateHighlightedOption(ctx) {
-          if (ctx.highlightedOption && !ctx.highlightedOption.id) {
-            ctx.highlightedOption.id = dom.getOptionId(ctx, ctx.highlightedOption.value)
-          } else if (ctx.highlightedOption) {
-            ctx.highlightedId = ctx.highlightedOption.id
-          } else if (ctx.highlightedId) {
-            ctx.highlightedOption = dom.getById(ctx, ctx.highlightedId)
-          }
-        },
       },
     },
   )
@@ -372,15 +359,12 @@ export function machine(userContext: UserDefinedContext) {
 
 function highlightOption(ctx: MachineContext, option?: HTMLElement | null) {
   if (!option) return
-  ctx.previousHighlightedId = ctx.highlightedId
-  ctx.highlightedId = option.id
+  ctx.prevHighlightedOption = ctx.highlightedOption
   ctx.highlightedOption = dom.getOptionDetails(option)
 }
 
 function selectOption(ctx: MachineContext, option?: HTMLElement | null) {
   if (!option) return
-  if (ctx.selectedOption) {
-    ctx.previousSelectedId = ctx.selectedOption.id
-  }
+  ctx.prevSelectedOption = ctx.selectedOption
   ctx.selectedOption = dom.getOptionDetails(option)
 }
