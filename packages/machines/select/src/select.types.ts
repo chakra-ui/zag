@@ -62,10 +62,6 @@ type PublicContext = DirectionProperty &
      */
     positioning: PositioningOptions
     /**
-     * Whether multiple options can be selected.
-     */
-    multiple?: boolean
-    /**
      * The selected option
      */
     selectedOption: Option | null
