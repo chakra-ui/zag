@@ -44,11 +44,11 @@ export const dom = defineDomHelpers({
   },
   getNextOption: (ctx: Ctx, currentId: string) => {
     const options = dom.getOptionElements(ctx)
-    return nextById(options, currentId, false)
+    return nextById(options, currentId, ctx.loop)
   },
   getPreviousOption: (ctx: Ctx, currentId: string) => {
     const options = dom.getOptionElements(ctx)
-    return prevById(options, currentId, false)
+    return prevById(options, currentId, ctx.loop)
   },
   getOptionDetails(option: HTMLElement) {
     const { label, value } = option.dataset

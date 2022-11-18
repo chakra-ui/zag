@@ -73,6 +73,10 @@ type PublicContext = DirectionProperty &
      * The highlighted option
      */
     highlightedOption: Option | null
+    /**
+     * Whether to loop the keyboard navigation through the options
+     */
+    loop?: boolean
   }
 
 type PrivateContext = Context<{
