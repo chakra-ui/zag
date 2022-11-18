@@ -209,6 +209,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectProps: normalize.select({
       "data-part": "select",
       name: state.context.name,
+      form: state.context.form,
       disabled: !isInteractive,
       "aria-hidden": true,
       id: dom.getHiddenSelectId(state.context),

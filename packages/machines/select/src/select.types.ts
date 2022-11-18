@@ -21,6 +21,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying select.
+     */
+    form?: string
+    /**
      * Whether the select is disabled
      */
     disabled?: boolean
