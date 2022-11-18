@@ -56,7 +56,7 @@ export default function Page() {
         <div className="control">
           <label {...api.labelProps}>Label</label>
           <button {...api.triggerProps}>
-            <span>{api.selectedOption?.label ?? "Select an option"}</span>
+            <span>{api.selectedOption?.label ?? "Select option"}</span>
             <CaretIcon />
           </button>
         </div>
