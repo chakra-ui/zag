@@ -451,12 +451,14 @@ importers:
   packages/frameworks/react:
     specifiers:
       '@types/react': 18.0.25
+      '@types/react-dom': 18.0.6
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       proxy-compare: 2.3.0
       react: 18.2.0
+      react-dom: 18.2.0
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/store': link:../../store
@@ -464,8 +466,10 @@ importers:
       proxy-compare: 2.3.0
     devDependencies:
       '@types/react': 18.0.25
+      '@types/react-dom': 18.0.6
       '@zag-js/utils': link:../../utilities/core
       react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
 
   packages/frameworks/solid:
     specifiers:
@@ -3066,7 +3070,7 @@ packages:
   /@types/react-dom/18.0.6:
     resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
     dependencies:
-      '@types/react': 18.0.21
+      '@types/react': 18.0.25
     dev: true
 
   /@types/react/18.0.21:
@@ -7776,7 +7780,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -8033,7 +8036,6 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /semver/5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
