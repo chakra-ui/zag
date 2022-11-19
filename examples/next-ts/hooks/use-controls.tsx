@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-onchange */
-import React, { useState } from "react"
+import { useState } from "react"
 import { ControlRecord, ControlValue } from "@zag-js/shared"
 
 function getDefaultValues<T extends ControlRecord>(obj: T) {

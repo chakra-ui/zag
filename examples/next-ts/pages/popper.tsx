@@ -1,11 +1,11 @@
 import { getPlacementStyles, getPlacement } from "@zag-js/popper"
-import React, { useEffect, useLayoutEffect } from "react"
+import { useEffect, useLayoutEffect, useRef } from "react"
 
 const useSafeEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
 
 export default function App() {
-  const referenceRef = React.useRef<HTMLButtonElement>(null)
-  const floatingRef = React.useRef<HTMLDivElement>(null)
+  const referenceRef = useRef<HTMLButtonElement>(null)
+  const floatingRef = useRef<HTMLDivElement>(null)
 
   useSafeEffect(() => {
     if (!referenceRef.current || !floatingRef.current) return

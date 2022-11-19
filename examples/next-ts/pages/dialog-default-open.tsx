@@ -1,7 +1,6 @@
 import * as dialog from "@zag-js/dialog"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId, useRef } from "react"
-import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 

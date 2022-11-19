@@ -1,7 +1,6 @@
 import * as popover from "@zag-js/popover"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as React from "react"
-import { Portal } from "../components/portal"
 
 function Popover({ children, nested, id }: any) {
   const [state, send] = useMachine(

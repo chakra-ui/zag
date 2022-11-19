@@ -1,7 +1,7 @@
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
+import { Portal } from "@zag-js/react"
 import { useEffect, useRef, useState } from "react"
-import { Portal } from "../components/portal"
 
 function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: string; inert?: boolean }) {
   const [open, setOpen] = useState(false)

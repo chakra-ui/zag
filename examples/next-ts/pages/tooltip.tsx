@@ -1,6 +1,5 @@
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
-import { Portal } from "../components/portal"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
