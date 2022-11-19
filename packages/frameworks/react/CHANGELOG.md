@@ -1,5 +1,12 @@
 # @zag-js/react
 
+## 0.3.0
+
+### Minor Changes
+
+- [`5e68880c`](https://github.com/chakra-ui/zag/commit/5e68880c86f0d0dd486b1de6a22a718c8a8e48ca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add new `Portal` component
+
 ## 0.2.2
 
 ### Patch Changes
