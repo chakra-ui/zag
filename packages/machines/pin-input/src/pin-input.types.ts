@@ -19,6 +19,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying select.
+     */
+    form?: string
+    /**
      * The regular expression that the user-entered input value is checked against.
      */
     pattern?: string

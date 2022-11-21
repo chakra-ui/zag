@@ -39,6 +39,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying select.
+     */
+    form?: string
+    /**
      * Whether the editable should auto-resize to fit the content.
      */
     autoResize?: boolean

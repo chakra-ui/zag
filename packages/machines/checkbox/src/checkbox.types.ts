@@ -55,6 +55,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying select.
+     */
+    form?: string
+    /**
      * The value to be used in the checkbox input.
      * This is the value that will be returned on form submission.
      */

@@ -26,6 +26,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying select.
+     */
+    form?: string
+    /**
      * Whether the slider is disabled
      */
     disabled?: boolean

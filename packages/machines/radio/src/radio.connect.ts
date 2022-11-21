@@ -139,6 +139,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         type: "radio",
         name: state.context.name || state.context.id,
+        form: state.context.form,
         value: props.value,
         onChange(event) {
           if (inputState.isReadOnly || inputState.isDisabled) {

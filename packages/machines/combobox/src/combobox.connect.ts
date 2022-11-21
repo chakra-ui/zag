@@ -98,6 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-invalid": isInvalid,
       "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
+      form: state.context.form,
       disabled: isDisabled,
       autoFocus: state.context.autoFocus,
       autoComplete: "off",

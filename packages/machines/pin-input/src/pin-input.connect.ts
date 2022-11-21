@@ -68,6 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       id: dom.getHiddenInputId(state.context),
       name: state.context.name,
+      form: state.context.form,
       style: visuallyHiddenStyle,
       maxLength: state.context.valueLength,
       defaultValue: state.context.valueAsString,
