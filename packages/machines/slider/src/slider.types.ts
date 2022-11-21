@@ -26,7 +26,7 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
-     * The associate form of the underlying select.
+     * The associate form of the slider.
      */
     form?: string
     /**

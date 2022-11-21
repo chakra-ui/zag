@@ -44,7 +44,7 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
-     * The associate form of the underlying select.
+     * The associate form of the underlying input.
      */
     form?: string
     /**
