@@ -2,7 +2,7 @@ import * as checkbox from "@zag-js/checkbox"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { checkboxControls } from "@zag-js/shared"
 import serialize from "form-serialize"
-import { useId, useState } from "react"
+import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -30,24 +30,15 @@ export default function Page() {
     },
   })
 
-  const [disabled, setDisabled] = useState(true)
-
   return (
     <>
       <main className="checkbox">
-        <button
-          onClick={() => {
-            setDisabled((prev) => !prev)
-          }}
-        >
-          Switch {disabled ? "enable" : "disable"}
-        </button>
         <form
           onChange={(e) => {
             console.log(serialize(e.currentTarget, { hash: true }))
           }}
         >
-          <fieldset disabled={disabled}>
+          <fieldset>
             <label {...api.rootProps}>
               <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
               <input {...inputProps} />
