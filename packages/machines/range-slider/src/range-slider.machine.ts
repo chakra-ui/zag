@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
 import { trackElementsSize } from "@zag-js/element-size"
-import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom, getClosestIndex } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
@@ -43,7 +43,7 @@ export function machine(userContext: UserDefinedContext) {
         values: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled", "trackThumbsSize"],
+      activities: ["trackFormControlState", "trackThumbsSize"],
 
       on: {
         SET_VALUE: {
@@ -140,23 +140,23 @@ export function machine(userContext: UserDefinedContext) {
         isVertical: (ctx) => ctx.isVertical,
       },
       activities: {
-        trackFieldsetDisabled(ctx) {
-          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-            if (disabled) {
-              ctx.disabled = disabled
-            }
+        trackFormControlState(ctx) {
+          return trackFormControl(dom.getRootEl(ctx), {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              if (!ctx.name) return
+
+              ctx.values.forEach((_value, index) => {
+                if (ctx.initialValues[index] != null) {
+                  ctx.values[index] = ctx.initialValues[index]
+                }
+              })
+            },
           })
         },
-        trackFormReset(ctx) {
-          if (!ctx.name) return
-          return trackFormReset(dom.getRootEl(ctx), () => {
-            ctx.values.forEach((_value, index) => {
-              if (ctx.initialValues[index] != null) {
-                ctx.values[index] = ctx.initialValues[index]
-              }
-            })
-          })
-        },
+
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove(info) {

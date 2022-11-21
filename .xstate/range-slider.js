@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
     "isVertical": false,
     "isVertical": false
   },
-  activities: ["trackFormReset", "trackFieldsetDisabled", "trackThumbsSize"],
+  activities: ["trackFormControlState", "trackThumbsSize"],
   on: {
     SET_VALUE: {
       actions: "setValue"

@@ -13,7 +13,7 @@ const fetchMachine = createMachine({
   id: "radio",
   initial: "unknown",
   context: {},
-  activities: ["trackFormReset", "trackFieldsetDisabled"],
+  activities: ["trackFormControlState"],
   on: {
     SET_VALUE: {
       actions: ["setValue"]

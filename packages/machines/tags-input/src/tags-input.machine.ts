@@ -1,7 +1,7 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createMachine, guards } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-utils"
-import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { compact, warn } from "@zag-js/utils"
@@ -65,7 +65,7 @@ export function machine(userContext: UserDefinedContext) {
         editedTagValue: "syncEditedTagValue",
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled"],
+      activities: ["trackFormControlState"],
 
       exit: ["removeLiveRegion", "clearLog"],
 
@@ -289,16 +289,14 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        trackFieldsetDisabled(ctx) {
-          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-            if (disabled) {
-              ctx.disabled = disabled
-            }
-          })
-        },
-        trackFormReset(ctx) {
-          return trackFormReset(dom.getHiddenInputEl(ctx), () => {
-            ctx.value = ctx.initialValue
+        trackFormControlState(ctx) {
+          return trackFormControl(dom.getHiddenInputEl(ctx), {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              ctx.value = ctx.initialValue
+            },
           })
         },
         autoResize(ctx) {

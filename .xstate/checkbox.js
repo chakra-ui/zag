@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
     "isInteractive": false,
     "isInteractive": false
   },
-  activities: ["trackFormReset", "trackFieldsetDisabled"],
+  activities: ["trackFormControlState"],
   on: {
     SET_STATE: [{
       cond: "shouldCheck && isInteractive",
