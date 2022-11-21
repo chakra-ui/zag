@@ -26,7 +26,11 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+<<<<<<< HEAD
      * The associate form of the slider.
+=======
+     * The associate form of the underlying input element.
+>>>>>>> 692f20e2b47114c2f0e0b276dad9be6a79acfd77
      */
     form?: string
     /**
