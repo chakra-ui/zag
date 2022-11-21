@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./checkbox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
@@ -31,7 +31,7 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled"],
+      activities: ["trackFormControlState"],
 
       on: {
         SET_STATE: [
@@ -89,16 +89,14 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: {
-        trackFieldsetDisabled(ctx) {
-          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-            if (disabled) {
-              ctx.disabled = disabled
-            }
-          })
-        },
-        trackFormReset(ctx, _evt, { send }) {
-          return trackFormReset(dom.getInputEl(ctx), () => {
-            send({ type: "SET_STATE", checked: !!ctx.defaultChecked })
+        trackFormControlState(ctx, _evt, { send }) {
+          return trackFormControl(dom.getInputEl(ctx), {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              send({ type: "SET_STATE", checked: !!ctx.defaultChecked })
+            },
           })
         },
       },

@@ -9,7 +9,7 @@ function isFormElement(el: HTMLElement): el is HTMLInputElement | HTMLSelectElem
   return el.matches("textarea, input, select, button")
 }
 
-export function trackFormReset(el: HTMLElement | null | undefined, callback: () => void) {
+function trackFormReset(el: HTMLElement | null | undefined, callback: () => void) {
   if (!el) return
   const form = getClosestForm(el)
   form?.addEventListener("reset", callback, { passive: true })
@@ -18,7 +18,7 @@ export function trackFormReset(el: HTMLElement | null | undefined, callback: () 
   }
 }
 
-export function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (disabled: boolean) => void) {
+function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (disabled: boolean) => void) {
   const fieldset = el?.closest("fieldset")
   if (!fieldset) return
   callback(fieldset.disabled)

@@ -30,7 +30,7 @@ const fetchMachine = createMachine({
     "isFirstTagFocused": false,
     "isInputRelatedTarget": false
   },
-  activities: ["trackFormReset", "trackFieldsetDisabled"],
+  activities: ["trackFormControlState"],
   exit: ["removeLiveRegion", "clearLog"],
   on: {
     DOUBLE_CLICK_TAG: {

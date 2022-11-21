@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
-import { trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { trackFormControl } from "@zag-js/form-utils"
 import { trackElementSize } from "@zag-js/element-size"
 import { compact } from "@zag-js/utils"
 import { dom } from "./slider.dom"
@@ -41,7 +41,7 @@ export function machine(userContext: UserDefinedContext) {
         value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled", "trackThumbSize"],
+      activities: ["trackFormControlState", "trackThumbSize"],
 
       on: {
         SET_VALUE: {
@@ -136,20 +136,19 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: {
-        trackFieldsetDisabled(ctx) {
-          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-            if (disabled) {
-              ctx.disabled = disabled
-            }
+        trackFormControlState(ctx) {
+          return trackFormControl(dom.getInputEl(ctx), {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              if (ctx.initialValue != null) {
+                ctx.value = ctx.initialValue
+              }
+            },
           })
         },
-        trackFormReset(ctx) {
-          return trackFormReset(dom.getInputEl(ctx), () => {
-            if (ctx.initialValue != null) {
-              ctx.value = ctx.initialValue
-            }
-          })
-        },
+
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove(info) {

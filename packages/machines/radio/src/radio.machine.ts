@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, trackFieldsetDisabled, trackFormReset } from "@zag-js/form-utils"
+import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./radio.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./radio.types"
@@ -19,7 +19,7 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
       },
 
-      activities: ["trackFormReset", "trackFieldsetDisabled"],
+      activities: ["trackFormControlState"],
 
       on: {
         SET_VALUE: {
@@ -53,16 +53,14 @@ export function machine(userContext: UserDefinedContext) {
 
     {
       activities: {
-        trackFieldsetDisabled(ctx) {
-          return trackFieldsetDisabled(dom.getRootEl(ctx), (disabled) => {
-            if (disabled) {
-              ctx.disabled = disabled
-            }
-          })
-        },
-        trackFormReset(ctx, _evt, { send }) {
-          return trackFormReset(dom.getRootEl(ctx), () => {
-            send({ type: "SET_VALUE", value: ctx.initialValue })
+        trackFormControlState(ctx, _evt, { send }) {
+          return trackFormControl(dom.getRootEl(ctx), {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              send({ type: "SET_VALUE", value: ctx.initialValue })
+            },
           })
         },
       },
