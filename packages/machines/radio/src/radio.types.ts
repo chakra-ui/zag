@@ -27,6 +27,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying input.
+     */
+    form?: string
+    /**
      * If `true`, the radio group will be disabled
      */
     disabled?: boolean

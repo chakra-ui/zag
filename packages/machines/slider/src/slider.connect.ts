@@ -151,6 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "text",
       defaultValue: state.context.value,
       name: state.context.name,
+      form: state.context.form,
       id: dom.getInputId(state.context),
       hidden: true,
     }),

@@ -30,6 +30,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying input element.
+     */
+    form?: string
+    /**
      * The value of the range slider
      */
     values: number[]

@@ -44,6 +44,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the input element.
+     */
+    form?: string
+    /**
      * Whether the number input is disabled.
      */
     disabled?: boolean

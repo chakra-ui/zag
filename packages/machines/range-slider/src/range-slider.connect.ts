@@ -199,6 +199,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.input({
         "data-part": "input",
         name: `${state.context.name}[${index}]`,
+        form: state.context.form,
         type: "text",
         hidden: true,
         defaultValue: state.context.values[index],

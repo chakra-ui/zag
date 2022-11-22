@@ -32,6 +32,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the underlying input element.
+     */
+    form?: string
+    /**
      * The current rating value.
      */
     value: number

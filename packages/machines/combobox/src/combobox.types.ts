@@ -40,6 +40,10 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
+     * The associate form of the combobox.
+     */
+    form?: string
+    /**
      * Whether the combobox is disabled
      */
     disabled?: boolean

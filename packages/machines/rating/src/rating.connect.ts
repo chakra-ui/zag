@@ -50,6 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     inputProps: normalize.input({
       "data-part": "input",
       name: state.context.name,
+      form: state.context.form,
       type: "text",
       hidden: true,
       id: dom.getInputId(state.context),

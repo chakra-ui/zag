@@ -25,6 +25,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const ariaChecked = isIndeterminate ? "mixed" : isChecked
 
   const name = state.context.name
+  const form = state.context.form
   const value = state.context.value
 
   const trulyDisabled = isDisabled && !isFocusable
@@ -123,6 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-describedby": ariaDescribedBy,
       "aria-disabled": isDisabled,
       name,
+      form,
       value,
       style: visuallyHiddenStyle,
       onChange() {

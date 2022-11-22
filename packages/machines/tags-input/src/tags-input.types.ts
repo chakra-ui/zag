@@ -130,6 +130,10 @@ type PublicContext = DirectionProperty &
      * The name attribute for the input. Useful for form submissions
      */
     name?: string
+    /**
+     * The associate form of the underlying input element.
+     */
+    form?: string
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

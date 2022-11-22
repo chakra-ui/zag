@@ -72,6 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "input",
       "aria-label": translations.input,
       name: state.context.name,
+      form: state.context.form,
       id: dom.getInputId(state.context),
       hidden: autoResize ? undefined : !isEditing,
       placeholder: placeholder?.edit,
