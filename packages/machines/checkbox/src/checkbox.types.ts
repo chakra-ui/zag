@@ -32,7 +32,7 @@ type PublicContext = DirectionProperty &
     /**
      * If `true`, the checkbox will be readonly
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * If `true`, the checkbox is marked as invalid.
      */

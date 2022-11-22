@@ -51,7 +51,7 @@ type PublicContext = DirectionProperty &
      * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
      * but the user can still interact with it
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * Whether the combobox is required
      */

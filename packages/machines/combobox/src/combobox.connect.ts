@@ -10,7 +10,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
   const isInvalid = state.context.invalid
-  const isReadonly = state.context.readonly
+  const isReadOnly = state.context.readOnly
 
   const isOpen = state.hasTag("open")
   const isFocused = state.hasTag("focused")
@@ -56,14 +56,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
     }),
 
     labelProps: normalize.label({
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
     }),
@@ -105,7 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoCorrect: "off",
       autoCapitalize: "none",
       spellCheck: "false",
-      readOnly: isReadonly,
+      readOnly: isReadOnly,
       placeholder: state.context.placeholder,
       id: dom.getInputId(state.context),
       type: "text",
@@ -189,7 +189,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-expanded": isOpen,
       "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
       disabled: isDisabled,
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
         const evt = getNativeEvent(event)

@@ -44,7 +44,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the slider is read-only
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * Whether the slider is invalid
      */

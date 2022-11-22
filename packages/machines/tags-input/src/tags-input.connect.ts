@@ -6,7 +6,7 @@ import type { Send, State, TagProps } from "./tags-input.types"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
-  const isReadonly = state.context.readonly
+  const isReadOnly = state.context.readOnly
   const isInvalid = state.context.invalid || state.context.isOverflowing
 
   const translations = state.context.translations
@@ -51,7 +51,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       "data-part": "root",
       "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isInputFocused),
       "data-empty": dataAttr(isEmpty),
@@ -66,7 +66,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
     }),
@@ -74,9 +74,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       id: dom.getControlId(state.context),
       "data-part": "control",
-      tabIndex: isReadonly ? 0 : undefined,
+      tabIndex: isReadOnly ? 0 : undefined,
       "data-disabled": dataAttr(isDisabled),
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isInputFocused),
     }),
@@ -85,14 +85,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "input",
       "data-invalid": dataAttr(isInvalid),
       "aria-invalid": isInvalid,
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
       defaultValue: state.context.inputValue,
       autoComplete: "off",
       autoCorrect: "off",
       autoCapitalize: "none",
-      disabled: isDisabled || isReadonly,
+      disabled: isDisabled || isReadOnly,
       onChange(event) {
         const evt = getNativeEvent(event)
 
@@ -263,7 +263,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",
-      "data-readonly": dataAttr(isReadonly),
+      "data-readonly": dataAttr(isReadOnly),
       disabled: isDisabled,
       "aria-label": translations.clearButtonLabel,
       hidden: isEmpty,

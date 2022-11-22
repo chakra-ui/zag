@@ -54,7 +54,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the number input is readonly
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * Whether the number input value is invalid.
      */

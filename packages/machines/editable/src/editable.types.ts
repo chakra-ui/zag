@@ -90,7 +90,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the editable is readonly
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * The callback that is called when the editable's value is changed
      */

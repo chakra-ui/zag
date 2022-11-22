@@ -19,7 +19,7 @@ export function machine(userContext: UserDefinedContext) {
         initialValue: -1,
         hoveredValue: -1,
         disabled: false,
-        readonly: false,
+        readOnly: false,
         ...ctx,
         translations: {
           ratingValueText: (index) => `${index} stars`,
@@ -35,7 +35,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         isHovering: (ctx) => ctx.hoveredValue > -1,
       },
 
@@ -118,7 +118,7 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
         isValueEmpty: (ctx) => ctx.value <= 0,
         isRadioFocused: (ctx) => !!dom.getItemGroupEl(ctx)?.contains(dom.getActiveEl(ctx)),

@@ -58,7 +58,7 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
-        isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
+        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         autoComplete: (ctx) => ctx.inputBehavior === "autocomplete",
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
       },

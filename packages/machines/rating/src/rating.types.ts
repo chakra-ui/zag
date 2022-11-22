@@ -42,7 +42,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the rating is readonly.
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * Whether the rating is disabled.
      */

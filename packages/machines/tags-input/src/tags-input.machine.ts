@@ -51,7 +51,7 @@ export function machine(userContext: UserDefinedContext) {
         count: (ctx) => ctx.value.length,
         valueAsString: (ctx) => JSON.stringify(ctx.value),
         trimmedInputValue: (ctx) => ctx.inputValue.trim(),
-        isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
+        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         isAtMax: (ctx) => ctx.count === ctx.max,
         isOverflowing: (ctx) => ctx.count > ctx.max,
       },

@@ -34,7 +34,7 @@ export function machine(userContext: UserDefinedContext) {
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
-        isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
+        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
         hasMeasuredThumbSize: (ctx) => ctx.thumbSizes.length !== 0,
       },

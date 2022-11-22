@@ -7,11 +7,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isChecked = state.matches("checked")
 
   const isInteractive = state.context.isInteractive
-
   const isIndeterminate = state.context.indeterminate
   const isDisabled = state.context.disabled
   const isInvalid = state.context.invalid
-  const isReadOnly = state.context.readonly
+  const isReadOnly = state.context.readOnly
   const isRequired = state.context.required
   const isFocusable = state.context.focusable
 

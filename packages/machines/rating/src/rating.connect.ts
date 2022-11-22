@@ -69,7 +69,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "radiogroup",
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
-      tabIndex: state.context.readonly ? 0 : -1,
+      tabIndex: state.context.readOnly ? 0 : -1,
       "data-disabled": dataAttr(isDisabled),
       onPointerMove(event) {
         if (!isInteractive || event.pointerType === "touch") return
@@ -94,8 +94,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": valueText,
         "aria-disabled": isDisabled,
         "data-disabled": dataAttr(isDisabled),
-        "aria-readonly": ariaAttr(state.context.readonly),
-        "data-readonly": dataAttr(state.context.readonly),
+        "aria-readonly": ariaAttr(state.context.readOnly),
+        "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
         "aria-posinset": index,

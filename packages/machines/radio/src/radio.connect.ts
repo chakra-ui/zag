@@ -5,11 +5,11 @@ import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isGroupDisabled = state.context.disabled
-  const isGroupReadonly = state.context.readonly
+  const isGroupReadOnly = state.context.readOnly
 
   function getRadioState<T extends ItemProps>(props: T) {
     const itemState = {
-      isReadOnly: props.readonly || isGroupReadonly,
+      isReadOnly: props.readOnly || isGroupReadOnly,
       isInvalid: props.invalid,
       isDisabled: props.disabled || isGroupDisabled,
       isChecked: state.context.value === props.value,

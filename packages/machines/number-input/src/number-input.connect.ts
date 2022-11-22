@@ -92,7 +92,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: !!state.context.readonly,
+      readOnly: !!state.context.readOnly,
       autoComplete: "off",
       autoCorrect: "off",
       spellCheck: "false",

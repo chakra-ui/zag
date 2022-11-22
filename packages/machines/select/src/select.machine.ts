@@ -32,7 +32,7 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         hasSelectedOption: (ctx) => ctx.selectedOption != null,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         selectedId: (ctx) => (ctx.selectedOption ? dom.getOptionId(ctx, ctx.selectedOption.value) : null),
         highlightedId: (ctx) => (ctx.highlightedOption ? dom.getOptionId(ctx, ctx.highlightedOption.value) : null),
         hasSelectedChanged: (ctx) => ctx.selectedOption?.value !== ctx.prevSelectedOption?.value,

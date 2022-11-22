@@ -72,7 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(state.context.readonly),
+      "data-readonly": dataAttr(state.context.readOnly),
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (disabled) return
@@ -100,7 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
       "aria-invalid": invalid,
-      "data-readonly": dataAttr(state.context.readonly),
+      "data-readonly": dataAttr(state.context.readOnly),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasSelectedOption),
       onPointerDown(event) {

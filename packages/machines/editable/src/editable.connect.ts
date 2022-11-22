@@ -6,7 +6,7 @@ import type { Send, State } from "./editable.types"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
-  const isReadonly = state.context.readonly
+  const isReadOnly = state.context.readOnly
   const isValueEmpty = state.context.isValueEmpty
   const isInvalid = state.context.invalid
 
@@ -78,8 +78,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       placeholder: placeholder?.edit,
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: isReadonly,
-      "data-readonly": dataAttr(isReadonly),
+      readOnly: isReadOnly,
+      "data-readonly": dataAttr(isReadOnly),
       "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       defaultValue: state.context.value,
@@ -119,7 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getPreviewId(state.context),
       "data-part": "preview",
       "data-placeholder-shown": dataAttr(isValueEmpty),
-      "aria-readonly": ariaAttr(isReadonly),
+      "aria-readonly": ariaAttr(isReadOnly),
       "data-readonly": dataAttr(isDisabled),
       "data-disabled": dataAttr(isDisabled),
       "aria-disabled": ariaAttr(isDisabled),

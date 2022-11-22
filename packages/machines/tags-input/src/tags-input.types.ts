@@ -65,7 +65,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the tags input should be read-only
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * Whether the tags input is invalid
      */
