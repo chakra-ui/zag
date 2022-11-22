@@ -48,11 +48,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     blur() {
       dom.getTriggerElement(state.context).blur()
     },
-
-    openMenu() {
+    open() {
       send("OPEN")
     },
-    closeMenu() {
+    close() {
       send("CLOSE")
     },
     setSelectedOption(value: Option) {
@@ -91,12 +90,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       disabled,
       dir: state.context.dir,
+      type: "button",
       "aria-controls": dom.getMenuId(state.context),
       "aria-expanded": isOpen,
       "data-expanded": dataAttr(isOpen),
       "aria-haspopup": "listbox",
       "aria-labelledby": "label",
       "data-part": "trigger",
+      "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
       "aria-invalid": invalid,
       "data-readonly": dataAttr(state.context.readonly),

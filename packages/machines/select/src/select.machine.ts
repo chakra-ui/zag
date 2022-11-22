@@ -13,9 +13,10 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        selectOnTab: true,
+        selectOnTab: false,
         selectedOption: null,
         highlightedOption: null,
+        loop: false,
         ...ctx,
         initialSelectedOption: null,
         prevSelectedOption: null,
