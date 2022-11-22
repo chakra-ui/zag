@@ -33,7 +33,7 @@ export default defineComponent({
                 {parentDialog.isOpen && (
                   <Teleport to="body">
                     <div class="dialog-backdrop" {...parentDialog.backdropProps} />
-                    <div {...parentDialog.underlayProps} data-testid="underlay-1">
+                    <div {...parentDialog.containerProps} data-testid="container-1">
                       <div {...parentDialog.contentProps}>
                         <h2 {...parentDialog.titleProps}>Edit profile</h2>
                         <p {...parentDialog.descriptionProps}>
@@ -49,7 +49,7 @@ export default defineComponent({
                         </button>
                         {childDialog.isOpen && (
                           <Teleport to="body">
-                            <div {...childDialog.underlayProps} data-testid="underlay-2" />
+                            <div {...childDialog.containerProps} data-testid="container-2" />
                             <div {...childDialog.contentProps}>
                               <h2 {...childDialog.titleProps}>Nested</h2>
                               <button {...childDialog.closeButtonProps} data-testid="close-2">

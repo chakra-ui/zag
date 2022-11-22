@@ -742,7 +742,7 @@ body {
   position: fixed;
   inset: 0px;
 }
-.dialog-backdrop + [data-part="underlay"] {
+.dialog-backdrop + [data-part="container"] {
   height: 100vh;
   width: 100vw;
   position: fixed;
@@ -752,21 +752,21 @@ body {
   justify-content: center;
 }
 
-.dialog-backdrop + [data-part="underlay"] [data-part="title"] {
+.dialog-backdrop + [data-part="container"] [data-part="title"] {
   margin: 0px;
   font-weight: 500;
   color: rgb(26, 21, 35);
   font-size: 17px;
 }
 
-.dialog-backdrop + [data-part="underlay"] [data-part="description"] {
+.dialog-backdrop + [data-part="container"] [data-part="description"] {
   margin: 10px 0px 20px;
   color: rgb(111, 110, 119);
   font-size: 15px;
   line-height: 1.5;
 }
 
-.dialog-backdrop + [data-part="underlay"] [data-part="content"] {
+.dialog-backdrop + [data-part="container"] [data-part="content"] {
   background-color: white;
   border-radius: 6px;
   box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px;
@@ -777,7 +777,7 @@ body {
   position: relative;
 }
 
-.dialog-backdrop + [data-part="underlay"] [data-part="close-button"] {
+.dialog-backdrop + [data-part="container"] [data-part="close-button"] {
   font-family: inherit;
   height: 25px;
   width: 25px;
@@ -791,7 +791,7 @@ body {
   border-radius: 100%;
 }
 
-.dialog-backdrop + [data-part="underlay"] [data-part="close-button"]:focus {
+.dialog-backdrop + [data-part="container"] [data-part="close-button"]:focus {
   outline: 2px blue solid;
   outline-offset: 2px;
 }
