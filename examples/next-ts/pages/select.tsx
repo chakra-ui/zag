@@ -1,4 +1,4 @@
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import { useId, useRef } from "react"
@@ -78,16 +78,18 @@ export default function Page() {
         </form>
 
         {/* UI select */}
-        <div {...api.positionerProps}>
-          <ul {...api.menuProps}>
-            {selectData.map(({ label, value }) => (
-              <li key={value} {...api.getOptionProps({ label, value })}>
-                <span>{label}</span>
-                {value === api.selectedOption?.value && "✓"}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Portal>
+          <div {...api.positionerProps}>
+            <ul {...api.menuProps}>
+              {selectData.map(({ label, value }) => (
+                <li key={value} {...api.getOptionProps({ label, value })}>
+                  <span>{label}</span>
+                  {value === api.selectedOption?.value && "✓"}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Portal>
       </main>
 
       <Toolbar controls={controls.ui}>
