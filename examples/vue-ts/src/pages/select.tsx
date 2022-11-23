@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, Teleport } from "vue"
 import { selectControls, selectData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -65,16 +65,18 @@ export default defineComponent({
             </form>
 
             {/* UI select */}
-            <div {...api.positionerProps}>
-              <ul {...api.menuProps}>
-                {selectData.map(({ label, value }) => (
-                  <li key={value} {...api.getOptionProps({ label, value })}>
-                    <span>{label}</span>
-                    {value === api.selectedOption?.value && "✓"}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <Teleport to="body">
+              <div {...api.positionerProps}>
+                <ul {...api.menuProps}>
+                  {selectData.map(({ label, value }) => (
+                    <li key={value} {...api.getOptionProps({ label, value })}>
+                      <span>{label}</span>
+                      {value === api.selectedOption?.value && "✓"}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Teleport>
           </main>
 
           <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} omit={["data"]} />} />
