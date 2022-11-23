@@ -157,5 +157,6 @@ export const selectControls = defineControls({
   loop: { type: "boolean", defaultValue: false, label: "Loop navigation" },
   readonly: { type: "boolean", defaultValue: false },
   selectOnTab: { type: "boolean", defaultValue: false },
+  closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
