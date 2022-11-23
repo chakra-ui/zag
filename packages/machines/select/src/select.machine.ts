@@ -151,7 +151,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 target: "focused",
                 actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
-                guard: "shouldCloseOnSelect",
+                guard: "closeOnSelect",
               },
               {
                 actions: ["selectHighlightedOption", "invokeOnSelect"],
@@ -161,7 +161,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 target: "focused",
                 actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
-                guard: "shouldCloseOnSelect",
+                guard: "closeOnSelect",
               },
               {
                 actions: ["selectHighlightedOption", "invokeOnSelect"],
@@ -228,7 +228,7 @@ export function machine(userContext: UserDefinedContext) {
         hasHighlightedOption: (ctx) => ctx.highlightedId != null,
         selectOnTab: (ctx) => !!ctx.selectOnTab,
         hasSelectedOption: (ctx) => ctx.hasSelectedOption,
-        shouldCloseOnSelect: (ctx) => !!ctx.closeOnSelect,
+        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       },
       activities: {
         trackFormControlState(ctx) {

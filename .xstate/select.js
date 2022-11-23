@@ -14,8 +14,8 @@ const fetchMachine = createMachine({
   context: {
     "hasSelectedOption": false,
     "hasSelectedOption": false,
-    "shouldCloseOnSelect": false,
-    "shouldCloseOnSelect": false,
+    "closeOnSelect": false,
+    "closeOnSelect": false,
     "hasHighlightedOption": false,
     "hasHighlightedOption": false,
     "selectOnTab": false
@@ -119,14 +119,14 @@ const fetchMachine = createMachine({
         OPTION_CLICK: [{
           target: "focused",
           actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
-          cond: "shouldCloseOnSelect"
+          cond: "closeOnSelect"
         }, {
           actions: ["selectHighlightedOption", "invokeOnSelect"]
         }],
         TRIGGER_KEY: [{
           target: "focused",
           actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
-          cond: "shouldCloseOnSelect"
+          cond: "closeOnSelect"
         }, {
           actions: ["selectHighlightedOption", "invokeOnSelect"]
         }],
@@ -186,7 +186,7 @@ const fetchMachine = createMachine({
   },
   guards: {
     "hasSelectedOption": ctx => ctx["hasSelectedOption"],
-    "shouldCloseOnSelect": ctx => ctx["shouldCloseOnSelect"],
+    "closeOnSelect": ctx => ctx["closeOnSelect"],
     "hasHighlightedOption": ctx => ctx["hasHighlightedOption"],
     "selectOnTab": ctx => ctx["selectOnTab"]
   }
