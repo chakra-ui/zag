@@ -142,6 +142,21 @@ test.describe("select / keyboard / select", () => {
     await expectToBeSelected(andorra)
     await expect(page.locator(trigger)).toContainText("Andorra")
   })
+
+  test("should close on select", async ({ page }) => {
+    await page.click(trigger)
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("Enter")
+    await expect(page.locator(menu)).not.toBeVisible()
+  })
+
+  test("should not close on select / closeOnSelect = false", async ({ page }) => {
+    await controls(page).bool("closeOnSelect", false)
+    await page.click(trigger)
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("Enter")
+    await expect(page.locator(menu)).toBeVisible()
+  })
 })
 
 test.describe("select / open / blur", () => {
