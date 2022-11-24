@@ -36,9 +36,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     close() {
       send("CLOSE")
     },
-    activeId: state.context.activeId,
-    setActiveId(id: string) {
-      send({ type: "SET_ACTIVE_ID", id })
+    highlightedId: state.context.highlightedId,
+    setHighlightedId(id: string) {
+      send({ type: "SET_HIGHLIGHTED_ID", id })
     },
     setParent(parent: Service) {
       send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
@@ -191,7 +191,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "menu",
       tabIndex: 0,
       dir: state.context.dir,
-      "aria-activedescendant": state.context.activeId ?? undefined,
+      "aria-activedescendant": state.context.highlightedId ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
       "data-placement": state.context.currentPlacement,
       onPointerEnter(event) {
@@ -273,7 +273,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
         "data-ownedby": dom.getContentId(state.context),
-        "data-focus": dataAttr(state.context.activeId === id),
+        "data-focus": dataAttr(state.context.highlightedId === id),
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return

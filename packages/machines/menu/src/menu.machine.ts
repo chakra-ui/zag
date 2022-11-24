@@ -16,7 +16,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "menu",
       initial: "unknown",
       context: {
-        activeId: null,
+        highlightedId: null,
         hoverId: null,
         parent: null,
         children: {},
@@ -68,7 +68,7 @@ export function machine(userContext: UserDefinedContext) {
         SET_VALUE: {
           actions: ["setOptionValue", "invokeOnValueChange"],
         },
-        SET_ACTIVE_ID: {
+        SET_HIGHLIGHTED_ID: {
           actions: "setFocusedItem",
         },
       },
@@ -276,13 +276,13 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
-        hasFocusedItem: (ctx) => ctx.activeId !== null,
+        hasFocusedItem: (ctx) => ctx.highlightedId !== null,
         isMenuFocused: (ctx) => {
           const menu = dom.getContentEl(ctx)
           const activeElement = dom.getActiveElement(ctx)
           return contains(menu, activeElement)
         },
-        isTargetFocused: (ctx, evt) => ctx.activeId === evt.target.id,
+        isTargetFocused: (ctx, evt) => ctx.highlightedId === evt.target.id,
         // whether the trigger is also a menu item
         isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
         // whether the trigger item is the active item
@@ -420,10 +420,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent.state.context.suspendPointer = false
         },
         setFocusedItem(ctx, evt) {
-          ctx.activeId = evt.id
+          ctx.highlightedId = evt.id
         },
         clearFocusedItem(ctx) {
-          ctx.activeId = null
+          ctx.highlightedId = null
         },
         focusMenu(ctx) {
           raf(() => dom.getContentEl(ctx)?.focus())
@@ -431,32 +431,32 @@ export function machine(userContext: UserDefinedContext) {
         focusFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
           if (!first) return
-          ctx.activeId = first.id
+          ctx.highlightedId = first.id
         },
         focusLastItem(ctx) {
           const last = dom.getLastEl(ctx)
           if (!last) return
-          ctx.activeId = last.id
+          ctx.highlightedId = last.id
         },
         focusNextItem(ctx) {
-          if (!ctx.activeId) return
+          if (!ctx.highlightedId) return
           const next = dom.getNextEl(ctx)
-          ctx.activeId = next?.id ?? null
+          ctx.highlightedId = next?.id ?? null
         },
         focusPrevItem(ctx) {
-          if (!ctx.activeId) return
+          if (!ctx.highlightedId) return
           const prev = dom.getPrevEl(ctx)
-          ctx.activeId = prev?.id ?? null
+          ctx.highlightedId = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
-          if (!ctx.activeId) return
-          ctx.onSelect?.(ctx.activeId)
+          if (!ctx.highlightedId) return
+          ctx.onSelect?.(ctx.highlightedId)
           if (!ctx.closeOnSelect) {
             ctx.pointerdownNode = null
           }
         },
         focusItem(ctx, event) {
-          ctx.activeId = event.id
+          ctx.highlightedId = event.id
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
@@ -464,7 +464,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
-          if (node) ctx.activeId = node.id
+          if (node) ctx.highlightedId = node.id
         },
         setParentMenu(ctx, evt) {
           ctx.parent = ref(evt.value)
@@ -489,7 +489,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreFocus(ctx) {
           if (!ctx.hoverId) return
-          ctx.activeId = ctx.hoverId
+          ctx.highlightedId = ctx.hoverId
           ctx.hoverId = null
         },
         restoreParentFocus(ctx) {
