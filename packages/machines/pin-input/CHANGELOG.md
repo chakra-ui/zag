@@ -1,5 +1,13 @@
 # @zag-js/pin-input
 
+## 0.2.3
+
+### Patch Changes
+
+- [#400](https://github.com/chakra-ui/zag/pull/400)
+  [`29f24231`](https://github.com/chakra-ui/zag/commit/29f242317df9fff2af04b83b618f6577cbdbb713) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add support for `form` attribute
+
 ## 0.2.2
 
 ### Patch Changes
