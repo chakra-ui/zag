@@ -14,7 +14,7 @@ export function Portal(props: PortalProps): JSX.Element {
   const portalNode = useRef<HTMLElement | null>(null)
   const [, forceUpdate] = useReducer((s) => s + 1, 0)
 
-  useLayoutEffect(() => {
+  useSafeLayoutEffect(() => {
     if (!node.current) return
     const doc = node.current.ownerDocument
     portalNode.current = doc.createElement("zag-portal")
