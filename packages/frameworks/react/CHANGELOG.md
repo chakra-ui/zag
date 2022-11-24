@@ -1,5 +1,12 @@
 # @zag-js/react
 
+## 0.3.1
+
+### Patch Changes
+
+- [`396493b6`](https://github.com/chakra-ui/zag/commit/396493b6cb85ffed7172c60668f6f49a8ba8f755) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix ssr issue with `Portal` component
+
 ## 0.3.0
 
 ### Minor Changes

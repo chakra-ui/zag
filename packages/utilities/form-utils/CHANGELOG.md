@@ -1,5 +1,13 @@
 # @zag-js/form-utils
 
+## 0.2.2
+
+### Patch Changes
+
+- [#398](https://github.com/chakra-ui/zag/pull/398)
+  [`5706d503`](https://github.com/chakra-ui/zag/commit/5706d5036db101ec7fd6dcb9a9065461aad0225c) Thanks
+  [@anubra266](https://github.com/anubra266)! - Refactor machine to simplify form-utils approach
+
 ## 0.2.1
 
 ### Patch Changes

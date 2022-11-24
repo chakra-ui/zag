@@ -1,5 +1,21 @@
 # @zag-js/select
 
+## 0.1.1
+
+### Patch Changes
+
+- [`839a296a`](https://github.com/chakra-ui/zag/commit/839a296ac493c4305d6f4cf0bf12c0762463e91a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Rename `openMenu`/`closeMenu` to `open`/`close` respectively for
+  consistency
+
+  - Add `type=button` to select trigger
+  - Add missing `data-disabled` attribute to select trigger
+  - Set `selectOnTab` to `false` by default
+
+- [`985d9b26`](https://github.com/chakra-ui/zag/commit/985d9b26a9db7e585ff504bbaa88de6835cf3fd0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure consistent API naming for `readonly` by renaming it to
+  `readOnly`
+
 ## 0.1.0
 
 ### Minor Changes
