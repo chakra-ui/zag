@@ -49,7 +49,7 @@ const fetchMachine = createMachine({
     SET_VALUE: {
       actions: ["setOptionValue", "invokeOnValueChange"]
     },
-    SET_ACTIVE_ID: {
+    SET_HIGHLIGHTED_ID: {
       actions: "setFocusedItem"
     }
   },

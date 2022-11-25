@@ -29,7 +29,7 @@ type PublicContext = DirectionProperty &
     /**
      * The `id` of the active menu item.
      */
-    activeId: string | null
+    highlightedId: string | null
     /**
      * Function called when a menu item is selected.
      */

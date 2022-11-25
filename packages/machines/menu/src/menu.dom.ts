@@ -14,7 +14,7 @@ export const dom = defineDomHelpers({
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-  getFocusedItem: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
+  getFocusedItem: (ctx: Ctx) => (ctx.highlightedId ? dom.getById(ctx, ctx.highlightedId) : null),
   getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
 
   getElements: (ctx: Ctx) => {
@@ -24,11 +24,11 @@ export const dom = defineDomHelpers({
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx) => nextById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
-  getPrevEl: (ctx: Ctx) => prevById(dom.getElements(ctx), ctx.activeId!, ctx.loop),
+  getNextEl: (ctx: Ctx) => nextById(dom.getElements(ctx), ctx.highlightedId!, ctx.loop),
+  getPrevEl: (ctx: Ctx) => prevById(dom.getElements(ctx), ctx.highlightedId!, ctx.loop),
 
   getElemByKey: (ctx: Ctx, key: string) =>
-    findByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.activeId }),
+    findByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedId }),
 
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && v.dataset.disabled === ""
