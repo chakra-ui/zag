@@ -58,14 +58,14 @@ test("should not be focusable when disabled", async ({ page }) => {
 })
 
 test("should be focusable when readonly", async ({ page }) => {
-  await controls(page).bool("readonly")
+  await controls(page).bool("readOnly")
   await page.click("main")
   await page.keyboard.press("Tab")
   await expect(page.locator(input)).toBeFocused()
 })
 
 test("should not be changeable when readonly", async ({ page }) => {
-  await controls(page).bool("readonly")
+  await controls(page).bool("readOnly")
   await page.click(root)
   await expect(page.locator(input)).toHaveAttribute("aria-checked", "false")
 })
