@@ -63,20 +63,20 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         checked: {
+          entry: ["invokeOnChange"],
           on: {
             TOGGLE: {
               target: "unchecked",
               guard: "isInteractive",
-              actions: ["invokeOnChange"],
             },
           },
         },
         unchecked: {
+          entry: ["invokeOnChange"],
           on: {
             TOGGLE: {
               target: "checked",
               guard: "isInteractive",
-              actions: ["invokeOnChange"],
             },
           },
         },
