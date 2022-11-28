@@ -29,7 +29,7 @@ importers:
       eslint-plugin-jest: 27.1.1
       eslint-plugin-prettier: 4.2.1
       find-packages: 10.0.0
-      husky: 8.0.1
+      husky: 8.0.2
       jest: 29.1.2
       jest-watch-typeahead: 2.2.0
       json-format-highlight: 1.0.4
@@ -68,7 +68,7 @@ importers:
       eslint-plugin-jest: 27.1.1_tyntwui2bgqwveldr4h74k2kni
       eslint-plugin-prettier: 4.2.1_hvbqyfstm4urdpm6ffpwfka4e4
       find-packages: 10.0.0
-      husky: 8.0.1
+      husky: 8.0.2
       jest: 29.1.2
       jest-watch-typeahead: 2.2.0_jest@29.1.2
       json-format-highlight: 1.0.4
@@ -5788,8 +5788,8 @@ packages:
     engines: {node: '>=12.20.0'}
     dev: false
 
-  /husky/8.0.1:
-    resolution: {integrity: sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==}
+  /husky/8.0.2:
+    resolution: {integrity: sha512-Tkv80jtvbnkK3mYWxPZePGFpQ/tT3HNSs/sasF9P2YfkMezDl3ON37YN6jUUI4eTg5LcyVynlb6r4eyvOmspvg==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
