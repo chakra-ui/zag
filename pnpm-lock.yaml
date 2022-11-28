@@ -451,7 +451,7 @@ importers:
   packages/frameworks/react:
     specifiers:
       '@types/react': 18.0.25
-      '@types/react-dom': 18.0.6
+      '@types/react-dom': 18.0.9
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
@@ -466,7 +466,7 @@ importers:
       proxy-compare: 2.3.0
     devDependencies:
       '@types/react': 18.0.25
-      '@types/react-dom': 18.0.6
+      '@types/react-dom': 18.0.9
       '@zag-js/utils': link:../../utilities/core
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -3077,6 +3077,12 @@ packages:
     resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
     dependencies:
       '@types/react': 18.0.21
+    dev: true
+
+  /@types/react-dom/18.0.9:
+    resolution: {integrity: sha512-qnVvHxASt/H7i+XG1U1xMiY5t+IHcPGUK7TDMDzom08xa7e86eCeKOiLZezwCKVxJn6NEiiy2ekgX8aQssjIKg==}
+    dependencies:
+      '@types/react': 18.0.25
     dev: true
 
   /@types/react/18.0.21:
