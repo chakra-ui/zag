@@ -71,7 +71,7 @@
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.40.0",
     "@typescript-eslint/parser": "5.40.0",
-    "axe-core": "4.4.3",
+    "axe-core": "4.5.2",
     "commitlint": "17.1.2",
     "eslint": "8.25.0",
     "eslint-config-prettier": "8.5.0",

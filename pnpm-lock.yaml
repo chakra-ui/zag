@@ -21,7 +21,7 @@ importers:
       '@types/signale': 1.4.4
       '@typescript-eslint/eslint-plugin': 5.40.0
       '@typescript-eslint/parser': 5.40.0
-      axe-core: 4.4.3
+      axe-core: 4.5.2
       commitlint: 17.1.2
       eslint: 8.25.0
       eslint-config-prettier: 8.5.0
@@ -60,7 +60,7 @@ importers:
       '@types/signale': 1.4.4
       '@typescript-eslint/eslint-plugin': 5.40.0_25sstg4uu2sk4pm7xcyzuov7xq
       '@typescript-eslint/parser': 5.40.0_z4bbprzjrhnsfa24uvmcbu7f5q
-      axe-core: 4.4.3
+      axe-core: 4.5.2
       commitlint: 17.1.2_@swc+core@1.3.7
       eslint: 8.25.0
       eslint-config-prettier: 8.5.0_eslint@8.25.0
@@ -1032,7 +1032,7 @@ packages:
     peerDependencies:
       playwright: '>= 1.0.0'
     dependencies:
-      axe-core: 4.4.3
+      axe-core: 4.5.2
       playwright: 1.27.1
     dev: false
 
@@ -3847,8 +3847,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /axe-core/4.4.3:
-    resolution: {integrity: sha512-32+ub6kkdhhWick/UjvEwRchgoetXqTK14INLqbGm5U2TzBkBNF3nQtLYm8ovxSkQWArjEQvftCKryjZaATu3w==}
+  /axe-core/4.5.2:
+    resolution: {integrity: sha512-u2MVsXfew5HBvjsczCv+xlwdNnB1oQR9HlAcsejZttNjKKSkeDNVwB1vMThIUIFI9GoT57Vtk8iQLwqOfAkboA==}
     engines: {node: '>=4'}
     dev: false
 
