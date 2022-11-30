@@ -1,13 +1,13 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, PropsWithChildren } from "solid-js"
+import { createMemo, createUniqueId, ParentProps } from "solid-js"
 import { Portal } from "solid-js/web"
 import { popoverControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
-function Wrapper(props: PropsWithChildren<{ guard: boolean }>) {
+function Wrapper(props: ParentProps<{ guard: boolean }>) {
   return <>{props.guard ? <Portal mount={document.body}>{props.children}</Portal> : props.children}</>
 }
 
