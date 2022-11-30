@@ -21,7 +21,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"] ?? dom.getLabelId(state.context)
   const ariaDescribedBy = state.context["aria-describedby"]
-  const ariaChecked = isIndeterminate ? "mixed" : isChecked
 
   const name = state.context.name
   const form = state.context.form
@@ -119,9 +118,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       "aria-invalid": isInvalid,
-      "aria-checked": ariaChecked,
       "aria-describedby": ariaDescribedBy,
-      "aria-disabled": isDisabled,
       name,
       form,
       value,
