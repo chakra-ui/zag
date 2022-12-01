@@ -45,9 +45,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_INDETERMINATE", value: indeterminate })
     },
 
-    rootProps: normalize.element({
+    rootProps: normalize.label({
       "data-part": "root",
       id: dom.getRootId(state.context),
+      htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-checked": dataAttr(isChecked),
@@ -75,9 +76,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.label({
+    labelProps: normalize.element({
       "data-part": "label",
-      htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-hover": dataAttr(isHovered),
