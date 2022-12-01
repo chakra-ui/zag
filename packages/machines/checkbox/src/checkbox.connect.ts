@@ -1,4 +1,4 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
 import type { Send, State } from "./checkbox.types"
@@ -114,7 +114,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultChecked: isChecked,
       disabled: trulyDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: isReadOnly,
+      "aria-readonly": ariaAttr(isReadOnly),
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       "aria-invalid": isInvalid,
