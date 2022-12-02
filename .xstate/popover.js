@@ -11,32 +11,20 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "popover",
-  initial: "unknown",
+  initial: ctx.defaultOpen ? "open" : "closed",
   context: {
-    "isDefaultOpen": false,
     "!isRelatedTargetWithinContent": false,
     "isTriggerFocused && portalled": false,
     "isLastTabbableElement && closeOnInteractOutside && portalled": false,
     "(isFirstTabbableElement || isContentFocused) && portalled": false
   },
+  entry: "checkRenderedElements",
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: [{
-          target: "open",
-          cond: "isDefaultOpen",
-          actions: "checkRenderedElements"
-        }, {
-          target: "closed",
-          actions: "checkRenderedElements"
-        }]
-      }
-    },
     closed: {
       entry: "invokeOnClose",
       on: {
@@ -82,7 +70,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isDefaultOpen": ctx => ctx["isDefaultOpen"],
     "!isRelatedTargetWithinContent": ctx => ctx["!isRelatedTargetWithinContent"],
     "isTriggerFocused && portalled": ctx => ctx["isTriggerFocused && portalled"],
     "isLastTabbableElement && closeOnInteractOutside && portalled": ctx => ctx["isLastTabbableElement && closeOnInteractOutside && portalled"],

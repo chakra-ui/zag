@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "menu",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "!isSubmenu": false,
     "isSubmenu": false,
@@ -59,11 +59,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       on: {
         CONTEXT_MENU_START: {

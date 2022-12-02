@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "number-input",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "clampOnBlur": false,
     "isInvalidExponential": false,
@@ -39,20 +39,13 @@ const fetchMachine = createMachine({
       actions: ["decrement"]
     }
   },
+  entry: "syncInputValue",
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          target: "idle",
-          actions: "syncInputValue"
-        }
-      }
-    },
     idle: {
       exit: "invokeOnFocus",
       on: {

@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "splitter",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isCollapsed": false,
     "!isFixed": false,
@@ -42,11 +42,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       on: {
         POINTER_OVER: {

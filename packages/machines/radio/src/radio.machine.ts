@@ -9,7 +9,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "radio",
-      initial: "unknown",
+      initial: "idle",
       context: {
         value: null,
         initialValue: null,
@@ -40,15 +40,7 @@ export function machine(userContext: UserDefinedContext) {
         value: ["dispatchChangeEvent", "invokeOnChange"],
       },
 
-      states: {
-        unknown: {
-          on: {
-            SETUP: {
-              actions: "checkValue",
-            },
-          },
-        },
-      },
+      entry: "checkValue",
     },
 
     {

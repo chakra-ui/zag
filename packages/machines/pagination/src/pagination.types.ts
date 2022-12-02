@@ -84,7 +84,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "idle"
+  value: "idle"
 }
 
 export type State = S.State<MachineContext, MachineState>

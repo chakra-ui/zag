@@ -11,9 +11,8 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "editable",
-  initial: "unknown",
+  initial: ctx.startWithEditView ? "edit" : "preview",
   context: {
-    "startWithEditView": false,
     "activateOnDblClick": false,
     "activateOnFocus": false,
     "!isAtMaxLength": false,
@@ -31,16 +30,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: [{
-          cond: "startWithEditView",
-          target: "edit"
-        }, {
-          target: "preview"
-        }]
-      }
-    },
     preview: {
       // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
       entry: ["blurInputIfNeeded"],
@@ -98,7 +87,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "startWithEditView": ctx => ctx["startWithEditView"],
     "activateOnDblClick": ctx => ctx["activateOnDblClick"],
     "activateOnFocus": ctx => ctx["activateOnFocus"],
     "!isAtMaxLength": ctx => ctx["!isAtMaxLength"],

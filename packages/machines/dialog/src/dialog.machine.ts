@@ -13,7 +13,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "dialog",
-      initial: "unknown",
+      initial: ctx.defaultOpen ? "open" : "closed",
 
       context: {
         role: "dialog",
@@ -31,11 +31,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: ctx.defaultOpen ? "open" : "closed",
-          },
-        },
         open: {
           entry: ["checkRenderedElements"],
           activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],

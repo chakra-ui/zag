@@ -12,7 +12,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "splitter",
-      initial: "unknown",
+      initial: "idle",
       context: {
         orientation: "horizontal",
         min: 224,
@@ -47,12 +47,6 @@ export function machine(userContext: UserDefinedContext) {
         ],
       },
       states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
-
         idle: {
           on: {
             POINTER_OVER: {
@@ -177,10 +171,8 @@ export function machine(userContext: UserDefinedContext) {
         HOVER_DELAY: 250,
       },
       actions: {
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value })
         },
         invokeOnChangeStart(ctx) {
           ctx.onChangeStart?.({ value: ctx.value })

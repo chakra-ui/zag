@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "rating",
-      initial: "unknown",
+      initial: "idle",
       context: {
         name: "rating",
         max: 5,
@@ -41,16 +41,9 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: ["trackFormControlState"],
 
-      states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: "checkValue",
-            },
-          },
-        },
+      entry: "checkValue",
 
+      states: {
         idle: {
           entry: "clearHoveredValue",
           on: {
@@ -173,15 +166,11 @@ export function machine(userContext: UserDefinedContext) {
           let value = evt.index - factor
           ctx.hoveredValue = value
         },
-        dispatchChangeEvent(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            dom.dispatchChangeEvent(ctx)
-          }
+        dispatchChangeEvent(ctx) {
+          dom.dispatchChangeEvent(ctx)
         },
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value })
         },
         invokeOnHover(ctx) {
           ctx.onHover?.({ value: ctx.hoveredValue })

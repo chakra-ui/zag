@@ -12,7 +12,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "slider",
-      initial: "unknown",
+      initial: "idle",
       context: {
         thumbSize: null,
         thumbAlignment: "contain",
@@ -55,16 +55,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: ["checkValue"],
-            },
-          },
-        },
+      entry: "checkValue",
 
+      states: {
         idle: {
           on: {
             POINTER_DOWN: {

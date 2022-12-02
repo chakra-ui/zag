@@ -12,7 +12,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "pin-input",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         value: [],
         focusedIndex: -1,
@@ -59,22 +59,9 @@ export function machine(userContext: UserDefinedContext) {
         ],
       },
 
+      entry: ctx.autoFocus ? ["setupValue", "setFocusIndexToFirst"] : "setupValue",
+
       states: {
-        unknown: {
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused",
-                actions: ["setupValue", "setFocusIndexToFirst"],
-              },
-              {
-                target: "idle",
-                actions: "setupValue",
-              },
-            ],
-          },
-        },
         idle: {
           on: {
             FOCUS: {
@@ -183,12 +170,10 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.isValueComplete) return
           ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
         },
-        invokeOnChange: (ctx, evt) => {
-          if (evt.type === "SETUP") return
+        invokeOnChange: (ctx) => {
           ctx.onChange?.({ value: Array.from(ctx.value) })
         },
-        dispatchInputEvent: (ctx, evt) => {
-          if (evt.type === "SETUP") return
+        dispatchInputEvent: (ctx) => {
           dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
           const inputs = dom.getElements(ctx)
           ctx.value.forEach((val, index) => {

@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "pressable",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isVirtualPointerEvent": false,
     "wasPressedDown": false,
@@ -24,11 +24,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection", "resetIgnoreClick"],
       on: {

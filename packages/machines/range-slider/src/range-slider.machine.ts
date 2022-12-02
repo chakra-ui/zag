@@ -12,7 +12,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "range-slider",
-      initial: "unknown",
+      initial: "idle",
 
       context: {
         thumbSizes: [],
@@ -57,15 +57,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
+      entry: "checkValue",
+
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: "checkValue",
-            },
-          },
-        },
         idle: {
           on: {
             POINTER_DOWN: {
@@ -189,17 +183,13 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.values })
         },
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.values })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.values })
         },
-        dispatchChangeEvent(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            raf(() => {
-              dom.dispatchChangeEvent(ctx)
-            })
-          }
+        dispatchChangeEvent(ctx) {
+          raf(() => {
+            dom.dispatchChangeEvent(ctx)
+          })
         },
         setActiveIndex(ctx, evt) {
           ctx.activeIndex = evt.index ?? getClosestIndex(ctx, evt)

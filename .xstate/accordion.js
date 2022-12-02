@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "accordion",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isExpanded && canToggle": false,
     "!isExpanded": false
@@ -27,11 +27,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       on: {
         FOCUS: {

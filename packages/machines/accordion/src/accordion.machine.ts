@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "accordion",
-      initial: "unknown",
+      initial: "idle",
 
       context: {
         focusedValue: null,
@@ -34,11 +34,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
         idle: {
           on: {
             FOCUS: {
@@ -88,10 +83,8 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value })
         },
         collapse(ctx, evt) {
           ctx.value = ctx.multiple ? remove(toArray(ctx.value), evt.value) : null

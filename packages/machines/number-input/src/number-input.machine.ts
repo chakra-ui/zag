@@ -21,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "number-input",
-      initial: "unknown",
+      initial: "idle",
       context: {
         dir: "ltr",
         focusInputOnChange: true,
@@ -85,16 +85,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: "syncInputValue",
-            },
-          },
-        },
+      entry: "syncInputValue",
 
+      states: {
         idle: {
           exit: "invokeOnFocus",
           on: {

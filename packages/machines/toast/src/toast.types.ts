@@ -149,7 +149,11 @@ type GroupPrivateContext = Context<{
 
 export type GroupMachineContext = GroupPublicContext & GroupComputedContext & GroupPrivateContext
 
-export type GroupState = S.State<GroupMachineContext>
+export type GroupMachineState = {
+  value: "active"
+}
+
+export type GroupState = S.State<GroupMachineContext, GroupMachineState>
 
 export type GroupSend = (event: S.Event<S.AnyEventObject>) => void
 

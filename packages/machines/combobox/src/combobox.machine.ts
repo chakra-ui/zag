@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         loop: true,
         openOnClick: false,
@@ -74,6 +74,7 @@ export function machine(userContext: UserDefinedContext) {
         activeId: "setSectionLabel",
       },
 
+      entry: "setupDocument",
       exit: "removeLiveRegion",
 
       on: {
@@ -102,23 +103,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          tags: ["idle"],
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused",
-                actions: "setupDocument",
-              },
-              {
-                target: "idle",
-                actions: "setupDocument",
-              },
-            ],
-          },
-        },
-
         idle: {
           tags: ["idle"],
           entry: ["scrollToTop", "clearFocusedOption"],
@@ -349,7 +333,6 @@ export function machine(userContext: UserDefinedContext) {
         openOnClick: (ctx) => !!ctx.openOnClick,
         isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
         focusOnClear: (ctx) => !!ctx.focusOnClear,
-        autoFocus: (ctx) => !!ctx.autoFocus,
         autoComplete: (ctx) => ctx.autoComplete,
         autoHighlight: (ctx) => ctx.autoHighlight,
         isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.activeId,

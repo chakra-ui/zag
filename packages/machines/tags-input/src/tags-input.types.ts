@@ -212,7 +212,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
   tags: "focused" | "editing"
 }
 

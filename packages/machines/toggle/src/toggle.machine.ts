@@ -7,7 +7,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "toggle",
-      initial: "unknown",
+      initial: ctx.defaultPressed ? "pressed" : "unpressed",
 
       context: {
         disabled: false,
@@ -23,11 +23,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: ctx.defaultPressed ? "pressed" : "unpressed",
-          },
-        },
         pressed: {
           on: { TOGGLE: "unpressed" },
         },

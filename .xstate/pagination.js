@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "pagination",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isValidCount": false,
     "isValidPage": false,
@@ -40,19 +40,6 @@ const fetchMachine = createMachine({
       cond: "canGoToNextPage",
       actions: "goToNextPage"
     }
-  },
-  on: {
-    UPDATE_CONTEXT: {
-      actions: "updateContext"
-    }
-  },
-  states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
-    idle: {}
   }
 }, {
   actions: {

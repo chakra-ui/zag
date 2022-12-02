@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "tags-input",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused:input" : "idle",
 
       context: {
         log: { current: null, prev: null },
@@ -67,6 +67,8 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: ["trackFormControlState"],
 
+      entry: ["setupDocument", "checkValue"],
+
       exit: ["removeLiveRegion", "clearLog"],
 
       on: {
@@ -109,19 +111,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused:input",
-                actions: ["setupDocument", "checkValue"],
-              },
-              { target: "idle", actions: ["setupDocument", "checkValue"] },
-            ],
-          },
-        },
-
         idle: {
           on: {
             FOCUS: "focused:input",
@@ -262,7 +251,6 @@ export function machine(userContext: UserDefinedContext) {
         isInputValueEmpty: (ctx) => ctx.trimmedInputValue.length === 0,
         hasTags: (ctx) => ctx.value.length > 0,
         allowOverflow: (ctx) => !!ctx.allowOverflow,
-        autoFocus: (ctx) => !!ctx.autoFocus,
         addOnBlur: (ctx) => ctx.blurBehavior === "add",
         clearOnBlur: (ctx) => ctx.blurBehavior === "clear",
         addOnPaste: (ctx) => !!ctx.addOnPaste,

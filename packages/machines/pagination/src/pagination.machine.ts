@@ -7,7 +7,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "pagination",
-      initial: "unknown",
+      initial: "idle",
       context: {
         pageSize: 10,
         siblingCount: 1,
@@ -64,15 +64,6 @@ export function machine(userContext: UserDefinedContext) {
           guard: "canGoToNextPage",
           actions: "goToNextPage",
         },
-      },
-
-      states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
-        idle: {},
       },
     },
     {
