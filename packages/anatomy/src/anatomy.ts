@@ -1,4 +1,4 @@
-export const anatomy = (component: string) => {
+export const createAnatomy = (component: string) => {
   let _component = component
   let _parts: string[]
 
