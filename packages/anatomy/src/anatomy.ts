@@ -5,7 +5,7 @@ export const anatomy = (component: string) => {
   const api = {
     parts<T extends string>(...parts: T[]) {
       if (_parts) {
-        throw new Error("[anatomy] .part(...) should only be called once. Did you mean to use .extend(...) ?")
+        throw new Error('anatomy("").parts(...) should only be called once. Did you mean to use .extend(...) ?')
       }
       _parts = parts
       return api
