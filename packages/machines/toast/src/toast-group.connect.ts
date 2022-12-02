@@ -150,9 +150,7 @@ export function groupConnect<T extends PropTypes>(state: GroupState, send: Group
     },
   }
 
-  if (!state.matches("unknown")) {
-    Object.assign(toaster, group)
-  }
+  Object.assign(toaster, group)
 
   return group
 }
