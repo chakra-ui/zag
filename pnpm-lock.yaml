@@ -437,6 +437,9 @@ importers:
       typescript: 4.8.4
       vue-tsc: 1.0.3_typescript@4.8.4
 
+  packages/anatomy:
+    specifiers: {}
+
   packages/core:
     specifiers:
       '@zag-js/store': workspace:*
@@ -514,11 +517,13 @@ importers:
 
   packages/machines/accordion:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
