@@ -1,6 +1,6 @@
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId, For } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -33,6 +33,7 @@ export default function Page() {
         <div>
           <button onClick={() => api().setValue("Togo")}>Set to Togo</button>
           <br />
+
           <div {...api().rootProps}>
             <label {...api().labelProps}>Select country</label>
             <div {...api().controlProps}>
@@ -40,8 +41,9 @@ export default function Page() {
               <button {...api().toggleButtonProps}>▼</button>
             </div>
           </div>
+
           <div {...api().positionerProps}>
-            {options().length > 0 && (
+            <Show when={options().length > 0}>
               <ul {...api().listboxProps}>
                 <For each={options()}>
                   {(item, index) => {
@@ -54,7 +56,7 @@ export default function Page() {
                   }}
                 </For>
               </ul>
-            )}
+            </Show>
           </div>
         </div>
       </main>
