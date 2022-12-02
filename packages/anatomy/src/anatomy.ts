@@ -11,7 +11,7 @@ export const anatomy = (component: string) => {
       return api
     },
 
-    extends<T extends string>(...parts: T[]) {
+    extend<T extends string>(...parts: T[]) {
       _parts = [..._parts, ...parts]
       return api
     },

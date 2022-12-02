@@ -24,7 +24,7 @@ describe("Anatomy", () => {
 
   it("should allow to extend the anatomy", () => {
     const baseAnatomy = anatomy("accordion").parts("root")
-    const result = baseAnatomy.extends("control").build()
+    const result = baseAnatomy.extend("control").build()
 
     expect(result).toEqual({
       root: {
@@ -38,7 +38,7 @@ describe("Anatomy", () => {
 
   it("should filter duplicates parts when extending", () => {
     const baseAnatomy = anatomy("accordion").parts("root", "control")
-    const result = baseAnatomy.extends("control").build()
+    const result = baseAnatomy.extend("control").build()
 
     expect(result).toEqual({
       root: {
