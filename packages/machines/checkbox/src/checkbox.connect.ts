@@ -46,6 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.label({
+      "data-scope": "checkbox",
       "data-part": "root",
       id: dom.getRootId(state.context),
       htmlFor: dom.getInputId(state.context),
@@ -77,6 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
+      "data-scope": "checkbox",
       "data-part": "label",
       id: dom.getLabelId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -93,6 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
+      "data-scope": "checkbox",
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -107,6 +110,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
+      "data-scope": "checkbox",
       "data-part": "input",
       id: dom.getInputId(state.context),
       type: "checkbox",

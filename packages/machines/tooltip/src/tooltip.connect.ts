@@ -37,6 +37,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     triggerProps: normalize.button({
+      "data-scope": "tooltip",
       "data-part": "trigger",
       id: triggerId,
       "data-expanded": dataAttr(isOpen),
@@ -74,22 +75,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
+      "data-scope": "tooltip",
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
+      "data-scope": "tooltip",
       "data-part": "arrow-inner",
       style: popperStyles.innerArrow,
     }),
 
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
+      "data-scope": "tooltip",
       "data-part": "positioner",
       style: popperStyles.floating,
     }),
 
     contentProps: normalize.element({
+      "data-scope": "tooltip",
       "data-part": "content",
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
@@ -106,6 +111,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
+      "data-scope": "tooltip",
       "data-part": "label",
       id: contentId,
       role: "tooltip",

@@ -29,6 +29,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "toast",
       "data-part": "root",
       dir: state.context.dir,
       id: dom.getContainerId(state.context),
@@ -74,17 +75,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     titleProps: normalize.element({
+      "data-scope": "toast",
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
+      "data-scope": "toast",
       "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({
       id: dom.getCloseButtonId(state.context),
+      "data-scope": "toast",
       "data-part": "close-button",
       type: "button",
       "aria-label": "Dismiss notification",

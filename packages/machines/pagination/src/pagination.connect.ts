@@ -49,12 +49,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
       "data-part": "root",
+      "data-scope": "pagination",
       "aria-label": translations.rootLabel,
     }),
 
     getEllipsisProps(props: EllipsisProps) {
       return normalize.element({
         id: dom.getEllipsisId(state.context, props.index),
+        "data-scope": "pagination",
         "data-part": "ellipsis",
       })
     },
@@ -65,6 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         id: dom.getItemId(state.context, pageIndex),
+        "data-scope": "pagination",
         "data-part": "item",
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
@@ -77,6 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     prevItemProps: normalize.element({
       id: dom.getPrevItemId(state.context),
+      "data-scope": "pagination",
       "data-part": "prev-item",
       "data-disabled": dataAttr(isFirstPage),
       onClick(evt) {
@@ -86,6 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     nextItemProps: normalize.element({
       id: dom.getNextItemId(state.context),
+      "data-scope": "pagination",
       "data-part": "next-item",
       "data-disabled": dataAttr(isLastPage),
       onClick(evt) {

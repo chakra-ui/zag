@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "tabs",
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
@@ -27,6 +28,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     triggerGroupProps: normalize.element({
+      "data-scope": "tabs",
       "data-part": "trigger-group",
       id: dom.getTriggerGroupId(state.context),
       role: "tablist",
@@ -74,6 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const selected = state.context.value === value
 
       return normalize.button({
+        "data-scope": "tabs",
         "data-part": "trigger",
         role: "tab",
         type: "button",
@@ -108,6 +111,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     contentGroupProps: normalize.element({
+      "data-scope": "tabs",
       "data-part": "content-group",
       id: dom.getContentGroupId(state.context),
       "data-orientation": state.context.orientation,
@@ -116,6 +120,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps({ value }: { value: string }) {
       const selected = state.context.value === value
       return normalize.element({
+        "data-scope": "tabs",
         "data-part": "content",
         id: dom.getContentId(state.context, value),
         tabIndex: 0,
@@ -128,6 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getDeleteButtonProps({ value, disabled }: TabProps) {
       return normalize.button({
+        "data-scope": "tabs",
         "data-part": "delete-button",
         type: "button",
         tabIndex: -1,
@@ -141,6 +147,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     indicatorProps: normalize.element({
       id: dom.getIndicatorId(state.context),
+      "data-scope": "tabs",
       "data-part": "indicator",
       "data-orientation": state.context.orientation,
       style: {
