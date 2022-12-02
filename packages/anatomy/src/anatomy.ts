@@ -17,7 +17,7 @@ export const anatomy = (component: string) => {
     },
 
     build() {
-      return [...new Set(_parts)].reduce(
+      return [...new Set(_parts)].reduce<Record<string, { selector: string }>>(
         (prev, part) =>
           Object.assign(prev, {
             [part]: {
