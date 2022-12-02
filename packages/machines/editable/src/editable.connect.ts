@@ -41,11 +41,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "editable",
       "data-part": "root",
       id: dom.getRootId(state.context),
     }),
 
     areaProps: normalize.element({
+      "data-scope": "editable",
       "data-part": "area",
       id: dom.getAreaId(state.context),
       style: autoResize ? { display: "inline-grid" } : undefined,
@@ -55,6 +57,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
+      "data-scope": "editable",
       "data-part": "label",
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
@@ -69,6 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
+      "data-scope": "editable",
       "data-part": "input",
       "aria-label": translations.input,
       name: state.context.name,
@@ -117,6 +121,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     previewProps: normalize.element({
       id: dom.getPreviewId(state.context),
+      "data-scope": "editable",
       "data-part": "preview",
       "data-placeholder-shown": dataAttr(isValueEmpty),
       "aria-readonly": ariaAttr(isReadOnly),
@@ -150,6 +155,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     editButtonProps: normalize.button({
+      "data-scope": "editable",
       "data-part": "edit-button",
       id: dom.getEditBtnId(state.context),
       "aria-label": translations.edit,
@@ -163,10 +169,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlGroupProps: normalize.element({
       id: dom.getControlGroupId(state.context),
+      "data-scope": "editable",
       "data-part": "control-group",
     }),
 
     submitButtonProps: normalize.button({
+      "data-scope": "editable",
       "data-part": "submit-button",
       id: dom.getSubmitBtnId(state.context),
       "aria-label": translations.submit,
@@ -179,6 +187,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     cancelButtonProps: normalize.button({
+      "data-scope": "editable",
       "data-part": "cancel-button",
       "aria-label": translations.cancel,
       id: dom.getCancelBtnId(state.context),

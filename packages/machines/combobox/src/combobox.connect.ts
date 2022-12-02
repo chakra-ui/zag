@@ -53,6 +53,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "combobox",
       "data-part": "root",
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
@@ -60,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
+      "data-scope": "combobox",
       "data-part": "label",
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
@@ -69,6 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
+      "data-scope": "combobox",
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-expanded": dataAttr(isOpen),
@@ -86,6 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     positionerProps: normalize.element({
+      "data-scope": "combobox",
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
       "data-expanded": dataAttr(isOpen),
@@ -94,6 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
+      "data-scope": "combobox",
       "data-part": "input",
       "aria-invalid": isInvalid,
       "data-invalid": dataAttr(isInvalid),
@@ -180,6 +185,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     toggleButtonProps: normalize.button({
+      "data-scope": "combobox",
       "data-part": "toggle-button",
       id: dom.getToggleBtnId(state.context),
       "aria-haspopup": "listbox",
@@ -200,6 +206,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     listboxProps: normalize.element({
+      "data-scope": "combobox",
       "data-part": "listbox",
       id: dom.getListboxId(state.context),
       role: "listbox",
@@ -212,6 +219,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     clearButtonProps: normalize.button({
+      "data-scope": "combobox",
       "data-part": "clear-button",
       id: dom.getClearBtnId(state.context),
       type: "button",
@@ -241,6 +249,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const _state = api.getOptionState(props)
 
       return normalize.element({
+        "data-scope": "combobox",
         "data-part": "option",
         id,
         role: "option",
@@ -279,6 +288,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOptionGroupProps(props: OptionGroupProps) {
       const { label } = props
       return normalize.element({
+        "data-scope": "combobox",
         "data-part": "option-group",
         role: "group",
         "aria-label": label,

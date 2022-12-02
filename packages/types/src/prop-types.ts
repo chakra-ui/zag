@@ -22,6 +22,7 @@ type DataAttr = {
   "data-empty"?: Booleanish
   "data-placeholder-shown"?: Booleanish
   "data-half"?: Booleanish
+  "data-scope"?: string
 
   "data-uid"?: string
   "data-name"?: string

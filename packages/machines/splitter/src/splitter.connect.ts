@@ -37,6 +37,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "splitter",
       "data-part": "root",
       "data-orientation": state.context.orientation,
       "data-disabled": dataAttr(isDisabled),
@@ -49,6 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     secondaryPaneProps: normalize.element({
+      "data-scope": "splitter",
       "data-part": "secondary-pane",
       "data-disabled": dataAttr(isDisabled),
       id: dom.getSecondaryPaneId(state.context),
@@ -61,6 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     primaryPaneProps: normalize.element({
+      "data-scope": "splitter",
       "data-part": "primary-pane",
       id: dom.getPrimaryPaneId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -77,6 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     toggleButtonProps: normalize.element({
+      "data-scope": "splitter",
       "data-part": "toggle-button",
       id: dom.getToggleButtonId(state.context),
       "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
@@ -86,11 +90,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
+      "data-scope": "splitter",
       "data-part": "label",
       id: dom.getLabelId(state.context),
     }),
 
     splitterProps: normalize.element({
+      "data-scope": "splitter",
       "data-part": "splitter",
       id: dom.getSplitterId(state.context),
       role: "separator",

@@ -43,12 +43,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       dir: state.context.dir,
+      "data-scope": "rating",
       "data-part": "root",
       id: dom.getRootId(state.context),
     }),
 
     inputProps: normalize.input({
       "data-part": "input",
+      "data-scope": "rating",
       name: state.context.name,
       form: state.context.form,
       type: "text",
@@ -58,6 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
+      "data-scope": "rating",
       "data-part": "label",
       id: dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -65,6 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     itemGroupProps: normalize.element({
       id: dom.getItemGroupId(state.context),
+      "data-scope": "rating",
       "data-part": "item-group",
       role: "radiogroup",
       "aria-orientation": "horizontal",
@@ -86,6 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
+        "data-scope": "rating",
         "data-part": "item",
         id: dom.getItemId(state.context, index.toString()),
         role: "radio",
