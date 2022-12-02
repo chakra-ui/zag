@@ -1,1 +1,1 @@
-export { anatomy } from "./anatomy"
+export { createAnatomy } from "./create-anatomy"

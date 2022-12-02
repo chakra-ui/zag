@@ -1,9 +1,9 @@
-import { anatomy } from "./anatomy"
+import { createAnatomy } from "./create-anatomy"
 
 describe("Anatomy", () => {
   it("should allow to set parts", () => {
-    const result = anatomy("accordion").parts("root").build()
-    expect(result).toEqual({
+    const anatomy = createAnatomy("accordion").parts("root").build()
+    expect(anatomy).toEqual({
       root: {
         selector: '[data-scope="accordion"][data-part="root"]',
       },
@@ -11,8 +11,8 @@ describe("Anatomy", () => {
   })
 
   it("should filter duplicate values", () => {
-    const result = anatomy("accordion").parts("root", "control", "control").build()
-    expect(result).toEqual({
+    const anatomy = createAnatomy("accordion").parts("root", "control", "control").build()
+    expect(anatomy).toEqual({
       root: {
         selector: '[data-scope="accordion"][data-part="root"]',
       },
@@ -23,10 +23,10 @@ describe("Anatomy", () => {
   })
 
   it("should allow to extend the anatomy", () => {
-    const baseAnatomy = anatomy("accordion").parts("root")
-    const result = baseAnatomy.extend("control").build()
+    const anatomy = createAnatomy("accordion").parts("root")
+    const extendedAnatomy = anatomy.extend("control").build()
 
-    expect(result).toEqual({
+    expect(extendedAnatomy).toEqual({
       root: {
         selector: '[data-scope="accordion"][data-part="root"]',
       },
@@ -37,10 +37,10 @@ describe("Anatomy", () => {
   })
 
   it("should filter duplicates parts when extending", () => {
-    const baseAnatomy = anatomy("accordion").parts("root", "control")
-    const result = baseAnatomy.extend("control").build()
+    const anatomy = createAnatomy("accordion").parts("root", "control")
+    const extendedAnatomy = anatomy.extend("control").build()
 
-    expect(result).toEqual({
+    expect(extendedAnatomy).toEqual({
       root: {
         selector: '[data-scope="accordion"][data-part="root"]',
       },
@@ -51,11 +51,11 @@ describe("Anatomy", () => {
   })
 
   it("should not allow to invoke .parts more than once", () => {
-    expect(() => anatomy("accordion").parts("a").parts("b")).toThrow()
+    expect(() => createAnatomy("accordion").parts("a").parts("b")).toThrow()
   })
 
   it("should not allow to invoke .parts when extending", () => {
-    const baseAnatomy = anatomy("accordion").parts("root", "control")
-    expect(() => baseAnatomy.parts("b")).toThrow()
+    const anatomy = createAnatomy("accordion").parts("root", "control")
+    expect(() => anatomy.parts("b")).toThrow()
   })
 })
