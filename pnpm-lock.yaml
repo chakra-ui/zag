@@ -438,7 +438,10 @@ importers:
       vue-tsc: 1.0.3_typescript@4.8.4
 
   packages/anatomy:
-    specifiers: {}
+    specifiers:
+      '@zag-js/utils': workspace:*
+    dependencies:
+      '@zag-js/utils': link:../utilities/core
 
   packages/core:
     specifiers:

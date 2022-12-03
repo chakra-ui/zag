@@ -2,8 +2,8 @@ import { createAnatomy } from "./create-anatomy"
 
 describe("Anatomy", () => {
   it("should allow to set parts", () => {
-    const anatomy = createAnatomy("accordion").parts("root").build()
-    expect(anatomy).toEqual({
+    const anamtomy = createAnatomy("accordion").parts("root").build()
+    expect(anamtomy).toEqual({
       root: {
         selector: '[data-scope="accordion"][data-part="root"]',
       },
@@ -51,11 +51,13 @@ describe("Anatomy", () => {
   })
 
   it("should not allow to invoke .parts more than once", () => {
+    // @ts-expect-error
     expect(() => createAnatomy("accordion").parts("a").parts("b")).toThrow()
   })
 
   it("should not allow to invoke .parts when extending", () => {
     const anatomy = createAnatomy("accordion").parts("root", "control")
+    // @ts-expect-error
     expect(() => anatomy.parts("b")).toThrow()
   })
 })

@@ -1,32 +1,28 @@
-export const createAnatomy = (component: string) => {
-  let _component = component
-  let _parts: string[]
+import { isEmpty } from "@zag-js/utils"
 
-  const api = {
-    parts<T extends string>(...parts: T[]) {
-      if (_parts) {
-        throw new Error('anatomy("").parts(...) should only be called once. Did you mean to use .extend(...) ?')
-      }
-      _parts = parts
-      return api
-    },
-
-    extend<T extends string>(...parts: T[]) {
-      _parts = [..._parts, ...parts]
-      return api
-    },
-
-    build() {
-      return [...new Set(_parts)].reduce<Record<string, { selector: string }>>(
-        (prev, part) =>
-          Object.assign(prev, {
-            [part]: {
-              selector: `[data-scope="${_component}"][data-part="${part}"]`,
-            },
-          }),
-        {},
-      )
-    },
-  }
-  return api
+export type Anatomy<T extends string> = {
+  parts: <U extends string>(...parts: U[]) => Omit<Anatomy<U>, "parts">
+  extend: <V extends string>(...parts: V[]) => Omit<Anatomy<T | V>, "parts">
+  build: () => Record<T, { selector: string }>
 }
+
+export const createAnatomy = <T extends string>(name: string, parts = [] as T[]): Anatomy<T> => ({
+  parts: <U extends string>(...values: U[]): Omit<Anatomy<U>, "parts"> => {
+    if (isEmpty(parts)) {
+      return createAnatomy(name, values)
+    }
+    throw new Error("createAnatomy().parts(...) should only be called once. Did you mean to use .extend(...) ?")
+  },
+  extend: <V extends string>(...values: V[]): Omit<Anatomy<T | V>, "parts"> =>
+    createAnatomy(name, [...parts, ...values]),
+  build: () =>
+    [...new Set(parts)].reduce<Record<string, { selector: string }>>(
+      (prev, part) =>
+        Object.assign(prev, {
+          [part]: {
+            selector: `[data-scope="${name}"][data-part="${part}"]`,
+          },
+        }),
+      {},
+    ),
+})
