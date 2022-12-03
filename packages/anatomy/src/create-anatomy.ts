@@ -1,9 +1,14 @@
 import { isEmpty } from "@zag-js/utils"
 
+export type Part = {
+  selector: string
+  attrs: Record<"data-scope" | "data-part", string>
+}
+
 export type Anatomy<T extends string> = {
   parts: <U extends string>(...parts: U[]) => Omit<Anatomy<U>, "parts">
   extend: <V extends string>(...parts: V[]) => Omit<Anatomy<T | V>, "parts">
-  build: () => Record<T, { selector: string }>
+  build: () => Record<T, Part>
 }
 
 export const createAnatomy = <T extends string>(name: string, parts = [] as T[]): Anatomy<T> => ({
@@ -16,11 +21,12 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
   extend: <V extends string>(...values: V[]): Omit<Anatomy<T | V>, "parts"> =>
     createAnatomy(name, [...parts, ...values]),
   build: () =>
-    [...new Set(parts)].reduce<Record<string, { selector: string }>>(
+    [...new Set(parts)].reduce<Record<string, Part>>(
       (prev, part) =>
         Object.assign(prev, {
           [part]: {
             selector: `[data-scope="${name}"][data-part="${part}"]`,
+            attrs: { "data-scope": name, "data-part": part },
           },
         }),
       {},
