@@ -535,12 +535,14 @@ importers:
 
   packages/machines/checkbox:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -550,6 +552,7 @@ importers:
 
   packages/machines/combobox:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
@@ -559,6 +562,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
@@ -571,6 +575,7 @@ importers:
 
   packages/machines/dialog:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
@@ -580,6 +585,7 @@ importers:
       '@zag-js/utils': workspace:*
       focus-trap: 7.0.0
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
@@ -592,6 +598,7 @@ importers:
 
   packages/machines/editable:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -599,6 +606,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
       '@zag-js/types': link:../../types
@@ -609,6 +617,7 @@ importers:
 
   packages/machines/hover-card:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-utils': workspace:*
@@ -616,6 +625,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
       '@zag-js/popper': link:../../utilities/popper
@@ -626,6 +636,7 @@ importers:
 
   packages/machines/menu:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-utils': workspace:*
@@ -634,6 +645,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
       '@zag-js/popper': link:../../utilities/popper
@@ -645,6 +657,7 @@ importers:
 
   packages/machines/number-input:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -652,6 +665,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -662,11 +676,13 @@ importers:
 
   packages/machines/pagination:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -675,12 +691,14 @@ importers:
 
   packages/machines/pin-input:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -690,6 +708,7 @@ importers:
 
   packages/machines/popover:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
@@ -700,6 +719,7 @@ importers:
       '@zag-js/utils': workspace:*
       focus-trap: 7.0.0
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
@@ -713,11 +733,13 @@ importers:
 
   packages/machines/pressable:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -726,12 +748,14 @@ importers:
 
   packages/machines/radio:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -741,6 +765,7 @@ importers:
 
   packages/machines/range-slider:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/element-size': workspace:*
@@ -751,6 +776,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/element-size': link:../../utilities/element-size
       '@zag-js/slider': link:../slider
@@ -764,12 +790,14 @@ importers:
 
   packages/machines/rating:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -779,6 +807,7 @@ importers:
 
   packages/machines/select:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -787,6 +816,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
       '@zag-js/popper': link:../../utilities/popper
@@ -798,6 +828,7 @@ importers:
 
   packages/machines/slider:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/element-size': workspace:*
@@ -806,6 +837,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/element-size': link:../../utilities/element-size
       '@zag-js/types': link:../../types
@@ -817,12 +849,14 @@ importers:
 
   packages/machines/splitter:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -832,11 +866,13 @@ importers:
 
   packages/machines/tabs:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -845,6 +881,7 @@ importers:
 
   packages/machines/tags-input:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/auto-resize': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
@@ -854,6 +891,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/auto-resize': link:../../utilities/auto-resize
       '@zag-js/core': link:../../core
       '@zag-js/interact-outside': link:../../utilities/interact-outside
@@ -866,11 +904,13 @@ importers:
 
   packages/machines/toast:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -879,11 +919,13 @@ importers:
 
   packages/machines/toggle:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
@@ -892,12 +934,14 @@ importers:
 
   packages/machines/tooltip:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/types': link:../../types
