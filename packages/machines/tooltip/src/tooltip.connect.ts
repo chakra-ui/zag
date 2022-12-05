@@ -4,6 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Send, State } from "./tooltip.types"
+import { parts } from "./tooltip.anatomy"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const id = state.context.id
@@ -37,8 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     triggerProps: normalize.button({
-      "data-scope": "tooltip",
-      "data-part": "trigger",
+      ...parts.trigger.attrs,
       id: triggerId,
       "data-expanded": dataAttr(isOpen),
       "aria-describedby": isOpen ? contentId : undefined,
@@ -75,27 +75,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
-      "data-scope": "tooltip",
-      "data-part": "arrow",
+      ...parts.arrow.attrs,
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
-      "data-scope": "tooltip",
-      "data-part": "arrow-inner",
+      ...parts.arrowInner.attrs,
       style: popperStyles.innerArrow,
     }),
 
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
-      "data-scope": "tooltip",
-      "data-part": "positioner",
+      ...parts.positioner.attrs,
       style: popperStyles.floating,
     }),
 
     contentProps: normalize.element({
-      "data-scope": "tooltip",
-      "data-part": "content",
+      ...parts.content.attrs,
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
       "data-placement": state.context.currentPlacement,
@@ -111,8 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
-      "data-scope": "tooltip",
-      "data-part": "label",
+      ...parts.label.attrs,
       id: contentId,
       role: "tooltip",
       style: visuallyHiddenStyle,
