@@ -570,14 +570,14 @@ importers:
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
-      focus-trap: 7.0.0
+      focus-trap: 7.2.0
     dependencies:
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
       '@zag-js/remove-scroll': link:../../utilities/remove-scroll
       '@zag-js/types': link:../../types
-      focus-trap: 7.0.0
+      focus-trap: 7.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
@@ -690,7 +690,7 @@ importers:
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
-      focus-trap: 7.0.0
+      focus-trap: 7.2.0
     dependencies:
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
@@ -698,7 +698,7 @@ importers:
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/remove-scroll': link:../../utilities/remove-scroll
       '@zag-js/types': link:../../types
-      focus-trap: 7.0.0
+      focus-trap: 7.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
@@ -5470,8 +5470,8 @@ packages:
   /flatted/3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
 
-  /focus-trap/7.0.0:
-    resolution: {integrity: sha512-uT4Bl8TwU+5vVAx/DHil/1eVS54k9unqhK/vGy2KSh7esPmqgC0koAB9J2sJ+vtj8+vmiFyGk2unLkhNLQaxoA==}
+  /focus-trap/7.2.0:
+    resolution: {integrity: sha512-v4wY6HDDYvzkBy4735kW5BUEuw6Yz9ABqMYLuTNbzAFPcBOGiGHwwcNVMvUz4G0kgSYh13wa/7TG3XwTeT4O/A==}
     dependencies:
       tabbable: 6.0.1
     dev: false
