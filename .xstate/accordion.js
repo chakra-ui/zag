@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
   },
   on: {
     SET_VALUE: {
-      actions: "setValue"
+      actions: ["setValue", "invokeOnChange"]
     }
   },
   on: {
@@ -45,10 +45,10 @@ const fetchMachine = createMachine({
         },
         CLICK: [{
           cond: "isExpanded && canToggle",
-          actions: "collapse"
+          actions: ["collapse", "invokeOnChange"]
         }, {
           cond: "!isExpanded",
-          actions: "expand"
+          actions: ["expand", "invokeOnChange"]
         }],
         HOME: {
           actions: "focusFirst"
