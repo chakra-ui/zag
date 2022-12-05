@@ -23,6 +23,7 @@
     "dist/**/*"
   ],
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/types": "workspace:*"
   },

@@ -29,6 +29,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",

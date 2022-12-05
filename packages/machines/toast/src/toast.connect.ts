@@ -1,5 +1,6 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
 import type { Send, State } from "./toast.types"
 
@@ -29,8 +30,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-scope": "toast",
-      "data-part": "root",
+      ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getContainerId(state.context),
       "data-open": dataAttr(isVisible),
@@ -75,21 +75,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     titleProps: normalize.element({
-      "data-scope": "toast",
-      "data-part": "title",
+      ...parts.title.attrs,
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
-      "data-scope": "toast",
-      "data-part": "description",
+      ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({
       id: dom.getCloseButtonId(state.context),
-      "data-scope": "toast",
-      "data-part": "close-button",
+      ...parts.closeButton.attrs,
       type: "button",
       "aria-label": "Dismiss notification",
       onClick() {

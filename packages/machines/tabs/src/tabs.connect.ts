@@ -1,5 +1,6 @@
 import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
 import type { Send, State, TabProps } from "./tabs.types"
 
@@ -19,8 +20,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-scope": "tabs",
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
@@ -28,8 +28,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     triggerGroupProps: normalize.element({
-      "data-scope": "tabs",
-      "data-part": "trigger-group",
+      ...parts.triggerGroup.attrs,
       id: dom.getTriggerGroupId(state.context),
       role: "tablist",
       "data-focus": dataAttr(isFocused),
@@ -76,8 +75,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const selected = state.context.value === value
 
       return normalize.button({
-        "data-scope": "tabs",
-        "data-part": "trigger",
+        ...parts.trigger.attrs,
         role: "tab",
         type: "button",
         disabled,
@@ -111,8 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     contentGroupProps: normalize.element({
-      "data-scope": "tabs",
-      "data-part": "content-group",
+      ...parts.contentGroup.attrs,
       id: dom.getContentGroupId(state.context),
       "data-orientation": state.context.orientation,
     }),
@@ -120,8 +117,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps({ value }: { value: string }) {
       const selected = state.context.value === value
       return normalize.element({
-        "data-scope": "tabs",
-        "data-part": "content",
+        ...parts.content.attrs,
         id: dom.getContentId(state.context, value),
         tabIndex: 0,
         "aria-labelledby": dom.getTriggerId(state.context, value),
@@ -133,8 +129,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getDeleteButtonProps({ value, disabled }: TabProps) {
       return normalize.button({
-        "data-scope": "tabs",
-        "data-part": "delete-button",
+        ...parts.deleteButton.attrs,
         type: "button",
         tabIndex: -1,
         "aria-label": translations.deleteLabel?.(value),
@@ -147,8 +142,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     indicatorProps: normalize.element({
       id: dom.getIndicatorId(state.context),
-      "data-scope": "tabs",
-      "data-part": "indicator",
+      ...parts.indicator.attrs,
       "data-orientation": state.context.orientation,
       style: {
         "--transition-duration": "200ms",

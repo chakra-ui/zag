@@ -1,4 +1,5 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./dialog.anatomy"
 import { dom } from "./dialog.dom"
 import type { Send, State } from "./dialog.types"
 
@@ -17,8 +18,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     triggerProps: normalize.button({
-      "data-scope": "dialog",
-      "data-part": "trigger",
+      ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       type: "button",
@@ -30,20 +30,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     backdropProps: normalize.element({
-      "data-scope": "dialog",
-      "data-part": "backdrop",
+      ...parts.backdrop.attrs,
       id: dom.getBackdropId(state.context),
     }),
 
     underlayProps: normalize.element({
-      "data-scope": "dialog",
-      "data-part": "underlay",
+      ...parts.underlay.attrs,
       id: dom.getUnderlayId(state.context),
     }),
 
     contentProps: normalize.element({
-      "data-scope": "dialog",
-      "data-part": "content",
+      ...parts.content.attrs,
       role: state.context.role,
       id: dom.getContentId(state.context),
       tabIndex: -1,
@@ -54,20 +51,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     titleProps: normalize.element({
-      "data-scope": "dialog",
-      "data-part": "title",
+      ...parts.title.attrs,
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
-      "data-scope": "dialog",
-      "data-part": "description",
+      ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({
-      "data-scope": "dialog",
-      "data-part": "close-button",
+      ...parts.closeButton.attrs,
       id: dom.getCloseButtonId(state.context),
       type: "button",
       onClick(event) {

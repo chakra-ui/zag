@@ -1,6 +1,7 @@
 import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
 import type { OptionData, OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
 
@@ -53,16 +54,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-scope": "combobox",
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
     }),
 
     labelProps: normalize.label({
-      "data-scope": "combobox",
-      "data-part": "label",
+      ...parts.label.attrs,
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-readonly": dataAttr(isReadOnly),
@@ -71,8 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
-      "data-scope": "combobox",
-      "data-part": "control",
+      ...parts.control.attrs,
       id: dom.getControlId(state.context),
       "data-expanded": dataAttr(isOpen),
       "data-focus": dataAttr(isFocused),
@@ -89,8 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     positionerProps: normalize.element({
-      "data-scope": "combobox",
-      "data-part": "positioner",
+      ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
       "data-expanded": dataAttr(isOpen),
       hidden: !isOpen,
@@ -98,8 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-scope": "combobox",
-      "data-part": "input",
+      ...parts.input.attrs,
       "aria-invalid": isInvalid,
       "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
@@ -185,8 +181,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     toggleButtonProps: normalize.button({
-      "data-scope": "combobox",
-      "data-part": "toggle-button",
+      ...parts.toggleButton.attrs,
       id: dom.getToggleBtnId(state.context),
       "aria-haspopup": "listbox",
       type: "button",
@@ -206,8 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     listboxProps: normalize.element({
-      "data-scope": "combobox",
-      "data-part": "listbox",
+      ...parts.listbox.attrs,
       id: dom.getListboxId(state.context),
       role: "listbox",
       hidden: !isOpen,
@@ -219,8 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     clearButtonProps: normalize.button({
-      "data-scope": "combobox",
-      "data-part": "clear-button",
+      ...parts.clearButton.attrs,
       id: dom.getClearBtnId(state.context),
       type: "button",
       tabIndex: -1,
@@ -249,8 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const _state = api.getOptionState(props)
 
       return normalize.element({
-        "data-scope": "combobox",
-        "data-part": "option",
+        ...parts.option.attrs,
         id,
         role: "option",
         tabIndex: -1,
@@ -288,8 +280,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOptionGroupProps(props: OptionGroupProps) {
       const { label } = props
       return normalize.element({
-        "data-scope": "combobox",
-        "data-part": "option-group",
+        ...parts.optionGroup.attrs,
         role: "group",
         "aria-label": label,
       })

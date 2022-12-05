@@ -1,5 +1,6 @@
 import { ariaAttr, dataAttr, EventKeyMap } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
 import type { Send, State } from "./editable.types"
 
@@ -41,14 +42,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-scope": "editable",
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
     areaProps: normalize.element({
-      "data-scope": "editable",
-      "data-part": "area",
+      ...parts.area.attrs,
       id: dom.getAreaId(state.context),
       style: autoResize ? { display: "inline-grid" } : undefined,
       "data-focus": dataAttr(isEditing),
@@ -57,8 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
-      "data-scope": "editable",
-      "data-part": "label",
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isEditing),
@@ -72,8 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-scope": "editable",
-      "data-part": "input",
+      ...parts.input.attrs,
       "aria-label": translations.input,
       name: state.context.name,
       form: state.context.form,
@@ -121,8 +118,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     previewProps: normalize.element({
       id: dom.getPreviewId(state.context),
-      "data-scope": "editable",
-      "data-part": "preview",
+      ...parts.preview.attrs,
       "data-placeholder-shown": dataAttr(isValueEmpty),
       "aria-readonly": ariaAttr(isReadOnly),
       "data-readonly": dataAttr(isDisabled),
@@ -155,8 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     editButtonProps: normalize.button({
-      "data-scope": "editable",
-      "data-part": "edit-button",
+      ...parts.editButton.attrs,
       id: dom.getEditBtnId(state.context),
       "aria-label": translations.edit,
       type: "button",
@@ -169,13 +164,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlGroupProps: normalize.element({
       id: dom.getControlGroupId(state.context),
-      "data-scope": "editable",
-      "data-part": "control-group",
+      ...parts.controlGroup.attrs,
     }),
 
     submitButtonProps: normalize.button({
-      "data-scope": "editable",
-      "data-part": "submit-button",
+      ...parts.submitButton.attrs,
       id: dom.getSubmitBtnId(state.context),
       "aria-label": translations.submit,
       disabled: isDisabled,
@@ -187,8 +180,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     cancelButtonProps: normalize.button({
-      "data-scope": "editable",
-      "data-part": "cancel-button",
+      ...parts.cancelButton.attrs,
       "aria-label": translations.cancel,
       id: dom.getCancelBtnId(state.context),
       type: "button",

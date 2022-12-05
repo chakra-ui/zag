@@ -1,5 +1,6 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
 import { Send, State } from "./pagination.types"
 import { utils } from "./pagination.utils"
@@ -48,16 +49,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
-      "data-part": "root",
-      "data-scope": "pagination",
+      ...parts.root.attrs,
       "aria-label": translations.rootLabel,
     }),
 
     getEllipsisProps(props: EllipsisProps) {
       return normalize.element({
         id: dom.getEllipsisId(state.context, props.index),
-        "data-scope": "pagination",
-        "data-part": "ellipsis",
+        ...parts.ellipsis.attrs,
       })
     },
 
@@ -67,8 +66,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         id: dom.getItemId(state.context, pageIndex),
-        "data-scope": "pagination",
-        "data-part": "item",
+        ...parts.item.attrs,
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
         "aria-label": translations.itemLabel?.({ page: pageIndex, totalPages }),
@@ -80,8 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     prevItemProps: normalize.element({
       id: dom.getPrevItemId(state.context),
-      "data-scope": "pagination",
-      "data-part": "prev-item",
+      ...parts.prevItem.attrs,
       "data-disabled": dataAttr(isFirstPage),
       onClick(evt) {
         send({ type: "PREVIOUS_PAGE", srcElement: evt.currentTarget })
@@ -90,8 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     nextItemProps: normalize.element({
       id: dom.getNextItemId(state.context),
-      "data-scope": "pagination",
-      "data-part": "next-item",
+      ...parts.nextItem.attrs,
       "data-disabled": dataAttr(isLastPage),
       onClick(evt) {
         send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
