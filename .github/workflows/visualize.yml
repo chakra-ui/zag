@@ -19,7 +19,7 @@ jobs:
           node-version: 16.x
 
       - name: Visualizer link
-        uses: thollander/actions-comment-pull-request@v1
+        uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
             Visualize the logic of the machines [here](https://state-machine-viz.vercel.app/pr/${{ github.event.number }}) :confetti_ball:
