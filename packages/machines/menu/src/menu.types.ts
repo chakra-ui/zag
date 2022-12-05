@@ -54,6 +54,14 @@ type PublicContext = DirectionProperty &
      * The accessibility label for the menu
      */
     "aria-label"?: string
+    /**
+     * Function called when the menu is opened
+     */
+    onOpen?: () => void
+    /**
+     * Function called when the menu is closed
+     */
+    onClose?: () => void
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

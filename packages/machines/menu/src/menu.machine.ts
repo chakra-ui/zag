@@ -55,13 +55,19 @@ export function machine(userContext: UserDefinedContext) {
         SET_CHILD: {
           actions: "setChildMenu",
         },
-        OPEN: "open",
+        OPEN: {
+          target: "open",
+          actions: "invokeOnOpen",
+        },
         OPEN_AUTOFOCUS: {
           internal: true,
           target: "open",
-          actions: "focusFirstItem",
+          actions: ["focusFirstItem", "invokeOnOpen"],
         },
-        CLOSE: "closed",
+        CLOSE: {
+          target: "closed",
+          actions: "invokeOnClose",
+        },
         RESTORE_FOCUS: {
           actions: "restoreFocus",
         },
@@ -88,9 +94,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             CONTEXT_MENU: {
               target: "open",
-              actions: "setAnchorPoint",
+              actions: ["setAnchorPoint", "invokeOnOpen"],
             },
-            TRIGGER_CLICK: "open",
+            TRIGGER_CLICK: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
               target: "closed",
@@ -104,20 +113,35 @@ export function machine(userContext: UserDefinedContext) {
 
         "opening:contextmenu": {
           after: {
-            LONG_PRESS_DELAY: "open",
+            LONG_PRESS_DELAY: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
           },
           on: {
-            CONTEXT_MENU_CANCEL: "closed",
+            CONTEXT_MENU_CANCEL: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
           },
         },
 
         opening: {
           after: {
-            SUBMENU_OPEN_DELAY: "open",
+            SUBMENU_OPEN_DELAY: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
           },
           on: {
-            BLUR: "closed",
-            TRIGGER_POINTERLEAVE: "closed",
+            BLUR: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
+            TRIGGER_POINTERLEAVE: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
           },
         },
 
@@ -127,7 +151,7 @@ export function machine(userContext: UserDefinedContext) {
           after: {
             SUBMENU_CLOSE_DELAY: {
               target: "closed",
-              actions: ["focusParentMenu", "restoreParentFocus"],
+              actions: ["focusParentMenu", "restoreParentFocus", "invokeOnClose"],
             },
           },
           on: {
@@ -151,9 +175,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             CONTEXT_MENU: {
               target: "open",
-              actions: "setAnchorPoint",
+              actions: ["setAnchorPoint", "invokeOnOpen"],
             },
-            TRIGGER_CLICK: "open",
+            TRIGGER_CLICK: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
@@ -161,11 +188,11 @@ export function machine(userContext: UserDefinedContext) {
             TRIGGER_BLUR: "idle",
             ARROW_DOWN: {
               target: "open",
-              actions: "focusFirstItem",
+              actions: ["focusFirstItem", "invokeOnOpen"],
             },
             ARROW_UP: {
               target: "open",
-              actions: "focusLastItem",
+              actions: ["focusLastItem", "invokeOnOpen"],
             },
           },
         },
@@ -179,6 +206,7 @@ export function machine(userContext: UserDefinedContext) {
             TRIGGER_CLICK: {
               guard: not("isTriggerItem"),
               target: "closed",
+              actions: "invokeOnClose",
             },
             ARROW_UP: [
               {
@@ -197,7 +225,7 @@ export function machine(userContext: UserDefinedContext) {
             ARROW_LEFT: {
               guard: "isSubmenu",
               target: "closed",
-              actions: "focusParentMenu",
+              actions: ["focusParentMenu", "invokeOnClose"],
             },
             HOME: {
               actions: ["focusFirstItem", "focusMenu"],
@@ -205,7 +233,10 @@ export function machine(userContext: UserDefinedContext) {
             END: {
               actions: ["focusLastItem", "focusMenu"],
             },
-            REQUEST_CLOSE: "closed",
+            REQUEST_CLOSE: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
             ARROW_RIGHT: {
               guard: "isTriggerItemFocused",
               actions: "openSubmenu",
@@ -217,8 +248,8 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: "closeOnSelect",
-                actions: "clickFocusedItem",
                 target: "closed",
+                actions: "clickFocusedItem",
               },
               {
                 actions: "clickFocusedItem",
@@ -242,7 +273,13 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable"), "closeOnSelect"),
                 target: "closed",
-                actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"],
+                actions: [
+                  "invokeOnSelect",
+                  "changeOptionValue",
+                  "invokeOnValueChange",
+                  "closeRootMenu",
+                  "invokeOnClose",
+                ],
               },
               {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable")),
@@ -500,6 +537,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearPointerdownNode(ctx) {
           ctx.pointerdownNode = null
+        },
+        invokeOnOpen(ctx) {
+          ctx.onOpen?.()
+        },
+        invokeOnClose(ctx) {
+          ctx.onClose?.()
         },
       },
     },
