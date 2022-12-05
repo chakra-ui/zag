@@ -9,3 +9,4 @@ export const anatomy = createAnatomy("dialog").parts(
   "description",
   "closeButton",
 )
+export const parts = anatomy.build()
