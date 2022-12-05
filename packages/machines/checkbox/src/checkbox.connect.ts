@@ -1,6 +1,7 @@
 import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
+import { parts } from "./checkbox.anatomy"
 import type { Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
@@ -46,8 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.label({
-      "data-scope": "checkbox",
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
       htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -78,8 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
-      "data-scope": "checkbox",
-      "data-part": "label",
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-hover": dataAttr(isHovered),
@@ -95,8 +94,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
-      "data-scope": "checkbox",
-      "data-part": "control",
+      ...parts.control.attrs,
       id: dom.getControlId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
@@ -110,8 +108,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-scope": "checkbox",
-      "data-part": "input",
+      ...parts.input.attrs,
       id: dom.getInputId(state.context),
       type: "checkbox",
       required: isRequired,
