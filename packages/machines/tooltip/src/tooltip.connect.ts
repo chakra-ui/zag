@@ -96,6 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contentProps: normalize.element({
       "data-scope": "tooltip",
       "data-part": "content",
+      hidden: !isOpen,
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
       "data-placement": state.context.currentPlacement,
