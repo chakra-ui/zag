@@ -1,4 +1,15 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
-// TODO define anatomy parts
-export const anatomy = createAnatomy("combobox")
+export const anatomy = createAnatomy("combobox").parts(
+  "root",
+  "label",
+  "input",
+  "positioner",
+  "control",
+  "toggleButton",
+  "listbox",
+  "clearButton",
+  "option",
+  "optionGroup",
+)
+export const parts = anatomy.build()
