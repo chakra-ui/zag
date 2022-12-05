@@ -49,20 +49,20 @@ const fetchMachine = createMachine({
   },
   states: {
     checked: {
+      entry: ["invokeOnChange"],
       on: {
         TOGGLE: {
           target: "unchecked",
-          cond: "isInteractive",
-          actions: ["invokeOnChange"]
+          cond: "isInteractive"
         }
       }
     },
     unchecked: {
+      entry: ["invokeOnChange"],
       on: {
         TOGGLE: {
           target: "checked",
-          cond: "isInteractive",
-          actions: ["invokeOnChange"]
+          cond: "isInteractive"
         }
       }
     }

@@ -28,21 +28,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
+      "data-scope": "popover",
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
+      "data-scope": "popover",
       "data-part": "arrow-inner",
       style: popperStyles.innerArrow,
     }),
 
     anchorProps: normalize.element({
+      "data-scope": "popover",
       "data-part": "anchor",
       id: dom.getAnchorId(state.context),
     }),
 
     triggerProps: normalize.button({
+      "data-scope": "popover",
       "data-part": "trigger",
       type: "button",
       "data-placement": currentPlacement,
@@ -61,11 +65,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
+      "data-scope": "popover",
       "data-part": "positioner",
       style: popperStyles.floating,
     }),
 
     contentProps: normalize.element({
+      "data-scope": "popover",
       "data-part": "content",
       id: dom.getContentId(state.context),
       tabIndex: -1,
@@ -78,16 +84,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     titleProps: normalize.element({
+      "data-scope": "popover",
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
+      "data-scope": "popover",
       "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({
+      "data-scope": "popover",
       "data-part": "close-button",
       id: dom.getCloseButtonId(state.context),
       type: "button",

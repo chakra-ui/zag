@@ -69,6 +69,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.label({
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
+      "data-scope": "select",
       "data-part": "label",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
@@ -81,6 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     positionerProps: normalize.element({
+      "data-scope": "select",
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
@@ -96,6 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-expanded": dataAttr(isOpen),
       "aria-haspopup": "listbox",
       "aria-labelledby": "label",
+      "data-scope": "select",
       "data-part": "trigger",
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
@@ -176,6 +179,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getOptionId(state.context, value),
         role: "option",
+        "data-scope": "select",
         "data-part": "option",
         "data-label": label,
         "data-value": value,
@@ -193,6 +197,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getOptionGroupId(state.context, htmlFor),
         role: "group",
+        "data-scope": "select",
         "data-part": "option-group-label",
       })
     },
@@ -200,6 +205,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOptionGroupProps(props: OptionGroupProps) {
       const { id } = props
       return normalize.element({
+        "data-scope": "select",
         "data-disabled": dataAttr(disabled),
         id: dom.getOptionGroupId(state.context, id),
         "data-part": "option-group",
@@ -208,7 +214,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     selectProps: normalize.select({
-      "data-part": "select",
+      "data-scope": "select",
+      "data-part": "select", // TODO: part is confusing
       name: state.context.name,
       form: state.context.form,
       disabled: !isInteractive,
@@ -230,6 +237,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getMenuId(state.context),
       role: "listbox",
+      "data-scope": "select",
       "data-part": "menu",
       "aria-activedescendant": state.context.highlightedId || "",
       "aria-labelledby": dom.getLabelId(state.context),

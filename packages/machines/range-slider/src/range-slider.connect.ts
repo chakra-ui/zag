@@ -67,6 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     labelProps: normalize.label({
+      "data-scope": "slider",
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -84,6 +85,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     rootProps: normalize.element({
+      "data-scope": "slider",
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -94,6 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     outputProps: normalize.output({
+      "data-scope": "slider",
       "data-part": "output",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -103,6 +106,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     trackProps: normalize.element({
+      "data-scope": "slider",
       "data-part": "track",
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -120,6 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize.element({
+        "data-scope": "slider",
         "data-part": "thumb",
         "data-index": index,
         id: dom.getThumbId(state.context, index),
@@ -197,6 +202,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getInputProps(index: number) {
       return normalize.input({
+        "data-scope": "slider",
         "data-part": "input",
         name: `${state.context.name}[${index}]`,
         form: state.context.form,
@@ -209,6 +215,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rangeProps: normalize.element({
       id: dom.getRangeId(state.context),
+      "data-scope": "slider",
       "data-part": "range",
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
@@ -218,6 +225,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
+      "data-scope": "slider",
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
@@ -239,6 +247,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     markerGroupProps: normalize.element({
+      "data-scope": "slider",
       "data-part": "marker-group",
       role: "presentation",
       "aria-hidden": true,
@@ -260,6 +269,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
 
       return normalize.element({
+        "data-scope": "slider",
         "data-part": "marker",
         id: dom.getMarkerId(state.context, value),
         role: "presentation",
