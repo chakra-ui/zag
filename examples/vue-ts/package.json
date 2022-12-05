@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
-    "@zag-js/anatomy": "workspace:^0.1.0",
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
