@@ -16,6 +16,21 @@ describe("Anatomy", () => {
     `)
   })
 
+  it("should convert string to kebab case if needed", () => {
+    const anamtomy = createAnatomy("hoverCard").parts("toggleButton").build()
+    expect(anamtomy).toMatchInlineSnapshot(`
+      {
+        "toggleButton": {
+          "attrs": {
+            "data-part": "toggle-button",
+            "data-scope": "hover-card",
+          },
+          "selector": "[data-scope="hover-card"][data-part="toggle-button"]",
+        },
+      }
+    `)
+  })
+
   it("should filter duplicate values", () => {
     const anatomy = createAnatomy("accordion").parts("root", "control", "control").build()
     expect(anatomy).toMatchInlineSnapshot(`

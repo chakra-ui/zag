@@ -25,10 +25,17 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
       (prev, part) =>
         Object.assign(prev, {
           [part]: {
-            selector: `[data-scope="${name}"][data-part="${part}"]`,
-            attrs: { "data-scope": name, "data-part": part },
+            selector: `[data-scope="${toKebabCase(name)}"][data-part="${toKebabCase(part)}"]`,
+            attrs: { "data-scope": toKebabCase(name), "data-part": toKebabCase(part) },
           },
         }),
       {},
     ),
 })
+
+const toKebabCase = (value: string) =>
+  value
+    .replace(/([A-Z])([A-Z])/g, "$1-$2")
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    .replace(/[\s_]+/g, "-")
+    .toLowerCase()
