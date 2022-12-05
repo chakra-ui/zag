@@ -55,6 +55,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     contextTriggerProps: normalize.element({
+      "data-scope": "menu",
       "data-part": "trigger",
       id: dom.getContextTriggerId(state.context),
       onPointerDown(event) {
@@ -90,6 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     triggerProps: normalize.button({
+      "data-scope": "menu",
       "data-part": isSubmenu ? "trigger-item" : "trigger",
       "data-placement": state.context.currentPlacement,
       type: "button",
@@ -167,6 +169,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     positionerProps: normalize.element({
+      "data-scope": "menu",
       "data-part": "positioner",
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
@@ -174,16 +177,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
+      "data-scope": "menu",
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
+      "data-scope": "menu",
       "data-part": "arrow-inner",
       style: popperStyles.innerArrow,
     }),
 
     contentProps: normalize.element({
+      "data-scope": "menu",
       "data-part": "content",
       id: dom.getContentId(state.context),
       "aria-label": state.context["aria-label"],
@@ -259,6 +265,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     separatorProps: normalize.element({
+      "data-scope": "menu",
       "data-part": "separator",
       role: "separator",
       "aria-orientation": "horizontal",
@@ -267,6 +274,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemProps(options: ItemProps) {
       const { id, disabled, valueText } = options
       return normalize.element({
+        "data-scope": "menu",
         "data-part": "item",
         id,
         role: "menuitem",

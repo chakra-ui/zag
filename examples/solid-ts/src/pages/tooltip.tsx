@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -14,12 +14,13 @@ export default function Page() {
 
   return (
     <>
-      <main class="tooltip" style={{ gap: "12px", flexDirection: "row" }}>
+      <main class="tooltip" style={{ gap: "12px", "flex-direction": "row" }}>
         <div class="root">
           <button data-testid="tip-1-trigger" {...api().triggerProps}>
             Over me
           </button>
-          {api().isOpen && (
+
+          <Show when={api().isOpen}>
             <Portal>
               <div {...api().positionerProps}>
                 <div class="tooltip-content" data-testid="tip-1-tooltip" {...api().contentProps}>
@@ -27,12 +28,13 @@ export default function Page() {
                 </div>
               </div>
             </Portal>
-          )}
+          </Show>
 
           <button data-testid="tip-2-trigger" {...api2().triggerProps}>
             Over me
           </button>
-          {api2().isOpen && (
+
+          <Show when={api2().isOpen}>
             <Portal>
               <div {...api2().positionerProps}>
                 <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2().contentProps}>
@@ -40,7 +42,7 @@ export default function Page() {
                 </div>
               </div>
             </Portal>
-          )}
+          </Show>
         </div>
       </main>
 

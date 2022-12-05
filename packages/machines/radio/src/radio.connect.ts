@@ -61,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "radio",
       "data-part": "root",
       role: "radiogroup",
       id: dom.getRootId(state.context),
@@ -70,6 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
+      "data-scope": "radio",
       "data-part": "label",
       id: dom.getLabelId(state.context),
       onClick: focus,
@@ -79,6 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const rootState = getRadioState(props)
 
       return normalize.label({
+        "data-scope": "radio",
         "data-part": "item",
         id: dom.getItemId(state.context, props.value),
         htmlFor: dom.getItemInputId(state.context, props.value),
@@ -108,6 +111,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemLabelProps(props: ItemProps) {
       return normalize.element({
+        "data-scope": "radio",
         "data-part": "item-label",
         id: dom.getItemLabelId(state.context, props.value),
         ...getRadioDataSet(props),
@@ -118,6 +122,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const controlState = getRadioState(props)
 
       return normalize.element({
+        "data-scope": "radio",
         "data-part": "item-control",
         id: dom.getItemControlId(state.context, props.value),
         "data-active": dataAttr(controlState.isActive),
@@ -133,6 +138,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const trulyDisabled = inputState.isDisabled && !props.focusable
 
       return normalize.input({
+        "data-scope": "radio",
         "data-part": "item-input",
         "data-ownedby": dom.getRootId(state.context),
         id: dom.getItemInputId(state.context, props.value),

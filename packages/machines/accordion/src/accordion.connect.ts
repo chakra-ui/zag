@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
+      "data-scope": "accordion",
       "data-part": "root",
       id: dom.getRootId(state.context),
     }),
@@ -35,6 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { isOpen, isFocused } = api.getItemState(props)
       return normalize.element({
         "data-part": "item",
+        "data-scope": "accordion",
         id: dom.getItemId(state.context, props.value),
         "data-expanded": dataAttr(isOpen),
         "data-focus": dataAttr(isFocused),
@@ -45,6 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { isOpen, isFocused, isDisabled } = api.getItemState(props)
       return normalize.element({
         "data-part": "content",
+        "data-scope": "accordion",
         role: "region",
         id: dom.getContentId(state.context, props.value),
         "aria-labelledby": dom.getTriggerId(state.context, props.value),
@@ -60,6 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { isDisabled, isOpen } = api.getItemState(props)
       return normalize.button({
         "data-part": "trigger",
+        "data-scope": "accordion",
         type: "button",
         id: dom.getTriggerId(state.context, value),
         "aria-controls": dom.getContentId(state.context, value),
