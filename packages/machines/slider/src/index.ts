@@ -1,4 +1,5 @@
-export { dom as unstable__dom } from "./slider.dom"
+export { anatomy } from "./slider.anatomy"
 export { connect } from "./slider.connect"
+export { dom as unstable__dom } from "./slider.dom"
 export { machine } from "./slider.machine"
 export type { UserDefinedContext as Context } from "./slider.types"
