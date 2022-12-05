@@ -1,5 +1,22 @@
 # @zag-js/accordion
 
+## 0.2.3
+
+### Patch Changes
+
+- [#416](https://github.com/chakra-ui/zag/pull/416)
+  [`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Describe the anatomy of a machine and use it to generate data-scope
+  and data-part
+
+- [#427](https://github.com/chakra-ui/zag/pull/427)
+  [`e4b529d8`](https://github.com/chakra-ui/zag/commit/e4b529d8a72ba980db1e88a201c5395c8803a887) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where value was reset infinitely when `value: []` and
+  `multiple: false` is passed to machine context.
+
+- Updated dependencies [[`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b)]:
+  - @zag-js/anatomy@0.1.1
+
 ## 0.2.2
 
 ### Patch Changes
