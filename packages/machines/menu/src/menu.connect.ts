@@ -13,6 +13,7 @@ import {
 } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
@@ -55,8 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     contextTriggerProps: normalize.element({
-      "data-scope": "menu",
-      "data-part": "trigger",
+      ...parts.trigger.attrs,
       id: dom.getContextTriggerId(state.context),
       onPointerDown(event) {
         if (event.pointerType === "mouse") return
@@ -91,8 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     triggerProps: normalize.button({
-      "data-scope": "menu",
-      "data-part": isSubmenu ? "trigger-item" : "trigger",
+      ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
       "data-placement": state.context.currentPlacement,
       type: "button",
       dir: state.context.dir,
@@ -169,28 +168,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     positionerProps: normalize.element({
-      "data-scope": "menu",
-      "data-part": "positioner",
+      ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
-      "data-scope": "menu",
-      "data-part": "arrow",
+      ...parts.arrow.attrs,
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
-      "data-scope": "menu",
-      "data-part": "arrow-inner",
+      ...parts.arrowInner.attrs,
       style: popperStyles.innerArrow,
     }),
 
     contentProps: normalize.element({
-      "data-scope": "menu",
-      "data-part": "content",
+      ...parts.content.attrs,
       id: dom.getContentId(state.context),
       "aria-label": state.context["aria-label"],
       hidden: !isOpen,
@@ -265,8 +260,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     separatorProps: normalize.element({
-      "data-scope": "menu",
-      "data-part": "separator",
+      ...parts.separator.attrs,
       role: "separator",
       "aria-orientation": "horizontal",
     }),
@@ -274,8 +268,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemProps(options: ItemProps) {
       const { id, disabled, valueText } = options
       return normalize.element({
-        "data-scope": "menu",
-        "data-part": "item",
+        ...parts.item.attrs,
         id,
         role: "menuitem",
         "aria-disabled": disabled,
@@ -329,7 +322,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         normalize.element({
           "data-type": type,
           "data-name": name,
-          "data-part": "option-item",
+          ...parts.optionItem.attrs,
           "data-value": option.value,
           role: `menuitem${type}`,
           "aria-checked": !!checked,
@@ -346,14 +339,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps(options: LabelProps) {
       return normalize.element({
         id: dom.getLabelId(state.context, options.htmlFor),
-        "data-part": "label",
+        ...parts.label.attrs,
       })
     },
 
     getGroupProps(options: GroupProps) {
       return normalize.element({
         id: dom.getGroupId(state.context, options.id),
-        "data-part": "group",
+        ...parts.group.attrs,
         "aria-labelledby": options.id,
         role: "group",
       })
