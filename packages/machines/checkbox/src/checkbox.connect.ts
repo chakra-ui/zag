@@ -1,4 +1,4 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
 import type { Send, State } from "./checkbox.types"
@@ -21,7 +21,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"] ?? dom.getLabelId(state.context)
   const ariaDescribedBy = state.context["aria-describedby"]
-  const ariaChecked = isIndeterminate ? "mixed" : isChecked
 
   const name = state.context.name
   const form = state.context.form
@@ -46,9 +45,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_INDETERMINATE", value: indeterminate })
     },
 
-    rootProps: normalize.element({
+    rootProps: normalize.label({
+      "data-scope": "checkbox",
       "data-part": "root",
       id: dom.getRootId(state.context),
+      htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-checked": dataAttr(isChecked),
@@ -76,9 +77,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.label({
+    labelProps: normalize.element({
+      "data-scope": "checkbox",
       "data-part": "label",
-      htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-hover": dataAttr(isHovered),
@@ -94,6 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
+      "data-scope": "checkbox",
       "data-part": "control",
       id: dom.getControlId(state.context),
       "data-focus": dataAttr(isFocused),
@@ -108,6 +110,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
+      "data-scope": "checkbox",
       "data-part": "input",
       id: dom.getInputId(state.context),
       type: "checkbox",
@@ -115,13 +118,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultChecked: isChecked,
       disabled: trulyDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: isReadOnly,
+      "aria-readonly": ariaAttr(isReadOnly),
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       "aria-invalid": isInvalid,
-      "aria-checked": ariaChecked,
       "aria-describedby": ariaDescribedBy,
-      "aria-disabled": isDisabled,
       name,
       form,
       value,

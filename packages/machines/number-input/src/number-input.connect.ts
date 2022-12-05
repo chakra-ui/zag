@@ -58,11 +58,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
+      "data-scope": "number-input",
       "data-part": "root",
       "data-disabled": dataAttr(isDisabled),
     }),
 
     labelProps: normalize.label({
+      "data-scope": "number-input",
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -71,6 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     groupProps: normalize.element({
+      "data-scope": "number-input",
       "data-part": "group",
       role: "group",
       "aria-disabled": isDisabled,
@@ -80,6 +83,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
+      "data-scope": "number-input",
       "data-part": "input",
       name: state.context.name,
       form: state.context.form,
@@ -148,6 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     decrementButtonProps: normalize.button({
+      "data-scope": "number-input",
       "data-part": "spin-button",
       "data-type": "decrement",
       id: dom.getDecButtonId(state.context),
@@ -172,6 +177,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     incrementButtonProps: normalize.button({
+      "data-scope": "number-input",
       "data-part": "spin-button",
       "data-type": "increment",
       id: dom.getIncButtonId(state.context),
@@ -195,6 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     scrubberProps: normalize.element({
+      "data-scope": "number-input",
       "data-disabled": dataAttr(isDisabled),
       "data-part": "scrubber",
       id: dom.getScrubberId(state.context),

@@ -17,6 +17,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     triggerProps: normalize.button({
+      "data-scope": "dialog",
       "data-part": "trigger",
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
@@ -29,16 +30,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     backdropProps: normalize.element({
+      "data-scope": "dialog",
       "data-part": "backdrop",
       id: dom.getBackdropId(state.context),
     }),
 
     underlayProps: normalize.element({
+      "data-scope": "dialog",
       "data-part": "underlay",
       id: dom.getUnderlayId(state.context),
     }),
 
     contentProps: normalize.element({
+      "data-scope": "dialog",
       "data-part": "content",
       role: state.context.role,
       id: dom.getContentId(state.context),
@@ -50,16 +54,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     titleProps: normalize.element({
+      "data-scope": "dialog",
       "data-part": "title",
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
+      "data-scope": "dialog",
       "data-part": "description",
       id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({
+      "data-scope": "dialog",
       "data-part": "close-button",
       id: dom.getCloseButtonId(state.context),
       type: "button",

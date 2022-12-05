@@ -49,6 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       dir: state.context.dir,
+      "data-scope": "tags-input",
       "data-part": "root",
       "data-invalid": dataAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
@@ -63,6 +64,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
+      "data-scope": "tags-input",
       "data-part": "label",
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -73,6 +75,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       id: dom.getControlId(state.context),
+      "data-scope": "tags-input",
       "data-part": "control",
       tabIndex: isReadOnly ? 0 : undefined,
       "data-disabled": dataAttr(isDisabled),
@@ -82,6 +85,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
+      "data-scope": "tags-input",
       "data-part": "input",
       "data-invalid": dataAttr(isInvalid),
       "aria-invalid": isInvalid,
@@ -160,6 +164,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     hiddenInputProps: normalize.input({
+      "data-scope": "tags-input",
       "data-part": "hidden-input",
       type: "text",
       hidden: true,
@@ -173,6 +178,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { value } = options
       const id = dom.getTagId(state.context, options)
       return normalize.element({
+        "data-scope": "tags-input",
         "data-part": "tag",
         id,
         hidden: isEditingTag ? state.context.editedId === id : false,
@@ -195,6 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const id = dom.getTagId(state.context, options)
       const active = state.context.editedId === id
       return normalize.input({
+        "data-scope": "tags-input",
         "data-part": "tag-input",
         "aria-label": translations.tagEdited(options.value),
         "aria-hidden": true,
@@ -233,6 +240,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTagDeleteButtonProps(options: TagProps) {
       const id = dom.getTagId(state.context, options)
       return normalize.button({
+        "data-scope": "tags-input",
         "data-part": "delete-button",
         id: dom.getTagDeleteBtnId(state.context, options),
         type: "button",
@@ -260,6 +268,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     clearButtonProps: normalize.button({
+      "data-scope": "tags-input",
       "data-part": "clear-button",
       id: dom.getClearButtonId(state.context),
       type: "button",

@@ -28,7 +28,7 @@ export default function Page() {
 
   const api = createMemo(() => pressable.connect(state, send, normalizeProps))
 
-  let buttonRef
+  let buttonRef: HTMLButtonElement | undefined
   return (
     <>
       <main class="pressable">

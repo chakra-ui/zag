@@ -17,17 +17,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
+      "data-scope": "hover-card",
       "data-part": "arrow",
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
       "data-part": "arrow-inner",
+      "data-scope": "hover-card",
       style: popperStyles.innerArrow,
     }),
 
     triggerProps: normalize.element({
       "data-part": "trigger",
+      "data-scope": "hover-card",
       "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
       "data-expanded": dataAttr(isOpen),
@@ -54,10 +57,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
       "data-part": "positioner",
+      "data-scope": "hover-card",
       style: popperStyles.floating,
     }),
 
     contentProps: normalize.element({
+      "data-scope": "hover-card",
       "data-part": "content",
       id: dom.getContentId(state.context),
       hidden: !isOpen,
