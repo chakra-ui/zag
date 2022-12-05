@@ -2,9 +2,9 @@ import { clamp, decrement, increment, percentToValue, snapToStep, toRanges } fro
 import type { MachineContext as Ctx } from "./range-slider.types"
 
 export const utils = {
-  check(ctx: Ctx, values: number[]) {
-    return values.map((value, index, _values) => {
-      return utils.convert({ ...ctx, values: _values }, value, index)
+  check(ctx: Ctx, value: number[]) {
+    return value.map((value, index, _value) => {
+      return utils.convert({ ...ctx, value: _value }, value, index)
     })
   },
   clampPercent(value: number) {

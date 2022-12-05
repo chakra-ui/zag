@@ -17,7 +17,7 @@ import { utils } from "./range-slider.utils"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
-  const values = state.context.values
+  const sliderValue = state.context.value
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
@@ -27,20 +27,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInteractive = state.context.isInteractive
 
   return {
-    values: state.context.values,
+    value: state.context.value,
     isDragging,
     isFocused,
-    setValue(values: number[]) {
-      send({ type: "SET_VALUE", value: values })
+    setValue(value: number[]) {
+      send({ type: "SET_VALUE", value: value })
     },
     getThumbValue(index: number) {
-      return values[index]
+      return sliderValue[index]
     },
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
     getThumbPercent(index: number) {
-      return valueToPercent(values[index], state.context)
+      return valueToPercent(sliderValue[index], state.context)
     },
     setThumbPercent(index: number, percent: number) {
       const value = percentToValue(percent, state.context)
@@ -98,7 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
-      htmlFor: values.map((_v, i) => dom.getInputId(state.context, i)).join(" "),
+      htmlFor: sliderValue.map((_v, i) => dom.getInputId(state.context, i)).join(" "),
       "aria-live": "off",
     }),
 
@@ -113,7 +113,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getThumbProps(index: number) {
-      const value = values[index]
+      const value = sliderValue[index]
       const range = toRanges(state.context)[index]
       const ariaValueText = state.context.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
@@ -133,7 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-orientation": state.context.orientation,
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
-        "aria-valuenow": values[index],
+        "aria-valuenow": sliderValue[index],
         "aria-valuetext": ariaValueText,
         role: "slider",
         tabIndex: isDisabled ? undefined : 0,
@@ -202,7 +202,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         type: "text",
         hidden: true,
-        defaultValue: state.context.values[index],
+        defaultValue: state.context.value[index],
         id: dom.getInputId(state.context, index),
       })
     },
@@ -251,9 +251,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const style = dom.getMarkerStyle(state.context, percent)
       let markerState: "over-value" | "under-value" | "at-value"
 
-      if (Math.max(...state.context.values) < value) {
+      if (Math.max(...state.context.value) < value) {
         markerState = "over-value"
-      } else if (Math.min(...state.context.values) > value) {
+      } else if (Math.min(...state.context.value) > value) {
         markerState = "under-value"
       } else {
         markerState = "at-value"

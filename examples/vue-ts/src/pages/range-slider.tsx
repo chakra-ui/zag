@@ -17,7 +17,7 @@ export default defineComponent({
       slider.machine({
         id: "range-slider",
         name: "quantity",
-        values: [10, 60],
+        value: [10, 60],
       }),
       { context: controls.context },
     )
@@ -40,14 +40,14 @@ export default defineComponent({
               <div {...api.rootProps}>
                 <div>
                   <label {...api.labelProps}>Quantity:</label>
-                  <output {...api.outputProps}>{api.values.join(" - ")}</output>
+                  <output {...api.outputProps}>{api.value.join(" - ")}</output>
                 </div>
                 <div class="control-area">
                   <div {...api.controlProps}>
                     <div {...api.trackProps}>
                       <div {...api.rangeProps} />
                     </div>
-                    {api.values.map((_, index) => (
+                    {api.value.map((_, index) => (
                       <div key={index} {...api.getThumbProps(index)}>
                         <input {...api.getInputProps(index)} />
                       </div>
