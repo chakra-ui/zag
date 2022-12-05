@@ -22,7 +22,7 @@ export function machine(userContext: UserDefinedContext) {
         min: 0,
         max: 100,
         step: 1,
-        values: [0, 100],
+        value: [0, 100],
         initialValues: [],
         orientation: "horizontal",
         dir: "ltr",
@@ -40,7 +40,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        values: ["invokeOnChange", "dispatchChangeEvent"],
+        value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
       activities: ["trackFormControlState", "trackThumbsSize"],
@@ -142,9 +142,9 @@ export function machine(userContext: UserDefinedContext) {
             onFormReset() {
               if (!ctx.name) return
 
-              ctx.values.forEach((_value, index) => {
+              ctx.value.forEach((_value, index) => {
                 if (ctx.initialValues[index] != null) {
-                  ctx.values[index] = ctx.initialValues[index]
+                  ctx.value[index] = ctx.initialValues[index]
                 }
               })
             },
@@ -178,13 +178,13 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         invokeOnChangeStart(ctx) {
-          ctx.onChangeStart?.({ value: ctx.values })
+          ctx.onChangeStart?.({ value: ctx.value })
         },
         invokeOnChangeEnd(ctx) {
-          ctx.onChangeEnd?.({ value: ctx.values })
+          ctx.onChangeEnd?.({ value: ctx.value })
         },
         invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.values })
+          ctx.onChange?.({ value: ctx.value })
         },
         dispatchChangeEvent(ctx) {
           raf(() => {
@@ -200,7 +200,7 @@ export function machine(userContext: UserDefinedContext) {
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
           if (value == null) return
-          ctx.values[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
+          ctx.value[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
         },
         focusActiveThumb(ctx) {
           raf(() => {
@@ -209,34 +209,34 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         decrementAtIndex(ctx, evt) {
-          ctx.values[ctx.activeIndex] = utils.decrement(ctx, evt.index, evt.step)
+          ctx.value[ctx.activeIndex] = utils.decrement(ctx, evt.index, evt.step)
         },
         incrementAtIndex(ctx, evt) {
-          ctx.values[ctx.activeIndex] = utils.increment(ctx, evt.index, evt.step)
+          ctx.value[ctx.activeIndex] = utils.increment(ctx, evt.index, evt.step)
         },
         setActiveThumbToMin(ctx) {
           const { min } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
-          ctx.values[ctx.activeIndex] = min
+          ctx.value[ctx.activeIndex] = min
         },
         setActiveThumbToMax(ctx) {
           const { max } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
-          ctx.values[ctx.activeIndex] = max
+          ctx.value[ctx.activeIndex] = max
         },
         checkValue(ctx) {
-          let values = utils.check(ctx, ctx.values)
-          ctx.values = values
-          ctx.initialValues = values.slice()
+          let value = utils.check(ctx, ctx.value)
+          ctx.value = value
+          ctx.initialValues = value.slice()
         },
         setValue(ctx, evt) {
           // set value at specified index
           if (typeof evt.index === "number" && typeof evt.value === "number") {
-            ctx.values[evt.index] = utils.convert(ctx, evt.value, evt.index)
+            ctx.value[evt.index] = utils.convert(ctx, evt.value, evt.index)
             return
           }
 
           // set values
           if (Array.isArray(evt.value)) {
-            ctx.values = utils.check(ctx, evt.value)
+            ctx.value = utils.check(ctx, evt.value)
           }
         },
       },

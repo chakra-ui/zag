@@ -36,7 +36,7 @@ type PublicContext = DirectionProperty &
     /**
      * The value of the range slider
      */
-    values: number[]
+    value: number[]
     /**
      * Whether the slider is disabled
      */
