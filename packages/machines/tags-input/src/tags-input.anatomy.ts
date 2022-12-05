@@ -4,10 +4,11 @@ export const anatomy = createAnatomy("tagsInput").parts(
   "root",
   "label",
   "control",
-  "tag",
   "input",
   "hiddenInput",
-  "clearButton",
+  "tag",
   "tagInput",
-  "tagDeleteButton",
+  "deleteButton",
+  "clearButton",
 )
+export const parts = anatomy.build()
