@@ -9,6 +9,7 @@ import {
 } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
+import { parts } from "./pin-input.anatomy"
 import { dom } from "./pin-input.dom"
 import type { Send, State } from "./pin-input.types"
 
@@ -42,8 +43,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       dir: state.context.dir,
-      "data-part": "root",
-      "data-scope": "pin-input",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(state.context.disabled),
@@ -51,8 +51,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
-      "data-part": "label",
-      "data-scope": "pin-input",
+      ...parts.label.attrs,
       htmlFor: dom.getHiddenInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-invalid": dataAttr(isInvalid),
@@ -65,8 +64,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     hiddenInputProps: normalize.input({
-      "data-scope": "pin-input",
-      "data-part": "hidden-input",
+      ...parts.hiddenInput.attrs,
       "aria-hidden": true,
       type: "text",
       tabIndex: -1,
@@ -81,8 +79,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getInputProps({ index }: { index: number }) {
       const inputType = state.context.type === "numeric" ? "tel" : "text"
       return normalize.input({
-        "data-scope": "pin-input",
-        "data-part": "input",
+        ...parts.input.attrs,
         disabled: state.context.disabled,
         "data-disabled": dataAttr(state.context.disabled),
         "data-complete": dataAttr(isValueComplete),
