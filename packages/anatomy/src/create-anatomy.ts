@@ -1,5 +1,3 @@
-import { isEmpty } from "@zag-js/utils"
-
 export type Part = {
   selector: string
   attrs: Record<"data-scope" | "data-part", string>
@@ -39,3 +37,5 @@ const toKebabCase = (value: string) =>
     .replace(/([a-z])([A-Z])/g, "$1-$2")
     .replace(/[\s_]+/g, "-")
     .toLowerCase()
+
+const isEmpty = <T>(v: T[]): boolean => v.length === 0
