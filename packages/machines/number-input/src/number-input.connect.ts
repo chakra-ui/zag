@@ -2,14 +2,14 @@ import {
   ariaAttr,
   dataAttr,
   EventKeyMap,
+  getEventPoint,
   getEventStep,
   getNativeEvent,
-  getEventPoint,
   isLeftClick,
 } from "@zag-js/dom-utils"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-
+import { parts } from "./number-input.anatomy"
 import { dom } from "./number-input.dom"
 import type { Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -58,14 +58,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
-      "data-scope": "number-input",
-      "data-part": "root",
+      ...parts.root.attrs,
       "data-disabled": dataAttr(isDisabled),
     }),
 
     labelProps: normalize.label({
-      "data-scope": "number-input",
-      "data-part": "label",
+      ...parts.label.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getLabelId(state.context),
@@ -73,8 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     groupProps: normalize.element({
-      "data-scope": "number-input",
-      "data-part": "group",
+      ...parts.group.attrs,
       role: "group",
       "aria-disabled": isDisabled,
       "data-disabled": dataAttr(isDisabled),
@@ -83,8 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-scope": "number-input",
-      "data-part": "input",
+      ...parts.input.attrs,
       name: state.context.name,
       form: state.context.form,
       id: dom.getInputId(state.context),
@@ -152,8 +148,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     decrementButtonProps: normalize.button({
-      "data-scope": "number-input",
-      "data-part": "spin-button",
+      ...parts.spinButton.attrs,
       "data-type": "decrement",
       id: dom.getDecButtonId(state.context),
       disabled: isDecrementDisabled,
@@ -177,8 +172,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     incrementButtonProps: normalize.button({
-      "data-scope": "number-input",
-      "data-part": "spin-button",
+      ...parts.spinButton.attrs,
       "data-type": "increment",
       id: dom.getIncButtonId(state.context),
       disabled: isIncrementDisabled,
@@ -201,9 +195,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     scrubberProps: normalize.element({
-      "data-scope": "number-input",
+      ...parts.scrubber.attrs,
       "data-disabled": dataAttr(isDisabled),
-      "data-part": "scrubber",
       id: dom.getScrubberId(state.context),
       role: "presentation",
       onMouseDown(event) {
