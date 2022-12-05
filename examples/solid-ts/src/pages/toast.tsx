@@ -85,8 +85,9 @@ export default function Page() {
           </button>
           <button
             onClick={() => {
-              if (!id()) return
-              api().update(id(), {
+              const idValue = id()
+              if (!idValue) return
+              api().update(idValue, {
                 title: "Testing",
                 type: "loading",
               })

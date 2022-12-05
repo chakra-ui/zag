@@ -1,6 +1,6 @@
 import * as editable from "@zag-js/editable"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
 import { editableControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -28,12 +28,12 @@ export default function Page() {
             <span data-testid="preview" {...api().previewProps} />
           </div>
           <div {...api().controlGroupProps}>
-            {!api().isEditing && (
+            <Show when={!api().isEditing}>
               <button data-testid="edit-button" {...api().editButtonProps}>
                 Edit
               </button>
-            )}
-            {api().isEditing && (
+            </Show>
+            <Show when={api().isEditing}>
               <>
                 <button data-testid="save-button" {...api().submitButtonProps}>
                   Save
@@ -42,7 +42,7 @@ export default function Page() {
                   Cancel
                 </button>
               </>
-            )}
+            </Show>
           </div>
         </div>
       </main>

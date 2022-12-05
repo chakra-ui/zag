@@ -1,6 +1,6 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
 import { hoverCardControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Portal } from "solid-js/web"
@@ -23,8 +23,7 @@ export default function Page() {
           <a href="https://twitter.com/zag_js" target="_blank" {...api().triggerProps}>
             Twitter
           </a>
-
-          {api().isOpen && (
+          <Show when={api().isOpen}>
             <Portal>
               <div {...api().positionerProps}>
                 <div class="hover-card-content" {...api().contentProps}>
@@ -38,8 +37,7 @@ export default function Page() {
                 </div>
               </div>
             </Portal>
-          )}
-
+          </Show>
           <div data-part="test-text">Test text</div>
         </div>
       </main>
