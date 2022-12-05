@@ -5,6 +5,8 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./accordi
 
 const { and, not } = guards
 
+const VALUE_MISMATCH = `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`
+
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
@@ -21,15 +23,15 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["checkValue", "invokeOnChange"],
-        multiple: ["checkValue"],
+        value: "sanitizeValue",
+        multiple: "sanitizeValue",
       },
 
-      created: ["checkValue"],
+      created: "sanitizeValue",
 
       on: {
         SET_VALUE: {
-          actions: "setValue",
+          actions: ["setValue", "invokeOnChange"],
         },
       },
 
@@ -58,11 +60,11 @@ export function machine(userContext: UserDefinedContext) {
             CLICK: [
               {
                 guard: and("isExpanded", "canToggle"),
-                actions: "collapse",
+                actions: ["collapse", "invokeOnChange"],
               },
               {
                 guard: not("isExpanded"),
-                actions: "expand",
+                actions: ["expand", "invokeOnChange"],
               },
             ],
             HOME: {
@@ -88,10 +90,8 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value })
         },
         collapse(ctx, evt) {
           ctx.value = ctx.multiple ? remove(toArray(ctx.value), evt.value) : null
@@ -124,15 +124,11 @@ export function machine(userContext: UserDefinedContext) {
         setValue(ctx, evt) {
           ctx.value = evt.value
         },
-        checkValue(ctx) {
+        sanitizeValue(ctx) {
           if (ctx.multiple && isString(ctx.value)) {
-            warn(
-              `[accordion/invalid-value]
-               Expected value for multiple accordion to be an 'array'
-               but received 'string'. Value will be coarsed to 'array'`,
-            )
+            warn(VALUE_MISMATCH)
             ctx.value = [ctx.value]
-          } else if (!ctx.multiple && Array.isArray(ctx.value)) {
+          } else if (!ctx.multiple && Array.isArray(ctx.value) && ctx.value.length > 0) {
             ctx.value = ctx.value[0]
           }
         },
