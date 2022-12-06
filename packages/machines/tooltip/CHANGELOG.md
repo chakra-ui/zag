@@ -1,5 +1,21 @@
 # @zag-js/tooltip
 
+## 0.2.3
+
+### Patch Changes
+
+- [#416](https://github.com/chakra-ui/zag/pull/416)
+  [`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Describe the anatomy of a machine and use it to generate data-scope
+  and data-part
+
+- [`fd303cd9`](https://github.com/chakra-ui/zag/commit/fd303cd9a851c07f53b64fb8e026e845724cdbab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the `hidden` property is not added to the content
+  element.
+
+- Updated dependencies [[`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b)]:
+  - @zag-js/anatomy@0.1.1
+
 ## 0.2.2
 
 ### Patch Changes
