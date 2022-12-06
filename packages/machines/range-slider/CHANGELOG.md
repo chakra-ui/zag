@@ -1,5 +1,22 @@
 # @zag-js/range-slider
 
+## 0.2.4
+
+### Patch Changes
+
+- [#426](https://github.com/chakra-ui/zag/pull/426)
+  [`dc848b83`](https://github.com/chakra-ui/zag/commit/dc848b83c20767ed87e38490515289a72f4da03b) Thanks
+  [@anubra266](https://github.com/anubra266)! - Change `values` to `value`
+
+- [#416](https://github.com/chakra-ui/zag/pull/416)
+  [`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Describe the anatomy of a machine and use it to generate data-scope
+  and data-part
+
+- Updated dependencies [[`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b)]:
+  - @zag-js/anatomy@0.1.1
+  - @zag-js/slider@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
