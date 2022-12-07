@@ -36,7 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     containerProps: normalize.element({
       ...parts.container.attrs,
-      id: dom.getUnderlayId(state.context),
+      id: dom.getContainerId(state.context),
     }),
 
     contentProps: normalize.element({
