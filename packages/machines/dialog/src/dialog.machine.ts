@@ -104,7 +104,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.modal) return
           let cleanup: VoidFunction | undefined
           nextTick(() => {
-            cleanup = ariaHidden([dom.getUnderlayEl(ctx)])
+            cleanup = ariaHidden([dom.getContainerEl(ctx)])
           })
           return () => cleanup?.()
         },
