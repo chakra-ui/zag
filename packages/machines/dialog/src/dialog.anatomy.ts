@@ -3,7 +3,7 @@ import { createAnatomy } from "@zag-js/anatomy"
 export const anatomy = createAnatomy("dialog").parts(
   "trigger",
   "backdrop",
-  "underlay",
+  "container",
   "content",
   "title",
   "description",

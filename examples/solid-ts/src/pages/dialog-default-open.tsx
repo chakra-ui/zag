@@ -22,7 +22,7 @@ export default function Page() {
           <Show when={parentDialog().isOpen}>
             <Portal>
               <div class="dialog-backdrop" {...parentDialog().backdropProps} />
-              <div {...parentDialog().underlayProps} data-testid="underlay-1">
+              <div {...parentDialog().containerProps} data-testid="container-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>
                   <p {...parentDialog().descriptionProps}>
