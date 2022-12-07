@@ -2,14 +2,15 @@ import {
   dataAttr,
   EventKeyMap,
   getEventKey,
+  getEventPoint,
   getEventStep,
   getNativeEvent,
-  getEventPoint,
   isLeftClick,
   isModifiedEvent,
 } from "@zag-js/dom-utils"
 import { percentToValue, valueToPercent } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./slider.anatomy"
 import { dom } from "./slider.dom"
 import type { Send, State } from "./slider.types"
 
@@ -46,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-part": "root",
+      ...parts.root.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isFocused),
       "data-orientation": state.context.orientation,
@@ -57,7 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
-      "data-part": "label",
+      ...parts.label.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
@@ -72,7 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     thumbProps: normalize.element({
-      "data-part": "thumb",
+      ...parts.thumb.attrs,
       id: dom.getThumbId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -147,7 +148,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-part": "input",
+      ...parts.input.attrs,
       type: "text",
       defaultValue: state.context.value,
       name: state.context.name,
@@ -157,7 +158,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     outputProps: normalize.output({
-      "data-part": "output",
+      ...parts.output.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
@@ -166,7 +167,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     trackProps: normalize.element({
-      "data-part": "track",
+      ...parts.track.attrs,
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isFocused),
@@ -176,7 +177,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     rangeProps: normalize.element({
-      "data-part": "range",
+      ...parts.range.attrs,
       id: dom.getRangeId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
@@ -186,7 +187,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
-      "data-part": "control",
+      ...parts.control.attrs,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -208,7 +209,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     markerGroupProps: normalize.element({
-      "data-part": "marker-group",
+      ...parts.markerGroup.attrs,
       role: "presentation",
       "aria-hidden": true,
       "data-orientation": state.context.orientation,
@@ -222,7 +223,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         value > state.context.value ? "over-value" : value < state.context.value ? "under-value" : "at-value"
 
       return normalize.element({
-        "data-part": "marker",
+        ...parts.marker.attrs,
         role: "presentation",
         "data-orientation": state.context.orientation,
         id: dom.getMarkerId(state.context, value),

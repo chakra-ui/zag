@@ -16,7 +16,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "menu",
       initial: "unknown",
       context: {
-        activeId: null,
+        highlightedId: null,
         hoverId: null,
         parent: null,
         children: {},
@@ -55,20 +55,26 @@ export function machine(userContext: UserDefinedContext) {
         SET_CHILD: {
           actions: "setChildMenu",
         },
-        OPEN: "open",
+        OPEN: {
+          target: "open",
+          actions: "invokeOnOpen",
+        },
         OPEN_AUTOFOCUS: {
           internal: true,
           target: "open",
-          actions: "focusFirstItem",
+          actions: ["focusFirstItem", "invokeOnOpen"],
         },
-        CLOSE: "closed",
+        CLOSE: {
+          target: "closed",
+          actions: "invokeOnClose",
+        },
         RESTORE_FOCUS: {
           actions: "restoreFocus",
         },
         SET_VALUE: {
           actions: ["setOptionValue", "invokeOnValueChange"],
         },
-        SET_ACTIVE_ID: {
+        SET_HIGHLIGHTED_ID: {
           actions: "setFocusedItem",
         },
       },
@@ -88,9 +94,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             CONTEXT_MENU: {
               target: "open",
-              actions: "setAnchorPoint",
+              actions: ["setAnchorPoint", "invokeOnOpen"],
             },
-            TRIGGER_CLICK: "open",
+            TRIGGER_CLICK: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
               target: "closed",
@@ -104,20 +113,35 @@ export function machine(userContext: UserDefinedContext) {
 
         "opening:contextmenu": {
           after: {
-            LONG_PRESS_DELAY: "open",
+            LONG_PRESS_DELAY: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
           },
           on: {
-            CONTEXT_MENU_CANCEL: "closed",
+            CONTEXT_MENU_CANCEL: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
           },
         },
 
         opening: {
           after: {
-            SUBMENU_OPEN_DELAY: "open",
+            SUBMENU_OPEN_DELAY: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
           },
           on: {
-            BLUR: "closed",
-            TRIGGER_POINTERLEAVE: "closed",
+            BLUR: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
+            TRIGGER_POINTERLEAVE: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
           },
         },
 
@@ -127,7 +151,7 @@ export function machine(userContext: UserDefinedContext) {
           after: {
             SUBMENU_CLOSE_DELAY: {
               target: "closed",
-              actions: ["focusParentMenu", "restoreParentFocus"],
+              actions: ["focusParentMenu", "restoreParentFocus", "invokeOnClose"],
             },
           },
           on: {
@@ -151,9 +175,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             CONTEXT_MENU: {
               target: "open",
-              actions: "setAnchorPoint",
+              actions: ["setAnchorPoint", "invokeOnOpen"],
             },
-            TRIGGER_CLICK: "open",
+            TRIGGER_CLICK: {
+              target: "open",
+              actions: "invokeOnOpen",
+            },
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
@@ -161,11 +188,11 @@ export function machine(userContext: UserDefinedContext) {
             TRIGGER_BLUR: "idle",
             ARROW_DOWN: {
               target: "open",
-              actions: "focusFirstItem",
+              actions: ["focusFirstItem", "invokeOnOpen"],
             },
             ARROW_UP: {
               target: "open",
-              actions: "focusLastItem",
+              actions: ["focusLastItem", "invokeOnOpen"],
             },
           },
         },
@@ -179,6 +206,7 @@ export function machine(userContext: UserDefinedContext) {
             TRIGGER_CLICK: {
               guard: not("isTriggerItem"),
               target: "closed",
+              actions: "invokeOnClose",
             },
             ARROW_UP: [
               {
@@ -197,7 +225,7 @@ export function machine(userContext: UserDefinedContext) {
             ARROW_LEFT: {
               guard: "isSubmenu",
               target: "closed",
-              actions: "focusParentMenu",
+              actions: ["focusParentMenu", "invokeOnClose"],
             },
             HOME: {
               actions: ["focusFirstItem", "focusMenu"],
@@ -205,7 +233,10 @@ export function machine(userContext: UserDefinedContext) {
             END: {
               actions: ["focusLastItem", "focusMenu"],
             },
-            REQUEST_CLOSE: "closed",
+            REQUEST_CLOSE: {
+              target: "closed",
+              actions: "invokeOnClose",
+            },
             ARROW_RIGHT: {
               guard: "isTriggerItemFocused",
               actions: "openSubmenu",
@@ -217,8 +248,8 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: "closeOnSelect",
-                actions: "clickFocusedItem",
                 target: "closed",
+                actions: "clickFocusedItem",
               },
               {
                 actions: "clickFocusedItem",
@@ -242,7 +273,13 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable"), "closeOnSelect"),
                 target: "closed",
-                actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu"],
+                actions: [
+                  "invokeOnSelect",
+                  "changeOptionValue",
+                  "invokeOnValueChange",
+                  "closeRootMenu",
+                  "invokeOnClose",
+                ],
               },
               {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable")),
@@ -276,13 +313,13 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
-        hasFocusedItem: (ctx) => ctx.activeId !== null,
+        hasFocusedItem: (ctx) => ctx.highlightedId !== null,
         isMenuFocused: (ctx) => {
           const menu = dom.getContentEl(ctx)
           const activeElement = dom.getActiveElement(ctx)
           return contains(menu, activeElement)
         },
-        isTargetFocused: (ctx, evt) => ctx.activeId === evt.target.id,
+        isTargetFocused: (ctx, evt) => ctx.highlightedId === evt.target.id,
         // whether the trigger is also a menu item
         isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
         // whether the trigger item is the active item
@@ -420,10 +457,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent.state.context.suspendPointer = false
         },
         setFocusedItem(ctx, evt) {
-          ctx.activeId = evt.id
+          ctx.highlightedId = evt.id
         },
         clearFocusedItem(ctx) {
-          ctx.activeId = null
+          ctx.highlightedId = null
         },
         focusMenu(ctx) {
           raf(() => dom.getContentEl(ctx)?.focus())
@@ -431,32 +468,32 @@ export function machine(userContext: UserDefinedContext) {
         focusFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
           if (!first) return
-          ctx.activeId = first.id
+          ctx.highlightedId = first.id
         },
         focusLastItem(ctx) {
           const last = dom.getLastEl(ctx)
           if (!last) return
-          ctx.activeId = last.id
+          ctx.highlightedId = last.id
         },
         focusNextItem(ctx) {
-          if (!ctx.activeId) return
+          if (!ctx.highlightedId) return
           const next = dom.getNextEl(ctx)
-          ctx.activeId = next?.id ?? null
+          ctx.highlightedId = next?.id ?? null
         },
         focusPrevItem(ctx) {
-          if (!ctx.activeId) return
+          if (!ctx.highlightedId) return
           const prev = dom.getPrevEl(ctx)
-          ctx.activeId = prev?.id ?? null
+          ctx.highlightedId = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
-          if (!ctx.activeId) return
-          ctx.onSelect?.(ctx.activeId)
+          if (!ctx.highlightedId) return
+          ctx.onSelect?.(ctx.highlightedId)
           if (!ctx.closeOnSelect) {
             ctx.pointerdownNode = null
           }
         },
         focusItem(ctx, event) {
-          ctx.activeId = event.id
+          ctx.highlightedId = event.id
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
@@ -464,7 +501,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
-          if (node) ctx.activeId = node.id
+          if (node) ctx.highlightedId = node.id
         },
         setParentMenu(ctx, evt) {
           ctx.parent = ref(evt.value)
@@ -489,7 +526,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreFocus(ctx) {
           if (!ctx.hoverId) return
-          ctx.activeId = ctx.hoverId
+          ctx.highlightedId = ctx.hoverId
           ctx.hoverId = null
         },
         restoreParentFocus(ctx) {
@@ -500,6 +537,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearPointerdownNode(ctx) {
           ctx.pointerdownNode = null
+        },
+        invokeOnOpen(ctx) {
+          ctx.onOpen?.()
+        },
+        invokeOnClose(ctx) {
+          ctx.onClose?.()
         },
       },
     },

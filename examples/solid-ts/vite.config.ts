@@ -6,7 +6,6 @@ export default defineConfig({
   plugins: [solid()],
   build: {
     target: "esnext",
-    polyfillDynamicImport: false,
   },
   resolve: {
     alias: [

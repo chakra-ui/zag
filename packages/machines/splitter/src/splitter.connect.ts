@@ -1,5 +1,6 @@
 import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
 import type { Send, State } from "./splitter.types"
 
@@ -37,7 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-part": "root",
+      ...parts.root.attrs,
       "data-orientation": state.context.orientation,
       "data-disabled": dataAttr(isDisabled),
       id: dom.getRootId(state.context),
@@ -49,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     secondaryPaneProps: normalize.element({
-      "data-part": "secondary-pane",
+      ...parts.secondaryPane.attrs,
       "data-disabled": dataAttr(isDisabled),
       id: dom.getSecondaryPaneId(state.context),
       style: {
@@ -61,7 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     primaryPaneProps: normalize.element({
-      "data-part": "primary-pane",
+      ...parts.primaryPane.attrs,
       id: dom.getPrimaryPaneId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-state": isAtMax ? "at-max" : isAtMin ? "at-min" : "between",
@@ -77,7 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     toggleButtonProps: normalize.element({
-      "data-part": "toggle-button",
+      ...parts.toggleButton.attrs,
       id: dom.getToggleButtonId(state.context),
       "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
       onClick() {
@@ -86,12 +87,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
-      "data-part": "label",
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
     }),
 
     splitterProps: normalize.element({
-      "data-part": "splitter",
+      ...parts.splitter.attrs,
       id: dom.getSplitterId(state.context),
       role: "separator",
       tabIndex: isDisabled ? undefined : 0,

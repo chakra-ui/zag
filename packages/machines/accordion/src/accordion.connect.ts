@@ -1,6 +1,7 @@
 import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { isArray } from "@zag-js/utils"
+import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
 import type { ItemProps, Send, State } from "./accordion.types"
 
@@ -19,7 +20,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
@@ -34,7 +35,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemProps(props: ItemProps) {
       const { isOpen, isFocused } = api.getItemState(props)
       return normalize.element({
-        "data-part": "item",
+        ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
         "data-expanded": dataAttr(isOpen),
         "data-focus": dataAttr(isFocused),
@@ -44,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps(props: ItemProps) {
       const { isOpen, isFocused, isDisabled } = api.getItemState(props)
       return normalize.element({
-        "data-part": "content",
+        ...parts.content.attrs,
         role: "region",
         id: dom.getContentId(state.context, props.value),
         "aria-labelledby": dom.getTriggerId(state.context, props.value),
@@ -59,7 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { value } = props
       const { isDisabled, isOpen } = api.getItemState(props)
       return normalize.button({
-        "data-part": "trigger",
+        ...parts.trigger.attrs,
         type: "button",
         id: dom.getTriggerId(state.context, value),
         "aria-controls": dom.getContentId(state.context, value),

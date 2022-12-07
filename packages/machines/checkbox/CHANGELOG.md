@@ -1,5 +1,57 @@
 # @zag-js/checkbox
 
+## 0.2.4
+
+### Patch Changes
+
+- [#407](https://github.com/chakra-ui/zag/pull/407)
+  [`5936094a`](https://github.com/chakra-ui/zag/commit/5936094ae61896c9ac58d541660d08e351626f7b) Thanks
+  [@malangcat](https://github.com/malangcat)! - Fix issue where `onChange` is called with incorrect state
+
+- [#413](https://github.com/chakra-ui/zag/pull/413)
+  [`38f2daf8`](https://github.com/chakra-ui/zag/commit/38f2daf8600afc517e2d40f40249925c137fbc0a) Thanks
+  [@malangcat](https://github.com/malangcat)! - Use aria-readonly instead of readOnly attribute. `readonly` attribute
+  only applies to text inputs, not checkboxes and radios according to the
+  [HTML spec](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly)
+
+- [#414](https://github.com/chakra-ui/zag/pull/414)
+  [`7fe62689`](https://github.com/chakra-ui/zag/commit/7fe62689a467bdacf90ff30b155b12c87475f3c6) Thanks
+  [@malangcat](https://github.com/malangcat)! - remove unused aria-invalid property in PublicContext
+
+- [#416](https://github.com/chakra-ui/zag/pull/416)
+  [`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Describe the anatomy of a machine and use it to generate data-scope
+  and data-part
+
+- [#408](https://github.com/chakra-ui/zag/pull/408)
+  [`62cf9e5f`](https://github.com/chakra-ui/zag/commit/62cf9e5f87eaf928d3e66fb9146f6dc70d7ee50b) Thanks
+  [@malangcat](https://github.com/malangcat)! - Remove `aria-checked` and `aria-disabled` from checkbox input part.
+  Based on recent [spec](w3c.github.io/html-aria/#att-checked), those attributes should be applied to native input
+  elements.
+
+- [#415](https://github.com/chakra-ui/zag/pull/415)
+  [`c0eefbc2`](https://github.com/chakra-ui/zag/commit/c0eefbc258fd5bb6127fd652df6d3219632bd18e) Thanks
+  [@anubra266](https://github.com/anubra266)! - Move html `for` attribute to `rootProps` so it targets label elements.
+
+- Updated dependencies [[`5e0e0ff5`](https://github.com/chakra-ui/zag/commit/5e0e0ff57c15c173bbf5f38e4e0dac117b47739b)]:
+  - @zag-js/anatomy@0.1.1
+
+## 0.2.3
+
+### Patch Changes
+
+- [#400](https://github.com/chakra-ui/zag/pull/400)
+  [`29f24231`](https://github.com/chakra-ui/zag/commit/29f242317df9fff2af04b83b618f6577cbdbb713) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add support for `form` attribute
+
+- [`985d9b26`](https://github.com/chakra-ui/zag/commit/985d9b26a9db7e585ff504bbaa88de6835cf3fd0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure consistent API naming for `readonly` by renaming it to
+  `readOnly`
+
+- [#398](https://github.com/chakra-ui/zag/pull/398)
+  [`5706d503`](https://github.com/chakra-ui/zag/commit/5706d5036db101ec7fd6dcb9a9065461aad0225c) Thanks
+  [@anubra266](https://github.com/anubra266)! - Refactor machine to simplify form-utils approach
+
 ## 0.2.2
 
 ### Patch Changes

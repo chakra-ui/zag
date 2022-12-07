@@ -7,8 +7,8 @@ import type { MachineContext as Ctx } from "./range-slider.types"
  * -----------------------------------------------------------------------------*/
 
 export function getRangeOffsets(ctx: Ctx) {
-  let start = (ctx.values[0] / ctx.max) * 100
-  let end = 100 - (ctx.values[ctx.values.length - 1] / ctx.max) * 100
+  let start = (ctx.value[0] / ctx.max) * 100
+  let end = 100 - (ctx.value[ctx.value.length - 1] / ctx.max) * 100
   return { start: `${start}%`, end: `${end}%` }
 }
 
@@ -33,7 +33,7 @@ function getThumbStyle(ctx: Ctx, index: number): Style {
 function getRootStyle(ctx: Ctx): Style {
   const range = getRangeOffsets(ctx)
 
-  const offsetStyles = ctx.values.reduce<Style>((styles, value, index) => {
+  const offsetStyles = ctx.value.reduce<Style>((styles, value, index) => {
     const thumbSize = ctx.thumbSizes[index] ?? { width: 0, height: 0 }
     const offset = sliderDom.getThumbOffset({ ...ctx, value, thumbSize })
     return { ...styles, [`--slider-thumb-offset-${index}`]: offset }

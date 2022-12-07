@@ -8,7 +8,7 @@ export const accordionControls = defineControls({
 export const checkboxControls = defineControls({
   indeterminate: { type: "boolean", defaultValue: false, label: "Indeterminate" },
   disabled: { type: "boolean", defaultValue: false, label: "disabled" },
-  readonly: { type: "boolean", defaultValue: false, label: "readonly" },
+  readOnly: { type: "boolean", defaultValue: false, label: "readonly" },
 })
 
 export const comboboxControls = defineControls({
@@ -30,7 +30,7 @@ export const comboboxControls = defineControls({
 })
 
 export const editableControls = defineControls({
-  readonly: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   autoResize: { type: "boolean", defaultValue: false },
   placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
@@ -85,7 +85,7 @@ export const popoverControls = defineControls({
 
 export const sliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  readonly: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
@@ -95,12 +95,12 @@ export const sliderControls = defineControls({
 
 export const radioControls = defineControls({
   disabled: { type: "boolean", defaultValue: false, label: "Disabled" },
-  readonly: { type: "boolean", defaultValue: false, label: "Readonly" },
+  readOnly: { type: "boolean", defaultValue: false, label: "Readonly" },
 })
 
 export const rangeSliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  readonly: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
@@ -121,7 +121,7 @@ export const paginationControls = defineControls({
 
 export const tagsInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  readonly: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   addOnPaste: { type: "boolean", defaultValue: false },
   blurBehavior: { type: "select", options: ["add", "clear"] as const, defaultValue: "---" },
   max: { type: "number", defaultValue: 6 },
@@ -131,7 +131,7 @@ export const tagsInputControls = defineControls({
 
 export const ratingControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  readonly: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   allowHalf: { type: "boolean", defaultValue: true },
   max: { type: "number", defaultValue: 5 },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
@@ -155,7 +155,8 @@ export const toastControls = defineControls({
 export const selectControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: false, label: "Loop navigation" },
-  readonly: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   selectOnTab: { type: "boolean", defaultValue: false },
+  closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/editable",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Core logic for the editable widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,6 +29,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/types": "workspace:*"

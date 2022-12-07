@@ -13,9 +13,11 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        selectOnTab: true,
+        selectOnTab: false,
         selectedOption: null,
         highlightedOption: null,
+        loop: false,
+        closeOnSelect: true,
         ...ctx,
         initialSelectedOption: null,
         prevSelectedOption: null,
@@ -31,7 +33,7 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         hasSelectedOption: (ctx) => ctx.selectedOption != null,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         selectedId: (ctx) => (ctx.selectedOption ? dom.getOptionId(ctx, ctx.selectedOption.value) : null),
         highlightedId: (ctx) => (ctx.highlightedOption ? dom.getOptionId(ctx, ctx.highlightedOption.value) : null),
         hasSelectedChanged: (ctx) => ctx.selectedOption?.value !== ctx.prevSelectedOption?.value,
@@ -145,14 +147,26 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: ["invokeOnClose"],
             },
-            OPTION_CLICK: {
-              target: "focused",
-              actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
-            },
-            TRIGGER_KEY: {
-              target: "focused",
-              actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
-            },
+            OPTION_CLICK: [
+              {
+                target: "focused",
+                actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
+                guard: "closeOnSelect",
+              },
+              {
+                actions: ["selectHighlightedOption", "invokeOnSelect"],
+              },
+            ],
+            TRIGGER_KEY: [
+              {
+                target: "focused",
+                actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
+                guard: "closeOnSelect",
+              },
+              {
+                actions: ["selectHighlightedOption", "invokeOnSelect"],
+              },
+            ],
             ESC_KEY: {
               target: "focused",
               actions: ["invokeOnClose"],
@@ -214,6 +228,7 @@ export function machine(userContext: UserDefinedContext) {
         hasHighlightedOption: (ctx) => ctx.highlightedId != null,
         selectOnTab: (ctx) => !!ctx.selectOnTab,
         hasSelectedOption: (ctx) => ctx.hasSelectedOption,
+        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       },
       activities: {
         trackFormControlState(ctx) {

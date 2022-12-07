@@ -12,6 +12,12 @@ const expectToBeChecked = async (page: Page) => {
   await expect(page.locator(control)).toHaveAttribute("data-checked", "")
 }
 
+const expectNotToBeChecked = async (page: Page) => {
+  await expect(page.locator(root)).not.toHaveAttribute("data-checked", "")
+  await expect(page.locator(label)).not.toHaveAttribute("data-checked", "")
+  await expect(page.locator(control)).not.toHaveAttribute("data-checked", "")
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto("/checkbox")
 })
@@ -39,11 +45,6 @@ test("should be checked when spacebar is pressed while focused", async ({ page }
   await expectToBeChecked(page)
 })
 
-test("should have aria-checked as mixed when indeterminate ", async ({ page }) => {
-  await controls(page).bool("indeterminate")
-  await expect(page.locator(input)).toHaveAttribute("aria-checked", "mixed")
-})
-
 test("should have disabled attributes when disabled", async ({ page }) => {
   await controls(page).bool("disabled")
   await expect(page.locator(input)).toHaveAttribute("data-disabled", "")
@@ -58,14 +59,14 @@ test("should not be focusable when disabled", async ({ page }) => {
 })
 
 test("should be focusable when readonly", async ({ page }) => {
-  await controls(page).bool("readonly")
+  await controls(page).bool("readOnly")
   await page.click("main")
   await page.keyboard.press("Tab")
   await expect(page.locator(input)).toBeFocused()
 })
 
 test("should not be changeable when readonly", async ({ page }) => {
-  await controls(page).bool("readonly")
+  await controls(page).bool("readOnly")
   await page.click(root)
-  await expect(page.locator(input)).toHaveAttribute("aria-checked", "false")
+  await expectNotToBeChecked(page)
 })

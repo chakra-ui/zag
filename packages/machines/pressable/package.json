@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/pressable",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Core logic for the pressable widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -23,6 +23,7 @@
     "dist/**/*"
   ],
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/types": "workspace:*"
   },

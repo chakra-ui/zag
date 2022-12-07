@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/popover",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Core logic for the popover widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,6 +29,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dismissable": "workspace:*",

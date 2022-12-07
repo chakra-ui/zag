@@ -1,17 +1,17 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
+import { parts } from "./checkbox.anatomy"
 import type { Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isChecked = state.matches("checked")
 
   const isInteractive = state.context.isInteractive
-
   const isIndeterminate = state.context.indeterminate
   const isDisabled = state.context.disabled
   const isInvalid = state.context.invalid
-  const isReadOnly = state.context.readonly
+  const isReadOnly = state.context.readOnly
   const isRequired = state.context.required
   const isFocusable = state.context.focusable
 
@@ -22,7 +22,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"] ?? dom.getLabelId(state.context)
   const ariaDescribedBy = state.context["aria-describedby"]
-  const ariaChecked = isIndeterminate ? "mixed" : isChecked
 
   const name = state.context.name
   const form = state.context.form
@@ -47,9 +46,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_INDETERMINATE", value: indeterminate })
     },
 
-    rootProps: normalize.element({
-      "data-part": "root",
+    rootProps: normalize.label({
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
+      htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-checked": dataAttr(isChecked),
@@ -77,9 +77,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.label({
-      "data-part": "label",
-      htmlFor: dom.getInputId(state.context),
+    labelProps: normalize.element({
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-hover": dataAttr(isHovered),
@@ -95,7 +94,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
-      "data-part": "control",
+      ...parts.control.attrs,
       id: dom.getControlId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
@@ -109,20 +108,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-part": "input",
+      ...parts.input.attrs,
       id: dom.getInputId(state.context),
       type: "checkbox",
       required: isRequired,
       defaultChecked: isChecked,
       disabled: trulyDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: isReadOnly,
+      "aria-readonly": ariaAttr(isReadOnly),
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       "aria-invalid": isInvalid,
-      "aria-checked": ariaChecked,
       "aria-describedby": ariaDescribedBy,
-      "aria-disabled": isDisabled,
       name,
       form,
       value,

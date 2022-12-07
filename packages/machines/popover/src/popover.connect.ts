@@ -3,6 +3,7 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
 import type { Send, State } from "./popover.types"
+import { parts } from "./popover.anatomy"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.matches("open")
@@ -28,22 +29,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
-      "data-part": "arrow",
+      ...parts.arrow.attrs,
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
-      "data-part": "arrow-inner",
+      ...parts.arrowInner.attrs,
       style: popperStyles.innerArrow,
     }),
 
     anchorProps: normalize.element({
-      "data-part": "anchor",
+      ...parts.anchor.attrs,
       id: dom.getAnchorId(state.context),
     }),
 
     triggerProps: normalize.button({
-      "data-part": "trigger",
+      ...parts.trigger.attrs,
       type: "button",
       "data-placement": currentPlacement,
       id: dom.getTriggerId(state.context),
@@ -61,12 +62,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
-      "data-part": "positioner",
+      ...parts.positioner.attrs,
       style: popperStyles.floating,
     }),
 
     contentProps: normalize.element({
-      "data-part": "content",
+      ...parts.content.attrs,
       id: dom.getContentId(state.context),
       tabIndex: -1,
       role: "dialog",
@@ -78,17 +79,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     titleProps: normalize.element({
-      "data-part": "title",
+      ...parts.title.attrs,
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
-      "data-part": "description",
+      ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
     }),
 
     closeButtonProps: normalize.button({
-      "data-part": "close-button",
+      ...parts.closeButton.attrs,
       id: dom.getCloseButtonId(state.context),
       type: "button",
       "aria-label": "close",

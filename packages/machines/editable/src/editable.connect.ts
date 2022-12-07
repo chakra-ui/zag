@@ -1,12 +1,13 @@
 import { ariaAttr, dataAttr, EventKeyMap } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
 import type { Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
-  const isReadonly = state.context.readonly
+  const isReadOnly = state.context.readOnly
   const isValueEmpty = state.context.isValueEmpty
   const isInvalid = state.context.invalid
 
@@ -41,12 +42,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
     areaProps: normalize.element({
-      "data-part": "area",
+      ...parts.area.attrs,
       id: dom.getAreaId(state.context),
       style: autoResize ? { display: "inline-grid" } : undefined,
       "data-focus": dataAttr(isEditing),
@@ -55,7 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.label({
-      "data-part": "label",
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isEditing),
@@ -69,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     inputProps: normalize.input({
-      "data-part": "input",
+      ...parts.input.attrs,
       "aria-label": translations.input,
       name: state.context.name,
       form: state.context.form,
@@ -78,8 +79,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       placeholder: placeholder?.edit,
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
-      readOnly: isReadonly,
-      "data-readonly": dataAttr(isReadonly),
+      readOnly: isReadOnly,
+      "data-readonly": dataAttr(isReadOnly),
       "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       defaultValue: state.context.value,
@@ -117,9 +118,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     previewProps: normalize.element({
       id: dom.getPreviewId(state.context),
-      "data-part": "preview",
+      ...parts.preview.attrs,
       "data-placeholder-shown": dataAttr(isValueEmpty),
-      "aria-readonly": ariaAttr(isReadonly),
+      "aria-readonly": ariaAttr(isReadOnly),
       "data-readonly": dataAttr(isDisabled),
       "data-disabled": dataAttr(isDisabled),
       "aria-disabled": ariaAttr(isDisabled),
@@ -150,7 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     editButtonProps: normalize.button({
-      "data-part": "edit-button",
+      ...parts.editButton.attrs,
       id: dom.getEditBtnId(state.context),
       "aria-label": translations.edit,
       type: "button",
@@ -163,11 +164,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlGroupProps: normalize.element({
       id: dom.getControlGroupId(state.context),
-      "data-part": "control-group",
+      ...parts.controlGroup.attrs,
     }),
 
     submitButtonProps: normalize.button({
-      "data-part": "submit-button",
+      ...parts.submitButton.attrs,
       id: dom.getSubmitBtnId(state.context),
       "aria-label": translations.submit,
       disabled: isDisabled,
@@ -179,7 +180,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     cancelButtonProps: normalize.button({
-      "data-part": "cancel-button",
+      ...parts.cancelButton.attrs,
       "aria-label": translations.cancel,
       id: dom.getCancelBtnId(state.context),
       type: "button",

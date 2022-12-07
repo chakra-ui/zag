@@ -37,7 +37,7 @@ type PublicContext = DirectionProperty &
     /**
      * If `true`, the radio group will be readonly
      */
-    readonly?: boolean
+    readOnly?: boolean
     /**
      * Function called once a radio is checked
      * @param value the value of the checked radio
@@ -95,7 +95,7 @@ export type ItemProps = {
   /**
    * If `true`, the radio will be readonly
    */
-  readonly?: boolean
+  readOnly?: boolean
   /**
    * If `true`, the radio is marked as invalid.
    */

@@ -18,7 +18,7 @@ export function machine(userContext: UserDefinedContext) {
         hovered: false,
         focused: false,
         disabled: false,
-        readonly: false,
+        readOnly: false,
         ...ctx,
       },
 
@@ -28,7 +28,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
+        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
       },
 
       activities: ["trackFormControlState"],
@@ -63,20 +63,20 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         checked: {
+          entry: ["invokeOnChange"],
           on: {
             TOGGLE: {
               target: "unchecked",
               guard: "isInteractive",
-              actions: ["invokeOnChange"],
             },
           },
         },
         unchecked: {
+          entry: ["invokeOnChange"],
           on: {
             TOGGLE: {
               target: "checked",
               guard: "isInteractive",
-              actions: ["invokeOnChange"],
             },
           },
         },

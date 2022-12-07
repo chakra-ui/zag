@@ -14,7 +14,7 @@ export default function Page() {
     slider.machine({
       id: createUniqueId(),
       name: "quantity",
-      values: [10, 60],
+      value: [10, 60],
     }),
     { context: controls.context as any },
   )
@@ -34,14 +34,14 @@ export default function Page() {
           <div {...api().rootProps}>
             <div>
               <label {...api().labelProps}>Quantity:</label>
-              <output {...api().outputProps}>{api().values.join(" - ")}</output>
+              <output {...api().outputProps}>{api().value.join(" - ")}</output>
             </div>
             <div class="control-area">
               <div {...api().controlProps}>
                 <div {...api().trackProps}>
                   <div {...api().rangeProps} />
                 </div>
-                <For each={api().values}>
+                <For each={api().value}>
                   {(_, index) => (
                     <div class="slider__thumb" {...api().getThumbProps(index())}>
                       <input {...api().getInputProps(index())} />

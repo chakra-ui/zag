@@ -2,7 +2,7 @@ import { Portal } from "solid-js/web"
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps } from "@zag-js/solid"
 import { StateVisualizer } from "../components/state-visualizer"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
@@ -19,7 +19,7 @@ export default function Page() {
             Open Dialog
           </button>
           <div style={{ "min-height": "1200px" }} />
-          {parentDialog().isOpen && (
+          <Show when={parentDialog().isOpen}>
             <Portal>
               <div class="dialog-backdrop" {...parentDialog().backdropProps} />
               <div {...parentDialog().containerProps} data-testid="container-1">
@@ -36,7 +36,7 @@ export default function Page() {
                 </div>
               </div>
             </Portal>
-          )}
+          </Show>
         </div>
       </main>
       <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />

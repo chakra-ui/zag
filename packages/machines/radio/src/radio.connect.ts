@@ -1,15 +1,16 @@
-import { NormalizeProps, PropTypes } from "@zag-js/types"
-import { State, Send, ItemProps, InputProps } from "./radio.types"
-import { dom } from "./radio.dom"
 import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./radio.anatomy"
+import { dom } from "./radio.dom"
+import { InputProps, ItemProps, Send, State } from "./radio.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isGroupDisabled = state.context.disabled
-  const isGroupReadonly = state.context.readonly
+  const isGroupReadOnly = state.context.readOnly
 
   function getRadioState<T extends ItemProps>(props: T) {
     const itemState = {
-      isReadOnly: props.readonly || isGroupReadonly,
+      isReadOnly: props.readOnly || isGroupReadOnly,
       isInvalid: props.invalid,
       isDisabled: props.disabled || isGroupDisabled,
       isChecked: state.context.value === props.value,
@@ -61,7 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      "data-part": "root",
+      ...parts.root.attrs,
       role: "radiogroup",
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
@@ -70,7 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
-      "data-part": "label",
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       onClick: focus,
     }),
@@ -79,7 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const rootState = getRadioState(props)
 
       return normalize.label({
-        "data-part": "item",
+        ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
         htmlFor: dom.getItemInputId(state.context, props.value),
         ...getRadioDataSet(props),
@@ -108,7 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemLabelProps(props: ItemProps) {
       return normalize.element({
-        "data-part": "item-label",
+        ...parts.itemLabel.attrs,
         id: dom.getItemLabelId(state.context, props.value),
         ...getRadioDataSet(props),
       })
@@ -118,7 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const controlState = getRadioState(props)
 
       return normalize.element({
-        "data-part": "item-control",
+        ...parts.itemControl.attrs,
         id: dom.getItemControlId(state.context, props.value),
         "data-active": dataAttr(controlState.isActive),
         "aria-hidden": true,
@@ -133,7 +134,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const trulyDisabled = inputState.isDisabled && !props.focusable
 
       return normalize.input({
-        "data-part": "item-input",
+        ...parts.itemInput.attrs,
         "data-ownedby": dom.getRootId(state.context),
         id: dom.getItemInputId(state.context, props.value),
 

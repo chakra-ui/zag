@@ -2,14 +2,15 @@ import {
   dataAttr,
   EventKeyMap,
   getEventKey,
+  getEventPoint,
   getEventStep,
   getNativeEvent,
-  getEventPoint,
   isLeftClick,
   isModifiedEvent,
 } from "@zag-js/dom-utils"
 import { percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./range-slider.anatomy"
 import { dom } from "./range-slider.dom"
 import type { Send, State } from "./range-slider.types"
 import { utils } from "./range-slider.utils"
@@ -17,7 +18,7 @@ import { utils } from "./range-slider.utils"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
-  const values = state.context.values
+  const sliderValue = state.context.value
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
@@ -27,20 +28,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInteractive = state.context.isInteractive
 
   return {
-    values: state.context.values,
+    value: state.context.value,
     isDragging,
     isFocused,
-    setValue(values: number[]) {
-      send({ type: "SET_VALUE", value: values })
+    setValue(value: number[]) {
+      send({ type: "SET_VALUE", value: value })
     },
     getThumbValue(index: number) {
-      return values[index]
+      return sliderValue[index]
     },
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
     getThumbPercent(index: number) {
-      return valueToPercent(values[index], state.context)
+      return valueToPercent(sliderValue[index], state.context)
     },
     setThumbPercent(index: number, percent: number) {
       const value = percentToValue(percent, state.context)
@@ -67,7 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     labelProps: normalize.label({
-      "data-part": "label",
+      ...parts.label.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
@@ -84,7 +85,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     rootProps: normalize.element({
-      "data-part": "root",
+      ...parts.root.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
@@ -94,16 +95,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     outputProps: normalize.output({
-      "data-part": "output",
+      ...parts.output.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
-      htmlFor: values.map((_v, i) => dom.getInputId(state.context, i)).join(" "),
+      htmlFor: sliderValue.map((_v, i) => dom.getInputId(state.context, i)).join(" "),
       "aria-live": "off",
     }),
 
     trackProps: normalize.element({
-      "data-part": "track",
+      ...parts.track.attrs,
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -113,14 +114,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getThumbProps(index: number) {
-      const value = values[index]
+      const value = sliderValue[index]
       const range = toRanges(state.context)[index]
       const ariaValueText = state.context.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize.element({
-        "data-part": "thumb",
+        ...parts.thumb.attrs,
         "data-index": index,
         id: dom.getThumbId(state.context, index),
         "data-disabled": dataAttr(isDisabled),
@@ -133,7 +134,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-orientation": state.context.orientation,
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
-        "aria-valuenow": values[index],
+        "aria-valuenow": sliderValue[index],
         "aria-valuetext": ariaValueText,
         role: "slider",
         tabIndex: isDisabled ? undefined : 0,
@@ -197,19 +198,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getInputProps(index: number) {
       return normalize.input({
-        "data-part": "input",
+        ...parts.input.attrs,
         name: `${state.context.name}[${index}]`,
         form: state.context.form,
         type: "text",
         hidden: true,
-        defaultValue: state.context.values[index],
+        defaultValue: state.context.value[index],
         id: dom.getInputId(state.context, index),
       })
     },
 
     rangeProps: normalize.element({
       id: dom.getRangeId(state.context),
-      "data-part": "range",
+      ...parts.range.attrs,
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(isDisabled),
@@ -218,7 +219,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     controlProps: normalize.element({
-      "data-part": "control",
+      ...parts.control.attrs,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -239,7 +240,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     markerGroupProps: normalize.element({
-      "data-part": "marker-group",
+      ...parts.markerGroup.attrs,
       role: "presentation",
       "aria-hidden": true,
       "data-orientation": state.context.orientation,
@@ -251,16 +252,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const style = dom.getMarkerStyle(state.context, percent)
       let markerState: "over-value" | "under-value" | "at-value"
 
-      if (Math.max(...state.context.values) < value) {
+      if (Math.max(...state.context.value) < value) {
         markerState = "over-value"
-      } else if (Math.min(...state.context.values) > value) {
+      } else if (Math.min(...state.context.value) > value) {
         markerState = "under-value"
       } else {
         markerState = "at-value"
       }
 
       return normalize.element({
-        "data-part": "marker",
+        ...parts.marker.attrs,
         id: dom.getMarkerId(state.context, value),
         role: "presentation",
         "data-value": value,

@@ -66,7 +66,7 @@ test.describe("rating / properties", () => {
   })
 
   test("should not be selectable when is readonly", async ({ page }) => {
-    await controls(page).bool("readonly")
+    await controls(page).bool("readOnly")
     const items = page.locator(item)
     const isAllItemsReadonly = await items.evaluateAll((items) => items.every((item) => item.dataset.readonly === ""))
     expect(isAllItemsReadonly).toBeTruthy()

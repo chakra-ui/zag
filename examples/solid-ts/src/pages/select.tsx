@@ -1,6 +1,7 @@
 import * as select from "@zag-js/select"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
+import { Portal } from "solid-js/web"
 import { selectControls, selectData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -56,18 +57,20 @@ export default function Page() {
         </form>
 
         {/* UI select */}
-        <div {...api().positionerProps}>
-          <ul {...api().menuProps}>
-            <For each={selectData}>
-              {({ label, value }) => (
-                <li {...api().getOptionProps({ label, value })}>
-                  <span>{label}</span>
-                  {value === api().selectedOption?.value && "✓"}
-                </li>
-              )}
-            </For>
-          </ul>
-        </div>
+        <Portal>
+          <div {...api().positionerProps}>
+            <ul {...api().menuProps}>
+              <For each={selectData}>
+                {({ label, value }) => (
+                  <li {...api().getOptionProps({ label, value })}>
+                    <span>{label}</span>
+                    {value === api().selectedOption?.value && "✓"}
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+        </Portal>
       </main>
 
       <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />

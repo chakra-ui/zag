@@ -35,7 +35,11 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the select is read-only
      */
-    readonly?: boolean
+    readOnly?: boolean
+    /**
+     * Whether the select should close after an option is selected
+     */
+    closeOnSelect?: boolean
     /**
      * Whether to select the highlighted option when the user presses Tab,
      * and the menu is open.

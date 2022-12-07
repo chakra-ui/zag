@@ -53,8 +53,8 @@ export const dom = defineDomHelpers({
 
   getValueFromPoint,
   dispatchChangeEvent(ctx: Ctx) {
-    const valuesArray = Array.from(ctx.values)
-    valuesArray.forEach((value, index) => {
+    const valueArray = Array.from(ctx.value)
+    valueArray.forEach((value, index) => {
       const input = dom.getInputEl(ctx, index)
       if (!input) return
       dispatchInputValueEvent(input, value)
@@ -92,8 +92,8 @@ export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
 
   const isThumbStacked = new Set(axisPoints).size !== points.length
 
-  if (isThumbStacked && point > ctx.values[index]) {
-    index = clamp(index + 1, { min: 0, max: ctx.values.length - 1 })
+  if (isThumbStacked && point > ctx.value[index]) {
+    index = clamp(index + 1, { min: 0, max: ctx.value.length - 1 })
   }
 
   return index

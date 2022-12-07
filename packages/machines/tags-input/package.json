@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tags-input",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "Core logic for the tags-input widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,6 +29,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",

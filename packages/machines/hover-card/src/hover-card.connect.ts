@@ -1,8 +1,9 @@
 import { dataAttr } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { State, Send } from "./hover-card.types"
+import { parts } from "./hover-card.anatomy"
 import { dom } from "./hover-card.dom"
+import { Send, State } from "./hover-card.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.hasTag("open")
@@ -17,17 +18,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
-      "data-part": "arrow",
+      ...parts.arrow.attrs,
       style: popperStyles.arrow,
     }),
 
     innerArrowProps: normalize.element({
-      "data-part": "arrow-inner",
+      ...parts.arrowInner.attrs,
       style: popperStyles.innerArrow,
     }),
 
     triggerProps: normalize.element({
-      "data-part": "trigger",
+      ...parts.trigger.attrs,
       "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
       "data-expanded": dataAttr(isOpen),
@@ -53,12 +54,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
-      "data-part": "positioner",
+      ...parts.positioner.attrs,
       style: popperStyles.floating,
     }),
 
     contentProps: normalize.element({
-      "data-part": "content",
+      ...parts.content.attrs,
       id: dom.getContentId(state.context),
       hidden: !isOpen,
       "data-expanded": dataAttr(isOpen),

@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@zag-js/select",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Core logic for the select widget implemented as a state machine",
   "keywords": [
     "js",
@@ -39,6 +39,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",

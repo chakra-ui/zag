@@ -4,6 +4,7 @@ import { groupConnect, toaster } from "./toast-group.connect"
 import { groupMachine } from "./toast-group.machine"
 import { createToastMachine as createMachine } from "./toast.machine"
 
+export { anatomy } from "./toast.anatomy"
 export { connect } from "./toast.connect"
 export type {
   GroupMachineContext,

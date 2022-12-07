@@ -10,6 +10,7 @@ import {
 } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast } from "@zag-js/utils"
+import { parts } from "./rating.anatomy"
 import { dom } from "./rating.dom"
 import type { Send, State } from "./rating.types"
 
@@ -43,12 +44,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       dir: state.context.dir,
-      "data-part": "root",
+      ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
     inputProps: normalize.input({
-      "data-part": "input",
+      ...parts.input.attrs,
       name: state.context.name,
       form: state.context.form,
       type: "text",
@@ -58,18 +59,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     labelProps: normalize.element({
-      "data-part": "label",
+      ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
     }),
 
     itemGroupProps: normalize.element({
       id: dom.getItemGroupId(state.context),
-      "data-part": "item-group",
+      ...parts.itemGroup.attrs,
       role: "radiogroup",
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
-      tabIndex: state.context.readonly ? 0 : -1,
+      tabIndex: state.context.readOnly ? 0 : -1,
       "data-disabled": dataAttr(isDisabled),
       onPointerMove(event) {
         if (!isInteractive || event.pointerType === "touch") return
@@ -86,7 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
-        "data-part": "item",
+        ...parts.item.attrs,
         id: dom.getItemId(state.context, index.toString()),
         role: "radio",
         tabIndex: isDisabled ? undefined : isChecked ? 0 : -1,
@@ -94,8 +95,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": valueText,
         "aria-disabled": isDisabled,
         "data-disabled": dataAttr(isDisabled),
-        "aria-readonly": ariaAttr(state.context.readonly),
-        "data-readonly": dataAttr(state.context.readonly),
+        "aria-readonly": ariaAttr(state.context.readOnly),
+        "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
         "aria-posinset": index,

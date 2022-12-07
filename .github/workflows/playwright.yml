@@ -80,21 +80,3 @@ jobs:
             e2e/report
             e2e/junit.xml
           retention-days: 15
-
-  report:
-    if: always()
-    name: Get reports
-    needs: [e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        id: download
-        uses: actions/download-artifact@v3
-
-      - name: Generate test summary
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          check_name: Playwright Tests
-          files: "**/*.xml"
-          commit: ${{ github.event.workflow_run.head_sha }}

@@ -1,5 +1,13 @@
 # @zag-js/number-utils
 
+## 0.2.1
+
+### Patch Changes
+
+- [#426](https://github.com/chakra-ui/zag/pull/426)
+  [`dc848b83`](https://github.com/chakra-ui/zag/commit/dc848b83c20767ed87e38490515289a72f4da03b) Thanks
+  [@anubra266](https://github.com/anubra266)! - Change `values` to `value` in utils context
+
 ## 0.2.0
 
 ### Minor Changes

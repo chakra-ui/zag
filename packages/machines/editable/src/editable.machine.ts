@@ -37,7 +37,7 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         submitOnEnter: (ctx) => ["both", "enter"].includes(ctx.submitMode),
         submitOnBlur: (ctx) => ["both", "blur"].includes(ctx.submitMode),
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readonly),
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         isValueEmpty: (ctx) => ctx.value === "",
         isPreviewFocusable: (ctx) => ctx.activationMode === "focus",
       },
