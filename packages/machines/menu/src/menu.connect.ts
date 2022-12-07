@@ -336,6 +336,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       )
     },
 
+    // TODO rename groupLabelProps
     getLabelProps(options: LabelProps) {
       return normalize.element({
         id: dom.getLabelId(state.context, options.htmlFor),

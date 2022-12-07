@@ -6,9 +6,9 @@ export const anatomy = createAnatomy("tagsInput").parts(
   "control",
   "input",
   "hiddenInput",
+  "clearButton", // TODO rename clearTrigger
   "tag",
   "tagInput",
-  "deleteButton",
-  "clearButton",
+  "deleteButton", // TODO rename tagDeleteTrigger
 )
 export const parts = anatomy.build()

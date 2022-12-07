@@ -3,7 +3,7 @@ import { createAnatomy } from "@zag-js/anatomy"
 export const anatomy = createAnatomy("tooltip").parts(
   "trigger",
   "arrow",
-  "arrowInner",
+  "arrowInner", // TODO rename innerArrow
   "positioner",
   "content",
   "label",

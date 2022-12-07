@@ -6,7 +6,7 @@ export const anatomy = createAnatomy("rangeSlider").parts(
   "output",
   "track",
   "thumb",
-  "input",
+  "input", // TODO rename to hiddenInput
   "range",
   "control",
   "markerGroup",
