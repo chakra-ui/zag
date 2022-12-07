@@ -7,6 +7,6 @@ export const anatomy = createAnatomy("dialog").parts(
   "content",
   "title",
   "description",
-  "closeButton", // close trigger
+  "closeButton", // TODO rename to closeTrigger
 )
 export const parts = anatomy.build()
