@@ -9,6 +9,7 @@ const options = {
   last: "[role=option]:last-of-type",
   get: (id: string) => `[role=option][data-value="${id}"]`,
 }
+const previousTabbable = ".previous-tabbable"
 const nextTabbable = ".next-tabbable"
 
 const expectToBeSelected = async (el: Locator) => {
@@ -186,6 +187,14 @@ test.describe("select / open / blur", () => {
     await expect(page.locator(menu)).not.toBeVisible()
     await expectToBeSelected(afganistan)
     await expect(page.locator(nextTabbable)).toBeFocused()
+  })
+
+  test("should focus previous element on shift tab", async ({ page }) => {
+    await page.click(trigger)
+    await page.keyboard.down("Shift")
+    await page.keyboard.press("Tab")
+    await page.keyboard.up("Shift")
+    await expect(page.locator(previousTabbable)).toBeFocused()
   })
 })
 

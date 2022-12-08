@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { contains, findByTypeahead, getNextTabbable, observeAttributes, raf } from "@zag-js/dom-utils"
+import { contains, findByTypeahead, observeAttributes, raf } from "@zag-js/dom-utils"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
@@ -216,13 +216,13 @@ export function machine(userContext: UserDefinedContext) {
                   "invokeOnClose",
                   "invokeOnSelect",
                   "clearHighlightedOption",
-                  "focusNextElement",
+                  "focusTriggerSync",
                 ],
                 guard: "selectOnTab",
               },
               {
                 target: "idle",
-                actions: ["invokeOnClose", "clearHighlightedOption", "focusNextElement"],
+                actions: ["invokeOnClose", "clearHighlightedOption", "focusTriggerSync"],
               },
             ],
           },
@@ -316,9 +316,8 @@ export function machine(userContext: UserDefinedContext) {
             dom.getTriggerElement(ctx).focus({ preventScroll: true })
           })
         },
-        focusNextElement(ctx) {
-          const trigger = dom.getTriggerElement(ctx)
-          getNextTabbable(trigger).focus({ preventScroll: true })
+        focusTriggerSync(ctx) {
+          dom.getTriggerElement(ctx).focus({ preventScroll: true })
         },
         selectHighlightedOption(ctx, evt) {
           const id = evt.id ?? ctx.highlightedId

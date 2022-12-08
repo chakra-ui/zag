@@ -80,12 +80,6 @@ export function getTabbables(container: HTMLElement | null, includeContainer?: I
   return tabbableElements
 }
 
-export function getNextTabbable(element: HTMLElement): HTMLElement {
-  const tabbableElements = getTabbables(element.ownerDocument.body)
-  const indexOfElement = tabbableElements.indexOf(element)
-  return tabbableElements[indexOfElement + 1]
-}
-
 /**
  * Whether this element is tabbable
  */

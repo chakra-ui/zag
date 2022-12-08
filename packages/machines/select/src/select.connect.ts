@@ -292,11 +292,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
         }
 
-        const exec = keyMap[getEventKey(event)]
+        const eventKey = getEventKey(event)
+        const exec = keyMap[eventKey]
 
         if (exec) {
           exec(event)
-          event.preventDefault()
+          if (eventKey !== "Tab") {
+            event.preventDefault()
+          }
           return
         }
 

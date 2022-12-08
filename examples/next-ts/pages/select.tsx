@@ -51,6 +51,8 @@ export default function Page() {
   return (
     <>
       <main className="select">
+        <button className="previous-tabbable">previous tabbable</button>
+
         {/* control */}
         <div className="control">
           <label {...api.labelProps}>Label</label>
