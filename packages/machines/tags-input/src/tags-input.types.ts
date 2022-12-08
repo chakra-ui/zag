@@ -3,8 +3,8 @@ import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
-  clearButtonLabel: string
-  deleteTagButtonLabel(value: string): string
+  clearTriggerLabel: string
+  deleteTagTriggerLabel(value: string): string
   tagSelected(value: string): string
   tagAdded(value: string): string
   tagsPasted(values: string[]): string
@@ -28,7 +28,7 @@ type ElementIds = Partial<{
   label: string
   control: string
   tag(opts: TagProps): string
-  tagDeleteBtn(opts: TagProps): string
+  tagDeleteTrigger(opts: TagProps): string
   tagInput(opts: TagProps): string
 }>
 

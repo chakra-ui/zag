@@ -5,13 +5,13 @@ import type { MachineContext as Ctx, TagProps } from "./tags-input.types"
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.id}:input`,
-  getClearButtonId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.id}:clear-btn`,
+  getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.id}:clear-btn`,
   getHiddenInputId: (ctx: Ctx) => `tags-input:${ctx.id}:hidden-input`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `tags-input:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `tags-input:${ctx.id}:control`,
   getTagId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tag?.(opt) ?? `tags-input:${ctx.id}:tag:${opt.value}:${opt.index}`,
-  getTagDeleteBtnId: (ctx: Ctx, opt: TagProps) =>
-    ctx.ids?.tagDeleteBtn?.(opt) ?? `${dom.getTagId(ctx, opt)}:delete-btn`,
+  getTagDeleteTriggerId: (ctx: Ctx, opt: TagProps) =>
+    ctx.ids?.tagDeleteTrigger?.(opt) ?? `${dom.getTagId(ctx, opt)}:delete-btn`,
   getTagInputId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tagInput?.(opt) ?? `${dom.getTagId(ctx, opt)}:input`,
   getEditInputId: (ctx: Ctx) => `${ctx.editedId}:input`,
 

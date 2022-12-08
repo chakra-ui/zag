@@ -35,8 +35,8 @@ export function machine(userContext: UserDefinedContext) {
         delimiter: ",",
         ...ctx,
         translations: {
-          clearButtonLabel: "Clear all tags",
-          deleteTagButtonLabel: (value) => `Delete tag ${value}`,
+          clearTriggerLabel: "Clear all tags",
+          deleteTagTriggerLabel: (value) => `Delete tag ${value}`,
           tagAdded: (value) => `Added tag ${value}`,
           tagsPasted: (values) => `Pasted ${values.length} tags`,
           tagEdited: (value) => `Editing tag ${value}. Press enter to save or escape to cancel.`,
