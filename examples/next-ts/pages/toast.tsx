@@ -29,7 +29,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
       <p {...api.titleProps}>{api.title}</p>
       <p {...api.descriptionProps}>{api.description}</p>
       <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
-      <button onClick={api.dismiss}>Close</button>
+      <button {...api.closeTriggerProps}>Close</button>
     </pre>
   )
 }

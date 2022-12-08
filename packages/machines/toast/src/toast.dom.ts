@@ -3,10 +3,10 @@ import type { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement 
 
 export const dom = defineDomHelpers({
   getGroupId: (placement: Placement) => `toast-group:${placement}`,
-  getContainerId: (ctx: Ctx) => `toast:${ctx.id}`,
-  getTitleId: (ctx: Ctx) => `toast-title:${ctx.id}`,
-  getDescriptionId: (ctx: Ctx) => `toast-description:${ctx.id}`,
-  getCloseButtonId: (ctx: Ctx) => `toast-close-button:${ctx.id}`,
+  getRootId: (ctx: Ctx) => `toast:${ctx.id}`,
+  getTitleId: (ctx: Ctx) => `toast:${ctx.id}:title`,
+  getDescriptionId: (ctx: Ctx) => `toast:${ctx.id}:description`,
+  getCloseTriggerId: (ctx: Ctx) => `toast${ctx.id}:close`,
 
   getPortalId: (ctx: GroupCtx) => `toast-portal:${ctx.id}`,
   // using `getDoc` instead of `getRootNode` since the portal is not a child of the root node

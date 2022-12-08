@@ -37,9 +37,8 @@ const ToastItem = defineComponent({
         <pre {...api.rootProps}>
           <div {...progressbarProps.value} />
           <p {...api.titleProps}>{api.title}</p>
-          {/* @ts-ignore */}
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
-          <button onClick={api.dismiss}>Close</button>
+          <button {...api.closeTriggerProps}>Close</button>
         </pre>
       )
     }
