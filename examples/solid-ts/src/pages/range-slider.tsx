@@ -44,7 +44,7 @@ export default function Page() {
                 <For each={api().value}>
                   {(_, index) => (
                     <div class="slider__thumb" {...api().getThumbProps(index())}>
-                      <input {...api().getInputProps(index())} />
+                      <input {...api().getHiddenInputProps(index())} />
                     </div>
                   )}
                 </For>
