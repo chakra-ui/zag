@@ -31,7 +31,7 @@ export default defineComponent({
                       <p {...parentDialog.descriptionProps}>
                         Make changes to your profile here. Click save when you are done.
                       </p>
-                      <button {...parentDialog.closeButtonProps} data-testid="close-1">
+                      <button {...parentDialog.closeTriggerProps} data-testid="close-1">
                         X
                       </button>
                       <input type="text" placeholder="Enter name..." data-testid="input-1" />

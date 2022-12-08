@@ -6,7 +6,7 @@ type ElementIds = Partial<{
   container: string
   backdrop: string
   content: string
-  closeBtn: string
+  closeTrigger: string
   title: string
   description: string
 }>

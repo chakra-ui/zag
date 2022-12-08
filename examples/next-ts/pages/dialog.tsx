@@ -42,7 +42,7 @@ export default function Page() {
                   <p {...parentDialog.descriptionProps}>
                     Make changes to your profile here. Click save when you are done.
                   </p>
-                  <button {...parentDialog.closeButtonProps} data-testid="close-1">
+                  <button {...parentDialog.closeTriggerProps} data-testid="close-1">
                     X
                   </button>
                   <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
@@ -58,7 +58,7 @@ export default function Page() {
                       <div data-testid="container-2" {...childDialog.containerProps}>
                         <div {...childDialog.contentProps}>
                           <h2 {...childDialog.titleProps}>Nested</h2>
-                          <button {...childDialog.closeButtonProps} data-testid="close-2">
+                          <button {...childDialog.closeTriggerProps} data-testid="close-2">
                             X
                           </button>
                           <button onClick={() => parentDialog.close()} data-testid="special-close">
