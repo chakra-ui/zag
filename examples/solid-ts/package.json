@@ -45,7 +45,7 @@
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/pressable": "workspace:*",
-    "@zag-js/radio": "workspace:*",
+    "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
     "@zag-js/rating": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",

@@ -4,7 +4,7 @@ import type { MachineContext as Ctx } from "./radio-group.types"
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `radio:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `radio:${ctx.id}:label`,
-  getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `radio:${ctx.id}:item:${value}`,
+  getRadioId: (ctx: Ctx, value: string) => ctx.ids?.radio?.(value) ?? `radio:${ctx.id}:item:${value}`,
   getItemInputId: (ctx: Ctx, value: string) => ctx.ids?.itemInput?.(value) ?? `radio:${ctx.id}:item:input:${value}`,
   getItemControlId: (ctx: Ctx, value: string) =>
     ctx.ids?.itemControl?.(value) ?? `radio:${ctx.id}:item:control:${value}`,

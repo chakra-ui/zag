@@ -1,4 +1,4 @@
-import * as radio from "@zag-js/radio"
+import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { radioControls, radioData } from "@zag-js/shared"
@@ -23,7 +23,7 @@ export default function Page() {
             <div {...api().rootProps}>
               <h3 {...api().labelProps}>Fruits</h3>
               {radioData.map((opt) => (
-                <label data-testid={`item-${opt.id}`} {...api().getItemProps({ value: opt.id })}>
+                <label data-testid={`item-${opt.id}`} {...api().getRadioProps({ value: opt.id })}>
                   <span data-testid={`label-${opt.id}`} {...api().getItemLabelProps({ value: opt.id })}>
                     {opt.label}
                   </span>
