@@ -4,21 +4,21 @@ import type { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.id}`,
-  getTriggerGroupId: (ctx: Ctx) => ctx.ids?.triggerGroup ?? `tabs:${ctx.id}:trigger-group`,
+  getTablistId: (ctx: Ctx) => ctx.ids?.tablist ?? `tabs:${ctx.id}:list`,
   getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,
   getContentGroupId: (ctx: Ctx) => ctx.ids?.contentGroup ?? `tabs:${ctx.id}:content-group`,
   getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`,
   getIndicatorId: (ctx: Ctx) => `tabs:${ctx.id}:indicator`,
 
-  getTriggerGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerGroupId(ctx)),
+  getTablistEl: (ctx: Ctx) => dom.getById(ctx, dom.getTablistId(ctx)),
   getContentEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getContentId(ctx, id)),
   getTriggerEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getTriggerId(ctx, id)),
   getIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx)),
 
   getElements: (ctx: Ctx) => {
-    const ownerId = CSS.escape(dom.getTriggerGroupId(ctx))
+    const ownerId = CSS.escape(dom.getTablistId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
-    return queryAll(dom.getTriggerGroupEl(ctx), selector)
+    return queryAll(dom.getTablistEl(ctx), selector)
   },
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),

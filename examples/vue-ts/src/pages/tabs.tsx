@@ -25,7 +25,7 @@ export default defineComponent({
           <main class="tabs">
             <div {...api.rootProps}>
               <div {...api.indicatorProps} />
-              <div {...api.triggerGroupProps}>
+              <div {...api.tablistProps}>
                 {tabsData.map((data) => (
                   <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                     {data.label}
