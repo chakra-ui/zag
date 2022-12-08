@@ -167,7 +167,7 @@ test.describe("select / open / blur", () => {
     await expect(page.locator(menu)).not.toBeVisible()
   })
 
-  test.only("should close on press tab - no select", async ({ page }) => {
+  test("should close on press tab - no select", async ({ page }) => {
     await page.click(trigger)
     await repeat(() => page.keyboard.press("ArrowDown"), 3)
     await page.keyboard.press("Tab")
@@ -185,6 +185,7 @@ test.describe("select / open / blur", () => {
     await page.keyboard.press("Tab")
     await expect(page.locator(menu)).not.toBeVisible()
     await expectToBeSelected(afganistan)
+    await expect(page.locator(nextTabbable)).toBeFocused()
   })
 })
 
