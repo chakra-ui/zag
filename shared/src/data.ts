@@ -117,3 +117,5 @@ export const radioData = [
   { id: "mango", label: "Mangoes" },
   { id: "grape", label: "Grapes" },
 ]
+
+export const datePickerData = {}
