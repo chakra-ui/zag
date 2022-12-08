@@ -6,9 +6,9 @@ export const dom = defineDomHelpers({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `radio:${ctx.id}:label`,
   getRadioId: (ctx: Ctx, value: string) => ctx.ids?.radio?.(value) ?? `radio:${ctx.id}:item:${value}`,
   getItemInputId: (ctx: Ctx, value: string) => ctx.ids?.itemInput?.(value) ?? `radio:${ctx.id}:item:input:${value}`,
-  getItemControlId: (ctx: Ctx, value: string) =>
-    ctx.ids?.itemControl?.(value) ?? `radio:${ctx.id}:item:control:${value}`,
-  getItemLabelId: (ctx: Ctx, value: string) => ctx.ids?.itemLabel?.(value) ?? `radio:${ctx.id}:item:label:${value}`,
+  getRadioControlId: (ctx: Ctx, value: string) =>
+    ctx.ids?.radioControl?.(value) ?? `radio:${ctx.id}:item:control:${value}`,
+  getRadioLabelId: (ctx: Ctx, value: string) => ctx.ids?.radioLabel?.(value) ?? `radio:${ctx.id}:item:label:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getItemInputEl: (ctx: Ctx, value: string) => dom.getById<HTMLInputElement>(ctx, dom.getItemInputId(ctx, value)),
