@@ -10,7 +10,7 @@ type ElementIds = Partial<{
   label: string
   hiddenInput: string
   controls: string
-  item(id: string): string
+  rating(id: string): string
 }>
 
 type PublicContext = DirectionProperty &

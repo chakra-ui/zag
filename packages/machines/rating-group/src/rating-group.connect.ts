@@ -82,13 +82,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getItemProps({ index }: { index: number }) {
+    getRatingProps({ index }: { index: number }) {
       const { isHalf, isHighlighted, isChecked } = api.getRatingState(index)
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
-        ...parts.item.attrs,
-        id: dom.getItemId(state.context, index.toString()),
+        ...parts.rating.attrs,
+        id: dom.getRatingId(state.context, index.toString()),
         role: "radio",
         tabIndex: isDisabled ? undefined : isChecked ? 0 : -1,
         "aria-roledescription": "rating",

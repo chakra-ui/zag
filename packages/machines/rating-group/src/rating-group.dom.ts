@@ -6,8 +6,8 @@ export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `rating:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `rating:${ctx.id}:label`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `rating:${ctx.id}:hiddenInput`,
-  getControlsId: (ctx: Ctx) => ctx.ids?.controls ?? `rating:${ctx.id}:item-group`,
-  getItemId: (ctx: Ctx, id: string) => ctx.ids?.item?.(id) ?? `rating:${ctx.id}:star:${id}`,
+  getControlsId: (ctx: Ctx) => ctx.ids?.controls ?? `rating:${ctx.id}:controls`,
+  getRatingId: (ctx: Ctx, id: string) => ctx.ids?.rating?.(id) ?? `rating:${ctx.id}:star:${id}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getControlsEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlsId(ctx)),

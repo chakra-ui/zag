@@ -61,7 +61,7 @@ export default function Page() {
               <For each={api().sizeArray}>
                 {(index) => {
                   const state = createMemo(() => api().getRatingState(index))
-                  return <span {...api().getItemProps({ index })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
+                  return <span {...api().getRatingProps({ index })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
                 }}
               </For>
             </div>

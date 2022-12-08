@@ -70,7 +70,7 @@ export default defineComponent({
                 {api.sizeArray.map((index) => {
                   const state = api.getRatingState(index)
                   return (
-                    <span key={index} {...api.getItemProps({ index })}>
+                    <span key={index} {...api.getRatingProps({ index })}>
                       {state.isHalf ? <HalfStar /> : <Star />}
                     </span>
                   )
