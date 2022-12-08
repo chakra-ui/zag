@@ -1,23 +1,19 @@
 {
-  "type": "module",
-  "name": "@zag-js/date-picker",
+  "name": "@zag-js/date-utils",
   "version": "0.0.0",
-  "description": "Core logic for the date-picker widget implemented as a state machine",
+  "description": "Date utilities for js projects",
   "keywords": [
     "js",
-    "machine",
-    "xstate",
-    "statechart",
-    "component",
-    "chakra-ui",
-    "date-picker"
+    "utils",
+    "date-utils"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/date-picker",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/date-utils",
   "sideEffects": false,
   "files": [
     "dist/**/*"
@@ -39,13 +35,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "workspace:*",
-    "@zag-js/types": "workspace:*",
-    "@zag-js/date-utils": "workspace:*",
-    "proxy-memoize": "1.2.0"
-  },
-  "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*"
+    "@internationalized/date": "3.0.1"
   }
 }

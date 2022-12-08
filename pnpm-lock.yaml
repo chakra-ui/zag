@@ -96,6 +96,7 @@ importers:
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-picker': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -152,6 +153,7 @@ importers:
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
       '@zag-js/date-picker': link:../../packages/machines/date-picker
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -216,6 +218,7 @@ importers:
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-picker': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -269,6 +272,7 @@ importers:
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
       '@zag-js/date-picker': link:../../packages/machines/date-picker
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -334,6 +338,7 @@ importers:
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-picker': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -391,6 +396,7 @@ importers:
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
       '@zag-js/date-picker': link:../../packages/machines/date-picker
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -585,12 +591,16 @@ importers:
   packages/machines/date-picker:
     specifiers:
       '@zag-js/core': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      proxy-memoize: 1.2.0
     dependencies:
       '@zag-js/core': link:../../core
+      '@zag-js/date-utils': link:../../utilities/date-utils
       '@zag-js/types': link:../../types
+      proxy-memoize: 1.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
@@ -994,6 +1004,12 @@ importers:
 
   packages/utilities/core:
     specifiers: {}
+
+  packages/utilities/date-utils:
+    specifiers:
+      '@internationalized/date': 3.0.1
+    dependencies:
+      '@internationalized/date': 3.0.1
 
   packages/utilities/dismissable:
     specifiers:
@@ -2022,6 +2038,12 @@ packages:
 
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
+
+  /@internationalized/date/3.0.1:
+    resolution: {integrity: sha512-E/3lASs4mAeJ2Z2ye6ab7eUD0bPUfTeNVTAv6IS+ne9UtMu9Uepb9A1U2Ae0hDr6WAlBuvUtrakaxEdYB9TV6Q==}
+    dependencies:
+      '@babel/runtime': 7.20.6
+    dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -7867,6 +7889,12 @@ packages:
 
   /proxy-compare/2.3.0:
     resolution: {integrity: sha512-c3L2CcAi7f7pvlD0D7xsF+2CQIW8C3HaYx2Pfgq8eA4HAl3GAH6/dVYsyBbYF/0XJs2ziGLrzmz5fmzPm6A0pQ==}
+    dev: false
+
+  /proxy-memoize/1.2.0:
+    resolution: {integrity: sha512-0heYEZb4yMfhdduz8T+BPJOCKGukc81WRJaYF0k6ZsJz/NkPLhGFqe6OLdiZURr5kC1byps5wdqLN6DC2tYAFw==}
+    dependencies:
+      proxy-compare: 2.3.0
     dev: false
 
   /pseudomap/1.0.2:
