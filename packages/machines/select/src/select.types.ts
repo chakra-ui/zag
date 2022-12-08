@@ -4,7 +4,7 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
-  menu: string
+  content: string
   trigger: string
   label: string
   option(id: string | number): string
