@@ -11,7 +11,7 @@
 "@zag-js/pin-input": patch
 "@zag-js/popover": patch
 "@zag-js/pressable": patch
-"@zag-js/radio": patch
+"@zag-js/radio-group": patch
 "@zag-js/range-slider": patch
 "@zag-js/rating": patch
 "@zag-js/select": patch
