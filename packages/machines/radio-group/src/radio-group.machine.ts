@@ -86,7 +86,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         dispatchChangeEvent(ctx, evt) {
           if (!evt.manual) return
-          const el = dom.getItemInputEl(ctx, evt.value)
+          const el = dom.getRadioInputEl(ctx, evt.value)
           if (!el) return
           dispatchInputCheckedEvent(el, !!evt.value)
         },
