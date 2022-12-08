@@ -22,13 +22,13 @@ export default function Page() {
           <Show when={parentDialog().isOpen}>
             <Portal>
               <div class="dialog-backdrop" {...parentDialog().backdropProps} />
-              <div {...parentDialog().underlayProps} data-testid="underlay-1">
+              <div {...parentDialog().containerProps} data-testid="container-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>
                   <p {...parentDialog().descriptionProps}>
                     Make changes to your profile here. Click save when you are done.
                   </p>
-                  <button {...parentDialog().closeButtonProps} data-testid="close-1">
+                  <button {...parentDialog().closeTriggerProps} data-testid="close-1">
                     X
                   </button>
                   <input type="text" placeholder="Enter name..." data-testid="input-1" />

@@ -28,13 +28,13 @@ export default function Page() {
           <Show when={parentDialog().isOpen}>
             <Portal>
               <div class="dialog-backdrop" {...parentDialog().backdropProps} />
-              <div {...parentDialog().underlayProps} data-testid="underlay-1">
+              <div {...parentDialog().containerProps} data-testid="container-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>
                   <p {...parentDialog().descriptionProps}>
                     Make changes to your profile here. Click save when you are done.
                   </p>
-                  <button {...parentDialog().closeButtonProps} data-testid="close-1">
+                  <button {...parentDialog().closeTriggerProps} data-testid="close-1">
                     X
                   </button>
                   <input type="text" placeholder="Enter name..." data-testid="input-1" />
@@ -46,10 +46,10 @@ export default function Page() {
                   <Show when={childDialog().isOpen}>
                     <Portal>
                       <div class="dialog-backdrop" {...childDialog().backdropProps} />
-                      <div {...childDialog().underlayProps} data-testid="underlay-2">
+                      <div {...childDialog().containerProps} data-testid="container-2">
                         <div {...childDialog().contentProps}>
                           <h2 {...childDialog().titleProps}>Nested</h2>
-                          <button {...childDialog().closeButtonProps} data-testid="close-2">
+                          <button {...childDialog().closeTriggerProps} data-testid="close-2">
                             X
                           </button>
                           <button onClick={() => parentDialog().close()} data-testid="special-close">

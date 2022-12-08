@@ -3,10 +3,10 @@ import type { CommonProperties, Context, DirectionProperty, MaybeElement, Requir
 
 type ElementIds = Partial<{
   trigger: string
-  underlay: string
+  container: string
   backdrop: string
   content: string
-  closeBtn: string
+  closeTrigger: string
   title: string
   description: string
 }>

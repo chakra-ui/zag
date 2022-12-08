@@ -27,18 +27,18 @@ export default function Page() {
             <input data-testid="input" {...api().inputProps} />
             <span data-testid="preview" {...api().previewProps} />
           </div>
-          <div {...api().controlGroupProps}>
+          <div {...api().controlProps}>
             <Show when={!api().isEditing}>
-              <button data-testid="edit-button" {...api().editButtonProps}>
+              <button data-testid="edit-button" {...api().editTriggerProps}>
                 Edit
               </button>
             </Show>
             <Show when={api().isEditing}>
               <>
-                <button data-testid="save-button" {...api().submitButtonProps}>
+                <button data-testid="save-button" {...api().submitTriggerProps}>
                   Save
                 </button>
-                <button data-testid="cancel-button" {...api().cancelButtonProps}>
+                <button data-testid="cancel-button" {...api().cancelTriggerProps}>
                   Cancel
                 </button>
               </>

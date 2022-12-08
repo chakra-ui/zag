@@ -43,7 +43,7 @@ export default defineComponent({
                       <span>{value} </span>
                       <button
                         data-testid={`${toDashCase(value)}-close-button`}
-                        {...api.getTagDeleteButtonProps({ index, value })}
+                        {...api.getTagDeleteTriggerProps({ index, value })}
                       >
                         &#x2715;
                       </button>

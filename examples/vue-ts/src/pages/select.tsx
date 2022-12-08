@@ -55,7 +55,7 @@ export default defineComponent({
               }}
             >
               {/* Hidden select */}
-              <select {...api.selectProps}>
+              <select {...api.hiddenSelectProps}>
                 {selectData.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -67,7 +67,7 @@ export default defineComponent({
             {/* UI select */}
             <Teleport to="body">
               <div {...api.positionerProps}>
-                <ul {...api.menuProps}>
+                <ul {...api.contentProps}>
                   {selectData.map(({ label, value }) => (
                     <li key={value} {...api.getOptionProps({ label, value })}>
                       <span>{label}</span>

@@ -34,9 +34,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getBackdropId(state.context),
     }),
 
-    underlayProps: normalize.element({
-      ...parts.underlay.attrs,
-      id: dom.getUnderlayId(state.context),
+    containerProps: normalize.element({
+      ...parts.container.attrs,
+      id: dom.getContainerId(state.context),
     }),
 
     contentProps: normalize.element({
@@ -60,9 +60,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getDescriptionId(state.context),
     }),
 
-    closeButtonProps: normalize.button({
-      ...parts.closeButton.attrs,
-      id: dom.getCloseButtonId(state.context),
+    closeTriggerProps: normalize.button({
+      ...parts.closeTrigger.attrs,
+      id: dom.getCloseTriggerId(state.context),
       type: "button",
       onClick(event) {
         event.stopPropagation()

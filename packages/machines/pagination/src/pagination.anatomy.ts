@@ -2,9 +2,9 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("pagination").parts(
   "root",
-  "item", // TODO rename to pageTrigger
+  "pageTrigger",
   "ellipsis",
-  "prevItem", // TODO rename to nextPageTrigger
-  "nextItem", // TODO rename to prevPageTrigger
+  "prevPageTrigger",
+  "nextPageTrigger",
 )
 export const parts = anatomy.build()

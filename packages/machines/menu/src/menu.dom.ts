@@ -9,7 +9,7 @@ export const dom = defineDomHelpers({
   getArrowId: (ctx: Ctx) => `menu:${ctx.id}:arrow`,
   getPositionerId: (ctx: Ctx) => `menu:${ctx.id}:popper`,
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
-  getLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
+  getGroupLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),

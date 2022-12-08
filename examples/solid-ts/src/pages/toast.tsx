@@ -43,7 +43,7 @@ function ToastItem(props: { actor: toast.Service }) {
       <div {...progressbarProps()} />
       <p {...api().titleProps}>{api().title}</p>
       <p>{api().type === "loading" ? <Loader /> : null}</p>
-      <button onClick={api().dismiss}>Close</button>
+      <button {...api().closeTriggerProps}>Close</button>
     </div>
   )
 }

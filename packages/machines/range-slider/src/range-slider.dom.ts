@@ -35,7 +35,7 @@ export const dom = defineDomHelpers({
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,
-  getInputId: (ctx: Ctx, index: number) => `slider:${ctx.id}:input:${index}`,
+  getHiddenInputId: (ctx: Ctx, index: number) => `slider:${ctx.id}:input:${index}`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.id}:control`,
   getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}:track`,
   getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.id}:range`,
@@ -45,7 +45,7 @@ export const dom = defineDomHelpers({
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getThumbId(ctx, index)),
-  getInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx, index)),
+  getHiddenInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx, index)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
@@ -55,7 +55,7 @@ export const dom = defineDomHelpers({
   dispatchChangeEvent(ctx: Ctx) {
     const valueArray = Array.from(ctx.value)
     valueArray.forEach((value, index) => {
-      const input = dom.getInputEl(ctx, index)
+      const input = dom.getHiddenInputEl(ctx, index)
       if (!input) return
       dispatchInputValueEvent(input, value)
     })

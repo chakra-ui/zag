@@ -3,7 +3,7 @@ import { a11y, controls, isInViewport, part, pointer, repeat } from "./__utils"
 
 const label = part("label")
 const trigger = part("trigger")
-const menu = part("menu")
+const menu = part("content")
 const options = {
   first: "[role=option]:first-of-type",
   last: "[role=option]:last-of-type",

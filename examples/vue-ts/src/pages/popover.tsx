@@ -35,7 +35,7 @@ export default defineComponent({
                 <div {...api.positionerProps}>
                   <div data-testid="popover-content" class="popover-content" {...api.contentProps}>
                     <div {...api.arrowProps}>
-                      <div {...api.innerArrowProps} />
+                      <div {...api.arrowTipProps} />
                     </div>
                     <div data-testid="popover-title" {...api.titleProps}>
                       Popover Title
@@ -46,7 +46,7 @@ export default defineComponent({
                         Focusable Link
                       </a>
                       <input data-testid="input" placeholder="input" />
-                      <button data-testid="popover-close-button" {...api.closeButtonProps}>
+                      <button data-testid="popover-close-button" {...api.closeTriggerProps}>
                         X
                       </button>
                     </div>

@@ -5,7 +5,7 @@ export type Part = {
 
 export type Anatomy<T extends string> = {
   parts: <U extends string>(...parts: U[]) => Omit<Anatomy<U>, "parts">
-  extend: <V extends string>(...parts: V[]) => Omit<Anatomy<T | V>, "parts">
+  extendWith: <V extends string>(...parts: V[]) => Omit<Anatomy<T | V>, "parts">
   build: () => Record<T, Part>
 }
 
@@ -16,7 +16,7 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
     }
     throw new Error("createAnatomy().parts(...) should only be called once. Did you mean to use .extend(...) ?")
   },
-  extend: <V extends string>(...values: V[]): Omit<Anatomy<T | V>, "parts"> =>
+  extendWith: <V extends string>(...values: V[]): Omit<Anatomy<T | V>, "parts"> =>
     createAnatomy(name, [...parts, ...values]),
   build: () =>
     [...new Set(parts)].reduce<Record<string, Part>>(

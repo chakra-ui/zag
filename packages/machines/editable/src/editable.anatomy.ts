@@ -6,9 +6,9 @@ export const anatomy = createAnatomy("editable").parts(
   "label",
   "preview",
   "input",
-  "editButton", // TODO editTrigger
-  "submitButton", // TODO submitTrigger
-  "cancelButton", // TODO cancelTrigger
-  "controlGroup", // TODO controls
+  "editTrigger",
+  "submitTrigger",
+  "cancelTrigger",
+  "control",
 )
 export const parts = anatomy.build()

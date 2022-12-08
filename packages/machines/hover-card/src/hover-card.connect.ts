@@ -22,9 +22,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: popperStyles.arrow,
     }),
 
-    innerArrowProps: normalize.element({
-      ...parts.arrowInner.attrs,
-      style: popperStyles.innerArrow,
+    arrowTipProps: normalize.element({
+      ...parts.arrowTip.attrs,
+      style: popperStyles.arrowTip,
     }),
 
     triggerProps: normalize.element({

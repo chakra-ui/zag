@@ -5,12 +5,12 @@ export const anatomy = createAnatomy("menu").parts(
   "triggerItem",
   "positioner",
   "arrow",
-  "arrowInner", // TODO rename to InnerArrow
+  "arrowTip",
   "content",
   "separator",
   "item",
   "optionItem",
-  "label", // TODO rename to groupLabel
+  "groupLabel",
   "group",
 )
 export const parts = anatomy.build()

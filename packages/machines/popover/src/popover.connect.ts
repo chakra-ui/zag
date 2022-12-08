@@ -33,9 +33,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: popperStyles.arrow,
     }),
 
-    innerArrowProps: normalize.element({
-      ...parts.arrowInner.attrs,
-      style: popperStyles.innerArrow,
+    arrowTipProps: normalize.element({
+      ...parts.arrowTip.attrs,
+      style: popperStyles.arrowTip,
     }),
 
     anchorProps: normalize.element({
@@ -88,9 +88,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getDescriptionId(state.context),
     }),
 
-    closeButtonProps: normalize.button({
-      ...parts.closeButton.attrs,
-      id: dom.getCloseButtonId(state.context),
+    closeTriggerProps: normalize.button({
+      ...parts.closeTrigger.attrs,
+      id: dom.getCloseTriggerId(state.context),
       type: "button",
       "aria-label": "close",
       onClick() {

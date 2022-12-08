@@ -28,11 +28,11 @@ export default function Page() {
           {api.isOpen && (
             <Portal>
               <div className="dialog-backdrop" {...api.backdropProps} />
-              <div data-testid="underlay-1" {...api.underlayProps}>
+              <div data-testid="container-1" {...api.containerProps}>
                 <div {...api.contentProps}>
                   <h2 {...api.titleProps}>Edit profile</h2>
                   <p {...api.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
-                  <button {...api.closeButtonProps} data-testid="close-1">
+                  <button {...api.closeTriggerProps} data-testid="close-1">
                     X
                   </button>
                   <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />

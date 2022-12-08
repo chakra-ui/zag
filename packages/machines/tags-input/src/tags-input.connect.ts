@@ -231,14 +231,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getTagDeleteButtonProps(options: TagProps) {
+    getTagDeleteTriggerProps(options: TagProps) {
       const id = dom.getTagId(state.context, options)
       return normalize.button({
-        ...parts.deleteButton.attrs,
-        id: dom.getTagDeleteBtnId(state.context, options),
+        ...parts.tagDeleteTrigger.attrs,
+        id: dom.getTagDeleteTriggerId(state.context, options),
         type: "button",
         disabled: isDisabled,
-        "aria-label": translations.deleteTagButtonLabel(options.value),
+        "aria-label": translations.deleteTagTriggerLabel(options.value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isInteractive) {
@@ -260,13 +260,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    clearButtonProps: normalize.button({
-      ...parts.clearButton.attrs,
-      id: dom.getClearButtonId(state.context),
+    clearTriggerProps: normalize.button({
+      ...parts.clearTrigger.attrs,
+      id: dom.getClearTriggerId(state.context),
       type: "button",
       "data-readonly": dataAttr(isReadOnly),
       disabled: isDisabled,
-      "aria-label": translations.clearButtonLabel,
+      "aria-label": translations.clearTriggerLabel,
       hidden: isEmpty,
       onClick() {
         if (!isInteractive) return
