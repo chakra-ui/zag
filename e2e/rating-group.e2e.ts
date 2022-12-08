@@ -2,7 +2,7 @@ import { expect, test, Locator, Page } from "@playwright/test"
 import { a11y, controls, part } from "./__utils"
 
 const group = part("item-group")
-const input = part("input")
+const hiddenInput = part("hidden-input")
 const item = part("item")
 
 const getRating = (page: Page, value: number) => {
@@ -33,7 +33,7 @@ test.describe("rating / pointer", () => {
 
   test("should set value when item is clicked", async ({ page }) => {
     await getRating(page, 4).click()
-    await expect(page.locator(input)).toHaveValue("4")
+    await expect(page.locator(hiddenInput)).toHaveValue("4")
   })
 
   test("highlight when hovered", async ({ page }) => {
@@ -48,7 +48,7 @@ test.describe("rating / pointer", () => {
 
     await pointerover(el)
     el.click()
-    await expect(page.locator(input)).toHaveValue("4")
+    await expect(page.locator(hiddenInput)).toHaveValue("4")
   })
 })
 

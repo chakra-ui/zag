@@ -67,7 +67,7 @@ export default function Page() {
                 )
               })}
             </div>
-            <input {...api.inputProps} />
+            <input {...api.hiddenInputProps} />
           </div>
           <button type="reset">Reset</button>
         </form>

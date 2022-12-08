@@ -48,13 +48,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
+    hiddenInputProps: normalize.input({
+      ...parts.hiddenInput.attrs,
       name: state.context.name,
       form: state.context.form,
       type: "text",
       hidden: true,
-      id: dom.getInputId(state.context),
+      id: dom.getHiddenInputId(state.context),
       defaultValue: state.context.value,
     }),
 

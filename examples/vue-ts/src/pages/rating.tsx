@@ -76,7 +76,7 @@ export default defineComponent({
                   )
                 })}
               </div>
-              <input {...api.inputProps} />
+              <input {...api.hiddenInputProps} />
             </div>
           </main>
 

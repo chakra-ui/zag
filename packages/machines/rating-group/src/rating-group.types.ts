@@ -8,7 +8,7 @@ type IntlTranslations = {
 type ElementIds = Partial<{
   root: string
   label: string
-  input: string
+  hiddenInput: string
   itemGroup: string
   item(id: string): string
 }>
