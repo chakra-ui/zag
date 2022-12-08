@@ -14,7 +14,7 @@ export function machine(userContext: UserDefinedContext) {
         page: 1,
         translations: {
           rootLabel: "pagination",
-          itemLabel({ page, totalPages }) {
+          pageTriggerLabel({ page, totalPages }) {
             const isLastPage = totalPages > 1 && page === totalPages
             return `${isLastPage ? "last page, " : ""}page ${page}`
           },

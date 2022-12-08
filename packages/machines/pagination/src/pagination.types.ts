@@ -3,15 +3,15 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 
 type IntlTranslations = {
   rootLabel?: string
-  itemLabel?(details: { page: number; totalPages: number }): string
+  pageTriggerLabel?(details: { page: number; totalPages: number }): string
 }
 
 type ElementIds = Partial<{
   root: string
   ellipsis(index: number): string
-  prevItem: string
-  nextItem: string
-  item(page: number): string
+  prevPageTrigger: string
+  nextPageTrigger: string
+  pageTrigger(page: number): string
 }>
 
 export type PaginationRange = ({ type: "ellipsis" } | { type: "page"; value: number })[]
