@@ -1,7 +1,6 @@
 import { createAnatomy } from "@zag-js/anatomy"
-// TODO rename package to @zag-js/radio-group
 
-export const anatomy = createAnatomy("radio").parts(
+export const anatomy = createAnatomy("radio-group").parts(
   "root",
   "label",
   "item", // TODO rename to radio

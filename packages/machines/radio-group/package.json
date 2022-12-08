@@ -1,7 +1,7 @@
 {
-  "name": "@zag-js/radio",
+  "name": "@zag-js/radio-group",
   "version": "0.1.4",
-  "description": "Core logic for the radio widget implemented as a state machine",
+  "description": "Core logic for the radio group widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -12,12 +12,13 @@
     "statechart",
     "component",
     "chakra-ui",
-    "radio"
+    "radio",
+    "radio-group"
   ],
   "author": "Abraham Aremu <anubra266@gmail.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/radio",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/radio-group",
   "sideEffects": false,
   "files": [
     "dist/**/*"
