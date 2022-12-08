@@ -33,6 +33,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     previousPage,
     nextPage,
     pageRange,
+    slice<T>(data: T[]) {
+      return data.slice(pageRange.start, pageRange.end)
+    },
     isFirstPage,
     isLastPage,
 
@@ -60,34 +63,34 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemProps(page: PageProps) {
-      const pageIndex = page.value
-      const isCurrentPage = pageIndex === state.context.page
+    getPageTriggerProps(page: PageProps) {
+      const index = page.value
+      const isCurrentPage = index === state.context.page
 
       return normalize.element({
-        id: dom.getItemId(state.context, pageIndex),
-        ...parts.item.attrs,
+        id: dom.getPageTriggerId(state.context, index),
+        ...parts.pageTrigger.attrs,
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
-        "aria-label": translations.itemLabel?.({ page: pageIndex, totalPages }),
+        "aria-label": translations.pageTriggerLabel?.({ page: index, totalPages }),
         onClick(evt) {
-          send({ type: "SET_PAGE", page: pageIndex, srcElement: evt.currentTarget })
+          send({ type: "SET_PAGE", page: index, srcElement: evt.currentTarget })
         },
       })
     },
 
-    prevItemProps: normalize.element({
-      id: dom.getPrevItemId(state.context),
-      ...parts.prevItem.attrs,
+    prevPageTriggerProps: normalize.element({
+      id: dom.getPrevPageTriggerId(state.context),
+      ...parts.prevPageTrigger.attrs,
       "data-disabled": dataAttr(isFirstPage),
       onClick(evt) {
         send({ type: "PREVIOUS_PAGE", srcElement: evt.currentTarget })
       },
     }),
 
-    nextItemProps: normalize.element({
-      id: dom.getNextItemId(state.context),
-      ...parts.nextItem.attrs,
+    nextPageTriggerProps: normalize.element({
+      id: dom.getNextPageTriggerId(state.context),
+      ...parts.nextPageTrigger.attrs,
       "data-disabled": dataAttr(isLastPage),
       onClick(evt) {
         send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
