@@ -38,7 +38,7 @@ export default function Page() {
             <div {...api.positionerProps}>
               <div data-testid="popover-content" className="popover-content" {...api.contentProps}>
                 <div {...api.arrowProps}>
-                  <div {...api.innerArrowProps} />
+                  <div {...api.arrowTipProps} />
                 </div>
                 <div data-testid="popover-title" {...api.titleProps}>
                   Popover Title

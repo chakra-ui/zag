@@ -33,7 +33,7 @@ export default defineComponent({
                   <div {...api.positionerProps}>
                     <div class="hover-card-content" {...api.contentProps}>
                       <div {...api.arrowProps}>
-                        <div {...api.innerArrowProps} />
+                        <div {...api.arrowTipProps} />
                       </div>
                       Twitter Preview
                       <a href="https://twitter.com/zag_js" target="_blank">

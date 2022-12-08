@@ -2,7 +2,7 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("popover").parts(
   "arrow",
-  "arrowInner",
+  "arrowTip",
   "anchor",
   "trigger",
   "positioner",
