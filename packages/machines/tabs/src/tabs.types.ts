@@ -3,13 +3,12 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 
 type IntlTranslations = {
   tablistLabel?: string
-  deleteLabel?(value: string): string
 }
 
 type ElementIds = Partial<{
   root: string
   trigger: string
-  triggerGroup: string
+  tablist: string
   contentGroup: string
   content: string
 }>
