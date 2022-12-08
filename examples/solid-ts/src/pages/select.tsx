@@ -71,6 +71,8 @@ export default function Page() {
             </ul>
           </div>
         </Portal>
+
+        <button class="next-tabbable">next tabbable</button>
       </main>
 
       <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />

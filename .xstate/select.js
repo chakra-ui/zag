@@ -167,11 +167,11 @@ const fetchMachine = createMachine({
         },
         TAB: [{
           target: "idle",
-          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect", "clearHighlightedOption"],
+          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect", "clearHighlightedOption", "focusNextElement"],
           cond: "selectOnTab"
         }, {
           target: "idle",
-          actions: ["invokeOnClose", "clearHighlightedOption"]
+          actions: ["invokeOnClose", "clearHighlightedOption", "focusNextElement"]
         }]
       }
     }

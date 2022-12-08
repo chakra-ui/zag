@@ -77,6 +77,8 @@ export default defineComponent({
                 </ul>
               </div>
             </Teleport>
+
+            <button class="next-tabbable">next tabbable</button>
           </main>
 
           <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} omit={["data"]} />} />

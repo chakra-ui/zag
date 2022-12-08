@@ -9,6 +9,7 @@ const options = {
   last: "[role=option]:last-of-type",
   get: (id: string) => `[role=option][data-value="${id}"]`,
 }
+const nextTabbable = ".next-tabbable"
 
 const expectToBeSelected = async (el: Locator) => {
   await expect(el).toHaveAttribute("data-selected", "")
@@ -166,12 +167,13 @@ test.describe("select / open / blur", () => {
     await expect(page.locator(menu)).not.toBeVisible()
   })
 
-  test("should close on press tab - no select", async ({ page }) => {
+  test.only("should close on press tab - no select", async ({ page }) => {
     await page.click(trigger)
     await repeat(() => page.keyboard.press("ArrowDown"), 3)
     await page.keyboard.press("Tab")
     await expect(page.locator(menu)).not.toBeVisible()
     await expect(page.locator(trigger)).toContainText("Select option")
+    await expect(page.locator(nextTabbable)).toBeFocused()
   })
 
   test("should close on press tab - with select", async ({ page }) => {
