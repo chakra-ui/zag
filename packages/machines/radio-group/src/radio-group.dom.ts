@@ -2,16 +2,18 @@ import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
 import type { MachineContext as Ctx } from "./radio-group.types"
 
 export const dom = defineDomHelpers({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `radio:${ctx.id}`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `radio:${ctx.id}:label`,
-  getRadioId: (ctx: Ctx, value: string) => ctx.ids?.radio?.(value) ?? `radio:${ctx.id}:item:${value}`,
-  getItemInputId: (ctx: Ctx, value: string) => ctx.ids?.itemInput?.(value) ?? `radio:${ctx.id}:item:input:${value}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `radio-group:${ctx.id}`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `radio-group:${ctx.id}:label`,
+  getRadioId: (ctx: Ctx, value: string) => ctx.ids?.radio?.(value) ?? `radio-group:${ctx.id}:radio:${value}`,
+  getRadioInputId: (ctx: Ctx, value: string) =>
+    ctx.ids?.radioInput?.(value) ?? `radio-group:${ctx.id}:radio:input:${value}`,
   getRadioControlId: (ctx: Ctx, value: string) =>
-    ctx.ids?.radioControl?.(value) ?? `radio:${ctx.id}:item:control:${value}`,
-  getRadioLabelId: (ctx: Ctx, value: string) => ctx.ids?.radioLabel?.(value) ?? `radio:${ctx.id}:item:label:${value}`,
+    ctx.ids?.radioControl?.(value) ?? `radio-group:${ctx.id}:radio:control:${value}`,
+  getRadioLabelId: (ctx: Ctx, value: string) =>
+    ctx.ids?.radioLabel?.(value) ?? `radio-group:${ctx.id}:radio:label:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getItemInputEl: (ctx: Ctx, value: string) => dom.getById<HTMLInputElement>(ctx, dom.getItemInputId(ctx, value)),
+  getRadioInputEl: (ctx: Ctx, value: string) => dom.getById<HTMLInputElement>(ctx, dom.getRadioInputId(ctx, value)),
 
   getFirstEnabledInputEl: (ctx: Ctx) => dom.getRootEl(ctx)?.querySelector<HTMLInputElement>("input:not(:disabled)"),
   getFirstEnabledAndCheckedInputEl: (ctx: Ctx) =>

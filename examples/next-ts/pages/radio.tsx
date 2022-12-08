@@ -32,7 +32,7 @@ export default function Page() {
                   <span data-testid={`label-${opt.id}`} {...api.getRadioLabelProps({ value: opt.id })}>
                     {opt.label}
                   </span>
-                  <input data-testid={`input-${opt.id}`} {...api.getItemInputProps({ value: opt.id })} />
+                  <input data-testid={`input-${opt.id}`} {...api.getRadioInputProps({ value: opt.id })} />
                   <div data-testid={`control-${opt.id}`} {...api.getRadioControlProps({ value: opt.id })} />
                 </label>
               ))}

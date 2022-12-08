@@ -5,7 +5,7 @@ export const anatomy = createAnatomy("radio-group").parts(
   "label",
   "radio",
   "radioLabel",
-  "radioControl", // TODO rename to radioControl
-  "itemInput", // TODO rename to radioInput
+  "radioControl",
+  "radioInput",
 )
 export const parts = anatomy.build()
