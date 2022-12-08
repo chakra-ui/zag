@@ -55,7 +55,7 @@ describe("Anatomy", () => {
 
   it("should allow to extend the anatomy", () => {
     const anatomy = createAnatomy("accordion").parts("root")
-    const extendedAnatomy = anatomy.extend("control").build()
+    const extendedAnatomy = anatomy.extendWith("control").build()
 
     expect(extendedAnatomy).toMatchInlineSnapshot(`
       {
@@ -79,7 +79,7 @@ describe("Anatomy", () => {
 
   it("should filter duplicates parts when extending", () => {
     const anatomy = createAnatomy("accordion").parts("root", "control")
-    const extendedAnatomy = anatomy.extend("control").build()
+    const extendedAnatomy = anatomy.extendWith("control").build()
 
     expect(extendedAnatomy).toMatchInlineSnapshot(`
       {
