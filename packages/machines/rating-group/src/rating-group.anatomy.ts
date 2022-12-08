@@ -5,6 +5,6 @@ export const anatomy = createAnatomy("rating").parts(
   "hiddenInput",
   "label",
   "item", // TODO reanme to rating
-  "itemGroup", // TODO rename to controls
+  "controls",
 )
 export const parts = anatomy.build()

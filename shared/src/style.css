@@ -358,7 +358,7 @@ body {
 * Rating
 * -----------------------------------------------------------------------------*/
 
-.rating [data-part="item-group"] {
+.rating [data-part="controls"] {
   display: inline-flex;
 }
 .rating [data-part="item"] {

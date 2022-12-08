@@ -121,7 +121,7 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
         isValueEmpty: (ctx) => ctx.value <= 0,
-        isRadioFocused: (ctx) => !!dom.getItemGroupEl(ctx)?.contains(dom.getActiveEl(ctx)),
+        isRadioFocused: (ctx) => !!dom.getControlsEl(ctx)?.contains(dom.getActiveEl(ctx)),
       },
       activities: {
         trackFormControlState(ctx) {

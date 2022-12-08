@@ -1,7 +1,7 @@
 import { expect, test, Locator, Page } from "@playwright/test"
-import { a11y, controls, part } from "./__utils"
+import { a11y, controls as testControls, part } from "./__utils"
 
-const group = part("item-group")
+const controls = part("controls")
 const hiddenInput = part("hidden-input")
 const item = part("item")
 
@@ -58,15 +58,15 @@ test.describe("rating / properties", () => {
   })
 
   test("should not be selectable when disabled", async ({ page }) => {
-    await controls(page).bool("disabled")
-    await expectToBeDisabled(page.locator(group))
+    await testControls(page).bool("disabled")
+    await expectToBeDisabled(page.locator(controls))
     const items = page.locator(item)
     const isAllItemsDisabled = await items.evaluateAll((items) => items.every((item) => item.dataset.disabled === ""))
     expect(isAllItemsDisabled).toBeTruthy()
   })
 
   test("should not be selectable when is readonly", async ({ page }) => {
-    await controls(page).bool("readOnly")
+    await testControls(page).bool("readOnly")
     const items = page.locator(item)
     const isAllItemsReadonly = await items.evaluateAll((items) => items.every((item) => item.dataset.readonly === ""))
     expect(isAllItemsReadonly).toBeTruthy()

@@ -57,7 +57,7 @@ export default function Page() {
         <div>
           <div {...api().rootProps}>
             <label {...api().labelProps}>Rate:</label>
-            <div {...api().itemGroupProps}>
+            <div {...api().controlsProps}>
               <For each={api().sizeArray}>
                 {(index) => {
                   const state = createMemo(() => api().getRatingState(index))

@@ -9,7 +9,7 @@ type ElementIds = Partial<{
   root: string
   label: string
   hiddenInput: string
-  itemGroup: string
+  controls: string
   item(id: string): string
 }>
 
