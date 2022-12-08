@@ -1,4 +1,3 @@
-import { mergeProps } from "@zag-js/core"
 import * as numberInput from "@zag-js/number-input"
 import { numberInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
@@ -14,25 +13,22 @@ export default function Page() {
     context: controls.context,
   })
 
-  const number = createMemo(() => numberInput.connect(state, send, normalizeProps))
+  const api = createMemo(() => numberInput.connect(state, send, normalizeProps))
 
   return (
     <>
       <main>
-        <div {...number().rootProps}>
-          <div
-            data-testid="scrubber"
-            {...mergeProps(number().scrubberProps, { style: { width: "32px", height: "32px", background: "red" } })}
-          />
-          <label data-testid="label" {...number().labelProps}>
+        <div {...api().rootProps}>
+          <div data-testid="scrubber" {...api().scrubberProps} />
+          <label data-testid="label" {...api().labelProps}>
             Enter number:
           </label>
-          <div>
-            <button data-testid="dec-button" {...number().decrementButtonProps}>
+          <div {...api().controlProps}>
+            <button data-testid="dec-button" {...api().decrementTriggerProps}>
               DEC
             </button>
-            <input data-testid="input" {...number().inputProps} />
-            <button data-testid="inc-button" {...number().incrementButtonProps}>
+            <input data-testid="input" {...api().inputProps} />
+            <button data-testid="inc-button" {...api().incrementTriggerProps}>
               INC
             </button>
           </div>

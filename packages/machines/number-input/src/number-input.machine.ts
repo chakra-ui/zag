@@ -247,7 +247,7 @@ export function machine(userContext: UserDefinedContext) {
           return dom.preventTextSelection(ctx)
         },
         trackButtonDisabled(ctx, _evt, { send }) {
-          const btn = dom.getActiveButton(ctx, ctx.hint)
+          const btn = dom.getPressedTriggerEl(ctx, ctx.hint)
           return observeAttributes(btn, "disabled", () => send("PRESS_UP"))
         },
         attachWheelListener(ctx, _evt, { send }) {
@@ -349,7 +349,7 @@ export function machine(userContext: UserDefinedContext) {
           let srcElement: HTMLElement | null = null
 
           if (evt.type === "PRESS_DOWN") {
-            srcElement = dom.getActiveButton(ctx, evt.hint)
+            srcElement = dom.getPressedTriggerEl(ctx, evt.hint)
           } else if (evt.type === "FOCUS") {
             srcElement = dom.getInputEl(ctx)
           } else if (evt.type === "PRESS_DOWN_SCRUBBER") {
