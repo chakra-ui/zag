@@ -78,25 +78,25 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "submitOnBlur",
                 target: "preview",
-                actions: ["focusEditButton", "invokeOnSubmit"],
+                actions: ["focusEditTrigger", "invokeOnSubmit"],
               },
               {
                 target: "preview",
-                actions: ["resetValueIfNeeded", "focusEditButton", "invokeOnCancel"],
+                actions: ["resetValueIfNeeded", "focusEditTrigger", "invokeOnCancel"],
               },
             ],
             CANCEL: {
               target: "preview",
-              actions: ["focusEditButton", "resetValueIfNeeded", "invokeOnCancel"],
+              actions: ["focusEditTrigger", "resetValueIfNeeded", "invokeOnCancel"],
             },
             ENTER: {
               guard: "submitOnEnter",
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "focusEditTrigger"],
             },
             SUBMIT: {
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "focusEditButton"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "focusEditTrigger"],
             },
           },
         },
@@ -115,7 +115,7 @@ export function machine(userContext: UserDefinedContext) {
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
-              const ignore = [dom.getCancelBtnEl(ctx), dom.getSubmitBtnEl(ctx)]
+              const ignore = [dom.getCancelTriggerEl(ctx), dom.getSubmitTriggerEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
             onInteractOutside() {
@@ -126,9 +126,9 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        focusEditButton(ctx) {
+        focusEditTrigger(ctx) {
           raf(() => {
-            dom.getEditBtnEl(ctx)?.focus()
+            dom.getEditTriggerEl(ctx)?.focus()
           })
         },
         focusInput(ctx) {
