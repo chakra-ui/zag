@@ -70,8 +70,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       htmlFor: dom.getInputId(state.context),
     }),
 
-    groupProps: normalize.element({
-      ...parts.group.attrs,
+    controlProps: normalize.element({
+      ...parts.control.attrs,
       role: "group",
       "aria-disabled": isDisabled,
       "data-disabled": dataAttr(isDisabled),
@@ -147,10 +147,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    decrementButtonProps: normalize.button({
-      ...parts.spinButton.attrs,
-      "data-type": "decrement",
-      id: dom.getDecButtonId(state.context),
+    decrementTriggerProps: normalize.button({
+      ...parts.decrementTrigger.attrs,
+      id: dom.getDecrementTriggerId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
       "aria-label": translations.decrementLabel,
@@ -171,10 +170,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    incrementButtonProps: normalize.button({
-      ...parts.spinButton.attrs,
-      "data-type": "increment",
-      id: dom.getIncButtonId(state.context),
+    incrementTriggerProps: normalize.button({
+      ...parts.incrementTrigger.attrs,
+      id: dom.getIncrementTriggerId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),
       "aria-label": translations.incrementLabel,
