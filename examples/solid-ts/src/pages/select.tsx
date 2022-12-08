@@ -51,7 +51,7 @@ export default function Page() {
           }}
         >
           {/* Hidden select */}
-          <select {...api().selectProps}>
+          <select {...api().hiddenSelectProps}>
             <For each={selectData}>{(option) => <option value={option.value}>{option.label}</option>}</For>
           </select>
         </form>
@@ -59,7 +59,7 @@ export default function Page() {
         {/* UI select */}
         <Portal>
           <div {...api().positionerProps}>
-            <ul {...api().menuProps}>
+            <ul {...api().contentProps}>
               <For each={selectData}>
                 {({ label, value }) => (
                   <li {...api().getOptionProps({ label, value })}>

@@ -47,7 +47,6 @@ export default function Page() {
   )
 
   const api = select.connect(state, send, normalizeProps)
-  const ref = useRef(null)
 
   return (
     <>
@@ -68,7 +67,7 @@ export default function Page() {
           }}
         >
           {/* Hidden select */}
-          <select ref={ref} {...api.selectProps}>
+          <select {...api.hiddenSelectProps}>
             {selectData.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -80,7 +79,7 @@ export default function Page() {
         {/* UI select */}
         <Portal>
           <div {...api.positionerProps}>
-            <ul {...api.menuProps}>
+            <ul {...api.contentProps}>
               {selectData.map(({ label, value }) => (
                 <li key={value} {...api.getOptionProps({ label, value })}>
                   <span>{label}</span>

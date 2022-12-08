@@ -10,7 +10,7 @@ import {
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = defineDomHelpers({
-  getMenuId: (ctx: Ctx) => ctx.ids?.menu ?? `${ctx.id}:menu`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `${ctx.id}:content`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `${ctx.id}:label`,
   getOptionId: (ctx: Ctx, id: string | number) => ctx.ids?.option?.(id) ?? `${ctx.id}:option:${id}`,
@@ -20,10 +20,10 @@ export const dom = defineDomHelpers({
   getOptionGroupLabelId: (ctx: Ctx, id: string | number) => `${ctx.id}:option-group-label:${id}`,
 
   getHiddenSelectElement: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
-  getMenuElement: (ctx: Ctx) => {
-    const menu = dom.getById(ctx, dom.getMenuId(ctx))
-    if (!menu) throw new Error("Could not find the menu element.")
-    return menu
+  getContentElement: (ctx: Ctx) => {
+    const content = dom.getById(ctx, dom.getContentId(ctx))
+    if (!content) throw new Error("Could not find the menu element.")
+    return content
   },
   getTriggerElement: (ctx: Ctx) => {
     const trigger = dom.getById(ctx, dom.getTriggerId(ctx))
@@ -34,13 +34,13 @@ export const dom = defineDomHelpers({
     return dom.getById(ctx, dom.getPositionerId(ctx))
   },
   getOptionElements: (ctx: Ctx) => {
-    return queryAll(dom.getMenuElement(ctx), "[role=option]:not([data-disabled])")
+    return queryAll(dom.getContentElement(ctx), "[role=option]:not([data-disabled])")
   },
   getFirstOption: (ctx: Ctx) => {
-    return query(dom.getMenuElement(ctx), "[role=option]:not([data-disabled])")
+    return query(dom.getContentElement(ctx), "[role=option]:not([data-disabled])")
   },
   getLastOption: (ctx: Ctx) => {
-    return query(dom.getMenuElement(ctx), "[role=option]:not([data-disabled]):last-of-type")
+    return query(dom.getContentElement(ctx), "[role=option]:not([data-disabled]):last-of-type")
   },
   getNextOption: (ctx: Ctx, currentId: string) => {
     const options = dom.getOptionElements(ctx)

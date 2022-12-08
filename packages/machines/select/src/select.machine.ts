@@ -43,7 +43,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
 
       watch: {
-        selectedOption: ["setSelectElementValue", "dispatchChangeEvent"],
+        selectedOption: ["syncSelectValue", "dispatchChangeEvent"],
       },
 
       on: {
@@ -135,8 +135,8 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          entry: ["focusMenu", "highlightSelectedOption", "invokeOnOpen"],
-          exit: ["scrollMenuToTop"],
+          entry: ["focusContent", "highlightSelectedOption", "invokeOnOpen"],
+          exit: ["scrollContentToTop"],
           activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption"],
           on: {
             CLOSE: {
@@ -243,7 +243,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackInteractOutside(ctx, _evt, { send }) {
-          return trackInteractOutside(dom.getMenuElement(ctx), {
+          return trackInteractOutside(dom.getContentElement(ctx), {
             exclude(target) {
               const ignore = [dom.getTriggerElement(ctx)]
               return ignore.some((el) => contains(el, target))
@@ -275,7 +275,7 @@ export function machine(userContext: UserDefinedContext) {
             exec()
           })
 
-          return observeAttributes(dom.getMenuElement(ctx), "aria-activedescendant", exec)
+          return observeAttributes(dom.getContentElement(ctx), "aria-activedescendant", exec)
         },
       },
       actions: {
@@ -300,9 +300,9 @@ export function machine(userContext: UserDefinedContext) {
           const option = dom.getLastOption(ctx)
           highlightOption(ctx, option)
         },
-        focusMenu(ctx) {
+        focusContent(ctx) {
           raf(() => {
-            dom.getMenuElement(ctx)?.focus({ preventScroll: true })
+            dom.getContentElement(ctx)?.focus({ preventScroll: true })
           })
         },
         focusTrigger(ctx) {
@@ -367,8 +367,8 @@ export function machine(userContext: UserDefinedContext) {
         clearSelectedOption(ctx) {
           ctx.selectedOption = null
         },
-        scrollMenuToTop(ctx) {
-          dom.getMenuElement(ctx)?.scrollTo(0, 0)
+        scrollContentToTop(ctx) {
+          dom.getContentElement(ctx)?.scrollTo(0, 0)
         },
         invokeOnOpen(ctx) {
           ctx.onOpen?.()
@@ -384,7 +384,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.hasSelectedChanged) return
           ctx.onChange?.(json(ctx.selectedOption))
         },
-        setSelectElementValue(ctx) {
+        syncSelectValue(ctx) {
           const selectedOption = ctx.selectedOption
           const node = dom.getHiddenSelectElement(ctx)
           if (!node || !selectedOption) return
