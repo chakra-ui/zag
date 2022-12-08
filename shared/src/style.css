@@ -974,11 +974,11 @@ main > .toggle[data-pressed] {
 * Radio
 * -----------------------------------------------------------------------------*/
 
-.radio [data-part="item-control"][data-focus] {
+.radio [data-part="radio-control"][data-focus] {
   outline: 2px solid royalblue;
 }
 
-.radio [data-part="item-label"][data-disabled] {
+.radio [data-part="radio-label"][data-disabled] {
   opacity: 0.4;
 }
 
@@ -1006,7 +1006,7 @@ main > .toggle[data-pressed] {
   cursor: not-allowed;
 }
 
-.radio [data-part="item-control"] {
+.radio [data-part="radio-control"] {
   position: absolute;
   top: 0;
   left: 0;
@@ -1016,20 +1016,20 @@ main > .toggle[data-pressed] {
   border: solid 2px grey;
   border-radius: 50%;
 }
-.radio [data-part="item-control"][data-hover] {
+.radio [data-part="radio-control"][data-hover] {
   background-color: #ccc;
 }
 
-.radio [data-part="item-control"][data-checked] {
+.radio [data-part="radio-control"][data-checked] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-.radio [data-part="item-control"][data-checked]::after {
+.radio [data-part="radio-control"][data-checked]::after {
   display: block;
 }
 
-.radio [data-part="item-control"]::after {
+.radio [data-part="radio-control"]::after {
   content: "";
   position: absolute;
   display: none;
