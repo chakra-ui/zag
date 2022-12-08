@@ -82,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.label({
         ...parts.radio.attrs,
         id: dom.getRadioId(state.context, props.value),
-        htmlFor: dom.getItemInputId(state.context, props.value),
+        htmlFor: dom.getRadioInputId(state.context, props.value),
         ...getRadioDataSet(props),
 
         onPointerMove() {
@@ -127,16 +127,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemInputProps(props: InputProps) {
+    getRadioInputProps(props: InputProps) {
       const inputState = getRadioState(props)
 
       const isRequired = props.required
       const trulyDisabled = inputState.isDisabled && !props.focusable
 
       return normalize.input({
-        ...parts.itemInput.attrs,
+        ...parts.radioInput.attrs,
         "data-ownedby": dom.getRootId(state.context),
-        id: dom.getItemInputId(state.context, props.value),
+        id: dom.getRadioInputId(state.context, props.value),
 
         type: "radio",
         name: state.context.name || state.context.id,
