@@ -956,7 +956,7 @@ main > .toggle[data-pressed] {
   gap: 16px;
 }
 
-.radio [data-part="item"] {
+.radio [data-part="radio"] {
   display: block;
   position: relative;
   padding-left: 35px;
@@ -970,7 +970,7 @@ main > .toggle[data-pressed] {
   width: fit-content;
 }
 
-.radio [data-part="item"][data-disabled] {
+.radio [data-part="radio"][data-disabled] {
   cursor: not-allowed;
 }
 
