@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
-      id: dom.getContainerId(state.context),
+      id: dom.getRootId(state.context),
       "data-open": dataAttr(isVisible),
       "data-type": state.context.type,
       "data-placement": placement,
@@ -84,9 +84,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getDescriptionId(state.context),
     }),
 
-    closeButtonProps: normalize.button({
-      id: dom.getCloseButtonId(state.context),
-      ...parts.closeButton.attrs,
+    closeTriggerProps: normalize.button({
+      id: dom.getCloseTriggerId(state.context),
+      ...parts.closeTrigger.attrs,
       type: "button",
       "aria-label": "Dismiss notification",
       onClick() {
