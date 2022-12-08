@@ -5,9 +5,9 @@ type ElementIds = Partial<{
   root: string
   label: string
   radio(value: string): string
+  radioLabel(value: string): string
+  radioControl(value: string): string
   itemInput(value: string): string
-  itemControl(value: string): string
-  itemLabel(value: string): string
 }>
 
 type PublicContext = DirectionProperty &

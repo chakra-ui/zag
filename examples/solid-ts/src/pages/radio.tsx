@@ -24,11 +24,11 @@ export default function Page() {
               <h3 {...api().labelProps}>Fruits</h3>
               {radioData.map((opt) => (
                 <label data-testid={`item-${opt.id}`} {...api().getRadioProps({ value: opt.id })}>
-                  <span data-testid={`label-${opt.id}`} {...api().getItemLabelProps({ value: opt.id })}>
+                  <span data-testid={`label-${opt.id}`} {...api().getRadioLabelProps({ value: opt.id })}>
                     {opt.label}
                   </span>
                   <input data-testid={`input-${opt.id}`} {...api().getItemInputProps({ value: opt.id })} />
-                  <div data-testid={`control-${opt.id}`} {...api().getItemControlProps({ value: opt.id })} />
+                  <div data-testid={`control-${opt.id}`} {...api().getRadioControlProps({ value: opt.id })} />
                 </label>
               ))}
             </div>
