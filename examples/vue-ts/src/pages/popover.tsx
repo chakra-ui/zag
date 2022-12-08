@@ -46,7 +46,7 @@ export default defineComponent({
                         Focusable Link
                       </a>
                       <input data-testid="input" placeholder="input" />
-                      <button data-testid="popover-close-button" {...api.closeButtonProps}>
+                      <button data-testid="popover-close-button" {...api.closeTriggerProps}>
                         X
                       </button>
                     </div>

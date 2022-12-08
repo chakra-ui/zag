@@ -12,7 +12,7 @@ export const dom = defineDomHelpers({
   getArrowId: (ctx: Ctx) => `popover:${ctx.id}:arrow`,
   getTitleId: (ctx: Ctx) => ctx.ids?.title ?? `popover:${ctx.id}:title`,
   getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `popover:${ctx.id}:desc`,
-  getCloseButtonId: (ctx: Ctx) => ctx.ids?.closeBtn ?? `popover:${ctx.id}:close-button`,
+  getCloseTriggerId: (ctx: Ctx) => ctx.ids?.closeTrigger ?? `popover:${ctx.id}:close`,
 
   getAnchorEl: (ctx: Ctx) => dom.getById(ctx, dom.getAnchorId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
