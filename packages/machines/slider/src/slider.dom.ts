@@ -10,7 +10,7 @@ export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `slider:${ctx.id}:thumb`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.id}:control`,
-  getInputId: (ctx: Ctx) => `slider:${ctx.id}:input`,
+  getHiddenInputId: (ctx: Ctx) => `slider:${ctx.id}:input`,
   getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.id}:output`,
   getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}track`,
   getRangeId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}:range`,
@@ -20,7 +20,7 @@ export const dom = defineDomHelpers({
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getThumbId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
     // get the slider root element
@@ -45,7 +45,7 @@ export const dom = defineDomHelpers({
   },
 
   dispatchChangeEvent(ctx: Ctx) {
-    const input = dom.getInputEl(ctx)
+    const input = dom.getHiddenInputEl(ctx)
     if (!input) return
     dispatchInputValueEvent(input, ctx.value)
   },

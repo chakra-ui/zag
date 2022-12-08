@@ -56,7 +56,7 @@ export default defineComponent({
                       <div {...api.rangeProps} />
                     </div>
                     <div data-testid="thumb" {...api.thumbProps}>
-                      <input {...api.inputProps} />
+                      <input {...api.hiddenInputProps} />
                     </div>
                   </div>
                   <div {...api.markerGroupProps}>
