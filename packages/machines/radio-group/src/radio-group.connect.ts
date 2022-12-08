@@ -107,20 +107,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemLabelProps(props: RadioProps) {
+    getRadioLabelProps(props: RadioProps) {
       return normalize.element({
-        ...parts.itemLabel.attrs,
-        id: dom.getItemLabelId(state.context, props.value),
+        ...parts.radioLabel.attrs,
+        id: dom.getRadioLabelId(state.context, props.value),
         ...getRadioDataSet(props),
       })
     },
 
-    getItemControlProps(props: RadioProps) {
+    getRadioControlProps(props: RadioProps) {
       const controlState = getRadioState(props)
 
       return normalize.element({
-        ...parts.itemControl.attrs,
-        id: dom.getItemControlId(state.context, props.value),
+        ...parts.radioControl.attrs,
+        id: dom.getRadioControlId(state.context, props.value),
         "data-active": dataAttr(controlState.isActive),
         "aria-hidden": true,
         ...getRadioDataSet(props),
