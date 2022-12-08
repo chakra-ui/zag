@@ -5,7 +5,7 @@ export const anatomy = createAnatomy("menu").parts(
   "triggerItem",
   "positioner",
   "arrow",
-  "arrowInner",
+  "arrowTip",
   "content",
   "separator",
   "item",
