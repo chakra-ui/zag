@@ -643,11 +643,16 @@ main [data-testid="scrubber"] {
 * Pin Input
 * -----------------------------------------------------------------------------*/
 
-.pin-input [data-part="root"] {
+.pin-input [data-part="control"] {
   width: 300px;
   display: flex;
   margin-bottom: 12px;
   gap: 12px;
+}
+
+.pin-input [data-part="label"] {
+  display: block;
+  margin-bottom: 8px;
 }
 
 .pin-input [data-part="input"] {
