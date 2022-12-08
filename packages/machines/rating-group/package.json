@@ -1,7 +1,7 @@
 {
-  "name": "@zag-js/rating",
+  "name": "@zag-js/rating-group",
   "version": "0.2.4",
-  "description": "Core logic for the rating widget implemented as a state machine",
+  "description": "Core logic for the rating-group widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -12,7 +12,8 @@
     "statechart",
     "component",
     "chakra-ui",
-    "rating"
+    "rating",
+    "rating-group"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",

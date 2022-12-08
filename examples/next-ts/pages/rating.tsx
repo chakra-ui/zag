@@ -1,4 +1,4 @@
-import * as rating from "@zag-js/rating"
+import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { ratingControls } from "@zag-js/shared"
 import { useId } from "react"

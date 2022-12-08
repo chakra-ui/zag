@@ -2,8 +2,8 @@ import { createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-utils"
 import { trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
-import { dom } from "./rating.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
+import { dom } from "./rating-group.dom"
+import type { MachineContext, MachineState, UserDefinedContext } from "./rating-group.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)

@@ -1,6 +1,5 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
-// TODO rename package to @zag-js/rating-group
 export const anatomy = createAnatomy("rating").parts(
   "root",
   "input", // TODO rename to hiddenInput

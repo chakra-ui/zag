@@ -10,9 +10,9 @@ import {
 } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast } from "@zag-js/utils"
-import { parts } from "./rating.anatomy"
-import { dom } from "./rating.dom"
-import type { Send, State } from "./rating.types"
+import { parts } from "./rating-group.anatomy"
+import { dom } from "./rating-group.dom"
+import type { Send, State } from "./rating-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive

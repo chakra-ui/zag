@@ -1,6 +1,6 @@
 import { defineDomHelpers } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
-import type { MachineContext as Ctx } from "./rating.types"
+import type { MachineContext as Ctx } from "./rating-group.types"
 
 export const dom = defineDomHelpers({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `rating:${ctx.id}`,
