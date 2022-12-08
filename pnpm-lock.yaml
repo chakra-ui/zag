@@ -89,11 +89,13 @@ importers:
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
       '@zag-js/accordion': workspace:*
+      '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/auto-resize': workspace:*
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -143,11 +145,13 @@ importers:
       typescript: 4.8.4
     dependencies:
       '@zag-js/accordion': link:../../packages/machines/accordion
+      '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -211,6 +215,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -263,6 +268,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -327,6 +333,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -383,6 +390,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -569,6 +577,19 @@ importers:
       '@zag-js/interact-outside': link:../../utilities/interact-outside
       '@zag-js/live-region': link:../../utilities/live-region
       '@zag-js/popper': link:../../utilities/popper
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
+
+  packages/machines/date-picker:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
+    dependencies:
+      '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom

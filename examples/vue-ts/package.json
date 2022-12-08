@@ -17,6 +17,7 @@
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/date-picker": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
