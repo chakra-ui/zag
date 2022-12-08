@@ -43,7 +43,7 @@ export default function Page() {
                 </div>
                 {api.value.map((_, index) => (
                   <div key={index} {...api.getThumbProps(index)}>
-                    <input {...api.getInputProps(index)} />
+                    <input {...api.getHiddenInputProps(index)} />
                   </div>
                 ))}
               </div>
