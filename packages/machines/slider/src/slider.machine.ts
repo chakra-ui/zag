@@ -130,7 +130,7 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: {
         trackFormControlState(ctx) {
-          return trackFormControl(dom.getInputEl(ctx), {
+          return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },

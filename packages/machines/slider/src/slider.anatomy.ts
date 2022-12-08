@@ -4,7 +4,7 @@ export const anatomy = createAnatomy("slider").parts(
   "root",
   "label",
   "thumb",
-  "input",
+  "hiddenInput",
   "output",
   "track",
   "range",

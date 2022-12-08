@@ -63,7 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
-      htmlFor: dom.getInputId(state.context),
+      htmlFor: dom.getHiddenInputId(state.context),
       onClick(event) {
         if (!isInteractive) return
         event.preventDefault()
@@ -147,13 +147,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getThumbStyle(state.context),
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
+    hiddenInputProps: normalize.input({
+      ...parts.hiddenInput.attrs,
       type: "text",
       defaultValue: state.context.value,
       name: state.context.name,
       form: state.context.form,
-      id: dom.getInputId(state.context),
+      id: dom.getHiddenInputId(state.context),
       hidden: true,
     }),
 
@@ -162,7 +162,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
-      htmlFor: dom.getInputId(state.context),
+      htmlFor: dom.getHiddenInputId(state.context),
       "aria-live": "off",
     }),
 
