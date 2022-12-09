@@ -590,6 +590,7 @@ importers:
 
   packages/machines/date-picker:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-utils': workspace:*
       '@zag-js/dom-utils': workspace:*
@@ -597,6 +598,7 @@ importers:
       '@zag-js/utils': workspace:*
       proxy-memoize: 1.2.0
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/date-utils': link:../../utilities/date-utils
       '@zag-js/types': link:../../types

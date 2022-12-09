@@ -40,6 +40,8 @@ type DataAttr = {
 
   "data-count"?: number
   "data-index"?: number
+} & {
+  [k in `data-${string}`]?: string | Booleanish | number
 }
 
 export type PropTypes = Record<"button" | "label" | "input" | "output" | "element" | "select", Dict>

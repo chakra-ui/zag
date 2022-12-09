@@ -7,25 +7,67 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "date-picker",
-      initial: "unknown",
-      context: {
-        ...ctx,
+      initial: "open:month",
+      // context: {
+      //   locale: "en",
+      //   timeZone: "GMT",
+      //   duration: { months: 1 },
+      // },
+
+      watch: {
+        focusedValue: ["adjustStartDate", "focusFocusedCell"],
       },
+
       states: {
-        unknown: {
+        idle: {
+          tags: "closed",
+        },
+        focused: {
+          tags: "closed",
+        },
+        "open:month": {
+          tags: "open",
           on: {
-            SETUP: {
-              actions: ["setupDocument"],
+            FOCUS_CELL: {
+              actions: ["setFocusedDate"],
+            },
+            ENTER: {
+              actions: ["selectFocusedDate"],
+            },
+            CLICK_CELL: {
+              actions: ["setFocusedDate", "setSelectedDate"],
+            },
+            ARROW_RIGHT: {
+              actions: ["focusNextDay"],
+            },
+            ARROW_LEFT: {
+              actions: ["focusPreviousDay"],
+            },
+            ARROW_UP: {
+              actions: ["focusPreviousWeek"],
+            },
+            ARROW_DOWN: {
+              actions: ["focusNextWeek"],
+            },
+            PAGE_UP: {
+              actions: ["focusPreviousSection"],
+            },
+            PAGE_DOWN: {
+              actions: ["focusNextSection"],
+            },
+            CLICK_PREV: {
+              actions: ["focusPreviousPage"],
+            },
+            CLICK_NEXT: {
+              actions: ["focusNextPage"],
             },
           },
         },
+        "open:year": {
+          tags: "open",
+        },
       },
     },
-    {
-      guards: {},
-      actions: {
-        setupDocument(ctx) {},
-      },
-    },
+    {},
   )
 }
