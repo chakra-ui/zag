@@ -1,4 +1,4 @@
-# @zag-js/radio
+# @zag-js/radio-group
 
 ## 0.1.4
 
