@@ -1,24 +1,38 @@
 // Credits: https://github.com/pmndrs/valtio
 
-import { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
-import { affectedToPathList, createProxy as createProxyToCompare, isChanged } from "proxy-compare"
-import { snapshot, subscribe } from "@zag-js/store"
+import { INTERNAL_Snapshot as Snapshot, snapshot, subscribe } from "@zag-js/store"
+import { createProxy as createProxyToCompare, getUntracked, isChanged } from "proxy-compare"
+//@ts-ignore
+import { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore, use } from "react"
 
-const __DEV__ = process.env.NODE_ENV !== "production"
-
-interface AsRef {
-  $$valtioRef: true
-}
-type AnyFunction = (...args: any[]) => any
-type Snapshot<T> = T extends AnyFunction
-  ? T
-  : T extends AsRef
-  ? T
-  : T extends Promise<infer V>
-  ? Snapshot<V>
-  : {
-      readonly [K in keyof T]: Snapshot<T[K]>
+// customized version of affectedToPathList
+// we need to avoid invoking getters
+const affectedToPathList = (obj: unknown, affected: WeakMap<object, unknown>) => {
+  const list: (string | symbol)[][] = []
+  const seen = new WeakSet()
+  const walk = (x: unknown, path?: (string | symbol)[]) => {
+    if (seen.has(x as object)) {
+      // for object with cycles
+      return
     }
+    let used: Set<string | symbol> | undefined
+    if (typeof x === "object" && x !== null) {
+      seen.add(x)
+      used = affected.get(getUntracked(x) || x) as any
+    }
+    if (used) {
+      used.forEach((key) => {
+        if ("value" in (Object.getOwnPropertyDescriptor(x, key) || {})) {
+          walk((x as any)[key], path ? [...path, key] : [key])
+        }
+      })
+    } else if (path) {
+      list.push(path)
+    }
+  }
+  walk(obj)
+  return list
+}
 
 const useAffectedDebugValue = (state: object, affected: WeakMap<object, unknown>) => {
   const pathList = useRef<(string | number | symbol)[][]>()
@@ -28,7 +42,7 @@ const useAffectedDebugValue = (state: object, affected: WeakMap<object, unknown>
   useDebugValue(pathList.current)
 }
 
-interface Options {
+type Options = {
   sync?: boolean
 }
 
@@ -47,7 +61,7 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
       [proxyObject, notifyInSync],
     ),
     () => {
-      const nextSnapshot = snapshot(proxyObject)
+      const nextSnapshot = snapshot(proxyObject, use)
       try {
         if (
           !inRender &&
@@ -63,7 +77,7 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
       }
       return nextSnapshot
     },
-    () => snapshot(proxyObject),
+    () => snapshot(proxyObject, use),
   )
   inRender = false
   const currAffected = new WeakMap()
@@ -71,11 +85,9 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
     lastSnapshot.current = currSnapshot
     lastAffected.current = currAffected
   })
-
-  if (__DEV__) {
+  if (process.env.NODE_ENV !== "production") {
     useAffectedDebugValue(currSnapshot, currAffected)
   }
-
   const proxyCache = useMemo(() => new WeakMap(), []) // per-hook proxyCache
   return createProxyToCompare(currSnapshot, currAffected, proxyCache)
 }
