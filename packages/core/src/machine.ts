@@ -14,7 +14,7 @@ import {
   warn,
 } from "@zag-js/utils"
 import { deepMerge } from "./deep-merge"
-import { klona } from "klona/json"
+import { klona } from "klona/full"
 import { createProxy } from "./create-proxy"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
