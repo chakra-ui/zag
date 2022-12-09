@@ -1,6 +1,5 @@
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { CellProps, Send, State } from "./date-picker.types"
-// import { dom } from "./date-picker.dom"
 import { getCalendarState } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
 import { parts } from "./date-picker.anatomy"
@@ -150,8 +149,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       "aria-label": "TODO",
       disabled: state.context.isNextVisibleRangeValid,
-      // onFocus: () => (nextFocused.current = true),
-      // onBlur: () => (nextFocused.current = false)
     }),
 
     prevTriggerProps: normalize.button({
@@ -162,8 +159,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       "aria-label": "TODO",
       disabled: state.context.isPrevVisibleRangeValid,
-      // onFocus: () => (previousFocused.current = true),
-      // onBlur: () => (previousFocused.current = false)
     }),
   }
 }

@@ -2,8 +2,16 @@ import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@zag-
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
+type ElementIds = Partial<{
+  root: string
+  grid: string
+  cell(id: string): string
+  cellTrigger(id: string): string
+}>
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
+    ids?: ElementIds
     locale: string
     timeZone: string
     disabled?: boolean

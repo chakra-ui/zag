@@ -3,6 +3,7 @@ import { DateFormatter, getCalendarState } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-utils"
 import { compact } from "@zag-js/utils"
 import memo from "proxy-memoize"
+import { dom } from "./date-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
 function getInitialContext(ctx: UserDefinedContext) {
@@ -110,9 +111,9 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         disableTextSelection() {},
         enableTextSelection() {},
-        focusFocusedCell() {
+        focusFocusedCell(ctx) {
           raf(() => {
-            const cell = document.querySelector<HTMLElement>("[data-part=cell-trigger][data-focused]")
+            const cell = dom.getFocusedCell(ctx)
             cell?.focus({ preventScroll: true })
           })
         },
