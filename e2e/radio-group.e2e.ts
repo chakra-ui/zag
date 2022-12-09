@@ -22,7 +22,7 @@ const expectToBeChecked = async (page: Page, item: typeof apple) => {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/radio")
+  await page.goto("/radio-group")
 })
 
 test("should have no accessibility violation", async ({ page }) => {
