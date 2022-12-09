@@ -15,14 +15,15 @@ export function getSelectedDateDescription(ctx: DateDescriptionContext) {
     if (isSameDay(ctx.start, ctx.end)) {
       return dateFormatter.format(ctx.start.toDate(ctx.timeZone))
     } else {
-      return formatRange(dateFormatter, ctx)
+      const msg = formatRange(dateFormatter, ctx)
+      return `${msg.start} - ${msg.end}`
     }
   }
 
   return ""
 }
 
-export function getVisibleRangeDescription(ctx: DateDescriptionContext, isAria: boolean) {
+export function getVisibleRangeDescription(ctx: DateDescriptionContext, isAria?: boolean) {
   if (!ctx.start || !ctx.end) throw new Error("Missing start date")
 
   let era = getEraFormat(ctx.start) || getEraFormat(ctx.end)

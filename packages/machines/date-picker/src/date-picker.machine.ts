@@ -1,8 +1,13 @@
 import { createMachine } from "@zag-js/core"
-import { DateFormatter, getCalendarState } from "@zag-js/date-utils"
+import {
+  DateFormatter,
+  getCalendarState,
+  getSelectedDateDescription,
+  getVisibleRangeDescription,
+} from "@zag-js/date-utils"
 import { createLiveRegion } from "@zag-js/live-region"
-import { raf } from "@zag-js/dom-utils"
-import { compact } from "@zag-js/utils"
+import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
+import { compact, isString } from "@zag-js/utils"
 import memo from "proxy-memoize"
 import { dom } from "./date-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
@@ -126,10 +131,33 @@ export function machine(userContext: UserDefinedContext) {
         setFormatter(ctx) {
           ctx.formatter = (options) => new DateFormatter(ctx.locale, options)
         },
-        announceSelectedDate() {},
-        announceVisibleRange() {},
-        disableTextSelection() {},
-        enableTextSelection() {},
+        announceSelectedDate(ctx) {
+          const selectedDate = getSelectedDateDescription({
+            createDateFormatter: ctx.formatter,
+            start: ctx.startValue,
+            locale: ctx.locale,
+            timeZone: ctx.timeZone,
+          })
+          ctx.annoucer?.announce(selectedDate)
+        },
+        announceVisibleRange(ctx) {
+          const visibleRange = getVisibleRangeDescription({
+            createDateFormatter: ctx.formatter,
+            start: ctx.startValue,
+            locale: ctx.locale,
+            timeZone: ctx.timeZone,
+          })
+
+          if (isString(visibleRange)) {
+            ctx.annoucer?.announce(visibleRange)
+          }
+        },
+        disableTextSelection(ctx) {
+          disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
+        },
+        enableTextSelection(ctx) {
+          restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
+        },
         focusFocusedCell(ctx) {
           raf(() => {
             const cell = dom.getFocusedCell(ctx)
