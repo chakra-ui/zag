@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { DateFormatter, getCalendarState } from "@zag-js/date-utils"
+import { createLiveRegion } from "@zag-js/live-region"
 import { raf } from "@zag-js/dom-utils"
 import { compact } from "@zag-js/utils"
 import memo from "proxy-memoize"
@@ -7,12 +8,16 @@ import { dom } from "./date-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
 function getInitialContext(ctx: UserDefinedContext) {
-  const calendar = getCalendarState(ctx as MachineContext)
+  const _ctx = ctx as MachineContext
+  const calendar = getCalendarState(_ctx)
+
   const focusedValue = calendar.getToday()
   const startValue = calendar.setAlignment(focusedValue, "start")
+
   return {
     focusedValue,
     startValue,
+    formatter: (options) => new DateFormatter(_ctx.locale, options),
     ...ctx,
   } as MachineContext
 }
@@ -46,6 +51,9 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         focusedValue: ["adjustStartDate", "focusFocusedCell"],
+        visibleRange: ["announceVisibleRange"],
+        value: ["announceSelectedDate"],
+        locale: ["setFormatter"],
       },
 
       on: {
@@ -109,6 +117,17 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       actions: {
+        setupAnnouncer(ctx) {
+          ctx.annoucer = createLiveRegion({
+            level: "assertive",
+            document: dom.getDoc(ctx),
+          })
+        },
+        setFormatter(ctx) {
+          ctx.formatter = (options) => new DateFormatter(ctx.locale, options)
+        },
+        announceSelectedDate() {},
+        announceVisibleRange() {},
         disableTextSelection() {},
         enableTextSelection() {},
         focusFocusedCell(ctx) {

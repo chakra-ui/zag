@@ -41,6 +41,7 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/live-region": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/date-utils": "workspace:*",
     "proxy-memoize": "1.2.0"

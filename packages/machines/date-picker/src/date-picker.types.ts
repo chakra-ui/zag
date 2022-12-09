@@ -1,6 +1,7 @@
 import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@zag-js/date-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import { LiveRegion } from "@zag-js/live-region"
 
 type ElementIds = Partial<{
   root: string
@@ -27,8 +28,12 @@ type PublicContext = DirectionProperty &
     isDateUnavailable?: (date: DateValue) => boolean
   }
 
+type DateFormatterFn = (options: Intl.DateTimeFormatOptions) => DateFormatter
+
 type PrivateContext = Context<{
   hasFocus?: boolean
+  annoucer?: LiveRegion
+  formatter: DateFormatterFn
 }>
 
 type ComputedContext = Readonly<{

@@ -594,6 +594,7 @@ importers:
       '@zag-js/core': workspace:*
       '@zag-js/date-utils': workspace:*
       '@zag-js/dom-utils': workspace:*
+      '@zag-js/live-region': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       proxy-memoize: 1.2.0
@@ -601,6 +602,7 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/date-utils': link:../../utilities/date-utils
+      '@zag-js/live-region': link:../../utilities/live-region
       '@zag-js/types': link:../../types
       proxy-memoize: 1.2.0
     devDependencies:

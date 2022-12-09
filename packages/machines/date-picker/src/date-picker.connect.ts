@@ -23,6 +23,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     weeks: state.context.weeks,
     weekDays: calendar.getWeekDays().map(formatDay),
+    visibleRangeText: "TODO",
 
     value: selectedDate,
     valueAsDate: selectedDate?.toDate(state.context.timeZone),
@@ -33,6 +34,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focusedValueAsString: focusedDate?.toString(),
 
     rootProps: normalize.element({
+      role: "group",
+      "aria-label": "TODO",
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
