@@ -2,21 +2,21 @@ import { expect, Page, test } from "@playwright/test"
 import { a11y, controls, testid } from "./__utils"
 
 const apple = {
-  item: testid("item-apple"),
+  radio: testid("radio-apple"),
   label: testid("label-apple"),
   input: testid("input-apple"),
   control: testid("control-apple"),
 }
 
 const grape = {
-  item: testid("item-grape"),
+  radio: testid("radio-grape"),
   label: testid("label-grape"),
   input: testid("input-grape"),
   control: testid("control-grape"),
 }
 
 const expectToBeChecked = async (page: Page, item: typeof apple) => {
-  await expect(page.locator(item.item)).toHaveAttribute("data-checked", "")
+  await expect(page.locator(item.radio)).toHaveAttribute("data-checked", "")
   await expect(page.locator(item.label)).toHaveAttribute("data-checked", "")
   await expect(page.locator(item.control)).toHaveAttribute("data-checked", "")
 }
@@ -30,10 +30,10 @@ test("should have no accessibility violation", async ({ page }) => {
 })
 
 test("should be checked when clicked", async ({ page }) => {
-  await page.click(apple.item)
+  await page.click(apple.radio)
   await expectToBeChecked(page, apple)
 
-  await page.click(grape.item)
+  await page.click(grape.radio)
   await expectToBeChecked(page, grape)
 })
 
@@ -72,7 +72,7 @@ test("should be focusable when readonly", async ({ page }) => {
 })
 
 test("should be focused on active radio item when page is tabbed", async ({ page }) => {
-  await page.click(grape.item)
+  await page.click(grape.radio)
   await expectToBeChecked(page, grape)
 
   await page.click("main")
@@ -82,7 +82,7 @@ test("should be focused on active radio item when page is tabbed", async ({ page
 })
 
 test("should check items when navigating by arrows", async ({ page }) => {
-  await page.click(apple.item)
+  await page.click(apple.radio)
   await expectToBeChecked(page, apple)
 
   await page.keyboard.press("ArrowDown")

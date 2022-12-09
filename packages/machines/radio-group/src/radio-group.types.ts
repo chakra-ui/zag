@@ -4,10 +4,10 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 type ElementIds = Partial<{
   root: string
   label: string
-  item(value: string): string
-  itemInput(value: string): string
-  itemControl(value: string): string
-  itemLabel(value: string): string
+  radio(value: string): string
+  radioLabel(value: string): string
+  radioControl(value: string): string
+  radioInput(value: string): string
 }>
 
 type PublicContext = DirectionProperty &
@@ -17,7 +17,7 @@ type PublicContext = DirectionProperty &
      */
     ids?: ElementIds
     /**
-     * The value of the checked radio item
+     * The value of the checked radio
      */
     value: string | null
 
@@ -57,17 +57,17 @@ type PrivateContext = Context<{
   initialValue: string | null
   /**
    * @internal
-   * The id of the active radio item
+   * The id of the active radio
    */
   activeId: string | null
   /**
    * @internal
-   * The id of the focused radio item
+   * The id of the focused radio
    */
   focusedId: string | null
   /**
    * @internal
-   * The id of the hovered radio item
+   * The id of the hovered radio
    */
   hoveredId: string | null
 }>
@@ -86,7 +86,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type ItemProps = {
+export type RadioProps = {
   value: string
   /**
    * If `true`, the radio will be disabled
@@ -102,7 +102,7 @@ export type ItemProps = {
   invalid?: boolean
 }
 
-export type InputProps = ItemProps & {
+export type InputProps = RadioProps & {
   /**
    * If `true` and `disabled` is passed, the radio will
    * remain tabbable but not interactive

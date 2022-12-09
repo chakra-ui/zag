@@ -1,8 +1,8 @@
 import { createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
-import { dom } from "./radio.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./radio.types"
+import { dom } from "./radio-group.dom"
+import { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -86,7 +86,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         dispatchChangeEvent(ctx, evt) {
           if (!evt.manual) return
-          const el = dom.getItemInputEl(ctx, evt.value)
+          const el = dom.getRadioInputEl(ctx, evt.value)
           if (!el) return
           dispatchInputCheckedEvent(el, !!evt.value)
         },
