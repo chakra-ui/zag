@@ -24,7 +24,7 @@ const pointerover = (el: Locator) => {
 
 test.describe("rating / pointer", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/rating")
+    await page.goto("/rating-group")
   })
 
   test("should be accessible", async ({ page }) => {
@@ -54,7 +54,7 @@ test.describe("rating / pointer", () => {
 
 test.describe("rating / properties", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/rating")
+    await page.goto("/rating-group")
   })
 
   test("should not be selectable when disabled", async ({ page }) => {
@@ -75,7 +75,7 @@ test.describe("rating / properties", () => {
 
 test.describe("rating / keyboard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/rating")
+    await page.goto("/rating-group")
     await page.click("main")
   })
 
