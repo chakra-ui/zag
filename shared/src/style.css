@@ -1113,21 +1113,21 @@ main > .toggle[data-pressed] {
   align-items: flex-start;
 }
 
-.select [data-part="label"] {
+[data-scope="select"][data-part="label"] {
   cursor: pointer;
   font-size: 14px;
 }
 
-.select [data-part="label"][data-disabled] {
+[data-scope="select"][data-part="label"][data-disabled] {
   cursor: default;
   color: gray;
 }
 
-.select [data-part="label"][data-invalid] {
+[data-scope="select"][data-part="label"][data-invalid] {
   color: red;
 }
 
-.select [data-part="trigger"] {
+[data-scope="select"][data-part="trigger"] {
   padding: 4px 12px;
   border-radius: 4px;
   border: none;
@@ -1146,19 +1146,19 @@ main > .toggle[data-pressed] {
   top: 1px;
 }
 
-.select [data-part="trigger"]:disabled {
+[data-scope="select"][data-part="trigger"]:disabled {
   cursor: default;
 }
 
-.select [data-part="trigger"][data-invalid] {
+[data-scope="select"][data-part="trigger"][data-invalid] {
   border: 2px solid red;
 }
 
-.select [data-part="positioner"] {
+[data-scope="select"][data-part="positioner"] {
   width: max-content;
 }
 
-.select [data-part="menu"] {
+[data-scope="select"][data-part="content"] {
   padding: 0px;
   list-style: none;
   width: 240px;
@@ -1175,7 +1175,7 @@ main > .toggle[data-pressed] {
   top: 0;
 }
 
-.select [data-part="option"] {
+[data-scope="select"][data-part="option"] {
   padding: 4px 6px;
   cursor: default;
   background: #efefef;
@@ -1183,19 +1183,19 @@ main > .toggle[data-pressed] {
   align-items: center;
 }
 
-.select [data-part="option"][data-disabled] {
+[data-scope="select"][data-part="option"][data-disabled] {
   color: #777;
 }
 
-.select [data-part="option"] > span {
+[data-scope="select"][data-part="option"] > span {
   flex: 1;
 }
 
-.select [data-part="option"]:hover {
+[data-scope="select"][data-part="option"]:hover {
   background: #dfdfdf;
 }
 
-.select [data-part="option"][data-focus] {
+[data-scope="select"][data-part="option"][data-focus] {
   background: blue;
   color: white;
 }
