@@ -9,7 +9,7 @@ import { useControls } from "../hooks/use-controls"
 function Loader() {
   return (
     <svg
-      class="spin"
+      class="spinner"
       stroke="currentColor"
       fill="currentColor"
       stroke-width="0"
@@ -27,6 +27,7 @@ function ToastItem(props: { actor: toast.Service }) {
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
   const progressbarProps = createMemo(() => ({
+    "data-scope": "toast",
     "data-part": "progressbar",
     "data-type": state.context.type,
     style: {
@@ -100,7 +101,7 @@ export default function Page() {
           <button onClick={() => api().resume()}>Resume all</button>
         </div>
 
-        <div class="toast-group" {...api().getGroupProps({ placement: "bottom" })}>
+        <div {...api().getGroupProps({ placement: "bottom" })}>
           <For each={api().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
         </div>
       </main>

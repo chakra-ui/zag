@@ -709,49 +709,50 @@ main [data-testid="scrubber"] {
   }
 }
 
-.toast-group [data-part="root"] {
+[data-scope="toast"][data-part="root"] {
   background: rgb(116, 116, 116);
   border-radius: 4px;
   color: white;
-  padding: 8px 8px 8px 16px;
+  padding: 12px;
   width: 400px;
   animation-fill-mode: forwards;
   animation-duration: 0.2s;
   animation-name: fadeIn;
 }
 
-.toast-group [data-part="root"]:not([data-open]) {
+[data-scope="toast"][data-part="root"]:not([data-open]) {
   animation-duration: var(--toast-remove-delay);
   animation-name: fadeOut;
 }
 
-.toast-group [data-part="root"][data-type="error"] {
+[data-scope="toast"][data-part="root"][data-type="error"] {
   background: red;
 }
-.toast-group [data-part="root"][data-type="info"] {
+[data-scope="toast"][data-part="root"][data-type="info"] {
   background: blue;
 }
-.toast-group [data-part="root"][data-type="warning"] {
+[data-scope="toast"][data-part="root"][data-type="warning"] {
   background: orange;
 }
-.toast-group [data-part="root"][data-type="success"] {
+[data-scope="toast"][data-part="root"][data-type="success"] {
   background: green;
 }
-.toast-group [data-part="root"][data-type="loading"] {
+[data-scope="toast"][data-part="root"][data-type="loading"] {
   background: purple;
 }
 
-.toast-group .spin {
+[data-scope="toast"] .spinner {
   animation: spin 1s linear infinite;
 }
 
-.toast-group [data-part="progressbar"] {
+[data-scope="toast"][data-part="progressbar"] {
   height: 4px;
   background: rgb(116, 116, 116);
+  width: 100%;
   animation-name: shrink;
 }
 
-.toast-group [data-part="progressbar"][data-type="loading"] {
+[data-scope="toast"][data-part="progressbar"][data-type="loading"] {
   animation-name: none;
 }
 
