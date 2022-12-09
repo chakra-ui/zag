@@ -1,20 +1,50 @@
+import type { CalendarDate, DateDuration, DateValue } from "@zag-js/date-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type PublicContext = DirectionProperty & CommonProperties & {}
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    locale: string
+    timeZone: string
+    disabled?: boolean
+    readonly?: boolean
+    min?: CalendarDate
+    max?: CalendarDate
+    value?: CalendarDate
+    focusedValue: CalendarDate
+    duration: DateDuration
+    startValue: CalendarDate
+    onChange?: (details: { value: CalendarDate }) => void
+    isDateUnavailable?: (date: DateValue) => boolean
+  }
 
-type PrivateContext = Context<{}>
+type PrivateContext = Context<{
+  hasFocus?: boolean
+}>
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  endValue: CalendarDate
+  weeks: (CalendarDate | null)[][]
+  isInteractive: boolean
+  visibleRange: { start: CalendarDate; end: CalendarDate }
+  isNextVisibleRangeValid: boolean
+  isPrevVisibleRangeValid: boolean
+}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-export type MachineState = {
-  value: "unknown"
-}
-
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type CellProps = {
+  date: CalendarDate
+  disabled?: boolean
+}
+
+export type MachineState = {
+  tags: "open" | "closed"
+  value: "idle" | "focused" | "open:month" | "open:year"
+}
