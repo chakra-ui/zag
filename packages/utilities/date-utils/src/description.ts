@@ -15,8 +15,7 @@ export function getSelectedDateDescription(ctx: DateDescriptionContext) {
     if (isSameDay(ctx.start, ctx.end)) {
       return dateFormatter.format(ctx.start.toDate(ctx.timeZone))
     } else {
-      const msg = formatRange(dateFormatter, ctx)
-      return `${msg.start} - ${msg.end}`
+      return formatRange(dateFormatter, ctx)
     }
   }
 
@@ -90,5 +89,5 @@ function formatRange(dateFormatter: DateFormatter, ctx: DateDescriptionContext) 
     }
   }
 
-  return { start, end }
+  return ctx.stringify({ start, end })
 }

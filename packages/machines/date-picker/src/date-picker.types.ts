@@ -44,6 +44,8 @@ type ComputedContext = Readonly<{
   visibleRange: { start: CalendarDate; end: CalendarDate }
   isNextVisibleRangeValid: boolean
   isPrevVisibleRangeValid: boolean
+  selectedDateDescription: string
+  visibleRangeDescription: string
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

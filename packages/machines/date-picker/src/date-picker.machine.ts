@@ -5,16 +5,16 @@ import {
   getSelectedDateDescription,
   getVisibleRangeDescription,
 } from "@zag-js/date-utils"
-import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
-import { compact, isString } from "@zag-js/utils"
+import { createLiveRegion } from "@zag-js/live-region"
+import { compact } from "@zag-js/utils"
 import memo from "proxy-memoize"
 import { dom } from "./date-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
-function getInitialContext(ctx: UserDefinedContext) {
-  const _ctx = ctx as MachineContext
-  const calendar = getCalendarState(_ctx)
+function getInitialContext(context: UserDefinedContext) {
+  const ctx = context as MachineContext
+  const calendar = getCalendarState(ctx)
 
   const focusedValue = calendar.getToday()
   const startValue = calendar.setAlignment(focusedValue, "start")
@@ -22,8 +22,8 @@ function getInitialContext(ctx: UserDefinedContext) {
   return {
     focusedValue,
     startValue,
-    formatter: (options) => new DateFormatter(_ctx.locale, options),
-    ...ctx,
+    formatter: (options) => new DateFormatter(ctx.locale, options),
+    ...context,
   } as MachineContext
 }
 
@@ -51,6 +51,28 @@ export function machine(userContext: UserDefinedContext) {
         },
         isNextVisibleRangeValid(ctx) {
           return getCalendarState(ctx).isNextVisibleRangeInvalid(ctx.startValue)
+        },
+        selectedDateDescription: (ctx) => {
+          return getSelectedDateDescription({
+            createDateFormatter: ctx.formatter,
+            start: ctx.startValue,
+            locale: ctx.locale,
+            timeZone: ctx.timeZone,
+            stringify({ start, end }) {
+              return `${start} - ${end}`
+            },
+          })
+        },
+        visibleRangeDescription: (ctx) => {
+          return getVisibleRangeDescription({
+            createDateFormatter: ctx.formatter,
+            start: ctx.startValue,
+            locale: ctx.locale,
+            timeZone: ctx.timeZone,
+            stringify({ start, end }) {
+              return `${start} - ${end}`
+            },
+          })
         },
       },
 
@@ -132,25 +154,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.formatter = (options) => new DateFormatter(ctx.locale, options)
         },
         announceSelectedDate(ctx) {
-          const selectedDate = getSelectedDateDescription({
-            createDateFormatter: ctx.formatter,
-            start: ctx.startValue,
-            locale: ctx.locale,
-            timeZone: ctx.timeZone,
-          })
-          ctx.annoucer?.announce(selectedDate, 3000)
+          ctx.annoucer?.announce(ctx.selectedDateDescription, 3000)
         },
         announceVisibleRange(ctx) {
-          const visibleRange = getVisibleRangeDescription({
-            createDateFormatter: ctx.formatter,
-            start: ctx.startValue,
-            locale: ctx.locale,
-            timeZone: ctx.timeZone,
-          })
-
-          if (isString(visibleRange)) {
-            ctx.annoucer?.announce(visibleRange)
-          }
+          ctx.annoucer?.announce(ctx.visibleRangeDescription)
         },
         disableTextSelection(ctx) {
           disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
