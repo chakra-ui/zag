@@ -138,7 +138,7 @@ export function machine(userContext: UserDefinedContext) {
             locale: ctx.locale,
             timeZone: ctx.timeZone,
           })
-          ctx.annoucer?.announce(selectedDate)
+          ctx.annoucer?.announce(selectedDate, 3000)
         },
         announceVisibleRange(ctx) {
           const visibleRange = getVisibleRangeDescription({
