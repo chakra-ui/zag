@@ -38,11 +38,9 @@ export default function Page() {
             <tbody>
               {api.weeks.map((week, i) => (
                 <tr key={i}>
-                  {week.map((day) => {
+                  {week.map((date, i) => {
                     return (
-                      <td key={day?.day}>
-                        <span {...api.getCellTriggerProps({ date: day! })}>{day?.day}</span>
-                      </td>
+                      <td key={i}>{date ? <span {...api.getCellTriggerProps({ date })}>{date.day}</span> : null}</td>
                     )
                   })}
                 </tr>
