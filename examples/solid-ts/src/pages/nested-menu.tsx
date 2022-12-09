@@ -42,7 +42,7 @@ export default function Page() {
 
           <Portal>
             <div {...root().positionerProps}>
-              <ul data-testid="menu" class="menu-content" {...root().contentProps}>
+              <ul data-testid="menu" {...root().contentProps}>
                 <For each={level1}>
                   {(item) => {
                     const props = createMemo(() =>
@@ -61,7 +61,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub().positionerProps}>
-              <ul data-testid="more-tools-submenu" class="menu-content" {...sub().contentProps}>
+              <ul data-testid="more-tools-submenu" {...sub().contentProps}>
                 <For each={level2}>
                   {(item) => {
                     const props = createMemo(() =>
@@ -80,7 +80,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub2().positionerProps}>
-              <ul data-testid="open-nested-submenu" class="menu-content" {...sub2().contentProps}>
+              <ul data-testid="open-nested-submenu" {...sub2().contentProps}>
                 <For each={level3}>
                   {(item) => (
                     <li data-testid={item.id} {...sub2().getItemProps({ id: item.id })}>
