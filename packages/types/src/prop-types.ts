@@ -44,7 +44,9 @@ type DataAttr = {
   [k in `data-${string}`]?: string | Booleanish | number
 }
 
-export type PropTypes = Record<"button" | "label" | "input" | "output" | "element" | "select", Dict>
+type ElementType = keyof JSX.IntrinsicElements | "element"
+
+export type PropTypes = Record<ElementType, Dict>
 
 export type NormalizeProps<T extends PropTypes> = {
   [K in keyof T]: (props: K extends keyof JSX.IntrinsicElements ? DataAttr & JSX.IntrinsicElements[K] : never) => T[K]
