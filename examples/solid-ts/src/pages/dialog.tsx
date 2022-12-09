@@ -27,7 +27,7 @@ export default function Page() {
 
           <Show when={parentDialog().isOpen}>
             <Portal>
-              <div class="dialog-backdrop" {...parentDialog().backdropProps} />
+              <div {...parentDialog().backdropProps} />
               <div {...parentDialog().containerProps} data-testid="container-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>
@@ -45,7 +45,7 @@ export default function Page() {
                   </button>
                   <Show when={childDialog().isOpen}>
                     <Portal>
-                      <div class="dialog-backdrop" {...childDialog().backdropProps} />
+                      <div {...childDialog().backdropProps} />
                       <div {...childDialog().containerProps} data-testid="container-2">
                         <div {...childDialog().contentProps}>
                           <h2 {...childDialog().titleProps}>Nested</h2>
