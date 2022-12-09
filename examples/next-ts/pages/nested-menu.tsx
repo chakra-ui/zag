@@ -54,7 +54,7 @@ export default function Page() {
 
           <Portal>
             <div {...root.positionerProps}>
-              <ul data-testid="menu" className="menu-content" {...root.contentProps}>
+              <ul data-testid="menu" {...root.contentProps}>
                 {level1.map((item) => {
                   const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
                   return (
@@ -69,7 +69,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub.positionerProps}>
-              <ul data-testid="more-tools-submenu" className="menu-content" {...sub.contentProps}>
+              <ul data-testid="more-tools-submenu" {...sub.contentProps}>
                 {level2.map((item) => {
                   const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
                   return (
@@ -84,7 +84,7 @@ export default function Page() {
 
           <Portal>
             <div {...sub2.positionerProps}>
-              <ul data-testid="open-nested-submenu" className="menu-content" {...sub2.contentProps}>
+              <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
                 {level3.map((item) => (
                   <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
                     {item.label}

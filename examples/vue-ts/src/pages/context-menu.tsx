@@ -26,7 +26,7 @@ export default defineComponent({
             </div>
             <Teleport to="body">
               <div {...api.positionerProps}>
-                <ul class="menu-content" {...api.contentProps}>
+                <ul {...api.contentProps}>
                   <li {...api.getItemProps({ id: "edit" })}>Edit</li>
                   <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
                   <li {...api.getItemProps({ id: "delete" })}>Delete</li>
