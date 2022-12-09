@@ -48,13 +48,13 @@ type ElementType = keyof JSX.IntrinsicElements | "element"
 
 export type PropTypes = Record<ElementType, Dict>
 
-export type NormalizeProps<T extends PropTypes> = {
+export type NormalizeProps<T extends Partial<PropTypes>> = {
   [K in keyof T]: (props: K extends keyof JSX.IntrinsicElements ? DataAttr & JSX.IntrinsicElements[K] : never) => T[K]
 } & {
   element(props: DataAttr & JSX.HTMLAttributes<HTMLElement>): T["element"]
 }
 
-export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T> {
+export function createNormalizer<T extends Partial<PropTypes>>(fn: (props: Dict) => Dict): NormalizeProps<T> {
   return new Proxy({} as any, {
     get() {
       return fn
