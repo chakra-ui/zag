@@ -1075,46 +1075,45 @@ main > .toggle[data-pressed] {
 
 .pagination ul {
   display: flex;
-  gap: 16px;
+  gap: 4px;
   list-style-type: none;
-}
-.pagination li a {
-  padding: 0 12px;
-  height: 32px;
-  text-align: center;
-  margin: auto 4px;
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  box-sizing: border-box;
-  align-items: center;
-  letter-spacing: 0.01071em;
-  border-radius: 9999px;
-  line-height: 1.43;
-  font-size: 13px;
-  min-width: 32px;
-  user-select: none;
-  text-decoration: none;
-}
-
-.pagination li a:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-}
-
-.pagination li a[data-selected] {
-  background-color: rgba(0, 0, 0, 0.08);
-}
-
-.pagination li a:focus {
-  outline: 2px solid var(--ring-color);
-  outline-offset: 1px;
 }
 
 .pagination th {
   text-align: start;
 }
 
-.pagination [data-part="ellipsis"] {
+[data-scope="pagination"][data-part*="trigger"],
+[data-scope="pagination"][data-part="ellipsis"] {
+  box-sizing: border-box;
+  padding: 0 12px;
+  height: 32px;
+  min-width: 32px;
+  text-align: center;
+  margin: auto 4px;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  user-select: none;
+  text-decoration: none;
+}
+
+[data-scope="pagination"][data-part*="trigger"]:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+}
+
+[data-scope="pagination"][data-part*="trigger"][data-selected] {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-scope="pagination"][data-part*="trigger"]:focus {
+  outline: 2px solid var(--ring-color);
+  outline-offset: 1px;
+}
+
+[data-scope="pagination"][data-part="ellipsis"] {
   cursor: default;
 }
 
