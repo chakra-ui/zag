@@ -21,7 +21,7 @@ export default function Page() {
           <div style={{ "min-height": "1200px" }} />
           <Show when={parentDialog().isOpen}>
             <Portal>
-              <div class="dialog-backdrop" {...parentDialog().backdropProps} />
+              <div {...parentDialog().backdropProps} />
               <div {...parentDialog().containerProps} data-testid="container-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>

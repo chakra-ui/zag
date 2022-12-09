@@ -35,7 +35,7 @@ export default function Page() {
 
           {parentDialog.isOpen && (
             <Portal>
-              <div className="dialog-backdrop" {...parentDialog.backdropProps} />
+              <div {...parentDialog.backdropProps} />
               <div data-testid="container-1" {...parentDialog.containerProps}>
                 <div {...parentDialog.contentProps}>
                   <h2 {...parentDialog.titleProps}>Edit profile</h2>
@@ -54,7 +54,7 @@ export default function Page() {
 
                   {childDialog.isOpen && (
                     <Portal>
-                      <div className="dialog-backdrop" {...childDialog.backdropProps} />
+                      <div {...childDialog.backdropProps} />
                       <div data-testid="container-2" {...childDialog.containerProps}>
                         <div {...childDialog.contentProps}>
                           <h2 {...childDialog.titleProps}>Nested</h2>
