@@ -236,20 +236,20 @@ body {
 * Editable
 * -----------------------------------------------------------------------------*/
 
-.editable [data-part="area"] {
+[data-scope="editable"][data-part="area"] {
   display: inline-block;
   margin-right: 0.5em;
   margin-bottom: 1em;
 }
-.editable [data-part="input"] {
+[data-scope="editable"][data-part="input"] {
   width: auto;
   background: transparent;
 }
-.editable [data-part="preview"][data-empty] {
+[data-scope="editable"][data-part="preview"][data-empty] {
   opacity: 0.7;
 }
-.editable [data-part="control-group"] {
-  display: inline-flex;
+[data-scope="editable"][data-part="control"] {
+  display: flex;
   gap: 0.5em;
 }
 
