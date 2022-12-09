@@ -7,6 +7,7 @@ type ElementIds = Partial<{
   grid: string
   cell(id: string): string
   cellTrigger(id: string): string
+  control: string
 }>
 
 type PublicContext = DirectionProperty &

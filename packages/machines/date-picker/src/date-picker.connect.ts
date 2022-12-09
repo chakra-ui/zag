@@ -3,6 +3,7 @@ import { CellProps, Send, State } from "./date-picker.types"
 import { getCalendarState } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
 import { parts } from "./date-picker.anatomy"
+import { dom } from "./date-picker.dom"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const calendar = getCalendarState(state.context)
@@ -33,17 +34,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      id: dom.getRootId(state.context),
     }),
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      id: dom.getControlId(state.context),
     }),
 
     gridProps: normalize.element({
       ...parts.grid.attrs,
       role: "grid",
+      id: dom.getGridId(state.context),
       "aria-readonly": readonly || undefined,
       "aria-disabled": disabled || undefined,
+      tabIndex: -1,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           Enter() {
@@ -106,6 +111,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.cell.attrs,
         role: "gridcell",
+        id: dom.getCellId(state.context, props.date.toString()),
         "aria-disabled": !cellState.isSelectable || undefined,
         "aria-selected": cellState.isSelected || undefined,
         "aria-invalid": cellState.isInvalid || undefined,
@@ -116,6 +122,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const cellState = this.getCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
+        id: dom.getCellTriggerId(state.context, props.date.toString()),
         role: "button",
         tabIndex: cellState.isFocused ? 0 : -1,
         "aria-disabled": !cellState.isSelectable,
@@ -143,6 +150,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     nextTriggerProps: normalize.button({
       ...parts.nextTrigger.attrs,
+      id: dom.getNextTriggerId(state.context),
       type: "button",
       onClick() {
         send("CLICK_NEXT")
@@ -153,6 +161,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     prevTriggerProps: normalize.button({
       ...parts.prevTrigger.attrs,
+      id: dom.getPrevTriggerId(state.context),
       type: "button",
       onClick() {
         send("CLICK_PREV")
