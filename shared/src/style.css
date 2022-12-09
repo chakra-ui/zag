@@ -257,7 +257,7 @@ body {
 * Menu
 * -----------------------------------------------------------------------------*/
 
-.menu-content[data-part="content"] {
+[data-scope="menu"][data-part="content"] {
   margin: 0;
   width: 160px;
   background-color: white;
@@ -265,10 +265,9 @@ body {
   padding: 5px;
   border: 1px solid lightgray;
   list-style-type: none;
-  padding-inline-start: 0;
 }
 
-.menu-content [data-part*="item"] {
+[data-scope="menu"][data-part*="item"] {
   all: unset;
   font-size: 14px;
   line-height: 1;
@@ -279,16 +278,16 @@ body {
   position: relative;
   user-select: none;
   border-radius: 3px;
-  padding: 0px 5px 0px 25px;
+  padding: 0px 5px;
 }
 
-.menu-content [data-part*="item"][data-focus] {
+[data-scope="menu"][data-part*="item"][data-focus] {
   outline: none;
   background-color: rgb(110, 86, 207);
   color: rgb(253, 252, 254);
 }
 
-.menu-content [data-part*="item"][data-disabled] {
+[data-scope="menu"][data-part*="item"][data-disabled] {
   opacity: 0.4;
 }
 

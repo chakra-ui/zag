@@ -30,7 +30,7 @@ export default defineComponent({
               </button>
               <Teleport to="body">
                 <div {...api.positionerProps}>
-                  <div class="menu-content" {...api.contentProps}>
+                  <div {...api.contentProps}>
                     {data.order.map((item) => {
                       const opts = { type: "radio", name: "order", value: item.id } as const
                       return (

@@ -23,7 +23,7 @@ export default function Page() {
           </button>
           <Portal>
             <div {...api.positionerProps}>
-              <ul className="menu-content" data-testid="menu" {...api.contentProps}>
+              <ul data-testid="menu" {...api.contentProps}>
                 <li {...api.getItemProps({ id: "edit" })}>Edit</li>
                 <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
                 <li {...api.getItemProps({ id: "delete" })}>Delete</li>
