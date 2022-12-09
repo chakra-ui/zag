@@ -1,4 +1,4 @@
-import { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
+import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@internationalized/date"
 
 export type DateContext = DateValueRange & {
   locale: string
@@ -13,3 +13,12 @@ export type DateValueRange = {
 }
 
 export type DateSegmentContext = {}
+
+export type DateDescriptionContext = {
+  start?: CalendarDate
+  end?: CalendarDate
+  isSelectingRange?: boolean
+  timeZone: string
+  locale: string
+  createDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
+}
