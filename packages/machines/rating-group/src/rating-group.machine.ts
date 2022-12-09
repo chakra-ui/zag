@@ -2,8 +2,8 @@ import { createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-utils"
 import { trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
-import { dom } from "./rating.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./rating.types"
+import { dom } from "./rating-group.dom"
+import type { MachineContext, MachineState, UserDefinedContext } from "./rating-group.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -121,11 +121,11 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         isHoveredValueEmpty: (ctx) => ctx.hoveredValue === -1,
         isValueEmpty: (ctx) => ctx.value <= 0,
-        isRadioFocused: (ctx) => !!dom.getItemGroupEl(ctx)?.contains(dom.getActiveEl(ctx)),
+        isRadioFocused: (ctx) => !!dom.getControlEl(ctx)?.contains(dom.getActiveEl(ctx)),
       },
       activities: {
         trackFormControlState(ctx) {
-          return trackFormControl(dom.getInputEl(ctx), {
+          return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },

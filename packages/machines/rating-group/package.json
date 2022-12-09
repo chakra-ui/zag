@@ -1,7 +1,7 @@
 {
-  "name": "@zag-js/radio",
-  "version": "0.1.4",
-  "description": "Core logic for the radio widget implemented as a state machine",
+  "name": "@zag-js/rating-group",
+  "version": "0.2.4",
+  "description": "Core logic for the rating-group widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -12,26 +12,17 @@
     "statechart",
     "component",
     "chakra-ui",
-    "radio"
+    "rating",
+    "rating-group"
   ],
-  "author": "Abraham Aremu <anubra266@gmail.com>",
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/radio",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/rating",
   "sideEffects": false,
   "files": [
     "dist/**/*"
   ],
-  "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
-    "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
-    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
-    "lint": "eslint src --ext .ts,.tsx",
-    "test-ci": "pnpm test --ci --runInBand",
-    "test-watch": "pnpm test --watch -u",
-    "typecheck": "tsc --noEmit"
-  },
   "publishConfig": {
     "access": "public"
   },
@@ -47,5 +38,15 @@
     "@zag-js/dom-utils": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*"
+  },
+  "scripts": {
+    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "start": "pnpm build --watch",
+    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit"
   }
 }

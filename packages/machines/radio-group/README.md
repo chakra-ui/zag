@@ -1,13 +1,13 @@
-# @zag-js/rating
+# @zag-js/radio-group
 
-Core logic for the rating widget implemented as a state machine
+Core logic for the radio widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add  @zag-js/rating
+yarn add  @zag-js/radio-group
 # or
-npm i  @zag-js/rating
+npm i  @zag-js/radio-group
 ```
 
 ## Contribution
