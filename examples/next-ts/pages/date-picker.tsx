@@ -51,7 +51,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["weeks"]} />
+        <StateVisualizer state={state} omit={["weeks", "weekDays"]} />
       </Toolbar>
     </>
   )
