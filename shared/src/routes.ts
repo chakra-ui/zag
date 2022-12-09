@@ -4,7 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
-  { label: "Date-picker", path: "/date-picker" },
+  { label: "Date Picker", path: "/date-picker" },
   { label: "Select", path: "/select" },
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
