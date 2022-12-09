@@ -10,24 +10,24 @@ import {
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = defineDomHelpers({
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `${ctx.id}:content`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `${ctx.id}:trigger`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `${ctx.id}:label`,
-  getOptionId: (ctx: Ctx, id: string | number) => ctx.ids?.option?.(id) ?? `${ctx.id}:option:${id}`,
-  getHiddenSelectId: (ctx: Ctx) => `${ctx.id}:select`,
-  getPositionerId: (ctx: Ctx) => `${ctx.id}:positioner`,
-  getOptionGroupId: (ctx: Ctx, id: string | number) => `${ctx.id}:option-group:${id}`,
-  getOptionGroupLabelId: (ctx: Ctx, id: string | number) => `${ctx.id}:option-group-label:${id}`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `select:${ctx.id}:content`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `select:${ctx.id}:trigger`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `select:${ctx.id}:label`,
+  getOptionId: (ctx: Ctx, id: string | number) => ctx.ids?.option?.(id) ?? `select:${ctx.id}:option:${id}`,
+  getHiddenSelectId: (ctx: Ctx) => `select:${ctx.id}:select`,
+  getPositionerId: (ctx: Ctx) => `select:${ctx.id}:positioner`,
+  getOptionGroupId: (ctx: Ctx, id: string | number) => `select:${ctx.id}:optgroup:${id}`,
+  getOptionGroupLabelId: (ctx: Ctx, id: string | number) => `select:${ctx.id}:optgroup-label:${id}`,
 
   getHiddenSelectElement: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
   getContentElement: (ctx: Ctx) => {
     const content = dom.getById(ctx, dom.getContentId(ctx))
-    if (!content) throw new Error("Could not find the menu element.")
+    if (!content) throw new Error("Could not find the select content element.")
     return content
   },
   getTriggerElement: (ctx: Ctx) => {
     const trigger = dom.getById(ctx, dom.getTriggerId(ctx))
-    if (!trigger) throw new Error("Could not find the trigger element.")
+    if (!trigger) throw new Error("Could not find the select trigger element.")
     return trigger
   },
   getPositionerElement: (ctx: Ctx) => {
