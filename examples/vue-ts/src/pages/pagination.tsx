@@ -1,5 +1,5 @@
 import * as pagination from "@zag-js/pagination"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { paginationControls, paginationData } from "@zag-js/shared"
@@ -23,7 +23,7 @@ export default defineComponent({
 
     return () => {
       const api = apiRef.value
-      const data = paginationData.slice(api.pageRange.start, api.pageRange.end)
+      const data = api.slice(paginationData)
 
       return (
         <>
@@ -56,7 +56,7 @@ export default defineComponent({
               <nav {...api.rootProps}>
                 <ul>
                   <li>
-                    <a href="#previous" {...api.prevItemProps}>
+                    <a href="#previous" {...api.prevPageTriggerProps}>
                       Previous <span style={visuallyHiddenStyle}>Page</span>
                     </a>
                   </li>
@@ -64,7 +64,11 @@ export default defineComponent({
                     if (page.type === "page")
                       return (
                         <li key={page.value}>
-                          <a href={`#${page.value}`} data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
+                          <a
+                            href={`#${page.value}`}
+                            data-testid={`item-${page.value}`}
+                            {...api.getPageTriggerProps(page)}
+                          >
                             {page.value}
                           </a>
                         </li>
@@ -77,7 +81,7 @@ export default defineComponent({
                       )
                   })}
                   <li>
-                    <a href="#next" {...api.nextItemProps}>
+                    <a href="#next" {...api.nextPageTriggerProps}>
                       Next <span style={visuallyHiddenStyle}>Page</span>
                     </a>
                   </li>

@@ -9,7 +9,7 @@ type ElementIds = Partial<{
   content: string
   title: string
   description: string
-  closeBtn: string
+  closeTrigger: string
 }>
 
 type PublicContext = DismissableElementHandlers &

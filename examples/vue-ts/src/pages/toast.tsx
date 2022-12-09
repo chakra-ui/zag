@@ -19,6 +19,7 @@ const ToastItem = defineComponent({
     const [state, send] = useActor(props.actor)
     const apiRef = computed(() => toast.connect(state.value, send, normalizeProps))
     const progressbarProps = computed(() => ({
+      "data-scope": "toast",
       "data-part": "progressbar",
       "data-type": state.value.context.type,
       style: {
@@ -37,9 +38,8 @@ const ToastItem = defineComponent({
         <pre {...api.rootProps}>
           <div {...progressbarProps.value} />
           <p {...api.titleProps}>{api.title}</p>
-          {/* @ts-ignore */}
           <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
-          <button onClick={api.dismiss}>Close</button>
+          <button {...api.closeTriggerProps}>Close</button>
         </pre>
       )
     }
@@ -101,7 +101,7 @@ export default defineComponent({
               <button onClick={() => api.pause()}>Pause all</button>
               <button onClick={() => api.resume()}>Resume all</button>
             </div>
-            <div class="toast-group" {...api.getGroupProps({ placement: "bottom" })}>
+            <div {...api.getGroupProps({ placement: "bottom" })}>
               {api.toasts.map((actor) => (
                 <ToastItem key={actor.id} actor={actor} />
               ))}

@@ -7,8 +7,8 @@ type ElementIds = Partial<{
   root: string
   label: string
   input: string
-  incBtn: string
-  decBtn: string
+  incrementTrigger: string
+  decrementTrigger: string
   scrubber: string
 }>
 

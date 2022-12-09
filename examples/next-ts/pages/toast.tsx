@@ -12,6 +12,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
   const api = toast.connect(state, send, normalizeProps)
 
   const progressbarProps = {
+    "data-scope": "toast",
     "data-part": "progressbar",
     "data-type": state.context.type,
     style: {
@@ -29,7 +30,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
       <p {...api.titleProps}>{api.title}</p>
       <p {...api.descriptionProps}>{api.description}</p>
       <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
-      <button onClick={api.dismiss}>Close</button>
+      <button {...api.closeTriggerProps}>Close</button>
     </pre>
   )
 }
@@ -90,7 +91,7 @@ export default function Page() {
           <button onClick={() => api.pause()}>Pause all</button>
           <button onClick={() => api.resume()}>Resume all</button>
         </div>
-        <div className="toast-group" {...api.getGroupProps({ placement: "bottom" })}>
+        <div {...api.getGroupProps({ placement: "bottom" })}>
           {api.toasts.map((actor) => (
             <ToastItem key={actor.id} actor={actor} />
           ))}

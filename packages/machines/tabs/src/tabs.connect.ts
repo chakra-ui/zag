@@ -27,9 +27,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
     }),
 
-    triggerGroupProps: normalize.element({
-      ...parts.triggerGroup.attrs,
-      id: dom.getTriggerGroupId(state.context),
+    tablistProps: normalize.element({
+      ...parts.tablist.attrs,
+      id: dom.getTablistId(state.context),
       role: "tablist",
       "data-focus": dataAttr(isFocused),
       "aria-orientation": state.context.orientation,
@@ -86,7 +86,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-selected": selected,
         "data-selected": dataAttr(selected),
         "aria-controls": dom.getContentId(state.context, value),
-        "data-ownedby": dom.getTriggerGroupId(state.context),
+        "data-ownedby": dom.getTablistId(state.context),
         id: dom.getTriggerId(state.context, value),
         tabIndex: selected ? 0 : -1,
         onFocus() {
@@ -122,21 +122,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: 0,
         "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
-        "data-ownedby": dom.getTriggerGroupId(state.context),
+        "data-ownedby": dom.getTablistId(state.context),
         hidden: !selected,
-      })
-    },
-
-    getDeleteButtonProps({ value, disabled }: TabProps) {
-      return normalize.button({
-        ...parts.deleteButton.attrs,
-        type: "button",
-        tabIndex: -1,
-        "aria-label": translations.deleteLabel?.(value),
-        disabled,
-        onClick() {
-          send({ type: "DELETE", value })
-        },
       })
     },
 

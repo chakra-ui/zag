@@ -92,7 +92,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled,
       dir: state.context.dir,
       type: "button",
-      "aria-controls": dom.getMenuId(state.context),
+      "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen,
       "data-expanded": dataAttr(isOpen),
       "aria-haspopup": "listbox",
@@ -208,8 +208,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    selectProps: normalize.select({
-      ...parts.select.attrs,
+    hiddenSelectProps: normalize.select({
+      ...parts.hiddenSelect.attrs,
       name: state.context.name,
       form: state.context.form,
       disabled: !isInteractive,
@@ -226,12 +226,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
     }),
 
-    menuProps: normalize.element({
+    contentProps: normalize.element({
       hidden: !isOpen,
       dir: state.context.dir,
-      id: dom.getMenuId(state.context),
+      id: dom.getContentId(state.context),
       role: "listbox",
-      ...parts.menu.attrs,
+      ...parts.content.attrs,
       "aria-activedescendant": state.context.highlightedId || "",
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: -1,

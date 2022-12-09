@@ -6,6 +6,7 @@ export const dom = defineDomHelpers({
   getInputId: (ctx: Ctx, id: string) => ctx.ids?.input?.(id) ?? `pin-input:${ctx.id}:${id}`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `pin-input:${ctx.id}:hidden`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `pin-input:${ctx.id}:label`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `pin-input:${ctx.id}:control`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getElements: (ctx: Ctx) => {

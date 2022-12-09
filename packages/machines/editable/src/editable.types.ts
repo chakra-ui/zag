@@ -18,10 +18,10 @@ type ElementIds = Partial<{
   label: string
   preview: string
   input: string
-  controlGroup: string
-  submitBtn: string
-  cancelBtn: string
-  editBtn: string
+  controls: string
+  submitTrigger: string
+  cancelTrigger: string
+  editTrigger: string
 }>
 
 type PublicContext = DirectionProperty &

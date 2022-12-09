@@ -36,7 +36,7 @@ export function getPlacementStyles(options: Options) {
       opacity: !measured ? 0 : undefined,
     } as const,
 
-    innerArrow: {
+    arrowTip: {
       transform: ARROW_FLOATING_STYLE[placement.split("-")[0]],
       background: cssVars.arrowBg.reference,
       top: "0",

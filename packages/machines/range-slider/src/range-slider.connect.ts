@@ -73,7 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
-      htmlFor: dom.getInputId(state.context, 0),
+      htmlFor: dom.getHiddenInputId(state.context, 0),
       onClick(event) {
         if (!isInteractive) return
         event.preventDefault()
@@ -99,7 +99,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
-      htmlFor: sliderValue.map((_v, i) => dom.getInputId(state.context, i)).join(" "),
+      htmlFor: sliderValue.map((_v, i) => dom.getHiddenInputId(state.context, i)).join(" "),
       "aria-live": "off",
     }),
 
@@ -196,15 +196,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getInputProps(index: number) {
+    getHiddenInputProps(index: number) {
       return normalize.input({
-        ...parts.input.attrs,
+        ...parts.hiddenInput.attrs,
         name: `${state.context.name}[${index}]`,
         form: state.context.form,
         type: "text",
         hidden: true,
         defaultValue: state.context.value[index],
-        id: dom.getInputId(state.context, index),
+        id: dom.getHiddenInputId(state.context, index),
       })
     },
 

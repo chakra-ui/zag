@@ -76,6 +76,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.valueAsString,
     }),
 
+    controlProps: normalize.element({
+      ...parts.control.attrs,
+      id: dom.getControlId(state.context),
+    }),
+
     getInputProps({ index }: { index: number }) {
       const inputType = state.context.type === "numeric" ? "tel" : "text"
       return normalize.input({

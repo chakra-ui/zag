@@ -15,8 +15,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
 
   const isEditing = state.matches("edit")
-  const _placeholder = state.context.placeholder
-  const placeholder = typeof _placeholder === "string" ? { edit: _placeholder, preview: _placeholder } : _placeholder
+
+  const placeholderProp = state.context.placeholder
+  const placeholder =
+    typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
 
   return {
     isEditing,
@@ -150,9 +152,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         : undefined,
     }),
 
-    editButtonProps: normalize.button({
-      ...parts.editButton.attrs,
-      id: dom.getEditBtnId(state.context),
+    editTriggerProps: normalize.button({
+      ...parts.editTrigger.attrs,
+      id: dom.getEditTriggerId(state.context),
       "aria-label": translations.edit,
       type: "button",
       disabled: isDisabled,
@@ -162,14 +164,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    controlGroupProps: normalize.element({
-      id: dom.getControlGroupId(state.context),
-      ...parts.controlGroup.attrs,
+    controlProps: normalize.element({
+      id: dom.getControlId(state.context),
+      ...parts.control.attrs,
     }),
 
-    submitButtonProps: normalize.button({
-      ...parts.submitButton.attrs,
-      id: dom.getSubmitBtnId(state.context),
+    submitTriggerProps: normalize.button({
+      ...parts.submitTrigger.attrs,
+      id: dom.getSubmitTriggerId(state.context),
       "aria-label": translations.submit,
       disabled: isDisabled,
       type: "button",
@@ -179,10 +181,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    cancelButtonProps: normalize.button({
-      ...parts.cancelButton.attrs,
+    cancelTriggerProps: normalize.button({
+      ...parts.cancelTrigger.attrs,
       "aria-label": translations.cancel,
-      id: dom.getCancelBtnId(state.context),
+      id: dom.getCancelTriggerId(state.context),
       type: "button",
       disabled: isDisabled,
       onClick() {

@@ -179,9 +179,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: popperStyles.arrow,
     }),
 
-    innerArrowProps: normalize.element({
-      ...parts.arrowInner.attrs,
-      style: popperStyles.innerArrow,
+    arrowTipProps: normalize.element({
+      ...parts.arrowTip.attrs,
+      style: popperStyles.arrowTip,
     }),
 
     contentProps: normalize.element({
@@ -336,10 +336,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       )
     },
 
-    getLabelProps(options: LabelProps) {
+    getGroupLabelProps(options: LabelProps) {
       return normalize.element({
-        id: dom.getLabelId(state.context, options.htmlFor),
-        ...parts.label.attrs,
+        id: dom.getGroupLabelId(state.context, options.htmlFor),
+        ...parts.groupLabel.attrs,
       })
     },
 

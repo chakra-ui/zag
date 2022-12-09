@@ -33,11 +33,14 @@ export default function Page() {
           }}
         >
           <div {...api().rootProps}>
-            <input data-testid="input-1" {...api().getInputProps({ index: 0 })} />
-            <input data-testid="input-2" {...api().getInputProps({ index: 1 })} />
-            <input data-testid="input-3" {...api().getInputProps({ index: 2 })} />
+            <label {...api().labelProps}>Enter code:</label>
+            <div {...api().controlProps}>
+              <input data-testid="input-1" {...api().getInputProps({ index: 0 })} />
+              <input data-testid="input-2" {...api().getInputProps({ index: 1 })} />
+              <input data-testid="input-3" {...api().getInputProps({ index: 2 })} />
+            </div>
+            <input {...api().hiddenInputProps} />
           </div>
-          <input {...api().hiddenInputProps} />
           <button data-testid="clear-button" onClick={api().clearValue}>
             Clear
           </button>
