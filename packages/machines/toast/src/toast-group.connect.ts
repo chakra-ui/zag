@@ -1,6 +1,7 @@
 import { subscribe } from "@zag-js/core"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
+import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
 import type {
   GroupMachineContext,
@@ -126,6 +127,7 @@ export function groupConnect<T extends PropTypes>(state: GroupState, send: Group
     getGroupProps(options: GroupProps) {
       const { placement, label = "Notifications" } = options
       return normalize.element({
+        ...parts.group.attrs,
         tabIndex: -1,
         "aria-label": label,
         id: dom.getGroupId(placement),
