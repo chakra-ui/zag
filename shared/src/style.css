@@ -650,19 +650,19 @@ main [data-testid="scrubber"] {
 * Pin Input
 * -----------------------------------------------------------------------------*/
 
-.pin-input [data-part="control"] {
+[data-scope="pin-input"][data-part="control"] {
   width: 300px;
   display: flex;
   margin-bottom: 12px;
   gap: 12px;
 }
 
-.pin-input [data-part="label"] {
+[data-scope="pin-input"][data-part="label"] {
   display: block;
   margin-bottom: 8px;
 }
 
-.pin-input [data-part="input"] {
+[data-scope="pin-input"][data-part="input"] {
   width: 48px;
   height: 48px;
   text-align: center;
