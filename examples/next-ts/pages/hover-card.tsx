@@ -31,7 +31,7 @@ export default function Page() {
           {api.isOpen && (
             <Portal>
               <div {...api.positionerProps}>
-                <div className="hover-card-content" {...api.contentProps}>
+                <div {...api.contentProps}>
                   <div {...api.arrowProps}>
                     <div {...api.arrowTipProps} />
                   </div>

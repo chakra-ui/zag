@@ -31,7 +31,7 @@ export default defineComponent({
               {api.isOpen && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>
-                    <div class="hover-card-content" {...api.contentProps}>
+                    <div {...api.contentProps}>
                       <div {...api.arrowProps}>
                         <div {...api.arrowTipProps} />
                       </div>
