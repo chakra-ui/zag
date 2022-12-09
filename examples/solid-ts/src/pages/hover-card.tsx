@@ -26,7 +26,7 @@ export default function Page() {
           <Show when={api().isOpen}>
             <Portal>
               <div {...api().positionerProps}>
-                <div class="hover-card-content" {...api().contentProps}>
+                <div {...api().contentProps}>
                   <div {...api().arrowProps}>
                     <div {...api().arrowTipProps} />
                   </div>
