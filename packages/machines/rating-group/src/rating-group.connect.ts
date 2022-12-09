@@ -64,9 +64,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
     }),
 
-    controlsProps: normalize.element({
-      id: dom.getControlsId(state.context),
-      ...parts.controls.attrs,
+    controlProps: normalize.element({
+      id: dom.getControlId(state.context),
+      ...parts.control.attrs,
       role: "radiogroup",
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),

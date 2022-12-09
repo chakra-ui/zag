@@ -57,7 +57,7 @@ export default function Page() {
         <form action="">
           <div {...api.rootProps}>
             <label {...api.labelProps}>Rate:</label>
-            <div {...api.controlsProps}>
+            <div {...api.controlProps}>
               {api.sizeArray.map((index) => {
                 const state = api.getRatingState(index)
                 return (

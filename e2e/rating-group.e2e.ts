@@ -1,7 +1,7 @@
 import { expect, test, Locator, Page } from "@playwright/test"
 import { a11y, controls as testControls, part } from "./__utils"
 
-const controls = part("controls")
+const control = part("control")
 const hiddenInput = part("hidden-input")
 const rating = part("rating")
 
@@ -59,7 +59,7 @@ test.describe("rating / properties", () => {
 
   test("should not be selectable when disabled", async ({ page }) => {
     await testControls(page).bool("disabled")
-    await expectToBeDisabled(page.locator(controls))
+    await expectToBeDisabled(page.locator(control))
     const items = page.locator(rating)
     const isAllItemsDisabled = await items.evaluateAll((items) => items.every((item) => item.dataset.disabled === ""))
     expect(isAllItemsDisabled).toBeTruthy()

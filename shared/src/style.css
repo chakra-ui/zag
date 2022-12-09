@@ -369,28 +369,33 @@ main [data-testid="scrubber"] {
 * Rating
 * -----------------------------------------------------------------------------*/
 
-.rating [data-part="controls"] {
+[data-scope="rating-group"][data-part="control"] {
   display: inline-flex;
 }
-.rating [data-part="rating"] {
+
+[data-scope="rating-group"][data-part="rating"] {
   width: 20px;
   height: 20px;
   padding: 1px;
 }
-.rating [data-part="rating"]:focus {
+
+[data-scope="rating-group"][data-part="rating"]:focus {
   outline: 2px solid royalblue;
 }
 
-.rating [data-part="star"] {
+[data-scope="rating-group"] [data-part="star"] {
   color: #bdbdbd;
 }
-.rating [data-part="rating"][data-highlighted] [data-part="star"] {
+
+[data-scope="rating-group"][data-part="rating"][data-highlighted] [data-part="star"] {
   color: #ffb400;
 }
-.rating [data-part="rating"][data-highlighted][data-disabled] [data-part="star"] {
+
+[data-scope="rating-group"][data-part="rating"][data-highlighted][data-disabled] [data-part="star"] {
   color: #a1a1a1;
 }
-.rating [dir="rtl"] [data-half] [data-part="star"] {
+
+[data-scope="rating-group"][dir="rtl"] [data-half] [data-part="star"] {
   transform: scale(-1, 1);
 }
 

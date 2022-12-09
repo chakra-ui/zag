@@ -66,7 +66,7 @@ export default defineComponent({
         <>
           <main class="rating">
             <div {...api.rootProps}>
-              <div {...api.controlsProps}>
+              <div {...api.controlProps}>
                 {api.sizeArray.map((index) => {
                   const state = api.getRatingState(index)
                   return (
