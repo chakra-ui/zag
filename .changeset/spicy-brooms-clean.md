@@ -13,7 +13,7 @@
 "@zag-js/pressable": patch
 "@zag-js/radio-group": patch
 "@zag-js/range-slider": patch
-"@zag-js/rating": patch
+"@zag-js/rating-group": patch
 "@zag-js/select": patch
 "@zag-js/slider": patch
 "@zag-js/splitter": patch

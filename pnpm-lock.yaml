@@ -117,7 +117,7 @@ importers:
       '@zag-js/pressable': workspace:*
       '@zag-js/radio-group': workspace:*
       '@zag-js/range-slider': workspace:*
-      '@zag-js/rating': workspace:*
+      '@zag-js/rating-group': workspace:*
       '@zag-js/react': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
@@ -171,7 +171,7 @@ importers:
       '@zag-js/pressable': link:../../packages/machines/pressable
       '@zag-js/radio-group': link:../../packages/machines/radio-group
       '@zag-js/range-slider': link:../../packages/machines/range-slider
-      '@zag-js/rating': link:../../packages/machines/rating
+      '@zag-js/rating-group': link:../../packages/machines/rating-group
       '@zag-js/react': link:../../packages/frameworks/react
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
@@ -234,7 +234,7 @@ importers:
       '@zag-js/pressable': workspace:*
       '@zag-js/radio-group': workspace:*
       '@zag-js/range-slider': workspace:*
-      '@zag-js/rating': workspace:*
+      '@zag-js/rating-group': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/select': workspace:*
@@ -286,7 +286,7 @@ importers:
       '@zag-js/pressable': link:../../packages/machines/pressable
       '@zag-js/radio-group': link:../../packages/machines/radio-group
       '@zag-js/range-slider': link:../../packages/machines/range-slider
-      '@zag-js/rating': link:../../packages/machines/rating
+      '@zag-js/rating-group': link:../../packages/machines/rating-group
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
       '@zag-js/select': link:../../packages/machines/select
@@ -350,7 +350,7 @@ importers:
       '@zag-js/pressable': workspace:*
       '@zag-js/radio-group': workspace:*
       '@zag-js/range-slider': workspace:*
-      '@zag-js/rating': workspace:*
+      '@zag-js/rating-group': workspace:*
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/select': workspace:*
@@ -406,7 +406,7 @@ importers:
       '@zag-js/pressable': link:../../packages/machines/pressable
       '@zag-js/radio-group': link:../../packages/machines/radio-group
       '@zag-js/range-slider': link:../../packages/machines/range-slider
-      '@zag-js/rating': link:../../packages/machines/rating
+      '@zag-js/rating-group': link:../../packages/machines/rating-group
       '@zag-js/rect-utils': link:../../packages/utilities/rect
       '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
       '@zag-js/select': link:../../packages/machines/select
@@ -789,7 +789,7 @@ importers:
       '@zag-js/rect-utils': link:../../utilities/rect
       '@zag-js/utils': link:../../utilities/core
 
-  packages/machines/rating:
+  packages/machines/rating-group:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*

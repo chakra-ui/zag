@@ -29,7 +29,7 @@ export const routes: RouteDefinition[] = [
   // { path: "/nested-popover", component: () => lazy(()=>import("./pages/nested-popover")) },
   { path: "/radio-group", component: () => lazy(() => import("./pages/radio-group")) },
   { path: "/range-slider", component: () => lazy(() => import("./pages/range-slider")) },
-  { path: "/rating", component: () => lazy(() => import("./pages/rating")) },
+  { path: "/rating-group", component: () => lazy(() => import("./pages/rating-group")) },
   { path: "/slider", component: () => lazy(() => import("./pages/slider")) },
   { path: "/tabs", component: () => lazy(() => import("./pages/tabs")) },
   { path: "/tags-input", component: () => lazy(() => import("./pages/tags-input")) },

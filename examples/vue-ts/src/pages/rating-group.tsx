@@ -1,4 +1,4 @@
-import * as rating from "@zag-js/rating"
+import * as rating from "@zag-js/rating-group"
 import { ratingControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
@@ -66,17 +66,17 @@ export default defineComponent({
         <>
           <main class="rating">
             <div {...api.rootProps}>
-              <div {...api.itemGroupProps}>
+              <div {...api.controlProps}>
                 {api.sizeArray.map((index) => {
                   const state = api.getRatingState(index)
                   return (
-                    <span key={index} {...api.getItemProps({ index })}>
+                    <span key={index} {...api.getRatingProps({ index })}>
                       {state.isHalf ? <HalfStar /> : <Star />}
                     </span>
                   )
                 })}
               </div>
-              <input {...api.inputProps} />
+              <input {...api.hiddenInputProps} />
             </div>
           </main>
 

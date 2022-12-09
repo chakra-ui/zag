@@ -10,9 +10,9 @@ import {
 } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast } from "@zag-js/utils"
-import { parts } from "./rating.anatomy"
-import { dom } from "./rating.dom"
-import type { Send, State } from "./rating.types"
+import { parts } from "./rating-group.anatomy"
+import { dom } from "./rating-group.dom"
+import type { Send, State } from "./rating-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
@@ -48,13 +48,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
+    hiddenInputProps: normalize.input({
+      ...parts.hiddenInput.attrs,
       name: state.context.name,
       form: state.context.form,
       type: "text",
       hidden: true,
-      id: dom.getInputId(state.context),
+      id: dom.getHiddenInputId(state.context),
       defaultValue: state.context.value,
     }),
 
@@ -64,9 +64,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
     }),
 
-    itemGroupProps: normalize.element({
-      id: dom.getItemGroupId(state.context),
-      ...parts.itemGroup.attrs,
+    controlProps: normalize.element({
+      id: dom.getControlId(state.context),
+      ...parts.control.attrs,
       role: "radiogroup",
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
@@ -82,13 +82,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getItemProps({ index }: { index: number }) {
+    getRatingProps({ index }: { index: number }) {
       const { isHalf, isHighlighted, isChecked } = api.getRatingState(index)
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
-        ...parts.item.attrs,
-        id: dom.getItemId(state.context, index.toString()),
+        ...parts.rating.attrs,
+        id: dom.getRatingId(state.context, index.toString()),
         role: "radio",
         tabIndex: isDisabled ? undefined : isChecked ? 0 : -1,
         "aria-roledescription": "rating",
