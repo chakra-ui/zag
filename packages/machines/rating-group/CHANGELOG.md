@@ -1,4 +1,4 @@
-# @zag-js/rating
+# @zag-js/rating-group
 
 ## 0.2.4
 

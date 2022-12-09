@@ -8,9 +8,9 @@ type IntlTranslations = {
 type ElementIds = Partial<{
   root: string
   label: string
-  input: string
-  itemGroup: string
-  item(id: string): string
+  hiddenInput: string
+  control: string
+  rating(id: string): string
 }>
 
 type PublicContext = DirectionProperty &

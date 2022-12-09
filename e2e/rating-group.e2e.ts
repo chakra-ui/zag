@@ -1,12 +1,12 @@
 import { expect, test, Locator, Page } from "@playwright/test"
-import { a11y, controls, part } from "./__utils"
+import { a11y, controls as testControls, part } from "./__utils"
 
-const group = part("item-group")
-const input = part("input")
-const item = part("item")
+const control = part("control")
+const hiddenInput = part("hidden-input")
+const rating = part("rating")
 
 const getRating = (page: Page, value: number) => {
-  return page.locator(item).nth(value - 1)
+  return page.locator(rating).nth(value - 1)
 }
 
 const expectToBeHighlighted = (el: Locator) => {
@@ -24,7 +24,7 @@ const pointerover = (el: Locator) => {
 
 test.describe("rating / pointer", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/rating")
+    await page.goto("/rating-group")
   })
 
   test("should be accessible", async ({ page }) => {
@@ -33,7 +33,7 @@ test.describe("rating / pointer", () => {
 
   test("should set value when item is clicked", async ({ page }) => {
     await getRating(page, 4).click()
-    await expect(page.locator(input)).toHaveValue("4")
+    await expect(page.locator(hiddenInput)).toHaveValue("4")
   })
 
   test("highlight when hovered", async ({ page }) => {
@@ -48,26 +48,26 @@ test.describe("rating / pointer", () => {
 
     await pointerover(el)
     el.click()
-    await expect(page.locator(input)).toHaveValue("4")
+    await expect(page.locator(hiddenInput)).toHaveValue("4")
   })
 })
 
 test.describe("rating / properties", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/rating")
+    await page.goto("/rating-group")
   })
 
   test("should not be selectable when disabled", async ({ page }) => {
-    await controls(page).bool("disabled")
-    await expectToBeDisabled(page.locator(group))
-    const items = page.locator(item)
+    await testControls(page).bool("disabled")
+    await expectToBeDisabled(page.locator(control))
+    const items = page.locator(rating)
     const isAllItemsDisabled = await items.evaluateAll((items) => items.every((item) => item.dataset.disabled === ""))
     expect(isAllItemsDisabled).toBeTruthy()
   })
 
   test("should not be selectable when is readonly", async ({ page }) => {
-    await controls(page).bool("readOnly")
-    const items = page.locator(item)
+    await testControls(page).bool("readOnly")
+    const items = page.locator(rating)
     const isAllItemsReadonly = await items.evaluateAll((items) => items.every((item) => item.dataset.readonly === ""))
     expect(isAllItemsReadonly).toBeTruthy()
   })
@@ -75,7 +75,7 @@ test.describe("rating / properties", () => {
 
 test.describe("rating / keyboard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/rating")
+    await page.goto("/rating-group")
     await page.click("main")
   })
 
