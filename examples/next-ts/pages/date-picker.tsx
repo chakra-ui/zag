@@ -1,6 +1,6 @@
 import * as datePicker from "@zag-js/date-picker"
-import { useMachine, normalizeProps } from "@zag-js/react"
-import { datePickerControls, datePickerData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { datePickerControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -18,11 +18,42 @@ export default function Page() {
   return (
     <>
       <main className="date-picker">
-        <div {...api.rootProps}></div>
+        <div {...api.rootProps}>
+          <output className="date-output">
+            <div>Selected: {api.valueAsString ?? "-"}</div>
+            <div>Focused: {api.focusedValueAsString}</div>
+          </output>
+          <div {...api.controlProps}>
+            <button {...api.prevTriggerProps}>Prev</button>
+            <button {...api.nextTriggerProps}>Next</button>
+          </div>
+          <table {...api.gridProps}>
+            <thead>
+              <tr>
+                {api.weekDays.map((day, i) => (
+                  <th key={i}>{day}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {api.weeks.map((week, i) => (
+                <tr key={i}>
+                  {week.map((day) => {
+                    return (
+                      <td key={day?.day}>
+                        <span {...api.getCellTriggerProps({ date: day! })}>{day?.day}</span>
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>{" "}
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={state} omit={["weeks"]} />
       </Toolbar>
     </>
   )

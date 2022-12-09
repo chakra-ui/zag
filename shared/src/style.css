@@ -1217,6 +1217,41 @@ main > .toggle[data-pressed] {
 }
 
 /* -----------------------------------------------------------------------------
+* DatePicker
+* -----------------------------------------------------------------------------*/
+
+[data-scope="date-picker"][data-part="cell-trigger"][data-focused] {
+  background: rgba(128, 0, 128, 0.171);
+  color: rgba(128, 0, 128, 0.959);
+}
+
+[data-scope="date-picker"][data-part="cell-trigger"][data-outside-range] {
+  display: none;
+}
+
+[data-scope="date-picker"][data-part="cell-trigger"][data-selected] {
+  background: purple;
+  color: white;
+}
+
+[data-scope="date-picker"][data-part="cell-trigger"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+[data-scope="date-picker"][data-part="control"] {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 16px;
+}
+
+/* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/
 

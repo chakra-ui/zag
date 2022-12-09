@@ -1,4 +1,4 @@
-import type { CalendarDate, DateDuration, DateValue } from "@zag-js/date-utils"
+import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@zag-js/date-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
@@ -23,6 +23,7 @@ type PrivateContext = Context<{
 }>
 
 type ComputedContext = Readonly<{
+  dayFormatter: DateFormatter
   endValue: CalendarDate
   weeks: (CalendarDate | null)[][]
   isInteractive: boolean

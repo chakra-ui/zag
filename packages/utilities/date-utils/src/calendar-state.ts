@@ -4,6 +4,7 @@ import {
   DateValue,
   endOfMonth,
   endOfWeek,
+  getWeeksInMonth,
   GregorianCalendar,
   isSameDay,
   isToday,
@@ -14,6 +15,7 @@ import {
   today,
 } from "@internationalized/date"
 import { alignCenter, alignEnd, alignStart, constrainStart, constrainValue } from "./align-date"
+import { getDatesInWeek } from "./get-dates-in-weeks"
 import { DateContext } from "./types"
 
 export function getCalendarState(ctx: DateContext) {
@@ -48,9 +50,14 @@ export function getCalendarState(ctx: DateContext) {
       return dateB != null && isSameDay(dateA, dateB)
     },
 
-    isPreviousVisibleRangeInvalid(date: CalendarDate) {
-      let prev = date.subtract({ days: 1 })
-      return isSameDay(prev, date) || this.isInvalid(prev)
+    isPreviousVisibleRangeInvalid(startDate: CalendarDate) {
+      let prev = startDate.subtract({ days: 1 })
+      return isSameDay(prev, startDate) || this.isInvalid(prev)
+    },
+
+    isNextVisibleRangeInvalid(endDate: CalendarDate) {
+      let next = endDate.add({ days: 1 })
+      return isSameDay(next, endDate) || this.isInvalid(next)
     },
 
     clamp(date: CalendarDate) {
@@ -190,6 +197,46 @@ export function getCalendarState(ctx: DateContext) {
         let date = weekStart.add({ days: index })
         return date.toDate(ctx.timeZone)
       })
+    },
+
+    getMonthDates(startDate: CalendarDate) {
+      const weeksInMonth = getWeeksInMonth(startDate, ctx.locale)
+      const computedWeek = ctx.duration.weeks ?? weeksInMonth
+      return [...new Array(computedWeek).keys()].map((index) => getDatesInWeek(index, startDate, ctx.locale))
+    },
+
+    getNextSection(date: CalendarDate, larger?: boolean) {
+      const d = ctx.duration
+      const unitDuration = this.getUnitDuration()
+
+      if (!larger && !d.days) {
+        return date.add(unitDuration)
+      }
+
+      if (d.days) {
+        return date.add(d)
+      } else if (d.weeks) {
+        return date.add({ months: 1 })
+      } else if (d.months || d.years) {
+        return date.add({ years: 1 })
+      }
+    },
+
+    getPreviousSection(date: CalendarDate, larger?: boolean) {
+      const d = ctx.duration
+      const unitDuration = this.getUnitDuration()
+
+      if (!larger && !d.days) {
+        return date.subtract(unitDuration)
+      }
+
+      if (d.days) {
+        return date.subtract(ctx.duration)
+      } else if (d.weeks) {
+        return date.subtract({ months: 1 })
+      } else if (d.months || d.years) {
+        return date.subtract({ years: 1 })
+      }
     },
 
     setMonth(date: CalendarDate, month: number) {

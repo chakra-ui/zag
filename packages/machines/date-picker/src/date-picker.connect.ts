@@ -1,5 +1,5 @@
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { State, Send, CellProps } from "./date-picker.types"
+import { CellProps, Send, State } from "./date-picker.types"
 // import { dom } from "./date-picker.dom"
 import { getCalendarState } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
@@ -16,13 +16,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const disabled = state.context.disabled
   const readonly = state.context.readonly
 
+  const formatDay = (day: Date) => {
+    return state.context.dayFormatter.format(day)
+  }
+
   return {
+    weeks: state.context.weeks,
+    weekDays: calendar.getWeekDays().map(formatDay),
+
     value: selectedDate,
     valueAsDate: selectedDate?.toDate(state.context.timeZone),
     valueAsString: selectedDate?.toString(),
 
+    focusedValue: focusedDate,
+    focusedValueAsDate: focusedDate?.toDate(state.context.timeZone),
+    focusedValueAsString: focusedDate?.toString(),
+
     rootProps: normalize.element({
       ...parts.root.attrs,
+    }),
+
+    controlProps: normalize.element({
+      ...parts.control.attrs,
     }),
 
     gridProps: normalize.element({
@@ -62,6 +77,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.preventDefault()
           event.stopPropagation()
         }
+      },
+      onPointerDown() {
+        send({ type: "POINTER_DOWN" })
+      },
+      onPointerUp() {
+        send({ type: "POINTER_UP" })
       },
     }),
 

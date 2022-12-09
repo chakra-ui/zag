@@ -12,6 +12,15 @@ const {
 const fetchMachine = createMachine({
   id: "date-picker",
   initial: "open:month",
+  context: {},
+  on: {
+    POINTER_DOWN: {
+      actions: ["disableTextSelection"]
+    },
+    POINTER_UP: {
+      actions: ["enableTextSelection"]
+    }
+  },
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
