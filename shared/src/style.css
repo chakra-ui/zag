@@ -850,7 +850,7 @@ main > .toggle[data-pressed] {
   gap: 20px;
 }
 
-.tooltip-content {
+[data-scope="tooltip"][data-part="content"] {
   z-index: 1;
   padding: 0.25em 0.5em;
   box-shadow: 2px 2px 10px hsla(0, 0%, 0%, 0.1);
