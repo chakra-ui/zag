@@ -571,7 +571,12 @@ main [data-testid="scrubber"] {
 * Tags Input
 * -----------------------------------------------------------------------------*/
 
-.tags-input [data-part="control"] {
+[data-scope="tags-input"][data-part="label"] {
+  display: block;
+  margin-bottom: 8px;
+}
+
+[data-scope="tags-input"][data-part="control"] {
   padding: 0 2px;
   background: #fff;
   border: 1px solid #ccc;
@@ -580,17 +585,17 @@ main [data-testid="scrubber"] {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.tags-input [data-part="control"][data-disabled] {
+[data-scope="tags-input"][data-part="control"][data-disabled] {
   background: #f9f9f9;
 }
 
-.tags-input [data-part="control"][data-focus],
-.tags-input [data-part="control"]:focus {
-  border-color: red;
-  outline: 0;
+[data-scope="tags-input"][data-part="control"][data-focus],
+[data-scope="tags-input"][data-part="control"]:focus {
+  outline: 2px solid var(--ring-color);
+  outline-offset: 2px;
 }
 
-.tags-input [data-part="tag"] {
+[data-scope="tags-input"][data-part="tag"] {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -603,20 +608,20 @@ main [data-testid="scrubber"] {
   display: inline-block;
 }
 
-.tags-input [data-part="tag"][hidden] {
+[data-scope="tags-input"][data-part="tag"][hidden] {
   display: none !important;
 }
-.tags-input [data-part="tag"][data-selected] {
+[data-scope="tags-input"][data-part="tag"][data-selected] {
   background-color: #777;
   border-color: #777;
   color: #eee;
 }
-.tags-input [data-part="tag"][data-disabled] {
+[data-scope="tags-input"][data-part="tag"][data-disabled] {
   opacity: 0.6;
   cursor: default;
 }
 
-.tags-input [data-part*="input"] {
+[data-scope="tags-input"][data-part*="input"] {
   appearance: none;
   padding: 3px;
   margin: 0;
@@ -629,15 +634,15 @@ main [data-testid="scrubber"] {
   display: inline-block !important;
 }
 
-.tags-input [data-part*="input"][hidden] {
+[data-scope="tags-input"][data-part*="input"][hidden] {
   display: none !important;
 }
 
-.tags-input [data-part*="input"]:disabled {
+[data-scope="tags-input"][data-part*="input"]:disabled {
   opacity: 0.6;
 }
 
-.tags-input [data-part="delete-button"] {
+[data-scope="tags-input"][data-part="tag-delete-trigger"] {
   all: unset;
 }
 
