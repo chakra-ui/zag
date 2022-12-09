@@ -865,16 +865,16 @@ main > .toggle[data-pressed] {
 * Tabs
 * -----------------------------------------------------------------------------*/
 
-.tabs [data-part="root"] {
+[data-scope="tabs"][data-part="root"] {
   max-width: 20em;
 }
 
-.tabs [data-part="trigger-group"] {
+[data-scope="tabs"][data-part="tablist"] {
   margin: 0 0 -0.1em;
   overflow: visible;
 }
 
-.tabs [data-part="trigger"] {
+[data-scope="tabs"][data-part="trigger"] {
   position: relative;
   margin: 0;
   padding: 0.3em 0.5em 0.4em;
@@ -886,25 +886,25 @@ main > .toggle[data-pressed] {
   background: hsl(220, 20%, 94%);
 }
 
-.tabs [data-part="trigger"]:hover,
-.tabs [data-part="trigger"]:focus,
-.tabs [data-part="trigger"]:active {
+[data-scope="tabs"][data-part="trigger"]:hover,
+[data-scope="tabs"][data-part="trigger"]:focus,
+[data-scope="tabs"][data-part="trigger"]:active {
   outline: 0;
   border-radius: 0;
   color: inherit;
 }
 
-.tabs [data-part="trigger"][data-selected] {
+[data-scope="tabs"][data-part="trigger"][data-selected] {
   border-radius: 0;
   background: hsl(220, 43%, 99%);
   outline: 0;
 }
 
-.tabs [data-part="trigger"][data-selected]:not(:focus):not(:hover)::before {
+[data-scope="tabs"][data-part="trigger"][data-selected]:not(:focus):not(:hover)::before {
   border-top: 5px solid hsl(218, 96%, 48%);
 }
 
-.tabs [data-part="trigger"][data-selected]::after {
+[data-scope="tabs"][data-part="trigger"][data-selected]::after {
   position: absolute;
   z-index: 3;
   bottom: -1px;
@@ -916,14 +916,14 @@ main > .toggle[data-pressed] {
   content: "";
 }
 
-.tabs [data-part="trigger"]:hover::before,
-.tabs [data-part="trigger"]:focus::before {
+[data-scope="tabs"][data-part="trigger"]:hover::before,
+[data-scope="tabs"][data-part="trigger"]:focus::before {
   border-color: hsl(20, 96%, 48%);
 }
 
-.tabs [data-part="trigger"]:hover::before,
-.tabs [data-part="trigger"]:focus::before,
-.tabs [data-part="trigger"][data-selected]::before {
+[data-scope="tabs"][data-part="trigger"]:hover::before,
+[data-scope="tabs"][data-part="trigger"]:focus::before,
+[data-scope="tabs"][data-part="trigger"][data-selected]::before {
   position: absolute;
   bottom: 100%;
   right: -1px;
@@ -933,7 +933,7 @@ main > .toggle[data-pressed] {
   content: "";
 }
 
-.tabs [data-part="content"] {
+[data-scope="tabs"][data-part="content"] {
   position: relative;
   z-index: 2;
   padding: 0.5em 0.5em 0.7em;
@@ -942,18 +942,18 @@ main > .toggle[data-pressed] {
   box-shadow: 0 0 0.2em hsl(219, 1%, 72%);
   background: hsl(220, 43%, 99%);
 }
-.tabs [data-part="content"] p {
+[data-scope="tabs"][data-part="content"] p {
   margin: 0;
 }
-.tabs [data-part="content"] * + p {
+[data-scope="tabs"][data-part="content"] * + p {
   margin-top: 1em;
 }
-.tabs [data-part="content"]:focus {
+[data-scope="tabs"][data-part="content"]:focus {
   border-color: hsl(20, 96%, 48%);
   box-shadow: 0 0 0.2em hsl(20, 96%, 48%);
   outline: 0;
 }
-.tabs [data-part="content"]:focus::after {
+[data-scope="tabs"][data-part="content"]:focus::after {
   position: absolute;
   bottom: 0;
   right: -1px;
@@ -963,7 +963,7 @@ main > .toggle[data-pressed] {
   content: "";
 }
 
-.tabs [data-part="indicator"] {
+[data-scope="tabs"][data-part="indicator"] {
   height: 4px;
   background-color: red;
   z-index: 10;
