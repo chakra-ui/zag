@@ -66,7 +66,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      entry: ["setupAnnouncer"],
+      activities: ["setupAnnouncer"],
 
       watch: {
         focusedValue: ["adjustStartDate", "focusFocusedCell"],
@@ -135,13 +135,16 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      actions: {
+      activities: {
         setupAnnouncer(ctx) {
           ctx.annoucer = createLiveRegion({
             level: "assertive",
             document: dom.getDoc(ctx),
           })
+          return () => ctx.annoucer?.destroy?.()
         },
+      },
+      actions: {
         setFormatter(ctx) {
           ctx.formatter = (options) => new DateFormatter(ctx.locale, options)
         },
