@@ -2,8 +2,10 @@
 
 import { INTERNAL_Snapshot as Snapshot, snapshot, subscribe } from "@zag-js/store"
 import { createProxy as createProxyToCompare, getUntracked, isChanged } from "proxy-compare"
+import React, { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
+
 //@ts-ignore
-import { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore, use } from "react"
+const { use } = React
 
 // customized version of affectedToPathList
 // we need to avoid invoking getters
