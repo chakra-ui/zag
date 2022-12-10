@@ -11,9 +11,11 @@ export function getSelectedDateDescription(ctx: DateDescriptionContext) {
     timeZone: ctx.timeZone,
   })
 
-  if (!ctx.isSelectingRange && ctx.start && ctx.end) {
-    if (isSameDay(ctx.start, ctx.end)) {
-      return dateFormatter.format(ctx.start.toDate(ctx.timeZone))
+  const { start, end = start } = ctx
+
+  if (!ctx.isSelectingRange && start && end) {
+    if (isSameDay(start, end)) {
+      return dateFormatter.format(start.toDate(ctx.timeZone))
     } else {
       return formatRange(dateFormatter, ctx)
     }
