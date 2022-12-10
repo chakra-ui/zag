@@ -23,6 +23,7 @@ function getInitialContext(context: UserDefinedContext) {
     focusedValue,
     startValue,
     formatter: (options) => new DateFormatter(ctx.locale, options),
+    selectedDateDescription: "",
     ...context,
   } as MachineContext
 }
@@ -52,17 +53,6 @@ export function machine(userContext: UserDefinedContext) {
         isNextVisibleRangeValid(ctx) {
           return getCalendarState(ctx).isNextVisibleRangeInvalid(ctx.startValue)
         },
-        selectedDateDescription: (ctx) => {
-          return getSelectedDateDescription({
-            createDateFormatter: ctx.formatter,
-            start: ctx.startValue,
-            locale: ctx.locale,
-            timeZone: ctx.timeZone,
-            stringify({ start, end }) {
-              return `${start} - ${end}`
-            },
-          })
-        },
         visibleRangeDescription: (ctx) => {
           return getVisibleRangeDescription({
             createDateFormatter: ctx.formatter,
@@ -76,10 +66,12 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
+      entry: ["setupAnnouncer"],
+
       watch: {
         focusedValue: ["adjustStartDate", "focusFocusedCell"],
         visibleRange: ["announceVisibleRange"],
-        value: ["announceSelectedDate"],
+        value: ["setSelectedDateDescription", "announceSelectedDate"],
         locale: ["setFormatter"],
       },
 
@@ -152,6 +144,17 @@ export function machine(userContext: UserDefinedContext) {
         },
         setFormatter(ctx) {
           ctx.formatter = (options) => new DateFormatter(ctx.locale, options)
+        },
+        setSelectedDateDescription(ctx) {
+          ctx.selectedDateDescription = getSelectedDateDescription({
+            createDateFormatter: ctx.formatter,
+            start: ctx.value,
+            locale: ctx.locale,
+            timeZone: ctx.timeZone,
+            stringify({ start, end }) {
+              return `${start} - ${end}`
+            },
+          })
         },
         announceSelectedDate(ctx) {
           ctx.annoucer?.announce(ctx.selectedDateDescription, 3000)

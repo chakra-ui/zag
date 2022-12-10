@@ -34,6 +34,7 @@ type PrivateContext = Context<{
   hasFocus?: boolean
   annoucer?: LiveRegion
   formatter: DateFormatterFn
+  selectedDateDescription: string
 }>
 
 type ComputedContext = Readonly<{
@@ -44,7 +45,6 @@ type ComputedContext = Readonly<{
   visibleRange: { start: CalendarDate; end: CalendarDate }
   isNextVisibleRangeValid: boolean
   isPrevVisibleRangeValid: boolean
-  selectedDateDescription: string
   visibleRangeDescription: string
 }>
 
