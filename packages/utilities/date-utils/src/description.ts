@@ -23,7 +23,8 @@ export function getSelectedDateDescription(ctx: DateDescriptionContext) {
 }
 
 export function getVisibleRangeDescription(ctx: DateDescriptionContext, isAria?: boolean) {
-  if (!ctx.start || !ctx.end) throw new Error("Missing start date")
+  if (!ctx.start) return ""
+  const { start, end = start } = ctx
 
   let era = getEraFormat(ctx.start) || getEraFormat(ctx.end)
 
@@ -44,21 +45,21 @@ export function getVisibleRangeDescription(ctx: DateDescriptionContext, isAria?:
     timeZone: ctx.timeZone,
   })
 
-  if (isSameDay(ctx.start, startOfMonth(ctx.start))) {
-    if (isSameDay(ctx.end, endOfMonth(ctx.start))) {
-      return monthFormatter.format(ctx.start.toDate(ctx.timeZone))
+  if (isSameDay(start, startOfMonth(start))) {
+    if (isSameDay(end, endOfMonth(start))) {
+      return monthFormatter.format(start.toDate(ctx.timeZone))
     }
 
-    if (isSameDay(ctx.end, endOfMonth(ctx.end))) {
+    if (isSameDay(end, endOfMonth(end))) {
       return isAria
         ? formatRange(monthFormatter, ctx)
-        : monthFormatter.formatRange(ctx.start.toDate(ctx.timeZone), ctx.end.toDate(ctx.timeZone))
+        : monthFormatter.formatRange(start.toDate(ctx.timeZone), end.toDate(ctx.timeZone))
     }
   }
 
   return isAria
     ? formatRange(dateFormatter, ctx)
-    : dateFormatter.formatRange(ctx.start.toDate(ctx.timeZone), ctx.end.toDate(ctx.timeZone))
+    : dateFormatter.formatRange(start.toDate(ctx.timeZone), end.toDate(ctx.timeZone))
 }
 
 function getEraFormat(date: CalendarDate | undefined): "short" | undefined {
