@@ -82,6 +82,9 @@ export function machine(userContext: UserDefinedContext) {
         POINTER_UP: {
           actions: ["enableTextSelection"],
         },
+        SET_VALUE: {
+          actions: ["setSelectedDate"],
+        },
       },
 
       states: {

@@ -20,6 +20,9 @@ const fetchMachine = createMachine({
     },
     POINTER_UP: {
       actions: ["enableTextSelection"]
+    },
+    SET_VALUE: {
+      actions: ["setSelectedDate"]
     }
   },
   on: {

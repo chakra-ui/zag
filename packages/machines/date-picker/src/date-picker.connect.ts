@@ -33,6 +33,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focusedValueAsDate: focusedDate?.toDate(state.context.timeZone),
     focusedValueAsString: focusedDate?.toString(),
 
+    setMonth(month: number) {
+      if (!selectedDate) return
+      const date = calendar.setMonth(selectedDate, month)
+      send({ type: "SET_VALUE", date })
+    },
+    setYear(year: number) {
+      if (!selectedDate) return
+      const date = calendar.setYear(selectedDate, year)
+      send({ type: "SET_VALUE", date })
+    },
+
     rootProps: normalize.element({
       role: "group",
       "aria-label": "TODO",
