@@ -35,8 +35,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "date-picker",
       initial: "open:month",
       context: getInitialContext({
-        locale: "en",
-        timeZone: "GMT",
+        locale: "en-US",
+        timeZone: "UTC",
         duration: { months: 1 },
         ...ctx,
       }),
