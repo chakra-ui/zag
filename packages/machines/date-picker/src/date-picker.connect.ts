@@ -185,7 +185,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: state.context.isPrevVisibleRangeValid,
     }),
 
-    segments: segmentState.getSegments(selectedDate, state.context.validSegments),
+    segments: segmentState.getSegments(state.context.displayValue, state.context.validSegments),
 
     getSegmentProps(props: DateSegment) {
       if (props.type === "literal") {
@@ -227,10 +227,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (isModifiedEvent(event) || readonly) return
 
           const keyMap: EventKeyMap = {
-            ArrowLeft() {},
-            ArrowRight() {},
-            ArrowUp() {},
-            ArrowDown() {},
+            ArrowLeft() {
+              send("ARROW_LEFT")
+            },
+            ArrowRight() {
+              send("ARROW_RIGHT")
+            },
+            ArrowUp() {
+              send("ARROW_UP")
+            },
+            ArrowDown() {
+              send("ARROW_DOWN")
+            },
             PageUp() {},
             PageDown() {},
             Home() {},

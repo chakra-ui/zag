@@ -5,6 +5,7 @@ import {
   getSegmentState,
   getSelectedDateDescription,
   getVisibleRangeDescription,
+  toCalendarDate,
 } from "@zag-js/date-utils"
 import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
 import { createLiveRegion } from "@zag-js/live-region"
@@ -16,13 +17,16 @@ import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.
 function getInitialContext(context: UserDefinedContext) {
   const ctx = context as MachineContext
   const calendar = getCalendarState(ctx)
+
   const focusedValue = calendar.getToday()
   const startValue = calendar.setAlignment(focusedValue, "start")
 
   const contextValue = {
     focusedValue,
     startValue,
-    getDateFormatter: (options) => new DateFormatter(ctx.locale, options),
+    getDateFormatter(options) {
+      return new DateFormatter(ctx.locale, options)
+    },
     selectedDateDescription: "",
     getPlaceholder({ field }) {
       return { day: "dd", month: "mm", year: "yyyy" }[field]
@@ -32,9 +36,11 @@ function getInitialContext(context: UserDefinedContext) {
 
   const segments = getSegmentState(contextValue)
   const allSegments = segments.getAllSegments()
+  const placeholderValue = segments.createPlaceholderDate()
 
   return {
     ...contextValue,
+    placeholderValue,
     allSegments,
     validSegments: { ...allSegments },
   }
@@ -45,7 +51,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "date-picker",
-      initial: "open:month",
+      initial: "focused",
       context: getInitialContext({
         locale: "en-US",
         timeZone: "UTC",
@@ -87,6 +93,11 @@ export function machine(userContext: UserDefinedContext) {
             complete: keys.length === allKeys.length,
           }
         },
+        displayValue(ctx) {
+          return ctx.value && Object.keys(ctx.validSegments).length >= Object.keys(ctx.allSegments).length
+            ? ctx.value
+            : ctx.placeholderValue
+        },
       },
 
       activities: ["setupAnnouncer"],
@@ -114,14 +125,22 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           tags: "closed",
         },
+
         focused: {
           tags: "closed",
           on: {
             FOCUS_SEGMENT: {
               actions: ["setFocusedSegment"],
             },
+            ARROW_UP: {
+              actions: ["incrementFocusedSegment"],
+            },
+            ARROW_DOWN: {
+              actions: ["decrementFocusedSegment"],
+            },
           },
         },
+
         "open:month": {
           tags: "open",
           on: {
@@ -267,6 +286,11 @@ export function machine(userContext: UserDefinedContext) {
             ctx.focusedValue = focusedValue
           }
         },
+
+        /* -----------------------------------------------------------------------------
+         * Segments
+         * -----------------------------------------------------------------------------*/
+
         adjustSegments(ctx) {
           if (!ctx.value && ctx.validSegmentDetails.complete) {
             ctx.validSegments = {}
@@ -286,6 +310,22 @@ export function machine(userContext: UserDefinedContext) {
         },
         setFocusedSegment(ctx, evt) {
           ctx.focusedSegment = evt.segment
+        },
+        incrementFocusedSegment(ctx) {
+          if (!ctx.focusedSegment) return
+          const segments = getSegmentState(ctx)
+          const segment = segments.increment(ctx.focusedSegment)
+          if (!segment) return
+          const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
+          ctx[key] = toCalendarDate(segment)
+        },
+        decrementFocusedSegment(ctx) {
+          if (!ctx.focusedSegment) return
+          const segments = getSegmentState(ctx)
+          const segment = segments.decrement(ctx.focusedSegment)
+          if (!segment) return
+          const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
+          ctx[key] = toCalendarDate(segment)
         },
       },
     },

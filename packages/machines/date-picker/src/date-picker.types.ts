@@ -38,7 +38,7 @@ type PublicContext = DirectionProperty &
     granularity: Granularity
     onChange?: (details: { value: CalendarDate }) => void
     isDateUnavailable?: (date: DateValue) => boolean
-    placeholderValue?: DateValue
+    placeholderValue: DateValue
   }
 
 type PrivateContext = Context<{
@@ -49,7 +49,7 @@ type PrivateContext = Context<{
   allSegments: Partial<Record<DateSegment["type"], boolean>>
   validSegments: Partial<Record<DateSegment["type"], boolean>>
   getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
-  getPlaceholder: (ootions: { field: string; locale?: string }) => string
+  getPlaceholder: (options: { field: string; locale?: string }) => string
 }>
 
 type ComputedContext = Readonly<{
@@ -62,6 +62,7 @@ type ComputedContext = Readonly<{
   isPrevVisibleRangeValid: boolean
   visibleRangeDescription: string
   validSegmentDetails: { complete: boolean; keys: string[]; exceeds: boolean }
+  displayValue: DateValue
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

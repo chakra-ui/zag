@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "date-picker",
-  initial: "open:month",
+  initial: "focused",
   context: {},
   activities: ["setupAnnouncer"],
   on: {
@@ -39,6 +39,12 @@ const fetchMachine = createMachine({
       on: {
         FOCUS_SEGMENT: {
           actions: ["setFocusedSegment"]
+        },
+        ARROW_UP: {
+          actions: ["incrementFocusedSegment"]
+        },
+        ARROW_DOWN: {
+          actions: ["decrementFocusedSegment"]
         }
       }
     },

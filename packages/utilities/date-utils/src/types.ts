@@ -20,6 +20,9 @@ export type DateSegmentContext = {
   timeZone: string
   locale: string
   granularity: Granularity
+  allSegments: any
+  displayValue: DateValue
+  validSegments: any
   getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
   getPlaceholder: (options: { field: string; locale: string }) => string
 }

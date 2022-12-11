@@ -84,26 +84,35 @@ export function getSegmentState(ctx: DateSegmentContext) {
       return createPlaceholderDate(ctx)
     },
     setSegment,
-    adjustSegment(date: DateValue, part: Part, amount: number) {
+    markValid(part: string) {
+      ctx.validSegments[part] = true
+      if (part === "year" && ctx.allSegments.era) {
+        ctx.validSegments.era = true
+      }
+    },
+    adjustSegment(part: Part, amount: number) {
+      if (!ctx.validSegments[part]) {
+        this.markValid(part)
+      }
       const dateFormatter = ctx.getDateFormatter({})
-      addSegment(date, part, amount, dateFormatter.resolvedOptions())
+      return addSegment(ctx.displayValue, part, amount, dateFormatter.resolvedOptions())
     },
-    increment(date: DateValue, part: Part) {
-      return this.adjustSegment(date, part, 1)
+    increment(part: Part) {
+      return this.adjustSegment(part, 1)
     },
-    decrement(date: DateValue, part: Part) {
-      return this.adjustSegment(date, part, -1)
+    decrement(part: Part) {
+      return this.adjustSegment(part, -1)
     },
-    incrementPage(date: DateValue, part: Part) {
-      return this.adjustSegment(date, part, PAGE_STEP[part] || 1)
+    incrementPage(part: Part) {
+      return this.adjustSegment(part, PAGE_STEP[part] || 1)
     },
-    decrementPage(date: DateValue, part: Part) {
-      return this.adjustSegment(date, part, -(PAGE_STEP[part] || 1))
+    decrementPage(part: Part) {
+      return this.adjustSegment(part, -(PAGE_STEP[part] || 1))
     },
   }
 }
 
-function addSegment(date: DateValue, part: string, amount: number, options: Intl.ResolvedDateTimeFormatOptions) {
+function addSegment(date: DateValue, part: Part, amount: number, options: Intl.ResolvedDateTimeFormatOptions) {
   switch (part) {
     case "era":
     case "year":
