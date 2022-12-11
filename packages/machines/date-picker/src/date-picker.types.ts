@@ -20,6 +20,7 @@ type ElementIds = Partial<{
   cell(id: string): string
   cellTrigger(id: string): string
   control: string
+  trigger: string
 }>
 
 type PublicContext = DirectionProperty &

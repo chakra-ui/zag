@@ -186,12 +186,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: state.context.isPrevVisibleRangeValid,
     }),
 
+    triggerProps: normalize.button({
+      ...parts.trigger.attrs,
+      id: dom.getTriggerId(state.context),
+      type: "button",
+      onClick() {
+        send("CLICK_TRIGGER")
+      },
+    }),
+
     segments: segmentState.getSegments(state.context.displayValue, state.context.validSegments),
 
     fieldProps: normalize.element({
       ...parts.field.attrs,
       role: "presentation",
       id: dom.getFieldId(state.context),
+    }),
+
+    groupProps: normalize.element({
+      ...parts.group.attrs,
+      id: dom.getGroupId(state.context),
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           ArrowLeft() {
@@ -207,7 +221,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (exec) {
           exec(event)
           event.preventDefault()
-          event.stopPropagation()
         }
       },
     }),

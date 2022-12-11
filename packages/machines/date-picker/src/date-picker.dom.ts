@@ -1,4 +1,5 @@
-import { defineDomHelpers, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { nextIndex, prevIndex } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = defineDomHelpers({
@@ -9,8 +10,10 @@ export const dom = defineDomHelpers({
   getPrevTriggerId: (ctx: Ctx) => `date-picker:${ctx.id}:prev-trigger`,
   getNextTriggerId: (ctx: Ctx) => `date-picker:${ctx.id}:next-trigger`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `date-picker:${ctx.id}:control`,
+  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `date-picker:${ctx.id}:trigger`,
   getSegmentId: (ctx: Ctx, id: string) => `date-picker:${ctx.id}:${id}`,
   getFieldId: (ctx: Ctx) => ctx.ids?.control ?? `date-picker:${ctx.id}:field`,
+  getGroupId: (ctx: Ctx) => ctx.ids?.control ?? `date-picker:${ctx.id}:group`,
 
   getGridEl: (ctx: Ctx) => dom.getById(ctx, dom.getGridId(ctx)),
   getFocusedCell: (ctx: Ctx) => {
@@ -18,19 +21,19 @@ export const dom = defineDomHelpers({
     return grid?.querySelector<HTMLElement>("[data-part=cell-trigger][data-focused]")
   },
   getSegmentEls: (ctx: Ctx) => {
-    const field = dom.getById(ctx, dom.getFieldId(ctx))
-    return queryAll(field, "[data-part=segment], [data-part=trigger]")
+    const group = dom.getById(ctx, dom.getGroupId(ctx))
+    return queryAll(group, "[data-part=segment], [data-part=trigger]")
   },
   focusNextSegment(ctx: Ctx) {
-    if (!ctx.focusedSegment) return
     const segments = dom.getSegmentEls(ctx)
-    const next = nextById(segments, dom.getSegmentId(ctx, ctx.focusedSegment), false)
+    const index = nextIndex(segments, segments.indexOf(dom.getActiveElement(ctx)!), { loop: false })
+    const next = segments[index]
     next?.focus()
   },
   focusPrevSegment(ctx: Ctx) {
-    if (!ctx.focusedSegment) return
     const segments = dom.getSegmentEls(ctx)
-    const prev = prevById(segments, dom.getSegmentId(ctx, ctx.focusedSegment), false)
+    const index = prevIndex(segments, segments.indexOf(dom.getActiveElement(ctx)!), { loop: false })
+    const prev = segments[index]
     prev?.focus()
   },
 })
