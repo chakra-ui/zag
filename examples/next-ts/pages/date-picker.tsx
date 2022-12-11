@@ -18,7 +18,6 @@ export default function Page() {
   return (
     <>
       <main className="date-picker">
-        <pre style={{ position: "absolute", left: "800px" }}>{JSON.stringify(api.segments, null, 4)}</pre>
         <div {...api.rootProps}>
           <output className="date-output">
             <div>Selected: {api.valueAsString ?? "-"}</div>
@@ -65,6 +64,7 @@ export default function Page() {
             </tbody>
           </table>{" "}
         </div>
+        <pre>{JSON.stringify(api.segments, null, 4)}</pre>
       </main>
 
       <Toolbar controls={controls.ui}>
