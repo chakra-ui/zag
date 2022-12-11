@@ -2,6 +2,8 @@ import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@inte
 
 type Stringify = ({ start, end }: { start: string; end: string }) => string
 
+export type Granularity = "day" | "hour" | "minute" | "second"
+
 export type DateContext = DateValueRange & {
   locale: string
   timeZone: string
@@ -14,7 +16,12 @@ export type DateValueRange = {
   max?: DateValue
 }
 
-export type DateSegmentContext = {}
+export type DateSegmentContext = {
+  timeZone: string
+  locale: string
+  getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
+  getPlaceholder: (options: { field: string; locale: string }) => string
+}
 
 export type DateDescriptionContext = {
   start?: CalendarDate
@@ -22,6 +29,6 @@ export type DateDescriptionContext = {
   isSelectingRange?: boolean
   timeZone: string
   locale: string
-  createDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
+  getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
   stringify: Stringify
 }

@@ -9,6 +9,8 @@ export const dom = defineDomHelpers({
   getPrevTriggerId: (ctx: Ctx) => `date-picker:${ctx.id}:prev-trigger`,
   getNextTriggerId: (ctx: Ctx) => `date-picker:${ctx.id}:next-trigger`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `date-picker:${ctx.id}:control`,
+  getSegmentId: (ctx: Ctx, id: string) => `date-picker:${ctx.id}:${id}`,
+
   getGridEl: (ctx: Ctx) => dom.getById(ctx, dom.getGridId(ctx)),
   getFocusedCell: (ctx: Ctx) => {
     const grid = dom.getGridEl(ctx)

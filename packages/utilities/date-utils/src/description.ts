@@ -2,7 +2,7 @@ import { CalendarDate, DateFormatter, endOfMonth, isSameDay, startOfMonth } from
 import { DateDescriptionContext } from "./types"
 
 export function getSelectedDateDescription(ctx: DateDescriptionContext) {
-  let dateFormatter = ctx.createDateFormatter({
+  let dateFormatter = ctx.getDateFormatter({
     weekday: "long",
     month: "long",
     year: "numeric",
@@ -30,7 +30,7 @@ export function getVisibleRangeDescription(ctx: DateDescriptionContext, isAria?:
 
   let era = getEraFormat(ctx.start) || getEraFormat(ctx.end)
 
-  let monthFormatter = ctx.createDateFormatter({
+  let monthFormatter = ctx.getDateFormatter({
     month: "long",
     year: "numeric",
     era,
@@ -38,7 +38,7 @@ export function getVisibleRangeDescription(ctx: DateDescriptionContext, isAria?:
     timeZone: ctx.timeZone,
   })
 
-  let dateFormatter = ctx.createDateFormatter({
+  let dateFormatter = ctx.getDateFormatter({
     month: "long",
     year: "numeric",
     day: "numeric",

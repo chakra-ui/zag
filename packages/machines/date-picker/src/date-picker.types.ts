@@ -3,6 +3,17 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 import { LiveRegion } from "@zag-js/live-region"
 
+export interface DateSegment {
+  type: keyof Intl.DateTimeFormatPartTypesRegistry
+  text: string
+  value?: number
+  min?: number
+  max?: number
+  isPlaceholder: boolean
+  placeholder: string
+  isEditable: boolean
+}
+
 type ElementIds = Partial<{
   root: string
   grid: string
@@ -26,15 +37,16 @@ type PublicContext = DirectionProperty &
     startValue: CalendarDate
     onChange?: (details: { value: CalendarDate }) => void
     isDateUnavailable?: (date: DateValue) => boolean
+    placeholder?: CalendarDate
   }
-
-type DateFormatterFn = (options: Intl.DateTimeFormatOptions) => DateFormatter
 
 type PrivateContext = Context<{
   hasFocus?: boolean
   annoucer?: LiveRegion
-  formatter: DateFormatterFn
   selectedDateDescription: string
+  focusedSegment: DateSegment["type"] | null
+  getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
+  getPlaceholder: (ootions: { field: string; locale?: string }) => string
 }>
 
 type ComputedContext = Readonly<{
@@ -63,5 +75,5 @@ export type CellProps = {
 
 export type MachineState = {
   tags: "open" | "closed"
-  value: "idle" | "focused" | "open:month" | "open:year"
+  value: "idle" | "focused" | "focused:spin" | "open:month" | "open:year"
 }

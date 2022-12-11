@@ -18,11 +18,28 @@ export default function Page() {
   return (
     <>
       <main className="date-picker">
+        <pre style={{ position: "absolute", left: "800px" }}>{JSON.stringify(api.segments, null, 4)}</pre>
         <div {...api.rootProps}>
           <output className="date-output">
             <div>Selected: {api.valueAsString ?? "-"}</div>
             <div>Focused: {api.focusedValueAsString}</div>
           </output>
+          <div style={{ display: "inline-flex", border: "1px solid gray", padding: "2px" }}>
+            {api.segments.map((segment, i) => (
+              <div key={i} {...api.getSegmentProps(segment)}>
+                <span
+                  style={{
+                    visibility: segment.isPlaceholder ? undefined : "hidden",
+                    height: segment.isPlaceholder ? "" : 0,
+                    pointerEvents: "none",
+                  }}
+                >
+                  {segment.placeholder}
+                </span>
+                <span>{segment.isPlaceholder ? "" : segment.text}</span>
+              </div>
+            ))}
+          </div>
           <div {...api.controlProps}>
             <button {...api.prevTriggerProps}>Prev</button>
             <button {...api.nextTriggerProps}>Next</button>

@@ -22,8 +22,11 @@ function getInitialContext(context: UserDefinedContext) {
   return {
     focusedValue,
     startValue,
-    formatter: (options) => new DateFormatter(ctx.locale, options),
+    getDateFormatter: (options) => new DateFormatter(ctx.locale, options),
     selectedDateDescription: "",
+    getPlaceholder({ field }) {
+      return { day: "dd", month: "mm", year: "yyyy" }[field]
+    },
     ...context,
   } as MachineContext
 }
@@ -55,7 +58,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         visibleRangeDescription: (ctx) => {
           return getVisibleRangeDescription({
-            createDateFormatter: ctx.formatter,
+            getDateFormatter: ctx.getDateFormatter,
             start: ctx.startValue,
             locale: ctx.locale,
             timeZone: ctx.timeZone,
@@ -149,11 +152,11 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         setFormatter(ctx) {
-          ctx.formatter = (options) => new DateFormatter(ctx.locale, options)
+          ctx.getDateFormatter = (options) => new DateFormatter(ctx.locale, options)
         },
         setSelectedDateDescription(ctx) {
           ctx.selectedDateDescription = getSelectedDateDescription({
-            createDateFormatter: ctx.formatter,
+            getDateFormatter: ctx.getDateFormatter,
             start: ctx.value,
             locale: ctx.locale,
             timeZone: ctx.timeZone,

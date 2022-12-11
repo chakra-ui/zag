@@ -1,12 +1,13 @@
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { CellProps, Send, State } from "./date-picker.types"
-import { getCalendarState } from "@zag-js/date-utils"
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey } from "@zag-js/dom-utils"
+import { CellProps, DateSegment, Send, State } from "./date-picker.types"
+import { getCalendarState, getSegmentState } from "@zag-js/date-utils"
+import { ariaAttr, dataAttr, EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const calendar = getCalendarState(state.context)
+  const segmentState = getSegmentState(state.context)
 
   const startDate = state.context.startValue
   const endDate = state.context.endValue
@@ -183,5 +184,68 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "TODO",
       disabled: state.context.isPrevVisibleRangeValid,
     }),
+
+    segments: segmentState.getSegments(selectedDate),
+
+    getSegmentProps(props: DateSegment) {
+      if (props.type === "literal") {
+        return {
+          id: dom.getSegmentId(state.context, props.type),
+          "aria-hidden": true,
+        }
+      }
+
+      const isEditable = state.context.isInteractive && props.isEditable
+      return normalize.element({
+        id: dom.getSegmentId(state.context, props.type),
+        role: "spinbutton",
+        "aria-valuemax": props.max,
+        "aria-valuemin": props.min,
+        "aria-valuenow": props.value,
+        "aria-valuetext": "TODO",
+        ["enterKeyHint" as any]: isEditable ? "next" : undefined,
+        "aria-readonly": state.context.readonly || !props.isEditable ? "true" : undefined,
+        "data-placeholder": props.isPlaceholder || undefined,
+        "data-editable": dataAttr(isEditable),
+        contentEditable: isEditable,
+        suppressContentEditableWarning: isEditable,
+        spellCheck: isEditable ? "false" : undefined,
+        autoCapitalize: isEditable ? "off" : undefined,
+        autoCorrect: isEditable ? "off" : undefined,
+        inputMode:
+          disabled || props.type === "dayPeriod" || props.type === "era" || !isEditable ? undefined : "numeric",
+        tabIndex: disabled ? undefined : 0,
+        style: {
+          "--min-width": props.max != null ? String(props.max).length + "ch" : undefined,
+          caretColor: "transparent",
+          fontVariantNumeric: "tabular-nums",
+        },
+        onFocus() {
+          send({ type: "FOCUS_SEGMENT", segment: props.type })
+        },
+        onKeyDown(event) {
+          if (isModifiedEvent(event) || readonly) return
+
+          const keyMap: EventKeyMap = {
+            ArrowLeft() {},
+            ArrowRight() {},
+            ArrowUp() {},
+            ArrowDown() {},
+            PageUp() {},
+            PageDown() {},
+            Home() {},
+            End() {},
+          }
+
+          const exec = keyMap[getEventKey(event, state.context)]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+      })
+    },
   }
 }
