@@ -93,11 +93,6 @@ export function machine(userContext: UserDefinedContext) {
             complete: keys.length === allKeys.length,
           }
         },
-        displayValue(ctx) {
-          return ctx.value && Object.keys(ctx.validSegments).length >= Object.keys(ctx.allSegments).length
-            ? ctx.value
-            : ctx.placeholderValue
-        },
       },
 
       activities: ["setupAnnouncer"],
@@ -107,6 +102,7 @@ export function machine(userContext: UserDefinedContext) {
         visibleRange: ["announceVisibleRange"],
         value: ["adjustSegments", "setSelectedDateDescription", "announceSelectedDate"],
         locale: ["setFormatter"],
+        "*": ["setDisplayValue"],
       },
 
       on: {
@@ -326,6 +322,12 @@ export function machine(userContext: UserDefinedContext) {
           if (!segment) return
           const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
           ctx[key] = toCalendarDate(segment)
+        },
+        setDisplayValue(ctx) {
+          ctx.displayValue =
+            ctx.value && Object.keys(ctx.validSegments).length >= Object.keys(ctx.allSegments).length
+              ? ctx.value
+              : ctx.placeholderValue
         },
       },
     },

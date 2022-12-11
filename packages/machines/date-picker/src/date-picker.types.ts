@@ -50,6 +50,7 @@ type PrivateContext = Context<{
   validSegments: Partial<Record<DateSegment["type"], boolean>>
   getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
   getPlaceholder: (options: { field: string; locale?: string }) => string
+  displayValue: DateValue
 }>
 
 type ComputedContext = Readonly<{
@@ -62,7 +63,6 @@ type ComputedContext = Readonly<{
   isPrevVisibleRangeValid: boolean
   visibleRangeDescription: string
   validSegmentDetails: { complete: boolean; keys: string[]; exceeds: boolean }
-  displayValue: DateValue
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
