@@ -333,7 +333,7 @@ export declare namespace StateMachine {
     /**
      * A generic way to react to context value changes
      */
-    watch?: { [K in keyof TContext]?: PureActions<TContext, TState, TEvent> }
+    watch?: { [K in keyof TContext | "*"]?: PureActions<TContext, TState, TEvent> }
     /**
      * The computed properties based on the state
      */

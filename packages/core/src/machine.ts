@@ -177,11 +177,17 @@ export class Machine<
 
   private setupContextWatchers = () => {
     for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      this.contextWatchers.add(
-        subscribeKey(this.state.context, key, () => {
+      let cleanup: VoidFunction
+      if (key === "*") {
+        cleanup = subscribe(this.state.context, () => {
           this.executeActions(fn, this.state.event as TEvent)
-        }),
-      )
+        })
+      } else {
+        cleanup = subscribeKey(this.state.context, key, () => {
+          this.executeActions(fn, this.state.event as TEvent)
+        })
+      }
+      this.contextWatchers.add(cleanup)
     }
   }
 

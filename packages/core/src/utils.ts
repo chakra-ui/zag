@@ -29,7 +29,7 @@ export function subscribeKey<T extends object, K extends keyof T>(
       const snap = snapshot(obj) as T
       if (!Object.is(prev, snap[key])) {
         fn(snap[key])
-        prev = Reflect.get(snap, key)
+        prev = Reflect.get(snap, key) as any
       }
     },
     sync,
