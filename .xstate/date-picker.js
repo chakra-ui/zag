@@ -51,6 +51,10 @@ const fetchMachine = createMachine({
         },
         ARROW_LEFT: {
           actions: ["focusPreviousSegment"]
+        },
+        CLICK_TRIGGER: {
+          target: "open:month",
+          actions: ["focusSelectedDateIfNeeded"]
         }
       }
     },

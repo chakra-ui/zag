@@ -140,6 +140,10 @@ export function machine(userContext: UserDefinedContext) {
             ARROW_LEFT: {
               actions: ["focusPreviousSegment"],
             },
+            CLICK_TRIGGER: {
+              target: "open:month",
+              actions: ["focusSelectedDateIfNeeded"],
+            },
           },
         },
 
@@ -222,6 +226,10 @@ export function machine(userContext: UserDefinedContext) {
         },
         enableTextSelection(ctx) {
           restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
+        },
+        focusSelectedDateIfNeeded(ctx) {
+          if (!ctx.value) return
+          ctx.focusedValue = ctx.value
         },
         focusFocusedCell(ctx) {
           raf(() => {
