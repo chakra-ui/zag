@@ -1,5 +1,12 @@
-import { DateValue, getMinimumDayInMonth, getMinimumMonthInYear, now } from "@internationalized/date"
-import { DateSegmentContext } from "./types"
+import {
+  DateValue,
+  getMinimumDayInMonth,
+  getMinimumMonthInYear,
+  now,
+  toCalendarDate,
+  toCalendarDateTime,
+} from "@internationalized/date"
+import { DateSegmentContext, Granularity } from "./types"
 
 const EDITABLE_SEGMENTS = {
   year: true,
@@ -72,6 +79,9 @@ export function getSegmentState(ctx: DateSegmentContext) {
           isEditable: Boolean(isEditable),
         }
       })
+    },
+    createPlaceholderDate() {
+      return createPlaceholderDate(ctx)
     },
     setSegment,
     adjustSegment(date: DateValue, part: Part, amount: number) {
@@ -231,14 +241,23 @@ function setSegment(date: DateValue, part: string, segmentValue: number, options
   }
 }
 
-// function createPlaceholderDate(granularity: string, calendar: Calendar, timeZone: string) {
-//   if (granularity === "year" || granularity === "month" || granularity === "day") {
-//     return toCalendarDate(date)
-//   }
+function createPlaceholderDate(ctx: { timeZone: string; granularity: Granularity }) {
+  const { timeZone, granularity } = ctx
 
-//   if (!timeZone) {
-//     return toCalendarDateTime(date)
-//   }
+  let date = now(timeZone).set({
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  })
 
-//   return date
-// }
+  if (granularity === "year" || granularity === "month" || granularity === "day") {
+    return toCalendarDate(date)
+  }
+
+  if (!timeZone) {
+    return toCalendarDateTime(date)
+  }
+
+  return date
+}

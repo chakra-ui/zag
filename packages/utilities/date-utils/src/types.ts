@@ -2,7 +2,7 @@ import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@inte
 
 type Stringify = ({ start, end }: { start: string; end: string }) => string
 
-export type Granularity = "day" | "hour" | "minute" | "second"
+export type Granularity = "day" | "hour" | "minute" | "second" | "year" | "month"
 
 export type DateContext = DateValueRange & {
   locale: string
@@ -19,6 +19,7 @@ export type DateValueRange = {
 export type DateSegmentContext = {
   timeZone: string
   locale: string
+  granularity: Granularity
   getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
   getPlaceholder: (options: { field: string; locale: string }) => string
 }

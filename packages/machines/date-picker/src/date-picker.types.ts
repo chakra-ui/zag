@@ -1,4 +1,4 @@
-import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@zag-js/date-utils"
+import type { CalendarDate, DateDuration, DateFormatter, DateValue, Granularity } from "@zag-js/date-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 import { LiveRegion } from "@zag-js/live-region"
@@ -35,9 +35,10 @@ type PublicContext = DirectionProperty &
     focusedValue: CalendarDate
     duration: DateDuration
     startValue: CalendarDate
+    granularity: Granularity
     onChange?: (details: { value: CalendarDate }) => void
     isDateUnavailable?: (date: DateValue) => boolean
-    placeholder?: CalendarDate
+    placeholderValue?: DateValue
   }
 
 type PrivateContext = Context<{

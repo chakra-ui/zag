@@ -278,6 +278,12 @@ export function machine(userContext: UserDefinedContext) {
             return
           }
         },
+        adjustPlaceholder(ctx) {
+          if (ctx.value && !ctx.validSegmentDetails.complete) {
+            const segments = getSegmentState(ctx)
+            ctx.placeholderValue = segments.createPlaceholderDate()
+          }
+        },
         setFocusedSegment(ctx, evt) {
           ctx.focusedSegment = evt.segment
         },
