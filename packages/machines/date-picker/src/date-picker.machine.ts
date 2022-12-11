@@ -2,6 +2,7 @@ import { createMachine } from "@zag-js/core"
 import {
   DateFormatter,
   getCalendarState,
+  getSegmentState,
   getSelectedDateDescription,
   getVisibleRangeDescription,
 } from "@zag-js/date-utils"
@@ -15,11 +16,10 @@ import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.
 function getInitialContext(context: UserDefinedContext) {
   const ctx = context as MachineContext
   const calendar = getCalendarState(ctx)
-
   const focusedValue = calendar.getToday()
   const startValue = calendar.setAlignment(focusedValue, "start")
 
-  return {
+  const contextValue = {
     focusedValue,
     startValue,
     getDateFormatter: (options) => new DateFormatter(ctx.locale, options),
@@ -29,6 +29,15 @@ function getInitialContext(context: UserDefinedContext) {
     },
     ...context,
   } as MachineContext
+
+  const segments = getSegmentState(contextValue)
+  const allSegments = segments.getAllSegments()
+
+  return {
+    ...contextValue,
+    allSegments,
+    validSegments: { ...allSegments },
+  }
 }
 
 export function machine(userContext: UserDefinedContext) {
@@ -43,6 +52,8 @@ export function machine(userContext: UserDefinedContext) {
         duration: { months: 1 },
         ...ctx,
       }),
+
+      created: ["adjustSegments"],
 
       computed: {
         isInteractive: (ctx) => !(ctx.readonly || ctx.disabled),
@@ -67,6 +78,15 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
+        validSegmentDetails(ctx) {
+          const keys = Object.keys(ctx.validSegments)
+          const allKeys = Object.keys(ctx.allSegments)
+          return {
+            keys,
+            exceeds: keys.length >= allKeys.length,
+            complete: keys.length === allKeys.length,
+          }
+        },
       },
 
       activities: ["setupAnnouncer"],
@@ -74,7 +94,7 @@ export function machine(userContext: UserDefinedContext) {
       watch: {
         focusedValue: ["adjustStartDate", "focusFocusedCell"],
         visibleRange: ["announceVisibleRange"],
-        value: ["setSelectedDateDescription", "announceSelectedDate"],
+        value: ["adjustSegments", "setSelectedDateDescription", "announceSelectedDate"],
         locale: ["setFormatter"],
       },
 
@@ -96,6 +116,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         focused: {
           tags: "closed",
+          on: {
+            FOCUS_SEGMENT: {
+              actions: ["setFocusedSegment"],
+            },
+          },
         },
         "open:month": {
           tags: "open",
@@ -241,6 +266,20 @@ export function machine(userContext: UserDefinedContext) {
           if (focusedValue) {
             ctx.focusedValue = focusedValue
           }
+        },
+        adjustSegments(ctx) {
+          if (!ctx.value && ctx.validSegmentDetails.complete) {
+            ctx.validSegments = {}
+            return
+          }
+
+          if (ctx.value && !ctx.validSegmentDetails.complete) {
+            ctx.validSegments = { ...ctx.allSegments }
+            return
+          }
+        },
+        setFocusedSegment(ctx, evt) {
+          ctx.focusedSegment = evt.segment
         },
       },
     },

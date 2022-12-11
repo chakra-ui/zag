@@ -185,7 +185,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: state.context.isPrevVisibleRangeValid,
     }),
 
-    segments: segmentState.getSegments(selectedDate),
+    segments: segmentState.getSegments(selectedDate, state.context.validSegments),
 
     getSegmentProps(props: DateSegment) {
       if (props.type === "literal") {

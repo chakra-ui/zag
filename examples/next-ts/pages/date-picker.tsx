@@ -26,16 +26,10 @@ export default function Page() {
           <div style={{ display: "inline-flex", border: "1px solid gray", padding: "2px" }}>
             {api.segments.map((segment, i) => (
               <div key={i} {...api.getSegmentProps(segment)}>
-                <span
-                  style={{
-                    visibility: segment.isPlaceholder ? undefined : "hidden",
-                    height: segment.isPlaceholder ? "" : 0,
-                    pointerEvents: "none",
-                  }}
-                >
+                <span hidden={!segment.isPlaceholder} style={{ pointerEvents: "none" }}>
                   {segment.placeholder}
                 </span>
-                <span>{segment.isPlaceholder ? "" : segment.text}</span>
+                {segment.isPlaceholder ? "" : segment.text}
               </div>
             ))}
           </div>
@@ -64,10 +58,9 @@ export default function Page() {
             </tbody>
           </table>{" "}
         </div>
-        <pre>{JSON.stringify(api.segments, null, 4)}</pre>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar viz controls={controls.ui}>
         <StateVisualizer state={state} omit={["weeks", "weekDays"]} />
       </Toolbar>
     </>

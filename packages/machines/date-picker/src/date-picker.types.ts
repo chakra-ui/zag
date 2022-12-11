@@ -45,6 +45,8 @@ type PrivateContext = Context<{
   annoucer?: LiveRegion
   selectedDateDescription: string
   focusedSegment: DateSegment["type"] | null
+  allSegments: Partial<Record<DateSegment["type"], boolean>>
+  validSegments: Partial<Record<DateSegment["type"], boolean>>
   getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
   getPlaceholder: (ootions: { field: string; locale?: string }) => string
 }>
@@ -58,6 +60,7 @@ type ComputedContext = Readonly<{
   isNextVisibleRangeValid: boolean
   isPrevVisibleRangeValid: boolean
   visibleRangeDescription: string
+  validSegmentDetails: { complete: boolean; keys: string[]; exceeds: boolean }
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

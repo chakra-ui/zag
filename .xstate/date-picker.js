@@ -35,7 +35,12 @@ const fetchMachine = createMachine({
       tags: "closed"
     },
     focused: {
-      tags: "closed"
+      tags: "closed",
+      on: {
+        FOCUS_SEGMENT: {
+          actions: ["setFocusedSegment"]
+        }
+      }
     },
     "open:month": {
       tags: "open",

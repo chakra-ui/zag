@@ -12,6 +12,8 @@ const EDITABLE_SEGMENTS = {
   era: true,
 }
 
+type Segments = Partial<typeof EDITABLE_SEGMENTS>
+
 const PAGE_STEP = {
   year: 5,
   month: 2,
@@ -36,18 +38,17 @@ export function getSegmentState(ctx: DateSegmentContext) {
         millisecond: 0,
       })
     },
-    getValidSegments() {
+    getAllSegments() {
       const formatter = ctx.getDateFormatter({})
       return formatter
         .formatToParts(new Date())
         .filter((segment) => EDITABLE_SEGMENTS[segment.type])
         .reduce((acc, segment) => ((acc[segment.type] = true), acc), {})
     },
-    getSegments(dateValue: DateValue | undefined) {
+    getSegments(dateValue: DateValue | undefined, validSegments: Segments) {
       const date = dateValue || this.getPlaceholderDate()
       const nativeDate = date.toDate(ctx.timeZone)
       const dateFormatter = ctx.getDateFormatter({})
-      const validSegments = this.getValidSegments()
 
       return dateFormatter.formatToParts(nativeDate).map((segment) => {
         let isEditable = EDITABLE_SEGMENTS[segment.type]
@@ -66,9 +67,9 @@ export function getSegmentState(ctx: DateSegmentContext) {
           type: segment.type,
           text: isPlaceholder ? placeholder : segment.value,
           ...getSegmentLimits(date, segment.type, dateFormatter.resolvedOptions()),
-          isPlaceholder,
+          isPlaceholder: Boolean(isPlaceholder),
           placeholder,
-          isEditable,
+          isEditable: Boolean(isEditable),
         }
       })
     },
