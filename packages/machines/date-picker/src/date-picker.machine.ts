@@ -134,6 +134,12 @@ export function machine(userContext: UserDefinedContext) {
             ARROW_DOWN: {
               actions: ["decrementFocusedSegment"],
             },
+            ARROW_RIGHT: {
+              actions: ["focusNextSegment"],
+            },
+            ARROW_LEFT: {
+              actions: ["focusPreviousSegment"],
+            },
           },
         },
 
@@ -328,6 +334,12 @@ export function machine(userContext: UserDefinedContext) {
             ctx.value && Object.keys(ctx.validSegments).length >= Object.keys(ctx.allSegments).length
               ? ctx.value
               : ctx.placeholderValue
+        },
+        focusNextSegment(ctx) {
+          dom.focusNextSegment(ctx)
+        },
+        focusPreviousSegment(ctx) {
+          dom.focusPrevSegment(ctx)
         },
       },
     },

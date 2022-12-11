@@ -55,6 +55,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
+      "data-focus": dataAttr(!!state.context.focusedSegment),
     }),
 
     gridProps: normalize.element({
@@ -187,6 +188,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     segments: segmentState.getSegments(state.context.displayValue, state.context.validSegments),
 
+    fieldProps: normalize.element({
+      ...parts.field.attrs,
+      role: "presentation",
+      id: dom.getFieldId(state.context),
+      onKeyDown(event) {
+        const keyMap: EventKeyMap = {
+          ArrowLeft() {
+            send("ARROW_LEFT")
+          },
+          ArrowRight() {
+            send("ARROW_RIGHT")
+          },
+        }
+
+        const exec = keyMap[getEventKey(event, state.context)]
+
+        if (exec) {
+          exec(event)
+          event.preventDefault()
+          event.stopPropagation()
+        }
+      },
+    }),
+
     getSegmentProps(props: DateSegment) {
       if (props.type === "literal") {
         return {
@@ -197,6 +222,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       const isEditable = state.context.isInteractive && props.isEditable
       return normalize.element({
+        ...parts.segment.attrs,
         id: dom.getSegmentId(state.context, props.type),
         role: "spinbutton",
         "aria-valuemax": props.max,
@@ -227,12 +253,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (isModifiedEvent(event) || readonly) return
 
           const keyMap: EventKeyMap = {
-            ArrowLeft() {
-              send("ARROW_LEFT")
-            },
-            ArrowRight() {
-              send("ARROW_RIGHT")
-            },
             ArrowUp() {
               send("ARROW_UP")
             },

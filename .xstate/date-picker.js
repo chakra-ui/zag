@@ -45,6 +45,12 @@ const fetchMachine = createMachine({
         },
         ARROW_DOWN: {
           actions: ["decrementFocusedSegment"]
+        },
+        ARROW_RIGHT: {
+          actions: ["focusNextSegment"]
+        },
+        ARROW_LEFT: {
+          actions: ["focusPreviousSegment"]
         }
       }
     },

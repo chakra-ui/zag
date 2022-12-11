@@ -23,7 +23,7 @@ export default function Page() {
             <div>Selected: {api.valueAsString ?? "-"}</div>
             <div>Focused: {api.focusedValueAsString}</div>
           </output>
-          <div style={{ display: "inline-flex", border: "1px solid gray", padding: "2px" }}>
+          <div {...api.fieldProps} style={{ display: "inline-flex", border: "1px solid gray", padding: "2px" }}>
             {api.segments.map((segment, i) => (
               <div key={i} {...api.getSegmentProps(segment)}>
                 <span hidden={!segment.isPlaceholder} style={{ pointerEvents: "none" }}>
