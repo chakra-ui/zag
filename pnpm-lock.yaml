@@ -33,7 +33,7 @@ importers:
       jest: 29.1.2
       jest-watch-typeahead: 2.2.0
       json-format-highlight: 1.0.4
-      lint-staged: 13.0.3
+      lint-staged: 13.1.0
       playwright: 1.27.1
       plop: 3.1.1
       prettier: 2.8.0
@@ -72,7 +72,7 @@ importers:
       jest: 29.1.2
       jest-watch-typeahead: 2.2.0_jest@29.1.2
       json-format-highlight: 1.0.4
-      lint-staged: 13.0.3
+      lint-staged: 13.1.0
       playwright: 1.27.1
       plop: 3.1.1
       prettier: 2.8.0
@@ -6836,11 +6836,6 @@ packages:
       resolve: 1.22.1
     dev: false
 
-  /lilconfig/2.0.5:
-    resolution: {integrity: sha512-xaYmXZtTHPAw5m+xLN8ab9C+3a8YmV3asNSPOATITbtwrfbwaLJj8h66H1WMIpALCkqsIzK3h7oQ+PdX+LQ9Eg==}
-    engines: {node: '>=10'}
-    dev: false
-
   /lilconfig/2.0.6:
     resolution: {integrity: sha512-9JROoBW7pobfsx+Sq2JsASvCo6Pfo6WWoUW79HuB1BCoBXD4PLWJPqDF6fNj67pqBYTbAHkE57M1kS/+L1neOg==}
     engines: {node: '>=10'}
@@ -6850,8 +6845,8 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: false
 
-  /lint-staged/13.0.3:
-    resolution: {integrity: sha512-9hmrwSCFroTSYLjflGI8Uk+GWAwMB4OlpU4bMJEAT5d/llQwtYKoim4bLOyLCuWFAhWEupE0vkIFqtw/WIsPug==}
+  /lint-staged/13.1.0:
+    resolution: {integrity: sha512-pn/sR8IrcF/T0vpWLilih8jmVouMlxqXxKuAojmbiGX5n/gDnz+abdPptlj0vYnbfE0SQNl3CY/HwtM0+yfOVQ==}
     engines: {node: ^14.13.1 || >=16.0.0}
     hasBin: true
     dependencies:
@@ -6860,8 +6855,8 @@ packages:
       commander: 9.4.1
       debug: 4.3.4
       execa: 6.1.0
-      lilconfig: 2.0.5
-      listr2: 4.0.5
+      lilconfig: 2.0.6
+      listr2: 5.0.6
       micromatch: 4.0.5
       normalize-path: 3.0.0
       object-inspect: 1.12.2
@@ -6873,9 +6868,9 @@ packages:
       - supports-color
     dev: false
 
-  /listr2/4.0.5:
-    resolution: {integrity: sha512-juGHV1doQdpNT3GSTs9IUN43QJb7KHdF9uqg7Vufs/tG9VTzpFphqF4pm/ICdAABGQxsyNn9CiYA3StkI6jpwA==}
-    engines: {node: '>=12'}
+  /listr2/5.0.6:
+    resolution: {integrity: sha512-u60KxKBy1BR2uLJNTWNptzWQ1ob/gjMzIJPZffAENzpZqbMZ/5PrXXOomDcevIS/+IB7s1mmCEtSlT2qHWMqag==}
+    engines: {node: ^14.13.1 || >=16.0.0}
     peerDependencies:
       enquirer: '>= 2.3.0 < 3'
     peerDependenciesMeta:
