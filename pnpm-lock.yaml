@@ -4,7 +4,7 @@ importers:
 
   .:
     specifiers:
-      '@axe-core/playwright': 4.4.5
+      '@axe-core/playwright': 4.5.2
       '@babel/generator': 7.19.5
       '@babel/parser': 7.19.4
       '@babel/traverse': 7.19.4
@@ -43,7 +43,7 @@ importers:
       turbo: 1.6.3
       typescript: 4.8.4
     dependencies:
-      '@axe-core/playwright': 4.4.5_playwright@1.27.1
+      '@axe-core/playwright': 4.5.2_playwright@1.27.1
       '@babel/generator': 7.19.5
       '@babel/parser': 7.19.4
       '@babel/traverse': 7.19.4
@@ -1080,8 +1080,8 @@ packages:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.17
 
-  /@axe-core/playwright/4.4.5_playwright@1.27.1:
-    resolution: {integrity: sha512-oyh8TuAjPc6GIut3E+BiJU19jAEuzhf1ZMB7nrJqfGWsU6kWP0ymRwuj6TX3JJTT5mL3m+yFhph5RhCr/MkQ1g==}
+  /@axe-core/playwright/4.5.2_playwright@1.27.1:
+    resolution: {integrity: sha512-RXdnUeroQwLoIoxxZNKBy/2FsjOrgYsiIrSdZkRfVVWFudTgatncc9izyMZ40ou+nw/d1zi/WPCjrLUI6TZBBA==}
     peerDependencies:
       playwright: '>= 1.0.0'
     dependencies:
@@ -3910,6 +3910,11 @@ packages:
   /astral-regex/2.0.0:
     resolution: {integrity: sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==}
     engines: {node: '>=8'}
+    dev: false
+
+  /axe-core/4.5.2:
+    resolution: {integrity: sha512-u2MVsXfew5HBvjsczCv+xlwdNnB1oQR9HlAcsejZttNjKKSkeDNVwB1vMThIUIFI9GoT57Vtk8iQLwqOfAkboA==}
+    engines: {node: '>=4'}
     dev: false
 
   /axe-core/4.5.2:
