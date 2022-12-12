@@ -38,7 +38,7 @@ importers:
       plop: 3.1.1
       prettier: 2.8.0
       signale: 1.4.0
-      tsup: 6.2.3
+      tsup: 6.5.0
       tsx: 3.10.1
       turbo: 1.6.3
       typescript: 4.8.4
@@ -77,7 +77,7 @@ importers:
       plop: 3.1.1
       prettier: 2.8.0
       signale: 1.4.0
-      tsup: 6.2.3_wjzbeglvstffrdttjkux2azjju
+      tsup: 6.5.0_wjzbeglvstffrdttjkux2azjju
       tsx: 3.10.1
       turbo: 1.6.3
       typescript: 4.8.4
@@ -8090,9 +8090,9 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /rollup/2.79.1:
-    resolution: {integrity: sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==}
-    engines: {node: '>=10.0.0'}
+  /rollup/3.5.1:
+    resolution: {integrity: sha512-hdQWTvPeiAbM6SUkxV70HdGUVxsgsc+CLy5fuh4KdgUBJ0SowXiix8gANgXoG3wEuLwfoJhCT2V+WwxfWq9Ikw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
@@ -8717,8 +8717,8 @@ packages:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
     dev: false
 
-  /tsup/6.2.3_wjzbeglvstffrdttjkux2azjju:
-    resolution: {integrity: sha512-J5Pu2Dx0E1wlpIEsVFv9ryzP1pZ1OYsJ2cBHZ7GrKteytNdzaSz5hmLX7/nAxtypq+jVkVvA79d7S83ETgHQ5w==}
+  /tsup/6.5.0_wjzbeglvstffrdttjkux2azjju:
+    resolution: {integrity: sha512-36u82r7rYqRHFkD15R20Cd4ercPkbYmuvRkz3Q1LCm5BsiFNUgpo36zbjVhCOgvjyxNBWNKHsaD5Rl8SykfzNA==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
@@ -8744,7 +8744,7 @@ packages:
       joycon: 3.1.1
       postcss-load-config: 3.1.4
       resolve-from: 5.0.0
-      rollup: 2.79.1
+      rollup: 3.5.1
       source-map: 0.8.0-beta.0
       sucrase: 3.29.0
       tree-kill: 1.2.2
