@@ -10,7 +10,7 @@ export const anatomy = createAnatomy("menu").parts(
   "separator",
   "item",
   "optionItem",
-  "groupLabel",
-  "group",
+  "itemGroupLabel",
+  "itemGroup",
 )
 export const parts = anatomy.build()
