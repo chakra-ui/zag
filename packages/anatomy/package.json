@@ -35,7 +35,5 @@
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

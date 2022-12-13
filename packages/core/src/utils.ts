@@ -22,7 +22,7 @@ export function subscribeKey<T extends object, K extends keyof T>(
   fn: (value: T[K]) => void,
   sync?: boolean,
 ) {
-  let prev = Reflect.get(snapshot(obj), key)
+  let prev: any = Reflect.get(snapshot(obj), key)
   return subscribe(
     obj,
     () => {
