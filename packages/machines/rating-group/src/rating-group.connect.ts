@@ -99,6 +99,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
+        "data-checked": dataAttr(isChecked),
         "aria-posinset": index,
         "data-highlighted": dataAttr(isHighlighted),
         "data-half": dataAttr(isHalf),
