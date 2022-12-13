@@ -336,17 +336,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       )
     },
 
-    getGroupLabelProps(options: LabelProps) {
+    getItemGroupLabelProps(options: LabelProps) {
       return normalize.element({
         id: dom.getGroupLabelId(state.context, options.htmlFor),
-        ...parts.groupLabel.attrs,
+        ...parts.itemGroupLabel.attrs,
       })
     },
 
-    getGroupProps(options: GroupProps) {
+    getItemGroupProps(options: GroupProps) {
       return normalize.element({
         id: dom.getGroupId(state.context, options.id),
-        ...parts.group.attrs,
+        ...parts.itemGroup.attrs,
         "aria-labelledby": options.id,
         role: "group",
       })
