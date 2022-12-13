@@ -67,6 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
     }),
 
     controlProps: normalize.element({
