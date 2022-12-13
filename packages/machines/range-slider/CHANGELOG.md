@@ -1,5 +1,17 @@
 # @zag-js/range-slider
 
+## 0.2.5
+
+### Patch Changes
+
+- [`af4ab9bb`](https://github.com/chakra-ui/zag/commit/af4ab9bb7cd599c53e47ca7ed2ea90a4ff742499) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update anatomy of components
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b),
+  [`af4ab9bb`](https://github.com/chakra-ui/zag/commit/af4ab9bb7cd599c53e47ca7ed2ea90a4ff742499)]:
+  - @zag-js/core@0.2.3
+  - @zag-js/slider@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes

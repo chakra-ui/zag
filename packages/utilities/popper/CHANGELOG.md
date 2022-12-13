@@ -1,5 +1,12 @@
 # @zag-js/popper
 
+## 0.2.1
+
+### Patch Changes
+
+- [`9332f1ca`](https://github.com/chakra-ui/zag/commit/9332f1caf5122c16a3edb48e20664b04714d226c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump dependencies
+
 ## 0.2.0
 
 ### Minor Changes
