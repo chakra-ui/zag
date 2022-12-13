@@ -122,8 +122,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("POINTER_DOWN")
       },
       onFocus() {
-        if (!isInteractive) return
+        if (isDisabled) return
         send("FOCUS")
+      },
+      onBlur() {
+        if (isDisabled) return
+        send("BLUR")
       },
       onChange(event) {
         const evt = getNativeEvent(event)
