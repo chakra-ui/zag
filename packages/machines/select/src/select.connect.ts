@@ -96,7 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-expanded": isOpen,
       "data-expanded": dataAttr(isOpen),
       "aria-haspopup": "listbox",
-      "aria-labelledby": "label",
+      "aria-labelledby": dom.getLabelId(state.context),
       ...parts.trigger.attrs,
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
