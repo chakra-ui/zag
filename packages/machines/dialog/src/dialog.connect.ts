@@ -31,17 +31,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     backdropProps: normalize.element({
       ...parts.backdrop.attrs,
+      hidden: !isOpen,
       id: dom.getBackdropId(state.context),
     }),
 
     containerProps: normalize.element({
       ...parts.container.attrs,
+      hidden: !isOpen,
       id: dom.getContainerId(state.context),
+      style: {
+        pointerEvents: isOpen ? undefined : "none",
+      },
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
       role: state.context.role,
+      hidden: !isOpen,
       id: dom.getContentId(state.context),
       tabIndex: -1,
       "aria-modal": true,
