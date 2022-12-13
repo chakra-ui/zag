@@ -8,6 +8,7 @@ export const routesData: RouteData[] = [
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
   { label: "Combobox", path: "/combobox" },
+  { label: "Combobox Tags", path: "/combobox-tags" },
   { label: "Editable", path: "/editable" },
   { label: "Dialog", path: "/dialog" },
   { label: "Dialog Default Open", path: "/dialog-default-open" },
