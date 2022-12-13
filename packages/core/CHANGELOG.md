@@ -1,5 +1,15 @@
 # @zag-js/core
 
+## 0.2.3
+
+### Patch Changes
+
+- [`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix typescript errors
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/store@0.2.1
+
 ## 0.2.2
 
 ### Patch Changes
