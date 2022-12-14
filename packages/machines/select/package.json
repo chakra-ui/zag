@@ -1,8 +1,10 @@
 {
-  "type": "module",
   "name": "@zag-js/select",
   "version": "0.1.3",
   "description": "Core logic for the select widget implemented as a state machine",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "keywords": [
     "js",
     "machine",
@@ -15,8 +17,6 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/select",
   "sideEffects": false,
   "files": [
