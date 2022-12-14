@@ -2,8 +2,8 @@ import { expect, Locator, test } from "@playwright/test"
 import { a11y, controls, isInViewport, testid } from "./__utils"
 
 const input = testid("input")
-const button = testid("input-arrow")
-const listbox = testid("combobox-listbox")
+const trigger = testid("trigger")
+const content = testid("combobox-content")
 
 const options = "[data-part=option]:not([data-disabled])"
 const highlighted_option = "[data-part=option][data-highlighted]"
@@ -26,21 +26,21 @@ test.describe("combobox", () => {
   })
 
   test("[pointer] should open combobox menu when arrow is clicked", async ({ page }) => {
-    await page.click(button)
-    await expect(page.locator(listbox)).toBeVisible()
+    await page.click(trigger)
+    await expect(page.locator(content)).toBeVisible()
     await expect(page.locator(input)).toBeFocused()
   })
 
-  test("[keyboard] Escape should close listbox", async ({ page }) => {
-    await page.click(button)
-    await expect(page.locator(listbox)).toBeVisible()
+  test("[keyboard] Escape should close content", async ({ page }) => {
+    await page.click(trigger)
+    await expect(page.locator(content)).toBeVisible()
     await page.keyboard.press("Escape")
-    await expect(page.locator(listbox)).not.toBeVisible()
+    await expect(page.locator(content)).not.toBeVisible()
   })
 
   test("[typeahead / autohighlight / selection] should open combobox menu when typing", async ({ page }) => {
     await page.type(input, "an")
-    await expect(page.locator(listbox)).toBeVisible()
+    await expect(page.locator(content)).toBeVisible()
 
     const option = page.locator(options).first()
     await expectToBeHighlighted(option)
@@ -49,11 +49,11 @@ test.describe("combobox", () => {
     const textValue = await option.textContent()
     await expect(page.locator(input)).toHaveValue(textValue!)
 
-    await expect(page.locator(listbox)).toBeHidden()
+    await expect(page.locator(content)).toBeHidden()
   })
 
   test("[pointer / selection]", async ({ page }) => {
-    await page.click(button)
+    await page.click(trigger)
 
     const option_els = page.locator(options)
     await option_els.nth(0).hover()
@@ -66,14 +66,14 @@ test.describe("combobox", () => {
 
     const textValue = await option.textContent()
     await expect(page.locator(input)).toHaveValue(textValue!)
-    await expect(page.locator(listbox)).toBeHidden()
+    await expect(page.locator(content)).toBeHidden()
   })
 
   test("[keyboard] on arrow down, open and highlight first enabled option", async ({ page }) => {
     await page.focus(input)
     await page.keyboard.press("ArrowDown")
     const option = page.locator(options).first()
-    await expect(page.locator(listbox)).toBeVisible()
+    await expect(page.locator(content)).toBeVisible()
     await expectToBeHighlighted(option)
   })
 
@@ -81,14 +81,14 @@ test.describe("combobox", () => {
     await page.focus(input)
     await page.keyboard.press("ArrowUp")
     const option = page.locator(options).last()
-    await expect(page.locator(listbox)).toBeVisible()
+    await expect(page.locator(content)).toBeVisible()
     await expectToBeHighlighted(option)
   })
 
   test("[keyboard / opened] on home and end, when open, focus first and last option", async ({ page }) => {
     const option_els = page.locator(options)
 
-    await page.click(button)
+    await page.click(trigger)
 
     // navigate a bit with the keyboard
     await page.keyboard.press("ArrowDown")
@@ -103,7 +103,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / closed] on home and end, caret moves to start and end", async ({ page }) => {
-    await page.click(button)
+    await page.click(trigger)
     await page.type(input, "an")
 
     // close
@@ -141,17 +141,17 @@ test.describe("combobox", () => {
   test("[pointer / open-on-click]", async ({ page }) => {
     await controls(page).bool("openOnClick")
     await page.click(input, { force: true })
-    await expect(page.locator(listbox)).toBeVisible()
+    await expect(page.locator(content)).toBeVisible()
   })
 
   test("should scroll selected option into view", async ({ page }) => {
-    await page.click(button)
+    await page.click(trigger)
     const malta = page.locator(options).locator("text=Malta").first()
     await malta.click()
-    await page.click(button)
+    await page.click(trigger)
 
     await expectToBeHighlighted(malta)
-    await expectToBeInViewport(page.locator(listbox), malta)
+    await expectToBeInViewport(page.locator(content), malta)
   })
 
   test.describe("[auto-complete]", () => {
@@ -177,7 +177,7 @@ test.describe("combobox", () => {
       await page.keyboard.press("Enter")
 
       await expect(page.locator(input)).toHaveValue(textValue!)
-      await expect(page.locator(listbox)).toBeHidden()
+      await expect(page.locator(content)).toBeHidden()
       await expect(page.locator(input)).toBeFocused()
     })
 
@@ -201,7 +201,7 @@ test.describe("combobox", () => {
     })
 
     test("[pointer] hovering an option should not update input value", async ({ page }) => {
-      await page.click(button)
+      await page.click(trigger)
       await page.type(input, "mal")
 
       const option_els = page.locator(options)

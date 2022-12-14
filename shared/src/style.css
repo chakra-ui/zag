@@ -201,7 +201,7 @@ body {
   flex-direction: column;
 }
 
-.combobox [data-part="listbox"] {
+.combobox [data-part="content"] {
   list-style-type: none;
   padding: 0;
   margin: 0;
