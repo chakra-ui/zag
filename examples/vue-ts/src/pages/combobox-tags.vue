@@ -2,10 +2,10 @@
   <main class="combobox">
     <div>
       <div v-bind="api.rootProps">
-        <label v-bind="api.labelProps">Select country</label>
+        <label v-bind="api.labelProps">Select countries</label>
 
-        <div v-bind="api.controlProps">
-          <div v-bind="tagsApi.rootProps" style="display: flex; width: 400px; flex-direction: row; flex-wrap: wrap">
+        <div v-bind="api.controlProps" class="combobox-tags">
+          <div v-bind="tagsApi.rootProps" class="combobox-tags-input">
             <span v-for="(value, index) in tagsApi.value" :key="index">
               <div v-bind="tagsApi.getTagProps({ index, value })">
                 <span>{{ value }}</span>
@@ -24,11 +24,9 @@
           <li
             v-for="(item, index) in options"
             :key="index"
-            v-bind="api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })"
-            :aria-selected="tagsApi.value.includes(item.label)"
-            :data-checked="null"
+            v-bind="getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })"
           >
-            <span v-if="tagsApi.value.includes(item.label)">✓</span>
+            <span v-if="isSelected(item.label)">✓</span>
             {{ item.label }}
           </li>
         </ul>
@@ -44,6 +42,7 @@ import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
 import { computed, ref } from "vue"
 import { useControls } from "../hooks/use-controls"
+import type { OptionProps } from "@zag-js/combobox/src/combobox.types"
 
 const controls = useControls(comboboxControls)
 const comboboxOptions = ref(comboboxData)
@@ -73,7 +72,7 @@ const [state, send] = useMachine(
     onInputChange({ value }) {
       const filtered = comboboxOptions.value.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
       const newOptions = filtered.length > 0 ? filtered : [...comboboxOptions.value]
-      if (value && newOptions[0].label !== value) {
+      if (value && newOptions[0].label.toLowerCase() !== value.toLowerCase()) {
         newOptions.unshift({
           label: value,
           code: value,
@@ -114,8 +113,9 @@ const inputProps = computed(() => {
 
   function onKeydown(event: KeyboardEvent) {
     comboboxProps?.onKeydown?.(event)
+
+    // Adding tags is handled by combobox onSelect
     if (event.key === "Enter") {
-      // Only select entry on enter
       return
     }
     tagsProps?.onKeydown?.(event)
@@ -123,4 +123,40 @@ const inputProps = computed(() => {
 
   return { ...mergeProps(tagsProps, comboboxProps), onKeydown }
 })
+
+const isSelected = (label: string) => tagsApi.value.value.includes(label)
+
+const getOptionProps = (option: OptionProps) => ({
+  ...api.value.getOptionProps(option),
+  // Selected options are handled by tags
+  ["aria-selected"]: isSelected(option.label),
+  ["data-checked"]: null,
+})
 </script>
+
+<style lang="css" scoped>
+.combobox-tags {
+  border: 1px solid gray;
+}
+
+.combobox-tags:focus-within {
+  outline: 2px solid blue;
+}
+
+.combobox-tags-input {
+  display: flex;
+  width: 400px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 4px;
+}
+
+.combobox-tags-input input {
+  min-width: 100px;
+  border: none;
+}
+
+.combobox-tags-input input:focus {
+  outline: none;
+}
+</style>
