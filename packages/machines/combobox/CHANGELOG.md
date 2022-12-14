@@ -1,5 +1,13 @@
 # @zag-js/combobox
 
+## 0.2.6
+
+### Patch Changes
+
+- [#447](https://github.com/chakra-ui/zag/pull/447)
+  [`4a8657c1`](https://github.com/chakra-ui/zag/commit/4a8657c15b9111f9123da61323b43622f803731d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix anatomy and naming conventions
+
 ## 0.2.5
 
 ### Patch Changes
