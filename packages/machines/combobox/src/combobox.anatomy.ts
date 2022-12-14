@@ -7,7 +7,7 @@ export const anatomy = createAnatomy("combobox").parts(
   "positioner",
   "control",
   "toggleButton",
-  "listbox",
+  "content",
   "clearButton",
   "option",
   "optionGroup",

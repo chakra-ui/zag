@@ -7,7 +7,7 @@ export const dom = defineDomHelpers({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.id}:input`,
-  getListboxId: (ctx: Ctx) => ctx.ids?.listbox ?? `combobox:${ctx.id}:listbox`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `combobox:${ctx.id}:content`,
   getPositionerId: (ctx: Ctx) => `combobox:${ctx.id}:popper`,
   getToggleBtnId: (ctx: Ctx) => ctx.ids?.toggleBtn ?? `combobox:${ctx.id}:toggle-btn`,
   getClearBtnId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `combobox:${ctx.id}:clear-btn`,
@@ -15,18 +15,18 @@ export const dom = defineDomHelpers({
     ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.id}:option:${id}`, index].filter((v) => v != null).join(":"),
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
-  getListboxEl: (ctx: Ctx) => dom.getById(ctx, dom.getListboxId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getToggleBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getToggleBtnId(ctx)),
   getClearBtnEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearBtnId(ctx)),
 
-  getElements: (ctx: Ctx) => queryAll(dom.getListboxEl(ctx), "[role=option]:not([aria-disabled=true])"),
+  getElements: (ctx: Ctx) => queryAll(dom.getContentEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {
     if (!ctx.activeId) return null
     const selector = `[role=option][id=${CSS.escape(ctx.activeId)}]`
-    return dom.getListboxEl(ctx)?.querySelector<HTMLElement>(selector)
+    return dom.getContentEl(ctx)?.querySelector<HTMLElement>(selector)
   },
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
@@ -41,22 +41,22 @@ export const dom = defineDomHelpers({
   }),
   getOptionCount: (ctx: Ctx) => {
     // if option has `aria-setsize`, announce the number of options
-    const listbox = dom.getListboxEl(ctx)
-    const count = listbox?.querySelector("[role-option]")?.getAttribute("aria-setsize")
+    const content = dom.getContentEl(ctx)
+    const count = content?.querySelector("[role-option]")?.getAttribute("aria-setsize")
 
     if (count != null) return parseInt(count)
-    // else announce the number of options by querying the listbox
-    return listbox?.querySelectorAll("[role=option]").length ?? 0
+    // else announce the number of options by querying the content
+    return content?.querySelectorAll("[role=option]").length ?? 0
   },
   getMatchingOptionEl: (ctx: Ctx, value: string | null | undefined) => {
     if (!value) return null
 
     const selector = `[role=option][data-value="${CSS.escape(value)}"`
 
-    const listbox = dom.getListboxEl(ctx)
-    if (!listbox) return null
+    const content = dom.getContentEl(ctx)
+    if (!content) return null
 
-    return listbox.querySelector<HTMLElement>(selector)
+    return content.querySelector<HTMLElement>(selector)
   },
 
   focusInput: (ctx: Ctx) => {

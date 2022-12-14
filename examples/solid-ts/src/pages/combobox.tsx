@@ -44,7 +44,7 @@ export default function Page() {
 
           <div {...api().positionerProps}>
             <Show when={options().length > 0}>
-              <ul {...api().listboxProps}>
+              <ul {...api().contentProps}>
                 <For each={options()}>
                   {(item, index) => {
                     const options = { label: item.label, value: item.code, index: index(), disabled: item.disabled }

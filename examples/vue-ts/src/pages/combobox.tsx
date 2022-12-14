@@ -50,7 +50,7 @@ export default defineComponent({
 
               <div {...api.positionerProps}>
                 {options.value.length > 0 && (
-                  <ul {...api.listboxProps}>
+                  <ul {...api.contentProps}>
                     {options.value.map((item, index) => (
                       <li
                         key={`${item.code}:${index}`}

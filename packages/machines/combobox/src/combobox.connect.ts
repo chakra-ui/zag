@@ -115,7 +115,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: value,
       "data-value": value,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-      "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
+      "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
       "aria-activedescendant": state.context.activeId ?? undefined,
       onPointerDown() {
@@ -193,7 +193,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       "aria-label": translations.toggleButtonLabel,
       "aria-expanded": isOpen,
-      "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
+      "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       disabled: isDisabled,
       "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
@@ -205,14 +205,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    listboxProps: normalize.element({
-      ...parts.listbox.attrs,
-      id: dom.getListboxId(state.context),
+    contentProps: normalize.element({
+      ...parts.content.attrs,
+      id: dom.getContentId(state.context),
       role: "listbox",
       hidden: !isOpen,
       "aria-labelledby": dom.getLabelId(state.context),
       onPointerDown(event) {
-        // prevent options or elements within listbox from taking focus
+        // prevent options or elements within content from taking focus
         event.preventDefault()
       },
     }),
@@ -261,7 +261,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
         "data-label": label,
         // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
-        // NOTE: for perf, we may want to move these handlers to the listbox
+        // NOTE: for perf, we may want to move these handlers to the content
         onPointerMove() {
           if (_state.disabled) return
           send({ type: "POINTEROVER_OPTION", id, value, label })

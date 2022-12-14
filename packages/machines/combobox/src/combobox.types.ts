@@ -15,7 +15,7 @@ type ElementIds = Partial<{
   label: string
   control: string
   input: string
-  listbox: string
+  content: string
   toggleBtn: string
   clearBtn: string
   option(id: string, index?: number): string
@@ -64,7 +64,7 @@ type PublicContext = DirectionProperty &
      * Defines the auto-completion behavior of the combobox.
      *
      * - `autohighlight`: The first focused option is highlighted as the user types
-     * - `autocomplete`: Navigating the listbox with the arrow keys selects the option and the input is updated
+     * - `autocomplete`: Navigating the content with the arrow keys selects the option and the input is updated
      */
     inputBehavior: "autohighlight" | "autocomplete" | "none"
     /**

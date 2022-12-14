@@ -44,7 +44,7 @@ export default function Page() {
           </div>
           <div {...api.positionerProps}>
             {options.length > 0 && (
-              <ul data-testid="combobox-listbox" {...api.listboxProps}>
+              <ul data-testid="combobox-content" {...api.contentProps}>
                 {options.map((item, index) => (
                   <li
                     data-testid={item.code}
