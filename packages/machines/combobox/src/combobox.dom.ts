@@ -42,7 +42,7 @@ export const dom = defineDomHelpers({
   getOptionCount: (ctx: Ctx) => {
     // if option has `aria-setsize`, announce the number of options
     const listbox = dom.getContentEl(ctx)
-    const count = listbox?.querySelector("[role-option]")?.getAttribute("aria-setsize")
+    const count = listbox?.querySelector("[role=option]")?.getAttribute("aria-setsize")
 
     if (count != null) return parseInt(count)
     // else announce the number of options by querying the listbox
