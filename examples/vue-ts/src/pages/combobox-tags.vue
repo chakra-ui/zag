@@ -48,6 +48,15 @@ const controls = useControls(comboboxControls)
 const comboboxOptions = ref(comboboxData)
 const options = ref(comboboxData)
 
+const addValueToOptionsIfNeeded = (value: string) => {
+  if (!comboboxOptions.value.some((item) => item.label === value)) {
+    comboboxOptions.value.push({
+      label: value,
+      code: value,
+    })
+  }
+}
+
 const [tagsState, tagsSend] = useMachine(
   tagsInput.machine({
     id: "combobox",
@@ -56,6 +65,12 @@ const [tagsState, tagsSend] = useMachine(
     },
     value: [],
     allowEditTag: false,
+    onChange({ values }) {
+      const latestValue = values[values.length - 1]
+      if (latestValue != null) {
+        addValueToOptionsIfNeeded(latestValue)
+      }
+    },
   }),
 )
 const tagsApi = computed(() => tagsInput.connect(tagsState.value, tagsSend, normalizeProps))
@@ -92,13 +107,6 @@ const [state, send] = useMachine(
       } else {
         tagsApi.value.setValue([...oldValues, newValue])
       }
-
-      if (!comboboxOptions.value.some((item) => item.label === newValue)) {
-        comboboxOptions.value.push({
-          label: newValue,
-          code: newValue,
-        })
-      }
       api.value.clearValue()
     },
   }),
@@ -114,8 +122,8 @@ const inputProps = computed(() => {
   function onKeydown(event: KeyboardEvent) {
     comboboxProps?.onKeydown?.(event)
 
-    // Adding tags is handled by combobox onSelect
-    if (event.key === "Enter") {
+    // Adding tags with enter is handled by combobox onSelect when open
+    if (api.value.isOpen && event.key === "Enter") {
       return
     }
     tagsProps?.onKeydown?.(event)
@@ -128,7 +136,7 @@ const isSelected = (label: string) => tagsApi.value.value.includes(label)
 
 const getOptionProps = (option: OptionProps) => ({
   ...api.value.getOptionProps(option),
-  // Selected options are handled by tags
+  // Selected options are defined by tags
   ["aria-selected"]: isSelected(option.label),
   ["data-checked"]: null,
 })
