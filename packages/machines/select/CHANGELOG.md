@@ -1,5 +1,12 @@
 # @zag-js/select
 
+## 0.1.4
+
+### Patch Changes
+
+- [`cdef3fb0`](https://github.com/chakra-ui/zag/commit/cdef3fb08d61557bee50cdba63458406b731690e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix package entrypoints
+
 ## 0.1.3
 
 ### Patch Changes
