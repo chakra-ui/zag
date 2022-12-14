@@ -38,13 +38,13 @@ export default function Page() {
             <label {...api().labelProps}>Select country</label>
             <div {...api().controlProps}>
               <input {...api().inputProps} />
-              <button {...api().toggleButtonProps}>▼</button>
+              <button {...api().triggerProps}>▼</button>
             </div>
           </div>
 
           <div {...api().positionerProps}>
             <Show when={options().length > 0}>
-              <ul {...api().listboxProps}>
+              <ul {...api().contentProps}>
                 <For each={options()}>
                   {(item, index) => {
                     const options = { label: item.label, value: item.code, index: index(), disabled: item.disabled }

@@ -46,8 +46,8 @@ export function machine(userContext: UserDefinedContext) {
           ...ctx.positioning,
         },
         translations: {
-          toggleButtonLabel: "Toggle suggestions",
-          clearButtonLabel: "Clear value",
+          triggerLabel: "Toggle suggestions",
+          clearTriggerLabel: "Clear value",
           navigationHint: "use the up and down keys to navigate. Press the enter key to select",
           countAnnouncement: (count) => `${count} ${count === 1 ? "option" : "options"} available`,
           ...ctx.translations,
@@ -358,7 +358,7 @@ export function machine(userContext: UserDefinedContext) {
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
-              const ignore = [dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)]
+              const ignore = [dom.getContentEl(ctx), dom.getTriggerEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
             onInteractOutside() {
@@ -368,7 +368,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         hideOtherElements(ctx) {
           if (!ctx.ariaHidden) return
-          return ariaHidden([dom.getInputEl(ctx), dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)])
+          return ariaHidden([dom.getInputEl(ctx), dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
         },
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
@@ -388,7 +388,7 @@ export function machine(userContext: UserDefinedContext) {
           const focusFirstOption = meta.getAction("focusFirstOption")
           const exec = () => focusFirstOption(ctx, evt, meta)
           exec()
-          return observeChildren(dom.getListboxEl(ctx), exec)
+          return observeChildren(dom.getContentEl(ctx), exec)
         },
         scrollOptionIntoView(ctx, _evt) {
           const input = dom.getInputEl(ctx)
@@ -494,7 +494,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.selectionData = null
         },
         scrollToTop(ctx) {
-          const listbox = dom.getListboxEl(ctx)
+          const listbox = dom.getContentEl(ctx)
           if (!listbox) return
           listbox.scrollTop = 0
         },
