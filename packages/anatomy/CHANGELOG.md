@@ -1,5 +1,12 @@
 # @zag-js/anatomy
 
+## 0.1.2
+
+### Patch Changes
+
+- [`5bd24f02`](https://github.com/chakra-ui/zag/commit/5bd24f02fcab355f7df8a2d5cea3b155155380f8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Force new release
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/accordion",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Core logic for the accordion widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
