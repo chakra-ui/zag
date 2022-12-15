@@ -33,7 +33,7 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when a menu item is selected.
      */
-    onSelect?: (value: string) => void
+    onSelect?: (details: { value: string }) => void
     /**
      * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
      */

@@ -487,7 +487,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnSelect(ctx) {
           if (!ctx.highlightedId) return
-          ctx.onSelect?.(ctx.highlightedId)
+          ctx.onSelect?.({ value: ctx.highlightedId })
           if (!ctx.closeOnSelect) {
             ctx.pointerdownNode = null
           }
