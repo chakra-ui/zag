@@ -23,7 +23,10 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
       (prev, part) =>
         Object.assign(prev, {
           [part]: {
-            selector: `[data-scope="${toKebabCase(name)}"][data-part="${toKebabCase(part)}"]`,
+            selector: [
+              `&[data-scope="${toKebabCase(name)}"][data-part="${toKebabCase(part)}"]`,
+              `& [data-scope="${toKebabCase(name)}"][data-part="${toKebabCase(part)}"]`,
+            ].join(", "),
             attrs: { "data-scope": toKebabCase(name), "data-part": toKebabCase(part) },
           },
         }),
