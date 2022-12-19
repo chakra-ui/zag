@@ -498,11 +498,11 @@ importers:
   packages/frameworks/svelte:
     specifiers:
       '@zag-js/core': workspace:*
-      svelte: 3.54.0
+      svelte: 3.55.0
     dependencies:
       '@zag-js/core': link:../../core
     devDependencies:
-      svelte: 3.54.0
+      svelte: 3.55.0
 
   packages/frameworks/vue:
     specifiers:
@@ -8319,8 +8319,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  /svelte/3.54.0:
-    resolution: {integrity: sha512-tdrgeJU0hob0ZWAMoKXkhcxXA7dpTg6lZGxUeko5YqvPdJBiyRspGsCwV27kIrbrqPP2WUoSV9ca0gnLlw8YzQ==}
+  /svelte/3.55.0:
+    resolution: {integrity: sha512-uGu2FVMlOuey4JoKHKrpZFkoYyj0VLjJdz47zX5+gVK5odxHM40RVhar9/iK2YFRVxvfg9FkhfVlR0sjeIrOiA==}
     engines: {node: '>= 8'}
     dev: true
 
