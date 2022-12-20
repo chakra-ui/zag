@@ -1,5 +1,12 @@
 # @zag-js/store
 
+## 0.2.1
+
+### Patch Changes
+
+- [`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix typescript errors
+
 ## 0.2.0
 
 ### Minor Changes

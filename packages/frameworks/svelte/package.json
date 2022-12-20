@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/svelte",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "The svelte wrapper for zag",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -31,7 +31,7 @@
     "@zag-js/core": "workspace:*"
   },
   "devDependencies": {
-    "svelte": "3.53.1"
+    "svelte": "3.54.0"
   },
   "peerDependencies": {
     "svelte": ">=3.0.0"

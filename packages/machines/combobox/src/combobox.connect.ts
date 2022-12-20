@@ -67,6 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
     }),
 
     controlProps: normalize.element({
@@ -114,7 +115,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: value,
       "data-value": value,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-      "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
+      "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
       "aria-activedescendant": state.context.activeId ?? undefined,
       onPointerDown() {
@@ -122,8 +123,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("POINTER_DOWN")
       },
       onFocus() {
-        if (!isInteractive) return
+        if (isDisabled) return
         send("FOCUS")
+      },
+      onBlur() {
+        if (isDisabled) return
+        send("BLUR")
       },
       onChange(event) {
         const evt = getNativeEvent(event)
@@ -180,15 +185,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    toggleButtonProps: normalize.button({
-      ...parts.toggleButton.attrs,
-      id: dom.getToggleBtnId(state.context),
+    triggerProps: normalize.button({
+      ...parts.trigger.attrs,
+      id: dom.getTriggerId(state.context),
       "aria-haspopup": "listbox",
       type: "button",
       tabIndex: -1,
-      "aria-label": translations.toggleButtonLabel,
+      "aria-label": translations.triggerLabel,
       "aria-expanded": isOpen,
-      "aria-controls": isOpen ? dom.getListboxId(state.context) : undefined,
+      "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       disabled: isDisabled,
       "data-readonly": dataAttr(isReadOnly),
       "data-disabled": dataAttr(isDisabled),
@@ -200,9 +205,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    listboxProps: normalize.element({
-      ...parts.listbox.attrs,
-      id: dom.getListboxId(state.context),
+    contentProps: normalize.element({
+      ...parts.content.attrs,
+      id: dom.getContentId(state.context),
       role: "listbox",
       hidden: !isOpen,
       "aria-labelledby": dom.getLabelId(state.context),
@@ -212,13 +217,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    clearButtonProps: normalize.button({
-      ...parts.clearButton.attrs,
-      id: dom.getClearBtnId(state.context),
+    clearTriggerProps: normalize.button({
+      ...parts.clearTrigger.attrs,
+      id: dom.getClearTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
-      "aria-label": translations.clearButtonLabel,
+      "aria-label": translations.clearTriggerLabel,
       hidden: !showClearButton,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
@@ -239,18 +244,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOptionProps(props: OptionProps) {
       const { value, label, index, count } = props
       const id = dom.getOptionId(state.context, value, index)
-      const _state = api.getOptionState(props)
+      const optionState = api.getOptionState(props)
 
       return normalize.element({
         ...parts.option.attrs,
         id,
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(_state.focused),
-        "data-disabled": dataAttr(_state.disabled),
-        "data-checked": dataAttr(_state.checked),
-        "aria-selected": _state.focused,
-        "aria-disabled": _state.disabled,
+        "data-highlighted": dataAttr(optionState.focused),
+        "data-disabled": dataAttr(optionState.disabled),
+        "data-checked": dataAttr(optionState.checked),
+        "aria-selected": optionState.focused,
+        "aria-disabled": optionState.disabled,
         "aria-posinset": count && index != null ? index + 1 : undefined,
         "aria-setsize": count,
         "data-value": value,
@@ -258,19 +263,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
         // NOTE: for perf, we may want to move these handlers to the listbox
         onPointerMove() {
-          if (_state.disabled) return
+          if (optionState.disabled) return
           send({ type: "POINTEROVER_OPTION", id, value, label })
         },
         onPointerUp(event) {
-          if (_state.disabled) return
+          if (optionState.disabled) return
           event.currentTarget.click()
         },
         onClick() {
-          if (_state.disabled) return
+          if (optionState.disabled) return
           send({ type: "CLICK_OPTION", id, value, label })
         },
         onAuxClick(event) {
-          if (_state.disabled) return
+          if (optionState.disabled) return
           event.preventDefault()
           event.currentTarget.click()
         },

@@ -37,14 +37,14 @@ export default function Page() {
             <label {...api.labelProps}>Select country</label>
             <div {...api.controlProps}>
               <input data-testid="input" {...api.inputProps} />
-              <button data-testid="input-arrow" {...api.toggleButtonProps}>
+              <button data-testid="trigger" {...api.triggerProps}>
                 ▼
               </button>
             </div>
           </div>
           <div {...api.positionerProps}>
             {options.length > 0 && (
-              <ul data-testid="combobox-listbox" {...api.listboxProps}>
+              <ul data-testid="combobox-content" {...api.contentProps}>
                 {options.map((item, index) => (
                   <li
                     data-testid={item.code}

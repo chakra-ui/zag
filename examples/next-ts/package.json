@@ -37,9 +37,9 @@
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/pressable": "workspace:*",
-    "@zag-js/radio": "workspace:*",
+    "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
-    "@zag-js/rating": "workspace:*",
+    "@zag-js/rating-group": "workspace:*",
     "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
@@ -59,16 +59,16 @@
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-spinners": "0.13.6"
+    "react-spinners": "0.13.7"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "18.8.3",
-    "@types/react": "18.0.21",
-    "@types/react-dom": "18.0.6",
-    "eslint-plugin-react": "7.31.9",
+    "@types/node": "18.11.13",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.9",
+    "eslint-plugin-react": "7.31.11",
     "eslint-plugin-react-hooks": "4.6.0",
-    "typescript": "4.8.4"
+    "typescript": "4.9.4"
   },
   "license": "MIT"
 }

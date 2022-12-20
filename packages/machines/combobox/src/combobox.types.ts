@@ -4,8 +4,8 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
-  toggleButtonLabel?: string
-  clearButtonLabel?: string
+  triggerLabel?: string
+  clearTriggerLabel?: string
   countAnnouncement(count: number): string
   navigationHint?: string
 }
@@ -15,9 +15,9 @@ type ElementIds = Partial<{
   label: string
   control: string
   input: string
-  listbox: string
-  toggleBtn: string
-  clearBtn: string
+  content: string
+  trigger: string
+  clearTrigger: string
   option(id: string, index?: number): string
 }>
 

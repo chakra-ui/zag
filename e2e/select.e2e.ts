@@ -37,6 +37,12 @@ test.describe("select / accessibility", () => {
     await page.click(label)
     await expect(page.locator(trigger)).toBeFocused()
   })
+
+  test("trigger sets aria-labbeledby to label id", async ({ page }) => {
+    const labelId = await page.locator(label).getAttribute("id")
+    expect(labelId).not.toBeNull()
+    await expect(page.locator(trigger)).toHaveAttribute("aria-labelledby", labelId as string)
+  })
 })
 
 test.describe("select / pointer", () => {

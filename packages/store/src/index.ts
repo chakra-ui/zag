@@ -94,7 +94,7 @@ export function proxy<T extends object>(initialObject: T = {} as T): T {
     markToTrack(snapshot, true) // mark to track
     snapshotCache.set(receiver, [version, snapshot])
     Reflect.ownKeys(target).forEach((key) => {
-      const value = Reflect.get(target, key, receiver)
+      const value: any = Reflect.get(target, key, receiver)
       if (refSet.has(value)) {
         markToTrack(value, false) // mark not to track
         snapshot[key] = value

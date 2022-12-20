@@ -1,5 +1,36 @@
 # @zag-js/combobox
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [[`5bd24f02`](https://github.com/chakra-ui/zag/commit/5bd24f02fcab355f7df8a2d5cea3b155155380f8)]:
+  - @zag-js/anatomy@0.1.2
+
+## 0.2.6
+
+### Patch Changes
+
+- [#447](https://github.com/chakra-ui/zag/pull/447)
+  [`4a8657c1`](https://github.com/chakra-ui/zag/commit/4a8657c15b9111f9123da61323b43622f803731d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix anatomy and naming conventions
+
+## 0.2.5
+
+### Patch Changes
+
+- [`034eec99`](https://github.com/chakra-ui/zag/commit/034eec99aad9b8b4667d5145a171fa89d058e764) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `data-focus` is attached to control when the
+  machine is no longer in the focused state.
+
+- [`af4ab9bb`](https://github.com/chakra-ui/zag/commit/af4ab9bb7cd599c53e47ca7ed2ea90a4ff742499) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update anatomy of components
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b),
+  [`9332f1ca`](https://github.com/chakra-ui/zag/commit/9332f1caf5122c16a3edb48e20664b04714d226c)]:
+  - @zag-js/core@0.2.3
+  - @zag-js/popper@0.2.1
+
 ## 0.2.4
 
 ### Patch Changes

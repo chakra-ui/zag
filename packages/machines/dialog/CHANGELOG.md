@@ -1,5 +1,30 @@
 # @zag-js/dialog
 
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`5bd24f02`](https://github.com/chakra-ui/zag/commit/5bd24f02fcab355f7df8a2d5cea3b155155380f8)]:
+  - @zag-js/anatomy@0.1.2
+
+## 0.2.4
+
+### Patch Changes
+
+- [`4d9c2bcd`](https://github.com/chakra-ui/zag/commit/4d9c2bcdc429b751943e123130d7a1f3c6855105) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `hidden` property is not applied to the dialog and
+  backdrop
+
+- [#401](https://github.com/chakra-ui/zag/pull/401)
+  [`c5c5c15d`](https://github.com/chakra-ui/zag/commit/c5c5c15d2a8a45e51a8832f2da31cc653e7aa1d8) Thanks
+  [@anubra266](https://github.com/anubra266)! - Rename "dialog underlay" to "dialog container"
+
+- [`af4ab9bb`](https://github.com/chakra-ui/zag/commit/af4ab9bb7cd599c53e47ca7ed2ea90a4ff742499) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update anatomy of components
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/core@0.2.3
+
 ## 0.2.3
 
 ### Patch Changes

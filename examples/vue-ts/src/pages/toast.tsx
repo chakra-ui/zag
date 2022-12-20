@@ -19,6 +19,7 @@ const ToastItem = defineComponent({
     const [state, send] = useActor(props.actor)
     const apiRef = computed(() => toast.connect(state.value, send, normalizeProps))
     const progressbarProps = computed(() => ({
+      "data-scope": "toast",
       "data-part": "progressbar",
       "data-type": state.value.context.type,
       style: {
@@ -100,7 +101,7 @@ export default defineComponent({
               <button onClick={() => api.pause()}>Pause all</button>
               <button onClick={() => api.resume()}>Resume all</button>
             </div>
-            <div class="toast-group" {...api.getGroupProps({ placement: "bottom" })}>
+            <div {...api.getGroupProps({ placement: "bottom" })}>
               {api.toasts.map((actor) => (
                 <ToastItem key={actor.id} actor={actor} />
               ))}

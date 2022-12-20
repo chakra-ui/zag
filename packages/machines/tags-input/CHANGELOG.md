@@ -1,5 +1,19 @@
 # @zag-js/tags-input
 
+## 0.3.6
+
+### Patch Changes
+
+- Updated dependencies [[`5bd24f02`](https://github.com/chakra-ui/zag/commit/5bd24f02fcab355f7df8a2d5cea3b155155380f8)]:
+  - @zag-js/anatomy@0.1.2
+
+## 0.3.5
+
+### Patch Changes
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/core@0.2.3
+
 ## 0.3.4
 
 ### Patch Changes

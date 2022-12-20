@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/vue",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "The vue wrapper for zag",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
-    "vue": "3.2.40"
+    "vue": "3.2.45"
   },
   "peerDependencies": {
     "vue": ">=3.0.0"

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dialog",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "Core logic for the dialog widget implemented as a state machine",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -35,7 +35,7 @@
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "focus-trap": "7.0.0"
+    "focus-trap": "7.2.0"
   },
   "devDependencies": {
     "@zag-js/dom-utils": "workspace:*",

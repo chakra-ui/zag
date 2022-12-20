@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/anatomy",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -35,7 +35,5 @@
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

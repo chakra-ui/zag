@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
     "vite": "3.1.7",
-    "vite-plugin-solid": "2.3.9"
+    "vite-plugin-solid": "2.5.0"
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
@@ -45,9 +45,9 @@
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/pressable": "workspace:*",
-    "@zag-js/radio": "workspace:*",
+    "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
-    "@zag-js/rating": "workspace:*",
+    "@zag-js/rating-group": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/select": "workspace:*",
@@ -65,6 +65,6 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "solid-app-router": "0.4.2",
-    "solid-js": "1.5.7"
+    "solid-js": "1.6.4"
   }
 }

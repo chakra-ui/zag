@@ -25,7 +25,7 @@ export default function Page() {
 
           <Portal>
             <div {...api.positionerProps}>
-              <div className="menu-content" {...api.contentProps}>
+              <div {...api.contentProps}>
                 {data.order.map((item) => {
                   const opts = { type: "radio", name: "order", value: item.id } as const
                   return (
