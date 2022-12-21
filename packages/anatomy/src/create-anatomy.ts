@@ -1,4 +1,4 @@
-export type Part = {
+export type AnatomyPart = {
   selector: string
   attrs: Record<"data-scope" | "data-part", string>
 }
@@ -6,7 +6,7 @@ export type Part = {
 export type Anatomy<T extends string> = {
   parts: <U extends string>(...parts: U[]) => Omit<Anatomy<U>, "parts">
   extendWith: <V extends string>(...parts: V[]) => Omit<Anatomy<T | V>, "parts">
-  build: () => Record<T, Part>
+  build: () => Record<T, AnatomyPart>
 }
 
 export const createAnatomy = <T extends string>(name: string, parts = [] as T[]): Anatomy<T> => ({
@@ -14,12 +14,12 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
     if (isEmpty(parts)) {
       return createAnatomy(name, values)
     }
-    throw new Error("createAnatomy().parts(...) should only be called once. Did you mean to use .extend(...) ?")
+    throw new Error("createAnatomy().parts(...) should only be called once. Did you mean to use .extendWith(...) ?")
   },
   extendWith: <V extends string>(...values: V[]): Omit<Anatomy<T | V>, "parts"> =>
     createAnatomy(name, [...parts, ...values]),
   build: () =>
-    [...new Set(parts)].reduce<Record<string, Part>>(
+    [...new Set(parts)].reduce<Record<string, AnatomyPart>>(
       (prev, part) =>
         Object.assign(prev, {
           [part]: {
