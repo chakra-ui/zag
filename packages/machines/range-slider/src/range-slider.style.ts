@@ -7,7 +7,7 @@ import type { MachineContext as Ctx } from "./range-slider.types"
  * -----------------------------------------------------------------------------*/
 
 export function getRangeOffsets(ctx: Ctx) {
-  let start = (ctx.value[0] / ctx.max) * 100
+  let start = ((ctx.value[0] - ctx.min) / (ctx.max - ctx.min)) * 100
   let end = 100 - (ctx.value[ctx.value.length - 1] / ctx.max) * 100
   return { start: `${start}%`, end: `${end}%` }
 }
