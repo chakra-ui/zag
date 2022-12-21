@@ -1,23 +1,26 @@
-export type AnatomyPart = {
+export interface AnatomyPart {
   selector: string
   attrs: Record<"data-scope" | "data-part", string>
 }
 
-export type Anatomy<T extends string> = {
-  parts: <U extends string>(...parts: U[]) => Omit<Anatomy<U>, "parts">
-  extendWith: <V extends string>(...parts: V[]) => Omit<Anatomy<T | V>, "parts">
+export type AnatomyInstance<T extends string> = Omit<Anatomy<T>, "parts">
+
+export type AnatomyPartName<T> = T extends AnatomyInstance<infer U> ? U : never
+
+export interface Anatomy<T extends string> {
+  parts: <U extends string>(...parts: U[]) => AnatomyInstance<U>
+  extendWith: <V extends string>(...parts: V[]) => AnatomyInstance<T | V>
   build: () => Record<T, AnatomyPart>
 }
 
 export const createAnatomy = <T extends string>(name: string, parts = [] as T[]): Anatomy<T> => ({
-  parts: <U extends string>(...values: U[]): Omit<Anatomy<U>, "parts"> => {
+  parts: (...values) => {
     if (isEmpty(parts)) {
       return createAnatomy(name, values)
     }
     throw new Error("createAnatomy().parts(...) should only be called once. Did you mean to use .extendWith(...) ?")
   },
-  extendWith: <V extends string>(...values: V[]): Omit<Anatomy<T | V>, "parts"> =>
-    createAnatomy(name, [...parts, ...values]),
+  extendWith: (...values) => createAnatomy(name, [...parts, ...values]),
   build: () =>
     [...new Set(parts)].reduce<Record<string, AnatomyPart>>(
       (prev, part) =>
