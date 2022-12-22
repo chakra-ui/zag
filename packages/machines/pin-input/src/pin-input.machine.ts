@@ -36,7 +36,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         focusedIndex: ["focusInput", "setInputSelection"],
-        value: ["invokeOnChange", "dispatchInputEvent"],
+        value: ["dispatchInputEvent"],
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
@@ -44,17 +44,17 @@ export function machine(userContext: UserDefinedContext) {
         SET_VALUE: [
           {
             guard: "hasIndex",
-            actions: "setValueAtIndex",
+            actions: ["setValueAtIndex", "invokeOnChange"],
           },
-          { actions: "setValue" },
+          { actions: ["setValue", "invokeOnChange"] },
         ],
         CLEAR_VALUE: [
           {
             guard: "isDisabled",
-            actions: "clearValue",
+            actions: ["clearValue", "invokeOnChange"],
           },
           {
-            actions: ["clearValue", "setFocusIndexToFirst"],
+            actions: ["clearValue", "invokeOnChange", "setFocusIndexToFirst"],
           },
         ],
       },
@@ -75,19 +75,19 @@ export function machine(userContext: UserDefinedContext) {
             INPUT: [
               {
                 guard: and("isFinalValue", "isValidValue"),
-                actions: ["setFocusedValue", "dispatchInputEventIfNeeded"],
+                actions: ["setFocusedValue", "invokeOnChange", "dispatchInputEventIfNeeded"],
               },
               {
                 guard: "isValidValue",
-                actions: ["setFocusedValue", "setNextFocusedIndex", "dispatchInputEventIfNeeded"],
+                actions: ["setFocusedValue", "invokeOnChange", "setNextFocusedIndex", "dispatchInputEventIfNeeded"],
               },
             ],
             PASTE: [
               {
                 guard: "isValidValue",
-                actions: ["setPastedValue", "setLastValueFocusIndex"],
+                actions: ["setPastedValue", "invokeOnChange", "setLastValueFocusIndex"],
               },
-              { actions: "resetFocusedValue" },
+              { actions: ["resetFocusedValue", "invokeOnChange"] },
             ],
             BLUR: {
               target: "idle",
@@ -95,7 +95,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             DELETE: {
               guard: "hasValue",
-              actions: "clearFocusedValue",
+              actions: ["clearFocusedValue", "invokeOnChange"],
             },
             ARROW_LEFT: {
               actions: "setPrevFocusedIndex",
@@ -106,10 +106,10 @@ export function machine(userContext: UserDefinedContext) {
             BACKSPACE: [
               {
                 guard: "hasValue",
-                actions: "clearFocusedValue",
+                actions: ["clearFocusedValue", "invokeOnChange"],
               },
               {
-                actions: ["setPrevFocusedIndex", "clearFocusedValue"],
+                actions: ["setPrevFocusedIndex", "clearFocusedValue", "invokeOnChange"],
               },
             ],
             ENTER: {
