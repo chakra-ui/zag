@@ -1039,11 +1039,11 @@ importers:
 
   packages/utilities/popper:
     specifiers:
-      '@floating-ui/dom': 1.0.10
+      '@floating-ui/dom': 1.1.0
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
     dependencies:
-      '@floating-ui/dom': 1.0.10
+      '@floating-ui/dom': 1.1.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
@@ -1920,14 +1920,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@floating-ui/core/1.0.4:
-    resolution: {integrity: sha512-FPFLbg2b06MIw1dqk2SOEMAMX3xlrreGjcui5OTxfBDtaKTmh0kioOVjT8gcfl58juawL/yF+S+gnq8aUYQx/Q==}
+  /@floating-ui/core/1.0.5:
+    resolution: {integrity: sha512-iDdOsaCHZH/0FM0yNBYt+cJxJF9S5jrYWNtDZOiDFMiZ7uxMJ/71h8eTwoVifEAruv9p9rlMPYCGIgMjOz95FQ==}
     dev: false
 
-  /@floating-ui/dom/1.0.10:
-    resolution: {integrity: sha512-ZRe5ZmtGYCd82zrjWnnMW8hN5H1otedLh0Ur6rRo6f0exbEe6IlkVvo1RO7tgiMvbF0Df8hkhdm50VcVYqwP6g==}
+  /@floating-ui/dom/1.1.0:
+    resolution: {integrity: sha512-TSogMPVxbRe77QCj1dt8NmRiJasPvuc+eT5jnJ6YpLqgOD2zXc5UA3S1qwybN+GVCDNdKfpKy1oj8RpzLJvh6A==}
     dependencies:
-      '@floating-ui/core': 1.0.4
+      '@floating-ui/core': 1.0.5
     dev: false
 
   /@gwhitney/detect-indent/7.0.1:
