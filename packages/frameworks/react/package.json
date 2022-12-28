@@ -2,9 +2,6 @@
   "name": "@zag-js/react",
   "version": "0.3.2",
   "description": "The react wrapper for zag",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "keywords": [
     "ui-machines",
     "state-machines",
@@ -38,20 +35,25 @@
     "@types/react-dom": "18.0.9",
     "@zag-js/utils": "workspace:*",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "clean-package": "2.2.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
-    "typecheck": "tsc --noEmit"
-  }
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
 }

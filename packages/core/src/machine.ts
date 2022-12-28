@@ -13,14 +13,13 @@ import {
   uuid,
   warn,
 } from "@zag-js/utils"
-import { deepMerge } from "./deep-merge"
-import { klona } from "klona/json"
 import { createProxy } from "./create-proxy"
+import { deepMerge } from "./deep-merge"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
-import { subscribeKey, toArray, toEvent } from "./utils"
+import { cloneFull, cloneJson, subscribeKey, toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -67,8 +66,8 @@ export class Machine<
   // Let's get started!
   constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
     // clone the config and options
-    this.config = klona(config)
-    this.options = klona(options ?? {})
+    this.config = cloneFull(config)
+    this.options = cloneFull(options ?? {})
 
     this.id = this.config.id ?? `machine-${uuid()}`
 
@@ -93,7 +92,7 @@ export class Machine<
   }
 
   public getState(): S.State<TContext, TState, TEvent> {
-    return klona(this.stateSnapshot)
+    return cloneJson(this.stateSnapshot)
   }
 
   // immutable context value

@@ -14,7 +14,7 @@
     "start": "pnpm packages -- start",
     "prepare": "husky install",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
-    "clean-pkgs": "pnpm -r exec rm -rf dist .turbo .swc *.log",
+    "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",
     "clean": "pnpm clean-pkgs && rm -rf node_modules",
     "react": "pnpm --filter \"./examples/next-ts\"",
     "vue": "pnpm --filter \"./examples/vue-ts\"",
@@ -30,7 +30,7 @@
     "e2e-solid": "FRAMEWORK=solid playwright test",
     "generate-machine": "plop machine && pnpm sync-pkgs",
     "generate-util": "plop utility && pnpm sync-pkgs",
-    "typecheck": "turbo run typecheck --filter=./packages/**/*",
+    "typecheck": "pnpm packages -- typecheck",
     "prettier": "prettier --check packages/**/*",
     "prettier-fix": "prettier --write packages/**/*",
     "lint": "eslint packages --ext .ts",
@@ -68,6 +68,7 @@
     "@swc-node/jest": "1.5.5",
     "@swc/core": "1.3.22",
     "@types/jest": "29.2.4",
+    "@types/node": "^18.11.18",
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.46.0",
     "@typescript-eslint/parser": "5.46.0",
@@ -90,7 +91,6 @@
     "signale": "1.4.0",
     "tsup": "6.5.0",
     "tsx": "3.12.1",
-    "turbo": "1.6.3",
     "typescript": "4.9.4"
   }
 }
