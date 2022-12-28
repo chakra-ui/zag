@@ -442,18 +442,23 @@ importers:
       vue-tsc: 1.0.18_typescript@4.9.4
 
   packages/anatomy:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/core:
     specifiers:
       '@zag-js/store': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
       klona: 2.0.5
     dependencies:
       '@zag-js/store': link:../store
       klona: 2.0.5
     devDependencies:
       '@zag-js/utils': link:../utilities/core
+      clean-package: 2.2.0
 
   packages/frameworks/react:
     specifiers:
@@ -463,6 +468,7 @@ importers:
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
       proxy-compare: 2.3.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -475,6 +481,7 @@ importers:
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.9
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
 
@@ -484,6 +491,7 @@ importers:
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
       hyphenate-style-name: 1.0.4
       solid-js: 1.6.4
     dependencies:
@@ -493,15 +501,18 @@ importers:
       hyphenate-style-name: 1.0.4
     devDependencies:
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
       solid-js: 1.6.4
 
   packages/frameworks/svelte:
     specifiers:
       '@zag-js/core': workspace:*
+      clean-package: 2.2.0
       svelte: 3.55.0
     dependencies:
       '@zag-js/core': link:../../core
     devDependencies:
+      clean-package: 2.2.0
       svelte: 3.55.0
 
   packages/frameworks/vue:
@@ -510,6 +521,7 @@ importers:
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
       vue: 3.2.45
     dependencies:
       '@zag-js/core': link:../../core
@@ -517,6 +529,7 @@ importers:
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
       vue: 3.2.45
 
   packages/machines/accordion:
@@ -526,6 +539,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -533,6 +547,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/checkbox:
     specifiers:
@@ -542,6 +557,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -550,6 +566,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/combobox:
     specifiers:
@@ -562,6 +579,7 @@ importers:
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
@@ -573,6 +591,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/dialog:
     specifiers:
@@ -584,6 +603,7 @@ importers:
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
       focus-trap: 7.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
@@ -596,6 +616,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/editable:
     specifiers:
@@ -606,6 +627,7 @@ importers:
       '@zag-js/interact-outside': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -615,6 +637,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/hover-card:
     specifiers:
@@ -625,6 +648,7 @@ importers:
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -634,6 +658,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/menu:
     specifiers:
@@ -645,6 +670,7 @@ importers:
       '@zag-js/rect-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -655,6 +681,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/rect-utils': link:../../utilities/rect
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/number-input:
     specifiers:
@@ -665,6 +692,7 @@ importers:
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -674,6 +702,7 @@ importers:
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/pagination:
     specifiers:
@@ -682,6 +711,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -689,6 +719,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/pin-input:
     specifiers:
@@ -698,6 +729,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -706,6 +738,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/popover:
     specifiers:
@@ -718,6 +751,7 @@ importers:
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
       focus-trap: 7.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
@@ -731,6 +765,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/pressable:
     specifiers:
@@ -739,6 +774,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -746,6 +782,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/radio-group:
     specifiers:
@@ -755,6 +792,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -763,6 +801,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/range-slider:
     specifiers:
@@ -776,6 +815,7 @@ importers:
       '@zag-js/slider': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -788,6 +828,7 @@ importers:
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/rect-utils': link:../../utilities/rect
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/rating-group:
     specifiers:
@@ -797,6 +838,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -805,6 +847,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/select:
     specifiers:
@@ -816,6 +859,7 @@ importers:
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -826,6 +870,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/slider:
     specifiers:
@@ -837,6 +882,7 @@ importers:
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -847,6 +893,7 @@ importers:
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/splitter:
     specifiers:
@@ -856,6 +903,7 @@ importers:
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -864,6 +912,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/tabs:
     specifiers:
@@ -872,6 +921,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -879,6 +929,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/tags-input:
     specifiers:
@@ -891,6 +942,7 @@ importers:
       '@zag-js/live-region': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/auto-resize': link:../../utilities/auto-resize
@@ -902,6 +954,7 @@ importers:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/toast:
     specifiers:
@@ -910,6 +963,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -917,6 +971,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/toggle:
     specifiers:
@@ -925,6 +980,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -932,6 +988,7 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/machines/tooltip:
     specifiers:
@@ -941,6 +998,7 @@ importers:
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
@@ -949,118 +1007,166 @@ importers:
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
 
   packages/store:
     specifiers:
+      clean-package: 2.2.0
       proxy-compare: 2.3.0
     dependencies:
       proxy-compare: 2.3.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/types:
     specifiers:
+      clean-package: 2.2.0
       csstype: 3.1.1
     dependencies:
       csstype: 3.1.1
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/aria-hidden:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/auto-resize:
     specifiers:
       '@zag-js/dom-utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
+      clean-package: 2.2.0
 
   packages/utilities/core:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/dismissable:
     specifiers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/interact-outside': link:../interact-outside
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
+      clean-package: 2.2.0
 
   packages/utilities/dom:
     specifiers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/utils': link:../core
+      clean-package: 2.2.0
 
   packages/utilities/dom-query:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/element-rect:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/element-size:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/focus-scope:
     specifiers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
+      clean-package: 2.2.0
 
   packages/utilities/focus-visible:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/form-utils:
     specifiers:
       '@zag-js/dom-utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
+      clean-package: 2.2.0
 
   packages/utilities/interact-outside:
     specifiers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
+      clean-package: 2.2.0
 
   packages/utilities/live-region:
     specifiers:
       '@zag-js/dom-utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
+      clean-package: 2.2.0
 
   packages/utilities/number:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/utilities/popper:
     specifiers:
       '@floating-ui/dom': 1.1.0
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     dependencies:
       '@floating-ui/dom': 1.1.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
+      clean-package: 2.2.0
 
   packages/utilities/rect:
     specifiers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
       '@zag-js/utils': link:../core
+      clean-package: 2.2.0
 
   packages/utilities/remove-scroll:
     specifiers:
       '@zag-js/dom-utils': workspace:*
+      clean-package: 2.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../dom
+      clean-package: 2.2.0
 
   shared:
     specifiers:
@@ -4318,6 +4424,13 @@ packages:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: false
 
+  /clean-package/2.2.0:
+    resolution: {integrity: sha512-vLv8kRqvh4smPDpqAYFPLEijTppAd/cfCz4yBcUGoVl/JKu6ZWKhlo+G/cAmwlSa29RudfBeuyiNEzas8bTwEQ==}
+    hasBin: true
+    dependencies:
+      dot-prop: 6.0.1
+    dev: true
+
   /clean-stack/2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
     engines: {node: '>=6'}
@@ -4738,6 +4851,13 @@ packages:
     dependencies:
       is-obj: 2.0.0
     dev: false
+
+  /dot-prop/6.0.1:
+    resolution: {integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA==}
+    engines: {node: '>=10'}
+    dependencies:
+      is-obj: 2.0.0
+    dev: true
 
   /dotenv/8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
@@ -6196,7 +6316,6 @@ packages:
   /is-obj/2.0.0:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
     engines: {node: '>=8'}
-    dev: false
 
   /is-path-cwd/2.2.0:
     resolution: {integrity: sha512-w942bTcih8fdJPJmQHFzkS76NEP8Kzzvmw92cXsazb8intwLqPibPPdXf4ANdKV3rYMuuQYGIWtvz9JilB3NFQ==}
