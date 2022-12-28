@@ -2,9 +2,6 @@
   "name": "@zag-js/auto-resize",
   "version": "0.2.0",
   "description": "Autoresize utilities for the web",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "keywords": [
     "js",
     "utils",
@@ -19,9 +16,9 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand -u",
@@ -35,5 +32,7 @@
   },
   "devDependencies": {
     "@zag-js/dom-utils": "workspace:*"
-  }
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
 }

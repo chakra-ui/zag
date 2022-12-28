@@ -1,6 +1,16 @@
-import { isArray, isObject, isString } from "@zag-js/utils"
 import { snapshot, subscribe } from "@zag-js/store"
+import { isArray, isObject, isString } from "@zag-js/utils"
+import { klona as klonaFull } from "klona/full"
+import { klona as klonaJson } from "klona/json"
 import type { CompareFn, Dict, StateMachine as S } from "./types"
+
+export function cloneJson<T>(v: T): T {
+  return klonaJson(v)
+}
+
+export function cloneFull<T>(v: T): T {
+  return klonaFull(v)
+}
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {
   const obj = isString(event) ? { type: event } : event

@@ -1,9 +1,6 @@
 {
   "name": "@zag-js/types",
   "version": "0.3.1",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "keywords": [
     "js",
     "utils",
@@ -27,13 +24,15 @@
     "csstype": "3.1.1"
   },
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
     "typecheck": "tsc --noEmit"
-  }
+  },
+  "clean-package": "../../clean-package.config.json",
+  "main": "src/index.ts"
 }
