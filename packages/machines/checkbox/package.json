@@ -26,7 +26,9 @@
     "test": "jest --config ../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand -u",
-    "test-watch": "pnpm test --watch"
+    "test-watch": "pnpm test --watch",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
   },
   "publishConfig": {
     "access": "public"
@@ -42,7 +44,8 @@
   "devDependencies": {
     "@zag-js/dom-utils": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*"
+    "@zag-js/utils": "workspace:*",
+    "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json",
   "main": "src/index.ts"

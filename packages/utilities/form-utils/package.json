@@ -16,7 +16,8 @@
     "dist/**/*"
   ],
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*"
+    "@zag-js/dom-utils": "workspace:*",
+    "clean-package": "2.2.0"
   },
   "scripts": {
     "build-fast": "tsup src",
@@ -26,7 +27,9 @@
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
   },
   "publishConfig": {
     "access": "public"

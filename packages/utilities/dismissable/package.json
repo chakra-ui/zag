@@ -26,7 +26,9 @@
     "test": "jest --config ../../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand -u",
-    "test-watch": "pnpm test --watchAll"
+    "test-watch": "pnpm test --watchAll",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
   },
   "publishConfig": {
     "access": "public"
@@ -36,7 +38,8 @@
   },
   "devDependencies": {
     "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*"
+    "@zag-js/utils": "workspace:*",
+    "clean-package": "2.2.0"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
