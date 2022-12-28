@@ -26,6 +26,7 @@
 
 # Split view
 
+- https://github.com/bvaughn/react-resizable-panels
 - https://github.com/milahu/svelte-layout-resizable/issues/1
 - https://angular-split.github.io
 - https://split.js.org
