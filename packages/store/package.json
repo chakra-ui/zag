@@ -2,9 +2,6 @@
   "name": "@zag-js/store",
   "version": "0.2.1",
   "description": "The reactive store package for zag machines",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "keywords": [
     "js",
     "utils",
@@ -20,13 +17,15 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand -u",
-    "test-watch": "pnpm test --watchAll"
+    "test-watch": "pnpm test --watchAll",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
   },
   "publishConfig": {
     "access": "public"
@@ -36,5 +35,10 @@
   },
   "dependencies": {
     "proxy-compare": "2.3.0"
+  },
+  "clean-package": "../../clean-package.config.json",
+  "main": "src/index.ts",
+  "devDependencies": {
+    "clean-package": "2.2.0"
   }
 }

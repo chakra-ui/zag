@@ -12,20 +12,16 @@ async function main() {
     pkgs.map((pkg) => {
       const { dir, manifest } = pkg
 
-      // @ts-ignore
-      const { module, main, type, types, name, version, description, ...rest } = manifest
+      manifest.devDependencies ||= {}
+      manifest.devDependencies["clean-package"] = "2.2.0"
 
-      const data = {
-        name,
-        version,
-        description,
-        main: "dist/index.js",
-        module: "dist/index.mjs",
-        types,
-        ...rest,
+      manifest.scripts = {
+        ...manifest.scripts,
+        prepack: "clean-package",
+        postpack: "clean-package restore",
       }
 
-      return writeFile(join(dir, "package.json"), JSON.stringify(data, null, 2))
+      return writeFile(join(dir, "package.json"), JSON.stringify(manifest, null, 2))
     }),
   )
 }
