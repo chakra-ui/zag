@@ -235,7 +235,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           End() {
             send("END")
           },
-          Tab() {},
+          Tab(event) {
+            send({ type: "TAB", shiftKey: event.shiftKey, loop: false })
+          },
         }
 
         const key = getEventKey(event, { dir: state.context.dir })
@@ -244,7 +246,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (exec) {
           const allow = isLink && key === "Enter"
           exec(event)
-          if (!allow) event.preventDefault()
+          if (!allow) {
+            event.preventDefault()
+          }
           //
         } else {
           //

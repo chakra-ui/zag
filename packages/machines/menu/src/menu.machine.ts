@@ -202,20 +202,19 @@ export function machine(userContext: UserDefinedContext) {
               target: "closed",
               actions: "invokeOnClose",
             },
-            ARROW_UP: [
+            TAB: [
               {
-                guard: "hasFocusedItem",
-                actions: ["focusPrevItem", "focusMenu"],
+                guard: "isForwardTabNavigation",
+                actions: ["focusNextItem"],
               },
-              { actions: "focusLastItem" },
+              { actions: ["focusPrevItem"] },
             ],
-            ARROW_DOWN: [
-              {
-                guard: "hasFocusedItem",
-                actions: ["focusNextItem", "focusMenu"],
-              },
-              { actions: "focusFirstItem" },
-            ],
+            ARROW_UP: {
+              actions: ["focusPrevItem", "focusMenu"],
+            },
+            ARROW_DOWN: {
+              actions: ["focusNextItem", "focusMenu"],
+            },
             ARROW_LEFT: {
               guard: "isSubmenu",
               target: "closed",
@@ -307,7 +306,6 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
-        hasFocusedItem: (ctx) => ctx.highlightedId !== null,
         isMenuFocused: (ctx) => {
           const menu = dom.getContentEl(ctx)
           const activeElement = dom.getActiveElement(ctx)
@@ -321,6 +319,7 @@ export function machine(userContext: UserDefinedContext) {
           const target = (evt.target ?? dom.getFocusedItem(ctx)) as HTMLElement | null
           return !!target?.hasAttribute("aria-controls")
         },
+        isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
         isFocusedItemEditable: (ctx) => isElementEditable(dom.getFocusedItem(ctx)),
@@ -457,7 +456,12 @@ export function machine(userContext: UserDefinedContext) {
           ctx.highlightedId = null
         },
         focusMenu(ctx) {
-          raf(() => dom.getContentEl(ctx)?.focus())
+          raf(() => {
+            const activeEl = dom.getActiveElement(ctx)
+            const contentEl = dom.getContentEl(ctx)
+            if (contains(contentEl, activeEl)) return
+            contentEl?.focus()
+          })
         },
         focusFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
@@ -469,14 +473,12 @@ export function machine(userContext: UserDefinedContext) {
           if (!last) return
           ctx.highlightedId = last.id
         },
-        focusNextItem(ctx) {
-          if (!ctx.highlightedId) return
-          const next = dom.getNextEl(ctx)
+        focusNextItem(ctx, evt) {
+          const next = dom.getNextEl(ctx, evt.loop)
           ctx.highlightedId = next?.id ?? null
         },
-        focusPrevItem(ctx) {
-          if (!ctx.highlightedId) return
-          const prev = dom.getPrevEl(ctx)
+        focusPrevItem(ctx, evt) {
+          const prev = dom.getPrevEl(ctx, evt.loop)
           ctx.highlightedId = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
