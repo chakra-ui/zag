@@ -382,6 +382,7 @@ export declare namespace StateMachine {
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
     sync?: boolean
+    compareFns?: { [K in keyof TContext]: CompareFn<TContext[K], K> }
   }
 
   export type HookOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
@@ -422,3 +423,5 @@ export enum MachineType {
   Machine = "machine",
   Actor = "machine.actor",
 }
+
+export type CompareFn<T = any, K = string> = (prev: T, next: T, key: K) => boolean
