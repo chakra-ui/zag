@@ -1,5 +1,13 @@
 # @zag-js/remove-scroll
 
+## 0.2.1
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
 ## 0.2.0
 
 ### Minor Changes
