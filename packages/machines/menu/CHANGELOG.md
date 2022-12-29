@@ -1,5 +1,31 @@
 # @zag-js/menu
 
+## 0.3.3
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- [`063bbc40`](https://github.com/chakra-ui/zag/commit/063bbc40a2674049a343226a42af2ed1d2b7e884) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Support the use of `Tab` key press to navigate through the menu
+  items.
+
+- [#451](https://github.com/chakra-ui/zag/pull/451)
+  [`3d1f2ca3`](https://github.com/chakra-ui/zag/commit/3d1f2ca300bbfe78c3b8d474d258d912b92e6b52) Thanks
+  [@anubra266](https://github.com/anubra266)! - Refactor `onSelect`
+
+- Updated dependencies [[`4c98f016`](https://github.com/chakra-ui/zag/commit/4c98f016ae3d48b1b74f4dc8c302ef9a1c664260),
+  [`ec776276`](https://github.com/chakra-ui/zag/commit/ec77627603f310ca34a659bc250cdcf819a17b91),
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822),
+  [`5799fcb5`](https://github.com/chakra-ui/zag/commit/5799fcb520a7956dc7ef1a9bc7aaa8dff85fa592)]:
+  - @zag-js/core@0.2.4
+  - @zag-js/anatomy@0.1.3
+  - @zag-js/types@0.3.2
+  - @zag-js/dismissable@0.2.1
+  - @zag-js/popper@0.2.2
+
 ## 0.3.2
 
 ### Patch Changes

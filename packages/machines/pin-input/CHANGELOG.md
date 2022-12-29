@@ -1,5 +1,25 @@
 # @zag-js/pin-input
 
+## 0.2.7
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- [#456](https://github.com/chakra-ui/zag/pull/456)
+  [`d1dbf9e2`](https://github.com/chakra-ui/zag/commit/d1dbf9e240803c9e3ed81ebef363739be4273de0) Thanks
+  [@anubra266](https://github.com/anubra266)! - - Multiple characters being accepted by input in controlled mode
+  - Infinite loop when value changes
+- Updated dependencies [[`4c98f016`](https://github.com/chakra-ui/zag/commit/4c98f016ae3d48b1b74f4dc8c302ef9a1c664260),
+  [`ec776276`](https://github.com/chakra-ui/zag/commit/ec77627603f310ca34a659bc250cdcf819a17b91),
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822),
+  [`5799fcb5`](https://github.com/chakra-ui/zag/commit/5799fcb520a7956dc7ef1a9bc7aaa8dff85fa592)]:
+  - @zag-js/core@0.2.4
+  - @zag-js/anatomy@0.1.3
+  - @zag-js/types@0.3.2
+
 ## 0.2.6
 
 ### Patch Changes

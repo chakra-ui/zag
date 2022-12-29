@@ -1,5 +1,17 @@
 # @zag-js/focus-visible
 
+## 0.2.1
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- [`1100d885`](https://github.com/chakra-ui/zag/commit/1100d88590bcc9e896219686edb3cb2a68eb63b4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `:focus-visible` query throw a `SyntaxError` in
+  Jest
+
 ## 0.2.0
 
 ### Minor Changes
