@@ -37,10 +37,17 @@ function onKeyboardEvent(event: KeyboardEvent) {
 
 function onPointerEvent(event: PointerEvent | MouseEvent) {
   modality = "pointer"
+
   if (event.type === "mousedown" || event.type === "pointerdown") {
     hasEventBeforeFocus = true
     const target = event.composedPath ? event.composedPath()[0] : event.target
-    if ((target as HTMLElement).matches(":focus-visible")) return
+
+    let matches = false
+    try {
+      matches = (target as any).matches(":focus-visible")
+    } catch {}
+
+    if (matches) return
     trigger("pointer", event)
   }
 }
