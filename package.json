@@ -39,6 +39,9 @@
     "test": "jest",
     "visualize": "tsx scripts/visualize.ts --all",
     "changelog": "tsx scripts/changelog.ts",
+    "changelog-latest": "tsx scripts/changelog.ts --latest",
+    "changelog-commit": "git add . && git commit -am 'docs: add changelog' && git push",
+    "changelog-format": "prettier --write .changelog",
     "sandbox": "tsx scripts/sandbox.ts"
   },
   "lint-staged": {

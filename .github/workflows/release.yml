@@ -52,6 +52,13 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Add changelog for latest version
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          pnpm changelog-latest
+          pnpm changelog-format
+          pnpm changelog-commit
+
       - name: Dispatch update to docs
         if: steps.changesets.outputs.published == 'true'
         uses: actions/github-script@v6
