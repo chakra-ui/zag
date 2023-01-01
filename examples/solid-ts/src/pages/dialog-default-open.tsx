@@ -39,7 +39,10 @@ export default function Page() {
           </Show>
         </div>
       </main>
-      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+
+      <Toolbar>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

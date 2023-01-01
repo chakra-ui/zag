@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { useMachine } from "@zag-js/solid"
 
-const counter = createMachine(
+const counter = createMachine<{ value: number; readonly isAbove: boolean }>(
   {
     id: "counter",
     context: {
