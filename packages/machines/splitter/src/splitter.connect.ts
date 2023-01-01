@@ -2,178 +2,170 @@ import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-ut
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
-import type { Send, State } from "./splitter.types"
+import type { PanelId, PanelProps, ResizeTriggerProps, Send, State } from "./splitter.types"
+import { getHandleBounds } from "./splitter.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isHorizontal = state.context.isHorizontal
-  const isDisabled = state.context.disabled
-
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
 
-  const isAtMin = state.context.isAtMin
-  const isAtMax = state.context.isAtMax
-  const min = state.context.min
-  const max = state.context.max
-  const value = state.context.value
-
   return {
-    isCollapsed: isAtMin,
-    isExpanded: isAtMax,
     isFocused,
     isDragging,
-    value,
+    bounds: getHandleBounds(state.context),
 
-    collapse() {
-      send("COLLAPSE")
+    collapse(id: PanelId) {
+      send({ type: "COLLAPSE", id })
     },
-    expand() {
-      send("EXPAND")
+    expand(id: PanelId) {
+      send({ type: "EXPAND", id })
     },
-    toggle() {
-      send("TOGGLE")
+    toggle(id: PanelId) {
+      send({ type: "TOGGLE", id })
     },
-    setSize(size: number) {
-      send({ type: "SET_SIZE", size })
+    setSize(id: PanelId, size: number) {
+      send({ type: "SET_SIZE", id, size })
     },
 
     rootProps: normalize.element({
       ...parts.root.attrs,
       "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(isDisabled),
       id: dom.getRootId(state.context),
+      dir: state.context.dir,
       style: {
         display: "flex",
-        flex: "1 1 0%",
         flexDirection: isHorizontal ? "row" : "column",
+        height: "100%",
+        width: "100%",
+        overflow: "hidden",
       },
     }),
 
-    secondaryPaneProps: normalize.element({
-      ...parts.secondaryPane.attrs,
-      "data-disabled": dataAttr(isDisabled),
-      id: dom.getSecondaryPaneId(state.context),
-      style: {
-        height: isHorizontal ? "100%" : "auto",
-        width: isHorizontal ? "auto" : "100%",
-        flex: "1 1 auto",
-        position: "relative",
-      },
-    }),
+    getPanelProps(props: PanelProps) {
+      const { id } = props
+      return normalize.element({
+        ...parts.panel.attrs,
+        dir: state.context.dir,
+        id: dom.getPanelId(state.context, id),
+        "data-ownedby": dom.getRootId(state.context),
+        style: dom.getPanelStyle(state.context, id),
+      })
+    },
 
-    primaryPaneProps: normalize.element({
-      ...parts.primaryPane.attrs,
-      id: dom.getPrimaryPaneId(state.context),
-      "data-disabled": dataAttr(isDisabled),
-      "data-state": isAtMax ? "at-max" : isAtMin ? "at-min" : "between",
-      style: {
-        visibility: "visible",
-        flex: `0 0 ${value}px`,
-        position: "relative",
-        userSelect: isDragging ? "none" : "auto",
-        ...(isHorizontal
-          ? { minWidth: `${min}px`, maxWidth: `${max}px` }
-          : { minHeight: `${min}px`, maxHeight: `${max}px` }),
-      },
-    }),
+    // toggleTriggerProps: normalize.element({
+    //   ...parts.toggleButton.attrs,
+    //   id: dom.getToggleButtonId(state.context),
+    //   "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
+    //   onClick() {
+    //     send("TOGGLE")
+    //   },
+    // }),
 
-    toggleButtonProps: normalize.element({
-      ...parts.toggleButton.attrs,
-      id: dom.getToggleButtonId(state.context),
-      "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
-      onClick() {
-        send("TOGGLE")
-      },
-    }),
+    getResizeTriggerState(id: string) {
+      const ids = id.split(":")
+      const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
+      const panels = getHandleBounds(state.context, id)
 
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      id: dom.getLabelId(state.context),
-    }),
+      return {
+        isFocused: state.context.activeResizeId === id && isFocused,
+        panelIds,
+        min: panels?.min,
+        max: panels?.max,
+        value: 0,
+      }
+    },
 
-    splitterProps: normalize.element({
-      ...parts.splitter.attrs,
-      id: dom.getSplitterId(state.context),
-      role: "separator",
-      tabIndex: isDisabled ? undefined : 0,
-      "aria-valuenow": value,
-      "aria-valuemin": min,
-      "aria-valuemax": max,
-      "aria-orientation": state.context.orientation,
-      "aria-labelledby": dom.getLabelId(state.context),
-      "aria-controls": dom.getPrimaryPaneId(state.context),
-      "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(isDisabled),
-      style: {
-        touchAction: "none",
-        userSelect: "none",
-        WebkitUserSelect: "none",
-        msUserSelect: "none",
-        flex: "0 0 auto",
-        cursor: dom.getCursor(state.context),
-        minHeight: isHorizontal ? "0px" : undefined,
-        minWidth: isHorizontal ? undefined : "0px",
-      },
-      onPointerDown(event) {
-        if (isDisabled) {
+    getResizeTriggerProps(props: ResizeTriggerProps) {
+      const { id, disabled, step = 1 } = props
+      const triggerState = this.getResizeTriggerState(id)
+
+      return normalize.element({
+        ...parts.resizeTrigger.attrs,
+        dir: state.context.dir,
+        id: dom.getResizeTriggerId(state.context, id),
+        role: "separator",
+        "data-ownedby": dom.getRootId(state.context),
+        tabIndex: disabled ? undefined : 0,
+        "aria-valuenow": triggerState.value,
+        "aria-valuemin": triggerState.min,
+        "aria-valuemax": triggerState.max,
+        "data-orientation": state.context.orientation,
+        "aria-orientation": state.context.orientation,
+        "aria-controls": triggerState.panelIds.join(" "),
+        "data-focus": dataAttr(triggerState.isFocused),
+        "data-disabled": dataAttr(disabled),
+        style: {
+          touchAction: "none",
+          userSelect: "none",
+          flex: "0 0 auto",
+          pointerEvents: isDragging && !triggerState.isFocused ? "none" : undefined,
+          cursor: isHorizontal ? "col-resize" : "row-resize",
+          [isHorizontal ? "minHeight" : "minWidth"]: "0",
+        },
+        onPointerDown(event) {
+          if (disabled) {
+            event.preventDefault()
+            return
+          }
+          send({ type: "POINTER_DOWN", id })
           event.preventDefault()
-          return
-        }
-        send("POINTER_DOWN")
-        event.preventDefault()
-        event.stopPropagation()
-      },
-      onPointerOver() {
-        if (isDisabled) return
-        send("POINTER_OVER")
-      },
-      onPointerLeave() {
-        if (isDisabled) return
-        send("POINTER_LEAVE")
-      },
-      onBlur() {
-        send("BLUR")
-      },
-      onFocus() {
-        send("FOCUS")
-      },
-      onDoubleClick() {
-        if (isDisabled) return
-        send("DOUBLE_CLICK")
-      },
-      onKeyDown(event) {
-        if (isDisabled) return
-        const step = getEventStep(event) * state.context.step
-        const keyMap: EventKeyMap = {
-          ArrowUp() {
-            send({ type: "ARROW_UP", step })
-          },
-          ArrowDown() {
-            send({ type: "ARROW_DOWN", step })
-          },
-          ArrowLeft() {
-            send({ type: "ARROW_LEFT", step })
-          },
-          ArrowRight() {
-            send({ type: "ARROW_RIGHT", step })
-          },
-          Home() {
-            send("HOME")
-          },
-          End() {
-            send("END")
-          },
-        }
+          event.stopPropagation()
+        },
+        onPointerOver() {
+          if (disabled) return
+          send({ type: "POINTER_OVER", id })
+        },
+        onPointerLeave() {
+          if (disabled) return
+          send({ type: "POINTER_LEAVE", id })
+        },
+        onBlur() {
+          send("BLUR")
+        },
+        onFocus() {
+          send({ type: "FOCUS", id })
+        },
+        onDoubleClick() {
+          if (disabled) return
+          send({ type: "DOUBLE_CLICK", id })
+        },
+        onKeyDown(event) {
+          if (disabled) return
+          const moveStep = getEventStep(event) * step
+          const keyMap: EventKeyMap = {
+            Enter() {
+              send("ENTER")
+            },
+            ArrowUp() {
+              send({ type: "ARROW_UP", step: moveStep })
+            },
+            ArrowDown() {
+              send({ type: "ARROW_DOWN", step: moveStep })
+            },
+            ArrowLeft() {
+              send({ type: "ARROW_LEFT", step: moveStep })
+            },
+            ArrowRight() {
+              send({ type: "ARROW_RIGHT", step: moveStep })
+            },
+            Home() {
+              send("HOME")
+            },
+            End() {
+              send("END")
+            },
+          }
 
-        const key = getEventKey(event, state.context)
-        const exec = keyMap[key]
+          const key = getEventKey(event, state.context)
+          const exec = keyMap[key]
 
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-        }
-      },
-    }),
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
+        },
+      })
+    },
   }
 }

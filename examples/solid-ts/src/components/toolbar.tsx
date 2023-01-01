@@ -3,7 +3,8 @@ import { createSignal, JSX } from "solid-js"
 
 type ToolbarProps = {
   controls: null | (() => JSX.Element)
-  visualizer: null | JSX.Element
+  visualizer?: null | JSX.Element
+  children?: JSX.Element
 }
 
 export function Toolbar(props: ToolbarProps) {
@@ -28,6 +29,7 @@ export function Toolbar(props: ToolbarProps) {
           </div>
         )}
         <div data-content data-active={dataAttr(active() === 1)}>
+          {props.children}
           {props.visualizer}
         </div>
       </div>

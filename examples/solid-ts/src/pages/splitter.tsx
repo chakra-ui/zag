@@ -9,32 +9,43 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(splitter.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    splitter.machine({
+      id: createUniqueId(),
+      size: [{ id: "aside", size: 40, maxSize: 60 }, { id: "content", size: 20 }, { id: "sources" }],
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = createMemo(() => splitter.connect(state, send, normalizeProps))
 
   return (
     <>
       <main class="splitter">
-        <div>
-          <div {...api().rootProps}>
-            <div {...api().primaryPaneProps}>
-              <div>
-                <small {...api().labelProps}>Table of Contents</small>
-                <p>Primary Pane</p>
-              </div>
-            </div>
-            <div {...api().splitterProps}>
-              <div class="splitter-bar" />
-            </div>
-            <div {...api().secondaryPaneProps}>Secondary Pane</div>
+        <div {...api().rootProps}>
+          <div {...api().getPanelProps({ id: "aside" })}>
+            <p>Aside</p>
+          </div>
+          <div {...api().getResizeTriggerProps({ id: "aside:content" })}>
+            <div class="bar" />
+          </div>
+          <div {...api().getPanelProps({ id: "content" })}>
+            <p>Content</p>
+          </div>
+          <div {...api().getResizeTriggerProps({ id: "content:sources" })}>
+            <div class="bar" />
+          </div>
+          <div {...api().getPanelProps({ id: "sources" })}>
+            <p>Sources</p>
           </div>
         </div>
       </main>
 
-      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} omit={["previousPanels", "initialSize"]} />
+      </Toolbar>
     </>
   )
 }
