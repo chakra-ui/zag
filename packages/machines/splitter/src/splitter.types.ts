@@ -1,89 +1,55 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type ElementIds = Partial<{
-  root: string
-  splitter: string
-  label: string
-  toggleBtn: string
-  primaryPane: string
-  secondaryPane: string
-}>
+export type PanelId = string | number
+
+type PanelSizeData = {
+  id: PanelId
+  size?: number
+  minSize?: number
+  maxSize?: number
+}
+
+type ResizeDetails = {
+  size: PanelSizeData[]
+  activeHandleId: string | null
+}
 
 type PublicContext = DirectionProperty &
   CommonProperties & {
-    /**
-     * The ids of the elements in the splitter. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * Whether to allow the separator to be dragged.
-     */
-    fixed?: boolean
-    /**
-     * The orientation of the split view.
-     */
+    // pushSiblings?: boolean
     orientation: "horizontal" | "vertical"
-    /**
-     * The minimum size of the primary pane.
-     */
-    min: number
-    /**
-     * The maximum size of the primary pane.
-     */
-    max: number
-    /**
-     * The size of the primary pane.
-     */
-    value: number
-    /**
-     * The step increments of the primary pane when it is dragged
-     * or resized with keyboard.
-     */
-    step: number
-    /**
-     * Callback to be invoked when the primary pane is resized.
-     */
-    onChange?: (details: { value: number }) => void
-    /**
-     * Callback to be invoked when the primary pane's resize session starts
-     */
-    onChangeStart?: (details: { value: number }) => void
-    /**
-     * Callback to be invoked when the primary pane's resize session ends
-     */
-    onChangeEnd?: (details: { value: number }) => void
-    /**
-     * Whether the primary pane is disabled.
-     */
-    disabled?: boolean
-    /**
-     * The minimum offset needed to snap the primary pane to its minimum or maximum size.
-     */
-    snapOffset: number
+    size: PanelSizeData[]
+    onResize?: (details: ResizeDetails) => void
+    onResizeStart?: (details: ResizeDetails) => void
+    onResizeEnd?: (details: ResizeDetails) => void
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
+export type NormalizedPanelData = Array<
+  Required<PanelSizeData> & {
+    remainingSize: number
+    minSize: number
+    maxSize: number
+    start: number
+    end: number
+  }
+>
+
 type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the primary pane is at its minimum size.
-   */
-  isAtMin: boolean
-  /**
-   * @computed
-   * Whether the primary pane is at its maximum size.
-   */
-  isAtMax: boolean
-  /**
-   * @computed
-   * Whether the orientation is horizontal.
-   */
   isHorizontal: boolean
+  panels: NormalizedPanelData
+  activeResizeBounds?: { min: number; max: number }
+  activeResizePanels?: { before: PanelSizeData; after: PanelSizeData }
 }>
 
-type PrivateContext = Context<{}>
+type PrivateContext = Context<{
+  activeResizeId: string | null
+  previousPanels: NormalizedPanelData
+  activeResizeState: { isAtMin: boolean; isAtMax: boolean }
+  initialSize: Array<Required<Pick<PanelSizeData, "id" | "size">>>
+}>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
@@ -95,3 +61,14 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type PanelProps = {
+  id: PanelId
+  snapSize?: number
+}
+
+export type ResizeTriggerProps = {
+  id: `${PanelId}:${PanelId}`
+  step?: number
+  disabled?: boolean
+}
