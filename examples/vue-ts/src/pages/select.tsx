@@ -79,7 +79,9 @@ export default defineComponent({
             </Teleport>
           </main>
 
-          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} omit={["data"]} />} />
+          <Toolbar controls={controls.ui}>
+            <StateVisualizer state={state} omit={["data"]} />
+          </Toolbar>
         </>
       )
     }

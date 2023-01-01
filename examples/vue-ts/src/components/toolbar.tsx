@@ -2,7 +2,7 @@ import { dataAttr } from "@zag-js/dom-utils"
 import { defineComponent, ref } from "vue"
 
 export const Toolbar = defineComponent({
-  props: ["controls", "visualizer"],
+  props: ["controls"],
   setup(props, { slots }) {
     const activeState = ref(props.controls === null ? 1 : 0)
 
@@ -30,14 +30,13 @@ export const Toolbar = defineComponent({
             </button>
           </nav>
           <div>
-            {props.controls !== null && (
+            {props.controls && (
               <div data-content data-active={dataAttr(activeState.value === 0)}>
                 <props.controls />
               </div>
             )}
             <div data-content data-active={dataAttr(activeState.value === 1)}>
               {slots?.default?.()}
-              {props.visualizer}
             </div>
           </div>
         </div>

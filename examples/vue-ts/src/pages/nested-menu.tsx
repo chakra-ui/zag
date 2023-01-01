@@ -88,16 +88,11 @@ export default defineComponent({
             </div>
           </main>
 
-          <Toolbar
-            controls={null}
-            visualizer={
-              <>
-                <StateVisualizer state={state} />
-                <StateVisualizer state={subState} />
-                <StateVisualizer state={sub2State} />
-              </>
-            }
-          />
+          <Toolbar>
+            <StateVisualizer state={state} />
+            <StateVisualizer state={subState} />
+            <StateVisualizer state={sub2State} />
+          </Toolbar>
         </>
       )
     }
