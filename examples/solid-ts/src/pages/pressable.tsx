@@ -42,7 +42,10 @@ export default function Page() {
         <br />
         <button onClick={() => buttonRef?.click()}>Programmatic click me</button>
       </main>
-      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+
+      <Toolbar>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }
