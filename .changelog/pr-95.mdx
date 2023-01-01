@@ -3,20 +3,18 @@ releaseUrl: https://github.com/chakra-ui/zag/pull/95
 releaseDate: May 19, 2022
 ---
 
+## Patch Changes
 
-## @zag-js/editable@0.1.5
+### Editable `0.1.5`
 
-### Patch Changes
+- Add support for different placeholders in preview and edit mode.
 
--   [`5f1e56ee`](https://github.com/chakra-ui/zag/commit/5f1e56ee25fadb2839ed5db214aa349905527dcd) Thanks
-    [@segunadebayo](https://github.com/segunadebayo)! - Add support for different placeholders in preview and edit mode.
+  The `placeholder` can be a `string` or an object containing `edit` and `preview`.
 
-    The `placeholder` can be a `string` or an object containing `edit` and `preview`.
-
-    ```js
-    const [state, send] = useMachine(
-      editable.machine({
-        placeholder: { edit: "Enter...", preview: "Add name..." },
-      }),
-    )
-    ```
+  ```js
+  const [state, send] = useMachine(
+    editable.machine({
+      placeholder: { edit: "Enter...", preview: "Add name..." },
+    }),
+  )
+  ```
