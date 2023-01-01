@@ -36,7 +36,9 @@ export default defineComponent({
             </Teleport>
           </main>
 
-          <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+          <Toolbar>
+            <StateVisualizer state={state} />
+          </Toolbar>
         </>
       )
     }
