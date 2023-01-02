@@ -463,7 +463,7 @@ importers:
   packages/frameworks/react:
     specifiers:
       '@types/react': 18.0.26
-      '@types/react-dom': 18.0.9
+      '@types/react-dom': 18.0.10
       '@zag-js/core': workspace:*
       '@zag-js/store': workspace:*
       '@zag-js/types': workspace:*
@@ -479,7 +479,7 @@ importers:
       proxy-compare: 2.3.0
     devDependencies:
       '@types/react': 18.0.26
-      '@types/react-dom': 18.0.9
+      '@types/react-dom': 18.0.10
       '@zag-js/utils': link:../../utilities/core
       clean-package: 2.2.0
       react: 18.2.0
