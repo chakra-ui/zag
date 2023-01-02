@@ -59,6 +59,12 @@ jobs:
           pnpm changelog-format
           pnpm changelog-commit
 
+      - name: Slack notification
+        if: steps.changesets.outputs.published == 'true'
+        run: pnpm slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Dispatch update to docs
         if: steps.changesets.outputs.published == 'true'
         uses: actions/github-script@v6
