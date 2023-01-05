@@ -41,7 +41,9 @@ export function requestPointerLock(doc: Document, handlers: PointerLockHandlers 
 
   if (!supported) return
 
-  body.requestPointerLock()
+  try {
+    body.requestPointerLock()
+  } catch {}
 
   const cleanup = callAll(
     addPointerlockChangeListener(doc, onPointerChange),

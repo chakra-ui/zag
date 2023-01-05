@@ -1,11 +1,11 @@
-import type { StateMachine } from "@zag-js/core"
-import { getPointRelativeToNode, defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { defineDomHelpers, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
-import { clamp, percentToValue } from "@zag-js/number-utils"
-import { closest, createRect, Point } from "@zag-js/rect-utils"
+import { getPercentValue } from "@zag-js/numeric-range"
 import { styles } from "./range-slider.style"
 import type { MachineContext as Ctx } from "./range-slider.types"
-import { utils } from "./range-slider.utils"
+import { clampPercent } from "./range-slider.utils"
+
+type Point = { x: number; y: number }
 
 function getPointProgress(ctx: Ctx, point: Point) {
   const el = dom.getControlEl(ctx)!
@@ -21,18 +21,11 @@ function getPointProgress(ctx: Ctx, point: Point) {
     percent = 1 - percentY
   }
 
-  return utils.clampPercent(percent)
-}
-
-function getValueFromPoint(ctx: Ctx, point: Point) {
-  if (ctx.activeIndex === -1) return
-  let percent = getPointProgress(ctx, point)
-  return utils.fromPercent(ctx, percent)
+  return clampPercent(percent)
 }
 
 export const dom = defineDomHelpers({
   ...styles,
-
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,
   getHiddenInputId: (ctx: Ctx, index: number) => `slider:${ctx.id}:input:${index}`,
@@ -51,7 +44,10 @@ export const dom = defineDomHelpers({
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
   getRangeEl: (ctx: Ctx) => dom.getById(ctx, dom.getRangeId(ctx)),
 
-  getValueFromPoint,
+  getValueFromPoint(ctx: Ctx, point: Point) {
+    const percent = getPointProgress(ctx, point)
+    return getPercentValue(percent, ctx.min, ctx.max, ctx.step)
+  },
   dispatchChangeEvent(ctx: Ctx) {
     const valueArray = Array.from(ctx.value)
     valueArray.forEach((value, index) => {
@@ -61,40 +57,3 @@ export const dom = defineDomHelpers({
     })
   },
 })
-
-export function getClosestIndex(ctx: Ctx, evt: StateMachine.AnyEventObject) {
-  let index: number
-
-  // get the center point of all thumbs
-  const thumbs = dom.getElements(ctx)
-  const points = thumbs.map((el) => {
-    const { center } = createRect(el.getBoundingClientRect())
-    return center
-  })
-
-  // get the closest center point from the event ("pointerdown") point
-  const getClosest = closest(...points)
-  const closestPoint = getClosest(evt.point)
-  index = points.indexOf(closestPoint)
-
-  const control = dom.getControlEl(ctx)
-  if (!control) return index
-
-  // when two thumbs are stacked and the user clicks at a point larger than
-  // their values, pick the next closest thumb
-  const percent = getPointProgress(ctx, evt.point)
-  const point = percentToValue(percent, ctx)
-
-  // prettier-ignore
-  const axisPoints = ctx.isHorizontal ? 
-    points.map((p) => p.x) :
-    points.map((p) => p.y)
-
-  const isThumbStacked = new Set(axisPoints).size !== points.length
-
-  if (isThumbStacked && point > ctx.value[index]) {
-    index = clamp(index + 1, { min: 0, max: ctx.value.length - 1 })
-  }
-
-  return index
-}

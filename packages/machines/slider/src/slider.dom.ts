@@ -1,8 +1,8 @@
-import { getPointRelativeToNode, defineDomHelpers } from "@zag-js/dom-utils"
+import { defineDomHelpers, getPointRelativeToNode } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
+import { getPercentValue } from "@zag-js/numeric-range"
 import { styles } from "./slider.style"
 import type { MachineContext as Ctx, Point } from "./slider.types"
-import { utils } from "./slider.utils"
 
 export const dom = defineDomHelpers({
   ...styles,
@@ -41,7 +41,7 @@ export const dom = defineDomHelpers({
       percent = 1 - percentY
     }
 
-    return utils.fromPercent(ctx, percent)
+    return getPercentValue(percent, ctx.min, ctx.max, ctx.step)
   },
 
   dispatchChangeEvent(ctx: Ctx) {

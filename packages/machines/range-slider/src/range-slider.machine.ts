@@ -2,10 +2,11 @@ import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
 import { trackElementsSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
+import { getValuePercent } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
-import { dom, getClosestIndex } from "./range-slider.dom"
+import { dom } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
-import { utils } from "./range-slider.utils"
+import * as utils from "./range-slider.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -37,6 +38,9 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
         hasMeasuredThumbSize: (ctx) => ctx.thumbSizes.length !== 0,
+        valuePercent(ctx) {
+          return ctx.value.map((value) => 100 * getValuePercent(value, ctx.min, ctx.max))
+        },
       },
 
       watch: {
@@ -70,7 +74,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"],
+              actions: ["setActiveIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
             },
             FOCUS: {
               target: "focus",
@@ -83,7 +87,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"],
+              actions: ["setActiveIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
             },
             ARROW_LEFT: {
               guard: "isHorizontal",
@@ -147,7 +151,6 @@ export function machine(userContext: UserDefinedContext) {
             },
             onFormReset() {
               if (!ctx.name) return
-
               ctx.value.forEach((_value, index) => {
                 if (ctx.initialValues[index] != null) {
                   ctx.value[index] = ctx.initialValues[index]
@@ -202,7 +205,12 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         setActiveIndex(ctx, evt) {
-          ctx.activeIndex = evt.index ?? getClosestIndex(ctx, evt)
+          if (evt.index != null) {
+            ctx.activeIndex = evt.index
+          } else {
+            const pointValue = dom.getValueFromPoint(ctx, evt.point)
+            ctx.activeIndex = utils.getClosestIndex(ctx, pointValue)
+          }
         },
         clearActiveIndex(ctx) {
           ctx.activeIndex = -1
@@ -210,7 +218,7 @@ export function machine(userContext: UserDefinedContext) {
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
           if (value == null) return
-          ctx.value[ctx.activeIndex] = utils.convert(ctx, value, ctx.activeIndex)
+          ctx.value[ctx.activeIndex] = utils.constrainValue(ctx, value, ctx.activeIndex)
         },
         focusActiveThumb(ctx) {
           raf(() => {
@@ -219,10 +227,10 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         decrementAtIndex(ctx, evt) {
-          ctx.value[ctx.activeIndex] = utils.decrement(ctx, evt.index, evt.step)
+          ctx.value = utils.decrement(ctx, evt.index, evt.step)
         },
         incrementAtIndex(ctx, evt) {
-          ctx.value[ctx.activeIndex] = utils.increment(ctx, evt.index, evt.step)
+          ctx.value = utils.increment(ctx, evt.index, evt.step)
         },
         setActiveThumbToMin(ctx) {
           const { min } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
@@ -233,20 +241,20 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value[ctx.activeIndex] = max
         },
         checkValue(ctx) {
-          let value = utils.check(ctx, ctx.value)
+          let value = utils.normalizeValues(ctx, ctx.value)
           ctx.value = value
           ctx.initialValues = value.slice()
         },
         setValue(ctx, evt) {
           // set value at specified index
           if (typeof evt.index === "number" && typeof evt.value === "number") {
-            ctx.value[evt.index] = utils.convert(ctx, evt.value, evt.index)
+            ctx.value[evt.index] = utils.constrainValue(ctx, evt.value, evt.index)
             return
           }
 
           // set values
           if (Array.isArray(evt.value)) {
-            ctx.value = utils.check(ctx, evt.value)
+            ctx.value = utils.normalizeValues(ctx, evt.value)
           }
         },
       },

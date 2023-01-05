@@ -126,6 +126,11 @@ type ComputedContext = Readonly<{
    * Whether the slider is in RTL mode
    */
   readonly isRtl: boolean
+  /**
+   * @computed
+   * The value of the slider as a percentage
+   */
+  readonly valuePercent: number
 }>
 
 type PrivateContext = Context<{

@@ -1,11 +1,12 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackPointerMove } from "@zag-js/dom-utils"
-import { trackFormControl } from "@zag-js/form-utils"
 import { trackElementSize } from "@zag-js/element-size"
+import { trackFormControl } from "@zag-js/form-utils"
+import { clampValue, getValuePercent } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
-import { utils } from "./slider.utils"
+import { constrainValue, decrement, increment } from "./slider.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -35,6 +36,7 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
         isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
         hasMeasuredThumbSize: (ctx) => ctx.thumbSize !== null,
+        valuePercent: (ctx) => 100 * getValuePercent(ctx.value, ctx.min, ctx.max),
       },
 
       watch: {
@@ -169,7 +171,7 @@ export function machine(userContext: UserDefinedContext) {
 
       actions: {
         checkValue(ctx) {
-          const value = utils.convert(ctx, ctx.value)
+          const value = constrainValue(ctx, ctx.value)
           ctx.value = value
           ctx.initialValue = value
         },
@@ -188,16 +190,16 @@ export function machine(userContext: UserDefinedContext) {
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
           if (value == null) return
-          ctx.value = utils.clamp(ctx, value)
+          ctx.value = clampValue(value, ctx.min, ctx.max)
         },
         focusThumb(ctx) {
           raf(() => dom.getThumbEl(ctx)?.focus())
         },
         decrement(ctx, evt) {
-          ctx.value = utils.decrement(ctx, evt.step)
+          ctx.value = decrement(ctx, evt.step)
         },
         increment(ctx, evt) {
-          ctx.value = utils.increment(ctx, evt.step)
+          ctx.value = increment(ctx, evt.step)
         },
         setToMin(ctx) {
           ctx.value = ctx.min
@@ -206,7 +208,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value = ctx.max
         },
         setValue(ctx, evt) {
-          ctx.value = utils.convert(ctx, evt.value)
+          ctx.value = constrainValue(ctx, evt.value)
         },
       },
     },

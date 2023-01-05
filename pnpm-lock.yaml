@@ -91,6 +91,7 @@ importers:
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
       '@zag-js/accordion': workspace:*
+      '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/auto-resize': workspace:*
       '@zag-js/checkbox': workspace:*
@@ -112,6 +113,7 @@ importers:
       '@zag-js/menu': workspace:*
       '@zag-js/number-input': workspace:*
       '@zag-js/number-utils': workspace:*
+      '@zag-js/numeric-range': workspace:*
       '@zag-js/pagination': workspace:*
       '@zag-js/pin-input': workspace:*
       '@zag-js/popover': workspace:*
@@ -145,6 +147,7 @@ importers:
       typescript: 4.9.4
     dependencies:
       '@zag-js/accordion': link:../../packages/machines/accordion
+      '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
       '@zag-js/checkbox': link:../../packages/machines/checkbox
@@ -166,6 +169,7 @@ importers:
       '@zag-js/menu': link:../../packages/machines/menu
       '@zag-js/number-input': link:../../packages/machines/number-input
       '@zag-js/number-utils': link:../../packages/utilities/number
+      '@zag-js/numeric-range': link:../../packages/utilities/numeric-range
       '@zag-js/pagination': link:../../packages/machines/pagination
       '@zag-js/pin-input': link:../../packages/machines/pin-input
       '@zag-js/popover': link:../../packages/machines/popover
@@ -229,6 +233,7 @@ importers:
       '@zag-js/menu': workspace:*
       '@zag-js/number-input': workspace:*
       '@zag-js/number-utils': workspace:*
+      '@zag-js/numeric-range': workspace:*
       '@zag-js/pagination': workspace:*
       '@zag-js/pin-input': workspace:*
       '@zag-js/popover': workspace:*
@@ -281,6 +286,7 @@ importers:
       '@zag-js/menu': link:../../packages/machines/menu
       '@zag-js/number-input': link:../../packages/machines/number-input
       '@zag-js/number-utils': link:../../packages/utilities/number
+      '@zag-js/numeric-range': link:../../packages/utilities/numeric-range
       '@zag-js/pagination': link:../../packages/machines/pagination
       '@zag-js/pin-input': link:../../packages/machines/pin-input
       '@zag-js/popover': link:../../packages/machines/popover
@@ -345,6 +351,7 @@ importers:
       '@zag-js/menu': workspace:*
       '@zag-js/number-input': workspace:*
       '@zag-js/number-utils': workspace:*
+      '@zag-js/numeric-range': workspace:*
       '@zag-js/pagination': workspace:*
       '@zag-js/pin-input': workspace:*
       '@zag-js/popover': workspace:*
@@ -401,6 +408,7 @@ importers:
       '@zag-js/menu': link:../../packages/machines/menu
       '@zag-js/number-input': link:../../packages/machines/number-input
       '@zag-js/number-utils': link:../../packages/utilities/number
+      '@zag-js/numeric-range': link:../../packages/utilities/numeric-range
       '@zag-js/pagination': link:../../packages/machines/pagination
       '@zag-js/pin-input': link:../../packages/machines/pin-input
       '@zag-js/popover': link:../../packages/machines/popover
@@ -812,8 +820,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/element-size': workspace:*
       '@zag-js/form-utils': workspace:*
-      '@zag-js/number-utils': workspace:*
-      '@zag-js/rect-utils': workspace:*
+      '@zag-js/numeric-range': workspace:*
       '@zag-js/slider': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
@@ -822,13 +829,12 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/element-size': link:../../utilities/element-size
+      '@zag-js/form-utils': link:../../utilities/form-utils
+      '@zag-js/numeric-range': link:../../utilities/numeric-range
       '@zag-js/slider': link:../slider
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
-      '@zag-js/form-utils': link:../../utilities/form-utils
-      '@zag-js/number-utils': link:../../utilities/number
-      '@zag-js/rect-utils': link:../../utilities/rect
       '@zag-js/utils': link:../../utilities/core
       clean-package: 2.2.0
 
@@ -881,7 +887,7 @@ importers:
       '@zag-js/dom-utils': workspace:*
       '@zag-js/element-size': workspace:*
       '@zag-js/form-utils': workspace:*
-      '@zag-js/number-utils': workspace:*
+      '@zag-js/numeric-range': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
@@ -889,11 +895,11 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/element-size': link:../../utilities/element-size
+      '@zag-js/numeric-range': link:../../utilities/numeric-range
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/form-utils': link:../../utilities/form-utils
-      '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/utils': link:../../utilities/core
       clean-package: 2.2.0
 
@@ -1134,6 +1140,12 @@ importers:
       clean-package: 2.2.0
 
   packages/utilities/number:
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
+
+  packages/utilities/numeric-range:
     specifiers:
       clean-package: 2.2.0
     devDependencies:

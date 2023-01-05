@@ -12,9 +12,9 @@ export function getPointRelativeToNode(point: Point, element: HTMLElement) {
 const clampPercent = (value: number) => Math.max(0, Math.min(100, value))
 
 export function getPointPercentRelativeToNode(point: Point, element: HTMLElement) {
-  const pt = getPointRelativeToNode(point, element)
-  const x = (pt.x / element.offsetWidth) * 100
-  const y = (pt.y / element.offsetHeight) * 100
+  const relativePoint = getPointRelativeToNode(point, element)
+  const x = (relativePoint.x / element.offsetWidth) * 100
+  const y = (relativePoint.y / element.offsetHeight) * 100
   return { x: clampPercent(x), y: clampPercent(y) }
 }
 
