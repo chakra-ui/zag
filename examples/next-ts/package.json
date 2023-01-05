@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
+    "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
@@ -32,6 +33,7 @@
     "@zag-js/menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
+    "@zag-js/numeric-range": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
     "@zag-js/popover": "workspace:*",

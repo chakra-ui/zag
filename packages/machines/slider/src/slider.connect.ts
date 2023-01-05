@@ -8,7 +8,7 @@ import {
   isLeftClick,
   isModifiedEvent,
 } from "@zag-js/dom-utils"
-import { percentToValue, valueToPercent } from "@zag-js/number-utils"
+import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./slider.anatomy"
 import { dom } from "./slider.dom"
@@ -29,12 +29,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFocused,
     isDragging,
     value: state.context.value,
-    percent: valueToPercent(state.context.value, state.context),
+    percent: getValuePercent(state.context.value, state.context.min, state.context.max),
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
     getPercentValue(percent: number) {
-      return percentToValue(percent, state.context)
+      return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
+    },
+    getValuePercent(value: number) {
+      return getValuePercent(value, state.context.min, state.context.max)
     },
     focus() {
       dom.getThumbEl(state.context)?.focus()
@@ -217,7 +220,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = valueToPercent(value, state.context)
+      const percent = this.getValuePercent(value)
       const style = dom.getMarkerStyle(state.context, percent)
       const markerState =
         value > state.context.value ? "over-value" : value < state.context.value ? "under-value" : "at-value"
