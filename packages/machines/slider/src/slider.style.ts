@@ -35,10 +35,18 @@ function getThumbOffset(ctx: SharedContext) {
   return `calc(${percent}% - ${offset}px)`
 }
 
+function getVisibility(ctx: SharedContext) {
+  let visibility: "visible" | "hidden" = "visible"
+  if (ctx.thumbAlignment === "contain" && !ctx.hasMeasuredThumbSize) {
+    visibility = "hidden"
+  }
+  return visibility
+}
+
 function getThumbStyle(ctx: SharedContext): Style {
   const placementProp = ctx.isVertical ? "bottom" : ctx.isRtl ? "right" : "left"
   return {
-    visibility: ctx.hasMeasuredThumbSize ? "visible" : "hidden",
+    visibility: getVisibility(ctx),
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     [placementProp]: "var(--slider-thumb-offset)",
