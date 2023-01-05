@@ -3,5 +3,5 @@
 "@zag-js/slider": patch
 ---
 
-- Redesiged style calculations for consistency
-- Fixed issue where thumb cannot go back to original position when `min` is greater than `0`
+- Redesigned style calculations for consistency
+- Fixed issue where the thumb cannot go back to its original position when `min` is greater than `0`
