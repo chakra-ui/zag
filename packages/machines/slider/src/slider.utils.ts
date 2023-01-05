@@ -1,23 +1,31 @@
-import { clamp, decrement, increment, percentToValue, snapToStep } from "@zag-js/number-utils"
+import { clampValue, getNextStepValue, getPreviousStepValue, snapValueToStep } from "@zag-js/numeric-range"
 import type { MachineContext as Ctx } from "./slider.types"
 
-export const utils = {
-  fromPercent(ctx: Ctx, percent: number) {
-    percent = clamp(percent, { min: 0, max: 1 })
-    return parseFloat(snapToStep(percentToValue(percent, ctx), ctx.step))
-  },
-  clamp(ctx: Ctx, value: number) {
-    return clamp(value, ctx)
-  },
-  convert(ctx: Ctx, value: number) {
-    return clamp(parseFloat(snapToStep(value, ctx.step)), ctx)
-  },
-  decrement(ctx: Ctx, step?: number) {
-    let value = decrement(ctx.value, step ?? ctx.step)
-    return utils.convert(ctx, value)
-  },
-  increment(ctx: Ctx, step?: number) {
-    let value = increment(ctx.value, step ?? ctx.step)
-    return utils.convert(ctx, value)
-  },
+export function clampPercent(percent: number) {
+  return clampValue(percent, 0, 1)
+}
+
+export function constrainValue(ctx: Ctx, value: number) {
+  const snapValue = snapValueToStep(value, ctx.min, ctx.max, ctx.step)
+  return clampValue(snapValue, ctx.min, ctx.max)
+}
+
+export function decrement(ctx: Ctx, step?: number) {
+  const index = 0
+  const values = getPreviousStepValue(index, {
+    ...ctx,
+    step: step ?? ctx.step,
+    values: [ctx.value],
+  })
+  return values[index]
+}
+
+export function increment(ctx: Ctx, step?: number) {
+  const index = 0
+  const values = getNextStepValue(index, {
+    ...ctx,
+    step: step ?? ctx.step,
+    values: [ctx.value],
+  })
+  return values[index]
 }

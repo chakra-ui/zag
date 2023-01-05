@@ -8,12 +8,12 @@ import {
   isLeftClick,
   isModifiedEvent,
 } from "@zag-js/dom-utils"
-import { percentToValue, toRanges, valueToPercent } from "@zag-js/number-utils"
+import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./range-slider.anatomy"
 import { dom } from "./range-slider.dom"
 import type { Send, State } from "./range-slider.types"
-import { utils } from "./range-slider.utils"
+import { getRangeAtIndex } from "./range-slider.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const ariaLabel = state.context["aria-label"]
@@ -22,9 +22,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
+
   const isDisabled = state.context.disabled
   const isInvalid = state.context.invalid
-
   const isInteractive = state.context.isInteractive
 
   return {
@@ -40,21 +40,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
-    getThumbPercent(index: number) {
-      return valueToPercent(sliderValue[index], state.context)
-    },
-    setThumbPercent(index: number, percent: number) {
-      const value = percentToValue(percent, state.context)
-      send({ type: "SET_VALUE", index, value })
+    getValuePercent(value: number) {
+      return getValuePercent(value, state.context.min, state.context.max)
     },
     getPercentValue(percent: number) {
-      return percentToValue(percent, state.context)
+      return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
+    },
+    getThumbPercent(index: number) {
+      return this.getValuePercent(sliderValue[index])
+    },
+    setThumbPercent(index: number, percent: number) {
+      const value = this.getPercentValue(percent)
+      send({ type: "SET_VALUE", index, value })
     },
     getThumbMin(index: number) {
-      return utils.getRangeAtIndex(state.context, index).min
+      return getRangeAtIndex(state.context, index).min
     },
     getThumbMax(index: number) {
-      return utils.getRangeAtIndex(state.context, index).max
+      return getRangeAtIndex(state.context, index).max
     },
     increment(index: number) {
       send({ type: "INCREMENT", index })
@@ -115,7 +118,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getThumbProps(index: number) {
       const value = sliderValue[index]
-      const range = toRanges(state.context)[index]
+      const range = getRangeAtIndex(state.context, index)
       const ariaValueText = state.context.getAriaValueText?.(value, index)
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
@@ -248,7 +251,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = valueToPercent(value, state.context)
+      const percent = this.getValuePercent(value)
       const style = dom.getMarkerStyle(state.context, percent)
       let markerState: "over-value" | "under-value" | "at-value"
 
