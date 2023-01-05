@@ -6,7 +6,14 @@ import { getValuePercent } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
 import { dom } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
-import * as utils from "./range-slider.utils"
+import {
+  constrainValue,
+  decrement,
+  getClosestIndex,
+  getRangeAtIndex,
+  increment,
+  normalizeValues,
+} from "./range-slider.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -209,7 +216,7 @@ export function machine(userContext: UserDefinedContext) {
             ctx.activeIndex = evt.index
           } else {
             const pointValue = dom.getValueFromPoint(ctx, evt.point)
-            ctx.activeIndex = utils.getClosestIndex(ctx, pointValue)
+            ctx.activeIndex = getClosestIndex(ctx, pointValue)
           }
         },
         clearActiveIndex(ctx) {
@@ -218,7 +225,7 @@ export function machine(userContext: UserDefinedContext) {
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
           if (value == null) return
-          ctx.value[ctx.activeIndex] = utils.constrainValue(ctx, value, ctx.activeIndex)
+          ctx.value[ctx.activeIndex] = constrainValue(ctx, value, ctx.activeIndex)
         },
         focusActiveThumb(ctx) {
           raf(() => {
@@ -227,34 +234,34 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         decrementAtIndex(ctx, evt) {
-          ctx.value = utils.decrement(ctx, evt.index, evt.step)
+          ctx.value = decrement(ctx, evt.index, evt.step)
         },
         incrementAtIndex(ctx, evt) {
-          ctx.value = utils.increment(ctx, evt.index, evt.step)
+          ctx.value = increment(ctx, evt.index, evt.step)
         },
         setActiveThumbToMin(ctx) {
-          const { min } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
+          const { min } = getRangeAtIndex(ctx, ctx.activeIndex)
           ctx.value[ctx.activeIndex] = min
         },
         setActiveThumbToMax(ctx) {
-          const { max } = utils.getRangeAtIndex(ctx, ctx.activeIndex)
+          const { max } = getRangeAtIndex(ctx, ctx.activeIndex)
           ctx.value[ctx.activeIndex] = max
         },
         checkValue(ctx) {
-          let value = utils.normalizeValues(ctx, ctx.value)
+          let value = normalizeValues(ctx, ctx.value)
           ctx.value = value
           ctx.initialValues = value.slice()
         },
         setValue(ctx, evt) {
           // set value at specified index
           if (typeof evt.index === "number" && typeof evt.value === "number") {
-            ctx.value[evt.index] = utils.constrainValue(ctx, evt.value, evt.index)
+            ctx.value[evt.index] = constrainValue(ctx, evt.value, evt.index)
             return
           }
 
           // set values
           if (Array.isArray(evt.value)) {
-            ctx.value = utils.normalizeValues(ctx, evt.value)
+            ctx.value = normalizeValues(ctx, evt.value)
           }
         },
       },
