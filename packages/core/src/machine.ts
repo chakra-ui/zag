@@ -176,9 +176,15 @@ export class Machine<
 
   private setupContextWatchers = () => {
     for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      const compareFn = this.options.compareFns?.[key]
-      this.contextWatchers.add(
-        subscribeKey(
+      let cleanup: VoidFunction
+
+      if (key === "*") {
+        cleanup = subscribe(this.state.context, () => {
+          this.executeActions(fn, this.state.event as TEvent)
+        })
+      } else {
+        const compareFn = this.options.compareFns?.[key]
+        cleanup = subscribeKey(
           this.state.context,
           key,
           () => {
@@ -186,8 +192,10 @@ export class Machine<
           },
           this.sync,
           compareFn,
-        ),
-      )
+        )
+      }
+
+      this.contextWatchers.add(cleanup)
     }
   }
 
