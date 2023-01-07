@@ -1,11 +1,6 @@
-import { Calendar, CalendarDate, GregorianCalendar, toCalendar, toCalendarDate, today } from "@internationalized/date"
+import { Calendar, CalendarDate, DateValue, toCalendar, toCalendarDate, today } from "@internationalized/date"
 import { constrainValue } from "./constrain"
-import { isDateUnavailable } from "./assertion"
-import { DateContext } from "./types"
-
-export function clampDate(ctx: DateContext, date: CalendarDate) {
-  return constrainValue(ctx, date)
-}
+import { DateAvailableFn } from "./types"
 
 export function getTodayDate(timezone: string) {
   return today(timezone)
@@ -31,29 +26,28 @@ export function setCalendar(date: CalendarDate, calendar: Calendar) {
   return toCalendar(toCalendarDate(date), calendar)
 }
 
-export function setDate(ctx: DateContext, date: CalendarDate, nextDate: CalendarDate, startDate: CalendarDate) {
+export function setDate(
+  date: CalendarDate,
+  startDate: CalendarDate,
+  isDateUnavailable: DateAvailableFn,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
   let result: CalendarDate | undefined
-  result = clampDate(ctx, nextDate)
-  result = getPreviousAvailableDate(ctx, nextDate, startDate)
-
-  if (!result) return
-  result = toCalendar(result, date?.calendar || new GregorianCalendar())
-
-  if (date && "hour" in date) {
-    return date.set(result)
-  }
-
+  result = constrainValue(date, minValue, maxValue)
+  result = getPreviousAvailableDate(date, startDate, isDateUnavailable)
   return result
 }
 
-function getPreviousAvailableDate(ctx: DateContext, date: CalendarDate, min?: CalendarDate) {
-  const minValue = min ?? ctx.min
-  if (!isDateUnavailable(ctx, date) || !minValue) {
+export function getPreviousAvailableDate(date: CalendarDate, minValue: DateValue, isDateUnavailable?: DateAvailableFn) {
+  if (!isDateUnavailable) {
     return date
   }
-  while (date.compare(minValue) >= 0 && isDateUnavailable(ctx, date)) {
+
+  while (date.compare(minValue) >= 0 && isDateUnavailable(date)) {
     date = date.subtract({ days: 1 })
   }
+
   if (date.compare(minValue) >= 0) {
     return date
   }

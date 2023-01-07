@@ -1,7 +1,7 @@
 import { DateValue, getMinimumDayInMonth, getMinimumMonthInYear } from "@internationalized/date"
 import { DateFormatOptions, DateSegmentPart } from "./types"
 
-export function getSegmentLimits(date: DateValue, type: DateSegmentPart, options: DateFormatOptions) {
+export function getSegmentLimits(date: DateValue, type: DateSegmentPart, options?: Pick<DateFormatOptions, "hour12">) {
   switch (type) {
     case "era": {
       let eras = date.calendar.getEras()
@@ -40,7 +40,7 @@ export function getSegmentLimits(date: DateValue, type: DateSegmentPart, options
           max: 12,
         }
       case "hour":
-        if (options.hour12) {
+        if (options?.hour12) {
           let isPM = date.hour >= 12
           return {
             value: date.hour,

@@ -1,7 +1,6 @@
 import { DateFormatter, DateValue } from "@internationalized/date"
-import { isSegmentEditable } from "./segment-constants"
+import { DateSegments, isSegmentEditable } from "./segment-constants"
 import { getSegmentLimits } from "./segment-limit"
-import { DateSegmentContext } from "./types"
 
 export function getAllSegments(segments: Intl.DateTimeFormatPart[]) {
   return segments
@@ -14,13 +13,13 @@ function getPlaceholder(params: { field: string }) {
   return placeholder[params.field]
 }
 
-export function getSegments(ctx: DateSegmentContext, date: DateValue, formatter: DateFormatter) {
-  const segments = formatter.formatToParts(date.toDate(ctx.timeZone))
+export function getSegments(date: DateValue, validSegments: DateSegments, formatter: DateFormatter, timeZone: string) {
+  const segments = formatter.formatToParts(date.toDate(timeZone))
   return segments.map((segment) => {
     let isEditable = isSegmentEditable(segment.type)
     if (segment.type === "era") isEditable = false
 
-    let isPlaceholder = isSegmentEditable(segment.type) && !ctx.validSegments[segment.type]
+    let isPlaceholder = isSegmentEditable(segment.type) && !validSegments[segment.type]
     let placeholder = isSegmentEditable(segment.type) ? getPlaceholder({ field: segment.type }) : null
 
     return {

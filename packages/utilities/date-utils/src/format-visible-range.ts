@@ -1,18 +1,26 @@
-import { endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
+import { CalendarDate, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
 import { formatRange } from "./format-range"
 import { getDateFormatter, getMonthFormatter } from "./get-formatter"
-import { DateDescriptionContext } from "./types"
+import { GetFormatterFn } from "./types"
 
-export function formatVisibleRange(ctx: DateDescriptionContext, isAria?: boolean) {
-  if (!ctx.start) return ""
-  const { start, end = start, timeZone } = ctx
+export function formatVisibleRange(
+  startDate: CalendarDate | null,
+  endDate: CalendarDate | null,
+  getFormatter: GetFormatterFn,
+  isAria: boolean,
+  timeZone: string,
+) {
+  if (!startDate) return ""
 
-  let monthFormatter = getMonthFormatter(ctx)
-  let dateFormatter = getDateFormatter(ctx)
+  let start = startDate
+  let end = endDate ?? startDate
+
+  let monthFormatter = getMonthFormatter(start, end, getFormatter, timeZone)
+  let dateFormatter = getDateFormatter(start, end, getFormatter, timeZone)
 
   if (!isSameDay(start, startOfMonth(start))) {
     return isAria
-      ? formatRange(ctx, dateFormatter)
+      ? formatRange(start, end, dateFormatter, (start, end) => `${start} – ${end}`, timeZone)
       : dateFormatter.formatRange(start.toDate(timeZone), end.toDate(timeZone))
   }
 
@@ -22,7 +30,7 @@ export function formatVisibleRange(ctx: DateDescriptionContext, isAria?: boolean
 
   if (isSameDay(end, endOfMonth(end))) {
     return isAria
-      ? formatRange(ctx, monthFormatter)
+      ? formatRange(start, end, monthFormatter, (start, end) => `${start} – ${end}`, timeZone)
       : monthFormatter.formatRange(start.toDate(timeZone), end.toDate(timeZone))
   }
 }

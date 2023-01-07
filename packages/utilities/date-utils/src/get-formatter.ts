@@ -1,9 +1,20 @@
-import { DateDescriptionContext } from "./types"
-import { getEraFormat } from "./get-era-format"
+import { CalendarDate } from "@internationalized/date"
+import { GetFormatterFn } from "./types"
 
-export function getDateFormatter(ctx: DateDescriptionContext) {
-  const { start, end = start, getDateFormatter, timeZone } = ctx
+function getEraFormat(date: CalendarDate | undefined): "short" | undefined {
+  return date?.calendar.identifier === "gregory" && date.era === "BC" ? "short" : undefined
+}
+
+export function getDateFormatter(
+  startDate: CalendarDate,
+  endDate: CalendarDate | null,
+  getDateFormatter: GetFormatterFn,
+  timeZone: string,
+) {
+  let start = startDate
+  let end = endDate ?? startDate
   let era = getEraFormat(start) || getEraFormat(end)
+
   return getDateFormatter({
     weekday: "long",
     month: "long",
@@ -14,9 +25,16 @@ export function getDateFormatter(ctx: DateDescriptionContext) {
   })
 }
 
-export function getMonthFormatter(ctx: DateDescriptionContext) {
-  const { start, end = start, getDateFormatter, timeZone } = ctx
+export function getMonthFormatter(
+  startDate: CalendarDate,
+  endDate: CalendarDate | null,
+  getDateFormatter: GetFormatterFn,
+  timeZone: string,
+) {
+  let start = startDate
+  let end = endDate ?? startDate
   let era = getEraFormat(start) || getEraFormat(end)
+
   return getDateFormatter({
     month: "long",
     year: "numeric",
