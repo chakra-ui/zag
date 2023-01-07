@@ -11,7 +11,13 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
         if (v.hasOwnProperty("target") && v.hasOwnProperty("timeStamp"))
           return pick(v, ["type", "target", "currentTarget", "relatedTarget"])
 
-        if (omit?.includes(key)) return undefined
+        if (omit?.includes(key)) {
+          return undefined
+        }
+
+        if ("calendar" in v) {
+          return v.toString()
+        }
 
         switch (v?.toString()) {
           case "[object Machine]":
