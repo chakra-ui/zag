@@ -69,5 +69,9 @@ export function getSegmentLimits(date: DateValue, type: DateSegmentPart, options
     }
   }
 
-  return {}
+  return {
+    value: -1,
+    min: -1,
+    max: -1,
+  }
 }
