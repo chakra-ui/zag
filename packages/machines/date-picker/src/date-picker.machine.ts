@@ -15,8 +15,10 @@ import {
   getPreviousDay,
   getPreviousSection,
   getTodayDate,
+  isNextVisibleRangeInvalid,
+  isPreviousVisibleRangeInvalid,
 } from "@zag-js/date-utils"
-import { raf } from "@zag-js/dom-utils"
+import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
 import { createLiveRegion } from "@zag-js/live-region"
 import { compact } from "@zag-js/utils"
 import memo from "proxy-memoize"
@@ -82,16 +84,36 @@ export function machine(userContext: UserDefinedContext) {
             complete: keys.length === allKeys.length,
           }
         },
+        isPrevVisibleRangeValid: (ctx) => {
+          return isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max)
+        },
+        isNextVisibleRangeValid(ctx) {
+          return isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max)
+        },
       },
 
       created: ["adjustSegments"],
 
+      activities: ["setupAnnouncer"],
+
       watch: {
-        focusedValue: ["adjustSegments", "focusFocusedCell"],
+        focusedValue: ["focusFocusedCell"],
         visibleRange: ["announceVisibleRange"],
-        value: ["setValueText", "announceValueText"],
+        value: ["adjustSegments", "setValueText", "announceValueText"],
         locale: ["setFormatter"],
         "*": ["setDisplayValue"],
+      },
+
+      on: {
+        POINTER_DOWN: {
+          actions: ["disableTextSelection"],
+        },
+        POINTER_UP: {
+          actions: ["enableTextSelection"],
+        },
+        SET_VALUE: {
+          actions: ["setSelectedDate"],
+        },
       },
 
       states: {
@@ -191,6 +213,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         announceVisibleRange(ctx) {
           ctx.announcer?.announce(ctx.visibleRangeText)
+        },
+        disableTextSelection(ctx) {
+          disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
+        },
+        enableTextSelection(ctx) {
+          restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
         },
         focusSelectedDateIfNeeded(ctx) {
           if (!ctx.value) return

@@ -13,6 +13,18 @@ const fetchMachine = createMachine({
   id: "datepicker",
   initial: "focused",
   context: {},
+  activities: ["setupAnnouncer"],
+  on: {
+    POINTER_DOWN: {
+      actions: ["disableTextSelection"]
+    },
+    POINTER_UP: {
+      actions: ["enableTextSelection"]
+    },
+    SET_VALUE: {
+      actions: ["setSelectedDate"]
+    }
+  },
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
