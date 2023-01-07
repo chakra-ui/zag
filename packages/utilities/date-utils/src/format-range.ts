@@ -1,8 +1,13 @@
-import { DateFormatter } from "@internationalized/date"
-import { DateDescriptionContext } from "./types"
+import { CalendarDate, DateFormatter } from "@internationalized/date"
 
-export function formatRange(ctx: DateDescriptionContext, formatter: DateFormatter) {
-  let parts = formatter.formatRangeToParts(ctx.start!.toDate(ctx.timeZone), ctx.end!.toDate(ctx.timeZone))
+export function formatRange(
+  startDate: CalendarDate,
+  endDate: CalendarDate,
+  formatter: DateFormatter,
+  toString: (start: string, end: string) => string,
+  timeZone: string,
+) {
+  let parts = formatter.formatRangeToParts(startDate.toDate(timeZone), endDate.toDate(timeZone))
 
   let separatorIndex = -1
 
@@ -26,5 +31,5 @@ export function formatRange(ctx: DateDescriptionContext, formatter: DateFormatte
     }
   }
 
-  return ctx.toString(start, end)
+  return toString(start, end)
 }

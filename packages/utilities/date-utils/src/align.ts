@@ -1,30 +1,40 @@
-import { CalendarDate } from "@internationalized/date"
+import { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
 import { alignCenter, alignEnd, alignStart } from "./constrain"
-import { DateAlignment, DateContext } from "./types"
+import { DateAlignment } from "./types"
 
-export function alignDate(ctx: DateContext, date: CalendarDate, alignment: DateAlignment) {
+export function alignDate(
+  date: CalendarDate,
+  alignment: DateAlignment,
+  duration: DateDuration,
+  locale: string,
+  min?: DateValue | undefined,
+  max?: DateValue | undefined,
+) {
   switch (alignment) {
     case "start":
-      return alignStart(ctx, date)
+      return alignStart(date, duration, locale, min, max)
     case "end":
-      return alignEnd(ctx, date)
+      return alignEnd(date, duration, locale, min, max)
     case "center":
     default:
-      return alignCenter(ctx, date)
+      return alignCenter(date, duration, locale, min, max)
   }
 }
 
 export function alignStartDate(
-  ctx: DateContext,
-  focusedDate: CalendarDate,
+  date: CalendarDate,
   startDate: CalendarDate,
   endDate: CalendarDate,
+  duration: DateDuration,
+  locale: string,
+  min?: DateValue | undefined,
+  max?: DateValue | undefined,
 ) {
-  if (focusedDate.compare(startDate) < 0) {
-    return alignEnd(ctx, focusedDate)
+  if (date.compare(startDate) < 0) {
+    return alignEnd(date, duration, locale, min, max)
   }
-  if (focusedDate.compare(endDate) > 0) {
-    return alignStart(ctx, focusedDate)
+  if (date.compare(endDate) > 0) {
+    return alignStart(date, duration, locale, min, max)
   }
   return startDate
 }

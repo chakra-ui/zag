@@ -1,25 +1,142 @@
-import { CalendarDate, endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "@internationalized/date"
-import { alignStart, constrainStart, constrainValue } from "./constrain"
-import { getUnitDuration } from "./duration"
-import { DateContext } from "./types"
+import { CalendarDate, DateDuration, endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "@internationalized/date"
+import { isDateInvalid } from "./assertion"
+import { alignEnd, alignStart, constrainStart, constrainValue } from "./constrain"
+import { getEndDate, getUnitDuration } from "./duration"
+
+function getAdjustedDateFn(
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  return function getDate(options: { startDate: CalendarDate; focusedDate: CalendarDate }) {
+    const { startDate, focusedDate } = options
+    const endDate = getEndDate(startDate, visibleDuration)
+
+    // If the focused date was moved to an invalid value, it can't be focused, so constrain it.
+    if (isDateInvalid(focusedDate, minValue, maxValue)) {
+      return {
+        startDate,
+        focusedDate: constrainValue(focusedDate, minValue, maxValue),
+        endDate,
+      }
+    }
+
+    if (focusedDate.compare(startDate) < 0) {
+      return {
+        startDate: alignEnd(focusedDate, visibleDuration, locale, minValue, maxValue),
+        endDate,
+        focusedDate: constrainValue(focusedDate, minValue, maxValue),
+      }
+    }
+
+    if (focusedDate.compare(endDate) > 0) {
+      return {
+        startDate: alignStart(focusedDate, visibleDuration, locale, minValue, maxValue),
+        endDate,
+        focusedDate: constrainValue(focusedDate, minValue, maxValue),
+      }
+    }
+
+    return {
+      startDate,
+      endDate,
+      focusedDate: constrainValue(focusedDate, minValue, maxValue),
+    }
+  }
+}
 
 /* -----------------------------------------------------------------------------
  *  Get next and previous page (for date range)
  * -----------------------------------------------------------------------------*/
 
-export function getNextPage(ctx: DateContext, date: CalendarDate, startDate: CalendarDate) {
-  const start = startDate.add(ctx.duration)
-  return {
-    startDate: alignStart(ctx, constrainStart(ctx, date, start)),
-    focusedDate: constrainValue(ctx, date.add(ctx.duration)),
+export function getNextPage(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
+  const start = startDate.add(visibleDuration)
+
+  return adjust({
+    focusedDate: focusedDate.add(visibleDuration),
+    startDate: alignStart(
+      constrainStart(focusedDate, start, visibleDuration, locale, minValue, maxValue),
+      visibleDuration,
+      locale,
+    ),
+  })
+}
+
+export function getPreviousPage(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
+  let start = startDate.subtract(visibleDuration)
+
+  return adjust({
+    focusedDate: focusedDate.subtract(visibleDuration),
+    startDate: alignStart(
+      constrainStart(focusedDate, start, visibleDuration, locale, minValue, maxValue),
+      visibleDuration,
+      locale,
+    ),
+  })
+}
+
+/* -----------------------------------------------------------------------------
+ * Get the next and previous row (for date range)
+ * -----------------------------------------------------------------------------*/
+
+export function getNextRow(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
+
+  if (visibleDuration.days) {
+    return getNextPage(focusedDate, startDate, visibleDuration, locale, minValue, maxValue)
+  }
+
+  if (visibleDuration.weeks || visibleDuration.months || visibleDuration.years) {
+    return adjust({
+      focusedDate: focusedDate.add({ weeks: 1 }),
+      startDate,
+    })
   }
 }
 
-export function getPreviousPage(ctx: DateContext, date: CalendarDate, startDate: CalendarDate) {
-  const start = startDate.subtract(ctx.duration)
-  return {
-    startDate: alignStart(ctx, constrainStart(ctx, date, start)),
-    focusedDate: constrainValue(ctx, date.subtract(ctx.duration)),
+export function getPreviousRow(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
+
+  if (visibleDuration.days) {
+    return getPreviousPage(focusedDate, startDate, visibleDuration, locale, minValue, maxValue)
+  }
+
+  if (visibleDuration.weeks || visibleDuration.months || visibleDuration.years) {
+    return adjust({
+      focusedDate: focusedDate.subtract({ weeks: 1 }),
+      startDate,
+    })
   }
 }
 
@@ -27,87 +144,141 @@ export function getPreviousPage(ctx: DateContext, date: CalendarDate, startDate:
  * Get start and end date for a date section
  * -----------------------------------------------------------------------------*/
 
-export function getSectionStart(ctx: DateContext, date: CalendarDate, startDate: CalendarDate) {
-  const d = ctx.duration
-  if (d.days) {
-    return startDate
+export function getSectionStart(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
+
+  if (visibleDuration.days) {
+    return adjust({
+      focusedDate: startDate,
+      startDate,
+    })
   }
-  if (d.weeks) {
-    return startOfWeek(date, ctx.locale)
+
+  if (visibleDuration.weeks) {
+    return adjust({
+      focusedDate: startOfWeek(focusedDate, locale),
+      startDate,
+    })
   }
-  if (d.months || d.years) {
-    return startOfMonth(date)
+
+  if (visibleDuration.months || visibleDuration.years) {
+    return adjust({
+      focusedDate: startOfMonth(focusedDate),
+      startDate,
+    })
   }
 }
 
-export function getSectionEnd(ctx: DateContext, date: CalendarDate, endDate: CalendarDate) {
-  const d = ctx.duration
-  if (d.days) {
-    return endDate
+export function getSectionEnd(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
+  const endDate = getEndDate(startDate, visibleDuration)
+
+  if (visibleDuration.days) {
+    return adjust({
+      focusedDate: endDate,
+      startDate,
+    })
   }
-  if (d.weeks) {
-    return endOfWeek(date, ctx.locale)
+
+  if (visibleDuration.weeks) {
+    return adjust({
+      focusedDate: endOfWeek(focusedDate, locale),
+      startDate,
+    })
   }
-  if (d.months || d.years) {
-    return endOfMonth(date)
+
+  if (visibleDuration.months || visibleDuration.years) {
+    return adjust({
+      focusedDate: endOfMonth(focusedDate),
+      startDate,
+    })
   }
 }
 
-export function getNextSection(ctx: DateContext, date: CalendarDate, larger?: boolean) {
-  const d = ctx.duration
-  const unitDuration = getUnitDuration(ctx.duration)
+export function getNextSection(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  larger: boolean,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
-  if (!larger && !d.days) {
-    return date.add(unitDuration)
+  if (!larger && !visibleDuration.days) {
+    return adjust({
+      focusedDate: focusedDate.add(getUnitDuration(visibleDuration)),
+      startDate,
+    })
   }
-  if (d.days) {
-    return date.add(d)
+
+  if (visibleDuration.days) {
+    return getNextPage(focusedDate, startDate, visibleDuration, locale, minValue, maxValue)
   }
-  if (d.weeks) {
-    return date.add({ months: 1 })
+
+  if (visibleDuration.weeks) {
+    return adjust({
+      focusedDate: focusedDate.add({ months: 1 }),
+      startDate,
+    })
   }
-  if (d.months || d.years) {
-    return date.add({ years: 1 })
+
+  if (visibleDuration.months || visibleDuration.years) {
+    return adjust({
+      focusedDate: focusedDate.add({ years: 1 }),
+      startDate,
+    })
   }
 }
 
-export function getPreviousSection(ctx: DateContext, date: CalendarDate, larger?: boolean) {
-  const d = ctx.duration
-  const unitDuration = getUnitDuration(ctx.duration)
-  if (!larger && !d.days) {
-    return date.subtract(unitDuration)
-  }
-  if (d.days) {
-    return date.subtract(ctx.duration)
-  }
-  if (d.weeks) {
-    return date.subtract({ months: 1 })
-  }
-  if (d.months || d.years) {
-    return date.subtract({ years: 1 })
-  }
-}
+export function getPreviousSection(
+  focusedDate: CalendarDate,
+  startDate: CalendarDate,
+  larger: boolean,
+  visibleDuration: DateDuration,
+  locale: string,
+  minValue: CalendarDate,
+  maxValue: CalendarDate,
+) {
+  const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
-/* -----------------------------------------------------------------------------
- * Get the next and previous row (for date range)
- * -----------------------------------------------------------------------------*/
+  if (!larger && !visibleDuration.days) {
+    return adjust({
+      focusedDate: focusedDate.subtract(getUnitDuration(visibleDuration)),
+      startDate,
+    })
+  }
 
-export function getNextRow(ctx: DateContext, date: CalendarDate, startDate: CalendarDate) {
-  const d = ctx.duration
-  if (d.days) {
-    return getNextPage(ctx, date, startDate)
+  if (visibleDuration.days) {
+    return getPreviousPage(focusedDate, startDate, visibleDuration, locale, minValue, maxValue)
   }
-  if (d.weeks || d.months || d.years) {
-    return date.add({ weeks: 1 })
-  }
-}
 
-export function getPreviousRow(ctx: DateContext, date: CalendarDate, startDate: CalendarDate) {
-  const d = ctx.duration
-  if (d.days) {
-    return getPreviousPage(ctx, date, startDate)
+  if (visibleDuration.weeks) {
+    return adjust({
+      focusedDate: focusedDate.subtract({ months: 1 }),
+      startDate,
+    })
   }
-  if (d.weeks || d.months || d.years) {
-    return date.subtract({ weeks: 1 })
+
+  if (visibleDuration.months || visibleDuration.years) {
+    return adjust({
+      focusedDate: focusedDate.subtract({ years: 1 }),
+      startDate,
+    })
   }
 }

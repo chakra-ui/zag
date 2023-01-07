@@ -1,7 +1,12 @@
 import { DateValue } from "@internationalized/date"
 import { DateFormatOptions, DateSegmentPart } from "./types"
 
-export function addSegment(date: DateValue, part: DateSegmentPart, amount: number, options: DateFormatOptions) {
+export function addSegment(
+  date: DateValue,
+  part: DateSegmentPart,
+  amount: number,
+  options?: Pick<DateFormatOptions, "hour12">,
+) {
   switch (part) {
     case "era":
     case "year":
@@ -23,13 +28,20 @@ export function addSegment(date: DateValue, part: DateSegmentPart, amount: numbe
       case "second":
         return date.cycle(part, amount, {
           round: part !== "hour",
-          hourCycle: options.hour12 ? 12 : 24,
+          hourCycle: options?.hour12 ? 12 : 24,
         })
     }
   }
+
+  return date
 }
 
-export function setSegment(date: DateValue, part: DateSegmentPart, value: number, options: DateFormatOptions) {
+export function setSegment(
+  date: DateValue,
+  part: DateSegmentPart,
+  value: number,
+  options?: Pick<DateFormatOptions, "hour12">,
+) {
   switch (part) {
     case "day":
     case "month":
@@ -49,7 +61,7 @@ export function setSegment(date: DateValue, part: DateSegmentPart, value: number
 
       case "hour":
         // In 12 hour time, ensure that AM/PM does not change
-        if (options.hour12) {
+        if (options?.hour12) {
           let hours = date.hour
           let wasPM = hours >= 12
 
@@ -68,4 +80,6 @@ export function setSegment(date: DateValue, part: DateSegmentPart, value: number
         return date.set({ [part]: value })
     }
   }
+
+  return date
 }

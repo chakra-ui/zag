@@ -1,4 +1,4 @@
-import { CalendarDate, getDayOfWeek, isSameDay, startOfWeek, today } from "@internationalized/date"
+import { CalendarDate, getDayOfWeek, isSameDay, startOfWeek } from "@internationalized/date"
 
 export type DatesInWeek = (CalendarDate | null)[]
 
@@ -29,8 +29,8 @@ export function getDatesInWeek(weekIndex: number, fromDate: CalendarDate, locale
   return dates
 }
 
-export function getWeekDates(timeZone: string, locale: string) {
-  let weekStart = startOfWeek(today(timeZone), locale)
+export function getWeekDates(fromDate: CalendarDate, timeZone: string, locale: string) {
+  let weekStart = startOfWeek(fromDate, locale)
   let weekArr = [...new Array(7).keys()]
 
   return weekArr.map((index) => {
