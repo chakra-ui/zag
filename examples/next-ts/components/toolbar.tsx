@@ -4,10 +4,11 @@ import { ReactNode, useState } from "react"
 type ToolbarProps = {
   controls: null | (() => JSX.Element)
   children: ReactNode
+  viz?: boolean
 }
 
 export function Toolbar(props: ToolbarProps) {
-  const [active, setActive] = useState(props.controls === null ? 1 : 0)
+  const [active, setActive] = useState(props.viz ? 1 : props.controls === null ? 1 : 0)
 
   return (
     <div className="toolbar">

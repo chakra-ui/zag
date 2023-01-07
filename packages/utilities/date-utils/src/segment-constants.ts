@@ -13,6 +13,8 @@ const EDITABLE_SEGMENTS = {
 
 export type DateSegments = Partial<typeof EDITABLE_SEGMENTS>
 
+export type DateSegment = keyof DateSegments
+
 export const SEGMENT_PAGE_STEP = {
   year: 5,
   month: 2,
@@ -24,4 +26,8 @@ export const SEGMENT_PAGE_STEP = {
 
 export function isSegmentEditable(segment: DateSegmentPart) {
   return EDITABLE_SEGMENTS[segment]
+}
+
+export function getSegmentPageStep(segment: DateSegmentPart) {
+  return SEGMENT_PAGE_STEP[segment] ?? 1
 }

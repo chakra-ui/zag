@@ -97,6 +97,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
@@ -154,6 +155,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
@@ -219,6 +221,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
@@ -273,6 +276,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
@@ -339,6 +343,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
@@ -397,6 +402,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
@@ -604,6 +610,33 @@ importers:
       '@zag-js/live-region': link:../../utilities/live-region
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
+
+  packages/machines/date-picker:
+    specifiers:
+      '@internationalized/date': ^3.0.2
+      '@internationalized/number': ^3.1.2
+      '@zag-js/anatomy': workspace:*
+      '@zag-js/core': workspace:*
+      '@zag-js/date-utils': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/live-region': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
+      proxy-memoize: 1.2.0
+    dependencies:
+      '@internationalized/date': 3.0.2
+      '@internationalized/number': 3.1.2
+      '@zag-js/anatomy': link:../../anatomy
+      '@zag-js/core': link:../../core
+      '@zag-js/date-utils': link:../../utilities/date-utils
+      '@zag-js/live-region': link:../../utilities/live-region
+      '@zag-js/types': link:../../types
+      proxy-memoize: 1.2.0
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
@@ -2325,7 +2358,12 @@ packages:
     resolution: {integrity: sha512-9V1IxesP6ASZj/hYyOXOC4yPJvidbbStyWQKLCQSqhhKACMOXoo+BddXZJy47ju9mqOMpWdrJ2rTx4yTxK9oag==}
     dependencies:
       '@swc/helpers': 0.4.14
-    dev: true
+
+  /@internationalized/number/3.1.2:
+    resolution: {integrity: sha512-Mbys8SGsn0ApXz3hJLNU+d95B8luoUbwnmCpBwl7d63UmYAlcT6TRDyvaS/vwdbElXLcsQJjQCu0gox2cv/Tig==}
+    dependencies:
+      '@swc/helpers': 0.4.14
+    dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -8110,6 +8148,12 @@ packages:
 
   /proxy-compare/2.3.0:
     resolution: {integrity: sha512-c3L2CcAi7f7pvlD0D7xsF+2CQIW8C3HaYx2Pfgq8eA4HAl3GAH6/dVYsyBbYF/0XJs2ziGLrzmz5fmzPm6A0pQ==}
+    dev: false
+
+  /proxy-memoize/1.2.0:
+    resolution: {integrity: sha512-0heYEZb4yMfhdduz8T+BPJOCKGukc81WRJaYF0k6ZsJz/NkPLhGFqe6OLdiZURr5kC1byps5wdqLN6DC2tYAFw==}
+    dependencies:
+      proxy-compare: 2.3.0
     dev: false
 
   /pseudomap/1.0.2:

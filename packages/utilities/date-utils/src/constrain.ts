@@ -93,7 +93,7 @@ export function constrainStart(
   return aligned
 }
 
-export function constrainValue(date: CalendarDate, minValue: DateValue, maxValue: DateValue) {
+export function constrainValue(date: CalendarDate, minValue?: DateValue, maxValue?: DateValue) {
   if (minValue) {
     date = maxDate(date, toCalendarDate(minValue))
   }

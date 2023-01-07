@@ -3,11 +3,11 @@ import { isDateInvalid } from "./assertion"
 import { alignEnd, alignStart, constrainStart, constrainValue } from "./constrain"
 import { getEndDate, getUnitDuration } from "./duration"
 
-function getAdjustedDateFn(
+export function getAdjustedDateFn(
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   return function getDate(options: { startDate: CalendarDate; focusedDate: CalendarDate }) {
     const { startDate, focusedDate } = options
@@ -55,8 +55,8 @@ export function getNextPage(
   startDate: CalendarDate,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
   const start = startDate.add(visibleDuration)
@@ -76,8 +76,8 @@ export function getPreviousPage(
   startDate: CalendarDate,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
   let start = startDate.subtract(visibleDuration)
@@ -101,8 +101,8 @@ export function getNextRow(
   startDate: CalendarDate,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
@@ -123,8 +123,8 @@ export function getPreviousRow(
   startDate: CalendarDate,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
@@ -149,8 +149,8 @@ export function getSectionStart(
   startDate: CalendarDate,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
@@ -181,8 +181,8 @@ export function getSectionEnd(
   startDate: CalendarDate,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
   const endDate = getEndDate(startDate, visibleDuration)
@@ -215,8 +215,8 @@ export function getNextSection(
   larger: boolean,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
@@ -252,8 +252,8 @@ export function getPreviousSection(
   larger: boolean,
   visibleDuration: DateDuration,
   locale: string,
-  minValue: CalendarDate,
-  maxValue: CalendarDate,
+  minValue?: CalendarDate,
+  maxValue?: CalendarDate,
 ) {
   const adjust = getAdjustedDateFn(visibleDuration, locale, minValue, maxValue)
 
