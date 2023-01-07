@@ -97,6 +97,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -153,6 +154,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -217,6 +219,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -270,6 +273,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -335,6 +339,7 @@ importers:
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
+      '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-query': workspace:*
@@ -392,6 +397,7 @@ importers:
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
@@ -1053,6 +1059,14 @@ importers:
     specifiers:
       clean-package: 2.2.0
     devDependencies:
+      clean-package: 2.2.0
+
+  packages/utilities/date-utils:
+    specifiers:
+      '@internationalized/date': ^3.0.2
+      clean-package: 2.2.0
+    devDependencies:
+      '@internationalized/date': 3.0.2
       clean-package: 2.2.0
 
   packages/utilities/dismissable:
@@ -2307,6 +2321,12 @@ packages:
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
 
+  /@internationalized/date/3.0.2:
+    resolution: {integrity: sha512-9V1IxesP6ASZj/hYyOXOC4yPJvidbbStyWQKLCQSqhhKACMOXoo+BddXZJy47ju9mqOMpWdrJ2rTx4yTxK9oag==}
+    dependencies:
+      '@swc/helpers': 0.4.14
+    dev: true
+
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
     engines: {node: '>=8'}
@@ -3241,7 +3261,6 @@ packages:
     resolution: {integrity: sha512-4C7nX/dvpzB7za4Ql9K81xK3HPxCpHMgwTZVyf+9JQ6VUbn9jjZVN7/Nkdz/Ugzs2CSjqnL/UPXroiVBVHUWUw==}
     dependencies:
       tslib: 2.4.1
-    dev: false
 
   /@tsconfig/node10/1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
@@ -8963,7 +8982,6 @@ packages:
 
   /tslib/2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
-    dev: false
 
   /tsup/6.5.0_iw47evymfow2jlwxd3s5onabde:
     resolution: {integrity: sha512-36u82r7rYqRHFkD15R20Cd4ercPkbYmuvRkz3Q1LCm5BsiFNUgpo36zbjVhCOgvjyxNBWNKHsaD5Rl8SykfzNA==}
