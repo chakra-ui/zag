@@ -17,7 +17,7 @@ importers:
       '@playwright/test': 1.28.1
       '@swc-node/jest': 1.5.5
       '@swc/core': 1.3.22
-      '@types/jest': 29.2.4
+      '@types/jest': 29.2.5
       '@types/node': ^18.11.18
       '@types/signale': 1.4.4
       '@typescript-eslint/eslint-plugin': 5.46.0
@@ -57,7 +57,7 @@ importers:
       '@playwright/test': 1.28.1
       '@swc-node/jest': 1.5.5_iw47evymfow2jlwxd3s5onabde
       '@swc/core': 1.3.22
-      '@types/jest': 29.2.4
+      '@types/jest': 29.2.5
       '@types/node': 18.11.18
       '@types/signale': 1.4.4
       '@typescript-eslint/eslint-plugin': 5.46.0_5mle7isnkfgjmrghnnczirv6iy
@@ -3391,8 +3391,8 @@ packages:
       '@types/istanbul-lib-report': 3.0.0
     dev: false
 
-  /@types/jest/29.2.4:
-    resolution: {integrity: sha512-PipFB04k2qTRPePduVLTRiPzQfvMeLwUN3Z21hsAKaB/W9IIzgB2pizCL466ftJlcyZqnHoC9ZHpxLGl3fS86A==}
+  /@types/jest/29.2.5:
+    resolution: {integrity: sha512-H2cSxkKgVmqNHXP7TC2L/WUorrZu8ZigyRywfVzv6EyBlxj39n4C00hjXYQWsbwqgElaj/CiAeSRmk5GoaKTgw==}
     dependencies:
       expect: 29.3.1
       pretty-format: 29.3.1
