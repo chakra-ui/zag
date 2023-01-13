@@ -222,7 +222,7 @@ export function machine(userContext: UserDefinedContext) {
         setPastedValue(ctx, evt) {
           raf(() => {
             const startIndex = ctx.focusedValue ? 1 : 0
-            const value = evt.value.substring(startIndex, ctx.valueLength)
+            const value = evt.value.substring(startIndex, startIndex + ctx.valueLength)
             assign(ctx, value)
           })
         },

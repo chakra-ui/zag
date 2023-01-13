@@ -11,7 +11,7 @@ test.describe("pin input", () => {
     await page.goto("/pin-input")
   })
 
-  test("on type: should moves focus to the next input", async ({ page }) => {
+  test("on type: should move focus to the next input", async ({ page }) => {
     await page.locator(first).type("1")
     await expect(page.locator(second)).toBeFocused()
     await page.locator(second).type("2")
@@ -57,6 +57,16 @@ test.describe("pin input", () => {
   })
 
   test("on paste: should autofill all fields", async ({ page }) => {
+    await page.locator(first).focus()
+    await page.$eval(first, nativeInput, "123")
+    await expect(page.locator(first)).toHaveValue("1")
+    await expect(page.locator(second)).toHaveValue("2")
+    await expect(page.locator(third)).toHaveValue("3")
+    await expect(page.locator(third)).toBeFocused()
+  })
+
+  test("on paste: should autofill all fields if focused field is not empty", async ({ page }) => {
+    await page.locator(first).type("1")
     await page.locator(first).focus()
     await page.$eval(first, nativeInput, "123")
     await expect(page.locator(first)).toHaveValue("1")
