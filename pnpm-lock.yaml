@@ -629,7 +629,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-      proxy-memoize: 1.2.0
+      proxy-memoize: 2.0.1
     dependencies:
       '@internationalized/date': 3.0.2
       '@internationalized/number': 3.1.2
@@ -638,7 +638,7 @@ importers:
       '@zag-js/date-utils': link:../../utilities/date-utils
       '@zag-js/live-region': link:../../utilities/live-region
       '@zag-js/types': link:../../types
-      proxy-memoize: 1.2.0
+      proxy-memoize: 2.0.1
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom
       '@zag-js/utils': link:../../utilities/core
@@ -8186,10 +8186,14 @@ packages:
     resolution: {integrity: sha512-c3L2CcAi7f7pvlD0D7xsF+2CQIW8C3HaYx2Pfgq8eA4HAl3GAH6/dVYsyBbYF/0XJs2ziGLrzmz5fmzPm6A0pQ==}
     dev: false
 
-  /proxy-memoize/1.2.0:
-    resolution: {integrity: sha512-0heYEZb4yMfhdduz8T+BPJOCKGukc81WRJaYF0k6ZsJz/NkPLhGFqe6OLdiZURr5kC1byps5wdqLN6DC2tYAFw==}
+  /proxy-compare/2.4.0:
+    resolution: {integrity: sha512-FD8KmQUQD6Mfpd0hywCOzcon/dbkFP8XBd9F1ycbKtvVsfv6TsFUKJ2eC0Iz2y+KzlkdT1Z8SY6ZSgm07zOyqg==}
+    dev: false
+
+  /proxy-memoize/2.0.1:
+    resolution: {integrity: sha512-x6OgDaqtFDEpiDIsh6TEBdF4EhGbUJupQWsLOIHwaGXVdFcszeJcHZFT1BN/2RKCGBA6o7PQIeVFL4I5808HOw==}
     dependencies:
-      proxy-compare: 2.3.0
+      proxy-compare: 2.4.0
     dev: false
 
   /pseudomap/1.0.2:
