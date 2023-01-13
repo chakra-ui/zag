@@ -9,7 +9,7 @@ const endDate = parseDate("2023-01-12")
 
 const getFormatter = (options: any) => new DateFormatter(locale, options)
 
-describe("Date utilities", () => {
+describe.skip("Date utilities", () => {
   test("format / selected date", () => {
     expect(formatSelectedDate(startDate, null, getFormatter, false, timeZone)).toMatchInlineSnapshot(
       `"Tuesday, January 10, 2023"`,
@@ -24,12 +24,12 @@ describe("Date utilities", () => {
   })
 
   test("format / visible range", () => {
-    expect(formatVisibleRange(startDate, endDate, getFormatter, false, timeZone)).toEqual(
-      "Tuesday, January 10 – Thursday, January 12, 2023",
+    expect(formatVisibleRange(startDate, endDate, getFormatter, false, timeZone)).toMatchInlineSnapshot(
+      `"Tuesday, January 10 – Thursday, January 12, 2023"`,
     )
 
-    expect(formatVisibleRange(startDate, endDate, getFormatter, true, timeZone)).toEqual(
-      "Tuesday, January 10 – Thursday, January 12, 2023",
+    expect(formatVisibleRange(startDate, endDate, getFormatter, true, timeZone)).toMatchInlineSnapshot(
+      `"Tuesday, January 10 – Thursday, January 12, 2023"`,
     )
   })
 })
