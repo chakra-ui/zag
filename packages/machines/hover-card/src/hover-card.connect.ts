@@ -15,6 +15,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isOpen,
+    open() {
+      send("OPEN")
+    },
+    close() {
+      send("CLOSE")
+    },
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
