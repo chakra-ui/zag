@@ -41,7 +41,8 @@ const fetchMachine = createMachine({
           actions: ["setIsPointer"],
           target: "opening"
         },
-        TRIGGER_FOCUS: "opening"
+        TRIGGER_FOCUS: "opening",
+        OPEN: "opening"
       }
     },
     opening: {
@@ -54,7 +55,8 @@ const fetchMachine = createMachine({
         TRIGGER_BLUR: {
           cond: "!isPointer",
           target: "closed"
-        }
+        },
+        CLOSE: "closed"
       }
     },
     open: {

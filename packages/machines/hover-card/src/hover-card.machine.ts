@@ -40,6 +40,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_ENTER: { actions: ["setIsPointer"], target: "opening" },
             TRIGGER_FOCUS: "opening",
+            OPEN: "opening",
           },
         },
 
@@ -54,6 +55,7 @@ export function machine(userContext: UserDefinedContext) {
               guard: not("isPointer"),
               target: "closed",
             },
+            CLOSE: "closed",
           },
         },
 
