@@ -532,12 +532,12 @@ importers:
     specifiers:
       '@zag-js/core': workspace:*
       clean-package: 2.2.0
-      svelte: 3.55.0
+      svelte: 3.55.1
     dependencies:
       '@zag-js/core': link:../../core
     devDependencies:
       clean-package: 2.2.0
-      svelte: 3.55.0
+      svelte: 3.55.1
 
   packages/frameworks/vue:
     specifiers:
@@ -8907,8 +8907,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  /svelte/3.55.0:
-    resolution: {integrity: sha512-uGu2FVMlOuey4JoKHKrpZFkoYyj0VLjJdz47zX5+gVK5odxHM40RVhar9/iK2YFRVxvfg9FkhfVlR0sjeIrOiA==}
+  /svelte/3.55.1:
+    resolution: {integrity: sha512-S+87/P0Ve67HxKkEV23iCdAh/SX1xiSfjF1HOglno/YTbSTW7RniICMCofWGdJJbdjw3S+0PfFb1JtGfTXE0oQ==}
     engines: {node: '>= 8'}
     dev: true
 
