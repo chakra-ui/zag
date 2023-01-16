@@ -517,7 +517,7 @@ importers:
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
       hyphenate-style-name: 1.0.4
-      solid-js: 1.6.4
+      solid-js: 1.6.9
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/store': link:../../store
@@ -526,7 +526,7 @@ importers:
     devDependencies:
       '@zag-js/utils': link:../../utilities/core
       clean-package: 2.2.0
-      solid-js: 1.6.4
+      solid-js: 1.6.9
 
   packages/frameworks/svelte:
     specifiers:
@@ -8620,16 +8620,16 @@ packages:
       solid-js: 1.6.6
     dev: false
 
-  /solid-js/1.6.4:
-    resolution: {integrity: sha512-IfJJ1ejAcRTOEB0XXk/J8tzvVNZXAdEuHtWQwTXefUteZPGWOl4aVSOrkoj3y1bjwDayqok3+Vv3TV/j4IhKyw==}
-    dependencies:
-      csstype: 3.1.1
-    dev: true
-
   /solid-js/1.6.6:
     resolution: {integrity: sha512-5x33mEbPI8QLuywvFjQP4krjWDr8xiYFgZx9KCBH7b0ZzypQCHaUubob7bK6i+1u6nhaAqhWtvXS587Kb8DShA==}
     dependencies:
       csstype: 3.1.1
+
+  /solid-js/1.6.9:
+    resolution: {integrity: sha512-kV3fMmm+1C2J95c8eDOPKGfZHnuAkHUBLG4hX1Xu08bXeAIPqmxuz/QdH3B8SIdTp3EatBVIyA6RCes3hrGzpg==}
+    dependencies:
+      csstype: 3.1.1
+    dev: true
 
   /solid-refresh/0.4.1_solid-js@1.6.6:
     resolution: {integrity: sha512-v3tD/OXQcUyXLrWjPW1dXZyeWwP7/+GQNs8YTL09GBq+5FguA6IejJWUvJDrLIA4M0ho9/5zK2e9n+uy+4488g==}
