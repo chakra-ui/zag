@@ -1,5 +1,12 @@
 # @zag-js/svelte
 
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/core@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes

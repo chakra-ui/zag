@@ -1,5 +1,15 @@
 # @zag-js/core
 
+## 0.2.5
+
+### Patch Changes
+
+- [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Added support for watching all context properties via the `*` key.
+
+- Updated dependencies [[`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da)]:
+  - @zag-js/store@0.2.3
+
 ## 0.2.4
 
 ### Patch Changes

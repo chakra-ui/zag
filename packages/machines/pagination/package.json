@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/pagination",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Core logic for the pagination widget implemented as a state machine",
   "keywords": [
     "js",

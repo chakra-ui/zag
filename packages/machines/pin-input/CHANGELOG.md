@@ -1,5 +1,18 @@
 # @zag-js/pin-input
 
+## 0.2.8
+
+### Patch Changes
+
+- [#471](https://github.com/chakra-ui/zag/pull/471)
+  [`749e8a6a`](https://github.com/chakra-ui/zag/commit/749e8a6adbb95557ba4ef37ba7fd99493f2fce7b) Thanks
+  [@lemming](https://github.com/lemming)! - fix(pin-input): paste in non-empty field #470
+
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b),
+  [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/types@0.3.3
+  - @zag-js/core@0.2.5
+
 ## 0.2.7
 
 ### Patch Changes
