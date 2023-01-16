@@ -1,5 +1,21 @@
 # @zag-js/dom-utils
 
+## 0.2.3
+
+### Patch Changes
+
+- [`18db4fc4`](https://github.com/chakra-ui/zag/commit/18db4fc4d1bdefba3be99da98ff1ac040f09a638) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `getPointPercentRelativeToNode` and `normalizePointValue`
+  utilities
+
+- [#467](https://github.com/chakra-ui/zag/pull/467)
+  [`de1af599`](https://github.com/chakra-ui/zag/commit/de1af599a515d2b0d09ee7c5d92835088ae05201) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `requestPointerLock` could throw in a sandbox
+  environment
+  - Remove unused `createEmitter` and `createListener`
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b)]:
+  - @zag-js/types@0.3.3
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @zag-js/splitter
 
+## 0.2.7
+
+### Patch Changes
+
+- [`18db4fc4`](https://github.com/chakra-ui/zag/commit/18db4fc4d1bdefba3be99da98ff1ac040f09a638) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - [BREAKING💥] Redesign API to be more flexible and work with
+  multiple splitters.
+
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b),
+  [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/types@0.3.3
+  - @zag-js/core@0.2.5
+
 ## 0.2.6
 
 ### Patch Changes

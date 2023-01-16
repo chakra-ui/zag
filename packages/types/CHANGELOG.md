@@ -1,5 +1,12 @@
 # @zag-js/types
 
+## 0.3.3
+
+### Patch Changes
+
+- [`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Added support for any data attribute when using connect.
+
 ## 0.3.2
 
 ### Patch Changes
