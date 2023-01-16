@@ -1,5 +1,34 @@
 # @zag-js/hover-card
 
+## 0.2.0
+
+### Minor Changes
+
+- [#472](https://github.com/chakra-ui/zag/pull/472)
+  [`ccd562f3`](https://github.com/chakra-ui/zag/commit/ccd562f3ba7b4e3b3209274dd452a471592aef1b) Thanks
+  [@TimKolberger](https://github.com/TimKolberger)! - Add `open` and `close` functions to the connect api:
+
+  ```ts
+  import * as hoverCard from "@zag-js/hover-card"
+
+  const api = hoverCard.connect(state, send, normalizeProps)
+
+  // call `open` to open the hover card
+  api.open()
+
+  // call `close` to close the hover card
+  api.close()
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b),
+  [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/types@0.3.3
+  - @zag-js/core@0.2.5
+  - @zag-js/dismissable@0.2.1
+  - @zag-js/popper@0.2.2
+
 ## 0.1.6
 
 ### Patch Changes

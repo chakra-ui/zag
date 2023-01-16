@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/react",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",

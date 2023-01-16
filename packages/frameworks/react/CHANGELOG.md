@@ -1,5 +1,20 @@
 # @zag-js/react
 
+## 0.3.4
+
+### Patch Changes
+
+- [#478](https://github.com/chakra-ui/zag/pull/478)
+  [`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da) Thanks
+  [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency proxy-compare to v2.4.0
+
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b),
+  [`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da),
+  [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/types@0.3.3
+  - @zag-js/store@0.2.3
+  - @zag-js/core@0.2.5
+
 ## 0.3.3
 
 ### Patch Changes

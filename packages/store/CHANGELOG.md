@@ -1,5 +1,13 @@
 # @zag-js/store
 
+## 0.2.3
+
+### Patch Changes
+
+- [#478](https://github.com/chakra-ui/zag/pull/478)
+  [`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da) Thanks
+  [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency proxy-compare to v2.4.0
+
 ## 0.2.2
 
 ### Patch Changes
