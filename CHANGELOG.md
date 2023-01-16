@@ -2,10 +2,11 @@
 
 
 ## Latest Release
-### December 30, 2022: [#452](/.changelog/pr-452.mdx)
+### January 16, 2023: [#464](/.changelog/pr-464.mdx)
 
 
 ## Previous Releases
+### December 30, 2022: [#452](/.changelog/pr-452.mdx)
 ### December 15, 2022: [#449](/.changelog/pr-449.mdx)
 ### December 14, 2022: [#448](/.changelog/pr-448.mdx)
 ### December 13, 2022: [#429](/.changelog/pr-429.mdx)
