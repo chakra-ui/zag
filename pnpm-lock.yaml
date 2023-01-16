@@ -493,14 +493,14 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-      proxy-compare: 2.3.0
+      proxy-compare: 2.4.0
       react: 18.2.0
       react-dom: 18.2.0
     dependencies:
       '@zag-js/core': link:../../core
       '@zag-js/store': link:../../store
       '@zag-js/types': link:../../types
-      proxy-compare: 2.3.0
+      proxy-compare: 2.4.0
     devDependencies:
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
@@ -1061,9 +1061,9 @@ importers:
   packages/store:
     specifiers:
       clean-package: 2.2.0
-      proxy-compare: 2.3.0
+      proxy-compare: 2.4.0
     dependencies:
-      proxy-compare: 2.3.0
+      proxy-compare: 2.4.0
     devDependencies:
       clean-package: 2.2.0
 
@@ -8184,6 +8184,10 @@ packages:
 
   /proxy-compare/2.3.0:
     resolution: {integrity: sha512-c3L2CcAi7f7pvlD0D7xsF+2CQIW8C3HaYx2Pfgq8eA4HAl3GAH6/dVYsyBbYF/0XJs2ziGLrzmz5fmzPm6A0pQ==}
+    dev: false
+
+  /proxy-compare/2.4.0:
+    resolution: {integrity: sha512-FD8KmQUQD6Mfpd0hywCOzcon/dbkFP8XBd9F1ycbKtvVsfv6TsFUKJ2eC0Iz2y+KzlkdT1Z8SY6ZSgm07zOyqg==}
     dev: false
 
   /proxy-memoize/1.2.0:
