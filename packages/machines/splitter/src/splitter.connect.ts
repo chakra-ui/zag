@@ -10,7 +10,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
 
-  return {
+  const api = {
     isFocused,
     isDragging,
     bounds: getHandleBounds(state.context),
@@ -62,12 +62,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     //   },
     // }),
 
-    getResizeTriggerState(id: string) {
+    getResizeTriggerState(props: ResizeTriggerProps) {
+      const { id, disabled } = props
       const ids = id.split(":")
       const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
       const panels = getHandleBounds(state.context, id)
 
       return {
+        isDisabled: !!disabled,
         isFocused: state.context.activeResizeId === id && isFocused,
         panelIds,
         min: panels?.min,
@@ -78,7 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       const { id, disabled, step = 1 } = props
-      const triggerState = this.getResizeTriggerState(id)
+      const triggerState = api.getResizeTriggerState(props)
 
       return normalize.element({
         ...parts.resizeTrigger.attrs,
@@ -168,4 +170,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
+
+  return api
 }

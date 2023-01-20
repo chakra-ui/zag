@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInvalid = state.context.invalid
   const isInteractive = state.context.isInteractive
 
-  return {
+  const api = {
     value: state.context.value,
     isDragging,
     isFocused,
@@ -47,10 +47,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
     },
     getThumbPercent(index: number) {
-      return this.getValuePercent(sliderValue[index])
+      return api.getValuePercent(sliderValue[index])
     },
     setThumbPercent(index: number, percent: number) {
-      const value = this.getPercentValue(percent)
+      const value = api.getPercentValue(percent)
       send({ type: "SET_VALUE", index, value })
     },
     getThumbMin(index: number) {
@@ -251,7 +251,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = this.getValuePercent(value)
+      const percent = api.getValuePercent(value)
       const style = dom.getMarkerStyle(state.context, percent)
       let markerState: "over-value" | "under-value" | "at-value"
 
@@ -275,4 +275,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
+
+  return api
 }
