@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const locale = state.context.locale
   const timeZone = state.context.timeZone
 
-  return {
+  const api = {
     weeks: state.context.weeks,
     weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) =>
       state.context.dayFormatter.format(day),
@@ -127,7 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getCellState(props: CellProps) {
       const { date, disabled } = props
-      return {
+      const cellState = {
         isInvalid: isDateInvalid(date, min, max),
         isDisabled: isDateDisabled(date, startDate, endDate, min, max),
         isSelected: isDateEqual(date, selectedDate),
@@ -136,13 +136,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isFocused: isDateEqual(date, focusedDate),
         isToday: isTodayDate(date, timeZone),
         get isSelectable() {
-          return !this.isDisabled && !this.isUnavailable
+          return !cellState.isDisabled && !cellState.isUnavailable
         },
       }
+      return cellState
     },
 
     getCellProps(props: CellProps) {
-      const cellState = this.getCellState(props)
+      const cellState = api.getCellState(props)
       return normalize.element({
         ...parts.cell.attrs,
         role: "gridcell",
@@ -154,7 +155,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getCellTriggerProps(props: CellProps) {
-      const cellState = this.getCellState(props)
+      const cellState = api.getCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
         id: dom.getCellTriggerId(state.context, props.date.toString()),
@@ -308,4 +309,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
+
+  return api
 }

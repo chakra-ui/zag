@@ -25,7 +25,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInteractive = state.context.isInteractive
   const isInvalid = state.context.invalid
 
-  return {
+  const api = {
     isFocused,
     isDragging,
     value: state.context.value,
@@ -220,7 +220,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = this.getValuePercent(value)
+      const percent = api.getValuePercent(value)
       const style = dom.getMarkerStyle(state.context, percent)
       const markerState =
         value > state.context.value ? "over-value" : value < state.context.value ? "under-value" : "at-value"
@@ -237,4 +237,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
+
+  return api
 }
