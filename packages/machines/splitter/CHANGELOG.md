@@ -1,5 +1,13 @@
 # @zag-js/splitter
 
+## 0.2.8
+
+### Patch Changes
+
+- [`5f0aef04`](https://github.com/chakra-ui/zag/commit/5f0aef04601bd65ded6b352c8b6695716df8fc3e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `this` type throws a `TypeError` when `api`
+  properties are destructured.
+
 ## 0.2.7
 
 ### Patch Changes
