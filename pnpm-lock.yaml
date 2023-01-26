@@ -42,7 +42,7 @@ importers:
       prettier: 2.8.1
       signale: 1.4.0
       tsup: 6.5.0
-      tsx: 3.12.1
+      tsx: 3.12.2
       typescript: 4.9.4
     dependencies:
       '@axe-core/playwright': 4.5.2_playwright@1.28.1
@@ -83,7 +83,7 @@ importers:
       prettier: 2.8.1
       signale: 1.4.0
       tsup: 6.5.0_iw47evymfow2jlwxd3s5onabde
-      tsx: 3.12.1
+      tsx: 3.12.2
       typescript: 4.9.4
 
   examples/next-ts:
@@ -9071,8 +9071,8 @@ packages:
       tslib: 1.14.1
       typescript: 4.9.4
 
-  /tsx/3.12.1:
-    resolution: {integrity: sha512-Rcg1x+rNe7qwlP8j7kx4VjP/pJo/V57k+17hlrn6a7FuQLNwkaw5W4JF75tYornNVCxkXdSUnqlIT8JY/ttvIw==}
+  /tsx/3.12.2:
+    resolution: {integrity: sha512-ykAEkoBg30RXxeOMVeZwar+JH632dZn9EUJVyJwhfag62k6UO/dIyJEV58YuLF6e5BTdV/qmbQrpkWqjq9cUnQ==}
     hasBin: true
     dependencies:
       '@esbuild-kit/cjs-loader': 2.4.1
