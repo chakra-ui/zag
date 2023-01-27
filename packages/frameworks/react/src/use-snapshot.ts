@@ -1,34 +1,20 @@
-// Credits: https://github.com/pmndrs/valtio
+/// <reference types="react/experimental" />
 
-import { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
+import { useCallback, useDebugValue, useEffect, useMemo, useRef, use, useSyncExternalStore } from "react"
 import { affectedToPathList, createProxy as createProxyToCompare, isChanged } from "proxy-compare"
-import { snapshot, subscribe } from "@zag-js/store"
+import { INTERNAL_Snapshot as Snapshot, snapshot, subscribe } from "@zag-js/store"
 
 const __DEV__ = process.env.NODE_ENV !== "production"
-
-interface AsRef {
-  $$valtioRef: true
-}
-type AnyFunction = (...args: any[]) => any
-type Snapshot<T> = T extends AnyFunction
-  ? T
-  : T extends AsRef
-  ? T
-  : T extends Promise<infer V>
-  ? Snapshot<V>
-  : {
-      readonly [K in keyof T]: Snapshot<T[K]>
-    }
 
 const useAffectedDebugValue = (state: object, affected: WeakMap<object, unknown>) => {
   const pathList = useRef<(string | number | symbol)[][]>()
   useEffect(() => {
-    pathList.current = affectedToPathList(state, affected)
+    pathList.current = affectedToPathList(state, affected, true)
   })
   useDebugValue(pathList.current)
 }
 
-interface Options {
+type Options = {
   sync?: boolean
 }
 
@@ -47,7 +33,7 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
       [proxyObject, notifyInSync],
     ),
     () => {
-      const nextSnapshot = snapshot(proxyObject)
+      const nextSnapshot = snapshot(proxyObject, use)
       try {
         if (
           !inRender &&
@@ -63,7 +49,7 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
       }
       return nextSnapshot
     },
-    () => snapshot(proxyObject),
+    () => snapshot(proxyObject, use),
   )
   inRender = false
   const currAffected = new WeakMap()
@@ -71,11 +57,9 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
     lastSnapshot.current = currSnapshot
     lastAffected.current = currAffected
   })
-
   if (__DEV__) {
     useAffectedDebugValue(currSnapshot, currAffected)
   }
-
   const proxyCache = useMemo(() => new WeakMap(), []) // per-hook proxyCache
   return createProxyToCompare(currSnapshot, currAffected, proxyCache)
 }

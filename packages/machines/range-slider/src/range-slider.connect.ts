@@ -27,7 +27,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInvalid = state.context.invalid
   const isInteractive = state.context.isInteractive
 
-  const api = {
+  function getValuePercentFn(value: number) {
+    return getValuePercent(value, state.context.min, state.context.max)
+  }
+
+  function getPercentValueFn(percent: number) {
+    return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
+  }
+
+  return {
     value: state.context.value,
     isDragging,
     isFocused,
@@ -40,17 +48,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
-    getValuePercent(value: number) {
-      return getValuePercent(value, state.context.min, state.context.max)
-    },
-    getPercentValue(percent: number) {
-      return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
-    },
+    getValuePercent: getValuePercentFn,
+    getPercentValue: getPercentValueFn,
     getThumbPercent(index: number) {
-      return api.getValuePercent(sliderValue[index])
+      return getValuePercentFn(sliderValue[index])
     },
     setThumbPercent(index: number, percent: number) {
-      const value = api.getPercentValue(percent)
+      const value = getPercentValueFn(percent)
       send({ type: "SET_VALUE", index, value })
     },
     getThumbMin(index: number) {
@@ -251,7 +255,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = api.getValuePercent(value)
+      const percent = getValuePercentFn(value)
       const style = dom.getMarkerStyle(state.context, percent)
       let markerState: "over-value" | "under-value" | "at-value"
 
@@ -275,6 +279,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-
-  return api
 }

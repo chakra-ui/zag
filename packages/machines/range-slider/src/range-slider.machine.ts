@@ -7,6 +7,7 @@ import { compact } from "@zag-js/utils"
 import { dom } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
 import {
+  assignArray,
   constrainValue,
   decrement,
   getClosestIndex,
@@ -57,9 +58,13 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControlState", "trackThumbsSize"],
 
       on: {
-        SET_VALUE: {
-          actions: "setValue",
-        },
+        SET_VALUE: [
+          {
+            guard: "hasIndex",
+            actions: "setValueAtIndex",
+          },
+          { actions: "setValue" },
+        ],
         INCREMENT: {
           actions: "incrementAtIndex",
         },
@@ -75,7 +80,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
+              actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
             },
             FOCUS: {
               target: "focus",
@@ -88,7 +93,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
+              actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
             },
             ARROW_LEFT: {
               guard: "isHorizontal",
@@ -143,6 +148,7 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         isHorizontal: (ctx) => ctx.isHorizontal,
         isVertical: (ctx) => ctx.isVertical,
+        hasIndex: (_ctx, evt) => evt.index != null,
       },
       activities: {
         trackFormControlState(ctx) {
@@ -152,11 +158,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             onFormReset() {
               if (!ctx.name) return
-              ctx.value.forEach((_value, index) => {
-                if (ctx.initialValues[index] != null) {
-                  ctx.value[index] = ctx.initialValues[index]
-                }
-              })
+              assignArray(ctx.value, ctx.initialValues)
             },
           })
         },
@@ -201,13 +203,12 @@ export function machine(userContext: UserDefinedContext) {
             dom.dispatchChangeEvent(ctx)
           })
         },
+        setClosestThumbIndex(ctx, evt) {
+          const pointValue = dom.getValueFromPoint(ctx, evt.point)
+          ctx.activeIndex = getClosestIndex(ctx, pointValue)
+        },
         setActiveIndex(ctx, evt) {
-          if (evt.index != null) {
-            ctx.activeIndex = evt.index
-          } else {
-            const pointValue = dom.getValueFromPoint(ctx, evt.point)
-            ctx.activeIndex = getClosestIndex(ctx, pointValue)
-          }
+          ctx.activeIndex = evt.index
         },
         clearActiveIndex(ctx) {
           ctx.activeIndex = -1
@@ -224,10 +225,12 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         decrementAtIndex(ctx, evt) {
-          ctx.value = decrement(ctx, evt.index, evt.step)
+          const nextValue = decrement(ctx, evt.index, evt.step)
+          assignArray(ctx.value, nextValue)
         },
         incrementAtIndex(ctx, evt) {
-          ctx.value = increment(ctx, evt.index, evt.step)
+          const nextValue = increment(ctx, evt.index, evt.step)
+          assignArray(ctx.value, nextValue)
         },
         setActiveThumbToMin(ctx) {
           const { min } = getRangeAtIndex(ctx, ctx.activeIndex)
@@ -238,21 +241,15 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value[ctx.activeIndex] = max
         },
         checkValue(ctx) {
-          let value = normalizeValues(ctx, ctx.value)
-          ctx.value = value
-          ctx.initialValues = value.slice()
+          const nextValue = normalizeValues(ctx, ctx.value)
+          assignArray(ctx.value, nextValue)
+          assignArray(ctx.initialValues, nextValue)
+        },
+        setValueAtIndex(ctx, evt) {
+          ctx.value[evt.index] = constrainValue(ctx, evt.value, evt.index)
         },
         setValue(ctx, evt) {
-          // set value at specified index
-          if (typeof evt.index === "number" && typeof evt.value === "number") {
-            ctx.value[evt.index] = constrainValue(ctx, evt.value, evt.index)
-            return
-          }
-
-          // set values
-          if (Array.isArray(evt.value)) {
-            ctx.value = normalizeValues(ctx, evt.value)
-          }
+          assignArray(ctx.value, normalizeValues(ctx, evt.value))
         },
       },
     },

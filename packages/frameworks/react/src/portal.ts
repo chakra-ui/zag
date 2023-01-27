@@ -1,7 +1,6 @@
-import { createElement, useEffect, useLayoutEffect, useReducer, useRef } from "react"
+import { createElement, useReducer, useRef } from "react"
 import { createPortal } from "react-dom"
-
-export const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
+import { useSafeLayoutEffect } from "./use-layout-effect"
 
 export type PortalProps = {
   children: React.ReactNode
