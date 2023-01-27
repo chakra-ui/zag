@@ -56,10 +56,10 @@ const fetchMachine = createMachine({
       on: {
         INPUT: [{
           cond: "isFinalValue && isValidValue",
-          actions: ["setFocusedValue", "invokeOnChange", "dispatchInputEventIfNeeded"]
+          actions: ["setFocusedValue", "invokeOnChange", "syncInputValue"]
         }, {
           cond: "isValidValue",
-          actions: ["setFocusedValue", "invokeOnChange", "setNextFocusedIndex", "dispatchInputEventIfNeeded"]
+          actions: ["setFocusedValue", "invokeOnChange", "setNextFocusedIndex", "syncInputValue"]
         }],
         PASTE: [{
           cond: "isValidValue",
