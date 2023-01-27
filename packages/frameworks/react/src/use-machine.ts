@@ -1,14 +1,7 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { useEffect, useLayoutEffect, useRef } from "react"
+import { useConstant } from "./use-constant"
+import { useSafeLayoutEffect } from "./use-layout-effect"
 import { useSnapshot } from "./use-snapshot"
-
-const useSafeLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect
-
-function useConstant<T>(fn: () => T): T {
-  const ref = useRef<{ v: T }>()
-  if (!ref.current) ref.current = { v: fn() }
-  return ref.current.v
-}
 
 export function useService<
   TContext extends Record<string, any>,
@@ -18,8 +11,8 @@ export function useService<
   const { actions, state: hydratedState, context } = options ?? {}
 
   const service = useConstant(() => {
-    const _machine = typeof machine === "function" ? machine() : machine
-    return context ? _machine.withContext(context) : _machine
+    const instance = typeof machine === "function" ? machine() : machine
+    return context ? instance.withContext(context) : instance
   })
 
   useSafeLayoutEffect(() => {

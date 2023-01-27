@@ -8,8 +8,8 @@ import {
 } from "@zag-js/numeric-range"
 import type { MachineContext as Ctx } from "./range-slider.types"
 
-export function normalizeValues(ctx: Ctx, _values: number[]) {
-  return _values.map((value, index, values) => {
+export function normalizeValues(ctx: Ctx, nextValues: number[]) {
+  return nextValues.map((value, index, values) => {
     return constrainValue({ ...ctx, value: values }, value, index)
   })
 }
@@ -50,4 +50,11 @@ export function increment(ctx: Ctx, index?: number, step?: number) {
 
 export function getClosestIndex(ctx: Ctx, pointValue: number) {
   return getClosestValueIndex(ctx.value, pointValue)
+}
+
+export function assignArray(current: number[], next: number[]) {
+  for (let i = 0; i < next.length; i++) {
+    const value = next[i]
+    current[i] = value
+  }
 }

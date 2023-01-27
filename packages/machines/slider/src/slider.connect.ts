@@ -25,7 +25,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInteractive = state.context.isInteractive
   const isInvalid = state.context.invalid
 
-  const api = {
+  function getPercentValueFn(percent: number) {
+    return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
+  }
+
+  function getValuePercentFn(value: number) {
+    return getValuePercent(value, state.context.min, state.context.max)
+  }
+
+  return {
     isFocused,
     isDragging,
     value: state.context.value,
@@ -33,12 +41,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
-    getPercentValue(percent: number) {
-      return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
-    },
-    getValuePercent(value: number) {
-      return getValuePercent(value, state.context.min, state.context.max)
-    },
+    getPercentValue: getPercentValueFn,
+    getValuePercent: getValuePercentFn,
     focus() {
       dom.getThumbEl(state.context)?.focus()
     },
@@ -220,7 +224,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = api.getValuePercent(value)
+      const percent = getValuePercentFn(value)
       const style = dom.getMarkerStyle(state.context, percent)
       const markerState =
         value > state.context.value ? "over-value" : value < state.context.value ? "under-value" : "at-value"
@@ -237,6 +241,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-
-  return api
 }
