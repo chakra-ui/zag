@@ -80,6 +80,7 @@ const fetchMachine = createMachine({
     focused: {
       tags: ["focused"],
       entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
+      activities: ["trackInteractOutside"],
       on: {
         CHANGE: {
           target: "suggesting",
@@ -175,6 +176,10 @@ const fetchMachine = createMachine({
         CLICK_BUTTON: {
           target: "focused",
           actions: "invokeOnClose"
+        },
+        CLICK_OPTION: {
+          target: "focused",
+          actions: ["selectOption", "invokeOnClose"]
         }
       }
     },

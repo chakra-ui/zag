@@ -123,6 +123,7 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           tags: ["focused"],
           entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
+          activities: ["trackInteractOutside"],
           on: {
             CHANGE: {
               target: "suggesting",
@@ -240,6 +241,10 @@ export function machine(userContext: UserDefinedContext) {
             CLICK_BUTTON: {
               target: "focused",
               actions: "invokeOnClose",
+            },
+            CLICK_OPTION: {
+              target: "focused",
+              actions: ["selectOption", "invokeOnClose"],
             },
           },
         },
