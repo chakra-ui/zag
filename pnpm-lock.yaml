@@ -476,10 +476,10 @@ importers:
       '@zag-js/store': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-      klona: 2.0.5
+      klona: 2.0.6
     dependencies:
       '@zag-js/store': link:../store
-      klona: 2.0.5
+      klona: 2.0.6
     devDependencies:
       '@zag-js/utils': link:../utilities/core
       clean-package: 2.2.0
@@ -7078,8 +7078,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /klona/2.0.5:
-    resolution: {integrity: sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==}
+  /klona/2.0.6:
+    resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
     dev: false
 
