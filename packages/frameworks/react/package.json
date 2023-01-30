@@ -31,7 +31,7 @@
     "proxy-compare": "2.4.0"
   },
   "devDependencies": {
-    "@types/react": "18.0.26",
+    "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "@zag-js/utils": "workspace:*",
     "react": "18.2.0",
