@@ -1,5 +1,15 @@
 # @zag-js/pressable
 
+## 0.3.8
+
+### Patch Changes
+
+- [`0c7b0e9a`](https://github.com/chakra-ui/zag/commit/0c7b0e9ad09949c5b674c08ac3453fbcc5d8a97a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onPress` is not called on virtual click
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
 ## 0.3.7
 
 ### Patch Changes

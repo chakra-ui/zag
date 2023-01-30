@@ -1,5 +1,12 @@
 # @zag-js/store
 
+## 0.2.4
+
+### Patch Changes
+
+- [`88ccbbed`](https://github.com/chakra-ui/zag/commit/88ccbbed937acf10d4338e2c6d7f1e6b9eb538c8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor store and react implementations to match latest `valtio`
+
 ## 0.2.3
 
 ### Patch Changes

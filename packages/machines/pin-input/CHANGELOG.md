@@ -1,5 +1,16 @@
 # @zag-js/pin-input
 
+## 0.2.9
+
+### Patch Changes
+
+- [`20e83d8a`](https://github.com/chakra-ui/zag/commit/20e83d8a0bb0ca0e9c16903f3aa7dcd56cffb31b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple characters could be entered into the
+  input
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
 ## 0.2.8
 
 ### Patch Changes
