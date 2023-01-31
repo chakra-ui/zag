@@ -58,13 +58,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setTarget", "invokeOnPressStart", "trackDocumentKeyup"],
             },
             CLICK: {
-              actions: [
-                "focusIfNeeded",
-                "invokeOnPressStart",
-                "invokeOnPressUp",
-                "invokeOnPressEnd",
-                "resetIgnoreClick",
-              ],
+              actions: ["focusIfNeeded", "invokeOnPressStart", "invokeOnPressEnd", "invokeOnPress", "resetIgnoreClick"],
             },
           },
         },

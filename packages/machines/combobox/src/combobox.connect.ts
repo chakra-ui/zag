@@ -126,10 +126,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (isDisabled) return
         send("FOCUS")
       },
-      onBlur() {
-        if (isDisabled) return
-        send("BLUR")
-      },
       onChange(event) {
         const evt = getNativeEvent(event)
         if (evt.isComposing) return
@@ -199,9 +195,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        if (!isInteractive || !isLeftClick(evt)) return
+        if (!isInteractive || !isLeftClick(evt) || evt.pointerType === "touch") return
         send("CLICK_BUTTON")
         event.preventDefault()
+      },
+      onPointerUp(event) {
+        if (event.pointerType !== "touch") return
+        send("CLICK_BUTTON")
       },
     }),
 
