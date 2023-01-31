@@ -1,5 +1,16 @@
 # @zag-js/core
 
+## 0.2.6
+
+### Patch Changes
+
+- [#490](https://github.com/chakra-ui/zag/pull/490)
+  [`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699) Thanks
+  [@renovate](https://github.com/apps/renovate)! - Update dependency klona to v2.0.6
+
+- Updated dependencies [[`88ccbbed`](https://github.com/chakra-ui/zag/commit/88ccbbed937acf10d4338e2c6d7f1e6b9eb538c8)]:
+  - @zag-js/store@0.2.4
+
 ## 0.2.5
 
 ### Patch Changes

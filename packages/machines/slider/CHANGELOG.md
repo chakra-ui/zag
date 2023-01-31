@@ -1,5 +1,15 @@
 # @zag-js/slider
 
+## 0.2.10
+
+### Patch Changes
+
+- [`88ccbbed`](https://github.com/chakra-ui/zag/commit/88ccbbed937acf10d4338e2c6d7f1e6b9eb538c8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor connect function to avoid re-creating new objects
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
 ## 0.2.9
 
 ### Patch Changes
