@@ -1,10 +1,12 @@
 /// <reference types="react/experimental" />
 
-import { useCallback, useDebugValue, useEffect, useMemo, useRef, use, useSyncExternalStore } from "react"
+import ReactExports, { useCallback, useDebugValue, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 import { affectedToPathList, createProxy as createProxyToCompare, isChanged } from "proxy-compare"
 import { INTERNAL_Snapshot as Snapshot, snapshot, subscribe } from "@zag-js/store"
 
 const __DEV__ = process.env.NODE_ENV !== "production"
+
+const { use } = ReactExports
 
 const useAffectedDebugValue = (state: object, affected: WeakMap<object, unknown>) => {
   const pathList = useRef<(string | number | symbol)[][]>()
