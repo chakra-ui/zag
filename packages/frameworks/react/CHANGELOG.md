@@ -1,5 +1,12 @@
 # @zag-js/react
 
+## 0.3.6
+
+### Patch Changes
+
+- [`f54d7b8e`](https://github.com/chakra-ui/zag/commit/f54d7b8e9d39e86483b6b04216911fe76aeba0cd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `use` isn't exported from react
+
 ## 0.3.5
 
 ### Patch Changes
