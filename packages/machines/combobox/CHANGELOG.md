@@ -1,5 +1,16 @@
 # @zag-js/combobox
 
+## 0.2.10
+
+### Patch Changes
+
+- [`d5837eb8`](https://github.com/chakra-ui/zag/commit/d5837eb872f28990f50414183390f23450d85da2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where options could not be selected with touch on
+  Firefox.
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
 ## 0.2.9
 
 ### Patch Changes

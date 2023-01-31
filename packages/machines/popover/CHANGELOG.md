@@ -1,5 +1,12 @@
 # @zag-js/popover
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
 ## 0.2.7
 
 ### Patch Changes
