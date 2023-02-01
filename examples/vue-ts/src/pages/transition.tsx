@@ -1,6 +1,6 @@
 import { transitionControls } from "@zag-js/shared"
 import * as transition from "@zag-js/transition"
-import { useMachine } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -15,12 +15,12 @@ export default defineComponent({
       context: controls.context,
     })
 
-    const apiRef = computed(() => transition.connect(state.value, send))
+    const apiRef = computed(() => transition.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
 
-      const transitionStyles = api.transition({
+      const styles = api.transition({
         base: { transformOrigin: "center" },
         variants: {
           enter: { opacity: 1, transform: "scale(1)" },
@@ -33,15 +33,15 @@ export default defineComponent({
           <main class="presence">
             <div>
               <h2>{state.value}</h2>
-              <pre>{JSON.stringify(transitionStyles, null, 4)}</pre>
+              <pre>{JSON.stringify(styles, null, 4)}</pre>
               <button onClick={api.toggle}>Open</button>
               <br />
               <br />
               {api.unmount ? null : (
-                <div style={{ background: "tomato", padding: "40px", ...transitionStyles }}>Unmount On Exit</div>
+                <div style={{ background: "tomato", padding: "40px", ...styles }}>Unmount On Exit</div>
               )}
               <br />
-              <div hidden={api.unmount} style={{ background: "tomato", padding: "40px", ...transitionStyles }}>
+              <div hidden={api.unmount} style={{ background: "tomato", padding: "40px", ...styles }}>
                 Keep Mounted with Hidden Attribute
               </div>
             </div>
