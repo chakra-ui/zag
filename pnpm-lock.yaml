@@ -139,6 +139,7 @@ importers:
       '@zag-js/toast': workspace:*
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
+      '@zag-js/transition': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       eslint-plugin-react: 7.31.11
@@ -197,6 +198,7 @@ importers:
       '@zag-js/toast': link:../../packages/machines/toast
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
+      '@zag-js/transition': link:../../packages/machines/transition
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       form-serialize: 0.7.2
@@ -263,6 +265,7 @@ importers:
       '@zag-js/toast': workspace:*
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
+      '@zag-js/transition': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       form-serialize: 0.7.2
@@ -318,6 +321,7 @@ importers:
       '@zag-js/toast': link:../../packages/machines/toast
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
+      '@zag-js/transition': link:../../packages/machines/transition
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       form-serialize: 0.7.2
@@ -384,6 +388,7 @@ importers:
       '@zag-js/toast': workspace:*
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
+      '@zag-js/transition': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/vue': workspace:*
@@ -443,6 +448,7 @@ importers:
       '@zag-js/toast': link:../../packages/machines/toast
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
+      '@zag-js/transition': link:../../packages/machines/transition
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       '@zag-js/vue': link:../../packages/frameworks/vue
@@ -1052,6 +1058,21 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/popper': link:../../utilities/popper
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
+
+  packages/machines/transition:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
+    dependencies:
+      '@zag-js/core': link:../../core
       '@zag-js/types': link:../../types
     devDependencies:
       '@zag-js/dom-utils': link:../../utilities/dom

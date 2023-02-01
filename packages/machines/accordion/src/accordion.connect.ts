@@ -1,39 +1,23 @@
 import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { isArray } from "@zag-js/utils"
 import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
+import { createReducer } from "./accordion.reducer"
 import type { ItemProps, Send, State } from "./accordion.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const focusedValue = state.context.focusedValue
-  const value = state.context.value
-  const multiple = state.context.multiple
+  const reducer = createReducer(state, send)
 
-  const api = {
-    value: value,
-    setValue(value: string | string[]) {
-      if (multiple && !Array.isArray(value)) {
-        value = [value]
-      }
-      send({ type: "SET_VALUE", value })
-    },
+  return {
+    ...reducer,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
-    getItemState(props: ItemProps) {
-      return {
-        isOpen: isArray(value) ? value.includes(props.value) : props.value === value,
-        isFocused: focusedValue === props.value,
-        isDisabled: Boolean(props.disabled ?? state.context.disabled),
-      }
-    },
-
     getItemProps(props: ItemProps) {
-      const { isOpen, isFocused } = api.getItemState(props)
+      const { isOpen, isFocused } = reducer.getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
@@ -43,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getContentProps(props: ItemProps) {
-      const { isOpen, isFocused, isDisabled } = api.getItemState(props)
+      const { isOpen, isFocused, isDisabled } = reducer.getItemState(props)
       return normalize.element({
         ...parts.content.attrs,
         role: "region",
@@ -58,53 +42,64 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getTriggerProps(props: ItemProps) {
       const { value } = props
-      const { isDisabled, isOpen } = api.getItemState(props)
+      const itemState = reducer.getItemState(props)
+
       return normalize.button({
         ...parts.trigger.attrs,
         type: "button",
         id: dom.getTriggerId(state.context, value),
         "aria-controls": dom.getContentId(state.context, value),
-        "aria-expanded": isOpen,
-        disabled: isDisabled,
-        "aria-disabled": isDisabled,
-        "data-expanded": dataAttr(isOpen),
+        "aria-expanded": itemState.isOpen,
+        disabled: itemState.isDisabled,
+        "aria-disabled": itemState.isDisabled,
+        "data-expanded": dataAttr(itemState.isOpen),
         "data-ownedby": dom.getRootId(state.context),
         onFocus() {
-          if (isDisabled) return
-          send({ type: "FOCUS", value })
+          if (itemState.isDisabled) return
+          send({ type: "TRIGGER.FOCUS", value })
         },
         onBlur() {
-          if (isDisabled) return
-          send("BLUR")
+          if (itemState.isDisabled) return
+          send("TRIGGER.BLUR")
         },
         onClick(event) {
-          if (isDisabled) return
+          if (itemState.isDisabled) return
           if (isSafari()) {
             event.currentTarget.focus()
           }
-          send({ type: "CLICK", value })
+          send({ type: "TRIGGER.CLICK", value })
         },
         onKeyDown(event) {
-          if (isDisabled) return
+          if (itemState.isDisabled) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              send({ type: "ARROW_DOWN", value })
+              if (state.context.isHorizontal) return
+              send({ type: "GOTO.NEXT", value })
             },
             ArrowUp() {
-              send({ type: "ARROW_UP", value })
+              if (state.context.isHorizontal) return
+              send({ type: "GOTO.PREV", value })
+            },
+            ArrowRight() {
+              if (!state.context.isHorizontal) return
+              send({ type: "GOTO.NEXT", value })
+            },
+            ArrowLeft() {
+              if (!state.context.isHorizontal) return
+              send({ type: "GOTO.PREV", value })
             },
             Home() {
-              send({ type: "HOME", value })
+              send({ type: "GOTO.FIRST", value })
             },
             End() {
-              send({ type: "END", value })
+              send({ type: "GOTO.LAST", value })
             },
           }
 
           const key = getEventKey(event, {
             dir: state.context.dir,
-            orientation: "vertical",
+            orientation: state.context.orientation,
           })
 
           const exec = keyMap[key]
@@ -117,6 +112,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-
-  return api
 }

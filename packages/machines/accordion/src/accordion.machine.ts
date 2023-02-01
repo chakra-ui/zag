@@ -12,13 +12,14 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "accordion",
-      initial: "unknown",
+      initial: "idle",
 
       context: {
         focusedValue: null,
         value: null,
         collapsible: false,
         multiple: false,
+        orientation: "vertical",
         ...ctx,
       },
 
@@ -29,21 +30,20 @@ export function machine(userContext: UserDefinedContext) {
 
       created: "sanitizeValue",
 
+      computed: {
+        isHorizontal: (ctx) => ctx.orientation === "horizontal",
+      },
+
       on: {
-        SET_VALUE: {
+        "VALUE.SET": {
           actions: ["setValue", "invokeOnChange"],
         },
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
         idle: {
           on: {
-            FOCUS: {
+            "TRIGGER.FOCUS": {
               target: "focused",
               actions: "setFocusedValue",
             },
@@ -51,13 +51,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         focused: {
           on: {
-            ARROW_DOWN: {
+            "GOTO.NEXT": {
               actions: "focusNext",
             },
-            ARROW_UP: {
+            "GOTO.PREV": {
               actions: "focusPrev",
             },
-            CLICK: [
+            "TRIGGER.CLICK": [
               {
                 guard: and("isExpanded", "canToggle"),
                 actions: ["collapse", "invokeOnChange"],
@@ -67,13 +67,13 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["expand", "invokeOnChange"],
               },
             ],
-            HOME: {
+            "GOTO.FIRST": {
               actions: "focusFirst",
             },
-            END: {
+            "GOTO.LAST": {
               actions: "focusLast",
             },
-            BLUR: {
+            "TRIGGER.BLUR": {
               target: "idle",
               actions: "clearFocusedValue",
             },
@@ -85,7 +85,9 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         canToggle: (ctx) => !!ctx.collapsible || !!ctx.multiple,
         isExpanded: (ctx, evt) => {
-          if (ctx.multiple && Array.isArray(ctx.value)) return ctx.value.includes(evt.value)
+          if (ctx.multiple && Array.isArray(ctx.value)) {
+            return ctx.value.includes(evt.value)
+          }
           return ctx.value === evt.value
         },
       },
