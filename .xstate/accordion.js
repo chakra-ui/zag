@@ -17,7 +17,7 @@ const fetchMachine = createMachine({
     "!isExpanded": false
   },
   on: {
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: ["setValue", "invokeOnChange"]
     }
   },
@@ -29,7 +29,7 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        FOCUS: {
+        "TRIGGER.FOCUS": {
           target: "focused",
           actions: "setFocusedValue"
         }
@@ -37,26 +37,26 @@ const fetchMachine = createMachine({
     },
     focused: {
       on: {
-        ARROW_DOWN: {
+        "GOTO.NEXT": {
           actions: "focusNext"
         },
-        ARROW_UP: {
+        "GOTO.PREV": {
           actions: "focusPrev"
         },
-        CLICK: [{
+        "TRIGGER.CLICK": [{
           cond: "isExpanded && canToggle",
           actions: ["collapse", "invokeOnChange"]
         }, {
           cond: "!isExpanded",
           actions: ["expand", "invokeOnChange"]
         }],
-        HOME: {
+        "GOTO.FIRST": {
           actions: "focusFirst"
         },
-        END: {
+        "GOTO.LAST": {
           actions: "focusLast"
         },
-        BLUR: {
+        "TRIGGER.BLUR": {
           target: "idle",
           actions: "clearFocusedValue"
         }
