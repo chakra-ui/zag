@@ -1,7 +1,7 @@
 import { transitionControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as transition from "@zag-js/transition"
-import { createMemo } from "solid-js"
+import { createMemo, Show } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -34,9 +34,9 @@ export default function Page() {
           <button onClick={api().toggle}>Open</button>
           <br />
           <br />
-          {api().unmount ? null : (
+          <Show when={!api().unmount}>
             <div style={{ background: "tomato", padding: "40px", ...styles() }}>Unmount On Exit</div>
-          )}
+          </Show>
           <br />
           <div hidden={api().unmount} style={{ background: "tomato", padding: "40px", ...styles() }}>
             Keep Mounted with Hidden Attribute
