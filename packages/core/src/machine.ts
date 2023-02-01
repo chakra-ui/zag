@@ -102,6 +102,9 @@ export class Machine<
 
   // Starts the interpreted machine.
   public start = (init?: S.StateInit<TContext, TState>) => {
+    // reset state back to empty (for SSR, we had to set state.value to initial value)
+    this.state.value = ""
+
     // Don't start if it's already running
     if (this.status === MachineStatus.Running) {
       return this
