@@ -3,7 +3,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { addPointerEvent, contains, findByTypeahead, getEventPoint, isElementEditable, raf } from "@zag-js/dom-utils"
 import { getBasePlacement, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
-import { add, compact, isArray, remove } from "@zag-js/utils"
+import { add, cast, compact, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
 
@@ -19,7 +19,7 @@ export function machine(userContext: UserDefinedContext) {
         highlightedId: null,
         hoverId: null,
         parent: null,
-        children: {},
+        children: cast(ref({})),
         intentPolygon: null,
         loop: false,
         suspendPointer: false,

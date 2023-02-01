@@ -1,9 +1,10 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { menuData } from "@zag-js/shared"
-import { useEffect, useId } from "react"
+import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useEffectOnce } from "../hooks/use-effect-once"
 
 export default function Page() {
   const [state, send, machine] = useMachine(
@@ -13,31 +14,21 @@ export default function Page() {
   )
   const root = menu.connect(state, send, normalizeProps)
 
-  const [subState, subSend, subMachine] = useMachine(
-    menu.machine({
-      id: useId(),
-    }),
-  )
+  const [subState, subSend, subMachine] = useMachine(menu.machine({ id: useId() }))
   const sub = menu.connect(subState, subSend, normalizeProps)
 
-  const [sub2State, sub2Send, sub2Machine] = useMachine(
-    menu.machine({
-      id: useId(),
-    }),
-  )
+  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: useId() }))
   const sub2 = menu.connect(sub2State, sub2Send, normalizeProps)
 
-  useEffect(() => {
+  useEffectOnce(() => {
     root.setChild(subMachine)
     sub.setParent(machine)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  })
 
-  useEffect(() => {
+  useEffectOnce(() => {
     sub.setChild(sub2Machine)
     sub2.setParent(subMachine)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  })
 
   const triggerItemProps = root.getTriggerItemProps(sub)
   const triggerItem2Props = sub.getTriggerItemProps(sub2)
