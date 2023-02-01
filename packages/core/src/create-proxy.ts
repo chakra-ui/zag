@@ -9,7 +9,7 @@ export function createProxy<TContext extends Dict, TState extends S.StateSchema,
   const initialContext = config.context ?? cast<TContext>({})
 
   const state = proxy({
-    value: "",
+    value: config.initial ?? "",
     previousValue: "",
     event: cast<Dict>({}),
     previousEvent: cast<Dict>({}),

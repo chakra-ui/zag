@@ -36,11 +36,21 @@ type PublicContext = DirectionProperty &
      * The callback fired when the state of opened/closed accordion items changes.
      */
     onChange?: (details: { value: string | string[] | null }) => void
+    /**
+     *  The orientation of the accordion items.
+     */
+    orientation?: "horizontal" | "vertical"
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the accordion items are horizontal.
+   */
+  isHorizontal: boolean
+}>
 
 type PrivateContext = Context<{
   /**
