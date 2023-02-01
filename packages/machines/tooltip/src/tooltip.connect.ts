@@ -1,10 +1,10 @@
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Send, State } from "./tooltip.types"
-import { parts } from "./tooltip.anatomy"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const id = state.context.id
@@ -114,14 +114,5 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: visuallyHiddenStyle,
       children: state.context["aria-label"],
     }),
-
-    createPortal() {
-      const doc = dom.getDoc(state.context)
-      const exist = dom.getPortalEl(state.context)
-      if (exist) return exist
-      const portal = dom.createPortalEl(state.context)
-      doc.body.appendChild(portal)
-      return portal
-    },
   }
 }

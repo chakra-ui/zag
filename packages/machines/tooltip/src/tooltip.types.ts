@@ -85,7 +85,7 @@ type PrivateContext = RootProperties & {
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
 export type MachineState = {
-  value: "unknown" | "opening" | "open" | "closing" | "closed"
+  value: "opening" | "open" | "closing" | "closed"
   tags: "open" | "closed"
 }
 
