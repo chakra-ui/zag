@@ -11,26 +11,14 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "dialog",
-  initial: "unknown",
-  context: {
-    "isDefaultOpen": false
-  },
+  initial: ctx.defaultOpen ? "open" : "closed",
+  context: {},
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: [{
-          target: "open",
-          cond: "isDefaultOpen"
-        }, {
-          target: "closed"
-        }]
-      }
-    },
     open: {
       entry: ["checkRenderedElements"],
       activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
@@ -55,7 +43,5 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {
-    "isDefaultOpen": ctx => ctx["isDefaultOpen"]
-  }
+  guards: {}
 });

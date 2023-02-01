@@ -94,7 +94,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "open" | "closed"
+  value: "open" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>
