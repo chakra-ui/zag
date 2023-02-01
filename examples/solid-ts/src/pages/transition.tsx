@@ -1,5 +1,5 @@
 import { transitionControls } from "@zag-js/shared"
-import { useMachine } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as transition from "@zag-js/transition"
 import { createMemo } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -13,9 +13,9 @@ export default function Page() {
     context: controls.context,
   })
 
-  const api = createMemo(() => transition.connect(state, send))
+  const api = createMemo(() => transition.connect(state, send, normalizeProps))
 
-  const transitionStyles = createMemo(() =>
+  const styles = createMemo(() =>
     api().transition({
       base: { transformOrigin: "center" },
       variants: {
@@ -30,15 +30,15 @@ export default function Page() {
       <main class="presence">
         <div>
           <h2>{state.value}</h2>
-          <pre>{JSON.stringify(transitionStyles, null, 4)}</pre>
+          <pre>{JSON.stringify(styles(), null, 4)}</pre>
           <button onClick={api().toggle}>Open</button>
           <br />
           <br />
           {api().unmount ? null : (
-            <div style={{ background: "tomato", padding: "40px", ...transitionStyles }}>Unmount On Exit</div>
+            <div style={{ background: "tomato", padding: "40px", ...styles() }}>Unmount On Exit</div>
           )}
           <br />
-          <div hidden={api().unmount} style={{ background: "tomato", padding: "40px", ...transitionStyles }}>
+          <div hidden={api().unmount} style={{ background: "tomato", padding: "40px", ...styles() }}>
             Keep Mounted with Hidden Attribute
           </div>
         </div>

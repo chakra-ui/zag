@@ -1,19 +1,23 @@
+import { NormalizeProps, PropTypes } from "@zag-js/types"
 import { Send, State, TransitionConfig } from "./transition.types"
 
-export function connect(state: State, send: Send) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const [status] = state.tags
   const unmount = state.matches("exited")
   const duration = status === "enter" ? state.context.enterDuration : state.context.exitDuration
 
-  function transition(config: TransitionConfig): Record<string, any> {
+  function transition(config: TransitionConfig): T["style"] {
     const { base, variants } = config
     const properties = [...new Set([...Object.keys(variants.enter), ...Object.keys(variants.exit)])]
-    return {
-      ...base,
-      ...variants[status],
-      transitionDuration: `${duration}ms`,
-      transitionProperty: properties.join(", "),
-    }
+    const { style } = normalize.element({
+      style: {
+        ...base,
+        ...variants[status],
+        transitionDuration: `${duration}ms`,
+        transitionProperty: properties.join(", "),
+      },
+    })
+    return style
   }
 
   return {

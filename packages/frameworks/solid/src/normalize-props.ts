@@ -5,6 +5,7 @@ import type { JSX } from "solid-js"
 
 type PropTypes = JSX.IntrinsicElements & {
   element: JSX.HTMLAttributes<any>
+  style: JSX.CSSProperties
 }
 
 const eventMap = {
