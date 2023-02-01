@@ -3,6 +3,7 @@ import { defineControls } from "./define-controls"
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
   multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+  orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
 export const checkboxControls = defineControls({
@@ -164,4 +165,13 @@ export const selectControls = defineControls({
 export const datePickerControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
+export const transitionControls = defineControls({
+  duration: { type: "number", defaultValue: 200 },
+  easing: {
+    type: "select",
+    options: ["linear", "ease", "ease-in", "ease-out", "ease-in-out"] as const,
+    defaultValue: "ease",
+  },
 })

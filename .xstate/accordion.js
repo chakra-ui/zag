@@ -11,13 +11,13 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "accordion",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isExpanded && canToggle": false,
     "!isExpanded": false
   },
   on: {
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: ["setValue", "invokeOnChange"]
     }
   },
@@ -27,14 +27,9 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       on: {
-        FOCUS: {
+        "TRIGGER.FOCUS": {
           target: "focused",
           actions: "setFocusedValue"
         }
@@ -42,26 +37,26 @@ const fetchMachine = createMachine({
     },
     focused: {
       on: {
-        ARROW_DOWN: {
+        "GOTO.NEXT": {
           actions: "focusNext"
         },
-        ARROW_UP: {
+        "GOTO.PREV": {
           actions: "focusPrev"
         },
-        CLICK: [{
+        "TRIGGER.CLICK": [{
           cond: "isExpanded && canToggle",
           actions: ["collapse", "invokeOnChange"]
         }, {
           cond: "!isExpanded",
           actions: ["expand", "invokeOnChange"]
         }],
-        HOME: {
+        "GOTO.FIRST": {
           actions: "focusFirst"
         },
-        END: {
+        "GOTO.LAST": {
           actions: "focusLast"
         },
-        BLUR: {
+        "TRIGGER.BLUR": {
           target: "idle",
           actions: "clearFocusedValue"
         }
