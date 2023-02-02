@@ -13,7 +13,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "hover-card",
-      initial: "unknown",
+      initial: ctx.defaultOpen ? "open" : "closed",
       context: {
         openDelay: 700,
         closeDelay: 300,
@@ -26,14 +26,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: ctx.defaultOpen ? "open" : "closed",
-            },
-          },
-        },
-
         closed: {
           tags: ["closed"],
           entry: ["invokeOnClose", "clearIsPointer"],
