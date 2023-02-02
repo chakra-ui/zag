@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "range-slider",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "hasIndex": false,
     "isHorizontal": false,
@@ -19,6 +19,7 @@ const fetchMachine = createMachine({
     "isVertical": false,
     "isVertical": false
   },
+  entry: ["checkValue"],
   activities: ["trackFormControlState", "trackThumbsSize"],
   on: {
     SET_VALUE: [{
@@ -40,14 +41,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          target: "idle",
-          actions: "checkValue"
-        }
-      }
-    },
     idle: {
       on: {
         POINTER_DOWN: {

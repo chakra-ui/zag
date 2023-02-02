@@ -11,26 +11,19 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "rating",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isValueEmpty": false,
     "isRadioFocused": false
   },
   activities: ["trackFormControlState"],
+  entry: ["checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          target: "idle",
-          actions: "checkValue"
-        }
-      }
-    },
     idle: {
       entry: "clearHoveredValue",
       on: {

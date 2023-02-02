@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "splitter",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isStartPanelAtMin": false,
     "isHorizontal": false,
@@ -40,11 +40,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       entry: ["clearActiveHandleId"],
       on: {

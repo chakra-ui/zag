@@ -7,18 +7,11 @@ export function machine(userContext: UserDefinedContext){
   return createMachine<MachineContext, MachineState>(
     {
       id: "{{machine}}",
-      initial: "unknown",
+      initial: "idle",
       context: {
         ...ctx
       },
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              actions: ["setupDocument"],
-            },
-          }
-        },
       },
     },
     {

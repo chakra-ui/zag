@@ -21,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "range-slider",
-      initial: "unknown",
+      initial: "idle",
 
       context: {
         thumbSizes: [],
@@ -55,6 +55,8 @@ export function machine(userContext: UserDefinedContext) {
         value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
+      entry: ["checkValue"],
+
       activities: ["trackFormControlState", "trackThumbsSize"],
 
       on: {
@@ -74,14 +76,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: "checkValue",
-            },
-          },
-        },
         idle: {
           on: {
             POINTER_DOWN: {

@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "splitter",
-      initial: "unknown",
+      initial: "idle",
       context: {
         orientation: "horizontal",
         activeResizeId: null,
@@ -53,12 +53,6 @@ export function machine(userContext: UserDefinedContext) {
         ],
       },
       states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
-
         idle: {
           entry: ["clearActiveHandleId"],
           on: {

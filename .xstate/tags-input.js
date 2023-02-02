@@ -11,14 +11,13 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "tags-input",
-  initial: "unknown",
+  initial: ctx.autoFocus ? "focused:input" : "idle",
   context: {
     "allowEditTag": false,
     "!isTagFocused": false,
     "(!isAtMax || allowOverflow) && !isInputValueEmpty": false,
     "addOnBlur": false,
     "clearOnBlur": false,
-    "autoFocus": false,
     "!hasFocusedId": false,
     "addOnBlur": false,
     "clearOnBlur": false,
@@ -73,24 +72,13 @@ const fetchMachine = createMachine({
       actions: "clearInputValue"
     }]
   },
+  entry: ["setupDocument", "checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: [{
-          cond: "autoFocus",
-          target: "focused:input",
-          actions: ["setupDocument", "checkValue"]
-        }, {
-          target: "idle",
-          actions: ["setupDocument", "checkValue"]
-        }]
-      }
-    },
     idle: {
       on: {
         FOCUS: "focused:input",
@@ -221,7 +209,6 @@ const fetchMachine = createMachine({
     "(!isAtMax || allowOverflow) && !isInputValueEmpty": ctx => ctx["(!isAtMax || allowOverflow) && !isInputValueEmpty"],
     "addOnBlur": ctx => ctx["addOnBlur"],
     "clearOnBlur": ctx => ctx["clearOnBlur"],
-    "autoFocus": ctx => ctx["autoFocus"],
     "!hasFocusedId": ctx => ctx["!hasFocusedId"],
     "hasTags && isInputCaretAtStart": ctx => ctx["hasTags && isInputCaretAtStart"],
     "addOnPaste": ctx => ctx["addOnPaste"],

@@ -15,8 +15,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "tags-input",
-      initial: "unknown",
-
+      initial: ctx.autoFocus ? "focused:input" : "idle",
       context: {
         log: { current: null, prev: null },
         inputValue: "",
@@ -46,7 +45,6 @@ export function machine(userContext: UserDefinedContext) {
           ...ctx.translations,
         },
       },
-
       computed: {
         count: (ctx) => ctx.value.length,
         valueAsString: (ctx) => JSON.stringify(ctx.value),
@@ -55,7 +53,6 @@ export function machine(userContext: UserDefinedContext) {
         isAtMax: (ctx) => ctx.count === ctx.max,
         isOverflowing: (ctx) => ctx.count > ctx.max,
       },
-
       watch: {
         focusedId: ["invokeOnHighlight", "logFocused"],
         isOverflowing: "invokeOnInvalid",
@@ -108,20 +105,9 @@ export function machine(userContext: UserDefinedContext) {
         ],
       },
 
-      states: {
-        unknown: {
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused:input",
-                actions: ["setupDocument", "checkValue"],
-              },
-              { target: "idle", actions: ["setupDocument", "checkValue"] },
-            ],
-          },
-        },
+      entry: ["setupDocument", "checkValue"],
 
+      states: {
         idle: {
           on: {
             FOCUS: "focused:input",

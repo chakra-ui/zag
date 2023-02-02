@@ -54,7 +54,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "hover:temp" | "hover" | "dragging" | "focused"
+  value: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
   tags: "focus"
 }
 

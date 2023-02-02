@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "rating",
-      initial: "unknown",
+      initial: "idle",
       context: {
         name: "rating",
         max: 5,
@@ -40,17 +40,9 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: ["trackFormControlState"],
+      entry: ["checkValue"],
 
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: "checkValue",
-            },
-          },
-        },
-
         idle: {
           entry: "clearHoveredValue",
           on: {

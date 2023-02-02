@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "slider",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isHorizontal": false,
     "isHorizontal": false,
@@ -30,20 +30,13 @@ const fetchMachine = createMachine({
       actions: "decrement"
     }
   },
+  entry: ["checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          target: "idle",
-          actions: ["checkValue"]
-        }
-      }
-    },
     idle: {
       on: {
         POINTER_DOWN: {
