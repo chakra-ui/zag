@@ -25,13 +25,11 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
           lastAffected.current &&
           !isChanged(lastSnapshot.current, nextSnapshot, lastAffected.current, new WeakMap())
         ) {
-          console.log("not changed")
           return lastSnapshot.current
         }
       } catch (e) {
         // ignore if a promise or something is thrown
       }
-      console.log("changed")
       return nextSnapshot
     },
     () => snapshot(proxyObject, use),
