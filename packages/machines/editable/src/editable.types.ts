@@ -70,7 +70,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether to start with the edit mode active.
      */
-    startWithEditView: boolean
+    startWithEditView?: boolean
     /**
      * Whether to select the text in the input when it is focused.
      */
@@ -158,7 +158,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "preview" | "edit"
+  value: "preview" | "edit"
 }
 
 export type State = S.State<MachineContext, MachineState>

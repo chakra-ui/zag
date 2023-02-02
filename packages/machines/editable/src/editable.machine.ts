@@ -12,9 +12,8 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "editable",
-      initial: "unknown",
+      initial: ctx.startWithEditView ? "edit" : "preview",
       context: {
-        startWithEditView: false,
         activationMode: "focus",
         submitMode: "both",
         value: "",
@@ -49,20 +48,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: [
-              {
-                guard: "startWithEditView",
-                target: "edit",
-              },
-              {
-                target: "preview",
-              },
-            ],
-          },
-        },
-
         preview: {
           // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
           entry: ["blurInputIfNeeded"],
@@ -123,7 +108,6 @@ export function machine(userContext: UserDefinedContext) {
         isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
         activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
         activateOnFocus: (ctx) => ctx.activationMode === "focus",
-        startWithEditView: (ctx) => ctx.startWithEditView,
       },
 
       activities: {
