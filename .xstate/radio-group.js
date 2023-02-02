@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "radio",
-  initial: "unknown",
+  initial: "idle",
   context: {},
   activities: ["trackFormControlState"],
   on: {
@@ -28,19 +28,14 @@ const fetchMachine = createMachine({
       actions: "setFocused"
     }
   },
+  entry: ["checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          actions: "checkValue"
-        }
-      }
-    }
+    idle: {}
   }
 }, {
   actions: {
