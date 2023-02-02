@@ -14,7 +14,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "menu",
-      initial: "unknown",
+      initial: "idle",
       context: {
         highlightedId: null,
         hoverId: null,
@@ -80,12 +80,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
-
         idle: {
           on: {
             CONTEXT_MENU_START: {

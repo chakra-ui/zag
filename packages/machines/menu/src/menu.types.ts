@@ -136,7 +136,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+  value: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
   tags: "visible"
 }
 
