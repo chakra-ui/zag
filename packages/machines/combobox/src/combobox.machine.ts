@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         loop: true,
         openOnClick: false,
@@ -54,17 +54,11 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      activities: ["syncInputValue"],
-
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         autoComplete: (ctx) => ctx.inputBehavior === "autocomplete",
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
-      },
-
-      onEvent(ctx, evt) {
-        ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
       },
 
       watch: {
@@ -74,7 +68,10 @@ export function machine(userContext: UserDefinedContext) {
         activeId: "setSectionLabel",
       },
 
-      exit: "removeLiveRegion",
+      entry: ["setupLiveRegion"],
+      exit: ["removeLiveRegion"],
+
+      activities: ["syncInputValue"],
 
       on: {
         SET_VALUE: {
@@ -102,23 +99,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          tags: ["idle"],
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused",
-                actions: "setupDocument",
-              },
-              {
-                target: "idle",
-                actions: "setupDocument",
-              },
-            ],
-          },
-        },
-
         idle: {
           tags: ["idle"],
           entry: ["scrollToTop", "clearFocusedOption"],
@@ -412,10 +392,12 @@ export function machine(userContext: UserDefinedContext) {
           exec()
           return observeChildren(dom.getContentEl(ctx), exec)
         },
-        scrollOptionIntoView(ctx, _evt) {
+        scrollOptionIntoView(ctx, _evt, { getState }) {
           const input = dom.getInputEl(ctx)
           return observeAttributes(input, "aria-activedescendant", () => {
-            if (!ctx.isKeyboardEvent) return
+            const evt = getState().event
+            const isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
+            if (!isKeyboardEvent) return
 
             const option = dom.getActiveOptionEl(ctx)
             option?.scrollIntoView({ block: "nearest" })
@@ -428,11 +410,14 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        setupDocument(ctx) {
+        setupLiveRegion(ctx) {
           ctx.liveRegion = createLiveRegion({
             level: "assertive",
             document: dom.getDoc(ctx),
           })
+        },
+        removeLiveRegion(ctx) {
+          ctx.liveRegion?.destroy()
         },
         setActiveOption(ctx, evt) {
           const { label, id, value } = evt
@@ -586,9 +571,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearIsHovering(ctx) {
           ctx.isHovering = false
-        },
-        removeLiveRegion(ctx) {
-          ctx.liveRegion?.destroy()
         },
         preventDefault(_ctx, evt) {
           evt.preventDefault()
