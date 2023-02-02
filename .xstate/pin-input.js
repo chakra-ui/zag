@@ -11,11 +11,10 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "pin-input",
-  initial: "unknown",
+  initial: ctx.autoFocus ? "focused" : "idle",
   context: {
     "hasIndex": false,
     "isDisabled": false,
-    "autoFocus": false,
     "isFinalValue && isValidValue": false,
     "isValidValue": false,
     "isValidValue": false,
@@ -24,6 +23,7 @@ const fetchMachine = createMachine({
     "isValueComplete": false,
     "!isValidValue": false
   },
+  entry: ["setupValue"],
   on: {
     SET_VALUE: [{
       cond: "hasIndex",
@@ -44,18 +44,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: [{
-          cond: "autoFocus",
-          target: "focused",
-          actions: ["setupValue", "setFocusIndexToFirst"]
-        }, {
-          target: "idle",
-          actions: "setupValue"
-        }]
-      }
-    },
     idle: {
       on: {
         FOCUS: {
@@ -121,7 +109,6 @@ const fetchMachine = createMachine({
   guards: {
     "hasIndex": ctx => ctx["hasIndex"],
     "isDisabled": ctx => ctx["isDisabled"],
-    "autoFocus": ctx => ctx["autoFocus"],
     "isFinalValue && isValidValue": ctx => ctx["isFinalValue && isValidValue"],
     "isValidValue": ctx => ctx["isValidValue"],
     "hasValue": ctx => ctx["hasValue"],

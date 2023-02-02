@@ -12,10 +12,10 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "pin-input",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         value: [],
-        focusedIndex: -1,
+        focusedIndex: ctx.autoFocus ? 0 : -1,
         placeholder: "○",
         otp: false,
         type: "numeric",
@@ -40,6 +40,8 @@ export function machine(userContext: UserDefinedContext) {
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
+      entry: ["setupValue"],
+
       on: {
         SET_VALUE: [
           {
@@ -60,21 +62,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused",
-                actions: ["setupValue", "setFocusIndexToFirst"],
-              },
-              {
-                target: "idle",
-                actions: "setupValue",
-              },
-            ],
-          },
-        },
         idle: {
           on: {
             FOCUS: {
