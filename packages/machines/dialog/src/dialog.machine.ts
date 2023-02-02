@@ -35,15 +35,14 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["checkRenderedElements"],
           activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
           on: {
-            CLOSE: "closed",
-            TOGGLE: "closed",
+            CLOSE: { target: "closed", actions: ["invokeOnClose"] },
+            TOGGLE: { target: "closed", actions: ["invokeOnClose"] },
           },
         },
         closed: {
-          entry: ["invokeOnClose"],
           on: {
-            OPEN: "open",
-            TOGGLE: "open",
+            OPEN: { target: "open", actions: ["invokeOnOpen"] },
+            TOGGLE: { target: "open", actions: ["invokeOnOpen"] },
           },
         },
       },
@@ -118,6 +117,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose(ctx) {
           ctx.onClose?.()
+        },
+        invokeOnOpen(ctx) {
+          ctx.onOpen?.()
         },
       },
     },

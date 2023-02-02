@@ -46,6 +46,10 @@ type PublicContext = DirectionProperty &
      */
     onClose?: () => void
     /**
+     * Callback to be invoked when the dialog is opened
+     */
+    onOpen?: () => void
+    /**
      * Whether to close the dialog when the outside is clicked
      */
     closeOnOutsideClick: boolean
