@@ -23,7 +23,7 @@ const fetchMachine = createMachine({
     "isValueComplete": false,
     "!isValidValue": false
   },
-  entry: ["setupValue"],
+  entry: ctx.autoFocus ? ["setupValue", "setFocusIndexToFirst"] : ["setupValue"],
   on: {
     SET_VALUE: [{
       cond: "hasIndex",

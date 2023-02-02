@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         value: [],
-        focusedIndex: ctx.autoFocus ? 0 : -1,
+        focusedIndex: -1,
         placeholder: "○",
         otp: false,
         type: "numeric",
@@ -40,7 +40,7 @@ export function machine(userContext: UserDefinedContext) {
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
-      entry: ["setupValue"],
+      entry: ctx.autoFocus ? ["setupValue", "setFocusIndexToFirst"] : ["setupValue"],
 
       on: {
         SET_VALUE: [
