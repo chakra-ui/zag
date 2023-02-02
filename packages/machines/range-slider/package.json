@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/range-slider",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Core logic for the range-slider widget implemented as a state machine",
   "keywords": [
     "js",

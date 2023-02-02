@@ -1,5 +1,16 @@
 # @zag-js/dom-utils
 
+## 0.2.4
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+- Updated dependencies [[`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7),
+  [`fef822b9`](https://github.com/chakra-ui/zag/commit/fef822b91a4a9dbfc3c1e8f88a89727a3231326a)]:
+  - @zag-js/types@0.3.4
+
 ## 0.2.3
 
 ### Patch Changes

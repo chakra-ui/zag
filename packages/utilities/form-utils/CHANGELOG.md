@@ -1,5 +1,12 @@
 # @zag-js/form-utils
 
+## 0.2.4
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
 ## 0.2.3
 
 ### Patch Changes
