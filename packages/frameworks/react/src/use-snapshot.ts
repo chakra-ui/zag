@@ -16,7 +16,14 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
   const lastAffected = useRef<WeakMap<object, unknown>>()
 
   const currSnapshot = useSyncExternalStore(
-    useCallback((callback) => subscribe(proxyObject, callback, notifyInSync), [proxyObject, notifyInSync]),
+    useCallback(
+      (callback) => {
+        const unsub = subscribe(proxyObject, callback, notifyInSync)
+        callback()
+        return unsub
+      },
+      [proxyObject, notifyInSync],
+    ),
     () => {
       const nextSnapshot = snapshot(proxyObject, use)
       try {
