@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "pressable",
-      initial: "unknown",
+      initial: "idle",
       context: {
         ...ctx,
         ignoreClickAfterPress: false,
@@ -25,12 +25,6 @@ export function machine(userContext: UserDefinedContext) {
       exit: ["restoreTextSelection", "removeDocumentListeners"],
 
       states: {
-        unknown: {
-          on: {
-            SETUP: "idle",
-          },
-        },
-
         idle: {
           entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection", "resetIgnoreClick"],
           on: {

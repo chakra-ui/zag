@@ -109,7 +109,7 @@ type ComputedContext = Readonly<{}>
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "pressed:in" | "pressed:out"
+  value: "idle" | "pressed:in" | "pressed:out"
   tags: "pressed"
 }
 
