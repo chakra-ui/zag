@@ -34,12 +34,12 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "proxy-compare": "2.4.0"
+    "proxy-compare": "2.4.0",
+    "valtio": "^1.9.0"
   },
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "clean-package": "2.2.0",
-    "valtio": "^1.9.0"
+    "clean-package": "2.2.0"
   }
 }
