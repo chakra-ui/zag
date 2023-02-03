@@ -1,5 +1,17 @@
 # @zag-js/react
 
+## 0.3.8
+
+### Patch Changes
+
+- [`176e48ab`](https://github.com/chakra-ui/zag/commit/176e48ab72bc8b23d49ad71897fdc66c2bef526a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Stabilize the `useSnapshot` hook to prevent maximum depth exceeded
+  errors.
+
+- Updated dependencies [[`28dd7680`](https://github.com/chakra-ui/zag/commit/28dd768067f153e1f142154c8a8ce9bbde3746e2)]:
+  - @zag-js/store@0.2.6
+  - @zag-js/core@0.2.8
+
 ## 0.3.7
 
 ### Patch Changes

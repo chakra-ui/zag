@@ -1,5 +1,12 @@
 # @zag-js/tooltip
 
+## 0.2.10
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
 ## 0.2.9
 
 ### Patch Changes

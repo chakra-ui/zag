@@ -1,5 +1,15 @@
 # @zag-js/pin-input
 
+## 0.2.11
+
+### Patch Changes
+
+- [`176e48ab`](https://github.com/chakra-ui/zag/commit/176e48ab72bc8b23d49ad71897fdc66c2bef526a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `autoFocus` regression
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
 ## 0.2.10
 
 ### Patch Changes

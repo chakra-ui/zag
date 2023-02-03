@@ -1,5 +1,13 @@
 # @zag-js/range-slider
 
+## 0.2.12
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+  - @zag-js/slider@0.2.12
+
 ## 0.2.11
 
 ### Patch Changes

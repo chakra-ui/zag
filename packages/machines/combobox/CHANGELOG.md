@@ -1,5 +1,12 @@
 # @zag-js/combobox
 
+## 0.2.12
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
 ## 0.2.11
 
 ### Patch Changes
