@@ -1,5 +1,12 @@
 # @zag-js/menu
 
+## 0.3.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
 ## 0.3.6
 
 ### Patch Changes

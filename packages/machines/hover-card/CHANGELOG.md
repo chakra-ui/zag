@@ -1,5 +1,12 @@
 # @zag-js/hover-card
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
 ## 0.2.2
 
 ### Patch Changes

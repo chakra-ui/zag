@@ -1,5 +1,13 @@
 # @zag-js/store
 
+## 0.2.6
+
+### Patch Changes
+
+- [#499](https://github.com/chakra-ui/zag/pull/499)
+  [`28dd7680`](https://github.com/chakra-ui/zag/commit/28dd768067f153e1f142154c8a8ce9bbde3746e2) Thanks
+  [@malangcat](https://github.com/malangcat)! - install valtio as dependencies, not devDependencies
+
 ## 0.2.5
 
 ### Patch Changes

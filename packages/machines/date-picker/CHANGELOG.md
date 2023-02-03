@@ -1,5 +1,12 @@
 # @zag-js/date-picker
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
 ## 0.0.4
 
 ### Patch Changes

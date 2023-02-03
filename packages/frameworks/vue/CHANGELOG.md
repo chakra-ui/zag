@@ -1,5 +1,13 @@
 # @zag-js/vue
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`28dd7680`](https://github.com/chakra-ui/zag/commit/28dd768067f153e1f142154c8a8ce9bbde3746e2)]:
+  - @zag-js/store@0.2.6
+  - @zag-js/core@0.2.8
+
 ## 0.2.7
 
 ### Patch Changes
