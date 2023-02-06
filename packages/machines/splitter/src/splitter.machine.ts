@@ -238,7 +238,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusResizeHandle(ctx) {
           raf(() => {
-            dom.getActiveHandleEl(ctx)?.focus()
+            dom.getActiveHandleEl(ctx)?.focus({ preventScroll: true })
           })
         },
         blurResizeHandle(ctx) {
