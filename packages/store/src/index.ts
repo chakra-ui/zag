@@ -1,3 +1,3 @@
-export { ref, snapshot, proxy, subscribe } from "valtio/vanilla"
-export type { INTERNAL_Snapshot } from "valtio/vanilla"
-export { proxyWithComputed, subscribeKey } from "valtio/utils"
+export { proxy, ref, snapshot, subscribe, type Snapshot } from "./proxy"
+export { proxyWithComputed } from "./proxy-computed"
+export { subscribeKey } from "./subscribe-key"

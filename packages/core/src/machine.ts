@@ -1,4 +1,4 @@
-import { ref, snapshot, subscribe } from "@zag-js/store"
+import { ref, snapshot, subscribe, subscribeKey } from "@zag-js/store"
 import {
   cast,
   clear,
@@ -19,7 +19,7 @@ import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
-import { cloneFull, cloneJson, subscribeKey, toArray, toEvent } from "./utils"
+import { cloneFull, cloneJson, toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
