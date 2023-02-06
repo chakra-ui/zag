@@ -40,6 +40,9 @@ export default function Page() {
 
             {/*  */}
             <button type="reset">Reset</button>
+            <button type="button" onClick={() => api.clearValue()}>
+              Clear
+            </button>
             <button type="button" onClick={() => api.setValue("mango")}>
               Set to Mangoes
             </button>

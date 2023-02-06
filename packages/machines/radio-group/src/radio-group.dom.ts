@@ -22,6 +22,6 @@ export const dom = defineDomHelpers({
   getInputEls: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `input[type=radio][data-ownedby='${ownerId}']:not([disabled])`
-    return queryAll(dom.getRootEl(ctx), selector)
+    return queryAll<HTMLInputElement>(dom.getRootEl(ctx), selector)
   },
 })
