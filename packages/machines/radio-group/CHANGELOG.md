@@ -1,5 +1,16 @@
 # @zag-js/radio-group
 
+## 0.1.12
+
+### Patch Changes
+
+- [#510](https://github.com/chakra-ui/zag/pull/510)
+  [`10dda127`](https://github.com/chakra-ui/zag/commit/10dda1276a848c9833b9d4664e4c966c525a1152) Thanks
+  [@anubra266](https://github.com/anubra266)! - - Add `clearValue` api
+  - Fix radio inputs not syncing when radio group value is cleared,
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/core@0.2.9
+
 ## 0.1.11
 
 ### Patch Changes
