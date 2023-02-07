@@ -36,7 +36,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         focusedIndex: ["focusInput", "setInputSelection"],
-        value: ["dispatchInputEvent"],
+        value: ["dispatchInputEvent", "syncInputElements"],
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
@@ -154,13 +154,13 @@ export function machine(userContext: UserDefinedContext) {
         focusInput: (ctx) => {
           raf(() => {
             if (ctx.focusedIndex === -1) return
-            dom.getFocusedEl(ctx)?.focus()
+            dom.getFocusedInputEl(ctx)?.focus()
           })
         },
         setInputSelection: (ctx) => {
           raf(() => {
             if (ctx.focusedIndex === -1) return
-            const input = dom.getFocusedEl(ctx)
+            const input = dom.getFocusedInputEl(ctx)
             const length = input.value.length
             input.selectionStart = ctx.selectOnFocus ? 0 : length
             input.selectionEnd = length
@@ -170,18 +170,11 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.isValueComplete) return
           ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
         },
-        invokeOnChange: (ctx, evt) => {
-          if (evt.type === "SETUP") return
+        invokeOnChange: (ctx) => {
           ctx.onChange?.({ value: Array.from(ctx.value) })
         },
-        dispatchInputEvent: (ctx, evt) => {
-          if (evt.type === "SETUP") return
+        dispatchInputEvent: (ctx) => {
           dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
-          const inputs = dom.getElements(ctx)
-          ctx.value.forEach((val, index) => {
-            const input = inputs[index]
-            input.value = val || ""
-          })
         },
         invokeOnInvalid: (ctx, evt) => {
           ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
@@ -198,13 +191,16 @@ export function machine(userContext: UserDefinedContext) {
         setFocusedValue: (ctx, evt) => {
           ctx.value[ctx.focusedIndex] = getNextValue(ctx.focusedValue, evt.value)
         },
-        syncInputValue: (ctx, evt) => {
-          const nextValue = getNextValue(ctx.focusedValue, evt.value)
-          const changed = nextValue !== ctx.focusedValue
-          if (evt.value.length <= 1 || changed) return
+        syncInputValue(ctx, evt) {
+          const input = dom.getInputEl(ctx, evt.index.toString())
+          if (!input) return
+          input.value = ctx.value[evt.index]
+        },
+        syncInputElements(ctx) {
           const inputs = dom.getElements(ctx)
-          const input = inputs[ctx.focusedIndex]
-          input.value = nextValue
+          inputs.forEach((input, index) => {
+            input.value = ctx.value[index]
+          })
         },
         setPastedValue(ctx, evt) {
           raf(() => {
@@ -224,7 +220,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value[ctx.focusedIndex] = ""
         },
         resetFocusedValue: (ctx) => {
-          const input = dom.getFocusedEl(ctx)
+          const input = dom.getFocusedInputEl(ctx)
           input.value = ctx.focusedValue
         },
         setFocusIndexToFirst: (ctx) => {
@@ -247,7 +243,7 @@ export function machine(userContext: UserDefinedContext) {
         blurFocusedInputIfNeeded(ctx) {
           if (!ctx.blurOnComplete) return
           raf(() => {
-            dom.getFocusedEl(ctx)?.blur()
+            dom.getFocusedInputEl(ctx)?.blur()
           })
         },
         requestFormSubmit(ctx) {

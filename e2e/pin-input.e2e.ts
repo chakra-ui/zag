@@ -74,4 +74,19 @@ test.describe("pin input", () => {
     await expect(page.locator(third)).toHaveValue("3")
     await expect(page.locator(third)).toBeFocused()
   })
+
+  test("[different] should allow only single character", async ({ page }) => {
+    await page.locator(first).type("1")
+    await page.locator(second).type("2")
+    await page.locator(first).focus()
+    await page.locator(first).type("3")
+    await expect(page.locator(first)).toHaveValue("3")
+  })
+
+  test("[same] should allow only single character", async ({ page }) => {
+    await page.locator(first).type("1")
+    await page.locator(first).focus()
+    await page.locator(first).type("1")
+    await expect(page.locator(first)).toHaveValue("1")
+  })
 })

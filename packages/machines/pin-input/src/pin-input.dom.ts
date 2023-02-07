@@ -14,7 +14,8 @@ export const dom = defineDomHelpers({
     const selector = `input[data-ownedby=${ownerId}]`
     return queryAll<HTMLInputElement>(dom.getRootEl(ctx), selector)
   },
-  getFocusedEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
+  getInputEl: (ctx: Ctx, id: string) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx, id)),
+  getFocusedInputEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
   getFirstInputEl: (ctx: Ctx) => dom.getElements(ctx)[0],
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 })
