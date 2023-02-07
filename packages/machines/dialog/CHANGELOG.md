@@ -1,5 +1,12 @@
 # @zag-js/dialog
 
+## 0.2.11
+
+### Patch Changes
+
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/core@0.2.9
+
 ## 0.2.10
 
 ### Patch Changes

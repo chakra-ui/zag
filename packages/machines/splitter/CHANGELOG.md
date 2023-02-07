@@ -1,5 +1,15 @@
 # @zag-js/splitter
 
+## 0.2.12
+
+### Patch Changes
+
+- [`97848b4e`](https://github.com/chakra-ui/zag/commit/97848b4efb1694cd01452f86e0d63ffa0966ac88) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Avoid scrolling the page when using the splitter
+
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/core@0.2.9
+
 ## 0.2.11
 
 ### Patch Changes
