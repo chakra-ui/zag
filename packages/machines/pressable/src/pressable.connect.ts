@@ -67,14 +67,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const pointerType = isVirtualPointerEvent(evt) ? "virtual" : event.pointerType
         send({ type: "POINTER_DOWN", event, pointerType })
       },
-      onPointerUp(event) {
-        if (event.button !== 0) return
-
-        if (!contains(event.currentTarget, event.target)) return
-        if (state.context.pointerType === "virtual") return
-
-        send({ type: "POINTER_UP", event })
-      },
       onMouseDown(event) {
         if (event.button !== 0) return
         if (utils.shouldPreventDefault(event.currentTarget)) {
