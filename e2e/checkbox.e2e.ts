@@ -70,3 +70,15 @@ test("should not be changeable when readonly", async ({ page }) => {
   await page.click(root)
   await expectNotToBeChecked(page)
 })
+
+test("input is not blurred on label click", async ({ page }) => {
+  let blurCount = 0
+  await page.exposeFunction("trackBlur", () => blurCount++)
+  await page.locator(input).evaluate((input) => {
+    input.addEventListener("blur", (window as any).trackBlur)
+  })
+  await page.click(label)
+  await page.click(label)
+  await page.click(label)
+  expect(blurCount).toBe(0)
+})
