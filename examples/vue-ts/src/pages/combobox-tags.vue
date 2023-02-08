@@ -79,6 +79,7 @@ const [state, send] = useMachine(
     ids: {
       input: "combobox-tags",
     },
+    inputBehavior: "autohighlight",
     onOpen() {
       options.value = [...comboboxOptions.value]
     },
