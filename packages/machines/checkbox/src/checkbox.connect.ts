@@ -88,7 +88,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       onPointerDown(event) {
         if (!isInteractive) return
-        event.preventDefault()
         event.stopPropagation()
       },
     }),
