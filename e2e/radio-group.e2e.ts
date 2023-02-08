@@ -1,5 +1,8 @@
 import { expect, Page, test } from "@playwright/test"
-import { a11y, controls, testid } from "./__utils"
+import { a11y, controls, testid, part } from "./__utils"
+
+const root = part("root")
+const label = part("label")
 
 const apple = {
   radio: testid("radio-apple"),
@@ -27,6 +30,12 @@ test.beforeEach(async ({ page }) => {
 
 test("should have no accessibility violation", async ({ page }) => {
   await a11y(page)
+})
+
+test("should have aria-labelledby on root", async ({ page }) => {
+  const labelId = await page.locator(label).getAttribute("id")
+  expect(labelId).not.toBeNull()
+  await expect(page.locator(root)).toHaveAttribute("aria-labelledby", labelId as string)
 })
 
 test("should be checked when clicked", async ({ page }) => {
