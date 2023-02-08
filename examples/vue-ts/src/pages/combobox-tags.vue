@@ -15,12 +15,12 @@
             </span>
             <input v-bind="inputProps" placeholder="Add tag..." />
           </div>
-          <button v-bind="api.toggleButtonProps">▼</button>
+          <button v-bind="api.triggerProps">▼</button>
         </div>
       </div>
 
       <div v-bind="api.positionerProps">
-        <ul v-if="options.length > 0" v-bind="api.listboxProps">
+        <ul v-if="options.length > 0" v-bind="api.contentProps">
           <li
             v-for="(item, index) in options"
             :key="index"
@@ -38,13 +38,11 @@
 <script setup lang="ts">
 import * as tagsInput from "@zag-js/tags-input"
 import * as combobox from "@zag-js/combobox"
-import { comboboxControls, comboboxData } from "@zag-js/shared"
+import { comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
 import { computed, ref } from "vue"
-import { useControls } from "../hooks/use-controls"
 import type { OptionProps } from "@zag-js/combobox/src/combobox.types"
 
-const controls = useControls(comboboxControls)
 const comboboxOptions = ref(comboboxData)
 const options = ref(comboboxData)
 
@@ -110,7 +108,6 @@ const [state, send] = useMachine(
       api.value.clearValue()
     },
   }),
-  { context: controls.context },
 )
 
 const api = computed(() => combobox.connect(state.value, send, normalizeProps))
