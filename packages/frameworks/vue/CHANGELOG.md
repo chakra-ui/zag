@@ -1,5 +1,80 @@
 # @zag-js/vue
 
+## 0.2.9
+
+### Patch Changes
+
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/core@0.2.9
+  - @zag-js/store@0.2.7
+
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`28dd7680`](https://github.com/chakra-ui/zag/commit/28dd768067f153e1f142154c8a8ce9bbde3746e2)]:
+  - @zag-js/store@0.2.6
+  - @zag-js/core@0.2.8
+
+## 0.2.7
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+- [`fef822b9`](https://github.com/chakra-ui/zag/commit/fef822b91a4a9dbfc3c1e8f88a89727a3231326a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `style` to prop types in `normalizeProps`
+
+- Updated dependencies [[`f7bb988a`](https://github.com/chakra-ui/zag/commit/f7bb988aaeda6c6caebe95823f4cd44baa0d5e78),
+  [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7),
+  [`fef822b9`](https://github.com/chakra-ui/zag/commit/fef822b91a4a9dbfc3c1e8f88a89727a3231326a)]:
+  - @zag-js/core@0.2.7
+  - @zag-js/store@0.2.5
+  - @zag-js/types@0.3.4
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699),
+  [`88ccbbed`](https://github.com/chakra-ui/zag/commit/88ccbbed937acf10d4338e2c6d7f1e6b9eb538c8)]:
+  - @zag-js/core@0.2.6
+  - @zag-js/store@0.2.4
+
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b),
+  [`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da),
+  [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/types@0.3.3
+  - @zag-js/store@0.2.3
+  - @zag-js/core@0.2.5
+
+## 0.2.4
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- Updated dependencies [[`4c98f016`](https://github.com/chakra-ui/zag/commit/4c98f016ae3d48b1b74f4dc8c302ef9a1c664260),
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822)]:
+  - @zag-js/core@0.2.4
+  - @zag-js/store@0.2.2
+  - @zag-js/types@0.3.2
+
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/core@0.2.3
+  - @zag-js/store@0.2.1
+
 ## 0.2.2
 
 ### Patch Changes

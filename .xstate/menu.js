@@ -11,14 +11,13 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "menu",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "!isSubmenu": false,
     "isSubmenu": false,
     "isTriggerItem": false,
     "!isTriggerItem": false,
-    "hasFocusedItem": false,
-    "hasFocusedItem": false,
+    "isForwardTabNavigation": false,
     "isSubmenu": false,
     "isTriggerItemFocused": false,
     "isTriggerItemFocused": false,
@@ -65,11 +64,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       on: {
         CONTEXT_MENU_START: {
@@ -187,18 +181,18 @@ const fetchMachine = createMachine({
           target: "closed",
           actions: "invokeOnClose"
         },
-        ARROW_UP: [{
-          cond: "hasFocusedItem",
+        TAB: [{
+          cond: "isForwardTabNavigation",
+          actions: ["focusNextItem"]
+        }, {
+          actions: ["focusPrevItem"]
+        }],
+        ARROW_UP: {
           actions: ["focusPrevItem", "focusMenu"]
-        }, {
-          actions: "focusLastItem"
-        }],
-        ARROW_DOWN: [{
-          cond: "hasFocusedItem",
+        },
+        ARROW_DOWN: {
           actions: ["focusNextItem", "focusMenu"]
-        }, {
-          actions: "focusFirstItem"
-        }],
+        },
         ARROW_LEFT: {
           cond: "isSubmenu",
           target: "closed",
@@ -283,7 +277,7 @@ const fetchMachine = createMachine({
     "isSubmenu": ctx => ctx["isSubmenu"],
     "isTriggerItem": ctx => ctx["isTriggerItem"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
-    "hasFocusedItem": ctx => ctx["hasFocusedItem"],
+    "isForwardTabNavigation": ctx => ctx["isForwardTabNavigation"],
     "isTriggerItemFocused": ctx => ctx["isTriggerItemFocused"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
     "!suspendPointer && !isTargetFocused": ctx => ctx["!suspendPointer && !isTargetFocused"],

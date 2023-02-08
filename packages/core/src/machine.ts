@@ -1,4 +1,4 @@
-import { ref, snapshot, subscribe } from "@zag-js/store"
+import { ref, snapshot, subscribe, subscribeKey } from "@zag-js/store"
 import {
   cast,
   clear,
@@ -13,14 +13,13 @@ import {
   uuid,
   warn,
 } from "@zag-js/utils"
-import { deepMerge } from "./deep-merge"
-import { klona } from "klona/json"
 import { createProxy } from "./create-proxy"
+import { deepMerge } from "./deep-merge"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
-import { subscribeKey, toArray, toEvent } from "./utils"
+import { cloneFull, cloneJson, toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -67,8 +66,8 @@ export class Machine<
   // Let's get started!
   constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
     // clone the config and options
-    this.config = klona(config)
-    this.options = klona(options ?? {})
+    this.config = cloneFull(config)
+    this.options = cloneFull(options ?? {})
 
     this.id = this.config.id ?? `machine-${uuid()}`
 
@@ -93,7 +92,7 @@ export class Machine<
   }
 
   public getState(): S.State<TContext, TState, TEvent> {
-    return klona(this.stateSnapshot)
+    return cloneJson(this.stateSnapshot)
   }
 
   // immutable context value
@@ -103,6 +102,9 @@ export class Machine<
 
   // Starts the interpreted machine.
   public start = (init?: S.StateInit<TContext, TState>) => {
+    // reset state back to empty (for SSR, we had to set state.value to initial value)
+    this.state.value = ""
+
     // Don't start if it's already running
     if (this.status === MachineStatus.Running) {
       return this
@@ -177,11 +179,26 @@ export class Machine<
 
   private setupContextWatchers = () => {
     for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      this.contextWatchers.add(
-        subscribeKey(this.state.context, key, () => {
+      let cleanup: VoidFunction
+
+      if (key === "*") {
+        cleanup = subscribe(this.state.context, () => {
           this.executeActions(fn, this.state.event as TEvent)
-        }),
-      )
+        })
+      } else {
+        const compareFn = this.options.compareFns?.[key]
+        cleanup = subscribeKey(
+          this.state.context,
+          key,
+          () => {
+            this.executeActions(fn, this.state.event as TEvent)
+          },
+          this.sync,
+          compareFn,
+        )
+      }
+
+      this.contextWatchers.add(cleanup)
     }
   }
 

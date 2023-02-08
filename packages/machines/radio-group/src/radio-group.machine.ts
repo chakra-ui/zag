@@ -9,7 +9,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "radio",
-      initial: "unknown",
+      initial: "idle",
       context: {
         value: null,
         initialValue: null,
@@ -37,17 +37,13 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["dispatchChangeEvent", "invokeOnChange"],
+        value: ["dispatchChangeEvent", "invokeOnChange", "syncInputElements"],
       },
 
+      entry: ["checkValue"],
+
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              actions: "checkValue",
-            },
-          },
-        },
+        idle: {},
       },
     },
 
@@ -87,8 +83,13 @@ export function machine(userContext: UserDefinedContext) {
         dispatchChangeEvent(ctx, evt) {
           if (!evt.manual) return
           const el = dom.getRadioInputEl(ctx, evt.value)
-          if (!el) return
           dispatchInputCheckedEvent(el, !!evt.value)
+        },
+        syncInputElements(ctx) {
+          const inputs = dom.getInputEls(ctx)
+          inputs.forEach((input) => {
+            input.checked = input.value === ctx.value
+          })
         },
       },
     },

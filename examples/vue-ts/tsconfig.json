@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "paths": {
       "@zag-js/*": ["../../node_modules/@zag-js/*"]
-    }
+    },
+    "jsx":"preserve"
   },
 
   "references": [

@@ -53,6 +53,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(value: string) {
       send({ type: "SET_VALUE", value, manual: true })
     },
+    clearValue() {
+      send({ type: "SET_VALUE", value: null, manual: true })
+    },
     focus,
     blur() {
       const focusedElement = dom.getActiveElement(state.context)

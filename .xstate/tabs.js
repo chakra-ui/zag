@@ -10,7 +10,7 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  initial: "unknown",
+  initial: "idle",
   context: {
     "selectOnFocus": false,
     "isHorizontal": false,
@@ -28,20 +28,13 @@ const fetchMachine = createMachine({
       actions: "clearValue"
     }
   },
+  entry: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          target: "idle",
-          actions: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"]
-        }
-      }
-    },
     idle: {
       on: {
         TAB_FOCUS: {

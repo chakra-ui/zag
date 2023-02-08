@@ -6,20 +6,33 @@ import type { MachineContext as Ctx } from "./range-slider.types"
  * Range style calculations
  * -----------------------------------------------------------------------------*/
 
+function getBounds<T>(value: T[]): [T, T] {
+  const firstValue = value[0]
+  const lastThumb = value[value.length - 1]
+  return [firstValue, lastThumb]
+}
+
 export function getRangeOffsets(ctx: Ctx) {
-  let start = (ctx.value[0] / ctx.max) * 100
-  let end = 100 - (ctx.value[ctx.value.length - 1] / ctx.max) * 100
-  return { start: `${start}%`, end: `${end}%` }
+  const [firstPercent, lastPercent] = getBounds(ctx.valuePercent)
+  return { start: `${firstPercent}%`, end: `${100 - lastPercent}%` }
 }
 
 /* -----------------------------------------------------------------------------
  * Thumb style calculations
  * -----------------------------------------------------------------------------*/
 
+function getVisibility(ctx: Ctx) {
+  let visibility: "visible" | "hidden" = "visible"
+  if (ctx.thumbAlignment === "contain" && !ctx.hasMeasuredThumbSize) {
+    visibility = "hidden"
+  }
+  return visibility
+}
+
 function getThumbStyle(ctx: Ctx, index: number): Style {
   const placementProp = ctx.isVertical ? "bottom" : ctx.isRtl ? "right" : "left"
   return {
-    visibility: ctx.hasMeasuredThumbSize ? "visible" : "hidden",
+    visibility: getVisibility(ctx),
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     [placementProp]: `var(--slider-thumb-offset-${index})`,

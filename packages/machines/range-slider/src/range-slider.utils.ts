@@ -1,43 +1,60 @@
-import { clamp, decrement, increment, percentToValue, snapToStep, toRanges } from "@zag-js/number-utils"
+import {
+  clampValue,
+  getClosestValueIndex,
+  getNextStepValue,
+  getPreviousStepValue,
+  getValueRanges,
+  snapValueToStep,
+} from "@zag-js/numeric-range"
 import type { MachineContext as Ctx } from "./range-slider.types"
 
-export const utils = {
-  check(ctx: Ctx, value: number[]) {
-    return value.map((value, index, _value) => {
-      return utils.convert({ ...ctx, value: _value }, value, index)
-    })
-  },
-  clampPercent(value: number) {
-    return clamp(value, { min: 0, max: 1 })
-  },
-  getRangeAtIndex(ctx: Ctx, index: number) {
-    return toRanges(ctx)[index]
-  },
-  fromPercent(ctx: Ctx, percent: number) {
-    const range = utils.getRangeAtIndex(ctx, ctx.activeIndex)
+export function normalizeValues(ctx: Ctx, nextValues: number[]) {
+  return nextValues.map((value, index, values) => {
+    return constrainValue({ ...ctx, value: values }, value, index)
+  })
+}
 
-    const maxPercent = range.max / ctx.max
-    const minPercent = range.min / ctx.max
+export function clampPercent(percent: number) {
+  return clampValue(percent, 0, 1)
+}
 
-    percent = clamp(percent, { min: minPercent, max: maxPercent })
-    const value = percentToValue(percent, ctx)
+export function getRangeAtIndex(ctx: Ctx, index: number) {
+  return getValueRanges(ctx.value, ctx.min, ctx.max, ctx.minStepsBetweenThumbs)[index]
+}
 
-    return parseFloat(snapToStep(value, ctx.step))
-  },
-  convert(ctx: Ctx, value: number, index: number) {
-    const range = utils.getRangeAtIndex(ctx, index)
-    return clamp(snapToStep(value, ctx.step), range)
-  },
-  decrement(ctx: Ctx, idx?: number, step?: number) {
-    const index = idx ?? ctx.activeIndex
-    const range = utils.getRangeAtIndex(ctx, index)
-    let value = decrement(range.value, step ?? ctx.step)
-    return utils.convert(ctx, value, index)
-  },
-  increment(ctx: Ctx, idx?: number, step?: number) {
-    const index = idx ?? ctx.activeIndex
-    const range = utils.getRangeAtIndex(ctx, index)
-    let value = increment(range.value, step ?? ctx.step)
-    return utils.convert(ctx, value, index)
-  },
+export function constrainValue(ctx: Ctx, value: number, index: number) {
+  const range = getRangeAtIndex(ctx, index)
+  const snapValue = snapValueToStep(value, ctx.min, ctx.max, ctx.step)
+  return clampValue(snapValue, range.min, range.max)
+}
+
+export function decrement(ctx: Ctx, index?: number, step?: number) {
+  const idx = index ?? ctx.activeIndex
+  const range = getRangeAtIndex(ctx, idx)
+  return getPreviousStepValue(idx, {
+    ...range,
+    step: step ?? ctx.step,
+    values: ctx.value,
+  })
+}
+
+export function increment(ctx: Ctx, index?: number, step?: number) {
+  const idx = index ?? ctx.activeIndex
+  const range = getRangeAtIndex(ctx, idx)
+  return getNextStepValue(idx, {
+    ...range,
+    step: step ?? ctx.step,
+    values: ctx.value,
+  })
+}
+
+export function getClosestIndex(ctx: Ctx, pointValue: number) {
+  return getClosestValueIndex(ctx.value, pointValue)
+}
+
+export function assignArray(current: number[], next: number[]) {
+  for (let i = 0; i < next.length; i++) {
+    const value = next[i]
+    current[i] = value
+  }
 }

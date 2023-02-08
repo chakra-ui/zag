@@ -1,0 +1,45 @@
+{
+  "name": "@zag-js/date-utils",
+  "version": "0.1.1",
+  "description": "Date utilities for zag.js",
+  "keywords": [
+    "js",
+    "utils",
+    "date-utils"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/date-utils",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build-fast": "tsup src",
+    "start": "pnpm build --watch",
+    "build": "tsup src --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "peerDependencies": {
+    "@internationalized/date": ">=3.0.0"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0",
+    "@internationalized/date": "^3.0.2"
+  }
+}

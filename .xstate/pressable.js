@@ -11,11 +11,12 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "pressable",
-  initial: "unknown",
+  initial: "idle",
   context: {
     "isVirtualPointerEvent": false,
     "wasPressedDown": false,
-    "cancelOnPointerExit": false
+    "cancelOnPointerExit": false,
+    "wasPressedDown": false
   },
   exit: ["restoreTextSelection", "removeDocumentListeners"],
   on: {
@@ -24,11 +25,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "idle"
-      }
-    },
     idle: {
       entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection", "resetIgnoreClick"],
       on: {
@@ -44,43 +40,52 @@ const fetchMachine = createMachine({
           actions: ["setTarget", "invokeOnPressStart", "trackDocumentKeyup"]
         },
         CLICK: {
-          actions: ["focusIfNeeded", "invokeOnPressStart", "invokeOnPressUp", "invokeOnPressEnd", "resetIgnoreClick"]
+          actions: ["focusIfNeeded", "invokeOnPressStart", "invokeOnPressEnd", "invokeOnPress", "resetIgnoreClick"]
         }
       }
     },
     "pressed:in": {
       tags: "pressed",
-      exit: "clearPressedDown",
       entry: "preventContextMenu",
       after: {
         500: {
           cond: "wasPressedDown",
-          actions: "invokeOnLongPress"
+          actions: ["clearPressedDown", "invokeOnLongPress"]
         }
       },
       on: {
         POINTER_LEAVE: [{
           cond: "cancelOnPointerExit",
           target: "idle",
-          actions: "invokeOnPressEnd"
+          actions: ["clearPressedDown", "invokeOnPressEnd"]
         }, {
           target: "pressed:out",
-          actions: "invokeOnPressEnd"
+          actions: ["clearPressedDown", "invokeOnPressEnd"]
         }],
-        DOC_POINTER_UP: {
+        DOC_POINTER_UP: [{
+          cond: "wasPressedDown",
           target: "idle",
-          actions: ["invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress"]
-        },
+          actions: ["clearPressedDown", "invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress"]
+        }, {
+          target: "idle",
+          actions: ["clearPressedDown", "invokeOnPressUp", "invokeOnPressEnd"]
+        }],
         DOC_KEY_UP: {
           target: "idle",
-          actions: ["invokeOnPressEnd", "triggerClick"]
+          actions: ["clearPressedDown", "invokeOnPressEnd", "triggerClick"]
         },
         KEY_UP: {
           target: "idle",
-          actions: "invokeOnPressUp"
+          actions: ["clearPressedDown", "invokeOnPressUp"]
         },
-        DOC_POINTER_CANCEL: "idle",
-        DRAG_START: "idle"
+        DOC_POINTER_CANCEL: {
+          target: "idle",
+          actions: "clearPressedDown"
+        },
+        DRAG_START: {
+          target: "idle",
+          actions: "clearPressedDown"
+        }
       }
     },
     "pressed:out": {

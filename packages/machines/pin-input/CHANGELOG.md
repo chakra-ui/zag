@@ -1,5 +1,100 @@
 # @zag-js/pin-input
 
+## 0.2.12
+
+### Patch Changes
+
+- [`956cbb15`](https://github.com/chakra-ui/zag/commit/956cbb1591c90b0bf990e3c80495bca5857a8ff1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple characters could be entered in pin-input
+
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/core@0.2.9
+
+## 0.2.11
+
+### Patch Changes
+
+- [`176e48ab`](https://github.com/chakra-ui/zag/commit/176e48ab72bc8b23d49ad71897fdc66c2bef526a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `autoFocus` regression
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
+## 0.2.10
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+- Updated dependencies [[`f7bb988a`](https://github.com/chakra-ui/zag/commit/f7bb988aaeda6c6caebe95823f4cd44baa0d5e78),
+  [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7),
+  [`fef822b9`](https://github.com/chakra-ui/zag/commit/fef822b91a4a9dbfc3c1e8f88a89727a3231326a)]:
+  - @zag-js/core@0.2.7
+  - @zag-js/anatomy@0.1.4
+  - @zag-js/types@0.3.4
+
+## 0.2.9
+
+### Patch Changes
+
+- [`20e83d8a`](https://github.com/chakra-ui/zag/commit/20e83d8a0bb0ca0e9c16903f3aa7dcd56cffb31b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple characters could be entered into the
+  input
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
+## 0.2.8
+
+### Patch Changes
+
+- [#471](https://github.com/chakra-ui/zag/pull/471)
+  [`749e8a6a`](https://github.com/chakra-ui/zag/commit/749e8a6adbb95557ba4ef37ba7fd99493f2fce7b) Thanks
+  [@lemming](https://github.com/lemming)! - fix(pin-input): paste in non-empty field #470
+
+- Updated dependencies [[`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b),
+  [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/types@0.3.3
+  - @zag-js/core@0.2.5
+
+## 0.2.7
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- [#456](https://github.com/chakra-ui/zag/pull/456)
+  [`d1dbf9e2`](https://github.com/chakra-ui/zag/commit/d1dbf9e240803c9e3ed81ebef363739be4273de0) Thanks
+  [@anubra266](https://github.com/anubra266)! - - Multiple characters being accepted by input in controlled mode
+  - Infinite loop when value changes
+- Updated dependencies [[`4c98f016`](https://github.com/chakra-ui/zag/commit/4c98f016ae3d48b1b74f4dc8c302ef9a1c664260),
+  [`ec776276`](https://github.com/chakra-ui/zag/commit/ec77627603f310ca34a659bc250cdcf819a17b91),
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822),
+  [`5799fcb5`](https://github.com/chakra-ui/zag/commit/5799fcb520a7956dc7ef1a9bc7aaa8dff85fa592)]:
+  - @zag-js/core@0.2.4
+  - @zag-js/anatomy@0.1.3
+  - @zag-js/types@0.3.2
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`5bd24f02`](https://github.com/chakra-ui/zag/commit/5bd24f02fcab355f7df8a2d5cea3b155155380f8)]:
+  - @zag-js/anatomy@0.1.2
+
+## 0.2.5
+
+### Patch Changes
+
+- [`af4ab9bb`](https://github.com/chakra-ui/zag/commit/af4ab9bb7cd599c53e47ca7ed2ea90a4ff742499) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update anatomy of components
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/core@0.2.3
+
 ## 0.2.4
 
 ### Patch Changes

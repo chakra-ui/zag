@@ -15,7 +15,7 @@ import type {
 } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
-export let toaster: Toaster = {} as any
+export let toaster = {} as Toaster
 
 export function groupConnect<T extends PropTypes>(state: GroupState, send: GroupSend, normalize: NormalizeProps<T>) {
   const group = {
@@ -138,23 +138,12 @@ export function groupConnect<T extends PropTypes>(state: GroupState, send: Group
       })
     },
 
-    createPortal() {
-      const doc = dom.getDoc(state.context)
-      const exist = dom.getPortalEl(state.context)
-      if (exist) return exist
-      const portal = dom.createPortalEl(state.context)
-      doc.body.appendChild(portal)
-      return portal
-    },
-
     subscribe(fn: (toasts: GroupMachineContext["toasts"]) => void) {
       return subscribe(state.context.toasts, () => fn(state.context.toasts))
     },
   }
 
-  if (!state.matches("unknown")) {
-    Object.assign(toaster, group)
-  }
+  Object.assign(toaster, group)
 
   return group
 }

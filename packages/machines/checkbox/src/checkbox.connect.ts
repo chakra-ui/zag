@@ -88,7 +88,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       onPointerDown(event) {
         if (!isInteractive) return
-        event.preventDefault()
+        // On pointerdown, the input blurs and returns focus to the `body`,
+        // we need to prevent this.
+        if (isFocused) event.preventDefault()
         event.stopPropagation()
       },
     }),

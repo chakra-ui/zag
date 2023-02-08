@@ -47,7 +47,10 @@ export default defineComponent({
             <br />
             <button onClick={() => button?.click()}>Programmatic click me</button>
           </main>
-          <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+
+          <Toolbar>
+            <StateVisualizer state={state} />
+          </Toolbar>
         </>
       )
     }

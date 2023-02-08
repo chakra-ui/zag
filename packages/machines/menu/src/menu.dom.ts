@@ -24,8 +24,8 @@ export const dom = defineDomHelpers({
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx) => nextById(dom.getElements(ctx), ctx.highlightedId!, ctx.loop),
-  getPrevEl: (ctx: Ctx) => prevById(dom.getElements(ctx), ctx.highlightedId!, ctx.loop),
+  getNextEl: (ctx: Ctx, loop?: boolean) => nextById(dom.getElements(ctx), ctx.highlightedId!, loop ?? ctx.loop),
+  getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedId!, loop ?? ctx.loop),
 
   getElemByKey: (ctx: Ctx, key: string) =>
     findByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedId }),

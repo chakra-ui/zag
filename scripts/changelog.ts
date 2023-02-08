@@ -1,4 +1,13 @@
-import { getMergedPrs, getPrByNumber, getPrData, writePrFile, writeReadme, manifest } from "./changelog-utils"
+import {
+  getMergedPrs,
+  getPrByNumber,
+  getPrData,
+  writePrFile,
+  writeReadme,
+  manifest,
+  getLatestPr,
+  PrData,
+} from "./changelog-utils"
 
 async function sync() {
   const prs = await getMergedPrs()
@@ -14,9 +23,24 @@ async function syncByNumber(prNumber: number) {
   await writeReadme()
 }
 
+async function updateFiles(data: PrData) {
+  await writePrFile(data)
+  await manifest.update(data)
+  await writeReadme()
+}
+
+async function syncLatest() {
+  const pr = await getLatestPr()
+  const data = getPrData(pr)
+  if (!data) return
+  await updateFiles(data)
+}
+
 const arg = process.argv[2]
 
-if (arg) {
+if (arg.includes("--latest")) {
+  syncLatest()
+} else if (arg.includes("--number")) {
   const prNumber = +arg.replace("--number=", "")
   syncByNumber(prNumber)
 } else {

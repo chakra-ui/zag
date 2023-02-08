@@ -1,5 +1,30 @@
 # @zag-js/types
 
+## 0.3.4
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+- [`fef822b9`](https://github.com/chakra-ui/zag/commit/fef822b91a4a9dbfc3c1e8f88a89727a3231326a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `style` to prop types in `normalizeProps`
+
+## 0.3.3
+
+### Patch Changes
+
+- [`c1f609df`](https://github.com/chakra-ui/zag/commit/c1f609dfabbc31c296ebdc1e89480313130f832b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Added support for any data attribute when using connect.
+
+## 0.3.2
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
 ## 0.3.1
 
 ### Patch Changes

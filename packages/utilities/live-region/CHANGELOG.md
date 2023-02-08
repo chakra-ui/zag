@@ -1,5 +1,20 @@
 # @zag-js/live-region
 
+## 0.2.2
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+## 0.2.1
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
 ## 0.2.0
 
 ### Minor Changes

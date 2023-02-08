@@ -79,7 +79,7 @@ type ComputedContext = Readonly<{}>
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown"
+  value: "idle"
 }
 
 export type State = S.State<MachineContext, MachineState>

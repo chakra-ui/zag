@@ -1,5 +1,104 @@
 # @zag-js/core
 
+## 0.2.9
+
+### Patch Changes
+
+- [`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where react is always required due to direct dependency
+  on `valtio`
+
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/store@0.2.7
+
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`28dd7680`](https://github.com/chakra-ui/zag/commit/28dd768067f153e1f142154c8a8ce9bbde3746e2)]:
+  - @zag-js/store@0.2.6
+
+## 0.2.7
+
+### Patch Changes
+
+- [`f7bb988a`](https://github.com/chakra-ui/zag/commit/f7bb988aaeda6c6caebe95823f4cd44baa0d5e78) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix SSR issue with initial state
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+- Updated dependencies [[`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7)]:
+  - @zag-js/store@0.2.5
+
+## 0.2.6
+
+### Patch Changes
+
+- [#490](https://github.com/chakra-ui/zag/pull/490)
+  [`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699) Thanks
+  [@renovate](https://github.com/apps/renovate)! - Update dependency klona to v2.0.6
+
+- Updated dependencies [[`88ccbbed`](https://github.com/chakra-ui/zag/commit/88ccbbed937acf10d4338e2c6d7f1e6b9eb538c8)]:
+  - @zag-js/store@0.2.4
+
+## 0.2.5
+
+### Patch Changes
+
+- [`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Added support for watching all context properties via the `*` key.
+
+- Updated dependencies [[`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da)]:
+  - @zag-js/store@0.2.3
+
+## 0.2.4
+
+### Patch Changes
+
+- [`4c98f016`](https://github.com/chakra-ui/zag/commit/4c98f016ae3d48b1b74f4dc8c302ef9a1c664260) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for custom equality function for `watch` property
+  keys.
+
+  > This is done via the `compareFns` option.
+
+  This is useful for comparing complex objects or dates, to avoid unnecessary context updates.
+
+  ```js
+  const machine = createMachine(
+    {
+      context: {
+        date: new Date(),
+      },
+      watch: {
+        date: ["invokeOnDateChange"],
+      },
+    },
+    {
+      compareFns: {
+        date: (a, b) => a.getTime() === b.getTime(),
+      },
+    },
+  )
+  ```
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- Updated dependencies [[`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822)]:
+  - @zag-js/store@0.2.2
+
+## 0.2.3
+
+### Patch Changes
+
+- [`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix typescript errors
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/store@0.2.1
+
 ## 0.2.2
 
 ### Patch Changes

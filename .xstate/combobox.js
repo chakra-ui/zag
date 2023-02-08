@@ -11,10 +11,9 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "combobox",
-  initial: "unknown",
+  initial: ctx.autoFocus ? "focused" : "idle",
   context: {
     "focusOnClear": false,
-    "autoFocus": false,
     "openOnClick": false,
     "isCustomValue && !allowCustomValue": false,
     "autoComplete": false,
@@ -29,11 +28,9 @@ const fetchMachine = createMachine({
     "autoComplete": false,
     "autoComplete": false
   },
+  entry: ["setupLiveRegion"],
+  exit: ["removeLiveRegion"],
   activities: ["syncInputValue"],
-  onEvent(ctx, evt) {
-    ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type);
-  },
-  exit: "removeLiveRegion",
   on: {
     SET_VALUE: {
       actions: ["setInputValue", "setSelectionData"]
@@ -61,19 +58,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      tags: ["idle"],
-      on: {
-        SETUP: [{
-          cond: "autoFocus",
-          target: "focused",
-          actions: "setupDocument"
-        }, {
-          target: "idle",
-          actions: "setupDocument"
-        }]
-      }
-    },
     idle: {
       tags: ["idle"],
       entry: ["scrollToTop", "clearFocusedOption"],
@@ -93,6 +77,7 @@ const fetchMachine = createMachine({
     focused: {
       tags: ["focused"],
       entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
+      activities: ["trackInteractOutside"],
       on: {
         CHANGE: {
           target: "suggesting",
@@ -188,6 +173,10 @@ const fetchMachine = createMachine({
         CLICK_BUTTON: {
           target: "focused",
           actions: "invokeOnClose"
+        },
+        CLICK_OPTION: {
+          target: "focused",
+          actions: ["selectOption", "invokeOnClose"]
         }
       }
     },
@@ -273,7 +262,6 @@ const fetchMachine = createMachine({
   },
   guards: {
     "focusOnClear": ctx => ctx["focusOnClear"],
-    "autoFocus": ctx => ctx["autoFocus"],
     "openOnClick": ctx => ctx["openOnClick"],
     "isCustomValue && !allowCustomValue": ctx => ctx["isCustomValue && !allowCustomValue"],
     "autoComplete": ctx => ctx["autoComplete"],

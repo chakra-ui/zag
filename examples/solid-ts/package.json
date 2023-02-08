@@ -13,7 +13,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "3.1.7",
+    "vite": "4.0.3",
     "vite-plugin-solid": "2.5.0"
   },
   "dependencies": {
@@ -24,6 +24,8 @@
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/date-picker": "workspace:*",
+    "@zag-js/date-utils": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
@@ -40,6 +42,7 @@
     "@zag-js/menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
+    "@zag-js/numeric-range": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
     "@zag-js/popover": "workspace:*",
@@ -61,10 +64,11 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/transition": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "solid-app-router": "0.4.2",
-    "solid-js": "1.6.4"
+    "solid-js": "1.6.6"
   }
 }

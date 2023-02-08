@@ -112,7 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("BACKSPACE")
             return
           }
-          send({ type: "INPUT", value })
+          send({ type: "INPUT", value, index })
         },
         onKeyDown(event) {
           const evt = getNativeEvent(event)

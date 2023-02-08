@@ -1,5 +1,58 @@
 # @zag-js/store
 
+## 0.2.7
+
+### Patch Changes
+
+- [`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where react is always required due to direct dependency
+  on `valtio`
+
+## 0.2.6
+
+### Patch Changes
+
+- [#499](https://github.com/chakra-ui/zag/pull/499)
+  [`28dd7680`](https://github.com/chakra-ui/zag/commit/28dd768067f153e1f142154c8a8ce9bbde3746e2) Thanks
+  [@malangcat](https://github.com/malangcat)! - install valtio as dependencies, not devDependencies
+
+## 0.2.5
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+## 0.2.4
+
+### Patch Changes
+
+- [`88ccbbed`](https://github.com/chakra-ui/zag/commit/88ccbbed937acf10d4338e2c6d7f1e6b9eb538c8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor store and react implementations to match latest `valtio`
+
+## 0.2.3
+
+### Patch Changes
+
+- [#478](https://github.com/chakra-ui/zag/pull/478)
+  [`6e6f0f4d`](https://github.com/chakra-ui/zag/commit/6e6f0f4d757b63b045af15639e7ae101c25514da) Thanks
+  [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency proxy-compare to v2.4.0
+
+## 0.2.2
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+## 0.2.1
+
+### Patch Changes
+
+- [`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix typescript errors
+
 ## 0.2.0
 
 ### Minor Changes

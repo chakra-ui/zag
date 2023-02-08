@@ -44,13 +44,13 @@ export default defineComponent({
 
                 <div {...api.controlProps}>
                   <input {...api.inputProps} />
-                  <button {...api.toggleButtonProps}>▼</button>
+                  <button {...api.triggerProps}>▼</button>
                 </div>
               </div>
 
               <div {...api.positionerProps}>
                 {options.value.length > 0 && (
-                  <ul {...api.listboxProps}>
+                  <ul {...api.contentProps}>
                     {options.value.map((item, index) => (
                       <li
                         key={`${item.code}:${index}`}
@@ -65,7 +65,9 @@ export default defineComponent({
             </div>
           </main>
 
-          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
+          <Toolbar controls={controls.ui}>
+            <StateVisualizer state={state} />
+          </Toolbar>
         </>
       )
     }

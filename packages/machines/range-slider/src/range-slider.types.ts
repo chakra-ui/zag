@@ -126,6 +126,11 @@ type ComputedContext = Readonly<{
    * Whether the slider is in RTL mode
    */
   readonly isRtl: boolean
+  /**
+   * @computed
+   * The percentage of the slider value relative to the slider min/max
+   */
+  readonly valuePercent: number[]
 }>
 
 type PrivateContext = Context<{
@@ -156,7 +161,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "dragging" | "focus"
+  value: "idle" | "dragging" | "focus"
 }
 
 export type State = S.State<MachineContext, MachineState>

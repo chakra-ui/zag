@@ -1,10 +1,7 @@
 {
   "name": "@zag-js/react",
-  "version": "0.3.1",
+  "version": "0.3.9",
   "description": "The react wrapper for zag",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "keywords": [
     "ui-machines",
     "state-machines",
@@ -31,27 +28,32 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "proxy-compare": "2.3.0"
+    "proxy-compare": "2.4.0"
   },
   "devDependencies": {
-    "@types/react": "18.0.26",
-    "@types/react-dom": "18.0.9",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10",
     "@zag-js/utils": "workspace:*",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "clean-package": "2.2.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
-    "typecheck": "tsc --noEmit"
-  }
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
 }

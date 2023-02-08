@@ -19,8 +19,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
           .map((route) => {
             const active = router.pathname === route.path
             return (
-              <Link href={route.path} key={route.label} passHref>
-                <a data-active={dataAttr(active)}>{route.label}</a>
+              <Link data-active={dataAttr(active)} href={route.path} key={route.label} passHref>
+                {route.label}
               </Link>
             )
           })}

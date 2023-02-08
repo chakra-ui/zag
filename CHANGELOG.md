@@ -2,10 +2,35 @@
 
 
 ## Latest Release
-### August 10, 2022: [#233](/.changelog/pr-233.mdx)
+### February 7, 2023: [#508](/.changelog/pr-508.mdx)
 
 
 ## Previous Releases
+### February 3, 2023: [#498](/.changelog/pr-498.mdx)
+### February 2, 2023: [#496](/.changelog/pr-496.mdx)
+### January 31, 2023: [#493](/.changelog/pr-493.mdx)
+### January 31, 2023: [#486](/.changelog/pr-486.mdx)
+### January 20, 2023: [#482](/.changelog/pr-482.mdx)
+### January 16, 2023: [#464](/.changelog/pr-464.mdx)
+### December 30, 2022: [#452](/.changelog/pr-452.mdx)
+### December 15, 2022: [#449](/.changelog/pr-449.mdx)
+### December 14, 2022: [#448](/.changelog/pr-448.mdx)
+### December 13, 2022: [#429](/.changelog/pr-429.mdx)
+### December 6, 2022: [#406](/.changelog/pr-406.mdx)
+### November 24, 2022: [#399](/.changelog/pr-399.mdx)
+### November 21, 2022: [#396](/.changelog/pr-396.mdx)
+### November 18, 2022: [#389](/.changelog/pr-389.mdx)
+### November 9, 2022: [#388](/.changelog/pr-388.mdx)
+### November 9, 2022: [#380](/.changelog/pr-380.mdx)
+### November 3, 2022: [#351](/.changelog/pr-351.mdx)
+### October 7, 2022: [#327](/.changelog/pr-327.mdx)
+### September 27, 2022: [#324](/.changelog/pr-324.mdx)
+### September 16, 2022: [#305](/.changelog/pr-305.mdx)
+### September 1, 2022: [#272](/.changelog/pr-272.mdx)
+### August 15, 2022: [#256](/.changelog/pr-256.mdx)
+### August 11, 2022: [#251](/.changelog/pr-251.mdx)
+### August 10, 2022: [#233](/.changelog/pr-233.mdx)
+### August 10, 2022: [#233](/.changelog/pr-233.mdx)
 ### July 17, 2022: [#208](/.changelog/pr-208.mdx)
 ### July 15, 2022: [#204](/.changelog/pr-204.mdx)
 ### July 14, 2022: [#194](/.changelog/pr-194.mdx)

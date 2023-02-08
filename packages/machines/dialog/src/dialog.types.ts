@@ -46,6 +46,10 @@ type PublicContext = DirectionProperty &
      */
     onClose?: () => void
     /**
+     * Callback to be invoked when the dialog is opened
+     */
+    onOpen?: () => void
+    /**
      * Whether to close the dialog when the outside is clicked
      */
     closeOnOutsideClick: boolean
@@ -94,7 +98,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "open" | "closed"
+  value: "open" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>

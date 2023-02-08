@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "tooltip",
-  initial: "unknown",
+  initial: "closed",
   context: {
     "noVisibleTooltip": false,
     "closeOnPointerDown": false,
@@ -30,11 +30,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: "closed"
-      }
-    },
     closed: {
       tags: ["closed"],
       entry: ["clearGlobalId", "invokeOnClose"],

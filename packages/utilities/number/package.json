@@ -1,10 +1,7 @@
 {
   "name": "@zag-js/number-utils",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "keywords": [
     "js",
     "utils",
@@ -25,13 +22,20 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts",
+  "devDependencies": {
+    "clean-package": "2.2.0"
   }
 }

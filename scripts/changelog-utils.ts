@@ -12,7 +12,7 @@ const octokit = new Octokit({
 type PullRequests = RestEndpointMethodTypes["pulls"]["list"]["response"]["data"]
 type PullRequest = PullRequests[number]
 
-type PrData = {
+export type PrData = {
   id: number
   url: string
   body: string
@@ -62,6 +62,19 @@ export async function getPrByNumber(num: number): Promise<PullRequest> {
   })
 
   return data as any
+}
+
+export async function getLatestPr(): Promise<PullRequest> {
+  const { data } = await octokit.pulls.list({
+    state: "closed",
+    owner: "chakra-ui",
+    repo: "zag",
+    base: "main",
+    head: "chakra-ui:changeset-release/main",
+    per_page: 1,
+  })
+
+  return data[0]
 }
 
 export async function getMergedPrs(): Promise<PullRequests> {

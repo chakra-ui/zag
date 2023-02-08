@@ -11,18 +11,23 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "range-slider",
-  initial: "unknown",
+  initial: "idle",
   context: {
+    "hasIndex": false,
     "isHorizontal": false,
     "isHorizontal": false,
     "isVertical": false,
     "isVertical": false
   },
+  entry: ["checkValue"],
   activities: ["trackFormControlState", "trackThumbsSize"],
   on: {
-    SET_VALUE: {
+    SET_VALUE: [{
+      cond: "hasIndex",
+      actions: "setValueAtIndex"
+    }, {
       actions: "setValue"
-    },
+    }],
     INCREMENT: {
       actions: "incrementAtIndex"
     },
@@ -36,19 +41,11 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: {
-          target: "idle",
-          actions: "checkValue"
-        }
-      }
-    },
     idle: {
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"]
+          actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"]
         },
         FOCUS: {
           target: "focus",
@@ -61,7 +58,7 @@ const fetchMachine = createMachine({
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setActiveIndex", "invokeOnChangeStart", "setPointerValue", "focusActiveThumb"]
+          actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"]
         },
         ARROW_LEFT: {
           cond: "isHorizontal",
@@ -120,6 +117,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "hasIndex": ctx => ctx["hasIndex"],
     "isHorizontal": ctx => ctx["isHorizontal"],
     "isVertical": ctx => ctx["isVertical"]
   }

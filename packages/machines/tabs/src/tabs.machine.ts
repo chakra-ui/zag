@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
-      initial: "unknown",
+      initial: "idle",
 
       context: {
         dir: "ltr",
@@ -49,15 +49,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
+      entry: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
+
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
-            },
-          },
-        },
         idle: {
           on: {
             TAB_FOCUS: {

@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         loop: true,
         openOnClick: false,
@@ -46,25 +46,19 @@ export function machine(userContext: UserDefinedContext) {
           ...ctx.positioning,
         },
         translations: {
-          toggleButtonLabel: "Toggle suggestions",
-          clearButtonLabel: "Clear value",
+          triggerLabel: "Toggle suggestions",
+          clearTriggerLabel: "Clear value",
           navigationHint: "use the up and down keys to navigate. Press the enter key to select",
           countAnnouncement: (count) => `${count} ${count === 1 ? "option" : "options"} available`,
           ...ctx.translations,
         },
       },
 
-      activities: ["syncInputValue"],
-
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         autoComplete: (ctx) => ctx.inputBehavior === "autocomplete",
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
-      },
-
-      onEvent(ctx, evt) {
-        ctx.isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
       },
 
       watch: {
@@ -74,7 +68,10 @@ export function machine(userContext: UserDefinedContext) {
         activeId: "setSectionLabel",
       },
 
-      exit: "removeLiveRegion",
+      entry: ["setupLiveRegion"],
+      exit: ["removeLiveRegion"],
+
+      activities: ["syncInputValue"],
 
       on: {
         SET_VALUE: {
@@ -102,23 +99,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          tags: ["idle"],
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused",
-                actions: "setupDocument",
-              },
-              {
-                target: "idle",
-                actions: "setupDocument",
-              },
-            ],
-          },
-        },
-
         idle: {
           tags: ["idle"],
           entry: ["scrollToTop", "clearFocusedOption"],
@@ -139,6 +119,7 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           tags: ["focused"],
           entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
+          activities: ["trackInteractOutside"],
           on: {
             CHANGE: {
               target: "suggesting",
@@ -256,6 +237,10 @@ export function machine(userContext: UserDefinedContext) {
             CLICK_BUTTON: {
               target: "focused",
               actions: "invokeOnClose",
+            },
+            CLICK_OPTION: {
+              target: "focused",
+              actions: ["selectOption", "invokeOnClose"],
             },
           },
         },
@@ -375,7 +360,7 @@ export function machine(userContext: UserDefinedContext) {
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
-              const ignore = [dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)]
+              const ignore = [dom.getContentEl(ctx), dom.getTriggerEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
             onInteractOutside() {
@@ -385,7 +370,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         hideOtherElements(ctx) {
           if (!ctx.ariaHidden) return
-          return ariaHidden([dom.getInputEl(ctx), dom.getListboxEl(ctx), dom.getToggleBtnEl(ctx)])
+          return ariaHidden([dom.getInputEl(ctx), dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
         },
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
@@ -405,12 +390,14 @@ export function machine(userContext: UserDefinedContext) {
           const focusFirstOption = meta.getAction("focusFirstOption")
           const exec = () => focusFirstOption(ctx, evt, meta)
           exec()
-          return observeChildren(dom.getListboxEl(ctx), exec)
+          return observeChildren(dom.getContentEl(ctx), exec)
         },
-        scrollOptionIntoView(ctx, _evt) {
+        scrollOptionIntoView(ctx, _evt, { getState }) {
           const input = dom.getInputEl(ctx)
           return observeAttributes(input, "aria-activedescendant", () => {
-            if (!ctx.isKeyboardEvent) return
+            const evt = getState().event
+            const isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
+            if (!isKeyboardEvent) return
 
             const option = dom.getActiveOptionEl(ctx)
             option?.scrollIntoView({ block: "nearest" })
@@ -423,11 +410,14 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        setupDocument(ctx) {
+        setupLiveRegion(ctx) {
           ctx.liveRegion = createLiveRegion({
             level: "assertive",
             document: dom.getDoc(ctx),
           })
+        },
+        removeLiveRegion(ctx) {
+          ctx.liveRegion?.destroy()
         },
         setActiveOption(ctx, evt) {
           const { label, id, value } = evt
@@ -511,7 +501,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.selectionData = null
         },
         scrollToTop(ctx) {
-          const listbox = dom.getListboxEl(ctx)
+          const listbox = dom.getContentEl(ctx)
           if (!listbox) return
           listbox.scrollTop = 0
         },
@@ -581,9 +571,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearIsHovering(ctx) {
           ctx.isHovering = false
-        },
-        removeLiveRegion(ctx) {
-          ctx.liveRegion?.destroy()
         },
         preventDefault(_ctx, evt) {
           evt.preventDefault()

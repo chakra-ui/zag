@@ -2,8 +2,8 @@ import { dataAttr } from "@zag-js/dom-utils"
 import { createSignal, JSX } from "solid-js"
 
 type ToolbarProps = {
-  controls: null | (() => JSX.Element)
-  visualizer: null | JSX.Element
+  controls?: () => JSX.Element
+  children?: JSX.Element
 }
 
 export function Toolbar(props: ToolbarProps) {
@@ -22,13 +22,13 @@ export function Toolbar(props: ToolbarProps) {
         </button>
       </nav>
       <div>
-        {props.controls !== null && (
+        {props.controls && (
           <div data-content data-active={dataAttr(active() === 0)}>
             <props.controls />
           </div>
         )}
         <div data-content data-active={dataAttr(active() === 1)}>
-          {props.visualizer}
+          {props.children}
         </div>
       </div>
     </div>

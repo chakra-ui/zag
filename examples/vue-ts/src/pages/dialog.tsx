@@ -68,15 +68,11 @@ export default defineComponent({
               </div>
             </div>
           </main>
-          <Toolbar
-            controls={null}
-            visualizer={
-              <>
-                <StateVisualizer state={state} />
-                <StateVisualizer state={state2} />
-              </>
-            }
-          />
+
+          <Toolbar>
+            <StateVisualizer state={state} />
+            <StateVisualizer state={state2} />
+          </Toolbar>
         </>
       )
     }

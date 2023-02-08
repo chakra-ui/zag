@@ -12,7 +12,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "pin-input",
-      initial: "unknown",
+      initial: ctx.autoFocus ? "focused" : "idle",
       context: {
         value: [],
         focusedIndex: -1,
@@ -36,45 +36,32 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         focusedIndex: ["focusInput", "setInputSelection"],
-        value: ["invokeOnChange", "dispatchInputEvent"],
+        value: ["dispatchInputEvent", "syncInputElements"],
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
+
+      entry: ctx.autoFocus ? ["setupValue", "setFocusIndexToFirst"] : ["setupValue"],
 
       on: {
         SET_VALUE: [
           {
             guard: "hasIndex",
-            actions: "setValueAtIndex",
+            actions: ["setValueAtIndex", "invokeOnChange"],
           },
-          { actions: "setValue" },
+          { actions: ["setValue", "invokeOnChange"] },
         ],
         CLEAR_VALUE: [
           {
             guard: "isDisabled",
-            actions: "clearValue",
+            actions: ["clearValue", "invokeOnChange"],
           },
           {
-            actions: ["clearValue", "setFocusIndexToFirst"],
+            actions: ["clearValue", "invokeOnChange", "setFocusIndexToFirst"],
           },
         ],
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: [
-              {
-                guard: "autoFocus",
-                target: "focused",
-                actions: ["setupValue", "setFocusIndexToFirst"],
-              },
-              {
-                target: "idle",
-                actions: "setupValue",
-              },
-            ],
-          },
-        },
         idle: {
           on: {
             FOCUS: {
@@ -88,19 +75,19 @@ export function machine(userContext: UserDefinedContext) {
             INPUT: [
               {
                 guard: and("isFinalValue", "isValidValue"),
-                actions: ["setFocusedValue", "dispatchInputEventIfNeeded"],
+                actions: ["setFocusedValue", "invokeOnChange", "syncInputValue"],
               },
               {
                 guard: "isValidValue",
-                actions: ["setFocusedValue", "setNextFocusedIndex", "dispatchInputEventIfNeeded"],
+                actions: ["setFocusedValue", "invokeOnChange", "setNextFocusedIndex", "syncInputValue"],
               },
             ],
             PASTE: [
               {
                 guard: "isValidValue",
-                actions: ["setPastedValue", "setLastValueFocusIndex"],
+                actions: ["setPastedValue", "invokeOnChange", "setLastValueFocusIndex"],
               },
-              { actions: "resetFocusedValue" },
+              { actions: ["resetFocusedValue", "invokeOnChange"] },
             ],
             BLUR: {
               target: "idle",
@@ -108,7 +95,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             DELETE: {
               guard: "hasValue",
-              actions: "clearFocusedValue",
+              actions: ["clearFocusedValue", "invokeOnChange"],
             },
             ARROW_LEFT: {
               actions: "setPrevFocusedIndex",
@@ -119,10 +106,10 @@ export function machine(userContext: UserDefinedContext) {
             BACKSPACE: [
               {
                 guard: "hasValue",
-                actions: "clearFocusedValue",
+                actions: ["clearFocusedValue", "invokeOnChange"],
               },
               {
-                actions: ["setPrevFocusedIndex", "clearFocusedValue"],
+                actions: ["setPrevFocusedIndex", "clearFocusedValue", "invokeOnChange"],
               },
             ],
             ENTER: {
@@ -161,19 +148,19 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         setupValue: (ctx) => {
           const inputs = dom.getElements(ctx)
-          const empty = Array.from({ length: inputs.length }).map(() => "")
-          ctx.value = Object.assign(empty, ctx.value)
+          const emptyValues = Array.from<string>({ length: inputs.length }).fill("")
+          assign(ctx, emptyValues)
         },
         focusInput: (ctx) => {
           raf(() => {
             if (ctx.focusedIndex === -1) return
-            dom.getFocusedEl(ctx)?.focus()
+            dom.getFocusedInputEl(ctx)?.focus()
           })
         },
         setInputSelection: (ctx) => {
           raf(() => {
             if (ctx.focusedIndex === -1) return
-            const input = dom.getFocusedEl(ctx)
+            const input = dom.getFocusedInputEl(ctx)
             const length = input.value.length
             input.selectionStart = ctx.selectOnFocus ? 0 : length
             input.selectionEnd = length
@@ -183,18 +170,11 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.isValueComplete) return
           ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
         },
-        invokeOnChange: (ctx, evt) => {
-          if (evt.type === "SETUP") return
+        invokeOnChange: (ctx) => {
           ctx.onChange?.({ value: Array.from(ctx.value) })
         },
-        dispatchInputEvent: (ctx, evt) => {
-          if (evt.type === "SETUP") return
+        dispatchInputEvent: (ctx) => {
           dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
-          const inputs = dom.getElements(ctx)
-          ctx.value.forEach((val, index) => {
-            const input = inputs[index]
-            input.value = val || ""
-          })
         },
         invokeOnInvalid: (ctx, evt) => {
           ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
@@ -209,34 +189,38 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedIndex = evt.index
         },
         setFocusedValue: (ctx, evt) => {
-          ctx.value[ctx.focusedIndex] = lastChar(evt.value)
+          ctx.value[ctx.focusedIndex] = getNextValue(ctx.focusedValue, evt.value)
         },
-        dispatchInputEventIfNeeded: (ctx, evt) => {
-          const valueIsChanged = lastChar(evt.value) !== ctx.focusedValue
-          if (evt.value.length <= 1 || valueIsChanged) return
-
+        syncInputValue(ctx, evt) {
+          const input = dom.getInputEl(ctx, evt.index.toString())
+          if (!input) return
+          input.value = ctx.value[evt.index]
+        },
+        syncInputElements(ctx) {
           const inputs = dom.getElements(ctx)
-          const input = inputs[ctx.focusedIndex]
-          input.value = lastChar(evt.value)
+          inputs.forEach((input, index) => {
+            input.value = ctx.value[index]
+          })
         },
         setPastedValue(ctx, evt) {
           raf(() => {
             const startIndex = ctx.focusedValue ? 1 : 0
-            const value = evt.value.substring(startIndex, ctx.valueLength)
+            const value = evt.value.substring(startIndex, startIndex + ctx.valueLength)
             assign(ctx, value)
           })
         },
         setValueAtIndex: (ctx, evt) => {
-          ctx.value[evt.index] = lastChar(evt.value)
+          ctx.value[evt.index] = getNextValue(ctx.focusedValue, evt.value)
         },
         clearValue: (ctx) => {
-          ctx.value = ctx.value.map(() => "")
+          const nextValue = Array.from<string>({ length: ctx.valueLength }).fill("")
+          assign(ctx, nextValue)
         },
         clearFocusedValue: (ctx) => {
           ctx.value[ctx.focusedIndex] = ""
         },
         resetFocusedValue: (ctx) => {
-          const input = dom.getFocusedEl(ctx)
+          const input = dom.getFocusedInputEl(ctx)
           input.value = ctx.focusedValue
         },
         setFocusIndexToFirst: (ctx) => {
@@ -259,11 +243,11 @@ export function machine(userContext: UserDefinedContext) {
         blurFocusedInputIfNeeded(ctx) {
           if (!ctx.blurOnComplete) return
           raf(() => {
-            dom.getFocusedEl(ctx)?.blur()
+            dom.getFocusedInputEl(ctx)?.blur()
           })
         },
         requestFormSubmit(ctx) {
-          if (!ctx.name) return
+          if (!ctx.name || !ctx.isValueComplete) return
           const input = dom.getHiddenInputEl(ctx)
           input?.form?.requestSubmit()
         },
@@ -284,11 +268,15 @@ function isValidType(value: string, type: MachineContext["type"]) {
 }
 
 function assign(ctx: MachineContext, value: string | string[]) {
-  const valueArr = Array.isArray(value) ? value : value.split("").filter(Boolean)
-  const valueObj = Object.assign({}, ctx.value, valueArr)
-  ctx.value = Object.values(valueObj)
+  const arr = Array.isArray(value) ? value : value.split("").filter(Boolean)
+  arr.forEach((value, index) => {
+    ctx.value[index] = value
+  })
 }
 
-function lastChar(value: string) {
-  return value.charAt(value.length - 1)
+function getNextValue(current: string, next: string) {
+  let nextValue = next
+  if (current[0] === next[0]) nextValue = next[1]
+  else if (current[0] === next[1]) nextValue = next[0]
+  return nextValue
 }

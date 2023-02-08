@@ -333,7 +333,7 @@ export declare namespace StateMachine {
     /**
      * A generic way to react to context value changes
      */
-    watch?: { [K in keyof TContext]?: PureActions<TContext, TState, TEvent> }
+    watch?: { [K in keyof TContext | "*"]?: PureActions<TContext, TState, TEvent> }
     /**
      * The computed properties based on the state
      */
@@ -382,6 +382,7 @@ export declare namespace StateMachine {
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
     sync?: boolean
+    compareFns?: { [K in keyof TContext]?: CompareFn<TContext[K]> }
   }
 
   export type HookOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
@@ -422,3 +423,5 @@ export enum MachineType {
   Machine = "machine",
   Actor = "machine.actor",
 }
+
+export type CompareFn<T = any> = (prev: T, next: T) => boolean

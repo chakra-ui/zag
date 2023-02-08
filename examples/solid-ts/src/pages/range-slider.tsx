@@ -54,7 +54,9 @@ export default function Page() {
         </form>
       </main>
 
-      <Toolbar controls={null} visualizer={<StateVisualizer state={state} />} />
+      <Toolbar>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

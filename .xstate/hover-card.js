@@ -11,9 +11,8 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "hover-card",
-  initial: "unknown",
+  initial: ctx.defaultOpen ? "open" : "closed",
   context: {
-    "isDefaultOpen": false,
     "!isPointer": false,
     "!isPointer": false
   },
@@ -23,16 +22,6 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    unknown: {
-      on: {
-        SETUP: [{
-          target: "open",
-          cond: "isDefaultOpen"
-        }, {
-          target: "closed"
-        }]
-      }
-    },
     closed: {
       tags: ["closed"],
       entry: ["invokeOnClose", "clearIsPointer"],
@@ -41,7 +30,8 @@ const fetchMachine = createMachine({
           actions: ["setIsPointer"],
           target: "opening"
         },
-        TRIGGER_FOCUS: "opening"
+        TRIGGER_FOCUS: "opening",
+        OPEN: "opening"
       }
     },
     opening: {
@@ -54,7 +44,8 @@ const fetchMachine = createMachine({
         TRIGGER_BLUR: {
           cond: "!isPointer",
           target: "closed"
-        }
+        },
+        CLOSE: "closed"
       }
     },
     open: {
@@ -97,7 +88,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isDefaultOpen": ctx => ctx["isDefaultOpen"],
     "!isPointer": ctx => ctx["!isPointer"]
   }
 });

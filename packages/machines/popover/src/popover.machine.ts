@@ -16,7 +16,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "popover",
-      initial: "unknown",
+      initial: ctx.defaultOpen ? "open" : "closed",
       context: {
         closeOnInteractOutside: true,
         closeOnEsc: true,
@@ -40,16 +40,9 @@ export function machine(userContext: UserDefinedContext) {
         currentPortalled: (ctx) => !!ctx.modal || !!ctx.portalled,
       },
 
-      states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: ctx.defaultOpen ? "open" : "closed",
-              actions: "checkRenderedElements",
-            },
-          },
-        },
+      entry: ["checkRenderedElements"],
 
+      states: {
         closed: {
           entry: "invokeOnClose",
           on: {

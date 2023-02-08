@@ -3,6 +3,7 @@ import { defineControls } from "./define-controls"
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
   multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+  orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
 export const checkboxControls = defineControls({
@@ -91,6 +92,8 @@ export const sliderControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },
   step: { type: "number", defaultValue: 1 },
+  min: { type: "number", defaultValue: 0 },
+  max: { type: "number", defaultValue: 100 },
 })
 
 export const radioControls = defineControls({
@@ -104,6 +107,8 @@ export const rangeSliderControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  min: { type: "number", defaultValue: 0 },
+  max: { type: "number", defaultValue: 100 },
   step: { type: "number", defaultValue: 1 },
 })
 
@@ -138,12 +143,8 @@ export const ratingControls = defineControls({
 })
 
 export const splitterControls = defineControls({
-  fixed: { type: "boolean", defaultValue: false },
-  disabled: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
-  min: { type: "number", defaultValue: 0 },
-  max: { type: "number", defaultValue: 340 },
-  snapOffset: { type: "number", defaultValue: 0 },
 })
 
 export const toastControls = defineControls({
@@ -159,4 +160,18 @@ export const selectControls = defineControls({
   selectOnTab: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
+export const datePickerControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
+export const transitionControls = defineControls({
+  duration: { type: "number", defaultValue: 200 },
+  easing: {
+    type: "select",
+    options: ["linear", "ease", "ease-in", "ease-out", "ease-in-out"] as const,
+    defaultValue: "ease",
+  },
 })

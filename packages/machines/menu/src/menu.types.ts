@@ -33,7 +33,7 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when a menu item is selected.
      */
-    onSelect?: (value: string) => void
+    onSelect?: (details: { value: string }) => void
     /**
      * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
      */
@@ -136,7 +136,7 @@ type PrivateContext = Context<{
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+  value: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
   tags: "visible"
 }
 

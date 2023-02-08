@@ -19,7 +19,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "tooltip",
-      initial: "unknown",
+      initial: "closed",
 
       context: {
         openDelay: 1000,
@@ -49,12 +49,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: "closed",
-          },
-        },
-
         closed: {
           tags: ["closed"],
           entry: ["clearGlobalId", "invokeOnClose"],
@@ -216,11 +210,8 @@ export function machine(userContext: UserDefinedContext) {
             ctx.onOpen?.()
           }
         },
-        invokeOnClose(ctx, evt) {
-          const omit = ["SETUP"]
-          if (!omit.includes(evt.type)) {
-            ctx.onClose?.()
-          }
+        invokeOnClose(ctx) {
+          ctx.onClose?.()
         },
         closeIfDisabled(ctx, _evt, { send }) {
           if (ctx.disabled) {

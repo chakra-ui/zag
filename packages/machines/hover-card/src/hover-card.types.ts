@@ -60,7 +60,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "unknown" | "opening" | "open" | "closing" | "closed"
+  value: "opening" | "open" | "closing" | "closed"
   tags: "open" | "closed"
 }
 

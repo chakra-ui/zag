@@ -1,5 +1,66 @@
 # @zag-js/svelte
 
+## 0.2.9
+
+### Patch Changes
+
+- Updated dependencies [[`df27f257`](https://github.com/chakra-ui/zag/commit/df27f257f53d194013b528342d3d9aef994d0d5c)]:
+  - @zag-js/core@0.2.9
+
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.2.8
+
+## 0.2.7
+
+### Patch Changes
+
+- [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Switch to `es2020` to support `import.meta.env`
+
+- Updated dependencies [[`f7bb988a`](https://github.com/chakra-ui/zag/commit/f7bb988aaeda6c6caebe95823f4cd44baa0d5e78),
+  [`6957678d`](https://github.com/chakra-ui/zag/commit/6957678d2f00f4d219e791dffed91446e64211e7)]:
+  - @zag-js/core@0.2.7
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`80de0b7c`](https://github.com/chakra-ui/zag/commit/80de0b7c7f888a254a3e1fec2da5338e235bc699)]:
+  - @zag-js/core@0.2.6
+
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`c7e85e20`](https://github.com/chakra-ui/zag/commit/c7e85e20d4d08b56852768becf2fc5f7f4275dcc)]:
+  - @zag-js/core@0.2.5
+
+## 0.2.4
+
+### Patch Changes
+
+- [#462](https://github.com/chakra-ui/zag/pull/462)
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update packages to use explicit `exports` field in `package.json`
+
+- Updated dependencies [[`4c98f016`](https://github.com/chakra-ui/zag/commit/4c98f016ae3d48b1b74f4dc8c302ef9a1c664260),
+  [`f8c47a2b`](https://github.com/chakra-ui/zag/commit/f8c47a2b4442bfadc4d98315a8c1ac4aa4020822)]:
+  - @zag-js/core@0.2.4
+
+## 0.2.3
+
+### Patch Changes
+
+- [`9332f1ca`](https://github.com/chakra-ui/zag/commit/9332f1caf5122c16a3edb48e20664b04714d226c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump dependencies
+
+- Updated dependencies [[`9d936614`](https://github.com/chakra-ui/zag/commit/9d93661439f10a550c154e9f290905d32e8f509b)]:
+  - @zag-js/core@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes

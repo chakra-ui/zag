@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dom-query",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "The dom helper library for zag.js machines",
   "keywords": [
     "js",
@@ -11,28 +11,32 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/dom-helpers",
   "sideEffects": false,
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-    "build-fast": "tsup src/index.ts --format=esm,cjs",
+    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src/index.ts --format=esm,cjs --dts",
+    "build": "tsup src --dts",
     "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
   },
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts",
+  "devDependencies": {
+    "clean-package": "2.2.0"
   }
 }

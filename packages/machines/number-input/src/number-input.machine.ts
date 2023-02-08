@@ -21,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "number-input",
-      initial: "unknown",
+      initial: "idle",
       context: {
         dir: "ltr",
         focusInputOnChange: true,
@@ -64,6 +64,8 @@ export function machine(userContext: UserDefinedContext) {
         scrubberCursorPoint: ["setVirtualCursorPosition"],
       },
 
+      entry: ["syncInputValue"],
+
       on: {
         SET_VALUE: [
           {
@@ -86,15 +88,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       states: {
-        unknown: {
-          on: {
-            SETUP: {
-              target: "idle",
-              actions: "syncInputValue",
-            },
-          },
-        },
-
         idle: {
           exit: "invokeOnFocus",
           on: {
