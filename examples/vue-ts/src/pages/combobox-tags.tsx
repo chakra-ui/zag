@@ -122,11 +122,11 @@ export default defineComponent({
         <>
           <main class="combobox combobox-tags">
             <div>
-              <div {...comboboxApi.rootProps}>
+              <div {...mergeProps(comboboxApi.rootProps, tagsApi.rootProps)}>
                 <label {...comboboxApi.labelProps}>Select countries</label>
 
                 <div {...comboboxApi.controlProps}>
-                  <div {...tagsApi.rootProps}>
+                  <div>
                     {tagsApi.value.map((value, index) => (
                       <span key={`${toDashCase(value)}-tag-${index}`}>
                         <div data-testid={`${toDashCase(value)}-tag`} {...tagsApi.getTagProps({ index, value })}>

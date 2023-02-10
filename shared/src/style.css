@@ -245,7 +245,7 @@ body {
   outline: 2px solid blue;
 }
 
-.combobox-tags [data-part="root"] [data-part="root"] {
+.combobox-tags [data-part="control"] > div {
   display: flex;
   width: 400px;
   flex-direction: row;
