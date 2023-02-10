@@ -120,7 +120,7 @@ export default defineComponent({
 
       return (
         <>
-          <main class="combobox">
+          <main class="combobox combobox-tags">
             <div>
               <div {...comboboxApi.rootProps}>
                 <label {...comboboxApi.labelProps}>Select countries</label>
@@ -144,7 +144,7 @@ export default defineComponent({
                         />
                       </span>
                     ))}
-                    <input {...inputProps} placeholder="Add tag..." />
+                    <input {...inputProps.value} placeholder="Add tag..." />
                   </div>
                   <button {...comboboxApi.triggerProps}>▼</button>
                 </div>
@@ -156,13 +156,14 @@ export default defineComponent({
                     {options.value.map((item, index) => (
                       <li
                         key={`${item.code}:${index}`}
-                        {...comboboxApi.getOptionProps({
+                        {...getOptionProps({
                           label: item.label,
                           value: item.code,
                           index,
                           disabled: item.disabled,
                         })}
                       >
+                        {isSelected(item.label) && <span>✓</span>}
                         {item.label}
                       </li>
                     ))}

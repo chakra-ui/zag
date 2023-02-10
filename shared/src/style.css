@@ -234,6 +234,35 @@ body {
 }
 
 /* -----------------------------------------------------------------------------
+* Combobox Tags
+* -----------------------------------------------------------------------------*/
+
+.combobox-tags [data-part="control"] {
+  border: 1px solid gray;
+}
+
+.combobox-tags [data-part="control"]:focus-within {
+  outline: 2px solid blue;
+}
+
+.combobox-tags [data-part="root"] [data-part="root"] {
+  display: flex;
+  width: 400px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 4px;
+}
+
+.combobox-tags [data-part="input"] {
+  min-width: 100px;
+  border: none;
+}
+
+.combobox-tags [data-part="input"]:focus {
+  outline: none;
+}
+
+/* -----------------------------------------------------------------------------
 * Editable
 * -----------------------------------------------------------------------------*/
 
