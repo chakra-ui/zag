@@ -1,6 +1,6 @@
 import * as combobox from "@zag-js/combobox"
 import * as tagsInput from "@zag-js/tags-input"
-import { comboboxControls, comboboxData } from "@zag-js/shared"
+import { comboboxTagsControls, comboboxData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, ref } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -19,7 +19,7 @@ function optionsInclude(options: { label: string }[], value: string) {
 export default defineComponent({
   name: "ComboboxTags",
   setup() {
-    const controls = useControls(comboboxControls)
+    const controls = useControls(comboboxTagsControls)
     const options = ref(comboboxData)
     const comboboxOptions = ref(comboboxData)
 
@@ -47,10 +47,11 @@ export default defineComponent({
           }
         },
       }),
+      { context: controls.context },
     )
     const tagsApiRef = computed(() => tagsInput.connect(tagsState.value, tagsSend, normalizeProps))
 
-    const [state, send] = useMachine(
+    const [comboboxState, comboboxSend] = useMachine(
       combobox.machine({
         id: "combobox",
         ids: {
@@ -88,9 +89,10 @@ export default defineComponent({
           comboboxApiRef.value.clearValue()
         },
       }),
+      { context: controls.context },
     )
 
-    const comboboxApiRef = computed(() => combobox.connect(state.value, send, normalizeProps))
+    const comboboxApiRef = computed(() => combobox.connect(comboboxState.value, comboboxSend, normalizeProps))
 
     const inputProps = computed(() => {
       const tagsProps = tagsApiRef.value.inputProps
@@ -178,7 +180,8 @@ export default defineComponent({
           </main>
 
           <Toolbar controls={controls.ui}>
-            <StateVisualizer state={state} />
+            <StateVisualizer state={comboboxState} />
+            <StateVisualizer state={tagsState} />
           </Toolbar>
         </>
       )

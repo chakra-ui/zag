@@ -30,6 +30,10 @@ export const comboboxControls = defineControls({
   selectOnTab: { type: "boolean", defaultValue: true },
 })
 
+export const comboboxTagsControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+})
+
 export const editableControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
