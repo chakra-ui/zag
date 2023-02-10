@@ -38,7 +38,7 @@ export default defineComponent({
         ids: {
           input: "combobox-tags",
         },
-        value: [],
+        value: [comboboxData[0].label, comboboxData[1].label],
         allowEditTag: false,
         onChange({ values }) {
           const latestValue = values[values.length - 1]
