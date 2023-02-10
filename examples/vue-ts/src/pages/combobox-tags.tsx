@@ -12,6 +12,10 @@ function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
 }
 
+function optionsInclude(options: { label: string }[], value: string) {
+  return options.some((item) => item.label.toLowerCase() === value.toLowerCase())
+}
+
 export default defineComponent({
   name: "ComboboxTags",
   setup() {
@@ -20,7 +24,7 @@ export default defineComponent({
     const comboboxOptions = ref(comboboxData)
 
     const addValueToOptionsIfNeeded = (value: string) => {
-      if (!comboboxOptions.value.some((item) => item.label === value)) {
+      if (!optionsInclude(comboboxOptions.value, value)) {
         comboboxOptions.value.push({
           label: value,
           code: value,
@@ -61,7 +65,7 @@ export default defineComponent({
             item.label.toLowerCase().includes(value.toLowerCase()),
           )
           const newOptions = filtered.length > 0 ? filtered : [...comboboxOptions.value]
-          if (value && newOptions[0].label.toLowerCase() !== value.toLowerCase()) {
+          if (value && !optionsInclude(newOptions, value)) {
             newOptions.unshift({
               label: value,
               code: value,
