@@ -21,7 +21,7 @@ import {
 import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
 import { createLiveRegion } from "@zag-js/live-region"
 import { compact } from "@zag-js/utils"
-import memo from "proxy-memoize"
+import { memoize } from "proxy-memoize"
 import { dom } from "./date-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
@@ -72,8 +72,8 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !ctx.disabled && !ctx.readonly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
-        dayFormatter: memo((ctx) => new DateFormatter(ctx.locale, { weekday: "short", timeZone: ctx.timeZone })),
-        weeks: memo((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
+        dayFormatter: memoize((ctx) => new DateFormatter(ctx.locale, { weekday: "short", timeZone: ctx.timeZone })),
+        weeks: memoize((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
         validSegmentDetails(ctx) {
           const keys = Object.keys(ctx.validSegments)
