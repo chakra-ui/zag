@@ -46,7 +46,7 @@
     "@internationalized/date": "^3.0.2",
     "@internationalized/number": "^3.1.2",
     "@zag-js/date-utils": "workspace:*",
-    "proxy-memoize": "1.2.0"
+    "proxy-memoize": "2.0.2"
   },
   "devDependencies": {
     "@zag-js/dom-utils": "workspace:*",

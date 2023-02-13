@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "private": true,
   "dependencies": {
-    "country-list": "^2.2.0"
+    "country-list": "^2.3.0"
   },
   "devDependencies": {
     "@types/country-list": "^2.1.1"

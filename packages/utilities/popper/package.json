@@ -22,7 +22,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@floating-ui/dom": "1.1.0"
+    "@floating-ui/dom": "1.2.1"
   },
   "devDependencies": {
     "@zag-js/dom-utils": "workspace:*",
