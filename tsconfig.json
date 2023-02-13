@@ -23,6 +23,7 @@
     "stripInternal": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "types": ["vitest/globals"]
   }
 }
