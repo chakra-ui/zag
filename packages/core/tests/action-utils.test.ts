@@ -1,3 +1,4 @@
+import { expect, it } from "vitest"
 import { choose, guards } from "../src"
 
 const { not } = guards

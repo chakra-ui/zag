@@ -1,4 +1,5 @@
-import { countDecimals, formatDecimal, increment, decrement } from ".."
+import { describe, expect, test } from "vitest"
+import { countDecimals, decrement, formatDecimal, increment } from ".."
 
 describe("number utilities", () => {
   test("with unit step", () => {

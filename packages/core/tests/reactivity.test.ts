@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, expect, test, vi } from "vitest"
 import { createMachine } from ".."
 
 type Context = {
@@ -10,8 +11,8 @@ type State = {
 }
 
 const watchers = {
-  length: jest.fn(),
-  values: jest.fn(),
+  length: vi.fn(),
+  values: vi.fn(),
 }
 
 const service = createMachine<Context, State>({

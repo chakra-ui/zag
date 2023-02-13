@@ -1,3 +1,4 @@
+import { expect, describe, it } from "vitest"
 import { createMachine } from "../src"
 
 describe("tags", () => {

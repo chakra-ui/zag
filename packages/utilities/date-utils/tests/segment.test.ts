@@ -1,4 +1,5 @@
 import { parseDate } from "@internationalized/date"
+import { describe, expect, test } from "vitest"
 import { addSegment, getSegmentLimits, setSegment } from "../src"
 
 const focusedDate = parseDate("2023-01-10")

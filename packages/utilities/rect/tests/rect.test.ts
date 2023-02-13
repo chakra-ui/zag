@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest"
 import { createRect, getRectCorners } from "../src"
 import { containsPoint } from "../src/contains"
 import { getRectFromPoints } from "../src/from-points"

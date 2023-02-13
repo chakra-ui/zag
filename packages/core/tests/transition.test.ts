@@ -1,8 +1,9 @@
+import { expect, vi, test } from "vitest"
 import { createMachine } from ".."
 
 function getMachine(debug?: boolean) {
-  const checked = { entry: jest.fn(), exit: jest.fn() }
-  const unchecked = { entry: jest.fn(), exit: jest.fn() }
+  const checked = { entry: vi.fn(), exit: vi.fn() }
+  const unchecked = { entry: vi.fn(), exit: vi.fn() }
 
   const machine = createMachine(
     {
