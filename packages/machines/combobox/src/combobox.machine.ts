@@ -64,7 +64,7 @@ export function machine(userContext: UserDefinedContext) {
       watch: {
         inputValue: "invokeOnInputChange",
         navigationData: "invokeOnHighlight",
-        selectionData: ["invokeOnSelect", "blurOnSelectIfNeeded"],
+        selectionData: ["invokeOnSelect", "blurInputIfNeeded"],
         activeId: "setSectionLabel",
       },
 
@@ -107,10 +107,10 @@ export function machine(userContext: UserDefinedContext) {
               target: "interacting",
               actions: ["focusInput", "invokeOnOpen"],
             },
-            POINTER_DOWN: {
+            CLICK_INPUT: {
               guard: "openOnClick",
               target: "interacting",
-              actions: ["focusInput", "invokeOnOpen"],
+              actions: "invokeOnOpen",
             },
             FOCUS: "focused",
           },
@@ -129,6 +129,11 @@ export function machine(userContext: UserDefinedContext) {
             ESCAPE: {
               guard: and("isCustomValue", not("allowCustomValue")),
               actions: "revertInputValue",
+            },
+            CLICK_INPUT: {
+              guard: "openOnClick",
+              target: "interacting",
+              actions: ["focusInput", "invokeOnOpen"],
             },
             CLICK_BUTTON: {
               target: "interacting",
@@ -470,7 +475,7 @@ export function machine(userContext: UserDefinedContext) {
             ctx.inputValue = value
           }
         },
-        blurOnSelectIfNeeded(ctx) {
+        blurInputIfNeeded(ctx) {
           if (ctx.autoComplete || !ctx.blurOnSelect) return
           raf(() => {
             dom.getInputEl(ctx)?.blur()
@@ -478,9 +483,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusInput(ctx, evt) {
           if (evt.type === "CHANGE") return
-          raf(() => {
-            dom.focusInput(ctx)
-          })
+          dom.focusInput(ctx)
         },
         setInputValue(ctx, evt) {
           const value = evt.type === "SET_VALUE" ? evt.label : evt.value

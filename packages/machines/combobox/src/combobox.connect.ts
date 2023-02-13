@@ -118,9 +118,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
       "aria-activedescendant": state.context.activeId ?? undefined,
-      onPointerDown() {
+      onClick() {
         if (!isInteractive) return
-        send("POINTER_DOWN")
+        send("CLICK_INPUT")
       },
       onFocus() {
         if (isDisabled) return

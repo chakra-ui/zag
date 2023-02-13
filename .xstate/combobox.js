@@ -16,6 +16,7 @@ const fetchMachine = createMachine({
     "focusOnClear": false,
     "openOnClick": false,
     "isCustomValue && !allowCustomValue": false,
+    "openOnClick": false,
     "autoComplete": false,
     "autoComplete": false,
     "hasFocusedOption && autoComplete": false,
@@ -66,10 +67,10 @@ const fetchMachine = createMachine({
           target: "interacting",
           actions: ["focusInput", "invokeOnOpen"]
         },
-        POINTER_DOWN: {
+        CLICK_INPUT: {
           cond: "openOnClick",
           target: "interacting",
-          actions: ["focusInput", "invokeOnOpen"]
+          actions: "invokeOnOpen"
         },
         FOCUS: "focused"
       }
@@ -87,6 +88,11 @@ const fetchMachine = createMachine({
         ESCAPE: {
           cond: "isCustomValue && !allowCustomValue",
           actions: "revertInputValue"
+        },
+        CLICK_INPUT: {
+          cond: "openOnClick",
+          target: "interacting",
+          actions: ["focusInput", "invokeOnOpen"]
         },
         CLICK_BUTTON: {
           target: "interacting",
