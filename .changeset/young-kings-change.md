@@ -7,4 +7,4 @@
 "@zag-js/store": patch
 ---
 
-Update dependencies
+Update dependencies to latest versions

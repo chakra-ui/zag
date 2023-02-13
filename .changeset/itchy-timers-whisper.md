@@ -2,4 +2,4 @@
 "@zag-js/pressable": patch
 ---
 
-fix pressable event trigger
+Fix issue where `onPressEnd` was invoke at the wrong time

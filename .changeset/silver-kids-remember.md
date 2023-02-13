@@ -2,4 +2,4 @@
 "@zag-js/checkbox": patch
 ---
 
-Fixes triggering of onBlur on input element when clicking checkbox label
+Fixed issue where input element triggers `onBlur` when clicking the checkbox label.
