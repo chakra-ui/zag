@@ -42,9 +42,9 @@ const fetchMachine = createMachine({
     CLEAR_VALUE: [{
       cond: "focusOnClear",
       target: "focused",
-      actions: "clearInputValue"
+      actions: ["clearInputValue", "clearSelectedValue"]
     }, {
-      actions: "clearInputValue"
+      actions: ["clearInputValue", "clearSelectedValue"]
     }],
     POINTER_OVER: {
       actions: "setIsHovering"

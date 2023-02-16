@@ -36,6 +36,9 @@ export default defineComponent({
           <main class="combobox">
             <div>
               <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
+              <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
+                Clear Value
+              </button>
 
               <br />
 
@@ -43,14 +46,16 @@ export default defineComponent({
                 <label {...api.labelProps}>Select country</label>
 
                 <div {...api.controlProps}>
-                  <input {...api.inputProps} />
-                  <button {...api.triggerProps}>▼</button>
+                  <input data-testid="input" {...api.inputProps} />
+                  <button data-testid="trigger" {...api.triggerProps}>
+                    ▼
+                  </button>
                 </div>
               </div>
 
               <div {...api.positionerProps}>
                 {options.value.length > 0 && (
-                  <ul {...api.contentProps}>
+                  <ul data-testid="combobox-content" {...api.contentProps}>
                     {options.value.map((item, index) => (
                       <li
                         key={`${item.code}:${index}`}
