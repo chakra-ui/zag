@@ -68,6 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       role: "radiogroup",
       id: dom.getRootId(state.context),
+      "aria-labelledby": dom.getLabelId(state.context),
       "data-orientation": state.context.orientation,
       "aria-orientation": state.context.orientation,
       dir: state.context.dir,

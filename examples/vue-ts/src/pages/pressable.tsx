@@ -7,29 +7,32 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "pressable",
   setup() {
-    const buttonRef = ref<HTMLButtonElement | null>(null)
+    const eventsRef = ref<string[]>([])
+
     const [state, send] = useMachine(
       pressable.machine({
         id: "1",
-        onPressStart() {
-          console.log("press start")
+        onPressStart(e) {
+          eventsRef.value.push(`press start with ${e.pointerType}`)
         },
-        onPressEnd() {
-          console.log("press end")
+        onPressEnd(e) {
+          eventsRef.value.push(`press end with ${e.pointerType}`)
         },
         onPress(e) {
-          console.log("pressed with " + e.pointerType)
+          eventsRef.value.push(`press with ${e.pointerType}`)
         },
-        onPressUp() {
-          console.log("press up")
+        onPressUp(e) {
+          eventsRef.value.push(`press up with ${e.pointerType}`)
         },
-        onLongPress() {
-          console.log("long press")
+        onLongPress(e) {
+          eventsRef.value.push(`long press with ${e.pointerType}`)
         },
       }),
     )
 
     const apiRef = computed(() => pressable.connect(state.value, send, normalizeProps))
+    const buttonRef = ref<HTMLButtonElement | null>(null)
+
     return () => {
       const button = buttonRef.value
       const api = apiRef.value
@@ -37,15 +40,17 @@ export default defineComponent({
       return (
         <>
           <main class="pressable">
-            <button ref={buttonRef} {...api.pressableProps}>
-              Get element Press
-            </button>
-            <br />
-            <br />
-            <button>Just a button</button>
-            <br />
-            <br />
-            <button onClick={() => button?.click()}>Programmatic click me</button>
+            <div style={{ display: "flex", "flex-direction": "column", gap: "20px", "align-items": "flex-start" }}>
+              <button ref={buttonRef} {...api.pressableProps}>
+                Get element Press
+              </button>
+              <button onClick={() => button?.click()}>Programmatic click me</button>
+            </div>
+            <ul style={{ "max-height": "200px", overflow: "auto" }}>
+              {eventsRef.value.map((e, i) => (
+                <li key={i}>{e}</li>
+              ))}
+            </ul>
           </main>
 
           <Toolbar>

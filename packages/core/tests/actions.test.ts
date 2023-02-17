@@ -1,8 +1,11 @@
+import { expect, test, vi } from "vitest"
 import { createMachine } from "../src"
 
-test("[final state] exit actions should be called when invoked machine reaches its final state", (done) => {
-  const exit_root = jest.fn()
-  const exit_state = jest.fn()
+test("[final state] exit actions should be called when invoked machine reaches its final state", () => {
+  const exit_root = vi.fn()
+  const exit_state = vi.fn()
+
+  let done = vi.fn()
 
   const machine = createMachine({
     exit: exit_root,
@@ -23,11 +26,12 @@ test("[final state] exit actions should be called when invoked machine reaches i
 
   expect(exit_root).toHaveBeenCalled()
   expect(exit_state).toHaveBeenCalled()
+  expect(done).toHaveBeenCalled()
 })
 
 test("exit actions should be called when stopping a machine", () => {
-  const exit_root = jest.fn()
-  const exit_state = jest.fn()
+  const exit_root = vi.fn()
+  const exit_state = vi.fn()
 
   const machine = createMachine({
     exit: exit_root,

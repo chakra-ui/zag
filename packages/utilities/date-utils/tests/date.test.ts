@@ -1,4 +1,5 @@
 import { parseDate } from "@internationalized/date"
+import { describe, expect, test } from "vitest"
 import { constrainValue, getNextPage, getPreviousPage } from "../src"
 
 const locale = "en-US"

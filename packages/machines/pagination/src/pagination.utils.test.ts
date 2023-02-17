@@ -1,3 +1,4 @@
+import { expect, describe, test } from "vitest"
 import { utils } from "./pagination.utils"
 
 describe("@zag-js/pagination utils", () => {

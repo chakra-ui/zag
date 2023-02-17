@@ -32,6 +32,9 @@ export default function Page() {
       <main className="combobox">
         <div>
           <button onClick={() => api.setValue("TG")}>Set to Togo</button>
+          <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
+            Clear Value
+          </button>
           <br />
           <div {...api.rootProps}>
             <label {...api.labelProps}>Select country</label>

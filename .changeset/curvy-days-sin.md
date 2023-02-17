@@ -2,4 +2,4 @@
 "@zag-js/checkbox": patch
 ---
 
-Fix double click outside breaking click on checkbox label
+Fix issue where double clicking outside breaks a new click on checkbox label

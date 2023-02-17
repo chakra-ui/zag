@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest"
 import { createAnatomy } from "./create-anatomy"
 
 describe("Anatomy", () => {
@@ -10,7 +11,7 @@ describe("Anatomy", () => {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
         },
       }
     `)
@@ -25,7 +26,7 @@ describe("Anatomy", () => {
             "data-part": "toggle-button",
             "data-scope": "hover-card",
           },
-          "selector": "&[data-scope="hover-card"][data-part="toggle-button"], & [data-scope="hover-card"][data-part="toggle-button"]",
+          "selector": "&[data-scope=\\"hover-card\\"][data-part=\\"toggle-button\\"], & [data-scope=\\"hover-card\\"][data-part=\\"toggle-button\\"]",
         },
       }
     `)
@@ -40,14 +41,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"control\\"], & [data-scope=\\"accordion\\"][data-part=\\"control\\"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
         },
       }
     `)
@@ -64,14 +65,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"control\\"], & [data-scope=\\"accordion\\"][data-part=\\"control\\"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
         },
       }
     `)
@@ -88,14 +89,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"control\\"], & [data-scope=\\"accordion\\"][data-part=\\"control\\"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
+          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
         },
       }
     `)

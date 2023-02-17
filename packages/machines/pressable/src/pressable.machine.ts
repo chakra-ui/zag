@@ -75,7 +75,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "pressed:out",
-                actions: ["clearPressedDown", "invokeOnPressEnd"],
+                actions: ["invokeOnPressEnd"],
               },
             ],
             DOC_POINTER_UP: [
@@ -110,7 +110,6 @@ export function machine(userContext: UserDefinedContext) {
             },
             DOC_POINTER_UP: {
               target: "idle",
-              actions: "invokeOnPressEnd",
             },
             DOC_POINTER_CANCEL: "idle",
             DRAG_START: "idle",

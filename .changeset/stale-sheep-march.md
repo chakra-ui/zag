@@ -2,4 +2,4 @@
 "@zag-js/pressable": patch
 ---
 
-Fix pressable invoking `onPress` after long press
+Fixed issue where `onPress` was invoked after long press

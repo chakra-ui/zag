@@ -1,3 +1,4 @@
+import { expect, test } from "vitest"
 import { createMachine, guards } from "../src"
 
 const { stateIn } = guards

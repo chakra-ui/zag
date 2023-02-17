@@ -13,7 +13,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "4.0.3",
+    "vite": "4.1.1",
     "vite-plugin-solid": "2.5.0"
   },
   "dependencies": {
@@ -69,6 +69,6 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "solid-app-router": "0.4.2",
-    "solid-js": "1.6.6"
+    "solid-js": "1.6.10"
   }
 }

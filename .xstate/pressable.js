@@ -60,7 +60,7 @@ const fetchMachine = createMachine({
           actions: ["clearPressedDown", "invokeOnPressEnd"]
         }, {
           target: "pressed:out",
-          actions: ["clearPressedDown", "invokeOnPressEnd"]
+          actions: ["invokeOnPressEnd"]
         }],
         DOC_POINTER_UP: [{
           cond: "wasPressedDown",
@@ -95,8 +95,7 @@ const fetchMachine = createMachine({
           actions: "invokeOnPressStart"
         },
         DOC_POINTER_UP: {
-          target: "idle",
-          actions: "invokeOnPressEnd"
+          target: "idle"
         },
         DOC_POINTER_CANCEL: "idle",
         DRAG_START: "idle"
