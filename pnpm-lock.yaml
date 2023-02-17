@@ -88,6 +88,7 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/auto-resize': workspace:*
+      '@zag-js/carousel': workspace:*
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
@@ -147,6 +148,7 @@ importers:
       '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
+      '@zag-js/carousel': link:../../packages/machines/carousel
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
@@ -212,15 +214,111 @@ importers:
       '@types/react': ^18.0.27
       '@types/react-dom': ^18.0.10
       '@vitejs/plugin-react': ^3.1.0
-      '@zag-js/menu': workspace:^0.3.8
+      '@zag-js/accordion': workspace:*
+      '@zag-js/anatomy': workspace:*
+      '@zag-js/aria-hidden': workspace:*
+      '@zag-js/auto-resize': workspace:*
+      '@zag-js/carousel': workspace:*
+      '@zag-js/checkbox': workspace:*
+      '@zag-js/combobox': workspace:*
+      '@zag-js/core': workspace:*
+      '@zag-js/date-picker': workspace:*
+      '@zag-js/date-utils': workspace:*
+      '@zag-js/dialog': workspace:*
+      '@zag-js/dismissable': workspace:*
+      '@zag-js/dom-query': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/editable': workspace:*
+      '@zag-js/element-rect': workspace:*
+      '@zag-js/element-size': workspace:*
+      '@zag-js/focus-scope': workspace:*
+      '@zag-js/focus-visible': workspace:*
+      '@zag-js/form-utils': workspace:*
+      '@zag-js/hover-card': workspace:*
+      '@zag-js/interact-outside': workspace:*
+      '@zag-js/live-region': workspace:*
+      '@zag-js/menu': workspace:*
+      '@zag-js/number-input': workspace:*
+      '@zag-js/number-utils': workspace:*
+      '@zag-js/numeric-range': workspace:*
+      '@zag-js/pagination': workspace:*
+      '@zag-js/pin-input': workspace:*
+      '@zag-js/popover': workspace:*
+      '@zag-js/popper': workspace:*
+      '@zag-js/pressable': workspace:*
+      '@zag-js/radio-group': workspace:*
+      '@zag-js/range-slider': workspace:*
+      '@zag-js/rating-group': workspace:*
       '@zag-js/react': workspace:^0.3.9
+      '@zag-js/rect-utils': workspace:*
+      '@zag-js/remove-scroll': workspace:*
+      '@zag-js/select': workspace:*
+      '@zag-js/slider': workspace:*
+      '@zag-js/splitter': workspace:*
+      '@zag-js/store': workspace:*
+      '@zag-js/tabs': workspace:*
+      '@zag-js/tags-input': workspace:*
+      '@zag-js/toast': workspace:*
+      '@zag-js/toggle': workspace:*
+      '@zag-js/tooltip': workspace:*
+      '@zag-js/transition': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ^4.9.3
       vite: ^4.1.0
     dependencies:
+      '@zag-js/accordion': link:../../packages/machines/accordion
+      '@zag-js/anatomy': link:../../packages/anatomy
+      '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
+      '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
+      '@zag-js/carousel': link:../../packages/machines/carousel
+      '@zag-js/checkbox': link:../../packages/machines/checkbox
+      '@zag-js/combobox': link:../../packages/machines/combobox
+      '@zag-js/core': link:../../packages/core
+      '@zag-js/date-picker': link:../../packages/machines/date-picker
+      '@zag-js/date-utils': link:../../packages/utilities/date-utils
+      '@zag-js/dialog': link:../../packages/machines/dialog
+      '@zag-js/dismissable': link:../../packages/utilities/dismissable
+      '@zag-js/dom-query': link:../../packages/utilities/dom-query
+      '@zag-js/dom-utils': link:../../packages/utilities/dom
+      '@zag-js/editable': link:../../packages/machines/editable
+      '@zag-js/element-rect': link:../../packages/utilities/element-rect
+      '@zag-js/element-size': link:../../packages/utilities/element-size
+      '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
+      '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
+      '@zag-js/form-utils': link:../../packages/utilities/form-utils
+      '@zag-js/hover-card': link:../../packages/machines/hover-card
+      '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
+      '@zag-js/live-region': link:../../packages/utilities/live-region
       '@zag-js/menu': link:../../packages/machines/menu
+      '@zag-js/number-input': link:../../packages/machines/number-input
+      '@zag-js/number-utils': link:../../packages/utilities/number
+      '@zag-js/numeric-range': link:../../packages/utilities/numeric-range
+      '@zag-js/pagination': link:../../packages/machines/pagination
+      '@zag-js/pin-input': link:../../packages/machines/pin-input
+      '@zag-js/popover': link:../../packages/machines/popover
+      '@zag-js/popper': link:../../packages/utilities/popper
+      '@zag-js/pressable': link:../../packages/machines/pressable
+      '@zag-js/radio-group': link:../../packages/machines/radio-group
+      '@zag-js/range-slider': link:../../packages/machines/range-slider
+      '@zag-js/rating-group': link:../../packages/machines/rating-group
       '@zag-js/react': link:../../packages/frameworks/react
+      '@zag-js/rect-utils': link:../../packages/utilities/rect
+      '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
+      '@zag-js/select': link:../../packages/machines/select
+      '@zag-js/slider': link:../../packages/machines/slider
+      '@zag-js/splitter': link:../../packages/machines/splitter
+      '@zag-js/store': link:../../packages/store
+      '@zag-js/tabs': link:../../packages/machines/tabs
+      '@zag-js/tags-input': link:../../packages/machines/tags-input
+      '@zag-js/toast': link:../../packages/machines/toast
+      '@zag-js/toggle': link:../../packages/machines/toggle
+      '@zag-js/tooltip': link:../../packages/machines/tooltip
+      '@zag-js/transition': link:../../packages/machines/transition
+      '@zag-js/types': link:../../packages/types
+      '@zag-js/utils': link:../../packages/utilities/core
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -237,6 +335,7 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/auto-resize': workspace:*
+      '@zag-js/carousel': workspace:*
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
@@ -293,6 +392,7 @@ importers:
       '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
+      '@zag-js/carousel': link:../../packages/machines/carousel
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
@@ -361,6 +461,7 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/auto-resize': workspace:*
+      '@zag-js/carousel': workspace:*
       '@zag-js/checkbox': workspace:*
       '@zag-js/combobox': workspace:*
       '@zag-js/core': workspace:*
@@ -421,6 +522,7 @@ importers:
       '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
       '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
+      '@zag-js/carousel': link:../../packages/machines/carousel
       '@zag-js/checkbox': link:../../packages/machines/checkbox
       '@zag-js/combobox': link:../../packages/machines/combobox
       '@zag-js/core': link:../../packages/core
@@ -578,6 +680,23 @@ importers:
       vue: 3.2.47
 
   packages/machines/accordion:
+    specifiers:
+      '@zag-js/anatomy': workspace:*
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-utils': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
+      clean-package: 2.2.0
+    dependencies:
+      '@zag-js/anatomy': link:../../anatomy
+      '@zag-js/core': link:../../core
+      '@zag-js/types': link:../../types
+    devDependencies:
+      '@zag-js/dom-utils': link:../../utilities/dom
+      '@zag-js/utils': link:../../utilities/core
+      clean-package: 2.2.0
+
+  packages/machines/carousel:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
