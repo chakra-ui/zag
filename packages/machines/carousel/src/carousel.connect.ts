@@ -40,6 +40,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         flexDirection: "row",
         height: "auto",
         marginInlineStart: "calc(var(--slide-spacing) * -1)",
+        transform: state.context.translateValue,
       },
     }),
 
@@ -62,6 +63,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.previousTrigger.attrs,
       type: "button",
       disabled: !canScrollPrevious,
+      onClick() {
+        send({ type: "PREV" })
+      },
     }),
 
     nextTriggerProps: normalize.button({

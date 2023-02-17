@@ -15,6 +15,8 @@ type PrivateContext = Context<{
   inViewThreshold: number
   slideRects: DOMRect[]
   containerRect?: DOMRect
+  containerSize: number
+  scrollSnap: number
 }>
 
 type Edge = "top" | "right" | "bottom" | "left"
@@ -23,9 +25,9 @@ type ComputedContext = Readonly<{
   isRtl: boolean
   isHorizontal: boolean
   isVertical: boolean
-  containerSize: number
   startEdge: Edge
   endEdge: Edge
+  translateValue: string
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

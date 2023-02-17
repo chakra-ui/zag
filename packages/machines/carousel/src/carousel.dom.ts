@@ -11,18 +11,4 @@ export const dom = defineDomHelpers({
   getViewportEl: (ctx: Ctx) => dom.queryById(ctx, dom.getViewportId(ctx)),
   getSlideGroupEl: (ctx: Ctx) => dom.queryById(ctx, dom.getSlideGroupId(ctx)),
   getSlideEls: (ctx: Ctx) => queryAll(dom.getSlideGroupEl(ctx), `[data-part=slide]`),
-
-  translateSlideGroup: (ctx: Ctx, snap: number) => {
-    const sliderGroupEl = dom.getSlideGroupEl(ctx)
-    sliderGroupEl.style.transform = ctx.isHorizontal ? `translate3d(${snap}px, 0, 0)` : `translate3d(0, ${snap}px, 0)`
-  },
-
-  // [0, -600px, -1200px]
-  getScrollSnaps: (ctx: Ctx) => {
-    const containerRect = ctx.containerRect
-    if (!containerRect) return []
-    return ctx.slideRects
-      .map((rect) => containerRect[ctx.startEdge] - rect[ctx.startEdge])
-      .map((snap) => -Math.abs(snap))
-  },
 })

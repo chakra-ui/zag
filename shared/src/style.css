@@ -1277,10 +1277,9 @@ main > .toggle[data-pressed] {
 * Carousel
 * -----------------------------------------------------------------------------*/
 
-[data-scope="carousel"][data-part="container"] {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+[data-scope="carousel"][data-part="viewport"] {
+  max-width: 600px;
+  margin-top: 40px;
 }
 
 /* -----------------------------------------------------------------------------

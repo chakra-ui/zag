@@ -20,18 +20,16 @@ export default function Page() {
   return (
     <>
       <main className="carousel">
-        <div>
-          <div {...api.rootProps}>
-            <button {...api.previousTriggerProps}>Prev</button>
-            <button {...api.nextTriggerProps}>Next</button>
-            <div {...api.viewportProps}>
-              <div {...api.slideGroupProps}>
-                {images.map((image, index) => (
-                  <div {...api.getSlideProps({ index })} key={index}>
-                    <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
-                  </div>
-                ))}
-              </div>
+        <div {...api.rootProps}>
+          <button {...api.previousTriggerProps}>Prev</button>
+          <button {...api.nextTriggerProps}>Next</button>
+          <div {...api.viewportProps}>
+            <div {...api.slideGroupProps}>
+              {images.map((image, index) => (
+                <div {...api.getSlideProps({ index })} key={index}>
+                  <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
