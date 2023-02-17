@@ -4,12 +4,21 @@ import { a11y, controls, isInViewport, testid } from "./__utils"
 const input = testid("input")
 const trigger = testid("trigger")
 const content = testid("combobox-content")
+const clear_value_button = testid("clear-value-button")
 
 const options = "[data-part=option]:not([data-disabled])"
 const highlighted_option = "[data-part=option][data-highlighted]"
 
 const expectToBeHighlighted = async (el: Locator) => {
   await expect(el).toHaveAttribute("data-highlighted", "")
+}
+
+const expectToBeSelected = async (el: Locator) => {
+  await expect(el).toHaveAttribute("data-checked", "")
+}
+
+const expectNotToBeSelected = async (el: Locator) => {
+  await expect(el).not.toHaveAttribute("data-checked", "")
 }
 
 const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
@@ -142,6 +151,25 @@ test.describe("combobox", () => {
     await controls(page).bool("openOnClick")
     await page.click(input, { force: true })
     await expect(page.locator(content)).toBeVisible()
+  })
+
+  test("selects value on click", async ({ page }) => {
+    await page.click(trigger)
+    const option_els = page.locator(options)
+    await option_els.first().click()
+    await page.click(trigger)
+    await expectToBeSelected(option_els.first())
+  })
+
+  test("can clear value", async ({ page }) => {
+    await page.click(trigger)
+    const option_els = page.locator(options)
+    await option_els.first().click()
+    await page.click(trigger)
+    await page.locator(clear_value_button).click()
+
+    await expect(page.locator(input)).toHaveValue("")
+    await expectNotToBeSelected(option_els.first())
   })
 
   test("should scroll selected option into view", async ({ page }) => {

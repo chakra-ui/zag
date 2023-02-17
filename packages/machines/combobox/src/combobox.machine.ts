@@ -84,10 +84,10 @@ export function machine(userContext: UserDefinedContext) {
           {
             guard: "focusOnClear",
             target: "focused",
-            actions: "clearInputValue",
+            actions: ["clearInputValue", "clearSelectedValue"],
           },
           {
-            actions: "clearInputValue",
+            actions: ["clearInputValue", "clearSelectedValue"],
           },
         ],
         POINTER_OVER: {
