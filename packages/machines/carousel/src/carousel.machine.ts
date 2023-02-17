@@ -18,7 +18,7 @@ export function machine(userContext: UserDefinedContext) {
         loop: false,
         scrollSnap: 0,
         slidesPerView: 1,
-        spacing: "40px",
+        spacing: "0px",
         inViewThreshold: 0,
         containerSize: 0,
         slideRects: [],

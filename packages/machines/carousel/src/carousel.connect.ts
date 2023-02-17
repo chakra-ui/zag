@@ -38,7 +38,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-roledescription": "carousel",
       "aria-label": "Carousel",
       style: {
-        "--slide-spacing": "0px",
+        "--slide-spacing": state.context.spacing,
+        "--slide-size": `calc(100% / ${state.context.slidesPerView})`,
       },
     }),
 
@@ -80,7 +81,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-roledescription": "slide",
         "aria-label": sliderState.valueText,
         style: {
-          "--slide-size": "100%",
           flex: "0 0 var(--slide-size)",
           minWidth: "0px",
           paddingInlineStart: "var(--slide-spacing)",
