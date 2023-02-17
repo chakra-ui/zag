@@ -38,7 +38,7 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
       },
-      activities: ["trackElements"],
+      activities: ["trackContainerResize", "trackSlideMutation"],
       entry: ["measureElements"],
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
@@ -61,7 +61,18 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       activities: {
-        trackElements(ctx, _evt) {
+        trackSlideMutation(ctx, _evt) {
+          const container = dom.getSlideGroupEl(ctx)
+          const win = dom.getWin(ctx)
+          const observer = new win.MutationObserver(() => {
+            measureElements(ctx)
+          })
+          observer.observe(container, { childList: true })
+          return () => {
+            observer.disconnect()
+          }
+        },
+        trackContainerResize(ctx, _evt) {
           const container = dom.getSlideGroupEl(ctx)
           const win = dom.getWin(ctx)
           const observer = new win.ResizeObserver((entries) => {

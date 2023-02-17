@@ -33,7 +33,7 @@ const fetchMachine = createMachine({
       }
     }
   },
-  activities: ["trackElements"],
+  activities: ["trackContainerResize", "trackSlideMutation"],
   entry: ["measureElements"]
 }, {
   actions: {
