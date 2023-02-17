@@ -36,6 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       role: "region",
       "aria-roledescription": "carousel",
+      "data-orientation": state.context.orientation,
       "aria-label": "Carousel",
       style: {
         "--slide-spacing": state.context.spacing,
@@ -46,6 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     viewportProps: normalize.element({
       ...parts.viewport.attrs,
       id: dom.getViewportId(state.context),
+      "data-orientation": state.context.orientation,
       style: {
         overflow: "hidden",
       },
@@ -54,6 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     slideGroupProps: normalize.element({
       ...parts.slideGroup.attrs,
       id: dom.getSlideGroupId(state.context),
+      "data-orientation": state.context.orientation,
       style: {
         display: "flex",
         flexDirection: "row",
@@ -79,6 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-current": dataAttr(sliderState.isCurrent),
         role: "group",
         "aria-roledescription": "slide",
+        "data-orientation": state.context.orientation,
         "aria-label": sliderState.valueText,
         style: {
           flex: "0 0 var(--slide-size)",
@@ -94,6 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       disabled: !canScrollPrevious,
       "aria-label": "Previous Slide",
+      "data-orientation": state.context.orientation,
       "aria-controls": dom.getSlideGroupId(state.context),
       onClick() {
         send("PREV")
@@ -104,6 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.nextTrigger.attrs,
       type: "button",
       "aria-label": "Next Slide",
+      "data-orientation": state.context.orientation,
       "aria-controls": dom.getSlideGroupId(state.context),
       disabled: !canScrollNext,
       onClick() {
@@ -113,10 +119,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     indicatorGroupProps: normalize.element({
       ...parts.indicatorGroup.attrs,
+      "data-orientation": state.context.orientation,
     }),
 
     indicatorProps: normalize.button({
       ...parts.indicator.attrs,
+      "data-orientation": state.context.orientation,
       type: "button",
     }),
   }
