@@ -8,6 +8,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const canScrollNext = state.context.canScrollNext
   const canScrollPrevious = state.context.canScrollPrevious
   const isHorizontal = state.context.isHorizontal
+  const isAutoplay = state.matches("autoplay")
 
   function getSlideState(props: SlideProps) {
     const { index } = props
@@ -20,8 +21,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    index: state.context.index,
+    isAutoplay,
     canScrollNext,
     canScrollPrevious,
+
     scrollTo(index: number) {
       send({ type: "GOTO", index })
     },

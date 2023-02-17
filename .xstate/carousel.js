@@ -14,22 +14,30 @@ const fetchMachine = createMachine({
   initial: "idle",
   context: {},
   on: {
+    NEXT: {
+      actions: ["setNextIndex"]
+    },
+    PREV: {
+      actions: ["setPreviousIndex"]
+    },
+    GOTO: {
+      actions: ["setIndex"]
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    idle: {
+    idle: {},
+    autoplay: {
+      invoke: {
+        src: "interval",
+        id: "interval"
+      },
       on: {
-        NEXT: {
-          actions: ["setNextIndex"]
-        },
-        PREV: {
-          actions: ["setPreviousIndex"]
-        },
-        GOTO: {
-          actions: ["setIndex"]
-        }
+        PAUSE: "idle"
       }
     }
   },

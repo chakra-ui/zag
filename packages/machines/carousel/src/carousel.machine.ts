@@ -27,18 +27,25 @@ export function machine(userContext: UserDefinedContext) {
       watch: {
         index: ["invokeOnSlideChange", "setScrollSnap"],
       },
+      on: {
+        NEXT: {
+          actions: ["setNextIndex"],
+        },
+        PREV: {
+          actions: ["setPreviousIndex"],
+        },
+        GOTO: {
+          actions: ["setIndex"],
+        },
+      },
       states: {
-        idle: {
+        idle: {},
+        autoplay: {
+          every: {
+            300: ["setNextIndex"],
+          },
           on: {
-            NEXT: {
-              actions: ["setNextIndex"],
-            },
-            PREV: {
-              actions: ["setPreviousIndex"],
-            },
-            GOTO: {
-              actions: ["setIndex"],
-            },
+            PAUSE: "idle",
           },
         },
       },
