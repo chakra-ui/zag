@@ -270,7 +270,8 @@ export function machine(userContext: UserDefinedContext) {
             exclude(target) {
               return contains(dom.getRootEl(ctx), target)
             },
-            onInteractOutside() {
+            onInteractOutside(event) {
+              if (ctx.isInteractionOutside && !ctx.isInteractionOutside(event)) return
               send({ type: "BLUR", src: "interact-outside" })
             },
           })

@@ -46,4 +46,19 @@ describe("@zag-js/tags-input machine", () => {
     await clickOutside()
     expectStateToBe("idle")
   })
+
+  test("isInteractionOutside can keep focus after click outside", async () => {
+    const isInteractionOutside = vi.fn(() => false)
+    const { send, expectStateToBe } = setupTest({
+      isInteractionOutside,
+    })
+
+    send("FOCUS")
+    await clickOutside()
+    expectStateToBe("focused:input")
+
+    isInteractionOutside.mockImplementationOnce(() => true)
+    await clickOutside()
+    expectStateToBe("idle")
+  })
 })

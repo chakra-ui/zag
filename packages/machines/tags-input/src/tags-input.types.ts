@@ -1,4 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { InteractOutsideEvent } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
@@ -104,6 +105,11 @@ type PublicContext = DirectionProperty &
      * Useful for preventing duplicates or invalid tag values.
      */
     validate?(details: { inputValue: string; values: string[] }): boolean
+    /**
+     * Returns a boolean that determines whether a event is treated as an outside interaction.
+     * Useful for preventing blur on the tags input when composing it with other components (e.g. combobox).
+     */
+    isInteractionOutside?(event: InteractOutsideEvent): boolean
     /**
      * The behavior of the tags input when the input is blurred
      * - `"add"`: add the input value as a new tag
