@@ -106,7 +106,7 @@ type PublicContext = DirectionProperty &
      */
     validate?(details: { inputValue: string; values: string[] }): boolean
     /**
-     * Returns a boolean that determines whether a event is treated as an outside interaction.
+     * Returns a boolean that determines whether an event is treated as an outside interaction.
      * Useful for preventing blur on the tags input when composing it with other components (e.g. combobox).
      */
     isInteractionOutside?(event: InteractOutsideEvent): boolean
