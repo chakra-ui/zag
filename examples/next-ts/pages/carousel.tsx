@@ -1,8 +1,10 @@
 import * as carousel from "@zag-js/carousel"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { carouselControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 const images = [
   "https://tinyurl.com/5b6ka8jd",
@@ -13,7 +15,11 @@ const images = [
 ]
 
 export default function Page() {
-  const [state, send] = useMachine(carousel.machine({ id: useId() }))
+  const controls = useControls(carouselControls)
+
+  const [state, send] = useMachine(carousel.machine({ id: useId() }), {
+    context: controls.context,
+  })
 
   const api = carousel.connect(state, send, normalizeProps)
 
@@ -35,7 +41,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={null}>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
