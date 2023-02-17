@@ -4,8 +4,8 @@ import { dom } from "./carousel.dom"
 import { Send, State } from "./carousel.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const canScrollNext = true
-  const canScrollPrevious = true
+  const canScrollNext = state.context.canScrollNext
+  const canScrollPrevious = state.context.canScrollPrevious
 
   return {
     canScrollNext,

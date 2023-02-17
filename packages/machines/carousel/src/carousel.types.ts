@@ -28,6 +28,8 @@ type ComputedContext = Readonly<{
   startEdge: Edge
   endEdge: Edge
   translateValue: string
+  canScrollNext: boolean
+  canScrollPrevious: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

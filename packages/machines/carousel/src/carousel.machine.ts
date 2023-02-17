@@ -40,6 +40,8 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
+        canScrollNext: (ctx) => ctx.index < ctx.slideRects.length - 1,
+        canScrollPrevious: (ctx) => ctx.index > 0,
         startEdge(ctx) {
           if (ctx.isVertical) return "top"
           return ctx.isRtl ? "right" : "left"
@@ -48,8 +50,9 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.isVertical) return "bottom"
           return ctx.isRtl ? "left" : "right"
         },
-        translateValue: (ctx) =>
-          ctx.isHorizontal ? `translate3d(${ctx.scrollSnap}px, 0, 0)` : `translate3d(0, ${ctx.scrollSnap}px, 0)`,
+        translateValue: (ctx) => {
+          return ctx.isHorizontal ? `translate3d(${ctx.scrollSnap}px, 0, 0)` : `translate3d(0, ${ctx.scrollSnap}px, 0)`
+        },
       },
     },
     {
