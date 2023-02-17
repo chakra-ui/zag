@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
+export type SlideProps = {
+  index: number
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     orientation: "horizontal" | "vertical"

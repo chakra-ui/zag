@@ -27,14 +27,18 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           on: {
             NEXT: {
-              actions: ["measureElements", "setNextIndex", "setScrollSnap"],
+              actions: ["setNextIndex", "setScrollSnap"],
             },
             PREV: {
-              actions: ["measureElements", "setPreviousIndex", "setScrollSnap"],
+              actions: ["setPreviousIndex", "setScrollSnap"],
+            },
+            SCROLL_TO: {
+              actions: ["setIndex", "setScrollSnap"],
             },
           },
         },
       },
+      activities: ["trackElements"],
       entry: ["measureElements"],
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
@@ -56,6 +60,23 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      activities: {
+        trackElements(ctx, _evt) {
+          const container = dom.getSlideGroupEl(ctx)
+          const win = dom.getWin(ctx)
+          const observer = new win.ResizeObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.target === container) {
+                measureElements(ctx)
+              }
+            })
+          })
+          observer.observe(container)
+          return () => {
+            observer.disconnect()
+          }
+        },
+      },
       guards: {},
       actions: {
         setNextIndex(ctx) {
@@ -67,12 +88,17 @@ export function machine(userContext: UserDefinedContext) {
         setScrollSnap(ctx) {
           ctx.scrollSnap = getScrollSnap(ctx)[ctx.index]
         },
-        measureElements(ctx) {
-          ctx.containerRect = ref(dom.getSlideGroupEl(ctx).getBoundingClientRect())
-          ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
-          ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
+        setIndex(ctx, evt) {
+          ctx.index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
         },
+        measureElements,
       },
     },
   )
+}
+
+const measureElements = (ctx: MachineContext) => {
+  ctx.containerRect = ref(dom.getSlideGroupEl(ctx).getBoundingClientRect())
+  ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
+  ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
 }

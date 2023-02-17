@@ -22,14 +22,18 @@ const fetchMachine = createMachine({
     idle: {
       on: {
         NEXT: {
-          actions: ["measureElements", "setNextIndex", "setScrollSnap"]
+          actions: ["setNextIndex", "setScrollSnap"]
         },
         PREV: {
-          actions: ["measureElements", "setPreviousIndex", "setScrollSnap"]
+          actions: ["setPreviousIndex", "setScrollSnap"]
+        },
+        SCROLL_TO: {
+          actions: ["setIndex", "setScrollSnap"]
         }
       }
     }
   },
+  activities: ["trackElements"],
   entry: ["measureElements"]
 }, {
   actions: {
