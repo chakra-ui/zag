@@ -7,6 +7,7 @@ import { Send, SlideProps, State } from "./carousel.types"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const canScrollNext = state.context.canScrollNext
   const canScrollPrevious = state.context.canScrollPrevious
+  const isHorizontal = state.context.isHorizontal
 
   function getSlideState(props: SlideProps) {
     const { index } = props
@@ -59,8 +60,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
       style: {
         display: "flex",
-        flexDirection: "row",
-        height: "auto",
+        flexDirection: isHorizontal ? "row" : "column",
+        [isHorizontal ? "height" : "width"]: "auto",
         marginInlineStart: "calc(var(--slide-spacing) * -1)",
         transform: state.context.translateValue,
         transitionProperty: "transform",
@@ -86,8 +87,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": sliderState.valueText,
         style: {
           flex: "0 0 var(--slide-size)",
-          minWidth: "0px",
-          paddingInlineStart: "var(--slide-spacing)",
+          [isHorizontal ? "minWidth" : "minHeight"]: "0px",
+          [isHorizontal ? "paddingInlineStart" : "paddingBlockStart"]: "var(--slide-spacing)",
           position: "relative",
         },
       })
