@@ -44,8 +44,8 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => ctx.index < ctx.slideRects.length - 1,
-        canScrollPrevious: (ctx) => ctx.index > 0,
+        canScrollNext: (ctx) => !ctx.loop && ctx.index < ctx.slideRects.length - 1,
+        canScrollPrevious: (ctx) => !ctx.loop && ctx.index > 0,
         startEdge(ctx) {
           if (ctx.isVertical) return "top"
           return ctx.isRtl ? "right" : "left"
