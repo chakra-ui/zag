@@ -23,17 +23,20 @@ export function machine(userContext: UserDefinedContext) {
         containerSize: 0,
         slideRects: [],
       },
+      watch: {
+        index: ["invokeOnSlideChange", "setScrollSnap"],
+      },
       states: {
         idle: {
           on: {
             NEXT: {
-              actions: ["setNextIndex", "setScrollSnap"],
+              actions: ["setNextIndex"],
             },
             PREV: {
-              actions: ["setPreviousIndex", "setScrollSnap"],
+              actions: ["setPreviousIndex"],
             },
-            SCROLL_TO: {
-              actions: ["setIndex", "setScrollSnap"],
+            GOTO: {
+              actions: ["setIndex"],
             },
           },
         },
@@ -90,6 +93,9 @@ export function machine(userContext: UserDefinedContext) {
       },
       guards: {},
       actions: {
+        invokeOnSlideChange(ctx, _evt) {
+          ctx.onSlideChange?.({ index: ctx.index })
+        },
         setNextIndex(ctx) {
           ctx.index = nextIndex(ctx.slideRects, ctx.index)
         },

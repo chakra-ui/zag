@@ -13,6 +13,7 @@ type PublicContext = DirectionProperty &
     loop: boolean
     index: number
     spacing: string
+    onSlideChange?: (details: { index: number }) => void
   }
 
 type PrivateContext = Context<{

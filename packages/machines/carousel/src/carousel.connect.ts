@@ -22,7 +22,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     canScrollNext,
     canScrollPrevious,
     scrollTo(index: number) {
-      send({ type: "SCROLL_TO", index })
+      send({ type: "GOTO", index })
     },
     scrollToNext() {
       send("NEXT")
