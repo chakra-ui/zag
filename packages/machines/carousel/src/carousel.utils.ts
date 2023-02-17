@@ -11,5 +11,9 @@ export const getViewPercent = (containerSize: number, slideSize: number) => (sli
 export const getScrollSnap = (ctx: MachineContext) => {
   const containerRect = ctx.containerRect
   if (!containerRect) return []
-  return ctx.slideRects.map((rect) => containerRect[ctx.startEdge] - rect[ctx.startEdge]).map((snap) => -Math.abs(snap))
+  const snaps = ctx.slideRects
+    .map((rect) => containerRect[ctx.startEdge] - rect[ctx.startEdge])
+    .map((snap) => -Math.abs(snap))
+
+  return snaps
 }

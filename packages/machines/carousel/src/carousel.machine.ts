@@ -21,6 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         spacing: "0px",
         inViewThreshold: 0,
         containerSize: 0,
+        scrollWidth: 0,
         slideRects: [],
       },
       watch: {
@@ -42,13 +43,13 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       activities: ["trackContainerResize", "trackSlideMutation"],
-      entry: ["measureElements"],
+      entry: ["measureElements", "setScrollSnap"],
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => !ctx.loop && ctx.index < ctx.slideRects.length - 1,
-        canScrollPrevious: (ctx) => !ctx.loop && ctx.index > 0,
+        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.slideRects.length - 1,
+        canScrollPrevious: (ctx) => ctx.loop || ctx.index > 0,
         startEdge(ctx) {
           if (ctx.isVertical) return "top"
           return ctx.isRtl ? "right" : "left"
@@ -91,7 +92,11 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
       },
-      guards: {},
+      guards: {
+        loop: (ctx) => ctx.loop,
+        isLastSlide: (ctx) => ctx.index === ctx.slideRects.length - 1,
+        isFirstSlide: (ctx) => ctx.index === 0,
+      },
       actions: {
         invokeOnSlideChange(ctx, _evt) {
           ctx.onSlideChange?.({ index: ctx.index })
@@ -115,7 +120,9 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const measureElements = (ctx: MachineContext) => {
-  ctx.containerRect = ref(dom.getSlideGroupEl(ctx).getBoundingClientRect())
+  const container = dom.getSlideGroupEl(ctx)
+  ctx.containerRect = ref(container.getBoundingClientRect())
   ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
   ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
+  ctx.scrollWidth = container.scrollWidth
 }

@@ -22,6 +22,7 @@ type PrivateContext = Context<{
   containerRect?: DOMRect
   containerSize: number
   scrollSnap: number
+  scrollWidth: number
 }>
 
 type Edge = "top" | "right" | "bottom" | "left"

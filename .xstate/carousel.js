@@ -34,7 +34,7 @@ const fetchMachine = createMachine({
     }
   },
   activities: ["trackContainerResize", "trackSlideMutation"],
-  entry: ["measureElements"]
+  entry: ["measureElements", "setScrollSnap"]
 }, {
   actions: {
     updateContext: assign((context, event) => {
