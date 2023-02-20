@@ -46,7 +46,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: {
         "--slide-spacing": state.context.spacing,
         "--slide-size": `calc(100% / ${state.context.slidesPerView})`,
-        "--transform": state.context.translateValue,
       },
     }),
 
@@ -65,7 +64,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         flexDirection: isHorizontal ? "row" : "column",
         [isHorizontal ? "height" : "width"]: "auto",
         gap: "var(--slide-spacing)",
-        transform: "var(--transform)",
+        transform: state.context.translateValue,
         transitionProperty: "transform",
         willChange: "transform",
         transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
