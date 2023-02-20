@@ -17,7 +17,7 @@ const images = [
 export default function Page() {
   const controls = useControls(carouselControls)
 
-  const [state, send] = useMachine(carousel.machine({ id: useId() }), {
+  const [state, send] = useMachine(carousel.machine({ id: useId(), index: 1 }), {
     context: controls.context,
   })
 

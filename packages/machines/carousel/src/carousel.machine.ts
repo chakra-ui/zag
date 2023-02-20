@@ -11,7 +11,6 @@ export function machine(userContext: UserDefinedContext) {
       id: "carousel",
       initial: "idle",
       context: {
-        ...ctx,
         index: 0,
         orientation: "horizontal",
         align: "start",
@@ -19,6 +18,7 @@ export function machine(userContext: UserDefinedContext) {
         scrollSnap: 0,
         slidesPerView: 1,
         spacing: "0px",
+        ...ctx,
         inViewThreshold: 0,
         containerSize: 0,
         scrollWidth: 0,
@@ -37,12 +37,15 @@ export function machine(userContext: UserDefinedContext) {
         GOTO: {
           actions: ["setIndex"],
         },
+        MUTATION: {
+          actions: ["measureElements", "setScrollSnap"],
+        },
       },
       states: {
         idle: {},
         autoplay: {
           every: {
-            300: ["setNextIndex"],
+            2000: ["setNextIndex"],
           },
           on: {
             PAUSE: "idle",
@@ -72,11 +75,11 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       activities: {
-        trackSlideMutation(ctx, _evt) {
+        trackSlideMutation(ctx, _evt, { send }) {
           const container = dom.getSlideGroupEl(ctx)
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
-            measureElements(ctx)
+            send("MUTATION")
           })
           observer.observe(container, { childList: true })
           return () => {

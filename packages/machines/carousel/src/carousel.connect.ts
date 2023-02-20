@@ -53,9 +53,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.viewport.attrs,
       id: dom.getViewportId(state.context),
       "data-orientation": state.context.orientation,
-      style: {
-        overflow: "hidden",
-      },
     }),
 
     slideGroupProps: normalize.element({

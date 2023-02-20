@@ -22,6 +22,9 @@ const fetchMachine = createMachine({
     },
     GOTO: {
       actions: ["setIndex"]
+    },
+    MUTATION: {
+      actions: ["measureElements", "setScrollSnap"]
     }
   },
   on: {
