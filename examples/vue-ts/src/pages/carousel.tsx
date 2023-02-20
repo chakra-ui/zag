@@ -1,7 +1,7 @@
 import * as carousel from "@zag-js/carousel"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
 import { carouselControls, carouselData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -11,7 +11,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(carouselControls)
 
-    const [state, send] = useMachine(carousel.machine({ id: "1" }), {
+    const [state, send] = useMachine(carousel.machine({ id: "1", index: 1 }), {
       context: controls.context,
     })
 
@@ -23,10 +23,24 @@ export default defineComponent({
       return (
         <>
           <main class="carousel">
-            <div {...api.rootProps}></div>
+            <div {...api.rootProps}>
+              <button {...api.previousTriggerProps}>Prev</button>
+              <button {...api.nextTriggerProps}>Next</button>
+              <div {...api.viewportProps}>
+                <div {...api.slideGroupProps}>
+                  {carouselData.map((image, index) => (
+                    <div {...api.getSlideProps({ index })} key={index}>
+                      <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </main>
 
-          <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
+          <Toolbar controls={controls.ui}>
+            <StateVisualizer state={state} />
+          </Toolbar>
         </>
       )
     }

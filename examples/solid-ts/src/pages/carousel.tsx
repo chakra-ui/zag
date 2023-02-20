@@ -1,7 +1,7 @@
 import * as carousel from "@zag-js/carousel"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
-import { createMemo, createUniqueId } from "solid-js"
 import { carouselControls, carouselData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -18,10 +18,26 @@ export default function Page() {
   return (
     <>
       <main class="carousel">
-        <div {...api().rootProps}></div>
+        <div {...api().rootProps}>
+          <button {...api().previousTriggerProps}>Prev</button>
+          <button {...api().nextTriggerProps}>Next</button>
+          <div {...api().viewportProps}>
+            <div {...api().slideGroupProps}>
+              <For each={carouselData}>
+                {(image, index) => (
+                  <div {...api().getSlideProps({ index: index() })}>
+                    <img src={image} alt="" style={{ height: "300px", width: "100%", "object-fit": "cover" }} />
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </div>
       </main>
 
-      <Toolbar controls={controls.ui} visualizer={<StateVisualizer state={state} />} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} />
+      </Toolbar>
     </>
   )
 }

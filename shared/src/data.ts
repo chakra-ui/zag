@@ -117,3 +117,11 @@ export const radioData = [
   { id: "mango", label: "Mangoes" },
   { id: "grape", label: "Grapes" },
 ]
+
+export const carouselData = [
+  "https://tinyurl.com/5b6ka8jd",
+  "https://tinyurl.com/7rmccdn5",
+  "https://tinyurl.com/59jxz9uu",
+  "https://tinyurl.com/6jurv23t",
+  "https://tinyurl.com/yp4rfum7",
+]
