@@ -11,7 +11,7 @@ export function createReducer(state: State, send: Send) {
     if (multiple && !Array.isArray(nextValue)) {
       nextValue = [nextValue]
     }
-    send({ type: "value.set", value: nextValue })
+    send({ type: "VALUE.SET", value: nextValue })
   }
 
   function getItemState(props: ItemProps) {
