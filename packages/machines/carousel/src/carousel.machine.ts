@@ -42,13 +42,25 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       states: {
-        idle: {},
+        idle: {
+          on: {
+            POINTER_DOWN: "pointerdown",
+          },
+        },
         autoplay: {
           every: {
             2000: ["setNextIndex"],
           },
           on: {
             PAUSE: "idle",
+          },
+        },
+        pointerdown: {
+          on: {
+            POINTER_UP: "idle",
+            POINTER_MOVE: {
+              actions: ["setScrollSnap"],
+            },
           },
         },
       },

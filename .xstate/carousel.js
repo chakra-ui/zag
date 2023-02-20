@@ -33,7 +33,11 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    idle: {},
+    idle: {
+      on: {
+        POINTER_DOWN: "pointerdown"
+      }
+    },
     autoplay: {
       invoke: {
         src: "interval",
@@ -41,6 +45,14 @@ const fetchMachine = createMachine({
       },
       on: {
         PAUSE: "idle"
+      }
+    },
+    pointerdown: {
+      on: {
+        POINTER_UP: "idle",
+        POINTER_MOVE: {
+          actions: ["setScrollSnap"]
+        }
       }
     }
   },
