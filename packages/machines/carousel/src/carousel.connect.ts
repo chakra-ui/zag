@@ -46,6 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: {
         "--slide-spacing": state.context.spacing,
         "--slide-size": `calc(100% / ${state.context.slidesPerView})`,
+        "--transform": state.context.translateValue,
       },
     }),
 
@@ -63,8 +64,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         display: "flex",
         flexDirection: isHorizontal ? "row" : "column",
         [isHorizontal ? "height" : "width"]: "auto",
-        marginInlineStart: "calc(var(--slide-spacing) * -1)",
-        transform: state.context.translateValue,
+        gap: "var(--slide-spacing)",
+        transform: "var(--transform)",
         transitionProperty: "transform",
         willChange: "transform",
         transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
@@ -87,10 +88,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "aria-label": sliderState.valueText,
         style: {
+          position: "relative",
           flex: "0 0 var(--slide-size)",
           [isHorizontal ? "minWidth" : "minHeight"]: "0px",
-          [isHorizontal ? "paddingInlineStart" : "paddingBlockStart"]: "var(--slide-spacing)",
-          position: "relative",
         },
       })
     },
@@ -98,6 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     previousTriggerProps: normalize.button({
       ...parts.previousTrigger.attrs,
       type: "button",
+      tabIndex: -1,
       disabled: !canScrollPrevious,
       "aria-label": "Previous Slide",
       "data-orientation": state.context.orientation,
@@ -110,6 +111,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     nextTriggerProps: normalize.button({
       ...parts.nextTrigger.attrs,
       type: "button",
+      tabIndex: -1,
       "aria-label": "Next Slide",
       "data-orientation": state.context.orientation,
       "aria-controls": dom.getSlideGroupId(state.context),
