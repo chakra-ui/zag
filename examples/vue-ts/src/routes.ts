@@ -4,6 +4,7 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/carousel", component: () => import("./pages/carousel") },
     { path: "/transition", component: () => import("./pages/transition") },
     { path: "/date-picker", component: () => import("./pages/date-picker") },
     { path: "/select", component: () => import("./pages/select") },

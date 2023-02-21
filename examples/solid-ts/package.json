@@ -21,6 +21,7 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
+    "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",

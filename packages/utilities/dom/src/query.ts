@@ -87,6 +87,11 @@ export function defineDomHelpers<T>(helpers: T) {
     getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
     getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
+    queryById: <T = HTMLElement>(ctx: Ctx, id: string): T => {
+      const el = dom.getById<T>(ctx, id)
+      if (!el) throw new Error(`Element with id "${id}" not found.`)
+      return el
+    },
   }
 
   return {
