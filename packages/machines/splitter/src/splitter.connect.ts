@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-event"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
@@ -95,8 +95,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "aria-orientation": state.context.orientation,
         "aria-controls": triggerState.panelIds.join(" "),
-        "data-focus": dataAttr(triggerState.isFocused),
-        "data-disabled": dataAttr(disabled),
+        "data-focus": triggerState.isFocused || undefined,
+        "data-disabled": disabled || undefined,
         style: {
           touchAction: "none",
           userSelect: "none",

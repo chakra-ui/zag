@@ -1,4 +1,3 @@
-import { dataAttr } from "@zag-js/dom-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./toggle.dom"
 import type { Send, State } from "./toggle.types"
@@ -18,8 +17,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled,
       "aria-label": state.context.label,
       "aria-pressed": isPressed,
-      "data-disabled": dataAttr(disabled),
-      "data-pressed": dataAttr(isPressed),
+      "data-disabled": disabled || undefined,
+      "data-pressed": isPressed || undefined,
       onClick() {
         if (disabled) return
         send({ type: "TOGGLE", pressed: isPressed })

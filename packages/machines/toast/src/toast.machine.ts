@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { trackDocumentVisibility } from "@zag-js/dom-utils"
+import { addDomEvent } from "@zag-js/dom-event"
 import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import type { MachineContext, MachineState, Options } from "./toast.types"
@@ -103,8 +103,9 @@ export function createToastMachine(options: Options = {}) {
       activities: {
         trackDocumentVisibility(ctx, _evt, { send }) {
           if (!ctx.pauseOnPageIdle) return
-          return trackDocumentVisibility(dom.getDoc(ctx), function (hidden) {
-            send(hidden ? "PAUSE" : "RESUME")
+          const doc = dom.getDoc(ctx)
+          return addDomEvent(doc, "visibilitychange", () => {
+            send(doc.visibilityState === "hidden" ? "PAUSE" : "RESUME")
           })
         },
       },

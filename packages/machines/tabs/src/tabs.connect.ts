@@ -1,4 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
@@ -23,7 +24,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(isFocused),
+      "data-focus": isFocused || undefined,
       dir: state.context.dir,
     }),
 
@@ -31,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.tablist.attrs,
       id: dom.getTablistId(state.context),
       role: "tablist",
-      "data-focus": dataAttr(isFocused),
+      "data-focus": isFocused || undefined,
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
       "aria-label": translations.tablistLabel,
@@ -80,11 +81,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         disabled,
         "data-orientation": state.context.orientation,
-        "data-disabled": dataAttr(disabled),
+        "data-disabled": disabled || undefined,
         "aria-disabled": disabled,
         "data-value": value,
         "aria-selected": selected,
-        "data-selected": dataAttr(selected),
+        "data-selected": selected || undefined,
         "aria-controls": dom.getContentId(state.context, value),
         "data-ownedby": dom.getTablistId(state.context),
         id: dom.getTriggerId(state.context, value),

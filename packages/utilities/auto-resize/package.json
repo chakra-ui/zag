@@ -33,7 +33,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json",

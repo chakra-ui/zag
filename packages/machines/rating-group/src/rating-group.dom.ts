@@ -1,8 +1,8 @@
-import { defineDomHelpers } from "@zag-js/dom-utils"
+import { createScope } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import type { MachineContext as Ctx } from "./rating-group.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `rating:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `rating:${ctx.id}:label`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `rating:${ctx.id}:input`,

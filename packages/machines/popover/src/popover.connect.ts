@@ -1,4 +1,3 @@
-import { dataAttr } from "@zag-js/dom-utils"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
@@ -50,7 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
-      "data-expanded": dataAttr(isOpen),
+      "data-expanded": isOpen || undefined,
       "aria-controls": dom.getContentId(state.context),
       onClick() {
         send("TOGGLE")
@@ -72,7 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
-      "data-expanded": dataAttr(isOpen),
+      "data-expanded": isOpen || undefined,
       "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
       "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": currentPlacement,

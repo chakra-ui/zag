@@ -1,21 +1,21 @@
 import { mergeProps } from "@zag-js/core"
 import {
-  dataAttr,
   EventKeyMap,
   getEventKey,
-  getEventPoint,
   getNativeEvent,
   isContextMenuEvent,
-  isElementEditable,
   isLeftClick,
   isModifiedEvent,
-  isSelfEvent,
-} from "@zag-js/dom-utils"
+} from "@zag-js/dom-event"
+import { contains, isEditableElement } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
+
+const getEventPoint = (event: Pick<PointerEvent, "clientX" | "clientY">) => ({ x: event.clientX, y: event.clientY })
+const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target">) => contains(event.currentTarget, event.target)
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isSubmenu = state.context.isSubmenu
@@ -100,7 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen || undefined,
-      "data-expanded": dataAttr(isOpen),
+      "data-expanded": isOpen || undefined,
       onPointerMove(event) {
         if (event.pointerType !== "mouse") return
         const disabled = dom.isTargetDisabled(event.currentTarget)
@@ -253,7 +253,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         } else {
           //
           const isSingleKey = event.key.length === 1
-          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isElementEditable(item)
+          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isEditableElement(item)
 
           if (!isValidTypeahead) return
 
@@ -276,9 +276,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         role: "menuitem",
         "aria-disabled": disabled,
-        "data-disabled": dataAttr(disabled),
+        "data-disabled": disabled || undefined,
         "data-ownedby": dom.getContentId(state.context),
-        "data-focus": dataAttr(state.context.highlightedId === id),
+        "data-focus": state.context.highlightedId === id || undefined,
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
@@ -330,7 +330,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "data-value": option.value,
           role: `menuitem${type}`,
           "aria-checked": !!checked,
-          "data-checked": dataAttr(checked),
+          "data-checked": checked || undefined,
           onClick(event) {
             if (disabled) return
             send({ type: "ITEM_CLICK", target: event.currentTarget, option })

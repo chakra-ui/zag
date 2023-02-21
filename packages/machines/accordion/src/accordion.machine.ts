@@ -5,7 +5,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./accordi
 
 const { and, not } = guards
 
-const VALUE_MISMATCH = `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`
+const valueMismatchMessage = `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -128,7 +128,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         sanitizeValue(ctx) {
           if (ctx.multiple && isString(ctx.value)) {
-            warn(VALUE_MISMATCH)
+            warn(valueMismatchMessage)
             ctx.value = [ctx.value]
           } else if (!ctx.multiple && Array.isArray(ctx.value) && ctx.value.length > 0) {
             ctx.value = ctx.value[0]

@@ -1,6 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
-import { contains, observeAttributes, observeChildren, raf } from "@zag-js/dom-utils"
+import { contains, raf } from "@zag-js/dom-query"
+import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
@@ -399,7 +400,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         scrollOptionIntoView(ctx, _evt, { getState }) {
           const input = dom.getInputEl(ctx)
-          return observeAttributes(input, "aria-activedescendant", () => {
+          return observeAttributes(input, ["aria-activedescendant"], () => {
             const evt = getState().event
             const isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
             if (!isKeyboardEvent) return

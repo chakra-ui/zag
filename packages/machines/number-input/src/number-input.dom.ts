@@ -1,8 +1,8 @@
-import { defineDomHelpers, isSafari, MAX_Z_INDEX, supportsPointerEvent } from "@zag-js/dom-utils"
+import { createScope, isSafari, MAX_Z_INDEX } from "@zag-js/dom-query"
 import { roundToDevicePixel, wrap } from "@zag-js/number-utils"
 import type { MachineContext as Ctx } from "./number-input.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `number-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `number-input:${ctx.id}:input`,
   getIncrementTriggerId: (ctx: Ctx) => ctx.ids?.incrementTrigger ?? `number-input:${ctx.id}:inc`,
@@ -29,7 +29,7 @@ export const dom = defineDomHelpers({
   },
 
   setupVirtualCursor(ctx: Ctx) {
-    if (isSafari() || !supportsPointerEvent()) return
+    if (isSafari()) return
     dom.createVirtualCursor(ctx)
     return () => {
       dom.getCursorEl(ctx)?.remove()

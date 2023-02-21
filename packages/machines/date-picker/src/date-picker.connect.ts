@@ -12,7 +12,7 @@ import {
   setMonth,
   setYear,
 } from "@zag-js/date-utils"
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-event"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
@@ -74,7 +74,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-focus": dataAttr(!!state.context.focusedSegment),
+      "data-focus": !!state.context.focusedSegment || undefined,
     }),
 
     gridProps: normalize.element({
@@ -163,14 +163,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: cellState.isFocused ? 0 : -1,
         "aria-disabled": !cellState.isSelectable,
         "aria-label": "TODO",
-        "aria-invalid": ariaAttr(cellState.isInvalid),
-        "data-today": dataAttr(cellState.isToday),
-        "data-selected": dataAttr(cellState.isSelected),
-        "data-focused": dataAttr(cellState.isFocused),
-        "data-disabled": dataAttr(cellState.isDisabled),
-        "data-unavailable": dataAttr(cellState.isUnavailable),
-        "data-invalid": dataAttr(cellState.isInvalid),
-        "data-outside-range": dataAttr(cellState.isOutsideRange),
+        "aria-invalid": cellState.isInvalid || undefined,
+        "data-today": cellState.isToday || undefined,
+        "data-selected": cellState.isSelected || undefined,
+        "data-focused": cellState.isFocused || undefined,
+        "data-disabled": cellState.isDisabled || undefined,
+        "data-unavailable": cellState.isUnavailable || undefined,
+        "data-invalid": cellState.isInvalid || undefined,
+        "data-outside-range": cellState.isOutsideRange || undefined,
         onContextMenu(event) {
           event.preventDefault()
         },
@@ -265,7 +265,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ["enterKeyHint" as any]: isEditable ? "next" : undefined,
         "aria-readonly": state.context.readonly || !props.isEditable ? "true" : undefined,
         "data-placeholder": props.isPlaceholder || undefined,
-        "data-editable": dataAttr(isEditable),
+        "data-editable": isEditable || undefined,
         contentEditable: isEditable,
         suppressContentEditableWarning: isEditable,
         spellCheck: isEditable ? "false" : undefined,

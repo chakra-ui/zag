@@ -1,8 +1,8 @@
-import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { createScope, queryAll } from "@zag-js/dom-query"
 import { nextIndex, prevIndex } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./date-picker.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => `datepicker:${ctx.id}`,
   getGridId: (ctx: Ctx) => `datepicker:${ctx.id}:grid`,
   getCellId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-${id}`,

@@ -1,4 +1,4 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
@@ -40,7 +40,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: triggerId,
-      "data-expanded": dataAttr(isOpen),
+      "data-expanded": isOpen || undefined,
       "aria-describedby": isOpen ? contentId : undefined,
       onClick() {
         send("CLICK")

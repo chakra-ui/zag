@@ -1,15 +1,8 @@
-import {
-  defineDomHelpers,
-  findByTypeahead,
-  isHTMLElement,
-  nextById,
-  prevById,
-  query,
-  queryAll,
-} from "@zag-js/dom-utils"
+import { createScope, isHTMLElement, nextById, prevById, query, queryAll } from "@zag-js/dom-query"
+import { findByTypeahead } from "@zag-js/typeahead"
 import type { MachineContext as Ctx, Option } from "./select.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `select:${ctx.id}:content`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `select:${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `select:${ctx.id}:label`,

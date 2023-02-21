@@ -1,0 +1,7 @@
+{
+  "extends": "../../../tsconfig.json",
+  "include": ["src", "src/get-event-key.ts", "../keyboard-event/src/types.ts"],
+  "compilerOptions": {
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
+  }
+}

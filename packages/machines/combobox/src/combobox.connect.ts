@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -56,27 +56,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
+      "data-invalid": isInvalid || undefined,
+      "data-readonly": isReadOnly || undefined,
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
-      "data-readonly": dataAttr(isReadOnly),
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
-      "data-focus": dataAttr(isFocused),
+      "data-readonly": isReadOnly || undefined,
+      "data-disabled": isDisabled || undefined,
+      "data-invalid": isInvalid || undefined,
+      "data-focus": isFocused || undefined,
     }),
 
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-expanded": dataAttr(isOpen),
-      "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
+      "data-expanded": isOpen || undefined,
+      "data-focus": isFocused || undefined,
+      "data-disabled": isDisabled || undefined,
+      "data-invalid": isInvalid || undefined,
       onPointerOver() {
         if (!isInteractive) return
         send("POINTER_OVER")
@@ -90,7 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
-      "data-expanded": dataAttr(isOpen),
+      "data-expanded": isOpen || undefined,
       hidden: !isOpen,
       style: popperStyles.floating,
     }),
@@ -98,7 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     inputProps: normalize.input({
       ...parts.input.attrs,
       "aria-invalid": isInvalid,
-      "data-invalid": dataAttr(isInvalid),
+      "data-invalid": isInvalid || undefined,
       name: state.context.name,
       form: state.context.form,
       disabled: isDisabled,
@@ -191,11 +191,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-expanded": isOpen,
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       disabled: isDisabled,
-      "data-readonly": dataAttr(isReadOnly),
-      "data-disabled": dataAttr(isDisabled),
+      "data-readonly": isReadOnly || undefined,
+      "data-disabled": isDisabled || undefined,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        if (!isInteractive || !isLeftClick(evt) || evt.pointerType === "touch") return
+        if (!isInteractive || evt.button !== 0 || evt.pointerType === "touch") return
         send("CLICK_BUTTON")
         event.preventDefault()
       },
@@ -227,7 +227,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !showClearButton,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        if (!isInteractive || !isLeftClick(evt)) return
+        if (!isInteractive || evt.button !== 0) return
         send("CLEAR_VALUE")
         event.preventDefault()
       },
@@ -251,9 +251,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(optionState.focused),
-        "data-disabled": dataAttr(optionState.disabled),
-        "data-checked": dataAttr(optionState.checked),
+        "data-highlighted": optionState.focused || undefined,
+        "data-disabled": optionState.disabled || undefined,
+        "data-checked": optionState.checked || undefined,
         "aria-selected": optionState.focused,
         "aria-disabled": optionState.disabled,
         "aria-posinset": count && index != null ? index + 1 : undefined,

@@ -1,4 +1,4 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
@@ -51,11 +51,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       dir: state.context.dir,
       ...parts.root.attrs,
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
-      "data-disabled": dataAttr(isDisabled),
-      "data-focus": dataAttr(isInputFocused),
-      "data-empty": dataAttr(isEmpty),
+      "data-invalid": isInvalid || undefined,
+      "data-readonly": isReadOnly || undefined,
+      "data-disabled": isDisabled || undefined,
+      "data-focus": isInputFocused || undefined,
+      "data-empty": isEmpty || undefined,
       id: dom.getRootId(state.context),
       onPointerDown() {
         if (!isInteractive) return
@@ -65,9 +65,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
+      "data-disabled": isDisabled || undefined,
+      "data-invalid": isInvalid || undefined,
+      "data-readonly": isReadOnly || undefined,
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
     }),
@@ -76,17 +76,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
       tabIndex: isReadOnly ? 0 : undefined,
-      "data-disabled": dataAttr(isDisabled),
-      "data-readonly": dataAttr(isReadOnly),
-      "data-invalid": dataAttr(isInvalid),
-      "data-focus": dataAttr(isInputFocused),
+      "data-disabled": isDisabled || undefined,
+      "data-readonly": isReadOnly || undefined,
+      "data-invalid": isInvalid || undefined,
+      "data-focus": isInputFocused || undefined,
     }),
 
     inputProps: normalize.input({
       ...parts.input.attrs,
-      "data-invalid": dataAttr(isInvalid),
+      "data-invalid": isInvalid || undefined,
       "aria-invalid": isInvalid,
-      "data-readonly": dataAttr(isReadOnly),
+      "data-readonly": isReadOnly || undefined,
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),
       defaultValue: state.context.inputValue,
@@ -178,8 +178,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         hidden: isEditingTag ? state.context.editedId === id : false,
         "data-value": value,
-        "data-disabled": dataAttr(isDisabled),
-        "data-selected": dataAttr(id === state.context.focusedId),
+        "data-disabled": isDisabled || undefined,
+        "data-selected": id === state.context.focusedId || undefined,
         onPointerDown(event) {
           if (!isInteractive) return
           event.preventDefault()
@@ -264,7 +264,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       type: "button",
-      "data-readonly": dataAttr(isReadOnly),
+      "data-readonly": isReadOnly || undefined,
       disabled: isDisabled,
       "aria-label": translations.clearTriggerLabel,
       hidden: isEmpty,

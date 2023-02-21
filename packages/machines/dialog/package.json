@@ -35,7 +35,7 @@
     "focus-trap": "7.2.0"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },

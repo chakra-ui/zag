@@ -1,4 +1,4 @@
-import { defineDomHelpers, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
+import { createScope, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { getPercentValue } from "@zag-js/numeric-range"
 import { styles } from "./range-slider.style"
@@ -24,7 +24,7 @@ function getPointProgress(ctx: Ctx, point: Point) {
   return clampPercent(percent)
 }
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   ...styles,
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
   getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,

@@ -1,15 +1,10 @@
 import { choose, createMachine, guards } from "@zag-js/core"
-import {
-  addDomEvent,
-  observeAttributes,
-  raf,
-  requestPointerLock,
-  isSafari,
-  supportsPointerEvent,
-} from "@zag-js/dom-utils"
+import { addDomEvent, trackPointerLock } from "@zag-js/dom-event"
+import { isSafari, raf } from "@zag-js/dom-query"
+import { dispatchInputValueEvent } from "@zag-js/form-utils"
+import { observeAttributes } from "@zag-js/mutation-observer"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
 import { callAll, compact } from "@zag-js/utils"
-import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -241,7 +236,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackButtonDisabled(ctx, _evt, { send }) {
           const btn = dom.getPressedTriggerEl(ctx, ctx.hint)
-          return observeAttributes(btn, "disabled", () => send("PRESS_UP"))
+          return observeAttributes(btn, ["disabled"], () => {
+            send("PRESS_UP")
+          })
         },
         attachWheelListener(ctx, _evt, { send }) {
           const input = dom.getInputEl(ctx)
@@ -262,8 +259,8 @@ export function machine(userContext: UserDefinedContext) {
           return addDomEvent(input, "wheel", onWheel, { passive: false })
         },
         activatePointerLock(ctx) {
-          if (isSafari() || !supportsPointerEvent()) return
-          return requestPointerLock(dom.getDoc(ctx))
+          if (isSafari()) return
+          return trackPointerLock(dom.getDoc(ctx))
         },
         trackMousemove(ctx, _evt, { send }) {
           const doc = dom.getDoc(ctx)

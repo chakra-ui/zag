@@ -1,8 +1,8 @@
-import { defineDomHelpers, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { createScope, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./combobox.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,

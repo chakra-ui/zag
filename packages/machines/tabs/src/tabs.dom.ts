@@ -1,8 +1,8 @@
-import { defineDomHelpers, itemById, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { createScope, itemById, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./tabs.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.id}`,
   getTablistId: (ctx: Ctx) => ctx.ids?.tablist ?? `tabs:${ctx.id}:list`,
   getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,

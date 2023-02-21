@@ -1,14 +1,9 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  findByTypeahead,
-  getEventKey,
-  isElementEditable,
-  visuallyHiddenStyle,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { isEditableElement } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
+import { findByTypeahead } from "@zag-js/typeahead"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
 import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
@@ -71,9 +66,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       ...parts.label.attrs,
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(state.context.readOnly),
+      "data-disabled": disabled || undefined,
+      "data-invalid": invalid || undefined,
+      "data-readonly": state.context.readOnly || undefined,
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (disabled) return
@@ -94,16 +89,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen,
-      "data-expanded": dataAttr(isOpen),
+      "data-expanded": isOpen || undefined,
       "aria-haspopup": "listbox",
       "aria-labelledby": dom.getLabelId(state.context),
       ...parts.trigger.attrs,
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
+      "data-disabled": disabled || undefined,
+      "data-invalid": invalid || undefined,
       "aria-invalid": invalid,
-      "data-readonly": dataAttr(state.context.readOnly),
+      "data-readonly": state.context.readOnly || undefined,
       "data-placement": state.context.currentPlacement,
-      "data-placeholder-shown": dataAttr(!state.context.hasSelectedOption),
+      "data-placeholder-shown": !state.context.hasSelectedOption || undefined,
       onPointerDown(event) {
         if (event.button || event.ctrlKey || !isInteractive) return
         event.currentTarget.dataset.pointerType = event.pointerType
@@ -182,10 +177,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
         "data-valuetext": valueText ?? label,
         "aria-selected": optionState.isSelected,
-        "data-selected": dataAttr(optionState.isSelected),
-        "data-focus": dataAttr(optionState.isHighlighted),
-        "data-disabled": dataAttr(optionState.isDisabled),
-        "aria-disabled": ariaAttr(optionState.isDisabled),
+        "data-selected": optionState.isSelected || undefined,
+        "data-focus": optionState.isHighlighted || undefined,
+        "data-disabled": optionState.isDisabled || undefined,
+        "aria-disabled": optionState.isDisabled || undefined,
       })
     },
 
@@ -202,7 +197,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { id } = props
       return normalize.element({
         ...parts.optionGroup.attrs,
-        "data-disabled": dataAttr(disabled),
+        "data-disabled": disabled || undefined,
         id: dom.getOptionGroupId(state.context, id),
         "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
       })
@@ -300,7 +295,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (isElementEditable(event.target)) {
+        if (isEditableElement(event.target)) {
           return
         }
 

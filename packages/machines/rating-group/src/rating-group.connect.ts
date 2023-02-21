@@ -1,15 +1,5 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getEventPoint,
-  getNativeEvent,
-  getPointRelativeToNode,
-  isLeftClick,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent, getRelativePointPercent, isLeftClick } from "@zag-js/dom-event"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { cast } from "@zag-js/utils"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
 import type { Send, State } from "./rating-group.types"
@@ -61,7 +51,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.element({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": isDisabled || undefined,
     }),
 
     controlProps: normalize.element({
@@ -71,7 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: state.context.readOnly ? 0 : -1,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": isDisabled || undefined,
       onPointerMove(event) {
         if (!isInteractive || event.pointerType === "touch") return
         send("GROUP_POINTER_OVER")
@@ -94,15 +84,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-roledescription": "rating",
         "aria-label": valueText,
         "aria-disabled": isDisabled,
-        "data-disabled": dataAttr(isDisabled),
-        "aria-readonly": ariaAttr(state.context.readOnly),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-disabled": isDisabled || undefined,
+        "aria-readonly": state.context.readOnly || undefined,
+        "data-readonly": state.context.readOnly || undefined,
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
-        "data-checked": dataAttr(isChecked),
+        "data-checked": isChecked || undefined,
         "aria-posinset": index,
-        "data-highlighted": dataAttr(isHighlighted),
-        "data-half": dataAttr(isHalf),
+        "data-highlighted": isHighlighted || undefined,
+        "data-half": isHalf || undefined,
         onPointerDown(event) {
           if (!isInteractive) return
           const evt = getNativeEvent(event)
@@ -112,11 +102,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerMove(event) {
           if (!isInteractive) return
-          const point = getEventPoint(cast(event))
+          const point = { x: event.clientX, y: event.clientY }
           const el = event.currentTarget
-          const relativePoint = getPointRelativeToNode(point, el)
-          const percentX = relativePoint.x / el.offsetWidth
-          const isMidway = percentX < 0.5
+          const percent = getRelativePointPercent(point, el)
+          const isMidway = percent.x < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {

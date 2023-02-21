@@ -18,8 +18,9 @@ import {
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
 } from "@zag-js/date-utils"
-import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
+import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { dom } from "./date-picker.dom"

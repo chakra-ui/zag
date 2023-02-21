@@ -1,14 +1,7 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getNativeEvent,
-  isModifiedEvent,
-  visuallyHiddenStyle,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-event"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./pin-input.anatomy"
 import { dom } from "./pin-input.dom"
 import type { Send, State } from "./pin-input.types"
@@ -45,18 +38,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(isInvalid),
-      "data-disabled": dataAttr(state.context.disabled),
-      "data-complete": dataAttr(isValueComplete),
+      "data-invalid": isInvalid || undefined,
+      "data-disabled": state.context.disabled || undefined,
+      "data-complete": isValueComplete || undefined,
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       htmlFor: dom.getHiddenInputId(state.context),
       id: dom.getLabelId(state.context),
-      "data-invalid": dataAttr(isInvalid),
-      "data-disabled": dataAttr(state.context.disabled),
-      "data-complete": dataAttr(isValueComplete),
+      "data-invalid": isInvalid || undefined,
+      "data-disabled": state.context.disabled || undefined,
+      "data-complete": isValueComplete || undefined,
       onClick: (event) => {
         event.preventDefault()
         focus()
@@ -86,14 +79,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.input({
         ...parts.input.attrs,
         disabled: state.context.disabled,
-        "data-disabled": dataAttr(state.context.disabled),
-        "data-complete": dataAttr(isValueComplete),
+        "data-disabled": state.context.disabled || undefined,
+        "data-complete": isValueComplete || undefined,
         id: dom.getInputId(state.context, index.toString()),
         "data-ownedby": dom.getRootId(state.context),
         "aria-label": translations.inputLabel(index, state.context.valueLength),
         inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
-        "aria-invalid": ariaAttr(isInvalid),
-        "data-invalid": dataAttr(isInvalid),
+        "aria-invalid": isInvalid || undefined,
+        "data-invalid": isInvalid || undefined,
         type: state.context.mask ? "password" : inputType,
         defaultValue: state.context.value[index] || "",
         autoCapitalize: "none",

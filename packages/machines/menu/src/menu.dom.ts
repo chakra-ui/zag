@@ -1,8 +1,8 @@
-import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, defineDomHelpers } from "@zag-js/dom-utils"
+import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, createScope } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./menu.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`,
   getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.id}:content`,

@@ -1,3 +1,13 @@
 export * from "./contains"
-export * from "./is-element"
-export * from "./helpers"
+export * from "./create-scope"
+export * from "./get-active-element"
+export * from "./get-by-id"
+export * from "./get-by-text"
+export * from "./get-scroll-parent"
+export * from "./is-editable-element"
+export * from "./is-html-element"
+export * from "./platform"
+export * from "./query"
+export * from "./raf"
+
+export const MAX_Z_INDEX = 2147483647

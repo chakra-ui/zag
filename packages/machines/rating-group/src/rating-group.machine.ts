@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { raf } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./rating-group.dom"

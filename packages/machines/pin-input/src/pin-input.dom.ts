@@ -1,7 +1,7 @@
-import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./pin-input.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `pin-input:${ctx.id}`,
   getInputId: (ctx: Ctx, id: string) => ctx.ids?.input?.(id) ?? `pin-input:${ctx.id}:${id}`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `pin-input:${ctx.id}:hidden`,

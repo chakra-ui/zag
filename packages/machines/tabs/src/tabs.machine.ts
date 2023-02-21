@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
-import { getFocusables, nextTick, raf } from "@zag-js/dom-utils"
+import { nextTick, raf } from "@zag-js/dom-query"
+import { getFocusables } from "@zag-js/tabbable"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
