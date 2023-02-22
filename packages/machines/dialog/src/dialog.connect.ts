@@ -9,10 +9,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const rendered = state.context.renderedElements
 
   return {
+    /**
+     * Whether the dialog is open
+     */
     isOpen,
+    /**
+     * Function to open the dialog
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the dialog
+     */
     close() {
       send("CLOSE")
     },

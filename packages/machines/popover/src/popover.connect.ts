@@ -18,11 +18,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the popover is portalled
+     */
     portalled,
+    /**
+     * Whether the popover is open
+     */
     isOpen,
+    /**
+     * Function to open the popover
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the popover
+     */
     close() {
       send("CLOSE")
     },

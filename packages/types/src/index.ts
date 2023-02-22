@@ -11,8 +11,9 @@ export type MaybeElement<T extends HTMLElement = HTMLElement> = T | null
 export type DirectionProperty = {
   /**
    * The document's text/writing direction.
+   * @default "ltr"
    */
-  dir?: Direction
+  dir?: "ltr" | "rtl"
 }
 
 export type CommonProperties = {

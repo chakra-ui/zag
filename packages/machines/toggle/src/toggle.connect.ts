@@ -8,7 +8,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const disabled = state.context.disabled
 
   return {
+    /**
+     * Whether the toggle is pressed.
+     */
     isPressed,
+    /**
+     * Function to set the pressed state of the toggle.
+     */
     setPressed(value: boolean) {
       send({ type: "SET_STATE", pressed: value })
     },

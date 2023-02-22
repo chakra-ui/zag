@@ -50,20 +50,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    /**
+     * The current value of the radio group
+     */
     value: state.context.value,
+    /**
+     * Function to set the value of the radio group
+     */
     setValue(value: string) {
       send({ type: "SET_VALUE", value, manual: true })
     },
+    /**
+     * Function to clear the value of the radio group
+     */
     clearValue() {
       send({ type: "SET_VALUE", value: null, manual: true })
     },
+    /**
+     * Function to focus the radio group
+     */
     focus,
+    /**
+     * Function to blur the currently focused radio input in the radio group
+     */
     blur() {
       const focusedElement = dom.getActiveElement(state.context)
       const inputEls = dom.getInputEls(state.context)
       const radioInputIsFocused = inputEls.some((el) => el === focusedElement)
       if (radioInputIsFocused) focusedElement?.blur()
     },
+    /**
+     * Returns the state details of a radio input
+     */
+    getRadioState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,

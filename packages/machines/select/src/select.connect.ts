@@ -34,32 +34,66 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the select is open
+     */
     isOpen,
+    /**
+     * The currently highlighted option
+     */
     highlightedOption,
+    /**
+     * The currently selected option
+     */
     selectedOption,
+    /**
+     * Function to focus the select
+     */
     focus() {
       dom.getTriggerElement(state.context).focus()
     },
+    /**
+     * Function to blur the select
+     */
     blur() {
       dom.getTriggerElement(state.context).blur()
     },
+    /**
+     * Function to open the select
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the select
+     */
     close() {
       send("CLOSE")
     },
+    /**
+     * Function to set the selected option
+     */
     setSelectedOption(value: Option) {
       utils.validateOptionData(value)
       send({ type: "SELECT_OPTION", value })
     },
+    /**
+     * Function to set the highlighted option
+     */
     setHighlightedOption(value: Option) {
       utils.validateOptionData(value)
       send({ type: "HIGHLIGHT_OPTION", value })
     },
+    /**
+     * Function to clear the selected option
+     */
     clearSelectedOption() {
       send({ type: "CLEAR_SELECTED" })
     },
+    /**
+     * Returns the state details of an option
+     */
+    getOptionState,
 
     labelProps: normalize.label({
       dir: state.context.dir,
@@ -164,7 +198,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getOptionState,
     getOptionProps(props: OptionProps) {
       const { value, label, valueText } = props
       const optionState = getOptionState(props)

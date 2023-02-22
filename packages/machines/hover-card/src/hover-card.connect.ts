@@ -14,10 +14,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the hover card is open
+     */
     isOpen,
+    /**
+     * Function to open the hover card
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the hover card
+     */
     close() {
       send("CLOSE")
     },

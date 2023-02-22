@@ -21,12 +21,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    /**
+     * The current status of the transition.
+     */
     status,
+    /**
+     * Whether to unmount the element
+     */
     unmount,
+    /**
+     * Function to toggle the transition.
+     */
     toggle() {
       send("MOUNTED.TOGGLE")
     },
+    /**
+     * Returns the transition styles to apply to the element.
+     */
     transition,
+    /**
+     * Returns the transition styles to apply to a group of elements.
+     */
     transitionGroup<K extends string>(configs: Record<K, TransitionConfig>): Record<K, Record<string, any>> {
       return Object.keys(configs).reduce((acc, config) => {
         acc[config] = transition(configs[config])

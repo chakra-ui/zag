@@ -18,21 +18,42 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    /**
+     * The value of the input as an array of strings.
+     */
     value: state.context.value,
+    /**
+     * The value of the input as a string.
+     */
     valueAsString: state.context.valueAsString,
+    /**
+     * Whether all inputs are filled.
+     */
     isValueComplete: isValueComplete,
+    /**
+     * Function to set the value of the inputs.
+     */
     setValue(value: string[]) {
       if (!Array.isArray(value)) {
         invariant("[pin-input/setValue] value must be an array")
       }
       send({ type: "SET_VALUE", value })
     },
+    /**
+     * Function to clear the value of the inputs.
+     */
     clearValue() {
       send({ type: "CLEAR_VALUE" })
     },
+    /**
+     * Function to set the value of the input at a specific index.
+     */
     setValueAtIndex(index: number, value: string) {
       send({ type: "SET_VALUE", value, index })
     },
+    /**
+     * Function to focus the pin-input. This will focus the first input.
+     */
     focus,
 
     rootProps: normalize.element({

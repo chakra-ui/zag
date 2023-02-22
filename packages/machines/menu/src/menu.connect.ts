@@ -29,27 +29,57 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   const api = {
+    /**
+     * Whether the menu is open
+     */
     isOpen,
+    /**
+     * Function to open the menu
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the menu
+     */
     close() {
       send("CLOSE")
     },
+    /**
+     * The id of the currently highlighted menuitem
+     */
     highlightedId: state.context.highlightedId,
+    /**
+     * Function to set the highlighted menuitem
+     */
     setHighlightedId(id: string) {
       send({ type: "SET_HIGHLIGHTED_ID", id })
     },
+    /**
+     * Function to register a parent menu. This is used for submenus
+     */
     setParent(parent: Service) {
       send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
     },
+    /**
+     * Function to register a child menu. This is used for submenus
+     */
     setChild(child: Service) {
       send({ type: "SET_CHILD", value: child, id: child.state.context.id })
     },
+    /**
+     * The value of the menu options item
+     */
     value: values,
+    /**
+     * Function to set the value of the menu options item
+     */
     setValue(name: string, value: any) {
       send({ type: "SET_VALUE", name, value })
     },
+    /**
+     * Function to check if an option is checked
+     */
     isOptionChecked(opts: OptionItemProps) {
       return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
     },

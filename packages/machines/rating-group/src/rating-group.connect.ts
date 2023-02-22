@@ -12,11 +12,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
 
   const api = {
+    /**
+     * Whether the rating group is being hovered
+     */
     isHovering: state.context.isHovering,
+    /**
+     * The current value of the rating group
+     */
     value,
+    /**
+     * The value of the currently hovered rating
+     */
     hoveredValue: state.context.hoveredValue,
+    /**
+     * The maximum value of the rating group
+     */
     size: state.context.max,
+    /**
+     * The array of rating values. Returns an array of numbers from 1 to the max value.
+     */
     sizeArray: Array.from({ length: state.context.max }).map((_, index) => index + 1),
+    /**
+     * Returns the state of a rating item
+     */
     getRatingState(index: number) {
       const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
       const isEqual = Math.ceil(value) === index

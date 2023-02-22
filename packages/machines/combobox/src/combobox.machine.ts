@@ -22,8 +22,8 @@ export function machine(userContext: UserDefinedContext) {
         openOnClick: false,
         ariaHidden: true,
 
-        activeId: null,
-        activeOptionData: null,
+        focusedId: null,
+        focusedOptionData: null,
         navigationData: null,
         selectionData: null,
 
@@ -66,7 +66,7 @@ export function machine(userContext: UserDefinedContext) {
         inputValue: "invokeOnInputChange",
         navigationData: "invokeOnHighlight",
         selectionData: ["invokeOnSelect", "blurInputIfNeeded"],
-        activeId: "setSectionLabel",
+        focusedId: "setSectionLabel",
       },
 
       entry: ["setupLiveRegion"],
@@ -343,12 +343,12 @@ export function machine(userContext: UserDefinedContext) {
         autoFocus: (ctx) => !!ctx.autoFocus,
         autoComplete: (ctx) => ctx.autoComplete,
         autoHighlight: (ctx) => ctx.autoHighlight,
-        isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.activeId,
-        isLastOptionFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.activeId,
+        isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.focusedId,
+        isLastOptionFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.focusedId,
         isCustomValue: (ctx) =>
           !!ctx.isCustomValue?.({ inputValue: ctx.inputValue, previousValue: ctx.selectionData?.value }),
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
-        hasFocusedOption: (ctx) => !!ctx.activeId,
+        hasFocusedOption: (ctx) => !!ctx.focusedId,
         selectOnTab: (ctx) => !!ctx.selectOnTab,
       },
 
@@ -427,8 +427,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         setActiveOption(ctx, evt) {
           const { label, id, value } = evt
-          ctx.activeId = id
-          ctx.activeOptionData = { label, value }
+          ctx.focusedId = id
+          ctx.focusedOptionData = { label, value }
         },
         setNavigationData(ctx, evt) {
           const { label, value } = evt
@@ -443,14 +443,14 @@ export function machine(userContext: UserDefinedContext) {
           ctx.navigationData = null
         },
         clearFocusedOption(ctx) {
-          ctx.activeId = null
-          ctx.activeOptionData = null
+          ctx.focusedId = null
+          ctx.focusedOptionData = null
           ctx.navigationData = null
         },
         selectActiveOption(ctx) {
-          if (!ctx.activeOptionData) return
-          ctx.selectionData = ctx.activeOptionData
-          ctx.inputValue = ctx.activeOptionData.label
+          if (!ctx.focusedOptionData) return
+          ctx.selectionData = ctx.focusedOptionData
+          ctx.inputValue = ctx.focusedOptionData.label
         },
         selectOption(ctx, evt) {
           const isOptionEvent = !!evt.value && !!evt.label
@@ -545,13 +545,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusNextOption(ctx) {
           raf(() => {
-            const option = dom.getNextEl(ctx, ctx.activeId ?? "")
+            const option = dom.getNextEl(ctx, ctx.focusedId ?? "")
             setFocus(ctx, option)
           })
         },
         focusPrevOption(ctx) {
           raf(() => {
-            let option = dom.getPrevEl(ctx, ctx.activeId ?? "")
+            let option = dom.getPrevEl(ctx, ctx.focusedId ?? "")
             setFocus(ctx, option)
           })
         },
@@ -592,13 +592,13 @@ export function machine(userContext: UserDefinedContext) {
 function setHighlight(ctx: MachineContext, option: HTMLElement | undefined | null) {
   if (!option) return
   const data = dom.getOptionData(option)
-  ctx.activeId = option.id
-  ctx.activeOptionData = data
+  ctx.focusedId = option.id
+  ctx.focusedOptionData = data
   return data
 }
 
 function setFocus(ctx: MachineContext, option: HTMLElement | undefined | null) {
-  if (!option || option.id === ctx.activeId) return
+  if (!option || option.id === ctx.focusedId) return
   const data = setHighlight(ctx, option)
   ctx.navigationData = data!
 }

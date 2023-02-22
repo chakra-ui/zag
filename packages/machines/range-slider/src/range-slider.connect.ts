@@ -27,43 +27,90 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
   }
 
+  // TODO - getThumbState
+
   return {
+    /**
+     * The value of the slider.
+     */
     value: state.context.value,
+    /**
+     * Whether the slider is being dragged.
+     */
     isDragging,
+    /**
+     * Whether the slider is focused.
+     */
     isFocused,
+    /**
+     * Function to set the value of the slider.
+     */
     setValue(value: number[]) {
       send({ type: "SET_VALUE", value: value })
     },
+    /**
+     * Returns the value of the thumb at the given index.
+     */
     getThumbValue(index: number) {
       return sliderValue[index]
     },
+    /**
+     * Sets the value of the thumb at the given index.
+     */
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
+    /**
+     * Returns the percent of the thumb at the given index.
+     */
     getValuePercent: getValuePercentFn,
+    /**
+     * Returns the value of the thumb at the given percent.
+     */
     getPercentValue: getPercentValueFn,
+    /**
+     * Returns the percent of the thumb at the given index.
+     */
     getThumbPercent(index: number) {
       return getValuePercentFn(sliderValue[index])
     },
+    /**
+     * Sets the percent of the thumb at the given index.
+     */
     setThumbPercent(index: number, percent: number) {
       const value = getPercentValueFn(percent)
       send({ type: "SET_VALUE", index, value })
     },
+    /**
+     * Returns the min value of the thumb at the given index.
+     */
     getThumbMin(index: number) {
       return getRangeAtIndex(state.context, index).min
     },
+    /**
+     * Returns the max value of the thumb at the given index.
+     */
     getThumbMax(index: number) {
       return getRangeAtIndex(state.context, index).max
     },
+    /**
+     * Function to increment the value of the slider at the given index.
+     */
     increment(index: number) {
       send({ type: "INCREMENT", index })
     },
+    /**
+     * Function to decrement the value of the slider at the given index.
+     */
     decrement(index: number) {
       send({ type: "DECREMENT", index })
     },
-    focus(index = 0) {
+    /**
+     * Function to focus the slider. This focuses the first thumb.
+     */
+    focus() {
       if (!isInteractive) return
-      send({ type: "FOCUS", index })
+      send({ type: "FOCUS", index: 0 })
     },
 
     labelProps: normalize.label({

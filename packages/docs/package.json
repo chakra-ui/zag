@@ -1,0 +1,45 @@
+{
+  "name": "@zag-js/docs",
+  "version": "0.1.0",
+  "description": "Docs for zag-js machines",
+  "keywords": [
+    "ui-machines",
+    "state-machines",
+    "zag",
+    "fsm",
+    "xstate",
+    "finite state machine"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/api-docs",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*",
+    "api.json"
+  ],
+  "scripts": {
+    "build-fast": "tsup src",
+    "start": "pnpm build --watch",
+    "build": "tsup src --dts",
+    "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../clean-package.config.json",
+  "main": "src/index.ts"
+}

@@ -24,13 +24,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the tooltip is open.
+     */
     isOpen,
+    /**
+     * Function to open the tooltip.
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the tooltip.
+     */
     close() {
       send("CLOSE")
     },
+    /**
+     * Returns the animation state of the tooltip.
+     */
     getAnimationState() {
       return {
         enter: store.prevId === null && id === store.id,
