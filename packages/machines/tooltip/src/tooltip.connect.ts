@@ -1,11 +1,11 @@
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Send, State } from "./tooltip.types"
-import { dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const id = state.context.id
