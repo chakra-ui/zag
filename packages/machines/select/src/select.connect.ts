@@ -1,5 +1,5 @@
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
-import { isEditableElement, getByTypeahead, dataAttr } from "@zag-js/dom-query"
+import { isEditableElement, getByTypeahead, dataAttr, ariaAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -179,7 +179,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-selected": dataAttr(optionState.isSelected),
         "data-focus": dataAttr(optionState.isHighlighted),
         "data-disabled": dataAttr(optionState.isDisabled),
-        "aria-disabled": dataAttr(optionState.isDisabled),
+        "aria-disabled": ariaAttr(optionState.isDisabled),
       })
     },
 
