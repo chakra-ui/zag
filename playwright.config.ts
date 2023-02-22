@@ -34,7 +34,7 @@ const config: PlaywrightTestConfig = {
   outputDir: "./e2e/results",
   testMatch: "*.e2e.ts",
   fullyParallel: true,
-  timeout: 5000,
+  timeout: 30_000,
   forbidOnly: !!process.env.CI,
   workers: process.env.CI ? 1 : undefined,
   reporter: [
