@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -196,7 +196,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        if (!isInteractive || evt.button !== 0 || evt.pointerType === "touch") return
+        if (!isInteractive || !isLeftClick(evt) || evt.pointerType === "touch") return
         send("CLICK_BUTTON")
         event.preventDefault()
       },
@@ -228,7 +228,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !showClearButton,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
-        if (!isInteractive || evt.button !== 0) return
+        if (!isInteractive || !isLeftClick(evt)) return
         send("CLEAR_VALUE")
         event.preventDefault()
       },
