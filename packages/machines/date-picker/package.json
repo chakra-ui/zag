@@ -49,7 +49,6 @@
     "@zag-js/date-utils": "workspace:*",
     "proxy-memoize": "2.0.2",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

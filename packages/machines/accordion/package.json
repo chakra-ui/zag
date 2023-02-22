@@ -30,7 +30,6 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
