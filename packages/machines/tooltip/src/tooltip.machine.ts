@@ -147,10 +147,8 @@ export function machine(userContext: UserDefinedContext) {
           return cleanup
         },
         trackPointerlockChange(ctx, _evt, { send }) {
-          return trackPointerLock(dom.getDoc(ctx), {
-            onChange() {
-              send("POINTER_LOCK_CHANGE")
-            },
+          return trackPointerLock(dom.getDoc(ctx), () => {
+            send("POINTER_LOCK_CHANGE")
           })
         },
         trackScroll(ctx, _evt, { send }) {

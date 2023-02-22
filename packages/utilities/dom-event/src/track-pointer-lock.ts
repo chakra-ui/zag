@@ -1,22 +1,17 @@
 import { addDomEvent } from "./add-dom-event"
 
-type PointerLockHandlers = {
-  onChange?: (locked: boolean) => void
-}
-
-export function trackPointerLock(doc: Document, handlers: PointerLockHandlers = {}) {
-  const { onChange } = handlers
+export function trackPointerLock(doc: Document, fn?: (locked: boolean) => void) {
   const body = doc.body
 
   const supported = "pointerLockElement" in doc || "mozPointerLockElement" in doc
   const isLocked = () => !!doc.pointerLockElement
 
   function onPointerChange() {
-    onChange?.(isLocked())
+    fn?.(isLocked())
   }
 
   function onPointerError(event: Event) {
-    if (isLocked()) onChange?.(false)
+    if (isLocked()) fn?.(false)
     console.error("PointerLock error occured:", event)
     doc.exitPointerLock()
   }
