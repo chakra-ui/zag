@@ -1,9 +1,9 @@
-import { getWindow } from "@zag-js/dom-utils"
-
 type DescriptorOptions = {
   type: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement"
   property?: "value" | "checked"
 }
+
+const getWindow = (el: HTMLElement) => el.ownerDocument.defaultView || window
 
 function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
   const { type, property = "value" } = options

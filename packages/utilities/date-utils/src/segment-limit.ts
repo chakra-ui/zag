@@ -1,5 +1,5 @@
 import { DateValue, getMinimumDayInMonth, getMinimumMonthInYear } from "@internationalized/date"
-import { DateFormatOptions, DateSegmentPart } from "./types"
+import type { DateFormatOptions, DateSegmentPart } from "./types"
 
 export function getSegmentLimits(date: DateValue, type: DateSegmentPart, options?: Pick<DateFormatOptions, "hour12">) {
   switch (type) {

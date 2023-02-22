@@ -1,10 +1,10 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { raf } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./hover-card.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./hover-card.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./hover-card.types"
 
 const { not } = guards
 

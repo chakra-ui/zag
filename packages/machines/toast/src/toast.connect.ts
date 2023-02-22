@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"

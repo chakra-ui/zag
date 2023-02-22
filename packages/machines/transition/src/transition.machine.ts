@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { isNumber } from "@zag-js/utils"
-import { MachineContext, MachineState, UserDefinedContext } from "./transition.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./transition.types"
 
 export function machine(ctx: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(

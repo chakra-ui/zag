@@ -1,4 +1,4 @@
-import { DateSegmentPart } from "./types"
+import type { DateSegmentPart } from "./types"
 
 const EDITABLE_SEGMENTS = {
   year: true,

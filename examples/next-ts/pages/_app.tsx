@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
 import "@zag-js/shared/src/style.css"
 import { AppProps } from "next/app"

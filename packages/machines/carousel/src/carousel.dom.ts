@@ -1,7 +1,7 @@
-import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./carousel.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => `carousel:${ctx.id}`,
   getViewportId: (ctx: Ctx) => `carousel:${ctx.id}:viewport`,
   getSlideId: (ctx: Ctx, index: number) => `carousel:${ctx.id}:slider:${index}`,

@@ -1,6 +1,6 @@
-import { isIos } from "@zag-js/dom-utils"
+import { isIos } from "@zag-js/dom-query"
 
-const LOCK_CLASSNAME = "data-scroll-lock"
+const LOCK_CLASSNAME = "data-zag-scroll-lock"
 
 function assignStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
   if (!el) return () => {}

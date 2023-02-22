@@ -1,4 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
@@ -85,7 +86,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     inputProps: normalize.input({
       ...parts.input.attrs,
       "data-invalid": dataAttr(isInvalid),
-      "aria-invalid": isInvalid,
+      "aria-invalid": ariaAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
       maxLength: state.context.maxLength,
       id: dom.getInputId(state.context),

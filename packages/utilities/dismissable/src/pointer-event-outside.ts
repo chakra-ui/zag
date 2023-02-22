@@ -1,4 +1,4 @@
-import { getDocument } from "@zag-js/dom-utils"
+import { getDocument } from "@zag-js/dom-query"
 import { layerStack } from "./layer-stack"
 
 let originalBodyPointerEvents: string

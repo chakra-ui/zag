@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { MAX_Z_INDEX } from "@zag-js/dom-utils"
+import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { createToastMachine } from "./toast.machine"
 import type { GroupMachineContext, UserDefinedGroupContext } from "./toast.types"

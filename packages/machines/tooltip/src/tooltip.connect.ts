@@ -1,6 +1,7 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"

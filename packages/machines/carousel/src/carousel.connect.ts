@@ -1,8 +1,8 @@
-import { dataAttr } from "@zag-js/dom-utils"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import { dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import { Send, SlideProps, State } from "./carousel.types"
+import type { Send, SlideProps, State } from "./carousel.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const canScrollNext = state.context.canScrollNext

@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./toggle.dom"
 import type { Send, State } from "./toggle.types"

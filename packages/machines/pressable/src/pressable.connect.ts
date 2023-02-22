@@ -1,8 +1,9 @@
-import { contains, dataAttr, getNativeEvent, isVirtualClick, isVirtualPointerEvent } from "@zag-js/dom-utils"
-import { NormalizeProps, PropTypes } from "@zag-js/types"
+import { getNativeEvent, isVirtualClick, isVirtualPointerEvent } from "@zag-js/dom-event"
+import { contains, dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./pressable.dom"
-import { Send, State } from "./pressable.types"
-import { utils } from "./pressable.utils"
+import type { Send, State } from "./pressable.types"
+import { isValidKeyboardEvent, shouldPreventDefault, shouldPreventDefaultKeyboard } from "./pressable.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isPressed = state.hasTag("pressed")
@@ -16,21 +17,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         const evt = getNativeEvent(event)
 
-        if (!utils.isValidKeyboardEvent(evt)) return
+        if (!isValidKeyboardEvent(evt)) return
         if (!contains(event.currentTarget, event.target)) return
 
         if (!event.repeat) {
           send({ type: "KEY_DOWN", event, pointerType: "keyboard" })
         }
 
-        if (utils.shouldPreventDefaultKeyboard(event.target as Element)) {
+        if (shouldPreventDefaultKeyboard(event.target)) {
           event.preventDefault()
         }
       },
       onKeyUp(event) {
         const evt = getNativeEvent(event)
 
-        if (!utils.isValidKeyboardEvent(evt) || event.repeat) return
+        if (!isValidKeyboardEvent(evt) || event.repeat) return
         if (!contains(event.currentTarget, event.target)) return
 
         send({ type: "KEY_UP", event, pointerType: "keyboard" })
@@ -59,7 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (utils.shouldPreventDefault(event.currentTarget)) {
+        if (shouldPreventDefault(event.currentTarget)) {
           event.preventDefault()
         }
 
@@ -69,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onMouseDown(event) {
         if (event.button !== 0) return
-        if (utils.shouldPreventDefault(event.currentTarget)) {
+        if (shouldPreventDefault(event.currentTarget)) {
           event.preventDefault()
         }
       },

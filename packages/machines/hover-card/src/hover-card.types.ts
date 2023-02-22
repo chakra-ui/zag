@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{

@@ -1,4 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -97,7 +98,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
-      "aria-invalid": isInvalid,
+      "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
       form: state.context.form,

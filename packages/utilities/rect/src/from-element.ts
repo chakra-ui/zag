@@ -1,5 +1,13 @@
-import { getComputedStyle } from "@zag-js/dom-utils"
 import { createRect, Rect } from "./rect"
+
+const styleCache = new WeakMap<HTMLElement, any>()
+function getCacheComputedStyle(el: HTMLElement) {
+  if (!styleCache.has(el)) {
+    const win = el.ownerDocument.defaultView || window
+    styleCache.set(el, win.getComputedStyle(el))
+  }
+  return styleCache.get(el)
+}
 
 export function getElementRect(el: HTMLElement, opts: ElementRectOptions = {}): Rect {
   return createRect(getClientRect(el, opts))
@@ -22,7 +30,7 @@ function getClientRect(el: HTMLElement, opts: ElementRectOptions = {}) {
   const { x, y, width, height } = el.getBoundingClientRect()
   const r = { x, y, width, height }
 
-  const style = getComputedStyle(el)
+  const style = getCacheComputedStyle(el)
 
   const { borderLeftWidth, borderTopWidth, borderRightWidth, borderBottomWidth } = style
 

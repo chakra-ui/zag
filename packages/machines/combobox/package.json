@@ -30,13 +30,15 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/mutation-observer": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

@@ -16,6 +16,7 @@ test.describe("tooltip", () => {
 
   test("should open tooltip on hover interaction", async ({ page }) => {
     await page.hover(tooltip_1.trigger)
+    await page.waitForTimeout(1000)
     await expect(page.locator(tooltip_1.tooltip)).toBeVisible()
     await page.mouse.move(0, 0)
     await expect(page.locator(tooltip_1.tooltip)).not.toBeVisible()
@@ -23,6 +24,7 @@ test.describe("tooltip", () => {
 
   test("should show only one tooltip at a time", async ({ page }) => {
     await page.hover(tooltip_1.trigger)
+    await page.waitForTimeout(1000)
     await page.hover(tooltip_2.trigger)
     await expect(page.locator(tooltip_1.tooltip)).not.toBeVisible()
     await expect(page.locator(tooltip_2.tooltip)).toBeVisible()
@@ -48,6 +50,7 @@ test.describe("tooltip", () => {
 
   test("closes on pointerdown", async ({ page }) => {
     await page.hover(tooltip_1.trigger)
+    await page.waitForTimeout(1000)
     await expect(page.locator(tooltip_1.tooltip)).toBeVisible()
     const el = page.locator(tooltip_1.trigger)
     await el.dispatchEvent("pointerdown", { button: 0 })

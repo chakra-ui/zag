@@ -1,4 +1,5 @@
-import { ariaAttr, dataAttr, EventKeyMap } from "@zag-js/dom-utils"
+import type { EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"

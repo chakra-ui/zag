@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
 import { Link, useMatch, useRoutes } from "solid-app-router"
 import { Component, For } from "solid-js"

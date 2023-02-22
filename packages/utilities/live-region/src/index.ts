@@ -1,4 +1,4 @@
-import { setVisuallyHidden } from "@zag-js/dom-utils"
+import { setVisuallyHidden } from "@zag-js/visually-hidden"
 
 export type LiveRegionOptions = {
   level: "polite" | "assertive"

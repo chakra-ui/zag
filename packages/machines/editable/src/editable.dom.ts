@@ -1,7 +1,7 @@
-import { defineDomHelpers } from "@zag-js/dom-utils"
+import { createScope } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./editable.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `editable:${ctx.id}`,
   getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `editable:${ctx.id}:area`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `editable:${ctx.id}:label`,

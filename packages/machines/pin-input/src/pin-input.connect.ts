@@ -1,14 +1,8 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getNativeEvent,
-  isModifiedEvent,
-  visuallyHiddenStyle,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./pin-input.anatomy"
 import { dom } from "./pin-input.dom"
 import type { Send, State } from "./pin-input.types"

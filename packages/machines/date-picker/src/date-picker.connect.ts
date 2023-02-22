@@ -12,11 +12,12 @@ import {
   setMonth,
   setYear,
 } from "@zag-js/date-utils"
-import { ariaAttr, dataAttr, EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-utils"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import { EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import { CellProps, Send, State } from "./date-picker.types"
+import type { CellProps, Send, State } from "./date-picker.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startDate = state.context.startValue
@@ -81,8 +82,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.grid.attrs,
       role: "grid",
       id: dom.getGridId(state.context),
-      "aria-readonly": readonly || undefined,
-      "aria-disabled": disabled || undefined,
+      "aria-readonly": ariaAttr(readonly),
+      "aria-disabled": ariaAttr(disabled),
       tabIndex: -1,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -148,9 +149,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.cell.attrs,
         role: "gridcell",
         id: dom.getCellId(state.context, props.date.toString()),
-        "aria-disabled": !cellState.isSelectable || undefined,
-        "aria-selected": cellState.isSelected || undefined,
-        "aria-invalid": cellState.isInvalid || undefined,
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "aria-selected": ariaAttr(cellState.isSelected),
+        "aria-invalid": ariaAttr(cellState.isInvalid),
       })
     },
 
@@ -264,7 +265,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-valuetext": "TODO",
         ["enterKeyHint" as any]: isEditable ? "next" : undefined,
         "aria-readonly": state.context.readonly || !props.isEditable ? "true" : undefined,
-        "data-placeholder": props.isPlaceholder || undefined,
+        "data-placeholder": dataAttr(props.isPlaceholder),
         "data-editable": dataAttr(isEditable),
         contentEditable: isEditable,
         suppressContentEditableWarning: isEditable,

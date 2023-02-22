@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { contains, raf } from "@zag-js/dom-utils"
+import { contains, raf } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { compact } from "@zag-js/utils"
 import { dom } from "./editable.dom"

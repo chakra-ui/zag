@@ -1,13 +1,6 @@
 import { createMachine, subscribe } from "@zag-js/core"
-import {
-  addDomEvent,
-  addPointerEvent,
-  addPointerlockChangeListener,
-  getScrollParents,
-  isHTMLElement,
-  isSafari,
-  raf,
-} from "@zag-js/dom-utils"
+import { addDomEvent } from "@zag-js/dom-event"
+import { getScrollParents, isHTMLElement, isSafari, raf } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
@@ -154,9 +147,8 @@ export function machine(userContext: UserDefinedContext) {
           return cleanup
         },
         trackPointerlockChange(ctx, _evt, { send }) {
-          return addPointerlockChangeListener(dom.getDoc(ctx), () => {
-            send("POINTER_LOCK_CHANGE")
-          })
+          const onChange = () => send("POINTER_LOCK_CHANGE")
+          return addDomEvent(dom.getDoc(ctx), "pointerlockchange", onChange, false)
         },
         trackScroll(ctx, _evt, { send }) {
           const trigger = dom.getTriggerEl(ctx)
@@ -179,7 +171,7 @@ export function machine(userContext: UserDefinedContext) {
         trackDisabledTriggerOnSafari(ctx, _evt, { send }) {
           if (!isSafari()) return
           const doc = dom.getDoc(ctx)
-          return addPointerEvent(doc, "pointermove", (event) => {
+          return addDomEvent(doc, "pointermove", (event) => {
             const selector = "[data-part=trigger][data-expanded]"
             if (isHTMLElement(event.target) && event.target.closest(selector)) return
             send("POINTER_LEAVE")

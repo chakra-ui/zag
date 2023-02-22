@@ -1,5 +1,5 @@
-import { NormalizeProps, PropTypes } from "@zag-js/types"
-import { Send, State, TransitionConfig } from "./transition.types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Send, State, TransitionConfig } from "./transition.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const [status] = state.tags

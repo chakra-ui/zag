@@ -1,11 +1,12 @@
 import { createMachine } from "@zag-js/core"
-import { contains, findByTypeahead, observeAttributes, raf } from "@zag-js/dom-utils"
+import { contains, raf, getByTypeahead } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
+import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { compact, json } from "@zag-js/utils"
 import { dom } from "./select.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./select.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./select.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -22,7 +23,7 @@ export function machine(userContext: UserDefinedContext) {
         initialSelectedOption: null,
         prevSelectedOption: null,
         prevHighlightedOption: null,
-        typeahead: findByTypeahead.defaultOptions,
+        typeahead: getByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -275,7 +276,7 @@ export function machine(userContext: UserDefinedContext) {
             exec()
           })
 
-          return observeAttributes(dom.getContentElement(ctx), "aria-activedescendant", exec)
+          return observeAttributes(dom.getContentElement(ctx), ["aria-activedescendant"], exec)
         },
       },
       actions: {

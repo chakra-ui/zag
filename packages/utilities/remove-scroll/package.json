@@ -29,8 +29,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@zag-js/dom-query": "workspace:*"
+  },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "bugs": {

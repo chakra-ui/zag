@@ -26,9 +26,13 @@
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
+  "dependencies": {
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/tabbable": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "publishConfig": {

@@ -1,8 +1,8 @@
-import { defineDomHelpers, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { createScope, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import type { MachineContext as Ctx, TagProps } from "./tags-input.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tags-input:${ctx.id}`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `tags-input:${ctx.id}:input`,
   getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearBtn ?? `tags-input:${ctx.id}:clear-btn`,

@@ -1,17 +1,11 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  findByTypeahead,
-  getEventKey,
-  isElementEditable,
-  visuallyHiddenStyle,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { isEditableElement, getByTypeahead, dataAttr, ariaAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
-import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
+import type { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
 import * as utils from "./select.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
@@ -163,7 +157,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (findByTypeahead.isValidEvent(event)) {
+        if (getByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }
@@ -300,11 +294,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (isElementEditable(event.target)) {
+        if (isEditableElement(event.target)) {
           return
         }
 
-        if (findByTypeahead.isValidEvent(event)) {
+        if (getByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }

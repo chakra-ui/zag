@@ -1,13 +1,5 @@
-import {
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getEventPoint,
-  getEventStep,
-  getNativeEvent,
-  isLeftClick,
-  isModifiedEvent,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./range-slider.anatomy"
@@ -135,7 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-focus": dataAttr(isFocused && state.context.activeIndex === index),
         draggable: false,
-        "aria-disabled": isDisabled || undefined,
+        "aria-disabled": ariaAttr(isDisabled),
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(state.context),
         "aria-orientation": state.context.orientation,
@@ -239,7 +231,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
-        send({ type: "POINTER_DOWN", point: getEventPoint(evt) })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "POINTER_DOWN", point })
 
         event.preventDefault()
         event.stopPropagation()

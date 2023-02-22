@@ -1,8 +1,9 @@
-import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
-import { NormalizeProps, PropTypes } from "@zag-js/types"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
-import { InputProps, RadioProps, Send, State } from "./radio-group.types"
+import type { InputProps, RadioProps, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isGroupDisabled = state.context.disabled

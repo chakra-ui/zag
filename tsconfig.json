@@ -22,6 +22,7 @@
     "strict": true,
     "stripInternal": true,
     "noUnusedLocals": true,
+    "importsNotUsedAsValues": "error",
     "noUnusedParameters": true,
     "suppressImplicitAnyIndexErrors": true,
     "types": ["vitest/globals"]

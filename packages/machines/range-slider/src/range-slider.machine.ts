@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { raf, trackPointerMove } from "@zag-js/dom-utils"
+import { trackPointerMove } from "@zag-js/dom-event"
+import { raf } from "@zag-js/dom-query"
 import { trackElementsSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
 import { getValuePercent } from "@zag-js/numeric-range"
@@ -195,17 +196,13 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.value })
         },
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value })
         },
-        dispatchChangeEvent(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            raf(() => {
-              dom.dispatchChangeEvent(ctx)
-            })
-          }
+        dispatchChangeEvent(ctx) {
+          raf(() => {
+            dom.dispatchChangeEvent(ctx)
+          })
         },
         setClosestThumbIndex(ctx, evt) {
           const pointValue = dom.getValueFromPoint(ctx, evt.point)

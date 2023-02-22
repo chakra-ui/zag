@@ -1,8 +1,8 @@
-import { isHTMLElement } from "./is-element"
+import { isHTMLElement } from "./is-html-element"
 
-type Target = HTMLElement | EventTarget
+type Target = HTMLElement | EventTarget | null | undefined
 
-export function contains(parent: Target | null | undefined, child: Target | null) {
+export function contains(parent: Target, child: Target) {
   if (!parent || !child) return false
   if (!isHTMLElement(parent) || !isHTMLElement(child)) return false
   return parent === child || parent.contains(child)

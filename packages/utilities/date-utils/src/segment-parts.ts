@@ -1,4 +1,4 @@
-import { DateFormatter, DateValue } from "@internationalized/date"
+import type { DateFormatter, DateValue } from "@internationalized/date"
 import { getTodayPlaceholderDate } from "./placeholder"
 import { DateSegments, isSegmentEditable } from "./segment-constants"
 import { getSegmentLimits } from "./segment-limit"

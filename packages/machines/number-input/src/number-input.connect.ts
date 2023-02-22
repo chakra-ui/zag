@@ -1,12 +1,5 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  getEventPoint,
-  getEventStep,
-  getNativeEvent,
-  isLeftClick,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./number-input.anatomy"
@@ -88,7 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.formattedValue,
       pattern: state.context.pattern,
       inputMode: state.context.inputMode,
-      "aria-invalid": isInvalid || undefined,
+      "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
@@ -201,7 +194,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (isDisabled) return
         const evt = getNativeEvent(event)
         event.preventDefault()
-        const point = getEventPoint(evt)
+        const point = { x: evt.clientX, y: evt.clientY }
 
         point.x = point.x - roundToDevicePixel(7.5)
         point.y = point.y - roundToDevicePixel(7.5)

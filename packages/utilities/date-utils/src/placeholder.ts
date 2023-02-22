@@ -1,5 +1,5 @@
 import { now, toCalendarDate } from "@internationalized/date"
-import { DateGranularity } from "./types"
+import type { DateGranularity } from "./types"
 
 export function getTodayPlaceholderDate(timeZone: string) {
   return now(timeZone).set({

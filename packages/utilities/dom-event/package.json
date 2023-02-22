@@ -1,0 +1,45 @@
+{
+  "name": "@zag-js/dom-event",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [
+    "js",
+    "utils",
+    "pointer-event"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/pointer-event",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build-fast": "tsup src",
+    "start": "pnpm build --watch",
+    "build": "tsup src --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "dependencies": {
+    "@zag-js/types": "workspace:*",
+    "@zag-js/text-selection": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  }
+}

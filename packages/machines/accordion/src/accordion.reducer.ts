@@ -1,5 +1,4 @@
-import { isArray } from "@zag-js/utils"
-import { ItemProps, Send, State } from "./accordion.types"
+import type { ItemProps, Send, State } from "./accordion.types"
 
 export function createReducer(state: State, send: Send) {
   const focusedValue = state.context.focusedValue
@@ -16,7 +15,7 @@ export function createReducer(state: State, send: Send) {
 
   function getItemState(props: ItemProps) {
     return {
-      isOpen: isArray(value) ? value.includes(props.value) : props.value === value,
+      isOpen: Array.isArray(value) ? value.includes(props.value) : props.value === value,
       isFocused: focusedValue === props.value,
       isDisabled: Boolean(props.disabled ?? state.context.disabled),
     }

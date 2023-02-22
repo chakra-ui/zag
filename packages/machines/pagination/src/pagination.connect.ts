@@ -1,8 +1,8 @@
-import { dataAttr } from "@zag-js/dom-utils"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import { dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
-import { Send, State } from "./pagination.types"
+import type { Send, State } from "./pagination.types"
 import { utils } from "./pagination.utils"
 
 type PageProps = {

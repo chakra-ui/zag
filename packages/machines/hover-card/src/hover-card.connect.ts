@@ -1,9 +1,9 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import { dom } from "./hover-card.dom"
-import { Send, State } from "./hover-card.types"
+import type { Send, State } from "./hover-card.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.hasTag("open")

@@ -1,7 +1,6 @@
 import type { Placement, ReferenceElement } from "@floating-ui/dom"
 import { getOverflowAncestors } from "@floating-ui/dom"
-import { addDomEvent, isHTMLElement, observeElementRect } from "@zag-js/dom-utils"
-import { callAll, isBoolean } from "@zag-js/utils"
+import { trackElementRect } from "@zag-js/element-rect"
 
 export type { Placement }
 
@@ -13,8 +12,22 @@ export type AutoUpdateOptions = {
 
 type Ancestors = ReturnType<typeof getOverflowAncestors>
 
+const callAll =
+  (...fns: VoidFunction[]) =>
+  () =>
+    fns.forEach((fn) => fn())
+
+const isHTMLElement = (el: any): el is HTMLElement => {
+  return typeof el === "object" && el !== null && el.nodeType === 1
+}
+
+const addDomEvent = (el: HTMLElement, type: string, fn: VoidFunction, options?: boolean | AddEventListenerOptions) => {
+  el.addEventListener(type, fn, options)
+  return () => el.removeEventListener(type, fn, options)
+}
+
 function resolveOptions(option: boolean | AutoUpdateOptions) {
-  const bool = isBoolean(option)
+  const bool = typeof option === "boolean"
   return {
     ancestorResize: bool ? option : option.ancestorResize ?? true,
     ancestorScroll: bool ? option : option.ancestorScroll ?? true,
@@ -38,9 +51,9 @@ export function autoUpdate(
   }
 
   function addResizeListeners() {
-    let cleanups: VoidFunction[] = [observeElementRect(floating, update)]
+    let cleanups: VoidFunction[] = [trackElementRect(floating, update)]
     if (referenceResize && isHTMLElement(reference)) {
-      cleanups.push(observeElementRect(reference, update))
+      cleanups.push(trackElementRect(reference, update))
     }
     cleanups.push(callAll(...ancestors.map((el: any) => addDomEvent(el, "resize", update))))
     return () => cleanups.forEach((fn) => fn())
