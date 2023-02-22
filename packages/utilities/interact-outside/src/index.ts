@@ -1,14 +1,8 @@
-import {
-  addDomEvent,
-  contains,
-  fireCustomEvent,
-  getDocument,
-  getEventTarget,
-  getWindow,
-  isContextMenuEvent,
-  isFocusable,
-} from "@zag-js/dom-utils"
+import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
+import { contains, getDocument, getEventTarget, getWindow, isHTMLElement } from "@zag-js/dom-query"
+import { isFocusable } from "@zag-js/tabbable"
 import { callAll } from "@zag-js/utils"
+import { getWindowFrames } from "./get-window-frames"
 
 export type InteractOutsideHandlers = {
   onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
@@ -32,35 +26,6 @@ const FOCUS_OUTSIDE_EVENT = "focus.outside"
 export type PointerDownOutsideEvent = CustomEvent<EventDetails<PointerEvent>>
 export type FocusOutsideEvent = CustomEvent<EventDetails<FocusEvent>>
 export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
-
-function getWindowFrames(win: Window) {
-  const frames = {
-    each(cb: (win: Window) => void) {
-      for (let i = 0; i < win.frames?.length; i += 1) {
-        const frame = win.frames[i]
-        if (frame) cb(frame)
-      }
-    },
-    addEventListener(event: string, listener: any, options?: any) {
-      frames.each((frame) => {
-        frame.document.addEventListener(event, listener, options)
-      })
-      return () => {
-        frames.removeEventListener(event, listener, options)
-      }
-    },
-    removeEventListener(event: string, listener: any, options?: any) {
-      frames.each((frame) => {
-        frame.document.removeEventListener(event, listener, options)
-      })
-    },
-  }
-  return frames
-}
-
-const isHTMLElement = (node: any): node is HTMLElement => {
-  return node !== null && typeof node === "object" && node.nodeType === 1
-}
 
 export function trackInteractOutside(node: HTMLElement | null, options: InteractOutsideOptions) {
   const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options

@@ -6,7 +6,7 @@ import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { compact, json } from "@zag-js/utils"
 import { dom } from "./select.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./select.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./select.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)

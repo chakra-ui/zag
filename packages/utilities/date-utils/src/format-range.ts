@@ -1,4 +1,4 @@
-import { CalendarDate, DateFormatter } from "@internationalized/date"
+import type { CalendarDate, DateFormatter } from "@internationalized/date"
 
 export function formatRange(
   startDate: CalendarDate,

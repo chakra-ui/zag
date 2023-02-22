@@ -15,8 +15,10 @@
   "files": [
     "dist/**/*"
   ],
+  "dependencies": {
+    "@zag-js/mutation-observer": "workspace:*"
+  },
   "devDependencies": {
-    "@zag-js/dom-query": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

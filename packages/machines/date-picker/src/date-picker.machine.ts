@@ -24,7 +24,7 @@ import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selecti
 import { compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { dom } from "./date-picker.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
 function getInitialState(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"

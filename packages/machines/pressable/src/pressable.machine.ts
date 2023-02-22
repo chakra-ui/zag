@@ -4,7 +4,7 @@ import { isHTMLElement } from "@zag-js/dom-query"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { dom } from "./pressable.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./pressable.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./pressable.types"
 import { isHTMLAnchorLink, isOverTarget, isValidKeyboardEvent, shouldPreventDefaultKeyboard } from "./pressable.utils"
 
 export function machine(userContext: UserDefinedContext) {

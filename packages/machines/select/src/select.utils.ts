@@ -1,5 +1,5 @@
 import { isObject } from "@zag-js/utils"
-import { Option } from "./select.types"
+import type { Option } from "./select.types"
 
 export function isOptionData(v: any): v is Option {
   return isObject(v) && "value" in v && "label" in v

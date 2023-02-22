@@ -22,11 +22,12 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/element-rect": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@floating-ui/dom": "1.2.1"
   },
   "devDependencies": {
-    "@zag-js/dom-query": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

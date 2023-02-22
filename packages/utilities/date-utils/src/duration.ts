@@ -1,4 +1,4 @@
-import { CalendarDate, DateDuration } from "@internationalized/date"
+import type { CalendarDate, DateDuration } from "@internationalized/date"
 
 export function getUnitDuration(duration: DateDuration) {
   let d = { ...duration }

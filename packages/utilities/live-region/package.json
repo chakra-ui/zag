@@ -26,8 +26,10 @@
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
+  "dependencies": {
+    "@zag-js/visually-hidden": "workspace:*"
+  },
   "devDependencies": {
-    "@zag-js/dom-query": "workspace:*",
     "clean-package": "2.2.0"
   },
   "publishConfig": {

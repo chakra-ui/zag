@@ -1,4 +1,4 @@
-import { isHTMLElement, nextById, prevById, queryAll, findByTypeahead, createScope } from "@zag-js/dom-query"
+import { isHTMLElement, nextById, prevById, queryAll, getByTypeahead, createScope } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./menu.types"
 
@@ -28,7 +28,7 @@ export const dom = createScope({
   getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedId!, loop ?? ctx.loop),
 
   getElemByKey: (ctx: Ctx, key: string) =>
-    findByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedId }),
+    getByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedId }),
 
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && v.dataset.disabled === ""

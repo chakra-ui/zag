@@ -1,5 +1,4 @@
-import { PaginationRange } from "./pagination.types"
-import type { MachineContext as Ctx } from "./pagination.types"
+import type { MachineContext as Ctx, PaginationRange } from "./pagination.types"
 
 export const utils = {
   range: (start: number, end: number) => {

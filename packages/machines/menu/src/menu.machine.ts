@@ -1,6 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addPointerEvent, contains, findByTypeahead, getEventPoint, isElementEditable, raf } from "@zag-js/dom-utils"
+import { contains, getByTypeahead, isEditableElement, raf } from "@zag-js/dom-query"
+import { addDomEvent } from "@zag-js/dom-event"
 import { getBasePlacement, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, cast, compact, isArray, remove } from "@zag-js/utils"
@@ -29,7 +30,7 @@ export function machine(userContext: UserDefinedContext) {
         focusTriggerOnClose: true,
         ...ctx,
         pointerdownNode: null,
-        typeahead: findByTypeahead.defaultOptions,
+        typeahead: getByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -322,7 +323,7 @@ export function machine(userContext: UserDefinedContext) {
         isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
-        isFocusedItemEditable: (ctx) => isElementEditable(dom.getFocusedItem(ctx)),
+        isFocusedItemEditable: (ctx) => isEditableElement(dom.getFocusedItem(ctx)),
         isWithinPolygon: (ctx, evt) => {
           if (!ctx.intentPolygon) return false
           return isPointInPolygon(ctx.intentPolygon, evt.point)
@@ -362,8 +363,9 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent!.state.context.suspendPointer = true
 
           const doc = dom.getDoc(ctx)
-          return addPointerEvent(doc, "pointermove", (e) => {
-            const isMovingToSubmenu = isWithinPolygon(ctx, { point: getEventPoint(e) })
+          return addDomEvent(doc, "pointermove", (e) => {
+            const point = { x: e.clientX, y: e.clientY }
+            const isMovingToSubmenu = isWithinPolygon(ctx, { point })
             if (!isMovingToSubmenu) {
               send("POINTER_MOVED_AWAY_FROM_SUBMENU")
               // NOTE: we're mutating parent context here. sending events to parent doesn't work

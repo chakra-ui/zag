@@ -1,4 +1,4 @@
-import { contains, getEventTarget } from "@zag-js/dom-utils"
+import { contains, getEventTarget } from "@zag-js/dom-query"
 import {
   FocusOutsideEvent,
   InteractOutsideHandlers,
@@ -78,7 +78,7 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
 
   const cleanups = [
     pointerBlocking ? disablePointerEventsOutside(node) : undefined,
-    trackEscapeKeydown(onEscapeKeyDown),
+    trackEscapeKeydown(node, onEscapeKeyDown),
     trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside }),
   ]
 

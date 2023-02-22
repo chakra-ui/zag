@@ -5,11 +5,13 @@ export * from "./get-active-element"
 export * from "./get-by-id"
 export * from "./get-by-text"
 export * from "./get-by-typeahead"
+export * from "./get-event-target"
 export * from "./get-scroll-parent"
 export * from "./is-editable-element"
 export * from "./is-html-element"
 export * from "./platform"
 export * from "./query"
 export * from "./raf"
+export * from "./attrs"
 
 export const MAX_Z_INDEX = 2147483647

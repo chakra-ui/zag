@@ -13,10 +13,10 @@ import {
   setYear,
 } from "@zag-js/date-utils"
 import { EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-event"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import { CellProps, Send, State } from "./date-picker.types"
+import type { CellProps, Send, State } from "./date-picker.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startDate = state.context.startValue

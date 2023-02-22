@@ -1,6 +1,6 @@
 import { Calendar, CalendarDate, DateValue, toCalendar, toCalendarDate, today } from "@internationalized/date"
 import { constrainValue } from "./constrain"
-import { DateAvailableFn } from "./types"
+import type { DateAvailableFn } from "./types"
 
 export function getTodayDate(timezone: string) {
   return today(timezone)

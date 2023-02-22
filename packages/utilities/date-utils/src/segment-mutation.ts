@@ -1,5 +1,5 @@
-import { DateValue } from "@internationalized/date"
-import { DateFormatOptions, DateSegmentPart } from "./types"
+import type { DateValue } from "@internationalized/date"
+import type { DateFormatOptions, DateSegmentPart } from "./types"
 
 export function addSegment(
   date: DateValue,

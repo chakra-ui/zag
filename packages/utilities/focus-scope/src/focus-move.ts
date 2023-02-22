@@ -1,4 +1,4 @@
-import { getActiveElement } from "@zag-js/dom-utils"
+import { getActiveElement } from "@zag-js/dom-query"
 import type { FocusContext } from "./focus-context"
 import { focusScopeStack } from "./focus-stack"
 

@@ -2,7 +2,7 @@ import { createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./radio-group.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)

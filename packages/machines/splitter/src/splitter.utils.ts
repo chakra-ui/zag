@@ -1,4 +1,4 @@
-import { MachineContext as Ctx, NormalizedPanelData } from "./splitter.types"
+import type { MachineContext as Ctx, NormalizedPanelData } from "./splitter.types"
 
 function validateSize(key: string, size: number) {
   if (Math.floor(size) > 100) {

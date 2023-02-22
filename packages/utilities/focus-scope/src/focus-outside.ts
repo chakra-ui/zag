@@ -1,4 +1,5 @@
-import { addDomEvent, contains, getActiveElement, getEventTarget } from "@zag-js/dom-utils"
+import { addDomEvent } from "@zag-js/dom-event"
+import { contains, getActiveElement, getEventTarget } from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
 import type { FocusContext } from "./focus-context"
 

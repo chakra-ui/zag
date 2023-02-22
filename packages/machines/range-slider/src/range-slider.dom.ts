@@ -1,4 +1,5 @@
-import { createScope, getPointRelativeToNode, queryAll } from "@zag-js/dom-utils"
+import { getRelativePointValue } from "@zag-js/dom-event"
+import { createScope, queryAll } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { getPercentValue } from "@zag-js/numeric-range"
 import { styles } from "./range-slider.style"
@@ -9,7 +10,7 @@ type Point = { x: number; y: number }
 
 function getPointProgress(ctx: Ctx, point: Point) {
   const el = dom.getControlEl(ctx)!
-  const relativePoint = getPointRelativeToNode(point, el)
+  const relativePoint = getRelativePointValue(point, el)
   const percentX = relativePoint.x / el.offsetWidth
   const percentY = relativePoint.y / el.offsetHeight
 
