@@ -6,15 +6,13 @@ export function nextTick(fn: VoidFunction) {
   }
   raf(() => raf(fn))
   return function cleanup() {
-    set.forEach(function (fn) {
-      fn()
-    })
+    set.forEach((fn) => fn())
   }
 }
 
 export function raf(fn: VoidFunction) {
   const id = globalThis.requestAnimationFrame(fn)
-  return function cleanup() {
+  return () => {
     globalThis.cancelAnimationFrame(id)
   }
 }
