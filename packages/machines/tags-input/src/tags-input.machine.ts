@@ -92,7 +92,7 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["setValueAtIndex"],
         },
         CLEAR_VALUE: {
-          actions: ["clearTags", "focusInput"],
+          actions: ["clearTags", "clearInputValue", "focusInput"],
         },
         ADD_TAG: {
           // (!isAtMax || allowOverflow) && !inputValueIsEmpty
