@@ -1,6 +1,6 @@
 import { addDomEvent } from "./add-dom-event"
 
-export function trackPointerLock(doc: Document, fn?: (locked: boolean) => void) {
+export function requestPointerLock(doc: Document, fn?: (locked: boolean) => void) {
   const body = doc.body
 
   const supported = "pointerLockElement" in doc || "mozPointerLockElement" in doc

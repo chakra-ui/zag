@@ -1,5 +1,5 @@
 import { choose, createMachine, guards } from "@zag-js/core"
-import { addDomEvent, trackPointerLock } from "@zag-js/dom-event"
+import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, raf } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
@@ -260,7 +260,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         activatePointerLock(ctx) {
           if (isSafari()) return
-          return trackPointerLock(dom.getDoc(ctx))
+          return requestPointerLock(dom.getDoc(ctx))
         },
         trackMousemove(ctx, _evt, { send }) {
           const doc = dom.getDoc(ctx)

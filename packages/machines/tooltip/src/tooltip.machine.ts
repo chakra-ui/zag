@@ -1,6 +1,6 @@
 import { createMachine, subscribe } from "@zag-js/core"
+import { addDomEvent } from "@zag-js/dom-event"
 import { getScrollParents, isHTMLElement, isSafari, raf } from "@zag-js/dom-query"
-import { addDomEvent, trackPointerLock } from "@zag-js/dom-event"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
@@ -147,9 +147,8 @@ export function machine(userContext: UserDefinedContext) {
           return cleanup
         },
         trackPointerlockChange(ctx, _evt, { send }) {
-          return trackPointerLock(dom.getDoc(ctx), () => {
-            send("POINTER_LOCK_CHANGE")
-          })
+          const onChange = () => send("POINTER_LOCK_CHANGE")
+          return addDomEvent(dom.getDoc(ctx), "pointerlockchange", onChange, false)
         },
         trackScroll(ctx, _evt, { send }) {
           const trigger = dom.getTriggerEl(ctx)
