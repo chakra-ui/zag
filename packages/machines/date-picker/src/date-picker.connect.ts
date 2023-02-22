@@ -13,6 +13,7 @@ import {
   setYear,
 } from "@zag-js/date-utils"
 import { EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
@@ -74,15 +75,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-focus": !!state.context.focusedSegment || undefined,
+      "data-focus": dataAttr(!!state.context.focusedSegment),
     }),
 
     gridProps: normalize.element({
       ...parts.grid.attrs,
       role: "grid",
       id: dom.getGridId(state.context),
-      "aria-readonly": readonly || undefined,
-      "aria-disabled": disabled || undefined,
+      "aria-readonly": ariaAttr(readonly),
+      "aria-disabled": ariaAttr(disabled),
       tabIndex: -1,
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -148,9 +149,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.cell.attrs,
         role: "gridcell",
         id: dom.getCellId(state.context, props.date.toString()),
-        "aria-disabled": !cellState.isSelectable || undefined,
-        "aria-selected": cellState.isSelected || undefined,
-        "aria-invalid": cellState.isInvalid || undefined,
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "aria-selected": ariaAttr(cellState.isSelected),
+        "aria-invalid": ariaAttr(cellState.isInvalid),
       })
     },
 
@@ -163,14 +164,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: cellState.isFocused ? 0 : -1,
         "aria-disabled": !cellState.isSelectable,
         "aria-label": "TODO",
-        "aria-invalid": cellState.isInvalid || undefined,
-        "data-today": cellState.isToday || undefined,
-        "data-selected": cellState.isSelected || undefined,
-        "data-focused": cellState.isFocused || undefined,
-        "data-disabled": cellState.isDisabled || undefined,
-        "data-unavailable": cellState.isUnavailable || undefined,
-        "data-invalid": cellState.isInvalid || undefined,
-        "data-outside-range": cellState.isOutsideRange || undefined,
+        "aria-invalid": ariaAttr(cellState.isInvalid),
+        "data-today": dataAttr(cellState.isToday),
+        "data-selected": dataAttr(cellState.isSelected),
+        "data-focused": dataAttr(cellState.isFocused),
+        "data-disabled": dataAttr(cellState.isDisabled),
+        "data-unavailable": dataAttr(cellState.isUnavailable),
+        "data-invalid": dataAttr(cellState.isInvalid),
+        "data-outside-range": dataAttr(cellState.isOutsideRange),
         onContextMenu(event) {
           event.preventDefault()
         },
@@ -264,8 +265,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-valuetext": "TODO",
         ["enterKeyHint" as any]: isEditable ? "next" : undefined,
         "aria-readonly": state.context.readonly || !props.isEditable ? "true" : undefined,
-        "data-placeholder": props.isPlaceholder || undefined,
-        "data-editable": isEditable || undefined,
+        "data-placeholder": dataAttr(props.isPlaceholder),
+        "data-editable": dataAttr(isEditable),
         contentEditable: isEditable,
         suppressContentEditableWarning: isEditable,
         spellCheck: isEditable ? "false" : undefined,

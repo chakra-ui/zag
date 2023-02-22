@@ -1,5 +1,5 @@
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
-import { isEditableElement, getByTypeahead } from "@zag-js/dom-query"
+import { isEditableElement, getByTypeahead, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -65,9 +65,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       ...parts.label.attrs,
-      "data-disabled": disabled || undefined,
-      "data-invalid": invalid || undefined,
-      "data-readonly": state.context.readOnly || undefined,
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(state.context.readOnly),
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (disabled) return
@@ -88,16 +88,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen,
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       "aria-haspopup": "listbox",
       "aria-labelledby": dom.getLabelId(state.context),
       ...parts.trigger.attrs,
-      "data-disabled": disabled || undefined,
-      "data-invalid": invalid || undefined,
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
       "aria-invalid": invalid,
-      "data-readonly": state.context.readOnly || undefined,
+      "data-readonly": dataAttr(state.context.readOnly),
       "data-placement": state.context.currentPlacement,
-      "data-placeholder-shown": !state.context.hasSelectedOption || undefined,
+      "data-placeholder-shown": dataAttr(!state.context.hasSelectedOption),
       onPointerDown(event) {
         if (event.button || event.ctrlKey || !isInteractive) return
         event.currentTarget.dataset.pointerType = event.pointerType
@@ -176,10 +176,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
         "data-valuetext": valueText ?? label,
         "aria-selected": optionState.isSelected,
-        "data-selected": optionState.isSelected || undefined,
-        "data-focus": optionState.isHighlighted || undefined,
-        "data-disabled": optionState.isDisabled || undefined,
-        "aria-disabled": optionState.isDisabled || undefined,
+        "data-selected": dataAttr(optionState.isSelected),
+        "data-focus": dataAttr(optionState.isHighlighted),
+        "data-disabled": dataAttr(optionState.isDisabled),
+        "aria-disabled": dataAttr(optionState.isDisabled),
       })
     },
 
@@ -196,7 +196,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { id } = props
       return normalize.element({
         ...parts.optionGroup.attrs,
-        "data-disabled": disabled || undefined,
+        "data-disabled": dataAttr(disabled),
         id: dom.getOptionGroupId(state.context, id),
         "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
       })

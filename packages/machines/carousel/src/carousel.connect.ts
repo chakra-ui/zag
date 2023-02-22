@@ -1,3 +1,4 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
@@ -80,7 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.slide.attrs,
         id: dom.getSlideId(state.context, index),
-        "data-current": sliderState.isCurrent || undefined,
+        "data-current": dataAttr(sliderState.isCurrent),
         role: "group",
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,

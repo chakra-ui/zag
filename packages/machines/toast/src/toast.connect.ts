@@ -1,3 +1,4 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
@@ -32,7 +33,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
-      "data-open": isVisible || undefined,
+      "data-open": dataAttr(isVisible),
       "data-type": state.context.type,
       "data-placement": placement,
       role: "status",

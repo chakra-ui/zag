@@ -1,4 +1,5 @@
 import { EventKeyMap, getEventKey, getNativeEvent, getRelativePointPercent, isLeftClick } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
@@ -51,7 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.element({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
     }),
 
     controlProps: normalize.element({
@@ -61,7 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: state.context.readOnly ? 0 : -1,
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
       onPointerMove(event) {
         if (!isInteractive || event.pointerType === "touch") return
         send("GROUP_POINTER_OVER")
@@ -84,15 +85,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-roledescription": "rating",
         "aria-label": valueText,
         "aria-disabled": isDisabled,
-        "data-disabled": isDisabled || undefined,
-        "aria-readonly": state.context.readOnly || undefined,
-        "data-readonly": state.context.readOnly || undefined,
+        "data-disabled": dataAttr(isDisabled),
+        "aria-readonly": ariaAttr(state.context.readOnly),
+        "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.max,
         "aria-checked": isChecked,
-        "data-checked": isChecked || undefined,
+        "data-checked": dataAttr(isChecked),
         "aria-posinset": index,
-        "data-highlighted": isHighlighted || undefined,
-        "data-half": isHalf || undefined,
+        "data-highlighted": dataAttr(isHighlighted),
+        "data-half": dataAttr(isHalf),
         onPointerDown(event) {
           if (!isInteractive) return
           const evt = getNativeEvent(event)

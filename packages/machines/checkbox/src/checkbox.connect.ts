@@ -3,6 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./checkbox.dom"
 import { parts } from "./checkbox.anatomy"
 import type { Send, State } from "./checkbox.types"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isChecked = state.matches("checked")
@@ -50,12 +51,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       htmlFor: dom.getInputId(state.context),
-      "data-focus": isFocused || undefined,
-      "data-disabled": isDisabled || undefined,
-      "data-checked": isChecked || undefined,
-      "data-hover": isHovered || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-readonly": isReadOnly || undefined,
+      "data-focus": dataAttr(isFocused),
+      "data-disabled": dataAttr(isDisabled),
+      "data-checked": dataAttr(isChecked),
+      "data-hover": dataAttr(isHovered),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadOnly),
       onPointerMove() {
         if (!isInteractive) return
         send({ type: "SET_HOVERED", value: true })
@@ -80,12 +81,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.element({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
-      "data-focus": isFocused || undefined,
-      "data-hover": isHovered || undefined,
-      "data-readonly": isReadOnly || undefined,
-      "data-disabled": isDisabled || undefined,
-      "data-checked": isChecked || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-focus": dataAttr(isFocused),
+      "data-hover": dataAttr(isHovered),
+      "data-readonly": dataAttr(isReadOnly),
+      "data-disabled": dataAttr(isDisabled),
+      "data-checked": dataAttr(isChecked),
+      "data-invalid": dataAttr(isInvalid),
       onPointerDown(event) {
         if (!isInteractive) return
         // On pointerdown, the input blurs and returns focus to the `body`,
@@ -98,15 +99,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-focus": isFocused || undefined,
-      "data-disabled": isDisabled || undefined,
-      "data-hover": isHovered || undefined,
-      "data-indeterminate": isIndeterminate || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-checked": isChecked || undefined,
-      "data-readonly": isReadOnly || undefined,
+      "data-focus": dataAttr(isFocused),
+      "data-disabled": dataAttr(isDisabled),
+      "data-hover": dataAttr(isHovered),
+      "data-indeterminate": dataAttr(isIndeterminate),
+      "data-invalid": dataAttr(isInvalid),
+      "data-checked": dataAttr(isChecked),
+      "data-readonly": dataAttr(isReadOnly),
       "aria-hidden": true,
-      "data-active": isActive || undefined,
+      "data-active": dataAttr(isActive),
     }),
 
     inputProps: normalize.input({
@@ -116,8 +117,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       required: isRequired,
       defaultChecked: isChecked,
       disabled: trulyDisabled,
-      "data-disabled": isDisabled || undefined,
-      "aria-readonly": isReadOnly || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "aria-readonly": ariaAttr(isReadOnly),
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       "aria-invalid": isInvalid,

@@ -1,4 +1,5 @@
 import { EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -38,18 +39,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
-      "data-invalid": isInvalid || undefined,
-      "data-disabled": state.context.disabled || undefined,
-      "data-complete": isValueComplete || undefined,
+      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(state.context.disabled),
+      "data-complete": dataAttr(isValueComplete),
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       htmlFor: dom.getHiddenInputId(state.context),
       id: dom.getLabelId(state.context),
-      "data-invalid": isInvalid || undefined,
-      "data-disabled": state.context.disabled || undefined,
-      "data-complete": isValueComplete || undefined,
+      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(state.context.disabled),
+      "data-complete": dataAttr(isValueComplete),
       onClick: (event) => {
         event.preventDefault()
         focus()
@@ -79,14 +80,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.input({
         ...parts.input.attrs,
         disabled: state.context.disabled,
-        "data-disabled": state.context.disabled || undefined,
-        "data-complete": isValueComplete || undefined,
+        "data-disabled": dataAttr(state.context.disabled),
+        "data-complete": dataAttr(isValueComplete),
         id: dom.getInputId(state.context, index.toString()),
         "data-ownedby": dom.getRootId(state.context),
         "aria-label": translations.inputLabel(index, state.context.valueLength),
         inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
-        "aria-invalid": isInvalid || undefined,
-        "data-invalid": isInvalid || undefined,
+        "aria-invalid": ariaAttr(isInvalid),
+        "data-invalid": dataAttr(isInvalid),
         type: state.context.mask ? "password" : inputType,
         defaultValue: state.context.value[index] || "",
         autoCapitalize: "none",

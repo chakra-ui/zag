@@ -1,4 +1,5 @@
 import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -56,27 +57,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
-      "data-invalid": isInvalid || undefined,
-      "data-readonly": isReadOnly || undefined,
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadOnly),
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
-      "data-readonly": isReadOnly || undefined,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-focus": isFocused || undefined,
+      "data-readonly": dataAttr(isReadOnly),
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
     }),
 
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-expanded": isOpen || undefined,
-      "data-focus": isFocused || undefined,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-expanded": dataAttr(isOpen),
+      "data-focus": dataAttr(isFocused),
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       onPointerOver() {
         if (!isInteractive) return
         send("POINTER_OVER")
@@ -90,15 +91,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       hidden: !isOpen,
       style: popperStyles.floating,
     }),
 
     inputProps: normalize.input({
       ...parts.input.attrs,
-      "aria-invalid": isInvalid,
-      "data-invalid": isInvalid || undefined,
+      "aria-invalid": ariaAttr(isInvalid),
+      "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
       form: state.context.form,
       disabled: isDisabled,
@@ -191,8 +192,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-expanded": isOpen,
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       disabled: isDisabled,
-      "data-readonly": isReadOnly || undefined,
-      "data-disabled": isDisabled || undefined,
+      "data-readonly": dataAttr(isReadOnly),
+      "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || evt.button !== 0 || evt.pointerType === "touch") return
@@ -251,9 +252,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         role: "option",
         tabIndex: -1,
-        "data-highlighted": optionState.focused || undefined,
-        "data-disabled": optionState.disabled || undefined,
-        "data-checked": optionState.checked || undefined,
+        "data-highlighted": dataAttr(optionState.focused),
+        "data-disabled": dataAttr(optionState.disabled),
+        "data-checked": dataAttr(optionState.checked),
         "aria-selected": optionState.focused,
         "aria-disabled": optionState.disabled,
         "aria-posinset": count && index != null ? index + 1 : undefined,

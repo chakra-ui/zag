@@ -1,4 +1,5 @@
 import { EventKeyMap, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./number-input.anatomy"
@@ -51,13 +52,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
     }),
@@ -66,9 +67,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.control.attrs,
       role: "group",
       "aria-disabled": isDisabled,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
-      "aria-invalid": state.context.invalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "aria-invalid": ariaAttr(state.context.invalid),
     }),
 
     inputProps: normalize.input({
@@ -80,10 +81,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.formattedValue,
       pattern: state.context.pattern,
       inputMode: state.context.inputMode,
-      "aria-invalid": isInvalid || undefined,
-      "data-invalid": isInvalid || undefined,
+      "aria-invalid": ariaAttr(isInvalid),
+      "data-invalid": dataAttr(isInvalid),
       disabled: isDisabled,
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
       readOnly: !!state.context.readOnly,
       autoComplete: "off",
       autoCorrect: "off",
@@ -143,7 +144,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.decrementTrigger.attrs,
       id: dom.getDecrementTriggerId(state.context),
       disabled: isDecrementDisabled,
-      "data-disabled": isDecrementDisabled || undefined,
+      "data-disabled": dataAttr(isDecrementDisabled),
       "aria-label": translations.decrementLabel,
       type: "button",
       tabIndex: -1,
@@ -166,7 +167,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.incrementTrigger.attrs,
       id: dom.getIncrementTriggerId(state.context),
       disabled: isIncrementDisabled,
-      "data-disabled": isIncrementDisabled || undefined,
+      "data-disabled": dataAttr(isIncrementDisabled),
       "aria-label": translations.incrementLabel,
       type: "button",
       tabIndex: -1,
@@ -186,7 +187,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     scrubberProps: normalize.element({
       ...parts.scrubber.attrs,
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
       id: dom.getScrubberId(state.context),
       role: "presentation",
       onMouseDown(event) {

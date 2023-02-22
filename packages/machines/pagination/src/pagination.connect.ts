@@ -1,3 +1,4 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
@@ -69,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getPageTriggerId(state.context, index),
         ...parts.pageTrigger.attrs,
-        "data-selected": isCurrentPage || undefined,
+        "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
         "aria-label": translations.pageTriggerLabel?.({ page: index, totalPages }),
         onClick(evt) {
@@ -81,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     prevPageTriggerProps: normalize.element({
       id: dom.getPrevPageTriggerId(state.context),
       ...parts.prevPageTrigger.attrs,
-      "data-disabled": isFirstPage || undefined,
+      "data-disabled": dataAttr(isFirstPage),
       onClick(evt) {
         send({ type: "PREVIOUS_PAGE", srcElement: evt.currentTarget })
       },
@@ -90,7 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     nextPageTriggerProps: normalize.element({
       id: dom.getNextPageTriggerId(state.context),
       ...parts.nextPageTrigger.attrs,
-      "data-disabled": isLastPage || undefined,
+      "data-disabled": dataAttr(isLastPage),
       onClick(evt) {
         send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
       },

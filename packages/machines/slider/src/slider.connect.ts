@@ -1,4 +1,5 @@
 import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./slider.anatomy"
@@ -46,10 +47,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-disabled": isDisabled || undefined,
-      "data-focus": isFocused || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(isFocused),
       "data-orientation": state.context.orientation,
-      "data-invalid": isInvalid || undefined,
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getRootId(state.context),
       dir: state.context.dir,
       style: dom.getRootStyle(state.context),
@@ -57,9 +58,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-focus": isFocused || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       onClick(event) {
@@ -73,13 +74,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     thumbProps: normalize.element({
       ...parts.thumb.attrs,
       id: dom.getThumbId(state.context),
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
-      "data-focus": isFocused || undefined,
+      "data-focus": dataAttr(isFocused),
       draggable: false,
-      "aria-invalid": isInvalid || undefined,
-      "data-invalid": isInvalid || undefined,
-      "aria-disabled": isDisabled || undefined,
+      "aria-invalid": ariaAttr(isInvalid),
+      "data-invalid": dataAttr(isInvalid),
+      "aria-disabled": ariaAttr(isDisabled),
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy ?? dom.getLabelId(state.context),
       "aria-orientation": state.context.orientation,
@@ -157,8 +158,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     outputProps: normalize.output({
       ...parts.output.attrs,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       "aria-live": "off",
@@ -167,9 +168,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     trackProps: normalize.element({
       ...parts.track.attrs,
       id: dom.getTrackId(state.context),
-      "data-disabled": isDisabled || undefined,
-      "data-focus": isFocused || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       style: dom.getTrackStyle(),
     }),
@@ -177,9 +178,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rangeProps: normalize.element({
       ...parts.range.attrs,
       id: dom.getRangeId(state.context),
-      "data-focus": isFocused || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-disabled": isDisabled || undefined,
+      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
     }),
@@ -187,10 +188,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
-      "data-focus": isFocused || undefined,
+      "data-focus": dataAttr(isFocused),
       onPointerDown(event) {
         if (!isInteractive) return
 
@@ -226,7 +227,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         id: dom.getMarkerId(state.context, value),
         "data-value": value,
-        "data-disabled": isDisabled || undefined,
+        "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
         style,
       })

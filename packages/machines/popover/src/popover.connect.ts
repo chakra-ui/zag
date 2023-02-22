@@ -3,6 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./popover.dom"
 import type { Send, State } from "./popover.types"
 import { parts } from "./popover.anatomy"
+import { dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.matches("open")
@@ -49,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       "aria-controls": dom.getContentId(state.context),
       onClick() {
         send("TOGGLE")
@@ -71,7 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
       "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": currentPlacement,

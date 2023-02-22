@@ -1,3 +1,4 @@
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
@@ -36,7 +37,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
 
       onPointerEnter(event) {
         if (event.pointerType === "touch") return
@@ -67,7 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
       hidden: !isOpen,
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       "data-placement": state.context.currentPlacement,
       onPointerEnter(event) {
         if (event.pointerType === "touch") return

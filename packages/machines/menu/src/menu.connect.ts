@@ -7,7 +7,7 @@ import {
   isLeftClick,
   isModifiedEvent,
 } from "@zag-js/dom-event"
-import { contains, isEditableElement } from "@zag-js/dom-query"
+import { contains, dataAttr, isEditableElement } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
@@ -100,7 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen || undefined,
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       onPointerMove(event) {
         if (event.pointerType !== "mouse") return
         const disabled = dom.isTargetDisabled(event.currentTarget)
@@ -276,9 +276,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         role: "menuitem",
         "aria-disabled": disabled,
-        "data-disabled": disabled || undefined,
+        "data-disabled": dataAttr(disabled),
         "data-ownedby": dom.getContentId(state.context),
-        "data-focus": state.context.highlightedId === id || undefined,
+        "data-focus": dataAttr(state.context.highlightedId === id),
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
@@ -330,7 +330,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "data-value": option.value,
           role: `menuitem${type}`,
           "aria-checked": !!checked,
-          "data-checked": checked || undefined,
+          "data-checked": dataAttr(checked),
           onClick(event) {
             if (disabled) return
             send({ type: "ITEM_CLICK", target: event.currentTarget, option })

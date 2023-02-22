@@ -5,6 +5,7 @@ import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Send, State } from "./tooltip.types"
+import { dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const id = state.context.id
@@ -40,7 +41,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: triggerId,
-      "data-expanded": isOpen || undefined,
+      "data-expanded": dataAttr(isOpen),
       "aria-describedby": isOpen ? contentId : undefined,
       onClick() {
         send("CLICK")

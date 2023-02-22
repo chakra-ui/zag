@@ -1,5 +1,5 @@
 import { getNativeEvent, isVirtualClick, isVirtualPointerEvent } from "@zag-js/dom-event"
-import { contains } from "@zag-js/dom-query"
+import { contains, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./pressable.dom"
 import type { Send, State } from "./pressable.types"
@@ -12,8 +12,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isPressed,
     pressableProps: normalize.element({
       id: dom.getPressableId(state.context),
-      "data-disabled": isDisabled || undefined,
-      "data-pressed": isPressed || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-pressed": dataAttr(isPressed),
       onKeyDown(event) {
         const evt = getNativeEvent(event)
 

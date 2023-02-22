@@ -1,4 +1,5 @@
 import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./range-slider.anatomy"
@@ -67,9 +68,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-focus": isFocused || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getHiddenInputId(state.context, 0),
       onClick(event) {
@@ -84,9 +85,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
-      "data-invalid": isInvalid || undefined,
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getRootId(state.context),
       dir: state.context.dir,
       style: dom.getRootStyle(state.context),
@@ -94,8 +95,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     outputProps: normalize.output({
       ...parts.output.attrs,
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       id: dom.getOutputId(state.context),
       htmlFor: sliderValue.map((_v, i) => dom.getHiddenInputId(state.context, i)).join(" "),
       "aria-live": "off",
@@ -104,10 +105,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     trackProps: normalize.element({
       ...parts.track.attrs,
       id: dom.getTrackId(state.context),
-      "data-disabled": isDisabled || undefined,
-      "data-invalid": isInvalid || undefined,
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
-      "data-focus": isFocused || undefined,
+      "data-focus": dataAttr(isFocused),
       style: { position: "relative" },
     }),
 
@@ -122,11 +123,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.thumb.attrs,
         "data-index": index,
         id: dom.getThumbId(state.context, index),
-        "data-disabled": isDisabled || undefined,
+        "data-disabled": dataAttr(isDisabled),
         "data-orientation": state.context.orientation,
-        "data-focus": (isFocused && state.context.activeIndex === index) || undefined,
+        "data-focus": dataAttr(isFocused && state.context.activeIndex === index),
         draggable: false,
-        "aria-disabled": isDisabled || undefined,
+        "aria-disabled": ariaAttr(isDisabled),
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(state.context),
         "aria-orientation": state.context.orientation,
@@ -209,9 +210,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rangeProps: normalize.element({
       id: dom.getRangeId(state.context),
       ...parts.range.attrs,
-      "data-focus": isFocused || undefined,
-      "data-invalid": isInvalid || undefined,
-      "data-disabled": isDisabled || undefined,
+      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
     }),
@@ -219,10 +220,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-disabled": isDisabled || undefined,
+      "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
-      "data-invalid": isInvalid || undefined,
-      "data-focus": isFocused || undefined,
+      "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       style: dom.getControlStyle(),
       onPointerDown(event) {
         if (!isInteractive) return
@@ -265,7 +266,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "presentation",
         "data-value": value,
         "aria-hidden": true,
-        "data-disabled": isDisabled || undefined,
+        "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
         style,
       })

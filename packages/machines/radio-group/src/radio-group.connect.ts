@@ -1,3 +1,4 @@
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
@@ -27,12 +28,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getRadioDataSet<T extends RadioProps>(props: T) {
     const radioState = getRadioState(props)
     return {
-      "data-focus": radioState.isFocused || undefined,
-      "data-disabled": radioState.isDisabled || undefined,
-      "data-checked": radioState.isChecked || undefined,
-      "data-hover": radioState.isHovered || undefined,
-      "data-invalid": radioState.isInvalid || undefined,
-      "data-readonly": radioState.isReadOnly || undefined,
+      "data-focus": dataAttr(radioState.isFocused),
+      "data-disabled": dataAttr(radioState.isDisabled),
+      "data-checked": dataAttr(radioState.isChecked),
+      "data-hover": dataAttr(radioState.isHovered),
+      "data-invalid": dataAttr(radioState.isInvalid),
+      "data-readonly": dataAttr(radioState.isReadOnly),
     }
   }
 
@@ -125,7 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.radioControl.attrs,
         id: dom.getRadioControlId(state.context, props.value),
-        "data-active": controlState.isActive || undefined,
+        "data-active": dataAttr(controlState.isActive),
         "aria-hidden": true,
         ...getRadioDataSet(props),
       })
@@ -173,13 +174,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: trulyDisabled,
         required: isRequired,
         defaultChecked: inputState.isChecked,
-        "data-disabled": inputState.isDisabled || undefined,
-        "aria-required": isRequired || undefined,
-        "aria-invalid": inputState.isInvalid || undefined,
+        "data-disabled": dataAttr(inputState.isDisabled),
+        "aria-required": ariaAttr(isRequired),
+        "aria-invalid": ariaAttr(inputState.isInvalid),
         readOnly: inputState.isReadOnly,
-        "data-readonly": inputState.isReadOnly || undefined,
-        "aria-disabled": trulyDisabled || undefined,
-        "aria-checked": inputState.isChecked || undefined,
+        "data-readonly": dataAttr(inputState.isReadOnly),
+        "aria-disabled": ariaAttr(trulyDisabled),
+        "aria-checked": ariaAttr(inputState.isChecked),
         style: visuallyHiddenStyle,
       })
     },

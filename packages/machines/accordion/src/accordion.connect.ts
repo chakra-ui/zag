@@ -1,5 +1,5 @@
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
-import { isSafari } from "@zag-js/dom-query"
+import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
@@ -22,8 +22,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
-        "data-expanded": isOpen || undefined,
-        "data-focus": isFocused || undefined,
+        "data-expanded": dataAttr(isOpen),
+        "data-focus": dataAttr(isFocused),
       })
     },
 
@@ -35,9 +35,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getContentId(state.context, props.value),
         "aria-labelledby": dom.getTriggerId(state.context, props.value),
         hidden: !isOpen,
-        "data-disabled": isDisabled || undefined,
-        "data-focus": isFocused || undefined,
-        "data-expanded": isOpen || undefined,
+        "data-disabled": dataAttr(isDisabled),
+        "data-focus": dataAttr(isFocused),
+        "data-expanded": dataAttr(isOpen),
       })
     },
 
@@ -53,7 +53,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-expanded": itemState.isOpen,
         disabled: itemState.isDisabled,
         "aria-disabled": itemState.isDisabled,
-        "data-expanded": itemState.isOpen || undefined,
+        "data-expanded": dataAttr(itemState.isOpen),
         "data-ownedby": dom.getRootId(state.context),
         onFocus() {
           if (itemState.isDisabled) return
