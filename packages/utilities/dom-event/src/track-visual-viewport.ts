@@ -1,20 +1,19 @@
-import { addDomEvent } from "./listener"
+import { addDomEvent } from "./add-dom-event"
 
 type ViewportSize = {
   width: number
   height: number
 }
 
-type Options = {
-  document?: Document
-  resolve?(data: ViewportSize): void
-}
-
-export function trackVisualViewport(options: Options) {
-  const { document: doc, resolve } = options
+export function trackVisualViewport(doc: Document, fn: (data: ViewportSize) => void) {
   const win = doc?.defaultView || window
-  resolve?.(getViewportSize(win))
-  const onResize = () => resolve?.(getViewportSize(win))
+
+  const onResize = () => {
+    fn?.(getViewportSize(win))
+  }
+
+  onResize()
+
   return addDomEvent(win.visualViewport ?? win, "resize", onResize)
 }
 

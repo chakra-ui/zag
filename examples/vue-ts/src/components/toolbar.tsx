@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { defineComponent, ref } from "vue"
 
 export const Toolbar = defineComponent({

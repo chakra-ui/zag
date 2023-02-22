@@ -1,6 +1,6 @@
 import * as pagination from "@zag-js/pagination"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"

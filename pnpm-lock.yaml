@@ -98,7 +98,6 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
-      '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
       '@zag-js/element-rect': workspace:*
       '@zag-js/element-size': workspace:*
@@ -163,7 +162,6 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
-      '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
       '@zag-js/element-rect': link:../../packages/utilities/element-rect
       '@zag-js/element-size': link:../../packages/utilities/element-size
@@ -238,7 +236,6 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
-      '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
       '@zag-js/element-rect': workspace:*
       '@zag-js/element-size': workspace:*
@@ -298,7 +295,6 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
-      '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
       '@zag-js/element-rect': link:../../packages/utilities/element-rect
       '@zag-js/element-size': link:../../packages/utilities/element-size
@@ -365,7 +361,6 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
-      '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
       '@zag-js/element-rect': workspace:*
       '@zag-js/element-size': workspace:*
@@ -427,7 +422,6 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
-      '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
       '@zag-js/element-rect': link:../../packages/utilities/element-rect
       '@zag-js/element-size': link:../../packages/utilities/element-size
@@ -501,7 +495,6 @@ importers:
       '@zag-js/dismissable': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
-      '@zag-js/dom-utils': workspace:*
       '@zag-js/editable': workspace:*
       '@zag-js/element-rect': workspace:*
       '@zag-js/element-size': workspace:*
@@ -567,7 +560,6 @@ importers:
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
-      '@zag-js/dom-utils': link:../../packages/utilities/dom
       '@zag-js/editable': link:../../packages/machines/editable
       '@zag-js/element-rect': link:../../packages/utilities/element-rect
       '@zag-js/element-size': link:../../packages/utilities/element-size
@@ -1373,17 +1365,6 @@ importers:
       '@zag-js/interact-outside': link:../interact-outside
       '@zag-js/utils': link:../core
     devDependencies:
-      clean-package: 2.2.0
-
-  packages/utilities/dom:
-    specifiers:
-      '@zag-js/types': workspace:*
-      '@zag-js/utils': workspace:*
-      clean-package: 2.2.0
-    dependencies:
-      '@zag-js/types': link:../../types
-    devDependencies:
-      '@zag-js/utils': link:../core
       clean-package: 2.2.0
 
   packages/utilities/dom-event:

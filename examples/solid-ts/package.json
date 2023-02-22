@@ -31,7 +31,6 @@
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-utils": "workspace:*",
     "@zag-js/editable": "workspace:*",
     "@zag-js/element-rect": "workspace:*",
     "@zag-js/element-size": "workspace:*",
