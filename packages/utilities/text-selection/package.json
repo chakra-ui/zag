@@ -2,14 +2,20 @@
   "name": "@zag-js/text-selection",
   "version": "0.0.0",
   "description": "",
-  "keywords": ["js", "utils", "text-selection"],
+  "keywords": [
+    "js",
+    "utils",
+    "text-selection"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/text-selection",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src",
     "start": "pnpm build --watch",

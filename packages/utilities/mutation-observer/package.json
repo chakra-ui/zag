@@ -2,14 +2,20 @@
   "name": "@zag-js/mutation-observer",
   "version": "0.0.0",
   "description": "",
-  "keywords": ["js", "utils", "mutation-observer"],
+  "keywords": [
+    "js",
+    "utils",
+    "mutation-observer"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/mutation-observer",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src",
     "start": "pnpm build --watch",
