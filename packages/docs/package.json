@@ -37,6 +37,9 @@
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
   },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts"
 }

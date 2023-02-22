@@ -642,7 +642,10 @@ importers:
       clean-package: 2.2.0
 
   packages/docs:
-    specifiers: {}
+    specifiers:
+      clean-package: 2.2.0
+    devDependencies:
+      clean-package: 2.2.0
 
   packages/frameworks/react:
     specifiers:
