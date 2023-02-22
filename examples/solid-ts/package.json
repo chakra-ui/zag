@@ -70,7 +70,6 @@
     "@zag-js/toggle": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/transition": "workspace:*",
-    "@zag-js/typeahead": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",

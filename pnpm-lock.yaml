@@ -137,7 +137,6 @@ importers:
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
       '@zag-js/transition': workspace:*
-      '@zag-js/typeahead': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/visually-hidden': workspace:*
@@ -203,7 +202,6 @@ importers:
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
       '@zag-js/transition': link:../../packages/machines/transition
-      '@zag-js/typeahead': link:../../packages/utilities/typeahead
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       '@zag-js/visually-hidden': link:../../packages/utilities/visually-hidden
@@ -278,7 +276,6 @@ importers:
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
       '@zag-js/transition': workspace:*
-      '@zag-js/typeahead': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/visually-hidden': workspace:*
@@ -339,7 +336,6 @@ importers:
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
       '@zag-js/transition': link:../../packages/machines/transition
-      '@zag-js/typeahead': link:../../packages/utilities/typeahead
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       '@zag-js/visually-hidden': link:../../packages/utilities/visually-hidden
@@ -408,7 +404,6 @@ importers:
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
       '@zag-js/transition': workspace:*
-      '@zag-js/typeahead': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/visually-hidden': workspace:*
@@ -471,7 +466,6 @@ importers:
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
       '@zag-js/transition': link:../../packages/machines/transition
-      '@zag-js/typeahead': link:../../packages/utilities/typeahead
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       '@zag-js/visually-hidden': link:../../packages/utilities/visually-hidden
@@ -545,7 +539,6 @@ importers:
       '@zag-js/toggle': workspace:*
       '@zag-js/tooltip': workspace:*
       '@zag-js/transition': workspace:*
-      '@zag-js/typeahead': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/visually-hidden': workspace:*
@@ -612,7 +605,6 @@ importers:
       '@zag-js/toggle': link:../../packages/machines/toggle
       '@zag-js/tooltip': link:../../packages/machines/tooltip
       '@zag-js/transition': link:../../packages/machines/transition
-      '@zag-js/typeahead': link:../../packages/utilities/typeahead
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       '@zag-js/visually-hidden': link:../../packages/utilities/visually-hidden
@@ -1134,7 +1126,6 @@ importers:
       '@zag-js/interact-outside': workspace:*
       '@zag-js/mutation-observer': workspace:*
       '@zag-js/popper': workspace:*
-      '@zag-js/typeahead': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/visually-hidden': workspace:*
@@ -1148,7 +1139,6 @@ importers:
       '@zag-js/interact-outside': link:../../utilities/interact-outside
       '@zag-js/mutation-observer': link:../../utilities/mutation-observer
       '@zag-js/popper': link:../../utilities/popper
-      '@zag-js/typeahead': link:../../utilities/typeahead
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
       '@zag-js/visually-hidden': link:../../utilities/visually-hidden
@@ -1522,15 +1512,6 @@ importers:
   packages/utilities/text-selection:
     specifiers:
       clean-package: 2.2.0
-    devDependencies:
-      clean-package: 2.2.0
-
-  packages/utilities/typeahead:
-    specifiers:
-      '@zag-js/dom-query': workspace:*
-      clean-package: 2.2.0
-    dependencies:
-      '@zag-js/dom-query': link:../dom-query
     devDependencies:
       clean-package: 2.2.0
 

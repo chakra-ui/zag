@@ -1,4 +1,4 @@
-import { getByText } from "@zag-js/dom-query"
+import { getByText } from "./get-by-text"
 
 export type TypeaheadState = {
   keysSoFar: string
@@ -12,7 +12,7 @@ export type TypeaheadOptions = {
   timeout?: number
 }
 
-function findByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {
+function getByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {
   const { state, activeId, key, timeout = 350 } = options
 
   const search = state.keysSoFar + key
@@ -45,7 +45,7 @@ function findByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: Typeah
 
   return next
 }
-export const findByTypeahead = /*#__PURE__*/ Object.assign(findByTypeaheadImpl, {
+export const getByTypeahead = /*#__PURE__*/ Object.assign(getByTypeaheadImpl, {
   defaultOptions: { keysSoFar: "", timer: -1 },
   isValidEvent: isValidTypeaheadEvent,
 })

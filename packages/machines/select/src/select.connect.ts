@@ -1,7 +1,6 @@
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
-import { isEditableElement } from "@zag-js/dom-query"
+import { isEditableElement, getByTypeahead } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import { findByTypeahead } from "@zag-js/typeahead"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
@@ -158,7 +157,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (findByTypeahead.isValidEvent(event)) {
+        if (getByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }
@@ -299,7 +298,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (findByTypeahead.isValidEvent(event)) {
+        if (getByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }

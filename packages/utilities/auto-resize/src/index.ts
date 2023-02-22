@@ -1,4 +1,4 @@
-import { getDocument, getWindow } from "@zag-js/dom-utils"
+import { getDocument, getWindow } from "@zag-js/dom-query"
 
 function copyVisualStyles(fromEl: HTMLElement | null, toEl: HTMLElement) {
   if (!fromEl) return

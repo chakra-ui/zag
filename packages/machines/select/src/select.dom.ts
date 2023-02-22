@@ -1,5 +1,4 @@
-import { createScope, isHTMLElement, nextById, prevById, query, queryAll } from "@zag-js/dom-query"
-import { findByTypeahead } from "@zag-js/typeahead"
+import { createScope, isHTMLElement, nextById, prevById, query, queryAll, getByTypeahead } from "@zag-js/dom-query"
 import type { MachineContext as Ctx, Option } from "./select.types"
 
 export const dom = createScope({
@@ -48,7 +47,7 @@ export const dom = createScope({
     return { label, value } as Option
   },
   getMatchingOption(ctx: Ctx, key: string, current: any) {
-    return findByTypeahead(dom.getOptionElements(ctx), { state: ctx.typeahead, key, activeId: current })
+    return getByTypeahead(dom.getOptionElements(ctx), { state: ctx.typeahead, key, activeId: current })
   },
   getHighlightedOption(ctx: Ctx) {
     if (!ctx.highlightedId) return null
