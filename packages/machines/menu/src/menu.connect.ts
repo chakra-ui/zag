@@ -14,7 +14,6 @@ import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
 
-const getEventPoint = (event: Pick<PointerEvent, "clientX" | "clientY">) => ({ x: event.clientX, y: event.clientY })
 const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target">) => contains(event.currentTarget, event.target)
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
@@ -61,7 +60,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         if (event.pointerType === "mouse") return
         const evt = getNativeEvent(event)
-        send({ type: "CONTEXT_MENU_START", point: getEventPoint(evt) })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "CONTEXT_MENU_START", point })
       },
       onPointerCancel(event) {
         if (event.pointerType === "mouse") return
@@ -77,7 +77,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onContextMenu(event) {
         const evt = getNativeEvent(event)
-        send({ type: "CONTEXT_MENU", point: getEventPoint(evt) })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "CONTEXT_MENU", point })
         event.preventDefault()
       },
       style: {
@@ -115,11 +116,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
-        send({
-          type: "TRIGGER_POINTERLEAVE",
-          target: event.currentTarget,
-          point: getEventPoint(evt),
-        })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, point })
       },
       onClick(event) {
         if (dom.isTriggerItem(event.currentTarget)) {
