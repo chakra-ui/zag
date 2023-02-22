@@ -11,6 +11,7 @@
     "packages": "pnpm --filter=./packages/** -r",
     "build-fast": "pnpm packages -- build-fast",
     "build": "pnpm packages -- build",
+    "postbuild": "pnpm typedocs",
     "start": "pnpm packages -- start",
     "prepare": "husky install",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
