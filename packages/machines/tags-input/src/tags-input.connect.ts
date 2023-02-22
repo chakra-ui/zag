@@ -296,7 +296,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick() {
           if (!isInteractive) return
-          send({ type: "DELETE_TAG", id })
+          send({ type: "CLEAR_TAG", id })
         },
       })
     },
