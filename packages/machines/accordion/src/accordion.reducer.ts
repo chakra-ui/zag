@@ -1,4 +1,4 @@
-import { ItemProps, Send, State } from "./accordion.types"
+import type { ItemProps, Send, State } from "./accordion.types"
 
 export function createReducer(state: State, send: Send) {
   const focusedValue = state.context.focusedValue
