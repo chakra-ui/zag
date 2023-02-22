@@ -30,6 +30,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
     "@zag-js/element-size": "workspace:*",

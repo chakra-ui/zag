@@ -31,6 +31,7 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
