@@ -781,7 +781,6 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/live-region': workspace:*
@@ -794,7 +793,6 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/interact-outside': link:../../utilities/interact-outside
       '@zag-js/live-region': link:../../utilities/live-region
@@ -812,7 +810,6 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-utils': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/live-region': workspace:*
       '@zag-js/text-selection': workspace:*
@@ -826,7 +823,6 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/date-utils': link:../../utilities/date-utils
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/live-region': link:../../utilities/live-region
       '@zag-js/text-selection': link:../../utilities/text-selection
@@ -865,7 +861,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
@@ -875,7 +870,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/interact-outside': link:../../utilities/interact-outside
@@ -910,7 +904,6 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/rect-utils': workspace:*
@@ -921,7 +914,6 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/rect-utils': link:../../utilities/rect
@@ -934,7 +926,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/mutation-observer': workspace:*
@@ -945,7 +936,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/mutation-observer': link:../../utilities/mutation-observer
@@ -976,7 +966,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
@@ -986,7 +975,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/types': link:../../types
@@ -1001,7 +989,6 @@ importers:
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/remove-scroll': workspace:*
@@ -1015,7 +1002,6 @@ importers:
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/remove-scroll': link:../../utilities/remove-scroll
@@ -1030,7 +1016,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/text-selection': workspace:*
       '@zag-js/types': workspace:*
@@ -1039,7 +1024,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/text-selection': link:../../utilities/text-selection
       '@zag-js/types': link:../../types
@@ -1072,7 +1056,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/element-size': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -1084,7 +1067,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/element-size': link:../../utilities/element-size
       '@zag-js/form-utils': link:../../utilities/form-utils
@@ -1099,7 +1081,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/types': workspace:*
@@ -1108,7 +1089,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/types': link:../../types
@@ -1120,7 +1100,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
@@ -1133,7 +1112,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/interact-outside': link:../../utilities/interact-outside
@@ -1149,7 +1127,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/element-size': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -1160,7 +1137,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/element-size': link:../../utilities/element-size
       '@zag-js/form-utils': link:../../utilities/form-utils
@@ -1174,7 +1150,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/number-utils': workspace:*
       '@zag-js/types': workspace:*
@@ -1183,7 +1158,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/types': link:../../types
@@ -1195,7 +1169,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/tabbable': workspace:*
       '@zag-js/types': workspace:*
@@ -1204,7 +1177,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/tabbable': link:../../utilities/tabbable
       '@zag-js/types': link:../../types
@@ -1217,7 +1189,6 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/auto-resize': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
       '@zag-js/interact-outside': workspace:*
@@ -1229,7 +1200,6 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/auto-resize': link:../../utilities/auto-resize
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/interact-outside': link:../../utilities/interact-outside
@@ -1243,7 +1213,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
@@ -1251,7 +1220,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
@@ -1279,7 +1247,6 @@ importers:
     specifiers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/types': workspace:*
@@ -1289,7 +1256,6 @@ importers:
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/types': link:../../types
@@ -1341,8 +1307,9 @@ importers:
     specifiers:
       '@zag-js/dom-query': workspace:*
       clean-package: 2.2.0
-    devDependencies:
+    dependencies:
       '@zag-js/dom-query': link:../dom-query
+    devDependencies:
       clean-package: 2.2.0
 
   packages/utilities/core:
@@ -1361,13 +1328,11 @@ importers:
 
   packages/utilities/dismissable:
     specifiers:
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/interact-outside': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
     dependencies:
-      '@zag-js/dom-event': link:../dom-event
       '@zag-js/dom-query': link:../dom-query
       '@zag-js/interact-outside': link:../interact-outside
       '@zag-js/utils': link:../core
@@ -1448,13 +1413,11 @@ importers:
 
   packages/utilities/interact-outside:
     specifiers:
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/tabbable': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
     devDependencies:
-      '@zag-js/dom-event': link:../dom-event
       '@zag-js/dom-query': link:../dom-query
       '@zag-js/tabbable': link:../tabbable
       '@zag-js/utils': link:../core
