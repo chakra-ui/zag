@@ -26,10 +26,12 @@
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
-  "devDependencies": {
+  "dependencies": {
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/tabbable": "workspace:*",
-    "@zag-js/utils": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
+  "devDependencies": {
     "clean-package": "2.2.0"
   },
   "publishConfig": {

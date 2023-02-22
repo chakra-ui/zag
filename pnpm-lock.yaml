@@ -1419,10 +1419,11 @@ importers:
       '@zag-js/tabbable': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-    devDependencies:
+    dependencies:
       '@zag-js/dom-query': link:../dom-query
       '@zag-js/tabbable': link:../tabbable
       '@zag-js/utils': link:../core
+    devDependencies:
       clean-package: 2.2.0
 
   packages/utilities/live-region:
