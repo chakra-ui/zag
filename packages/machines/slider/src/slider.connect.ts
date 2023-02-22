@@ -25,22 +25,54 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return getValuePercent(value, state.context.min, state.context.max)
   }
 
+  // TODO - getMarkerState
+
   return {
+    /**
+     * Whether the slider is focused.
+     */
     isFocused,
+    /**
+     * Whether the slider is being dragged.
+     */
     isDragging,
+    /**
+     * The value of the slider.
+     */
     value: state.context.value,
+    /**
+     * The value of the slider as a percent.
+     */
     percent: getValuePercent(state.context.value, state.context.min, state.context.max),
+    /**
+     * Function to set the value of the slider.
+     */
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
+    /**
+     * Returns the value of the slider at the given percent.
+     */
     getPercentValue: getPercentValueFn,
+    /**
+     * Returns the percent of the slider at the given value.
+     */
     getValuePercent: getValuePercentFn,
+    /**
+     * Function to focus the slider.
+     */
     focus() {
       dom.getThumbEl(state.context)?.focus()
     },
+    /**
+     * Function to increment the value of the slider by the step.
+     */
     increment() {
       send("INCREMENT")
     },
+    /**
+     * Function to decrement the value of the slider by the step.
+     */
     decrement() {
       send("DECREMENT")
     },

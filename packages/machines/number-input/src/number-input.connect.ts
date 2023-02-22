@@ -19,32 +19,71 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
 
   return {
+    /**
+     * Whether the input is focused.
+     */
     isFocused,
+    /**
+     * Whether the input is invalid.
+     */
     isInvalid,
+    /**
+     * Whether the input value is empty.
+     */
     isValueEmpty,
+    /**
+     * The formatted value of the input.
+     */
     value: state.context.formattedValue,
+    /**
+     * The value of the input as a number.
+     */
     valueAsNumber: state.context.valueAsNumber,
+    /**
+     * Function to set the value of the input.
+     */
     setValue(value: string | number) {
       send({ type: "SET_VALUE", value: value.toString() })
     },
+    /**
+     * Function to clear the value of the input.
+     */
     clearValue() {
       send("CLEAR_VALUE")
     },
+    /**
+     * Function to increment the value of the input by the step.
+     */
     increment() {
       send("INCREMENT")
     },
+    /**
+     * Function to decrement the value of the input by the step.
+     */
     decrement() {
       send("DECREMENT")
     },
+    /**
+     * Function to set the value of the input to the max.
+     */
     setToMax() {
       send({ type: "SET_VALUE", value: state.context.max })
     },
+    /**
+     * Function to set the value of the input to the min.
+     */
     setToMin() {
       send({ type: "SET_VALUE", value: state.context.min })
     },
+    /**
+     * Function to focus the input.
+     */
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
+    /**
+     * Function to blur the input.
+     */
     blur() {
       dom.getInputEl(state.context)?.blur()
     },

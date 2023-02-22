@@ -173,12 +173,12 @@ type PrivateContext = Context<{
    * @internal
    * The active option's id. Used to set the `aria-activedescendant` attribute
    */
-  activeId: string | null
+  focusedId: string | null
   /**
    * @internal
    * The data associated with the focused option
    */
-  activeOptionData: OptionData | null
+  focusedOptionData: OptionData | null
   /**
    * @internal
    * The value of the option when the user hovers/navigates with keyboard

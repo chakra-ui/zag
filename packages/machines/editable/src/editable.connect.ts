@@ -22,23 +22,47 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
 
   return {
+    /**
+     * Whether the editable is in edit mode
+     */
     isEditing,
+    /**
+     * Whether the editable value is empty
+     */
     isValueEmpty: isValueEmpty,
+    /**
+     * The current value of the editable
+     */
     value: state.context.value,
+    /**
+     * Function to set the value of the editable
+     */
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
+    /**
+     * Function to clear the value of the editable
+     */
     clearValue() {
       send({ type: "SET_VALUE", value: "" })
     },
+    /**
+     * Function to enter edit mode
+     */
     edit() {
       if (!isInteractive) return
       send("EDIT")
     },
+    /**
+     * Function to exit edit mode, and discard any changes
+     */
     cancel() {
       if (!isInteractive) return
       send("CANCEL")
     },
+    /**
+     * Function to exit edit mode, and submit any changes
+     */
     submit() {
       if (!isInteractive) return
       send("SUBMIT")

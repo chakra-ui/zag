@@ -9,6 +9,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isPressed = state.hasTag("pressed")
   const isDisabled = state.context.disabled
   return {
+    /**
+     * Whether the element is pressed.
+     */
     isPressed,
     pressableProps: normalize.element({
       id: dom.getPressableId(state.context),

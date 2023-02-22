@@ -29,10 +29,6 @@ type PublicContext = DirectionProperty &
      */
     loop: boolean
     /**
-     * Whether the indicator is rendered.
-     */
-    isIndicatorRendered: boolean
-    /**
      * The selected tab id
      */
     value: string | null
@@ -81,6 +77,11 @@ type ComputedContext = Readonly<{
 }>
 
 type PrivateContext = Context<{
+  /**
+   * @internal
+   * Whether the indicator is rendered.
+   */
+  isIndicatorRendered: boolean
   /**
    * @internal
    * The focused tab id

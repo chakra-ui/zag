@@ -12,21 +12,59 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDragging = state.matches("dragging")
 
   const api = {
+    /**
+     * Whether the splitter is focused.
+     */
     isFocused,
+    /**
+     * Whether the splitter is being dragged.
+     */
     isDragging,
+    /**
+     *  The bounds of the currently dragged splitter handle.
+     */
     bounds: getHandleBounds(state.context),
-
+    /**
+     * Function to collapse a panel.
+     */
     collapse(id: PanelId) {
       send({ type: "COLLAPSE", id })
     },
+    /**
+     * Function to expand a panel.
+     */
     expand(id: PanelId) {
       send({ type: "EXPAND", id })
     },
+    /**
+     * Function to toggle a panel between collapsed and expanded.
+     */
     toggle(id: PanelId) {
       send({ type: "TOGGLE", id })
     },
+    /**
+     * Function to set the size of a panel.
+     */
     setSize(id: PanelId, size: number) {
       send({ type: "SET_SIZE", id, size })
+    },
+    /**
+     * Returns the state details for a resize trigger.
+     */
+    getResizeTriggerState(props: ResizeTriggerProps) {
+      const { id, disabled } = props
+      const ids = id.split(":")
+      const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
+      const panels = getHandleBounds(state.context, id)
+
+      return {
+        isDisabled: !!disabled,
+        isFocused: state.context.activeResizeId === id && isFocused,
+        panelIds,
+        min: panels?.min,
+        max: panels?.max,
+        value: 0,
+      }
     },
 
     rootProps: normalize.element({
@@ -62,22 +100,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     //     send("TOGGLE")
     //   },
     // }),
-
-    getResizeTriggerState(props: ResizeTriggerProps) {
-      const { id, disabled } = props
-      const ids = id.split(":")
-      const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
-      const panels = getHandleBounds(state.context, id)
-
-      return {
-        isDisabled: !!disabled,
-        isFocused: state.context.activeResizeId === id && isFocused,
-        panelIds,
-        min: panels?.min,
-        max: panels?.max,
-        value: 0,
-      }
-    },
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       const { id, disabled, step = 1 } = props

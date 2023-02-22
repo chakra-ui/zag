@@ -14,7 +14,7 @@ export const dom = createScope({
   getOptionId: (ctx: Ctx, id: string, index?: number) =>
     ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.id}:option:${id}`, index].filter((v) => v != null).join(":"),
 
-  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
+  getActiveOptionEl: (ctx: Ctx) => (ctx.focusedId ? dom.getById(ctx, ctx.focusedId) : null),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
@@ -24,8 +24,8 @@ export const dom = createScope({
 
   getElements: (ctx: Ctx) => queryAll(dom.getContentEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {
-    if (!ctx.activeId) return null
-    const selector = `[role=option][id=${CSS.escape(ctx.activeId)}]`
+    if (!ctx.focusedId) return null
+    const selector = `[role=option][id=${CSS.escape(ctx.focusedId)}]`
     return dom.getContentEl(ctx)?.querySelector<HTMLElement>(selector)
   },
 
@@ -70,7 +70,7 @@ export const dom = createScope({
   },
 
   getClosestSectionLabel(ctx: Ctx) {
-    if (!ctx.activeId) return
+    if (!ctx.focusedId) return
     const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
     return group?.getAttribute("aria-label")
   },

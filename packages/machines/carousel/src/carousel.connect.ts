@@ -21,20 +21,44 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    /**
+     * The current index of the carousel
+     */
     index: state.context.index,
+    /**
+     * Whether the carousel is currently auto-playing
+     */
     isAutoplay,
+    /**
+     * Whether the carousel is can scroll to the next slide
+     */
     canScrollNext,
+    /**
+     * Whether the carousel is can scroll to the previous slide
+     */
     canScrollPrevious,
-
+    /**
+     * Function to scroll to a specific slide index
+     */
     scrollTo(index: number) {
       send({ type: "GOTO", index })
     },
+    /**
+     * Function to scroll to the next slide
+     */
     scrollToNext() {
       send("NEXT")
     },
+    /**
+     * Function to scroll to the previous slide
+     */
     scrollToPrevious() {
       send("PREV")
     },
+    /**
+     *  Returns the state of a specific slide
+     */
+    getSlideState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -71,8 +95,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         transitionDuration: "0.3s",
       },
     }),
-
-    getSlideState,
 
     getSlideProps(props: SlideProps) {
       const { index } = props

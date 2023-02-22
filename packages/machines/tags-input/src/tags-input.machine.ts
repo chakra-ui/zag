@@ -85,13 +85,13 @@ export function machine(userContext: UserDefinedContext) {
         SET_VALUE: {
           actions: ["setValue"],
         },
-        DELETE_TAG: {
+        CLEAR_TAG: {
           actions: ["deleteTag"],
         },
         SET_VALUE_AT_INDEX: {
           actions: ["setValueAtIndex"],
         },
-        CLEAR_ALL: {
+        CLEAR_VALUE: {
           actions: ["clearTags", "focusInput"],
         },
         ADD_TAG: {

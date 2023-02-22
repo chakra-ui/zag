@@ -22,9 +22,21 @@ export function createReducer(state: State, send: Send) {
   }
 
   return {
+    /**
+     * The value of the focused accordion item.
+     */
     focusedValue,
+    /**
+     * The value of the accordion.
+     */
     value,
+    /**
+     * Sets the value of the accordion.
+     */
     setValue,
+    /**
+     * Gets the state of an accordion item.
+     */
     getItemState,
   }
 }

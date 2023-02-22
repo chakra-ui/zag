@@ -34,35 +34,87 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const timeZone = state.context.timeZone
 
   const api = {
+    /**
+     * The weeks of the month. Represented as an array of arrays of dates.
+     */
     weeks: state.context.weeks,
+    /**
+     * The days of the week. Represented as an array of strings.
+     */
     weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) =>
       state.context.dayFormatter.format(day),
     ),
+    /**
+     * The human readable text for the visible range of dates.
+     */
     visibleRangeText: "TODO",
+    /**
+     * The current date segment details.
+     */
     segments: getSegments(
       state.context.displayValue,
       state.context.validSegments,
       state.context.getDateFormatter({ day: "2-digit", month: "2-digit", year: "numeric", timeZone }),
       timeZone,
     ),
-
+    /**
+     * The selected date.
+     */
     value: selectedDate,
+    /**
+     * The selected date as a Date object.
+     */
     valueAsDate: selectedDate?.toDate(timeZone),
+    /**
+     * The selected date as a string.
+     */
     valueAsString: selectedDate?.toString(),
-
+    /**
+     * The focused date.
+     */
     focusedValue: focusedDate,
+    /**
+     * The focused date as a Date object.
+     */
     focusedValueAsDate: focusedDate?.toDate(timeZone),
+    /**
+     * The focused date as a string.
+     */
     focusedValueAsString: focusedDate?.toString(),
-
+    /**
+     * Function to set the selected month.
+     */
     setMonth(month: number) {
       if (!selectedDate) return
       const date = setMonth(selectedDate, month)
       send({ type: "SET_VALUE", date })
     },
+    /**
+     * Function to set the selected year.
+     */
     setYear(year: number) {
       if (!selectedDate) return
       const date = setYear(selectedDate, year)
       send({ type: "SET_VALUE", date })
+    },
+    /**
+     * Returns the state details for a given cell.
+     */
+    getCellState(props: CellProps) {
+      const { date, disabled } = props
+      const cellState = {
+        isInvalid: isDateInvalid(date, min, max),
+        isDisabled: isDateDisabled(date, startDate, endDate, min, max),
+        isSelected: isDateEqual(date, selectedDate),
+        isUnavailable: isDateUnavailable(date, state.context.isDateUnavailable, min, max) && !disabled,
+        isOutsideRange: isDateOutsideVisibleRange(date, startDate, endDate),
+        isFocused: isDateEqual(date, focusedDate),
+        isToday: isTodayDate(date, timeZone),
+        get isSelectable() {
+          return !cellState.isDisabled && !cellState.isUnavailable
+        },
+      }
+      return cellState
     },
 
     rootProps: normalize.element({
@@ -125,23 +177,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "POINTER_UP" })
       },
     }),
-
-    getCellState(props: CellProps) {
-      const { date, disabled } = props
-      const cellState = {
-        isInvalid: isDateInvalid(date, min, max),
-        isDisabled: isDateDisabled(date, startDate, endDate, min, max),
-        isSelected: isDateEqual(date, selectedDate),
-        isUnavailable: isDateUnavailable(date, state.context.isDateUnavailable, min, max) && !disabled,
-        isOutsideRange: isDateOutsideVisibleRange(date, startDate, endDate),
-        isFocused: isDateEqual(date, focusedDate),
-        isToday: isTodayDate(date, timeZone),
-        get isSelectable() {
-          return !cellState.isDisabled && !cellState.isUnavailable
-        },
-      }
-      return cellState
-    },
 
     getCellProps(props: CellProps) {
       const cellState = api.getCellState(props)
