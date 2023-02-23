@@ -1,5 +1,12 @@
 # @zag-js/store
 
+## 0.2.8
+
+### Patch Changes
+
+- [`5277f653`](https://github.com/chakra-ui/zag/commit/5277f65311c46e5792f605021d58b3b7e7dc3eaa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update dependencies to latest versions
+
 ## 0.2.7
 
 ### Patch Changes
