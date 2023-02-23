@@ -310,7 +310,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
-          send({ type: "ITEM_CLICK", target: event.currentTarget, id })
+          send({ type: "ITEM_CLICK", src: "click", target: event.currentTarget, id })
         },
         onPointerDown(event) {
           if (disabled) return
@@ -318,8 +318,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || disabled || state.context.pointerdownNode === event.currentTarget) return
-          event.currentTarget.click()
+          if (!isLeftClick(evt) || disabled) return
+          send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, id })
         },
         onPointerLeave(event) {
           if (disabled || event.pointerType !== "mouse") return
@@ -336,7 +336,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onAuxClick(event) {
           if (disabled) return
           event.preventDefault()
-          event.currentTarget.click()
+          send({ type: "ITEM_CLICK", src: "auxclick", target: event.currentTarget, id })
         },
       })
     },
