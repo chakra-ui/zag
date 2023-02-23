@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { menuControls, menuOptionData as data } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { useControls } from "src/hooks/use-controls"
+import { useControls } from "../hooks/use-controls"
 import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
