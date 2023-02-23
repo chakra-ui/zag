@@ -29,7 +29,6 @@ export function machine(userContext: UserDefinedContext) {
         isPlacementComplete: false,
         focusTriggerOnClose: true,
         ...ctx,
-        pointerdownNode: null,
         typeahead: getByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
@@ -196,7 +195,6 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["visible"],
           activities: ["trackInteractOutside", "computePlacement"],
           entry: ["focusMenu", "resumePointer"],
-          exit: ["clearPointerdownNode"],
           on: {
             TRIGGER_CLICK: {
               guard: not("isTriggerItem"),
@@ -279,14 +277,14 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
-              { actions: ["focusItem"] },
+              { actions: "focusItem" },
             ],
             TRIGGER_POINTERLEAVE: {
               target: "closing",
               actions: "setIntentPolygon",
             },
             ITEM_POINTERDOWN: {
-              actions: ["setPointerdownNode", "focusItem"],
+              actions: "focusItem",
             },
             TYPEAHEAD: {
               actions: "focusMatchedItem",
@@ -486,9 +484,6 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnSelect(ctx) {
           if (!ctx.highlightedId) return
           ctx.onSelect?.({ value: ctx.highlightedId })
-          if (!ctx.closeOnSelect) {
-            ctx.pointerdownNode = null
-          }
         },
         focusItem(ctx, event) {
           ctx.highlightedId = event.id
@@ -529,12 +524,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreParentFocus(ctx) {
           ctx.parent?.send("RESTORE_FOCUS")
-        },
-        setPointerdownNode(ctx, evt) {
-          ctx.pointerdownNode = ref(evt.target)
-        },
-        clearPointerdownNode(ctx) {
-          ctx.pointerdownNode = null
         },
         invokeOnOpen(ctx) {
           ctx.onOpen?.()

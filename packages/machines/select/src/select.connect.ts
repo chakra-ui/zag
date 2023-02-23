@@ -275,7 +275,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         if (!option || option.hasAttribute("data-disabled")) return
-        option?.click()
+        send({ type: "OPTION_CLICK", src: "pointerup", id: option.id })
       },
       onPointerLeave() {
         send({ type: "POINTER_LEAVE" })
@@ -284,7 +284,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         if (!option || option.hasAttribute("data-disabled")) return
-        send({ type: "OPTION_CLICK", id: option.id })
+        send({ type: "OPTION_CLICK", src: "click", id: option.id })
       },
       onKeyDown(event) {
         if (!isInteractive) return

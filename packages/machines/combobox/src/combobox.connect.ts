@@ -297,18 +297,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (optionState.disabled) return
           send({ type: "POINTEROVER_OPTION", id, value, label })
         },
-        onPointerUp(event) {
+        onPointerUp() {
           if (optionState.disabled) return
-          event.currentTarget.click()
+          send({ type: "CLICK_OPTION", src: "pointerup", id, value, label })
         },
         onClick() {
           if (optionState.disabled) return
-          send({ type: "CLICK_OPTION", id, value, label })
+          send({ type: "CLICK_OPTION", src: "click", id, value, label })
         },
         onAuxClick(event) {
           if (optionState.disabled) return
           event.preventDefault()
-          event.currentTarget.click()
+          send({ type: "CLICK_OPTION", src: "auxclick", id, value, label })
         },
       })
     },
