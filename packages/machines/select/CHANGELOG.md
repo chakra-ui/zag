@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 0.1.12
+
+### Patch Changes
+
+- [#536](https://github.com/chakra-ui/zag/pull/536)
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor all packages to have proper dependency structure
+
+- Updated dependencies [[`58078617`](https://github.com/chakra-ui/zag/commit/58078617637c22756497cb6e1d90618586e55687),
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99),
+  [`5277f653`](https://github.com/chakra-ui/zag/commit/5277f65311c46e5792f605021d58b3b7e7dc3eaa)]:
+  - @zag-js/interact-outside@0.2.3
+  - @zag-js/mutation-observer@0.0.1
+  - @zag-js/visually-hidden@0.0.1
+  - @zag-js/form-utils@0.2.5
+  - @zag-js/dom-event@0.0.1
+  - @zag-js/dom-query@0.1.3
+  - @zag-js/popper@0.2.4
+  - @zag-js/core@0.2.10
+
 ## 0.1.11
 
 ### Patch Changes

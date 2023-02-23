@@ -1,5 +1,29 @@
 # @zag-js/checkbox
 
+## 0.2.13
+
+### Patch Changes
+
+- [#516](https://github.com/chakra-ui/zag/pull/516)
+  [`d6c15603`](https://github.com/chakra-ui/zag/commit/d6c15603bfcaf00fc0244a6c5ac7c3f742a8d878) Thanks
+  [@visualjerk](https://github.com/visualjerk)! - Fix issue where double clicking outside breaks a new click on checkbox
+  label
+
+- [#517](https://github.com/chakra-ui/zag/pull/517)
+  [`9f22e88d`](https://github.com/chakra-ui/zag/commit/9f22e88d3f99cefa36214187600cd5036e6b343f) Thanks
+  [@visualjerk](https://github.com/visualjerk)! - Fixed issue where input element triggers `onBlur` when clicking the
+  checkbox label.
+
+- [#536](https://github.com/chakra-ui/zag/pull/536)
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor all packages to have proper dependency structure
+
+- Updated dependencies [[`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99)]:
+  - @zag-js/visually-hidden@0.0.1
+  - @zag-js/form-utils@0.2.5
+  - @zag-js/dom-query@0.1.3
+  - @zag-js/core@0.2.10
+
 ## 0.2.12
 
 ### Patch Changes
