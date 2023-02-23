@@ -1,5 +1,28 @@
 # @zag-js/pressable
 
+## 0.3.12
+
+### Patch Changes
+
+- [#521](https://github.com/chakra-ui/zag/pull/521)
+  [`fced0ea2`](https://github.com/chakra-ui/zag/commit/fced0ea278c3a359f4d475e18229518edb9f2b21) Thanks
+  [@malangcat](https://github.com/malangcat)! - Fix issue where `onPressEnd` was invoke at the wrong time
+
+- [#513](https://github.com/chakra-ui/zag/pull/513)
+  [`7cc4a593`](https://github.com/chakra-ui/zag/commit/7cc4a593ff5ec3e30d66fe55c4aaf147f79b67cc) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fixed issue where `onPress` was invoked after long press.
+
+- [#536](https://github.com/chakra-ui/zag/pull/536)
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor all packages to have proper dependency structure and
+  bundle size.
+
+- Updated dependencies [[`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99)]:
+  - @zag-js/text-selection@0.0.1
+  - @zag-js/dom-event@0.0.1
+  - @zag-js/dom-query@0.1.3
+  - @zag-js/core@0.2.10
+
 ## 0.3.11
 
 ### Patch Changes

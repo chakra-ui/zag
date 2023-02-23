@@ -1,5 +1,16 @@
 # @zag-js/react
 
+## 0.3.10
+
+### Patch Changes
+
+- [`5277f653`](https://github.com/chakra-ui/zag/commit/5277f65311c46e5792f605021d58b3b7e7dc3eaa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update dependencies to latest versions
+
+- Updated dependencies [[`5277f653`](https://github.com/chakra-ui/zag/commit/5277f65311c46e5792f605021d58b3b7e7dc3eaa)]:
+  - @zag-js/store@0.2.8
+  - @zag-js/core@0.2.10
+
 ## 0.3.9
 
 ### Patch Changes
