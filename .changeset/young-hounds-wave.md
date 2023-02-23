@@ -43,4 +43,4 @@
 "@zag-js/tabs": patch
 ---
 
-Refactor all packages to have proper dependency structure
+Refactor all packages to have proper dependency structure and bundle size.
