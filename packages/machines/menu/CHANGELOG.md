@@ -1,5 +1,14 @@
 # @zag-js/menu
 
+## 0.3.10
+
+### Patch Changes
+
+- [#539](https://github.com/chakra-ui/zag/pull/539)
+  [`240b0340`](https://github.com/chakra-ui/zag/commit/240b0340ed87a2572552dc8de19470a5f1c46e35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where element triggers double click events due to the
+  internal `.click()` calls
+
 ## 0.3.9
 
 ### Patch Changes
