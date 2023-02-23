@@ -1,17 +1,21 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { menuOptionData as data } from "@zag-js/shared"
+import { menuControls, menuOptionData as data } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
+  const controls = useControls(menuControls)
+
   const [state, send] = useMachine(
     menu.machine({
       id: useId(),
       value: { order: "", type: [] },
       onValueChange: console.log,
     }),
+    { context: controls.context },
   )
   const api = menu.connect(state, send, normalizeProps)
 
@@ -49,7 +53,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={null}>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

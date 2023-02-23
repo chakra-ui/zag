@@ -1,6 +1,7 @@
 import * as menu from "@zag-js/menu"
-import { menuOptionData as data } from "@zag-js/shared"
+import { menuControls, menuOptionData as data } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { useControls } from "src/hooks/use-controls"
 import { computed, defineComponent, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
@@ -9,6 +10,7 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "Menu",
   setup() {
+    const controls = useControls(menuControls)
     const [state, send] = useMachine(
       menu.machine({
         id: "menu-options",
@@ -54,7 +56,7 @@ export default defineComponent({
             </div>
           </main>
 
-          <Toolbar>
+          <Toolbar controls={controls.ui}>
             <StateVisualizer state={state} />
           </Toolbar>
         </>
