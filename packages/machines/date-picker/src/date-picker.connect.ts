@@ -13,6 +13,7 @@ import {
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { getFormatter } from "./date-formatter"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type { CellProps, Send, State } from "./date-picker.types"
@@ -39,9 +40,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The days of the week. Represented as an array of strings.
      */
-    weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) =>
-      state.context.dayFormatter.format(day),
-    ),
+    weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) => {
+      return getFormatter(locale, { weekday: "short" }).format(day)
+    }),
     /**
      * The human readable text for the visible range of dates.
      */
@@ -76,7 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setMonth(month: number) {
       if (!selectedDate) return
       const date = setMonth(selectedDate, month)
-      send({ type: "SET_VALUE", date })
+      send({ type: "VALUE.SET", date })
     },
     /**
      * Function to set the selected year.
@@ -84,7 +85,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setYear(year: number) {
       if (!selectedDate) return
       const date = setYear(selectedDate, year)
-      send({ type: "SET_VALUE", date })
+      send({ type: "VALUE.SET", date })
     },
     /**
      * Returns the state details for a given cell.
@@ -123,25 +124,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           Enter() {
-            send("ENTER")
+            send("GRID.ENTER")
           },
           ArrowLeft() {
-            send("ARROW_LEFT")
+            send("GRID.ARROW_LEFT")
           },
           ArrowRight() {
-            send("ARROW_RIGHT")
+            send("GRID.ARROW_RIGHT")
           },
           ArrowUp() {
-            send("ARROW_UP")
+            send("GRID.ARROW_UP")
           },
           ArrowDown() {
-            send("ARROW_DOWN")
+            send("GRID.ARROW_DOWN")
           },
           PageUp(event) {
-            send({ type: "PAGE_UP", larger: event.shiftKey })
+            send({ type: "GRID.PAGE_UP", larger: event.shiftKey })
           },
           PageDown(event) {
-            send({ type: "PAGE_DOWN", larger: event.shiftKey })
+            send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey })
           },
         }
 
@@ -154,10 +155,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
       onPointerDown() {
-        send({ type: "POINTER_DOWN" })
+        send({ type: "GRID.POINTER_DOWN" })
       },
       onPointerUp() {
-        send({ type: "POINTER_UP" })
+        send({ type: "GRID.POINTER_UP" })
       },
     }),
 
@@ -195,10 +196,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onFocus() {
           if (disabled) return
-          send({ type: "FOCUS_CELL", date: props.date })
+          send({ type: "CELL.FOCUS", date: props.date })
         },
         onPointerUp() {
-          send({ type: "CLICK_CELL", date: props.date })
+          send({ type: "CELL.CLICK", date: props.date })
         },
       })
     },
@@ -208,7 +209,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getNextTriggerId(state.context),
       type: "button",
       onClick() {
-        send("CLICK_NEXT")
+        send("GOTO.NEXT")
       },
       "aria-label": "TODO",
       disabled: state.context.isNextVisibleRangeValid,
@@ -219,10 +220,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getPrevTriggerId(state.context),
       type: "button",
       onClick() {
-        send("CLICK_PREV")
+        send("GOTO.PREV")
       },
       "aria-label": "TODO",
       disabled: state.context.isPrevVisibleRangeValid,
+    }),
+
+    clearTriggerProps: normalize.button({
+      ...parts.clearTrigger.attrs,
+      id: dom.getClearTriggerId(state.context),
+      type: "button",
+      hidden: true,
+      onClick() {
+        send("VALUE.CLEAR")
+      },
     }),
 
     triggerProps: normalize.button({
@@ -230,35 +241,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       type: "button",
       onClick() {
-        send("CLICK_TRIGGER")
+        send("TRIGGER.CLICK")
       },
     }),
 
-    fieldProps: normalize.element({
+    fieldProps: normalize.input({
       ...parts.field.attrs,
-      role: "presentation",
       id: dom.getFieldId(state.context),
-    }),
-
-    groupProps: normalize.element({
-      ...parts.group.attrs,
-      id: dom.getGroupId(state.context),
-      onKeyDown(event) {
-        const keyMap: EventKeyMap = {
-          ArrowLeft() {
-            send("ARROW_LEFT")
-          },
-          ArrowRight() {
-            send("ARROW_RIGHT")
-          },
-        }
-
-        const exec = keyMap[getEventKey(event, state.context)]
-
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-        }
+      autoComplete: "off",
+      autoCorrect: "off",
+      spellCheck: "false",
+      onChange(event) {
+        send({ type: "VALUE.RAW", value: event.target.value })
       },
     }),
   }

@@ -1,4 +1,4 @@
-import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@internationalized/date"
+import type { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
 import type { DateAdjustFn } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -20,7 +20,6 @@ type PublicContext = DirectionProperty &
     onFocusChange?: (details: { value: CalendarDate }) => void
     onViewChange?: (details: { value: DateView }) => void
     isDateUnavailable?: (date: DateValue) => boolean
-    placeholderValue: DateValue
   }
 
 type DateView = "date" | "month" | "year"
@@ -30,14 +29,10 @@ type PrivateContext = Context<{
   startValue: CalendarDate
   hasFocus?: boolean
   announcer?: LiveRegion
-  getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
-  dateFormatter: DateFormatter
   valueText: string
-  displayValue: DateValue
 }>
 
 type ComputedContext = Readonly<{
-  dayFormatter: DateFormatter
   endValue: CalendarDate
   weeks: (CalendarDate | null)[][]
   isInteractive: boolean
@@ -46,7 +41,6 @@ type ComputedContext = Readonly<{
   isNextVisibleRangeValid: boolean
   isPrevVisibleRangeValid: boolean
   visibleRangeText: string
-  validSegmentDetails: { complete: boolean; keys: string[]; exceeds: boolean }
   adjustFn: DateAdjustFn
 }>
 

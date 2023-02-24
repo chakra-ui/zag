@@ -808,7 +808,6 @@ importers:
   packages/machines/date-picker:
     specifiers:
       '@internationalized/date': ^3.0.2
-      '@internationalized/number': ^3.1.2
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-utils': workspace:*
@@ -822,7 +821,6 @@ importers:
       proxy-memoize: 2.0.2
     dependencies:
       '@internationalized/date': 3.0.2
-      '@internationalized/number': 3.1.2
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/date-utils': link:../../utilities/date-utils
@@ -2702,12 +2700,6 @@ packages:
     resolution: {integrity: sha512-9V1IxesP6ASZj/hYyOXOC4yPJvidbbStyWQKLCQSqhhKACMOXoo+BddXZJy47ju9mqOMpWdrJ2rTx4yTxK9oag==}
     dependencies:
       '@swc/helpers': 0.4.14
-
-  /@internationalized/number/3.1.2:
-    resolution: {integrity: sha512-Mbys8SGsn0ApXz3hJLNU+d95B8luoUbwnmCpBwl7d63UmYAlcT6TRDyvaS/vwdbElXLcsQJjQCu0gox2cv/Tig==}
-    dependencies:
-      '@swc/helpers': 0.4.14
-    dev: false
 
   /@jridgewell/gen-mapping/0.1.1:
     resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==}

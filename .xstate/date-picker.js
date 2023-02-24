@@ -15,19 +15,19 @@ const fetchMachine = createMachine({
   context: {},
   activities: ["setupAnnouncer"],
   on: {
-    POINTER_DOWN: {
+    "GRID.POINTER_DOWN": {
       actions: ["disableTextSelection"]
     },
-    POINTER_UP: {
+    "GRID.POINTER_UP": {
       actions: ["enableTextSelection"]
     },
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: ["setSelectedDate"]
     },
-    CLICK_PREV: {
+    "GOTO.NEXT": {
       actions: ["focusPreviousPage"]
     },
-    CLICK_NEXT: {
+    "GOTO.PREV": {
       actions: ["focusNextPage"]
     }
   },
@@ -43,44 +43,44 @@ const fetchMachine = createMachine({
     focused: {
       tags: "closed",
       on: {
-        CLICK_TRIGGER: {
+        "TRIGGER.CLICK": {
           target: "open",
           actions: ["setViewToDate", "focusSelectedDateIfNeeded"]
         },
-        INPUT: {}
+        "FIELD.TYPE": {}
       }
     },
     open: {
       tags: "open",
       on: {
-        FOCUS_CELL: {
+        "CELL.FOCUS": {
           actions: ["setFocusedDate"]
         },
-        ENTER: {
+        "KEY.ENTER": {
           actions: ["selectFocusedDate"]
         },
-        CLICK_CELL: {
+        "CELL.CLICK": {
           actions: ["setFocusedDate", "setSelectedDate"]
         },
-        ARROW_RIGHT: {
+        "GRID.ARROW_RIGHT": {
           actions: ["focusNextDay"]
         },
-        ARROW_LEFT: {
+        "GRID.ARROW_LEFT": {
           actions: ["focusPreviousDay"]
         },
-        ARROW_UP: {
+        "GRID.ARROW_UP": {
           actions: ["focusPreviousWeek"]
         },
-        ARROW_DOWN: {
+        "GRID.ARROW_DOWN": {
           actions: ["focusNextWeek"]
         },
-        PAGE_UP: {
+        "GRID.PAGE_UP": {
           actions: ["focusPreviousSection"]
         },
-        PAGE_DOWN: {
+        "GRID.PAGE_DOWN": {
           actions: ["focusNextSection"]
         },
-        CLICK_TRIGGER: {
+        "TRIGGER.CLICK": {
           target: "focused"
         }
       }

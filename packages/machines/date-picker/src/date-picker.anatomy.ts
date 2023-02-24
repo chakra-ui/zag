@@ -5,7 +5,6 @@ export const anatomy = createAnatomy("date-picker").parts(
   "label",
   "trigger",
   "field",
-  "group",
   "cell",
   "cellTrigger",
   "nextTrigger",

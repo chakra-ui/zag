@@ -1,8 +1,6 @@
-import { DateFormatter } from "@internationalized/date"
 import { createMachine } from "@zag-js/core"
 import {
   alignDate,
-  createPlaceholderDate,
   formatSelectedDate,
   getAdjustedDateFn,
   getEndDate,
@@ -20,6 +18,7 @@ import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
+import { getFormatterFn } from "./date-formatter"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
@@ -28,15 +27,8 @@ function getInitialState(ctx: UserDefinedContext) {
   const timeZone = ctx.timeZone || "UTC"
   const numOfMonths = ctx.numOfMonths || 1
   const visibleDuration = { months: numOfMonths }
-
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
-  const placeholderValue = createPlaceholderDate("day", timeZone)
-
-  const getDateFormatter: MachineContext["getDateFormatter"] = (options) => {
-    return new DateFormatter(locale, options)
-  }
-
   return {
     id: "",
     view: "date",
@@ -45,10 +37,7 @@ function getInitialState(ctx: UserDefinedContext) {
     numOfMonths,
     focusedValue,
     startValue,
-    placeholderValue,
-    getDateFormatter,
     valueText: "",
-    dateFormatter: new DateFormatter(locale, { timeZone }),
   } as MachineContext
 }
 
@@ -64,7 +53,6 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !ctx.disabled && !ctx.readonly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
-        dayFormatter: memoize((ctx) => new DateFormatter(ctx.locale, { weekday: "short", timeZone: ctx.timeZone })),
         weeks: memoize((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
         isPrevVisibleRangeValid: (ctx) => {
@@ -78,26 +66,25 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupAnnouncer"],
 
       watch: {
-        focusedValue: ["focusFocusedCell"],
+        focusedValue: ["focusCell"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
-        locale: ["setFormatter"],
       },
 
       on: {
-        POINTER_DOWN: {
+        "GRID.POINTER_DOWN": {
           actions: ["disableTextSelection"],
         },
-        POINTER_UP: {
+        "GRID.POINTER_UP": {
           actions: ["enableTextSelection"],
         },
-        SET_VALUE: {
+        "VALUE.SET": {
           actions: ["setSelectedDate"],
         },
-        CLICK_PREV: {
+        "GOTO.NEXT": {
           actions: ["focusPreviousPage"],
         },
-        CLICK_NEXT: {
+        "GOTO.PREV": {
           actions: ["focusNextPage"],
         },
       },
@@ -110,46 +97,45 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           tags: "closed",
           on: {
-            CLICK_TRIGGER: {
+            "TRIGGER.CLICK": {
               target: "open",
               actions: ["setViewToDate", "focusSelectedDateIfNeeded"],
             },
-            INPUT: {},
+            "FIELD.TYPE": {},
           },
         },
 
         open: {
           tags: "open",
           on: {
-            FOCUS_CELL: {
+            "CELL.FOCUS": {
               actions: ["setFocusedDate"],
             },
-            ENTER: {
+            "KEY.ENTER": {
               actions: ["selectFocusedDate"],
             },
-            CLICK_CELL: {
+            "CELL.CLICK": {
               actions: ["setFocusedDate", "setSelectedDate"],
             },
-            ARROW_RIGHT: {
+            "GRID.ARROW_RIGHT": {
               actions: ["focusNextDay"],
             },
-            ARROW_LEFT: {
+            "GRID.ARROW_LEFT": {
               actions: ["focusPreviousDay"],
             },
-            ARROW_UP: {
+            "GRID.ARROW_UP": {
               actions: ["focusPreviousWeek"],
             },
-            ARROW_DOWN: {
+            "GRID.ARROW_DOWN": {
               actions: ["focusNextWeek"],
             },
-            PAGE_UP: {
+            "GRID.PAGE_UP": {
               actions: ["focusPreviousSection"],
             },
-            PAGE_DOWN: {
+            "GRID.PAGE_DOWN": {
               actions: ["focusNextSection"],
             },
-
-            CLICK_TRIGGER: {
+            "TRIGGER.CLICK": {
               target: "focused",
             },
           },
@@ -168,12 +154,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        setFormatter(ctx) {
-          ctx.getDateFormatter = (options) => new DateFormatter(ctx.locale, options)
-        },
         setValueText(ctx) {
           if (!ctx.value) return
-          ctx.valueText = formatSelectedDate(ctx.value, null, ctx.getDateFormatter, false, ctx.timeZone)
+          ctx.valueText = formatSelectedDate(ctx.value, null, getFormatterFn(ctx.locale), false, ctx.timeZone)
         },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueText, 3000)
@@ -200,7 +183,7 @@ export function machine(userContext: UserDefinedContext) {
         selectFocusedDate(ctx) {
           ctx.value = ctx.focusedValue.copy()
         },
-        focusFocusedCell(ctx) {
+        focusCell(ctx) {
           raf(() => {
             const cell = dom.getFocusedCell(ctx)
             cell?.focus({ preventScroll: true })

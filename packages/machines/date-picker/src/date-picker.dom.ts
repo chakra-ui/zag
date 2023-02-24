@@ -12,7 +12,7 @@ export const dom = createScope({
   getTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:trigger`,
   getFieldId: (ctx: Ctx) => `datepicker:${ctx.id}:field`,
   getGroupId: (ctx: Ctx) => `datepicker:${ctx.id}:group`,
-
+  getClearTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:clear-trigger`,
   getGridEl: (ctx: Ctx) => dom.getById(ctx, dom.getGridId(ctx)),
   getFocusedCell: (ctx: Ctx) => {
     const grid = dom.getGridEl(ctx)

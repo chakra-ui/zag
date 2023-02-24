@@ -23,7 +23,10 @@ export default function Page() {
             <div>Selected: {api.valueAsString ?? "-"}</div>
             <div>Focused: {api.focusedValueAsString}</div>
           </output>
-          <button {...api.triggerProps}>🗓</button>
+          <div data-scope="date-picker" data-part="control">
+            <input {...api.fieldProps} />
+            <button {...api.triggerProps}>🗓</button>
+          </div>
           <div>
             <button {...api.prevTriggerProps}>Prev</button>
             <button {...api.nextTriggerProps}>Next</button>
