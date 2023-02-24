@@ -30,6 +30,7 @@ export default function Page() {
           <div>
             <button {...api.prevTriggerProps}>Prev</button>
             <button {...api.nextTriggerProps}>Next</button>
+            <button {...api.clearTriggerProps}>❌</button>
           </div>
 
           <select

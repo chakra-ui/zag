@@ -12,7 +12,7 @@ type PublicContext = DirectionProperty &
     readonly?: boolean
     min?: CalendarDate
     max?: CalendarDate
-    value?: CalendarDate
+    value: CalendarDate | null
     focusedValue: CalendarDate
     numOfMonths?: number
     firstDayOfWeek?: number

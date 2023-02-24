@@ -1,14 +1,14 @@
 import { DateFormatter } from "@internationalized/date"
 
-const formatterCache = new Map<string, DateFormatter>()
+const cache = new Map<string, DateFormatter>()
 
 export const getFormatter = (locale: string, options: Intl.DateTimeFormatOptions) => {
   const key = `${locale}-${JSON.stringify(options)}`
-  if (!formatterCache.has(key)) {
+  if (!cache.has(key)) {
     const formatter = new DateFormatter(locale, options)
-    formatterCache.set(key, formatter)
+    cache.set(key, formatter)
   }
-  return formatterCache.get(key)!
+  return cache.get(key)!
 }
 
 export const getFormatterFn = (locale: string) => (options: Intl.DateTimeFormatOptions) => getFormatter(locale, options)

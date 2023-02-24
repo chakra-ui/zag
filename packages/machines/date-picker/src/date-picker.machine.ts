@@ -37,7 +37,7 @@ function getInitialState(ctx: UserDefinedContext) {
     numOfMonths,
     focusedValue,
     startValue,
-    value: focusedValue,
+    value: null,
     valueText: "",
   } as MachineContext
 }
@@ -77,6 +77,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         "VALUE.SET": {
           actions: ["setSelectedDate", "setFocusedDate"],
+        },
+        "VALUE.CLEAR": {
+          actions: ["clearSelectedDate", "clearFocusedDate"],
         },
         "GOTO.NEXT": {
           actions: ["focusPreviousPage"],
@@ -244,6 +247,12 @@ export function machine(userContext: UserDefinedContext) {
 
           if (!section) return
           ctx.focusedValue = section.focusedDate
+        },
+        clearSelectedDate(ctx) {
+          ctx.value = null
+        },
+        clearFocusedDate(ctx) {
+          ctx.focusedValue = getTodayDate(ctx.timeZone)
         },
       },
       compareFns: {

@@ -80,16 +80,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to set the selected month.
      */
     setMonth(month: number) {
-      if (!selectedDate) return
-      const date = setMonth(selectedDate, month)
+      const date = setMonth(selectedDate ?? getTodayDate(timeZone), month)
       send({ type: "VALUE.SET", date })
     },
     /**
      * Function to set the selected year.
      */
     setYear(year: number) {
-      if (!selectedDate) return
-      const date = setYear(selectedDate, year)
+      const date = setYear(selectedDate ?? getTodayDate(timeZone), year)
       send({ type: "VALUE.SET", date })
     },
     /**
@@ -235,7 +233,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       type: "button",
-      hidden: true,
+      hidden: state.context.value == null,
       onClick() {
         send("VALUE.CLEAR")
       },

@@ -24,6 +24,9 @@ const fetchMachine = createMachine({
     "VALUE.SET": {
       actions: ["setSelectedDate", "setFocusedDate"]
     },
+    "VALUE.CLEAR": {
+      actions: ["clearSelectedDate", "clearFocusedDate"]
+    },
     "GOTO.NEXT": {
       actions: ["focusPreviousPage"]
     },
