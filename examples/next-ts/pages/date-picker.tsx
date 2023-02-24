@@ -24,13 +24,26 @@ export default function Page() {
             <div>Focused: {api.focusedValueAsString}</div>
           </output>
           <div data-scope="date-picker" data-part="control">
-            <input {...api.fieldProps} />
+            <input {...api.inputProps} />
             <button {...api.triggerProps}>🗓</button>
           </div>
           <div>
             <button {...api.prevTriggerProps}>Prev</button>
             <button {...api.nextTriggerProps}>Next</button>
           </div>
+
+          <select
+            onChange={(e) => {
+              api.setMonth(parseInt(e.target.value))
+            }}
+          >
+            {api.months.map((month, i) => (
+              <option key={i} value={i + 1}>
+                {month}
+              </option>
+            ))}
+          </select>
+
           <table {...api.gridProps}>
             <thead>
               <tr>
@@ -50,7 +63,7 @@ export default function Page() {
                 </tr>
               ))}
             </tbody>
-          </table>{" "}
+          </table>
         </div>
       </main>
 

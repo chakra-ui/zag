@@ -13,7 +13,7 @@ const fetchMachine = createMachine({
   id: "datepicker",
   initial: "focused",
   context: {},
-  activities: ["setupAnnouncer"],
+  activities: ["setupLiveRegion"],
   on: {
     "GRID.POINTER_DOWN": {
       actions: ["disableTextSelection"]
@@ -22,7 +22,7 @@ const fetchMachine = createMachine({
       actions: ["enableTextSelection"]
     },
     "VALUE.SET": {
-      actions: ["setSelectedDate"]
+      actions: ["setSelectedDate", "setFocusedDate"]
     },
     "GOTO.NEXT": {
       actions: ["focusPreviousPage"]
@@ -56,7 +56,7 @@ const fetchMachine = createMachine({
         "CELL.FOCUS": {
           actions: ["setFocusedDate"]
         },
-        "KEY.ENTER": {
+        "GRID.ENTER": {
           actions: ["selectFocusedDate"]
         },
         "CELL.CLICK": {

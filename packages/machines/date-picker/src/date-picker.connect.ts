@@ -1,4 +1,5 @@
 import {
+  getMonthNames,
   getTodayDate,
   getWeekDates,
   isDateDisabled,
@@ -33,6 +34,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const timeZone = state.context.timeZone
 
   const api = {
+    /**
+     * The month names in the year. Represented as an array of strings.
+     */
+    months: getMonthNames(locale),
     /**
      * The weeks of the month. Represented as an array of arrays of dates.
      */
@@ -212,7 +217,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("GOTO.NEXT")
       },
       "aria-label": "TODO",
-      disabled: state.context.isNextVisibleRangeValid,
+      disabled: !state.context.isNextVisibleRangeValid,
     }),
 
     prevTriggerProps: normalize.button({
@@ -223,7 +228,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("GOTO.PREV")
       },
       "aria-label": "TODO",
-      disabled: state.context.isPrevVisibleRangeValid,
+      disabled: !state.context.isPrevVisibleRangeValid,
     }),
 
     clearTriggerProps: normalize.button({
@@ -245,14 +250,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    fieldProps: normalize.input({
+    inputProps: normalize.input({
       ...parts.field.attrs,
-      id: dom.getFieldId(state.context),
+      id: dom.getInputId(state.context),
       autoComplete: "off",
       autoCorrect: "off",
       spellCheck: "false",
       onChange(event) {
-        send({ type: "VALUE.RAW", value: event.target.value })
+        send({ type: "FIELD.TYPE", value: event.target.value })
       },
     }),
   }

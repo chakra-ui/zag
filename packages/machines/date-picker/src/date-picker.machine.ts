@@ -37,6 +37,7 @@ function getInitialState(ctx: UserDefinedContext) {
     numOfMonths,
     focusedValue,
     startValue,
+    value: focusedValue,
     valueText: "",
   } as MachineContext
 }
@@ -55,18 +56,14 @@ export function machine(userContext: UserDefinedContext) {
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
         weeks: memoize((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
-        isPrevVisibleRangeValid: (ctx) => {
-          return isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max)
-        },
-        isNextVisibleRangeValid(ctx) {
-          return isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max)
-        },
+        isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
+        isNextVisibleRangeValid: (ctx) => !isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max),
       },
 
-      activities: ["setupAnnouncer"],
+      activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["focusCell"],
+        focusedValue: ["focusCell", "adjustStartDate"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
       },
@@ -79,7 +76,7 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["enableTextSelection"],
         },
         "VALUE.SET": {
-          actions: ["setSelectedDate"],
+          actions: ["setSelectedDate", "setFocusedDate"],
         },
         "GOTO.NEXT": {
           actions: ["focusPreviousPage"],
@@ -111,7 +108,7 @@ export function machine(userContext: UserDefinedContext) {
             "CELL.FOCUS": {
               actions: ["setFocusedDate"],
             },
-            "KEY.ENTER": {
+            "GRID.ENTER": {
               actions: ["selectFocusedDate"],
             },
             "CELL.CLICK": {
@@ -145,7 +142,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {},
       activities: {
-        setupAnnouncer(ctx) {
+        setupLiveRegion(ctx) {
           ctx.announcer = createLiveRegion({
             level: "assertive",
             document: dom.getDoc(ctx),
@@ -183,6 +180,13 @@ export function machine(userContext: UserDefinedContext) {
         selectFocusedDate(ctx) {
           ctx.value = ctx.focusedValue.copy()
         },
+        adjustStartDate(ctx) {
+          const { startDate } = ctx.adjustFn({
+            focusedDate: ctx.focusedValue,
+            startDate: ctx.startValue,
+          })
+          ctx.startValue = startDate
+        },
         focusCell(ctx) {
           raf(() => {
             const cell = dom.getFocusedCell(ctx)
@@ -190,60 +194,28 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setPreviousDate(ctx) {
-          ctx.startValue = getPreviousDay(ctx.startValue)
           ctx.focusedValue = getPreviousDay(ctx.focusedValue)
         },
         setNextDate(ctx) {
-          ctx.startValue = getNextDay(ctx.startValue)
           ctx.focusedValue = getNextDay(ctx.focusedValue)
         },
         focusPreviousDay(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.subtract({ days: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.subtract({ days: 1 })
         },
         focusNextDay(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.add({ days: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.add({ days: 1 })
         },
         focusPreviousWeek(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.subtract({ weeks: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.subtract({ weeks: 1 })
         },
         focusNextWeek(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.add({ weeks: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.add({ weeks: 1 })
         },
         focusNextPage(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.add(ctx.visibleDuration),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.add(ctx.visibleDuration)
         },
         focusPreviousPage(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.subtract(ctx.visibleDuration),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.subtract(ctx.visibleDuration)
         },
         focusNextSection(ctx, evt) {
           const section = getNextSection(
@@ -257,9 +229,7 @@ export function machine(userContext: UserDefinedContext) {
           )
 
           if (!section) return
-
           ctx.focusedValue = section.focusedDate
-          ctx.startValue = section.startDate
         },
         focusPreviousSection(ctx, evt) {
           const section = getPreviousSection(
@@ -273,9 +243,7 @@ export function machine(userContext: UserDefinedContext) {
           )
 
           if (!section) return
-
           ctx.focusedValue = section.focusedDate
-          ctx.startValue = section.startDate
         },
       },
       compareFns: {
