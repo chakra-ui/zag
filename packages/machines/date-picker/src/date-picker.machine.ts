@@ -16,7 +16,7 @@ import {
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
-import { compact } from "@zag-js/utils"
+import { cast, compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { getFormatterFn } from "./date-formatter"
 import { dom } from "./date-picker.dom"
@@ -25,13 +25,16 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./date-pi
 function getInitialState(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
+
   const numOfMonths = ctx.numOfMonths || 1
   const visibleDuration = { months: numOfMonths }
+
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
-  return {
-    id: "",
-    view: "date",
+
+  return cast<MachineContext>({
+    id: "1",
+    view: "day",
     locale,
     timeZone,
     numOfMonths,
@@ -39,7 +42,7 @@ function getInitialState(ctx: UserDefinedContext) {
     startValue,
     value: null,
     valueText: "",
-  } as MachineContext
+  })
 }
 
 export function machine(userContext: UserDefinedContext) {
@@ -99,9 +102,9 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDate", "focusSelectedDateIfNeeded"],
+              actions: ["setViewToDate", "focusSelectedDate"],
             },
-            "FIELD.TYPE": {},
+            "INPUT.TYPE": {},
           },
         },
 
@@ -143,7 +146,9 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      guards: {},
+      guards: {
+        isDayView: (ctx) => ctx.view === "day",
+      },
       activities: {
         setupLiveRegion(ctx) {
           ctx.announcer = createLiveRegion({
@@ -170,7 +175,7 @@ export function machine(userContext: UserDefinedContext) {
         enableTextSelection(ctx) {
           restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
         },
-        focusSelectedDateIfNeeded(ctx) {
+        focusSelectedDate(ctx) {
           if (!ctx.value) return
           ctx.focusedValue = ctx.value
         },

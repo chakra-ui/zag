@@ -22,7 +22,7 @@ type PublicContext = DirectionProperty &
     isDateUnavailable?: (date: DateValue) => boolean
   }
 
-type DateView = "date" | "month" | "year"
+type DateView = "day" | "month" | "year"
 
 type PrivateContext = Context<{
   view: DateView

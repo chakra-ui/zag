@@ -48,9 +48,9 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["setViewToDate", "focusSelectedDateIfNeeded"]
+          actions: ["setViewToDate", "focusSelectedDate"]
         },
-        "FIELD.TYPE": {}
+        "INPUT.TYPE": {}
       }
     },
     open: {

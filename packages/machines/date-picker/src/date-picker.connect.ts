@@ -255,7 +255,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoCorrect: "off",
       spellCheck: "false",
       onChange(event) {
-        send({ type: "FIELD.TYPE", value: event.target.value })
+        send({ type: "INPUT.TYPE", value: event.target.value })
       },
     }),
   }
