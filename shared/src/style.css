@@ -1247,8 +1247,8 @@ main > .toggle[data-pressed] {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   border-radius: 4px;
   cursor: pointer;
 }

@@ -147,6 +147,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           PageDown(event) {
             send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey })
           },
+          HOME() {
+            send("GRID.HOME")
+          },
+          END() {
+            send("GRID.END")
+          },
         }
 
         const exec = keyMap[getEventKey(event, state.context)]
@@ -210,39 +216,41 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getMonthTriggerProps(props: { month: number }) {
-      const date = setMonth(focusedDate, props.month)
-      const cellState = api.getCellState({ date })
+      const { month } = props
+      const isFocused = focusedDate.month === month
       return normalize.element({
         ...parts.cellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, date.toString()),
-        "data-focused": dataAttr(cellState.isFocused),
+        id: dom.getCellTriggerId(state.context, month.toString()),
+        "data-focused": dataAttr(isFocused),
         role: "button",
-        tabIndex: cellState.isFocused ? 0 : -1,
-        onFocus() {
-          if (disabled) return
-          send({ type: "CELL.FOCUS", date })
-        },
-        onPointerUp() {
-          send({ type: "CELL.CLICK", date })
-        },
+        tabIndex: isFocused ? 0 : -1,
+        // onFocus() {
+        //   if (disabled) return
+        //   send({ type: "CELL.FOCUS", date })
+        // },
+        // onPointerUp() {
+        //   send({ type: "CELL.CLICK", date })
+        // },
       })
     },
 
     getYearTriggerProps(props: { year: number }) {
-      const date = setYear(focusedDate, props.year)
-      const cellState = api.getCellState({ date })
+      const { year } = props
+      const isFocused = focusedDate.year === year
       return normalize.element({
         ...parts.cellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, date.toString()),
+        id: dom.getCellTriggerId(state.context, year.toString()),
+        "data-focused": dataAttr(isFocused),
+        "data-value": year,
         role: "button",
-        tabIndex: cellState.isFocused ? 0 : -1,
-        onFocus() {
-          if (disabled) return
-          send({ type: "CELL.FOCUS", date })
-        },
-        onPointerUp() {
-          send({ type: "CELL.CLICK", date })
-        },
+        tabIndex: isFocused ? 0 : -1,
+        // onFocus() {
+        //   if (disabled) return
+        //   send({ type: "CELL.FOCUS", date })
+        // },
+        // onPointerUp() {
+        //   send({ type: "CELL.CLICK", date })
+        // },
       })
     },
 

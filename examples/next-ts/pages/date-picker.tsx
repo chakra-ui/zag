@@ -1,5 +1,5 @@
 import * as datePicker from "@zag-js/date-picker"
-import { getYearsRange } from "@zag-js/date-utils"
+import { getDecadeRange, getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { datePickerControls } from "@zag-js/shared"
 import { chunk } from "@zag-js/utils"
@@ -82,19 +82,35 @@ export default function Page() {
             </tbody>
           </table>
 
-          <table>
-            <tbody>
-              {chunk(api.months, 4).map((months, rowIndex) => (
-                <tr key={rowIndex}>
-                  {months.map((month, monthIndex) => (
-                    <td key={monthIndex} {...api.getMonthTriggerProps({ month: rowIndex * 4 + monthIndex + 1 })}>
-                      {month}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ display: "flex", gap: "40px" }}>
+            <table>
+              <tbody>
+                {chunk(api.months, 4).map((months, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {months.map((month, monthIndex) => (
+                      <td key={monthIndex} {...api.getMonthTriggerProps({ month: rowIndex * 4 + monthIndex + 1 })}>
+                        {month}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <table>
+              <tbody>
+                {chunk(getDecadeRange(api.focusedValue.year), 4).map((years, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {years.map((year, index) => (
+                      <td key={index} {...api.getYearTriggerProps({ year })}>
+                        {year}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </main>
 
