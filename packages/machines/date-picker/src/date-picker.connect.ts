@@ -178,14 +178,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getCellTriggerProps(props: CellProps) {
+      const { date } = props
       const cellState = api.getCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, props.date.toString()),
+        id: dom.getCellTriggerId(state.context, date.toString()),
         role: "button",
         tabIndex: cellState.isFocused ? 0 : -1,
         "aria-disabled": !cellState.isSelectable,
-        "aria-label": "TODO",
+        "aria-label": date.toString(),
+        "data-value": date.toString(),
         "aria-invalid": ariaAttr(cellState.isInvalid),
         "data-today": dataAttr(cellState.isToday),
         "data-selected": dataAttr(cellState.isSelected),
@@ -203,6 +205,43 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerUp() {
           send({ type: "CELL.CLICK", date: props.date })
+        },
+      })
+    },
+
+    getMonthTriggerProps(props: { month: number }) {
+      const date = setMonth(focusedDate, props.month)
+      const cellState = api.getCellState({ date })
+      return normalize.element({
+        ...parts.cellTrigger.attrs,
+        id: dom.getCellTriggerId(state.context, date.toString()),
+        "data-focused": dataAttr(cellState.isFocused),
+        role: "button",
+        tabIndex: cellState.isFocused ? 0 : -1,
+        onFocus() {
+          if (disabled) return
+          send({ type: "CELL.FOCUS", date })
+        },
+        onPointerUp() {
+          send({ type: "CELL.CLICK", date })
+        },
+      })
+    },
+
+    getYearTriggerProps(props: { year: number }) {
+      const date = setYear(focusedDate, props.year)
+      const cellState = api.getCellState({ date })
+      return normalize.element({
+        ...parts.cellTrigger.attrs,
+        id: dom.getCellTriggerId(state.context, date.toString()),
+        role: "button",
+        tabIndex: cellState.isFocused ? 0 : -1,
+        onFocus() {
+          if (disabled) return
+          send({ type: "CELL.FOCUS", date })
+        },
+        onPointerUp() {
+          send({ type: "CELL.CLICK", date })
         },
       })
     },
@@ -254,8 +293,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoComplete: "off",
       autoCorrect: "off",
       spellCheck: "false",
-      onChange(event) {
-        send({ type: "INPUT.TYPE", value: event.target.value })
+      onBlur(event) {
+        send({ type: "INPUT.BLUR", value: event.target.value })
+      },
+      onKeyDown(event) {
+        if (event.key === "Enter") {
+          send("INPUT.ENTER")
+        }
       },
     }),
   }

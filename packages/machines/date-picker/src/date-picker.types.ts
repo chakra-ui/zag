@@ -16,6 +16,7 @@ type PublicContext = DirectionProperty &
     focusedValue: CalendarDate
     numOfMonths?: number
     firstDayOfWeek?: number
+    isSelectingRange?: boolean
     onChange?: (details: { value: CalendarDate }) => void
     onFocusChange?: (details: { value: CalendarDate }) => void
     onViewChange?: (details: { value: DateView }) => void
@@ -59,5 +60,5 @@ export type CellProps = {
 
 export type MachineState = {
   tags: "open" | "closed"
-  value: "idle" | "focused" | "focused:spinning" | "open"
+  value: "idle" | "focused" | "open"
 }

@@ -1,6 +1,8 @@
 import * as datePicker from "@zag-js/date-picker"
+import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { datePickerControls } from "@zag-js/shared"
+import { chunk } from "@zag-js/utils"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -34,6 +36,7 @@ export default function Page() {
           </div>
 
           <select
+            defaultValue={api.focusedValue.month}
             onChange={(e) => {
               api.setMonth(parseInt(e.target.value))
             }}
@@ -41,6 +44,19 @@ export default function Page() {
             {api.months.map((month, i) => (
               <option key={i} value={i + 1}>
                 {month}
+              </option>
+            ))}
+          </select>
+
+          <select
+            defaultValue={api.focusedValue.year}
+            onChange={(e) => {
+              api.setYear(parseInt(e.target.value))
+            }}
+          >
+            {getYearsRange({ from: 2000, to: 2030 }).map((year, i) => (
+              <option key={i} value={year}>
+                {year}
               </option>
             ))}
           </select>
@@ -56,11 +72,25 @@ export default function Page() {
             <tbody>
               {api.weeks.map((week, i) => (
                 <tr key={i}>
-                  {week.map((date, i) => {
-                    return (
-                      <td key={i}>{date ? <span {...api.getCellTriggerProps({ date })}>{date.day}</span> : null}</td>
-                    )
-                  })}
+                  {week.map((date, i) => (
+                    <td key={i} {...api.getCellProps({ date })}>
+                      {date ? <span {...api.getCellTriggerProps({ date })}>{date.day}</span> : null}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <table>
+            <tbody>
+              {chunk(api.months, 4).map((months, rowIndex) => (
+                <tr key={rowIndex}>
+                  {months.map((month, monthIndex) => (
+                    <td key={monthIndex} {...api.getMonthTriggerProps({ month: rowIndex * 4 + monthIndex + 1 })}>
+                      {month}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
