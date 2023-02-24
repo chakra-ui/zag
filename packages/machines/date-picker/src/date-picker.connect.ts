@@ -1,6 +1,4 @@
 import {
-  DateSegmentDetails,
-  getSegments,
   getTodayDate,
   getWeekDates,
   isDateDisabled,
@@ -12,7 +10,7 @@ import {
   setMonth,
   setYear,
 } from "@zag-js/date-utils"
-import { EventKeyMap, getEventKey, isModifiedEvent } from "@zag-js/dom-event"
+import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-picker.anatomy"
@@ -48,15 +46,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * The human readable text for the visible range of dates.
      */
     visibleRangeText: "TODO",
-    /**
-     * The current date segment details.
-     */
-    segments: getSegments(
-      state.context.displayValue,
-      state.context.validSegments,
-      state.context.getDateFormatter({ day: "2-digit", month: "2-digit", year: "numeric", timeZone }),
-      timeZone,
-    ),
     /**
      * The selected date.
      */
@@ -122,12 +111,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "TODO",
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
-    }),
-
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      id: dom.getControlId(state.context),
-      "data-focus": dataAttr(!!state.context.focusedSegment),
     }),
 
     gridProps: normalize.element({
@@ -278,72 +261,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
     }),
-
-    getSegmentProps(props: DateSegmentDetails) {
-      if (props.type === "literal") {
-        return {
-          "data-scope": "date-picker",
-          "data-literal": "",
-          id: dom.getSegmentId(state.context, props.type),
-          "aria-hidden": true,
-        }
-      }
-
-      const isEditable = state.context.isInteractive && props.isEditable
-      return normalize.element({
-        ...parts.segment.attrs,
-        id: dom.getSegmentId(state.context, props.type),
-        role: "spinbutton",
-        "aria-valuemax": props.max,
-        "aria-valuemin": props.min,
-        "aria-valuenow": props.value,
-        "aria-valuetext": "TODO",
-        ["enterKeyHint" as any]: isEditable ? "next" : undefined,
-        "aria-readonly": state.context.readonly || !props.isEditable ? "true" : undefined,
-        "data-placeholder": dataAttr(props.isPlaceholder),
-        "data-editable": dataAttr(isEditable),
-        contentEditable: isEditable,
-        suppressContentEditableWarning: isEditable,
-        spellCheck: isEditable ? "false" : undefined,
-        autoCapitalize: isEditable ? "off" : undefined,
-        autoCorrect: isEditable ? "off" : undefined,
-        inputMode:
-          disabled || props.type === "dayPeriod" || props.type === "era" || !isEditable ? undefined : "numeric",
-        tabIndex: disabled ? undefined : 0,
-        style: {
-          "--min-width": props.max != null ? String(props.max).length + "ch" : undefined,
-          caretColor: "transparent",
-          fontVariantNumeric: "tabular-nums",
-        },
-        onFocus() {
-          send({ type: "FOCUS_SEGMENT", segment: props.type })
-        },
-        onKeyDown(event) {
-          if (isModifiedEvent(event) || readonly) return
-
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send("ARROW_UP")
-            },
-            ArrowDown() {
-              send("ARROW_DOWN")
-            },
-            PageUp() {},
-            PageDown() {},
-            Home() {},
-            End() {},
-          }
-
-          const exec = keyMap[getEventKey(event, state.context)]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-            event.stopPropagation()
-          }
-        },
-      })
-    },
   }
 
   return api

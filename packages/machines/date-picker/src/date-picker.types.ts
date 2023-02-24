@@ -1,6 +1,6 @@
 import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
-import type { DateSegment, DateAdjustFn } from "@zag-js/date-utils"
+import type { DateAdjustFn } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
@@ -30,9 +30,6 @@ type PrivateContext = Context<{
   startValue: CalendarDate
   hasFocus?: boolean
   announcer?: LiveRegion
-  focusedSegment: DateSegment | null
-  allSegments: Partial<Record<DateSegment, boolean>>
-  validSegments: Partial<Record<DateSegment, boolean>>
   getDateFormatter: (options: Intl.DateTimeFormatOptions) => DateFormatter
   dateFormatter: DateFormatter
   valueText: string

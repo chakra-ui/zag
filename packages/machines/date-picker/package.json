@@ -45,7 +45,6 @@
     "@zag-js/text-selection": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@internationalized/date": "^3.0.2",
-    "@internationalized/number": "^3.1.2",
     "@zag-js/date-utils": "workspace:*",
     "proxy-memoize": "2.0.2",
     "@zag-js/dom-query": "workspace:*",

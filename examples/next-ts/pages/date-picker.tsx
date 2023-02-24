@@ -23,20 +23,8 @@ export default function Page() {
             <div>Selected: {api.valueAsString ?? "-"}</div>
             <div>Focused: {api.focusedValueAsString}</div>
           </output>
-          <div {...api.groupProps} style={{ display: "inline-flex" }}>
-            <div {...api.fieldProps} style={{ display: "inline-flex", border: "1px solid gray", padding: "2px" }}>
-              {api.segments.map((segment, i) => (
-                <div key={i} {...api.getSegmentProps(segment)}>
-                  <span hidden={!segment.isPlaceholder} style={{ pointerEvents: "none" }}>
-                    {segment.placeholder}
-                  </span>
-                  {segment.isPlaceholder ? "" : segment.text}
-                </div>
-              ))}
-            </div>
-            <button {...api.triggerProps}>🗓</button>
-          </div>
-          <div {...api.controlProps}>
+          <button {...api.triggerProps}>🗓</button>
+          <div>
             <button {...api.prevTriggerProps}>Prev</button>
             <button {...api.nextTriggerProps}>Next</button>
           </div>

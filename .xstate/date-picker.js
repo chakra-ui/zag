@@ -37,25 +37,11 @@ const fetchMachine = createMachine({
     focused: {
       tags: "closed",
       on: {
-        FOCUS_SEGMENT: {
-          actions: ["setFocusedSegment"]
-        },
-        ARROW_UP: {
-          actions: ["incrementFocusedSegment"]
-        },
-        ARROW_DOWN: {
-          actions: ["decrementFocusedSegment"]
-        },
-        ARROW_RIGHT: {
-          actions: ["focusNextSegment"]
-        },
-        ARROW_LEFT: {
-          actions: ["focusPreviousSegment"]
-        },
         CLICK_TRIGGER: {
           target: "open",
           actions: ["setViewToDate", "focusSelectedDateIfNeeded"]
-        }
+        },
+        INPUT: {}
       }
     },
     open: {

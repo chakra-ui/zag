@@ -1,13 +1,10 @@
-import { DateFormatter, toCalendarDate } from "@internationalized/date"
+import { DateFormatter } from "@internationalized/date"
 import { createMachine } from "@zag-js/core"
 import {
-  addSegment,
   alignDate,
   createPlaceholderDate,
-  DateSegmentPart,
   formatSelectedDate,
   getAdjustedDateFn,
-  getAllSegments,
   getEndDate,
   getMonthDates,
   getNextDay,
@@ -40,9 +37,6 @@ function getInitialState(ctx: UserDefinedContext) {
     return new DateFormatter(locale, options)
   }
 
-  const formatter = getDateFormatter({ timeZone })
-  const allSegments = getAllSegments(formatter.formatToParts(new Date()))
-
   return {
     id: "",
     view: "date",
@@ -53,10 +47,7 @@ function getInitialState(ctx: UserDefinedContext) {
     startValue,
     placeholderValue,
     getDateFormatter,
-    allSegments,
     valueText: "",
-    validSegments: { ...allSegments },
-    focusedSegment: null,
     dateFormatter: new DateFormatter(locale, { timeZone }),
   } as MachineContext
 }
@@ -76,15 +67,6 @@ export function machine(userContext: UserDefinedContext) {
         dayFormatter: memoize((ctx) => new DateFormatter(ctx.locale, { weekday: "short", timeZone: ctx.timeZone })),
         weeks: memoize((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
-        validSegmentDetails(ctx) {
-          const keys = Object.keys(ctx.validSegments)
-          const allKeys = Object.keys(ctx.allSegments)
-          return {
-            keys,
-            exceeds: keys.length >= allKeys.length,
-            complete: keys.length === allKeys.length,
-          }
-        },
         isPrevVisibleRangeValid: (ctx) => {
           return isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max)
         },
@@ -93,14 +75,12 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      created: ["adjustSegments"],
-
       activities: ["setupAnnouncer"],
 
       watch: {
         focusedValue: ["focusFocusedCell"],
         visibleRange: ["announceVisibleRange"],
-        value: ["adjustSegments", "setValueText", "announceValueText"],
+        value: ["setValueText", "announceValueText"],
         locale: ["setFormatter"],
         "*": ["setDisplayValue"],
       },
@@ -125,25 +105,11 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           tags: "closed",
           on: {
-            FOCUS_SEGMENT: {
-              actions: ["setFocusedSegment"],
-            },
-            ARROW_UP: {
-              actions: ["incrementFocusedSegment"],
-            },
-            ARROW_DOWN: {
-              actions: ["decrementFocusedSegment"],
-            },
-            ARROW_RIGHT: {
-              actions: ["focusNextSegment"],
-            },
-            ARROW_LEFT: {
-              actions: ["focusPreviousSegment"],
-            },
             CLICK_TRIGGER: {
               target: "open",
               actions: ["setViewToDate", "focusSelectedDateIfNeeded"],
             },
+            INPUT: {},
           },
         },
 
@@ -328,50 +294,6 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = section.focusedDate
           ctx.startValue = section.startDate
         },
-        adjustSegments(ctx) {
-          if (!ctx.value && ctx.validSegmentDetails.complete) {
-            ctx.validSegments = {}
-            return
-          }
-
-          if (ctx.value && !ctx.validSegmentDetails.complete) {
-            ctx.validSegments = { ...ctx.allSegments }
-            return
-          }
-        },
-        setDisplayValue(ctx) {
-          ctx.displayValue =
-            ctx.value && Object.keys(ctx.validSegments).length >= Object.keys(ctx.allSegments).length
-              ? ctx.value
-              : ctx.placeholderValue
-        },
-        adjustPlaceholder(ctx) {
-          if (ctx.value && !ctx.validSegmentDetails.complete) {
-            ctx.placeholderValue = createPlaceholderDate("day", ctx.timeZone)
-          }
-        },
-        setFocusedSegment(ctx, evt) {
-          ctx.focusedSegment = evt.segment
-        },
-        focusNextSegment(ctx) {
-          dom.focusNextSegment(ctx)
-        },
-        focusPreviousSegment(ctx) {
-          dom.focusPrevSegment(ctx)
-        },
-        incrementFocusedSegment(ctx) {
-          if (!ctx.focusedSegment) return
-          const segment = incrementSegment(ctx, ctx.focusedSegment)
-          if (!segment) return
-          const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
-          ctx[key] = toCalendarDate(segment)
-        },
-        decrementFocusedSegment(ctx) {
-          if (!ctx.focusedSegment) return
-          const segment = decrementSegment(ctx, ctx.focusedSegment)
-          const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
-          ctx[key] = toCalendarDate(segment)
-        },
       },
       compareFns: {
         startValue: (a, b) => a.toString() === b.toString(),
@@ -381,34 +303,3 @@ export function machine(userContext: UserDefinedContext) {
     },
   )
 }
-
-function markValidSegment(ctx: MachineContext, part: DateSegmentPart) {
-  ctx.validSegments[part] = true
-  if (part === "year" && ctx.allSegments.era) {
-    ctx.validSegments.era = true
-  }
-}
-
-function adjustSegment(ctx: MachineContext, part: DateSegmentPart, amount: number) {
-  if (!ctx.validSegments[part]) {
-    markValidSegment(ctx, part)
-  }
-  const dateFormatter = ctx.getDateFormatter({})
-  return addSegment(ctx.displayValue, part, amount, dateFormatter.resolvedOptions())
-}
-
-function incrementSegment(ctx: MachineContext, part: DateSegmentPart) {
-  return adjustSegment(ctx, part, 1)
-}
-
-function decrementSegment(ctx: MachineContext, part: DateSegmentPart) {
-  return adjustSegment(ctx, part, -1)
-}
-
-// function incrementSegmentPage(ctx: MachineContext, part: DateSegmentPart) {
-//   return adjustSegment(ctx, part, getSegmentPageStep(part))
-// }
-
-// function decrementSegmentPage(ctx: MachineContext, part: DateSegmentPart) {
-//   return adjustSegment(ctx, part, -getSegmentPageStep(part))
-// }

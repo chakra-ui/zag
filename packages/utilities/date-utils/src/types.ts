@@ -11,6 +11,4 @@ export type DateAdjustFn = (options: { startDate: CalendarDate; focusedDate: Cal
   focusedDate: CalendarDate
   endDate: CalendarDate
 }
-
-export type DateSegmentPart = Intl.DateTimeFormatPartTypes
 export type DateFormatOptions = Intl.ResolvedDateTimeFormatOptions
