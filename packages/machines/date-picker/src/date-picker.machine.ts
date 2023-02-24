@@ -82,7 +82,6 @@ export function machine(userContext: UserDefinedContext) {
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
         locale: ["setFormatter"],
-        "*": ["setDisplayValue"],
       },
 
       on: {
@@ -94,6 +93,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         SET_VALUE: {
           actions: ["setSelectedDate"],
+        },
+        CLICK_PREV: {
+          actions: ["focusPreviousPage"],
+        },
+        CLICK_NEXT: {
+          actions: ["focusNextPage"],
         },
       },
 
@@ -143,12 +148,7 @@ export function machine(userContext: UserDefinedContext) {
             PAGE_DOWN: {
               actions: ["focusNextSection"],
             },
-            CLICK_PREV: {
-              actions: ["focusPreviousPage"],
-            },
-            CLICK_NEXT: {
-              actions: ["focusNextPage"],
-            },
+
             CLICK_TRIGGER: {
               target: "focused",
             },

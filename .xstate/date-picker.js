@@ -23,6 +23,12 @@ const fetchMachine = createMachine({
     },
     SET_VALUE: {
       actions: ["setSelectedDate"]
+    },
+    CLICK_PREV: {
+      actions: ["focusPreviousPage"]
+    },
+    CLICK_NEXT: {
+      actions: ["focusNextPage"]
     }
   },
   on: {
@@ -73,12 +79,6 @@ const fetchMachine = createMachine({
         },
         PAGE_DOWN: {
           actions: ["focusNextSection"]
-        },
-        CLICK_PREV: {
-          actions: ["focusPreviousPage"]
-        },
-        CLICK_NEXT: {
-          actions: ["focusNextPage"]
         },
         CLICK_TRIGGER: {
           target: "focused"
