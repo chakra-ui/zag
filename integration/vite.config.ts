@@ -7,6 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    include: ["**/*.integration.ts"],
     transformMode: {
       web: [/.[tj]sx$/],
     },

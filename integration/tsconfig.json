@@ -10,7 +10,6 @@
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
     "declaration": true,
     "inlineSourceMap": true,
     "jsx": "preserve"
