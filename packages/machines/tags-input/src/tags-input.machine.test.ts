@@ -1,4 +1,4 @@
-import { UserDefinedContext } from "./tags-input.types"
+import type { UserDefinedContext } from "./tags-input.types"
 import { expect, describe, test, afterEach } from "vitest"
 import { machine } from "./tags-input.machine"
 import userEvent from "@testing-library/user-event"
