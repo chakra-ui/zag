@@ -1,13 +1,19 @@
 import { render } from "@testing-library/vue"
+import { machine, connect } from "@zag-js/tags-input"
+import type { UserDefinedContext } from "@zag-js/tags-input/src/tags-input.types"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent, computed, h } from "vue"
 
-export function setupTestVue(machine: any, connect: any) {
+export function setupVue(userContext: Partial<UserDefinedContext> = {}) {
+  const [state, send] = useMachine(
+    machine({
+      id: "foo",
+      ...userContext,
+    }),
+  )
+  const apiRef = computed(() => connect(state.value, send, normalizeProps))
   const testComponent = defineComponent({
     setup() {
-      const [state, send] = useMachine(machine)
-      const apiRef = computed(() => connect(state.value, send, normalizeProps))
-
       return () => {
         const api = apiRef.value
 
@@ -29,4 +35,9 @@ export function setupTestVue(machine: any, connect: any) {
     },
   })
   render(testComponent)
+
+  return {
+    getState: () => state.value,
+    send,
+  }
 }

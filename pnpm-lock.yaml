@@ -641,7 +641,7 @@ importers:
       jsdom: 21.1.0
       typescript: 4.9.5
       vite: 4.1.4
-      vitest: ^0.28.5
+      vitest: 0.28.5
       vue: 3.2.47
     dependencies:
       '@testing-library/dom': 9.0.0
