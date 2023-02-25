@@ -311,7 +311,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: isEmpty,
       onClick() {
         if (!isInteractive) return
-        send("CLEAR_ALL")
+        send("CLEAR_VALUE")
       },
     }),
   }
