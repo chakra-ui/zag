@@ -16,7 +16,7 @@ import {
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
-import { cast, compact } from "@zag-js/utils"
+import { compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { getFormatterFn } from "./date-formatter"
 import { dom } from "./date-picker.dom"
@@ -32,7 +32,7 @@ function getInitialState(ctx: UserDefinedContext) {
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
 
-  return cast<MachineContext>({
+  return {
     id: "1",
     view: "day",
     locale,
@@ -42,7 +42,8 @@ function getInitialState(ctx: UserDefinedContext) {
     startValue,
     value: null,
     valueText: "",
-  })
+    selectionMode: "single",
+  } as MachineContext
 }
 
 export function machine(userContext: UserDefinedContext) {

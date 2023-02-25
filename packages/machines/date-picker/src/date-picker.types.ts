@@ -15,12 +15,13 @@ type PublicContext = DirectionProperty &
     value: CalendarDate | null
     focusedValue: CalendarDate
     numOfMonths?: number
-    firstDayOfWeek?: number
+    startOfWeek?: number
     isSelectingRange?: boolean
     onChange?: (details: { value: CalendarDate }) => void
     onFocusChange?: (details: { value: CalendarDate }) => void
     onViewChange?: (details: { value: DateView }) => void
     isDateUnavailable?: (date: DateValue) => boolean
+    selectionMode: "single" | "multiple" | "range"
   }
 
 type DateView = "day" | "month" | "year"

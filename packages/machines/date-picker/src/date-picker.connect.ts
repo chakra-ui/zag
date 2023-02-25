@@ -111,8 +111,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     rootProps: normalize.element({
-      role: "group",
-      "aria-label": "TODO",
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
