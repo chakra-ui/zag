@@ -1,5 +1,13 @@
 # @zag-js/menu
 
+## 0.3.12
+
+### Patch Changes
+
+- [`b295d51f`](https://github.com/chakra-ui/zag/commit/b295d51f368a66488b391d1a4c31763415bde846) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression where menu option items could not be
+  checked/unchecked
+
 ## 0.3.11
 
 ### Patch Changes
