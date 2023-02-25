@@ -95,7 +95,7 @@ type PublicContext = DirectionProperty &
     /**
      * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
      */
-    onInvalid?: (details: { reason: ValidityState }) => void
+    onInvalid?(details: { reason: ValidityState }): void
     /**
      * Callback fired when a tag's value is updated
      */
@@ -106,10 +106,10 @@ type PublicContext = DirectionProperty &
      */
     validate?(details: { inputValue: string; values: string[] }): boolean
     /**
-     * Returns a boolean that determines whether an event is treated as an outside interaction.
+     * Callback fired when an outside interaction was triggered.
      * Useful for preventing blur on the tags input when composing it with other components (e.g. combobox).
      */
-    isInteractionOutside?(event: InteractOutsideEvent): boolean
+    onInteractOutside?(event: InteractOutsideEvent): void
     /**
      * The behavior of the tags input when the input is blurred
      * - `"add"`: add the input value as a new tag

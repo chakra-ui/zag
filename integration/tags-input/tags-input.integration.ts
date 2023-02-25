@@ -13,10 +13,12 @@ describe.each([["vue", setupVue]])("@zag-js/tags-input machine %s", (_, setupFra
     }
   }
 
-  test("isInteractionOutside can prevent loosing visual focus on click outside", async () => {
-    const isInteractionOutside = vi.fn(() => false)
+  test("onInteractOutside can prevent loosing visual focus on click outside", async () => {
+    const onInteractOutside = vi.fn((event: Event) => {
+      event.preventDefault()
+    })
     const { root, input } = setupTest({
-      isInteractionOutside,
+      onInteractOutside,
     })
     await click(input)
     expect(root).toHaveAttribute("data-focus")
@@ -24,7 +26,7 @@ describe.each([["vue", setupVue]])("@zag-js/tags-input machine %s", (_, setupFra
     await clickOutside()
     expect(root).toHaveAttribute("data-focus")
 
-    isInteractionOutside.mockImplementationOnce(() => true)
+    onInteractOutside.mockImplementationOnce(() => null)
     await clickOutside()
     expect(root).not.toHaveAttribute("data-focus")
   })
