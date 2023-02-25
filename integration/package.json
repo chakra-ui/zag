@@ -5,8 +5,10 @@
   },
   "dependencies": {
     "@testing-library/dom": "9.0.0",
+    "@testing-library/jest-dom": "5.16.5",
     "@testing-library/user-event": "14.4.3",
     "@testing-library/vue": "6.6.1",
+    "@types/testing-library__jest-dom": "5.14.5",
     "@vitejs/plugin-vue": "4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/compiler-sfc": "3.2.47",

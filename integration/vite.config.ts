@@ -11,5 +11,6 @@ export default defineConfig({
     transformMode: {
       web: [/.[tj]sx$/],
     },
+    setupFiles: ["./setup.ts"],
   },
 })
