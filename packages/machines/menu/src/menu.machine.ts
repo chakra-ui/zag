@@ -485,8 +485,8 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.highlightedId) return
           ctx.onSelect?.({ value: ctx.highlightedId })
         },
-        focusItem(ctx, event) {
-          ctx.highlightedId = event.id
+        focusItem(ctx, evt) {
+          ctx.highlightedId = evt.id
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
