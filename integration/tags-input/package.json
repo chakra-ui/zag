@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "4.0.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.0",
+    "@testing-library/vue": "6.6.1",
+    "typescript": "4.9.5",
+    "vitest": "^0.28.5",
+    "@testing-library/dom": "9.0.0",
+    "@testing-library/user-event": "14.4.3",
+    "jsdom": "21.1.0",
+    "@vue/compiler-sfc": "3.2.47",
+    "@zag-js/tags-input": "workspace:*",
+    "@zag-js/vue": "workspace:*",
+    "vite": "4.1.4",
+    "vue": "3.2.47"
+  },
+  "license": "MIT"
+}
