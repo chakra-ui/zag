@@ -1,5 +1,13 @@
 # @zag-js/dom-query
 
+## 0.1.4
+
+### Patch Changes
+
+- [#543](https://github.com/chakra-ui/zag/pull/543)
+  [`1446d88b`](https://github.com/chakra-ui/zag/commit/1446d88bff3848f2a2ec0a793ee83281cda966e8) Thanks
+  [@blukai](https://github.com/blukai)! - Fix issue with isTouchDevice usage
+
 ## 0.1.3
 
 ### Patch Changes

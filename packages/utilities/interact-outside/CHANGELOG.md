@@ -1,5 +1,17 @@
 # @zag-js/interact-outside
 
+## 0.2.4
+
+### Patch Changes
+
+- [#542](https://github.com/chakra-ui/zag/pull/542)
+  [`f55fc3a0`](https://github.com/chakra-ui/zag/commit/f55fc3a01ab7b95ac29caf41eaeac4033b00e1be) Thanks
+  [@LiamMartens](https://github.com/LiamMartens)! - Fixes app breaking error when cross origin frames are present on the
+  page
+
+- Updated dependencies [[`1446d88b`](https://github.com/chakra-ui/zag/commit/1446d88bff3848f2a2ec0a793ee83281cda966e8)]:
+  - @zag-js/dom-query@0.1.4
+
 ## 0.2.3
 
 ### Patch Changes
