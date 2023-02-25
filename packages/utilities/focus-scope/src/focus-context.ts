@@ -1,4 +1,5 @@
-import { getDocument, getTabbables, getWindow } from "@zag-js/dom-utils"
+import { getDocument, getWindow } from "@zag-js/dom-query"
+import { getTabbables } from "@zag-js/tabbable"
 import { createScope } from "./focus-stack"
 
 export function createFocusContext(node: HTMLElement) {

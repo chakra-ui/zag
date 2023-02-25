@@ -1,7 +1,8 @@
-import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { dom } from "./checkbox.dom"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./checkbox.anatomy"
+import { dom } from "./checkbox.dom"
 import type { Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
@@ -33,15 +34,40 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const view = state.context.indeterminate ? "mixed" : stateView
 
   return {
+    /**
+     * Whether the checkbox is checked
+     */
     isChecked,
+    /**
+     * Whether the checkbox is disabled
+     */
     isDisabled,
+
+    /**
+     * Whether the checkbox is indeterminate
+     */
     isIndeterminate,
+    /**
+     * Whether the checkbox is focused
+     */
     isFocused,
+    /**
+     * Whether the checkbox is readonly
+     */
     isReadOnly,
+    /**
+     * The current view of the checkbox (checked, unchecked, mixed)
+     */
     view,
+    /**
+     * Function to set the checked state of the checkbox
+     */
     setChecked(checked: boolean) {
       send({ type: "SET_STATE", checked, manual: true })
     },
+    /**
+     * Function to set the indeterminate state of the checkbox
+     */
     setIndeterminate(indeterminate: boolean) {
       send({ type: "SET_INDETERMINATE", value: indeterminate })
     },

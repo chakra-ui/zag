@@ -1,4 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, isSafari } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
@@ -9,12 +10,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.matches("focused")
 
   return {
+    /**
+     * The current value of the tabs.
+     */
     value: state.context.value,
+    /**
+     * The value of the tab that is currently focused.
+     */
     focusedValue: state.context.focusedValue,
+    /**
+     * The previous values of the tabs in sequence of selection.
+     */
     previousValues: Array.from(state.context.previousValues),
+    /**
+     * Sets the value of the tabs.
+     */
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
+    /**
+     * Clears the value of the tabs.
+     */
     clearValue() {
       send({ type: "CLEAR_VALUE" })
     },

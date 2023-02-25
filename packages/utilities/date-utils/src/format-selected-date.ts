@@ -1,7 +1,7 @@
 import { CalendarDate, isSameDay } from "@internationalized/date"
 import { formatRange } from "./format-range"
 import { getDateFormatter } from "./get-formatter"
-import { GetFormatterFn } from "./types"
+import type { GetFormatterFn } from "./types"
 
 export function formatSelectedDate(
   startDate: CalendarDate,

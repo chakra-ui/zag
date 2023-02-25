@@ -1,21 +1,20 @@
 import { mergeProps } from "@zag-js/core"
 import {
-  dataAttr,
   EventKeyMap,
   getEventKey,
-  getEventPoint,
   getNativeEvent,
   isContextMenuEvent,
-  isElementEditable,
   isLeftClick,
   isModifiedEvent,
-  isSelfEvent,
-} from "@zag-js/dom-utils"
+} from "@zag-js/dom-event"
+import { contains, dataAttr, isEditableElement } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
+
+const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target">) => contains(event.currentTarget, event.target)
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isSubmenu = state.context.isSubmenu
@@ -30,27 +29,57 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   const api = {
+    /**
+     * Whether the menu is open
+     */
     isOpen,
+    /**
+     * Function to open the menu
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the menu
+     */
     close() {
       send("CLOSE")
     },
+    /**
+     * The id of the currently highlighted menuitem
+     */
     highlightedId: state.context.highlightedId,
+    /**
+     * Function to set the highlighted menuitem
+     */
     setHighlightedId(id: string) {
       send({ type: "SET_HIGHLIGHTED_ID", id })
     },
+    /**
+     * Function to register a parent menu. This is used for submenus
+     */
     setParent(parent: Service) {
       send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
     },
+    /**
+     * Function to register a child menu. This is used for submenus
+     */
     setChild(child: Service) {
       send({ type: "SET_CHILD", value: child, id: child.state.context.id })
     },
+    /**
+     * The value of the menu options item
+     */
     value: values,
+    /**
+     * Function to set the value of the menu options item
+     */
     setValue(name: string, value: any) {
       send({ type: "SET_VALUE", name, value })
     },
+    /**
+     * Function to check if an option is checked
+     */
     isOptionChecked(opts: OptionItemProps) {
       return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
     },
@@ -61,7 +90,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         if (event.pointerType === "mouse") return
         const evt = getNativeEvent(event)
-        send({ type: "CONTEXT_MENU_START", point: getEventPoint(evt) })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "CONTEXT_MENU_START", point })
       },
       onPointerCancel(event) {
         if (event.pointerType === "mouse") return
@@ -77,7 +107,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onContextMenu(event) {
         const evt = getNativeEvent(event)
-        send({ type: "CONTEXT_MENU", point: getEventPoint(evt) })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "CONTEXT_MENU", point })
         event.preventDefault()
       },
       style: {
@@ -115,11 +146,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
-        send({
-          type: "TRIGGER_POINTERLEAVE",
-          target: event.currentTarget,
-          point: getEventPoint(evt),
-        })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, point })
       },
       onClick(event) {
         if (dom.isTriggerItem(event.currentTarget)) {
@@ -253,7 +281,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         } else {
           //
           const isSingleKey = event.key.length === 1
-          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isElementEditable(item)
+          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isEditableElement(item)
 
           if (!isValidTypeahead) return
 
@@ -282,7 +310,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
-          send({ type: "ITEM_CLICK", target: event.currentTarget, id })
+          send({ type: "ITEM_CLICK", src: "click", target: event.currentTarget, id })
         },
         onPointerDown(event) {
           if (disabled) return
@@ -290,8 +318,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || disabled || state.context.pointerdownNode === event.currentTarget) return
-          event.currentTarget.click()
+          if (!isLeftClick(evt) || disabled) return
+          send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, id })
         },
         onPointerLeave(event) {
           if (disabled || event.pointerType !== "mouse") return
@@ -308,7 +336,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onAuxClick(event) {
           if (disabled) return
           event.preventDefault()
-          event.currentTarget.click()
+          send({ type: "ITEM_CLICK", src: "auxclick", target: event.currentTarget, id })
         },
       })
     },

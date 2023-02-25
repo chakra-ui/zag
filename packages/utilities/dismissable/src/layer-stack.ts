@@ -1,4 +1,4 @@
-import { contains } from "@zag-js/dom-utils"
+import { contains } from "@zag-js/dom-query"
 
 export type Layer = {
   dismiss: VoidFunction

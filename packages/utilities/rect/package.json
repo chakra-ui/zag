@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/rect-utils",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "",
   "keywords": [
     "js",
@@ -22,8 +22,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

@@ -1,9 +1,9 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./popover.anatomy"
 import { dom } from "./popover.dom"
 import type { Send, State } from "./popover.types"
-import { parts } from "./popover.anatomy"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.matches("open")
@@ -18,11 +18,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the popover is portalled
+     */
     portalled,
+    /**
+     * Whether the popover is open
+     */
     isOpen,
+    /**
+     * Function to open the popover
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the popover
+     */
     close() {
       send("CLOSE")
     },

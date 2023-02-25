@@ -1,4 +1,3 @@
-import { hasProp } from "@zag-js/utils"
 import type { RectEdge, RectValue } from "./types"
 
 const point = (x: number, y: number) => ({ x, y })
@@ -23,6 +22,9 @@ export function createRect(r: RectValue) {
 }
 
 export type Rect = ReturnType<typeof createRect>
+
+const hasProp = <T extends string>(obj: any, prop: T): obj is Record<T, any> =>
+  Object.prototype.hasOwnProperty.call(obj, prop)
 
 export function isRect(v: any): v is Rect {
   return hasProp(v, "x") && hasProp(v, "y") && hasProp(v, "width") && hasProp(v, "height")

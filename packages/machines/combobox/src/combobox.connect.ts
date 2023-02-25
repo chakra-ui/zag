@@ -1,4 +1,5 @@
-import { dataAttr, EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -28,12 +29,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   const api = {
+    /**
+     * Whether the combobox is focused
+     */
     isFocused,
+    /**
+     * Whether the combobox content or listbox is open
+     */
     isOpen,
+    /**
+     * Whether the combobox input is empty
+     */
     isInputValueEmpty: state.context.isInputValueEmpty,
+    /**
+     * The current value of the combobox input
+     */
     inputValue: state.context.inputValue,
-    activeOption: state.context.activeOptionData,
+    /**
+     * The currently focused option (by pointer or keyboard)
+     */
+    focusedOption: state.context.focusedOptionData,
+    /**
+     * The currently selected option value
+     */
     selectedValue: state.context.selectionData?.value,
+    /**
+     * Function to set the combobox value
+     */
     setValue(value: string | OptionData) {
       let data: OptionData
       if (typeof value === "string") {
@@ -43,12 +65,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
       send({ type: "SET_VALUE", ...data })
     },
+    /**
+     * Function to set the combobox input value
+     */
     setInputValue(value: string) {
       send({ type: "SET_INPUT_VALUE", value })
     },
+    /**
+     * Function to clear the combobox input value and selected value
+     */
     clearValue() {
       send("CLEAR_VALUE")
     },
+    /**
+     * Function to focus the combobox input
+     */
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
@@ -97,7 +128,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
-      "aria-invalid": isInvalid,
+      "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
       form: state.context.form,
@@ -117,7 +148,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
-      "aria-activedescendant": state.context.activeId ?? undefined,
+      "aria-activedescendant": state.context.focusedId ?? undefined,
       onClick() {
         if (!isInteractive) return
         send("CLICK_INPUT")
@@ -236,7 +267,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOptionState(props: OptionProps) {
       const { value, index, disabled } = props
       const id = dom.getOptionId(state.context, value, index)
-      const focused = state.context.activeId === id
+      const focused = state.context.focusedId === id
       const checked = state.context.selectionData?.value === value
       return { disabled, focused, checked }
     },
@@ -266,18 +297,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (optionState.disabled) return
           send({ type: "POINTEROVER_OPTION", id, value, label })
         },
-        onPointerUp(event) {
+        onPointerUp() {
           if (optionState.disabled) return
-          event.currentTarget.click()
+          send({ type: "CLICK_OPTION", src: "pointerup", id, value, label })
         },
         onClick() {
           if (optionState.disabled) return
-          send({ type: "CLICK_OPTION", id, value, label })
+          send({ type: "CLICK_OPTION", src: "click", id, value, label })
         },
         onAuxClick(event) {
           if (optionState.disabled) return
           event.preventDefault()
-          event.currentTarget.click()
+          send({ type: "CLICK_OPTION", src: "auxclick", id, value, label })
         },
       })
     },

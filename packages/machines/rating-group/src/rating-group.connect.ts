@@ -1,15 +1,6 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getEventPoint,
-  getNativeEvent,
-  getPointRelativeToNode,
-  isLeftClick,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getNativeEvent, getRelativePointPercent, isLeftClick } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { cast } from "@zag-js/utils"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
 import type { Send, State } from "./rating-group.types"
@@ -21,11 +12,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
 
   const api = {
+    /**
+     * Whether the rating group is being hovered
+     */
     isHovering: state.context.isHovering,
+    /**
+     * The current value of the rating group
+     */
     value,
+    /**
+     * The value of the currently hovered rating
+     */
     hoveredValue: state.context.hoveredValue,
+    /**
+     * The maximum value of the rating group
+     */
     size: state.context.max,
+    /**
+     * The array of rating values. Returns an array of numbers from 1 to the max value.
+     */
     sizeArray: Array.from({ length: state.context.max }).map((_, index) => index + 1),
+    /**
+     * Returns the state of a rating item
+     */
     getRatingState(index: number) {
       const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
       const isEqual = Math.ceil(value) === index
@@ -112,11 +121,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerMove(event) {
           if (!isInteractive) return
-          const point = getEventPoint(cast(event))
+          const point = { x: event.clientX, y: event.clientY }
           const el = event.currentTarget
-          const relativePoint = getPointRelativeToNode(point, el)
-          const percentX = relativePoint.x / el.offsetWidth
-          const isMidway = percentX < 0.5
+          const percent = getRelativePointPercent(point, el)
+          const isMidway = percent.x < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {

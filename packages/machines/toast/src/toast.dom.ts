@@ -1,7 +1,7 @@
-import { defineDomHelpers } from "@zag-js/dom-utils"
+import { createScope } from "@zag-js/dom-query"
 import type { GroupMachineContext as GroupCtx, MachineContext as Ctx, Placement } from "./toast.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getGroupId: (placement: Placement) => `toast-group:${placement}`,
   getRootId: (ctx: Ctx) => `toast:${ctx.id}`,
   getTitleId: (ctx: Ctx) => `toast:${ctx.id}:title`,

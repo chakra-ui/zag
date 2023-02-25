@@ -1,5 +1,32 @@
 # @zag-js/menu
 
+## 0.3.10
+
+### Patch Changes
+
+- [#539](https://github.com/chakra-ui/zag/pull/539)
+  [`240b0340`](https://github.com/chakra-ui/zag/commit/240b0340ed87a2572552dc8de19470a5f1c46e35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where element triggers double click events due to the
+  internal `.click()` calls
+
+## 0.3.9
+
+### Patch Changes
+
+- [#536](https://github.com/chakra-ui/zag/pull/536)
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor all packages to have proper dependency structure and
+  bundle size.
+
+- Updated dependencies [[`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99),
+  [`5277f653`](https://github.com/chakra-ui/zag/commit/5277f65311c46e5792f605021d58b3b7e7dc3eaa)]:
+  - @zag-js/dismissable@0.2.3
+  - @zag-js/dom-event@0.0.1
+  - @zag-js/dom-query@0.1.3
+  - @zag-js/popper@0.2.4
+  - @zag-js/rect-utils@0.2.3
+  - @zag-js/core@0.2.10
+
 ## 0.3.8
 
 ### Patch Changes

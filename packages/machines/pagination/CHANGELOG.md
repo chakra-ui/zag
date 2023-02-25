@@ -1,5 +1,26 @@
 # @zag-js/pagination
 
+## 0.1.13
+
+### Patch Changes
+
+- [`135f365b`](https://github.com/chakra-ui/zag/commit/135f365b12ac1d59d6f85f31fdcb6a11c091a324) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `vitest` was bundled in `dist` due to incorrect
+  structure
+
+## 0.1.12
+
+### Patch Changes
+
+- [#536](https://github.com/chakra-ui/zag/pull/536)
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor all packages to have proper dependency structure and
+  bundle size.
+
+- Updated dependencies [[`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99)]:
+  - @zag-js/dom-query@0.1.3
+  - @zag-js/core@0.2.10
+
 ## 0.1.11
 
 ### Patch Changes

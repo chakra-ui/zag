@@ -2,12 +2,33 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { Context } from "@zag-js/types"
 
 type PublicContext = {
+  /**
+   * Whether the transition is mounted.
+   */
   mounted?: boolean
+  /**
+   * The duration of the transition.
+   */
   duration: number | { enter: number; exit: number }
+  /**
+   * Whether to listen to reduce motion preferences
+   */
   reduceMotion?: boolean
+  /**
+   * Function called when the transition enters.
+   */
   onEnter?: VoidFunction
+  /**
+   *  Function called when the transition exits.
+   */
   onExit?: VoidFunction
+  /**
+   * Function called when the transition has entered.
+   */
   onEntered?: VoidFunction
+  /**
+   * Function called when the transition has exited.
+   */
   onExited?: VoidFunction
 }
 

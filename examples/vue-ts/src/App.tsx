@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
 import { computed, defineComponent } from "vue"
 import { RouterLink, RouterView, useRouter } from "vue-router"

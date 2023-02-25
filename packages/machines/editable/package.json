@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/editable",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Core logic for the editable widget implemented as a state machine",
   "keywords": [
     "js",
@@ -29,12 +29,13 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/utils": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/utils": "workspace:*",
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

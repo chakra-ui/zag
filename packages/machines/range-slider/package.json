@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/range-slider",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Core logic for the range-slider widget implemented as a state machine",
   "keywords": [
     "js",
@@ -29,14 +29,15 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
     "@zag-js/element-size": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

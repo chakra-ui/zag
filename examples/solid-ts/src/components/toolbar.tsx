@@ -1,4 +1,4 @@
-import { dataAttr } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { createSignal, JSX } from "solid-js"
 
 type ToolbarProps = {

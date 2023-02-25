@@ -1,8 +1,9 @@
-import { ariaAttr, dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
-import { NormalizeProps, PropTypes } from "@zag-js/types"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
-import { InputProps, RadioProps, Send, State } from "./radio-group.types"
+import type { InputProps, RadioProps, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isGroupDisabled = state.context.disabled
@@ -49,20 +50,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    /**
+     * The current value of the radio group
+     */
     value: state.context.value,
+    /**
+     * Function to set the value of the radio group
+     */
     setValue(value: string) {
       send({ type: "SET_VALUE", value, manual: true })
     },
+    /**
+     * Function to clear the value of the radio group
+     */
     clearValue() {
       send({ type: "SET_VALUE", value: null, manual: true })
     },
+    /**
+     * Function to focus the radio group
+     */
     focus,
+    /**
+     * Function to blur the currently focused radio input in the radio group
+     */
     blur() {
       const focusedElement = dom.getActiveElement(state.context)
       const inputEls = dom.getInputEls(state.context)
       const radioInputIsFocused = inputEls.some((el) => el === focusedElement)
       if (radioInputIsFocused) focusedElement?.blur()
     },
+    /**
+     * Returns the state details of a radio input
+     */
+    getRadioState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,

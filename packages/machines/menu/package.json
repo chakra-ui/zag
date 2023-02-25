@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/menu",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "description": "Core logic for the menu widget implemented as a state machine",
   "keywords": [
     "js",
@@ -28,14 +28,15 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/rect-utils": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/rect-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "scripts": {

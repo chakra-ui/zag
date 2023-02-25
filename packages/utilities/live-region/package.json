@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/live-region",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Implementing live region for screen readers",
   "keywords": [
     "js",
@@ -26,8 +26,10 @@
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
+  "dependencies": {
+    "@zag-js/visually-hidden": "workspace:*"
+  },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "publishConfig": {

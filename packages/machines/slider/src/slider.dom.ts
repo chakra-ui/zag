@@ -1,10 +1,11 @@
-import { defineDomHelpers, getPointRelativeToNode } from "@zag-js/dom-utils"
+import { createScope } from "@zag-js/dom-query"
+import { getRelativePointValue } from "@zag-js/dom-event"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { getPercentValue } from "@zag-js/numeric-range"
 import { styles } from "./slider.style"
 import type { MachineContext as Ctx, Point } from "./slider.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   ...styles,
 
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
@@ -28,7 +29,7 @@ export const dom = defineDomHelpers({
     if (!el) return
 
     // get the position/progress % of the point relative to the root's width/height
-    const relativePoint = getPointRelativeToNode(point, el)
+    const relativePoint = getRelativePointValue(point, el)
     const percentX = relativePoint.x / el.offsetWidth
     const percentY = relativePoint.y / el.offsetHeight
 

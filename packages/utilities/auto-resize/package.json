@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/auto-resize",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Autoresize utilities for the web",
   "keywords": [
     "js",
@@ -32,8 +32,10 @@
   "bugs": {
     "url": "https://github.com/chakra-ui/zag/issues"
   },
+  "dependencies": {
+    "@zag-js/dom-query": "workspace:*"
+  },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json",

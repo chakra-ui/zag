@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dismissable",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Dismissable layer utilities for the DOM",
   "keywords": [
     "js",
@@ -34,11 +34,12 @@
     "access": "public"
   },
   "dependencies": {
-    "@zag-js/interact-outside": "workspace:*"
+    "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "bugs": {

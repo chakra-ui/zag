@@ -18,12 +18,13 @@ import {
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
 } from "@zag-js/date-utils"
-import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-utils"
+import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
+import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { dom } from "./date-picker.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
 function getInitialState(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
@@ -264,16 +265,36 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = focusedDate
         },
         focusPreviousWeek(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ weeks: 1 })
+          const { startDate, focusedDate } = ctx.adjustFn({
+            focusedDate: ctx.focusedValue.subtract({ weeks: 1 }),
+            startDate: ctx.startValue,
+          })
+          ctx.startValue = startDate
+          ctx.focusedValue = focusedDate
         },
         focusNextWeek(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ weeks: 1 })
+          const { startDate, focusedDate } = ctx.adjustFn({
+            focusedDate: ctx.focusedValue.add({ weeks: 1 }),
+            startDate: ctx.startValue,
+          })
+          ctx.startValue = startDate
+          ctx.focusedValue = focusedDate
         },
         focusNextPage(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add(ctx.visibleDuration)
+          const { startDate, focusedDate } = ctx.adjustFn({
+            focusedDate: ctx.focusedValue.add(ctx.visibleDuration),
+            startDate: ctx.startValue,
+          })
+          ctx.startValue = startDate
+          ctx.focusedValue = focusedDate
         },
         focusPreviousPage(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract(ctx.visibleDuration)
+          const { startDate, focusedDate } = ctx.adjustFn({
+            focusedDate: ctx.focusedValue.subtract(ctx.visibleDuration),
+            startDate: ctx.startValue,
+          })
+          ctx.startValue = startDate
+          ctx.focusedValue = focusedDate
         },
         focusNextSection(ctx, evt) {
           const section = getNextSection(
@@ -285,10 +306,11 @@ export function machine(userContext: UserDefinedContext) {
             ctx.min,
             ctx.max,
           )
-          if (section) {
-            ctx.focusedValue = section.focusedDate
-            ctx.startValue = section.startDate
-          }
+
+          if (!section) return
+
+          ctx.focusedValue = section.focusedDate
+          ctx.startValue = section.startDate
         },
         focusPreviousSection(ctx, evt) {
           const section = getPreviousSection(
@@ -301,10 +323,10 @@ export function machine(userContext: UserDefinedContext) {
             ctx.max,
           )
 
-          if (section) {
-            ctx.focusedValue = section.focusedDate
-            ctx.startValue = section.startDate
-          }
+          if (!section) return
+
+          ctx.focusedValue = section.focusedDate
+          ctx.startValue = section.startDate
         },
         adjustSegments(ctx) {
           if (!ctx.value && ctx.validSegmentDetails.complete) {

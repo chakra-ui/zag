@@ -1,5 +1,42 @@
 # @zag-js/combobox
 
+## 0.2.15
+
+### Patch Changes
+
+- [#539](https://github.com/chakra-ui/zag/pull/539)
+  [`240b0340`](https://github.com/chakra-ui/zag/commit/240b0340ed87a2572552dc8de19470a5f1c46e35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where element triggers double click events due to the
+  internal `.click()` calls
+
+## 0.2.14
+
+### Patch Changes
+
+- [#532](https://github.com/chakra-ui/zag/pull/532)
+  [`7bef71dd`](https://github.com/chakra-ui/zag/commit/7bef71ddaacf1997098b423dc7362477ebcee0a4) Thanks
+  [@visualjerk](https://github.com/visualjerk)! - Clear selected option on `clearValue`
+
+- [`8185b33e`](https://github.com/chakra-ui/zag/commit/8185b33e2183dd77c9daefe0c66f9c584642be49) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where combobox content doesn't open when the input is
+  clicked, `openOnClick` is `true` and `blurOnSelect` is `true`
+
+- [#536](https://github.com/chakra-ui/zag/pull/536)
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor all packages to have proper dependency structure and
+  bundle size.
+
+- Updated dependencies [[`58078617`](https://github.com/chakra-ui/zag/commit/58078617637c22756497cb6e1d90618586e55687),
+  [`aabc9aed`](https://github.com/chakra-ui/zag/commit/aabc9aed93ae3f49e2cec8d8b28edd23a337ce99),
+  [`5277f653`](https://github.com/chakra-ui/zag/commit/5277f65311c46e5792f605021d58b3b7e7dc3eaa)]:
+  - @zag-js/interact-outside@0.2.3
+  - @zag-js/mutation-observer@0.0.1
+  - @zag-js/live-region@0.2.3
+  - @zag-js/dom-event@0.0.1
+  - @zag-js/dom-query@0.1.3
+  - @zag-js/popper@0.2.4
+  - @zag-js/core@0.2.10
+
 ## 0.2.13
 
 ### Patch Changes

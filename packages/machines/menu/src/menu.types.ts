@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { TypeaheadState } from "@zag-js/dom-utils"
+import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"

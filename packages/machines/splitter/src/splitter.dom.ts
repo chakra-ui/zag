@@ -1,8 +1,8 @@
-import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { createScope, queryAll } from "@zag-js/dom-query"
 import type { JSX, Style } from "@zag-js/types"
 import type { MachineContext as Ctx, PanelId } from "./splitter.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => `splitter:${ctx.id}`,
   getResizeTriggerId: (ctx: Ctx, id: string) => `splitter:${ctx.id}:splitter:${id}`,
   getToggleTriggerId: (ctx: Ctx) => `splitter:${ctx.id}:toggle-btn`,

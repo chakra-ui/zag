@@ -1,17 +1,11 @@
-import {
-  ariaAttr,
-  dataAttr,
-  EventKeyMap,
-  findByTypeahead,
-  getEventKey,
-  isElementEditable,
-  visuallyHiddenStyle,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { isEditableElement, getByTypeahead, dataAttr, ariaAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
-import { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
+import type { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
 import * as utils from "./select.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
@@ -40,32 +34,66 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the select is open
+     */
     isOpen,
+    /**
+     * The currently highlighted option
+     */
     highlightedOption,
+    /**
+     * The currently selected option
+     */
     selectedOption,
+    /**
+     * Function to focus the select
+     */
     focus() {
       dom.getTriggerElement(state.context).focus()
     },
+    /**
+     * Function to blur the select
+     */
     blur() {
       dom.getTriggerElement(state.context).blur()
     },
+    /**
+     * Function to open the select
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the select
+     */
     close() {
       send("CLOSE")
     },
+    /**
+     * Function to set the selected option
+     */
     setSelectedOption(value: Option) {
       utils.validateOptionData(value)
       send({ type: "SELECT_OPTION", value })
     },
+    /**
+     * Function to set the highlighted option
+     */
     setHighlightedOption(value: Option) {
       utils.validateOptionData(value)
       send({ type: "HIGHLIGHT_OPTION", value })
     },
+    /**
+     * Function to clear the selected option
+     */
     clearSelectedOption() {
       send({ type: "CLEAR_SELECTED" })
     },
+    /**
+     * Returns the state details of an option
+     */
+    getOptionState,
 
     labelProps: normalize.label({
       dir: state.context.dir,
@@ -163,14 +191,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (findByTypeahead.isValidEvent(event)) {
+        if (getByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }
       },
     }),
 
-    getOptionState,
     getOptionProps(props: OptionProps) {
       const { value, label, valueText } = props
       const optionState = getOptionState(props)
@@ -248,7 +275,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         if (!option || option.hasAttribute("data-disabled")) return
-        option?.click()
+        send({ type: "OPTION_CLICK", src: "pointerup", id: option.id })
       },
       onPointerLeave() {
         send({ type: "POINTER_LEAVE" })
@@ -257,7 +284,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
         if (!option || option.hasAttribute("data-disabled")) return
-        send({ type: "OPTION_CLICK", id: option.id })
+        send({ type: "OPTION_CLICK", src: "click", id: option.id })
       },
       onKeyDown(event) {
         if (!isInteractive) return
@@ -300,11 +327,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        if (isElementEditable(event.target)) {
+        if (isEditableElement(event.target)) {
           return
         }
 
-        if (findByTypeahead.isValidEvent(event)) {
+        if (getByTypeahead.isValidEvent(event)) {
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         }

@@ -1,6 +1,7 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
@@ -23,13 +24,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
+    /**
+     * Whether the tooltip is open.
+     */
     isOpen,
+    /**
+     * Function to open the tooltip.
+     */
     open() {
       send("OPEN")
     },
+    /**
+     * Function to close the tooltip.
+     */
     close() {
       send("CLOSE")
     },
+    /**
+     * Returns the animation state of the tooltip.
+     */
     getAnimationState() {
       return {
         enter: store.prevId === null && id === store.id,

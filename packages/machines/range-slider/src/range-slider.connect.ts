@@ -1,13 +1,5 @@
-import {
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getEventPoint,
-  getEventStep,
-  getNativeEvent,
-  isLeftClick,
-  isModifiedEvent,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./range-slider.anatomy"
@@ -35,43 +27,90 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
   }
 
+  // TODO - getThumbState
+
   return {
+    /**
+     * The value of the slider.
+     */
     value: state.context.value,
+    /**
+     * Whether the slider is being dragged.
+     */
     isDragging,
+    /**
+     * Whether the slider is focused.
+     */
     isFocused,
+    /**
+     * Function to set the value of the slider.
+     */
     setValue(value: number[]) {
       send({ type: "SET_VALUE", value: value })
     },
+    /**
+     * Returns the value of the thumb at the given index.
+     */
     getThumbValue(index: number) {
       return sliderValue[index]
     },
+    /**
+     * Sets the value of the thumb at the given index.
+     */
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
+    /**
+     * Returns the percent of the thumb at the given index.
+     */
     getValuePercent: getValuePercentFn,
+    /**
+     * Returns the value of the thumb at the given percent.
+     */
     getPercentValue: getPercentValueFn,
+    /**
+     * Returns the percent of the thumb at the given index.
+     */
     getThumbPercent(index: number) {
       return getValuePercentFn(sliderValue[index])
     },
+    /**
+     * Sets the percent of the thumb at the given index.
+     */
     setThumbPercent(index: number, percent: number) {
       const value = getPercentValueFn(percent)
       send({ type: "SET_VALUE", index, value })
     },
+    /**
+     * Returns the min value of the thumb at the given index.
+     */
     getThumbMin(index: number) {
       return getRangeAtIndex(state.context, index).min
     },
+    /**
+     * Returns the max value of the thumb at the given index.
+     */
     getThumbMax(index: number) {
       return getRangeAtIndex(state.context, index).max
     },
+    /**
+     * Function to increment the value of the slider at the given index.
+     */
     increment(index: number) {
       send({ type: "INCREMENT", index })
     },
+    /**
+     * Function to decrement the value of the slider at the given index.
+     */
     decrement(index: number) {
       send({ type: "DECREMENT", index })
     },
-    focus(index = 0) {
+    /**
+     * Function to focus the slider. This focuses the first thumb.
+     */
+    focus() {
       if (!isInteractive) return
-      send({ type: "FOCUS", index })
+      send({ type: "FOCUS", index: 0 })
     },
 
     labelProps: normalize.label({
@@ -135,7 +174,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-focus": dataAttr(isFocused && state.context.activeIndex === index),
         draggable: false,
-        "aria-disabled": isDisabled || undefined,
+        "aria-disabled": ariaAttr(isDisabled),
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(state.context),
         "aria-orientation": state.context.orientation,
@@ -239,7 +278,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
-        send({ type: "POINTER_DOWN", point: getEventPoint(evt) })
+        const point = { x: evt.clientX, y: evt.clientY }
+        send({ type: "POINTER_DOWN", point })
 
         event.preventDefault()
         event.stopPropagation()

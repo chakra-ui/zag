@@ -1,18 +1,24 @@
 import * as menu from "@zag-js/menu"
-import { menuOptionData as data } from "@zag-js/shared"
+import { menuControls, menuOptionData as data } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
+  const controls = useControls(menuControls)
+
   const [state, send] = useMachine(
     menu.machine({
       id: createUniqueId(),
       value: { order: "", type: [] },
       onValueChange: console.log,
     }),
+    {
+      context: controls.context,
+    },
   )
 
   const api = createMemo(() => menu.connect(state, send, normalizeProps))
@@ -55,7 +61,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

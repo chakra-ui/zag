@@ -1,6 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addPointerEvent, contains, findByTypeahead, getEventPoint, isElementEditable, raf } from "@zag-js/dom-utils"
+import { contains, getByTypeahead, isEditableElement, raf } from "@zag-js/dom-query"
+import { addDomEvent } from "@zag-js/dom-event"
 import { getBasePlacement, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, cast, compact, isArray, remove } from "@zag-js/utils"
@@ -28,8 +29,7 @@ export function machine(userContext: UserDefinedContext) {
         isPlacementComplete: false,
         focusTriggerOnClose: true,
         ...ctx,
-        pointerdownNode: null,
-        typeahead: findByTypeahead.defaultOptions,
+        typeahead: getByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -195,7 +195,6 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["visible"],
           activities: ["trackInteractOutside", "computePlacement"],
           entry: ["focusMenu", "resumePointer"],
-          exit: ["clearPointerdownNode"],
           on: {
             TRIGGER_CLICK: {
               guard: not("isTriggerItem"),
@@ -278,14 +277,14 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
-              { actions: ["focusItem"] },
+              { actions: "focusItem" },
             ],
             TRIGGER_POINTERLEAVE: {
               target: "closing",
               actions: "setIntentPolygon",
             },
             ITEM_POINTERDOWN: {
-              actions: ["setPointerdownNode", "focusItem"],
+              actions: "focusItem",
             },
             TYPEAHEAD: {
               actions: "focusMatchedItem",
@@ -322,7 +321,7 @@ export function machine(userContext: UserDefinedContext) {
         isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
-        isFocusedItemEditable: (ctx) => isElementEditable(dom.getFocusedItem(ctx)),
+        isFocusedItemEditable: (ctx) => isEditableElement(dom.getFocusedItem(ctx)),
         isWithinPolygon: (ctx, evt) => {
           if (!ctx.intentPolygon) return false
           return isPointInPolygon(ctx.intentPolygon, evt.point)
@@ -362,8 +361,9 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent!.state.context.suspendPointer = true
 
           const doc = dom.getDoc(ctx)
-          return addPointerEvent(doc, "pointermove", (e) => {
-            const isMovingToSubmenu = isWithinPolygon(ctx, { point: getEventPoint(e) })
+          return addDomEvent(doc, "pointermove", (e) => {
+            const point = { x: e.clientX, y: e.clientY }
+            const isMovingToSubmenu = isWithinPolygon(ctx, { point })
             if (!isMovingToSubmenu) {
               send("POINTER_MOVED_AWAY_FROM_SUBMENU")
               // NOTE: we're mutating parent context here. sending events to parent doesn't work
@@ -484,9 +484,6 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnSelect(ctx) {
           if (!ctx.highlightedId) return
           ctx.onSelect?.({ value: ctx.highlightedId })
-          if (!ctx.closeOnSelect) {
-            ctx.pointerdownNode = null
-          }
         },
         focusItem(ctx, event) {
           ctx.highlightedId = event.id
@@ -527,12 +524,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreParentFocus(ctx) {
           ctx.parent?.send("RESTORE_FOCUS")
-        },
-        setPointerdownNode(ctx, evt) {
-          ctx.pointerdownNode = ref(evt.target)
-        },
-        clearPointerdownNode(ctx) {
-          ctx.pointerdownNode = null
         },
         invokeOnOpen(ctx) {
           ctx.onOpen?.()

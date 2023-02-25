@@ -1,5 +1,5 @@
 import { CalendarDate, DateValue, isSameDay, isToday } from "@internationalized/date"
-import { DateAvailableFn } from "./types"
+import type { DateAvailableFn } from "./types"
 
 export function isTodayDate(date: CalendarDate, timeZone: string) {
   return isToday(date, timeZone)

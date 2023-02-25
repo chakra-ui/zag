@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/checkbox",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Core logic for the checkbox widget implemented as a state machine",
   "keywords": [
     "js",
@@ -39,12 +39,13 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/visually-hidden": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json",

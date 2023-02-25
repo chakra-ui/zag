@@ -50,14 +50,14 @@ const fetchMachine = createMachine({
     SET_VALUE: {
       actions: ["setValue"]
     },
-    DELETE_TAG: {
+    CLEAR_TAG: {
       actions: ["deleteTag"]
     },
     SET_VALUE_AT_INDEX: {
       actions: ["setValueAtIndex"]
     },
-    CLEAR_ALL: {
-      actions: ["clearTags", "focusInput"]
+    CLEAR_VALUE: {
+      actions: ["clearTags", "clearInputValue", "focusInput"]
     },
     ADD_TAG: {
       // (!isAtMax || allowOverflow) && !inputValueIsEmpty

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/hover-card",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Core logic for the hover-card widget implemented as a state machine",
   "keywords": [
     "js",
@@ -40,13 +40,13 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json",

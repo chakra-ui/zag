@@ -1,15 +1,7 @@
-import {
-  defineDomHelpers,
-  findByTypeahead,
-  isHTMLElement,
-  nextById,
-  prevById,
-  query,
-  queryAll,
-} from "@zag-js/dom-utils"
+import { createScope, isHTMLElement, nextById, prevById, query, queryAll, getByTypeahead } from "@zag-js/dom-query"
 import type { MachineContext as Ctx, Option } from "./select.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `select:${ctx.id}:content`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `select:${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `select:${ctx.id}:label`,
@@ -55,7 +47,7 @@ export const dom = defineDomHelpers({
     return { label, value } as Option
   },
   getMatchingOption(ctx: Ctx, key: string, current: any) {
-    return findByTypeahead(dom.getOptionElements(ctx), { state: ctx.typeahead, key, activeId: current })
+    return getByTypeahead(dom.getOptionElements(ctx), { state: ctx.typeahead, key, activeId: current })
   },
   getHighlightedOption(ctx: Ctx) {
     if (!ctx.highlightedId) return null

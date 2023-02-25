@@ -1,7 +1,7 @@
 import { CalendarDate, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
 import { formatRange } from "./format-range"
 import { getDateFormatter, getMonthFormatter } from "./get-formatter"
-import { GetFormatterFn } from "./types"
+import type { GetFormatterFn } from "./types"
 
 export function formatVisibleRange(
   startDate: CalendarDate | null,

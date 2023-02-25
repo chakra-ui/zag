@@ -27,13 +27,16 @@ export function getToastDuration(duration: number | undefined, type: MachineCont
 
 export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Placement): Style {
   const offset = ctx.offsets
-  const __offset = typeof offset === "string" ? { left: offset, right: offset, bottom: offset, top: offset } : offset
+  const computedOffset =
+    typeof offset === "string" ? { left: offset, right: offset, bottom: offset, top: offset } : offset
 
   const rtl = ctx.dir === "rtl"
-  const __placement = placement.replace("-start", rtl ? "-right" : "-left").replace("-end", rtl ? "-left" : "-right")
+  const computedPlacement = placement
+    .replace("-start", rtl ? "-right" : "-left")
+    .replace("-end", rtl ? "-left" : "-right")
 
-  const isRighty = __placement.includes("right")
-  const isLefty = __placement.includes("left")
+  const isRighty = computedPlacement.includes("right")
+  const isLefty = computedPlacement.includes("left")
 
   const styles: Style = {
     position: "fixed",
@@ -50,23 +53,23 @@ export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Plac
 
   styles.alignItems = alignItems
 
-  if (__placement.includes("top")) {
-    const offset = __offset.top
+  if (computedPlacement.includes("top")) {
+    const offset = computedOffset.top
     styles.top = `calc(env(safe-area-inset-top, 0px) + ${offset})`
   }
 
-  if (__placement.includes("bottom")) {
-    const offset = __offset.bottom
+  if (computedPlacement.includes("bottom")) {
+    const offset = computedOffset.bottom
     styles.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${offset})`
   }
 
-  if (!__placement.includes("left")) {
-    const offset = __offset.right
+  if (!computedPlacement.includes("left")) {
+    const offset = computedOffset.right
     styles.right = `calc(env(safe-area-inset-right, 0px) + ${offset})`
   }
 
-  if (!__placement.includes("right")) {
-    const offset = __offset.left
+  if (!computedPlacement.includes("right")) {
+    const offset = computedOffset.left
     styles.left = `calc(env(safe-area-inset-left, 0px) + ${offset})`
   }
 

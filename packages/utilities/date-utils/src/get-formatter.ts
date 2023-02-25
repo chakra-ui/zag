@@ -1,5 +1,5 @@
-import { CalendarDate } from "@internationalized/date"
-import { GetFormatterFn } from "./types"
+import type { CalendarDate } from "@internationalized/date"
+import type { GetFormatterFn } from "./types"
 
 function getEraFormat(date: CalendarDate | undefined): "short" | undefined {
   return date?.calendar.identifier === "gregory" && date.era === "BC" ? "short" : undefined

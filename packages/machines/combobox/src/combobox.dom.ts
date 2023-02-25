@@ -1,8 +1,8 @@
-import { defineDomHelpers, nextById, prevById, queryAll } from "@zag-js/dom-utils"
+import { createScope, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./combobox.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
@@ -14,7 +14,7 @@ export const dom = defineDomHelpers({
   getOptionId: (ctx: Ctx, id: string, index?: number) =>
     ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.id}:option:${id}`, index].filter((v) => v != null).join(":"),
 
-  getActiveOptionEl: (ctx: Ctx) => (ctx.activeId ? dom.getById(ctx, ctx.activeId) : null),
+  getActiveOptionEl: (ctx: Ctx) => (ctx.focusedId ? dom.getById(ctx, ctx.focusedId) : null),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
@@ -24,8 +24,8 @@ export const dom = defineDomHelpers({
 
   getElements: (ctx: Ctx) => queryAll(dom.getContentEl(ctx), "[role=option]:not([aria-disabled=true])"),
   getFocusedOptionEl: (ctx: Ctx) => {
-    if (!ctx.activeId) return null
-    const selector = `[role=option][id=${CSS.escape(ctx.activeId)}]`
+    if (!ctx.focusedId) return null
+    const selector = `[role=option][id=${CSS.escape(ctx.focusedId)}]`
     return dom.getContentEl(ctx)?.querySelector<HTMLElement>(selector)
   },
 
@@ -70,7 +70,7 @@ export const dom = defineDomHelpers({
   },
 
   getClosestSectionLabel(ctx: Ctx) {
-    if (!ctx.activeId) return
+    if (!ctx.focusedId) return
     const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
     return group?.getAttribute("aria-label")
   },

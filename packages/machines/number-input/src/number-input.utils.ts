@@ -1,4 +1,4 @@
-import { isModifiedEvent } from "@zag-js/dom-utils"
+import { isModifiedEvent } from "@zag-js/dom-event"
 import { clamp, decrement, formatDecimal, increment } from "@zag-js/number-utils"
 import type { JSX } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./number-input.types"

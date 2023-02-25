@@ -1,13 +1,5 @@
-import {
-  dataAttr,
-  EventKeyMap,
-  getEventKey,
-  getEventPoint,
-  getEventStep,
-  getNativeEvent,
-  isLeftClick,
-  isModifiedEvent,
-} from "@zag-js/dom-utils"
+import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./slider.anatomy"
@@ -33,22 +25,54 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return getValuePercent(value, state.context.min, state.context.max)
   }
 
+  // TODO - getMarkerState
+
   return {
+    /**
+     * Whether the slider is focused.
+     */
     isFocused,
+    /**
+     * Whether the slider is being dragged.
+     */
     isDragging,
+    /**
+     * The value of the slider.
+     */
     value: state.context.value,
+    /**
+     * The value of the slider as a percent.
+     */
     percent: getValuePercent(state.context.value, state.context.min, state.context.max),
+    /**
+     * Function to set the value of the slider.
+     */
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
+    /**
+     * Returns the value of the slider at the given percent.
+     */
     getPercentValue: getPercentValueFn,
+    /**
+     * Returns the percent of the slider at the given value.
+     */
     getValuePercent: getValuePercentFn,
+    /**
+     * Function to focus the slider.
+     */
     focus() {
       dom.getThumbEl(state.context)?.focus()
     },
+    /**
+     * Function to increment the value of the slider by the step.
+     */
     increment() {
       send("INCREMENT")
     },
+    /**
+     * Function to decrement the value of the slider by the step.
+     */
     decrement() {
       send("DECREMENT")
     },
@@ -86,9 +110,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
       "data-focus": dataAttr(isFocused),
       draggable: false,
-      "aria-invalid": isInvalid || undefined,
+      "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
-      "aria-disabled": isDisabled || undefined,
+      "aria-disabled": ariaAttr(isDisabled),
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabel ? undefined : ariaLabelledBy ?? dom.getLabelId(state.context),
       "aria-orientation": state.context.orientation,
@@ -206,7 +230,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
-        const point = getEventPoint(evt)
+        const point = { x: evt.clientX, y: evt.clientY }
         send({ type: "POINTER_DOWN", point })
 
         event.preventDefault()

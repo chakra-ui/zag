@@ -1,9 +1,11 @@
 import { createMachine, ref } from "@zag-js/core"
-import { addDomEvent, disableTextSelection, isHTMLElement, restoreTextSelection } from "@zag-js/dom-utils"
+import { addDomEvent } from "@zag-js/dom-event"
+import { isHTMLElement } from "@zag-js/dom-query"
+import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { dom } from "./pressable.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./pressable.types"
-import { utils } from "./pressable.utils"
+import type { MachineContext, MachineState, UserDefinedContext } from "./pressable.types"
+import { isHTMLAnchorLink, isOverTarget, isValidKeyboardEvent, shouldPreventDefaultKeyboard } from "./pressable.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -130,8 +132,8 @@ export function machine(userContext: UserDefinedContext) {
 
           const onPointerMove = (event: PointerEvent) => {
             if (event.pointerId !== ctx.activePointerId) return
-            const isOverTarget = utils.isOverTarget(event, ctx.target)
-            send({ type: isOverTarget ? "POINTER_ENTER" : "POINTER_LEAVE", event })
+            const isOver = isOverTarget(event, ctx.target)
+            send({ type: isOver ? "POINTER_ENTER" : "POINTER_LEAVE", event })
           }
 
           const onPointerUp = (event: PointerEvent) => {
@@ -160,9 +162,9 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
 
           const onKeyup = (event: KeyboardEvent) => {
-            if (!utils.isValidKeyboardEvent(event)) return
+            if (!isValidKeyboardEvent(event)) return
 
-            if (utils.shouldPreventDefaultKeyboard(event.target as Element)) {
+            if (shouldPreventDefaultKeyboard(event.target as Element)) {
               event.preventDefault()
             }
 
@@ -253,7 +255,7 @@ export function machine(userContext: UserDefinedContext) {
             return
           }
 
-          const isAnchor = utils.isHTMLAnchorLink(ctx.target) || ctx.target.getAttribute("role") === "link"
+          const isAnchor = isHTMLAnchorLink(ctx.target) || ctx.target.getAttribute("role") === "link"
 
           if (ctx.target.contains(target) && isAnchor) {
             ctx.target.click()

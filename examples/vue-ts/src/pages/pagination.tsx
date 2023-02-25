@@ -1,6 +1,6 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"

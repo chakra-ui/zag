@@ -1,6 +1,6 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { visuallyHiddenStyle } from "@zag-js/dom-utils"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"

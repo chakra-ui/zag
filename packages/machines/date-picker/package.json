@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/date-picker",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Core logic for the date-picker widget implemented as a state machine",
   "keywords": [
     "js",
@@ -42,15 +42,17 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",
+    "@zag-js/text-selection": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@internationalized/date": "^3.0.2",
     "@internationalized/number": "^3.1.2",
     "@zag-js/date-utils": "workspace:*",
-    "proxy-memoize": "2.0.2"
+    "proxy-memoize": "2.0.2",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/dom-utils": "workspace:*",
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json"

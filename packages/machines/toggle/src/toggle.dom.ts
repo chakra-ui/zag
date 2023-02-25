@@ -1,7 +1,7 @@
-import { defineDomHelpers } from "@zag-js/dom-utils"
+import { createScope } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./toggle.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `toggle:${ctx.id}`,
   getButtonId: (ctx: Ctx) => ctx.ids?.button ?? `toggle:${ctx.id}:button`,
 

@@ -1,7 +1,7 @@
-import { defineDomHelpers, queryAll } from "@zag-js/dom-utils"
+import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./radio-group.types"
 
-export const dom = defineDomHelpers({
+export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `radio-group:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `radio-group:${ctx.id}:label`,
   getRadioId: (ctx: Ctx, value: string) => ctx.ids?.radio?.(value) ?? `radio-group:${ctx.id}:radio:${value}`,
