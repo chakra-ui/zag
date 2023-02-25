@@ -1,5 +1,14 @@
 # @zag-js/editable
 
+## 0.2.14
+
+### Patch Changes
+
+- Updated dependencies [[`1446d88b`](https://github.com/chakra-ui/zag/commit/1446d88bff3848f2a2ec0a793ee83281cda966e8),
+  [`f55fc3a0`](https://github.com/chakra-ui/zag/commit/f55fc3a01ab7b95ac29caf41eaeac4033b00e1be)]:
+  - @zag-js/dom-query@0.1.4
+  - @zag-js/interact-outside@0.2.4
+
 ## 0.2.13
 
 ### Patch Changes

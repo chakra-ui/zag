@@ -1,5 +1,18 @@
 # @zag-js/tags-input
 
+## 0.3.14
+
+### Patch Changes
+
+- [`81ac845c`](https://github.com/chakra-ui/zag/commit/81ac845c013d045060814918709a7fe920b1967d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix event name mismatch in clear trigger event name
+
+- Updated dependencies [[`1446d88b`](https://github.com/chakra-ui/zag/commit/1446d88bff3848f2a2ec0a793ee83281cda966e8),
+  [`f55fc3a0`](https://github.com/chakra-ui/zag/commit/f55fc3a01ab7b95ac29caf41eaeac4033b00e1be)]:
+  - @zag-js/dom-query@0.1.4
+  - @zag-js/interact-outside@0.2.4
+  - @zag-js/auto-resize@0.2.4
+
 ## 0.3.13
 
 ### Patch Changes
