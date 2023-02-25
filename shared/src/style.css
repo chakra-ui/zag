@@ -1244,9 +1244,7 @@ main > .toggle[data-pressed] {
 }
 
 [data-scope="date-picker"][data-part="cell-trigger"] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 4px;
   min-width: 30px;
   min-height: 30px;
   border-radius: 4px;
