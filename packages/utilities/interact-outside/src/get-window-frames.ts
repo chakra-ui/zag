@@ -8,15 +8,27 @@ export function getWindowFrames(win: Window) {
     },
     addEventListener(event: string, listener: any, options?: any) {
       frames.each((frame) => {
-        frame.document.addEventListener(event, listener, options)
+        try {
+          frame.document.addEventListener(event, listener, options)
+        } catch (err) {
+          console.warn(err)
+        }
       })
       return () => {
-        frames.removeEventListener(event, listener, options)
+        try {
+          frames.removeEventListener(event, listener, options)
+        } catch (err) {
+          console.warn(err)
+        }
       }
     },
     removeEventListener(event: string, listener: any, options?: any) {
       frames.each((frame) => {
-        frame.document.removeEventListener(event, listener, options)
+        try {
+          frame.document.removeEventListener(event, listener, options)
+        } catch (err) {
+          console.warn(err)
+        }
       })
     },
   }
