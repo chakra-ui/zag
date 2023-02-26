@@ -207,7 +207,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.cellTrigger.attrs,
         role: "gridcell",
         tabIndex: cellState.isFocused ? 0 : -1,
-        id: dom.getCellId(state.context, value.toString()),
+        id: dom.getCellTriggerId(state.context, value.toString()),
         "aria-label": value.toString(),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "aria-selected": ariaAttr(cellState.isSelected),
@@ -350,6 +350,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send("INPUT.ENTER")
         }
       },
+    }),
+
+    monthSelectProps: normalize.select({
+      ...parts.monthSelect.attrs,
+      id: dom.getMonthSelectId(state.context),
+      "aria-label": "Select month",
+    }),
+
+    yearSelectProps: normalize.select({
+      ...parts.yearSelect.attrs,
+      id: dom.getYearSelectId(state.context),
+      "aria-label": "Select year",
     }),
   }
 

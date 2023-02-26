@@ -12,6 +12,8 @@ export const anatomy = createAnatomy("date-picker").parts(
   "prevTrigger",
   "clearTrigger",
   "grid",
+  "monthSelect",
+  "yearSelect",
 )
 
 export const parts = anatomy.build()
