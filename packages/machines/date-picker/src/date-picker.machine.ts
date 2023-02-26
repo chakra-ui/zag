@@ -65,7 +65,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["focusCell", "adjustStartDate"],
+        focusedValue: ["focusCell", "adjustStartDate", "syncElements"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
       },
@@ -169,6 +169,12 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         setViewToDay(ctx) {
           ctx.view = "day"
+        },
+        setViewToMonth(ctx) {
+          ctx.view = "month"
+        },
+        setViewToYear(ctx) {
+          ctx.view = "year"
         },
         setValueText(ctx) {
           if (!ctx.value.length) return
@@ -277,6 +283,18 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearFocusedDate(ctx) {
           ctx.focusedValue = getTodayDate(ctx.timeZone)
+        },
+        syncElements(ctx) {
+          const yearSelect = dom.getYearSelectEl(ctx)
+          const monthSelect = dom.getMonthSelectEl(ctx)
+
+          if (!yearSelect || !monthSelect) return
+
+          const year = ctx.focusedValue.year
+          const month = ctx.focusedValue.month
+
+          yearSelect.value = year.toString()
+          monthSelect.value = month.toString()
         },
       },
       compareFns: {

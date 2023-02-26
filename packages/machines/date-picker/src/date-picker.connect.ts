@@ -263,10 +263,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: isFocused ? 0 : -1,
         onFocus() {
           if (disabled) return
-          send({ type: "CELL.FOCUS", cell: "month", date: value })
+          send({ type: "CELL.FOCUS", cell: "year", date: value })
         },
         onPointerUp() {
-          send({ type: "CELL.CLICK", cell: "month", date: value })
+          send({ type: "CELL.CLICK", cell: "year", date: value })
         },
       })
     },
@@ -356,12 +356,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.monthSelect.attrs,
       id: dom.getMonthSelectId(state.context),
       "aria-label": "Select month",
+      defaultValue: focusedValue.month,
+      onChange: (e) => {
+        api.focusMonth(parseInt(e.target.value))
+      },
     }),
 
     yearSelectProps: normalize.select({
       ...parts.yearSelect.attrs,
       id: dom.getYearSelectId(state.context),
       "aria-label": "Select year",
+      defaultValue: focusedValue.year,
+      onChange: (e) => {
+        api.focusYear(parseInt(e.target.value))
+      },
     }),
   }
 

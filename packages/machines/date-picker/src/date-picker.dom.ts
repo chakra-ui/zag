@@ -24,4 +24,6 @@ export const dom = createScope({
     const grid = dom.getGridEl(ctx)
     return grid?.querySelector<HTMLElement>("[data-part=cell-trigger][data-focused]")
   },
+  getYearSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getYearSelectId(ctx)),
+  getMonthSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getMonthSelectId(ctx)),
 })

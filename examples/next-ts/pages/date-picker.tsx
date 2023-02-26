@@ -35,12 +35,7 @@ export default function Page() {
           </div>
 
           <div style={{ marginBlock: "20px" }}>
-            <select
-              defaultValue={api.focusedValue.month}
-              onChange={(e) => {
-                api.focusMonth(parseInt(e.target.value))
-              }}
-            >
+            <select {...api.monthSelectProps}>
               {api.getMonths().map((month, i) => (
                 <option key={i} value={i + 1}>
                   {month}
@@ -48,12 +43,7 @@ export default function Page() {
               ))}
             </select>
 
-            <select
-              defaultValue={api.focusedValue.year}
-              onChange={(e) => {
-                api.focusYear(parseInt(e.target.value))
-              }}
-            >
+            <select {...api.yearSelectProps}>
               {getYearsRange({ from: 2000, to: 2030 }).map((year, i) => (
                 <option key={i} value={year}>
                   {year}
