@@ -4,6 +4,10 @@ import type { DateAdjustFn } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
+type ChangeDetails = {
+  value: CalendarDate
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     locale: string
@@ -12,19 +16,23 @@ type PublicContext = DirectionProperty &
     readonly?: boolean
     min?: CalendarDate
     max?: CalendarDate
-    value: CalendarDate | null
+    activeIndex: number
+    value: CalendarDate[]
     focusedValue: CalendarDate
     numOfMonths?: number
     startOfWeek?: number
-    isSelectingRange?: boolean
-    onChange?: (details: { value: CalendarDate }) => void
-    onFocusChange?: (details: { value: CalendarDate }) => void
+    onChange?: (details: ChangeDetails) => void
+    onFocusChange?: (details: ChangeDetails) => void
     onViewChange?: (details: { value: DateView }) => void
     isDateUnavailable?: (date: DateValue) => boolean
     selectionMode: "single" | "multiple" | "range"
   }
 
-type DateView = "day" | "month" | "year"
+export type DateView = "day" | "month" | "year"
+
+export type TriggerProps = {
+  view?: DateView
+}
 
 type PrivateContext = Context<{
   view: DateView
@@ -54,12 +62,12 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type CellProps = {
-  date: CalendarDate
+export type DayCellProps = {
+  value: CalendarDate
   disabled?: boolean
 }
 
 export type MachineState = {
   tags: "open" | "closed"
-  value: "idle" | "focused" | "open"
+  value: "idle" | "focused" | "open" | "open:range"
 }

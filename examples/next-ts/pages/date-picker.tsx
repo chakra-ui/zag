@@ -1,8 +1,7 @@
 import * as datePicker from "@zag-js/date-picker"
-import { getDecadeRange, getYearsRange } from "@zag-js/date-utils"
+import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { datePickerControls } from "@zag-js/shared"
-import { chunk } from "@zag-js/utils"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -30,38 +29,40 @@ export default function Page() {
             <button {...api.triggerProps}>🗓</button>
           </div>
           <div>
-            <button {...api.prevTriggerProps}>Prev</button>
-            <button {...api.nextTriggerProps}>Next</button>
+            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getNextTriggerProps()}>Next</button>
             <button {...api.clearTriggerProps}>❌</button>
           </div>
 
-          <select
-            defaultValue={api.focusedValue.month}
-            onChange={(e) => {
-              api.setMonth(parseInt(e.target.value))
-            }}
-          >
-            {api.months.map((month, i) => (
-              <option key={i} value={i + 1}>
-                {month}
-              </option>
-            ))}
-          </select>
+          <div style={{ marginBlock: "20px" }}>
+            <select
+              defaultValue={api.focusedValue.month}
+              onChange={(e) => {
+                api.focusMonth(parseInt(e.target.value))
+              }}
+            >
+              {api.getMonths().map((month, i) => (
+                <option key={i} value={i + 1}>
+                  {month}
+                </option>
+              ))}
+            </select>
 
-          <select
-            defaultValue={api.focusedValue.year}
-            onChange={(e) => {
-              api.setYear(parseInt(e.target.value))
-            }}
-          >
-            {getYearsRange({ from: 2000, to: 2030 }).map((year, i) => (
-              <option key={i} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+            <select
+              defaultValue={api.focusedValue.year}
+              onChange={(e) => {
+                api.focusYear(parseInt(e.target.value))
+              }}
+            >
+              {getYearsRange({ from: 2000, to: 2030 }).map((year, i) => (
+                <option key={i} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <table {...api.gridProps}>
+          <table {...api.getGridProps()}>
             <thead>
               <tr>
                 {api.weekDays.map((day, i) => (
@@ -73,8 +74,8 @@ export default function Page() {
               {api.weeks.map((week, i) => (
                 <tr key={i}>
                   {week.map((date, i) => (
-                    <td key={i} {...api.getCellProps({ date })}>
-                      {date ? <span {...api.getCellTriggerProps({ date })}>{date.day}</span> : null}
+                    <td key={i} {...api.getDayCellProps({ value: date })}>
+                      {date.day}
                     </td>
                   ))}
                 </tr>
@@ -82,13 +83,13 @@ export default function Page() {
             </tbody>
           </table>
 
-          <div style={{ display: "flex", gap: "40px" }}>
+          <div style={{ display: "flex", gap: "40px", marginTop: "24px" }}>
             <table>
               <tbody>
-                {chunk(api.months, 4).map((months, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {months.map((month, monthIndex) => (
-                      <td key={monthIndex} {...api.getMonthTriggerProps({ month: rowIndex * 4 + monthIndex + 1 })}>
+                {api.getMonths({ columns: 4 }).map((months, row) => (
+                  <tr key={row}>
+                    {months.map((month, index) => (
+                      <td key={index} {...api.getMonthCellProps({ value: row * 4 + index + 1 })}>
                         {month}
                       </td>
                     ))}
@@ -99,10 +100,10 @@ export default function Page() {
 
             <table>
               <tbody>
-                {chunk(getDecadeRange(api.focusedValue.year), 4).map((years, rowIndex) => (
-                  <tr key={rowIndex}>
+                {api.getYears({ columns: 4 }).map((years, row) => (
+                  <tr key={row}>
                     {years.map((year, index) => (
-                      <td key={index} {...api.getYearTriggerProps({ year })}>
+                      <td key={index} {...api.getYearCellProps({ value: year })}>
                         {year}
                       </td>
                     ))}

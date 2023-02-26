@@ -1,4 +1,5 @@
 import {
+  getDecadeRange,
   getMonthNames,
   getTodayDate,
   getWeekDates,
@@ -14,16 +15,17 @@ import {
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { chunk } from "@zag-js/utils"
 import { getFormatter } from "./date-formatter"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import type { CellProps, Send, State } from "./date-picker.types"
+import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const startDate = state.context.startValue
-  const endDate = state.context.endValue
-  const selectedDate = state.context.value
-  const focusedDate = state.context.focusedValue
+  const startValue = state.context.startValue
+  const endValue = state.context.endValue
+  const selectedValue = state.context.value
+  const focusedValue = state.context.focusedValue
 
   const disabled = state.context.disabled
   const readonly = state.context.readonly
@@ -35,74 +37,81 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const api = {
     /**
-     * The month names in the year. Represented as an array of strings.
-     */
-    months: getMonthNames(locale),
-    /**
      * The weeks of the month. Represented as an array of arrays of dates.
      */
     weeks: state.context.weeks,
+
     /**
      * The days of the week. Represented as an array of strings.
      */
     weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) => {
       return getFormatter(locale, { weekday: "short" }).format(day)
     }),
+
     /**
      * The human readable text for the visible range of dates.
      */
     visibleRangeText: "TODO",
+
     /**
      * The selected date.
      */
-    value: selectedDate,
+    value: selectedValue,
+
     /**
      * The selected date as a Date object.
      */
-    valueAsDate: selectedDate?.toDate(timeZone),
+    valueAsDate: selectedValue.map((date) => date.toDate(timeZone)),
+
     /**
      * The selected date as a string.
      */
-    valueAsString: selectedDate?.toString(),
+    valueAsString: selectedValue.map((date) => date.toString()),
+
     /**
      * The focused date.
      */
-    focusedValue: focusedDate,
+    focusedValue: focusedValue,
+
     /**
      * The focused date as a Date object.
      */
-    focusedValueAsDate: focusedDate?.toDate(timeZone),
+    focusedValueAsDate: focusedValue?.toDate(timeZone),
+
     /**
      * The focused date as a string.
      */
-    focusedValueAsString: focusedDate?.toString(),
+    focusedValueAsString: focusedValue?.toString(),
+
     /**
      * Function to set the selected month.
      */
-    setMonth(month: number) {
-      const date = setMonth(selectedDate ?? getTodayDate(timeZone), month)
-      send({ type: "VALUE.SET", date })
+    focusMonth(month: number) {
+      const date = setMonth(focusedValue ?? getTodayDate(timeZone), month)
+      send({ type: "FOCUS.SET", date })
     },
+
     /**
      * Function to set the selected year.
      */
-    setYear(year: number) {
-      const date = setYear(selectedDate ?? getTodayDate(timeZone), year)
-      send({ type: "VALUE.SET", date })
+    focusYear(year: number) {
+      const date = setYear(focusedValue ?? getTodayDate(timeZone), year)
+      send({ type: "FOCUS.SET", date })
     },
+
     /**
      * Returns the state details for a given cell.
      */
-    getCellState(props: CellProps) {
-      const { date, disabled } = props
+    getCellState(props: DayCellProps) {
+      const { value, disabled } = props
       const cellState = {
-        isInvalid: isDateInvalid(date, min, max),
-        isDisabled: isDateDisabled(date, startDate, endDate, min, max),
-        isSelected: isDateEqual(date, selectedDate),
-        isUnavailable: isDateUnavailable(date, state.context.isDateUnavailable, min, max) && !disabled,
-        isOutsideRange: isDateOutsideVisibleRange(date, startDate, endDate),
-        isFocused: isDateEqual(date, focusedDate),
-        isToday: isTodayDate(date, timeZone),
+        isInvalid: isDateInvalid(value, min, max),
+        isDisabled: isDateDisabled(value, startValue, endValue, min, max),
+        isSelected: !!selectedValue.find((date) => isDateEqual(value, date)),
+        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
+        isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
+        isFocused: isDateEqual(value, focusedValue),
+        isToday: isTodayDate(value, timeZone),
         get isSelectable() {
           return !cellState.isDisabled && !cellState.isUnavailable
         },
@@ -110,175 +119,199 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return cellState
     },
 
+    /**
+     * Returns the years of the decade based on the columns.
+     * Represented as an array of arrays of years.
+     */
+    getYears(props: { columns?: number } = {}) {
+      const { columns = 1 } = props
+      return chunk(getDecadeRange(focusedValue.year), columns)
+    },
+
+    /**
+     * Returns the months of the year based on the columns.
+     * Represented as an array of arrays of months.
+     */
+    getMonths(props: { columns?: number } = {}) {
+      const { columns = 1 } = props
+      return chunk(getMonthNames(locale, "short"), columns)
+    },
+
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
-    gridProps: normalize.element({
-      ...parts.grid.attrs,
-      role: "grid",
-      id: dom.getGridId(state.context),
-      "aria-readonly": ariaAttr(readonly),
-      "aria-disabled": ariaAttr(disabled),
-      tabIndex: -1,
-      onKeyDown(event) {
-        const keyMap: EventKeyMap = {
-          Enter() {
-            send("GRID.ENTER")
-          },
-          ArrowLeft() {
-            send("GRID.ARROW_LEFT")
-          },
-          ArrowRight() {
-            send("GRID.ARROW_RIGHT")
-          },
-          ArrowUp() {
-            send("GRID.ARROW_UP")
-          },
-          ArrowDown() {
-            send("GRID.ARROW_DOWN")
-          },
-          PageUp(event) {
-            send({ type: "GRID.PAGE_UP", larger: event.shiftKey })
-          },
-          PageDown(event) {
-            send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey })
-          },
-          HOME() {
-            send("GRID.HOME")
-          },
-          END() {
-            send("GRID.END")
-          },
-        }
+    getGridProps(props: { view?: DateView } = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.grid.attrs,
+        role: "grid",
+        id: dom.getGridId(state.context),
+        "aria-readonly": ariaAttr(readonly),
+        "aria-disabled": ariaAttr(disabled),
+        "data-type": view,
+        tabIndex: -1,
+        onKeyDown(event) {
+          const keyMap: EventKeyMap = {
+            Enter() {
+              send("GRID.ENTER")
+            },
+            ArrowLeft() {
+              send("GRID.ARROW_LEFT")
+            },
+            ArrowRight() {
+              send("GRID.ARROW_RIGHT")
+            },
+            ArrowUp() {
+              send("GRID.ARROW_UP")
+            },
+            ArrowDown() {
+              send("GRID.ARROW_DOWN")
+            },
+            PageUp(event) {
+              send({ type: "GRID.PAGE_UP", larger: event.shiftKey })
+            },
+            PageDown(event) {
+              send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey })
+            },
+            HOME() {
+              send("GRID.HOME")
+            },
+            END() {
+              send("GRID.END")
+            },
+          }
 
-        const exec = keyMap[getEventKey(event, state.context)]
+          const exec = keyMap[getEventKey(event, state.context)]
 
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-          event.stopPropagation()
-        }
-      },
-      onPointerDown() {
-        send({ type: "GRID.POINTER_DOWN" })
-      },
-      onPointerUp() {
-        send({ type: "GRID.POINTER_UP" })
-      },
-    }),
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+        onPointerDown() {
+          send({ type: "GRID.POINTER_DOWN" })
+        },
+        onPointerUp() {
+          send({ type: "GRID.POINTER_UP" })
+        },
+      })
+    },
 
-    getCellProps(props: CellProps) {
+    getDayCellProps(props: DayCellProps) {
+      const { value } = props
       const cellState = api.getCellState(props)
       return normalize.element({
-        ...parts.cell.attrs,
+        ...parts.cellTrigger.attrs,
         role: "gridcell",
-        id: dom.getCellId(state.context, props.date.toString()),
+        tabIndex: cellState.isFocused ? 0 : -1,
+        id: dom.getCellId(state.context, value.toString()),
+        "aria-label": value.toString(),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "aria-selected": ariaAttr(cellState.isSelected),
         "aria-invalid": ariaAttr(cellState.isInvalid),
-      })
-    },
-
-    getCellTriggerProps(props: CellProps) {
-      const { date } = props
-      const cellState = api.getCellState(props)
-      return normalize.element({
-        ...parts.cellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, date.toString()),
-        role: "button",
-        tabIndex: cellState.isFocused ? 0 : -1,
-        "aria-disabled": !cellState.isSelectable,
-        "aria-label": date.toString(),
-        "data-value": date.toString(),
-        "aria-invalid": ariaAttr(cellState.isInvalid),
+        "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
-        "data-selected": dataAttr(cellState.isSelected),
         "data-focused": dataAttr(cellState.isFocused),
         "data-disabled": dataAttr(cellState.isDisabled),
         "data-unavailable": dataAttr(cellState.isUnavailable),
-        "data-invalid": dataAttr(cellState.isInvalid),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
-        onContextMenu(event) {
-          event.preventDefault()
-        },
         onFocus() {
           if (disabled) return
-          send({ type: "CELL.FOCUS", date: props.date })
+          send({ type: "CELL.FOCUS", cell: "day", date: value })
         },
         onPointerUp() {
-          send({ type: "CELL.CLICK", date: props.date })
+          send({ type: "CELL.CLICK", cell: "day", date: value })
         },
       })
     },
 
-    getMonthTriggerProps(props: { month: number }) {
-      const { month } = props
-      const isFocused = focusedDate.month === month
+    getMonthCellProps(props: { value: number }) {
+      const { value } = props
+      const isFocused = focusedValue.month === value
       return normalize.element({
         ...parts.cellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, month.toString()),
+        role: "gridcell",
+        id: dom.getCellTriggerId(state.context, value.toString()),
         "data-focused": dataAttr(isFocused),
-        role: "button",
+        "data-type": "month",
+        "data-value": value,
         tabIndex: isFocused ? 0 : -1,
-        // onFocus() {
-        //   if (disabled) return
-        //   send({ type: "CELL.FOCUS", date })
-        // },
-        // onPointerUp() {
-        //   send({ type: "CELL.CLICK", date })
-        // },
+        onFocus() {
+          if (disabled) return
+          send({ type: "CELL.FOCUS", cell: "month", date: value })
+        },
+        onPointerUp() {
+          send({ type: "CELL.CLICK", cell: "month", date: value })
+        },
       })
     },
 
-    getYearTriggerProps(props: { year: number }) {
-      const { year } = props
-      const isFocused = focusedDate.year === year
+    getYearCellProps(props: { value: number }) {
+      const { value } = props
+      const isFocused = focusedValue.year === value
       return normalize.element({
         ...parts.cellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, year.toString()),
+        role: "gridcell",
+        id: dom.getCellTriggerId(state.context, value.toString()),
         "data-focused": dataAttr(isFocused),
-        "data-value": year,
-        role: "button",
+        "data-value": value,
+        "data-type": "year",
         tabIndex: isFocused ? 0 : -1,
-        // onFocus() {
-        //   if (disabled) return
-        //   send({ type: "CELL.FOCUS", date })
-        // },
-        // onPointerUp() {
-        //   send({ type: "CELL.CLICK", date })
-        // },
+        onFocus() {
+          if (disabled) return
+          send({ type: "CELL.FOCUS", cell: "month", date: value })
+        },
+        onPointerUp() {
+          send({ type: "CELL.CLICK", cell: "month", date: value })
+        },
       })
     },
 
-    nextTriggerProps: normalize.button({
-      ...parts.nextTrigger.attrs,
-      id: dom.getNextTriggerId(state.context),
-      type: "button",
-      onClick() {
-        send("GOTO.NEXT")
-      },
-      "aria-label": "TODO",
-      disabled: !state.context.isNextVisibleRangeValid,
-    }),
+    getNextTriggerProps(props: TriggerProps = {}) {
+      const { view = "day" } = props
+      return normalize.button({
+        ...parts.nextTrigger.attrs,
+        id: dom.getNextTriggerId(state.context),
+        type: "button",
+        "aria-label": `Next ${view}`,
+        disabled: !state.context.isNextVisibleRangeValid,
+        onClick() {
+          send("GOTO.NEXT")
+        },
+      })
+    },
 
-    prevTriggerProps: normalize.button({
-      ...parts.prevTrigger.attrs,
-      id: dom.getPrevTriggerId(state.context),
-      type: "button",
-      onClick() {
-        send("GOTO.PREV")
-      },
-      "aria-label": "TODO",
-      disabled: !state.context.isPrevVisibleRangeValid,
-    }),
+    getPrevTriggerProps(props: TriggerProps = {}) {
+      const { view = "day" } = props
+      return normalize.button({
+        ...parts.prevTrigger.attrs,
+        id: dom.getPrevTriggerId(state.context),
+        type: "button",
+        "aria-label": `Previous ${view}`,
+        disabled: !state.context.isPrevVisibleRangeValid,
+        onClick() {
+          send("GOTO.PREV")
+        },
+      })
+    },
+
+    getHeaderProps(props: { view: DateView }) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.header.attrs,
+        "data-type": view,
+        id: dom.getHeaderId(state.context),
+      })
+    },
 
     clearTriggerProps: normalize.button({
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       type: "button",
-      hidden: state.context.value == null,
+      hidden: !state.context.value.length,
       onClick() {
         send("VALUE.CLEAR")
       },
@@ -293,8 +326,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
+    viewTriggerProps: normalize.button({
+      ...parts.viewTrigger.attrs,
+      id: dom.getViewTriggerId(state.context),
+      type: "button",
+      onClick() {
+        send("VIEW.CHANGE")
+      },
+    }),
+
     inputProps: normalize.input({
-      ...parts.field.attrs,
+      ...parts.input.attrs,
       id: dom.getInputId(state.context),
       autoComplete: "off",
       autoCorrect: "off",

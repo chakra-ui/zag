@@ -1235,7 +1235,7 @@ main > .toggle[data-pressed] {
 }
 
 [data-scope="date-picker"][data-part="cell-trigger"][data-outside-range] {
-  display: none;
+  visibility: hidden;
 }
 
 [data-scope="date-picker"][data-part="cell-trigger"][data-selected] {

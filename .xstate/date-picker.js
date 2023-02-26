@@ -24,14 +24,17 @@ const fetchMachine = createMachine({
     "VALUE.SET": {
       actions: ["setSelectedDate", "setFocusedDate"]
     },
+    "FOCUS.SET": {
+      actions: ["setFocusedDate"]
+    },
     "VALUE.CLEAR": {
       actions: ["clearSelectedDate", "clearFocusedDate"]
     },
     "GOTO.NEXT": {
-      actions: ["focusPreviousPage"]
+      actions: ["focusNextPage"]
     },
     "GOTO.PREV": {
-      actions: ["focusNextPage"]
+      actions: ["focusPreviousPage"]
     }
   },
   on: {
@@ -87,7 +90,8 @@ const fetchMachine = createMachine({
           target: "focused"
         }
       }
-    }
+    },
+    "open:range": {}
   }
 }, {
   actions: {

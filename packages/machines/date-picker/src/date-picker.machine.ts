@@ -22,28 +22,26 @@ import { getFormatterFn } from "./date-formatter"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
-function getInitialState(ctx: UserDefinedContext) {
+function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
-
   const numOfMonths = ctx.numOfMonths || 1
   const visibleDuration = { months: numOfMonths }
-
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
-
   return {
     id: "1",
-    view: "day",
+    view: "day" as const,
     locale,
     timeZone,
     numOfMonths,
     focusedValue,
     startValue,
-    value: null,
+    activeIndex: 0,
+    value: [],
     valueText: "",
-    selectionMode: "single",
-  } as MachineContext
+    selectionMode: "single" as const,
+  }
 }
 
 export function machine(userContext: UserDefinedContext) {
@@ -52,7 +50,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "datepicker",
       initial: "focused",
-      context: getInitialState(ctx),
+      context: getContext(ctx),
       computed: {
         adjustFn: (ctx) => getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max),
         isInteractive: (ctx) => !ctx.disabled && !ctx.readonly,
@@ -82,14 +80,17 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.SET": {
           actions: ["setSelectedDate", "setFocusedDate"],
         },
+        "FOCUS.SET": {
+          actions: ["setFocusedDate"],
+        },
         "VALUE.CLEAR": {
           actions: ["clearSelectedDate", "clearFocusedDate"],
         },
         "GOTO.NEXT": {
-          actions: ["focusPreviousPage"],
+          actions: ["focusNextPage"],
         },
         "GOTO.PREV": {
-          actions: ["focusNextPage"],
+          actions: ["focusPreviousPage"],
         },
       },
 
@@ -144,6 +145,8 @@ export function machine(userContext: UserDefinedContext) {
             },
           },
         },
+
+        "open:range": {},
       },
     },
     {
@@ -152,17 +155,17 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         setupLiveRegion(ctx) {
-          ctx.announcer = createLiveRegion({
-            level: "assertive",
-            document: dom.getDoc(ctx),
-          })
+          const doc = dom.getDoc(ctx)
+          ctx.announcer = createLiveRegion({ level: "assertive", document: doc })
           return () => ctx.announcer?.destroy?.()
         },
       },
       actions: {
         setValueText(ctx) {
-          if (!ctx.value) return
-          ctx.valueText = formatSelectedDate(ctx.value, null, getFormatterFn(ctx.locale), false, ctx.timeZone)
+          if (!ctx.value.length) return
+          ctx.valueText = ctx.value
+            .map((date) => formatSelectedDate(date, null, getFormatterFn(ctx.locale), false, ctx.timeZone))
+            .join(", ")
         },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueText, 3000)
@@ -178,7 +181,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusSelectedDate(ctx) {
           if (!ctx.value) return
-          ctx.focusedValue = ctx.value
+          ctx.focusedValue = ctx.value[0]
         },
         setFocusedDate(ctx, evt) {
           ctx.focusedValue = evt.date
@@ -187,7 +190,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value = evt.date
         },
         selectFocusedDate(ctx) {
-          ctx.value = ctx.focusedValue.copy()
+          ctx.value[ctx.activeIndex] = ctx.focusedValue.copy()
         },
         adjustStartDate(ctx) {
           const { startDate } = ctx.adjustFn({
@@ -255,7 +258,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = section.focusedDate
         },
         clearSelectedDate(ctx) {
-          ctx.value = null
+          ctx.value = []
         },
         clearFocusedDate(ctx) {
           ctx.focusedValue = getTodayDate(ctx.timeZone)
