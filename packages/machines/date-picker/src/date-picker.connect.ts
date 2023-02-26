@@ -175,10 +175,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             PageDown(event) {
               send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey })
             },
-            HOME() {
+            Home() {
               send("GRID.HOME")
             },
-            END() {
+            End() {
               send("GRID.END")
             },
           }
@@ -215,6 +215,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
         "data-focused": dataAttr(cellState.isFocused),
+        "data-selected": dataAttr(cellState.isSelected),
         "data-disabled": dataAttr(cellState.isDisabled),
         "data-unavailable": dataAttr(cellState.isUnavailable),
         "data-outside-range": dataAttr(cellState.isOutsideRange),

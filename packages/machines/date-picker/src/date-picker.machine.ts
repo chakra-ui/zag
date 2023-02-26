@@ -104,7 +104,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDate", "focusSelectedDate"],
+              actions: ["setViewToDay", "focusSelectedDate"],
             },
             "INPUT.TYPE": {},
           },
@@ -140,6 +140,12 @@ export function machine(userContext: UserDefinedContext) {
             "GRID.PAGE_DOWN": {
               actions: ["focusNextSection"],
             },
+            "GRID.HOME": {
+              actions: ["focusFirstDay"],
+            },
+            "GRID.END": {
+              actions: ["focusLastDay"],
+            },
             "TRIGGER.CLICK": {
               target: "focused",
             },
@@ -161,6 +167,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        setViewToDay(ctx) {
+          ctx.view = "day"
+        },
         setValueText(ctx) {
           if (!ctx.value.length) return
           ctx.valueText = ctx.value
@@ -180,14 +189,14 @@ export function machine(userContext: UserDefinedContext) {
           restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
         },
         focusSelectedDate(ctx) {
-          if (!ctx.value) return
+          if (!ctx.value.length) return
           ctx.focusedValue = ctx.value[0]
         },
         setFocusedDate(ctx, evt) {
           ctx.focusedValue = evt.date
         },
         setSelectedDate(ctx, evt) {
-          ctx.value = evt.date
+          ctx.value[ctx.activeIndex] = evt.date
         },
         selectFocusedDate(ctx) {
           ctx.value[ctx.activeIndex] = ctx.focusedValue.copy()
@@ -210,6 +219,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         setNextDate(ctx) {
           ctx.focusedValue = getNextDay(ctx.focusedValue)
+        },
+        focusFirstDay(ctx) {
+          ctx.focusedValue = ctx.startValue.copy()
+        },
+        focusLastDay(ctx) {
+          ctx.focusedValue = ctx.endValue.copy()
         },
         focusPreviousDay(ctx) {
           ctx.focusedValue = ctx.focusedValue.subtract({ days: 1 })

@@ -51,7 +51,7 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["setViewToDate", "focusSelectedDate"]
+          actions: ["setViewToDay", "focusSelectedDate"]
         },
         "INPUT.TYPE": {}
       }
@@ -85,6 +85,12 @@ const fetchMachine = createMachine({
         },
         "GRID.PAGE_DOWN": {
           actions: ["focusNextSection"]
+        },
+        "GRID.HOME": {
+          actions: ["focusFirstDay"]
+        },
+        "GRID.END": {
+          actions: ["focusLastDay"]
         },
         "TRIGGER.CLICK": {
           target: "focused"
