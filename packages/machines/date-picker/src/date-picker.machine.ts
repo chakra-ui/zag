@@ -17,6 +17,7 @@ import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
+import { dispatchSelectValueEvent } from "@zag-js/form-utils"
 import { memoize } from "proxy-memoize"
 import { getFormatterFn } from "./date-formatter"
 import { dom } from "./date-picker.dom"
@@ -65,7 +66,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["focusCell", "adjustStartDate", "syncElements"],
+        focusedValue: ["focusCell", "adjustStartDate", "syncSelectElements"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
       },
@@ -284,17 +285,12 @@ export function machine(userContext: UserDefinedContext) {
         clearFocusedDate(ctx) {
           ctx.focusedValue = getTodayDate(ctx.timeZone)
         },
-        syncElements(ctx) {
+        syncSelectElements(ctx) {
           const yearSelect = dom.getYearSelectEl(ctx)
+          dispatchSelectValueEvent(yearSelect, ctx.focusedValue.year.toString())
+
           const monthSelect = dom.getMonthSelectEl(ctx)
-
-          if (!yearSelect || !monthSelect) return
-
-          const year = ctx.focusedValue.year
-          const month = ctx.focusedValue.month
-
-          yearSelect.value = year.toString()
-          monthSelect.value = month.toString()
+          dispatchSelectValueEvent(monthSelect, ctx.focusedValue.month.toString())
         },
       },
       compareFns: {

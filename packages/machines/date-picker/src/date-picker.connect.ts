@@ -342,6 +342,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoComplete: "off",
       autoCorrect: "off",
       spellCheck: "false",
+      placeholder: "mm/dd/yyyy",
+      onFocus() {
+        send("INPUT.FOCUS")
+      },
       onBlur(event) {
         send({ type: "INPUT.BLUR", value: event.target.value })
       },
@@ -349,6 +353,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (event.key === "Enter") {
           send("INPUT.ENTER")
         }
+      },
+      onChange(event) {
+        send({ type: "INPUT.CHANGE", value: event.target.value })
       },
     }),
 
