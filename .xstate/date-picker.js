@@ -12,7 +12,12 @@ const {
 const fetchMachine = createMachine({
   id: "datepicker",
   initial: "focused",
-  context: {},
+  context: {
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false
+  },
   activities: ["setupLiveRegion"],
   on: {
     "GRID.POINTER_DOWN": {
@@ -30,12 +35,24 @@ const fetchMachine = createMachine({
     "VALUE.CLEAR": {
       actions: ["clearSelectedDate", "clearFocusedDate"]
     },
-    "GOTO.NEXT": {
+    "GOTO.NEXT": [{
+      cond: "isYearView",
+      actions: ["focusNextDecade"]
+    }, {
+      cond: "isMonthView",
+      actions: ["focusNextYear"]
+    }, {
       actions: ["focusNextPage"]
-    },
-    "GOTO.PREV": {
+    }],
+    "GOTO.PREV": [{
+      cond: "isYearView",
+      actions: ["focusPreviousDecade"]
+    }, {
+      cond: "isMonthView",
+      actions: ["focusPreviousYear"]
+    }, {
       actions: ["focusPreviousPage"]
-    }
+    }]
   },
   on: {
     UPDATE_CONTEXT: {
@@ -53,7 +70,12 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["setViewToDay", "focusSelectedDate"]
         },
-        "INPUT.TYPE": {}
+        "INPUT.CHANGE": {
+          actions: ["focusTypedDate"]
+        },
+        "INPUT.ENTER": {
+          actions: ["selectFocusedDate"]
+        }
       }
     },
     open: {
@@ -107,5 +129,8 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isYearView": ctx => ctx["isYearView"],
+    "isMonthView": ctx => ctx["isMonthView"]
+  }
 });

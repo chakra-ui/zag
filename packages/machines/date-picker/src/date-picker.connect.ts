@@ -129,6 +129,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     /**
+     * Returns the start and end years of the decade.
+     */
+    getDecade() {
+      const years = getDecadeRange(focusedValue.year)
+      return { start: years.at(0), end: years.at(-1) }
+    },
+
+    /**
      * Returns the months of the year based on the columns.
      * Represented as an array of arrays of months.
      */
@@ -219,10 +227,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(cellState.isDisabled),
         "data-unavailable": dataAttr(cellState.isUnavailable),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
-        onFocus() {
-          if (disabled) return
-          send({ type: "CELL.FOCUS", cell: "day", date: value })
-        },
         onPointerUp() {
           send({ type: "CELL.CLICK", cell: "day", date: value })
         },
@@ -240,10 +244,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-type": "month",
         "data-value": value,
         tabIndex: isFocused ? 0 : -1,
-        onFocus() {
-          if (disabled) return
-          send({ type: "CELL.FOCUS", cell: "month", date: value })
-        },
         onPointerUp() {
           send({ type: "CELL.CLICK", cell: "month", date: value })
         },
@@ -261,10 +261,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
         "data-type": "year",
         tabIndex: isFocused ? 0 : -1,
-        onFocus() {
-          if (disabled) return
-          send({ type: "CELL.FOCUS", cell: "year", date: value })
-        },
         onPointerUp() {
           send({ type: "CELL.CLICK", cell: "year", date: value })
         },
@@ -280,7 +276,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": `Next ${view}`,
         disabled: !state.context.isNextVisibleRangeValid,
         onClick() {
-          send("GOTO.NEXT")
+          send({ type: "GOTO.NEXT", view })
         },
       })
     },
@@ -294,7 +290,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": `Previous ${view}`,
         disabled: !state.context.isPrevVisibleRangeValid,
         onClick() {
-          send("GOTO.PREV")
+          send({ type: "GOTO.PREV", view })
         },
       })
     },

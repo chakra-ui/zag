@@ -44,7 +44,7 @@ export default function Page() {
             </select>
 
             <select {...api.yearSelectProps}>
-              {getYearsRange({ from: 2000, to: 2030 }).map((year, i) => (
+              {getYearsRange({ from: 100, to: 10_000 }).map((year, i) => (
                 <option key={i} value={year}>
                   {year}
                 </option>
@@ -74,33 +74,51 @@ export default function Page() {
           </table>
 
           <div style={{ display: "flex", gap: "40px", marginTop: "24px" }}>
-            <table>
-              <tbody>
-                {api.getMonths({ columns: 4 }).map((months, row) => (
-                  <tr key={row}>
-                    {months.map((month, index) => (
-                      <td key={index} {...api.getMonthCellProps({ value: row * 4 + index + 1 })}>
-                        {month}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
+                <span>{api.focusedValue.year}</span>
+                <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
+              </div>
 
-            <table>
-              <tbody>
-                {api.getYears({ columns: 4 }).map((years, row) => (
-                  <tr key={row}>
-                    {years.map((year, index) => (
-                      <td key={index} {...api.getYearCellProps({ value: year })}>
-                        {year}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              <table>
+                <tbody>
+                  {api.getMonths({ columns: 4 }).map((months, row) => (
+                    <tr key={row}>
+                      {months.map((month, index) => (
+                        <td key={index} {...api.getMonthCellProps({ value: row * 4 + index + 1 })}>
+                          {month}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
+                <span>
+                  {api.getDecade().start} - {api.getDecade().end}
+                </span>
+                <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
+              </div>
+
+              <table>
+                <tbody>
+                  {api.getYears({ columns: 4 }).map((years, row) => (
+                    <tr key={row}>
+                      {years.map((year, index) => (
+                        <td key={index} {...api.getYearCellProps({ value: year })}>
+                          {year}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </main>

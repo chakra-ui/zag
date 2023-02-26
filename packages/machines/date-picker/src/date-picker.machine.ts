@@ -13,7 +13,6 @@ import {
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
 } from "@zag-js/date-utils"
-import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
@@ -66,7 +65,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["focusCell", "adjustStartDate", "syncSelectElements"],
+        focusedValue: ["adjustStartDate", "syncSelectElements"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
       },
@@ -87,12 +86,16 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.CLEAR": {
           actions: ["clearSelectedDate", "clearFocusedDate"],
         },
-        "GOTO.NEXT": {
-          actions: ["focusNextPage"],
-        },
-        "GOTO.PREV": {
-          actions: ["focusPreviousPage"],
-        },
+        "GOTO.NEXT": [
+          { guard: "isYearView", actions: ["focusNextDecade"] },
+          { guard: "isMonthView", actions: ["focusNextYear"] },
+          { actions: ["focusNextPage"] },
+        ],
+        "GOTO.PREV": [
+          { guard: "isYearView", actions: ["focusPreviousDecade"] },
+          { guard: "isMonthView", actions: ["focusPreviousYear"] },
+          { actions: ["focusPreviousPage"] },
+        ],
       },
 
       states: {
@@ -107,7 +110,12 @@ export function machine(userContext: UserDefinedContext) {
               target: "open",
               actions: ["setViewToDay", "focusSelectedDate"],
             },
-            "INPUT.TYPE": {},
+            "INPUT.CHANGE": {
+              actions: ["focusTypedDate"],
+            },
+            "INPUT.ENTER": {
+              actions: ["selectFocusedDate"],
+            },
           },
         },
 
@@ -158,7 +166,8 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isDayView: (ctx) => ctx.view === "day",
+        isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
+        isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
       },
       activities: {
         setupLiveRegion(ctx) {
@@ -214,12 +223,6 @@ export function machine(userContext: UserDefinedContext) {
             startDate: ctx.startValue,
           })
           ctx.startValue = startDate
-        },
-        focusCell(ctx) {
-          raf(() => {
-            const cell = dom.getFocusedCell(ctx)
-            cell?.focus({ preventScroll: true })
-          })
         },
         setPreviousDate(ctx) {
           ctx.focusedValue = getPreviousDay(ctx.focusedValue)
@@ -278,6 +281,18 @@ export function machine(userContext: UserDefinedContext) {
 
           if (!section) return
           ctx.focusedValue = section.focusedDate
+        },
+        focusNextYear(ctx) {
+          ctx.focusedValue = ctx.focusedValue.add({ years: 1 })
+        },
+        focusPreviousYear(ctx) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ years: 1 })
+        },
+        focusNextDecade(ctx) {
+          ctx.focusedValue = ctx.focusedValue.add({ years: 10 })
+        },
+        focusPreviousDecade(ctx) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ years: 10 })
         },
         clearSelectedDate(ctx) {
           ctx.value = []
