@@ -1,3 +1,4 @@
+import { isWeekend } from "@internationalized/date"
 import {
   getDecadeRange,
   getMonthNames,
@@ -104,6 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     getCellState(props: DayCellProps) {
       const { value, disabled } = props
+
       const cellState = {
         isInvalid: isDateInvalid(value, min, max),
         isDisabled: isDateDisabled(value, startValue, endValue, min, max),
@@ -112,6 +114,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
         isFocused: isDateEqual(value, focusedValue),
         isToday: isTodayDate(value, timeZone),
+        isWeekend: isWeekend(value, locale),
         get isSelectable() {
           return !cellState.isDisabled && !cellState.isUnavailable
         },
@@ -227,6 +230,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(cellState.isDisabled),
         "data-unavailable": dataAttr(cellState.isUnavailable),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
+        "data-weekend": dataAttr(cellState.isWeekend),
         onPointerUp() {
           send({ type: "CELL.CLICK", cell: "day", date: value })
         },
