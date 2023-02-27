@@ -1,9 +1,9 @@
 import { expect, describe, test, vi } from "vitest"
 import type { UserDefinedContext } from "@zag-js/tags-input/src/tags-input.types"
-import { setupVue } from "./tags-input.vue"
+import { setupFramework } from "./tags-input.setup"
 import { click, clickOutside, getByPart } from "../utils"
 
-describe.each([["vue", setupVue]])("@zag-js/tags-input %s", (_, setupFramework) => {
+describe("@zag-js/tags-input", () => {
   function setupTest(userContext: Partial<UserDefinedContext> = {}) {
     setupFramework(userContext)
 

@@ -8,11 +8,12 @@
     "strict": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
+    "isolatedModules": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "declaration": true,
     "inlineSourceMap": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
   },
   "exclude": ["node_modules"]
 }

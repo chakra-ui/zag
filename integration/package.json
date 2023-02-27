@@ -1,20 +1,27 @@
 {
   "private": true,
   "scripts": {
-    "test": "vitest"
+    "test": "pnpm test-react & pnpm test-vue",
+    "test-react": "vitest --config vite.config.react.ts",
+    "test-vue": "vitest --config vite.config.vue.ts"
   },
   "dependencies": {
     "@testing-library/dom": "9.0.0",
     "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",
     "@testing-library/vue": "6.6.1",
     "@types/testing-library__jest-dom": "5.14.5",
+    "@vitejs/plugin-react": "3.1.0",
     "@vitejs/plugin-vue": "4.0.0",
-    "@vitejs/plugin-vue-jsx": "^3.0.0",
+    "@vitejs/plugin-vue-jsx": "3.0.0",
     "@vue/compiler-sfc": "3.2.47",
+    "@zag-js/react": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/vue": "workspace:*",
     "jsdom": "21.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "typescript": "4.9.5",
     "vite": "4.1.4",
     "vitest": "0.28.5",

@@ -632,15 +632,20 @@ importers:
     specifiers:
       '@testing-library/dom': 9.0.0
       '@testing-library/jest-dom': 5.16.5
+      '@testing-library/react': 14.0.0
       '@testing-library/user-event': 14.4.3
       '@testing-library/vue': 6.6.1
       '@types/testing-library__jest-dom': 5.14.5
+      '@vitejs/plugin-react': 3.1.0
       '@vitejs/plugin-vue': 4.0.0
-      '@vitejs/plugin-vue-jsx': ^3.0.0
+      '@vitejs/plugin-vue-jsx': 3.0.0
       '@vue/compiler-sfc': 3.2.47
+      '@zag-js/react': workspace:*
       '@zag-js/tags-input': workspace:*
       '@zag-js/vue': workspace:*
       jsdom: 21.1.0
+      react: 18.2.0
+      react-dom: 18.2.0
       typescript: 4.9.5
       vite: 4.1.4
       vitest: 0.28.5
@@ -648,15 +653,20 @@ importers:
     dependencies:
       '@testing-library/dom': 9.0.0
       '@testing-library/jest-dom': 5.16.5
+      '@testing-library/react': 14.0.0_biqbaboplfbrettd7655fr4n2y
       '@testing-library/user-event': 14.4.3_@testing-library+dom@9.0.0
       '@testing-library/vue': 6.6.1_a2ihsjreowava2sm4iorpgwkom
       '@types/testing-library__jest-dom': 5.14.5
+      '@vitejs/plugin-react': 3.1.0_vite@4.1.4
       '@vitejs/plugin-vue': 4.0.0_vite@4.1.4+vue@3.2.47
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.1.4+vue@3.2.47
       '@vue/compiler-sfc': 3.2.47
+      '@zag-js/react': link:../packages/frameworks/react
       '@zag-js/tags-input': link:../packages/machines/tags-input
       '@zag-js/vue': link:../packages/frameworks/vue
       jsdom: 21.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       typescript: 4.9.5
       vite: 4.1.4
       vitest: 0.28.5_jsdom@21.1.0
@@ -1823,7 +1833,6 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       '@babel/helper-plugin-utils': 7.20.2
-    dev: true
 
   /@babel/plugin-transform-react-jsx-source/7.19.6_@babel+core@7.21.0:
     resolution: {integrity: sha512-RpAi004QyMNisst/pvSanoRdJ4q+jMCWyk9zdw/CyLB9j8RXEahodR6l2GyttDRyEVWZtbN+TpLiHJ3t34LbsQ==}
@@ -1833,7 +1842,6 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       '@babel/helper-plugin-utils': 7.20.2
-    dev: true
 
   /@babel/plugin-transform-typescript/7.21.0_@babel+core@7.21.0:
     resolution: {integrity: sha512-xo///XTPp3mDzTtrqXoBlK9eiAYW3wv9JXglcn/u1bi60RW11dEUxIgA8cbnDhutS1zacjMRmAwxE0gMklLnZg==}
@@ -3314,6 +3322,20 @@ packages:
       redent: 3.0.0
     dev: false
 
+  /@testing-library/react/14.0.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-S04gSNJbYE30TlIMLTzv6QCTzt9AqIF5y6s6SzVFILNcNvbV/jU96GeiTPillGQo+Ny64M/5PV7klNYYgv5Dfg==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@testing-library/dom': 9.0.0
+      '@types/react-dom': 18.0.11
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /@testing-library/user-event/14.4.3_@testing-library+dom@9.0.0:
     resolution: {integrity: sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==}
     engines: {node: '>=12', npm: '>=6'}
@@ -3460,13 +3482,11 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/react-dom/18.0.11:
     resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==}
     dependencies:
       '@types/react': 18.0.28
-    dev: true
 
   /@types/react/18.0.28:
     resolution: {integrity: sha512-RD0ivG1kEztNBdoAK7lekI9M+azSnitIn85h4iOiaLjaTrMjzslhaqCGaI4IyCJ1RljWiLCEu4jyrLLgqxBTew==}
@@ -3474,11 +3494,9 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
-    dev: true
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
-    dev: true
 
   /@types/semver/6.2.3:
     resolution: {integrity: sha512-KQf+QAMWKMrtBMsB8/24w53tEsxllMj6TuA80TT/5igJalLI/zm0L3oXRbIAl4Ohfc85gyHX/jhMwsVkmhLU4A==}
@@ -3655,7 +3673,6 @@ packages:
       vite: 4.1.4
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /@vitejs/plugin-vue-jsx/3.0.0_vite@4.1.4+vue@3.2.47:
     resolution: {integrity: sha512-vurkuzgac5SYuxd2HUZqAFAWGTF10diKBwJNbCvnWijNZfXd+7jMtqjPFbGt7idOJUn584fP1Ar9j/GN2jQ3Ew==}
@@ -6855,7 +6872,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.14
-    dev: true
 
   /make-error/1.3.6:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
@@ -7822,7 +7838,6 @@ packages:
   /react-refresh/0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /react-spinners/0.13.8_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-3e+k56lUkPj0vb5NDXPVFAOkPC//XyhKPJjvcGjyMNPWsBKpplfeyialP74G7H7+It7KzhtET+MvGqbKgAqpZA==}

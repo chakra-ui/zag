@@ -4,7 +4,7 @@ import type { UserDefinedContext } from "@zag-js/tags-input/src/tags-input.types
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent, computed, h } from "vue"
 
-export function setupVue(userContext: Partial<UserDefinedContext> = {}) {
+export function setupFramework(userContext: Partial<UserDefinedContext> = {}) {
   const testComponent = defineComponent({
     setup() {
       const [state, send] = useMachine(
