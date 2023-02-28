@@ -275,7 +275,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.button({
         ...parts.nextTrigger.attrs,
-        id: dom.getNextTriggerId(state.context),
+        id: dom.getNextTriggerId(state.context, view),
         type: "button",
         "aria-label": `Next ${view}`,
         disabled: !state.context.isNextVisibleRangeValid,
@@ -289,7 +289,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.button({
         ...parts.prevTrigger.attrs,
-        id: dom.getPrevTriggerId(state.context),
+        id: dom.getPrevTriggerId(state.context, view),
         type: "button",
         "aria-label": `Previous ${view}`,
         disabled: !state.context.isPrevVisibleRangeValid,

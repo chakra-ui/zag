@@ -1,5 +1,5 @@
 import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./date-picker.types"
+import type { DateView, MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => `datepicker:${ctx.id}`,
@@ -7,8 +7,8 @@ export const dom = createScope({
   getHeaderId: (ctx: Ctx) => `datepicker:${ctx.id}:header`,
 
   getCellTriggerId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-${id}`,
-  getPrevTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:prev-trigger`,
-  getNextTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:next-trigger`,
+  getPrevTriggerId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:prev:${view}`,
+  getNextTriggerId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:next:${view}`,
   getViewTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:view-trigger`,
   getClearTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:clear-trigger`,
 

@@ -26,12 +26,8 @@ export default function Page() {
           </output>
           <div data-scope="date-picker" data-part="control">
             <input {...api.inputProps} />
-            <button {...api.triggerProps}>🗓</button>
-          </div>
-          <div>
-            <button {...api.getPrevTriggerProps()}>Prev</button>
-            <button {...api.getNextTriggerProps()}>Next</button>
             <button {...api.clearTriggerProps}>❌</button>
+            <button {...api.triggerProps}>🗓</button>
           </div>
 
           <div style={{ marginBlock: "20px" }}>
@@ -52,30 +48,41 @@ export default function Page() {
             </select>
           </div>
 
-          <table {...api.getGridProps()}>
-            <thead>
-              <tr>
-                {api.weekDays.map((day, i) => (
-                  <th key={i}>{day}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {api.weeks.map((week, i) => (
-                <tr key={i}>
-                  {week.map((date, i) => (
-                    <td key={i} {...api.getDayCellProps({ value: date })}>
-                      {date.day}
-                    </td>
+          <div style={{ maxWidth: "230px" }}>
+            <div
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
+            >
+              <button {...api.getPrevTriggerProps()}>Prev</button>
+              <span>{api.getMonths().at(api.focusedValue.month - 1)}</span>
+              <button {...api.getNextTriggerProps()}>Next</button>
+            </div>
+            <table {...api.getGridProps()}>
+              <thead>
+                <tr>
+                  {api.weekDays.map((day, i) => (
+                    <th key={i}>{day}</th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {api.weeks.map((week, i) => (
+                  <tr key={i}>
+                    {week.map((date, i) => (
+                      <td key={i} {...api.getDayCellProps({ value: date })}>
+                        {date.day}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div style={{ display: "flex", gap: "40px", marginTop: "24px" }}>
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
+              >
                 <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
                 <span>{api.focusedValue.year}</span>
                 <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
@@ -97,7 +104,9 @@ export default function Page() {
             </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
+              >
                 <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
                 <span>
                   {api.getDecade().start} - {api.getDecade().end}
