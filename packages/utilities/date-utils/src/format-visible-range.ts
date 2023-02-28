@@ -1,22 +1,22 @@
 import { CalendarDate, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
 import { formatRange } from "./format-range"
-import { getDateFormatter, getMonthFormatter } from "./get-formatter"
-import type { GetFormatterFn } from "./types"
+import { getMonthFormatter } from "./get-month-formatter"
+import { getDayFormatter } from "./get-day-formatter"
 
 export function formatVisibleRange(
   startDate: CalendarDate | null,
   endDate: CalendarDate | null,
-  getFormatter: GetFormatterFn,
-  isAria: boolean,
+  locale: string,
   timeZone: string,
+  isAria: boolean,
 ) {
   if (!startDate) return ""
 
   let start = startDate
   let end = endDate ?? startDate
 
-  let monthFormatter = getMonthFormatter(start, end, getFormatter, timeZone)
-  let dateFormatter = getDateFormatter(start, end, getFormatter, timeZone)
+  let monthFormatter = getMonthFormatter(locale, timeZone)
+  let dateFormatter = getDayFormatter(locale, timeZone)
 
   if (!isSameDay(start, startOfMonth(start))) {
     return isAria

@@ -109,10 +109,10 @@ const fetchMachine = createMachine({
           actions: ["focusNextSection"]
         },
         "GRID.HOME": {
-          actions: ["focusFirstDay"]
+          actions: ["focusSectionStart"]
         },
         "GRID.END": {
-          actions: ["focusLastDay"]
+          actions: ["focusSectionEnd"]
         },
         "TRIGGER.CLICK": {
           target: "focused"

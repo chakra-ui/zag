@@ -10,7 +10,7 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(datePickerControls)
 
-  const [state, send] = useMachine(datePicker.machine({ id: useId() }), {
+  const [state, send] = useMachine(datePicker.machine({ id: useId(), locale: "en" }), {
     context: controls.context,
   })
 
@@ -40,7 +40,7 @@ export default function Page() {
             </select>
 
             <select {...api.yearSelectProps}>
-              {getYearsRange({ from: 100, to: 10_000 }).map((year, i) => (
+              {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
                 <option key={i} value={year}>
                   {year}
                 </option>

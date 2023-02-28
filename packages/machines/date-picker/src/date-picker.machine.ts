@@ -17,7 +17,6 @@ import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
-import { getFormatterFn } from "./date-formatter"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
@@ -149,10 +148,10 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["focusNextSection"],
             },
             "GRID.HOME": {
-              actions: ["focusFirstDay"],
+              actions: ["focusSectionStart"],
             },
             "GRID.END": {
-              actions: ["focusLastDay"],
+              actions: ["focusSectionEnd"],
             },
             "TRIGGER.CLICK": {
               target: "focused",
@@ -187,9 +186,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setValueText(ctx) {
           if (!ctx.value.length) return
-          ctx.valueText = ctx.value
-            .map((date) => formatSelectedDate(date, null, getFormatterFn(ctx.locale), false, ctx.timeZone))
-            .join(", ")
+          ctx.valueText = ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)).join(", ")
         },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueText, 3000)
@@ -229,12 +226,6 @@ export function machine(userContext: UserDefinedContext) {
         setNextDate(ctx) {
           ctx.focusedValue = getNextDay(ctx.focusedValue)
         },
-        focusFirstDay(ctx) {
-          ctx.focusedValue = ctx.startValue.copy()
-        },
-        focusLastDay(ctx) {
-          ctx.focusedValue = ctx.endValue.copy()
-        },
         focusPreviousDay(ctx) {
           ctx.focusedValue = ctx.focusedValue.subtract({ days: 1 })
         },
@@ -252,6 +243,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusPreviousPage(ctx) {
           ctx.focusedValue = ctx.focusedValue.subtract(ctx.visibleDuration)
+        },
+        focusSectionStart(ctx) {
+          ctx.focusedValue = ctx.startValue.copy()
+        },
+        focusSectionEnd(ctx) {
+          ctx.focusedValue = ctx.endValue.copy()
         },
         focusNextSection(ctx, evt) {
           const section = getNextSection(

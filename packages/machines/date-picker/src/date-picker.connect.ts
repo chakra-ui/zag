@@ -1,5 +1,6 @@
 import { isWeekend } from "@internationalized/date"
 import {
+  getDayFormatter,
   getDecadeRange,
   getMonthNames,
   getTodayDate,
@@ -17,7 +18,6 @@ import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
-import { getFormatter } from "./date-formatter"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
@@ -45,9 +45,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The days of the week. Represented as an array of strings.
      */
-    weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) => {
-      return getFormatter(locale, { weekday: "short" }).format(day)
-    }),
+    weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) =>
+      getDayFormatter.short(locale, timeZone).format(day),
+    ),
 
     /**
      * The human readable text for the visible range of dates.
@@ -161,7 +161,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getGridId(state.context),
         "aria-readonly": ariaAttr(readonly),
         "aria-disabled": ariaAttr(disabled),
+        "aria-multiselectable": ariaAttr(state.context.selectionMode !== "single"),
         "data-type": view,
+        dir: state.context.dir,
         tabIndex: -1,
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
@@ -303,6 +305,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.element({
         ...parts.header.attrs,
+        "aria-hidden": true,
+        dir: state.context.dir,
         "data-type": view,
         id: dom.getHeaderId(state.context),
       })
@@ -342,6 +346,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoComplete: "off",
       autoCorrect: "off",
       spellCheck: "false",
+      dir: state.context.dir,
       placeholder: "mm/dd/yyyy",
       onFocus() {
         send("INPUT.FOCUS")
@@ -363,6 +368,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.monthSelect.attrs,
       id: dom.getMonthSelectId(state.context),
       "aria-label": "Select month",
+      dir: state.context.dir,
       defaultValue: focusedValue.month,
       onChange: (e) => {
         api.focusMonth(parseInt(e.target.value))
@@ -373,6 +379,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.yearSelect.attrs,
       id: dom.getYearSelectId(state.context),
       "aria-label": "Select year",
+      dir: state.context.dir,
       defaultValue: focusedValue.year,
       onChange: (e) => {
         api.focusYear(parseInt(e.target.value))

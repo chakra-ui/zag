@@ -20,7 +20,6 @@ type PublicContext = DirectionProperty &
     value: CalendarDate[]
     focusedValue: CalendarDate
     numOfMonths?: number
-    startOfWeek?: number
     onChange?: (details: ChangeDetails) => void
     onFocusChange?: (details: ChangeDetails) => void
     onViewChange?: (details: { value: DateView }) => void
