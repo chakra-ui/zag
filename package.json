@@ -38,6 +38,7 @@
     "version": "changeset version",
     "release": "changeset publish",
     "test": "vitest",
+    "integration": "pnpm --filter \"./integration/**\" test",
     "visualize": "tsx scripts/visualize.ts --all",
     "changelog": "tsx scripts/changelog.ts",
     "changelog-latest": "tsx scripts/changelog.ts --latest",
