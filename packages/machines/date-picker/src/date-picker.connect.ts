@@ -92,16 +92,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to set the selected month.
      */
     focusMonth(month: number) {
-      const date = setMonth(focusedValue ?? getTodayDate(timeZone), month)
-      send({ type: "FOCUS.SET", date })
+      const value = setMonth(focusedValue ?? getTodayDate(timeZone), month)
+      send({ type: "FOCUS.SET", value })
     },
 
     /**
      * Function to set the selected year.
      */
     focusYear(year: number) {
-      const date = setYear(focusedValue ?? getTodayDate(timeZone), year)
-      send({ type: "FOCUS.SET", date })
+      const value = setYear(focusedValue ?? getTodayDate(timeZone), year)
+      send({ type: "FOCUS.SET", value })
     },
 
     /**
