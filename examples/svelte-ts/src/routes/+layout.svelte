@@ -8,6 +8,10 @@
 	const routes = routesData.sort((a, b) => a.label.localeCompare(b.label));
 </script>
 
+<svelte:head>
+	<title>Svelte Machines</title>
+</svelte:head>
+
 <div class="page">
 	<aside class="nav">
 		<header>Zagjs</header>
