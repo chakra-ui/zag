@@ -6,7 +6,7 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: any) {
-  const { actions, state: hydratedState } = options !== null && options !== void 0 ? options : {}
+  const { actions, state: hydratedState } = options ?? {}
 
   const _machine = typeof machine === "function" ? machine() : machine
   const service = _machine.start(hydratedState)
