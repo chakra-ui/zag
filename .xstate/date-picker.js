@@ -65,7 +65,16 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
-      tags: "closed"
+      tags: "closed",
+      on: {
+        "INPUT.FOCUS": {
+          target: "focused"
+        },
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["setViewToDay", "focusSelectedDate"]
+        }
+      }
     },
     focused: {
       tags: "closed",
@@ -85,12 +94,6 @@ const fetchMachine = createMachine({
     open: {
       tags: "open",
       on: {
-        "CELL.FOCUS": {
-          actions: ["setFocusedDate"]
-        },
-        "GRID.ENTER": {
-          actions: ["selectFocusedDate"]
-        },
         "CELL.CLICK": [{
           cond: "isMonthView",
           actions: ["setFocusedMonth", "setViewToDay"]
@@ -100,6 +103,12 @@ const fetchMachine = createMachine({
         }, {
           actions: ["setFocusedDate", "setSelectedDate"]
         }],
+        "CELL.FOCUS": {
+          actions: ["setFocusedDate"]
+        },
+        "GRID.ENTER": {
+          actions: ["selectFocusedDate"]
+        },
         "GRID.ARROW_RIGHT": {
           actions: ["focusNextDay"]
         },

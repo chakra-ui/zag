@@ -99,6 +99,15 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           tags: "closed",
+          on: {
+            "INPUT.FOCUS": {
+              target: "focused",
+            },
+            "TRIGGER.CLICK": {
+              target: "open",
+              actions: ["setViewToDay", "focusSelectedDate"],
+            },
+          },
         },
 
         focused: {
@@ -120,17 +129,17 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: "open",
           on: {
+            "CELL.CLICK": [
+              { guard: "isMonthView", actions: ["setFocusedMonth", "setViewToDay"] },
+              { guard: "isYearView", actions: ["setFocusedYear", "setViewToMonth"] },
+              { actions: ["setFocusedDate", "setSelectedDate"] },
+            ],
             "CELL.FOCUS": {
               actions: ["setFocusedDate"],
             },
             "GRID.ENTER": {
               actions: ["selectFocusedDate"],
             },
-            "CELL.CLICK": [
-              { guard: "isMonthView", actions: ["setFocusedMonth", "setViewToDay"] },
-              { guard: "isYearView", actions: ["setFocusedYear", "setViewToMonth"] },
-              { actions: ["setFocusedDate", "setSelectedDate"] },
-            ],
             "GRID.ARROW_RIGHT": {
               actions: ["focusNextDay"],
             },
