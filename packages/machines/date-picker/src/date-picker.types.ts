@@ -25,6 +25,8 @@ type PublicContext = DirectionProperty &
     onViewChange?: (details: { value: DateView }) => void
     isDateUnavailable?: (date: DateValue) => boolean
     selectionMode: "single" | "multiple" | "range"
+    parse?: (value: string) => CalendarDate[]
+    format?: (value: CalendarDate[]) => string
   }
 
 export type DateView = "day" | "month" | "year"

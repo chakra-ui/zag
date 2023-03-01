@@ -48,12 +48,12 @@ export default function Page() {
             </select>
           </div>
 
-          <div style={{ maxWidth: "230px" }}>
+          <div hidden={api.view !== "day"} style={{ maxWidth: "230px" }}>
             <div
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
             >
               <button {...api.getPrevTriggerProps()}>Prev</button>
-              <span>{api.getMonths().at(api.focusedValue.month - 1)}</span>
+              <span {...api.viewTriggerProps}>{api.getMonths().at(api.focusedValue.month - 1)}</span>
               <button {...api.getNextTriggerProps()}>Next</button>
             </div>
             <table {...api.getGridProps()}>
@@ -79,12 +79,12 @@ export default function Page() {
           </div>
 
           <div style={{ display: "flex", gap: "40px", marginTop: "24px" }}>
-            <div>
+            <div hidden={api.view !== "month"}>
               <div
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
               >
                 <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
-                <span>{api.focusedValue.year}</span>
+                <span {...api.viewTriggerProps}>{api.focusedValue.year}</span>
                 <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
 
@@ -103,7 +103,7 @@ export default function Page() {
               </table>
             </div>
 
-            <div>
+            <div hidden={api.view !== "year"}>
               <div
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
               >

@@ -11,11 +11,15 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "datepicker",
-  initial: "focused",
+  initial: "open",
   context: {
     "isYearView": false,
     "isMonthView": false,
     "isYearView": false,
+    "isMonthView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isDayView": false,
     "isMonthView": false
   },
   activities: ["setupLiveRegion"],
@@ -87,9 +91,15 @@ const fetchMachine = createMachine({
         "GRID.ENTER": {
           actions: ["selectFocusedDate"]
         },
-        "CELL.CLICK": {
+        "CELL.CLICK": [{
+          cond: "isMonthView",
+          actions: ["setFocusedMonth", "setViewToDay"]
+        }, {
+          cond: "isYearView",
+          actions: ["setFocusedYear", "setViewToMonth"]
+        }, {
           actions: ["setFocusedDate", "setSelectedDate"]
-        },
+        }],
         "GRID.ARROW_RIGHT": {
           actions: ["focusNextDay"]
         },
@@ -116,10 +126,16 @@ const fetchMachine = createMachine({
         },
         "TRIGGER.CLICK": {
           target: "focused"
-        }
+        },
+        "VIEW.CHANGE": [{
+          cond: "isDayView",
+          actions: ["setViewToMonth", "invokeOnViewChange"]
+        }, {
+          cond: "isMonthView",
+          actions: ["setViewToYear", "invokeOnViewChange"]
+        }]
       }
-    },
-    "open:range": {}
+    }
   }
 }, {
   actions: {
@@ -131,6 +147,7 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isYearView": ctx => ctx["isYearView"],
-    "isMonthView": ctx => ctx["isMonthView"]
+    "isMonthView": ctx => ctx["isMonthView"],
+    "isDayView": ctx => ctx["isDayView"]
   }
 });

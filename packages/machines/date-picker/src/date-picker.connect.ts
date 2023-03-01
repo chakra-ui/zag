@@ -38,6 +38,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const api = {
     /**
+     * The current view of the date picker
+     */
+    view: state.context.view,
+    /**
      * The weeks of the month. Represented as an array of arrays of dates.
      */
     weeks: state.context.weeks,
@@ -151,6 +155,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
+      role: "application",
+      "aria-roledescription": "datepicker",
+      "aria-label": "calendar",
     }),
 
     getGridProps(props: { view?: DateView } = {}) {
@@ -158,6 +165,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.grid.attrs,
         role: "grid",
+        "aria-roledescription": (() => {
+          if (view === "year") return "calendar decade"
+          if (view === "month") return "calendar year"
+          else "calendar month"
+        })(),
         id: dom.getGridId(state.context),
         "aria-readonly": ariaAttr(readonly),
         "aria-disabled": ariaAttr(disabled),
@@ -221,6 +233,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "gridcell",
         tabIndex: cellState.isFocused ? 0 : -1,
         id: dom.getCellTriggerId(state.context, value.toString()),
+        // TODO: compute this aria-label
         "aria-label": value.toString(),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "aria-selected": ariaAttr(cellState.isSelected),
@@ -234,7 +247,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-outside-range": dataAttr(cellState.isOutsideRange),
         "data-weekend": dataAttr(cellState.isWeekend),
         onPointerUp() {
-          send({ type: "CELL.CLICK", cell: "day", date: value })
+          send({ type: "CELL.CLICK", cell: "day", value })
         },
       })
     },
@@ -251,7 +264,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
         tabIndex: isFocused ? 0 : -1,
         onPointerUp() {
-          send({ type: "CELL.CLICK", cell: "month", date: value })
+          send({ type: "CELL.CLICK", cell: "month", value })
         },
       })
     },
@@ -268,7 +281,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-type": "year",
         tabIndex: isFocused ? 0 : -1,
         onPointerUp() {
-          send({ type: "CELL.CLICK", cell: "year", date: value })
+          send({ type: "CELL.CLICK", cell: "year", value })
         },
       })
     },

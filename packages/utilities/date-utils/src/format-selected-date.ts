@@ -11,7 +11,7 @@ export function formatSelectedDate(
   let start = startDate
   let end = endDate ?? startDate
 
-  let formatter = getDayFormatter(start, locale, timeZone)
+  let formatter = getDayFormatter(locale, timeZone)
 
   if (isSameDay(start, end)) {
     return formatter.format(start.toDate(timeZone))

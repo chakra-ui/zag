@@ -47,7 +47,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
-      initial: "focused",
+      initial: "open",
       context: getContext(ctx),
       computed: {
         adjustFn: (ctx) => getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max),
@@ -126,9 +126,11 @@ export function machine(userContext: UserDefinedContext) {
             "GRID.ENTER": {
               actions: ["selectFocusedDate"],
             },
-            "CELL.CLICK": {
-              actions: ["setFocusedDate", "setSelectedDate"],
-            },
+            "CELL.CLICK": [
+              { guard: "isMonthView", actions: ["setFocusedMonth", "setViewToDay"] },
+              { guard: "isYearView", actions: ["setFocusedYear", "setViewToMonth"] },
+              { actions: ["setFocusedDate", "setSelectedDate"] },
+            ],
             "GRID.ARROW_RIGHT": {
               actions: ["focusNextDay"],
             },
@@ -156,16 +158,26 @@ export function machine(userContext: UserDefinedContext) {
             "TRIGGER.CLICK": {
               target: "focused",
             },
+            "VIEW.CHANGE": [
+              {
+                guard: "isDayView",
+                actions: ["setViewToMonth", "invokeOnViewChange"],
+              },
+              {
+                guard: "isMonthView",
+                actions: ["setViewToYear", "invokeOnViewChange"],
+              },
+            ],
           },
         },
-
-        "open:range": {},
       },
     },
     {
       guards: {
+        isDayView: (ctx, evt) => (evt.view || ctx.view) === "day",
         isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
         isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
+        isRangePicker: (ctx) => ctx.selectionMode === "range",
       },
       activities: {
         setupLiveRegion(ctx) {
@@ -205,10 +217,16 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = ctx.value[0]
         },
         setFocusedDate(ctx, evt) {
-          ctx.focusedValue = evt.date
+          ctx.focusedValue = evt.value
+        },
+        setFocusedMonth(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.set({ month: evt.value })
+        },
+        setFocusedYear(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.set({ year: evt.value })
         },
         setSelectedDate(ctx, evt) {
-          ctx.value[ctx.activeIndex] = evt.date
+          ctx.value[ctx.activeIndex] = evt.value
         },
         selectFocusedDate(ctx) {
           ctx.value[ctx.activeIndex] = ctx.focusedValue.copy()
