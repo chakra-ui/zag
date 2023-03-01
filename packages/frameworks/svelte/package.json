@@ -25,7 +25,8 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/core": "workspace:*"
+    "@zag-js/core": "workspace:*",
+    "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
     "svelte": "3.55.1",
