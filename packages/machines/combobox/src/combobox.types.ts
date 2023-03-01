@@ -139,7 +139,7 @@ type PublicContext = DirectionProperty &
     onClose?: () => void
     /**
      * Callback fired when an outside interaction was triggered.
-     * Useful for preventing blur on editable when composing it with other components.
+     * Useful for preventing blur on combobox when composing it with other components.
      */
     onInteractOutside?(event: InteractOutsideEvent): void
     /**
