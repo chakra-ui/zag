@@ -16,15 +16,23 @@
 </script>
 
 <main class="accordion">
-  <div use:zag={api.rootProps}>
+  <div use:zag={api.rootProps.handlers} {...api.rootProps.attributes}>
     {#each accordionData as item}
-      <div use:zag={api.getItemProps({ value: item.id })}>
+      <div use:zag={api.getItemProps({ value: item.id }).handlers} {...api.getItemProps({ value: item.id }).attributes}>
         <h3>
-          <button data-testid={`${item.id}:trigger`} use:zag={api.getTriggerProps({ value: item.id })}>
+          <button
+            data-testid={`${item.id}:trigger`}
+            use:zag={api.getTriggerProps({ value: item.id }).handlers}
+            {...api.getTriggerProps({ value: item.id }).attributes}
+          >
             {item.label}
           </button>
         </h3>
-        <div data-testid={`${item.id}:content`} use:zag={api.getContentProps({ value: item.id })}>
+        <div
+          data-testid={`${item.id}:content`}
+          use:zag={api.getContentProps({ value: item.id }).handlers}
+          {...api.getContentProps({ value: item.id }).attributes}
+        >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua.
         </div>
