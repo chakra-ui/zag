@@ -82,6 +82,7 @@ importers:
 
   examples/next-ts:
     specifiers:
+      '@internationalized/date': ^3.0.2
       '@types/form-serialize': 0.7.2
       '@types/node': 18.14.0
       '@types/react': 18.0.28
@@ -150,6 +151,7 @@ importers:
       react-spinners: 0.13.8
       typescript: 4.9.5
     dependencies:
+      '@internationalized/date': 3.0.2
       '@zag-js/accordion': link:../../packages/machines/accordion
       '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden

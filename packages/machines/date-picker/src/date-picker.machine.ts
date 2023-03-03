@@ -40,6 +40,7 @@ function getContext(ctx: UserDefinedContext) {
     value: [],
     valueText: "",
     selectionMode: "single" as const,
+    ...(ctx as any),
   }
 }
 

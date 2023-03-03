@@ -1,3 +1,4 @@
+import { CalendarDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
@@ -9,10 +10,17 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-
-  const [state, send] = useMachine(datePicker.machine({ id: useId(), locale: "en" }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    datePicker.machine({
+      id: useId(),
+      locale: "en",
+      max: new CalendarDate(2023, 4, 20),
+      min: new CalendarDate(2023, 1, 20),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = datePicker.connect(state, send, normalizeProps)
 
