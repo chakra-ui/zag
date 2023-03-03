@@ -234,8 +234,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "gridcell",
         tabIndex: cellState.isFocused ? 0 : -1,
         id: dom.getCellTriggerId(state.context, value.toString()),
-        // TODO: compute this aria-label
-        "aria-label": value.toString(),
+        "aria-label": getDayFormatter(locale, timeZone).format(value.toDate(timeZone)),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "aria-selected": ariaAttr(cellState.isSelected),
         "aria-invalid": ariaAttr(cellState.isInvalid),

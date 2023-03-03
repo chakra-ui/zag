@@ -13,6 +13,7 @@ import {
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
 } from "@zag-js/date-utils"
+import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
@@ -66,6 +67,7 @@ export function machine(userContext: UserDefinedContext) {
         focusedValue: ["adjustStartDate", "syncSelectElements"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
+        view: ["focusActiveCell"],
       },
 
       on: {
@@ -351,6 +353,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusNextYearColumn(ctx, evt) {
           ctx.focusedValue = ctx.focusedValue.add({ years: evt.columns })
+        },
+        focusActiveCell(ctx) {
+          raf(() => {
+            dom.getFocusedCell(ctx)?.focus()
+          })
         },
         syncSelectElements(ctx) {
           const year = dom.getYearSelectEl(ctx)
