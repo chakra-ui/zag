@@ -20,6 +20,17 @@ const fetchMachine = createMachine({
     "isMonthView": false,
     "isYearView": false,
     "isDayView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isDayView": false,
     "isMonthView": false
   },
   activities: ["setupLiveRegion"],
@@ -104,23 +115,54 @@ const fetchMachine = createMachine({
           actions: ["setFocusedDate", "setSelectedDate"]
         }],
         "CELL.FOCUS": {
+          cond: "isDayView",
           actions: ["setFocusedDate"]
         },
-        "GRID.ENTER": {
-          actions: ["selectFocusedDate"]
-        },
-        "GRID.ARROW_RIGHT": {
-          actions: ["focusNextDay"]
-        },
-        "GRID.ARROW_LEFT": {
+        "GRID.ENTER": [{
+          cond: "isMonthView",
+          actions: "setViewToDay"
+        }, {
+          cond: "isYearView",
+          actions: "setViewToMonth"
+        }, {
+          actions: "selectFocusedDate"
+        }],
+        "GRID.ARROW_RIGHT": [{
+          cond: "isMonthView",
+          actions: "focusNextMonth"
+        }, {
+          cond: "isYearView",
+          actions: "focusNextYear"
+        }, {
+          actions: "focusNextDay"
+        }],
+        "GRID.ARROW_LEFT": [{
+          cond: "isMonthView",
+          actions: "focusPreviousMonth"
+        }, {
+          cond: "isYearView",
+          actions: "focusPreviousYear"
+        }, {
           actions: ["focusPreviousDay"]
-        },
-        "GRID.ARROW_UP": {
+        }],
+        "GRID.ARROW_UP": [{
+          cond: "isMonthView",
+          actions: "focusPreviousMonthColumn"
+        }, {
+          cond: "isYearView",
+          actions: "focusPreviousYearColumn"
+        }, {
           actions: ["focusPreviousWeek"]
-        },
-        "GRID.ARROW_DOWN": {
+        }],
+        "GRID.ARROW_DOWN": [{
+          cond: "isMonthView",
+          actions: "focusNextMonthColumn"
+        }, {
+          cond: "isYearView",
+          actions: "focusNextYearColumn"
+        }, {
           actions: ["focusNextWeek"]
-        },
+        }],
         "GRID.PAGE_UP": {
           actions: ["focusPreviousSection"]
         },

@@ -3,7 +3,7 @@ import type { DateView, MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => `datepicker:${ctx.id}`,
-  getGridId: (ctx: Ctx) => `datepicker:${ctx.id}:grid`,
+  getGridId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:grid:${view}`,
   getHeaderId: (ctx: Ctx) => `datepicker:${ctx.id}:header`,
 
   getCellTriggerId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-${id}`,
@@ -19,9 +19,9 @@ export const dom = createScope({
   getMonthSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:month-select`,
   getYearSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:year-select`,
 
-  getGridEl: (ctx: Ctx) => dom.getById(ctx, dom.getGridId(ctx)),
-  getFocusedCell: (ctx: Ctx) => {
-    const grid = dom.getGridEl(ctx)
+  getGridEl: (ctx: Ctx, view = ctx.view) => dom.getById(ctx, dom.getGridId(ctx, view)),
+  getFocusedCell: (ctx: Ctx, view = ctx.view) => {
+    const grid = dom.getGridEl(ctx, view)
     return grid?.querySelector<HTMLElement>("[data-part=cell-trigger][data-focused]")
   },
   getYearSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getYearSelectId(ctx)),

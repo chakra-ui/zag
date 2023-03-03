@@ -160,17 +160,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "calendar",
     }),
 
-    getGridProps(props: { view?: DateView } = {}) {
-      const { view = "day" } = props
+    getGridProps(props: { view?: DateView; columns?: number } = {}) {
+      const { view = "day", columns = view === "day" ? 7 : 4 } = props
       return normalize.element({
         ...parts.grid.attrs,
         role: "grid",
+        "data-columns": columns,
         "aria-roledescription": (() => {
           if (view === "year") return "calendar decade"
           if (view === "month") return "calendar year"
           else "calendar month"
         })(),
-        id: dom.getGridId(state.context),
+        id: dom.getGridId(state.context, view),
         "aria-readonly": ariaAttr(readonly),
         "aria-disabled": ariaAttr(disabled),
         "aria-multiselectable": ariaAttr(state.context.selectionMode !== "single"),
@@ -180,31 +181,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             Enter() {
-              send("GRID.ENTER")
+              send({ type: "GRID.ENTER", view, columns })
             },
             ArrowLeft() {
-              send("GRID.ARROW_LEFT")
+              send({ type: "GRID.ARROW_LEFT", view, columns })
             },
             ArrowRight() {
-              send("GRID.ARROW_RIGHT")
+              send({ type: "GRID.ARROW_RIGHT", view, columns })
             },
             ArrowUp() {
-              send("GRID.ARROW_UP")
+              send({ type: "GRID.ARROW_UP", view, columns })
             },
             ArrowDown() {
-              send("GRID.ARROW_DOWN")
+              send({ type: "GRID.ARROW_DOWN", view, columns })
             },
             PageUp(event) {
-              send({ type: "GRID.PAGE_UP", larger: event.shiftKey })
+              send({ type: "GRID.PAGE_UP", larger: event.shiftKey, view, columns })
             },
             PageDown(event) {
-              send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey })
+              send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey, view, columns })
             },
             Home() {
-              send("GRID.HOME")
+              send({ type: "GRID.HOME", view, columns })
             },
             End() {
-              send("GRID.END")
+              send({ type: "GRID.END", view, columns })
             },
           }
 
@@ -217,10 +218,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onPointerDown() {
-          send({ type: "GRID.POINTER_DOWN" })
+          send({ type: "GRID.POINTER_DOWN", view })
         },
         onPointerUp() {
-          send({ type: "GRID.POINTER_UP" })
+          send({ type: "GRID.POINTER_UP", view })
         },
       })
     },

@@ -135,23 +135,34 @@ export function machine(userContext: UserDefinedContext) {
               { actions: ["setFocusedDate", "setSelectedDate"] },
             ],
             "CELL.FOCUS": {
+              guard: "isDayView",
               actions: ["setFocusedDate"],
             },
-            "GRID.ENTER": {
-              actions: ["selectFocusedDate"],
-            },
-            "GRID.ARROW_RIGHT": {
-              actions: ["focusNextDay"],
-            },
-            "GRID.ARROW_LEFT": {
-              actions: ["focusPreviousDay"],
-            },
-            "GRID.ARROW_UP": {
-              actions: ["focusPreviousWeek"],
-            },
-            "GRID.ARROW_DOWN": {
-              actions: ["focusNextWeek"],
-            },
+            "GRID.ENTER": [
+              { guard: "isMonthView", actions: "setViewToDay" },
+              { guard: "isYearView", actions: "setViewToMonth" },
+              { actions: "selectFocusedDate" },
+            ],
+            "GRID.ARROW_RIGHT": [
+              { guard: "isMonthView", actions: "focusNextMonth" },
+              { guard: "isYearView", actions: "focusNextYear" },
+              { actions: "focusNextDay" },
+            ],
+            "GRID.ARROW_LEFT": [
+              { guard: "isMonthView", actions: "focusPreviousMonth" },
+              { guard: "isYearView", actions: "focusPreviousYear" },
+              { actions: ["focusPreviousDay"] },
+            ],
+            "GRID.ARROW_UP": [
+              { guard: "isMonthView", actions: "focusPreviousMonthColumn" },
+              { guard: "isYearView", actions: "focusPreviousYearColumn" },
+              { actions: ["focusPreviousWeek"] },
+            ],
+            "GRID.ARROW_DOWN": [
+              { guard: "isMonthView", actions: "focusNextMonthColumn" },
+              { guard: "isYearView", actions: "focusNextYearColumn" },
+              { actions: ["focusNextWeek"] },
+            ],
             "GRID.PAGE_UP": {
               actions: ["focusPreviousSection"],
             },
@@ -230,6 +241,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         setFocusedMonth(ctx, evt) {
           ctx.focusedValue = ctx.focusedValue.set({ month: evt.value })
+        },
+        focusNextMonth(ctx) {
+          ctx.focusedValue = ctx.focusedValue.add({ months: 1 })
+        },
+        focusPreviousMonth(ctx) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ months: 1 })
         },
         setFocusedYear(ctx, evt) {
           ctx.focusedValue = ctx.focusedValue.set({ year: evt.value })
@@ -322,6 +339,18 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearFocusedDate(ctx) {
           ctx.focusedValue = getTodayDate(ctx.timeZone)
+        },
+        focusPreviousMonthColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ months: evt.columns })
+        },
+        focusNextMonthColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.add({ months: evt.columns })
+        },
+        focusPreviousYearColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ years: evt.columns })
+        },
+        focusNextYearColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.add({ years: evt.columns })
         },
         syncSelectElements(ctx) {
           const year = dom.getYearSelectEl(ctx)

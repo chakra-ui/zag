@@ -88,7 +88,7 @@ export default function Page() {
                 <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
 
-              <table>
+              <table {...api.getGridProps({ view: "month", columns: 4 })}>
                 <tbody>
                   {api.getMonths({ columns: 4 }).map((months, row) => (
                     <tr key={row}>
@@ -114,7 +114,7 @@ export default function Page() {
                 <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
               </div>
 
-              <table>
+              <table {...api.getGridProps({ view: "year", columns: 4 })}>
                 <tbody>
                   {api.getYears({ columns: 4 }).map((years, row) => (
                     <tr key={row}>
