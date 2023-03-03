@@ -4,7 +4,6 @@ import {
   formatSelectedDate,
   getAdjustedDateFn,
   getEndDate,
-  getMonthDates,
   getNextDay,
   getNextSection,
   getPreviousDay,
@@ -17,7 +16,6 @@ import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
-import { memoize } from "proxy-memoize"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
@@ -52,11 +50,9 @@ export function machine(userContext: UserDefinedContext) {
       initial: "open",
       context: getContext(ctx),
       computed: {
-        adjustFn: (ctx) => getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max),
         isInteractive: (ctx) => !ctx.disabled && !ctx.readonly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
-        weeks: memoize((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
         isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
         isNextVisibleRangeValid: (ctx) => !isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max),
@@ -265,11 +261,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value[ctx.activeIndex] = ctx.focusedValue.copy()
         },
         adjustStartDate(ctx) {
-          const { startDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue,
-            startDate: ctx.startValue,
-          })
+          const adjust = getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max)
+          const { startDate, focusedDate } = adjust({ focusedDate: ctx.focusedValue, startDate: ctx.startValue })
           ctx.startValue = startDate
+          ctx.focusedValue = focusedDate
         },
         setPreviousDate(ctx) {
           ctx.focusedValue = getPreviousDay(ctx.focusedValue)

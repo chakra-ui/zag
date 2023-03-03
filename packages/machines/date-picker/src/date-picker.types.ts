@@ -1,6 +1,5 @@
 import type { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
-import type { DateAdjustFn } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
@@ -45,14 +44,12 @@ type PrivateContext = Context<{
 
 type ComputedContext = Readonly<{
   endValue: CalendarDate
-  weeks: (CalendarDate | null)[][]
   isInteractive: boolean
   visibleDuration: DateDuration
   visibleRange: { start: CalendarDate; end: CalendarDate }
   isNextVisibleRangeValid: boolean
   isPrevVisibleRangeValid: boolean
   visibleRangeText: string
-  adjustFn: DateAdjustFn
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

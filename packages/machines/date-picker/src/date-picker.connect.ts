@@ -2,6 +2,7 @@ import { isWeekend } from "@internationalized/date"
 import {
   getDayFormatter,
   getDecadeRange,
+  getMonthDates,
   getMonthNames,
   getTodayDate,
   getWeekDates,
@@ -41,10 +42,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * The current view of the date picker
      */
     view: state.context.view,
+
     /**
      * The weeks of the month. Represented as an array of arrays of dates.
      */
-    weeks: state.context.weeks,
+    weeks: getMonthDates(state.context.startValue, state.context.visibleDuration, locale),
 
     /**
      * The days of the week. Represented as an array of strings.

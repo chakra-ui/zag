@@ -821,7 +821,6 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-      proxy-memoize: 2.0.2
     dependencies:
       '@internationalized/date': 3.0.2
       '@zag-js/anatomy': link:../../anatomy
@@ -834,7 +833,6 @@ importers:
       '@zag-js/text-selection': link:../../utilities/text-selection
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
-      proxy-memoize: 2.0.2
     devDependencies:
       clean-package: 2.2.0
 
@@ -7111,18 +7109,8 @@ packages:
       react-is: 16.13.1
     dev: true
 
-  /proxy-compare/2.4.0:
-    resolution: {integrity: sha512-FD8KmQUQD6Mfpd0hywCOzcon/dbkFP8XBd9F1ycbKtvVsfv6TsFUKJ2eC0Iz2y+KzlkdT1Z8SY6ZSgm07zOyqg==}
-    dev: false
-
   /proxy-compare/2.5.0:
     resolution: {integrity: sha512-f1us0OsVAJ3tdIMXGQx2lmseYS4YXe4W+sKF5g5ww/jV+5ogMadPt+sIZ+88Ga9kvMJsrRNWzCrKPpr6pMWYbA==}
-    dev: false
-
-  /proxy-memoize/2.0.2:
-    resolution: {integrity: sha512-g0nfJQ048mAGixyBt2urDN7vLaYMm+wlhju35kNrxEuJ49UjQsyMpr4qA9O5iR2xuGmzVDa3xH5tHds1t8vR7w==}
-    dependencies:
-      proxy-compare: 2.4.0
     dev: false
 
   /pseudomap/1.0.2:
