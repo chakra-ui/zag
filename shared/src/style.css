@@ -1251,10 +1251,6 @@ main > .toggle[data-pressed] {
   cursor: pointer;
 }
 
-[data-scope="date-picker"][data-literal] {
-  margin-inline: 3px;
-}
-
 [data-scope="date-picker"][data-part="control"] {
   display: flex;
   gap: 10px;
@@ -1262,13 +1258,8 @@ main > .toggle[data-pressed] {
   margin-bottom: 16px;
 }
 
-[data-scope="date-picker"][data-part="segment"] {
-  min-width: var(--min-width);
-}
-
-[data-scope="date-picker"][data-part="segment"]:focus {
-  background: blue;
-  color: white;
+[data-scope="date-picker"][data-part="cell-trigger"][data-today] {
+  color: purple;
 }
 
 /* -----------------------------------------------------------------------------
