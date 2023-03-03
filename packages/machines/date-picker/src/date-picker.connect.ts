@@ -3,6 +3,7 @@ import {
   getDayFormatter,
   getDecadeRange,
   getMonthDates,
+  getMonthFormatter,
   getMonthNames,
   getTodayDate,
   getWeekDates,
@@ -238,51 +239,81 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getCellTriggerId(state.context, value.toString()),
         "aria-label": getDayFormatter(locale, timeZone).format(value.toDate(timeZone)),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "data-disabled": dataAttr(!cellState.isSelectable),
         "aria-selected": ariaAttr(cellState.isSelected),
+        "data-selected": dataAttr(cellState.isSelected),
         "aria-invalid": ariaAttr(cellState.isInvalid),
         "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
         "data-focused": dataAttr(cellState.isFocused),
-        "data-selected": dataAttr(cellState.isSelected),
-        "data-disabled": dataAttr(cellState.isDisabled),
         "data-unavailable": dataAttr(cellState.isUnavailable),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
         "data-weekend": dataAttr(cellState.isWeekend),
         onPointerUp() {
+          if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
         },
       })
     },
 
+    getMonthCellState(props: { value: number }) {
+      const { value } = props
+      const normalized = focusedValue.set({ month: value })
+      const formatter = getMonthFormatter(locale, timeZone)
+      return {
+        isFocused: focusedValue.month === props.value,
+        isSelectable: !isDateInvalid(normalized, min, max),
+        valueText: formatter.format(normalized.toDate(timeZone)),
+      }
+    },
+
     getMonthCellProps(props: { value: number }) {
       const { value } = props
-      const isFocused = focusedValue.month === value
+      const cellState = api.getMonthCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
         role: "gridcell",
         id: dom.getCellTriggerId(state.context, value.toString()),
-        "data-focused": dataAttr(isFocused),
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "data-disabled": dataAttr(!cellState.isSelectable),
+        "data-focused": dataAttr(cellState.isFocused),
+        "aria-label": cellState.valueText,
         "data-type": "month",
         "data-value": value,
-        tabIndex: isFocused ? 0 : -1,
+        tabIndex: cellState.isFocused ? 0 : -1,
         onPointerUp() {
+          if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
       })
     },
 
+    getYearCellState(props: { value: number }) {
+      const { value } = props
+      const normalized = focusedValue.set({ year: value })
+      return {
+        isFocused: focusedValue.year === props.value,
+        isSelectable: !isDateInvalid(normalized, min, max),
+        valueText: value.toString(),
+      }
+    },
+
     getYearCellProps(props: { value: number }) {
       const { value } = props
-      const isFocused = focusedValue.year === value
+      const cellState = api.getYearCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
         role: "gridcell",
         id: dom.getCellTriggerId(state.context, value.toString()),
-        "data-focused": dataAttr(isFocused),
+        "data-focused": dataAttr(cellState.isFocused),
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "data-disabled": dataAttr(!cellState.isSelectable),
+        "aria-label": cellState.valueText,
         "data-value": value,
         "data-type": "year",
-        tabIndex: isFocused ? 0 : -1,
+        tabIndex: cellState.isFocused ? 0 : -1,
         onPointerUp() {
+          if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "year", value })
         },
       })
