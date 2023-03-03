@@ -30,6 +30,10 @@ const fetchMachine = createMachine({
     "isYearView": false,
     "isMonthView": false,
     "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
     "isDayView": false,
     "isMonthView": false
   },
@@ -169,12 +173,24 @@ const fetchMachine = createMachine({
         "GRID.PAGE_DOWN": {
           actions: ["focusNextSection"]
         },
-        "GRID.HOME": {
+        "GRID.HOME": [{
+          cond: "isMonthView",
+          actions: ["focusMonthStart"]
+        }, {
+          cond: "isYearView",
+          actions: ["focusYearStart"]
+        }, {
           actions: ["focusSectionStart"]
-        },
-        "GRID.END": {
+        }],
+        "GRID.END": [{
+          cond: "isMonthView",
+          actions: ["focusMonthEnd"]
+        }, {
+          cond: "isYearView",
+          actions: ["focusYearEnd"]
+        }, {
           actions: ["focusSectionEnd"]
-        },
+        }],
         "TRIGGER.CLICK": {
           target: "focused"
         },

@@ -171,12 +171,16 @@ export function machine(userContext: UserDefinedContext) {
             "GRID.PAGE_DOWN": {
               actions: ["focusNextSection"],
             },
-            "GRID.HOME": {
-              actions: ["focusSectionStart"],
-            },
-            "GRID.END": {
-              actions: ["focusSectionEnd"],
-            },
+            "GRID.HOME": [
+              { guard: "isMonthView", actions: ["focusMonthStart"] },
+              { guard: "isYearView", actions: ["focusYearStart"] },
+              { actions: ["focusSectionStart"] },
+            ],
+            "GRID.END": [
+              { guard: "isMonthView", actions: ["focusMonthEnd"] },
+              { guard: "isYearView", actions: ["focusYearEnd"] },
+              { actions: ["focusSectionEnd"] },
+            ],
             "TRIGGER.CLICK": {
               target: "focused",
             },
@@ -353,6 +357,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusNextYearColumn(ctx, evt) {
           ctx.focusedValue = ctx.focusedValue.add({ years: evt.columns })
+        },
+        focusMonthStart(ctx) {
+          ctx.focusedValue = ctx.focusedValue.set({ month: 1 })
+        },
+        focusMonthEnd(ctx) {
+          ctx.focusedValue = ctx.focusedValue.set({ month: 12 })
         },
         focusActiveCell(ctx) {
           raf(() => {
