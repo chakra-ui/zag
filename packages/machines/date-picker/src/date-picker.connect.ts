@@ -107,7 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Returns the state details for a given cell.
      */
-    getCellState(props: DayCellProps) {
+    getDayCellState(props: DayCellProps) {
       const { value, disabled } = props
 
       const cellState = {
@@ -120,7 +120,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isToday: isTodayDate(value, timeZone),
         isWeekend: isWeekend(value, locale),
         get isSelectable() {
-          return !cellState.isDisabled && !cellState.isUnavailable
+          return !cellState.isInvalid && !cellState.isDisabled && !cellState.isUnavailable
         },
       }
       return cellState
@@ -228,7 +228,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getDayCellProps(props: DayCellProps) {
       const { value } = props
-      const cellState = api.getCellState(props)
+      const cellState = api.getDayCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
         role: "gridcell",
