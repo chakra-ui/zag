@@ -1262,6 +1262,11 @@ main > .toggle[data-pressed] {
   color: purple;
 }
 
+[data-scope="date-picker"][data-part="cell-trigger"][data-unavailable] {
+  text-decoration: line-through;
+  opacity: 0.4;
+}
+
 /* -----------------------------------------------------------------------------
 * Carousel
 * -----------------------------------------------------------------------------*/
