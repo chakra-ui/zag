@@ -2,14 +2,24 @@
   "name": "@zag-js/switch",
   "version": "0.0.0",
   "description": "Core logic for the switch widget implemented as a state machine",
-  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "switch"],
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "switch"
+  ],
   "author": "Abraham Aremu <anubra266@gmail.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-    "main": "src/index.ts",
+  "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/switch",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src",
     "start": "pnpm build --watch",
