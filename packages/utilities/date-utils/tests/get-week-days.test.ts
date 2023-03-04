@@ -1,13 +1,13 @@
 import { parseDate } from "@internationalized/date"
 import { describe, expect, test } from "vitest"
-import { getMonthDates, getWeekDates } from "../src"
+import { getMonthDates, getWeekDays } from "../src"
 
 const timeZone = "UTC"
 const locale = "en-US"
 
 describe("Date utilities", () => {
   test("should get week dates", () => {
-    expect(getWeekDates(parseDate("2023-01-10"), timeZone, locale)).toMatchInlineSnapshot(`
+    expect(getWeekDays(parseDate("2023-01-10"), timeZone, locale)).toMatchInlineSnapshot(`
       [
         2023-01-08T00:00:00.000Z,
         2023-01-09T00:00:00.000Z,

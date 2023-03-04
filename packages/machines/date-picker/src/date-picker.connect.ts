@@ -7,7 +7,7 @@ import {
   getMonthFormatter,
   getMonthNames,
   getTodayDate,
-  getWeekDates,
+  getWeekDays,
   isDateDisabled,
   isDateEqual,
   isDateInvalid,
@@ -53,7 +53,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The days of the week. Represented as an array of strings.
      */
-    weekDays: getWeekDates(getTodayDate(timeZone), timeZone, locale).map((day: Date) =>
+    weekDays: getWeekDays(getTodayDate(timeZone), timeZone, locale).map((day: Date) =>
       getDayFormatter.short(locale, timeZone).format(day),
     ),
 
