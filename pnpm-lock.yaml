@@ -1209,6 +1209,7 @@ importers:
 
   packages/machines/switch:
     specifiers:
+      '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -1217,6 +1218,7 @@ importers:
       '@zag-js/visually-hidden': workspace:*
       clean-package: 2.2.0
     dependencies:
+      '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils
