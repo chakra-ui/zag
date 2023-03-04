@@ -164,8 +164,10 @@ export const selectControls = defineControls({
 })
 
 export const datePickerControls = defineControls({
+  readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  selectionMode: { type: "select", options: ["single", "multiple", "range"] as const, defaultValue: "single" },
 })
 
 export const transitionControls = defineControls({

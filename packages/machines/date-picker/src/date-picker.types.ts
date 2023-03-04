@@ -12,20 +12,19 @@ type PublicContext = DirectionProperty &
     locale: string
     timeZone: string
     disabled?: boolean
-    readonly?: boolean
+    readOnly?: boolean
     min?: CalendarDate
     max?: CalendarDate
     activeIndex: number
     value: CalendarDate[]
     focusedValue: CalendarDate
     numOfMonths?: number
+    startOfWeek?: number
     onChange?: (details: ChangeDetails) => void
     onFocusChange?: (details: ChangeDetails) => void
     onViewChange?: (details: { value: DateView }) => void
     isDateUnavailable?: (date: DateValue) => boolean
     selectionMode: "single" | "multiple" | "range"
-    parse?: (value: string) => CalendarDate[]
-    format?: (value: CalendarDate[]) => string
   }
 
 export type DateView = "day" | "month" | "year"
@@ -67,5 +66,5 @@ export type DayCellProps = {
 
 export type MachineState = {
   tags: "open" | "closed"
-  value: "idle" | "focused" | "open" | "open:range"
+  value: "idle" | "focused" | "open"
 }
