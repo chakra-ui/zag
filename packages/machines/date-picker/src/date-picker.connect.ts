@@ -446,19 +446,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       dir: state.context.dir,
       placeholder: "mm/dd/yyyy",
+      defaultValue: state.context.inputValue,
       onFocus() {
         send("INPUT.FOCUS")
       },
       onBlur(event) {
-        send({ type: "INPUT.BLUR", value: event.target.value })
+        send({ type: "INPUT.BLUR", value: event.currentTarget.value })
       },
       onKeyDown(event) {
         if (event.key === "Enter") {
-          send("INPUT.ENTER")
+          send({ type: "INPUT.ENTER", value: event.currentTarget.value })
         }
       },
       onChange(event) {
-        send({ type: "INPUT.CHANGE", value: event.target.value })
+        send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
       },
     }),
 

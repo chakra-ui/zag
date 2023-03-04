@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "datepicker",
-  initial: "open",
+  initial: "focused",
   context: {
     "isYearView": false,
     "isMonthView": false,
@@ -93,10 +93,10 @@ const fetchMachine = createMachine({
           actions: ["setViewToDay", "focusSelectedDate"]
         },
         "INPUT.CHANGE": {
-          actions: ["focusTypedDate"]
+          actions: ["parseInputValue"]
         },
         "INPUT.ENTER": {
-          actions: ["selectFocusedDate"]
+          actions: ["parseInputValue", "selectFocusedDate"]
         }
       }
     },

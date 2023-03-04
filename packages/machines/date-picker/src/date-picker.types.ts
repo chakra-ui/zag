@@ -99,6 +99,7 @@ type PrivateContext = Context<{
   hasFocus?: boolean
   announcer?: LiveRegion
   valueText: string
+  inputValue: string
 }>
 
 type ComputedContext = Readonly<{

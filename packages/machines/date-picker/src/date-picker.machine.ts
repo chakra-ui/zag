@@ -13,6 +13,7 @@ import {
   getTodayDate,
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
+  parseDateString,
 } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
@@ -39,6 +40,7 @@ function getContext(ctx: UserDefinedContext) {
     activeIndex: 0,
     value: [],
     valueText: "",
+    inputValue: "",
     selectionMode: "single" as const,
     ...(ctx as any),
   }
@@ -49,7 +51,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
-      initial: "open",
+      initial: "focused",
       context: getContext(ctx),
       computed: {
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
@@ -119,10 +121,10 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setViewToDay", "focusSelectedDate"],
             },
             "INPUT.CHANGE": {
-              actions: ["focusTypedDate"],
+              actions: ["parseInputValue"],
             },
             "INPUT.ENTER": {
-              actions: ["selectFocusedDate"],
+              actions: ["parseInputValue", "selectFocusedDate"],
             },
           },
         },
@@ -390,6 +392,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnViewChange(ctx) {
           ctx.onViewChange?.({ value: ctx.view })
+        },
+        parseInputValue(ctx, evt) {
+          ctx.inputValue = evt.value
+          const parsedValue = parseDateString(ctx.inputValue)
+          if (!parsedValue) return
+          ctx.focusedValue = parsedValue
         },
       },
       compareFns: {
