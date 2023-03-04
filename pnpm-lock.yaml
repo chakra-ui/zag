@@ -98,6 +98,7 @@ importers:
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
+      '@zag-js/docs': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/editable': workspace:*
@@ -130,6 +131,7 @@ importers:
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
       '@zag-js/store': workspace:*
+      '@zag-js/switch': workspace:*
       '@zag-js/tabbable': workspace:*
       '@zag-js/tabs': workspace:*
       '@zag-js/tags-input': workspace:*
@@ -162,6 +164,7 @@ importers:
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
+      '@zag-js/docs': link:../../packages/docs
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
       '@zag-js/editable': link:../../packages/machines/editable
@@ -194,6 +197,7 @@ importers:
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
       '@zag-js/store': link:../../packages/store
+      '@zag-js/switch': link:../../packages/machines/switch
       '@zag-js/tabbable': link:../../packages/utilities/tabbable
       '@zag-js/tabs': link:../../packages/machines/tabs
       '@zag-js/tags-input': link:../../packages/machines/tags-input
@@ -236,6 +240,7 @@ importers:
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
+      '@zag-js/docs': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/editable': workspace:*
@@ -267,6 +272,7 @@ importers:
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
       '@zag-js/store': workspace:*
+      '@zag-js/switch': workspace:*
       '@zag-js/tabbable': workspace:*
       '@zag-js/tabs': workspace:*
       '@zag-js/tags-input': workspace:*
@@ -295,6 +301,7 @@ importers:
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
+      '@zag-js/docs': link:../../packages/docs
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
       '@zag-js/editable': link:../../packages/machines/editable
@@ -326,6 +333,7 @@ importers:
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
       '@zag-js/store': link:../../packages/store
+      '@zag-js/switch': link:../../packages/machines/switch
       '@zag-js/tabbable': link:../../packages/utilities/tabbable
       '@zag-js/tabs': link:../../packages/machines/tabs
       '@zag-js/tags-input': link:../../packages/machines/tags-input
@@ -361,6 +369,7 @@ importers:
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
+      '@zag-js/docs': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/editable': workspace:*
@@ -393,6 +402,7 @@ importers:
       '@zag-js/solid': workspace:*
       '@zag-js/splitter': workspace:*
       '@zag-js/store': workspace:*
+      '@zag-js/switch': workspace:*
       '@zag-js/tabbable': workspace:*
       '@zag-js/tabs': workspace:*
       '@zag-js/tags-input': workspace:*
@@ -422,6 +432,7 @@ importers:
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
+      '@zag-js/docs': link:../../packages/docs
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
       '@zag-js/editable': link:../../packages/machines/editable
@@ -454,6 +465,7 @@ importers:
       '@zag-js/solid': link:../../packages/frameworks/solid
       '@zag-js/splitter': link:../../packages/machines/splitter
       '@zag-js/store': link:../../packages/store
+      '@zag-js/switch': link:../../packages/machines/switch
       '@zag-js/tabbable': link:../../packages/utilities/tabbable
       '@zag-js/tabs': link:../../packages/machines/tabs
       '@zag-js/tags-input': link:../../packages/machines/tags-input
@@ -495,6 +507,7 @@ importers:
       '@zag-js/date-utils': workspace:*
       '@zag-js/dialog': workspace:*
       '@zag-js/dismissable': workspace:*
+      '@zag-js/docs': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/editable': workspace:*
@@ -526,6 +539,7 @@ importers:
       '@zag-js/slider': workspace:*
       '@zag-js/splitter': workspace:*
       '@zag-js/store': workspace:*
+      '@zag-js/switch': workspace:*
       '@zag-js/tabbable': workspace:*
       '@zag-js/tabs': workspace:*
       '@zag-js/tags-input': workspace:*
@@ -560,6 +574,7 @@ importers:
       '@zag-js/date-utils': link:../../packages/utilities/date-utils
       '@zag-js/dialog': link:../../packages/machines/dialog
       '@zag-js/dismissable': link:../../packages/utilities/dismissable
+      '@zag-js/docs': link:../../packages/docs
       '@zag-js/dom-event': link:../../packages/utilities/dom-event
       '@zag-js/dom-query': link:../../packages/utilities/dom-query
       '@zag-js/editable': link:../../packages/machines/editable
@@ -591,6 +606,7 @@ importers:
       '@zag-js/slider': link:../../packages/machines/slider
       '@zag-js/splitter': link:../../packages/machines/splitter
       '@zag-js/store': link:../../packages/store
+      '@zag-js/switch': link:../../packages/machines/switch
       '@zag-js/tabbable': link:../../packages/utilities/tabbable
       '@zag-js/tabs': link:../../packages/machines/tabs
       '@zag-js/tags-input': link:../../packages/machines/tags-input
@@ -1188,6 +1204,25 @@ importers:
       '@zag-js/number-utils': link:../../utilities/number
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
+    devDependencies:
+      clean-package: 2.2.0
+
+  packages/machines/switch:
+    specifiers:
+      '@zag-js/core': workspace:*
+      '@zag-js/dom-query': workspace:*
+      '@zag-js/form-utils': workspace:*
+      '@zag-js/types': workspace:*
+      '@zag-js/utils': workspace:*
+      '@zag-js/visually-hidden': workspace:*
+      clean-package: 2.2.0
+    dependencies:
+      '@zag-js/core': link:../../core
+      '@zag-js/dom-query': link:../../utilities/dom-query
+      '@zag-js/form-utils': link:../../utilities/form-utils
+      '@zag-js/types': link:../../types
+      '@zag-js/utils': link:../../utilities/core
+      '@zag-js/visually-hidden': link:../../utilities/visually-hidden
     devDependencies:
       clean-package: 2.2.0
 
