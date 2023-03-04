@@ -2,8 +2,10 @@ import { createMachine } from "@zag-js/core"
 import {
   alignDate,
   formatSelectedDate,
+  formatVisibleRange,
   getAdjustedDateFn,
   getEndDate,
+  getFormatter,
   getNextDay,
   getNextSection,
   getPreviousDay,
@@ -50,10 +52,16 @@ export function machine(userContext: UserDefinedContext) {
       initial: "open",
       context: getContext(ctx),
       computed: {
-        isInteractive: (ctx) => !ctx.disabled && !ctx.readonly,
+        isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
+        visibleRangeText(ctx) {
+          const formatter = getFormatter(ctx.locale, { month: "long", year: "numeric", timeZone: ctx.timeZone })
+          const start = formatter.format(ctx.startValue.toDate(ctx.timeZone))
+          const end = formatter.format(ctx.endValue.toDate(ctx.timeZone))
+          return { start, end, formatted: formatVisibleRange(ctx.startValue, ctx.endValue, ctx.locale, ctx.timeZone) }
+        },
         isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
         isNextVisibleRangeValid: (ctx) => !isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max),
       },
@@ -61,19 +69,13 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["adjustStartDate", "syncSelectElements"],
+        focusedValue: ["adjustStartDate", "syncSelectElements", "invokeOnFocusChange"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
-        view: ["focusActiveCell"],
+        view: ["focusActiveCell", "invokeOnViewChange"],
       },
 
       on: {
-        "GRID.POINTER_DOWN": {
-          actions: ["disableTextSelection"],
-        },
-        "GRID.POINTER_UP": {
-          actions: ["enableTextSelection"],
-        },
         "VALUE.SET": {
           actions: ["setSelectedDate", "setFocusedDate"],
         },
@@ -137,6 +139,16 @@ export function machine(userContext: UserDefinedContext) {
               guard: "isDayView",
               actions: ["setFocusedDate"],
             },
+            "GRID.POINTER_DOWN": {
+              actions: ["disableTextSelection"],
+            },
+            "GRID.POINTER_UP": {
+              actions: ["enableTextSelection"],
+            },
+            "GRID.ESCAPE": {
+              target: "focused",
+              actions: ["setViewToDay", "focusSelectedDate"],
+            },
             "GRID.ENTER": [
               { guard: "isMonthView", actions: "setViewToDay" },
               { guard: "isYearView", actions: "setViewToMonth" },
@@ -184,11 +196,11 @@ export function machine(userContext: UserDefinedContext) {
             "VIEW.CHANGE": [
               {
                 guard: "isDayView",
-                actions: ["setViewToMonth", "invokeOnViewChange"],
+                actions: ["setViewToMonth"],
               },
               {
                 guard: "isMonthView",
-                actions: ["setViewToYear", "invokeOnViewChange"],
+                actions: ["setViewToYear"],
               },
             ],
           },
@@ -227,7 +239,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.announcer?.announce(ctx.valueText, 3000)
         },
         announceVisibleRange(ctx) {
-          ctx.announcer?.announce(ctx.visibleRangeText)
+          const { start, end } = ctx.visibleRangeText
+          ctx.announcer?.announce(`${start} to ${end}`)
         },
         disableTextSelection(ctx) {
           disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
@@ -371,6 +384,12 @@ export function machine(userContext: UserDefinedContext) {
 
           const month = dom.getMonthSelectEl(ctx)
           if (month) month.value = ctx.focusedValue.month.toString()
+        },
+        invokeOnFocusChange(ctx) {
+          ctx.onFocusChange?.({ value: ctx.focusedValue })
+        },
+        invokeOnViewChange(ctx) {
+          ctx.onViewChange?.({ value: ctx.view })
         },
       },
       compareFns: {

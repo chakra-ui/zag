@@ -13,7 +13,3 @@ export function getDayFormatter(locale: string, timeZone: string) {
     timeZone,
   })
 }
-
-getDayFormatter.short = (locale: string, timeZone: string) => {
-  return getFormatter(locale, { weekday: "narrow", timeZone })
-}

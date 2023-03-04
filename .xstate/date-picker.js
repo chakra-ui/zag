@@ -39,12 +39,6 @@ const fetchMachine = createMachine({
   },
   activities: ["setupLiveRegion"],
   on: {
-    "GRID.POINTER_DOWN": {
-      actions: ["disableTextSelection"]
-    },
-    "GRID.POINTER_UP": {
-      actions: ["enableTextSelection"]
-    },
     "VALUE.SET": {
       actions: ["setSelectedDate", "setFocusedDate"]
     },
@@ -122,6 +116,16 @@ const fetchMachine = createMachine({
           cond: "isDayView",
           actions: ["setFocusedDate"]
         },
+        "GRID.POINTER_DOWN": {
+          actions: ["disableTextSelection"]
+        },
+        "GRID.POINTER_UP": {
+          actions: ["enableTextSelection"]
+        },
+        "GRID.ESCAPE": {
+          target: "focused",
+          actions: ["setViewToDay", "focusSelectedDate"]
+        },
         "GRID.ENTER": [{
           cond: "isMonthView",
           actions: "setViewToDay"
@@ -196,10 +200,10 @@ const fetchMachine = createMachine({
         },
         "VIEW.CHANGE": [{
           cond: "isDayView",
-          actions: ["setViewToMonth", "invokeOnViewChange"]
+          actions: ["setViewToMonth"]
         }, {
           cond: "isMonthView",
-          actions: ["setViewToYear", "invokeOnViewChange"]
+          actions: ["setViewToYear"]
         }]
       }
     }

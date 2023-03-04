@@ -26,4 +26,6 @@ export function formatVisibleRange(
   if (isSameDay(end, endOfMonth(end))) {
     return monthFormatter.formatRange(start.toDate(timeZone), end.toDate(timeZone))
   }
+
+  return ""
 }
