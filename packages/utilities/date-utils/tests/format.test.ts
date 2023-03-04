@@ -26,7 +26,7 @@ describe("Date utilities", () => {
 
   test("format / visible range", () => {
     expect(formatVisibleRange(startDate, endDate, getFormatter, false, timeZone)).toMatchInlineSnapshot(
-      '"Tuesday, January 10 – Thursday, January 12, 2023"',
+      '"Tuesday, January 10 – Thursday, January 12, 2023"',
     )
 
     expect(formatVisibleRange(startDate, endDate, getFormatter, true, timeZone)).toMatchInlineSnapshot(
