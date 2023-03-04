@@ -27,6 +27,8 @@ export default function Page() {
   return (
     <>
       <main className="date-picker">
+        <p>{api.visibleRangeText}</p>
+
         <div {...api.rootProps}>
           <output className="date-output">
             <div>Selected: {api.valueAsString ?? "-"}</div>

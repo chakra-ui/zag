@@ -1,5 +1,6 @@
 import { isWeekend } from "@internationalized/date"
 import {
+  formatVisibleRange,
   getDayFormatter,
   getDecadeRange,
   getMonthDates,
@@ -59,7 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The human readable text for the visible range of dates.
      */
-    visibleRangeText: "TODO",
+    visibleRangeText: formatVisibleRange(startValue, endValue, locale, timeZone),
 
     /**
      * The selected date.
