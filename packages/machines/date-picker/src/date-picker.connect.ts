@@ -125,17 +125,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Clears the selected date(s).
      */
-    clearValue() {},
+    clearValue() {
+      send("VALUE.CLEAR")
+    },
 
     /**
      * Function to open the calendar.
      */
-    open() {},
+    open() {
+      send("OPEN")
+    },
 
     /**
      * Function to close the calendar.
      */
-    close() {},
+    close() {
+      send("CLOSE")
+    },
 
     /**
      * Function to set the selected month.
@@ -153,6 +159,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "FOCUS.SET", value })
     },
 
+    /**
+     * The visible range of dates.
+     */
     visibleRange: state.context.visibleRange,
 
     /**
@@ -495,8 +504,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Select month",
       dir: state.context.dir,
       defaultValue: focusedValue.month,
-      onChange: (e) => {
-        api.focusMonth(parseInt(e.target.value))
+      onChange(event) {
+        api.focusMonth(Number(event.currentTarget.value))
       },
     }),
 
@@ -506,8 +515,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Select year",
       dir: state.context.dir,
       defaultValue: focusedValue.year,
-      onChange: (e) => {
-        api.focusYear(parseInt(e.target.value))
+      onChange(event) {
+        api.focusYear(Number(event.currentTarget.value))
       },
     }),
   }

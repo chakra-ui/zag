@@ -11,6 +11,7 @@ import {
   getPreviousDay,
   getPreviousSection,
   getTodayDate,
+  isDateEqual,
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
   parseDateString,
@@ -113,7 +114,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDay", "focusSelectedDate"],
+              actions: ["setViewToDay", "focusFirstSelectedDate"],
             },
           },
         },
@@ -123,7 +124,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDay", "focusSelectedDate"],
+              actions: ["setViewToDay", "focusFirstSelectedDate"],
             },
             "INPUT.CHANGE": {
               actions: ["parseInputValue"],
@@ -153,6 +154,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"],
               },
               {
+                guard: "isMultiPicker",
+                actions: ["setFocusedDate", "toggleSelectedDate"],
+              },
+              {
                 target: "focused",
                 actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"],
               },
@@ -173,7 +178,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "GRID.ESCAPE": {
               target: "focused",
-              actions: ["setViewToDay", "focusSelectedDate", "focusTriggerElement"],
+              actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"],
             },
             "GRID.ENTER": [
               {
@@ -183,6 +188,10 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "isYearView",
                 actions: "setViewToMonth",
+              },
+              {
+                guard: "isMultiPicker",
+                actions: "toggleSelectedDate",
               },
               {
                 target: "focused",
@@ -252,6 +261,7 @@ export function machine(userContext: UserDefinedContext) {
         isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
         isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
         isRangePicker: (ctx) => ctx.selectionMode === "range",
+        isMultiPicker: (ctx) => ctx.selectionMode === "multiple",
         isTargetFocusable: (_ctx, evt) => evt.focusable,
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
       },
@@ -306,7 +316,7 @@ export function machine(userContext: UserDefinedContext) {
         enableTextSelection(ctx) {
           restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
         },
-        focusSelectedDate(ctx) {
+        focusFirstSelectedDate(ctx) {
           if (!ctx.value.length) return
           ctx.focusedValue = ctx.value[0]
         },
@@ -327,6 +337,15 @@ export function machine(userContext: UserDefinedContext) {
         },
         setSelectedDate(ctx, evt) {
           ctx.value[ctx.activeIndex] = evt.value
+        },
+        toggleSelectedDate(ctx, evt) {
+          const currentValue = evt.value ?? ctx.focusedValue
+          const index = ctx.value.findIndex((date) => isDateEqual(date, currentValue))
+          if (index === -1) {
+            ctx.value.push(currentValue)
+          } else {
+            ctx.value.splice(index, 1)
+          }
         },
         selectFocusedDate(ctx) {
           ctx.value[ctx.activeIndex] = ctx.focusedValue.copy()
