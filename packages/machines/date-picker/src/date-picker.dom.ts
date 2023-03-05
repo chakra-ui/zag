@@ -5,6 +5,7 @@ export const dom = createScope({
   getRootId: (ctx: Ctx) => `datepicker:${ctx.id}`,
   getGridId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:grid:${view}`,
   getHeaderId: (ctx: Ctx) => `datepicker:${ctx.id}:header`,
+  getContentId: (ctx: Ctx) => `datepicker:${ctx.id}:content`,
 
   getCellTriggerId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-${id}`,
   getPrevTriggerId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:prev:${view}`,

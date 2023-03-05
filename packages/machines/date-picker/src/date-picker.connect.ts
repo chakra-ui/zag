@@ -38,7 +38,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const locale = state.context.locale
   const timeZone = state.context.timeZone
 
+  const isFocused = state.matches("focused")
+  const isOpen = state.matches("open")
+
   const api = {
+    /**
+     * Whether the input is focused
+     */
+    isFocused,
+    /**
+     * Whether the date picker is open
+     */
+    isOpen,
     /**
      * The current view of the date picker
      */
@@ -198,9 +209,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return chunk(getMonthNames(locale, format), columns)
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
+    controlProps: normalize.element({
+      ...parts.control.attrs,
+      id: dom.getControlId(state.context),
+      "data-disabled": dataAttr(disabled),
+    }),
+
+    contentProps: normalize.element({
+      ...parts.content.attrs,
+      hidden: !isOpen,
+      id: dom.getContentId(state.context),
       role: "application",
       "aria-roledescription": "datepicker",
       "aria-label": "calendar",
@@ -229,28 +247,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send({ type: "GRID.ENTER", view, columns })
             },
             ArrowLeft() {
-              send({ type: "GRID.ARROW_LEFT", view, columns })
+              send({ type: "GRID.ARROW_LEFT", view, columns, focus: true })
             },
             ArrowRight() {
-              send({ type: "GRID.ARROW_RIGHT", view, columns })
+              send({ type: "GRID.ARROW_RIGHT", view, columns, focus: true })
             },
             ArrowUp() {
-              send({ type: "GRID.ARROW_UP", view, columns })
+              send({ type: "GRID.ARROW_UP", view, columns, focus: true })
             },
             ArrowDown() {
-              send({ type: "GRID.ARROW_DOWN", view, columns })
+              send({ type: "GRID.ARROW_DOWN", view, columns, focus: true })
             },
             PageUp(event) {
-              send({ type: "GRID.PAGE_UP", larger: event.shiftKey, view, columns })
+              send({ type: "GRID.PAGE_UP", larger: event.shiftKey, view, columns, focus: true })
             },
             PageDown(event) {
-              send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey, view, columns })
+              send({ type: "GRID.PAGE_DOWN", larger: event.shiftKey, view, columns, focus: true })
             },
             Home() {
-              send({ type: "GRID.HOME", view, columns })
+              send({ type: "GRID.HOME", view, columns, focus: true })
             },
             End() {
-              send({ type: "GRID.END", view, columns })
+              send({ type: "GRID.END", view, columns, focus: true })
             },
           }
 
@@ -308,6 +326,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return {
         isFocused: focusedValue.month === props.value,
         isSelectable: !isDateInvalid(normalized, min, max),
+        //TODO
+        isSelected: !!selectedValue.find((date) => date.month === value),
         valueText: formatter.format(normalized.toDate(timeZone)),
       }
     },
@@ -319,6 +339,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.cellTrigger.attrs,
         role: "gridcell",
         id: dom.getCellTriggerId(state.context, value.toString()),
+        "aria-selected": ariaAttr(cellState.isSelected),
+        "data-selected": dataAttr(cellState.isSelected),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "data-disabled": dataAttr(!cellState.isSelectable),
         "data-focused": dataAttr(cellState.isFocused),
@@ -342,6 +364,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return {
         isFocused: focusedValue.year === props.value,
         isSelectable: !isDateInvalid(normalized, min, max),
+        //TODO
+        isSelected: !!selectedValue.find((date) => date.year === value),
         valueText: value.toString(),
       }
     },
@@ -353,6 +377,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.cellTrigger.attrs,
         role: "gridcell",
         id: dom.getCellTriggerId(state.context, value.toString()),
+        "aria-selected": ariaAttr(cellState.isSelected),
+        "data-selected": dataAttr(cellState.isSelected),
         "data-focused": dataAttr(cellState.isFocused),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "data-disabled": dataAttr(!cellState.isSelectable),

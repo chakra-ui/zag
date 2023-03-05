@@ -102,6 +102,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: "open",
+      entry: ["focusActiveCell"],
       on: {
         "CELL.CLICK": [{
           cond: "isMonthView",

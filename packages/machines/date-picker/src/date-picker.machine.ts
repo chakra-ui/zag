@@ -71,7 +71,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["adjustStartDate", "syncSelectElements", "invokeOnFocusChange"],
+        focusedValue: ["adjustStartDate", "syncSelectElements", "ifNeeded(focusActiveCell)", "invokeOnFocusChange"],
         visibleRange: ["announceVisibleRange"],
         value: ["setValueText", "announceValueText"],
         view: ["focusActiveCell", "invokeOnViewChange"],
@@ -131,6 +131,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: "open",
+          entry: ["focusActiveCell"],
           on: {
             "CELL.CLICK": [
               { guard: "isMonthView", actions: ["setFocusedMonth", "setViewToDay"] },
@@ -376,6 +377,12 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = ctx.focusedValue.set({ month: 12 })
         },
         focusActiveCell(ctx) {
+          raf(() => {
+            dom.getFocusedCell(ctx)?.focus()
+          })
+        },
+        "ifNeeded(focusActiveCell)"(ctx, evt) {
+          if (!evt.focus) return
           raf(() => {
             dom.getFocusedCell(ctx)?.focus()
           })

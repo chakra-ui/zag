@@ -29,18 +29,18 @@ export default function Page() {
       <main className="date-picker">
         <p>{`Visible range: ${api.visibleRangeText.formatted}`}</p>
 
-        <div {...api.rootProps}>
-          <output className="date-output">
-            <div>Selected: {api.valueAsString ?? "-"}</div>
-            <div>Focused: {api.focusedValueAsString}</div>
-          </output>
+        <output className="date-output">
+          <div>Selected: {api.valueAsString ?? "-"}</div>
+          <div>Focused: {api.focusedValueAsString}</div>
+        </output>
 
-          <div data-scope="date-picker" data-part="control">
-            <input {...api.inputProps} />
-            <button {...api.clearTriggerProps}>❌</button>
-            <button {...api.triggerProps}>🗓</button>
-          </div>
+        <div {...api.controlProps}>
+          <input {...api.inputProps} />
+          <button {...api.clearTriggerProps}>❌</button>
+          <button {...api.triggerProps}>🗓</button>
+        </div>
 
+        <div {...api.contentProps}>
           <div style={{ marginBlock: "20px" }}>
             <select {...api.monthSelectProps}>
               {api.getMonths().map((month, i) => (
@@ -97,7 +97,12 @@ export default function Page() {
           <div style={{ display: "flex", gap: "40px", marginTop: "24px" }}>
             <div hidden={api.view !== "month"}>
               <div
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBlock: "10px",
+                }}
               >
                 <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
                 <span {...api.viewTriggerProps}>{api.visibleRange.start.year}</span>
@@ -121,7 +126,12 @@ export default function Page() {
 
             <div hidden={api.view !== "year"}>
               <div
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBlock: "10px",
+                }}
               >
                 <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
                 <span>
@@ -149,7 +159,7 @@ export default function Page() {
       </main>
 
       <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} omit={["weeks", "weekDays"]} />
+        <StateVisualizer state={state} omit={["weeks"]} />
       </Toolbar>
     </>
   )

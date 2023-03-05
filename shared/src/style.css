@@ -1271,6 +1271,12 @@ main > .toggle[data-pressed] {
   opacity: 0.4;
 }
 
+[data-scope="date-picker"][data-part="content"] {
+  border: 1px solid gray;
+  padding: 0.5rem 1.5rem;
+  width: fit-content;
+}
+
 /* -----------------------------------------------------------------------------
 * Carousel
 * -----------------------------------------------------------------------------*/
