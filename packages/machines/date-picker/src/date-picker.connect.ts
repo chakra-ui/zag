@@ -324,8 +324,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return {
         isFocused: focusedValue.month === props.value,
         isSelectable: !isDateInvalid(normalized, min, max),
-        //TODO
-        isSelected: !!selectedValue.find((date) => date.month === value),
+        isSelected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
         valueText: formatter.format(normalized.toDate(timeZone)),
       }
     },
@@ -362,7 +361,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return {
         isFocused: focusedValue.year === props.value,
         isSelectable: !isDateInvalid(normalized, min, max),
-        //TODO
         isSelected: !!selectedValue.find((date) => date.year === value),
         valueText: value.toString(),
       }
@@ -437,6 +435,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       type: "button",
+      "aria-label": "Clear dates",
       hidden: !state.context.value.length,
       onClick() {
         send("VALUE.CLEAR")
@@ -447,6 +446,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       type: "button",
+      "aria-label": isOpen ? "Close calendar" : "Open calendar",
+      "aria-haspopup": "grid",
       onClick() {
         send("TRIGGER.CLICK")
       },

@@ -148,7 +148,7 @@ export default function Page() {
                   {api.getYears({ columns: 4 }).map((years, row) => (
                     <tr key={row}>
                       {years.map((year, index) => (
-                        <td key={index} {...api.getYearCellProps({ value: year })}>
+                        <td colSpan={4} key={index} {...api.getYearCellProps({ value: year })}>
                           {year}
                         </td>
                       ))}

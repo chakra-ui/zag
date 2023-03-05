@@ -16,6 +16,7 @@ export const dom = createScope({
   getTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:trigger`,
   getMonthSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:month-select`,
   getYearSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:year-select`,
+
   getGridEl: (ctx: Ctx, view = ctx.view) => dom.getById(ctx, dom.getGridId(ctx, view)),
   getFocusedCell: (ctx: Ctx, view = ctx.view) =>
     query(dom.getGridEl(ctx, view), "[data-part=cell-trigger][data-focused]"),
@@ -24,4 +25,5 @@ export const dom = createScope({
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getYearSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getYearSelectId(ctx)),
   getMonthSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getMonthSelectId(ctx)),
+  getClearTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getClearTriggerId(ctx)),
 })

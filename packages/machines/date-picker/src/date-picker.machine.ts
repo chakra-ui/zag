@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
   formatSelectedDate,
@@ -23,6 +23,8 @@ import { compact } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
+const { and } = guards
+
 function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
@@ -30,6 +32,7 @@ function getContext(ctx: UserDefinedContext) {
   const visibleDuration = { months: numOfMonths }
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
+
   return {
     id: "1",
     view: "day" as const,
@@ -39,6 +42,7 @@ function getContext(ctx: UserDefinedContext) {
     focusedValue,
     startValue,
     activeIndex: 0,
+    highlightedRange: null,
     value: [],
     valueText: "",
     inputValue: "",
@@ -52,7 +56,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
-      initial: "focused",
+      initial: ctx.inline ? "open" : "idle",
       context: getContext(ctx),
       computed: {
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
@@ -72,8 +76,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["adjustStartDate", "syncSelectElements", "ifNeeded(focusActiveCell)", "invokeOnFocusChange"],
-        visibleRange: ["announceVisibleRange"],
+        focusedValue: ["adjustStartDate", "syncSelectElements", "focusActiveCellIfNeeded", "invokeOnFocusChange"],
         value: ["setValueText", "announceValueText"],
         view: ["focusActiveCell", "invokeOnViewChange"],
       },
@@ -86,16 +89,17 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["setFocusedDate"],
         },
         "VALUE.CLEAR": {
-          actions: ["clearSelectedDate", "clearFocusedDate"],
+          target: "focused",
+          actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"],
         },
         "GOTO.NEXT": [
-          { guard: "isYearView", actions: ["focusNextDecade"] },
-          { guard: "isMonthView", actions: ["focusNextYear"] },
+          { guard: "isYearView", actions: ["focusNextDecade", "announceVisibleRange"] },
+          { guard: "isMonthView", actions: ["focusNextYear", "announceVisibleRange"] },
           { actions: ["focusNextPage"] },
         ],
         "GOTO.PREV": [
-          { guard: "isYearView", actions: ["focusPreviousDecade"] },
-          { guard: "isMonthView", actions: ["focusPreviousYear"] },
+          { guard: "isYearView", actions: ["focusPreviousDecade", "announceVisibleRange"] },
+          { guard: "isMonthView", actions: ["focusPreviousYear", "announceVisibleRange"] },
           { actions: ["focusPreviousPage"] },
         ],
       },
@@ -146,7 +150,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: "isRangePicker",
-                actions: ["setFocusedDate", "setSelectedDate", "incrementActiveIndex"],
+                actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"],
               },
               {
                 target: "focused",
@@ -156,6 +160,10 @@ export function machine(userContext: UserDefinedContext) {
             "CELL.FOCUS": {
               guard: "isDayView",
               actions: ["setFocusedDate"],
+            },
+            "CELL.POINTER_MOVE": {
+              guard: and("isRangePicker", "isSelectingEndDate"),
+              actions: ["setHighlightedRange"],
             },
             "GRID.POINTER_DOWN": {
               actions: ["disableTextSelection"],
@@ -168,9 +176,18 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setViewToDay", "focusSelectedDate", "focusTriggerElement"],
             },
             "GRID.ENTER": [
-              { guard: "isMonthView", actions: "setViewToDay" },
-              { guard: "isYearView", actions: "setViewToMonth" },
-              { actions: "selectFocusedDate" },
+              {
+                guard: "isMonthView",
+                actions: "setViewToDay",
+              },
+              {
+                guard: "isYearView",
+                actions: "setViewToMonth",
+              },
+              {
+                target: "focused",
+                actions: ["selectFocusedDate", "focusInputElement"],
+              },
             ],
             "GRID.ARROW_RIGHT": [
               { guard: "isMonthView", actions: "focusNextMonth" },
@@ -236,6 +253,7 @@ export function machine(userContext: UserDefinedContext) {
         isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
         isRangePicker: (ctx) => ctx.selectionMode === "range",
         isTargetFocusable: (_ctx, evt) => evt.focusable,
+        isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
       },
       activities: {
         setupLiveRegion(ctx) {
@@ -247,7 +265,7 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.inline) return
           let focusable = false
           return trackDismissableElement(dom.getContentEl(ctx), {
-            exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx)],
+            exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onInteractOutside(event) {
               focusable = event.detail.focusable
             },
@@ -279,8 +297,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.announcer?.announce(ctx.valueText, 3000)
         },
         announceVisibleRange(ctx) {
-          const { start, end } = ctx.visibleRangeText
-          ctx.announcer?.announce(`${start} to ${end}`)
+          const { formatted } = ctx.visibleRangeText
+          ctx.announcer?.announce(formatted)
         },
         disableTextSelection(ctx) {
           disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
@@ -413,12 +431,24 @@ export function machine(userContext: UserDefinedContext) {
         focusMonthEnd(ctx) {
           ctx.focusedValue = ctx.focusedValue.set({ month: 12 })
         },
+        setHighlightedStartDate(ctx, evt) {
+          ctx.highlightedRange ||= { start: null, end: null }
+          ctx.highlightedRange.start = evt.value
+        },
+        setHighlightedEndDate(ctx, evt) {
+          ctx.highlightedRange ||= { start: null, end: null }
+          ctx.highlightedRange.end = evt.value
+        },
+        setEndIndex(ctx) {
+          ctx.activeIndex = 1
+        },
+        // formatInputValue(ctx) {},
         focusActiveCell(ctx) {
           raf(() => {
-            dom.getFocusedCell(ctx)?.focus()
+            dom.getFocusedCell(ctx)?.focus({ preventScroll: true })
           })
         },
-        "ifNeeded(focusActiveCell)"(ctx, evt) {
+        focusActiveCellIfNeeded(ctx, evt) {
           if (!evt.focus) return
           raf(() => {
             dom.getFocusedCell(ctx)?.focus({ preventScroll: true })

@@ -1249,6 +1249,7 @@ main > .toggle[data-pressed] {
   min-height: 30px;
   border-radius: 4px;
   cursor: pointer;
+  text-align: center;
 }
 
 [data-scope="date-picker"][data-part="control"] {
@@ -1275,6 +1276,10 @@ main > .toggle[data-pressed] {
   border: 1px solid gray;
   padding: 0.5rem 1.5rem;
   width: fit-content;
+}
+
+[data-scope="date-picker"][data-part="content"] table {
+  min-width: 240px;
 }
 
 /* -----------------------------------------------------------------------------
