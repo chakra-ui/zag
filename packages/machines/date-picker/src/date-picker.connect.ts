@@ -240,9 +240,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: -1,
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
-            Escape() {
-              send({ type: "GRID.ESCAPE", view })
-            },
             Enter() {
               send({ type: "GRID.ENTER", view, columns })
             },
@@ -305,6 +302,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-invalid": ariaAttr(cellState.isInvalid),
         "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
+        "aria-current": cellState.isToday ? "date" : undefined,
         "data-focused": dataAttr(cellState.isFocused),
         "data-unavailable": dataAttr(cellState.isUnavailable),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
@@ -471,7 +469,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       autoCorrect: "off",
       spellCheck: "false",
       dir: state.context.dir,
-      placeholder: "mm/dd/yyyy",
+      name: state.context.name,
+      placeholder: "MM/DD/YYYY",
       defaultValue: state.context.inputValue,
       onFocus() {
         send("INPUT.FOCUS")

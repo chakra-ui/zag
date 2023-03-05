@@ -43,6 +43,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@internationalized/date": "^3.0.2",
     "@zag-js/date-utils": "workspace:*",

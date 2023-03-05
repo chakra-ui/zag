@@ -813,6 +813,7 @@ importers:
       '@zag-js/anatomy': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/date-utils': workspace:*
+      '@zag-js/dismissable': workspace:*
       '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/form-utils': workspace:*
@@ -826,6 +827,7 @@ importers:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/core': link:../../core
       '@zag-js/date-utils': link:../../utilities/date-utils
+      '@zag-js/dismissable': link:../../utilities/dismissable
       '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/form-utils': link:../../utilities/form-utils

@@ -27,6 +27,9 @@ export default function Page() {
   return (
     <>
       <main className="date-picker">
+        <div>
+          <button>Outside Element</button>
+        </div>
         <p>{`Visible range: ${api.visibleRangeText.formatted}`}</p>
 
         <output className="date-output">
@@ -74,7 +77,7 @@ export default function Page() {
               <thead {...api.getHeaderProps()}>
                 <tr>
                   {api.weekDays.map((day, i) => (
-                    <th key={i} aria-label={day.long}>
+                    <th scope="col" key={i} aria-label={day.long}>
                       {day.narrow}
                     </th>
                   ))}

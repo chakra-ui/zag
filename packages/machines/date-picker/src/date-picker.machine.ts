@@ -15,6 +15,7 @@ import {
   isPreviousVisibleRangeInvalid,
   parseDateString,
 } from "@zag-js/date-utils"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
@@ -131,12 +132,26 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: "open",
+          activities: ["trackDismissableElement"],
           entry: ["focusActiveCell"],
           on: {
             "CELL.CLICK": [
-              { guard: "isMonthView", actions: ["setFocusedMonth", "setViewToDay"] },
-              { guard: "isYearView", actions: ["setFocusedYear", "setViewToMonth"] },
-              { actions: ["setFocusedDate", "setSelectedDate"] },
+              {
+                guard: "isMonthView",
+                actions: ["setFocusedMonth", "setViewToDay"],
+              },
+              {
+                guard: "isYearView",
+                actions: ["setFocusedYear", "setViewToMonth"],
+              },
+              {
+                guard: "isRangePicker",
+                actions: ["setFocusedDate", "setSelectedDate", "incrementActiveIndex"],
+              },
+              {
+                target: "focused",
+                actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"],
+              },
             ],
             "CELL.FOCUS": {
               guard: "isDayView",
@@ -150,7 +165,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "GRID.ESCAPE": {
               target: "focused",
-              actions: ["setViewToDay", "focusSelectedDate"],
+              actions: ["setViewToDay", "focusSelectedDate", "focusTriggerElement"],
             },
             "GRID.ENTER": [
               { guard: "isMonthView", actions: "setViewToDay" },
@@ -206,6 +221,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setViewToYear"],
               },
             ],
+            DISMISS: [
+              { guard: "isTargetFocusable", target: "idle" },
+              { target: "focused", actions: ["focusTriggerElement"] },
+            ],
           },
         },
       },
@@ -216,12 +235,30 @@ export function machine(userContext: UserDefinedContext) {
         isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
         isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
         isRangePicker: (ctx) => ctx.selectionMode === "range",
+        isTargetFocusable: (_ctx, evt) => evt.focusable,
       },
       activities: {
         setupLiveRegion(ctx) {
           const doc = dom.getDoc(ctx)
           ctx.announcer = createLiveRegion({ level: "assertive", document: doc })
           return () => ctx.announcer?.destroy?.()
+        },
+        trackDismissableElement(ctx, _evt, { send }) {
+          if (ctx.inline) return
+          let focusable = false
+          return trackDismissableElement(dom.getContentEl(ctx), {
+            exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx)],
+            onInteractOutside(event) {
+              focusable = event.detail.focusable
+            },
+            onDismiss() {
+              send({ type: "DISMISS", src: "dismissable", focusable })
+            },
+            onEscapeKeyDown(event) {
+              event.preventDefault()
+              send({ type: "GRID.ESCAPE", src: "dismissable" })
+            },
+          })
         },
       },
       actions: {
@@ -384,7 +421,17 @@ export function machine(userContext: UserDefinedContext) {
         "ifNeeded(focusActiveCell)"(ctx, evt) {
           if (!evt.focus) return
           raf(() => {
-            dom.getFocusedCell(ctx)?.focus()
+            dom.getFocusedCell(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        focusTriggerElement(ctx) {
+          raf(() => {
+            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        focusInputElement(ctx) {
+          raf(() => {
+            dom.getInputEl(ctx)?.focus()
           })
         },
         syncSelectElements(ctx) {
