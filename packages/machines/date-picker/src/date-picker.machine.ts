@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@internationalized/date"
 import { createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
@@ -25,6 +26,12 @@ import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 
 const { and } = guards
+
+function adjustStartAndEndDate(value: CalendarDate[]) {
+  const [startDate, endDate] = value
+  if (!startDate || !endDate) return value
+  return startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
+}
 
 function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
@@ -336,7 +343,9 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = ctx.focusedValue.set({ year: evt.value })
         },
         setSelectedDate(ctx, evt) {
-          ctx.value[ctx.activeIndex] = evt.value
+          const nextValue = [...ctx.value]
+          nextValue[ctx.activeIndex] = evt.value
+          ctx.value = adjustStartAndEndDate(nextValue)
         },
         toggleSelectedDate(ctx, evt) {
           const currentValue = evt.value ?? ctx.focusedValue
@@ -348,7 +357,9 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         selectFocusedDate(ctx) {
-          ctx.value[ctx.activeIndex] = ctx.focusedValue.copy()
+          const nextValue = [...ctx.value]
+          nextValue[ctx.activeIndex] = ctx.focusedValue.copy()
+          ctx.value = adjustStartAndEndDate(nextValue)
         },
         adjustStartDate(ctx) {
           const adjust = getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max)

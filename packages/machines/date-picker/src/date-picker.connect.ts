@@ -24,6 +24,12 @@ import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
 
+function isDateWithinRange(date: CalendarDate, value: CalendarDate[]) {
+  const [startDate, endDate] = value
+  if (!startDate || !endDate) return false
+  return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
+}
+
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startValue = state.context.startValue
   const endValue = state.context.endValue
@@ -40,6 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isFocused = state.matches("focused")
   const isOpen = state.matches("open")
+  const isRangePicker = state.context.selectionMode === "range"
 
   const api = {
     /**
@@ -173,10 +180,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const cellState = {
         isInvalid: isDateInvalid(value, min, max),
         isDisabled: isDateDisabled(value, startValue, endValue, min, max),
-        isSelected: !!selectedValue.find((date) => isDateEqual(value, date)),
+        isSelected: selectedValue.some((date) => isDateEqual(value, date)),
         isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
         isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
+        isInRange: isRangePicker && isDateWithinRange(value, selectedValue),
         isFocused: isDateEqual(value, focusedValue),
+        isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
+        isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
         isToday: isTodayDate(value, timeZone),
         isWeekend: isWeekend(value, locale),
         valueText: formatter.format(value.toDate(timeZone)),
@@ -306,14 +316,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": cellState.ariaLabel,
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "data-disabled": dataAttr(!cellState.isSelectable),
-        "aria-selected": ariaAttr(cellState.isSelected),
-        "data-selected": dataAttr(cellState.isSelected),
+        "aria-selected": ariaAttr(cellState.isSelected || cellState.isInRange),
+        "data-selected": dataAttr(cellState.isSelected || cellState.isInRange),
         "aria-invalid": ariaAttr(cellState.isInvalid),
         "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
         "aria-current": cellState.isToday ? "date" : undefined,
         "data-focused": dataAttr(cellState.isFocused),
         "data-unavailable": dataAttr(cellState.isUnavailable),
+        "data-in-range": dataAttr(cellState.isInRange),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
         "data-weekend": dataAttr(cellState.isWeekend),
         onClick() {
