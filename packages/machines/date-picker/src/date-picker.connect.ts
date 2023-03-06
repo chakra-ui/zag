@@ -316,7 +316,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": cellState.ariaLabel,
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "data-disabled": dataAttr(!cellState.isSelectable),
-        "aria-selected": ariaAttr(cellState.isSelected || cellState.isInRange),
+        "aria-selected": cellState.isSelected || cellState.isInRange,
         "data-selected": dataAttr(cellState.isSelected || cellState.isInRange),
         "aria-invalid": ariaAttr(cellState.isInvalid),
         "data-value": value.toString(),
