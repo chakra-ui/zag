@@ -172,37 +172,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     visibleRange: state.context.visibleRange,
 
     /**
-     * Returns the state details for a given cell.
-     */
-    getDayCellState(props: DayCellProps) {
-      const { value, disabled } = props
-      const formatter = getDayFormatter(locale, timeZone)
-      const cellState = {
-        isInvalid: isDateInvalid(value, min, max),
-        isDisabled: isDateDisabled(value, startValue, endValue, min, max),
-        isSelected: selectedValue.some((date) => isDateEqual(value, date)),
-        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
-        isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
-        isInRange: isRangePicker && isDateWithinRange(value, selectedValue),
-        isFocused: isDateEqual(value, focusedValue),
-        isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
-        isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
-        isToday: isTodayDate(value, timeZone),
-        isWeekend: isWeekend(value, locale),
-        valueText: formatter.format(value.toDate(timeZone)),
-        get ariaLabel() {
-          if (cellState.isUnavailable) return `Not available. ${cellState.valueText}`
-          if (cellState.isSelected) return `Selected date. ${cellState.valueText}`
-          return `Choose ${cellState.valueText}`
-        },
-        get isSelectable() {
-          return !cellState.isInvalid && !cellState.isDisabled && !cellState.isUnavailable
-        },
-      }
-      return cellState
-    },
-
-    /**
      * Returns the years of the decade based on the columns.
      * Represented as an array of arrays of years.
      */
@@ -226,6 +195,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getMonths(props: { columns?: number; format?: "short" | "long" } = {}) {
       const { columns = 1, format } = props
       return chunk(getMonthNames(locale, format), columns)
+    },
+
+    /**
+     * Returns the state details for a given cell.
+     */
+    getDayCellState(props: DayCellProps) {
+      const { value, disabled } = props
+      const formatter = getDayFormatter(locale, timeZone)
+
+      const cellState = {
+        isInvalid: isDateInvalid(value, min, max),
+        isDisabled: disabled || isDateDisabled(value, startValue, endValue, min, max),
+        isSelected: selectedValue.some((date) => isDateEqual(value, date)),
+        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
+        isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
+        isInRange: isRangePicker && isDateWithinRange(value, selectedValue),
+        isFocused: isDateEqual(value, focusedValue),
+        isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
+        isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
+        isToday: isTodayDate(value, timeZone),
+        isWeekend: isWeekend(value, locale),
+        formattedDate: formatter.format(value.toDate(timeZone)),
+        get ariaLabel() {
+          if (cellState.isUnavailable) return `Not available. ${cellState.formattedDate}`
+          if (cellState.isSelected) return `Selected date. ${cellState.formattedDate}`
+          return `Choose ${cellState.formattedDate}`
+        },
+        get isSelectable() {
+          return !cellState.isDisabled && !cellState.isUnavailable
+        },
+      }
+
+      return cellState
     },
 
     controlProps: normalize.element({
@@ -309,27 +311,49 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { value } = props
       const cellState = api.getDayCellState(props)
       return normalize.element({
-        ...parts.cellTrigger.attrs,
         role: "gridcell",
-        tabIndex: cellState.isFocused ? 0 : -1,
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "aria-selected": cellState.isSelected || cellState.isInRange,
+        "aria-invalid": ariaAttr(cellState.isInvalid),
+        "aria-current": cellState.isToday ? "date" : undefined,
+        "data-value": value.toString(),
+      })
+    },
+
+    getDayCellTriggerProps(props: DayCellProps) {
+      const { value } = props
+      const cellState = api.getDayCellState(props)
+      return normalize.element({
+        ...parts.cellTrigger.attrs,
         id: dom.getCellTriggerId(state.context, value.toString()),
+        role: "button",
+        tabIndex: cellState.isFocused ? 0 : -1,
         "aria-label": cellState.ariaLabel,
         "aria-disabled": ariaAttr(!cellState.isSelectable),
-        "data-disabled": dataAttr(!cellState.isSelectable),
-        "aria-selected": cellState.isSelected || cellState.isInRange,
-        "data-selected": dataAttr(cellState.isSelected || cellState.isInRange),
         "aria-invalid": ariaAttr(cellState.isInvalid),
+        "data-disabled": dataAttr(!cellState.isSelectable),
+        "data-selected": dataAttr(cellState.isSelected || cellState.isInRange),
         "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
-        "aria-current": cellState.isToday ? "date" : undefined,
         "data-focused": dataAttr(cellState.isFocused),
         "data-unavailable": dataAttr(cellState.isUnavailable),
+        "data-range-start": dataAttr(cellState.isFirstInRange),
+        "data-range-end": dataAttr(cellState.isLastInRange),
         "data-in-range": dataAttr(cellState.isInRange),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
         "data-weekend": dataAttr(cellState.isWeekend),
+        onFocus() {
+          if (cellState.isDisabled) return
+          send({ type: "CELL.FOCUS", cell: "day", value })
+        },
         onClick() {
           if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
+        },
+        onPointerEnter(event) {
+          if (event.pointerType !== "touch") return
+          if (!cellState.isSelectable) return
+          send({ type: "CELL.HOVER", cell: "day", value })
         },
         onContextMenu(event) {
           event.preventDefault()
@@ -353,10 +377,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { value } = props
       const cellState = api.getMonthCellState(props)
       return normalize.element({
-        ...parts.cellTrigger.attrs,
         role: "gridcell",
-        id: dom.getCellTriggerId(state.context, value.toString()),
         "aria-selected": ariaAttr(cellState.isSelected),
+        "data-selected": dataAttr(cellState.isSelected),
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "data-value": value,
+      })
+    },
+
+    getMonthCellTriggerProps(props: { value: number }) {
+      const { value } = props
+      const cellState = api.getMonthCellState(props)
+      return normalize.element({
+        ...parts.cellTrigger.attrs,
+        role: "button",
+        id: dom.getCellTriggerId(state.context, value.toString()),
         "data-selected": dataAttr(cellState.isSelected),
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "data-disabled": dataAttr(!cellState.isSelectable),

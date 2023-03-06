@@ -86,9 +86,9 @@ export default function Page() {
               <tbody>
                 {api.weeks.map((week, i) => (
                   <tr key={i}>
-                    {week.map((date, i) => (
-                      <td key={i} {...api.getDayCellProps({ value: date })}>
-                        {date.day}
+                    {week.map((value, i) => (
+                      <td key={i} {...api.getDayCellProps({ value })}>
+                        <div {...api.getDayCellTriggerProps({ value })}>{value.day}</div>
                       </td>
                     ))}
                   </tr>
@@ -116,11 +116,14 @@ export default function Page() {
                 <tbody>
                   {api.getMonths({ columns: 4, format: "short" }).map((months, row) => (
                     <tr key={row}>
-                      {months.map((month, index) => (
-                        <td key={index} {...api.getMonthCellProps({ value: row * 4 + index + 1 })}>
-                          {month}
-                        </td>
-                      ))}
+                      {months.map((month, index) => {
+                        const value = row * 4 + index + 1
+                        return (
+                          <td key={index} {...api.getMonthCellProps({ value })}>
+                            <div {...api.getMonthCellTriggerProps({ value })}>{month}</div>
+                          </td>
+                        )
+                      })}
                     </tr>
                   ))}
                 </tbody>
