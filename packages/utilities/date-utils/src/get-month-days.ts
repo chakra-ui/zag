@@ -1,14 +1,5 @@
-import { CalendarDate, getDayOfWeek, getWeeksInMonth, isSameDay } from "@internationalized/date"
-
-export function getStartOfWeek(date: CalendarDate, locale: string, firstDayOfWeek: number = 0) {
-  const day = getDayOfWeek(date, locale)
-  const diff = (day - firstDayOfWeek + 7) % 7
-  return date.subtract({ days: diff })
-}
-
-export function getEndOfWeek(date: CalendarDate, locale: string, firstDayOfWeek: number = 0) {
-  return getStartOfWeek(date, locale, firstDayOfWeek).add({ days: 6 })
-}
+import { CalendarDate, getWeeksInMonth, isSameDay } from "@internationalized/date"
+import { getStartOfWeek } from "./get-start-of-week"
 
 export function getDaysInWeek(weekIndex: number, from: CalendarDate, locale: string, firstDayOfWeek?: number) {
   const weekDate = from.add({ weeks: weekIndex })

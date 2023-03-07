@@ -57,7 +57,7 @@ type PublicContext = DirectionProperty &
     /**
      * The number of months to display.
      */
-    numOfMonths?: number
+    numOfMonths: number
     /**
      * The first day of the week.
      */
@@ -149,9 +149,15 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export type Offset = {
+  amount: number
+  visibleRange: { start: CalendarDate; end: CalendarDate }
+}
+
 export type DayCellProps = {
   value: CalendarDate
   disabled?: boolean
+  offset?: Offset
 }
 
 export type MachineState = {

@@ -18,7 +18,7 @@ export const dom = createScope({
   getYearSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:year-select`,
 
   getFocusedCell: (ctx: Ctx, view = ctx.view) =>
-    query(dom.getContentEl(ctx), `[data-part=cell-trigger][data-type=${view}][data-focused]`),
+    query(dom.getContentEl(ctx), `[data-part=cell-trigger][data-type=${view}][data-focused]:not([data-outside-range])`),
   getTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getTriggerId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),

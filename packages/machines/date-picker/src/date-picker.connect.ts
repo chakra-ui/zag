@@ -8,6 +8,7 @@ import {
   getMonthFormatter,
   getMonthNames,
   getTodayDate,
+  getUnitDuration,
   getWeekDays,
   isDateDisabled,
   isDateEqual,
@@ -24,7 +25,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
+import type { DateView, DayCellProps, Offset, Send, State, TriggerProps } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   getNextTriggerLabel,
@@ -35,7 +36,7 @@ import {
 } from "./date-picker.utils"
 
 // TODO: Figure out where this goes in context.
-const numOfWeeks = 5
+const numOfWeeks = undefined
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startValue = state.context.startValue
@@ -52,10 +53,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const max = state.context.max
   const locale = state.context.locale
   const timeZone = state.context.timeZone
+  const startOfWeek = state.context.startOfWeek
 
   const isFocused = state.matches("focused")
   const isOpen = state.matches("open")
   const isRangePicker = state.context.selectionMode === "range"
+
+  const defaultOffset: Offset = {
+    amount: 0,
+    visibleRange: state.context.visibleRange,
+  }
 
   const api = {
     /**
@@ -77,7 +84,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
      */
     getDaysInWeek: (weekIndex: number, from = startValue) => {
-      return getDaysInWeek(weekIndex, from, locale, state.context.startOfWeek)
+      return getDaysInWeek(weekIndex, from, locale, startOfWeek)
     },
 
     /**
@@ -86,6 +93,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOffset: (months: number) => {
       const from = startValue.add({ months })
       return {
+        amount: months,
         visibleRange: { start: from, end: endValue.add({ months }) },
         weeks: api.getMonthDays(from),
       }
@@ -95,7 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
      */
     getMonthDays(from = startValue) {
-      return getMonthDays(from, locale, numOfWeeks, state.context.startOfWeek)
+      return getMonthDays(from, locale, numOfWeeks, startOfWeek)
     },
 
     /**
@@ -108,7 +116,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The days of the week. Represented as an array of strings.
      */
-    weekDays: getWeekDays(getTodayDate(timeZone), state.context.startOfWeek, timeZone, locale),
+    weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
 
     /**
      * The human readable text for the visible range of dates.
@@ -324,23 +332,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Returns the state details for a given cell.
      */
     getDayCellState(props: DayCellProps) {
-      const { value, disabled } = props
+      const { value, disabled, offset = defaultOffset } = props
+      const { visibleRange } = offset
+
       const formatter = getDayFormatter(locale, timeZone)
+      const unitDuration = getUnitDuration(state.context.visibleDuration)
+      const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
 
       const cellState = {
         isInvalid: isDateInvalid(value, min, max),
-        isDisabled: disabled || isDateDisabled(value, startValue, endValue, min, max),
+        isDisabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
         isSelected: selectedValue.some((date) => isDateEqual(value, date)),
         isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
-        isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
+        isOutsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
         isInRange:
           isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
-        isFocused: isDateEqual(value, focusedValue),
         isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
         isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
         isToday: isTodayDate(value, timeZone),
         isWeekend: isWeekend(value, locale),
         formattedDate: formatter.format(value.toDate(timeZone)),
+        get isFocused() {
+          return isDateEqual(value, focusedValue) && !cellState.isOutsideRange
+        },
         get ariaLabel() {
           if (cellState.isUnavailable) return `Not available. ${cellState.formattedDate}`
           if (cellState.isSelected) return `Selected date. ${cellState.formattedDate}`
