@@ -1,4 +1,4 @@
-import type { CalendarDate } from "@internationalized/date"
+import { DateFormatter } from "@internationalized/date"
 import { createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
@@ -24,20 +24,15 @@ import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selecti
 import { compact } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
+import { adjustStartAndEndDate, sortDates } from "./date-picker.utils"
 
 const { and } = guards
-
-function adjustStartAndEndDate(value: CalendarDate[]) {
-  const [startDate, endDate] = value
-  if (!startDate || !endDate) return value
-  return startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
-}
 
 function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
   const numOfMonths = ctx.numOfMonths || 1
-  const visibleDuration = { months: numOfMonths }
+  const visibleDuration = { months: numOfMonths, weeks: 6 }
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
 
@@ -53,6 +48,7 @@ function getContext(ctx: UserDefinedContext) {
     highlightedRange: null,
     value: [],
     valueText: "",
+    hoveredValue: null,
     inputValue: "",
     selectionMode: "single" as const,
     ...(ctx as any),
@@ -146,6 +142,7 @@ export function machine(userContext: UserDefinedContext) {
           tags: "open",
           activities: ["trackDismissableElement"],
           entry: ["focusActiveCell"],
+          exit: ["clearHoveredDate"],
           on: {
             "CELL.CLICK": [
               {
@@ -155,6 +152,15 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "isYearView",
                 actions: ["setFocusedYear", "setViewToMonth"],
+              },
+              {
+                guard: and("isRangePicker", "isRangeSelected"),
+                actions: ["resetIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"],
+              },
+              {
+                target: "focused",
+                guard: and("isRangePicker", "isSelectingEndDate"),
+                actions: ["setFocusedDate", "setSelectedDate", "resetIndex", "clearHoveredDate", "focusInputElement"],
               },
               {
                 guard: "isRangePicker",
@@ -173,9 +179,13 @@ export function machine(userContext: UserDefinedContext) {
               guard: "isDayView",
               actions: ["setFocusedDate"],
             },
-            "CELL.POINTER_MOVE": {
+            "CELL.POINTER_ENTER": {
               guard: and("isRangePicker", "isSelectingEndDate"),
-              actions: ["setHighlightedRange"],
+              actions: ["setHoveredDate"],
+            },
+            "GRID.POINTER_LEAVE": {
+              guard: "isRangePicker",
+              actions: ["clearHoveredDate"],
             },
             "GRID.POINTER_DOWN": {
               actions: ["disableTextSelection"],
@@ -268,6 +278,7 @@ export function machine(userContext: UserDefinedContext) {
         isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
         isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
         isRangePicker: (ctx) => ctx.selectionMode === "range",
+        isRangeSelected: (ctx) => ctx.value.length === 2,
         isMultiPicker: (ctx) => ctx.selectionMode === "multiple",
         isTargetFocusable: (_ctx, evt) => evt.focusable,
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
@@ -351,10 +362,19 @@ export function machine(userContext: UserDefinedContext) {
           const currentValue = evt.value ?? ctx.focusedValue
           const index = ctx.value.findIndex((date) => isDateEqual(date, currentValue))
           if (index === -1) {
-            ctx.value.push(currentValue)
+            const nextValues = [...ctx.value, currentValue]
+            ctx.value = sortDates(nextValues)
           } else {
-            ctx.value.splice(index, 1)
+            const nextValues = [...ctx.value]
+            nextValues.splice(index, 1)
+            ctx.value = sortDates(nextValues)
           }
+        },
+        setHoveredDate(ctx, evt) {
+          ctx.hoveredValue = evt.value
+        },
+        clearHoveredDate(ctx) {
+          ctx.hoveredValue = null
         },
         selectFocusedDate(ctx) {
           const nextValue = [...ctx.value]
@@ -461,18 +481,17 @@ export function machine(userContext: UserDefinedContext) {
         focusMonthEnd(ctx) {
           ctx.focusedValue = ctx.focusedValue.set({ month: 12 })
         },
-        setHighlightedStartDate(ctx, evt) {
-          ctx.highlightedRange ||= { start: null, end: null }
-          ctx.highlightedRange.start = evt.value
-        },
-        setHighlightedEndDate(ctx, evt) {
-          ctx.highlightedRange ||= { start: null, end: null }
-          ctx.highlightedRange.end = evt.value
-        },
         setEndIndex(ctx) {
           ctx.activeIndex = 1
         },
-        // formatInputValue(ctx) {},
+        resetIndex(ctx) {
+          ctx.activeIndex = 0
+        },
+        formatInputValue(ctx) {
+          const o = new DateFormatter(ctx.locale)
+          const formatted = o.format(ctx.value[0].toDate(ctx.timeZone))
+          console.log(formatted)
+        },
         focusActiveCell(ctx) {
           raf(() => {
             dom.getFocusedCell(ctx)?.focus({ preventScroll: true })

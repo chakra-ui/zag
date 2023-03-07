@@ -19,10 +19,13 @@ const fetchMachine = createMachine({
     "isMonthView": false,
     "isMonthView": false,
     "isYearView": false,
+    "isRangePicker && isRangeSelected": false,
+    "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
     "isDayView": false,
     "isRangePicker && isSelectingEndDate": false,
+    "isRangePicker": false,
     "isMonthView": false,
     "isYearView": false,
     "isMultiPicker": false,
@@ -110,6 +113,7 @@ const fetchMachine = createMachine({
       tags: "open",
       activities: ["trackDismissableElement"],
       entry: ["focusActiveCell"],
+      exit: ["clearHoveredDate"],
       on: {
         "CELL.CLICK": [{
           cond: "isMonthView",
@@ -117,6 +121,13 @@ const fetchMachine = createMachine({
         }, {
           cond: "isYearView",
           actions: ["setFocusedYear", "setViewToMonth"]
+        }, {
+          cond: "isRangePicker && isRangeSelected",
+          actions: ["resetIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"]
+        }, {
+          target: "focused",
+          cond: "isRangePicker && isSelectingEndDate",
+          actions: ["setFocusedDate", "setSelectedDate", "resetIndex", "clearHoveredDate", "focusInputElement"]
         }, {
           cond: "isRangePicker",
           actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"]
@@ -131,9 +142,13 @@ const fetchMachine = createMachine({
           cond: "isDayView",
           actions: ["setFocusedDate"]
         },
-        "CELL.POINTER_MOVE": {
+        "CELL.POINTER_ENTER": {
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setHighlightedRange"]
+          actions: ["setHoveredDate"]
+        },
+        "GRID.POINTER_LEAVE": {
+          cond: "isRangePicker",
+          actions: ["clearHoveredDate"]
         },
         "GRID.POINTER_DOWN": {
           actions: ["disableTextSelection"]
@@ -249,10 +264,11 @@ const fetchMachine = createMachine({
   guards: {
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
+    "isRangePicker && isRangeSelected": ctx => ctx["isRangePicker && isRangeSelected"],
+    "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
     "isRangePicker": ctx => ctx["isRangePicker"],
     "isMultiPicker": ctx => ctx["isMultiPicker"],
     "isDayView": ctx => ctx["isDayView"],
-    "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"]
   }
 });

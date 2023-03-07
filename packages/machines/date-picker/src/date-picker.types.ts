@@ -93,11 +93,6 @@ export type TriggerProps = {
   view?: DateView
 }
 
-type DateRange = {
-  start: CalendarDate | null
-  end: CalendarDate | null
-}
-
 type PrivateContext = Context<{
   view: DateView
   startValue: CalendarDate
@@ -105,7 +100,7 @@ type PrivateContext = Context<{
   announcer?: LiveRegion
   valueText: string
   inputValue: string
-  highlightedRange: DateRange | null
+  hoveredValue: CalendarDate | null
 }>
 
 type ComputedContext = Readonly<{

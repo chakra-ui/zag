@@ -23,18 +23,15 @@ import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
-
-function isDateWithinRange(date: CalendarDate, value: CalendarDate[]) {
-  const [startDate, endDate] = value
-  if (!startDate || !endDate) return false
-  return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
-}
+import { adjustStartAndEndDate, isDateWithinRange } from "./date-picker.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startValue = state.context.startValue
   const endValue = state.context.endValue
   const selectedValue = state.context.value
   const focusedValue = state.context.focusedValue
+  const hoveredValue = state.context.hoveredValue
+  const hoveredRangeValue = hoveredValue ? adjustStartAndEndDate([selectedValue[0], hoveredValue]) : []
 
   const disabled = state.context.disabled
   const readOnly = state.context.readOnly
@@ -197,39 +194,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return chunk(getMonthNames(locale, format), columns)
     },
 
-    /**
-     * Returns the state details for a given cell.
-     */
-    getDayCellState(props: DayCellProps) {
-      const { value, disabled } = props
-      const formatter = getDayFormatter(locale, timeZone)
-
-      const cellState = {
-        isInvalid: isDateInvalid(value, min, max),
-        isDisabled: disabled || isDateDisabled(value, startValue, endValue, min, max),
-        isSelected: selectedValue.some((date) => isDateEqual(value, date)),
-        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
-        isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
-        isInRange: isRangePicker && isDateWithinRange(value, selectedValue),
-        isFocused: isDateEqual(value, focusedValue),
-        isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
-        isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
-        isToday: isTodayDate(value, timeZone),
-        isWeekend: isWeekend(value, locale),
-        formattedDate: formatter.format(value.toDate(timeZone)),
-        get ariaLabel() {
-          if (cellState.isUnavailable) return `Not available. ${cellState.formattedDate}`
-          if (cellState.isSelected) return `Selected date. ${cellState.formattedDate}`
-          return `Choose ${cellState.formattedDate}`
-        },
-        get isSelectable() {
-          return !cellState.isDisabled && !cellState.isUnavailable
-        },
-      }
-
-      return cellState
-    },
-
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
@@ -238,7 +202,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      hidden: !isOpen,
+      // hidden: !isOpen,
       id: dom.getContentId(state.context),
       role: "application",
       "aria-roledescription": "datepicker",
@@ -298,6 +262,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             event.stopPropagation()
           }
         },
+        onPointerLeave() {
+          send({ type: "GRID.POINTER_LEAVE" })
+        },
         onPointerDown() {
           send({ type: "GRID.POINTER_DOWN", view })
         },
@@ -305,6 +272,40 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "GRID.POINTER_UP", view })
         },
       })
+    },
+
+    /**
+     * Returns the state details for a given cell.
+     */
+    getDayCellState(props: DayCellProps) {
+      const { value, disabled } = props
+      const formatter = getDayFormatter(locale, timeZone)
+
+      const cellState = {
+        isInvalid: isDateInvalid(value, min, max),
+        isDisabled: disabled || isDateDisabled(value, startValue, endValue, min, max),
+        isSelected: selectedValue.some((date) => isDateEqual(value, date)),
+        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
+        isOutsideRange: isDateOutsideVisibleRange(value, startValue, endValue),
+        isInRange:
+          isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
+        isFocused: isDateEqual(value, focusedValue),
+        isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
+        isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
+        isToday: isTodayDate(value, timeZone),
+        isWeekend: isWeekend(value, locale),
+        formattedDate: formatter.format(value.toDate(timeZone)),
+        get ariaLabel() {
+          if (cellState.isUnavailable) return `Not available. ${cellState.formattedDate}`
+          if (cellState.isSelected) return `Selected date. ${cellState.formattedDate}`
+          return `Choose ${cellState.formattedDate}`
+        },
+        get isSelectable() {
+          return !cellState.isDisabled && !cellState.isUnavailable
+        },
+      }
+
+      return cellState
     },
 
     getDayCellProps(props: DayCellProps) {
@@ -332,7 +333,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "aria-invalid": ariaAttr(cellState.isInvalid),
         "data-disabled": dataAttr(!cellState.isSelectable),
-        "data-selected": dataAttr(cellState.isSelected || cellState.isInRange),
+        "data-selected": dataAttr(cellState.isSelected),
         "data-value": value.toString(),
         "data-today": dataAttr(cellState.isToday),
         "data-focused": dataAttr(cellState.isFocused),
@@ -351,9 +352,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "CELL.CLICK", cell: "day", value })
         },
         onPointerEnter(event) {
-          if (event.pointerType !== "touch") return
-          if (!cellState.isSelectable) return
-          send({ type: "CELL.HOVER", cell: "day", value })
+          if (event.pointerType === "touch" || !cellState.isSelectable) return
+          send({ type: "CELL.POINTER_ENTER", cell: "day", value })
         },
         onContextMenu(event) {
           event.preventDefault()
