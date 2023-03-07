@@ -142,7 +142,7 @@ const fetchMachine = createMachine({
           cond: "isDayView",
           actions: ["setFocusedDate"]
         },
-        "CELL.POINTER_ENTER": {
+        "CELL.POINTER_MOVE": {
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setHoveredDate"]
         },

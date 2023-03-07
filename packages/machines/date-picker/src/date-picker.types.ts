@@ -14,7 +14,7 @@ type PublicContext = DirectionProperty &
      */
     name?: string
     /**
-     * The locale to use when formatting the date.
+     * The locale (BCP 47 language tag) to use when formatting the date.
      */
     locale: string
     /**

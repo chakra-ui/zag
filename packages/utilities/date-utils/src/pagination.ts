@@ -18,14 +18,12 @@ export function getAdjustedDateFn(
       return {
         startDate,
         focusedDate: constrainValue(focusedDate, minValue, maxValue),
-        endDate,
       }
     }
 
     if (focusedDate.compare(startDate) < 0) {
       return {
         startDate: alignEnd(focusedDate, visibleDuration, locale, minValue, maxValue),
-        endDate,
         focusedDate: constrainValue(focusedDate, minValue, maxValue),
       }
     }
@@ -33,14 +31,12 @@ export function getAdjustedDateFn(
     if (focusedDate.compare(endDate) > 0) {
       return {
         startDate: alignStart(focusedDate, visibleDuration, locale, minValue, maxValue),
-        endDate,
         focusedDate: constrainValue(focusedDate, minValue, maxValue),
       }
     }
 
     return {
       startDate,
-      endDate,
       focusedDate: constrainValue(focusedDate, minValue, maxValue),
     }
   }

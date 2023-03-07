@@ -1,10 +1,11 @@
 import { CalendarDate } from "@internationalized/date"
-import { getMonthDates } from "../src/get-month-dates"
+import { getMonthDays } from "../src/get-month-days"
 
-describe("getMonthDates", () => {
+describe("getMonthDays", () => {
   it("en / returns the list of month dates", () => {
-    const days = getMonthDates(new CalendarDate(2023, 1, 1), { months: 1 }, "en")
-    expect(days.map((items) => items.map((v) => v?.toString()))).toMatchInlineSnapshot(`
+    const days = getMonthDays(new CalendarDate(2023, 1, 1), "en")
+    const dateStrings = days.map((weeks) => weeks.map((date) => date?.toString()))
+    expect(dateStrings).toMatchInlineSnapshot(`
       [
         [
           "2023-01-01",

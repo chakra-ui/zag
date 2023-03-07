@@ -32,7 +32,7 @@ function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
   const numOfMonths = ctx.numOfMonths || 1
-  const visibleDuration = { months: numOfMonths, weeks: 6 }
+  const visibleDuration = { months: numOfMonths }
   const focusedValue = getTodayDate(timeZone)
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
 
@@ -179,7 +179,7 @@ export function machine(userContext: UserDefinedContext) {
               guard: "isDayView",
               actions: ["setFocusedDate"],
             },
-            "CELL.POINTER_ENTER": {
+            "CELL.POINTER_MOVE": {
               guard: and("isRangePicker", "isSelectingEndDate"),
               actions: ["setHoveredDate"],
             },

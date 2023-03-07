@@ -1,9 +1,14 @@
-import { CalendarDate, startOfWeek } from "@internationalized/date"
+import { CalendarDate, getDayOfWeek } from "@internationalized/date"
 import { getWeekdayFormats } from "./get-weekday-formats"
 
-export function getWeekDays(date: CalendarDate, timeZone: string, locale: string) {
-  const weekStart = startOfWeek(date, locale)
-  const weekArr = [...new Array(7).keys()]
-  const getFormats = getWeekdayFormats(locale, timeZone)
-  return weekArr.map((index) => getFormats(weekStart.add({ days: index })))
+export function startOfWeek(date: CalendarDate, startOfWeekProp: number | undefined, locale: string) {
+  let dayOfWeek = startOfWeekProp ?? getDayOfWeek(date, locale)
+  return date.subtract({ days: dayOfWeek })
+}
+
+export function getWeekDays(date: CalendarDate, startOfWeekProp: number | undefined, timeZone: string, locale: string) {
+  const firstDayOfWeek = startOfWeek(date, startOfWeekProp, locale)
+  const weeks = [...new Array(7).keys()]
+  const format = getWeekdayFormats(locale, timeZone)
+  return weeks.map((index) => format(firstDayOfWeek.add({ days: index })))
 }

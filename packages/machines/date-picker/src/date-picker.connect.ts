@@ -1,8 +1,9 @@
 import { CalendarDate, isWeekend } from "@internationalized/date"
 import {
   getDayFormatter,
+  getDaysInWeek,
   getDecadeRange,
-  getMonthDates,
+  getMonthDays,
   getMonthFormatter,
   getMonthNames,
   getTodayDate,
@@ -24,6 +25,9 @@ import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
 import { adjustStartAndEndDate, isDateWithinRange } from "./date-picker.utils"
+
+// TODO: Figure out where this goes in context.
+const numOfWeeks = 5
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startValue = state.context.startValue
@@ -50,24 +54,54 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Whether the input is focused
      */
     isFocused,
+
     /**
      * Whether the date picker is open
      */
     isOpen,
+
     /**
      * The current view of the date picker
      */
     view: state.context.view,
 
     /**
+     * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
+     */
+    getDaysInWeek: (weekIndex: number, from = startValue) => {
+      return getDaysInWeek(weekIndex, from, locale, state.context.startOfWeek)
+    },
+
+    /**
+     * Returns the offset of the month based on the provided number of months.
+     */
+    getOffset: (months: number) => {
+      const from = startValue.add({ months })
+      return {
+        startValue: from,
+        endValue: endValue.add({ months }),
+        weeks: api.getMonthDays(from),
+      }
+    },
+
+    /**
+     * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
+     */
+    getMonthDays(from = startValue) {
+      return getMonthDays(from, locale, numOfWeeks, state.context.startOfWeek)
+    },
+
+    /**
      * The weeks of the month. Represented as an array of arrays of dates.
      */
-    weeks: getMonthDates(state.context.startValue, state.context.visibleDuration, locale),
+    get weeks() {
+      return api.getMonthDays()
+    },
 
     /**
      * The days of the week. Represented as an array of strings.
      */
-    weekDays: getWeekDays(getTodayDate(timeZone), timeZone, locale),
+    weekDays: getWeekDays(getTodayDate(timeZone), state.context.startOfWeek, timeZone, locale),
 
     /**
      * The human readable text for the visible range of dates.
@@ -351,9 +385,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
         },
-        onPointerEnter(event) {
+        onPointerMove(event) {
           if (event.pointerType === "touch" || !cellState.isSelectable) return
-          send({ type: "CELL.POINTER_ENTER", cell: "day", value })
+          send({ type: "CELL.POINTER_MOVE", cell: "day", value })
         },
         onContextMenu(event) {
           event.preventDefault()
