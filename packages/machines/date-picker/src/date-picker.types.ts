@@ -63,6 +63,11 @@ type PublicContext = DirectionProperty &
      */
     startOfWeek?: number
     /**
+     * Whether the calendar should have a fixed number of weeks.
+     * This renders the calendar with 6 weeks instead of 5 or 6.
+     */
+    fixedWeeks?: boolean
+    /**
      * Function called when the value changes.
      */
     onChange?: (details: ChangeDetails) => void

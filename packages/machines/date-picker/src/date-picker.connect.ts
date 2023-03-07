@@ -35,9 +35,6 @@ import {
   isDateWithinRange,
 } from "./date-picker.utils"
 
-// TODO: Figure out where this goes in context.
-const numOfWeeks = undefined
-
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startValue = state.context.startValue
   const endValue = state.context.endValue
@@ -103,6 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
      */
     getMonthDays(from = startValue) {
+      const numOfWeeks = state.context.fixedWeeks ? 6 : undefined
       return getMonthDays(from, locale, numOfWeeks, startOfWeek)
     },
 
