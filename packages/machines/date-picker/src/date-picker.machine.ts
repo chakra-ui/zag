@@ -37,7 +37,6 @@ function getContext(ctx: UserDefinedContext) {
   const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
 
   return {
-    id: "1",
     view: "day" as const,
     locale,
     timeZone,
@@ -45,14 +44,13 @@ function getContext(ctx: UserDefinedContext) {
     focusedValue,
     startValue,
     activeIndex: 0,
-    highlightedRange: null,
     value: [],
     valueText: "",
     hoveredValue: null,
     inputValue: "",
     selectionMode: "single" as const,
-    ...(ctx as any),
-  }
+    ...ctx,
+  } as MachineContext
 }
 
 export function machine(userContext: UserDefinedContext) {
