@@ -168,7 +168,8 @@ export const datePickerControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   inline: { type: "boolean", defaultValue: false },
-  selectionMode: { type: "select", options: ["single", "multiple", "range"] as const, defaultValue: "range" },
+  selectionMode: { type: "select", options: ["single", "multiple", "range"] as const, defaultValue: "single" },
+  startOfWeek: { type: "number", defaultValue: 0 },
 })
 
 export const transitionControls = defineControls({
