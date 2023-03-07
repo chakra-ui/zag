@@ -3,7 +3,6 @@ import { createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
   formatSelectedDate,
-  formatVisibleRange,
   getAdjustedDateFn,
   getEndDate,
   getFormatter,
@@ -69,7 +68,8 @@ export function machine(userContext: UserDefinedContext) {
           const formatter = getFormatter(ctx.locale, { month: "long", year: "numeric", timeZone: ctx.timeZone })
           const start = formatter.format(ctx.startValue.toDate(ctx.timeZone))
           const end = formatter.format(ctx.endValue.toDate(ctx.timeZone))
-          return { start, end, formatted: formatVisibleRange(ctx.startValue, ctx.endValue, ctx.locale, ctx.timeZone) }
+          // const formatted = formatVisibleRange(ctx.startValue, ctx.endValue, ctx.locale, ctx.timeZone)
+          return { start, end, formatted: "" }
         },
         isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
         isNextVisibleRangeValid: (ctx) => !isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max),
@@ -327,10 +327,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.announcer?.announce(formatted)
         },
         disableTextSelection(ctx) {
-          disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
+          disableTextSelection({ target: dom.getContentEl(ctx)!, doc: dom.getDoc(ctx) })
         },
         enableTextSelection(ctx) {
-          restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
+          restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getContentEl(ctx)! })
         },
         focusFirstSelectedDate(ctx) {
           if (!ctx.value.length) return

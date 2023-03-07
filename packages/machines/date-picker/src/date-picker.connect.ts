@@ -3,6 +3,7 @@ import {
   getDayFormatter,
   getDaysInWeek,
   getDecadeRange,
+  getFormatter,
   getMonthDays,
   getMonthFormatter,
   getMonthNames,
@@ -24,7 +25,14 @@ import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Send, State, TriggerProps } from "./date-picker.types"
-import { adjustStartAndEndDate, isDateWithinRange } from "./date-picker.utils"
+import {
+  adjustStartAndEndDate,
+  getNextTriggerLabel,
+  getPrevTriggerLabel,
+  getRoleDescription,
+  getViewTriggerLabel,
+  isDateWithinRange,
+} from "./date-picker.utils"
 
 // TODO: Figure out where this goes in context.
 const numOfWeeks = 5
@@ -78,8 +86,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getOffset: (months: number) => {
       const from = startValue.add({ months })
       return {
-        startValue: from,
-        endValue: endValue.add({ months }),
+        visibleRange: { start: from, end: endValue.add({ months }) },
         weeks: api.getMonthDays(from),
       }
     },
@@ -228,6 +235,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return chunk(getMonthNames(locale, format), columns)
     },
 
+    format(value: CalendarDate) {
+      return getFormatter(locale, { month: "long", year: "numeric" }).format(value.toDate(timeZone))
+    },
+
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
@@ -243,14 +254,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "calendar",
     }),
 
-    getGridProps(props: { view?: DateView; columns?: number } = {}) {
-      const { view = "day", columns = view === "day" ? 7 : 4 } = props
+    getGridProps(props: { view?: DateView; columns?: number; id?: string } = {}) {
+      const { view = "day", columns = view === "day" ? 7 : 4, id } = props
+      const uid = [view, id].filter(Boolean).join(" ")
       return normalize.element({
         ...parts.grid.attrs,
         role: "grid",
         "data-columns": columns,
         "aria-roledescription": getRoleDescription(view),
-        id: dom.getGridId(state.context, view),
+        id: dom.getGridId(state.context, uid),
         "aria-readonly": ariaAttr(readOnly),
         "aria-disabled": ariaAttr(disabled),
         "aria-multiselectable": ariaAttr(state.context.selectionMode !== "single"),
@@ -369,6 +381,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(!cellState.isSelectable),
         "data-selected": dataAttr(cellState.isSelected),
         "data-value": value.toString(),
+        "data-type": "day",
         "data-today": dataAttr(cellState.isToday),
         "data-focused": dataAttr(cellState.isFocused),
         "data-unavailable": dataAttr(cellState.isUnavailable),
@@ -610,42 +623,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return api
-}
-
-function matchView<T>(view: DateView, values: { year: T; month: T; day: T }) {
-  if (view === "year") return values.year
-  if (view === "month") return values.month
-  return values.day
-}
-
-function getNextTriggerLabel(view: DateView) {
-  return matchView(view, {
-    year: "Switch to next decade",
-    month: "Switch to next year",
-    day: "Switch to next month",
-  })
-}
-
-function getPrevTriggerLabel(view: DateView) {
-  return matchView(view, {
-    year: "Switch to previous decade",
-    month: "Switch to previous year",
-    day: "Switch to previous month",
-  })
-}
-
-function getRoleDescription(view: DateView) {
-  return matchView(view, {
-    year: "calendar decade",
-    month: "calendar year",
-    day: "calendar month",
-  })
-}
-
-function getViewTriggerLabel(view: DateView) {
-  return matchView(view, {
-    year: "Switch to month view",
-    month: "Switch to day view",
-    day: "Switch to year view",
-  })
 }
