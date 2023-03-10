@@ -46,6 +46,10 @@ type DataAttr = {
 
 export type PropTypes = Record<"button" | "label" | "input" | "output" | "element" | "select" | "style", Dict>
 
+type SveltePropTypes = PropTypes & {
+  isSvelte: boolean
+}
+
 export type NormalizeProps<T extends PropTypes> = {
   [K in keyof T]: (props: K extends keyof JSX.IntrinsicElements ? DataAttr & JSX.IntrinsicElements[K] : never) => T[K]
 } & {
@@ -62,12 +66,8 @@ type NormalizeSvelteProps<T extends PropTypes> = {
     : NormalizeProps<T>[K]
 }
 
-type SveltePropTypes = PropTypes & {
-  isSvelte: boolean
-}
-
-export function createNormalizer<T extends SveltePropTypes>(fn: (props: Dict) => Dict): NormalizeSvelteProps<T>
 export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T>
+export function createNormalizer<T extends SveltePropTypes>(fn: (props: Dict) => Dict): NormalizeSvelteProps<T>
 export function createNormalizer(fn: (props: Dict) => Dict): Record<string, any> {
   return new Proxy({} as any, {
     get() {
