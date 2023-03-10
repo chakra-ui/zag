@@ -1,9 +1,7 @@
 <script lang="ts">
-  // The country-list package used in shared prevents us from using the zag-shared package, because it uses require, and sveltekit has issues with that
-  import "../../../../shared/src/style.css"
+  import "@zag-js/shared/src/style.css"
   import { routesData } from "@zag-js/shared"
-  import { dataAttr } from "@zag-js/dom-query"
-  import { Router, Link, link } from "svelte-navigator"
+  import { Router, Link } from "svelte-navigator"
 
   const routes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>

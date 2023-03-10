@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { stringifyState } from "../../../../shared/src/stringify-state"
+  import { stringifyState } from "@zag-js/shared/src/stringify-state"
 
   export let label = "Visualizer"
   export let omit: string[] = []
