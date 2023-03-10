@@ -44,10 +44,19 @@ type DataAttr = {
   [key in `data-${string}`]?: string | number | Booleanish
 }
 
-export type PropTypes = Record<"button" | "label" | "input" | "output" | "element" | "select" | "style", Dict>
-
 type SveltePropTypes = PropTypes & {
   isSvelte: boolean
+}
+
+export type PropTypes = Record<"button" | "label" | "input" | "output" | "element" | "select" | "style", Dict>
+
+type NormalizeSvelteProps<T extends PropTypes> = {
+  [K in keyof Omit<NormalizeProps<T>, "isSvelte">]: NormalizeProps<T>[K] extends (...args: infer Args) => infer Ret
+    ? (...args: Args) => {
+        handlers: Ret
+        attributes: Ret
+      }
+    : NormalizeProps<T>[K]
 }
 
 export type NormalizeProps<T extends PropTypes> = {
@@ -57,17 +66,8 @@ export type NormalizeProps<T extends PropTypes> = {
   style: JSX.CSSProperties
 }
 
-type NormalizeSvelteProps<T extends PropTypes> = {
-  [K in keyof NormalizeProps<T>]: NormalizeProps<T>[K] extends (...args: infer Args) => infer Ret
-    ? (...args: Args) => {
-        handlers: Ret
-        attributes: Ret
-      }
-    : NormalizeProps<T>[K]
-}
-
-export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T>
 export function createNormalizer<T extends SveltePropTypes>(fn: (props: Dict) => Dict): NormalizeSvelteProps<T>
+export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T>
 export function createNormalizer(fn: (props: Dict) => Dict): Record<string, any> {
   return new Proxy({} as any, {
     get() {
