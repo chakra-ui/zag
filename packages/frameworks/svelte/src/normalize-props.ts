@@ -1,15 +1,12 @@
-import { createNormalizer } from "@zag-js/types"
+import { createNormalizer, JSX } from "@zag-js/types"
 import type {} from "svelte"
 import { getAttributesAndHandlers } from "./get-attributes-and-handlers"
 import { normalizeAttributes } from "./normalize-attributes"
 import { normalizeHandlers } from "./normalize-handlers"
 
-// TODO hoping to get element types from svelte
-type IntrinsicAttributes = Record<"button" | "label" | "input" | "output" | "element" | "select" | "style", any>
-
-type PropTypes = IntrinsicAttributes & {
-  element: any
-  style: any
+type PropTypes = JSX.IntrinsicElements & {
+  element: JSX.HTMLAttributes<any>
+  style: JSX.CSSProperties
 }
 
 export const normalizeProps = createNormalizer<PropTypes>((v) => {
