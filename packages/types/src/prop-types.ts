@@ -53,7 +53,22 @@ export type NormalizeProps<T extends PropTypes> = {
   style: JSX.CSSProperties
 }
 
-export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T> {
+type NormalizeSvelteProps<T extends PropTypes> = {
+  [K in keyof NormalizeProps<T>]: NormalizeProps<T>[K] extends (...args: infer Args) => infer Ret
+    ? (...args: Args) => {
+        handlers: Ret
+        attributes: Ret
+      }
+    : NormalizeProps<T>[K]
+}
+
+type SveltePropTypes = PropTypes & {
+  isSvelte: boolean
+}
+
+export function createNormalizer<T extends SveltePropTypes>(fn: (props: Dict) => Dict): NormalizeSvelteProps<T>
+export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T>
+export function createNormalizer(fn: (props: Dict) => Dict): Record<string, any> {
   return new Proxy({} as any, {
     get() {
       return fn

@@ -7,6 +7,7 @@ import { normalizeHandlers } from "./normalize-handlers"
 type PropTypes = JSX.IntrinsicElements & {
   element: JSX.HTMLAttributes<any>
   style: JSX.CSSProperties
+  isSvelte: boolean
 }
 
 export const normalizeProps = createNormalizer<PropTypes>((v) => {
