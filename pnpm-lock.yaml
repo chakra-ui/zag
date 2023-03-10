@@ -478,6 +478,7 @@ importers:
       '@sveltejs/adapter-auto': ^2.0.0
       '@sveltejs/kit': ^1.5.0
       '@sveltejs/package': ^2.0.0
+      '@sveltejs/vite-plugin-svelte': ^2.0.3
       '@typescript-eslint/eslint-plugin': ^5.45.0
       '@typescript-eslint/parser': ^5.45.0
       '@zag-js/accordion': workspace:*
@@ -543,6 +544,7 @@ importers:
       publint: ^0.1.9
       svelte: ^3.54.0
       svelte-check: ^3.0.1
+      svelte-navigator: ^3.2.2
       tslib: ^2.4.1
       typescript: ^4.9.3
       vite: ^4.0.0
@@ -602,10 +604,12 @@ importers:
       '@zag-js/types': link:../../packages/types
       '@zag-js/utils': link:../../packages/utilities/core
       '@zag-js/visually-hidden': link:../../packages/utilities/visually-hidden
+      svelte-navigator: 3.2.2_4x7phaipmicbaooxtnresslofa
     devDependencies:
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.9.1
       '@sveltejs/kit': 1.9.1_svelte@3.55.1+vite@4.1.4
       '@sveltejs/package': 2.0.2_4x7phaipmicbaooxtnresslofa
+      '@sveltejs/vite-plugin-svelte': 2.0.3_svelte@3.55.1+vite@4.1.4
       '@typescript-eslint/eslint-plugin': 5.53.0_ny4s7qc6yg74faf3d6xty2ofzy
       '@typescript-eslint/parser': 5.53.0_7kw3g6rralp5ps6mg3uyzz6azm
       eslint: 8.34.0
@@ -4781,7 +4785,6 @@ packages:
 
   /dedent-js/1.0.1:
     resolution: {integrity: sha512-OUepMozQULMLUmhxS95Vudo0jb0UchLimi3+pQ2plj61Fcy8axbP9hbiD4Sz6DPqn6XG3kfmziVfQ1rSys5AJQ==}
-    dev: true
 
   /deep-eql/4.1.3:
     resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}
@@ -8296,6 +8299,17 @@ packages:
       svelte: 3.55.1
     dev: true
 
+  /svelte-navigator/3.2.2_4x7phaipmicbaooxtnresslofa:
+    resolution: {integrity: sha512-Xio4ohLUG1nQJ+ENNbLphXXu9L189fnI1WGg+2Q3CIMPe8Jm2ipytKQthdBs8t0mN7p3Eb03SE9hq0xZAqwQNQ==}
+    peerDependencies:
+      svelte: 3.x
+    dependencies:
+      svelte: 3.55.1
+      svelte2tsx: 0.1.193_4x7phaipmicbaooxtnresslofa
+    transitivePeerDependencies:
+      - typescript
+    dev: false
+
   /svelte-preprocess/5.0.1_4x7phaipmicbaooxtnresslofa:
     resolution: {integrity: sha512-0HXyhCoc9rsW4zGOgtInylC6qj259E1hpFnJMJWTf+aIfeqh4O/QHT31KT2hvPEqQfdjmqBR/kO2JDkkciBLrQ==}
     engines: {node: '>= 14.10.0'}
@@ -8347,7 +8361,18 @@ packages:
   /svelte/3.55.1:
     resolution: {integrity: sha512-S+87/P0Ve67HxKkEV23iCdAh/SX1xiSfjF1HOglno/YTbSTW7RniICMCofWGdJJbdjw3S+0PfFb1JtGfTXE0oQ==}
     engines: {node: '>= 8'}
-    dev: true
+
+  /svelte2tsx/0.1.193_4x7phaipmicbaooxtnresslofa:
+    resolution: {integrity: sha512-vzy4YQNYDnoqp2iZPnJy7kpPAY6y121L0HKrSBjU/IWW7DQ6T7RMJed2VVHFmVYm0zAGYMDl9urPc6R4DDUyhg==}
+    peerDependencies:
+      svelte: ^3.24
+      typescript: ^4.1.2
+    dependencies:
+      dedent-js: 1.0.1
+      pascal-case: 3.1.2
+      svelte: 3.55.1
+      typescript: 4.9.5
+    dev: false
 
   /svelte2tsx/0.6.2_4x7phaipmicbaooxtnresslofa:
     resolution: {integrity: sha512-0ircYY2/jMOfistf+iq8fVHERnu1i90nku56c78+btC8svyafsc3OjOV37LDEOV7buqYY1Rv/uy03eMxhopH2Q==}
