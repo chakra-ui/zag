@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import * as accordion from "@zag-js/accordion"
   import { useMachine, normalizeProps, zag } from "@zag-js/svelte"
   import StateVisualizer from "../components/state-visualizer.svelte"

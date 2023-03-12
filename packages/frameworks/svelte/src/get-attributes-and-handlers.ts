@@ -1,5 +1,5 @@
 export function getAttributesAndHandlers(props: Record<string, any>) {
-  const handlers = {}
+  const handlers = {} as Record<string, any>
   const attributes = {}
 
   Object.keys(props).forEach((key) => {

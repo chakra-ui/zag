@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import * as select from "@zag-js/select"
   import { zag, useMachine, normalizeProps } from "@zag-js/svelte"
   import StateVisualizer from "../components/state-visualizer.svelte"
@@ -31,7 +31,6 @@
       {/if}
     </button>
   </div>
-  <!-- <Portal> -->
   <div use:zag={api.positionerProps.handlers} {...api.positionerProps.attributes}>
     <ul use:zag={api.contentProps.handlers} {...api.contentProps.attributes}>
       {#each selectData as { label, value }}
@@ -45,7 +44,6 @@
       {/each}
     </ul>
   </div>
-  <!-- </Portal> -->
 </div>
 
 <Toolbar>

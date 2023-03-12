@@ -1,5 +1,5 @@
-export function normalizeHandlers(handlers: Record<string, () => void>) {
-  const normalizedHandlers: Record<string, () => void> = {}
+export function normalizeHandlers(handlers: Record<string, EventListener>) {
+  const normalizedHandlers: Record<string, EventListener> = {}
 
   for (const [key, value] of Object.entries(handlers)) {
     const eventName = key.replace(/^on/, "").toLowerCase()

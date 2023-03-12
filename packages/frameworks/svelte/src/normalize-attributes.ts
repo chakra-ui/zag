@@ -14,7 +14,6 @@ export function normalizeAttributes(attributes: Record<string, any>) {
 
   for (const [key, value] of Object.entries(attributes)) {
     if (key === "style") {
-      console.log("style", styleObjectToString(value))
       normalizedAttributes[key] = styleObjectToString(value)
       // filter out falsy values as html attributes like undefined are still applied
       // even if their value is falsy
