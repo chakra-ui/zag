@@ -863,7 +863,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-      focus-trap: 7.3.1
+      focus-trap: 7.4.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
@@ -873,7 +873,7 @@ importers:
       '@zag-js/remove-scroll': link:../../utilities/remove-scroll
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
-      focus-trap: 7.3.1
+      focus-trap: 7.4.0
     devDependencies:
       clean-package: 2.2.0
 
@@ -1025,7 +1025,7 @@ importers:
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       clean-package: 2.2.0
-      focus-trap: 7.3.1
+      focus-trap: 7.4.0
     dependencies:
       '@zag-js/anatomy': link:../../anatomy
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
@@ -1038,7 +1038,7 @@ importers:
       '@zag-js/tabbable': link:../../utilities/tabbable
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
-      focus-trap: 7.3.1
+      focus-trap: 7.4.0
     devDependencies:
       clean-package: 2.2.0
 
@@ -5312,8 +5312,8 @@ packages:
   /flatted/3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
 
-  /focus-trap/7.3.1:
-    resolution: {integrity: sha512-bX/u4FJ+F0Pp6b/8Q9W8Br/JaLJ7rrhOJAzai9JU8bh4BPdOjEATy4pxHcbBBxFjPN4d1oHy7/KqknEdOetm9w==}
+  /focus-trap/7.4.0:
+    resolution: {integrity: sha512-yI7FwUqU4TVb+7t6PaQ3spT/42r/KLEi8mtdGoQo2li/kFzmu9URmalTvw7xCCJtSOyhBxscvEAmvjeN9iHARg==}
     dependencies:
       tabbable: 6.1.1
     dev: false
