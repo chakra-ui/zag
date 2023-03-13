@@ -62,9 +62,9 @@
   "dependencies": {
     "@axe-core/playwright": "4.6.0",
     "@babel/generator": "7.21.1",
-    "@babel/parser": "7.21.1",
-    "@babel/traverse": "7.21.0",
-    "@babel/types": "7.21.0",
+    "@babel/parser": "7.21.2",
+    "@babel/traverse": "7.21.2",
+    "@babel/types": "7.21.2",
     "@changesets/changelog-github": "0.4.8",
     "@changesets/cli": "2.26.0",
     "@commitlint/cli": "17.4.4",
