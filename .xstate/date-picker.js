@@ -19,11 +19,11 @@ const fetchMachine = createMachine({
     "isMonthView": false,
     "isMonthView": false,
     "isYearView": false,
-    "isRangePicker && isRangeSelected": false,
+    "isRangePicker && hasSelectedRange": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
-    "isDayView": false,
+    "isDayView && !isSameFocusedValue": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMonthView": false,
@@ -55,7 +55,7 @@ const fetchMachine = createMachine({
     },
     "VALUE.CLEAR": {
       target: "focused",
-      actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"]
+      actions: ["clearSelectedDate", "clearFocusedDate", "setInputValue", "focusInputElement"]
     },
     "GOTO.NEXT": [{
       cond: "isYearView",
@@ -102,10 +102,17 @@ const fetchMachine = createMachine({
           actions: ["setViewToDay", "focusFirstSelectedDate"]
         },
         "INPUT.CHANGE": {
-          actions: ["parseInputValue"]
+          actions: ["focusParsedDate"]
         },
         "INPUT.ENTER": {
-          actions: ["parseInputValue", "selectFocusedDate"]
+          actions: ["focusParsedDate", "selectFocusedDate", "setInputValue"]
+        },
+        "INPUT.BLUR": {
+          target: "idle"
+        },
+        "CELL.FOCUS": {
+          target: "open",
+          actions: ["setView"]
         }
       }
     },
@@ -122,24 +129,24 @@ const fetchMachine = createMachine({
           cond: "isYearView",
           actions: ["setFocusedYear", "setViewToMonth"]
         }, {
-          cond: "isRangePicker && isRangeSelected",
+          cond: "isRangePicker && hasSelectedRange",
           actions: ["resetIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"]
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setFocusedDate", "setSelectedDate", "resetIndex", "clearHoveredDate", "focusInputElement"]
+          actions: ["setFocusedDate", "setSelectedDate", "resetIndex", "clearHoveredDate", "setInputValue", "focusInputElement"]
         }, {
           cond: "isRangePicker",
           actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"]
         }, {
           cond: "isMultiPicker",
-          actions: ["setFocusedDate", "toggleSelectedDate"]
+          actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"]
         }, {
           target: "focused",
-          actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"]
+          actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"]
         }],
         "CELL.FOCUS": {
-          cond: "isDayView",
+          cond: "isDayView && !isSameFocusedValue",
           actions: ["setFocusedDate"]
         },
         "CELL.POINTER_MOVE": {
@@ -171,7 +178,7 @@ const fetchMachine = createMachine({
           actions: "toggleSelectedDate"
         }, {
           target: "focused",
-          actions: ["selectFocusedDate", "focusInputElement"]
+          actions: ["selectFocusedDate", "setInputValue", "focusInputElement"]
         }],
         "GRID.ARROW_RIGHT": [{
           cond: "isMonthView",
@@ -264,10 +271,11 @@ const fetchMachine = createMachine({
   guards: {
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
-    "isRangePicker && isRangeSelected": ctx => ctx["isRangePicker && isRangeSelected"],
+    "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
     "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
     "isRangePicker": ctx => ctx["isRangePicker"],
     "isMultiPicker": ctx => ctx["isMultiPicker"],
+    "isDayView && !isSameFocusedValue": ctx => ctx["isDayView && !isSameFocusedValue"],
     "isDayView": ctx => ctx["isDayView"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"]
   }

@@ -1,9 +1,8 @@
-import { CalendarDate, isWeekend } from "@internationalized/date"
+import { CalendarDate, DateFormatter, isWeekend } from "@internationalized/date"
 import {
   getDayFormatter,
   getDaysInWeek,
   getDecadeRange,
-  getFormatter,
   getMonthDays,
   getMonthFormatter,
   getMonthNames,
@@ -28,6 +27,7 @@ import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Offset, Send, State, TriggerProps } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
+  getInputPlaceholder,
   getNextTriggerLabel,
   getPrevTriggerLabel,
   getRoleDescription,
@@ -241,8 +241,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return chunk(getMonthNames(locale, format), columns)
     },
 
-    format(value: CalendarDate) {
-      return getFormatter(locale, { month: "long", year: "numeric" }).format(value.toDate(timeZone))
+    /**
+     * Formats the given date value based on the provided options.
+     */
+    format(value: CalendarDate, opts: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" }) {
+      return new DateFormatter(locale, opts).format(value.toDate(timeZone))
     },
 
     controlProps: normalize.element({
@@ -253,7 +256,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      // hidden: !isOpen,
+      hidden: !isOpen,
       id: dom.getContentId(state.context),
       role: "application",
       "aria-roledescription": "datepicker",
@@ -593,7 +596,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       dir: state.context.dir,
       name: state.context.name,
-      placeholder: "MM/DD/YYYY",
+      placeholder: getInputPlaceholder(locale),
       defaultValue: state.context.inputValue,
       onFocus() {
         send("INPUT.FOCUS")

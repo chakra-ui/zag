@@ -7,8 +7,16 @@ type ChangeDetails = {
   value: CalendarDate
 }
 
+type IntlMessages = {
+  placeholder: (locale: string) => { year: string; month: string; day: string }
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
+    /**
+     * The localized messages to use.
+     */
+    messages?: IntlMessages
     /**
      * The `name` attribute of the input element.
      */
@@ -90,6 +98,19 @@ type PublicContext = DirectionProperty &
      * - `range` - a range of dates can be selected
      */
     selectionMode: "single" | "multiple" | "range"
+    /**
+     * The format of the date to display in the input.
+     */
+    format?: (date: CalendarDate[]) => string
+    /**
+     * The format of the date to display in the input.
+     */
+    parse?: (value: string) => CalendarDate[]
+    /**
+     * Whether the calendar should be modal. This means that the calendar will
+     * block interaction with the rest of the page, and trap focus within it.
+     */
+    modal?: boolean
   }
 
 export type DateView = "day" | "month" | "year"

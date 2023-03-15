@@ -1,4 +1,4 @@
-import type { CalendarDate } from "@internationalized/date"
+import { CalendarDate, DateFormatter } from "@internationalized/date"
 import type { DateView } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: CalendarDate[]) {
@@ -21,6 +21,16 @@ export function matchView<T>(view: DateView, values: { year: T; month: T; day: T
   if (view === "year") return values.year
   if (view === "month") return values.month
   return values.day
+}
+
+export function formatValue(value: CalendarDate[], locale: string, timeZone: string) {
+  const formatter = new DateFormatter(locale, {
+    timeZone: timeZone,
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  })
+  return value.map((date) => formatter.format(date.toDate(timeZone)).toString()).join(", ")
 }
 
 export function getNextTriggerLabel(view: DateView) {
@@ -53,4 +63,12 @@ export function getViewTriggerLabel(view: DateView) {
     month: "Switch to day view",
     day: "Switch to year view",
   })
+}
+
+const PLACEHOLDERS = { day: "dd", month: "mm", year: "yyyy" }
+export function getInputPlaceholder(locale: string) {
+  return new DateFormatter(locale)
+    .formatToParts(new Date())
+    .map((item) => PLACEHOLDERS[item.type] ?? item.value)
+    .join("")
 }
