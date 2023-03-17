@@ -13,8 +13,8 @@ describe("Date utilities", () => {
           "long": "Sunday",
           "narrow": "S",
           "short": "Sun",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 8,
@@ -27,8 +27,8 @@ describe("Date utilities", () => {
           "long": "Monday",
           "narrow": "M",
           "short": "Mon",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 9,
@@ -41,8 +41,8 @@ describe("Date utilities", () => {
           "long": "Tuesday",
           "narrow": "T",
           "short": "Tue",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 10,
@@ -55,8 +55,8 @@ describe("Date utilities", () => {
           "long": "Wednesday",
           "narrow": "W",
           "short": "Wed",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 11,
@@ -69,8 +69,8 @@ describe("Date utilities", () => {
           "long": "Thursday",
           "narrow": "T",
           "short": "Thu",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 12,
@@ -83,8 +83,8 @@ describe("Date utilities", () => {
           "long": "Friday",
           "narrow": "F",
           "short": "Fri",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 13,
@@ -97,8 +97,8 @@ describe("Date utilities", () => {
           "long": "Saturday",
           "narrow": "S",
           "short": "Sat",
-          "value": $625ad1e1f4c43bc1$export$99faa760c7908e4f {
-            "calendar": $af14c9812fdceb33$export$80ee6245ec4f29ec {
+          "value": $35ea8db9cb2ccb90$export$99faa760c7908e4f {
+            "calendar": $3b62074eb05584b2$export$80ee6245ec4f29ec {
               "identifier": "gregory",
             },
             "day": 14,
