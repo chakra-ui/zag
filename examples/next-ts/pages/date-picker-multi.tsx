@@ -14,7 +14,7 @@ export default function Page() {
     datePicker.machine({
       id: useId(),
       locale: "en",
-      selectionMode: "single",
+      selectionMode: "multiple",
       max: new CalendarDate(2023, 4, 20),
       min: new CalendarDate(2010, 1, 20),
     }),
