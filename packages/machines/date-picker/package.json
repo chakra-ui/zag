@@ -43,13 +43,13 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@internationalized/date": "^3.0.2",
-    "@internationalized/number": "^3.1.2",
     "@zag-js/date-utils": "workspace:*",
-    "proxy-memoize": "2.0.2",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

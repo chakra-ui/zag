@@ -1,39 +1,28 @@
-import { createScope, queryAll } from "@zag-js/dom-query"
-import { nextIndex, prevIndex } from "@zag-js/utils"
-import type { MachineContext as Ctx } from "./date-picker.types"
+import { createScope, query } from "@zag-js/dom-query"
+import type { DateView, MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => `datepicker:${ctx.id}`,
-  getGridId: (ctx: Ctx) => `datepicker:${ctx.id}:grid`,
-  getCellId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-${id}`,
-  getCellTriggerId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-trigger-${id}`,
-  getPrevTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:prev-trigger`,
-  getNextTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:next-trigger`,
+  getGridId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:grid:${id}`,
+  getHeaderId: (ctx: Ctx) => `datepicker:${ctx.id}:header`,
+  getContentId: (ctx: Ctx) => `datepicker:${ctx.id}:content`,
+  getCellTriggerId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:cell-${id}`,
+  getPrevTriggerId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:prev:${view}`,
+  getNextTriggerId: (ctx: Ctx, view: DateView) => `datepicker:${ctx.id}:next:${view}`,
+  getViewTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:view-trigger`,
+  getClearTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:clear-trigger`,
   getControlId: (ctx: Ctx) => `datepicker:${ctx.id}:control`,
+  getInputId: (ctx: Ctx) => `datepicker:${ctx.id}:input`,
   getTriggerId: (ctx: Ctx) => `datepicker:${ctx.id}:trigger`,
-  getSegmentId: (ctx: Ctx, id: string) => `datepicker:${ctx.id}:${id}`,
-  getFieldId: (ctx: Ctx) => `datepicker:${ctx.id}:field`,
-  getGroupId: (ctx: Ctx) => `datepicker:${ctx.id}:group`,
+  getMonthSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:month-select`,
+  getYearSelectId: (ctx: Ctx) => `datepicker:${ctx.id}:year-select`,
 
-  getGridEl: (ctx: Ctx) => dom.getById(ctx, dom.getGridId(ctx)),
-  getFocusedCell: (ctx: Ctx) => {
-    const grid = dom.getGridEl(ctx)
-    return grid?.querySelector<HTMLElement>("[data-part=cell-trigger][data-focused]")
-  },
-  getSegmentEls: (ctx: Ctx) => {
-    const group = dom.getById(ctx, dom.getGroupId(ctx))
-    return queryAll(group, "[data-part=segment], [data-part=trigger]")
-  },
-  focusNextSegment(ctx: Ctx) {
-    const segments = dom.getSegmentEls(ctx)
-    const index = nextIndex(segments, segments.indexOf(dom.getActiveElement(ctx)!), { loop: false })
-    const next = segments[index]
-    next?.focus()
-  },
-  focusPrevSegment(ctx: Ctx) {
-    const segments = dom.getSegmentEls(ctx)
-    const index = prevIndex(segments, segments.indexOf(dom.getActiveElement(ctx)!), { loop: false })
-    const prev = segments[index]
-    prev?.focus()
-  },
+  getFocusedCell: (ctx: Ctx, view = ctx.view) =>
+    query(dom.getContentEl(ctx), `[data-part=cell-trigger][data-type=${view}][data-focused]:not([data-outside-range])`),
+  getTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getTriggerId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getYearSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getYearSelectId(ctx)),
+  getMonthSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getMonthSelectId(ctx)),
+  getClearTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getClearTriggerId(ctx)),
 })
