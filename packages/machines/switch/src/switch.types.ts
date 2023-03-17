@@ -6,65 +6,65 @@ type ElementIds = Partial<{
   input: string
   control: string
   label: string
+  thumb: string
 }>
 
+// TODO value and name, hover and focus
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
-     * The ids of the elements in the checkbox. Useful for composition.
+     * The ids of the elements in the switch. Useful for composition.
      */
     ids?: ElementIds
     /**
-     * If `true`, the checkbox will be indeterminate.
-     * This only affects the icon shown inside checkbox
-     * and does not modify the isChecked property.
+     * Specifies the localized strings that identifies the accessibility elements and their states
      */
-    indeterminate?: boolean
+    label: string
     /**
-     * If `true`, the checkbox will be disabled
+     * Whether the switch is disabled.
      */
     disabled?: boolean
     /**
-     * If `true` and `disabled` is passed, the checkbox will
+     * If `true` and `disabled` is passed, the switch will
      * remain tabbable but not interactive
      */
     focusable?: boolean
     /**
-     * If `true`, the checkbox will be readonly
+     * If `true`, the switch will be readonly
      */
     readOnly?: boolean
     /**
-     * If `true`, the checkbox is marked as invalid.
+     * If `true`, the switch is marked as invalid.
      */
     invalid?: boolean
     /**
-     * If `true`, the checkbox input is marked as required,
+     * If `true`, the switch input is marked as required,
      */
     required?: boolean
     /**
-     * If `true`, the checkbox will be initially checked.
+     * Function to call when the switch is clicked.
+     */
+    onChange?: (details: { checked: boolean }) => void
+    /**
+     * Whether the switch is initially checked.
      */
     defaultChecked?: boolean
     /**
-     * The callback invoked when the checked state of the `Checkbox` changes.
-     */
-    onChange?: (details: { checked: boolean | "indeterminate" }) => void
-    /**
-     * The name of the input field in a checkbox
+     * The name of the input field in a switch
      * (Useful for form submission).
      */
     name?: string
     /**
-     * The associate form of the underlying checkbox.
+     * The associate form of the underlying input.
      */
     form?: string
     /**
-     * The value to be used in the checkbox input.
+     * The value to be used in the switch input.
      * This is the value that will be returned on form submission.
      */
     value?: string | number
     /**
-     * Defines the string that labels the checkbox element.
+     * Defines the string that labels the switch element.
      */
     "aria-label"?: string
     "aria-labelledby"?: string

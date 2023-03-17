@@ -12,6 +12,11 @@ export const checkboxControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false, label: "readonly" },
 })
 
+export const switchControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false, label: "disabled" },
+  readOnly: { type: "boolean", defaultValue: false, label: "readonly" },
+})
+
 export const comboboxControls = defineControls({
   inputBehavior: {
     type: "select",

@@ -136,10 +136,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (event.pointerType !== "mouse") return
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
-        send({
-          type: "TRIGGER_POINTERMOVE",
-          target: event.currentTarget,
-        })
+        send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
       },
       onPointerLeave(event) {
         if (event.pointerType !== "mouse") return
@@ -361,7 +358,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "data-checked": dataAttr(checked),
           onClick(event) {
             if (disabled) return
-            send({ type: "ITEM_CLICK", target: event.currentTarget, option })
+            send({ type: "ITEM_CLICK", src: "click", target: event.currentTarget, option })
+            onCheckedChange?.(!checked)
+          },
+          onPointerUp(event) {
+            const evt = getNativeEvent(event)
+            if (!isLeftClick(evt) || disabled) return
+            send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, option })
+            onCheckedChange?.(!checked)
+          },
+          onAuxClick(event) {
+            if (disabled) return
+            event.preventDefault()
+            send({ type: "ITEM_CLICK", src: "auxclick", target: event.currentTarget, option })
             onCheckedChange?.(!checked)
           },
         }),

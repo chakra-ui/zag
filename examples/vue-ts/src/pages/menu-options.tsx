@@ -27,7 +27,7 @@ export default defineComponent({
         <>
           <main>
             <div>
-              <button {...api.triggerProps}>
+              <button data-testid="trigger" {...api.triggerProps}>
                 Actions <span aria-hidden>▾</span>
               </button>
               <Teleport to="body">

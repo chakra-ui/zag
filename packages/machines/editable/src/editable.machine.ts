@@ -117,7 +117,9 @@ export function machine(userContext: UserDefinedContext) {
               const ignore = [dom.getCancelTriggerEl(ctx), dom.getSubmitTriggerEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
-            onInteractOutside() {
+            onInteractOutside(event) {
+              ctx.onInteractOutside?.(event)
+              if (event.defaultPrevented) return
               send({ type: "BLUR", src: "interact-outside" })
             },
           })

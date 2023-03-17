@@ -27,7 +27,7 @@ export default function Page() {
     <>
       <main>
         <div>
-          <button {...api().triggerProps}>
+          <button data-testid="trigger" {...api().triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>
 
