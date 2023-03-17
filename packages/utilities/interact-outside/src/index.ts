@@ -27,6 +27,14 @@ export type PointerDownOutsideEvent = CustomEvent<EventDetails<PointerEvent>>
 export type FocusOutsideEvent = CustomEvent<EventDetails<FocusEvent>>
 export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
 
+function isComposedPathFocusable(event: Event) {
+  const composedPath = event.composedPath() ?? [event.target as HTMLElement]
+  for (const node of composedPath) {
+    if (isHTMLElement(node) && isFocusable(node)) return true
+  }
+  return false
+}
+
 export function trackInteractOutside(node: HTMLElement | null, options: InteractOutsideOptions) {
   const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options
 
@@ -68,7 +76,7 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
         detail: {
           originalEvent: event,
           contextmenu: isContextMenuEvent(event),
-          focusable: isFocusable(getEventTarget(event)),
+          focusable: isComposedPathFocusable(event),
         },
       })
     }
