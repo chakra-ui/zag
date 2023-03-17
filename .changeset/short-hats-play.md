@@ -2,4 +2,4 @@
 "@zag-js/core": patch
 ---
 
-Revert support for watching \*
+Revert support for watching `*`

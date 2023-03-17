@@ -3,4 +3,4 @@
 "@zag-js/date-utils": patch
 ---
 
-Complete date picker and utilities
+Simplify date picker utilities and machine

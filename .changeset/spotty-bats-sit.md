@@ -2,4 +2,4 @@
 "@zag-js/carousel": patch
 ---
 
-export anatomy of a carousel
+Fix issue where carousel anatomy was not exported
