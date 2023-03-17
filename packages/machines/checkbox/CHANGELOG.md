@@ -1,5 +1,18 @@
 # @zag-js/checkbox
 
+## 0.2.15
+
+### Patch Changes
+
+- [#556](https://github.com/chakra-ui/zag/pull/556)
+  [`65292bd2`](https://github.com/chakra-ui/zag/commit/65292bd2a892b5659287438d125ce2bbf930987e) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix typo in `interactive` type description.
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/form-utils@0.2.6
+  - @zag-js/core@0.2.11
+
 ## 0.2.14
 
 ### Patch Changes

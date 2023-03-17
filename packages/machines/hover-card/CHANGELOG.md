@@ -1,5 +1,12 @@
 # @zag-js/hover-card
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/core@0.2.11
+
 ## 0.2.6
 
 ### Patch Changes

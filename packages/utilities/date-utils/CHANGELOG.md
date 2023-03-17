@@ -1,5 +1,13 @@
 # @zag-js/date-utils
 
+## 0.1.3
+
+### Patch Changes
+
+- [#565](https://github.com/chakra-ui/zag/pull/565)
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Simplify date picker utilities and machine
+
 ## 0.1.2
 
 ### Patch Changes
