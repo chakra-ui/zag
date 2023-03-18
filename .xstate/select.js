@@ -130,10 +130,6 @@ const fetchMachine = createMachine({
         }, {
           actions: ["selectHighlightedOption", "invokeOnSelect"]
         }],
-        ESC_KEY: {
-          target: "focused",
-          actions: ["invokeOnClose"]
-        },
         BLUR: {
           target: "focused",
           actions: ["invokeOnClose"]

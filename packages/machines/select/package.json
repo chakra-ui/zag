@@ -47,7 +47,7 @@
     "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
