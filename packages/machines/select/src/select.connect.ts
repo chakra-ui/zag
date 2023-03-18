@@ -289,9 +289,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         if (!isInteractive) return
         const keyMap: EventKeyMap = {
-          Escape() {
-            send({ type: "ESC_KEY" })
-          },
           ArrowUp() {
             send({ type: "ARROW_UP" })
           },
