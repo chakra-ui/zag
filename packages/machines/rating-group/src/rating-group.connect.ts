@@ -140,7 +140,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send("ARROW_LEFT")
             },
             ArrowDown() {
-              send("ARROW_LEFT")
+              send("ARROW_RIGHT")
             },
             Space() {
               send({ type: "SPACE", value: index })
