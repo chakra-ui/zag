@@ -12,16 +12,8 @@ export const dom = createScope({
   getOptionGroupLabelId: (ctx: Ctx, id: string | number) => `select:${ctx.id}:optgroup-label:${id}`,
 
   getHiddenSelectElement: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
-  getContentElement: (ctx: Ctx) => {
-    const content = dom.getById(ctx, dom.getContentId(ctx))
-    if (!content) throw new Error("Could not find the select content element.")
-    return content
-  },
-  getTriggerElement: (ctx: Ctx) => {
-    const trigger = dom.getById(ctx, dom.getTriggerId(ctx))
-    if (!trigger) throw new Error("Could not find the select trigger element.")
-    return trigger
-  },
+  getContentElement: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
+  getTriggerElement: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getPositionerElement: (ctx: Ctx) => {
     return dom.getById(ctx, dom.getPositionerId(ctx))
   },

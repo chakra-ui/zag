@@ -307,7 +307,7 @@ export function machine(userContext: UserDefinedContext) {
         focusTrigger(ctx, evt) {
           if (evt.focusable) return
           raf(() => {
-            dom.getTriggerElement(ctx).focus({ preventScroll: true })
+            dom.getTriggerElement(ctx)?.focus({ preventScroll: true })
           })
         },
         selectHighlightedOption(ctx, evt) {

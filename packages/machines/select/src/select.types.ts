@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { InteractOutsideEvent } from "@zag-js/interact-outside"
+import type { InteractOutsideEvent } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 

@@ -50,13 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to focus the select
      */
     focus() {
-      dom.getTriggerElement(state.context).focus()
-    },
-    /**
-     * Function to blur the select
-     */
-    blur() {
-      dom.getTriggerElement(state.context).blur()
+      dom.getTriggerElement(state.context)?.focus()
     },
     /**
      * Function to open the select
