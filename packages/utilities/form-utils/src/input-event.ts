@@ -31,21 +31,6 @@ export function dispatchInputValueEvent(el: HTMLElement | null, value: string | 
   el.dispatchEvent(event)
 }
 
-export function dispatchSelectValueEvent(el: HTMLElement | null, value: string | number) {
-  if (!el) return
-
-  const win = getWindow(el)
-  if (!(el instanceof win.HTMLSelectElement)) return
-
-  // set property value
-  const desc = getDescriptor(el, { type: "HTMLSelectElement", property: "value" })
-  desc.set?.call(el, value)
-
-  // dispatch change event
-  const event = new win.Event("change", { bubbles: true })
-  el.dispatchEvent(event)
-}
-
 export function dispatchInputCheckedEvent(el: HTMLElement | null, checked: boolean) {
   if (!el) return
 

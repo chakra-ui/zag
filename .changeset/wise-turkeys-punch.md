@@ -2,4 +2,4 @@
 "@zag-js/rating-group": patch
 ---
 
-Fixed arrow down selecting previous instead of next star
+Fixed issue where arrow down selected previous rating instead of next star

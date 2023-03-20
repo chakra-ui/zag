@@ -2,4 +2,4 @@
 "@zag-js/switch": minor
 ---
 
-Add switch machine
+Add new switch machine

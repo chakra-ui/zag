@@ -2,4 +2,4 @@
 "@zag-js/select": patch
 ---
 
-Fix issue where dom helpers throw due to trigger or content element not in the DOM.
+Fix issue where machine throws when the trigger or content element is not in the DOM.

@@ -2,4 +2,4 @@
 "@zag-js/dismissable": patch
 ---
 
-Expose types from interact-outside package
+Re-export types from `@zag-js/interact-outside` package.
