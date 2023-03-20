@@ -8,7 +8,7 @@ export function compact<T extends Record<string, unknown> | undefined>(obj: T): 
   for (const key of keys) {
     const value = (obj as any)[key]
     if (value !== undefined) {
-      filtered[key] = compact(value)
+      filtered[key as keyof T] = compact(value)
     }
   }
   return filtered as T
