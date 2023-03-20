@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 0.0.9
+
+### Patch Changes
+
+- [#565](https://github.com/chakra-ui/zag/pull/565)
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Simplify date picker utilities and machine
+
+- [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump `@internationalized/date` dependency
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741)]:
+  - @zag-js/date-utils@0.1.3
+  - @zag-js/form-utils@0.2.6
+  - @zag-js/core@0.2.11
+  - @zag-js/dismissable@0.2.5
+
 ## 0.0.8
 
 ### Patch Changes

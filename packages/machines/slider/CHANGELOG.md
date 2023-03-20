@@ -1,5 +1,14 @@
 # @zag-js/slider
 
+## 0.2.16
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/form-utils@0.2.6
+  - @zag-js/core@0.2.11
+
 ## 0.2.15
 
 ### Patch Changes

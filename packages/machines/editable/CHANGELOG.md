@@ -1,5 +1,37 @@
 # @zag-js/editable
 
+## 0.3.0
+
+### Minor Changes
+
+- [#553](https://github.com/chakra-ui/zag/pull/553)
+  [`3ed0e554`](https://github.com/chakra-ui/zag/commit/3ed0e554a2a5f12bfdcf746eff6055b77b24c604) Thanks
+  [@visualjerk](https://github.com/visualjerk)! - Add `onInteractOutside` hook to context.
+
+  This can be used to prevent loosing focus when composing with other components.
+
+  Example usage:
+
+  ```ts
+  {
+    onInteractOutside(event) {
+      // Prevent loosing focus when interacting with related popup
+      if (popupElement.contains(event.target)) {
+        event.preventDefault()
+      }
+    }
+  }
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`1dcbc349`](https://github.com/chakra-ui/zag/commit/1dcbc349a2e8b27cda21e136de2d4feb5dd797bb)]:
+  - @zag-js/form-utils@0.2.6
+  - @zag-js/core@0.2.11
+  - @zag-js/interact-outside@0.2.5
+
 ## 0.2.14
 
 ### Patch Changes

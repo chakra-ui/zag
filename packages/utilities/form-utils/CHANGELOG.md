@@ -1,5 +1,13 @@
 # @zag-js/form-utils
 
+## 0.2.6
+
+### Patch Changes
+
+- [#565](https://github.com/chakra-ui/zag/pull/565)
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `dispatchSelectValueEvent`
+
 ## 0.2.5
 
 ### Patch Changes

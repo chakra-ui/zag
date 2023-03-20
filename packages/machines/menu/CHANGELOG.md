@@ -1,5 +1,16 @@
 # @zag-js/menu
 
+## 0.3.13
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741)]:
+  - @zag-js/core@0.2.11
+  - @zag-js/popper@0.2.6
+  - @zag-js/dismissable@0.2.5
+
 ## 0.3.12
 
 ### Patch Changes
