@@ -1,5 +1,12 @@
 # @zag-js/popper
 
+## 0.2.6
+
+### Patch Changes
+
+- [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump `@floating-ui/dom` dependency
+
 ## 0.2.5
 
 ### Patch Changes

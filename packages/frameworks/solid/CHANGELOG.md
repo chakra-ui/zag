@@ -1,5 +1,29 @@
 # @zag-js/solid
 
+## 0.3.0
+
+### Minor Changes
+
+- [`51ca61aa`](https://github.com/chakra-ui/zag/commit/51ca61aab3b2c8f188fa87f4a4f06ece673cf240) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for passing an accessor or signal as transient
+  context.
+
+  ```jsx
+  function Component(props) {
+    const [state, send] = useMachine(machine({ id: createUniqueId() }), {
+      context: createMemo(() => ({
+        max: props.max,
+        min: props.min,
+      })),
+    })
+  }
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/core@0.2.11
+
 ## 0.2.10
 
 ### Patch Changes
