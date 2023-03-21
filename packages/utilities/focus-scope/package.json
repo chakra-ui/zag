@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/focus-scope",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Manage and trap focus within an element",
   "keywords": [
     "js",

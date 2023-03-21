@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/menu",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Core logic for the menu widget implemented as a state machine",
   "keywords": [
     "js",

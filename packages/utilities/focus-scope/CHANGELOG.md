@@ -1,5 +1,12 @@
 # @zag-js/focus-scope
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`316eea98`](https://github.com/chakra-ui/zag/commit/316eea980af3a276ec3b0bd900b9e705f59f7c35)]:
+  - @zag-js/tabbable@0.1.0
+
 ## 0.1.4
 
 ### Patch Changes
