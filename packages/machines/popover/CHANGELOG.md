@@ -1,5 +1,21 @@
 # @zag-js/popover
 
+## 0.2.14
+
+### Patch Changes
+
+- [`5fbb3e80`](https://github.com/chakra-ui/zag/commit/5fbb3e8048280537da1ffdc822753f6bcb01d292) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump `focus-trap` package to latest
+
+- Updated dependencies [[`316eea98`](https://github.com/chakra-ui/zag/commit/316eea980af3a276ec3b0bd900b9e705f59f7c35),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741)]:
+  - @zag-js/tabbable@0.1.0
+  - @zag-js/core@0.2.11
+  - @zag-js/popper@0.2.6
+  - @zag-js/dismissable@0.2.5
+
 ## 0.2.13
 
 ### Patch Changes

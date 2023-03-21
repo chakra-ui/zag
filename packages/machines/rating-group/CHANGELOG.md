@@ -1,5 +1,22 @@
 # @zag-js/rating-group
 
+## 0.3.0
+
+### Minor Changes
+
+- [`1b957736`](https://github.com/chakra-ui/zag/commit/1b95773666855985633412550fd065bcacb6db5e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `setValue` and `clearValue` to rating-group
+
+### Patch Changes
+
+- [#567](https://github.com/chakra-ui/zag/pull/567)
+  [`c9a59f01`](https://github.com/chakra-ui/zag/commit/c9a59f01cf75f5200b2c0e5de9b2546478b3affb) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fixed issue where arrow down selected previous rating instead of next
+  star
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/core@0.2.11
+
 ## 0.2.14
 
 ### Patch Changes
