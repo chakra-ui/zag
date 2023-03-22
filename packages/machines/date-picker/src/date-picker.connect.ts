@@ -1,5 +1,6 @@
 import { CalendarDate, DateFormatter, isWeekend } from "@internationalized/date"
 import {
+  constrainValue,
   getDayFormatter,
   getDaysInWeek,
   getDecadeRange,
@@ -162,8 +163,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Sets the selected date to the given date.
      */
-    setValue(value: CalendarDate[]) {
-      console.log(value)
+    setValue(values: CalendarDate[]) {
+      const computedValue = values.map((date) => constrainValue(date, min, max))
+      send({ type: "VALUE.SET", value: computedValue })
     },
 
     /**

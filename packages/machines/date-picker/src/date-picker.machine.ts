@@ -366,7 +366,8 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setFocusedDate(ctx, evt) {
-          ctx.focusedValue = evt.value
+          const value = Array.isArray(evt.value) ? evt.value[0] : evt.value
+          ctx.focusedValue = value
         },
         setFocusedMonth(ctx, evt) {
           ctx.focusedValue = ctx.focusedValue.set({ month: evt.value })
