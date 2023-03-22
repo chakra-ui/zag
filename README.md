@@ -1,3 +1,7 @@
+<a href="https://zagjs.com/" >
+  <img alt="Zag.js hero image" src="https://repository-images.githubusercontent.com/383777434/87c5d462-1c65-45d7-9561-3f3f64d814f4"></img>
+</a>
+
 # Zag
 
 Finite state machines for accessible JavaScript components
@@ -11,7 +15,19 @@ Finite state machines for accessible JavaScript components
 - **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCXML
   specifications, but we've created an API that we think will help us build more complex components fast.
 
-## The problem
+---
+
+## Documentation
+
+To see the documentation, visit [zagjs.com/](https://zagjs.com/)
+
+## Releases
+
+For changelog, visit [zagjs.com/changelogs/latest](https://zagjs.com/changelogs/latest)
+
+---
+
+## Problem
 
 With the rise of design systems and component-driven development, there's an endless re-implementation of common
 component patterns (Tabs, Menu, Modal, etc.) in multiple frameworks.
@@ -42,7 +58,7 @@ For framework specific solutions, we provide simple wrappers to help you consume
 - 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
 - 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
 
-### Usage
+## Usage
 
 ```jsx
 import * as toggle from "@zag-js/toggle"
@@ -60,6 +76,8 @@ function Example() {
 }
 ```
 
+---
+
 ## Guiding Principles
 
 - All component machines and tests are modelled according to the
@@ -68,6 +86,8 @@ function Example() {
   component patterns to work the same way!**
 - All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
   nested states, etc.
+
+---
 
 ## Fun Facts
 
@@ -84,6 +104,8 @@ power the logic behind UI components.
 - The feeling you get when you use Zag will be called **"zagadat!"** 🚀
 
 - The Zag community will be called **"zag nation"** 🔥
+
+---
 
 ## Commands
 
@@ -125,6 +147,8 @@ ensure that the component works the same way regardless of the framework.
 - `test` : Run the tests for all packages
 - `lint` : Lint all packages
 
+---
+
 ## Inspirations
 
 - Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
@@ -135,6 +159,8 @@ ensure that the component works the same way regardless of the framework.
 - [XState](https://xstate.js.org/) for inspiring the base implementation of the state machine
 - [Vue.js](https://vuejs.org/) and [Lit](https://lit-element.polymer-project.org/) for inspiring new patterns in the
   machine (`computed` and `watch`)
+
+---
 
 ## Contributions
 
@@ -148,6 +174,8 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 
 Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
 what to work on.
+
+---
 
 ## License
 
