@@ -106,7 +106,7 @@ const fetchMachine = createMachine({
       tags: ["open"],
       entry: ["focusContent", "highlightSelectedOption", "invokeOnOpen"],
       exit: ["scrollContentToTop"],
-      activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption"],
+      activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption", "proxyTabFocus"],
       on: {
         CLOSE: {
           target: "focused",

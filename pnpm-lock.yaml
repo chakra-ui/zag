@@ -1146,6 +1146,7 @@ importers:
       '@zag-js/form-utils': workspace:*
       '@zag-js/mutation-observer': workspace:*
       '@zag-js/popper': workspace:*
+      '@zag-js/tabbable': workspace:*
       '@zag-js/types': workspace:*
       '@zag-js/utils': workspace:*
       '@zag-js/visually-hidden': workspace:*
@@ -1159,6 +1160,7 @@ importers:
       '@zag-js/form-utils': link:../../utilities/form-utils
       '@zag-js/mutation-observer': link:../../utilities/mutation-observer
       '@zag-js/popper': link:../../utilities/popper
+      '@zag-js/tabbable': link:../../utilities/tabbable
       '@zag-js/types': link:../../types
       '@zag-js/utils': link:../../utilities/core
       '@zag-js/visually-hidden': link:../../utilities/visually-hidden

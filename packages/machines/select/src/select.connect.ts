@@ -255,7 +255,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       "aria-activedescendant": state.context.highlightedId || "",
       "aria-labelledby": dom.getLabelId(state.context),
-      tabIndex: -1,
+      tabIndex: 0,
       onPointerMove(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
@@ -295,7 +295,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           End() {
             send({ type: "END" })
           },
-          Tab() {
+          Tab(event) {
+            if (event.shiftKey) return
             send({ type: "TAB" })
           },
           Enter() {

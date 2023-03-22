@@ -83,6 +83,7 @@ body {
   flex-direction: column;
   width: 292px;
   border-right: solid 1px #d7e0da;
+  overflow-y: scroll;
 }
 
 .nav header {

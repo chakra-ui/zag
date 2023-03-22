@@ -4,6 +4,7 @@ import { getByTypeahead, raf } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
+import { proxyTabFocus } from "@zag-js/tabbable"
 import { compact, json } from "@zag-js/utils"
 import { dom } from "./select.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./select.types"
@@ -138,7 +139,7 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           entry: ["focusContent", "highlightSelectedOption", "invokeOnOpen"],
           exit: ["scrollContentToTop"],
-          activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption"],
+          activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption", "proxyTabFocus"],
           on: {
             CLOSE: {
               target: "focused",
@@ -228,6 +229,12 @@ export function machine(userContext: UserDefinedContext) {
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       },
       activities: {
+        proxyTabFocus(ctx) {
+          const focus = (el: HTMLElement) => {
+            raf(() => el.focus({ preventScroll: true }))
+          }
+          return proxyTabFocus(dom.getContentElement(ctx), dom.getTriggerElement(ctx), focus)
+        },
         trackFormControlState(ctx) {
           return trackFormControl(dom.getHiddenSelectElement(ctx), {
             onFieldsetDisabled() {

@@ -151,17 +151,19 @@ export function proxyTabFocus(
     let elementToFocus: HTMLElement | null = null
 
     // get all tabbable elements within the container
-    const [firstTabbable, lastTabbable] = getTabbableEdges(container)
+    const [firstTabbable, lastTabbable] = getTabbableEdges(container, true)
+
+    const noTabbableElements = !firstTabbable && !lastTabbable
 
     // if we're focused on the first tabbable element and the user tabs backwards
     // we want to focus the reference element
-    if (event.shiftKey && doc.activeElement === firstTabbable) {
+    if (event.shiftKey && (doc.activeElement === firstTabbable || noTabbableElements)) {
       elementToFocus = reference
     } else if (!event.shiftKey && doc.activeElement === reference) {
       // if we're focused on the reference element and the user tabs forwards
       // we want to focus the first tabbable element
       elementToFocus = firstTabbable
-    } else if (!event.shiftKey && doc.activeElement === lastTabbable) {
+    } else if (!event.shiftKey && (doc.activeElement === lastTabbable || noTabbableElements)) {
       // if we're focused on the last tabbable element and the user tabs forwards
       // we want to focus the next tabbable element after the reference element
       elementToFocus = getNextTabbable(body, reference)
