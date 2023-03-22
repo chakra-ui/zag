@@ -267,7 +267,7 @@ importers:
       '@zag-js/radio-group': workspace:*
       '@zag-js/range-slider': workspace:*
       '@zag-js/rating-group': workspace:*
-      '@zag-js/react': workspace:^0.3.10
+      '@zag-js/react': workspace:^0.3.11
       '@zag-js/rect-utils': workspace:*
       '@zag-js/remove-scroll': workspace:*
       '@zag-js/select': workspace:*
@@ -358,6 +358,7 @@ importers:
 
   examples/solid-ts:
     specifiers:
+      '@internationalized/date': ^3.1.0
       '@types/form-serialize': 0.7.2
       '@zag-js/accordion': workspace:*
       '@zag-js/anatomy': workspace:*
@@ -422,6 +423,7 @@ importers:
       vite: 4.2.0
       vite-plugin-solid: 2.6.1
     dependencies:
+      '@internationalized/date': 3.1.0
       '@zag-js/accordion': link:../../packages/machines/accordion
       '@zag-js/anatomy': link:../../packages/anatomy
       '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden

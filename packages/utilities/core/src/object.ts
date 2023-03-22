@@ -3,7 +3,7 @@ export function compact<T extends Record<string, unknown> | undefined>(obj: T): 
     return obj
   }
 
-  const keys = Reflect.ownKeys(obj)
+  const keys = Reflect.ownKeys(obj).filter((key) => typeof key === "string")
   const filtered: Partial<T> = {}
   for (const key of keys) {
     const value = (obj as any)[key]
