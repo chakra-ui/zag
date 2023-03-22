@@ -23,7 +23,6 @@ const fetchMachine = createMachine({
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
-    "isDayView && !isSameFocusedValue": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMonthView": false,
@@ -145,10 +144,6 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"]
         }],
-        "CELL.FOCUS": {
-          cond: "isDayView && !isSameFocusedValue",
-          actions: ["setFocusedDate"]
-        },
         "CELL.POINTER_MOVE": {
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setHoveredDate"]
@@ -275,7 +270,6 @@ const fetchMachine = createMachine({
     "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
     "isRangePicker": ctx => ctx["isRangePicker"],
     "isMultiPicker": ctx => ctx["isMultiPicker"],
-    "isDayView && !isSameFocusedValue": ctx => ctx["isDayView && !isSameFocusedValue"],
     "isDayView": ctx => ctx["isDayView"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"]
   }

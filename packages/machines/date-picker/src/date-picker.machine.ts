@@ -24,7 +24,7 @@ import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.utils"
 
-const { and, not } = guards
+const { and } = guards
 
 function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
@@ -189,10 +189,6 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"],
               },
             ],
-            "CELL.FOCUS": {
-              guard: and("isDayView", not("isSameFocusedValue")),
-              actions: ["setFocusedDate"],
-            },
             "CELL.POINTER_MOVE": {
               guard: and("isRangePicker", "isSelectingEndDate"),
               actions: ["setHoveredDate"],
@@ -296,7 +292,6 @@ export function machine(userContext: UserDefinedContext) {
         isMultiPicker: (ctx) => ctx.selectionMode === "multiple",
         isTargetFocusable: (_ctx, evt) => evt.focusable,
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
-        isSameFocusedValue: (ctx, evt) => ctx.focusedValue.toString() === evt.value?.toString(),
       },
       activities: {
         setupLiveRegion(ctx) {

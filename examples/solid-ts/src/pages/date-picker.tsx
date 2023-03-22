@@ -47,12 +47,22 @@ export default function Page() {
         <div {...api().contentProps}>
           <div style={{ "margin-block": "20px" }}>
             <select {...api().monthSelectProps}>
-              <For each={api().getMonths()}>{(month, i) => <option value={i() + 1}>{month}</option>}</For>
+              <For each={api().getMonths()}>
+                {(month, i) => (
+                  <option value={i() + 1} selected={api().focusedValue.month === i() + 1}>
+                    {month}
+                  </option>
+                )}
+              </For>
             </select>
 
             <select {...api().yearSelectProps}>
               <For each={getYearsRange({ from: 1_000, to: 4_000 })}>
-                {(year) => <option value={year}>{year}</option>}
+                {(year) => (
+                  <option value={year} selected={api().focusedValue.year === year}>
+                    {year}
+                  </option>
+                )}
               </For>
             </select>
           </div>

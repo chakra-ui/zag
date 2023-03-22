@@ -405,10 +405,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-in-range": dataAttr(cellState.isInRange),
         "data-outside-range": dataAttr(cellState.isOutsideRange),
         "data-weekend": dataAttr(cellState.isWeekend),
-        onFocus() {
-          if (cellState.isDisabled) return
-          send({ type: "CELL.FOCUS", cell: "day", value })
-        },
         onClick() {
           if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
