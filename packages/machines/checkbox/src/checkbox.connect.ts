@@ -94,7 +94,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isInteractive) return
         // On pointerdown, the input blurs and returns focus to the `body`,
         // we need to prevent this.
-        if (isFocused) event.preventDefault()
+        if (isFocused && event.pointerType === "mouse") {
+          event.preventDefault()
+        }
         send({ type: "SET_ACTIVE", value: true })
       },
       onPointerUp() {
@@ -112,13 +114,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-checked": dataAttr(isChecked),
       "data-invalid": dataAttr(isInvalid),
-      onPointerDown(event) {
-        if (!isInteractive) return
-        // On pointerdown, the input blurs and returns focus to the `body`,
-        // we need to prevent this.
-        if (isFocused) event.preventDefault()
-        event.stopPropagation()
-      },
     }),
 
     controlProps: normalize.element({
