@@ -1,5 +1,12 @@
 # @zag-js/popper
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/utils@0.3.4
+
 ## 0.2.6
 
 ### Patch Changes
