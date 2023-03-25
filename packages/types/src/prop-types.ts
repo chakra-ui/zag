@@ -1,10 +1,6 @@
 import type { JSX } from "./jsx"
 
 type Dict<T = any> = Record<string, T>
-export type SplitArgs<T = any> = {
-  attributes: Record<string, T>
-  handlers: Record<string, EventListener>
-}
 
 type Booleanish = boolean | "true" | "false"
 
@@ -48,10 +44,7 @@ type DataAttr = {
   [key in `data-${string}`]?: string | number | Booleanish
 }
 
-export type PropTypes<T = any> = Record<
-  "button" | "label" | "input" | "output" | "element" | "select" | "style",
-  T extends SplitArgs ? SplitArgs : Dict
->
+export type PropTypes<T = Dict> = Record<"button" | "label" | "input" | "output" | "element" | "select" | "style", T>
 
 export type NormalizeProps<T extends PropTypes> = {
   [K in keyof T]: (props: K extends keyof JSX.IntrinsicElements ? DataAttr & JSX.IntrinsicElements[K] : never) => T[K]

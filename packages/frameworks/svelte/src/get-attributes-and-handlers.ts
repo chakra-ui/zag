@@ -1,6 +1,8 @@
-export function getAttributesAndHandlers(props: Record<string, any>) {
-  const handlers = {} as Record<string, any>
-  const attributes = {}
+import type { Dict } from "@zag-js/core/src/types"
+
+export function getAttributesAndHandlers(props: Dict) {
+  const handlers: Dict = {}
+  const attributes: Dict = {}
 
   Object.keys(props).forEach((key) => {
     // this is probably not a safe way to distiguish handlers
