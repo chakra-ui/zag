@@ -172,7 +172,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["visible"],
-      activities: ["trackInteractOutside", "computePlacement"],
+      activities: ["trackInteractOutside", "trackPositioning"],
       entry: ["focusMenu", "resumePointer"],
       on: {
         TRIGGER_CLICK: {
@@ -254,6 +254,9 @@ const fetchMachine = createMachine({
         },
         FOCUS_MENU: {
           actions: "focusMenu"
+        },
+        SET_POSITIONING: {
+          actions: "setPositioning"
         }
       }
     }

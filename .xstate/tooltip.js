@@ -62,7 +62,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["trackEscapeKey", "trackDisabledTriggerOnSafari", "trackScroll", "trackPointerlockChange", "computePlacement"],
+      activities: ["trackEscapeKey", "trackDisabledTriggerOnSafari", "trackScroll", "trackPointerlockChange", "trackPositioning"],
       entry: ["setGlobalId", "invokeOnOpen"],
       on: {
         POINTER_LEAVE: [{
@@ -83,12 +83,15 @@ const fetchMachine = createMachine({
           cond: "closeOnPointerDown",
           target: "closed"
         },
-        CLICK: "closed"
+        CLICK: "closed",
+        SET_POSITIONING: {
+          actions: "setPositioning"
+        }
       }
     },
     closing: {
       tags: ["open"],
-      activities: ["trackStore", "computePlacement"],
+      activities: ["trackStore", "trackPositioning"],
       after: {
         CLOSE_DELAY: "closed"
       },

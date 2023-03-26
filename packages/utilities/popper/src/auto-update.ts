@@ -51,7 +51,7 @@ export function autoUpdate(
   }
 
   function addResizeListeners() {
-    let cleanups: VoidFunction[] = [trackElementRect(floating, update)]
+    let cleanups: VoidFunction[] = [trackElementRect(floating, update, { scope: "size" })]
     if (referenceResize && isHTMLElement(reference)) {
       cleanups.push(trackElementRect(reference, update))
     }

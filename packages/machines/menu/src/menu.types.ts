@@ -118,11 +118,6 @@ type PrivateContext = Context<{
   currentPlacement?: Placement
   /**
    * @internal
-   * Whether the dynamic placement has been computed
-   */
-  isPlacementComplete: boolean
-  /**
-   * @internal
    * The typeahead state for faster keyboard navigation
    */
   typeahead: TypeaheadState

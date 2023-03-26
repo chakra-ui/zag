@@ -1023,7 +1023,6 @@ importers:
       '@zag-js/aria-hidden': workspace:*
       '@zag-js/core': workspace:*
       '@zag-js/dismissable': workspace:*
-      '@zag-js/dom-event': workspace:*
       '@zag-js/dom-query': workspace:*
       '@zag-js/popper': workspace:*
       '@zag-js/remove-scroll': workspace:*
@@ -1037,7 +1036,6 @@ importers:
       '@zag-js/aria-hidden': link:../../utilities/aria-hidden
       '@zag-js/core': link:../../core
       '@zag-js/dismissable': link:../../utilities/dismissable
-      '@zag-js/dom-event': link:../../utilities/dom-event
       '@zag-js/dom-query': link:../../utilities/dom-query
       '@zag-js/popper': link:../../utilities/popper
       '@zag-js/remove-scroll': link:../../utilities/remove-scroll

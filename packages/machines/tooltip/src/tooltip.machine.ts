@@ -82,7 +82,7 @@ export function machine(userContext: UserDefinedContext) {
             "trackDisabledTriggerOnSafari",
             "trackScroll",
             "trackPointerlockChange",
-            "computePlacement",
+            "trackPositioning",
           ],
           entry: ["setGlobalId", "invokeOnOpen"],
           on: {
@@ -106,12 +106,15 @@ export function machine(userContext: UserDefinedContext) {
               target: "closed",
             },
             CLICK: "closed",
+            SET_POSITIONING: {
+              actions: "setPositioning",
+            },
           },
         },
 
         closing: {
           tags: ["open"],
-          activities: ["trackStore", "computePlacement"],
+          activities: ["trackStore", "trackPositioning"],
           after: {
             CLOSE_DELAY: "closed",
           },
@@ -128,7 +131,7 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       activities: {
-        computePlacement(ctx) {
+        trackPositioning(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
           let cleanup: VoidFunction | undefined
           raf(() => {
@@ -136,15 +139,13 @@ export function machine(userContext: UserDefinedContext) {
               ...ctx.positioning,
               onComplete(data) {
                 ctx.currentPlacement = data.placement
-                ctx.isPlacementComplete = true
               },
               onCleanup() {
                 ctx.currentPlacement = undefined
-                ctx.isPlacementComplete = false
               },
             })
           })
-          return cleanup
+          return () => cleanup?.()
         },
         trackPointerlockChange(ctx, _evt, { send }) {
           const onChange = () => send("POINTER_LOCK_CHANGE")
@@ -209,6 +210,15 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.disabled) {
             send("CLOSE")
           }
+        },
+        setPositioning(ctx, evt) {
+          raf(() => {
+            getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+              ...ctx.positioning,
+              ...evt.options,
+              listeners: false,
+            })
+          })
         },
       },
       guards: {

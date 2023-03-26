@@ -1,5 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementStyles, PositioningOptions } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./tooltip.anatomy"
@@ -19,7 +19,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDisabled = state.context.disabled
 
   const popperStyles = getPlacementStyles({
-    measured: !!state.context.isPlacementComplete,
     placement: state.context.currentPlacement,
   })
 
@@ -48,6 +47,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         enter: store.prevId === null && id === store.id,
         exit: store.id === null,
       }
+    },
+    /**
+     * Function to reposition the popover
+     */
+    setPositioning(options: Partial<PositioningOptions>) {
+      send({ type: "SET_POSITIONING", options })
     },
 
     triggerProps: normalize.button({

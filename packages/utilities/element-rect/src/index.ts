@@ -9,13 +9,19 @@ export type Measurable = {
   getBoundingClientRect(): DOMRect
 }
 
-function getObservedElements(): Map<Measurable, ObservedData> {
-  ;(globalThis as any).__rectObserverMap__ = (globalThis as any).__rectObserverMap__ || new Map()
-  return (globalThis as any).__rectObserverMap__
+let rafId: number
+
+const observedElements = new Map<Measurable, ObservedData>()
+
+type TrackScope = "size" | "position" | "rect"
+
+type TrackRectOptions = {
+  scope?: TrackScope
 }
 
-export function trackElementRect(el: Measurable, fn: Fn) {
-  const observedElements = getObservedElements()
+export function trackElementRect(el: Measurable, fn: Fn, options: TrackRectOptions = {}) {
+  const { scope = "rect" } = options
+  const loop = getLoopFn(scope)
 
   const data = observedElements.get(el)
 
@@ -52,36 +58,37 @@ export function trackElementRect(el: Measurable, fn: Fn) {
   }
 }
 
-let rafId: number
+function getLoopFn(scope: TrackScope) {
+  const isEqual = getEqualityFn(scope)
+  return function loop() {
+    const changedRectsData: Array<ObservedData> = []
 
-function loop() {
-  const observedElements = getObservedElements()
+    observedElements.forEach((data, element) => {
+      const newRect = element.getBoundingClientRect()
 
-  const changedRectsData: Array<ObservedData> = []
+      if (!isEqual(data.rect, newRect)) {
+        data.rect = newRect
+        changedRectsData.push(data)
+      }
+    })
 
-  observedElements.forEach((data, element) => {
-    const newRect = element.getBoundingClientRect()
+    changedRectsData.forEach((data) => {
+      data.callbacks.forEach((callback) => callback(data.rect))
+    })
 
-    if (!isEqual(data.rect, newRect)) {
-      data.rect = newRect
-      changedRectsData.push(data)
-    }
-  })
-
-  changedRectsData.forEach((data) => {
-    data.callbacks.forEach((callback) => callback(data.rect))
-  })
-
-  rafId = requestAnimationFrame(loop)
+    rafId = requestAnimationFrame(loop)
+  }
 }
 
-function isEqual(rect1: DOMRect, rect2: DOMRect) {
-  return (
-    rect1.width === rect2.width &&
-    rect1.height === rect2.height &&
-    rect1.top === rect2.top &&
-    rect1.right === rect2.right &&
-    rect1.bottom === rect2.bottom &&
-    rect1.left === rect2.left
-  )
+const isEqualSize = (a: DOMRect, b: DOMRect) => a.width === b.width && a.height === b.height
+
+const isEqualPosition = (a: DOMRect, b: DOMRect) =>
+  a.top === b.top && a.right === b.right && a.bottom === b.bottom && a.left === b.left
+
+const isEqualRect = (a: DOMRect, b: DOMRect) => isEqualSize(a, b) && isEqualPosition(a, b)
+
+function getEqualityFn(scope: TrackScope) {
+  if (scope === "size") return isEqualSize
+  if (scope === "position") return isEqualPosition
+  return isEqualRect
 }
