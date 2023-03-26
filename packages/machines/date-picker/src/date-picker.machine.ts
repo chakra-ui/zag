@@ -199,7 +199,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
             "CELL.POINTER_MOVE": {
               guard: and("isRangePicker", "isSelectingEndDate"),
-              actions: ["setHoveredDate"],
+              actions: ["setHoveredDate", "setFocusedDate"],
             },
             "GRID.POINTER_LEAVE": {
               guard: "isRangePicker",

@@ -151,7 +151,7 @@ const fetchMachine = createMachine({
         }],
         "CELL.POINTER_MOVE": {
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setHoveredDate"]
+          actions: ["setHoveredDate", "setFocusedDate"]
         },
         "GRID.POINTER_LEAVE": {
           cond: "isRangePicker",

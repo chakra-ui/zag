@@ -413,7 +413,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerMove(event) {
           if (event.pointerType === "touch" || !cellState.isSelectable) return
-          send({ type: "CELL.POINTER_MOVE", cell: "day", value })
+          const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+          send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
         },
         onContextMenu(event) {
           event.preventDefault()
