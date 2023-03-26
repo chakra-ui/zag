@@ -29,7 +29,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   const popperStyles = getPlacementStyles({
-    measured: !!state.context.currentPlacement,
     placement: state.context.currentPlacement,
   })
 
