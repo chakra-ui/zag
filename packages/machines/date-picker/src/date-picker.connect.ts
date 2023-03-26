@@ -283,7 +283,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             Enter() {
-              send({ type: "GRID.ENTER", view, columns })
+              send({ type: "GRID.ENTER", view, columns, focus: true })
             },
             ArrowLeft() {
               send({ type: "GRID.ARROW_LEFT", view, columns, focus: true })
