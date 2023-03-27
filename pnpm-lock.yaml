@@ -13,6 +13,7 @@ importers:
       '@changesets/cli': 2.26.0
       '@commitlint/cli': 17.4.4
       '@commitlint/config-conventional': 17.4.4
+      '@internationalized/date': ^3.1.0
       '@octokit/rest': 19.0.7
       '@playwright/test': 1.31.2
       '@swc/core': 1.3.41
@@ -51,6 +52,7 @@ importers:
       '@changesets/cli': 2.26.0
       '@commitlint/cli': 17.4.4_@swc+core@1.3.41
       '@commitlint/config-conventional': 17.4.4
+      '@internationalized/date': 3.1.0
       '@octokit/rest': 19.0.7
       '@playwright/test': 1.31.2
       '@swc/core': 1.3.41

@@ -39,13 +39,13 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@internationalized/date": "^3.1.0",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "@internationalized/date": "^3.1.0",
     "@zag-js/date-utils": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",

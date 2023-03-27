@@ -79,7 +79,10 @@ export default defineComponent({
                   }}
                 >
                   <button {...api.getPrevTriggerProps()}>Prev</button>
-                  <button {...api.viewTriggerProps} style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}>
+                  <button
+                    {...api.getViewTriggerProps()}
+                    style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}
+                  >
                     {api.visibleRangeText.start}
                   </button>
                   <button {...api.getNextTriggerProps()}>Next</button>
@@ -123,7 +126,7 @@ export default defineComponent({
                     }}
                   >
                     <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
-                    <span {...api.viewTriggerProps}>{api.visibleRange.start.year}</span>
+                    <span {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</span>
                     <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
                   </div>
 

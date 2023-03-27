@@ -77,7 +77,10 @@ export default function Page() {
               }}
             >
               <button {...api().getPrevTriggerProps()}>Prev</button>
-              <button {...api().viewTriggerProps} style={{ border: "0", padding: "4px 20px", "border-radius": "4px" }}>
+              <button
+                {...api().getViewTriggerProps()}
+                style={{ border: "0", padding: "4px 20px", "border-radius": "4px" }}
+              >
                 {api().visibleRangeText.start}
               </button>
               <button {...api().getNextTriggerProps()}>Next</button>
@@ -127,7 +130,7 @@ export default function Page() {
                 }}
               >
                 <button {...api().getPrevTriggerProps({ view: "month" })}>Prev</button>
-                <button {...api().viewTriggerProps}>{api().visibleRange.start.year}</button>
+                <button {...api().getViewTriggerProps({ view: "month" })}>{api().visibleRange.start.year}</button>
                 <button {...api().getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
 

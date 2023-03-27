@@ -25,7 +25,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import type { DateView, DayCellProps, Offset, Send, State, TriggerProps } from "./date-picker.types"
+import type { DateView, DayCellProps, Offset, Send, State, ViewProps } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   getInputPlaceholder,
@@ -516,7 +516,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getNextTriggerProps(props: TriggerProps = {}) {
+    getNextTriggerProps(props: ViewProps = {}) {
       const { view = "day" } = props
       return normalize.button({
         ...parts.nextTrigger.attrs,
@@ -530,7 +530,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getPrevTriggerProps(props: TriggerProps = {}) {
+    getPrevTriggerProps(props: ViewProps = {}) {
       const { view = "day" } = props
       return normalize.button({
         ...parts.prevTrigger.attrs,
@@ -544,7 +544,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getHeaderProps(props: { view?: DateView } = {}) {
+    getHeaderProps(props: ViewProps = {}) {
       const { view = "day" } = props
       return normalize.element({
         ...parts.header.attrs,
@@ -577,15 +577,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    viewTriggerProps: normalize.button({
-      ...parts.viewTrigger.attrs,
-      id: dom.getViewTriggerId(state.context),
-      type: "button",
-      "aria-label": getViewTriggerLabel(state.context.view),
-      onClick() {
-        send("VIEW.CHANGE")
-      },
-    }),
+    getViewTriggerProps(props: ViewProps = {}) {
+      const { view = "day" } = props
+      return normalize.button({
+        ...parts.viewTrigger.attrs,
+        id: dom.getViewTriggerId(state.context, view),
+        type: "button",
+        "aria-label": getViewTriggerLabel(state.context.view),
+        onClick() {
+          send("VIEW.CHANGE")
+        },
+      })
+    },
 
     inputProps: normalize.input({
       ...parts.input.attrs,

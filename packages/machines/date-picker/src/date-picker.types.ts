@@ -115,7 +115,7 @@ type PublicContext = DirectionProperty &
 
 export type DateView = "day" | "month" | "year"
 
-export type TriggerProps = {
+export type ViewProps = {
   view?: DateView
 }
 
