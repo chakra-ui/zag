@@ -1,3 +1,4 @@
+import { getLocalTimeZone, parseDate, today, startOfMonth, endOfMonth } from "@internationalized/date"
 import { expect, Page, test } from "@playwright/test"
 import { a11y, part } from "./__utils"
 
@@ -11,14 +12,34 @@ const createScreen = (page: Page) => ({
   nextTrigger: page.locator(part("next-trigger")),
   grid: page.locator(part("grid")),
   todayCell: page.locator(`${part("cell-trigger")}[data-today]`),
+  getFirstDayCell() {
+    const start = startOfMonth(today(getLocalTimeZone()))
+    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${start.toString()}"]`)
+  },
+  getLastDayCell() {
+    const end = endOfMonth(today(getLocalTimeZone()))
+    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${end.toString()}"]`)
+  },
+  getNextDayCell(opts: { current?: string; step?: number } = {}) {
+    const { current, step = 1 } = opts
+    const now = current ? parseDate(current) : today(getLocalTimeZone())
+    const next = now.add({ days: step })
+    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${next.toString()}"]`)
+  },
+  getPrevDayCell(opts: { current?: string; step?: number } = {}) {
+    const { current, step = 1 } = opts
+    const now = current ? parseDate(current) : today(getLocalTimeZone())
+    const prev = now.add({ days: -1 * step })
+    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${prev.toString()}"]`)
+  },
   dayCell(value: string) {
-    return page.locator(`${part("cell-trigger")}[data-type=day][data-value=${value}]`)
+    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${value}"]`)
   },
   monthCell(value: string) {
-    return page.locator(`${part("cell-trigger")}[data-type=month][data-value=${value}]`)
+    return page.locator(`${part("cell-trigger")}[data-type=month][data-value="${value}"]`)
   },
   yearCell(value: string) {
-    return page.locator(`${part("year-cell-trigger")}[data-type=year][data-value=${value}]`)
+    return page.locator(`${part("cell-trigger")}[data-type=year][data-value="${value}"]`)
   },
 })
 
@@ -55,12 +76,51 @@ test.describe("datepicker [single]", () => {
     await expect(screen.input).toBeFocused()
   })
 
+  test("navigates to next day on ArrowRight key press", async ({ page }) => {
+    const screen = createScreen(page)
+    await screen.trigger.click()
+    await page.keyboard.press("ArrowRight")
+    await expect(screen.getNextDayCell()).toBeFocused()
+  })
+
+  test("navigates to previous day on ArrowLeft key press", async ({ page }) => {
+    const screen = createScreen(page)
+    await screen.trigger.click()
+    await page.keyboard.press("ArrowLeft")
+    await expect(screen.getPrevDayCell()).toBeFocused()
+  })
+
+  test("navigates to previous week on ArrowUp key press", async ({ page }) => {
+    const screen = createScreen(page)
+    await screen.trigger.click()
+    await page.keyboard.press("ArrowUp")
+    await expect(screen.getPrevDayCell({ step: 7 })).toBeFocused()
+  })
+
+  test("navigates to next week on ArrowDown key press", async ({ page }) => {
+    const screen = createScreen(page)
+    await screen.trigger.click()
+    await page.keyboard.press("ArrowDown")
+    await expect(screen.getNextDayCell({ step: 7 })).toBeFocused()
+  })
+
+  test("navigates to first day of the month on Home key press", async ({ page }) => {
+    const screen = createScreen(page)
+    await screen.trigger.click()
+    await page.keyboard.press("Home")
+    await expect(screen.getFirstDayCell()).toBeFocused()
+  })
+
+  test("navigates to first day of the month on End key press", async ({ page }) => {
+    const screen = createScreen(page)
+    await screen.trigger.click()
+    await page.keyboard.press("End")
+    await expect(screen.getLastDayCell()).toBeFocused()
+  })
+
   // test("should close datepicker popup upon click on a date", async () => {})
   // test("updates the calendar when a year selected from the dropdown", async ({ page }) => {})
   // test("updates the calendar when a month selected from the dropdown", async ({ page }) => {})
-
-  // test("navigates to next day on ArrowRight key press", async ({ page }) => {})
-  // test("navigates to previous day on ArrowLeft key press", async ({ page }) => {})
 
   // test("navigates to next week on ArrowDown key press", async ({ page }) => {})
   // test("navigates to previous week on ArrowUp key press", async ({ page }) => {})
