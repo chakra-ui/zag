@@ -1,5 +1,21 @@
 # @zag-js/date-picker
 
+## 0.0.10
+
+### Patch Changes
+
+- [`39793c63`](https://github.com/chakra-ui/zag/commit/39793c634f1cb8eac458c5f11da2ecfdfa325329) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix performance issue on React.js due to excessive `.focus()`
+  calls in day cell trigger
+  - Fix issue where HOME and END keys don't work as expected
+  - Fix keyboard selection when `selectionMode` is set to `range`
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0),
+  [`7f9c16a4`](https://github.com/chakra-ui/zag/commit/7f9c16a4257b9a022c3bfc9d736108b1d0f55a2e)]:
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+  - @zag-js/date-utils@0.1.4
+  - @zag-js/dismissable@0.2.6
+
 ## 0.0.9
 
 ### Patch Changes

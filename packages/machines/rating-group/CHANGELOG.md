@@ -1,5 +1,17 @@
 # @zag-js/rating-group
 
+## 0.3.1
+
+### Patch Changes
+
+- [`39bc4b4b`](https://github.com/chakra-ui/zag/commit/39bc4b4b49ea7d892821956b2cf26606ad700831) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression rating group that made it difficult to select half
+  values
+
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+
 ## 0.3.0
 
 ### Minor Changes

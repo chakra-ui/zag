@@ -1,5 +1,13 @@
 # @zag-js/utils
 
+## 0.3.4
+
+### Patch Changes
+
+- [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `machine.getState` returned a snapshot that is
+  incompatible with Solid.js
+
 ## 0.3.3
 
 ### Patch Changes

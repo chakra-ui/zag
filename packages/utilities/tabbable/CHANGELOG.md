@@ -1,5 +1,13 @@
 # @zag-js/tabbable
 
+## 0.1.1
+
+### Patch Changes
+
+- [`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve `proxyTabFocus` logic to account for empty tabbable
+  elements within container
+
 ## 0.1.0
 
 ### Minor Changes
