@@ -46,7 +46,7 @@
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
-    "@zag-js/react": "workspace:^0.3.12",
+    "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/select": "workspace:*",
