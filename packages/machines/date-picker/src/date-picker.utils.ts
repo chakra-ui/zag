@@ -1,5 +1,5 @@
 import { CalendarDate, DateFormatter } from "@internationalized/date"
-import type { DateView } from "./date-picker.types"
+import type { DateView, MachineContext } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: CalendarDate[]) {
   const [startDate, endDate] = value
@@ -23,14 +23,25 @@ export function matchView<T>(view: DateView, values: { year: T; month: T; day: T
   return values.day
 }
 
-export function formatValue(value: CalendarDate[], locale: string, timeZone: string) {
-  const formatter = new DateFormatter(locale, {
-    timeZone: timeZone,
+export function formatValue(ctx: MachineContext) {
+  const formatter = new DateFormatter(ctx.locale, {
+    timeZone: ctx.timeZone,
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   })
-  return value.map((date) => formatter.format(date.toDate(timeZone)).toString()).join(", ")
+
+  if (ctx.selectionMode === "range") {
+    const [startDate, endDate] = ctx.value
+    if (!startDate || !endDate) return ""
+    return `${formatter.format(startDate.toDate(ctx.timeZone))} - ${formatter.format(endDate.toDate(ctx.timeZone))}`
+  }
+
+  if (ctx.selectionMode === "single") {
+    return formatter.format(ctx.value[0].toDate(ctx.timeZone))
+  }
+
+  return ctx.value.map((date) => formatter.format(date.toDate(ctx.timeZone))).join(", ")
 }
 
 export function getNextTriggerLabel(view: DateView) {

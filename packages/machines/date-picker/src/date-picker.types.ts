@@ -3,8 +3,8 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-type ChangeDetails = {
-  value: CalendarDate
+type ChangeDetails<T = {}> = T & {
+  value: CalendarDate[]
 }
 
 type IntlMessages = {
@@ -68,6 +68,13 @@ type PublicContext = DirectionProperty &
     numOfMonths: number
     /**
      * The first day of the week.
+     *  `0` - Sunday
+     *  `1` - Monday
+     *  `2` - Tuesday
+     *  `3` - Wednesday
+     *  `4` - Thursday
+     *  `5` - Friday
+     *  `6` - Saturday
      */
     startOfWeek?: number
     /**
@@ -82,11 +89,11 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when the focused date changes.
      */
-    onFocusChange?: (details: ChangeDetails) => void
+    onFocusChange?: (details: ChangeDetails<{ focusedValue: CalendarDate; view: DateView }>) => void
     /**
      * Function called when the view changes.
      */
-    onViewChange?: (details: { value: DateView }) => void
+    onViewChange?: (details: { view: DateView }) => void
     /**
      * Returns whether a date of the calendar is available.
      */

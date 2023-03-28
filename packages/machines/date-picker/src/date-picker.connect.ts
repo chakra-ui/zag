@@ -46,6 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const disabled = state.context.disabled
   const readOnly = state.context.readOnly
+  const isInteractive = state.context.isInteractive
 
   const min = state.context.min
   const max = state.context.max
@@ -81,14 +82,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
      */
-    getDaysInWeek: (weekIndex: number, from = startValue) => {
+    getDaysInWeek(weekIndex: number, from = startValue) {
       return getDaysInWeek(weekIndex, from, locale, startOfWeek)
     },
 
     /**
      * Returns the offset of the month based on the provided number of months.
      */
-    getOffset: (months: number) => {
+    getOffset(months: number) {
       const from = startValue.add({ months })
       return {
         amount: months,
@@ -153,10 +154,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focusedValueAsString: focusedValue?.toString(),
 
     /**
-     *  Sets the selected date to today.
+     * Sets the selected date to today.
      */
     selectToday() {
-      const value = getTodayDate(timeZone)
+      const value = constrainValue(getTodayDate(timeZone), min, max)
       send({ type: "VALUE.SET", value })
     },
 
@@ -248,6 +249,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     format(value: CalendarDate, opts: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" }) {
       return new DateFormatter(locale, opts).format(value.toDate(timeZone))
+    },
+
+    /**
+     * Sets the view of the date picker.
+     */
+    setView(view: DateView) {
+      send({ type: "VIEW.SET", cell: view })
+    },
+
+    /**
+     * Goes to the next month/year/decade.
+     */
+    goToNext() {
+      send({ type: "GOTO.NEXT", view: state.context.view })
+    },
+
+    /**
+     * Goes to the previous month/year/decade.
+     */
+    goToPrev() {
+      send({ type: "GOTO.PREV", view: state.context.view })
     },
 
     controlProps: normalize.element({
@@ -523,7 +545,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getNextTriggerId(state.context, view),
         type: "button",
         "aria-label": getPrevTriggerLabel(view),
-        disabled: !state.context.isNextVisibleRangeValid,
+        disabled: disabled || !state.context.isNextVisibleRangeValid,
         onClick() {
           send({ type: "GOTO.NEXT", view })
         },
@@ -537,7 +559,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getPrevTriggerId(state.context, view),
         type: "button",
         "aria-label": getNextTriggerLabel(view),
-        disabled: !state.context.isPrevVisibleRangeValid,
+        disabled: disabled || !state.context.isPrevVisibleRangeValid,
         onClick() {
           send({ type: "GOTO.PREV", view })
         },
@@ -551,6 +573,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-hidden": true,
         dir: state.context.dir,
         "data-type": view,
+        "data-disabled": dataAttr(disabled),
         id: dom.getHeaderId(state.context),
       })
     },
@@ -572,7 +595,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "aria-label": isOpen ? "Close calendar" : "Open calendar",
       "aria-haspopup": "grid",
+      disabled,
       onClick() {
+        if (!isInteractive) return
         send("TRIGGER.CLICK")
       },
     }),
@@ -583,8 +608,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.viewTrigger.attrs,
         id: dom.getViewTriggerId(state.context, view),
         type: "button",
+        disabled,
         "aria-label": getViewTriggerLabel(state.context.view),
         onClick() {
+          if (!isInteractive) return
           send("VIEW.CHANGE")
         },
       })
@@ -598,6 +625,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       dir: state.context.dir,
       name: state.context.name,
+      readOnly,
+      disabled,
       placeholder: getInputPlaceholder(locale),
       defaultValue: state.context.inputValue,
       onFocus() {
@@ -607,9 +636,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "INPUT.BLUR", value: event.currentTarget.value })
       },
       onKeyDown(event) {
-        if (event.key === "Enter") {
-          send({ type: "INPUT.ENTER", value: event.currentTarget.value })
-        }
+        if (event.key !== "Enter" || !isInteractive) return
+        send({ type: "INPUT.ENTER", value: event.currentTarget.value })
       },
       onChange(event) {
         send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
@@ -620,6 +648,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.monthSelect.attrs,
       id: dom.getMonthSelectId(state.context),
       "aria-label": "Select month",
+      disabled,
       dir: state.context.dir,
       defaultValue: focusedValue.month,
       onChange(event) {
@@ -630,6 +659,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     yearSelectProps: normalize.select({
       ...parts.yearSelect.attrs,
       id: dom.getYearSelectId(state.context),
+      disabled,
       "aria-label": "Select year",
       dir: state.context.dir,
       defaultValue: focusedValue.year,

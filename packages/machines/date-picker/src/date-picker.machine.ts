@@ -67,10 +67,7 @@ export function machine(userContext: UserDefinedContext) {
           const formatter = new DateFormatter(ctx.locale, { month: "long", year: "numeric", timeZone: ctx.timeZone })
           const start = formatter.format(ctx.startValue.toDate(ctx.timeZone))
           const end = formatter.format(ctx.endValue.toDate(ctx.timeZone))
-          const formatted = formatter.formatRange(
-            ctx.startValue.toDate(ctx.timeZone),
-            ctx.endValue.toDate(ctx.timeZone),
-          )
+          const formatted = `${start} - ${end}`
           return { start, end, formatted }
         },
         isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
@@ -96,6 +93,9 @@ export function machine(userContext: UserDefinedContext) {
       on: {
         "VALUE.SET": {
           actions: ["setSelectedDate", "setFocusedDate"],
+        },
+        "VIEW.SET": {
+          actions: ["setView"],
         },
         "FOCUS.SET": {
           actions: ["setFocusedDate"],
@@ -159,6 +159,9 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["focusActiveCell"],
           exit: ["clearHoveredDate"],
           on: {
+            "INPUT.CHANGE": {
+              actions: ["focusParsedDate"],
+            },
             "CELL.CLICK": [
               {
                 guard: "isMonthView",
@@ -378,7 +381,7 @@ export function machine(userContext: UserDefinedContext) {
         setInputValue(ctx) {
           const input = dom.getInputEl(ctx)
           if (!input) return
-          ctx.inputValue = ctx.format?.(ctx.value) ?? formatValue(ctx.value, ctx.locale, ctx.timeZone)
+          ctx.inputValue = ctx.format?.(ctx.value) ?? formatValue(ctx)
         },
         syncInputElement(ctx) {
           const input = dom.getInputEl(ctx)
@@ -583,14 +586,14 @@ export function machine(userContext: UserDefinedContext) {
           year.value = ctx.focusedValue.year.toString()
         },
         invokeOnFocusChange(ctx) {
-          ctx.onFocusChange?.({ value: ctx.focusedValue })
+          ctx.onFocusChange?.({ focusedValue: ctx.focusedValue, value: ctx.value, view: ctx.view })
         },
         invokeOnViewChange(ctx) {
-          ctx.onViewChange?.({ value: ctx.view })
+          ctx.onViewChange?.({ view: ctx.view })
         },
         focusParsedDate(ctx, evt) {
           ctx.inputValue = evt.value
-          const date = parseDateString(ctx.inputValue)
+          const date = parseDateString(ctx.inputValue, ctx.locale, ctx.timeZone)
           if (!date) return
           ctx.focusedValue = date
         },

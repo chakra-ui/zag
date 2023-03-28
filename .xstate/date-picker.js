@@ -54,6 +54,9 @@ const fetchMachine = createMachine({
     "VALUE.SET": {
       actions: ["setSelectedDate", "setFocusedDate"]
     },
+    "VIEW.SET": {
+      actions: ["setView"]
+    },
     "FOCUS.SET": {
       actions: ["setFocusedDate"]
     },
@@ -126,6 +129,9 @@ const fetchMachine = createMachine({
       entry: ["focusActiveCell"],
       exit: ["clearHoveredDate"],
       on: {
+        "INPUT.CHANGE": {
+          actions: ["focusParsedDate"]
+        },
         "CELL.CLICK": [{
           cond: "isMonthView",
           actions: ["setFocusedMonth", "setViewToDay"]

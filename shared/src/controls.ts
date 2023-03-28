@@ -175,6 +175,7 @@ export const datePickerControls = defineControls({
   inline: { type: "boolean", defaultValue: false },
   startOfWeek: { type: "number", defaultValue: 0 },
   fixedWeeks: { type: "boolean", defaultValue: false },
+  locale: { type: "select", options: ["en-US", "fr", "de", "ja", "zh-CN"] as const, defaultValue: "en-US" },
 })
 
 export const transitionControls = defineControls({
