@@ -1,5 +1,17 @@
 # @zag-js/checkbox
 
+## 0.2.16
+
+### Patch Changes
+
+- [`7c56fc43`](https://github.com/chakra-ui/zag/commit/7c56fc43f6a532754e9ad0144715b57c56a790ee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where shows console warning due to `preventDefault` call
+  in pointer event on mobile
+
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+
 ## 0.2.15
 
 ### Patch Changes
