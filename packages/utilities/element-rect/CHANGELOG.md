@@ -1,5 +1,21 @@
 # @zag-js/element-rect
 
+## 0.3.0
+
+### Minor Changes
+
+- [`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for scoping the element rect tracking to size,
+  position or rect.
+
+  ```js
+  import { trackElementRect } from "@zag-js/element-rect"
+
+  trackElementRect(element, update, { scope: "size" }) // only track size
+  trackElementRect(element, update, { scope: "position" }) // only track position
+  trackElementRect(element, update, { scope: "rect" }) // track size and position (default)
+  ```
+
 ## 0.2.2
 
 ### Patch Changes

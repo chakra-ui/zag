@@ -1,5 +1,13 @@
 # @zag-js/date-utils
 
+## 0.1.4
+
+### Patch Changes
+
+- [`7f9c16a4`](https://github.com/chakra-ui/zag/commit/7f9c16a4257b9a022c3bfc9d736108b1d0f55a2e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `formatDate` function to allow formatting a date to specific
+  string format (e.g. `YYYY-MM-DD`, `DD/MM/YYYY`)
+
 ## 0.1.3
 
 ### Patch Changes

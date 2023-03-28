@@ -1,5 +1,21 @@
 # @zag-js/select
 
+## 0.2.1
+
+### Patch Changes
+
+- [`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve keyboard accessibility by managing focus between the
+  content, trigger and other tabbable elements in the natural DOM order.
+- Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
+  [`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/popper@0.2.7
+  - @zag-js/tabbable@0.1.1
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+  - @zag-js/dismissable@0.2.6
+
 ## 0.2.0
 
 ### Minor Changes
