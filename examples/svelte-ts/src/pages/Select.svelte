@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as select from "@zag-js/select"
-  import { zag, useMachine, normalizeProps } from "@zag-js/svelte"
+  import { spreadRest, useMachine, normalizeProps } from "@zag-js/svelte"
   import StateVisualizer from "../components/state-visualizer.svelte"
   import Toolbar from "../components/toolbar.svelte"
 
@@ -22,8 +22,8 @@
 <div style="min-width: 50%;">
   <div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label use:zag={api.labelProps.handlers} {...api.labelProps.attributes}>Label</label>
-    <button use:zag={api.triggerProps.handlers} {...api.triggerProps.attributes}>
+    <label use:spreadRest={api.labelProps} {...api.labelProps.attributes}>Label</label>
+    <button use:spreadRest={api.triggerProps} {...api.triggerProps.attributes}>
       {#if !api.selectedOption}
         <span>Select option</span>
       {:else}
@@ -31,11 +31,11 @@
       {/if}
     </button>
   </div>
-  <div use:zag={api.positionerProps.handlers} {...api.positionerProps.attributes}>
-    <ul use:zag={api.contentProps.handlers} {...api.contentProps.attributes}>
+  <div use:spreadRest={api.positionerProps} {...api.positionerProps.attributes}>
+    <ul use:spreadRest={api.contentProps} {...api.contentProps.attributes}>
       {#each selectData as { label, value }}
         <li
-          use:zag={api.getOptionProps({ label, value }).handlers}
+          use:spreadRest={api.getOptionProps({ label, value })}
           {...api.getOptionProps({ label, value }).attributes}
         >
           <span>{label}</span>

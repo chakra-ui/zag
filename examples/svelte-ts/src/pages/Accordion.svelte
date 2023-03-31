@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as accordion from "@zag-js/accordion"
-  import { useMachine, normalizeProps, zag } from "@zag-js/svelte"
+  import { useMachine, normalizeProps, spreadRest } from "@zag-js/svelte"
   import StateVisualizer from "../components/state-visualizer.svelte"
   import Toolbar from "../components/toolbar.svelte"
 
@@ -16,13 +16,13 @@
 </script>
 
 <main class="accordion">
-  <div use:zag={api.rootProps.handlers} {...api.rootProps.attributes}>
+  <div use:spreadRest={api.rootProps} {...api.rootProps.attributes}>
     {#each accordionData as item}
-      <div use:zag={api.getItemProps({ value: item.id }).handlers} {...api.getItemProps({ value: item.id }).attributes}>
+      <div use:spreadRest={api.getItemProps({ value: item.id })} {...api.getItemProps({ value: item.id }).attributes}>
         <h3>
           <button
             data-testid={`${item.id}:trigger`}
-            use:zag={api.getTriggerProps({ value: item.id }).handlers}
+            use:spreadRest={api.getTriggerProps({ value: item.id })}
             {...api.getTriggerProps({ value: item.id }).attributes}
           >
             {item.label}
@@ -30,7 +30,7 @@
         </h3>
         <div
           data-testid={`${item.id}:content`}
-          use:zag={api.getContentProps({ value: item.id }).handlers}
+          use:spreadRest={api.getContentProps({ value: item.id })}
           {...api.getContentProps({ value: item.id }).attributes}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
