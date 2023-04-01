@@ -19,12 +19,15 @@ function styleObjectToString(styleObject: Dict) {
 
 export const normalizeProps = createNormalizer<PropTypes<SplitArgs<Dict>>>((v: Dict) => {
   const { handlers, attributes, styles } = getAttributesAndHandlers(v)
-  const normalizedAttributes = normalizeAttributes(attributes) as SplitArgs["attributes"]
-  const normalizedHandlers = normalizeHandlers(handlers) as SplitArgs["handlers"]
+  const normalizedAttributes = normalizeAttributes(attributes) as SplitArgs["attrs"]
+  const normalizedHandlers = normalizeHandlers(handlers) as SplitArgs["rest"]["handlers"]
+  const rest = {
+    handlers: normalizedHandlers,
+    styles: styleObjectToString(styles) as SplitArgs["rest"]["styles"],
+  }
 
   return {
-    handlers: normalizedHandlers,
-    attributes: normalizedAttributes,
-    styles: styleObjectToString(styles),
+    rest,
+    attrs: normalizedAttributes,
   }
 })
