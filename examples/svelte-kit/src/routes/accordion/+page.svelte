@@ -1,8 +1,8 @@
-<script lang="ts">
+<script>
   import * as accordion from "@zag-js/accordion"
   import { useMachine, normalizeProps, zag } from "@zag-js/svelte"
-  import StateVisualizer from "../components/state-visualizer.svelte"
-  import Toolbar from "../components/toolbar.svelte"
+  import StateVisualizer from "../../components/state-visualizer.svelte"
+  import Toolbar from "../../components/toolbar.svelte"
 
   const accordionData = [
     { id: "home", label: "Home" },

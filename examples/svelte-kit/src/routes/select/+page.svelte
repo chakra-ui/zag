@@ -1,8 +1,8 @@
-<script lang="ts">
+<script>
   import * as select from "@zag-js/select"
   import { zag, useMachine, normalizeProps } from "@zag-js/svelte"
-  import StateVisualizer from "../components/state-visualizer.svelte"
-  import Toolbar from "../components/toolbar.svelte"
+  import StateVisualizer from "../../components/state-visualizer.svelte"
+  import Toolbar from "../../components/toolbar.svelte"
 
   const selectData = [
     { label: "Nigeria", value: "NG" },
@@ -21,7 +21,6 @@
 
 <div style="min-width: 50%;">
   <div>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
     <label use:zag={api.labelProps.handlers} {...api.labelProps.attributes}>Label</label>
     <button use:zag={api.triggerProps.handlers} {...api.triggerProps.attributes}>
       {#if !api.selectedOption}
@@ -31,6 +30,7 @@
       {/if}
     </button>
   </div>
+  <!-- <Portal> -->
   <div use:zag={api.positionerProps.handlers} {...api.positionerProps.attributes}>
     <ul use:zag={api.contentProps.handlers} {...api.contentProps.attributes}>
       {#each selectData as { label, value }}
@@ -44,6 +44,7 @@
       {/each}
     </ul>
   </div>
+  <!-- </Portal> -->
 </div>
 
 <Toolbar>
