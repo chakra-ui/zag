@@ -1,14 +1,15 @@
 {
-  "name": "svelte-ts",
+  "name": "svelte-kit",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
     "preview": "vite preview",
+    "package": "svelte-kit sync && svelte-package && publint",
     "prepublishOnly": "npm run package",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write ."
   },
@@ -61,6 +62,7 @@
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
+    "@zag-js/svelte": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/select": "workspace:*",
@@ -68,7 +70,6 @@
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/store": "workspace:*",
-    "@zag-js/svelte": "workspace:*",
     "@zag-js/tabbable": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
@@ -79,14 +80,12 @@
     "@zag-js/transition": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/visually-hidden": "workspace:*",
-    "svelte-navigator": "^3.2.2"
+    "@zag-js/visually-hidden": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.5.0",
     "@sveltejs/package": "^2.0.0",
-    "@sveltejs/vite-plugin-svelte": "^2.0.3",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "eslint": "^8.28.0",
