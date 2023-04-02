@@ -9,7 +9,6 @@ type ElementIds = Partial<{
   thumb: string
 }>
 
-// TODO value and name, hover and focus
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
