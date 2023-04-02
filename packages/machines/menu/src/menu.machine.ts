@@ -26,7 +26,6 @@ export function machine(userContext: UserDefinedContext) {
         suspendPointer: false,
         anchorPoint: null,
         closeOnSelect: true,
-        isPlacementComplete: false,
         focusTriggerOnClose: true,
         ...ctx,
         typeahead: getByTypeahead.defaultOptions,
@@ -193,7 +192,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["visible"],
-          activities: ["trackInteractOutside", "computePlacement"],
+          activities: ["trackInteractOutside", "trackPositioning"],
           entry: ["focusMenu", "resumePointer"],
           on: {
             TRIGGER_CLICK: {
@@ -292,6 +291,9 @@ export function machine(userContext: UserDefinedContext) {
             FOCUS_MENU: {
               actions: "focusMenu",
             },
+            SET_POSITIONING: {
+              actions: "setPositioning",
+            },
           },
         },
       },
@@ -329,14 +331,13 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: {
-        computePlacement(ctx) {
+        trackPositioning(ctx) {
           if (ctx.anchorPoint) return
           ctx.currentPlacement = ctx.positioning.placement
           return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
             ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement
-              ctx.isPlacementComplete = true
             },
           })
         },
@@ -394,13 +395,21 @@ export function machine(userContext: UserDefinedContext) {
               left: "0",
               transform: `translate3d(${point.x}px, ${point.y}px, 0)`,
             })
-            ctx.isPlacementComplete = true
           })
         },
         setSubmenuPlacement(ctx) {
           if (!ctx.isSubmenu) return
           ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
           ctx.positioning.gutter = 0
+        },
+        setPositioning(ctx, evt) {
+          raf(() => {
+            getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+              ...ctx.positioning,
+              ...evt.options,
+              listeners: false,
+            })
+          })
         },
         invokeOnValueChange(ctx, evt) {
           if (!ctx.value) return

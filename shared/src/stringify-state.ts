@@ -15,7 +15,7 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
           return undefined
         }
 
-        if ("calendar" in v) {
+        if (v.hasOwnProperty("calendar")) {
           return v.toString()
         }
 

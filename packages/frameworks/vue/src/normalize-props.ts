@@ -41,10 +41,11 @@ function toVueProp(prop: string) {
 export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
+    const value = props[key]
     if (key === "children") {
-      if (typeof props[key] === "string") {
-        normalized["innerHTML"] = props[key]
-      } else if (process.env.NODE_ENV !== "production") {
+      if (typeof value === "string") {
+        normalized["innerHTML"] = value
+      } else if (process.env.NODE_ENV !== "production" && value != null) {
         console.warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
       }
     } else {

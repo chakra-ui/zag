@@ -1,5 +1,37 @@
 # @zag-js/hover-card
 
+## 0.3.0
+
+### Minor Changes
+
+- [`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `api.setPositioning` to allow for programmatic re-positioning
+  of the popover. This API supports all the positioning options.
+
+  ```js
+  api.setPositioning({ placement: "top" })
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/popper@0.2.7
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+  - @zag-js/dismissable@0.2.6
+
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741)]:
+  - @zag-js/core@0.2.11
+  - @zag-js/popper@0.2.6
+  - @zag-js/dismissable@0.2.5
+
 ## 0.2.6
 
 ### Patch Changes

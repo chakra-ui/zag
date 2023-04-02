@@ -30,7 +30,10 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["closed"],
           entry: ["invokeOnClose", "clearIsPointer"],
           on: {
-            POINTER_ENTER: { actions: ["setIsPointer"], target: "opening" },
+            POINTER_ENTER: {
+              target: "opening",
+              actions: ["setIsPointer"],
+            },
             TRIGGER_FOCUS: "opening",
             OPEN: "opening",
           },
@@ -53,7 +56,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          activities: ["trackDismissableElement", "computePlacement"],
+          activities: ["trackDismissableElement", "trackPositioning"],
           entry: ["invokeOnOpen"],
           on: {
             POINTER_ENTER: { actions: ["setIsPointer"] },
@@ -64,17 +67,23 @@ export function machine(userContext: UserDefinedContext) {
               guard: not("isPointer"),
               target: "closed",
             },
+            SET_POSITIONING: {
+              actions: "setPositioning",
+            },
           },
         },
 
         closing: {
           tags: ["open"],
-          activities: ["computePlacement"],
+          activities: ["trackPositioning"],
           after: {
             CLOSE_DELAY: "closed",
           },
           on: {
-            POINTER_ENTER: { actions: ["setIsPointer"], target: "open" },
+            POINTER_ENTER: {
+              target: "open",
+              actions: ["setIsPointer"],
+            },
           },
         },
       },
@@ -84,7 +93,7 @@ export function machine(userContext: UserDefinedContext) {
         isPointer: (ctx) => !!ctx.isPointer,
       },
       activities: {
-        computePlacement(ctx) {
+        trackPositioning(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
           let cleanup: VoidFunction | undefined
           raf(() => {
@@ -92,22 +101,22 @@ export function machine(userContext: UserDefinedContext) {
               ...ctx.positioning,
               onComplete(data) {
                 ctx.currentPlacement = data.placement
-                ctx.isPlacementComplete = true
               },
               onCleanup() {
                 ctx.currentPlacement = undefined
-                ctx.isPlacementComplete = false
               },
             })
           })
-          return cleanup
+          return () => cleanup?.()
         },
         trackDismissableElement(ctx, _evt, { send }) {
           let cleanup: VoidFunction | undefined
           raf(() => {
             cleanup = trackDismissableElement(dom.getContentEl(ctx), {
               exclude: [dom.getTriggerEl(ctx)],
-              onDismiss: () => send({ type: "DISMISS" }),
+              onDismiss() {
+                send({ type: "DISMISS" })
+              },
               onFocusOutside(event) {
                 event.preventDefault()
               },
@@ -117,21 +126,26 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        invokeOnClose(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onOpenChange?.(false)
-          }
+        invokeOnClose(ctx) {
+          ctx.onOpenChange?.(false)
         },
-        invokeOnOpen(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onOpenChange?.(true)
-          }
+        invokeOnOpen(ctx) {
+          ctx.onOpenChange?.(true)
         },
         setIsPointer(ctx) {
           ctx.isPointer = true
         },
         clearIsPointer(ctx) {
           ctx.isPointer = false
+        },
+        setPositioning(ctx, evt) {
+          raf(() => {
+            getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+              ...ctx.positioning,
+              ...evt.options,
+              listeners: false,
+            })
+          })
         },
       },
       delays: {

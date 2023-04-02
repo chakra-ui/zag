@@ -1,14 +1,9 @@
 import { isArray, isObject, isString } from "@zag-js/utils"
-import { klona as klonaFull } from "klona/full"
-import { klona as klonaJson } from "klona/json"
+import { klona } from "klona/full"
 import type { Dict, StateMachine as S } from "./types"
 
-export function cloneJson<T>(v: T): T {
-  return klonaJson(v)
-}
-
-export function cloneFull<T>(v: T): T {
-  return klonaFull(v)
+export function structuredClone<T>(v: T): T {
+  return klona(v)
 }
 
 export function toEvent<T extends S.EventObject>(event: S.Event<T>): T {

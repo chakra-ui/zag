@@ -1,63 +1,53 @@
-import { DateFormatter, toCalendarDate } from "@internationalized/date"
-import { createMachine } from "@zag-js/core"
+import { DateFormatter } from "@internationalized/date"
+import { createMachine, guards } from "@zag-js/core"
 import {
-  addSegment,
   alignDate,
-  createPlaceholderDate,
-  DateSegmentPart,
   formatSelectedDate,
   getAdjustedDateFn,
-  getAllSegments,
+  getDecadeRange,
   getEndDate,
-  getMonthDates,
   getNextDay,
   getNextSection,
   getPreviousDay,
   getPreviousSection,
   getTodayDate,
+  isDateEqual,
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
+  parseDateString,
 } from "@zag-js/date-utils"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
-import { memoize } from "proxy-memoize"
 import { dom } from "./date-picker.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
+import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.utils"
 
-function getInitialState(ctx: UserDefinedContext) {
+const { and, not } = guards
+
+function getContext(ctx: UserDefinedContext) {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
   const numOfMonths = ctx.numOfMonths || 1
-  const visibleDuration = { months: numOfMonths }
-
   const focusedValue = getTodayDate(timeZone)
-  const startValue = alignDate(focusedValue, "start", visibleDuration, locale)
-  const placeholderValue = createPlaceholderDate("day", timeZone)
-
-  const getDateFormatter: MachineContext["getDateFormatter"] = (options) => {
-    return new DateFormatter(locale, options)
-  }
-
-  const formatter = getDateFormatter({ timeZone })
-  const allSegments = getAllSegments(formatter.formatToParts(new Date()))
+  const startValue = alignDate(focusedValue, "start", { months: numOfMonths }, locale)
 
   return {
-    id: "",
-    view: "date",
+    view: "day" as const,
     locale,
     timeZone,
     numOfMonths,
     focusedValue,
     startValue,
-    placeholderValue,
-    getDateFormatter,
-    allSegments,
+    activeIndex: 0,
+    value: [],
     valueText: "",
-    validSegments: { ...allSegments },
-    focusedSegment: null,
-    dateFormatter: new DateFormatter(locale, { timeZone }),
+    hoveredValue: null,
+    inputValue: "",
+    selectionMode: "single" as const,
+    ...ctx,
   } as MachineContext
 }
 
@@ -66,235 +56,421 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
-      initial: "focused",
-      context: getInitialState(ctx),
+      initial: ctx.inline ? "open" : "idle",
+      context: getContext(ctx),
       computed: {
-        adjustFn: (ctx) => getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max),
-        isInteractive: (ctx) => !ctx.disabled && !ctx.readonly,
+        isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
-        dayFormatter: memoize((ctx) => new DateFormatter(ctx.locale, { weekday: "short", timeZone: ctx.timeZone })),
-        weeks: memoize((ctx) => getMonthDates(ctx.startValue, ctx.visibleDuration, ctx.locale)),
         visibleRange: (ctx) => ({ start: ctx.startValue, end: ctx.endValue }),
-        validSegmentDetails(ctx) {
-          const keys = Object.keys(ctx.validSegments)
-          const allKeys = Object.keys(ctx.allSegments)
-          return {
-            keys,
-            exceeds: keys.length >= allKeys.length,
-            complete: keys.length === allKeys.length,
-          }
+        visibleRangeText(ctx) {
+          const formatter = new DateFormatter(ctx.locale, { month: "long", year: "numeric", timeZone: ctx.timeZone })
+          const start = formatter.format(ctx.startValue.toDate(ctx.timeZone))
+          const end = formatter.format(ctx.endValue.toDate(ctx.timeZone))
+          const formatted = `${start} - ${end}`
+          return { start, end, formatted }
         },
-        isPrevVisibleRangeValid: (ctx) => {
-          return isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max)
-        },
-        isNextVisibleRangeValid(ctx) {
-          return isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max)
-        },
+        isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
+        isNextVisibleRangeValid: (ctx) => !isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max),
       },
 
-      created: ["adjustSegments"],
-
-      activities: ["setupAnnouncer"],
+      activities: ["setupLiveRegion"],
 
       watch: {
-        focusedValue: ["focusFocusedCell"],
-        visibleRange: ["announceVisibleRange"],
-        value: ["adjustSegments", "setValueText", "announceValueText"],
-        locale: ["setFormatter"],
-        "*": ["setDisplayValue"],
+        focusedValue: [
+          "adjustStartDate",
+          "syncMonthSelectElement",
+          "syncYearSelectElement",
+          "focusActiveCellIfNeeded",
+          "setHoveredValueIfKeyboard",
+          "invokeOnFocusChange",
+        ],
+        value: ["setValueText", "announceValueText"],
+        inputValue: ["syncInputElement"],
+        view: ["focusActiveCell", "invokeOnViewChange"],
       },
 
       on: {
-        POINTER_DOWN: {
-          actions: ["disableTextSelection"],
+        "VALUE.SET": {
+          actions: ["setSelectedDate", "setFocusedDate"],
         },
-        POINTER_UP: {
-          actions: ["enableTextSelection"],
+        "VIEW.SET": {
+          actions: ["setView"],
         },
-        SET_VALUE: {
-          actions: ["setSelectedDate"],
+        "FOCUS.SET": {
+          actions: ["setFocusedDate"],
         },
+        "VALUE.CLEAR": {
+          target: "focused",
+          actions: ["clearSelectedDate", "clearFocusedDate", "setInputValue", "focusInputElement"],
+        },
+        "GOTO.NEXT": [
+          { guard: "isYearView", actions: ["focusNextDecade", "announceVisibleRange"] },
+          { guard: "isMonthView", actions: ["focusNextYear", "announceVisibleRange"] },
+          { actions: ["focusNextPage"] },
+        ],
+        "GOTO.PREV": [
+          { guard: "isYearView", actions: ["focusPreviousDecade", "announceVisibleRange"] },
+          { guard: "isMonthView", actions: ["focusPreviousYear", "announceVisibleRange"] },
+          { actions: ["focusPreviousPage"] },
+        ],
       },
 
       states: {
         idle: {
           tags: "closed",
+          on: {
+            "INPUT.FOCUS": {
+              target: "focused",
+            },
+            "TRIGGER.CLICK": {
+              target: "open",
+              actions: ["setViewToDay", "focusFirstSelectedDate"],
+            },
+          },
         },
 
         focused: {
           tags: "closed",
           on: {
-            FOCUS_SEGMENT: {
-              actions: ["setFocusedSegment"],
-            },
-            ARROW_UP: {
-              actions: ["incrementFocusedSegment"],
-            },
-            ARROW_DOWN: {
-              actions: ["decrementFocusedSegment"],
-            },
-            ARROW_RIGHT: {
-              actions: ["focusNextSegment"],
-            },
-            ARROW_LEFT: {
-              actions: ["focusPreviousSegment"],
-            },
-            CLICK_TRIGGER: {
+            "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDate", "focusSelectedDateIfNeeded"],
+              actions: ["setViewToDay", "focusFirstSelectedDate"],
+            },
+            "INPUT.CHANGE": {
+              actions: ["focusParsedDate"],
+            },
+            "INPUT.ENTER": {
+              actions: ["focusParsedDate", "selectFocusedDate", "setInputValue"],
+            },
+            "INPUT.BLUR": {
+              target: "idle",
+            },
+            "CELL.FOCUS": {
+              target: "open",
+              actions: ["setView"],
             },
           },
         },
 
         open: {
           tags: "open",
+          activities: ["trackDismissableElement"],
+          entry: ["focusActiveCell"],
+          exit: ["clearHoveredDate"],
           on: {
-            FOCUS_CELL: {
-              actions: ["setFocusedDate"],
+            "INPUT.CHANGE": {
+              actions: ["focusParsedDate"],
             },
-            ENTER: {
-              actions: ["selectFocusedDate"],
+            "CELL.CLICK": [
+              {
+                guard: "isMonthView",
+                actions: ["setFocusedMonth", "setViewToDay"],
+              },
+              {
+                guard: "isYearView",
+                actions: ["setFocusedYear", "setViewToMonth"],
+              },
+              {
+                guard: and("isRangePicker", "hasSelectedRange"),
+                actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"],
+              },
+              {
+                target: "focused",
+                guard: and("isRangePicker", "isSelectingEndDate"),
+                actions: [
+                  "setFocusedDate",
+                  "setSelectedDate",
+                  "setStartIndex",
+                  "clearHoveredDate",
+                  "setInputValue",
+                  "focusInputElement",
+                ],
+              },
+              {
+                guard: "isRangePicker",
+                actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"],
+              },
+              {
+                guard: "isMultiPicker",
+                actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"],
+              },
+              {
+                target: "focused",
+                actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"],
+              },
+            ],
+            "CELL.POINTER_MOVE": {
+              guard: and("isRangePicker", "isSelectingEndDate"),
+              actions: ["setHoveredDate", "setFocusedDate"],
             },
-            CLICK_CELL: {
-              actions: ["setFocusedDate", "setSelectedDate"],
+            "GRID.POINTER_LEAVE": {
+              guard: "isRangePicker",
+              actions: ["clearHoveredDate"],
             },
-            ARROW_RIGHT: {
-              actions: ["focusNextDay"],
+            "GRID.POINTER_DOWN": {
+              guard: not("isInline"),
+              actions: ["disableTextSelection"],
             },
-            ARROW_LEFT: {
-              actions: ["focusPreviousDay"],
+            "GRID.POINTER_UP": {
+              guard: not("isInline"),
+              actions: ["enableTextSelection"],
             },
-            ARROW_UP: {
-              actions: ["focusPreviousWeek"],
+            "GRID.ESCAPE": {
+              target: "focused",
+              actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"],
             },
-            ARROW_DOWN: {
-              actions: ["focusNextWeek"],
-            },
-            PAGE_UP: {
+            "GRID.ENTER": [
+              {
+                guard: "isMonthView",
+                actions: "setViewToDay",
+              },
+              {
+                guard: "isYearView",
+                actions: "setViewToMonth",
+              },
+              {
+                guard: and("isRangePicker", "hasSelectedRange"),
+                actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"],
+              },
+              {
+                target: "focused",
+                guard: and("isRangePicker", "isSelectingEndDate"),
+                actions: ["setSelectedDate", "setStartIndex", "setInputValue", "focusInputElement"],
+              },
+              {
+                guard: "isRangePicker",
+                actions: ["setSelectedDate", "setEndIndex", "focusNextDay"],
+              },
+              {
+                guard: "isMultiPicker",
+                actions: ["toggleSelectedDate", "setInputValue"],
+              },
+              {
+                target: "focused",
+                actions: ["selectFocusedDate", "setInputValue", "focusInputElement"],
+              },
+            ],
+            "GRID.ARROW_RIGHT": [
+              { guard: "isMonthView", actions: "focusNextMonth" },
+              { guard: "isYearView", actions: "focusNextYear" },
+              { actions: ["focusNextDay", "setHoveredDate"] },
+            ],
+            "GRID.ARROW_LEFT": [
+              { guard: "isMonthView", actions: "focusPreviousMonth" },
+              { guard: "isYearView", actions: "focusPreviousYear" },
+              { actions: ["focusPreviousDay"] },
+            ],
+            "GRID.ARROW_UP": [
+              { guard: "isMonthView", actions: "focusPreviousMonthColumn" },
+              { guard: "isYearView", actions: "focusPreviousYearColumn" },
+              { actions: ["focusPreviousWeek"] },
+            ],
+            "GRID.ARROW_DOWN": [
+              { guard: "isMonthView", actions: "focusNextMonthColumn" },
+              { guard: "isYearView", actions: "focusNextYearColumn" },
+              { actions: ["focusNextWeek"] },
+            ],
+            "GRID.PAGE_UP": {
               actions: ["focusPreviousSection"],
             },
-            PAGE_DOWN: {
+            "GRID.PAGE_DOWN": {
               actions: ["focusNextSection"],
             },
-            CLICK_PREV: {
-              actions: ["focusPreviousPage"],
-            },
-            CLICK_NEXT: {
-              actions: ["focusNextPage"],
-            },
-            CLICK_TRIGGER: {
+            "GRID.HOME": [
+              { guard: "isMonthView", actions: ["focusFirstMonth"] },
+              { guard: "isYearView", actions: ["focusFirstYear"] },
+              { actions: ["focusSectionStart"] },
+            ],
+            "GRID.END": [
+              { guard: "isMonthView", actions: ["focusLastMonth"] },
+              { guard: "isYearView", actions: ["focusLastYear"] },
+              { actions: ["focusSectionEnd"] },
+            ],
+            "TRIGGER.CLICK": {
               target: "focused",
             },
+            "VIEW.CHANGE": [
+              {
+                guard: "isDayView",
+                actions: ["setViewToMonth"],
+              },
+              {
+                guard: "isMonthView",
+                actions: ["setViewToYear"],
+              },
+            ],
+            DISMISS: [
+              { guard: "isTargetFocusable", target: "idle" },
+              { target: "focused", actions: ["focusTriggerElement"] },
+            ],
           },
         },
       },
     },
     {
-      guards: {},
+      guards: {
+        isDayView: (ctx, evt) => (evt.view || ctx.view) === "day",
+        isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
+        isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
+        isRangePicker: (ctx) => ctx.selectionMode === "range",
+        hasSelectedRange: (ctx) => ctx.value.length === 2,
+        isMultiPicker: (ctx) => ctx.selectionMode === "multiple",
+        isTargetFocusable: (_ctx, evt) => evt.focusable,
+        isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
+        isInline: (ctx) => !!ctx.inline,
+      },
       activities: {
-        setupAnnouncer(ctx) {
-          ctx.announcer = createLiveRegion({
-            level: "assertive",
-            document: dom.getDoc(ctx),
-          })
+        setupLiveRegion(ctx) {
+          const doc = dom.getDoc(ctx)
+          ctx.announcer = createLiveRegion({ level: "assertive", document: doc })
           return () => ctx.announcer?.destroy?.()
+        },
+        trackDismissableElement(ctx, _evt, { send }) {
+          if (ctx.inline) return
+          let focusable = false
+          return trackDismissableElement(dom.getContentEl(ctx), {
+            exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
+            onInteractOutside(event) {
+              focusable = event.detail.focusable
+            },
+            onDismiss() {
+              send({ type: "DISMISS", src: "dismissable", focusable })
+            },
+            onEscapeKeyDown(event) {
+              event.preventDefault()
+              send({ type: "GRID.ESCAPE", src: "dismissable" })
+            },
+          })
         },
       },
       actions: {
-        setFormatter(ctx) {
-          ctx.getDateFormatter = (options) => new DateFormatter(ctx.locale, options)
+        setViewToDay(ctx) {
+          ctx.view = "day"
+        },
+        setViewToMonth(ctx) {
+          ctx.view = "month"
+        },
+        setViewToYear(ctx) {
+          ctx.view = "year"
+        },
+        setView(ctx, evt) {
+          ctx.view = evt.cell
         },
         setValueText(ctx) {
-          if (!ctx.value) return
-          ctx.valueText = formatSelectedDate(ctx.value, null, ctx.getDateFormatter, false, ctx.timeZone)
+          if (!ctx.value.length) return
+          ctx.valueText = ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)).join(", ")
         },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueText, 3000)
         },
         announceVisibleRange(ctx) {
-          ctx.announcer?.announce(ctx.visibleRangeText)
+          const { formatted } = ctx.visibleRangeText
+          ctx.announcer?.announce(formatted)
         },
         disableTextSelection(ctx) {
-          disableTextSelection({ target: dom.getGridEl(ctx)!, doc: dom.getDoc(ctx) })
+          disableTextSelection({ target: dom.getContentEl(ctx)!, doc: dom.getDoc(ctx) })
         },
         enableTextSelection(ctx) {
-          restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getGridEl(ctx)! })
+          restoreTextSelection({ doc: dom.getDoc(ctx), target: dom.getContentEl(ctx)! })
         },
-        focusSelectedDateIfNeeded(ctx) {
-          if (!ctx.value) return
-          ctx.focusedValue = ctx.value
+        focusFirstSelectedDate(ctx) {
+          if (!ctx.value.length) return
+          ctx.focusedValue = ctx.value[0]
         },
-        setFocusedDate(ctx, evt) {
-          ctx.focusedValue = evt.date
+        setInputValue(ctx) {
+          const input = dom.getInputEl(ctx)
+          if (!input) return
+          ctx.inputValue = ctx.format?.(ctx.value) ?? formatValue(ctx)
         },
-        setSelectedDate(ctx, evt) {
-          ctx.value = evt.date
-        },
-        selectFocusedDate(ctx) {
-          ctx.value = ctx.focusedValue.copy()
-        },
-        focusFocusedCell(ctx) {
+        syncInputElement(ctx) {
+          const input = dom.getInputEl(ctx)
+          if (!input || input.value === ctx.inputValue) return
           raf(() => {
-            const cell = dom.getFocusedCell(ctx)
-            cell?.focus({ preventScroll: true })
+            input.value = ctx.inputValue
+            // move cursor to the end
+            input.setSelectionRange(input.value.length, input.value.length)
           })
         },
+        setFocusedDate(ctx, evt) {
+          const value = Array.isArray(evt.value) ? evt.value[0] : evt.value
+          ctx.focusedValue = value
+        },
+        setFocusedMonth(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.set({ month: evt.value })
+        },
+        focusNextMonth(ctx) {
+          ctx.focusedValue = ctx.focusedValue.add({ months: 1 })
+        },
+        focusPreviousMonth(ctx) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ months: 1 })
+        },
+        setFocusedYear(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.set({ year: evt.value })
+        },
+        setSelectedDate(ctx, evt) {
+          const nextValue = [...ctx.value]
+          nextValue[ctx.activeIndex] = evt.value ?? ctx.focusedValue
+          ctx.value = adjustStartAndEndDate(nextValue)
+        },
+        toggleSelectedDate(ctx, evt) {
+          const currentValue = evt.value ?? ctx.focusedValue
+          const index = ctx.value.findIndex((date) => isDateEqual(date, currentValue))
+          if (index === -1) {
+            const nextValues = [...ctx.value, currentValue]
+            ctx.value = sortDates(nextValues)
+          } else {
+            const nextValues = [...ctx.value]
+            nextValues.splice(index, 1)
+            ctx.value = sortDates(nextValues)
+          }
+        },
+        setHoveredDate(ctx, evt) {
+          ctx.hoveredValue = evt.value
+        },
+        clearHoveredDate(ctx) {
+          ctx.hoveredValue = null
+        },
+        selectFocusedDate(ctx) {
+          const nextValue = [...ctx.value]
+          nextValue[ctx.activeIndex] = ctx.focusedValue.copy()
+          ctx.value = adjustStartAndEndDate(nextValue)
+        },
+        adjustStartDate(ctx) {
+          const adjust = getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max)
+          const { startDate, focusedDate } = adjust({ focusedDate: ctx.focusedValue, startDate: ctx.startValue })
+          ctx.startValue = startDate
+          ctx.focusedValue = focusedDate
+        },
         setPreviousDate(ctx) {
-          ctx.startValue = getPreviousDay(ctx.startValue)
           ctx.focusedValue = getPreviousDay(ctx.focusedValue)
         },
         setNextDate(ctx) {
-          ctx.startValue = getNextDay(ctx.startValue)
           ctx.focusedValue = getNextDay(ctx.focusedValue)
         },
         focusPreviousDay(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.subtract({ days: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.subtract({ days: 1 })
         },
         focusNextDay(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.add({ days: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.add({ days: 1 })
         },
         focusPreviousWeek(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.subtract({ weeks: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.subtract({ weeks: 1 })
         },
         focusNextWeek(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.add({ weeks: 1 }),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.add({ weeks: 1 })
         },
         focusNextPage(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.add(ctx.visibleDuration),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.add({ months: 1 })
         },
         focusPreviousPage(ctx) {
-          const { startDate, focusedDate } = ctx.adjustFn({
-            focusedDate: ctx.focusedValue.subtract(ctx.visibleDuration),
-            startDate: ctx.startValue,
-          })
-          ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          ctx.focusedValue = ctx.focusedValue.subtract(ctx.visibleDuration)
+        },
+        focusSectionStart(ctx) {
+          ctx.focusedValue = ctx.startValue.copy()
+        },
+        focusSectionEnd(ctx) {
+          ctx.focusedValue = ctx.endValue.copy()
         },
         focusNextSection(ctx, evt) {
           const section = getNextSection(
@@ -308,9 +484,7 @@ export function machine(userContext: UserDefinedContext) {
           )
 
           if (!section) return
-
           ctx.focusedValue = section.focusedDate
-          ctx.startValue = section.startDate
         },
         focusPreviousSection(ctx, evt) {
           const section = getPreviousSection(
@@ -324,53 +498,104 @@ export function machine(userContext: UserDefinedContext) {
           )
 
           if (!section) return
-
           ctx.focusedValue = section.focusedDate
-          ctx.startValue = section.startDate
         },
-        adjustSegments(ctx) {
-          if (!ctx.value && ctx.validSegmentDetails.complete) {
-            ctx.validSegments = {}
-            return
-          }
-
-          if (ctx.value && !ctx.validSegmentDetails.complete) {
-            ctx.validSegments = { ...ctx.allSegments }
-            return
-          }
+        focusNextYear(ctx) {
+          ctx.focusedValue = ctx.focusedValue.add({ years: 1 })
         },
-        setDisplayValue(ctx) {
-          ctx.displayValue =
-            ctx.value && Object.keys(ctx.validSegments).length >= Object.keys(ctx.allSegments).length
-              ? ctx.value
-              : ctx.placeholderValue
+        focusPreviousYear(ctx) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ years: 1 })
         },
-        adjustPlaceholder(ctx) {
-          if (ctx.value && !ctx.validSegmentDetails.complete) {
-            ctx.placeholderValue = createPlaceholderDate("day", ctx.timeZone)
-          }
+        focusNextDecade(ctx) {
+          ctx.focusedValue = ctx.focusedValue.add({ years: 10 })
         },
-        setFocusedSegment(ctx, evt) {
-          ctx.focusedSegment = evt.segment
+        focusPreviousDecade(ctx) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ years: 10 })
         },
-        focusNextSegment(ctx) {
-          dom.focusNextSegment(ctx)
+        clearSelectedDate(ctx) {
+          ctx.value = []
         },
-        focusPreviousSegment(ctx) {
-          dom.focusPrevSegment(ctx)
+        clearFocusedDate(ctx) {
+          ctx.focusedValue = getTodayDate(ctx.timeZone)
         },
-        incrementFocusedSegment(ctx) {
-          if (!ctx.focusedSegment) return
-          const segment = incrementSegment(ctx, ctx.focusedSegment)
-          if (!segment) return
-          const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
-          ctx[key] = toCalendarDate(segment)
+        focusPreviousMonthColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ months: evt.columns })
         },
-        decrementFocusedSegment(ctx) {
-          if (!ctx.focusedSegment) return
-          const segment = decrementSegment(ctx, ctx.focusedSegment)
-          const key = ctx.validSegmentDetails.exceeds ? "value" : "placeholderValue"
-          ctx[key] = toCalendarDate(segment)
+        focusNextMonthColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.add({ months: evt.columns })
+        },
+        focusPreviousYearColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.subtract({ years: evt.columns })
+        },
+        focusNextYearColumn(ctx, evt) {
+          ctx.focusedValue = ctx.focusedValue.add({ years: evt.columns })
+        },
+        focusFirstMonth(ctx) {
+          ctx.focusedValue = ctx.focusedValue.set({ month: 0 })
+        },
+        focusLastMonth(ctx) {
+          ctx.focusedValue = ctx.focusedValue.set({ month: 12 })
+        },
+        focusFirstYear(ctx) {
+          const range = getDecadeRange(ctx.focusedValue.year)
+          ctx.focusedValue = ctx.focusedValue.set({ year: range.at(0) })
+        },
+        focusLastYear(ctx) {
+          const range = getDecadeRange(ctx.focusedValue.year)
+          ctx.focusedValue = ctx.focusedValue.set({ year: range.at(-1) })
+        },
+        setEndIndex(ctx) {
+          ctx.activeIndex = 1
+        },
+        setStartIndex(ctx) {
+          ctx.activeIndex = 0
+        },
+        focusActiveCell(ctx) {
+          raf(() => {
+            dom.getFocusedCell(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        focusActiveCellIfNeeded(ctx, evt) {
+          if (!evt.focus) return
+          raf(() => {
+            dom.getFocusedCell(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        setHoveredValueIfKeyboard(ctx, evt) {
+          if (!evt.type.startsWith("GRID.ARROW") || ctx.selectionMode !== "range" || ctx.activeIndex === 0) return
+          ctx.hoveredValue = ctx.focusedValue.copy()
+        },
+        focusTriggerElement(ctx) {
+          raf(() => {
+            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        focusInputElement(ctx) {
+          raf(() => {
+            dom.getInputEl(ctx)?.focus()
+          })
+        },
+        syncMonthSelectElement(ctx) {
+          const month = dom.getMonthSelectEl(ctx)
+          if (!month) return
+          month.value = ctx.focusedValue.month.toString()
+        },
+        syncYearSelectElement(ctx) {
+          const year = dom.getYearSelectEl(ctx)
+          if (!year) return
+          year.value = ctx.focusedValue.year.toString()
+        },
+        invokeOnFocusChange(ctx) {
+          ctx.onFocusChange?.({ focusedValue: ctx.focusedValue, value: ctx.value, view: ctx.view })
+        },
+        invokeOnViewChange(ctx) {
+          ctx.onViewChange?.({ view: ctx.view })
+        },
+        focusParsedDate(ctx, evt) {
+          ctx.inputValue = evt.value
+          const date = parseDateString(ctx.inputValue, ctx.locale, ctx.timeZone)
+          if (!date) return
+          ctx.focusedValue = date
         },
       },
       compareFns: {
@@ -381,34 +606,3 @@ export function machine(userContext: UserDefinedContext) {
     },
   )
 }
-
-function markValidSegment(ctx: MachineContext, part: DateSegmentPart) {
-  ctx.validSegments[part] = true
-  if (part === "year" && ctx.allSegments.era) {
-    ctx.validSegments.era = true
-  }
-}
-
-function adjustSegment(ctx: MachineContext, part: DateSegmentPart, amount: number) {
-  if (!ctx.validSegments[part]) {
-    markValidSegment(ctx, part)
-  }
-  const dateFormatter = ctx.getDateFormatter({})
-  return addSegment(ctx.displayValue, part, amount, dateFormatter.resolvedOptions())
-}
-
-function incrementSegment(ctx: MachineContext, part: DateSegmentPart) {
-  return adjustSegment(ctx, part, 1)
-}
-
-function decrementSegment(ctx: MachineContext, part: DateSegmentPart) {
-  return adjustSegment(ctx, part, -1)
-}
-
-// function incrementSegmentPage(ctx: MachineContext, part: DateSegmentPart) {
-//   return adjustSegment(ctx, part, getSegmentPageStep(part))
-// }
-
-// function decrementSegmentPage(ctx: MachineContext, part: DateSegmentPart) {
-//   return adjustSegment(ctx, part, -getSegmentPageStep(part))
-// }

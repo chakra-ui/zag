@@ -19,7 +19,7 @@ import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn } from "./transition-utils"
 import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
-import { cloneFull, cloneJson, toArray, toEvent } from "./utils"
+import { structuredClone, toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -66,8 +66,8 @@ export class Machine<
   // Let's get started!
   constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
     // clone the config and options
-    this.config = cloneFull(config)
-    this.options = cloneFull(options ?? {})
+    this.config = structuredClone(config)
+    this.options = structuredClone(options ?? {})
 
     this.id = this.config.id ?? `machine-${uuid()}`
 
@@ -92,7 +92,7 @@ export class Machine<
   }
 
   public getState(): S.State<TContext, TState, TEvent> {
-    return cloneJson(this.stateSnapshot)
+    return this.stateSnapshot
   }
 
   // immutable context value
@@ -179,25 +179,16 @@ export class Machine<
 
   private setupContextWatchers = () => {
     for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      let cleanup: VoidFunction
-
-      if (key === "*") {
-        cleanup = subscribe(this.state.context, () => {
+      const compareFn = this.options.compareFns?.[key]
+      const cleanup = subscribeKey(
+        this.state.context,
+        key,
+        () => {
           this.executeActions(fn, this.state.event as TEvent)
-        })
-      } else {
-        const compareFn = this.options.compareFns?.[key]
-        cleanup = subscribeKey(
-          this.state.context,
-          key,
-          () => {
-            this.executeActions(fn, this.state.event as TEvent)
-          },
-          this.sync,
-          compareFn,
-        )
-      }
-
+        },
+        this.sync,
+        compareFn,
+      )
       this.contextWatchers.add(cleanup)
     }
   }

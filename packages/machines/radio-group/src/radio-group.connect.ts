@@ -25,7 +25,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }
   }
 
-  function getRadioDataSet<T extends RadioProps>(props: T) {
+  function getRadioDataAttrs<T extends RadioProps>(props: T) {
     const radioState = getRadioState(props)
     return {
       "data-focus": dataAttr(radioState.isFocused),
@@ -107,7 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.radio.attrs,
         id: dom.getRadioId(state.context, props.value),
         htmlFor: dom.getRadioInputId(state.context, props.value),
-        ...getRadioDataSet(props),
+        ...getRadioDataAttrs(props),
 
         onPointerMove() {
           if (!rootState.isInteractive) return
@@ -121,7 +121,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!rootState.isInteractive) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
-          if (rootState.isFocused) event.preventDefault()
+          if (rootState.isFocused && event.pointerType === "mouse") {
+            event.preventDefault()
+          }
           send({ type: "SET_ACTIVE", value: props.value, active: true })
         },
         onPointerUp() {
@@ -135,7 +137,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.radioLabel.attrs,
         id: dom.getRadioLabelId(state.context, props.value),
-        ...getRadioDataSet(props),
+        ...getRadioDataAttrs(props),
       })
     },
 
@@ -147,7 +149,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getRadioControlId(state.context, props.value),
         "data-active": dataAttr(controlState.isActive),
         "aria-hidden": true,
-        ...getRadioDataSet(props),
+        ...getRadioDataAttrs(props),
       })
     },
 

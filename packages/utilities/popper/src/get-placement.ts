@@ -100,7 +100,7 @@ export function getPlacement(
 
   function compute(config: Omit<ComputePositionConfig, "platform"> = {}) {
     if (!reference || !floating) return
-    const { placement, strategy } = options
+    const { placement, strategy, onComplete } = options
 
     computePosition(reference, floating, {
       placement,
@@ -113,12 +113,12 @@ export function getPlacement(
 
       Object.assign(floating.style, {
         position: data.strategy,
-        top: "0",
-        left: "0",
+        top: "0px",
+        left: "0px",
         transform: `translate3d(${x}px, ${y}px, 0)`,
       })
 
-      options.onComplete?.({ ...data, compute })
+      onComplete?.(data)
     })
   }
 

@@ -95,12 +95,90 @@ export function isTabbable(el: HTMLElement | null): el is HTMLElement {
   return isFocusable(el) && !hasNegativeTabIndex(el)
 }
 
+/**
+ * Returns the first focusable element within the element
+ */
 export function getFirstTabbable(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
   const [first] = getTabbables(container, includeContainer)
   return first || null
 }
 
+/**
+ * Returns the last focusable element within the element
+ */
 export function getLastTabbable(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
   const elements = getTabbables(container, includeContainer)
   return elements[elements.length - 1] || null
+}
+
+/**
+ * Returns the first and last focusable elements within the element
+ */
+export function getTabbableEdges(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
+  const elements = getTabbables(container, includeContainer)
+  const first = elements[0] || null
+  const last = elements[elements.length - 1] || null
+  return [first, last]
+}
+
+/**
+ * Returns the next tabbable element after the current element
+ */
+export function getNextTabbable(container: HTMLElement | null, current?: HTMLElement | null) {
+  const tabbables = getTabbables(container)
+  const doc = container?.ownerDocument || document
+  const currentElement = current ?? (doc.activeElement as HTMLElement | null)
+  if (!currentElement) return null
+  const index = tabbables.indexOf(currentElement)
+  return tabbables[index + 1] || null
+}
+
+/**
+ * Proxies tab focus within a container to a reference element
+ * when the container is rendered in a portal
+ */
+export function proxyTabFocus(
+  container: HTMLElement | null,
+  reference: HTMLElement | null,
+  cb: (elementToFocus: HTMLElement) => void,
+) {
+  const doc = container?.ownerDocument || document
+  const body = doc.body
+
+  function onKeyDown(event: KeyboardEvent) {
+    if (event.key !== "Tab") return
+
+    let elementToFocus: HTMLElement | null = null
+
+    // get all tabbable elements within the container
+    const [firstTabbable, lastTabbable] = getTabbableEdges(container, true)
+
+    const noTabbableElements = !firstTabbable && !lastTabbable
+
+    // if we're focused on the first tabbable element and the user tabs backwards
+    // we want to focus the reference element
+    if (event.shiftKey && (doc.activeElement === firstTabbable || noTabbableElements)) {
+      elementToFocus = reference
+    } else if (!event.shiftKey && doc.activeElement === reference) {
+      // if we're focused on the reference element and the user tabs forwards
+      // we want to focus the first tabbable element
+      elementToFocus = firstTabbable
+    } else if (!event.shiftKey && (doc.activeElement === lastTabbable || noTabbableElements)) {
+      // if we're focused on the last tabbable element and the user tabs forwards
+      // we want to focus the next tabbable element after the reference element
+      elementToFocus = getNextTabbable(body, reference)
+    }
+
+    if (!elementToFocus) return
+
+    event.preventDefault()
+    cb(elementToFocus)
+  }
+
+  // listen for the tab key in the capture phase
+  doc?.addEventListener("keydown", onKeyDown, true)
+
+  return () => {
+    doc?.removeEventListener("keydown", onKeyDown, true)
+  }
 }

@@ -1,5 +1,24 @@
 # @zag-js/tabs
 
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies [[`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/tabbable@0.1.1
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+
+## 0.2.14
+
+### Patch Changes
+
+- Updated dependencies [[`316eea98`](https://github.com/chakra-ui/zag/commit/316eea980af3a276ec3b0bd900b9e705f59f7c35),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/tabbable@0.1.0
+  - @zag-js/core@0.2.11
+
 ## 0.2.13
 
 ### Patch Changes

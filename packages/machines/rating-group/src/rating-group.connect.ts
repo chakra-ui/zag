@@ -8,10 +8,23 @@ import type { Send, State } from "./rating-group.types"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
   const value = state.context.value
+  const hoveredValue = state.context.hoveredValue
   const isDisabled = state.context.disabled
   const translations = state.context.translations
 
   const api = {
+    /**
+     * Sets the value of the rating group
+     */
+    setValue(value: number) {
+      send({ type: "SET_VALUE", value })
+    },
+    /**
+     * Clears the value of the rating group
+     */
+    clearValue() {
+      send("CLEAR_VALUE")
+    },
     /**
      * Whether the rating group is being hovered
      */
@@ -23,7 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The value of the currently hovered rating
      */
-    hoveredValue: state.context.hoveredValue,
+    hoveredValue,
     /**
      * The maximum value of the rating group
      */
@@ -122,9 +135,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onPointerMove(event) {
           if (!isInteractive) return
           const point = { x: event.clientX, y: event.clientY }
-          const el = event.currentTarget
-          const percent = getRelativePointPercent(point, el)
-          const isMidway = percent.x < 0.5
+          const percent = getRelativePointPercent(point, event.currentTarget)
+          const isMidway = percent.x < 50
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {
@@ -140,7 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send("ARROW_LEFT")
             },
             ArrowDown() {
-              send("ARROW_LEFT")
+              send("ARROW_RIGHT")
             },
             Space() {
               send({ type: "SPACE", value: index })

@@ -1,0 +1,54 @@
+{
+  "name": "@zag-js/switch",
+  "version": "0.1.1",
+  "description": "Core logic for the switch widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "switch"
+  ],
+  "author": "Abraham Aremu <anubra266@gmail.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/switch",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build-fast": "tsup src",
+    "start": "pnpm build --watch",
+    "build": "tsup src --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
+    "@zag-js/utils": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/visually-hidden": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json"
+}

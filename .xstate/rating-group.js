@@ -19,6 +19,14 @@ const fetchMachine = createMachine({
   activities: ["trackFormControlState"],
   entry: ["checkValue"],
   on: {
+    SET_VALUE: {
+      actions: ["setValue"]
+    },
+    CLEAR_VALUE: {
+      actions: ["clearValue"]
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

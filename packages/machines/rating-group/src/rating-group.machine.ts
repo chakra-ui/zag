@@ -42,6 +42,15 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControlState"],
       entry: ["checkValue"],
 
+      on: {
+        SET_VALUE: {
+          actions: ["setValue"],
+        },
+        CLEAR_VALUE: {
+          actions: ["clearValue"],
+        },
+      },
+
       states: {
         idle: {
           entry: "clearHoveredValue",
@@ -131,7 +140,6 @@ export function machine(userContext: UserDefinedContext) {
         checkValue(ctx) {
           ctx.initialValue = ctx.value
         },
-
         clearHoveredValue(ctx) {
           ctx.hoveredValue = -1
         },
@@ -156,6 +164,9 @@ export function machine(userContext: UserDefinedContext) {
         setValue(ctx, evt) {
           ctx.value = ctx.hoveredValue === -1 ? evt.value : ctx.hoveredValue
         },
+        clearValue(ctx) {
+          ctx.value = -1
+        },
         setHoveredValue(ctx, evt) {
           const half = ctx.allowHalf && evt.isMidway
           let factor = half ? 0.5 : 0
@@ -165,15 +176,11 @@ export function machine(userContext: UserDefinedContext) {
           let value = evt.index - factor
           ctx.hoveredValue = value
         },
-        dispatchChangeEvent(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            dom.dispatchChangeEvent(ctx)
-          }
+        dispatchChangeEvent(ctx) {
+          dom.dispatchChangeEvent(ctx)
         },
-        invokeOnChange(ctx, evt) {
-          if (evt.type !== "SETUP") {
-            ctx.onChange?.({ value: ctx.value })
-          }
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value })
         },
         invokeOnHover(ctx) {
           ctx.onHover?.({ value: ctx.hoveredValue })

@@ -1,5 +1,48 @@
 # @zag-js/combobox
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/popper@0.2.7
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+  - @zag-js/interact-outside@0.2.6
+
+## 0.3.0
+
+### Minor Changes
+
+- [#553](https://github.com/chakra-ui/zag/pull/553)
+  [`3ed0e554`](https://github.com/chakra-ui/zag/commit/3ed0e554a2a5f12bfdcf746eff6055b77b24c604) Thanks
+  [@visualjerk](https://github.com/visualjerk)! - Add `onInteractOutside` hook to context.
+
+  This can be used to prevent loosing focus when composing with other components.
+
+  Example usage:
+
+  ```ts
+  {
+    onInteractOutside(event) {
+      // Prevent loosing focus when interacting with related popup
+      if (popupElement.contains(event.target)) {
+        event.preventDefault()
+      }
+    }
+  }
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`1dcbc349`](https://github.com/chakra-ui/zag/commit/1dcbc349a2e8b27cda21e136de2d4feb5dd797bb)]:
+  - @zag-js/core@0.2.11
+  - @zag-js/popper@0.2.6
+  - @zag-js/interact-outside@0.2.5
+
 ## 0.2.16
 
 ### Patch Changes

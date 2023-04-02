@@ -1,5 +1,60 @@
 # @zag-js/select
 
+## 0.2.1
+
+### Patch Changes
+
+- [`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve keyboard accessibility by managing focus between the
+  content, trigger and other tabbable elements in the natural DOM order.
+- Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
+  [`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/popper@0.2.7
+  - @zag-js/tabbable@0.1.1
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+  - @zag-js/dismissable@0.2.6
+
+## 0.2.0
+
+### Minor Changes
+
+- [#553](https://github.com/chakra-ui/zag/pull/553)
+  [`3ed0e554`](https://github.com/chakra-ui/zag/commit/3ed0e554a2a5f12bfdcf746eff6055b77b24c604) Thanks
+  [@visualjerk](https://github.com/visualjerk)! - Add `onInteractOutside` hook to context.
+
+  This can be used to prevent loosing focus when composing with other components.
+
+  Example usage:
+
+  ```ts
+  {
+    onInteractOutside(event) {
+      // Prevent loosing focus when interacting with related popup
+      if (popupElement.contains(event.target)) {
+        event.preventDefault()
+      }
+    }
+  }
+  ```
+
+### Patch Changes
+
+- [`65cbba78`](https://github.com/chakra-ui/zag/commit/65cbba78b4ebe2d4bdf661afc21147edf9b7a96c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor select to use dismissable layer pattern
+
+- [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where machine throws when the trigger or content element
+  is not in the DOM.
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741)]:
+  - @zag-js/core@0.2.11
+  - @zag-js/popper@0.2.6
+  - @zag-js/dismissable@0.2.5
+
 ## 0.1.14
 
 ### Patch Changes
