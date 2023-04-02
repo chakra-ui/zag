@@ -620,157 +620,6 @@ importers:
       typescript: 4.9.5
       vite: 4.1.4
 
-  examples/svelte-ts:
-    specifiers:
-      '@sveltejs/adapter-auto': ^2.0.0
-      '@sveltejs/kit': ^1.5.0
-      '@sveltejs/package': ^2.0.0
-      '@sveltejs/vite-plugin-svelte': ^2.0.3
-      '@typescript-eslint/eslint-plugin': ^5.45.0
-      '@typescript-eslint/parser': ^5.45.0
-      '@zag-js/accordion': workspace:*
-      '@zag-js/anatomy': workspace:*
-      '@zag-js/aria-hidden': workspace:*
-      '@zag-js/auto-resize': workspace:*
-      '@zag-js/carousel': workspace:*
-      '@zag-js/checkbox': workspace:*
-      '@zag-js/combobox': workspace:*
-      '@zag-js/core': workspace:*
-      '@zag-js/date-picker': workspace:*
-      '@zag-js/date-utils': workspace:*
-      '@zag-js/dialog': workspace:*
-      '@zag-js/dismissable': workspace:*
-      '@zag-js/dom-event': workspace:*
-      '@zag-js/dom-query': workspace:*
-      '@zag-js/editable': workspace:*
-      '@zag-js/element-rect': workspace:*
-      '@zag-js/element-size': workspace:*
-      '@zag-js/focus-scope': workspace:*
-      '@zag-js/focus-visible': workspace:*
-      '@zag-js/form-utils': workspace:*
-      '@zag-js/hover-card': workspace:*
-      '@zag-js/interact-outside': workspace:*
-      '@zag-js/live-region': workspace:*
-      '@zag-js/menu': workspace:*
-      '@zag-js/mutation-observer': workspace:*
-      '@zag-js/number-input': workspace:*
-      '@zag-js/number-utils': workspace:*
-      '@zag-js/numeric-range': workspace:*
-      '@zag-js/pagination': workspace:*
-      '@zag-js/pin-input': workspace:*
-      '@zag-js/popover': workspace:*
-      '@zag-js/popper': workspace:*
-      '@zag-js/pressable': workspace:*
-      '@zag-js/radio-group': workspace:*
-      '@zag-js/range-slider': workspace:*
-      '@zag-js/rating-group': workspace:*
-      '@zag-js/rect-utils': workspace:*
-      '@zag-js/remove-scroll': workspace:*
-      '@zag-js/select': workspace:*
-      '@zag-js/shared': workspace:*
-      '@zag-js/slider': workspace:*
-      '@zag-js/splitter': workspace:*
-      '@zag-js/store': workspace:*
-      '@zag-js/svelte': workspace:*
-      '@zag-js/tabbable': workspace:*
-      '@zag-js/tabs': workspace:*
-      '@zag-js/tags-input': workspace:*
-      '@zag-js/text-selection': workspace:*
-      '@zag-js/toast': workspace:*
-      '@zag-js/toggle': workspace:*
-      '@zag-js/tooltip': workspace:*
-      '@zag-js/transition': workspace:*
-      '@zag-js/types': workspace:*
-      '@zag-js/utils': workspace:*
-      '@zag-js/visually-hidden': workspace:*
-      eslint: ^8.28.0
-      eslint-config-prettier: ^8.5.0
-      eslint-plugin-svelte3: ^4.0.0
-      prettier: ^2.8.0
-      prettier-plugin-svelte: ^2.8.1
-      publint: ^0.1.9
-      svelte: ^3.54.0
-      svelte-check: ^3.0.1
-      svelte-navigator: ^3.2.2
-      tslib: ^2.4.1
-      typescript: ^4.9.3
-      vite: ^4.0.0
-    dependencies:
-      '@zag-js/accordion': link:../../packages/machines/accordion
-      '@zag-js/anatomy': link:../../packages/anatomy
-      '@zag-js/aria-hidden': link:../../packages/utilities/aria-hidden
-      '@zag-js/auto-resize': link:../../packages/utilities/auto-resize
-      '@zag-js/carousel': link:../../packages/machines/carousel
-      '@zag-js/checkbox': link:../../packages/machines/checkbox
-      '@zag-js/combobox': link:../../packages/machines/combobox
-      '@zag-js/core': link:../../packages/core
-      '@zag-js/date-picker': link:../../packages/machines/date-picker
-      '@zag-js/date-utils': link:../../packages/utilities/date-utils
-      '@zag-js/dialog': link:../../packages/machines/dialog
-      '@zag-js/dismissable': link:../../packages/utilities/dismissable
-      '@zag-js/dom-event': link:../../packages/utilities/dom-event
-      '@zag-js/dom-query': link:../../packages/utilities/dom-query
-      '@zag-js/editable': link:../../packages/machines/editable
-      '@zag-js/element-rect': link:../../packages/utilities/element-rect
-      '@zag-js/element-size': link:../../packages/utilities/element-size
-      '@zag-js/focus-scope': link:../../packages/utilities/focus-scope
-      '@zag-js/focus-visible': link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils': link:../../packages/utilities/form-utils
-      '@zag-js/hover-card': link:../../packages/machines/hover-card
-      '@zag-js/interact-outside': link:../../packages/utilities/interact-outside
-      '@zag-js/live-region': link:../../packages/utilities/live-region
-      '@zag-js/menu': link:../../packages/machines/menu
-      '@zag-js/mutation-observer': link:../../packages/utilities/mutation-observer
-      '@zag-js/number-input': link:../../packages/machines/number-input
-      '@zag-js/number-utils': link:../../packages/utilities/number
-      '@zag-js/numeric-range': link:../../packages/utilities/numeric-range
-      '@zag-js/pagination': link:../../packages/machines/pagination
-      '@zag-js/pin-input': link:../../packages/machines/pin-input
-      '@zag-js/popover': link:../../packages/machines/popover
-      '@zag-js/popper': link:../../packages/utilities/popper
-      '@zag-js/pressable': link:../../packages/machines/pressable
-      '@zag-js/radio-group': link:../../packages/machines/radio-group
-      '@zag-js/range-slider': link:../../packages/machines/range-slider
-      '@zag-js/rating-group': link:../../packages/machines/rating-group
-      '@zag-js/rect-utils': link:../../packages/utilities/rect
-      '@zag-js/remove-scroll': link:../../packages/utilities/remove-scroll
-      '@zag-js/select': link:../../packages/machines/select
-      '@zag-js/shared': link:../../shared
-      '@zag-js/slider': link:../../packages/machines/slider
-      '@zag-js/splitter': link:../../packages/machines/splitter
-      '@zag-js/store': link:../../packages/store
-      '@zag-js/svelte': link:../../packages/frameworks/svelte
-      '@zag-js/tabbable': link:../../packages/utilities/tabbable
-      '@zag-js/tabs': link:../../packages/machines/tabs
-      '@zag-js/tags-input': link:../../packages/machines/tags-input
-      '@zag-js/text-selection': link:../../packages/utilities/text-selection
-      '@zag-js/toast': link:../../packages/machines/toast
-      '@zag-js/toggle': link:../../packages/machines/toggle
-      '@zag-js/tooltip': link:../../packages/machines/tooltip
-      '@zag-js/transition': link:../../packages/machines/transition
-      '@zag-js/types': link:../../packages/types
-      '@zag-js/utils': link:../../packages/utilities/core
-      '@zag-js/visually-hidden': link:../../packages/utilities/visually-hidden
-      svelte-navigator: 3.2.2_4x7phaipmicbaooxtnresslofa
-    devDependencies:
-      '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.9.1
-      '@sveltejs/kit': 1.9.1_svelte@3.55.1+vite@4.1.4
-      '@sveltejs/package': 2.0.2_4x7phaipmicbaooxtnresslofa
-      '@sveltejs/vite-plugin-svelte': 2.0.3_svelte@3.55.1+vite@4.1.4
-      '@typescript-eslint/eslint-plugin': 5.53.0_ny4s7qc6yg74faf3d6xty2ofzy
-      '@typescript-eslint/parser': 5.53.0_7kw3g6rralp5ps6mg3uyzz6azm
-      eslint: 8.34.0
-      eslint-config-prettier: 8.6.0_eslint@8.34.0
-      eslint-plugin-svelte3: 4.0.0_dbthnr4b2bdkhyiebwn7su3hnq
-      prettier: 2.8.4
-      prettier-plugin-svelte: 2.9.0_jrsxveqmsx2uadbqiuq74wlc4u
-      publint: 0.1.9
-      svelte: 3.55.1
-      svelte-check: 3.0.4_svelte@3.55.1
-      tslib: 2.5.0
-      typescript: 4.9.5
-      vite: 4.1.4
-
   examples/vue-ts:
     specifiers:
       '@rushstack/eslint-patch': ^1.2.0
@@ -4932,6 +4781,7 @@ packages:
 
   /dedent-js/1.0.1:
     resolution: {integrity: sha512-OUepMozQULMLUmhxS95Vudo0jb0UchLimi3+pQ2plj61Fcy8axbP9hbiD4Sz6DPqn6XG3kfmziVfQ1rSys5AJQ==}
+    dev: true
 
   /deep-eql/4.1.3:
     resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}
@@ -8446,17 +8296,6 @@ packages:
       svelte: 3.55.1
     dev: true
 
-  /svelte-navigator/3.2.2_4x7phaipmicbaooxtnresslofa:
-    resolution: {integrity: sha512-Xio4ohLUG1nQJ+ENNbLphXXu9L189fnI1WGg+2Q3CIMPe8Jm2ipytKQthdBs8t0mN7p3Eb03SE9hq0xZAqwQNQ==}
-    peerDependencies:
-      svelte: 3.x
-    dependencies:
-      svelte: 3.55.1
-      svelte2tsx: 0.1.193_4x7phaipmicbaooxtnresslofa
-    transitivePeerDependencies:
-      - typescript
-    dev: false
-
   /svelte-preprocess/5.0.1_4x7phaipmicbaooxtnresslofa:
     resolution: {integrity: sha512-0HXyhCoc9rsW4zGOgtInylC6qj259E1hpFnJMJWTf+aIfeqh4O/QHT31KT2hvPEqQfdjmqBR/kO2JDkkciBLrQ==}
     engines: {node: '>= 14.10.0'}
@@ -8508,18 +8347,7 @@ packages:
   /svelte/3.55.1:
     resolution: {integrity: sha512-S+87/P0Ve67HxKkEV23iCdAh/SX1xiSfjF1HOglno/YTbSTW7RniICMCofWGdJJbdjw3S+0PfFb1JtGfTXE0oQ==}
     engines: {node: '>= 8'}
-
-  /svelte2tsx/0.1.193_4x7phaipmicbaooxtnresslofa:
-    resolution: {integrity: sha512-vzy4YQNYDnoqp2iZPnJy7kpPAY6y121L0HKrSBjU/IWW7DQ6T7RMJed2VVHFmVYm0zAGYMDl9urPc6R4DDUyhg==}
-    peerDependencies:
-      svelte: ^3.24
-      typescript: ^4.1.2
-    dependencies:
-      dedent-js: 1.0.1
-      pascal-case: 3.1.2
-      svelte: 3.55.1
-      typescript: 4.9.5
-    dev: false
+    dev: true
 
   /svelte2tsx/0.6.2_4x7phaipmicbaooxtnresslofa:
     resolution: {integrity: sha512-0ircYY2/jMOfistf+iq8fVHERnu1i90nku56c78+btC8svyafsc3OjOV37LDEOV7buqYY1Rv/uy03eMxhopH2Q==}
