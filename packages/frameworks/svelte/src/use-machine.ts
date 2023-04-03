@@ -1,40 +1,52 @@
-import { onDestroy } from "svelte/internal"
-import { readable } from "svelte/store"
+import { onMount } from "svelte/internal"
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
+import { writable } from "svelte/store"
 
-export function useMachine<
+export function useService<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
->(
-  machine: MachineSrc<TContext, TState, TEvent>,
-  options: S.MachineOptions<TContext, TState, TEvent> & {
-    state?: S.StateInit<TContext, TState>
-  },
-) {
-  const { actions, state: hydratedState } = options ?? {}
-
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: any) {
+  const { actions, state: hydratedState, context } = options ?? {}
   const _machine = typeof machine === "function" ? machine() : machine
+  const service = context ? _machine.withContext(context) : _machine
 
-  const service = _machine.start(hydratedState)
+  onMount(() => {
+    service.start(hydratedState)
 
-  const state = readable(service.state, (set) => {
-    service.subscribe((state) => {
-      if (state.changed) {
-        set(state)
-      }
-    })
+    if (service.state.can("SETUP")) {
+      service.send("SETUP")
+    }
 
     return () => {
       service.stop()
     }
   })
 
-  // update machine actives when `action` changes
-  $: service.setOptions({ actions })
+  service.setOptions({ actions })
 
-  onDestroy(() => {
-    service.stop()
+  service.setContext(context)
+
+  return service
+}
+
+export function useMachine<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
+  const service = useService(machine, options)
+
+  const state = writable(service.state)
+
+  onMount(() => {
+    const unsubscribe = service.subscribe((nextState) => {
+      state.set(nextState)
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
   })
 
   return [state, service.send, service] as const

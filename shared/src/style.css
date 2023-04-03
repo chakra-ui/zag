@@ -108,7 +108,7 @@ body {
   outline: none;
 }
 
-.nav a[data-active] {
+.nav a[data-active], a[aria-current="page"] {
   border-color: green;
   font-weight: 500;
 }
