@@ -6,8 +6,7 @@
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
 
-  import { useControls } from "../../stores/controls/context"
-  import ControlsUI from "../../stores/controls/ui.svelte"
+  import { ControlsUI, useControls } from "../../stores/controls/context"
 
   const ctx = useControls(accordionControls)
 

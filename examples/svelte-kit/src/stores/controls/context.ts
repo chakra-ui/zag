@@ -1,5 +1,6 @@
 import { ControlRecord, ControlValue } from "@zag-js/shared"
 import { writable } from "svelte/store"
+export { default as ControlsUI } from "./ui.svelte"
 
 function getDefaultValues<T extends ControlRecord>(obj: T) {
   return Object.keys(obj).reduce(
