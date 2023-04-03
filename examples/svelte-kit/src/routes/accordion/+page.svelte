@@ -1,16 +1,16 @@
 <script>
   import * as accordion from "@zag-js/accordion"
+  import { accordionControls, accordionData } from "@zag-js/shared"
   import { events, normalizeProps, useMachine } from "@zag-js/svelte"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
 
-  const accordionData = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "contact", label: "Contact" },
-  ]
+  import { useControls } from "../../stores/controls/context"
+  import ControlsUI from "../../stores/controls/ui.svelte"
 
-  const [state, send] = useMachine(accordion.machine({ id: "accordion" }))
+  const ctx = useControls(accordionControls)
+
+  const [state, send] = useMachine(accordion.machine({ id: "accordion" }), { context: $ctx })
 
   $: api = accordion.connect($state, send, normalizeProps)
 </script>
@@ -45,5 +45,6 @@
 </main>
 
 <Toolbar>
+  <ControlsUI slot="controls" {ctx} controls={accordionControls} />
   <StateVisualizer state={$state} />
 </Toolbar>
