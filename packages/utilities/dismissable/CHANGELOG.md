@@ -1,5 +1,23 @@
 # @zag-js/dismissable
 
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/utils@0.3.4
+  - @zag-js/interact-outside@0.2.6
+
+## 0.2.5
+
+### Patch Changes
+
+- [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Re-export types from `@zag-js/interact-outside` package.
+
+- Updated dependencies [[`1dcbc349`](https://github.com/chakra-ui/zag/commit/1dcbc349a2e8b27cda21e136de2d4feb5dd797bb)]:
+  - @zag-js/interact-outside@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes

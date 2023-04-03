@@ -11,19 +11,77 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "datepicker",
-  initial: "focused",
-  context: {},
-  activities: ["setupAnnouncer"],
+  initial: ctx.inline ? "open" : "idle",
+  context: {
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isRangePicker && hasSelectedRange": false,
+    "isRangePicker && isSelectingEndDate": false,
+    "isRangePicker": false,
+    "isMultiPicker": false,
+    "isRangePicker && isSelectingEndDate": false,
+    "isRangePicker": false,
+    "!isInline": false,
+    "!isInline": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isRangePicker && hasSelectedRange": false,
+    "isRangePicker && isSelectingEndDate": false,
+    "isRangePicker": false,
+    "isMultiPicker": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isMonthView": false,
+    "isYearView": false,
+    "isDayView": false,
+    "isMonthView": false,
+    "isTargetFocusable": false
+  },
+  activities: ["setupLiveRegion"],
   on: {
-    POINTER_DOWN: {
-      actions: ["disableTextSelection"]
+    "VALUE.SET": {
+      actions: ["setSelectedDate", "setFocusedDate"]
     },
-    POINTER_UP: {
-      actions: ["enableTextSelection"]
+    "VIEW.SET": {
+      actions: ["setView"]
     },
-    SET_VALUE: {
-      actions: ["setSelectedDate"]
-    }
+    "FOCUS.SET": {
+      actions: ["setFocusedDate"]
+    },
+    "VALUE.CLEAR": {
+      target: "focused",
+      actions: ["clearSelectedDate", "clearFocusedDate", "setInputValue", "focusInputElement"]
+    },
+    "GOTO.NEXT": [{
+      cond: "isYearView",
+      actions: ["focusNextDecade", "announceVisibleRange"]
+    }, {
+      cond: "isMonthView",
+      actions: ["focusNextYear", "announceVisibleRange"]
+    }, {
+      actions: ["focusNextPage"]
+    }],
+    "GOTO.PREV": [{
+      cond: "isYearView",
+      actions: ["focusPreviousDecade", "announceVisibleRange"]
+    }, {
+      cond: "isMonthView",
+      actions: ["focusPreviousYear", "announceVisibleRange"]
+    }, {
+      actions: ["focusPreviousPage"]
+    }]
   },
   on: {
     UPDATE_CONTEXT: {
@@ -32,71 +90,191 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
-      tags: "closed"
+      tags: "closed",
+      on: {
+        "INPUT.FOCUS": {
+          target: "focused"
+        },
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["setViewToDay", "focusFirstSelectedDate"]
+        }
+      }
     },
     focused: {
       tags: "closed",
       on: {
-        FOCUS_SEGMENT: {
-          actions: ["setFocusedSegment"]
-        },
-        ARROW_UP: {
-          actions: ["incrementFocusedSegment"]
-        },
-        ARROW_DOWN: {
-          actions: ["decrementFocusedSegment"]
-        },
-        ARROW_RIGHT: {
-          actions: ["focusNextSegment"]
-        },
-        ARROW_LEFT: {
-          actions: ["focusPreviousSegment"]
-        },
-        CLICK_TRIGGER: {
+        "TRIGGER.CLICK": {
           target: "open",
-          actions: ["setViewToDate", "focusSelectedDateIfNeeded"]
+          actions: ["setViewToDay", "focusFirstSelectedDate"]
+        },
+        "INPUT.CHANGE": {
+          actions: ["focusParsedDate"]
+        },
+        "INPUT.ENTER": {
+          actions: ["focusParsedDate", "selectFocusedDate", "setInputValue"]
+        },
+        "INPUT.BLUR": {
+          target: "idle"
+        },
+        "CELL.FOCUS": {
+          target: "open",
+          actions: ["setView"]
         }
       }
     },
     open: {
       tags: "open",
+      activities: ["trackDismissableElement"],
+      entry: ["focusActiveCell"],
+      exit: ["clearHoveredDate"],
       on: {
-        FOCUS_CELL: {
-          actions: ["setFocusedDate"]
+        "INPUT.CHANGE": {
+          actions: ["focusParsedDate"]
         },
-        ENTER: {
-          actions: ["selectFocusedDate"]
+        "CELL.CLICK": [{
+          cond: "isMonthView",
+          actions: ["setFocusedMonth", "setViewToDay"]
+        }, {
+          cond: "isYearView",
+          actions: ["setFocusedYear", "setViewToMonth"]
+        }, {
+          cond: "isRangePicker && hasSelectedRange",
+          actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"]
+        }, {
+          target: "focused",
+          cond: "isRangePicker && isSelectingEndDate",
+          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "setInputValue", "focusInputElement"]
+        }, {
+          cond: "isRangePicker",
+          actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"]
+        }, {
+          cond: "isMultiPicker",
+          actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"]
+        }, {
+          target: "focused",
+          actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"]
+        }],
+        "CELL.POINTER_MOVE": {
+          cond: "isRangePicker && isSelectingEndDate",
+          actions: ["setHoveredDate", "setFocusedDate"]
         },
-        CLICK_CELL: {
-          actions: ["setFocusedDate", "setSelectedDate"]
+        "GRID.POINTER_LEAVE": {
+          cond: "isRangePicker",
+          actions: ["clearHoveredDate"]
         },
-        ARROW_RIGHT: {
-          actions: ["focusNextDay"]
+        "GRID.POINTER_DOWN": {
+          cond: "!isInline",
+          actions: ["disableTextSelection"]
         },
-        ARROW_LEFT: {
+        "GRID.POINTER_UP": {
+          cond: "!isInline",
+          actions: ["enableTextSelection"]
+        },
+        "GRID.ESCAPE": {
+          target: "focused",
+          actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"]
+        },
+        "GRID.ENTER": [{
+          cond: "isMonthView",
+          actions: "setViewToDay"
+        }, {
+          cond: "isYearView",
+          actions: "setViewToMonth"
+        }, {
+          cond: "isRangePicker && hasSelectedRange",
+          actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"]
+        }, {
+          target: "focused",
+          cond: "isRangePicker && isSelectingEndDate",
+          actions: ["setSelectedDate", "setStartIndex", "setInputValue", "focusInputElement"]
+        }, {
+          cond: "isRangePicker",
+          actions: ["setSelectedDate", "setEndIndex", "focusNextDay"]
+        }, {
+          cond: "isMultiPicker",
+          actions: ["toggleSelectedDate", "setInputValue"]
+        }, {
+          target: "focused",
+          actions: ["selectFocusedDate", "setInputValue", "focusInputElement"]
+        }],
+        "GRID.ARROW_RIGHT": [{
+          cond: "isMonthView",
+          actions: "focusNextMonth"
+        }, {
+          cond: "isYearView",
+          actions: "focusNextYear"
+        }, {
+          actions: ["focusNextDay", "setHoveredDate"]
+        }],
+        "GRID.ARROW_LEFT": [{
+          cond: "isMonthView",
+          actions: "focusPreviousMonth"
+        }, {
+          cond: "isYearView",
+          actions: "focusPreviousYear"
+        }, {
           actions: ["focusPreviousDay"]
-        },
-        ARROW_UP: {
+        }],
+        "GRID.ARROW_UP": [{
+          cond: "isMonthView",
+          actions: "focusPreviousMonthColumn"
+        }, {
+          cond: "isYearView",
+          actions: "focusPreviousYearColumn"
+        }, {
           actions: ["focusPreviousWeek"]
-        },
-        ARROW_DOWN: {
+        }],
+        "GRID.ARROW_DOWN": [{
+          cond: "isMonthView",
+          actions: "focusNextMonthColumn"
+        }, {
+          cond: "isYearView",
+          actions: "focusNextYearColumn"
+        }, {
           actions: ["focusNextWeek"]
-        },
-        PAGE_UP: {
+        }],
+        "GRID.PAGE_UP": {
           actions: ["focusPreviousSection"]
         },
-        PAGE_DOWN: {
+        "GRID.PAGE_DOWN": {
           actions: ["focusNextSection"]
         },
-        CLICK_PREV: {
-          actions: ["focusPreviousPage"]
-        },
-        CLICK_NEXT: {
-          actions: ["focusNextPage"]
-        },
-        CLICK_TRIGGER: {
+        "GRID.HOME": [{
+          cond: "isMonthView",
+          actions: ["focusFirstMonth"]
+        }, {
+          cond: "isYearView",
+          actions: ["focusFirstYear"]
+        }, {
+          actions: ["focusSectionStart"]
+        }],
+        "GRID.END": [{
+          cond: "isMonthView",
+          actions: ["focusLastMonth"]
+        }, {
+          cond: "isYearView",
+          actions: ["focusLastYear"]
+        }, {
+          actions: ["focusSectionEnd"]
+        }],
+        "TRIGGER.CLICK": {
           target: "focused"
-        }
+        },
+        "VIEW.CHANGE": [{
+          cond: "isDayView",
+          actions: ["setViewToMonth"]
+        }, {
+          cond: "isMonthView",
+          actions: ["setViewToYear"]
+        }],
+        DISMISS: [{
+          cond: "isTargetFocusable",
+          target: "idle"
+        }, {
+          target: "focused",
+          actions: ["focusTriggerElement"]
+        }]
       }
     }
   }
@@ -108,5 +286,15 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isYearView": ctx => ctx["isYearView"],
+    "isMonthView": ctx => ctx["isMonthView"],
+    "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
+    "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
+    "isRangePicker": ctx => ctx["isRangePicker"],
+    "isMultiPicker": ctx => ctx["isMultiPicker"],
+    "!isInline": ctx => ctx["!isInline"],
+    "isDayView": ctx => ctx["isDayView"],
+    "isTargetFocusable": ctx => ctx["isTargetFocusable"]
+  }
 });

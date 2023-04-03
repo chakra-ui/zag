@@ -1,5 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
+import type { InteractOutsideEvent } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
@@ -61,6 +62,11 @@ type PublicContext = DirectionProperty &
      * The callback fired when the menu is closed.
      */
     onClose?: () => void
+    /**
+     * Callback fired when an outside interaction was triggered.
+     * Useful for preventing blur on select when composing it with other components.
+     */
+    onInteractOutside?(event: InteractOutsideEvent): void
     /**
      * The positioning options of the menu.
      */

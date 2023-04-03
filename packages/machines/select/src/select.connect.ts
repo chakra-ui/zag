@@ -29,7 +29,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   const popperStyles = getPlacementStyles({
-    measured: !!state.context.currentPlacement,
     placement: state.context.currentPlacement,
   })
 
@@ -50,13 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to focus the select
      */
     focus() {
-      dom.getTriggerElement(state.context).focus()
-    },
-    /**
-     * Function to blur the select
-     */
-    blur() {
-      dom.getTriggerElement(state.context).blur()
+      dom.getTriggerElement(state.context)?.focus()
     },
     /**
      * Function to open the select
@@ -261,7 +254,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       "aria-activedescendant": state.context.highlightedId || "",
       "aria-labelledby": dom.getLabelId(state.context),
-      tabIndex: -1,
+      tabIndex: 0,
       onPointerMove(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
@@ -289,9 +282,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         if (!isInteractive) return
         const keyMap: EventKeyMap = {
-          Escape() {
-            send({ type: "ESC_KEY" })
-          },
           ArrowUp() {
             send({ type: "ARROW_UP" })
           },
@@ -304,7 +294,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           End() {
             send({ type: "END" })
           },
-          Tab() {
+          Tab(event) {
+            if (event.shiftKey) return
             send({ type: "TAB" })
           },
           Enter() {

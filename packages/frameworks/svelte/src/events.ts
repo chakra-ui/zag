@@ -1,4 +1,4 @@
-export function zag(node: Element, handlers: Record<string, EventListener>) {
+export function events(node: Element, handlers: Record<string, EventListener>) {
   Object.entries(handlers).forEach(([key, value]) => {
     node.addEventListener(key, value)
   })

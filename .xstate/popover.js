@@ -12,12 +12,7 @@ const {
 const fetchMachine = createMachine({
   id: "popover",
   initial: ctx.defaultOpen ? "open" : "closed",
-  context: {
-    "!isRelatedTargetWithinContent": false,
-    "isTriggerFocused && portalled": false,
-    "isLastTabbableElement && closeOnInteractOutside && portalled": false,
-    "(isFirstTabbableElement || isContentFocused) && portalled": false
-  },
+  context: {},
   entry: ["checkRenderedElements"],
   on: {
     UPDATE_CONTEXT: {
@@ -33,7 +28,7 @@ const fetchMachine = createMachine({
       }
     },
     open: {
-      activities: ["trapFocus", "preventScroll", "hideContentBelow", "computePlacement", "trackInteractionOutside", "trackTabKeyDown"],
+      activities: ["trapFocus", "preventScroll", "hideContentBelow", "trackPositioning", "trackDismissableElement", "proxyTabFocus"],
       entry: ["setInitialFocus", "invokeOnOpen"],
       on: {
         CLOSE: "closed",
@@ -42,21 +37,8 @@ const fetchMachine = createMachine({
           actions: "focusTriggerIfNeeded"
         },
         TOGGLE: "closed",
-        TRIGGER_BLUR: {
-          cond: "!isRelatedTargetWithinContent",
-          target: "closed"
-        },
-        TAB: [{
-          cond: "isTriggerFocused && portalled",
-          actions: "focusFirstTabbableElement"
-        }, {
-          cond: "isLastTabbableElement && closeOnInteractOutside && portalled",
-          target: "closed",
-          actions: "focusNextTabbableElementAfterTrigger"
-        }],
-        SHIFT_TAB: {
-          cond: "(isFirstTabbableElement || isContentFocused) && portalled",
-          actions: "focusTriggerIfNeeded"
+        SET_POSITIONING: {
+          actions: "setPositioning"
         }
       }
     }
@@ -69,10 +51,5 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {
-    "!isRelatedTargetWithinContent": ctx => ctx["!isRelatedTargetWithinContent"],
-    "isTriggerFocused && portalled": ctx => ctx["isTriggerFocused && portalled"],
-    "isLastTabbableElement && closeOnInteractOutside && portalled": ctx => ctx["isLastTabbableElement && closeOnInteractOutside && portalled"],
-    "(isFirstTabbableElement || isContentFocused) && portalled": ctx => ctx["(isFirstTabbableElement || isContentFocused) && portalled"]
-  }
+  guards: {}
 });

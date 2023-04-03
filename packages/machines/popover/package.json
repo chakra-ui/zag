@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/popover",
-  "version": "0.2.13",
+  "version": "0.2.15",
   "description": "Core logic for the popover widget implemented as a state machine",
   "keywords": [
     "js",
@@ -30,14 +30,13 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/tabbable": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "focus-trap": "7.3.1"
+    "focus-trap": "7.4.0"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

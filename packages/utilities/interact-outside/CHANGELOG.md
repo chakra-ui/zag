@@ -1,5 +1,25 @@
 # @zag-js/interact-outside
 
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/tabbable@0.1.1
+  - @zag-js/utils@0.3.4
+
+## 0.2.5
+
+### Patch Changes
+
+- [`1dcbc349`](https://github.com/chakra-ui/zag/commit/1dcbc349a2e8b27cda21e136de2d4feb5dd797bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `focusable` property in pointerdown outside event
+  doesn't report correctly.
+
+- Updated dependencies [[`316eea98`](https://github.com/chakra-ui/zag/commit/316eea980af3a276ec3b0bd900b9e705f59f7c35)]:
+  - @zag-js/tabbable@0.1.0
+
 ## 0.2.4
 
 ### Patch Changes

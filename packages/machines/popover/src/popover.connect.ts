@@ -1,4 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
+import type { PositioningOptions } from "@zag-js/popper"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
@@ -13,7 +14,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const rendered = state.context.renderedElements
 
   const popperStyles = getPlacementStyles({
-    measured: !!state.context.isPlacementComplete,
     placement: currentPlacement,
   })
 
@@ -37,6 +37,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     close() {
       send("CLOSE")
+    },
+    /**
+     * Function to reposition the popover
+     */
+    setPositioning(options: Partial<PositioningOptions>) {
+      send({ type: "SET_POSITIONING", options })
     },
 
     arrowProps: normalize.element({

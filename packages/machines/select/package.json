@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/select",
-  "version": "0.1.14",
+  "version": "0.2.1",
   "description": "Core logic for the select widget implemented as a state machine",
   "keywords": [
     "js",
@@ -43,11 +43,12 @@
     "@zag-js/popper": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
+    "@zag-js/tabbable": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {

@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@internationalized/date": "^3.1.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
@@ -22,6 +23,7 @@
     "@zag-js/date-utils": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
+    "@zag-js/docs": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
@@ -54,6 +56,7 @@
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/store": "workspace:*",
+    "@zag-js/switch": "workspace:*",
     "@zag-js/tabbable": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
@@ -66,19 +69,19 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "next": "13.1.6",
+    "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "18.14.0",
+    "@types/node": "18.15.3",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "typescript": "4.9.5"
+    "typescript": "5.0.2"
   },
   "license": "MIT"
 }

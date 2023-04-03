@@ -1,5 +1,24 @@
 # @zag-js/popper
 
+## 0.2.7
+
+### Patch Changes
+
+- [`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Simplify `getPlacementStyles` logic
+  - Fix issue where `autoUpdate` prevented manual positioning updates from working due to rect tracking.
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0),
+  [`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c)]:
+  - @zag-js/utils@0.3.4
+  - @zag-js/element-rect@0.3.0
+
+## 0.2.6
+
+### Patch Changes
+
+- [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump `@floating-ui/dom` dependency
+
 ## 0.2.5
 
 ### Patch Changes

@@ -27,8 +27,8 @@ const fetchMachine = createMachine({
       entry: ["invokeOnClose", "clearIsPointer"],
       on: {
         POINTER_ENTER: {
-          actions: ["setIsPointer"],
-          target: "opening"
+          target: "opening",
+          actions: ["setIsPointer"]
         },
         TRIGGER_FOCUS: "opening",
         OPEN: "opening"
@@ -50,7 +50,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["trackDismissableElement", "computePlacement"],
+      activities: ["trackDismissableElement", "trackPositioning"],
       entry: ["invokeOnOpen"],
       on: {
         POINTER_ENTER: {
@@ -62,19 +62,22 @@ const fetchMachine = createMachine({
         TRIGGER_BLUR: {
           cond: "!isPointer",
           target: "closed"
+        },
+        SET_POSITIONING: {
+          actions: "setPositioning"
         }
       }
     },
     closing: {
       tags: ["open"],
-      activities: ["computePlacement"],
+      activities: ["trackPositioning"],
       after: {
         CLOSE_DELAY: "closed"
       },
       on: {
         POINTER_ENTER: {
-          actions: ["setIsPointer"],
-          target: "open"
+          target: "open",
+          actions: ["setIsPointer"]
         }
       }
     }

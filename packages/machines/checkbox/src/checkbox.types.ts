@@ -76,7 +76,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 type ComputedContext = Readonly<{
   /**
    * @computed
-   * Whether the slider is interactive
+   * Whether the checkbox is interactive
    */
   readonly isInteractive: boolean
 }>

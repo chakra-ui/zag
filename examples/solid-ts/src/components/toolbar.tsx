@@ -4,10 +4,11 @@ import { createSignal, JSX } from "solid-js"
 type ToolbarProps = {
   controls?: () => JSX.Element
   children?: JSX.Element
+  viz?: boolean
 }
 
 export function Toolbar(props: ToolbarProps) {
-  const [active, setActive] = createSignal(props.controls === null ? 1 : 0)
+  const [active, setActive] = createSignal(props.viz ? 1 : props.controls === null ? 1 : 0)
 
   return (
     <div class="toolbar">

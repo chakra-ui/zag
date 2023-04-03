@@ -21,6 +21,7 @@
     "@zag-js/date-utils": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
+    "@zag-js/docs": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
@@ -45,13 +46,14 @@
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
-    "@zag-js/react": "workspace:^0.3.10",
+    "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/store": "workspace:*",
+    "@zag-js/switch": "workspace:*",
     "@zag-js/tabbable": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
@@ -70,7 +72,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4"
+    "typescript": "^5.0.2",
+    "vite": "^4.2.0"
   }
 }

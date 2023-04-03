@@ -21,9 +21,7 @@
     "skipLibCheck": true,
     "strict": true,
     "stripInternal": true,
-    "noUnusedLocals": true,
-    "importsNotUsedAsValues": "error",
-    "noUnusedParameters": true,
+    "ignoreDeprecations": "5.0",
     "suppressImplicitAnyIndexErrors": true,
     "types": ["vitest/globals"]
   }

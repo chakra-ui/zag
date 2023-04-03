@@ -1,5 +1,45 @@
 # @zag-js/popover
 
+## 0.2.15
+
+### Patch Changes
+
+- [`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machine to use the `proxyTabFocus` helper for better
+  keyboard accessibility when portalled.
+
+  - Add `api.setPositioning` to allow for programmatic re-positioning of the popover. This API supports all the
+    positioning options.
+
+  ```js
+  api.setPositioning({ placement: "top" })
+  ```
+
+- Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
+  [`33d96b0d`](https://github.com/chakra-ui/zag/commit/33d96b0d927868a17d0e8e0298d5b34e82eed540),
+  [`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/popper@0.2.7
+  - @zag-js/tabbable@0.1.1
+  - @zag-js/utils@0.3.4
+  - @zag-js/core@0.2.12
+  - @zag-js/dismissable@0.2.6
+
+## 0.2.14
+
+### Patch Changes
+
+- [`5fbb3e80`](https://github.com/chakra-ui/zag/commit/5fbb3e8048280537da1ffdc822753f6bcb01d292) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump `focus-trap` package to latest
+
+- Updated dependencies [[`316eea98`](https://github.com/chakra-ui/zag/commit/316eea980af3a276ec3b0bd900b9e705f59f7c35),
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2),
+  [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360),
+  [`9d4db09e`](https://github.com/chakra-ui/zag/commit/9d4db09e1b31b4f5bd85a04622359b3312171741)]:
+  - @zag-js/tabbable@0.1.0
+  - @zag-js/core@0.2.11
+  - @zag-js/popper@0.2.6
+  - @zag-js/dismissable@0.2.5
+
 ## 0.2.13
 
 ### Patch Changes

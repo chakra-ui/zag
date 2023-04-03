@@ -1,5 +1,23 @@
 # @zag-js/vue
 
+## 0.2.12
+
+### Patch Changes
+
+- [`bbf48292`](https://github.com/chakra-ui/zag/commit/bbf48292914ddb89442853b5bb0d87482917fe73) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where normalize prop shows warning when `children` is
+  `null` or `undefined`
+
+- Updated dependencies [[`30dbeb28`](https://github.com/chakra-ui/zag/commit/30dbeb282f7901c33518097a0e1dd9a857f7efb0)]:
+  - @zag-js/core@0.2.12
+
+## 0.2.11
+
+### Patch Changes
+
+- Updated dependencies [[`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2)]:
+  - @zag-js/core@0.2.11
+
 ## 0.2.10
 
 ### Patch Changes

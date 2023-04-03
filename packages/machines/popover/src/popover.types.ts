@@ -81,18 +81,12 @@ type PrivateContext = Context<{
   renderedElements: {
     title: boolean
     description: boolean
-    anchor: boolean
   }
   /**
    * @internal
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
-  /**
-   * @internal
-   * Whether the dynamic placement has been computed
-   */
-  isPlacementComplete?: boolean
   /**
    * Whether to prevent returning focus to the trigger
    */

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/date-picker",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Core logic for the date-picker widget implemented as a state machine",
   "keywords": [
     "js",
@@ -39,17 +39,17 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
+    "@internationalized/date": "^3.1.0",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "@internationalized/date": "^3.0.2",
-    "@internationalized/number": "^3.1.2",
     "@zag-js/date-utils": "workspace:*",
-    "proxy-memoize": "2.0.2",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

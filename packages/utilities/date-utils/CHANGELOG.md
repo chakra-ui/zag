@@ -1,5 +1,24 @@
 # @zag-js/date-utils
 
+## 0.1.4
+
+### Patch Changes
+
+- [`7f9c16a4`](https://github.com/chakra-ui/zag/commit/7f9c16a4257b9a022c3bfc9d736108b1d0f55a2e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `formatDate` function to allow formatting a date to specific
+  string format (e.g. `YYYY-MM-DD`, `DD/MM/YYYY`)
+
+## 0.1.3
+
+### Patch Changes
+
+- [#565](https://github.com/chakra-ui/zag/pull/565)
+  [`1e10b1f4`](https://github.com/chakra-ui/zag/commit/1e10b1f40016f5c9bdf0924a3470b9383c0dbce2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Simplify date picker utilities and machine
+
+- [`fefa5098`](https://github.com/chakra-ui/zag/commit/fefa5098f400ee6b04e5636c8b0b016dca5b2360) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Bump `@internationalized/date` dependency
+
 ## 0.1.2
 
 ### Patch Changes

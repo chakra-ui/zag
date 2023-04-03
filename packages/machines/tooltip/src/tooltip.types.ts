@@ -75,11 +75,6 @@ type PrivateContext = RootProperties & {
    * The computed placement of the tooltip.
    */
   currentPlacement?: Placement
-  /**
-   * @internal
-   * Whether the dynamic placement has been computed
-   */
-  isPlacementComplete?: boolean
 }
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

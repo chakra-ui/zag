@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/date-utils",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Date utilities for zag.js",
   "keywords": [
     "js",
@@ -40,6 +40,6 @@
   },
   "devDependencies": {
     "clean-package": "2.2.0",
-    "@internationalized/date": "^3.0.2"
+    "@internationalized/date": "^3.1.0"
   }
 }

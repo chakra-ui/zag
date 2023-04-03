@@ -8,7 +8,7 @@ import {
   isModifiedEvent,
 } from "@zag-js/dom-event"
 import { contains, dataAttr, isEditableElement } from "@zag-js/dom-query"
-import { getPlacementStyles } from "@zag-js/popper"
+import { getPlacementStyles, PositioningOptions } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
@@ -24,7 +24,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isOpen = state.hasTag("visible")
 
   const popperStyles = getPlacementStyles({
-    measured: !!state.context.anchorPoint || !!state.context.currentPlacement,
     placement: state.context.currentPlacement,
   })
 
@@ -82,6 +81,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     isOptionChecked(opts: OptionItemProps) {
       return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
+    },
+    /**
+     * Function to reposition the popover
+     */
+    setPositioning(options: Partial<PositioningOptions>) {
+      send({ type: "SET_POSITIONING", options })
     },
 
     contextTriggerProps: normalize.element({
