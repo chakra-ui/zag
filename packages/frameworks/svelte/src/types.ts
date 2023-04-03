@@ -1,7 +1,7 @@
 export type SplitArgs<T = any> = {
   attrs: T
-  rest: {
+  handlers: {
     styles: T
-    handlers: Record<string, EventListener>
+    events: Record<string, EventListener>
   }
 }

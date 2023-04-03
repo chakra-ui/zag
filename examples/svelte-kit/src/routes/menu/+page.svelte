@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as menu from "@zag-js/menu"
-  import { useMachine, attach, normalizeProps } from "@zag-js/svelte"
+  import { useMachine, events, normalizeProps } from "@zag-js/svelte"
 
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
@@ -12,34 +12,23 @@
 
 <main>
   <div>
-    <button {...api.triggerProps.attrs} use:attach={api.triggerProps.rest}>
+    <button {...api.triggerProps.attrs} use:events={api.triggerProps.handlers}>
       Actions <span aria-hidden>▾</span>
     </button>
 
-    <div {...api.positionerProps.attrs} use:attach={api.positionerProps.rest}>
-      <ul {...api.contentProps.attrs} use:attach={api.contentProps.rest}>
-        <li 
-          {...api.getItemProps({ id: "edit" }).attrs} 
-          use:attach={api.getItemProps({ id: "edit" }).rest}
-        >
-          Edit
-        </li>
-        <li 
-          {...api.getItemProps({ id: "duplicate" }).attrs} 
-          use:attach={api.getItemProps({ id: "duplicate" }).rest}
+    <div {...api.positionerProps.attrs} use:events={api.positionerProps.handlers}>
+      <ul {...api.contentProps.attrs} use:events={api.contentProps.handlers}>
+        <li {...api.getItemProps({ id: "edit" }).attrs} use:events={api.getItemProps({ id: "edit" }).handlers}>Edit</li>
+        <li
+          {...api.getItemProps({ id: "duplicate" }).attrs}
+          use:events={api.getItemProps({ id: "duplicate" }).handlers}
         >
           Duplicate
         </li>
-        <li 
-          {...api.getItemProps({ id: "delete" }).attrs}
-          use:attach={api.getItemProps({ id: "delete" }).rest}
-        >
+        <li {...api.getItemProps({ id: "delete" }).attrs} use:events={api.getItemProps({ id: "delete" }).handlers}>
           Delete
         </li>
-        <li 
-          {...api.getItemProps({ id: "export" }).attrs}
-          use:attach={api.getItemProps({ id: "export" }).rest}
-        >
+        <li {...api.getItemProps({ id: "export" }).attrs} use:events={api.getItemProps({ id: "export" }).handlers}>
           Export...
         </li>
       </ul>

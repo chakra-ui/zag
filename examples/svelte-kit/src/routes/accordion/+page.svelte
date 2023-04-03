@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as accordion from "@zag-js/accordion"
-  import { attach, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { events, normalizeProps, useMachine } from "@zag-js/svelte"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
 
@@ -16,19 +16,19 @@
 </script>
 
 <main class="accordion">
-  <div {...api.rootProps.attrs} use:attach={api.rootProps.rest}>
+  <div {...api.rootProps.attrs} use:events={api.rootProps.handlers}>
     {#each accordionData as item}
-      <div {...api.getItemProps({ value: item.id }).attrs} use:attach={api.getItemProps({ value: item.id }).rest}>
+      <div {...api.getItemProps({ value: item.id }).attrs} use:events={api.getItemProps({ value: item.id }).handlers}>
         <button
           data-testid={`${item.id}:trigger`}
           {...api.getTriggerProps({ value: item.id }).attrs}
-          use:attach={api.getTriggerProps({ value: item.id }).rest}
+          use:events={api.getTriggerProps({ value: item.id }).handlers}
         >
           {item.label}
         </button>
         <div
           {...api.getContentProps({ value: item.id }).attrs}
-          use:attach={api.getContentProps({ value: item.id }).rest}
+          use:events={api.getContentProps({ value: item.id }).handlers}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua.

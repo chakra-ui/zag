@@ -1,20 +1,20 @@
 import type { Dict } from "@zag-js/core/src/types"
 
 export function getAttributesAndHandlers(props: Dict) {
-  const handlers: Dict = {}
+  const events: Dict = {}
   const attributes: Dict = {}
   let styles: Dict = {}
 
   Object.keys(props).forEach((key) => {
-    // this is probably not a safe way to distiguish handlers
+    // this is probably not a safe way to distiguish events
     if (key === "style") {
       styles = props[key]
     } else if (key.startsWith("on")) {
-      handlers[key] = props[key]
+      events[key] = props[key]
     } else {
       attributes[key] = props[key]
     }
   })
 
-  return { handlers, attributes, styles }
+  return { events, attributes, styles }
 }

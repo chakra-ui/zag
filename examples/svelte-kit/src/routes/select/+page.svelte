@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as select from "@zag-js/select"
-  import { attach, useMachine, normalizeProps } from "@zag-js/svelte"
+  import { events, useMachine, normalizeProps } from "@zag-js/svelte"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
 
@@ -21,8 +21,8 @@
 <div style="min-width: 50%;">
   <div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label {...api.labelProps.attrs} use:attach={api.labelProps.rest}>Label</label>
-    <button {...api.triggerProps.attrs} use:attach={api.triggerProps.rest}>
+    <label {...api.labelProps.attrs} use:events={api.labelProps.handlers}>Label</label>
+    <button {...api.triggerProps.attrs} use:events={api.triggerProps.handlers}>
       {#if !api.selectedOption}
         <span>Select option</span>
       {:else}
@@ -31,12 +31,12 @@
     </button>
   </div>
 
-  <div {...api.positionerProps.attrs} use:attach={api.positionerProps.rest}>
-    <ul {...api.contentProps.attrs} use:attach={api.contentProps.rest}>
+  <div {...api.positionerProps.attrs} use:events={api.positionerProps.handlers}>
+    <ul {...api.contentProps.attrs} use:events={api.contentProps.handlers}>
       {#each selectData as { label, value }}
         <li 
           {...api.getOptionProps({ label, value }).attrs} 
-          use:attach={api.getOptionProps({ label, value }).rest}
+          use:events={api.getOptionProps({ label, value }).handlers}
         >
           <span>{label}</span>
           {#if api.selectedOption && value === api.selectedOption.value}✓{/if}
