@@ -18,21 +18,15 @@
 <main class="accordion">
   <div {...api.rootProps.attrs} use:attach={api.rootProps.rest}>
     {#each accordionData as item}
-      <div 
-        {...api.getItemProps({ value: item.id }).attrs} 
-        use:attach={api.getItemProps({ value: item.id }).rest}>
-        <h3>
-          <button 
-            data-testid={`${item.id}:trigger`} 
-            {...api.getTriggerProps({ value: item.id }).attrs}
-            use:attach={api.getTriggerProps({ value: item.id }).rest}
-          >
-            {item.label}
-          </button>
-        </h3>
-
-        <div 
-          data-testid={`${item.id}:content`} 
+      <div {...api.getItemProps({ value: item.id }).attrs} use:attach={api.getItemProps({ value: item.id }).rest}>
+        <button
+          data-testid={`${item.id}:trigger`}
+          {...api.getTriggerProps({ value: item.id }).attrs}
+          use:attach={api.getTriggerProps({ value: item.id }).rest}
+        >
+          {item.label}
+        </button>
+        <div
           {...api.getContentProps({ value: item.id }).attrs}
           use:attach={api.getContentProps({ value: item.id }).rest}
         >
