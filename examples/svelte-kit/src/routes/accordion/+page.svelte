@@ -1,7 +1,7 @@
 <script>
   import * as accordion from "@zag-js/accordion"
-  import { accordionControls, accordionData } from "@zag-js/shared"
   import { events, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { accordionControls, accordionData } from "../../../../../shared"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
 
