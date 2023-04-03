@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { useControls } from "./context"
+  import { useControls } from "."
 
   export let controls: Record<string, any>
   export let ctx: ReturnType<typeof useControls>
-
-  console.log($ctx["orientation"])
 </script>
 
 <div class="controls-container">
