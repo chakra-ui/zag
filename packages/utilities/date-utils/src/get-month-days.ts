@@ -1,9 +1,9 @@
-import { CalendarDate, getWeeksInMonth, isSameDay } from "@internationalized/date"
+import { DateValue, getWeeksInMonth, isSameDay } from "@internationalized/date"
 import { getStartOfWeek } from "./get-start-of-week"
 
-export function getDaysInWeek(weekIndex: number, from: CalendarDate, locale: string, firstDayOfWeek?: number) {
+export function getDaysInWeek(weekIndex: number, from: DateValue, locale: string, firstDayOfWeek?: number) {
   const weekDate = from.add({ weeks: weekIndex })
-  const dates: (CalendarDate | null)[] = []
+  const dates: (DateValue | null)[] = []
   let date = getStartOfWeek(weekDate, locale, firstDayOfWeek)
   while (dates.length < 7) {
     dates.push(date)
@@ -16,10 +16,8 @@ export function getDaysInWeek(weekIndex: number, from: CalendarDate, locale: str
   return dates
 }
 
-export function getMonthDays(from: CalendarDate, locale: string, numOfWeeks?: number, firstDayOfWeek?: number) {
+export function getMonthDays(from: DateValue, locale: string, numOfWeeks?: number, firstDayOfWeek?: number) {
   const monthWeeks = getWeeksInMonth(from, locale)
   const weeks = [...new Array(numOfWeeks ?? monthWeeks).keys()]
-  return weeks.map((week) => {
-    return getDaysInWeek(week, from, locale, firstDayOfWeek)
-  })
+  return weeks.map((week) => getDaysInWeek(week, from, locale, firstDayOfWeek))
 }

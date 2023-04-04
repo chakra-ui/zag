@@ -1,4 +1,4 @@
-import type { CalendarDate, DateDuration } from "@internationalized/date"
+import type { DateDuration, DateValue } from "@internationalized/date"
 
 export function getUnitDuration(duration: DateDuration) {
   let d = { ...duration }
@@ -8,7 +8,7 @@ export function getUnitDuration(duration: DateDuration) {
   return d
 }
 
-export function getEndDate(startDate: CalendarDate, duration: DateDuration) {
+export function getEndDate(startDate: DateValue, duration: DateDuration) {
   let d = { ...duration }
   if (d.days) {
     d.days--

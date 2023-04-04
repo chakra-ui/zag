@@ -1,19 +1,19 @@
-import { CalendarDate, DateFormatter } from "@internationalized/date"
+import { DateValue, DateFormatter } from "@internationalized/date"
 import type { DateView, MachineContext } from "./date-picker.types"
 
-export function adjustStartAndEndDate(value: CalendarDate[]) {
+export function adjustStartAndEndDate(value: DateValue[]) {
   const [startDate, endDate] = value
   if (!startDate || !endDate) return value
   return startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
 }
 
-export function isDateWithinRange(date: CalendarDate, value: (CalendarDate | null)[]) {
+export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) {
   const [startDate, endDate] = value
   if (!startDate || !endDate) return false
   return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
 }
 
-export function sortDates(values: CalendarDate[]) {
+export function sortDates(values: DateValue[]) {
   return values.sort((a, b) => a.compare(b))
 }
 

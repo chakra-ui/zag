@@ -1,9 +1,9 @@
-import type { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
+import type { DateDuration, DateValue } from "@internationalized/date"
 import { alignCenter, alignEnd, alignStart } from "./constrain"
 import type { DateAlignment } from "./types"
 
 export function alignDate(
-  date: CalendarDate,
+  date: DateValue,
   alignment: DateAlignment,
   duration: DateDuration,
   locale: string,
@@ -22,9 +22,9 @@ export function alignDate(
 }
 
 export function alignStartDate(
-  date: CalendarDate,
-  startDate: CalendarDate,
-  endDate: CalendarDate,
+  date: DateValue,
+  startDate: DateValue,
+  endDate: DateValue,
   duration: DateDuration,
   locale: string,
   min?: DateValue | undefined,
