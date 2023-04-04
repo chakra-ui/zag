@@ -196,6 +196,7 @@ export function getSectionEnd(
 
   if (visibleDuration.weeks) {
     return adjust({
+      //@ts-expect-error - endOfWeek is loosely typed
       focusedDate: endOfWeek(focusedDate, locale),
       startDate,
     })
