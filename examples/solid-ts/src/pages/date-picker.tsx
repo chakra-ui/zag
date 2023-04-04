@@ -15,8 +15,6 @@ export default function Page() {
       id: createUniqueId(),
       locale: "en",
       selectionMode: "single",
-      max: new CalendarDate(2023, 4, 20),
-      min: new CalendarDate(2010, 1, 20),
     }),
     {
       context: controls.context,

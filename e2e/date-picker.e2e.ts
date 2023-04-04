@@ -32,13 +32,13 @@ const createScreen = (page: Page) => ({
     const prev = now.add({ days: -1 * step })
     return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${prev.toString()}"]`)
   },
-  dayCell(value: string) {
+  getDayCell(value: string) {
     return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${value}"]`)
   },
-  monthCell(value: string) {
+  getMonthCell(value: string) {
     return page.locator(`${part("cell-trigger")}[data-type=month][data-value="${value}"]`)
   },
-  yearCell(value: string) {
+  getYearCell(value: string) {
     return page.locator(`${part("cell-trigger")}[data-type=year][data-value="${value}"]`)
   },
 })
@@ -49,73 +49,73 @@ test.describe("datepicker [single]", () => {
   })
 
   test("should have no accessibility violation", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger } = createScreen(page)
+    await trigger.click()
     await a11y(page, "[data-part=content]")
   })
 
   test("opens the calendar on click trigger and focus on current date", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
-    await expect(screen.content).toBeVisible()
-    expect(screen.todayCell).toBeFocused()
+    const { trigger, content, todayCell } = createScreen(page)
+    await trigger.click()
+    await expect(content).toBeVisible()
+    expect(todayCell).toBeFocused()
   })
 
   test("closes the calendar on esc", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger, content } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("Escape")
-    await expect(screen.content).not.toBeVisible()
+    await expect(content).not.toBeVisible()
   })
 
   test("selecting a date with pointer", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
-    await screen.todayCell.click()
-    await expect(screen.content).not.toBeVisible()
-    await expect(screen.input).toBeFocused()
+    const { trigger, content, todayCell, input } = createScreen(page)
+    await trigger.click()
+    await todayCell.click()
+    await expect(content).not.toBeVisible()
+    await expect(input).toBeFocused()
   })
 
   test("navigates to next day on ArrowRight key press", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger, getNextDayCell } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("ArrowRight")
-    await expect(screen.getNextDayCell()).toBeFocused()
+    await expect(getNextDayCell()).toBeFocused()
   })
 
   test("navigates to previous day on ArrowLeft key press", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger, getPrevDayCell } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("ArrowLeft")
-    await expect(screen.getPrevDayCell()).toBeFocused()
+    await expect(getPrevDayCell()).toBeFocused()
   })
 
   test("navigates to previous week on ArrowUp key press", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger, getPrevDayCell } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("ArrowUp")
-    await expect(screen.getPrevDayCell({ step: 7 })).toBeFocused()
+    await expect(getPrevDayCell({ step: 7 })).toBeFocused()
   })
 
   test("navigates to next week on ArrowDown key press", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger, getNextDayCell } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("ArrowDown")
-    await expect(screen.getNextDayCell({ step: 7 })).toBeFocused()
+    await expect(getNextDayCell({ step: 7 })).toBeFocused()
   })
 
   test("navigates to first day of the month on Home key press", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+    const { trigger, getFirstDayCell } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("Home")
-    await expect(screen.getFirstDayCell()).toBeFocused()
+    await expect(getFirstDayCell()).toBeFocused()
   })
 
-  test("navigates to first day of the month on End key press", async ({ page }) => {
-    const screen = createScreen(page)
-    await screen.trigger.click()
+  test("navigates to last day of the month on End key press", async ({ page }) => {
+    const { trigger, getLastDayCell } = createScreen(page)
+    await trigger.click()
     await page.keyboard.press("End")
-    await expect(screen.getLastDayCell()).toBeFocused()
+    await expect(getLastDayCell()).toBeFocused()
   })
 
   // test("should close datepicker popup upon click on a date", async () => {})

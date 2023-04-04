@@ -72,6 +72,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   padding: 40px;
+  overflow-y: auto;
 }
 
 .page main > * {
@@ -108,7 +109,8 @@ body {
   outline: none;
 }
 
-.nav a[data-active], a[aria-current="page"] {
+.nav a[data-active],
+a[aria-current="page"] {
   border-color: green;
   font-weight: 500;
 }

@@ -1,4 +1,3 @@
-import { CalendarDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
@@ -16,8 +15,6 @@ export default function Page() {
       locale: "en",
       numOfMonths: 2,
       selectionMode: "range",
-      max: new CalendarDate(2023, 4, 20),
-      min: new CalendarDate(2010, 1, 20),
     }),
     {
       context: controls.context,

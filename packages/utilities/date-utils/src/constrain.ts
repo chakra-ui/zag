@@ -1,5 +1,4 @@
 import {
-  CalendarDate,
   DateDuration,
   DateValue,
   maxDate,
@@ -15,12 +14,12 @@ import {
  * -----------------------------------------------------------------------------*/
 
 export function alignCenter(
-  date: CalendarDate,
+  date: DateValue,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-) {
+): DateValue {
   let halfDuration: DateDuration = {}
   for (let key in duration) {
     halfDuration[key] = Math.floor(duration[key] / 2)
@@ -34,12 +33,12 @@ export function alignCenter(
 }
 
 export function alignStart(
-  date: CalendarDate,
+  date: DateValue,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-) {
+): DateValue {
   // align to the start of the largest unit
   let aligned = date
   if (duration.years) {
@@ -53,7 +52,13 @@ export function alignStart(
   return constrainStart(date, aligned, duration, locale, min, max)
 }
 
-export function alignEnd(date: CalendarDate, duration: DateDuration, locale: string, min?: DateValue, max?: DateValue) {
+export function alignEnd(
+  date: DateValue,
+  duration: DateDuration,
+  locale: string,
+  min?: DateValue,
+  max?: DateValue,
+): DateValue {
   let d: DateDuration = { ...duration }
   // subtract 1 from the smallest unit
   if (d.days) {
@@ -75,13 +80,13 @@ export function alignEnd(date: CalendarDate, duration: DateDuration, locale: str
  * -----------------------------------------------------------------------------*/
 
 export function constrainStart(
-  date: CalendarDate,
-  aligned: CalendarDate,
+  date: DateValue,
+  aligned: DateValue,
   duration: DateDuration,
   locale: string,
   min?: DateValue,
   max?: DateValue,
-) {
+): DateValue {
   if (min && date.compare(min) >= 0) {
     aligned = maxDate(aligned, alignStart(toCalendarDate(min), duration, locale))
   }
@@ -93,7 +98,7 @@ export function constrainStart(
   return aligned
 }
 
-export function constrainValue(date: CalendarDate, minValue?: DateValue, maxValue?: DateValue) {
+export function constrainValue(date: DateValue, minValue?: DateValue, maxValue?: DateValue): DateValue {
   if (minValue) {
     date = maxDate(date, toCalendarDate(minValue))
   }

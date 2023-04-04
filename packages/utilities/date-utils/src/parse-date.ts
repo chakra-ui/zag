@@ -1,17 +1,17 @@
-import { CalendarDate, DateFormatter } from "@internationalized/date"
+import { CalendarDateTime, DateFormatter } from "@internationalized/date"
 
 export function parseDateString(date: string, locale: string, timeZone: string) {
   const regex = createRegex(locale, timeZone)
   const { year, month, day } = extract(regex, date) ?? {}
 
   if (year != null && year.length === 4 && month != null && +month <= 12 && day != null && +day <= 31) {
-    return new CalendarDate(+year, +month, +day)
+    return new CalendarDateTime(+year, +month, +day)
   }
 
   const time = Date.parse(date)
   if (!isNaN(time)) {
     const date = new Date(time)
-    return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
+    return new CalendarDateTime(date.getFullYear(), date.getMonth() + 1, date.getDate())
   }
 }
 

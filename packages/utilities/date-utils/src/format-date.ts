@@ -1,4 +1,4 @@
-import { CalendarDate, toCalendarDateTime } from "@internationalized/date"
+import { DateValue, toCalendarDateTime } from "@internationalized/date"
 
 function createRegEx(sign: string) {
   let symbols = "\\s|\\.|-|/|\\\\|,|\\$|\\!|\\?|:|;"
@@ -9,7 +9,7 @@ function createRegEx(sign: string) {
  * Formats a date using the given format string as defined in:
  * https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
  */
-export function formatDate(value: CalendarDate, formatString: string, locale: string, timeZone: string = "UTC") {
+export function formatDate(value: DateValue, formatString: string, locale: string, timeZone: string = "UTC") {
   const datetime = toCalendarDateTime(value)
   const date = datetime.toDate(timeZone)
 
