@@ -1,10 +1,10 @@
-import { CalendarDate, DateFormatter } from "@internationalized/date"
+import { DateValue, DateFormatter } from "@internationalized/date"
 
 export function getWeekdayFormats(locale: string, timeZone: string) {
   const longFormat = new DateFormatter(locale, { weekday: "long", timeZone })
   const shortFormat = new DateFormatter(locale, { weekday: "short", timeZone })
   const narrowFormat = new DateFormatter(locale, { weekday: "narrow", timeZone })
-  return <T extends CalendarDate | Date>(value: T) => {
+  return <T extends DateValue | Date>(value: T) => {
     const date = value instanceof Date ? value : value.toDate(timeZone)
     return {
       value,

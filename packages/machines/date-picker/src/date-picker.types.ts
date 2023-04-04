@@ -1,10 +1,10 @@
-import type { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
+import type { DateDuration, DateValue } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 type ChangeDetails<T = {}> = T & {
-  value: CalendarDate[]
+  value: DateValue[]
 }
 
 type IntlMessages = {
@@ -40,11 +40,11 @@ type PublicContext = DirectionProperty &
     /**
      * The minimum date that can be selected.
      */
-    min?: CalendarDate
+    min?: DateValue
     /**
      * The maximum date that can be selected.
      */
-    max?: CalendarDate
+    max?: DateValue
     /**
      * The index of the currently active date.
      * Used in range selection mode.
@@ -57,11 +57,11 @@ type PublicContext = DirectionProperty &
     /**
      * The selected date(s).
      */
-    value: CalendarDate[]
+    value: DateValue[]
     /**
      * The focused date.
      */
-    focusedValue: CalendarDate
+    focusedValue: DateValue
     /**
      * The number of months to display.
      */
@@ -89,7 +89,7 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when the focused date changes.
      */
-    onFocusChange?: (details: ChangeDetails<{ focusedValue: CalendarDate; view: DateView }>) => void
+    onFocusChange?: (details: ChangeDetails<{ focusedValue: DateValue; view: DateView }>) => void
     /**
      * Function called when the view changes.
      */
@@ -108,11 +108,11 @@ type PublicContext = DirectionProperty &
     /**
      * The format of the date to display in the input.
      */
-    format?: (date: CalendarDate[]) => string
+    format?: (date: DateValue[]) => string
     /**
      * The format of the date to display in the input.
      */
-    parse?: (value: string) => CalendarDate[]
+    parse?: (value: string) => DateValue[]
     /**
      * Whether the calendar should be modal. This means that the calendar will
      * block interaction with the rest of the page, and trap focus within it.
@@ -128,12 +128,12 @@ export type ViewProps = {
 
 type PrivateContext = Context<{
   view: DateView
-  startValue: CalendarDate
+  startValue: DateValue
   hasFocus?: boolean
   announcer?: LiveRegion
   valueText: string
   inputValue: string
-  hoveredValue: CalendarDate | null
+  hoveredValue: DateValue | null
 }>
 
 type ComputedContext = Readonly<{
@@ -141,7 +141,7 @@ type ComputedContext = Readonly<{
    * @computed
    * The end date of the current visible duration.
    */
-  endValue: CalendarDate
+  endValue: DateValue
   /**
    * @computed
    * Whether the calendar is interactive.
@@ -156,7 +156,7 @@ type ComputedContext = Readonly<{
    * @computed
    * The start/end date of the current visible duration.
    */
-  visibleRange: { start: CalendarDate; end: CalendarDate }
+  visibleRange: { start: DateValue; end: DateValue }
   /**
    * @computed
    * The text to announce when the visible range changes.
@@ -184,11 +184,11 @@ export type Send = S.Send<S.AnyEventObject>
 
 export type Offset = {
   amount: number
-  visibleRange: { start: CalendarDate; end: CalendarDate }
+  visibleRange: { start: DateValue; end: DateValue }
 }
 
 export type DayCellProps = {
-  value: CalendarDate
+  value: DateValue
   disabled?: boolean
   offset?: Offset
 }

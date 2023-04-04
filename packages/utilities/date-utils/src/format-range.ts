@@ -1,8 +1,8 @@
-import type { CalendarDate, DateFormatter } from "@internationalized/date"
+import type { DateValue, DateFormatter } from "@internationalized/date"
 
 export function formatRange(
-  startDate: CalendarDate,
-  endDate: CalendarDate,
+  startDate: DateValue,
+  endDate: DateValue,
   formatter: DateFormatter,
   toString: (start: string, end: string) => string,
   timeZone: string,

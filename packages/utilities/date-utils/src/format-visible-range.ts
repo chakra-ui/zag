@@ -1,13 +1,8 @@
-import { CalendarDate, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
+import { DateValue, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
 import { getDayFormatter } from "./get-day-formatter"
 import { getMonthFormatter } from "./get-month-formatter"
 
-export function formatVisibleRange(
-  startDate: CalendarDate,
-  endDate: CalendarDate | null,
-  locale: string,
-  timeZone: string,
-) {
+export function formatVisibleRange(startDate: DateValue, endDate: DateValue | null, locale: string, timeZone: string) {
   const start = startDate
   const end = endDate ?? startDate
 
