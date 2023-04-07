@@ -45,7 +45,7 @@ type PublicContext = DirectionProperty &
      */
     onChange?: (details: { checked: boolean }) => void
     /**
-     * Whether the switch is initially checked.
+     * Whether the switch is checked.
      */
     checked?: boolean
     /**

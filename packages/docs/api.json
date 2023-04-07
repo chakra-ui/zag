@@ -210,9 +210,9 @@
         "description": "If `true`, the checkbox input is marked as required,",
         "defaultValue": null
       },
-      "defaultChecked": {
+      "checked": {
         "type": "boolean",
-        "description": "If `true`, the checkbox will be initially checked.",
+        "description": "If `true`, the checkbox will be checked.",
         "defaultValue": null
       },
       "onChange": {
@@ -2590,9 +2590,9 @@
         "description": "Function to call when the switch is clicked.",
         "defaultValue": null
       },
-      "defaultChecked": {
+      "checked": {
         "type": "boolean",
-        "description": "Whether the switch is initially checked.",
+        "description": "Whether the switch is checked.",
         "defaultValue": null
       },
       "name": {
