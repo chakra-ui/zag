@@ -48,7 +48,7 @@
     "changelog-format": "prettier --write .changelog",
     "slack": "tsx scripts/slack.ts",
     "sandbox": "tsx scripts/sandbox.ts",
-    "typedocs": "tsx scripts/typedocs.ts"
+    "typedocs": "tsx scripts/typedocs.ts && pnpm prettier-fix"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write",
