@@ -13,7 +13,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "dialog",
-      initial: ctx.defaultOpen ? "open" : "closed",
+      initial: ctx.open ? "open" : "closed",
 
       context: {
         role: "dialog",
@@ -28,6 +28,10 @@ export function machine(userContext: UserDefinedContext) {
         closeOnEsc: true,
         restoreFocus: true,
         ...ctx,
+      },
+
+      watch: {
+        open: ["toggleVisibility"],
       },
 
       states: {
@@ -120,6 +124,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnOpen(ctx) {
           ctx.onOpen?.()
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
     },

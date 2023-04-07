@@ -7,7 +7,7 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "Dialog",
   setup() {
-    const [state, send] = useMachine(dialog.machine({ id: "dialog", defaultOpen: true }))
+    const [state, send] = useMachine(dialog.machine({ id: "dialog", open: true }))
 
     const parentDialogRef = computed(() => dialog.connect(state.value, send, normalizeProps))
 

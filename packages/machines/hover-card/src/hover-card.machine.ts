@@ -13,7 +13,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "hover-card",
-      initial: ctx.defaultOpen ? "open" : "closed",
+      initial: ctx.open ? "open" : "closed",
       context: {
         openDelay: 700,
         closeDelay: 300,
@@ -23,6 +23,10 @@ export function machine(userContext: UserDefinedContext) {
           placement: "bottom",
           ...ctx.positioning,
         },
+      },
+
+      watch: {
+        open: ["toggleVisibility"],
       },
 
       states: {
@@ -146,6 +150,9 @@ export function machine(userContext: UserDefinedContext) {
               listeners: false,
             })
           })
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
       delays: {
