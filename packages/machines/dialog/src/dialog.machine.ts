@@ -95,7 +95,7 @@ export function machine(userContext: UserDefinedContext) {
               allowOutsideClick: true,
               returnFocusOnDeactivate: ctx.restoreFocus,
               initialFocus: runIfFn(ctx.initialFocusEl),
-              setReturnFocus: runIfFn(ctx.finalFocusEl),
+              setReturnFocus: runIfFn(ctx.finalFocusEl) ?? dom.getTriggerEl(ctx),
             })
             try {
               trap.activate()
