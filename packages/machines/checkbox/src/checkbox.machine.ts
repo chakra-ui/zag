@@ -11,7 +11,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "checkbox",
-      initial: ctx.defaultChecked ? "checked" : "unchecked",
+      initial: ctx.checked ? "checked" : "unchecked",
 
       context: {
         active: false,
@@ -25,6 +25,7 @@ export function machine(userContext: UserDefinedContext) {
       watch: {
         indeterminate: "syncInputIndeterminate",
         disabled: "removeFocusIfNeeded",
+        checked: ["toggleChecked", "invokeOnChange"],
       },
 
       computed: {
@@ -38,12 +39,12 @@ export function machine(userContext: UserDefinedContext) {
           {
             guard: and("shouldCheck", "isInteractive"),
             target: "checked",
-            actions: "dispatchChangeEvent",
+            actions: ["invokeOnChange", "dispatchChangeEvent"],
           },
           {
             guard: "isInteractive",
             target: "unchecked",
-            actions: "dispatchChangeEvent",
+            actions: ["invokeOnChange", "dispatchChangeEvent"],
           },
         ],
 
@@ -63,20 +64,20 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         checked: {
-          entry: ["invokeOnChange"],
           on: {
             TOGGLE: {
               target: "unchecked",
               guard: "isInteractive",
+              actions: ["invokeOnChange"],
             },
           },
         },
         unchecked: {
-          entry: ["invokeOnChange"],
           on: {
             TOGGLE: {
               target: "checked",
               guard: "isInteractive",
+              actions: ["invokeOnChange"],
             },
           },
         },
@@ -89,13 +90,13 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: {
-        trackFormControlState(ctx, _evt, { send }) {
+        trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              send({ type: "SET_STATE", checked: !!ctx.defaultChecked })
+              send({ type: "SET_STATE", checked: !!initialContext.checked })
             },
           })
         },

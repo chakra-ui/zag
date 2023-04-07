@@ -58,9 +58,9 @@ type PublicContext = DismissableElementHandlers &
      */
     positioning: PositioningOptions
     /**
-     * Whether to open the popover on page load
+     * Whether the popover is open
      */
-    defaultOpen?: boolean
+    open?: boolean
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

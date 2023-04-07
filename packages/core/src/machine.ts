@@ -28,7 +28,9 @@ export class Machine<
 > {
   public status: MachineStatus = MachineStatus.NotStarted
   public readonly state: S.State<TContext, TState, TEvent>
+
   public initialState: S.StateInfo<TContext, TState, TEvent> | undefined
+  public initialContext: TContext
 
   public id: string
 
@@ -80,6 +82,7 @@ export class Machine<
 
     // create mutatable state
     this.state = createProxy(this.config)
+    this.initialContext = snapshot(this.state.context)
 
     // created actions
     const event = toEvent<TEvent>(ActionTypes.Created)
@@ -476,7 +479,7 @@ export class Machine<
    * Useful when spawning child machines and managing the communication between them.
    */
   private get self(): S.Self<TContext, TState, TEvent> {
-    const _self = this
+    const self = this
     return {
       id: this.id,
       send: this.send.bind(this),
@@ -486,7 +489,13 @@ export class Machine<
       stopChild: this.stopChild.bind(this),
       spawn: this.spawn.bind(this) as any,
       get state() {
-        return _self.stateSnapshot
+        return self.stateSnapshot
+      },
+      get initialContext() {
+        return self.initialContext
+      },
+      get initialState() {
+        return self.initialState?.target ?? ""
       },
     }
   }
@@ -497,6 +506,8 @@ export class Machine<
       guards: this.guardMap,
       send: this.send.bind(this),
       self: this.self,
+      initialContext: this.initialContext,
+      initialState: this.initialState?.target ?? "",
       getState: () => this.stateSnapshot,
       getAction: (key) => this.actionMap[key],
       getGuard: (key) => this.guardMap[key],
@@ -514,8 +525,8 @@ export class Machine<
    * (referencing `options.actions`) or actual functions.
    */
   private executeActions = (actions: S.Actions<TContext, TState, TEvent> | undefined, event: TEvent) => {
-    const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
-    for (const action of toArray(_actions)) {
+    const pickedActions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
+    for (const action of toArray(pickedActions)) {
       const fn = isString(action) ? this.actionMap?.[action] : action
       warn(
         isString(action) && !fn,
@@ -664,8 +675,12 @@ export class Machine<
     }
 
     // get all entry actions
-    const _entry = determineActionsFn(stateNode?.entry, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
-    const entryActions = toArray(_entry)
+    const pickedActions = determineActionsFn(stateNode?.entry, this.guardMap)(
+      this.contextSnapshot,
+      event,
+      this.guardMeta,
+    )
+    const entryActions = toArray(pickedActions)
     const afterActions = this.getDelayedEventActions(next)
 
     if (stateNode?.after && afterActions) {

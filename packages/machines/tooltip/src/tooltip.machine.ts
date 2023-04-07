@@ -34,6 +34,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         disabled: ["closeIfDisabled"],
+        open: ["toggleVisibility"],
       },
 
       on: {
@@ -219,6 +220,9 @@ export function machine(userContext: UserDefinedContext) {
               listeners: false,
             })
           })
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
       guards: {

@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "popover",
-      initial: ctx.defaultOpen ? "open" : "closed",
+      initial: ctx.open ? "open" : "closed",
       context: {
         closeOnInteractOutside: true,
         closeOnEsc: true,
@@ -36,6 +36,10 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         currentPortalled: (ctx) => !!ctx.modal || !!ctx.portalled,
+      },
+
+      watch: {
+        open: ["toggleVisibility"],
       },
 
       entry: ["checkRenderedElements"],
@@ -189,6 +193,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose(ctx) {
           ctx.onOpenChange?.(false)
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
     },

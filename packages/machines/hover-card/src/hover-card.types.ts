@@ -26,9 +26,9 @@ type PublicContext = DirectionProperty &
      */
     closeDelay: number
     /**
-     * Whether to open the hover card on page load
+     * Whether the hover card is open
      */
-    defaultOpen?: boolean
+    open?: boolean
     /**
      * The user provided options used to position the popover content
      */

@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "hover-card",
-  initial: ctx.defaultOpen ? "open" : "closed",
+  initial: ctx.open ? "open" : "closed",
   context: {
     "!isPointer": false,
     "!isPointer": false

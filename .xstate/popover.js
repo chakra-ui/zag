@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "popover",
-  initial: ctx.defaultOpen ? "open" : "closed",
+  initial: ctx.open ? "open" : "closed",
   context: {},
   entry: ["checkRenderedElements"],
   on: {

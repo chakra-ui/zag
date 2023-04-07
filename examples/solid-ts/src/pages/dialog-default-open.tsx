@@ -7,7 +7,7 @@ import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   // dialog 1
-  const [state, send] = useMachine(dialog.machine({ id: createUniqueId(), defaultOpen: true }))
+  const [state, send] = useMachine(dialog.machine({ id: createUniqueId(), open: true }))
 
   const parentDialog = createMemo(() => dialog.connect(state, send, normalizeProps))
 

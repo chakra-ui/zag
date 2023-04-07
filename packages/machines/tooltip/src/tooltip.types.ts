@@ -58,6 +58,10 @@ type PublicContext = CommonProperties & {
    * Whether the tooltip is disabled
    */
   disabled?: boolean
+  /**
+   * Whether the tooltip is open
+   */
+  open?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

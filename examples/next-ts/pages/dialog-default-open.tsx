@@ -10,7 +10,7 @@ export default function Page() {
   const [state, send] = useMachine(
     dialog.machine({
       id: useId(),
-      defaultOpen: true,
+      open: true,
     }),
   )
   const api = dialog.connect(state, send, normalizeProps)

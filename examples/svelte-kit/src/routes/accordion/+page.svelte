@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import * as accordion from "@zag-js/accordion"
   import { events, normalizeProps, useMachine } from "@zag-js/svelte"
   import { accordionControls } from "../../../../../shared/src/controls"
@@ -16,25 +16,19 @@
 </script>
 
 <main class="accordion">
-  <div use:events={api.rootProps.handlers} {...api.rootProps.attributes}>
+  <div {...api.rootProps.attrs} use:events={api.rootProps.handlers}>
     {#each accordionData as item}
-      <div
-        use:events={api.getItemProps({ value: item.id }).handlers}
-        {...api.getItemProps({ value: item.id }).attributes}
-      >
-        <h3>
-          <button
-            data-testid={`${item.id}:trigger`}
-            use:events={api.getTriggerProps({ value: item.id }).handlers}
-            {...api.getTriggerProps({ value: item.id }).attributes}
-          >
-            {item.label}
-          </button>
-        </h3>
+      <div {...api.getItemProps({ value: item.id }).attrs} use:events={api.getItemProps({ value: item.id }).handlers}>
+        <button
+          data-testid={`${item.id}:trigger`}
+          {...api.getTriggerProps({ value: item.id }).attrs}
+          use:events={api.getTriggerProps({ value: item.id }).handlers}
+        >
+          {item.label}
+        </button>
         <div
-          data-testid={`${item.id}:content`}
+          {...api.getContentProps({ value: item.id }).attrs}
           use:events={api.getContentProps({ value: item.id }).handlers}
-          {...api.getContentProps({ value: item.id }).attributes}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua.
