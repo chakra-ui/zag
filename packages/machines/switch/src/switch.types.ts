@@ -45,9 +45,9 @@ type PublicContext = DirectionProperty &
      */
     onChange?: (details: { checked: boolean }) => void
     /**
-     * Whether the switch is initially checked.
+     * Whether the switch is checked.
      */
-    defaultChecked?: boolean
+    checked?: boolean
     /**
      * The name of the input field in a switch
      * (Useful for form submission).

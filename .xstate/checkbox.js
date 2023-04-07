@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "checkbox",
-  initial: ctx.defaultChecked ? "checked" : "unchecked",
+  initial: ctx.checked ? "checked" : "unchecked",
   context: {
     "shouldCheck && isInteractive": false,
     "isInteractive": false,
@@ -23,11 +23,11 @@ const fetchMachine = createMachine({
     SET_STATE: [{
       cond: "shouldCheck && isInteractive",
       target: "checked",
-      actions: "dispatchChangeEvent"
+      actions: ["invokeOnChange", "dispatchChangeEvent"]
     }, {
       cond: "isInteractive",
       target: "unchecked",
-      actions: "dispatchChangeEvent"
+      actions: ["invokeOnChange", "dispatchChangeEvent"]
     }],
     SET_ACTIVE: {
       actions: "setActive"
@@ -49,20 +49,20 @@ const fetchMachine = createMachine({
   },
   states: {
     checked: {
-      entry: ["invokeOnChange"],
       on: {
         TOGGLE: {
           target: "unchecked",
-          cond: "isInteractive"
+          cond: "isInteractive",
+          actions: ["invokeOnChange"]
         }
       }
     },
     unchecked: {
-      entry: ["invokeOnChange"],
       on: {
         TOGGLE: {
           target: "checked",
-          cond: "isInteractive"
+          cond: "isInteractive",
+          actions: ["invokeOnChange"]
         }
       }
     }
