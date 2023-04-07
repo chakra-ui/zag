@@ -47,7 +47,7 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the switch is initially checked.
      */
-    defaultChecked?: boolean
+    checked?: boolean
     /**
      * The name of the input field in a switch
      * (Useful for form submission).

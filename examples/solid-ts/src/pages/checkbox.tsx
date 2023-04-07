@@ -41,7 +41,7 @@ export default function Page() {
               Check
             </button>
             <button type="button" disabled={!api().isChecked} onClick={() => api().setChecked(false)}>
-              UnCheck
+              Uncheck
             </button>
             <button type="reset">Reset Form</button>
           </fieldset>

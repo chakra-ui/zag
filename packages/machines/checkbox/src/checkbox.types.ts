@@ -42,9 +42,9 @@ type PublicContext = DirectionProperty &
      */
     required?: boolean
     /**
-     * If `true`, the checkbox will be initially checked.
+     * If `true`, the checkbox will be checked.
      */
-    defaultChecked?: boolean
+    checked?: boolean
     /**
      * The callback invoked when the checked state of the `Checkbox` changes.
      */

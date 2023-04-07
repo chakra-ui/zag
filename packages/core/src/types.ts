@@ -71,6 +71,8 @@ export declare namespace StateMachine {
     guards: Dict
     send: Send<TEvent>
     self: Self<TContext, TState, TEvent>
+    initialContext: TContext
+    initialState: string
     getState: () => State<TContext, TState, TEvent>
     getAction: (key: string) => ExpressionWithMeta<TContext, TState, TEvent, void>
     getGuard: (key: string) => GuardExpression<TContext, TState, TEvent>
@@ -400,6 +402,8 @@ export declare namespace StateMachine {
     stopChild: (id: string) => void
     spawn<T>(src: T | (() => T), id?: string): T
     state: State<TContext, TState, TEvent>
+    initialContext: TContext
+    initialState: string
   }
 }
 
