@@ -325,8 +325,15 @@ export function machine(userContext: UserDefinedContext) {
               },
             ],
             DISMISS: [
-              { guard: "isTargetFocusable", target: "idle" },
-              { target: "focused", actions: ["focusTriggerElement"] },
+              {
+                guard: "isTargetFocusable",
+                target: "idle",
+                actions: ["setStartIndex"],
+              },
+              {
+                target: "focused",
+                actions: ["focusTriggerElement", "setStartIndex"],
+              },
             ],
           },
         },

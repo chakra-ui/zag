@@ -306,10 +306,11 @@ const fetchMachine = createMachine({
         }],
         DISMISS: [{
           cond: "isTargetFocusable",
-          target: "idle"
+          target: "idle",
+          actions: ["setStartIndex"]
         }, {
           target: "focused",
-          actions: ["focusTriggerElement"]
+          actions: ["focusTriggerElement", "setStartIndex"]
         }]
       }
     }
