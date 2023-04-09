@@ -2,6 +2,7 @@ import { DateFormatter } from "@internationalized/date"
 import { createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
+  constrainValue,
   formatSelectedDate,
   getAdjustedDateFn,
   getDecadeRange,
@@ -27,37 +28,34 @@ import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.uti
 
 const { and, not } = guards
 
-function getContext(ctx: UserDefinedContext) {
-  const locale = ctx.locale || "en-US"
-  const timeZone = ctx.timeZone || "UTC"
-  const numOfMonths = ctx.numOfMonths || 1
-  const focusedValue = getTodayDate(timeZone)
-  const startValue = alignDate(focusedValue, "start", { months: numOfMonths }, locale)
-
-  return {
-    view: "day" as const,
-    locale,
-    timeZone,
-    numOfMonths,
-    focusedValue,
-    startValue,
-    activeIndex: 0,
-    value: [],
-    valueText: "",
-    hoveredValue: null,
-    inputValue: "",
-    selectionMode: "single" as const,
-    ...ctx,
-  } as MachineContext
-}
-
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
+
+  const locale = ctx.locale || "en-US"
+  const timeZone = ctx.timeZone || "UTC"
+  const focusedValue = ctx.focusedValue || getTodayDate(timeZone)
+  const numOfMonths = ctx.numOfMonths || 1
+  const startValue = alignDate(focusedValue, "start", { months: numOfMonths }, locale)
+
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
       initial: ctx.inline ? "open" : "idle",
-      context: getContext(ctx),
+      context: {
+        view: "day",
+        locale,
+        numOfMonths,
+        focusedValue,
+        startValue,
+        timeZone,
+        activeIndex: 0,
+        value: [],
+        valueText: "",
+        hoveredValue: null,
+        inputValue: "",
+        selectionMode: "single",
+        ...ctx,
+      },
       computed: {
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
@@ -67,7 +65,7 @@ export function machine(userContext: UserDefinedContext) {
           const formatter = new DateFormatter(ctx.locale, { month: "long", year: "numeric", timeZone: ctx.timeZone })
           const start = formatter.format(ctx.startValue.toDate(ctx.timeZone))
           const end = formatter.format(ctx.endValue.toDate(ctx.timeZone))
-          const formatted = `${start} - ${end}`
+          const formatted = ctx.selectionMode === "range" ? `${start} - ${end}` : start
           return { start, end, formatted }
         },
         isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
@@ -77,6 +75,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
+        locale: ["setStartValue"],
         focusedValue: [
           "adjustStartDate",
           "syncMonthSelectElement",
@@ -125,7 +124,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDay", "focusFirstSelectedDate"],
+              actions: ["focusFirstSelectedDate"],
             },
           },
         },
@@ -156,8 +155,8 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: "open",
           activities: ["trackDismissableElement"],
-          entry: ["focusActiveCell"],
-          exit: ["clearHoveredDate"],
+          entry: ctx.inline ? undefined : ["focusActiveCell"],
+          exit: ["clearHoveredDate", "resetView"],
           on: {
             "INPUT.CHANGE": {
               actions: ["focusParsedDate"],
@@ -175,6 +174,11 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("isRangePicker", "hasSelectedRange"),
                 actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"],
               },
+              // === Grouped transitions (based on isInline) ===
+              {
+                guard: and("isRangePicker", "isSelectingEndDate", "isInline"),
+                actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"],
+              },
               {
                 target: "focused",
                 guard: and("isRangePicker", "isSelectingEndDate"),
@@ -187,6 +191,7 @@ export function machine(userContext: UserDefinedContext) {
                   "focusInputElement",
                 ],
               },
+              // ===
               {
                 guard: "isRangePicker",
                 actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"],
@@ -195,10 +200,16 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "isMultiPicker",
                 actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"],
               },
+              // === Grouped transitions (based on isInline) ===
+              {
+                guard: "isInline",
+                actions: ["setFocusedDate", "setSelectedDate"],
+              },
               {
                 target: "focused",
                 actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"],
               },
+              // ===
             ],
             "CELL.POINTER_MOVE": {
               guard: and("isRangePicker", "isSelectingEndDate"),
@@ -217,6 +228,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["enableTextSelection"],
             },
             "GRID.ESCAPE": {
+              guard: not("isInline"),
               target: "focused",
               actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"],
             },
@@ -233,11 +245,17 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("isRangePicker", "hasSelectedRange"),
                 actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"],
               },
+              // === Grouped transitions (based on isInline) ===
+              {
+                guard: and("isRangePicker", "isSelectingEndDate", "isInline"),
+                actions: ["setSelectedDate", "setStartIndex"],
+              },
               {
                 target: "focused",
                 guard: and("isRangePicker", "isSelectingEndDate"),
                 actions: ["setSelectedDate", "setStartIndex", "setInputValue", "focusInputElement"],
               },
+              // ===
               {
                 guard: "isRangePicker",
                 actions: ["setSelectedDate", "setEndIndex", "focusNextDay"],
@@ -246,10 +264,16 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "isMultiPicker",
                 actions: ["toggleSelectedDate", "setInputValue"],
               },
+              // === Grouped transitions (based on isInline) ===
+              {
+                guard: "isInline",
+                actions: ["selectFocusedDate"],
+              },
               {
                 target: "focused",
                 actions: ["selectFocusedDate", "setInputValue", "focusInputElement"],
               },
+              // ===
             ],
             "GRID.ARROW_RIGHT": [
               { guard: "isMonthView", actions: "focusNextMonth" },
@@ -394,7 +418,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setFocusedDate(ctx, evt) {
           const value = Array.isArray(evt.value) ? evt.value[0] : evt.value
-          ctx.focusedValue = value
+          ctx.focusedValue = constrainValue(value, ctx.min, ctx.max)
         },
         setFocusedMonth(ctx, evt) {
           ctx.focusedValue = ctx.focusedValue.set({ month: evt.value })
@@ -596,6 +620,13 @@ export function machine(userContext: UserDefinedContext) {
           const date = parseDateString(ctx.inputValue, ctx.locale, ctx.timeZone)
           if (!date) return
           ctx.focusedValue = date
+        },
+        resetView(ctx, _evt, { initialContext }) {
+          ctx.view = initialContext.view
+        },
+        setStartValue(ctx) {
+          const startValue = alignDate(ctx.focusedValue, "start", { months: ctx.numOfMonths }, ctx.locale)
+          ctx.startValue = startValue
         },
       },
       compareFns: {

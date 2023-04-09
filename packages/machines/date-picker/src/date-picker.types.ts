@@ -92,7 +92,7 @@ type PublicContext = DirectionProperty &
     /**
      * Returns whether a date of the calendar is available.
      */
-    isDateUnavailable?: (date: DateValue) => boolean
+    isDateUnavailable?: (date: DateValue, locale: string) => boolean
     /**
      * The selection mode of the calendar.
      * - `single` - only one date can be selected
@@ -109,6 +109,11 @@ type PublicContext = DirectionProperty &
      */
     parse?: (value: string) => DateValue[]
     /**
+     * The view of the calendar
+     * @default "day"
+     */
+    view: DateView
+    /**
      * Whether the calendar should be modal. This means that the calendar will
      * block interaction with the rest of the page, and trap focus within it.
      */
@@ -122,7 +127,6 @@ export type ViewProps = {
 }
 
 type PrivateContext = Context<{
-  view: DateView
   startValue: DateValue
   hasFocus?: boolean
   announcer?: LiveRegion

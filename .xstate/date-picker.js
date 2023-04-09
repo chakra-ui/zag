@@ -20,19 +20,24 @@ const fetchMachine = createMachine({
     "isMonthView": false,
     "isYearView": false,
     "isRangePicker && hasSelectedRange": false,
+    "isRangePicker && isSelectingEndDate && isInline": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
+    "isInline": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
+    "!isInline": false,
     "!isInline": false,
     "!isInline": false,
     "isMonthView": false,
     "isYearView": false,
     "isRangePicker && hasSelectedRange": false,
+    "isRangePicker && isSelectingEndDate && isInline": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
+    "isInline": false,
     "isMonthView": false,
     "isYearView": false,
     "isMonthView": false,
@@ -97,7 +102,7 @@ const fetchMachine = createMachine({
         },
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["setViewToDay", "focusFirstSelectedDate"]
+          actions: ["focusFirstSelectedDate"]
         }
       }
     },
@@ -126,8 +131,8 @@ const fetchMachine = createMachine({
     open: {
       tags: "open",
       activities: ["trackDismissableElement"],
-      entry: ["focusActiveCell"],
-      exit: ["clearHoveredDate"],
+      entry: ctx.inline ? undefined : ["focusActiveCell"],
+      exit: ["clearHoveredDate", "resetView"],
       on: {
         "INPUT.CHANGE": {
           actions: ["focusParsedDate"]
@@ -141,20 +146,35 @@ const fetchMachine = createMachine({
         }, {
           cond: "isRangePicker && hasSelectedRange",
           actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"]
+        },
+        // === Grouped transitions (based on isInline) ===
+        {
+          cond: "isRangePicker && isSelectingEndDate && isInline",
+          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"]
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "setInputValue", "focusInputElement"]
-        }, {
+        },
+        // ===
+        {
           cond: "isRangePicker",
           actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"]
         }, {
           cond: "isMultiPicker",
           actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"]
+        },
+        // === Grouped transitions (based on isInline) ===
+        {
+          cond: "isInline",
+          actions: ["setFocusedDate", "setSelectedDate"]
         }, {
           target: "focused",
           actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"]
-        }],
+        }
+        // ===
+        ],
+
         "CELL.POINTER_MOVE": {
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setHoveredDate", "setFocusedDate"]
@@ -172,6 +192,7 @@ const fetchMachine = createMachine({
           actions: ["enableTextSelection"]
         },
         "GRID.ESCAPE": {
+          cond: "!isInline",
           target: "focused",
           actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"]
         },
@@ -184,20 +205,35 @@ const fetchMachine = createMachine({
         }, {
           cond: "isRangePicker && hasSelectedRange",
           actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"]
+        },
+        // === Grouped transitions (based on isInline) ===
+        {
+          cond: "isRangePicker && isSelectingEndDate && isInline",
+          actions: ["setSelectedDate", "setStartIndex"]
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setSelectedDate", "setStartIndex", "setInputValue", "focusInputElement"]
-        }, {
+        },
+        // ===
+        {
           cond: "isRangePicker",
           actions: ["setSelectedDate", "setEndIndex", "focusNextDay"]
         }, {
           cond: "isMultiPicker",
           actions: ["toggleSelectedDate", "setInputValue"]
+        },
+        // === Grouped transitions (based on isInline) ===
+        {
+          cond: "isInline",
+          actions: ["selectFocusedDate"]
         }, {
           target: "focused",
           actions: ["selectFocusedDate", "setInputValue", "focusInputElement"]
-        }],
+        }
+        // ===
+        ],
+
         "GRID.ARROW_RIGHT": [{
           cond: "isMonthView",
           actions: "focusNextMonth"
@@ -290,9 +326,11 @@ const fetchMachine = createMachine({
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
     "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
+    "isRangePicker && isSelectingEndDate && isInline": ctx => ctx["isRangePicker && isSelectingEndDate && isInline"],
     "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
     "isRangePicker": ctx => ctx["isRangePicker"],
     "isMultiPicker": ctx => ctx["isMultiPicker"],
+    "isInline": ctx => ctx["isInline"],
     "!isInline": ctx => ctx["!isInline"],
     "isDayView": ctx => ctx["isDayView"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"]

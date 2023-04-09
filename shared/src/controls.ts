@@ -176,7 +176,7 @@ export const datePickerControls = defineControls({
   fixedWeeks: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
-    options: ["en-US", "fr_FR", "de_DE", "ja_JP", "mk_MK", "zh-CN"] as const,
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
 })

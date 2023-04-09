@@ -38,7 +38,9 @@ export function formatValue(ctx: MachineContext) {
   }
 
   if (ctx.selectionMode === "single") {
-    return formatter.format(ctx.value[0].toDate(ctx.timeZone))
+    const [startValue] = ctx.value
+    if (!startValue) return ""
+    return formatter.format(startValue.toDate(ctx.timeZone))
   }
 
   return ctx.value.map((date) => formatter.format(date.toDate(ctx.timeZone))).join(", ")
@@ -77,6 +79,7 @@ export function getViewTriggerLabel(view: DateView) {
 }
 
 const PLACEHOLDERS = { day: "dd", month: "mm", year: "yyyy" }
+
 export function getInputPlaceholder(locale: string) {
   return new DateFormatter(locale)
     .formatToParts(new Date())

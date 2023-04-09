@@ -62,6 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.matches("focused")
   const isOpen = state.matches("open") || state.context.inline
   const isRangePicker = state.context.selectionMode === "range"
+  const isDateUnavailableFn = state.context.isDateUnavailable
 
   const defaultOffset: Offset = {
     amount: 0,
@@ -117,7 +118,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Returns whether the provided date is available (or can be selected)
      */
     isUnavailable(date: DateValue) {
-      return isDateUnavailable(date, state.context.isDateUnavailable, min, max)
+      return isDateUnavailable(date, isDateUnavailableFn, locale, min, max)
     },
 
     /**
@@ -384,7 +385,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isInvalid: isDateInvalid(value, min, max),
         isDisabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
         isSelected: selectedValue.some((date) => isDateEqual(value, date)),
-        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
+        isUnavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
         isOutsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
         isInRange:
           isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
