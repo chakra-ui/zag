@@ -1,5 +1,13 @@
 # @zag-js/core
 
+## 0.5.0
+
+### Patch Changes
+
+- [`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Widen `watch` type to support `choose` helper
+  - Add `initialContext` and `initialState` to `meta` options
+
 ## 0.2.12
 
 ### Patch Changes

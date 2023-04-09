@@ -1,5 +1,14 @@
 # @zag-js/date-utils
 
+## 0.5.0
+
+### Patch Changes
+
+- [`7f4b6e45`](https://github.com/chakra-ui/zag/commit/7f4b6e4566f8015e9d258852330d3f4d32bc5757) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor to use `CalendarDateTime` instead of `CalendarDate` to
+  match the native date functionality.
+  - Improve input event handling to only allow valid characters and separators.
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @zag-js/dom-event
 
+## 0.5.0
+
+### Patch Changes
+
+- Updated dependencies [[`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/types@0.5.0
+
 ## 0.0.1
 
 ### Patch Changes

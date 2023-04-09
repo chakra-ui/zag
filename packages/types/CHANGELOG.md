@@ -1,5 +1,13 @@
 # @zag-js/types
 
+## 0.5.0
+
+### Patch Changes
+
+- [#550](https://github.com/chakra-ui/zag/pull/550)
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix handlers and attributes types for `normalizeProps`
+
 ## 0.3.4
 
 ### Patch Changes
