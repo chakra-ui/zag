@@ -46,11 +46,6 @@ type PublicContext = DirectionProperty &
      */
     max?: DateValue
     /**
-     * The index of the currently active date.
-     * Used in range selection mode.
-     */
-    activeIndex: number
-    /**
      * Whether the calendar should be displayed inline.
      */
     inline?: boolean
@@ -134,6 +129,11 @@ type PrivateContext = Context<{
   valueText: string
   inputValue: string
   hoveredValue: DateValue | null
+  /**
+   * The index of the currently active date.
+   * Used in range selection mode.
+   */
+  activeIndex: number
 }>
 
 type ComputedContext = Readonly<{
