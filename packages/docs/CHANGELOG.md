@@ -1,5 +1,12 @@
 # @zag-js/docs
 
+## 0.5.0
+
+### Minor Changes
+
+- [`4603295e`](https://github.com/chakra-ui/zag/commit/4603295e9e57115240cdd97de04e105836908c54) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add type docs for new components and changed APIs
+
 ## 0.1.1
 
 ### Patch Changes

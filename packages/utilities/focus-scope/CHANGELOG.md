@@ -1,5 +1,12 @@
 # @zag-js/focus-scope
 
+## 0.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.5.0
+
 ## 0.1.6
 
 ### Patch Changes
