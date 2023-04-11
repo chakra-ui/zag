@@ -1,0 +1,516 @@
+---
+releaseUrl: https://github.com/chakra-ui/zag/pull/594
+releaseDate: April 11, 2023
+---
+
+## @zag-js/docs@0.5.0
+
+### Minor Changes
+
+- [`4603295e`](https://github.com/chakra-ui/zag/commit/4603295e9e57115240cdd97de04e105836908c54) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add type docs for new components and changed APIs
+
+## @zag-js/checkbox@0.5.0
+
+### Minor Changes
+
+- [`1bf5f282`](https://github.com/chakra-ui/zag/commit/1bf5f2822f38c5ccde0e6ef0ce104ba263330195) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultChecked` property in favor of the `checked`
+  property that can now be controlled.
+
+  ```jsx
+  // the checkbox will be checked initially
+  const [state, send] = useMachine(
+    checkbox.machine({
+      id: "1",
+      checked: true,
+    }),
+  )
+
+  // this will update the checkbox when the `checked` value changes
+  const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the checkbox will be checked/unchecked
+      checked: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/dialog@0.5.0
+
+### Minor Changes
+
+- [`4603295e`](https://github.com/chakra-ui/zag/commit/4603295e9e57115240cdd97de04e105836908c54) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultOpen` property in favor of the `open` property
+  that can now be controlled.
+
+  ```jsx
+  // this is will open the dialog initially
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+
+  // this will open the dialog when the `open` value changes
+  const [state, send] = useMachine(dialog.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the dialog will open/close
+      open: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dismissable@0.5.0
+
+## @zag-js/hover-card@0.5.0
+
+### Minor Changes
+
+- [`4603295e`](https://github.com/chakra-ui/zag/commit/4603295e9e57115240cdd97de04e105836908c54) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultOpen` property in favor of the `open` property
+  that can now be controlled.
+
+  ```jsx
+  // this is will open the dialog initially
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+
+  // this will open the dialog when the `open` value changes
+  const [state, send] = useMachine(dialog.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the dialog will open/close
+      open: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dismissable@0.5.0
+
+## @zag-js/popover@0.5.0
+
+### Minor Changes
+
+- [`4603295e`](https://github.com/chakra-ui/zag/commit/4603295e9e57115240cdd97de04e105836908c54) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultOpen` property in favor of the `open` property
+  that can now be controlled.
+
+  ```jsx
+  // this is will open the dialog initially
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+
+  // this will open the dialog when the `open` value changes
+  const [state, send] = useMachine(dialog.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the dialog will open/close
+      open: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dismissable@0.5.0
+
+## @zag-js/switch@0.5.0
+
+### Minor Changes
+
+- [`1bf5f282`](https://github.com/chakra-ui/zag/commit/1bf5f2822f38c5ccde0e6ef0ce104ba263330195) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultChecked` property in favor of the `checked`
+  property that can now be controlled.
+
+  ```jsx
+  // the checkbox will be checked initially
+  const [state, send] = useMachine(
+    checkbox.machine({
+      id: "1",
+      checked: true,
+    }),
+  )
+
+  // this will update the checkbox when the `checked` value changes
+  const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the checkbox will be checked/unchecked
+      checked: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/tooltip@0.5.0
+
+### Minor Changes
+
+- [`4603295e`](https://github.com/chakra-ui/zag/commit/4603295e9e57115240cdd97de04e105836908c54) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultOpen` property in favor of the `open` property
+  that can now be controlled.
+
+  ```jsx
+  // this is will open the dialog initially
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+
+  // this will open the dialog when the `open` value changes
+  const [state, send] = useMachine(dialog.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the dialog will open/close
+      open: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/core@0.5.0
+
+### Patch Changes
+
+- [`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Widen `watch` type to support `choose` helper
+  - Add `initialContext` and `initialState` to `meta` options
+
+## @zag-js/react@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/solid@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/svelte@0.5.0
+
+### Patch Changes
+
+- [#593](https://github.com/chakra-ui/zag/pull/593)
+  [`3af33041`](https://github.com/chakra-ui/zag/commit/3af3304178fc145169a38461f016b3afa3244fef) Thanks
+  [@Shyrro](https://github.com/Shyrro)! - - Fix for style attribute ( now included in the use directive rather than the
+  native spread )
+
+  - Fix for handlers not being updated correctly ( we used to attach them once the connect is init, but they need to be
+    updated for each change of the api )
+  - Renamed attributes to attrs since lines are long enough
+  - Add Menu component example
+
+- [#550](https://github.com/chakra-ui/zag/pull/550)
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix handlers and attributes types for `normalizeProps`
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/vue@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/accordion@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/carousel@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/combobox@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/interact-outside@0.5.0
+
+## @zag-js/date-picker@0.5.0
+
+### Patch Changes
+
+- [`7f4b6e45`](https://github.com/chakra-ui/zag/commit/7f4b6e4566f8015e9d258852330d3f4d32bc5757) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor to use `CalendarDateTime` instead of `CalendarDate` to
+  match the native date functionality.
+  - Improve input event handling to only allow valid characters and separators.
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`7f4b6e45`](https://github.com/chakra-ui/zag/commit/7f4b6e4566f8015e9d258852330d3f4d32bc5757),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/date-utils@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/dismissable@0.5.0
+
+## @zag-js/editable@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/interact-outside@0.5.0
+
+## @zag-js/menu@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/dismissable@0.5.0
+
+## @zag-js/number-input@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/pagination@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/pin-input@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/pressable@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/radio-group@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/range-slider@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/slider@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/rating-group@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/select@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/dismissable@0.5.0
+
+## @zag-js/slider@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/splitter@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/tabs@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/tags-input@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/interact-outside@0.5.0
+
+## @zag-js/toast@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/toggle@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/transition@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
+## @zag-js/types@0.5.0
+
+### Patch Changes
+
+- [#550](https://github.com/chakra-ui/zag/pull/550)
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix handlers and attributes types for `normalizeProps`
+
+## @zag-js/date-utils@0.5.0
+
+### Patch Changes
+
+- [`7f4b6e45`](https://github.com/chakra-ui/zag/commit/7f4b6e4566f8015e9d258852330d3f4d32bc5757) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor to use `CalendarDateTime` instead of `CalendarDate` to
+  match the native date functionality.
+  - Improve input event handling to only allow valid characters and separators.
+
+## @zag-js/dismissable@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[]:
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/interact-outside@0.5.0
+
+## @zag-js/dom-event@0.5.0
+
+### Patch Changes
+
+- Updated dependencies
+  \[[`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/types@0.5.0
+
+## @zag-js/focus-scope@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[]:
+  - @zag-js/dom-event@0.5.0
+
+## @zag-js/interact-outside@0.5.0
+
+### Patch Changes
+
+- Updated dependencies \[]:
+  - @zag-js/dom-event@0.5.0
