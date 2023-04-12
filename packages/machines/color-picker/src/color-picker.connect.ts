@@ -3,11 +3,17 @@ import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import { AreaProps, ChannelProps, PreviewProps, Send, State } from "./color-picker.types"
 import { normalizeColor } from "@zag-js/color-utils"
+import { getColorAreaGradient } from "./utils/get-color-area-gradient"
+import { getChannelDetails } from "./color-picker.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+  const valueAsColor = state.context.valueAsColor
+  const channels = valueAsColor.getColorChannels()
   return {
+    channels,
+
     getPreviewProps(props: PreviewProps) {
-      const { format = "rgba", value } = props
+      const { format = "css", value } = props
       const color = normalizeColor(value)
       return normalize.element({
         ...parts.preview.attrs,
@@ -17,33 +23,52 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getGradientProps(props: AreaProps) {
-      return normalize.element({
-        style: {
-          position: "relative",
-          touchAction: "none",
-          forcedColorAdjust: "none",
-          backgroundImage: "TODO",
-        },
-      })
-    },
-
     getAreaProps(props: AreaProps) {
       const { xChannel, yChannel } = props
+      const { areaStyles } = getColorAreaGradient(state.context, xChannel, yChannel)
+
       return normalize.element({
         ...parts.area.attrs,
         style: {
           position: "relative",
           touchAction: "none",
           forcedColorAdjust: "none",
-          backgroundImage: "TODO",
+          ...areaStyles,
+        },
+      })
+    },
+
+    getAreaGradientProps(props: AreaProps) {
+      const { xChannel, yChannel } = props
+      const { areaGradientStyles } = getColorAreaGradient(state.context, xChannel, yChannel)
+
+      return normalize.element({
+        ...parts.areaGradient.attrs,
+        style: {
+          position: "relative",
+          touchAction: "none",
+          forcedColorAdjust: "none",
+          ...areaGradientStyles,
         },
       })
     },
 
     getAreaThumbProps(props: AreaProps) {
+      const { xChannel, yChannel } = props
+      const { getThumbPosition } = getChannelDetails(valueAsColor, xChannel, yChannel)
+      const { x, y } = getThumbPosition()
+
       return normalize.element({
         ...parts.areaThumb.attrs,
+        style: {
+          position: "absolute",
+          left: `${x * 100}%`,
+          top: `${y * 100}%`,
+          transform: "translate(0%, 0%)",
+          touchAction: "none",
+          forcedColorAdjust: "none",
+          background: state.context.displayColor.toString("css"),
+        },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             ArrowUp() {
@@ -82,14 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "slider",
         "aria-orientation": orientation,
         "data-orientation": orientation,
-        style: {
-          position: "absolute",
-          left: `${x * 100}%`,
-          top: `${y * 100}%`,
-          transform: "translate(0%, 0%)",
-          touchAction: "none",
-          forcedColorAdjust: "none",
-        },
+        style: {},
       })
     },
 

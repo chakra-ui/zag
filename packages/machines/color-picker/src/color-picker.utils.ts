@@ -35,7 +35,7 @@ export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel
     yChannelPageStep: pageSizeY,
     xValue,
     yValue,
-    getThumbPosition(xValue: number, yValue: number) {
+    getThumbPosition() {
       let x = (xValue - minValueX) / (maxValueX - minValueX)
       let y = 1 - (yValue - minValueY) / (maxValueY - minValueY)
       return { x, y }

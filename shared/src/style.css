@@ -1388,6 +1388,34 @@ main > .toggle[data-pressed] {
 }
 
 /* -----------------------------------------------------------------------------
+* Color Picker
+* -----------------------------------------------------------------------------*/
+
+[data-scope="color-picker"][data-part="area"] {
+  width: 200px;
+  height: 200px;
+  border-radius: 4px;
+}
+
+[data-scope="color-picker"][data-part="area-gradient"] {
+  background: rgb(142, 142, 142);
+  border-radius: 4px;
+  width: 200px;
+  height: 200px;
+}
+
+[data-scope="color-picker"][data-part="area-thumb"] {
+  background: rgb(142, 142, 142);
+  border: 2px solid white;
+  border-radius: 9999px;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  box-shadow: black 0px 0px 0px 1px, black 0px 0px 0px 1px inset;
+  width: 16px;
+  height: 16px;
+}
+
+/* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/
 

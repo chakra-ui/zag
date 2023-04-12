@@ -3,6 +3,7 @@ import { createAnatomy } from "@zag-js/anatomy"
 export const anatomy = createAnatomy("color-picker", [
   "area",
   "areaThumb",
+  "areaGradient",
   "sliderTrack",
   "sliderThumb",
   "input",

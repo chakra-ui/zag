@@ -1,10 +1,10 @@
 export const generateRGB_R = (orientation: [string, string], dir: boolean, zValue: number) => {
   const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, transparent, #000)`
   const result = {
-    colorAreaStyles: {
+    areaStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(${zValue},0,0),rgb(${zValue},255,0))`,
     },
-    gradientStyles: {
+    areaGradientStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(${zValue},0,255),rgb(${zValue},255,255))`,
       WebkitMaskImage: maskImage,
       maskImage,
@@ -16,10 +16,10 @@ export const generateRGB_R = (orientation: [string, string], dir: boolean, zValu
 export const generateRGB_G = (orientation: [string, string], dir: boolean, zValue: number) => {
   const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, transparent, #000)`
   const result = {
-    colorAreaStyles: {
+    areaStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(0,${zValue},0),rgb(255,${zValue},0))`,
     },
-    gradientStyles: {
+    areaGradientStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(0,${zValue},255),rgb(255,${zValue},255))`,
       WebkitMaskImage: maskImage,
       maskImage,
@@ -31,10 +31,10 @@ export const generateRGB_G = (orientation: [string, string], dir: boolean, zValu
 export const generateRGB_B = (orientation: [string, string], dir: boolean, zValue: number) => {
   const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, transparent, #000)`
   const result = {
-    colorAreaStyles: {
+    areaStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(0,0,${zValue}),rgb(255,0,${zValue}))`,
     },
-    gradientStyles: {
+    areaGradientStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(0,255,${zValue}),rgb(255,255,${zValue}))`,
       WebkitMaskImage: maskImage,
       maskImage,
@@ -45,8 +45,8 @@ export const generateRGB_B = (orientation: [string, string], dir: boolean, zValu
 
 export const generateHSL_H = (orientation: [string, string], dir: boolean, zValue: number) => {
   const result = {
-    colorAreaStyles: {},
-    gradientStyles: {
+    areaStyles: {},
+    areaGradientStyles: {
       background: [
         `linear-gradient(to ${
           orientation[Number(dir)]
@@ -61,8 +61,8 @@ export const generateHSL_H = (orientation: [string, string], dir: boolean, zValu
 
 export const generateHSL_S = (orientation: [string, string], dir: boolean, alphaValue: number) => {
   const result = {
-    colorAreaStyles: {},
-    gradientStyles: {
+    areaStyles: {},
+    areaGradientStyles: {
       background: [
         `linear-gradient(to ${
           orientation[Number(!dir)]
@@ -79,8 +79,8 @@ export const generateHSL_S = (orientation: [string, string], dir: boolean, alpha
 
 export const generateHSL_L = (orientation: [string, string], dir: boolean, zValue: number) => {
   const result = {
-    colorAreaStyles: {},
-    gradientStyles: {
+    areaStyles: {},
+    areaGradientStyles: {
       backgroundImage: [
         `linear-gradient(to ${orientation[Number(!dir)]},hsl(0,0%,${zValue}%),hsla(0,0%,${zValue}%,0))`,
         `linear-gradient(to ${
@@ -94,8 +94,8 @@ export const generateHSL_L = (orientation: [string, string], dir: boolean, zValu
 
 export const generateHSB_H = (orientation: [string, string], dir: boolean, zValue: number) => {
   const result = {
-    colorAreaStyles: {},
-    gradientStyles: {
+    areaStyles: {},
+    areaGradientStyles: {
       background: [
         `linear-gradient(to ${orientation[Number(dir)]},hsl(0,0%,0%),hsla(0,0%,0%,0))`,
         `linear-gradient(to ${orientation[Number(!dir)]},hsl(0,0%,100%),hsla(0,0%,100%,0))`,
@@ -108,8 +108,8 @@ export const generateHSB_H = (orientation: [string, string], dir: boolean, zValu
 
 export const generateHSB_S = (orientation: [string, string], dir: boolean, alphaValue: number) => {
   const result = {
-    colorAreaStyles: {},
-    gradientStyles: {
+    areaStyles: {},
+    areaGradientStyles: {
       background: [
         `linear-gradient(to ${orientation[Number(!dir)]},hsla(0,0%,0%,${alphaValue}),hsla(0,0%,0%,0))`,
         `linear-gradient(to ${
@@ -124,8 +124,8 @@ export const generateHSB_S = (orientation: [string, string], dir: boolean, alpha
 
 export const generateHSB_B = (orientation: [string, string], dir: boolean, alphaValue: number) => {
   const result = {
-    colorAreaStyles: {},
-    gradientStyles: {
+    areaStyles: {},
+    areaGradientStyles: {
       background: [
         `linear-gradient(to ${orientation[Number(!dir)]},hsla(0,0%,100%,${alphaValue}),hsla(0,0%,100%,0))`,
         `linear-gradient(to ${

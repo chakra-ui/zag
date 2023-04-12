@@ -21,7 +21,11 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
       },
 
-      computed: {},
+      computed: {
+        displayColor(ctx) {
+          return ctx.valueAsColor.withChannelValue("alpha", 1)
+        },
+      },
 
       watch: {
         value: ["setValueAsColor"],

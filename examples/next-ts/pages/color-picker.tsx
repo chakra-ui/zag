@@ -1,5 +1,5 @@
 import * as colorPicker from "@zag-js/color-picker"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { colorPickerControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -14,14 +14,20 @@ export default function Page() {
   })
 
   const api = colorPicker.connect(state, send, normalizeProps)
+  const [xChannel, yChannel] = api.channels
 
   return (
     <>
       <main className="color-picker">
-        <div {...api.rootProps}></div>
+        <div>
+          <div {...api.getAreaProps({ xChannel, yChannel })}>
+            <div {...api.getAreaGradientProps({ xChannel, yChannel })} />
+            <div {...api.getAreaThumbProps({ xChannel, yChannel })} />
+          </div>
+        </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar viz controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

@@ -58,12 +58,7 @@ type PrivateContext = Context<{
 }>
 
 type ComputedContext = Readonly<{
-  channels: {
-    xValue: number
-    yValue: number
-    zValue: number
-    alphaValue: number
-  }
+  displayColor: Color
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
