@@ -5,6 +5,7 @@ export const anatomy = createAnatomy("color-picker", [
   "areaThumb",
   "areaGradient",
   "sliderTrack",
+  "sliderTrackBg",
   "sliderThumb",
   "input",
   "preview",

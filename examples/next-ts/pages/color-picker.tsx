@@ -9,20 +9,36 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(colorPickerControls)
 
-  const [state, send] = useMachine(colorPicker.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: useId(),
+      format: "hsla",
+      value: "hsl(0, 100%, 50%)",
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = colorPicker.connect(state, send, normalizeProps)
-  const [xChannel, yChannel] = api.channels
+  const [xChannel, yChannel, zChannel] = api.channels
 
   return (
     <>
       <main className="color-picker">
-        <div>
+        <div data-scope="color-picker" data-part="content">
           <div {...api.getAreaProps({ xChannel, yChannel })}>
             <div {...api.getAreaGradientProps({ xChannel, yChannel })} />
             <div {...api.getAreaThumbProps({ xChannel, yChannel })} />
+          </div>
+
+          <div {...api.getSliderTrackProps({ channel: zChannel })}>
+            <div {...api.getSliderThumbProps({ channel: zChannel })} />
+          </div>
+
+          <div {...api.getSliderTrackProps({ channel: "alpha" })}>
+            <div {...api.getSliderBackgroundProps({ channel: "alpha" })} />
+            <div {...api.getSliderThumbProps({ channel: "alpha" })} />
           </div>
         </div>
       </main>

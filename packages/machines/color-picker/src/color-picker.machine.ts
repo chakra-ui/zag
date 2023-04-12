@@ -3,6 +3,8 @@ import { createMachine } from "@zag-js/core"
 import { compact } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
+import { trackPointerMove } from "@zag-js/dom-event"
+import { getChannelDetails } from "./color-picker.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -15,6 +17,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "color-picker",
       initial: "idle",
       context: {
+        dir: "ltr",
         format: "hex",
         value,
         valueAsColor,
@@ -22,9 +25,8 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        displayColor(ctx) {
-          return ctx.valueAsColor.withChannelValue("alpha", 1)
-        },
+        isRtl: (ctx) => ctx.dir === "rtl",
+        displayColor: (ctx) => ctx.valueAsColor.withChannelValue("alpha", 1),
       },
 
       watch: {
@@ -38,6 +40,11 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["openEyeDropper"],
             },
             "AREA.POINTER_DOWN": {
+              target: "dragging",
+              actions: ["setActiveThumb", "setColorFromPoint"],
+            },
+            "SLIDER.POINTER_DOWN": {
+              target: "dragging",
               actions: ["setActiveThumb", "setColorFromPoint"],
             },
           },
@@ -47,11 +54,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb"],
+              actions: ["setActiveThumb", "setColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb"],
+              actions: ["setActiveThumb", "setColorFromPoint"],
             },
             "AREA.ARROW_LEFT": {
               actions: ["decrementXChannel"],
@@ -77,14 +84,31 @@ export function machine(userContext: UserDefinedContext) {
         dragging: {
           activities: ["trackPointerMove"],
           on: {
-            "AREA.POINTER_MOVE": {},
-            "AREA.POINTER_UP": {},
+            "AREA.POINTER_MOVE": {
+              actions: ["setColorFromPoint"],
+            },
+            "AREA.POINTER_UP": {
+              target: "focused",
+              actions: ["focusAreaThumb"],
+            },
           },
         },
       },
     },
     {
       guards: {},
+      activities: {
+        trackPointerMove(ctx, _evt, { send }) {
+          return trackPointerMove(dom.getDoc(ctx), {
+            onPointerMove({ point }) {
+              send({ type: "AREA.POINTER_MOVE", point })
+            },
+            onPointerUp() {
+              send("AREA.POINTER_UP")
+            },
+          })
+        },
+      },
       actions: {
         openEyeDrop(ctx) {
           const isSupported = "EyeDropper" in dom.getWin(ctx)
@@ -100,11 +124,29 @@ export function machine(userContext: UserDefinedContext) {
             })
             .catch(() => void 0)
         },
-        setColorFromPoint() {},
+        setActiveThumb(ctx, evt) {
+          ctx.activeThumbId = evt.id
+        },
+        setColorFromPoint(ctx, evt) {
+          const { xChannel, yChannel } = evt
+
+          const point = dom.getAreaValueFromPoint(ctx, evt.point)
+          if (!point) return
+
+          const { getColorFromPoint } = getChannelDetails(valueAsColor, xChannel, yChannel)
+          const color = getColorFromPoint(point.x, point.y)
+          if (!color) return
+          ctx.value = color.toString("css")
+        },
+        setValueAsColor(ctx) {
+          ctx.valueAsColor = parseColor(ctx.value)
+        },
         incrementXChannel() {},
         decrementXChannel() {},
         incrementYChannel() {},
         decrementYChannel() {},
+        incrementAlphaChannel() {},
+        decrementAlphaChannel() {},
         setValue(ctx, evt) {
           ctx.value = evt.value
         },

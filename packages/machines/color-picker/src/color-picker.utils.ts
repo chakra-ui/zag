@@ -5,10 +5,10 @@ export function getHueBackgroundImage() {
   return `linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)`
 }
 
-export function getSliderBgDirection(orientation: "vertical" | "horizontal", direction: "ltr" | "rtl") {
+export function getSliderBgDirection(orientation: "vertical" | "horizontal", dir: "ltr" | "rtl") {
   if (orientation === "vertical") {
     return "top"
-  } else if (direction === "ltr") {
+  } else if (dir === "ltr") {
     return "right"
   } else {
     return "left"
@@ -55,19 +55,20 @@ export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel
     getColorFromPoint(x: number, y: number) {
       let newXValue = minValueX + clamp(x, { min: 0, max: 1 }) * (maxValueX - minValueX)
       let newYValue = minValueY + (1 - clamp(y, { min: 0, max: 1 })) * (maxValueY - minValueY)
+
       let newColor: Color | undefined
 
       if (newXValue !== xValue) {
-        newXValue = valueOf(snapToStep(newXValue, minValueX))
+        newXValue = valueOf(snapToStep(newXValue, stepX))
         newColor = color.withChannelValue(channels.xChannel, newXValue)
       }
 
       if (newYValue !== yValue) {
-        newYValue = valueOf(snapToStep(newYValue, minValueY))
+        newYValue = valueOf(snapToStep(newYValue, stepY))
         newColor = (newColor || color).withChannelValue(channels.yChannel, newYValue)
       }
 
-      return { newColor, newXValue, newYValue }
+      return newColor
     },
   }
 }

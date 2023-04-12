@@ -25,6 +25,11 @@ const fetchMachine = createMachine({
           actions: ["openEyeDropper"]
         },
         "AREA.POINTER_DOWN": {
+          target: "dragging",
+          actions: ["setActiveThumb", "setColorFromPoint"]
+        },
+        "SLIDER.POINTER_DOWN": {
+          target: "dragging",
           actions: ["setActiveThumb", "setColorFromPoint"]
         }
       }
@@ -33,11 +38,11 @@ const fetchMachine = createMachine({
       on: {
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb"]
+          actions: ["setActiveThumb", "setColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb"]
+          actions: ["setActiveThumb", "setColorFromPoint"]
         },
         "AREA.ARROW_LEFT": {
           actions: ["decrementXChannel"]
@@ -62,8 +67,13 @@ const fetchMachine = createMachine({
     dragging: {
       activities: ["trackPointerMove"],
       on: {
-        "AREA.POINTER_MOVE": {},
-        "AREA.POINTER_UP": {}
+        "AREA.POINTER_MOVE": {
+          actions: ["setColorFromPoint"]
+        },
+        "AREA.POINTER_UP": {
+          target: "focused",
+          actions: ["focusAreaThumb"]
+        }
       }
     }
   }

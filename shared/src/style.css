@@ -1391,6 +1391,13 @@ main > .toggle[data-pressed] {
 * Color Picker
 * -----------------------------------------------------------------------------*/
 
+[data-scope="color-picker"][data-part="content"] {
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 [data-scope="color-picker"][data-part="area"] {
   width: 200px;
   height: 200px;
@@ -1404,8 +1411,8 @@ main > .toggle[data-pressed] {
   height: 200px;
 }
 
-[data-scope="color-picker"][data-part="area-thumb"] {
-  background: rgb(142, 142, 142);
+[data-scope="color-picker"][data-part="area-thumb"],
+[data-scope="color-picker"][data-part="slider-thumb"] {
   border: 2px solid white;
   border-radius: 9999px;
   box-sizing: border-box;
@@ -1413,6 +1420,15 @@ main > .toggle[data-pressed] {
   box-shadow: black 0px 0px 0px 1px, black 0px 0px 0px 1px inset;
   width: 16px;
   height: 16px;
+}
+
+[data-scope="color-picker"][data-part="slider-track"] {
+  height: 20px;
+  border-radius: 4px;
+}
+
+[data-scope="color-picker"][data-part="slider-track-bg"] {
+  border-radius: 4px;
 }
 
 /* -----------------------------------------------------------------------------

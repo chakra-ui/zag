@@ -26,7 +26,7 @@ type PublicContext = CommonProperties & {
   /**
    * The direction of the color picker
    */
-  dir?: "ltr" | "rtl"
+  dir: "ltr" | "rtl"
   /**
    * The current color value
    */
@@ -59,6 +59,7 @@ type PrivateContext = Context<{
 
 type ComputedContext = Readonly<{
   displayColor: Color
+  isRtl: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
