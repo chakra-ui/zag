@@ -2,14 +2,20 @@
   "name": "@zag-js/color-utils",
   "version": "0.0.0",
   "description": "Color utilities for zag.js",
-  "keywords": ["js", "utils", "color-utils"],
+  "keywords": [
+    "js",
+    "utils",
+    "color-utils"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/color-utils",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src",
     "start": "pnpm build --watch",
@@ -29,6 +35,9 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "clean-package": "../../../clean-package.config.json",
+  "dependencies": {
+    "@zag-js/number-utils": "workspace:*"
+  },
   "devDependencies": {
     "clean-package": "2.2.0"
   }

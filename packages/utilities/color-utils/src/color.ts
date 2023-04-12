@@ -1,11 +1,12 @@
-import { ColorAxes, ColorChannel, ColorChannelRange, ColorFormat, Color as IColor } from "@react-types/color"
+import type { ColorType, ColorFormat, ColorChannel, ColorChannelRange, ColorAxes } from "./types"
 
-export abstract class Color implements IColor {
-  abstract toFormat(format: ColorFormat): IColor
+export abstract class Color implements ColorType {
+  abstract toFormat(format: ColorFormat): ColorType
   abstract toString(format: ColorFormat | "css"): string
-  abstract clone(): IColor
+  abstract clone(): ColorType
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
-  abstract formatChannelValue(channel: ColorChannel, locale: string): string
+  abstract getColorSpace(): ColorFormat
+  abstract getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
 
   toHexInt(): number {
     return this.toFormat("rgb").toHexInt()
@@ -19,29 +20,21 @@ export abstract class Color implements IColor {
     throw new Error("Unsupported color channel: " + channel)
   }
 
-  withChannelValue(channel: ColorChannel, value: number): IColor {
+  withChannelValue(channel: ColorChannel, value: number): ColorType {
     if (channel in this) {
-      let x = this.clone()
-      x[channel] = value
-      return x
+      let clone = this.clone()
+      clone[channel] = value
+      return clone
     }
 
     throw new Error("Unsupported color channel: " + channel)
   }
-
-  getChannelName(channel: ColorChannel, locale: string) {
-    return strings.getStringForLocale(channel, locale)
-  }
-
-  abstract getColorSpace(): ColorFormat
 
   getColorSpaceAxes(xyChannels: { xChannel?: ColorChannel; yChannel?: ColorChannel }): ColorAxes {
     let { xChannel, yChannel } = xyChannels
     let xCh = xChannel || this.getColorChannels().find((c) => c !== yChannel)
     let yCh = yChannel || this.getColorChannels().find((c) => c !== xCh)
     let zCh = this.getColorChannels().find((c) => c !== xCh && c !== yCh)
-
-    return { xChannel: xCh, yChannel: yCh, zChannel: zCh }
+    return { xChannel: xCh!, yChannel: yCh!, zChannel: zCh! }
   }
-  abstract getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
 }
