@@ -199,4 +199,8 @@ export class RGBColor extends Color {
   getColorChannels(): [ColorChannel, ColorChannel, ColorChannel] {
     return RGBColor.colorChannels
   }
+
+  set(v: Partial<{ red: number; green: number; blue: number; alpha: number }>): ColorType {
+    return new RGBColor(v.red ?? this.red, v.green ?? this.green, v.blue ?? this.blue, v.alpha ?? this.alpha)
+  }
 }

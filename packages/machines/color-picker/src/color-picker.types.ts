@@ -1,32 +1,77 @@
+import { Color, ColorChannel, ColorFormat } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
-
-type RGB = "red" | "green" | "blue"
-
-type HSL = "hue" | "saturation" | "lightness"
-
-type Alpha = "alpha"
+import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
 
 export type ChannelProps = {
-  channel: RGB | HSL | Alpha
+  channel: ColorChannel
+  orientation?: "vertical" | "horizontal"
 }
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    disabled?: boolean
-    orientation: "horizontal" | "vertical"
+export type AreaProps = {
+  xChannel: ColorChannel
+  yChannel: ColorChannel
+}
+
+export type PreviewProps = {
+  format?: ColorFormat
+  value: string | Color
+}
+
+type ChangeDetails = {
+  value: string
+  valueAsColor: Color
+}
+
+type PublicContext = CommonProperties & {
+  /**
+   * The direction of the color picker
+   */
+  dir?: "ltr" | "rtl"
+  /**
+   * The current color value
+   */
+  value: string
+  /**
+   * Whether the color picker is disabled
+   */
+  disabled?: boolean
+  /**
+   * The active color format
+   */
+  format: ColorFormat
+  /**
+   * Handler that is called when the value changes, as the user drags.
+   */
+  onChange?: (details: ChangeDetails) => void
+  /**
+   * Handler that is called when the user stops dragging.
+   */
+  onChangeEnd?: (details: ChangeDetails) => void
+  /**
+   * The id of the thumb that is currently being dragged
+   */
+  activeThumbId?: string
+}
+
+type PrivateContext = Context<{
+  valueAsColor: Color
+}>
+
+type ComputedContext = Readonly<{
+  channels: {
+    xValue: number
+    yValue: number
+    zValue: number
+    alphaValue: number
   }
-
-type PrivateContext = Context<{}>
-
-type ComputedContext = Readonly<{}>
+}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "idle"
+  value: "idle" | "focused" | "dragging"
 }
 
 export type State = S.State<MachineContext, MachineState>

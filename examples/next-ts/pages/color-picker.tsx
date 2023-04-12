@@ -1,6 +1,6 @@
-import * as colorPicker from "@zag-js/colorPicker"
+import * as colorPicker from "@zag-js/color-picker"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { colorPickerControls, colorPickerData } from "@zag-js/shared"
+import { colorPickerControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"

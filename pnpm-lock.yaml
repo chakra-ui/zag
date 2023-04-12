@@ -1409,12 +1409,21 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../utilities/color-utils
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/number-utils':
+        specifier: workspace:*
+        version: link:../../utilities/number
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

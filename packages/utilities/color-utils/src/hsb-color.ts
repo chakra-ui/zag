@@ -117,4 +117,13 @@ export class HSBColor extends Color {
   getColorChannels(): [ColorChannel, ColorChannel, ColorChannel] {
     return HSBColor.colorChannels
   }
+
+  set(v: Partial<{ hue: number; saturation: number; brightness: number; alpha: number }>): ColorType {
+    return new HSBColor(
+      v.hue ?? this.hue,
+      v.saturation ?? this.saturation,
+      v.brightness ?? this.brightness,
+      v.alpha ?? this.alpha,
+    )
+  }
 }

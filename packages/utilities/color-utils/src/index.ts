@@ -1,2 +1,3 @@
 export { Color } from "./color"
-export { parseColor } from "./parse-color"
+export { isValidColor, parseColor, normalizeColor } from "./parse-color"
+export type { ColorChannel, ColorFormat } from "./types"

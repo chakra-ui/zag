@@ -48,4 +48,5 @@ export interface ColorType {
    * Returns an array of the color channels within the current color space space.
    */
   getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
+  clone(): ColorType
 }

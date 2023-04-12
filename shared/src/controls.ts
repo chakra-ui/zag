@@ -196,3 +196,10 @@ export const carouselControls = defineControls({
   align: { type: "select", options: ["start", "center", "end"] as const, defaultValue: "start" },
   loop: { type: "boolean", defaultValue: false },
 })
+
+export const colorPickerControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  format: { type: "select", options: ["hex", "rgb", "hsl"] as const, defaultValue: "hex" },
+})
