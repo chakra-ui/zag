@@ -63,6 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to set the checked state of the checkbox
      */
     setChecked(checked: boolean) {
+      if (!isInteractive) return
       send({ type: "SET_STATE", checked, manual: true })
     },
     /**

@@ -1,10 +1,8 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./checkbox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
-
-const { and } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -37,12 +35,11 @@ export function machine(userContext: UserDefinedContext) {
       on: {
         SET_STATE: [
           {
-            guard: and("shouldCheck", "isInteractive"),
+            guard: "shouldCheck",
             target: "checked",
             actions: ["invokeOnChange", "dispatchChangeEvent"],
           },
           {
-            guard: "isInteractive",
             target: "unchecked",
             actions: ["invokeOnChange", "dispatchChangeEvent"],
           },
@@ -134,6 +131,9 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.disabled && ctx.focused) {
             ctx.focused = false
           }
+        },
+        toggleChecked(ctx, _evt, { send }) {
+          send({ type: "SET_STATE", checked: ctx.checked, controlled: true })
         },
       },
     },
