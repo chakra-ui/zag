@@ -1433,6 +1433,17 @@ main > .toggle[data-pressed] {
   border-radius: 4px;
 }
 
+[data-scope="color-picker"][data-part="swatch"] {
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+[data-scope="color-picker"][data-part="swatch-bg"] {
+  border-radius: 4px;
+}
+
 /* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/

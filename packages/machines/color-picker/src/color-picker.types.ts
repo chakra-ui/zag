@@ -1,4 +1,4 @@
-import { Color, ColorChannel, ColorFormat, ColorAxes } from "@zag-js/color-utils"
+import { Color, ColorAxes, ColorChannel } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
 
@@ -12,8 +12,7 @@ export type AreaProps = {
   yChannel: ColorChannel
 }
 
-export type PreviewProps = {
-  format?: ColorFormat
+export type SwatchProps = {
   value: string | Color
 }
 
@@ -36,10 +35,6 @@ type PublicContext = CommonProperties & {
    */
   disabled?: boolean
   /**
-   * The active color format
-   */
-  format: ColorFormat
-  /**
    * Handler that is called when the value changes, as the user drags.
    */
   onChange?: (details: ChangeDetails) => void
@@ -54,12 +49,20 @@ type PrivateContext = Context<{
    * The id of the thumb that is currently being dragged
    */
   activeId: string | null
+  /**
+   * The color value as a Color object
+   */
   valueAsColor: Color
+  /**
+   * The channel that is currently being interacted with
+   */
   activeChannel: Partial<ColorAxes> | null
 }>
 
 type ComputedContext = Readonly<{
-  displayColor: Color
+  /**
+   * Whether the color picker is in RTL mode
+   */
   isRtl: boolean
 }>
 

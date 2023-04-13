@@ -12,7 +12,6 @@ export default function Page() {
   const [state, send] = useMachine(
     colorPicker.machine({
       id: useId(),
-      format: "hsla",
       value: "hsl(0, 100%, 50%)",
     }),
     {
@@ -40,6 +39,15 @@ export default function Page() {
             <div {...api.getSliderBackgroundProps({ channel: "alpha" })} />
             <div {...api.getSliderThumbProps({ channel: "alpha" })} />
           </div>
+
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <div {...api.getSwatchProps({ value: api.valueAsColor })}>
+              <div {...api.getSwatchBackgroundProps({ value: api.valueAsColor })} />
+            </div>
+            <p>{api.value}</p>
+          </div>
+
+          <button {...api.eyeDropperTriggerProps}>Eye Dropper</button>
         </div>
       </main>
 

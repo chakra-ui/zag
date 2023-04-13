@@ -2228,10 +2228,6 @@ importers:
         version: 2.2.0
 
   packages/utilities/color-utils:
-    dependencies:
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../number
     devDependencies:
       clean-package:
         specifier: 2.2.0

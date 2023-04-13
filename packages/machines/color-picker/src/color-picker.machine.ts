@@ -1,4 +1,4 @@
-import { Color, parseColor } from "@zag-js/color-utils"
+import { Color, ColorChannel, parseColor } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { getPercentValue } from "@zag-js/numeric-range"
@@ -16,7 +16,6 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         dir: "ltr",
-        format: "hex",
         activeId: null,
         activeChannel: null,
         value: "#D9D9D9",
@@ -26,14 +25,23 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
-        displayColor: (ctx) => ctx.valueAsColor.withChannelValue("alpha", 1),
+      },
+
+      on: {
+        "VALUE.SET": {
+          actions: ["setValue"],
+        },
+      },
+
+      watch: {
+        value: ["setValueAsColor"],
       },
 
       states: {
         idle: {
           on: {
-            "EYEDROP.CLICK": {
-              actions: ["openEyeDropperper"],
+            "EYEDROPPER.CLICK": {
+              actions: ["openEyeDropper"],
             },
             "AREA.POINTER_DOWN": {
               target: "dragging",
@@ -117,11 +125,12 @@ export function machine(userContext: UserDefinedContext) {
         openEyeDropper(ctx) {
           const isSupported = "EyeDropper" in dom.getWin(ctx)
           if (!isSupported) return
-          const picker = new (dom.getWin as any).EyeDropper()
+          const win = dom.getWin(ctx) as any
+          const picker = new win.EyeDropper()
           picker
             .open()
             .then(({ sRGBHex }: { sRGBHex: string }) => {
-              const color = parseColor(sRGBHex).toFormat(ctx.format)
+              const color = parseColor(sRGBHex)
               setColor(ctx, color)
               ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: color })
             })
@@ -160,8 +169,21 @@ export function machine(userContext: UserDefinedContext) {
 
           setColor(ctx, newColor)
         },
+        setValue(ctx, evt) {
+          setColor(ctx, evt.value)
+        },
         setValueAsColor(ctx) {
-          ctx.valueAsColor = parseColor(ctx.value)
+          const color = parseColor(ctx.value)
+          if (color.isEqual(ctx.valueAsColor)) return
+          ctx.valueAsColor = color
+        },
+        syncChannelInputs(ctx) {
+          const inputs = dom.getChannelInputEls(ctx)
+          inputs.forEach((input) => {
+            const channel = input.getAttribute("data-channel") as ColorChannel
+            const value = ctx.valueAsColor.getChannelValue(channel)
+            input.value = value.toString()
+          })
         },
         incrementXChannel() {},
         decrementXChannel() {},
@@ -169,15 +191,12 @@ export function machine(userContext: UserDefinedContext) {
         decrementYChannel() {},
         incrementAlphaChannel() {},
         decrementAlphaChannel() {},
-        setValue(ctx, evt) {
-          ctx.value = evt.value
-        },
       },
     },
   )
 }
 
 const setColor = (ctx: MachineContext, color: Color) => {
-  ctx.value = color.toString(ctx.format)
+  ctx.value = color.toString("css")
   ctx.valueAsColor = color
 }

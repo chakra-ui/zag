@@ -48,5 +48,12 @@ export interface ColorType {
    * Returns an array of the color channels within the current color space space.
    */
   getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
+  /**
+   * Returns a new Color object with the same values as the current color.
+   */
   clone(): ColorType
+  /**
+   * Whether the color is equal to another color.
+   */
+  isEqual(color: ColorType): boolean
 }

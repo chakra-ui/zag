@@ -37,4 +37,8 @@ export abstract class Color implements ColorType {
     let zCh = this.getColorChannels().find((c) => c !== xCh && c !== yCh)
     return { xChannel: xCh!, yChannel: yCh!, zChannel: zCh! }
   }
+
+  isEqual(color: ColorType): boolean {
+    return this.toHexInt() === color.toHexInt()
+  }
 }

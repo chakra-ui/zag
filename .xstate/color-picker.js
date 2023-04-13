@@ -14,6 +14,11 @@ const fetchMachine = createMachine({
   initial: "idle",
   context: {},
   on: {
+    "VALUE.SET": {
+      actions: ["setValue"]
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
@@ -21,8 +26,8 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        "EYEDROP.CLICK": {
-          actions: ["openEyeDropperper"]
+        "EYEDROPPER.CLICK": {
+          actions: ["openEyeDropper"]
         },
         "AREA.POINTER_DOWN": {
           target: "dragging",

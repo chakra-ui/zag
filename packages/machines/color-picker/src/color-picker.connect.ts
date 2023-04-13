@@ -1,14 +1,14 @@
-import { normalizeColor } from "@zag-js/color-utils"
+import { Color, ColorFormat, normalizeColor } from "@zag-js/color-utils"
 import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
-import { AreaProps, ChannelProps, PreviewProps, Send, State } from "./color-picker.types"
+import { dom } from "./color-picker.dom"
+import { AreaProps, ChannelProps, Send, State, SwatchProps } from "./color-picker.types"
 import { getChannelDetails } from "./color-picker.utils"
+import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getColorAreaGradient } from "./utils/get-color-area-gradient"
 import { getSliderBgImage } from "./utils/get-slider-background"
-import { dom } from "./color-picker.dom"
-import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const valueAsColor = state.context.valueAsColor
@@ -16,7 +16,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const channels = valueAsColor.getColorChannels()
 
   return {
+    value: state.context.value,
+    valueAsColor,
     channels,
+    setColor(value: string | Color) {
+      send({ type: "VALUE.SET", value: normalizeColor(value) })
+    },
+    setFormat(format: ColorFormat) {
+      const value = valueAsColor.toFormat(format)
+      send({ type: "VALUE.SET", value })
+    },
+
+    contentProps: normalize.element({
+      ...parts.content.attrs,
+      id: dom.getContentId(state.context),
+    }),
 
     getAreaProps(props: AreaProps) {
       const { xChannel, yChannel } = props
@@ -76,7 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
-          background: state.context.displayColor.toString("css"),
+          background: valueAsColor.withChannelValue("alpha", 1).toString("css"),
         },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
@@ -186,28 +200,62 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getInputProps(props: ChannelProps) {
-      return normalize.element({
+    getChannelInputProps(props: ChannelProps) {
+      const { channel } = props
+      return normalize.input({
         ...parts.input.attrs,
-      })
-    },
-
-    eyeDropTriggerProps(props: ChannelProps) {
-      return normalize.button({
-        ...parts.eyeDropTrigger.attrs,
-        onClick() {
-          send("EYEDROP.CLICK")
+        type: "number",
+        "data-channel": channel,
+        "aria-label": channel,
+        disabled: isDisabled,
+        id: dom.getInputId(state.context, channel),
+        defaultValue: valueAsColor.getChannelValue(channel),
+        onChange(event) {
+          const value = event.currentTarget.value
+          send({ type: "INPUT.CHANGE", channel, value })
+        },
+        style: {
+          appearance: "none",
+          WebkitAppearance: "none",
         },
       })
     },
 
-    getPreviewProps(props: PreviewProps) {
-      const { format = "css", value } = props
+    eyeDropperTriggerProps: normalize.button({
+      ...parts.eyeDropTrigger.attrs,
+      onClick() {
+        send("EYEDROPPER.CLICK")
+      },
+    }),
+
+    getSwatchBackgroundProps(props: SwatchProps) {
+      const { value } = props
+      const alpha = normalizeColor(value).getChannelValue("alpha")
+      return normalize.element({
+        ...parts.swatchBg.attrs,
+        "data-alpha": alpha,
+        style: {
+          width: "100%",
+          height: "100%",
+          background: "#fff",
+          backgroundImage: `linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%),linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%),linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%),linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)`,
+          backgroundPosition: "-2px -2px,-2px 6px,6px -10px,-10px -2px",
+          backgroundSize: "16px 16px",
+          position: "absolute",
+          inset: "0px",
+          zIndex: -1,
+        },
+      })
+    },
+
+    getSwatchProps(props: SwatchProps) {
+      const { value } = props
       const color = normalizeColor(value)
       return normalize.element({
-        ...parts.preview.attrs,
+        ...parts.swatch.attrs,
         style: {
-          background: color.toString(format),
+          position: "relative",
+          background: color.toString("css"),
         },
       })
     },

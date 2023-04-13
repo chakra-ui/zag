@@ -8,7 +8,9 @@ export const anatomy = createAnatomy("color-picker", [
   "sliderTrackBg",
   "sliderThumb",
   "input",
-  "preview",
+  "swatchBg",
+  "swatch",
+  "content",
   "label",
   "eyeDropTrigger",
 ])
