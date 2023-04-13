@@ -4,7 +4,7 @@ import { ExtendedColorChannel } from "../color-picker.types"
 export function getChannelInputValue(color: Color, channel: ExtendedColorChannel) {
   switch (channel) {
     case "hex":
-      return color.toFormat("hex").toString("css")
+      return color.toString("hex")
     case "css":
       return color.toString("css")
     default:

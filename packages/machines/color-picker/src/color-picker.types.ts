@@ -72,7 +72,7 @@ type PrivateContext = Context<{
   /**
    * The orientation of the channel that is currently being interacted with
    */
-  activeChannelOrientation: Orientation | null
+  activeOrientation: Orientation | null
 }>
 
 type ComputedContext = Readonly<{

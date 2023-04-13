@@ -18,12 +18,3 @@ export function normalizeColor(v: string | ColorType) {
     return v
   }
 }
-
-export const isValidColor = (v: string | ColorType) => {
-  try {
-    normalizeColor(v)
-    return true
-  } catch (e) {
-    return false
-  }
-}

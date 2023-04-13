@@ -1,9 +1,10 @@
 import { Color, parseColor } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
+import { raf } from "@zag-js/dom-query"
 import { clampValue, getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
-import { compact } from "@zag-js/utils"
 import { disableTextSelection } from "@zag-js/text-selection"
+import { compact } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
 import { ExtendedColorChannel, MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
 import { getChannelDetails } from "./utils/get-channel-details"
@@ -20,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         activeId: null,
         activeChannel: null,
-        activeChannelOrientation: null,
+        activeOrientation: null,
         value: "#D9D9D9",
         ...ctx,
         valueAsColor: parseColor(ctx.value || "#D9D9D9"),
@@ -49,11 +50,11 @@ export function machine(userContext: UserDefinedContext) {
             },
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveChannel", "setAreaColorFromPoint"],
+              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
             },
-            "SLIDER.POINTER_DOWN": {
+            "CHANNEL_SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveChannel", "setChannelColorFromPoint"],
+              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
             },
             "CHANNEL_INPUT.FOCUS": {
               target: "focused",
@@ -69,11 +70,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveChannel", "setAreaColorFromPoint"],
+              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
             },
-            "SLIDER.POINTER_DOWN": {
+            "CHANNEL_SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveChannel", "setChannelColorFromPoint"],
+              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
             },
             "AREA.ARROW_LEFT": {
               actions: ["decrementXChannel"],
@@ -82,10 +83,10 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["incrementXChannel"],
             },
             "AREA.ARROW_UP": {
-              actions: ["decrementYChannel"],
+              actions: ["incrementYChannel"],
             },
             "AREA.ARROW_DOWN": {
-              actions: ["incrementYChannel"],
+              actions: ["decrementYChannel"],
             },
             "AREA.PAGE_UP": {
               actions: ["incrementXChannel"],
@@ -93,11 +94,49 @@ export function machine(userContext: UserDefinedContext) {
             "AREA.PAGE_DOWN": {
               actions: ["decrementXChannel"],
             },
+            "CHANNEL_SLIDER.ARROW_LEFT": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_RIGHT": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_UP": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_DOWN": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.PAGE_UP": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.PAGE_DOWN": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.HOME": {
+              actions: ["setChannelToMin"],
+            },
+            "CHANNEL_SLIDER.END": {
+              actions: ["setChannelToMax"],
+            },
             "CHANNEL_INPUT.FOCUS": {
               actions: ["setActiveChannel"],
             },
             "CHANNEL_INPUT.CHANGE": {
               actions: ["setChannelColorFromInput"],
+            },
+            "CHANNEL_INPUT.BLUR": [
+              {
+                guard: "isTextField",
+                target: "idle",
+                actions: ["setChannelColorFromInput"],
+              },
+              { target: "idle" },
+            ],
+            "CHANNEL_SLIDER.BLUR": {
+              target: "idle",
+            },
+            "AREA.BLUR": {
+              target: "idle",
             },
           },
         },
@@ -113,10 +152,10 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: ["invokeOnChangeEnd"],
             },
-            "SLIDER.POINTER_MOVE": {
+            "CHANNEL_SLIDER.POINTER_MOVE": {
               actions: ["setChannelColorFromPoint"],
             },
-            "SLIDER.POINTER_UP": {
+            "CHANNEL_SLIDER.POINTER_UP": {
               target: "focused",
               actions: ["invokeOnChangeEnd"],
             },
@@ -125,15 +164,18 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      guards: {
+        isTextField: (_ctx, evt) => !!evt.isTextField,
+      },
       activities: {
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove({ point }) {
-              const type = ctx.activeId === "area" ? "AREA.POINTER_MOVE" : "SLIDER.POINTER_MOVE"
+              const type = ctx.activeId === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
               send({ type, point })
             },
             onPointerUp() {
-              const type = ctx.activeId === "area" ? "AREA.POINTER_UP" : "SLIDER.POINTER_UP"
+              const type = ctx.activeId === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
               send({ type })
             },
           })
@@ -151,7 +193,8 @@ export function machine(userContext: UserDefinedContext) {
           picker
             .open()
             .then(({ sRGBHex }: { sRGBHex: string }) => {
-              const color = parseColor(sRGBHex)
+              const format = ctx.valueAsColor.getColorSpace()
+              const color = parseColor(sRGBHex).toFormat(format)
               setColor(ctx, color)
               ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: color })
             })
@@ -163,13 +206,13 @@ export function machine(userContext: UserDefinedContext) {
             ctx.activeChannel = evt.channel
           }
           if (evt.orientation) {
-            ctx.activeChannelOrientation = evt.orientation
+            ctx.activeOrientation = evt.orientation
           }
         },
         clearActiveChannel(ctx) {
           ctx.activeChannel = null
           ctx.activeId = null
-          ctx.activeChannelOrientation = null
+          ctx.activeOrientation = null
         },
         setAreaColorFromPoint(ctx, evt) {
           const { xChannel, yChannel } = evt.channel || ctx.activeChannel
@@ -186,7 +229,7 @@ export function machine(userContext: UserDefinedContext) {
           const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
 
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
-          const position = ctx.activeChannelOrientation || "horizontal"
+          const position = ctx.activeOrientation || "horizontal"
 
           const point = position === "horizontal" ? percent.x : percent.y
           const channelValue = getPercentValue(point, minValue, maxValue, step)
@@ -216,33 +259,91 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setChannelColorFromInput(ctx, evt) {
+          const { channel, isTextField, value } = evt
           try {
-            const channel = evt.channel
-            const newColor = evt.isTextField
-              ? parseColor(evt.value)
-              : ctx.valueAsColor.withChannelValue(channel, evt.value)
+            const format = ctx.valueAsColor.getColorSpace()
+
+            const newColor = isTextField
+              ? parseColor(value).toFormat(format)
+              : ctx.valueAsColor.withChannelValue(channel, value)
+
             setColor(ctx, newColor)
-          } catch {}
+            //
+          } catch {
+            // reset input value
+            const input = dom.getChannelInputEl(ctx, channel)
+            if (!input) return
+            input.value = getChannelInputValue(ctx.valueAsColor, channel)
+          }
         },
+
         incrementChannel(ctx, evt) {
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
           const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
-          const value = snapValueToStep(channelValue + step, minValue, maxValue, step)
+          const value = snapValueToStep(channelValue + evt.step, minValue, maxValue, step)
           const newColor = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
           setColor(ctx, newColor)
         },
         decrementChannel(ctx, evt) {
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
           const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
-          const value = snapValueToStep(channelValue - step, minValue, maxValue, step)
+          const value = snapValueToStep(channelValue - evt.step, minValue, maxValue, step)
           const newColor = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
           setColor(ctx, newColor)
         },
+
+        incrementXChannel(ctx, evt) {
+          const { xChannel, yChannel } = evt.channel
+          const { incrementX } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
+          const newColor = ctx.valueAsColor.withChannelValue(xChannel, incrementX(evt.step))
+          setColor(ctx, newColor)
+        },
+        decrementXChannel(ctx, evt) {
+          const { xChannel, yChannel } = evt.channel
+          const { decrementX } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
+          const newColor = ctx.valueAsColor.withChannelValue(xChannel, decrementX(evt.step))
+          setColor(ctx, newColor)
+        },
+
+        incrementYChannel(ctx, evt) {
+          const { xChannel, yChannel } = evt.channel
+          const { incrementY } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
+          const newColor = ctx.valueAsColor.withChannelValue(yChannel, incrementY(evt.step))
+          setColor(ctx, newColor)
+        },
+        decrementYChannel(ctx, evt) {
+          const { xChannel, yChannel } = evt.channel
+          const { decrementY } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
+          const newColor = ctx.valueAsColor.withChannelValue(yChannel, decrementY(evt.step))
+          setColor(ctx, newColor)
+        },
+
+        setChannelToMax(ctx, evt) {
+          const { maxValue } = ctx.valueAsColor.getChannelRange(evt.channel)
+          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, maxValue)
+          setColor(ctx, newColor)
+        },
+        setChannelToMin(ctx, evt) {
+          const { minValue } = ctx.valueAsColor.getChannelRange(evt.channel)
+          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, minValue)
+          setColor(ctx, newColor)
+        },
+
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
         },
         invokeOnChange(ctx) {
           ctx.onChange?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
+        },
+        focusAreaThumb(ctx) {
+          raf(() => {
+            dom.getAreaThumbEl(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        focusChannelThumb(ctx, evt) {
+          raf(() => {
+            dom.getChannelSliderThumbEl(ctx, evt.channel)?.focus({ preventScroll: true })
+          })
         },
       },
     },

@@ -12,7 +12,9 @@ const {
 const fetchMachine = createMachine({
   id: "color-picker",
   initial: "idle",
-  context: {},
+  context: {
+    "isTextField": false
+  },
   on: {
     "VALUE.SET": {
       actions: ["setValue"]
@@ -31,11 +33,11 @@ const fetchMachine = createMachine({
         },
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveChannel", "setAreaColorFromPoint"]
+          actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"]
         },
-        "SLIDER.POINTER_DOWN": {
+        "CHANNEL_SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveChannel", "setChannelColorFromPoint"]
+          actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"]
         },
         "CHANNEL_INPUT.FOCUS": {
           target: "focused",
@@ -50,11 +52,11 @@ const fetchMachine = createMachine({
       on: {
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveChannel", "setAreaColorFromPoint"]
+          actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"]
         },
-        "SLIDER.POINTER_DOWN": {
+        "CHANNEL_SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveChannel", "setChannelColorFromPoint"]
+          actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"]
         },
         "AREA.ARROW_LEFT": {
           actions: ["decrementXChannel"]
@@ -63,10 +65,10 @@ const fetchMachine = createMachine({
           actions: ["incrementXChannel"]
         },
         "AREA.ARROW_UP": {
-          actions: ["decrementYChannel"]
+          actions: ["incrementYChannel"]
         },
         "AREA.ARROW_DOWN": {
-          actions: ["incrementYChannel"]
+          actions: ["decrementYChannel"]
         },
         "AREA.PAGE_UP": {
           actions: ["incrementXChannel"]
@@ -74,11 +76,48 @@ const fetchMachine = createMachine({
         "AREA.PAGE_DOWN": {
           actions: ["decrementXChannel"]
         },
+        "CHANNEL_SLIDER.ARROW_LEFT": {
+          actions: ["decrementChannel"]
+        },
+        "CHANNEL_SLIDER.ARROW_RIGHT": {
+          actions: ["incrementChannel"]
+        },
+        "CHANNEL_SLIDER.ARROW_UP": {
+          actions: ["incrementChannel"]
+        },
+        "CHANNEL_SLIDER.ARROW_DOWN": {
+          actions: ["decrementChannel"]
+        },
+        "CHANNEL_SLIDER.PAGE_UP": {
+          actions: ["incrementChannel"]
+        },
+        "CHANNEL_SLIDER.PAGE_DOWN": {
+          actions: ["decrementChannel"]
+        },
+        "CHANNEL_SLIDER.HOME": {
+          actions: ["setChannelToMin"]
+        },
+        "CHANNEL_SLIDER.END": {
+          actions: ["setChannelToMax"]
+        },
         "CHANNEL_INPUT.FOCUS": {
           actions: ["setActiveChannel"]
         },
         "CHANNEL_INPUT.CHANGE": {
           actions: ["setChannelColorFromInput"]
+        },
+        "CHANNEL_INPUT.BLUR": [{
+          cond: "isTextField",
+          target: "idle",
+          actions: ["setChannelColorFromInput"]
+        }, {
+          target: "idle"
+        }],
+        "CHANNEL_SLIDER.BLUR": {
+          target: "idle"
+        },
+        "AREA.BLUR": {
+          target: "idle"
         }
       }
     },
@@ -93,10 +132,10 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["invokeOnChangeEnd"]
         },
-        "SLIDER.POINTER_MOVE": {
+        "CHANNEL_SLIDER.POINTER_MOVE": {
           actions: ["setChannelColorFromPoint"]
         },
-        "SLIDER.POINTER_UP": {
+        "CHANNEL_SLIDER.POINTER_UP": {
           target: "focused",
           actions: ["invokeOnChangeEnd"]
         }
@@ -111,5 +150,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isTextField": ctx => ctx["isTextField"]
+  }
 });

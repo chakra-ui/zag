@@ -1,5 +1,5 @@
-import { Color, ColorFormat, normalizeColor } from "@zag-js/color-utils"
-import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { Color, ColorChannel, ColorFormat, normalizeColor } from "@zag-js/color-utils"
+import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
@@ -15,19 +15,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const valueAsColor = state.context.valueAsColor
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
+  const isDragging = state.matches("dragging")
 
   const channels = valueAsColor.getColorChannels()
 
   return {
+    isDragging,
     value: state.context.value,
     valueAsColor,
     channels,
     setColor(value: string | Color) {
-      send({ type: "VALUE.SET", value: normalizeColor(value) })
+      send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
+    },
+    setChannelValue(channel: ColorChannel, value: number) {
+      const color = valueAsColor.withChannelValue(channel, value)
+      send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
     setFormat(format: ColorFormat) {
       const value = valueAsColor.toFormat(format)
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value, src: "set-format" })
     },
 
     contentProps: normalize.element({
@@ -84,6 +90,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { getThumbPosition } = getChannelDetails(valueAsColor, xChannel, yChannel)
       const { x, y } = getThumbPosition()
 
+      const channel = { xChannel, yChannel }
+
       return normalize.element({
         ...parts.areaThumb.attrs,
         id: dom.getAreaThumbId(state.context),
@@ -99,32 +107,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           forcedColorAdjust: "none",
           background: valueAsColor.withChannelValue("alpha", 1).toString("css"),
         },
+        onBlur() {
+          send("AREA.BLUR")
+        },
         onKeyDown(event) {
           if (!isInteractive) return
+
+          const step = getEventStep(event)
+
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              send("AREA.ARROW_UP")
+              send({ type: "AREA.ARROW_UP", channel, step })
             },
             ArrowDown() {
-              send("AREA.ARROW_DOWN")
+              send({ type: "AREA.ARROW_DOWN", channel, step })
             },
             ArrowLeft() {
-              send("AREA.ARROW_LEFT")
+              send({ type: "AREA.ARROW_LEFT", channel, step })
             },
             ArrowRight() {
-              send("AREA.ARROW_RIGHT")
+              send({ type: "AREA.ARROW_RIGHT", channel, step })
             },
             PageUp() {
-              send("AREA.PAGE_UP")
+              send({ type: "AREA.PAGE_UP", channel, step })
             },
             PageDown() {
-              send("AREA.PAGE_DOWN")
+              send({ type: "AREA.PAGE_DOWN", channel, step })
             },
           }
 
-          const execute = keyMap[getEventKey(event, state.context)]
-          if (execute) {
-            execute(event)
+          const exec = keyMap[getEventKey(event, state.context)]
+
+          if (exec) {
+            exec(event)
             event.preventDefault()
           }
         },
@@ -147,7 +162,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
           const point = { x: evt.clientX, y: evt.clientY }
-          send({ type: "SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
+          send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
         },
         style: {
           position: "relative",
@@ -183,7 +198,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getChannelSliderThumbProps(props: ChannelProps) {
       const { orientation = "horizontal", channel } = props
-      const { minValue, maxValue } = valueAsColor.getChannelRange(channel)
+      const { minValue, maxValue, step: stepValue } = valueAsColor.getChannelRange(channel)
       const channelValue = valueAsColor.getChannelValue(channel)
 
       const offset = (channelValue - minValue) / (maxValue - minValue)
@@ -195,6 +210,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
+        id: dom.getChannelSliderThumbId(state.context, channel),
         role: "slider",
         "aria-label": channel,
         tabIndex: isDisabled ? undefined : 0,
@@ -214,11 +230,49 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onFocus() {
           if (!isInteractive) return
-          send({ type: "SLIDER.FOCUS", channel })
+          send({ type: "CHANNEL_SLIDER.FOCUS", channel })
         },
         onBlur() {
           if (!isInteractive) return
-          send({ type: "SLIDER.BLUR", channel })
+          send({ type: "CHANNEL_SLIDER.BLUR", channel })
+        },
+        onKeyDown(event) {
+          if (!isInteractive) return
+          const step = getEventStep(event) * stepValue
+
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "CHANNEL_SLIDER.ARROW_UP", channel, step })
+            },
+            ArrowDown() {
+              send({ type: "CHANNEL_SLIDER.ARROW_DOWN", channel, step })
+            },
+            ArrowLeft() {
+              send({ type: "CHANNEL_SLIDER.ARROW_LEFT", channel, step })
+            },
+            ArrowRight() {
+              send({ type: "CHANNEL_SLIDER.ARROW_RIGHT", channel, step })
+            },
+            PageUp() {
+              send({ type: "CHANNEL_SLIDER.PAGE_UP", channel })
+            },
+            PageDown() {
+              send({ type: "CHANNEL_SLIDER.PAGE_DOWN", channel })
+            },
+            Home() {
+              send({ type: "CHANNEL_SLIDER.HOME", channel })
+            },
+            End() {
+              send({ type: "CHANNEL_SLIDER.END", channel })
+            },
+          }
+
+          const exec = keyMap[getEventKey(event, state.context)]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
         },
       })
     },
@@ -249,14 +303,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const value = event.currentTarget.value
           send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
         },
-        onBlur() {
-          if (!isTextField) return
-          send({ type: "CHANNEL_INPUT.CHANGE", channel })
+        onBlur(event) {
+          const value = event.currentTarget.value
+          send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
         onKeyDown(event) {
           if (!isTextField) return
           if (event.key === "Enter") {
-            send({ type: "CHANNEL_INPUT.CHANGE", channel })
+            const value = event.currentTarget.value
+            send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
           }
         },
         style: {
