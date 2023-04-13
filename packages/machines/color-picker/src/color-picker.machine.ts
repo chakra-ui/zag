@@ -189,9 +189,11 @@ export function machine(userContext: UserDefinedContext) {
           const position = ctx.activeChannelOrientation || "horizontal"
 
           const point = position === "horizontal" ? percent.x : percent.y
-          const value = getPercentValue(point, minValue, maxValue, step)
+          const channelValue = getPercentValue(point, minValue, maxValue, step)
 
+          const value = snapValueToStep(channelValue - step, minValue, maxValue, step)
           const newColor = ctx.valueAsColor.withChannelValue(channel, value)
+
           setColor(ctx, newColor)
         },
         setValue(ctx, evt) {
