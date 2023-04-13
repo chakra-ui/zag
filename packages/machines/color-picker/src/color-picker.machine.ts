@@ -1,8 +1,9 @@
 import { Color, parseColor } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
-import { getPercentValue } from "@zag-js/numeric-range"
+import { clampValue, getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
+import { disableTextSelection } from "@zag-js/text-selection"
 import { dom } from "./color-picker.dom"
 import { ExtendedColorChannel, MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
 import { getChannelDetails } from "./utils/get-channel-details"
@@ -103,7 +104,7 @@ export function machine(userContext: UserDefinedContext) {
 
         dragging: {
           exit: ["clearActiveChannel"],
-          activities: ["trackPointerMove"],
+          activities: ["trackPointerMove", "disableTextSelection"],
           on: {
             "AREA.POINTER_MOVE": {
               actions: ["setAreaColorFromPoint"],
@@ -124,7 +125,6 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      guards: {},
       activities: {
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
@@ -137,6 +137,9 @@ export function machine(userContext: UserDefinedContext) {
               send({ type })
             },
           })
+        },
+        disableTextSelection(ctx) {
+          return disableTextSelection({ doc: dom.getDoc(ctx), target: dom.getContentEl(ctx) })
         },
       },
       actions: {
@@ -219,12 +222,20 @@ export function machine(userContext: UserDefinedContext) {
             setColor(ctx, newColor)
           } catch {}
         },
-        incrementXChannel() {},
-        decrementXChannel() {},
-        incrementYChannel() {},
-        decrementYChannel() {},
-        incrementAlphaChannel() {},
-        decrementAlphaChannel() {},
+        incrementChannel(ctx, evt) {
+          const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
+          const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
+          const value = snapValueToStep(channelValue + step, minValue, maxValue, step)
+          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
+          setColor(ctx, newColor)
+        },
+        decrementChannel(ctx, evt) {
+          const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
+          const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
+          const value = snapValueToStep(channelValue - step, minValue, maxValue, step)
+          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
+          setColor(ctx, newColor)
+        },
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
         },

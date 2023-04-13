@@ -196,10 +196,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
         role: "slider",
+        "aria-label": channel,
         tabIndex: isDisabled ? undefined : 0,
         "data-channel": channel,
         "data-disabled": dataAttr(isDisabled),
         "data-orientation": orientation,
+        "aria-disabled": dataAttr(isDisabled),
         "aria-orientation": orientation,
         "aria-valuemax": maxValue,
         "aria-valuemin": minValue,

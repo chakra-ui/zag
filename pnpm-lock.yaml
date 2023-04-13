@@ -1427,6 +1427,9 @@ importers:
       '@zag-js/numeric-range':
         specifier: workspace:*
         version: link:../../utilities/numeric-range
+      '@zag-js/text-selection':
+        specifier: workspace:*
+        version: link:../../utilities/text-selection
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

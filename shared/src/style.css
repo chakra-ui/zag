@@ -1436,6 +1436,12 @@ main > .toggle[data-pressed] {
 [data-scope="color-picker"][data-part="channel-input"] {
   border-radius: 4px;
   width: 100%;
+  border: 1px solid #c2c2c2;
+}
+
+[data-scope="color-picker"][data-part="channel-input"]::-webkit-outer-spin-button,
+[data-scope="color-picker"][data-part="channel-input"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 
 [data-scope="color-picker"][data-part="swatch"] {

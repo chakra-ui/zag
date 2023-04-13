@@ -84,7 +84,7 @@ const fetchMachine = createMachine({
     },
     dragging: {
       exit: ["clearActiveChannel"],
-      activities: ["trackPointerMove"],
+      activities: ["trackPointerMove", "disableTextSelection"],
       on: {
         "AREA.POINTER_MOVE": {
           actions: ["setAreaColorFromPoint"]
