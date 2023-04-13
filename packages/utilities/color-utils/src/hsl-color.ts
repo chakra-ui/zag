@@ -112,13 +112,4 @@ export class HSLColor extends Color {
   getColorChannels(): [ColorChannel, ColorChannel, ColorChannel] {
     return HSLColor.colorChannels
   }
-
-  set(v: Partial<{ hue: number; saturation: number; lightness: number; alpha: number }>): ColorType {
-    return new HSLColor(
-      v.hue ?? this.hue,
-      v.saturation ?? this.saturation,
-      v.lightness ?? this.lightness,
-      v.alpha ?? this.alpha,
-    )
-  }
 }

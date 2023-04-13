@@ -1,17 +1,14 @@
-import { parseColor } from "@zag-js/color-utils"
+import { Color, parseColor } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
+import { trackPointerMove } from "@zag-js/dom-event"
+import { getPercentValue } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
-import { trackPointerMove } from "@zag-js/dom-event"
 import { getChannelDetails } from "./color-picker.utils"
-import { getPercentValue } from "@zag-js/numeric-range"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
-
-  const value = ctx.value || "#D9D9D9"
-  const valueAsColor = parseColor(value)
 
   return createMachine<MachineContext, MachineState>(
     {
@@ -20,20 +17,16 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         dir: "ltr",
         format: "hex",
-        value,
         activeId: null,
         activeChannel: null,
-        valueAsColor,
+        value: "#D9D9D9",
         ...ctx,
+        valueAsColor: parseColor(ctx.value || "#D9D9D9"),
       },
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         displayColor: (ctx) => ctx.valueAsColor.withChannelValue("alpha", 1),
-      },
-
-      watch: {
-        value: ["setValueAsColor"],
       },
 
       states: {
@@ -48,7 +41,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveId", "setChannelColorFromPoint"],
+              actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"],
             },
           },
         },
@@ -61,7 +54,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveId", "setChannelColorFromPoint"],
+              actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"],
             },
             "AREA.ARROW_LEFT": {
               actions: ["decrementXChannel"],
@@ -129,9 +122,8 @@ export function machine(userContext: UserDefinedContext) {
             .open()
             .then(({ sRGBHex }: { sRGBHex: string }) => {
               const color = parseColor(sRGBHex).toFormat(ctx.format)
-              const valueString = color.toString(ctx.format)
-              ctx.value = valueString
-              ctx.onChangeEnd?.({ value: valueString, valueAsColor: color })
+              setColor(ctx, color)
+              ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: color })
             })
             .catch(() => void 0)
         },
@@ -151,19 +143,22 @@ export function machine(userContext: UserDefinedContext) {
           const { xChannel, yChannel } = evt.channel || ctx.activeChannel
 
           const percent = dom.getAreaValueFromPoint(ctx, evt.point)
-          const { getColorFromPoint } = getChannelDetails(valueAsColor, xChannel, yChannel)
-
+          const { getColorFromPoint } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
           const color = getColorFromPoint(percent.x, percent.y)
+
           if (!color) return
-          ctx.value = color.toString("css")
+          setColor(ctx, color)
         },
         setChannelColorFromPoint(ctx, evt) {
           const channel = evt.channel || ctx.activeId
           const percent = dom.getSliderValueFromPoint(ctx, evt.point, channel)
-          const { minValue, maxValue, step } = valueAsColor.getChannelRange(channel)
+
+          const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
           const value = getPercentValue(percent.x, minValue, maxValue, step)
-          const newColor = valueAsColor.withChannelValue(channel, value)
-          ctx.value = newColor.toString("css")
+
+          const newColor = ctx.valueAsColor.withChannelValue(channel, value)
+
+          setColor(ctx, newColor)
         },
         setValueAsColor(ctx) {
           ctx.valueAsColor = parseColor(ctx.value)
@@ -180,4 +175,9 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const setColor = (ctx: MachineContext, color: Color) => {
+  ctx.value = color.toString(ctx.format)
+  ctx.valueAsColor = color
 }

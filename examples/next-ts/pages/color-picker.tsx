@@ -21,19 +21,19 @@ export default function Page() {
   )
 
   const api = colorPicker.connect(state, send, normalizeProps)
-  const [xChannel, yChannel, zChannel] = api.channels
+  const [hue, saturation, lightness] = api.channels
 
   return (
     <>
       <main className="color-picker">
         <div data-scope="color-picker" data-part="content">
-          <div {...api.getAreaProps({ xChannel, yChannel })}>
-            <div {...api.getAreaGradientProps({ xChannel, yChannel })} />
-            <div {...api.getAreaThumbProps({ xChannel, yChannel })} />
+          <div {...api.getAreaProps({ xChannel: saturation, yChannel: lightness })}>
+            <div {...api.getAreaGradientProps({ xChannel: saturation, yChannel: lightness })} />
+            <div {...api.getAreaThumbProps({ xChannel: saturation, yChannel: lightness })} />
           </div>
 
-          <div {...api.getSliderTrackProps({ channel: zChannel })}>
-            <div {...api.getSliderThumbProps({ channel: zChannel })} />
+          <div {...api.getSliderTrackProps({ channel: hue })}>
+            <div {...api.getSliderThumbProps({ channel: hue })} />
           </div>
 
           <div {...api.getSliderTrackProps({ channel: "alpha" })}>

@@ -30,7 +30,7 @@ const fetchMachine = createMachine({
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveId", "setChannelColorFromPoint"]
+          actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"]
         }
       }
     },
@@ -42,7 +42,7 @@ const fetchMachine = createMachine({
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveId", "setChannelColorFromPoint"]
+          actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"]
         },
         "AREA.ARROW_LEFT": {
           actions: ["decrementXChannel"]

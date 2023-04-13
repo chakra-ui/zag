@@ -36,10 +36,9 @@ export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel
     xValue,
     yValue,
     getThumbPosition() {
-      return {
-        x: getValuePercent(xValue, minValueX, maxValueX),
-        y: 1 - getValuePercent(yValue, minValueY, maxValueY),
-      }
+      let x = (xValue - minValueX) / (maxValueX - minValueX)
+      let y = 1 - (yValue - minValueY) / (maxValueY - minValueY)
+      return { x, y }
     },
     incrementX(stepSize: number) {
       return xValue + stepSize > maxValueX ? maxValueX : snapValueToStep(xValue + stepSize, minValueX, maxValueX, stepX)
