@@ -5,6 +5,7 @@ import { dom } from "./color-picker.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { getChannelDetails } from "./color-picker.utils"
+import { getPercentValue } from "@zag-js/numeric-range"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -20,8 +21,8 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         format: "hex",
         value,
+        activeId: null,
         activeChannel: null,
-        activeThumbId: null,
         valueAsColor,
         ...ctx,
       },
@@ -43,11 +44,11 @@ export function machine(userContext: UserDefinedContext) {
             },
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"],
+              actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb", "setColorFromPoint"],
+              actions: ["setActiveId", "setChannelColorFromPoint"],
             },
           },
         },
@@ -56,11 +57,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"],
+              actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb", "setColorFromPoint"],
+              actions: ["setActiveId", "setChannelColorFromPoint"],
             },
             "AREA.ARROW_LEFT": {
               actions: ["decrementXChannel"],
@@ -84,15 +85,20 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         dragging: {
-          exit: ["clearActiveThumb", "clearActiveChannel"],
+          exit: ["clearActiveChannel", "clearActiveId"],
           activities: ["trackPointerMove"],
           on: {
             "AREA.POINTER_MOVE": {
-              actions: ["setColorFromPoint"],
+              actions: ["setAreaColorFromPoint"],
             },
             "AREA.POINTER_UP": {
               target: "focused",
-              actions: ["focusAreaThumb"],
+            },
+            "SLIDER.POINTER_MOVE": {
+              actions: ["setChannelColorFromPoint"],
+            },
+            "SLIDER.POINTER_UP": {
+              target: "focused",
             },
           },
         },
@@ -104,10 +110,12 @@ export function machine(userContext: UserDefinedContext) {
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove({ point }) {
-              send({ type: "AREA.POINTER_MOVE", point })
+              const type = ctx.activeId === "area" ? "AREA.POINTER_MOVE" : "SLIDER.POINTER_MOVE"
+              send({ type, point })
             },
             onPointerUp() {
-              send("AREA.POINTER_UP")
+              const type = ctx.activeId === "area" ? "AREA.POINTER_UP" : "SLIDER.POINTER_UP"
+              send({ type })
             },
           })
         },
@@ -127,11 +135,11 @@ export function machine(userContext: UserDefinedContext) {
             })
             .catch(() => void 0)
         },
-        setActiveThumb(ctx, evt) {
-          ctx.activeThumbId = evt.id
+        setActiveId(ctx, evt) {
+          ctx.activeId = evt.id
         },
-        clearActiveThumb(ctx) {
-          ctx.activeThumbId = null
+        clearActiveId(ctx) {
+          ctx.activeId = null
         },
         setActiveChannel(ctx, evt) {
           ctx.activeChannel = evt.channel
@@ -139,15 +147,23 @@ export function machine(userContext: UserDefinedContext) {
         clearActiveChannel(ctx) {
           ctx.activeChannel = null
         },
-        setColorFromPoint(ctx, evt) {
+        setAreaColorFromPoint(ctx, evt) {
           const { xChannel, yChannel } = evt.channel || ctx.activeChannel
 
-          const point = dom.getAreaValueFromPoint(ctx, evt.point)
+          const percent = dom.getAreaValueFromPoint(ctx, evt.point)
           const { getColorFromPoint } = getChannelDetails(valueAsColor, xChannel, yChannel)
 
-          const color = getColorFromPoint(point.x, point.y)
+          const color = getColorFromPoint(percent.x, percent.y)
           if (!color) return
           ctx.value = color.toString("css")
+        },
+        setChannelColorFromPoint(ctx, evt) {
+          const channel = evt.channel || ctx.activeId
+          const percent = dom.getSliderValueFromPoint(ctx, evt.point, channel)
+          const { minValue, maxValue, step } = valueAsColor.getChannelRange(channel)
+          const value = getPercentValue(percent.x, minValue, maxValue, step)
+          const newColor = valueAsColor.withChannelValue(channel, value)
+          ctx.value = newColor.toString("css")
         },
         setValueAsColor(ctx) {
           ctx.valueAsColor = parseColor(ctx.value)

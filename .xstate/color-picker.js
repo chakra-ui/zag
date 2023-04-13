@@ -26,11 +26,11 @@ const fetchMachine = createMachine({
         },
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"]
+          actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb", "setColorFromPoint"]
+          actions: ["setActiveId", "setChannelColorFromPoint"]
         }
       }
     },
@@ -38,11 +38,11 @@ const fetchMachine = createMachine({
       on: {
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"]
+          actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb", "setColorFromPoint"]
+          actions: ["setActiveId", "setChannelColorFromPoint"]
         },
         "AREA.ARROW_LEFT": {
           actions: ["decrementXChannel"]
@@ -65,15 +65,20 @@ const fetchMachine = createMachine({
       }
     },
     dragging: {
-      exit: ["clearActiveThumb", "clearActiveChannel"],
+      exit: ["clearActiveChannel", "clearActiveId"],
       activities: ["trackPointerMove"],
       on: {
         "AREA.POINTER_MOVE": {
-          actions: ["setColorFromPoint"]
+          actions: ["setAreaColorFromPoint"]
         },
         "AREA.POINTER_UP": {
-          target: "focused",
-          actions: ["focusAreaThumb"]
+          target: "focused"
+        },
+        "SLIDER.POINTER_MOVE": {
+          actions: ["setChannelColorFromPoint"]
+        },
+        "SLIDER.POINTER_UP": {
+          target: "focused"
         }
       }
     }

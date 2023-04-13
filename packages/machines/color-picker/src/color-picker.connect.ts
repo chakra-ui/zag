@@ -111,13 +111,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getSliderTrackProps(props: ChannelProps) {
       const { orientation = "horizontal", channel } = props
+
       return normalize.element({
         ...parts.sliderTrack.attrs,
         id: dom.getSliderTrackId(state.context, channel),
         role: "group",
         "data-channel": channel,
-        onPointerDown() {
-          send({ type: "SLIDER.POINTER_DOWN", id: channel })
+        onPointerDown(event) {
+          const evt = getNativeEvent(event)
+          if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+          const point = { x: evt.clientX, y: evt.clientY }
+          send({ type: "SLIDER.POINTER_DOWN", channel, point, id: channel })
         },
         style: {
           position: "relative",

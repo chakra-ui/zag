@@ -19,4 +19,12 @@ export const dom = createScope({
     const areaEl = dom.getAreaEl(ctx)
     return getRelativePointPercent(point, areaEl)
   },
+
+  getSliderTrackEl: (ctx: Ctx, channel: ColorChannel) => {
+    return dom.queryById(ctx, dom.getSliderTrackId(ctx, channel))
+  },
+  getSliderValueFromPoint(ctx: Ctx, point: Point, channel: ColorChannel) {
+    const areaEl = dom.getSliderTrackEl(ctx, channel)
+    return getRelativePointPercent(point, areaEl)
+  },
 })

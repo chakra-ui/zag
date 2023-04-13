@@ -1,5 +1,4 @@
-import { Color, ColorChannel, ColorFormat } from "@zag-js/color-utils"
-import { ColorAxes } from "@zag-js/color-utils/src/types"
+import { Color, ColorChannel, ColorFormat, ColorAxes } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
 
@@ -54,7 +53,7 @@ type PrivateContext = Context<{
   /**
    * The id of the thumb that is currently being dragged
    */
-  activeThumbId: string | null
+  activeId: string | null
   valueAsColor: Color
   activeChannel: Partial<ColorAxes> | null
 }>
