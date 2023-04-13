@@ -174,7 +174,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setChannelColorFromPoint(ctx, evt) {
           const channel = evt.channel || ctx.activeId
-          const percent = dom.getSliderValueFromPoint(ctx, evt.point, channel)
+          const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
 
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
           const value = getPercentValue(percent.x, minValue, maxValue, step)
