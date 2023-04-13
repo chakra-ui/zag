@@ -1,10 +1,17 @@
 import { Color, ColorAxes, ColorChannel } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, Orientation, RequiredBy } from "@zag-js/types"
 
 export type ChannelProps = {
   channel: ColorChannel
-  orientation?: "vertical" | "horizontal"
+  orientation?: Orientation
+}
+
+export type ExtendedColorChannel = ColorChannel | "hex" | "css"
+
+export type ChannelInputProps = {
+  channel: ExtendedColorChannel
+  orientation?: Orientation
 }
 
 export type AreaProps = {

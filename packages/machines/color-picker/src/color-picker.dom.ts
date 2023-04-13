@@ -12,8 +12,8 @@ export const dom = createScope({
   getAreaId: (ctx: Ctx) => `color-picker:${ctx.id}:area`,
   getAreaGradientId: (ctx: Ctx) => `color-picker:${ctx.id}:area-gradient`,
   getAreaThumbId: (ctx: Ctx) => `color-picker:${ctx.id}:area-thumb`,
-  getSliderTrackId: (ctx: Ctx, channel: ColorChannel) => `color-picker:${ctx.id}:slider-track:${channel}`,
-  getInputId: (ctx: Ctx, channel: ColorChannel) => `color-picker:${ctx.id}:input:${channel}`,
+  getChannelSliderTrackId: (ctx: Ctx, channel: ColorChannel) => `color-picker:${ctx.id}:slider-track:${channel}`,
+  getChannelInputId: (ctx: Ctx, channel: string) => `color-picker:${ctx.id}:input:${channel}`,
   getContentId: (ctx: Ctx) => `color-picker:${ctx.id}:content`,
   getContentEl: (ctx: Ctx) => dom.queryById(ctx, dom.getContentId(ctx)),
 
@@ -23,11 +23,11 @@ export const dom = createScope({
     return getRelativePointPercent(point, areaEl)
   },
 
-  getSliderTrackEl: (ctx: Ctx, channel: ColorChannel) => {
-    return dom.queryById(ctx, dom.getSliderTrackId(ctx, channel))
+  getChannelSliderTrackEl: (ctx: Ctx, channel: ColorChannel) => {
+    return dom.queryById(ctx, dom.getChannelSliderTrackId(ctx, channel))
   },
-  getSliderValueFromPoint(ctx: Ctx, point: Point, channel: ColorChannel) {
-    const areaEl = dom.getSliderTrackEl(ctx, channel)
+  getChannelSliderValueFromPoint(ctx: Ctx, point: Point, channel: ColorChannel) {
+    const areaEl = dom.getChannelSliderTrackEl(ctx, channel)
     return getRelativePointPercent(point, areaEl)
   },
   getChannelInputEls: (ctx: Ctx) => {

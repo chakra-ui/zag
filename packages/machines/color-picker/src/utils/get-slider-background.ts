@@ -1,5 +1,14 @@
 import { ChannelProps, MachineContext } from "../color-picker.types"
-import { getSliderBgDirection } from "../color-picker.utils"
+
+function getSliderBgDirection(orientation: "vertical" | "horizontal", dir: "ltr" | "rtl") {
+  if (orientation === "vertical") {
+    return "top"
+  } else if (dir === "ltr") {
+    return "right"
+  } else {
+    return "left"
+  }
+}
 
 export const getSliderBgImage = (ctx: MachineContext, props: Required<ChannelProps>) => {
   const { channel } = props

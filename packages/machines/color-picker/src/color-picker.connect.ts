@@ -4,9 +4,10 @@ import { dataAttr } from "@zag-js/dom-query"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
-import { AreaProps, ChannelProps, Send, State, SwatchProps } from "./color-picker.types"
-import { getChannelDetails } from "./color-picker.utils"
+import { AreaProps, ChannelInputProps, ChannelProps, Send, State, SwatchProps } from "./color-picker.types"
+import { getChannelDetails } from "./utils/get-channel-details"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
+import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-input-value"
 import { getColorAreaGradient } from "./utils/get-color-area-gradient"
 import { getSliderBgImage } from "./utils/get-slider-background"
 
@@ -123,12 +124,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSliderTrackProps(props: ChannelProps) {
+    getChannelSliderTrackProps(props: ChannelProps) {
       const { orientation = "horizontal", channel } = props
 
       return normalize.element({
-        ...parts.sliderTrack.attrs,
-        id: dom.getSliderTrackId(state.context, channel),
+        ...parts.channelSliderTrack.attrs,
+        id: dom.getChannelSliderTrackId(state.context, channel),
         role: "group",
         "data-channel": channel,
         onPointerDown(event) {
@@ -146,16 +147,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSliderBackgroundProps(props: ChannelProps) {
+    getChannelSliderBackgroundProps(props: ChannelProps) {
       const { orientation = "horizontal", channel } = props
       return normalize.element({
-        ...parts.sliderTrackBg.attrs,
+        ...parts.channelSliderTrackBg.attrs,
         "data-orientation": orientation,
         "data-channel": channel,
         style: {
           position: "absolute",
           backgroundColor: "#fff",
-          backgroundImage: `linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%),linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%),linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%),linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)`,
+          backgroundImage: [
+            "linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%)",
+            "linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%)",
+            "linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%)",
+            "linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)",
+          ].join(","),
           backgroundSize: "16px 16px",
           backgroundPosition: "-2px -2px,-2px 6px,6px -10px,-10px -2px",
           inset: 0,
@@ -164,7 +170,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSliderThumbProps(props: ChannelProps) {
+    getChannelSliderThumbProps(props: ChannelProps) {
       const { orientation = "horizontal", channel } = props
       const { minValue, maxValue } = valueAsColor.getChannelRange(channel)
       const channelValue = valueAsColor.getChannelValue(channel)
@@ -177,8 +183,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           : { top: `${offset * 100}%`, left: "50%" }
 
       return normalize.element({
-        ...parts.sliderThumb.attrs,
+        ...parts.channelSliderThumb.attrs,
         role: "slider",
+        "data-channel": channel,
         tabIndex: isDisabled ? undefined : 0,
         "aria-orientation": orientation,
         "data-orientation": orientation,
@@ -200,23 +207,44 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelInputProps(props: ChannelProps) {
+    getChannelInputProps(props: ChannelInputProps) {
       const { channel } = props
+      const isTextField = channel === "hex" || channel === "css"
+      const range = getChannelInputRange(valueAsColor, channel)
+
       return normalize.input({
-        ...parts.input.attrs,
-        type: "number",
+        ...parts.channelInput.attrs,
+        type: isTextField ? "text" : "number",
         "data-channel": channel,
         "aria-label": channel,
         disabled: isDisabled,
-        id: dom.getInputId(state.context, channel),
-        defaultValue: valueAsColor.getChannelValue(channel),
+        id: dom.getChannelInputId(state.context, channel),
+        defaultValue: getChannelInputValue(valueAsColor, channel),
+        min: range?.minValue,
+        max: range?.maxValue,
+        step: range?.step,
+        onFocus() {
+          send({ type: "CHANNEL_INPUT.FOCUS", channel })
+        },
         onChange(event) {
+          if (isTextField) return
           const value = event.currentTarget.value
-          send({ type: "INPUT.CHANGE", channel, value })
+          send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
+        },
+        onBlur() {
+          if (!isTextField) return
+          send({ type: "CHANNEL_INPUT.CHANGE", channel })
+        },
+        onKeyDown(event) {
+          if (!isTextField) return
+          if (event.key === "Enter") {
+            send({ type: "CHANNEL_INPUT.CHANGE", channel })
+          }
         },
         style: {
           appearance: "none",
           WebkitAppearance: "none",
+          MozAppearance: "textfield",
         },
       })
     },
@@ -238,7 +266,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           width: "100%",
           height: "100%",
           background: "#fff",
-          backgroundImage: `linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%),linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%),linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%),linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)`,
+          backgroundImage: [
+            "linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%)",
+            "linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%)",
+            "linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%)",
+            "linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)",
+          ].join(","),
           backgroundPosition: "-2px -2px,-2px 6px,6px -10px,-10px -2px",
           backgroundSize: "16px 16px",
           position: "absolute",

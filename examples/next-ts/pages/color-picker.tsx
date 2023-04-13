@@ -25,19 +25,26 @@ export default function Page() {
   return (
     <>
       <main className="color-picker">
-        <div data-scope="color-picker" data-part="content">
+        <div {...api.contentProps}>
           <div {...api.getAreaProps({ xChannel: saturation, yChannel: lightness })}>
             <div {...api.getAreaGradientProps({ xChannel: saturation, yChannel: lightness })} />
             <div {...api.getAreaThumbProps({ xChannel: saturation, yChannel: lightness })} />
           </div>
 
-          <div {...api.getSliderTrackProps({ channel: hue })}>
-            <div {...api.getSliderThumbProps({ channel: hue })} />
+          <div {...api.getChannelSliderTrackProps({ channel: hue })}>
+            <div {...api.getChannelSliderThumbProps({ channel: hue })} />
           </div>
 
-          <div {...api.getSliderTrackProps({ channel: "alpha" })}>
-            <div {...api.getSliderBackgroundProps({ channel: "alpha" })} />
-            <div {...api.getSliderThumbProps({ channel: "alpha" })} />
+          <div {...api.getChannelSliderTrackProps({ channel: "alpha" })}>
+            <div {...api.getChannelSliderBackgroundProps({ channel: "alpha" })} />
+            <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+          </div>
+
+          <div style={{ display: "flex", width: "100%" }}>
+            <input {...api.getChannelInputProps({ channel: hue })} />
+            <input {...api.getChannelInputProps({ channel: saturation })} />
+            <input {...api.getChannelInputProps({ channel: lightness })} />
+            <input {...api.getChannelInputProps({ channel: "alpha" })} />
           </div>
 
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>

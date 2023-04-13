@@ -1,11 +1,12 @@
-import { Color, ColorChannel, parseColor } from "@zag-js/color-utils"
+import { Color, parseColor } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { getPercentValue } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
-import { getChannelDetails } from "./color-picker.utils"
+import { ExtendedColorChannel, MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
+import { getChannelDetails } from "./utils/get-channel-details"
+import { getChannelInputValue } from "./utils/get-channel-input-value"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -34,7 +35,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["setValueAsColor"],
+        value: ["setValueAsColor", "syncChannelInputs"],
       },
 
       states: {
@@ -50,6 +51,13 @@ export function machine(userContext: UserDefinedContext) {
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
               actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"],
+            },
+            "CHANNEL_INPUT.FOCUS": {
+              target: "focused",
+              actions: ["setActiveChannel"],
+            },
+            "CHANNEL_INPUT.CHANGE": {
+              actions: ["setChannelColorFromInput"],
             },
           },
         },
@@ -81,6 +89,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             "AREA.PAGE_DOWN": {
               actions: ["decrementXChannel"],
+            },
+            "CHANNEL_INPUT.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
+            "CHANNEL_INPUT.CHANGE": {
+              actions: ["setChannelColorFromInput"],
             },
           },
         },
@@ -166,24 +180,35 @@ export function machine(userContext: UserDefinedContext) {
           const value = getPercentValue(percent.x, minValue, maxValue, step)
 
           const newColor = ctx.valueAsColor.withChannelValue(channel, value)
-
           setColor(ctx, newColor)
         },
         setValue(ctx, evt) {
           setColor(ctx, evt.value)
         },
         setValueAsColor(ctx) {
-          const color = parseColor(ctx.value)
-          if (color.isEqual(ctx.valueAsColor)) return
-          ctx.valueAsColor = color
+          try {
+            const color = parseColor(ctx.value)
+            if (color.isEqual(ctx.valueAsColor)) return
+            ctx.valueAsColor = color
+          } catch {}
         },
         syncChannelInputs(ctx) {
           const inputs = dom.getChannelInputEls(ctx)
           inputs.forEach((input) => {
-            const channel = input.getAttribute("data-channel") as ColorChannel
-            const value = ctx.valueAsColor.getChannelValue(channel)
+            const channel = input.getAttribute("data-channel") as ExtendedColorChannel | null
+            if (!channel) return
+            const value = getChannelInputValue(ctx.valueAsColor, channel)
             input.value = value.toString()
           })
+        },
+        setChannelColorFromInput(ctx, evt) {
+          try {
+            const channel = evt.channel
+            const newColor = evt.isTextField
+              ? parseColor(evt.value)
+              : ctx.valueAsColor.withChannelValue(channel, evt.value)
+            setColor(ctx, newColor)
+          } catch {}
         },
         incrementXChannel() {},
         decrementXChannel() {},

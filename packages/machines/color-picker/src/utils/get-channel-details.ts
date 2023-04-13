@@ -1,19 +1,5 @@
 import { Color, ColorChannel } from "@zag-js/color-utils"
-import { snapValueToStep, getPercentValue, getValuePercent } from "@zag-js/numeric-range"
-
-export function getHueBackgroundImage() {
-  return `linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)`
-}
-
-export function getSliderBgDirection(orientation: "vertical" | "horizontal", dir: "ltr" | "rtl") {
-  if (orientation === "vertical") {
-    return "top"
-  } else if (dir === "ltr") {
-    return "right"
-  } else {
-    return "left"
-  }
-}
+import { snapValueToStep, getPercentValue } from "@zag-js/numeric-range"
 
 export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel: ColorChannel) {
   const channels = color.getColorSpaceAxes({ xChannel, yChannel })

@@ -36,6 +36,13 @@ const fetchMachine = createMachine({
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
           actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"]
+        },
+        "CHANNEL_INPUT.FOCUS": {
+          target: "focused",
+          actions: ["setActiveChannel"]
+        },
+        "CHANNEL_INPUT.CHANGE": {
+          actions: ["setChannelColorFromInput"]
         }
       }
     },
@@ -66,6 +73,12 @@ const fetchMachine = createMachine({
         },
         "AREA.PAGE_DOWN": {
           actions: ["decrementXChannel"]
+        },
+        "CHANNEL_INPUT.FOCUS": {
+          actions: ["setActiveChannel"]
+        },
+        "CHANNEL_INPUT.CHANGE": {
+          actions: ["setChannelColorFromInput"]
         }
       }
     },
