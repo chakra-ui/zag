@@ -225,6 +225,12 @@ export function machine(userContext: UserDefinedContext) {
         decrementYChannel() {},
         incrementAlphaChannel() {},
         decrementAlphaChannel() {},
+        invokeOnChangeEnd(ctx) {
+          ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
+        },
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
+        },
       },
     },
   )
