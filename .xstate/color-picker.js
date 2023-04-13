@@ -90,13 +90,15 @@ const fetchMachine = createMachine({
           actions: ["setAreaColorFromPoint"]
         },
         "AREA.POINTER_UP": {
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnChangeEnd"]
         },
         "SLIDER.POINTER_MOVE": {
           actions: ["setChannelColorFromPoint"]
         },
         "SLIDER.POINTER_UP": {
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnChangeEnd"]
         }
       }
     }

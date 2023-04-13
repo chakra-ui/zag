@@ -20,6 +20,7 @@ export type AreaProps = {
 }
 
 export type SwatchProps = {
+  readOnly?: boolean
   value: string | Color
 }
 
@@ -79,6 +80,10 @@ type ComputedContext = Readonly<{
    * Whether the color picker is in RTL mode
    */
   isRtl: boolean
+  /**
+   * Whether the color picker is interactive
+   */
+  isInteractive: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

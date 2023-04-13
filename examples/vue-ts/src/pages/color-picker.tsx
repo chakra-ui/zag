@@ -47,7 +47,7 @@ export default defineComponent({
               </div>
 
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <div {...api.getSwatchProps({ value: api.valueAsColor })}>
+                <div {...api.getSwatchProps({ value: api.valueAsColor, readOnly: true })}>
                   <div {...api.getSwatchBackgroundProps({ value: api.valueAsColor })} />
                 </div>
                 <p>{api.value}</p>

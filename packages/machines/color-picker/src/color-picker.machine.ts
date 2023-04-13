@@ -27,6 +27,7 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
       },
 
       on: {
@@ -36,7 +37,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["setValueAsColor", "syncChannelInputs"],
+        value: ["setValueAsColor", "syncChannelInputs", "invokeOnChange"],
       },
 
       states: {
@@ -109,12 +110,14 @@ export function machine(userContext: UserDefinedContext) {
             },
             "AREA.POINTER_UP": {
               target: "focused",
+              actions: ["invokeOnChangeEnd"],
             },
             "SLIDER.POINTER_MOVE": {
               actions: ["setChannelColorFromPoint"],
             },
             "SLIDER.POINTER_UP": {
               target: "focused",
+              actions: ["invokeOnChangeEnd"],
             },
           },
         },

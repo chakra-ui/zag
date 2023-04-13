@@ -14,6 +14,8 @@ import { getSliderBgImage } from "./utils/get-slider-background"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const valueAsColor = state.context.valueAsColor
   const isDisabled = state.context.disabled
+  const isInteractive = state.context.isInteractive
+
   const channels = valueAsColor.getColorChannels()
 
   return {
@@ -42,10 +44,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getAreaId(state.context),
         role: "group",
         onPointerDown(event) {
+          if (!isInteractive) return
+
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+
           const point = { x: evt.clientX, y: evt.clientY }
           const channel = { xChannel, yChannel }
+
           send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
         },
         style: {
@@ -94,6 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           background: valueAsColor.withChannelValue("alpha", 1).toString("css"),
         },
         onKeyDown(event) {
+          if (!isInteractive) return
           const keyMap: EventKeyMap = {
             ArrowUp() {
               send("AREA.ARROW_UP")
@@ -134,8 +141,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-channel": channel,
         "data-orientation": orientation,
         onPointerDown(event) {
+          if (!isInteractive) return
+
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+
           const point = { x: evt.clientX, y: evt.clientY }
           send({ type: "SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
         },
@@ -186,10 +196,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
         role: "slider",
-        "data-channel": channel,
         tabIndex: isDisabled ? undefined : 0,
-        "aria-orientation": orientation,
+        "data-channel": channel,
+        "data-disabled": dataAttr(isDisabled),
         "data-orientation": orientation,
+        "aria-orientation": orientation,
         "aria-valuemax": maxValue,
         "aria-valuemin": minValue,
         "aria-valuenow": channelValue,
@@ -200,9 +211,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ...placementStyles,
         },
         onFocus() {
+          if (!isInteractive) return
           send({ type: "SLIDER.FOCUS", channel })
         },
         onBlur() {
+          if (!isInteractive) return
           send({ type: "SLIDER.BLUR", channel })
         },
       })
@@ -219,6 +232,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-channel": channel,
         "aria-label": channel,
         disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
+        readOnly: state.context.readOnly,
         id: dom.getChannelInputId(state.context, channel),
         defaultValue: getChannelInputValue(valueAsColor, channel),
         min: range?.minValue,
@@ -283,10 +298,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getSwatchProps(props: SwatchProps) {
-      const { value } = props
+      const { value, readOnly } = props
       const color = normalizeColor(value)
       return normalize.element({
         ...parts.swatch.attrs,
+        onClick() {
+          if (readOnly) return
+          send({ type: "VALUE.SET", value: color.toString("css") })
+        },
         style: {
           position: "relative",
           background: color.toString("css"),
