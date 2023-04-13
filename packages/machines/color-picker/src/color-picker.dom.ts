@@ -1,7 +1,7 @@
+import { ColorChannel } from "@zag-js/color-utils"
+import { getRelativePointPercent } from "@zag-js/dom-event"
 import { createScope } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./color-picker.types"
-import { getRelativePointPercent } from "@zag-js/dom-event"
-import { ColorChannel } from "@zag-js/color-utils"
 
 type Point = {
   x: number
@@ -14,11 +14,9 @@ export const dom = createScope({
   getAreaThumbId: (ctx: Ctx) => `color-picker:${ctx.id}:area-thumb`,
   getSliderTrackId: (ctx: Ctx, channel: ColorChannel) => `color-picker:${ctx.id}:slider-track:${channel}`,
 
-  getAreaEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaId(ctx)),
+  getAreaEl: (ctx: Ctx) => dom.queryById(ctx, dom.getAreaId(ctx)),
   getAreaValueFromPoint(ctx: Ctx, point: Point) {
-    const el = dom.getAreaEl(ctx)
-    if (!el) return
-    const { x, y } = getRelativePointPercent(point, el)
-    return { x: x / 100, y: y / 100 }
+    const areaEl = dom.getAreaEl(ctx)
+    return getRelativePointPercent(point, areaEl)
   },
 })

@@ -1,4 +1,5 @@
 import { Color, ColorChannel, ColorFormat } from "@zag-js/color-utils"
+import { ColorAxes } from "@zag-js/color-utils/src/types"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
 
@@ -47,14 +48,15 @@ type PublicContext = CommonProperties & {
    * Handler that is called when the user stops dragging.
    */
   onChangeEnd?: (details: ChangeDetails) => void
-  /**
-   * The id of the thumb that is currently being dragged
-   */
-  activeThumbId?: string
 }
 
 type PrivateContext = Context<{
+  /**
+   * The id of the thumb that is currently being dragged
+   */
+  activeThumbId: string | null
   valueAsColor: Color
+  activeChannel: Partial<ColorAxes> | null
 }>
 
 type ComputedContext = Readonly<{

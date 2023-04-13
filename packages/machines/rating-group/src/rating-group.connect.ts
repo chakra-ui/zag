@@ -136,7 +136,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!isInteractive) return
           const point = { x: event.clientX, y: event.clientY }
           const percent = getRelativePointPercent(point, event.currentTarget)
-          const isMidway = percent.x < 50
+          const isMidway = percent.x < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {

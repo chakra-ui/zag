@@ -22,11 +22,11 @@ const fetchMachine = createMachine({
     idle: {
       on: {
         "EYEDROP.CLICK": {
-          actions: ["openEyeDropper"]
+          actions: ["openEyeDropperper"]
         },
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb", "setColorFromPoint"]
+          actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
@@ -38,7 +38,7 @@ const fetchMachine = createMachine({
       on: {
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveThumb", "setColorFromPoint"]
+          actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
@@ -65,6 +65,7 @@ const fetchMachine = createMachine({
       }
     },
     dragging: {
+      exit: ["clearActiveThumb", "clearActiveChannel"],
       activities: ["trackPointerMove"],
       on: {
         "AREA.POINTER_MOVE": {

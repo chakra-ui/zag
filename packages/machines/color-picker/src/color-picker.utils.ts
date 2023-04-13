@@ -1,5 +1,5 @@
-import { Color, ColorChannel, parseColor } from "@zag-js/color-utils"
-import { clamp, snapToStep, valueOf } from "@zag-js/number-utils"
+import { Color, ColorChannel } from "@zag-js/color-utils"
+import { snapValueToStep, getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 
 export function getHueBackgroundImage() {
   return `linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)`
@@ -36,58 +36,40 @@ export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel
     xValue,
     yValue,
     getThumbPosition() {
-      let x = (xValue - minValueX) / (maxValueX - minValueX)
-      let y = 1 - (yValue - minValueY) / (maxValueY - minValueY)
-      return { x, y }
+      return {
+        x: getValuePercent(xValue, minValueX, maxValueX),
+        y: 1 - getValuePercent(yValue, minValueY, maxValueY),
+      }
     },
     incrementX(stepSize: number) {
-      return xValue + stepSize > maxValueX ? maxValueX : snapToStep(xValue + stepSize, minValueX)
+      return xValue + stepSize > maxValueX ? maxValueX : snapValueToStep(xValue + stepSize, minValueX, maxValueX, stepX)
     },
     incrementY(stepSize: number) {
-      return yValue + stepSize > maxValueY ? maxValueY : snapToStep(yValue + stepSize, minValueY)
+      return yValue + stepSize > maxValueY ? maxValueY : snapValueToStep(yValue + stepSize, minValueY, maxValueY, stepY)
     },
     decrementX(stepSize: number) {
-      return snapToStep(xValue - stepSize, minValueX)
+      return snapValueToStep(xValue - stepSize, minValueX, maxValueX, stepX)
     },
     decrementY(stepSize: number) {
-      return snapToStep(yValue - stepSize, minValueY)
+      return snapValueToStep(yValue - stepSize, minValueY, maxValueY, stepY)
     },
     getColorFromPoint(x: number, y: number) {
-      let newXValue = minValueX + clamp(x, { min: 0, max: 1 }) * (maxValueX - minValueX)
-      let newYValue = minValueY + (1 - clamp(y, { min: 0, max: 1 })) * (maxValueY - minValueY)
+      let newXValue = getPercentValue(x, minValueX, maxValueX, stepX)
+      let newYValue = getPercentValue(1 - y, minValueY, maxValueY, stepY)
 
       let newColor: Color | undefined
 
       if (newXValue !== xValue) {
-        newXValue = valueOf(snapToStep(newXValue, stepX))
+        newXValue = snapValueToStep(newXValue, minValueX, maxValueX, stepX)
         newColor = color.withChannelValue(channels.xChannel, newXValue)
       }
 
       if (newYValue !== yValue) {
-        newYValue = valueOf(snapToStep(newYValue, stepY))
+        newYValue = snapValueToStep(newYValue, minValueY, maxValueY, stepY)
         newColor = (newColor || color).withChannelValue(channels.yChannel, newYValue)
       }
 
       return newColor
     },
-  }
-}
-
-export function getDisplayColor(color: Color, channel: ColorChannel) {
-  switch (channel) {
-    case "hue":
-      return parseColor(`hsl(${color.getChannelValue("hue")}, 100%, 50%)`)
-    case "lightness":
-    case "brightness":
-    case "saturation":
-    case "red":
-    case "green":
-    case "blue":
-      return color.withChannelValue("alpha", 1)
-    case "alpha": {
-      return color
-    }
-    default:
-      throw new Error("Unknown color channel: " + channel)
   }
 }

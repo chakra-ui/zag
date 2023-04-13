@@ -20,6 +20,8 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         format: "hex",
         value,
+        activeChannel: null,
+        activeThumbId: null,
         valueAsColor,
         ...ctx,
       },
@@ -37,11 +39,11 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           on: {
             "EYEDROP.CLICK": {
-              actions: ["openEyeDropper"],
+              actions: ["openEyeDropperper"],
             },
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb", "setColorFromPoint"],
+              actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
@@ -54,7 +56,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveThumb", "setColorFromPoint"],
+              actions: ["setActiveThumb", "setActiveChannel", "setColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
@@ -82,6 +84,7 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         dragging: {
+          exit: ["clearActiveThumb", "clearActiveChannel"],
           activities: ["trackPointerMove"],
           on: {
             "AREA.POINTER_MOVE": {
@@ -110,7 +113,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        openEyeDrop(ctx) {
+        openEyeDropper(ctx) {
           const isSupported = "EyeDropper" in dom.getWin(ctx)
           if (!isSupported) return
           const picker = new (dom.getWin as any).EyeDropper()
@@ -127,13 +130,21 @@ export function machine(userContext: UserDefinedContext) {
         setActiveThumb(ctx, evt) {
           ctx.activeThumbId = evt.id
         },
+        clearActiveThumb(ctx) {
+          ctx.activeThumbId = null
+        },
+        setActiveChannel(ctx, evt) {
+          ctx.activeChannel = evt.channel
+        },
+        clearActiveChannel(ctx) {
+          ctx.activeChannel = null
+        },
         setColorFromPoint(ctx, evt) {
-          const { xChannel, yChannel } = evt
+          const { xChannel, yChannel } = evt.channel || ctx.activeChannel
 
           const point = dom.getAreaValueFromPoint(ctx, evt.point)
-          if (!point) return
-
           const { getColorFromPoint } = getChannelDetails(valueAsColor, xChannel, yChannel)
+
           const color = getColorFromPoint(point.x, point.y)
           if (!color) return
           ctx.value = color.toString("css")

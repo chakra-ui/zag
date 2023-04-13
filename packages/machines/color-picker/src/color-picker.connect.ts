@@ -8,6 +8,7 @@ import { getChannelDetails } from "./color-picker.utils"
 import { getColorAreaGradient } from "./utils/get-color-area-gradient"
 import { getSliderBgImage } from "./utils/get-slider-background"
 import { dom } from "./color-picker.dom"
+import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const valueAsColor = state.context.valueAsColor
@@ -24,11 +25,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.area.attrs,
         id: dom.getAreaId(state.context),
+        role: "group",
         onPointerDown(event) {
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifiedEvent(evt)) return
           const point = { x: evt.clientX, y: evt.clientY }
-          send({ type: "AREA.POINTER_DOWN", point, xChannel, yChannel, id: "area" })
+          const channel = { xChannel, yChannel }
+          send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
         },
         style: {
           position: "relative",
@@ -65,6 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getAreaThumbId(state.context),
         tabIndex: isDisabled ? undefined : 0,
         "data-disabled": dataAttr(isDisabled),
+        role: "presentation",
         style: {
           position: "absolute",
           left: `${x * 100}%`,
@@ -166,7 +170,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: state.context.displayColor.toString("css"),
+          background: getChannelDisplayColor(valueAsColor, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {

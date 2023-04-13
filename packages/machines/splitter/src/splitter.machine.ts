@@ -266,7 +266,7 @@ export function machine(userContext: UserDefinedContext) {
 
           if (!panels || !rootEl || !bounds) return
 
-          let pointValue = getRelativePointPercent(evt.point, rootEl).normalize(ctx)
+          let pointValue = getRelativePointPercent(evt.point, rootEl).normalize(ctx) * 100
 
           // update active resize state here because we use `previousPanels` in the calculations
           ctx.activeResizeState = {

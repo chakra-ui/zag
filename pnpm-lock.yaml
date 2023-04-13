@@ -1424,6 +1424,9 @@ importers:
       '@zag-js/number-utils':
         specifier: workspace:*
         version: link:../../utilities/number
+      '@zag-js/numeric-range':
+        specifier: workspace:*
+        version: link:../../utilities/numeric-range
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
