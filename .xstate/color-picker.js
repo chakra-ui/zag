@@ -31,11 +31,11 @@ const fetchMachine = createMachine({
         },
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"]
+          actions: ["setActiveChannel", "setAreaColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"]
+          actions: ["setActiveChannel", "setChannelColorFromPoint"]
         },
         "CHANNEL_INPUT.FOCUS": {
           target: "focused",
@@ -50,11 +50,11 @@ const fetchMachine = createMachine({
       on: {
         "AREA.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"]
+          actions: ["setActiveChannel", "setAreaColorFromPoint"]
         },
         "SLIDER.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"]
+          actions: ["setActiveChannel", "setChannelColorFromPoint"]
         },
         "AREA.ARROW_LEFT": {
           actions: ["decrementXChannel"]
@@ -83,7 +83,7 @@ const fetchMachine = createMachine({
       }
     },
     dragging: {
-      exit: ["clearActiveChannel", "clearActiveId"],
+      exit: ["clearActiveChannel"],
       activities: ["trackPointerMove"],
       on: {
         "AREA.POINTER_MOVE": {

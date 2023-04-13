@@ -19,6 +19,7 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         activeId: null,
         activeChannel: null,
+        activeChannelOrientation: null,
         value: "#D9D9D9",
         ...ctx,
         valueAsColor: parseColor(ctx.value || "#D9D9D9"),
@@ -46,11 +47,11 @@ export function machine(userContext: UserDefinedContext) {
             },
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"],
+              actions: ["setActiveChannel", "setAreaColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"],
+              actions: ["setActiveChannel", "setChannelColorFromPoint"],
             },
             "CHANNEL_INPUT.FOCUS": {
               target: "focused",
@@ -66,11 +67,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "AREA.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveId", "setActiveChannel", "setAreaColorFromPoint"],
+              actions: ["setActiveChannel", "setAreaColorFromPoint"],
             },
             "SLIDER.POINTER_DOWN": {
               target: "dragging",
-              actions: ["setActiveId", "setActiveChannel", "setChannelColorFromPoint"],
+              actions: ["setActiveChannel", "setChannelColorFromPoint"],
             },
             "AREA.ARROW_LEFT": {
               actions: ["decrementXChannel"],
@@ -100,7 +101,7 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         dragging: {
-          exit: ["clearActiveChannel", "clearActiveId"],
+          exit: ["clearActiveChannel"],
           activities: ["trackPointerMove"],
           on: {
             "AREA.POINTER_MOVE": {
@@ -150,17 +151,19 @@ export function machine(userContext: UserDefinedContext) {
             })
             .catch(() => void 0)
         },
-        setActiveId(ctx, evt) {
-          ctx.activeId = evt.id
-        },
-        clearActiveId(ctx) {
-          ctx.activeId = null
-        },
         setActiveChannel(ctx, evt) {
-          ctx.activeChannel = evt.channel
+          ctx.activeId = evt.id
+          if (evt.channel) {
+            ctx.activeChannel = evt.channel
+          }
+          if (evt.orientation) {
+            ctx.activeChannelOrientation = evt.orientation
+          }
         },
         clearActiveChannel(ctx) {
           ctx.activeChannel = null
+          ctx.activeId = null
+          ctx.activeChannelOrientation = null
         },
         setAreaColorFromPoint(ctx, evt) {
           const { xChannel, yChannel } = evt.channel || ctx.activeChannel
@@ -177,7 +180,10 @@ export function machine(userContext: UserDefinedContext) {
           const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
 
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
-          const value = getPercentValue(percent.x, minValue, maxValue, step)
+          const position = ctx.activeChannelOrientation || "horizontal"
+
+          const point = position === "horizontal" ? percent.x : percent.y
+          const value = getPercentValue(point, minValue, maxValue, step)
 
           const newColor = ctx.valueAsColor.withChannelValue(channel, value)
           setColor(ctx, newColor)

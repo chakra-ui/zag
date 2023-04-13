@@ -42,6 +42,10 @@ type PublicContext = CommonProperties & {
    */
   disabled?: boolean
   /**
+   * Whether the color picker is read-only
+   */
+  readOnly?: boolean
+  /**
    * Handler that is called when the value changes, as the user drags.
    */
   onChange?: (details: ChangeDetails) => void
@@ -64,6 +68,10 @@ type PrivateContext = Context<{
    * The channel that is currently being interacted with
    */
   activeChannel: Partial<ColorAxes> | null
+  /**
+   * The orientation of the channel that is currently being interacted with
+   */
+  activeChannelOrientation: Orientation | null
 }>
 
 type ComputedContext = Readonly<{
