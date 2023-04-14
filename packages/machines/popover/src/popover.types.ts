@@ -50,9 +50,13 @@ type PublicContext = DismissableElementHandlers &
      */
     closeOnEsc?: boolean
     /**
-     * Function invoked when the popover is opened.
+     * Function invoked when the popover is closed
      */
-    onOpenChange?: (open: boolean) => void
+    onClose?: VoidFunction
+    /**
+     * Function invoked when the popover is opened
+     */
+    onOpen?: VoidFunction
     /**
      * The user provided options used to position the popover content
      */
