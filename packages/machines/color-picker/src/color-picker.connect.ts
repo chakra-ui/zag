@@ -356,7 +356,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getSwatchProps(props: SwatchProps) {
       const { value, readOnly } = props
-      const color = normalizeColor(value)
+      const color = normalizeColor(value).toFormat(valueAsColor.getColorSpace())
       return normalize.element({
         ...parts.swatch.attrs,
         onClick() {
