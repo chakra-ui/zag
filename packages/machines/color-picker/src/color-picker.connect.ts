@@ -361,7 +361,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.swatch.attrs,
         onClick() {
           if (readOnly) return
-          send({ type: "VALUE.SET", value: color.toString("css") })
+          send({ type: "VALUE.SET", value: color })
         },
         style: {
           position: "relative",
