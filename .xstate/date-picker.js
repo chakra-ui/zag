@@ -67,7 +67,7 @@ const fetchMachine = createMachine({
     },
     "VALUE.CLEAR": {
       target: "focused",
-      actions: ["clearSelectedDate", "clearFocusedDate", "setInputValue", "focusInputElement"]
+      actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"]
     },
     "GOTO.NEXT": [{
       cond: "isYearView",
@@ -117,7 +117,7 @@ const fetchMachine = createMachine({
           actions: ["focusParsedDate"]
         },
         "INPUT.ENTER": {
-          actions: ["focusParsedDate", "selectFocusedDate", "setInputValue"]
+          actions: ["focusParsedDate", "selectFocusedDate"]
         },
         "INPUT.BLUR": {
           target: "idle"
@@ -154,7 +154,7 @@ const fetchMachine = createMachine({
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "setInputValue", "focusInputElement"]
+          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "focusInputElement"]
         },
         // ===
         {
@@ -162,7 +162,7 @@ const fetchMachine = createMachine({
           actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"]
         }, {
           cond: "isMultiPicker",
-          actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"]
+          actions: ["setFocusedDate", "toggleSelectedDate"]
         },
         // === Grouped transitions (based on isInline) ===
         {
@@ -170,7 +170,7 @@ const fetchMachine = createMachine({
           actions: ["setFocusedDate", "setSelectedDate"]
         }, {
           target: "focused",
-          actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"]
+          actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"]
         }
         // ===
         ],
@@ -213,7 +213,7 @@ const fetchMachine = createMachine({
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setSelectedDate", "setStartIndex", "setInputValue", "focusInputElement"]
+          actions: ["setSelectedDate", "setStartIndex", "focusInputElement"]
         },
         // ===
         {
@@ -221,7 +221,7 @@ const fetchMachine = createMachine({
           actions: ["setSelectedDate", "setEndIndex", "focusNextDay"]
         }, {
           cond: "isMultiPicker",
-          actions: ["toggleSelectedDate", "setInputValue"]
+          actions: ["toggleSelectedDate"]
         },
         // === Grouped transitions (based on isInline) ===
         {
@@ -229,7 +229,7 @@ const fetchMachine = createMachine({
           actions: ["selectFocusedDate"]
         }, {
           target: "focused",
-          actions: ["selectFocusedDate", "setInputValue", "focusInputElement"]
+          actions: ["selectFocusedDate", "focusInputElement"]
         }
         // ===
         ],

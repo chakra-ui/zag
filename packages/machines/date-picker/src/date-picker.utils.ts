@@ -23,7 +23,7 @@ export function matchView<T>(view: DateView, values: { year: T; month: T; day: T
   return values.day
 }
 
-export function formatValue(ctx: MachineContext) {
+export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "selectionMode" | "value">) {
   const formatter = new DateFormatter(ctx.locale, {
     timeZone: ctx.timeZone,
     day: "2-digit",

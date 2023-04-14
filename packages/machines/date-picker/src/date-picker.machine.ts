@@ -28,34 +28,50 @@ import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.uti
 
 const { and, not } = guards
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-
+const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
-  const focusedValue = ctx.focusedValue || getTodayDate(timeZone)
+  const selectionMode = ctx.selectionMode || "single"
   const numOfMonths = ctx.numOfMonths || 1
+
+  // sort and constrain dates
+  let value = sortDates(ctx.value || [])
+  value = value.map((date) => constrainValue(date, ctx.min, ctx.max))
+
+  // get initial focused value
+  let focusedValue = value.at(0) || ctx.focusedValue || getTodayDate(timeZone)
+  focusedValue = constrainValue(focusedValue, ctx.min, ctx.max)
+
+  // get initial start value for visible range
   const startValue = alignDate(focusedValue, "start", { months: numOfMonths }, locale)
 
+  // format input value
+  const inputValue = ctx.format?.(value) ?? formatValue({ locale, timeZone, selectionMode, value })
+
+  return {
+    locale,
+    numOfMonths,
+    focusedValue,
+    startValue,
+    timeZone,
+    value,
+    inputValue,
+    selectionMode,
+    view: "day",
+    activeIndex: 0,
+    valueText: "",
+    hoveredValue: null,
+    ...ctx,
+  } as MachineContext
+}
+
+export function machine(userContext: UserDefinedContext) {
+  const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
       initial: ctx.inline ? "open" : "idle",
-      context: {
-        view: "day",
-        locale,
-        numOfMonths,
-        focusedValue,
-        startValue,
-        timeZone,
-        activeIndex: 0,
-        value: [],
-        valueText: "",
-        hoveredValue: null,
-        inputValue: "",
-        selectionMode: "single",
-        ...ctx,
-      },
+      context: getInitialContext(ctx),
       computed: {
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
@@ -75,7 +91,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["setupLiveRegion"],
 
       watch: {
-        locale: ["setStartValue"],
+        locale: ["setStartValue", "setInputValue"],
         focusedValue: [
           "adjustStartDate",
           "syncMonthSelectElement",
@@ -84,7 +100,7 @@ export function machine(userContext: UserDefinedContext) {
           "setHoveredValueIfKeyboard",
           "invokeOnFocusChange",
         ],
-        value: ["setValueText", "announceValueText"],
+        value: ["setValueText", "announceValueText", "setInputValue"],
         inputValue: ["syncInputElement"],
         view: ["focusActiveCell", "invokeOnViewChange"],
       },
@@ -101,7 +117,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         "VALUE.CLEAR": {
           target: "focused",
-          actions: ["clearSelectedDate", "clearFocusedDate", "setInputValue", "focusInputElement"],
+          actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"],
         },
         "GOTO.NEXT": [
           { guard: "isYearView", actions: ["focusNextDecade", "announceVisibleRange"] },
@@ -140,7 +156,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["focusParsedDate"],
             },
             "INPUT.ENTER": {
-              actions: ["focusParsedDate", "selectFocusedDate", "setInputValue"],
+              actions: ["focusParsedDate", "selectFocusedDate"],
             },
             "INPUT.BLUR": {
               target: "idle",
@@ -187,7 +203,6 @@ export function machine(userContext: UserDefinedContext) {
                   "setSelectedDate",
                   "setStartIndex",
                   "clearHoveredDate",
-                  "setInputValue",
                   "focusInputElement",
                 ],
               },
@@ -198,7 +213,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: "isMultiPicker",
-                actions: ["setFocusedDate", "toggleSelectedDate", "setInputValue"],
+                actions: ["setFocusedDate", "toggleSelectedDate"],
               },
               // === Grouped transitions (based on isInline) ===
               {
@@ -207,7 +222,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "focused",
-                actions: ["setFocusedDate", "setSelectedDate", "setInputValue", "focusInputElement"],
+                actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"],
               },
               // ===
             ],
@@ -253,7 +268,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 target: "focused",
                 guard: and("isRangePicker", "isSelectingEndDate"),
-                actions: ["setSelectedDate", "setStartIndex", "setInputValue", "focusInputElement"],
+                actions: ["setSelectedDate", "setStartIndex", "focusInputElement"],
               },
               // ===
               {
@@ -262,7 +277,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: "isMultiPicker",
-                actions: ["toggleSelectedDate", "setInputValue"],
+                actions: ["toggleSelectedDate"],
               },
               // === Grouped transitions (based on isInline) ===
               {
@@ -271,7 +286,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "focused",
-                actions: ["selectFocusedDate", "setInputValue", "focusInputElement"],
+                actions: ["selectFocusedDate", "focusInputElement"],
               },
               // ===
             ],

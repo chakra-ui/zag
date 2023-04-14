@@ -11,6 +11,8 @@ type IntlMessages = {
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
+export type SelectionMode = "single" | "multiple" | "range"
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -99,7 +101,7 @@ type PublicContext = DirectionProperty &
      * - `multiple` - multiple dates can be selected
      * - `range` - a range of dates can be selected
      */
-    selectionMode: "single" | "multiple" | "range"
+    selectionMode: SelectionMode
     /**
      * The format of the date to display in the input.
      */
