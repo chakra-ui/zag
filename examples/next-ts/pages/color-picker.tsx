@@ -5,7 +5,6 @@ import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { parseColor } from "@zag-js/color-utils"
 
 export default function Page() {
   const controls = useControls(colorPickerControls)
@@ -58,12 +57,12 @@ export default function Page() {
           <input {...api.getChannelInputProps({ channel: "hex" })} />
 
           <div style={{ display: "flex", gap: "10px" }}>
-            <div {...api.getSwatchProps({ value: parseColor("#f47373").toFormat("hsl") })}>
-              <div {...api.getSwatchBackgroundProps({ value: api.valueAsColor })} />
+            <div {...api.getSwatchProps({ value: "#f47373" })}>
+              <div {...api.getSwatchBackgroundProps({ value: "#f47373" })} />
             </div>
 
-            <div {...api.getSwatchProps({ value: parseColor("#697689").toFormat("hsl") })}>
-              <div {...api.getSwatchBackgroundProps({ value: api.valueAsColor })} />
+            <div {...api.getSwatchProps({ value: "#697689" })}>
+              <div {...api.getSwatchBackgroundProps({ value: "#697689" })} />
             </div>
           </div>
 

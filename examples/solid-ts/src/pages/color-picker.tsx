@@ -54,6 +54,18 @@ export default function Page() {
             <p>{api().value}</p>
           </div>
 
+          <input {...api().getChannelInputProps({ channel: "hex" })} />
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <div {...api().getSwatchProps({ value: "#f47373" })}>
+              <div {...api().getSwatchBackgroundProps({ value: "#f47373" })} />
+            </div>
+
+            <div {...api().getSwatchProps({ value: "#697689" })}>
+              <div {...api().getSwatchBackgroundProps({ value: "#697689" })} />
+            </div>
+          </div>
+
           <button {...api().eyeDropperTriggerProps}>Eye Dropper</button>
         </div>
       </main>
