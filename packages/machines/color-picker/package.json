@@ -1,0 +1,57 @@
+{
+  "name": "@zag-js/color-picker",
+  "version": "0.0.0",
+  "description": "Core logic for the color-picker widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "color-picker"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/color-picker",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build-fast": "tsup src",
+    "start": "pnpm build --watch",
+    "build": "tsup src --dts",
+    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test-ci": "pnpm test --ci --runInBand",
+    "test-watch": "pnpm test --watch -u",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/core": "workspace:*",
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/utils": "workspace:*",
+    "@zag-js/color-utils": "workspace:*",
+    "@zag-js/number-utils": "workspace:*",
+    "@zag-js/numeric-range": "workspace:*",
+    "@zag-js/text-selection": "workspace:*",
+    "@zag-js/types": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json"
+}

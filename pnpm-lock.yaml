@@ -142,6 +142,12 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -353,6 +359,12 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -549,6 +561,12 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -742,6 +760,12 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -760,6 +784,9 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../packages/utilities/dismissable
+      '@zag-js/docs':
+        specifier: workspace:*
+        version: link:../../packages/docs
       '@zag-js/dom-event':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-event
@@ -856,6 +883,9 @@ importers:
       '@zag-js/svelte':
         specifier: workspace:*
         version: link:../../packages/frameworks/svelte
+      '@zag-js/switch':
+        specifier: workspace:*
+        version: link:../../packages/machines/switch
       '@zag-js/tabbable':
         specifier: workspace:*
         version: link:../../packages/utilities/tabbable
@@ -962,6 +992,12 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -1363,6 +1399,43 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/color-picker:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../utilities/color-utils
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/number-utils':
+        specifier: workspace:*
+        version: link:../../utilities/number
+      '@zag-js/numeric-range':
+        specifier: workspace:*
+        version: link:../../utilities/numeric-range
+      '@zag-js/text-selection':
+        specifier: workspace:*
+        version: link:../../utilities/text-selection
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -2152,6 +2225,12 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/color-utils:
     devDependencies:
       clean-package:
         specifier: 2.2.0

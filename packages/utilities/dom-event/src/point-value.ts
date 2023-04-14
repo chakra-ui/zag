@@ -19,15 +19,15 @@ export function getRelativePointValue(absolutePoint: Point, element: HTMLElement
 
 export function getRelativePointPercent(absolutePoint: Point, element: HTMLElement) {
   const relativePoint = getRelativePointValue(absolutePoint, element)
-  const x = clamp(relativePoint.x / element.offsetWidth) * 100
-  const y = clamp(relativePoint.y / element.offsetHeight) * 100
+  const x = clamp(relativePoint.x / element.offsetWidth)
+  const y = clamp(relativePoint.y / element.offsetHeight)
   return {
     x,
     y,
     normalize(options: NormalizeOptions = {}) {
       const { dir = "ltr", orientation = "horizontal" } = options
       let newX = x
-      if (orientation === "horizontal" && dir === "rtl") newX = 100 - newX
+      if (orientation === "horizontal" && dir === "rtl") newX = 1 - newX
       return orientation === "horizontal" ? newX : y
     },
   }
