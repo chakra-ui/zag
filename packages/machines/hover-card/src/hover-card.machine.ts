@@ -131,10 +131,10 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         invokeOnClose(ctx) {
-          ctx.onOpenChange?.(false)
+          ctx.onClose?.()
         },
         invokeOnOpen(ctx) {
-          ctx.onOpenChange?.(true)
+          ctx.onOpen?.()
         },
         setIsPointer(ctx) {
           ctx.isPointer = true

@@ -16,7 +16,11 @@ type PublicContext = DirectionProperty &
     /**
      * Function invoked when the hover card is opened.
      */
-    onOpenChange?: (open: boolean) => void
+    onOpen?: VoidFunction
+    /**
+     * Function invoked when the hover card is closed.
+     */
+    onClose?: VoidFunction
     /**
      * The duration from when the mouse enters the trigger until the hover card opens.
      */
