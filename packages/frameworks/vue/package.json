@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/vue",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The vue wrapper for zag",
   "keywords": [
     "ui-machines",

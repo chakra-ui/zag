@@ -1,5 +1,16 @@
 # @zag-js/vue
 
+## 0.6.0
+
+### Patch Changes
+
+- [#601](https://github.com/chakra-ui/zag/pull/601)
+  [`657df96e`](https://github.com/chakra-ui/zag/commit/657df96e0fbc59dcab8d06eb90105519d32b527f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `defaultValue` does not get applied to input
+  element.
+
+  The fix was to normalize `defaultValue` to `value`
+
 ## 0.5.0
 
 ### Patch Changes

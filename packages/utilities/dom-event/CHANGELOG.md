@@ -1,5 +1,14 @@
 # @zag-js/dom-event
 
+## 0.6.0
+
+### Patch Changes
+
+- [#601](https://github.com/chakra-ui/zag/pull/601)
+  [`657df96e`](https://github.com/chakra-ui/zag/commit/657df96e0fbc59dcab8d06eb90105519d32b527f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update the output of `getRelativePointPercent` to return decimals
+  less than one for reduced complexity
+
 ## 0.5.0
 
 ### Patch Changes
