@@ -1,5 +1,15 @@
 # @zag-js/hover-card
 
+## 0.6.0
+
+### Patch Changes
+
+- [`ba2a631b`](https://github.com/chakra-ui/zag/commit/ba2a631b062a607ab66f6ff498140f5e5294cd89) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - [BREAKING] Rename `onOpenChange` to `onOpen` and `onClose`
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @zag-js/checkbox
 
+## 0.6.0
+
+### Patch Changes
+
+- [`78f64795`](https://github.com/chakra-ui/zag/commit/78f64795f94c6e25205ffac4c8ada2efed6406ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where checkbox `toggleChecked` was not defined
+
 ## 0.5.0
 
 ### Minor Changes

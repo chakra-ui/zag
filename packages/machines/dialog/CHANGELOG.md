@@ -1,5 +1,12 @@
 # @zag-js/dialog
 
+## 0.6.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes
