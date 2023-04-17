@@ -189,10 +189,10 @@ export function machine(userContext: UserDefinedContext) {
           raf(() => dom.getTriggerEl(ctx)?.focus())
         },
         invokeOnOpen(ctx) {
-          ctx.onOpenChange?.(true)
+          ctx.onOpen?.()
         },
         invokeOnClose(ctx) {
-          ctx.onOpenChange?.(false)
+          ctx.onClose?.()
         },
         toggleVisibility(ctx, _evt, { send }) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })

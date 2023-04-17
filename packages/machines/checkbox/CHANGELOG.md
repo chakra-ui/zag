@@ -1,5 +1,45 @@
 # @zag-js/checkbox
 
+## 0.6.0
+
+### Patch Changes
+
+- [`78f64795`](https://github.com/chakra-ui/zag/commit/78f64795f94c6e25205ffac4c8ada2efed6406ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where checkbox `toggleChecked` was not defined
+
+## 0.5.0
+
+### Minor Changes
+
+- [`1bf5f282`](https://github.com/chakra-ui/zag/commit/1bf5f2822f38c5ccde0e6ef0ce104ba263330195) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove the `defaultChecked` property in favor of the `checked`
+  property that can now be controlled.
+
+  ```jsx
+  // the checkbox will be checked initially
+  const [state, send] = useMachine(
+    checkbox.machine({
+      id: "1",
+      checked: true,
+    }),
+  )
+
+  // this will update the checkbox when the `checked` value changes
+  const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
+    context: {
+      // when this value changes, the checkbox will be checked/unchecked
+      checked: true,
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
 ## 0.2.16
 
 ### Patch Changes

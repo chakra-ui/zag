@@ -23,7 +23,7 @@ export function matchView<T>(view: DateView, values: { year: T; month: T; day: T
   return values.day
 }
 
-export function formatValue(ctx: MachineContext) {
+export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "selectionMode" | "value">) {
   const formatter = new DateFormatter(ctx.locale, {
     timeZone: ctx.timeZone,
     day: "2-digit",
@@ -38,7 +38,9 @@ export function formatValue(ctx: MachineContext) {
   }
 
   if (ctx.selectionMode === "single") {
-    return formatter.format(ctx.value[0].toDate(ctx.timeZone))
+    const [startValue] = ctx.value
+    if (!startValue) return ""
+    return formatter.format(startValue.toDate(ctx.timeZone))
   }
 
   return ctx.value.map((date) => formatter.format(date.toDate(ctx.timeZone))).join(", ")
@@ -77,9 +79,29 @@ export function getViewTriggerLabel(view: DateView) {
 }
 
 const PLACEHOLDERS = { day: "dd", month: "mm", year: "yyyy" }
+
 export function getInputPlaceholder(locale: string) {
   return new DateFormatter(locale)
     .formatToParts(new Date())
     .map((item) => PLACEHOLDERS[item.type] ?? item.value)
     .join("")
+}
+
+export const isValidCharacter = (char: string | null, separator: string) => {
+  if (!char) return true
+  return /\d/.test(char) || char === separator || char.length !== 1
+}
+
+export const ensureValidCharacters = (value: string, separator: string) => {
+  return value
+    .split("")
+    .filter((char) => isValidCharacter(char, separator))
+    .join("")
+}
+
+export function getLocaleSeparator(locale: string) {
+  const dateFormatter = new Intl.DateTimeFormat(locale)
+  const parts = dateFormatter.formatToParts(new Date())
+  const literalPart = parts.find((part) => part.type === "literal")
+  return literalPart ? literalPart.value : "/"
 }

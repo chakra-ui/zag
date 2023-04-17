@@ -11,6 +11,8 @@ type IntlMessages = {
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
+export type SelectionMode = "single" | "multiple" | "range"
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -45,11 +47,6 @@ type PublicContext = DirectionProperty &
      * The maximum date that can be selected.
      */
     max?: DateValue
-    /**
-     * The index of the currently active date.
-     * Used in range selection mode.
-     */
-    activeIndex: number
     /**
      * Whether the calendar should be displayed inline.
      */
@@ -97,14 +94,14 @@ type PublicContext = DirectionProperty &
     /**
      * Returns whether a date of the calendar is available.
      */
-    isDateUnavailable?: (date: DateValue) => boolean
+    isDateUnavailable?: (date: DateValue, locale: string) => boolean
     /**
      * The selection mode of the calendar.
      * - `single` - only one date can be selected
      * - `multiple` - multiple dates can be selected
      * - `range` - a range of dates can be selected
      */
-    selectionMode: "single" | "multiple" | "range"
+    selectionMode: SelectionMode
     /**
      * The format of the date to display in the input.
      */
@@ -113,6 +110,11 @@ type PublicContext = DirectionProperty &
      * The format of the date to display in the input.
      */
     parse?: (value: string) => DateValue[]
+    /**
+     * The view of the calendar
+     * @default "day"
+     */
+    view: DateView
     /**
      * Whether the calendar should be modal. This means that the calendar will
      * block interaction with the rest of the page, and trap focus within it.
@@ -127,13 +129,17 @@ export type ViewProps = {
 }
 
 type PrivateContext = Context<{
-  view: DateView
   startValue: DateValue
   hasFocus?: boolean
   announcer?: LiveRegion
   valueText: string
   inputValue: string
   hoveredValue: DateValue | null
+  /**
+   * The index of the currently active date.
+   * Used in range selection mode.
+   */
+  activeIndex: number
 }>
 
 type ComputedContext = Readonly<{

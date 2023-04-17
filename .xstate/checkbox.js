@@ -13,19 +13,17 @@ const fetchMachine = createMachine({
   id: "checkbox",
   initial: ctx.checked ? "checked" : "unchecked",
   context: {
-    "shouldCheck && isInteractive": false,
-    "isInteractive": false,
+    "shouldCheck": false,
     "isInteractive": false,
     "isInteractive": false
   },
   activities: ["trackFormControlState"],
   on: {
     SET_STATE: [{
-      cond: "shouldCheck && isInteractive",
+      cond: "shouldCheck",
       target: "checked",
       actions: ["invokeOnChange", "dispatchChangeEvent"]
     }, {
-      cond: "isInteractive",
       target: "unchecked",
       actions: ["invokeOnChange", "dispatchChangeEvent"]
     }],
@@ -76,7 +74,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "shouldCheck && isInteractive": ctx => ctx["shouldCheck && isInteractive"],
+    "shouldCheck": ctx => ctx["shouldCheck"],
     "isInteractive": ctx => ctx["isInteractive"]
   }
 });

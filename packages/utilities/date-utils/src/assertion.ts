@@ -26,13 +26,14 @@ export function isDateDisabled(
 export function isDateUnavailable(
   date: DateValue | null,
   isUnavailable: DateAvailableFn | undefined,
+  locale: string,
   minValue?: DateValue | null,
   maxValue?: DateValue | null,
 ) {
   if (!date) {
     return false
   }
-  if (isUnavailable?.(date)) {
+  if (isUnavailable?.(date, locale)) {
     return true
   }
   return isDateInvalid(date, minValue, maxValue)

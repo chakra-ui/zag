@@ -1,5 +1,28 @@
 # @zag-js/svelte
 
+## 0.5.0
+
+### Patch Changes
+
+- [#593](https://github.com/chakra-ui/zag/pull/593)
+  [`3af33041`](https://github.com/chakra-ui/zag/commit/3af3304178fc145169a38461f016b3afa3244fef) Thanks
+  [@Shyrro](https://github.com/Shyrro)! - - Fix for style attribute ( now included in the use directive rather than the
+  native spread )
+
+  - Fix for handlers not being updated correctly ( we used to attach them once the connect is init, but they need to be
+    updated for each change of the api )
+  - Renamed attributes to attrs since lines are long enough
+  - Add Menu component example
+
+- [#550](https://github.com/chakra-ui/zag/pull/550)
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix handlers and attributes types for `normalizeProps`
+
+- Updated dependencies [[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/types@0.5.0
+
 ## 0.2.12
 
 ### Patch Changes

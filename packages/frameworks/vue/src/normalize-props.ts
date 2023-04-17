@@ -19,17 +19,19 @@ function toCase(txt: string) {
   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
 }
 
-const eventMap = {
+const propMap = {
   htmlFor: "for",
   className: "class",
   onDoubleClick: "onDblclick",
   onChange: "onInput",
   onFocus: "onFocusin",
   onBlur: "onFocusout",
+  defaultValue: "value",
+  defaultChecked: "checked",
 }
 
 function toVueProp(prop: string) {
-  if (prop in eventMap) return eventMap[prop]
+  if (prop in propMap) return propMap[prop]
 
   if (prop.startsWith("on")) {
     return `on${toCase(prop.substr(2))}`

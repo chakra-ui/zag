@@ -242,6 +242,80 @@
       }
     }
   },
+  "color-picker": {
+    "api": {
+      "isDragging": {
+        "type": "boolean",
+        "description": "Whether the color picker is being dragged"
+      },
+      "value": {
+        "type": "string",
+        "description": "The current color value (as a string)"
+      },
+      "valueAsColor": {
+        "type": "Color",
+        "description": "The current color value (as a Color object)"
+      },
+      "channels": {
+        "type": "[ColorChannel]",
+        "description": "The current color channels of the color"
+      },
+      "setColor": {
+        "type": "(value: string | Color) => void",
+        "description": "Function to set the color value"
+      },
+      "setChannelValue": {
+        "type": "(channel: ColorChannel, value: number) => void",
+        "description": "Function to set the color value of a specific channel"
+      },
+      "setFormat": {
+        "type": "(format: ColorFormat) => void",
+        "description": "Function to set the color format"
+      }
+    },
+    "context": {
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine.",
+        "defaultValue": null
+      },
+      "getRootNode": {
+        "type": "() => Node | ShadowRoot | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.",
+        "defaultValue": null
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The direction of the color picker",
+        "defaultValue": null
+      },
+      "value": {
+        "type": "string",
+        "description": "The current color value",
+        "defaultValue": null
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the color picker is disabled",
+        "defaultValue": null
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the color picker is read-only",
+        "defaultValue": null
+      },
+      "onChange": {
+        "type": "(details: ChangeDetails) => void",
+        "description": "Handler that is called when the value changes, as the user drags.",
+        "defaultValue": null
+      },
+      "onChangeEnd": {
+        "type": "(details: ChangeDetails) => void",
+        "description": "Handler that is called when the user stops dragging.",
+        "defaultValue": null
+      }
+    }
+  },
   "combobox": {
     "api": {
       "isFocused": {
@@ -474,6 +548,10 @@
         "type": "(from?: DateValue[][]",
         "description": "Returns the weeks of the month from the provided date. Represented as an array of arrays of dates."
       },
+      "isUnavailable": {
+        "type": "(date: DateValue) => boolean",
+        "description": "Returns whether the provided date is available (or can be selected)"
+      },
       "weeks": {
         "type": "DateValue[][]",
         "description": "The weeks of the month. Represented as an array of arrays of dates."
@@ -635,11 +713,6 @@
         "description": "The maximum date that can be selected.",
         "defaultValue": null
       },
-      "activeIndex": {
-        "type": "number",
-        "description": "The index of the currently active date.\nUsed in range selection mode.",
-        "defaultValue": null
-      },
       "inline": {
         "type": "boolean",
         "description": "Whether the calendar should be displayed inline.",
@@ -686,7 +759,7 @@
         "defaultValue": null
       },
       "isDateUnavailable": {
-        "type": "(date: DateValue) => boolean",
+        "type": "(date: DateValue, locale: string) => boolean",
         "description": "Returns whether a date of the calendar is available.",
         "defaultValue": null
       },
@@ -704,6 +777,11 @@
         "type": "(value: string) => DateValue[]",
         "description": "The format of the date to display in the input.",
         "defaultValue": null
+      },
+      "view": {
+        "type": "DateView",
+        "description": "The view of the calendar",
+        "defaultValue": "\"day\""
       },
       "modal": {
         "type": "boolean",
@@ -1690,9 +1768,14 @@
         "description": "Whether to close the popover when the escape key is pressed.",
         "defaultValue": null
       },
-      "onOpenChange": {
-        "type": "(open: boolean) => void",
-        "description": "Function invoked when the popover is opened.",
+      "onClose": {
+        "type": "VoidFunction",
+        "description": "Function invoked when the popover is closed",
+        "defaultValue": null
+      },
+      "onOpen": {
+        "type": "VoidFunction",
+        "description": "Function invoked when the popover is opened",
         "defaultValue": null
       },
       "positioning": {

@@ -1,4 +1,4 @@
-import { CalendarDate, DateFormatter, isWeekend } from "@internationalized/date"
+import { CalendarDate, DateFormatter, DateValue, isWeekend } from "@internationalized/date"
 import {
   constrainValue,
   getDayFormatter,
@@ -19,7 +19,7 @@ import {
   setMonth,
   setYear,
 } from "@zag-js/date-utils"
-import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
@@ -28,13 +28,18 @@ import { dom } from "./date-picker.dom"
 import type { DateView, DayCellProps, Offset, Send, State, ViewProps } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
+  ensureValidCharacters,
   getInputPlaceholder,
+  getLocaleSeparator,
   getNextTriggerLabel,
   getPrevTriggerLabel,
   getRoleDescription,
   getViewTriggerLabel,
   isDateWithinRange,
+  isValidCharacter,
 } from "./date-picker.utils"
+
+const pretty = (value: DateValue) => value.toString().split("T")[0]
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const startValue = state.context.startValue
@@ -55,13 +60,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const startOfWeek = state.context.startOfWeek
 
   const isFocused = state.matches("focused")
-  const isOpen = state.matches("open")
+  const isOpen = state.matches("open") || state.context.inline
   const isRangePicker = state.context.selectionMode === "range"
+  const isDateUnavailableFn = state.context.isDateUnavailable
 
   const defaultOffset: Offset = {
     amount: 0,
     visibleRange: state.context.visibleRange,
   }
+
+  const separator = getLocaleSeparator(locale)
 
   const api = {
     /**
@@ -107,6 +115,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     /**
+     * Returns whether the provided date is available (or can be selected)
+     */
+    isUnavailable(date: DateValue) {
+      return isDateUnavailable(date, isDateUnavailableFn, locale, min, max)
+    },
+
+    /**
      * The weeks of the month. Represented as an array of arrays of dates.
      */
     get weeks() {
@@ -136,7 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The selected date as a string.
      */
-    valueAsString: selectedValue.map((date) => date.toString()),
+    valueAsString: selectedValue.map(pretty),
 
     /**
      * The focused date.
@@ -151,7 +166,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * The focused date as a string.
      */
-    focusedValueAsString: focusedValue?.toString(),
+    focusedValueAsString: pretty(focusedValue),
 
     /**
      * Sets the selected date to today.
@@ -305,6 +320,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             Enter() {
+              // if focused date is unavailable, do nothing
+              if (api.isUnavailable(focusedValue)) return
               send({ type: "GRID.ENTER", view, columns, focus: true })
             },
             ArrowLeft() {
@@ -368,7 +385,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isInvalid: isDateInvalid(value, min, max),
         isDisabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
         isSelected: selectedValue.some((date) => isDateEqual(value, date)),
-        isUnavailable: isDateUnavailable(value, state.context.isDateUnavailable, min, max) && !disabled,
+        isUnavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
         isOutsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
         isInRange:
           isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
@@ -629,6 +646,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled,
       placeholder: getInputPlaceholder(locale),
       defaultValue: state.context.inputValue,
+      onBeforeInput(event) {
+        const { data } = getNativeEvent(event)
+        if (!isValidCharacter(data, separator)) {
+          event.preventDefault()
+        }
+      },
       onFocus() {
         send("INPUT.FOCUS")
       },
@@ -637,10 +660,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         if (event.key !== "Enter" || !isInteractive) return
+        if (api.isUnavailable(state.context.focusedValue)) return
         send({ type: "INPUT.ENTER", value: event.currentTarget.value })
       },
       onChange(event) {
-        send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
+        const { value } = event.target
+        send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator) })
       },
     }),
 

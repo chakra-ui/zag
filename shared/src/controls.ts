@@ -172,10 +172,13 @@ export const datePickerControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
-  inline: { type: "boolean", defaultValue: false },
   startOfWeek: { type: "number", defaultValue: 0 },
   fixedWeeks: { type: "boolean", defaultValue: false },
-  locale: { type: "select", options: ["en-US", "fr", "de", "ja", "zh-CN"] as const, defaultValue: "en-US" },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    defaultValue: "en-US",
+  },
 })
 
 export const transitionControls = defineControls({
@@ -192,4 +195,10 @@ export const carouselControls = defineControls({
   slidesPerView: { type: "number", defaultValue: 1 },
   align: { type: "select", options: ["start", "center", "end"] as const, defaultValue: "start" },
   loop: { type: "boolean", defaultValue: false },
+})
+
+export const colorPickerControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

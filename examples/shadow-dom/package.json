@@ -15,6 +15,8 @@
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/color-picker": "workspace:*",
+    "@zag-js/color-utils": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/date-picker": "workspace:*",

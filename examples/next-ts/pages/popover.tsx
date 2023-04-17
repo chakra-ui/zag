@@ -1,7 +1,7 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { popoverControls } from "@zag-js/shared"
-import * as React from "react"
+import { Fragment, useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -11,7 +11,7 @@ export default function Page() {
 
   const [state, send] = useMachine(
     popover.machine({
-      id: React.useId(),
+      id: useId(),
     }),
     {
       context: controls.context,
@@ -20,7 +20,7 @@ export default function Page() {
 
   const api = popover.connect(state, send, normalizeProps)
 
-  const Wrapper = api.portalled ? Portal : React.Fragment
+  const Wrapper = api.portalled ? Portal : Fragment
 
   return (
     <>

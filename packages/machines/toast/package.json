@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/toast",
-  "version": "0.2.16",
+  "version": "0.6.0",
   "description": "Core logic for the toast widget implemented as a state machine",
   "keywords": [
     "js",

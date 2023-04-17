@@ -1,5 +1,34 @@
 # @zag-js/date-picker
 
+## 0.6.0
+
+### Patch Changes
+
+- [`86b03aeb`](https://github.com/chakra-ui/zag/commit/86b03aebf88b72492d114ac2ea76ba0fda718416) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `focusedValue` was not synced with `value`
+  property.
+  - Fix issue where input value was not updated when `locale` and `value` changed.
+- Updated dependencies [[`657df96e`](https://github.com/chakra-ui/zag/commit/657df96e0fbc59dcab8d06eb90105519d32b527f)]:
+  - @zag-js/dom-event@0.6.0
+  - @zag-js/dismissable@0.6.0
+
+## 0.5.0
+
+### Patch Changes
+
+- [`7f4b6e45`](https://github.com/chakra-ui/zag/commit/7f4b6e4566f8015e9d258852330d3f4d32bc5757) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor to use `CalendarDateTime` instead of `CalendarDate` to
+  match the native date functionality.
+  - Improve input event handling to only allow valid characters and separators.
+- Updated dependencies [[`ec07ff35`](https://github.com/chakra-ui/zag/commit/ec07ff3590916ebcb4450b64207370ee2af9d3d1),
+  [`7f4b6e45`](https://github.com/chakra-ui/zag/commit/7f4b6e4566f8015e9d258852330d3f4d32bc5757),
+  [`54377b1c`](https://github.com/chakra-ui/zag/commit/54377b1c4ed85deb06453a00648b7c2c1f0c72df)]:
+  - @zag-js/core@0.5.0
+  - @zag-js/date-utils@0.5.0
+  - @zag-js/types@0.5.0
+  - @zag-js/dom-event@0.5.0
+  - @zag-js/dismissable@0.5.0
+
 ## 0.0.10
 
 ### Patch Changes
