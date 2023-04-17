@@ -2389,8 +2389,8 @@ importers:
   packages/utilities/popper:
     dependencies:
       '@floating-ui/dom':
-        specifier: 1.2.5
-        version: 1.2.5
+        specifier: 1.2.6
+        version: 1.2.6
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
@@ -3629,14 +3629,14 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@floating-ui/core@1.2.5:
-    resolution: {integrity: sha512-qrcbyfnRVziRlB6IYwjCopYhO7Vud750JlJyuljruIXcPxr22y8zdckcJGsuOdnQ639uVD1tTXddrcH3t3QYIQ==}
+  /@floating-ui/core@1.2.6:
+    resolution: {integrity: sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==}
     dev: false
 
-  /@floating-ui/dom@1.2.5:
-    resolution: {integrity: sha512-+sAUfpQ3Frz+VCbPCqj+cZzvEESy3fjSeT/pDWkYCWOBXYNNKZfuVsHuv8/JO2zze8+Eb/Q7a6hZVgzS81fLbQ==}
+  /@floating-ui/dom@1.2.6:
+    resolution: {integrity: sha512-02vxFDuvuVPs22iJICacezYJyf7zwwOCWkPNkWNBr1U0Qt1cKFYzWvxts0AmqcOQGwt/3KJWcWIgtbUU38keyw==}
     dependencies:
-      '@floating-ui/core': 1.2.5
+      '@floating-ui/core': 1.2.6
     dev: false
 
   /@gwhitney/detect-indent@7.0.1:
