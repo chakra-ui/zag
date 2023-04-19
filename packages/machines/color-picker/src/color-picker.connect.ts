@@ -4,7 +4,14 @@ import { dataAttr } from "@zag-js/dom-query"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
-import { AreaProps, ChannelInputProps, ChannelProps, Send, State, SwatchProps } from "./color-picker.types"
+import {
+  ColorAreaProps,
+  ColorChannelInputProps,
+  ColorChannelProps,
+  ColorSwatchProps,
+  Send,
+  State,
+} from "./color-picker.types"
 import { getChannelDetails } from "./utils/get-channel-details"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-input-value"
@@ -62,7 +69,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
     }),
 
-    getAreaProps(props: AreaProps) {
+    getAreaProps(props: ColorAreaProps) {
       const { xChannel, yChannel } = props
       const { areaStyles } = getColorAreaGradient(state.context, xChannel, yChannel)
 
@@ -90,7 +97,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getAreaGradientProps(props: AreaProps) {
+    getAreaGradientProps(props: ColorAreaProps) {
       const { xChannel, yChannel } = props
       const { areaGradientStyles } = getColorAreaGradient(state.context, xChannel, yChannel)
 
@@ -106,7 +113,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getAreaThumbProps(props: AreaProps) {
+    getAreaThumbProps(props: ColorAreaProps) {
       const { xChannel, yChannel } = props
       const { getThumbPosition } = getChannelDetails(valueAsColor, xChannel, yChannel)
       const { x, y } = getThumbPosition()
@@ -167,7 +174,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelSliderTrackProps(props: ChannelProps) {
+    getChannelSliderTrackProps(props: ColorChannelProps) {
       const { orientation = "horizontal", channel } = props
 
       return normalize.element({
@@ -194,7 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelSliderBackgroundProps(props: ChannelProps) {
+    getChannelSliderBackgroundProps(props: ColorChannelProps) {
       const { orientation = "horizontal", channel } = props
       return normalize.element({
         ...parts.channelSliderTrackBg.attrs,
@@ -217,7 +224,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelSliderThumbProps(props: ChannelProps) {
+    getChannelSliderThumbProps(props: ColorChannelProps) {
       const { orientation = "horizontal", channel } = props
       const { minValue, maxValue, step: stepValue } = valueAsColor.getChannelRange(channel)
       const channelValue = valueAsColor.getChannelValue(channel)
@@ -298,7 +305,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelInputProps(props: ChannelInputProps) {
+    getChannelInputProps(props: ColorChannelInputProps) {
       const { channel } = props
       const isTextField = channel === "hex" || channel === "css"
       const range = getChannelInputRange(valueAsColor, channel)
@@ -350,7 +357,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getSwatchBackgroundProps(props: SwatchProps) {
+    getSwatchBackgroundProps(props: ColorSwatchProps) {
       const { value } = props
       const alpha = normalizeColor(value).getChannelValue("alpha")
       return normalize.element({
@@ -375,7 +382,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSwatchProps(props: SwatchProps) {
+    getSwatchProps(props: ColorSwatchProps) {
       const { value, readOnly } = props
       const color = normalizeColor(value).toFormat(valueAsColor.getColorSpace())
       return normalize.element({
