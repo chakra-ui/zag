@@ -255,9 +255,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.marker.attrs,
+        id: dom.getMarkerId(state.context, value),
         role: "presentation",
         "data-orientation": state.context.orientation,
-        id: dom.getMarkerId(state.context, value),
         "data-value": value,
         "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
