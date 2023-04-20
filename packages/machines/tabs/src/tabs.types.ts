@@ -11,6 +11,7 @@ type ElementIds = Partial<{
   tablist: string
   contentGroup: string
   content: string
+  indicator: string
 }>
 
 type PublicContext = DirectionProperty &

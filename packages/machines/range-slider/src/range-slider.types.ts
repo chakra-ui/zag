@@ -9,6 +9,7 @@ type ElementIds = Partial<{
   range: string
   label: string
   output: string
+  marker(index: number): string
 }>
 
 type PublicContext = DirectionProperty &

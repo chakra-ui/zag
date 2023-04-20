@@ -5,6 +5,8 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 type ElementIds = Partial<{
   trigger: string
   content: string
+  positioner: string
+  arrow: string
 }>
 
 type PublicContext = DirectionProperty &

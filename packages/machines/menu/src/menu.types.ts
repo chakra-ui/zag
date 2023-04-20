@@ -10,6 +10,8 @@ type ElementIds = Partial<{
   content: string
   label(id: string): string
   group(id: string): string
+  positioner: string
+  arrow: string
 }>
 
 type PublicContext = DirectionProperty &

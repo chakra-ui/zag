@@ -6,8 +6,8 @@ export const dom = createScope({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`,
   getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.id}:content`,
-  getArrowId: (ctx: Ctx) => `menu:${ctx.id}:arrow`,
-  getPositionerId: (ctx: Ctx) => `menu:${ctx.id}:popper`,
+  getArrowId: (ctx: Ctx) => ctx.ids?.arrow ?? `menu:${ctx.id}:arrow`,
+  getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `menu:${ctx.id}:popper`,
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
   getGroupLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
 

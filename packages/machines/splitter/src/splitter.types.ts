@@ -15,14 +15,40 @@ type ResizeDetails = {
   activeHandleId: string | null
 }
 
+type ElementIds = Partial<{
+  root: string
+  resizeTrigger(id: string): string
+  toggleTrigger(id: string): string
+  label(id: string): string
+  panel(id: string | number): string
+}>
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
-    // pushSiblings?: boolean
+    /**
+     * The orientation of the splitter. Can be `horizontal` or `vertical`
+     */
     orientation: "horizontal" | "vertical"
+    /**
+     * The size data of the panels
+     */
     size: PanelSizeData[]
+    /**
+     * Function called when the splitter is resized.
+     */
     onResize?: (details: ResizeDetails) => void
+    /**
+     * Function called when the splitter resize starts.
+     */
     onResizeStart?: (details: ResizeDetails) => void
+    /**
+     * Function called when the splitter resize ends.
+     */
     onResizeEnd?: (details: ResizeDetails) => void
+    /**
+     * The ids of the elements in the splitter. Useful for composition.
+     */
+    ids?: ElementIds
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

@@ -118,6 +118,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     previousTriggerProps: normalize.button({
       ...parts.previousTrigger.attrs,
+      id: dom.getPrevTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       disabled: !canScrollPrevious,
@@ -131,6 +132,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     nextTriggerProps: normalize.button({
       ...parts.nextTrigger.attrs,
+      id: dom.getNextTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       "aria-label": "Next Slide",
@@ -147,10 +149,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
     }),
 
-    indicatorProps: normalize.button({
-      ...parts.indicator.attrs,
-      "data-orientation": state.context.orientation,
-      type: "button",
-    }),
+    getIndicatorProps(props: { index: number }) {
+      const { index } = props
+      return normalize.button({
+        ...parts.indicator.attrs,
+        id: dom.getIndicatorId(state.context, index),
+        type: "button",
+        "data-orientation": state.context.orientation,
+        "data-index": index,
+        "data-current": dataAttr(index === state.context.index),
+      })
+    },
   }
 }

@@ -29,7 +29,21 @@ type ChangeDetails = {
   valueAsColor: Color
 }
 
+type ElementIds = Partial<{
+  content: string
+  area: string
+  areaGradient: string
+  areaThumb: string
+  channelInput(id: string): string
+  channelSliderTrack(id: ColorChannel): string
+  channelSliderThumb(id: ColorChannel): string
+}>
+
 type PublicContext = CommonProperties & {
+  /**
+   * The ids of the elements in the color picker. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * The direction of the color picker
    */

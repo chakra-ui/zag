@@ -8,7 +8,7 @@ export const dom = createScope({
   getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,
   getContentGroupId: (ctx: Ctx) => ctx.ids?.contentGroup ?? `tabs:${ctx.id}:content-group`,
   getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`,
-  getIndicatorId: (ctx: Ctx) => `tabs:${ctx.id}:indicator`,
+  getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`,
 
   getTablistEl: (ctx: Ctx) => dom.getById(ctx, dom.getTablistId(ctx)),
   getContentEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getContentId(ctx, id)),

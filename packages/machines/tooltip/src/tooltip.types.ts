@@ -5,6 +5,8 @@ import type { CommonProperties, RequiredBy, RootProperties } from "@zag-js/types
 type ElementIds = Partial<{
   trigger: string
   content: string
+  arrow: string
+  positioner: string
 }>
 
 type PublicContext = CommonProperties & {

@@ -10,6 +10,8 @@ type ElementIds = Partial<{
   title: string
   description: string
   closeTrigger: string
+  positioner: string
+  arrow: string
 }>
 
 type PublicContext = DismissableElementHandlers &

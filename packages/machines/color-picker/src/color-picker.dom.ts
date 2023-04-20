@@ -3,19 +3,19 @@ import { getRelativePointPercent } from "@zag-js/dom-event"
 import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./color-picker.types"
 
-type Point = {
-  x: number
-  y: number
-}
+type Point = { x: number; y: number }
 
 export const dom = createScope({
-  getAreaId: (ctx: Ctx) => `color-picker:${ctx.id}:area`,
-  getAreaGradientId: (ctx: Ctx) => `color-picker:${ctx.id}:area-gradient`,
-  getAreaThumbId: (ctx: Ctx) => `color-picker:${ctx.id}:area-thumb`,
-  getChannelSliderTrackId: (ctx: Ctx, channel: ColorChannel) => `color-picker:${ctx.id}:slider-track:${channel}`,
-  getChannelInputId: (ctx: Ctx, channel: string) => `color-picker:${ctx.id}:input:${channel}`,
-  getContentId: (ctx: Ctx) => `color-picker:${ctx.id}:content`,
-  getChannelSliderThumbId: (ctx: Ctx, channel: ColorChannel) => `color-picker:${ctx.id}:thumb:${channel}`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `color-picker:${ctx.id}:content`,
+  getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `color-picker:${ctx.id}:area`,
+  getAreaGradientId: (ctx: Ctx) => ctx.ids?.areaGradient ?? `color-picker:${ctx.id}:area-gradient`,
+  getAreaThumbId: (ctx: Ctx) => ctx.ids?.areaThumb ?? `color-picker:${ctx.id}:area-thumb`,
+  getChannelSliderTrackId: (ctx: Ctx, channel: ColorChannel) =>
+    ctx.ids?.channelSliderTrack?.(channel) ?? `color-picker:${ctx.id}:slider-track:${channel}`,
+  getChannelInputId: (ctx: Ctx, channel: string) =>
+    ctx.ids?.channelInput?.(channel) ?? `color-picker:${ctx.id}:input:${channel}`,
+  getChannelSliderThumbId: (ctx: Ctx, channel: ColorChannel) =>
+    ctx.ids?.channelSliderThumb?.(channel) ?? `color-picker:${ctx.id}:slider-thumb:${channel}`,
 
   getContentEl: (ctx: Ctx) => dom.queryById(ctx, dom.getContentId(ctx)),
   getAreaThumbEl: (ctx: Ctx) => dom.queryById(ctx, dom.getAreaThumbId(ctx)),
