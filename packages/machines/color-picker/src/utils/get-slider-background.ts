@@ -1,4 +1,4 @@
-import { ChannelProps, MachineContext } from "../color-picker.types"
+import { ColorChannelProps, MachineContext } from "../color-picker.types"
 
 function getSliderBgDirection(orientation: "vertical" | "horizontal", dir: "ltr" | "rtl") {
   if (orientation === "vertical") {
@@ -10,7 +10,7 @@ function getSliderBgDirection(orientation: "vertical" | "horizontal", dir: "ltr"
   }
 }
 
-export const getSliderBgImage = (ctx: MachineContext, props: Required<ChannelProps>) => {
+export const getSliderBgImage = (ctx: MachineContext, props: Required<ColorChannelProps>) => {
   const { channel } = props
 
   const dir = getSliderBgDirection(props.orientation, ctx.dir!)
