@@ -57,23 +57,23 @@ const fetchMachine = createMachine({
         BLUR: [{
           cond: "submitOnBlur",
           target: "preview",
-          actions: ["focusEditTrigger", "invokeOnSubmit"]
+          actions: ["focusFinalElement", "invokeOnSubmit"]
         }, {
           target: "preview",
-          actions: ["resetValueIfNeeded", "focusEditTrigger", "invokeOnCancel"]
+          actions: ["resetValueIfNeeded", "focusFinalElement", "invokeOnCancel"]
         }],
         CANCEL: {
           target: "preview",
-          actions: ["focusEditTrigger", "resetValueIfNeeded", "invokeOnCancel"]
+          actions: ["focusFinalElement", "resetValueIfNeeded", "invokeOnCancel"]
         },
         ENTER: {
           cond: "submitOnEnter",
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "focusEditTrigger"]
+          actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"]
         },
         SUBMIT: {
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "focusEditTrigger"]
+          actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"]
         }
       }
     }

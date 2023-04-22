@@ -121,6 +121,11 @@ type PublicContext = DirectionProperty &
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
     translations: IntlTranslations
+    /**
+     * The element that should receive focus when the editable is closed.
+     * By default, it will focus on the trigger element.
+     */
+    finalFocusEl?: () => HTMLElement | null
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

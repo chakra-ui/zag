@@ -77,25 +77,25 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "submitOnBlur",
                 target: "preview",
-                actions: ["focusEditTrigger", "invokeOnSubmit"],
+                actions: ["focusFinalElement", "invokeOnSubmit"],
               },
               {
                 target: "preview",
-                actions: ["resetValueIfNeeded", "focusEditTrigger", "invokeOnCancel"],
+                actions: ["resetValueIfNeeded", "focusFinalElement", "invokeOnCancel"],
               },
             ],
             CANCEL: {
               target: "preview",
-              actions: ["focusEditTrigger", "resetValueIfNeeded", "invokeOnCancel"],
+              actions: ["focusFinalElement", "resetValueIfNeeded", "invokeOnCancel"],
             },
             ENTER: {
               guard: "submitOnEnter",
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "focusEditTrigger"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"],
             },
             SUBMIT: {
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "focusEditTrigger"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"],
             },
           },
         },
@@ -127,17 +127,22 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        focusEditTrigger(ctx) {
+        focusFinalElement(ctx) {
           raf(() => {
-            dom.getEditTriggerEl(ctx)?.focus()
+            const finalEl = ctx.finalFocusEl?.() ?? dom.getEditTriggerEl(ctx)
+            finalEl?.focus({ preventScroll: true })
           })
         },
         focusInput(ctx) {
           raf(() => {
             const input = dom.getInputEl(ctx)
             if (!input) return
-            if (ctx.selectOnFocus) input.select()
-            else input.focus()
+
+            if (ctx.selectOnFocus) {
+              input.select()
+            } else {
+              input.focus({ preventScroll: true })
+            }
           })
         },
         invokeOnCancel(ctx) {
