@@ -24,7 +24,7 @@ export default defineComponent({
         <>
           <main class="switch">
             <label {...api.rootProps}>
-              <input type="checkbox" {...api.inputProps} />
+              <input {...api.inputProps} />
               <span {...api.controlProps}>
                 <span {...api.thumbProps} />
               </span>
