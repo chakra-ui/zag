@@ -94,7 +94,7 @@
     "node-fetch": "^3.3.1",
     "playwright": "1.31.2",
     "plop": "3.1.2",
-    "prettier": "2.8.5",
+    "prettier": "2.8.8",
     "signale": "1.4.0",
     "tsup": "6.7.0",
     "tsx": "3.12.5",
