@@ -6,7 +6,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.6.0
-        version: 4.6.0(playwright@1.31.2)
+        version: 4.6.0(playwright@1.32.3)
       '@babel/generator':
         specifier: 7.21.3
         version: 7.21.3
@@ -38,8 +38,8 @@ importers:
         specifier: 19.0.7
         version: 19.0.7
       '@playwright/test':
-        specifier: 1.31.2
-        version: 1.31.2
+        specifier: 1.32.3
+        version: 1.32.3
       '@swc/core':
         specifier: 1.3.41
         version: 1.3.41
@@ -92,8 +92,8 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
       playwright:
-        specifier: 1.31.2
-        version: 1.31.2
+        specifier: 1.32.3
+        version: 1.32.3
       plop:
         specifier: 3.1.2
         version: 3.1.2
@@ -117,7 +117,7 @@ importers:
         version: 5.0.2
       vitest:
         specifier: ^0.29.3
-        version: 0.29.8(playwright@1.31.2)
+        version: 0.29.8(playwright@1.32.3)
 
   examples/next-ts:
     dependencies:
@@ -2459,13 +2459,13 @@ packages:
       '@jridgewell/trace-mapping': 0.3.17
     dev: true
 
-  /@axe-core/playwright@4.6.0(playwright@1.31.2):
+  /@axe-core/playwright@4.6.0(playwright@1.32.3):
     resolution: {integrity: sha512-q9K4GVJ1fH8FQqErgs01dwzhOJ03vZDfMg+vO9Er05BxQOCp9Rm8oyB3byVzC7oNlxFaPU1qQ8zLwZYypHmchw==}
     peerDependencies:
       playwright: '>= 1.0.0'
     dependencies:
       axe-core: 4.6.3
-      playwright: 1.31.2
+      playwright: 1.32.3
     dev: false
 
   /@babel/code-frame@7.18.6:
@@ -3080,10 +3080,10 @@ packages:
       '@commitlint/execute-rule': 17.4.0
       '@commitlint/resolve-extends': 17.4.4
       '@commitlint/types': 17.4.4
-      '@types/node': 18.15.11
+      '@types/node': 18.15.3
       chalk: 4.1.2
       cosmiconfig: 8.1.0
-      cosmiconfig-typescript-loader: 4.3.0(@types/node@18.15.11)(cosmiconfig@8.1.0)(ts-node@10.9.1)(typescript@4.9.5)
+      cosmiconfig-typescript-loader: 4.3.0(@types/node@18.15.3)(cosmiconfig@8.1.0)(ts-node@10.9.1)(typescript@4.9.5)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -3981,13 +3981,13 @@ packages:
       '@octokit/openapi-types': 16.0.0
     dev: false
 
-  /@playwright/test@1.31.2:
-    resolution: {integrity: sha512-BYVutxDI4JeZKV1+ups6dt5WiqKhjBtIYowyZIJ3kBDmJgsuPKsqqKNIMFbUePLSCmp2cZu+BDL427RcNKTRYw==}
+  /@playwright/test@1.32.3:
+    resolution: {integrity: sha512-BvWNvK0RfBriindxhLVabi8BRe3X0J9EVjKlcmhxjg4giWBD/xleLcg2dz7Tx0agu28rczjNIPQWznwzDwVsZQ==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
-      '@types/node': 18.15.11
-      playwright-core: 1.31.2
+      '@types/node': 18.15.3
+      playwright-core: 1.32.3
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
@@ -4354,7 +4354,7 @@ packages:
     resolution: {integrity: sha512-Ny/PJkO6nxWAQnaet8q/oWz15lrfwvdvBpuY4treB0CSsBO1CG0fVuNLngR3m3bepQLd+E4c3Y3DlC2okpUvPw==}
     dependencies:
       '@types/fined': 1.1.3
-      '@types/node': 18.15.11
+      '@types/node': 18.15.3
     dev: false
 
   /@types/minimist@1.2.2:
@@ -4423,7 +4423,7 @@ packages:
   /@types/through@0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
-      '@types/node': 18.15.11
+      '@types/node': 18.15.3
     dev: false
 
   /@typescript-eslint/eslint-plugin@5.53.0(@typescript-eslint/parser@5.53.0)(eslint@8.34.0)(typescript@4.9.5):
@@ -5695,7 +5695,7 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /cosmiconfig-typescript-loader@4.3.0(@types/node@18.15.11)(cosmiconfig@8.1.0)(ts-node@10.9.1)(typescript@4.9.5):
+  /cosmiconfig-typescript-loader@4.3.0(@types/node@18.15.3)(cosmiconfig@8.1.0)(ts-node@10.9.1)(typescript@4.9.5):
     resolution: {integrity: sha512-NTxV1MFfZDLPiBMjxbHRwSh5LaLcPMwNdCutmnHJCKoVnlvldPWlllonKwrsRJ5pYZBIBGRWWU2tfvzxgeSW5Q==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
@@ -5704,7 +5704,7 @@ packages:
       ts-node: '>=10'
       typescript: '>=3'
     dependencies:
-      '@types/node': 18.15.11
+      '@types/node': 18.15.3
       cosmiconfig: 8.1.0
       ts-node: 10.9.1(@swc/core@1.3.41)(@types/node@18.15.11)(typescript@5.0.2)
       typescript: 4.9.5
@@ -8614,19 +8614,19 @@ packages:
       pathe: 1.1.0
     dev: false
 
-  /playwright-core@1.31.2:
-    resolution: {integrity: sha512-a1dFgCNQw4vCsG7bnojZjDnPewZcw7tZUNFN0ZkcLYKj+mPmXvg4MpaaKZ5SgqPsOmqIf2YsVRkgqiRDxD+fDQ==}
+  /playwright-core@1.32.3:
+    resolution: {integrity: sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
 
-  /playwright@1.31.2:
-    resolution: {integrity: sha512-jpC47n2PKQNtzB7clmBuWh6ftBRS/Bt5EGLigJ9k2QAKcNeYXZkEaDH5gmvb6+AbcE0DO6GnXdbl9ogG6Eh+og==}
+  /playwright@1.32.3:
+    resolution: {integrity: sha512-h/ylpgoj6l/EjkfUDyx8cdOlfzC96itPpPe8BXacFkqpw/YsuxkpPyVbzEq4jw+bAJh5FLgh31Ljg2cR6HV3uw==}
     engines: {node: '>=14'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      playwright-core: 1.31.2
+      playwright-core: 1.32.3
     dev: false
 
   /plop@3.1.2:
@@ -10202,7 +10202,7 @@ packages:
       vite: 4.2.0(@types/node@18.15.11)
     dev: true
 
-  /vitest@0.29.8(playwright@1.31.2):
+  /vitest@0.29.8(playwright@1.32.3):
     resolution: {integrity: sha512-JIAVi2GK5cvA6awGpH0HvH/gEG9PZ0a/WoxdiV3PmqK+3CjQMf8c+J/Vhv4mdZ2nRyXFw66sAg6qz7VNkaHfDQ==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -10248,7 +10248,7 @@ packages:
       local-pkg: 0.4.3
       pathe: 1.1.0
       picocolors: 1.0.0
-      playwright: 1.31.2
+      playwright: 1.32.3
       source-map: 0.6.1
       std-env: 3.3.2
       strip-literal: 1.0.1
