@@ -1304,8 +1304,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 3.57.0
-        version: 3.57.0
+        specifier: 3.58.0
+        version: 3.58.0
 
   packages/frameworks/vue:
     dependencies:
@@ -9594,8 +9594,8 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /svelte@3.57.0:
-    resolution: {integrity: sha512-WMXEvF+RtAaclw0t3bPDTUe19pplMlfyKDsixbHQYgCWi9+O9VN0kXU1OppzrB9gPAvz4NALuoca2LfW2bOjTQ==}
+  /svelte@3.58.0:
+    resolution: {integrity: sha512-brIBNNB76mXFmU/Kerm4wFnkskBbluBDCjx/8TcpYRb298Yh2dztS2kQ6bhtjMcvUhd5ynClfwpz5h2gnzdQ1A==}
     engines: {node: '>= 8'}
     dev: true
 
