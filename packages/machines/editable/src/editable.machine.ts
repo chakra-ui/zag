@@ -52,22 +52,25 @@ export function machine(userContext: UserDefinedContext) {
           // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
           entry: ["blurInputIfNeeded"],
           on: {
-            EDIT: "edit",
+            EDIT: {
+              target: "edit",
+              actions: ["focusInput", "invokeOnEdit"],
+            },
             DBLCLICK: {
               guard: "activateOnDblClick",
               target: "edit",
+              actions: ["focusInput", "invokeOnEdit"],
             },
             FOCUS: {
               guard: "activateOnFocus",
               target: "edit",
-              actions: "setPreviousValue",
+              actions: ["setPreviousValue", "focusInput", "invokeOnEdit"],
             },
           },
         },
 
         edit: {
           activities: ["trackInteractOutside"],
-          entry: ["focusInput", "invokeOnEdit"],
           on: {
             TYPE: {
               guard: not("isAtMaxLength"),
@@ -77,25 +80,25 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "submitOnBlur",
                 target: "preview",
-                actions: ["focusFinalElement", "invokeOnSubmit"],
+                actions: ["restoreFocusIfNeeded", "invokeOnSubmit"],
               },
               {
                 target: "preview",
-                actions: ["resetValueIfNeeded", "focusFinalElement", "invokeOnCancel"],
+                actions: ["resetValueIfNeeded", "restoreFocusIfNeeded", "invokeOnCancel"],
               },
             ],
             CANCEL: {
               target: "preview",
-              actions: ["focusFinalElement", "resetValueIfNeeded", "invokeOnCancel"],
+              actions: ["restoreFocusIfNeeded", "resetValueIfNeeded", "invokeOnCancel"],
             },
             ENTER: {
               guard: "submitOnEnter",
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocusIfNeeded"],
             },
             SUBMIT: {
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocusIfNeeded"],
             },
           },
         },
@@ -120,14 +123,16 @@ export function machine(userContext: UserDefinedContext) {
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
-              send({ type: "BLUR", src: "interact-outside" })
+              const { focusable } = event.detail
+              send({ type: "BLUR", src: "interact-outside", focusable })
             },
           })
         },
       },
 
       actions: {
-        focusFinalElement(ctx) {
+        restoreFocusIfNeeded(ctx, evt) {
+          if (evt.focusable) return
           raf(() => {
             const finalEl = ctx.finalFocusEl?.() ?? dom.getEditTriggerEl(ctx)
             finalEl?.focus({ preventScroll: true })

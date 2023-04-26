@@ -34,21 +34,24 @@ const fetchMachine = createMachine({
       // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
       entry: ["blurInputIfNeeded"],
       on: {
-        EDIT: "edit",
+        EDIT: {
+          target: "edit",
+          actions: ["focusInput", "invokeOnEdit"]
+        },
         DBLCLICK: {
           cond: "activateOnDblClick",
-          target: "edit"
+          target: "edit",
+          actions: ["focusInput", "invokeOnEdit"]
         },
         FOCUS: {
           cond: "activateOnFocus",
           target: "edit",
-          actions: "setPreviousValue"
+          actions: ["setPreviousValue", "focusInput", "invokeOnEdit"]
         }
       }
     },
     edit: {
       activities: ["trackInteractOutside"],
-      entry: ["focusInput", "invokeOnEdit"],
       on: {
         TYPE: {
           cond: "!isAtMaxLength",
@@ -57,23 +60,23 @@ const fetchMachine = createMachine({
         BLUR: [{
           cond: "submitOnBlur",
           target: "preview",
-          actions: ["focusFinalElement", "invokeOnSubmit"]
+          actions: ["restoreFocusIfNeeded", "invokeOnSubmit"]
         }, {
           target: "preview",
-          actions: ["resetValueIfNeeded", "focusFinalElement", "invokeOnCancel"]
+          actions: ["resetValueIfNeeded", "restoreFocusIfNeeded", "invokeOnCancel"]
         }],
         CANCEL: {
           target: "preview",
-          actions: ["focusFinalElement", "resetValueIfNeeded", "invokeOnCancel"]
+          actions: ["restoreFocusIfNeeded", "resetValueIfNeeded", "invokeOnCancel"]
         },
         ENTER: {
           cond: "submitOnEnter",
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"]
+          actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocusIfNeeded"]
         },
         SUBMIT: {
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "focusFinalElement"]
+          actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocusIfNeeded"]
         }
       }
     }
