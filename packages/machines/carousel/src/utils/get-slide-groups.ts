@@ -1,12 +1,11 @@
+import { isNumber } from "@zag-js/utils"
 import { MachineContext } from "../carousel.types"
 
 export function getSlidesToScroll(
   containerSize: number,
   slideSizesWithGaps: number[],
-  slidesToScroll: MachineContext["slidesToScroll"],
+  slidesPerView: MachineContext["slidesPerView"],
 ) {
-  const groupByNumber = typeof slidesToScroll === "number"
-
   function byNumber<T>(array: T[], groupSize: number): T[][] {
     return Array.from(array.keys())
       .filter((i) => i % groupSize === 0)
@@ -24,6 +23,6 @@ export function getSlidesToScroll(
   }
 
   return function groupSlides<T>(array: T[]): T[][] {
-    return groupByNumber ? byNumber(array, slidesToScroll) : bySize(array)
+    return isNumber(slidesPerView) ? byNumber(array, slidesPerView) : bySize(array)
   }
 }

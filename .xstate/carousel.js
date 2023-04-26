@@ -35,7 +35,7 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        POINTER_DOWN: "pointerdown"
+        POINTER_DOWN: "dragging"
       }
     },
     autoplay: {
@@ -47,7 +47,7 @@ const fetchMachine = createMachine({
         PAUSE: "idle"
       }
     },
-    pointerdown: {
+    dragging: {
       on: {
         POINTER_UP: "idle",
         POINTER_MOVE: {

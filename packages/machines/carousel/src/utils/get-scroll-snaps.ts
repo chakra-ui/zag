@@ -10,7 +10,7 @@ export function getScrollSnaps(ctx: MachineContext) {
   const { slideSizesWithGaps } = getSlideSizes(ctx)
   const containScroll = true
 
-  const groupSlides = getSlidesToScroll(ctx.containerSize!, slideSizesWithGaps, ctx.slidesToScroll)
+  const groupSlides = getSlidesToScroll(ctx.containerSize!, slideSizesWithGaps, ctx.slidesPerView)
 
   function measureSizes(): number[] {
     return groupSlides(ctx.slideRects)
@@ -33,11 +33,15 @@ export function getScrollSnaps(ctx: MachineContext) {
 
     return groupSlides(snaps)
       .map((snap) => snap[0])
-      .map((snap, index, groupedSnaps) => {
+      .map((snap, index, groups) => {
         const isFirst = !index
-        const isLast = index === arrayLastIndex(groupedSnaps)
-        if (containScroll && isFirst) return containedStartSnap
-        if (containScroll && isLast) return containedEndSnap
+        const isLast = index === arrayLastIndex(groups)
+        if (containScroll && isFirst) {
+          return containedStartSnap
+        }
+        if (containScroll && isLast) {
+          return containedEndSnap
+        }
         return snap + alignments[index]
       })
   }
@@ -48,6 +52,5 @@ export function getScrollSnaps(ctx: MachineContext) {
   return {
     snaps,
     snapsAligned,
-    maxIndex: snaps.length - 1,
   }
 }

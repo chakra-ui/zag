@@ -32,7 +32,7 @@ type PublicContext = DirectionProperty &
     /**
      * The number of slides to show at a time.
      */
-    slidesPerView: number
+    slidesPerView: number | "auto"
     /**
      * Whether the carousel should loop around.
      */
@@ -53,10 +53,6 @@ type PublicContext = DirectionProperty &
      * The ids of the elements in the carousel. Useful for composition.
      */
     ids?: ElementIds
-    /**
-     * The number of slides to scroll at a time.
-     */
-    slidesToScroll: "auto" | number
   }
 
 type PrivateContext = Context<{
@@ -67,14 +63,14 @@ type PrivateContext = Context<{
   scrollSnaps: number[]
 }>
 
-type Edge = "top" | "right" | "bottom" | "left"
+type RectEdge = "top" | "right" | "bottom" | "left"
 
 type ComputedContext = Readonly<{
   isRtl: boolean
   isHorizontal: boolean
   isVertical: boolean
-  startEdge: Edge
-  endEdge: Edge
+  startEdge: RectEdge
+  endEdge: RectEdge
   translateValue: string
   canScrollNext: boolean
   canScrollPrevious: boolean
@@ -85,7 +81,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "idle" | "pointerdown" | "autoplay"
+  value: "idle" | "dragging" | "autoplay"
 }
 
 export type State = S.State<MachineContext, MachineState>

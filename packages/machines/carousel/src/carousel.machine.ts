@@ -22,7 +22,6 @@ export function machine(userContext: UserDefinedContext) {
         inViewThreshold: 0,
         containerSize: 0,
         slideRects: [],
-        slidesToScroll: 1,
       },
       watch: {
         index: ["invokeOnSlideChange", "setScrollSnaps"],
@@ -44,7 +43,7 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            POINTER_DOWN: "pointerdown",
+            POINTER_DOWN: "dragging",
           },
         },
         autoplay: {
@@ -55,7 +54,7 @@ export function machine(userContext: UserDefinedContext) {
             PAUSE: "idle",
           },
         },
-        pointerdown: {
+        dragging: {
           on: {
             POINTER_UP: "idle",
             POINTER_MOVE: {

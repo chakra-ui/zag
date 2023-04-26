@@ -12,7 +12,7 @@ export default function Page() {
   const [state, send] = useMachine(
     carousel.machine({
       id: useId(),
-      index: 1,
+      index: 0,
       spacing: "40px",
       slidesPerView: 2,
     }),
