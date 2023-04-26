@@ -5,8 +5,8 @@ importers:
   .:
     dependencies:
       '@axe-core/playwright':
-        specifier: 4.6.0
-        version: 4.6.0(playwright@1.32.3)
+        specifier: 4.6.1
+        version: 4.6.1(playwright@1.32.3)
       '@babel/generator':
         specifier: 7.21.4
         version: 7.21.4
@@ -2462,8 +2462,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.17
     dev: true
 
-  /@axe-core/playwright@4.6.0(playwright@1.32.3):
-    resolution: {integrity: sha512-q9K4GVJ1fH8FQqErgs01dwzhOJ03vZDfMg+vO9Er05BxQOCp9Rm8oyB3byVzC7oNlxFaPU1qQ8zLwZYypHmchw==}
+  /@axe-core/playwright@4.6.1(playwright@1.32.3):
+    resolution: {integrity: sha512-XMKP2OzGfGIYpU9G9FgI2ulyjEXQDP6qtZerOwdQ7YC1w4SFgofK3ogSk0qVoy0QI+q6XWLUJMfMMkUwdTR2dA==}
     peerDependencies:
       playwright: '>= 1.0.0'
     dependencies:
