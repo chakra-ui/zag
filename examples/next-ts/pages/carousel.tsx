@@ -9,9 +9,17 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(carouselControls)
 
-  const [state, send] = useMachine(carousel.machine({ id: useId(), index: 1 }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    carousel.machine({
+      id: useId(),
+      index: 1,
+      spacing: "40px",
+      slidesPerView: 2,
+    }),
+    {
+      // context: controls.context,
+    },
+  )
 
   const api = carousel.connect(state, send, normalizeProps)
 

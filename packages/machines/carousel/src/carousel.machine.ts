@@ -2,7 +2,7 @@ import { createMachine, ref } from "@zag-js/core"
 import { compact, nextIndex, prevIndex } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
-import { getScrollSnap } from "./carousel.utils"
+import { getScrollSnaps } from "./utils/get-scroll-snaps"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -15,17 +15,17 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         align: "start",
         loop: false,
-        scrollSnap: 0,
+        scrollSnaps: [],
         slidesPerView: 1,
         spacing: "0px",
         ...ctx,
         inViewThreshold: 0,
         containerSize: 0,
-        scrollWidth: 0,
         slideRects: [],
+        slidesToScroll: 1,
       },
       watch: {
-        index: ["invokeOnSlideChange", "setScrollSnap"],
+        index: ["invokeOnSlideChange", "setScrollSnaps"],
       },
       on: {
         NEXT: {
@@ -38,7 +38,7 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["setIndex"],
         },
         MUTATION: {
-          actions: ["measureElements", "setScrollSnap"],
+          actions: ["measureElements", "setScrollSnaps"],
         },
       },
       states: {
@@ -59,18 +59,18 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_UP: "idle",
             POINTER_MOVE: {
-              actions: ["setScrollSnap"],
+              actions: ["setScrollSnaps"],
             },
           },
         },
       },
       activities: ["trackContainerResize", "trackSlideMutation"],
-      entry: ["measureElements", "setScrollSnap"],
+      entry: ["measureElements", "setScrollSnaps"],
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.slideRects.length - 1,
+        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.scrollSnaps.length - 1,
         canScrollPrevious: (ctx) => ctx.loop || ctx.index > 0,
         startEdge(ctx) {
           if (ctx.isVertical) return "top"
@@ -81,7 +81,8 @@ export function machine(userContext: UserDefinedContext) {
           return ctx.isRtl ? "left" : "right"
         },
         translateValue: (ctx) => {
-          return ctx.isHorizontal ? `translate3d(${ctx.scrollSnap}px, 0, 0)` : `translate3d(0, ${ctx.scrollSnap}px, 0)`
+          const scrollSnap = ctx.scrollSnaps[ctx.index]
+          return ctx.isHorizontal ? `translate3d(${scrollSnap}px, 0, 0)` : `translate3d(0, ${scrollSnap}px, 0)`
         },
       },
     },
@@ -129,8 +130,9 @@ export function machine(userContext: UserDefinedContext) {
         setPreviousIndex(ctx) {
           ctx.index = prevIndex(ctx.slideRects, ctx.index)
         },
-        setScrollSnap(ctx) {
-          ctx.scrollSnap = getScrollSnap(ctx)[ctx.index]
+        setScrollSnaps(ctx) {
+          const { snapsAligned } = getScrollSnaps(ctx)
+          ctx.scrollSnaps = snapsAligned
         },
         setIndex(ctx, evt) {
           ctx.index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
@@ -146,5 +148,4 @@ const measureElements = (ctx: MachineContext) => {
   ctx.containerRect = ref(container.getBoundingClientRect())
   ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
   ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
-  ctx.scrollWidth = container.scrollWidth
 }

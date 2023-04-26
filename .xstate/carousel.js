@@ -24,7 +24,7 @@ const fetchMachine = createMachine({
       actions: ["setIndex"]
     },
     MUTATION: {
-      actions: ["measureElements", "setScrollSnap"]
+      actions: ["measureElements", "setScrollSnaps"]
     }
   },
   on: {
@@ -51,13 +51,13 @@ const fetchMachine = createMachine({
       on: {
         POINTER_UP: "idle",
         POINTER_MOVE: {
-          actions: ["setScrollSnap"]
+          actions: ["setScrollSnaps"]
         }
       }
     }
   },
   activities: ["trackContainerResize", "trackSlideMutation"],
-  entry: ["measureElements", "setScrollSnap"]
+  entry: ["measureElements", "setScrollSnaps"]
 }, {
   actions: {
     updateContext: assign((context, event) => {

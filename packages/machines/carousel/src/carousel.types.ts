@@ -53,6 +53,10 @@ type PublicContext = DirectionProperty &
      * The ids of the elements in the carousel. Useful for composition.
      */
     ids?: ElementIds
+    /**
+     * The number of slides to scroll at a time.
+     */
+    slidesToScroll: "auto" | number
   }
 
 type PrivateContext = Context<{
@@ -60,8 +64,7 @@ type PrivateContext = Context<{
   slideRects: DOMRect[]
   containerRect?: DOMRect
   containerSize: number
-  scrollSnap: number
-  scrollWidth: number
+  scrollSnaps: number[]
 }>
 
 type Edge = "top" | "right" | "bottom" | "left"
