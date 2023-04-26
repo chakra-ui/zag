@@ -1,5 +1,5 @@
 import * as hoverCard from "@zag-js/hover-card"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, Show } from "solid-js"
 import { hoverCardControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
