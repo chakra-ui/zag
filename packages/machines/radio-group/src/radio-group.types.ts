@@ -4,6 +4,7 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 type ElementIds = Partial<{
   root: string
   label: string
+  indicator: string
   radio(value: string): string
   radioLabel(value: string): string
   radioControl(value: string): string
@@ -70,11 +71,37 @@ type PrivateContext = Context<{
    * The id of the hovered radio
    */
   hoveredId: string | null
+  /**
+   * @internal
+   * Whether the indicator is rendered.
+   */
+  isIndicatorRendered: boolean
+  /**
+   * @internal
+   * The active tab indicator's dom rect
+   */
+  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
+  /**
+   * @internal
+   * Whether the active tab indicator's rect has been measured
+   */
+  hasMeasuredRect?: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the radio is in the horizontal orientation
+   */
+  isHorizontal: boolean
+  /**
+   * @computed
+   * Whether the radio is in the vertical orientation
+   */
+  isVertical: boolean
+}>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 

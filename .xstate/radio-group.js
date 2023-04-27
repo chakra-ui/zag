@@ -28,7 +28,7 @@ const fetchMachine = createMachine({
       actions: "setFocused"
     }
   },
-  entry: ["checkValue"],
+  entry: ["checkValue", "checkRenderedElements", "setIndicatorRect"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

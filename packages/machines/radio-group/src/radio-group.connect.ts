@@ -205,5 +205,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: visuallyHiddenStyle,
       })
     },
+
+    indicatorProps: normalize.element({
+      id: dom.getIndicatorId(state.context),
+      ...parts.indicator.attrs,
+      "data-orientation": state.context.orientation,
+      style: {
+        "--transition-duration": "200ms",
+        "--transition-property": "left, right, top, bottom, width, height",
+        position: "absolute",
+        willChange: "var(--transition-property)",
+        transitionProperty: "var(--transition-property)",
+        transitionDuration: state.context.hasMeasuredRect ? "var(--transition-duration)" : "0ms",
+        transitionTimingFunction: "var(--transition-timing-function)",
+        ...state.context.indicatorRect,
+      },
+    }),
   }
 }

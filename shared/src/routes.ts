@@ -38,5 +38,6 @@ export const routesData: RouteData[] = [
   { label: "Tags Input", path: "/tags-input" },
   { label: "Toast", path: "/toast" },
   { label: "Tooltip", path: "/tooltip" },
+  { label: "Segmented Control", path: "/segmented-control" },
   { label: "Splitter", path: "/splitter" },
 ]

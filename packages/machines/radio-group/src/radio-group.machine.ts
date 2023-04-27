@@ -3,6 +3,7 @@ import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./radio-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
+import { nextTick } from "@zag-js/dom-query"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -16,6 +17,9 @@ export function machine(userContext: UserDefinedContext) {
         activeId: null,
         focusedId: null,
         hoveredId: null,
+        indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
+        hasMeasuredRect: false,
+        isIndicatorRendered: false,
         ...ctx,
       },
 
@@ -36,11 +40,17 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      watch: {
-        value: ["dispatchChangeEvent", "invokeOnChange", "syncInputElements"],
+      computed: {
+        isHorizontal: (ctx) => ctx.orientation === "horizontal",
+        isVertical: (ctx) => ctx.orientation === "vertical",
       },
 
-      entry: ["checkValue"],
+      watch: {
+        value: ["dispatchChangeEvent", "invokeOnChange", "syncInputElements", "setIndicatorRect"],
+        dir: ["clearMeasured", "setIndicatorRect"],
+      },
+
+      entry: ["checkValue", "checkRenderedElements", "setIndicatorRect"],
 
       states: {
         idle: {},
@@ -90,6 +100,22 @@ export function machine(userContext: UserDefinedContext) {
           inputs.forEach((input) => {
             input.checked = input.value === ctx.value
           })
+        },
+        setIndicatorRect(ctx) {
+          nextTick(() => {
+            if (!ctx.isIndicatorRendered || !ctx.value) return
+            ctx.indicatorRect = dom.getRectById(ctx, ctx.value)
+            if (ctx.hasMeasuredRect) return
+            nextTick(() => {
+              ctx.hasMeasuredRect = true
+            })
+          })
+        },
+        checkRenderedElements(ctx) {
+          ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
+        },
+        clearMeasured(ctx) {
+          ctx.hasMeasuredRect = false
         },
       },
     },

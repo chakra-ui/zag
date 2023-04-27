@@ -1083,16 +1083,17 @@ main > .toggle[data-pressed] {
 }
 
 .radio [data-part="root"] {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
+  background-color: #f1f3f5;
 }
 
 .radio [data-part="radio"] {
   display: block;
   position: relative;
   padding-left: 35px;
-  margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;
@@ -1100,6 +1101,7 @@ main > .toggle[data-pressed] {
   -ms-user-select: none;
   user-select: none;
   width: fit-content;
+  z-index: 2;
 }
 
 .radio [data-part="radio"][data-disabled] {
@@ -1142,6 +1144,27 @@ main > .toggle[data-pressed] {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+[data-scope="radio-group"][data-part="indicator"] {
+  height: 4px;
+  background-color: red;
+  z-index: 1;
+  border-radius: 0.25rem;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0.0625rem 0.1875rem, rgba(0, 0, 0, 0.1) 0px 0.0625rem 0.125rem;
+  background-color: rgb(255, 255, 255);
+}
+
+.segmented-control [data-part="root"] {
+  width: fit-content;
+  padding: 4px;
+}
+
+.segmented-control [data-part="radio"] {
+  padding-left: 0;
+  padding: 8px;
+  width: 100%;
+  text-align: center;
 }
 
 /* -----------------------------------------------------------------------------
