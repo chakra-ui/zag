@@ -14,7 +14,7 @@ export default function Page() {
       id: useId(),
       index: 0,
       spacing: "40px",
-      slidesPerView: 2,
+      slidesPerView: 3,
     }),
     {
       // context: controls.context,
@@ -27,7 +27,7 @@ export default function Page() {
     <>
       <main className="carousel">
         <div {...api.rootProps}>
-          <button {...api.previousTriggerProps}>Prev</button>
+          <button {...api.prevTriggerProps}>Prev</button>
           <button {...api.nextTriggerProps}>Next</button>
           <div {...api.viewportProps}>
             <div {...api.slideGroupProps}>

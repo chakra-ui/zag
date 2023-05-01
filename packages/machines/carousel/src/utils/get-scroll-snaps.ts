@@ -7,7 +7,7 @@ const arrayLast = <T>(array: T[]): T => array[arrayLastIndex(array)]
 const arrayLastIndex = <T>(array: T[]): number => Math.max(0, array.length - 1)
 
 export function getScrollSnaps(ctx: MachineContext) {
-  const { slideSizesWithGaps } = getSlideSizes(ctx)
+  const { slideSizes, slideSizesWithGaps } = getSlideSizes(ctx)
 
   const groupSlides = getSlidesToScroll(ctx.containerSize!, slideSizesWithGaps, ctx.slidesPerView)
 
@@ -34,9 +34,13 @@ export function getScrollSnaps(ctx: MachineContext) {
 
   const snaps = measureUnaligned()
   const snapsAligned = measureAligned()
+  const contentSize = -arrayLast(snaps) + arrayLast(slideSizesWithGaps)
 
   return {
     snaps,
     snapsAligned,
+    slideSizes,
+    slideSizesWithGaps,
+    contentSize,
   }
 }

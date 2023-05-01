@@ -56,7 +56,6 @@ type PublicContext = DirectionProperty &
   }
 
 type PrivateContext = Context<{
-  inViewThreshold: number
   slideRects: DOMRect[]
   containerRect?: DOMRect
   containerSize: number
@@ -73,7 +72,7 @@ type ComputedContext = Readonly<{
   endEdge: RectEdge
   translateValue: string
   canScrollNext: boolean
-  canScrollPrevious: boolean
+  canScrollPrev: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

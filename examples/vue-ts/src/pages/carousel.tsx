@@ -24,7 +24,7 @@ export default defineComponent({
         <>
           <main class="carousel">
             <div {...api.rootProps}>
-              <button {...api.previousTriggerProps}>Prev</button>
+              <button {...api.prevTriggerProps}>Prev</button>
               <button {...api.nextTriggerProps}>Next</button>
               <div {...api.viewportProps}>
                 <div {...api.slideGroupProps}>

@@ -19,7 +19,6 @@ export function machine(userContext: UserDefinedContext) {
         slidesPerView: 1,
         spacing: "0px",
         ...ctx,
-        inViewThreshold: 0,
         containerSize: 0,
         slideRects: [],
       },
@@ -30,17 +29,18 @@ export function machine(userContext: UserDefinedContext) {
 
       on: {
         NEXT: {
-          actions: ["setNextIndex"],
+          actions: ["scrollToNext"],
         },
         PREV: {
-          actions: ["setPreviousIndex"],
+          actions: ["scrollToPrev"],
         },
         GOTO: {
-          actions: ["setIndex"],
+          actions: ["scrollTo"],
         },
         MEASURE_DOM: {
           actions: ["measureElements", "setScrollSnaps"],
         },
+        PLAY: "autoplay",
       },
 
       states: {
@@ -50,8 +50,9 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
         autoplay: {
+          activities: ["trackDocumentVisibility"],
           every: {
-            2000: ["setNextIndex"],
+            2000: ["scrollToNext"],
           },
           on: {
             PAUSE: "idle",
@@ -73,7 +74,7 @@ export function machine(userContext: UserDefinedContext) {
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
         canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.scrollSnaps.length - 1,
-        canScrollPrevious: (ctx) => ctx.loop || ctx.index > 0,
+        canScrollPrev: (ctx) => ctx.loop || ctx.index > 0,
         startEdge(ctx) {
           if (ctx.isVertical) return "top"
           return ctx.isRtl ? "right" : "left"
@@ -116,6 +117,18 @@ export function machine(userContext: UserDefinedContext) {
             observer.disconnect()
           }
         },
+        trackDocumentVisibility(ctx, _evt, { send }) {
+          const doc = dom.getDoc(ctx)
+          const onVisibilityChange = () => {
+            if (doc.visibilityState !== "visible") {
+              send({ type: "PAUSE", src: "document-hidden" })
+            }
+          }
+          doc.addEventListener("visibilitychange", onVisibilityChange)
+          return () => {
+            doc.removeEventListener("visibilitychange", onVisibilityChange)
+          }
+        },
       },
       guards: {
         loop: (ctx) => ctx.loop,
@@ -126,17 +139,17 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnSlideChange(ctx, _evt) {
           ctx.onSlideChange?.({ index: ctx.index })
         },
-        setNextIndex(ctx) {
+        scrollToNext(ctx) {
           ctx.index = nextIndex(ctx.slideRects, ctx.index)
         },
-        setPreviousIndex(ctx) {
+        scrollToPrev(ctx) {
           ctx.index = prevIndex(ctx.slideRects, ctx.index)
         },
         setScrollSnaps(ctx) {
           const { snapsAligned } = getScrollSnaps(ctx)
           ctx.scrollSnaps = snapsAligned
         },
-        setIndex(ctx, evt) {
+        scrollTo(ctx, evt) {
           ctx.index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
         },
         measureElements,

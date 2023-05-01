@@ -15,17 +15,18 @@ const fetchMachine = createMachine({
   context: {},
   on: {
     NEXT: {
-      actions: ["setNextIndex"]
+      actions: ["scrollToNext"]
     },
     PREV: {
-      actions: ["setPreviousIndex"]
+      actions: ["scrollToPrev"]
     },
     GOTO: {
-      actions: ["setIndex"]
+      actions: ["scrollTo"]
     },
     MEASURE_DOM: {
       actions: ["measureElements", "setScrollSnaps"]
-    }
+    },
+    PLAY: "autoplay"
   },
   on: {
     UPDATE_CONTEXT: {
@@ -39,6 +40,7 @@ const fetchMachine = createMachine({
       }
     },
     autoplay: {
+      activities: ["trackDocumentVisibility"],
       invoke: {
         src: "interval",
         id: "interval"

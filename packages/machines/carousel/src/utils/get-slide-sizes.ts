@@ -9,8 +9,9 @@ export function getSlideSizes(ctx: MachineContext): SlideSizesType {
   const startGap = measureStartGap()
 
   function measureStartGap(): number {
+    if (!ctx.containerRect) return 0
     const slideRect = ctx.slideRects[0]
-    return Math.abs(ctx.containerRect![ctx.startEdge] - slideRect[ctx.startEdge])
+    return Math.abs(ctx.containerRect[ctx.startEdge] - slideRect[ctx.startEdge])
   }
 
   function measureWithGaps(): number[] {
