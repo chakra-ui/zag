@@ -69,7 +69,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Carousel",
       style: {
         "--slide-spacing": state.context.spacing,
-        "--slide-size": `calc(100% / ${state.context.slidesPerView})`,
+        "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
       },
     }),
 

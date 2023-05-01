@@ -23,9 +23,11 @@ export function machine(userContext: UserDefinedContext) {
         containerSize: 0,
         slideRects: [],
       },
+
       watch: {
         index: ["invokeOnSlideChange", "setScrollSnaps"],
       },
+
       on: {
         NEXT: {
           actions: ["setNextIndex"],
@@ -36,10 +38,11 @@ export function machine(userContext: UserDefinedContext) {
         GOTO: {
           actions: ["setIndex"],
         },
-        MUTATION: {
+        MEASURE_DOM: {
           actions: ["measureElements", "setScrollSnaps"],
         },
       },
+
       states: {
         idle: {
           on: {
@@ -91,20 +94,20 @@ export function machine(userContext: UserDefinedContext) {
           const container = dom.getSlideGroupEl(ctx)
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
-            send("MUTATION")
+            send({ type: "MEASURE_DOM", src: "mutation" })
           })
           observer.observe(container, { childList: true })
           return () => {
             observer.disconnect()
           }
         },
-        trackContainerResize(ctx, _evt) {
+        trackContainerResize(ctx, _evt, { send }) {
           const container = dom.getSlideGroupEl(ctx)
           const win = dom.getWin(ctx)
           const observer = new win.ResizeObserver((entries) => {
             entries.forEach((entry) => {
               if (entry.target === container) {
-                measureElements(ctx)
+                send({ type: "MEASURE_DOM", src: "resize" })
               }
             })
           })
