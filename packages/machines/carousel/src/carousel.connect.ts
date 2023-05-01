@@ -1,14 +1,18 @@
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
 import type { Send, SlideProps, State } from "./carousel.types"
+import { getSlidesInView } from "./utils/get-slide-in-view"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const canScrollNext = state.context.canScrollNext
-  const canScrollPrevious = state.context.canScrollPrevious
+  const canScrollPrev = state.context.canScrollPrev
   const isHorizontal = state.context.isHorizontal
   const isAutoplay = state.matches("autoplay")
+
+  const activeSnap = state.context.scrollSnaps[state.context.index]
+  const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
 
   function getSlideState(props: SlideProps) {
     const { index } = props
@@ -17,6 +21,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       isCurrent: index === state.context.index,
       isNext: index === state.context.index + 1,
       isPrevious: index === state.context.index - 1,
+      isInView: slidesInView.includes(index),
     }
   }
 
@@ -25,6 +30,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * The current index of the carousel
      */
     index: state.context.index,
+    /**
+     * The current scroll progress of the carousel
+     */
+    scrollProgress: state.context.scrollProgress,
     /**
      * Whether the carousel is currently auto-playing
      */
@@ -36,12 +45,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Whether the carousel is can scroll to the previous slide
      */
-    canScrollPrevious,
+    canScrollPrev,
     /**
      * Function to scroll to a specific slide index
      */
-    scrollTo(index: number) {
-      send({ type: "GOTO", index })
+    scrollTo(index: number, jump?: boolean) {
+      send({ type: "GOTO", index, jump })
     },
     /**
      * Function to scroll to the next slide
@@ -59,6 +68,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      *  Returns the state of a specific slide
      */
     getSlideState,
+    /**
+     * Function to start/resume autoplay
+     */
+    play() {
+      send("PLAY")
+    },
+    /**
+     * Function to pause autoplay
+     */
+    pause() {
+      send("PAUSE")
+    },
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -69,7 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Carousel",
       style: {
         "--slide-spacing": state.context.spacing,
-        "--slide-size": `calc(100% / ${state.context.slidesPerView})`,
+        "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
       },
     }),
 
@@ -104,6 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.slide.attrs,
         id: dom.getSlideId(state.context, index),
         "data-current": dataAttr(sliderState.isCurrent),
+        "data-inview": dataAttr(sliderState.isInView),
         role: "group",
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
@@ -116,12 +138,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    previousTriggerProps: normalize.button({
+    prevTriggerProps: normalize.button({
       ...parts.previousTrigger.attrs,
       id: dom.getPrevTriggerId(state.context),
       type: "button",
       tabIndex: -1,
-      disabled: !canScrollPrevious,
+      disabled: !canScrollPrev,
       "aria-label": "Previous Slide",
       "data-orientation": state.context.orientation,
       "aria-controls": dom.getSlideGroupId(state.context),

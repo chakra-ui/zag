@@ -1268,9 +1268,6 @@ importers:
 
   packages/frameworks/solid:
     dependencies:
-      '@solid-primitives/props':
-        specifier: ^3.1.4
-        version: 3.1.4(solid-js@1.6.15)
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
@@ -4075,23 +4072,6 @@ packages:
   /@rushstack/eslint-patch@1.2.0:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}
     dev: true
-
-  /@solid-primitives/props@3.1.4(solid-js@1.6.15):
-    resolution: {integrity: sha512-RiwOZXbqb3RMmkznyfI63gwAB/iVHPk8AWN55oIEBRkjzgpuqRXIzdbsSQVy23jMbkRs91tRtzxQ/g6eoWLnuQ==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      '@solid-primitives/utils': 6.1.0(solid-js@1.6.15)
-      solid-js: 1.6.15
-    dev: false
-
-  /@solid-primitives/utils@6.1.0(solid-js@1.6.15):
-    resolution: {integrity: sha512-uTikKFrq33UO+MnKt2WzZr9WYbQe5YX58ytGkL+29DL6o0pZs1wrICbd4ymzSm8azqzMcQqEQOL3HLWjuv9tLw==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      solid-js: 1.6.15
-    dev: false
 
   /@sveltejs/adapter-auto@2.0.0(@sveltejs/kit@1.9.1):
     resolution: {integrity: sha512-b+gkHFZgD771kgV3aO4avHFd7y1zhmMYy9i6xOK7m/rwmwaRO8gnF5zBc0Rgca80B2PMU1bKNxyBTHA14OzUAQ==}

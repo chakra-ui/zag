@@ -15,17 +15,18 @@ const fetchMachine = createMachine({
   context: {},
   on: {
     NEXT: {
-      actions: ["setNextIndex"]
+      actions: ["scrollToNext"]
     },
     PREV: {
-      actions: ["setPreviousIndex"]
+      actions: ["scrollToPrev"]
     },
     GOTO: {
-      actions: ["setIndex"]
+      actions: ["scrollTo"]
     },
-    MUTATION: {
-      actions: ["measureElements", "setScrollSnap"]
-    }
+    MEASURE_DOM: {
+      actions: ["measureElements", "setScrollSnaps"]
+    },
+    PLAY: "autoplay"
   },
   on: {
     UPDATE_CONTEXT: {
@@ -35,10 +36,11 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        POINTER_DOWN: "pointerdown"
+        POINTER_DOWN: "dragging"
       }
     },
     autoplay: {
+      activities: ["trackDocumentVisibility"],
       invoke: {
         src: "interval",
         id: "interval"
@@ -47,17 +49,17 @@ const fetchMachine = createMachine({
         PAUSE: "idle"
       }
     },
-    pointerdown: {
+    dragging: {
       on: {
         POINTER_UP: "idle",
         POINTER_MOVE: {
-          actions: ["setScrollSnap"]
+          actions: ["setScrollSnaps"]
         }
       }
     }
   },
   activities: ["trackContainerResize", "trackSlideMutation"],
-  entry: ["measureElements", "setScrollSnap"]
+  entry: ["measureElements", "setScrollSnaps"]
 }, {
   actions: {
     updateContext: assign((context, event) => {

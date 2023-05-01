@@ -9,9 +9,17 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(carouselControls)
 
-  const [state, send] = useMachine(carousel.machine({ id: useId(), index: 1 }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    carousel.machine({
+      id: useId(),
+      index: 0,
+      spacing: "20px",
+      slidesPerView: 2,
+    }),
+    {
+      // context: controls.context,
+    },
+  )
 
   const api = carousel.connect(state, send, normalizeProps)
 
@@ -19,7 +27,7 @@ export default function Page() {
     <>
       <main className="carousel">
         <div {...api.rootProps}>
-          <button {...api.previousTriggerProps}>Prev</button>
+          <button {...api.prevTriggerProps}>Prev</button>
           <button {...api.nextTriggerProps}>Next</button>
           <div {...api.viewportProps}>
             <div {...api.slideGroupProps}>
@@ -33,7 +41,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar viz controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

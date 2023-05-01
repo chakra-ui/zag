@@ -2,7 +2,7 @@ import { createMachine, ref } from "@zag-js/core"
 import { compact, nextIndex, prevIndex } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
-import { getScrollSnap } from "./carousel.utils"
+import { getScrollSnaps } from "./utils/get-scroll-snaps"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -15,63 +15,67 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         align: "start",
         loop: false,
-        scrollSnap: 0,
         slidesPerView: 1,
         spacing: "0px",
         ...ctx,
-        inViewThreshold: 0,
+        scrollSnaps: [],
+        scrollProgress: 0,
         containerSize: 0,
-        scrollWidth: 0,
         slideRects: [],
       },
+
       watch: {
-        index: ["invokeOnSlideChange", "setScrollSnap"],
+        index: ["invokeOnSlideChange", "setScrollSnaps"],
       },
+
       on: {
         NEXT: {
-          actions: ["setNextIndex"],
+          actions: ["scrollToNext"],
         },
         PREV: {
-          actions: ["setPreviousIndex"],
+          actions: ["scrollToPrev"],
         },
         GOTO: {
-          actions: ["setIndex"],
+          actions: ["scrollTo"],
         },
-        MUTATION: {
-          actions: ["measureElements", "setScrollSnap"],
+        MEASURE_DOM: {
+          actions: ["measureElements", "setScrollSnaps"],
         },
+        PLAY: "autoplay",
       },
+
       states: {
         idle: {
           on: {
-            POINTER_DOWN: "pointerdown",
+            POINTER_DOWN: "dragging",
           },
         },
         autoplay: {
+          activities: ["trackDocumentVisibility"],
           every: {
-            2000: ["setNextIndex"],
+            2000: ["scrollToNext"],
           },
           on: {
             PAUSE: "idle",
           },
         },
-        pointerdown: {
+        dragging: {
           on: {
             POINTER_UP: "idle",
             POINTER_MOVE: {
-              actions: ["setScrollSnap"],
+              actions: ["setScrollSnaps"],
             },
           },
         },
       },
       activities: ["trackContainerResize", "trackSlideMutation"],
-      entry: ["measureElements", "setScrollSnap"],
+      entry: ["measureElements", "setScrollSnaps"],
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.slideRects.length - 1,
-        canScrollPrevious: (ctx) => ctx.loop || ctx.index > 0,
+        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.scrollSnaps.length - 1,
+        canScrollPrev: (ctx) => ctx.loop || ctx.index > 0,
         startEdge(ctx) {
           if (ctx.isVertical) return "top"
           return ctx.isRtl ? "right" : "left"
@@ -81,7 +85,8 @@ export function machine(userContext: UserDefinedContext) {
           return ctx.isRtl ? "left" : "right"
         },
         translateValue: (ctx) => {
-          return ctx.isHorizontal ? `translate3d(${ctx.scrollSnap}px, 0, 0)` : `translate3d(0, ${ctx.scrollSnap}px, 0)`
+          const scrollSnap = ctx.scrollSnaps[ctx.index]
+          return ctx.isHorizontal ? `translate3d(${scrollSnap}px, 0, 0)` : `translate3d(0, ${scrollSnap}px, 0)`
         },
       },
     },
@@ -91,26 +96,38 @@ export function machine(userContext: UserDefinedContext) {
           const container = dom.getSlideGroupEl(ctx)
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
-            send("MUTATION")
+            send({ type: "MEASURE_DOM", src: "mutation" })
           })
           observer.observe(container, { childList: true })
           return () => {
             observer.disconnect()
           }
         },
-        trackContainerResize(ctx, _evt) {
+        trackContainerResize(ctx, _evt, { send }) {
           const container = dom.getSlideGroupEl(ctx)
           const win = dom.getWin(ctx)
           const observer = new win.ResizeObserver((entries) => {
             entries.forEach((entry) => {
               if (entry.target === container) {
-                measureElements(ctx)
+                send({ type: "MEASURE_DOM", src: "resize" })
               }
             })
           })
           observer.observe(container)
           return () => {
             observer.disconnect()
+          }
+        },
+        trackDocumentVisibility(ctx, _evt, { send }) {
+          const doc = dom.getDoc(ctx)
+          const onVisibilityChange = () => {
+            if (doc.visibilityState !== "visible") {
+              send({ type: "PAUSE", src: "document-hidden" })
+            }
+          }
+          doc.addEventListener("visibilitychange", onVisibilityChange)
+          return () => {
+            doc.removeEventListener("visibilitychange", onVisibilityChange)
           }
         },
       },
@@ -123,16 +140,18 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnSlideChange(ctx, _evt) {
           ctx.onSlideChange?.({ index: ctx.index })
         },
-        setNextIndex(ctx) {
+        scrollToNext(ctx) {
           ctx.index = nextIndex(ctx.slideRects, ctx.index)
         },
-        setPreviousIndex(ctx) {
+        scrollToPrev(ctx) {
           ctx.index = prevIndex(ctx.slideRects, ctx.index)
         },
-        setScrollSnap(ctx) {
-          ctx.scrollSnap = getScrollSnap(ctx)[ctx.index]
+        setScrollSnaps(ctx) {
+          const { snapsAligned, scrollProgress } = getScrollSnaps(ctx)
+          ctx.scrollSnaps = snapsAligned
+          ctx.scrollProgress = scrollProgress
         },
-        setIndex(ctx, evt) {
+        scrollTo(ctx, evt) {
           ctx.index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
         },
         measureElements,
@@ -146,5 +165,4 @@ const measureElements = (ctx: MachineContext) => {
   ctx.containerRect = ref(container.getBoundingClientRect())
   ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
   ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
-  ctx.scrollWidth = container.scrollWidth
 }
