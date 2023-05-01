@@ -15,10 +15,11 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         align: "start",
         loop: false,
-        scrollSnaps: [],
         slidesPerView: 1,
         spacing: "0px",
         ...ctx,
+        scrollSnaps: [],
+        scrollProgress: 0,
         containerSize: 0,
         slideRects: [],
       },
@@ -146,8 +147,9 @@ export function machine(userContext: UserDefinedContext) {
           ctx.index = prevIndex(ctx.slideRects, ctx.index)
         },
         setScrollSnaps(ctx) {
-          const { snapsAligned } = getScrollSnaps(ctx)
+          const { snapsAligned, scrollProgress } = getScrollSnaps(ctx)
           ctx.scrollSnaps = snapsAligned
+          ctx.scrollProgress = scrollProgress
         },
         scrollTo(ctx, evt) {
           ctx.index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))

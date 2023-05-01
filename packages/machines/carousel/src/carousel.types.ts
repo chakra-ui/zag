@@ -60,6 +60,7 @@ type PrivateContext = Context<{
   containerRect?: DOMRect
   containerSize: number
   scrollSnaps: number[]
+  scrollProgress: number
 }>
 
 type RectEdge = "top" | "right" | "bottom" | "left"

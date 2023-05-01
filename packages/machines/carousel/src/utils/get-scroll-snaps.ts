@@ -1,5 +1,6 @@
 import { MachineContext } from "../carousel.types"
 import { getAlignment } from "./get-alignment"
+import { getLimit } from "./get-limit"
 import { getSlidesToScroll } from "./get-slide-groups"
 import { getSlideSizes } from "./get-slide-sizes"
 
@@ -34,7 +35,11 @@ export function getScrollSnaps(ctx: MachineContext) {
 
   const snaps = measureUnaligned()
   const snapsAligned = measureAligned()
+
   const contentSize = -arrayLast(snaps) + arrayLast(slideSizesWithGaps)
+
+  const scrollLimit = getLimit(snaps[snaps.length - 1], snaps[0])
+  const scrollProgress = (snapsAligned[ctx.index] - scrollLimit.max) / -scrollLimit.length
 
   return {
     snaps,
@@ -42,5 +47,7 @@ export function getScrollSnaps(ctx: MachineContext) {
     slideSizes,
     slideSizesWithGaps,
     contentSize,
+    scrollLimit,
+    scrollProgress: Math.abs(scrollProgress),
   }
 }

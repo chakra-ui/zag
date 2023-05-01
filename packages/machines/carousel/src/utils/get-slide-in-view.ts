@@ -14,8 +14,7 @@ export function getSlidesInView(ctx: MachineContext) {
   const roundingSafety = 0.5
   const slideOffsets = [0]
 
-  const { snaps, slideSizes } = getScrollSnaps(ctx)
-  const limit = getLimit(snaps[snaps.length - 1], snaps[0])
+  const { snaps, slideSizes, scrollLimit } = getScrollSnaps(ctx)
 
   const slideThresholds = slideSizes.map((slideSize) => {
     const thresholdLimit = getLimit(roundingSafety, slideSize - roundingSafety)
@@ -32,7 +31,7 @@ export function getSlidesInView(ctx: MachineContext) {
   }, [])
 
   return (location: number) => {
-    const loc = limit.constrain(location)
+    const loc = scrollLimit.constrain(location)
     return slideBounds.reduce((list: number[], bound) => {
       const { index, start, end } = bound
       const inList = list.includes(index)

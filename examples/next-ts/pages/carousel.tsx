@@ -13,8 +13,8 @@ export default function Page() {
     carousel.machine({
       id: useId(),
       index: 0,
-      spacing: "40px",
-      slidesPerView: 3,
+      spacing: "20px",
+      slidesPerView: 2,
     }),
     {
       // context: controls.context,

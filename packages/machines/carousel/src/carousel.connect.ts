@@ -21,7 +21,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       isCurrent: index === state.context.index,
       isNext: index === state.context.index + 1,
       isPrevious: index === state.context.index - 1,
-      isInview: slidesInView.includes(index),
+      isInView: slidesInView.includes(index),
     }
   }
 
@@ -30,6 +30,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * The current index of the carousel
      */
     index: state.context.index,
+    /**
+     * The current scroll progress of the carousel
+     */
+    scrollProgress: state.context.scrollProgress,
     /**
      * Whether the carousel is currently auto-playing
      */
@@ -64,14 +68,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      *  Returns the state of a specific slide
      */
     getSlideState,
-    /**
-     * Returns the current scroll progress of the carousel
-     */
-    getScrollProgress() {},
-    /**
-     * Returns the scroll snap list of the carousel
-     */
-    getScrollSnapList() {},
     /**
      * Function to start/resume autoplay
      */
@@ -129,7 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.slide.attrs,
         id: dom.getSlideId(state.context, index),
         "data-current": dataAttr(sliderState.isCurrent),
-        "data-inview": dataAttr(sliderState.isInview),
+        "data-inview": dataAttr(sliderState.isInView),
         role: "group",
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
