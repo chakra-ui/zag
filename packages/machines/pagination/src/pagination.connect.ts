@@ -110,6 +110,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(evt) {
           send({ type: "SET_PAGE", page: index, srcElement: evt.currentTarget })
         },
+        ...(state.context.triggerType === "button" && { type: "button" }),
       })
     },
 
@@ -120,6 +121,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onClick(evt) {
         send({ type: "PREVIOUS_PAGE", srcElement: evt.currentTarget })
       },
+      ...(state.context.triggerType === "button" && { disabled: isFirstPage, type: "button" }),
     }),
 
     nextPageTriggerProps: normalize.element({
@@ -129,6 +131,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onClick(evt) {
         send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
       },
+      ...(state.context.triggerType === "button" && { disabled: isLastPage, type: "button" }),
     }),
   }
 }

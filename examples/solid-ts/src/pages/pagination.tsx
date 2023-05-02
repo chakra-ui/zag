@@ -52,22 +52,18 @@ export default function Page() {
           <nav {...api().rootProps}>
             <ul>
               <li>
-                <a href="#previous" {...api().prevPageTriggerProps}>
+                <button {...api().prevPageTriggerProps}>
                   Previous <span style={visuallyHiddenStyle}>Page</span>
-                </a>
+                </button>
               </li>
               <For each={api().pages}>
                 {(page, i) => {
                   if (page.type === "page")
                     return (
                       <li>
-                        <a
-                          href={`#${page.value}`}
-                          data-testid={`item-${page.value}`}
-                          {...api().getPageTriggerProps(page)}
-                        >
+                        <button data-testid={`item-${page.value}`} {...api().getPageTriggerProps(page)}>
                           {page.value}
-                        </a>
+                        </button>
                       </li>
                     )
                   return (
@@ -78,9 +74,9 @@ export default function Page() {
                 }}
               </For>
               <li>
-                <a href="#next" {...api().nextPageTriggerProps}>
+                <button {...api().nextPageTriggerProps}>
                   Next <span style={visuallyHiddenStyle}>Page</span>
-                </a>
+                </button>
               </li>
             </ul>
           </nav>

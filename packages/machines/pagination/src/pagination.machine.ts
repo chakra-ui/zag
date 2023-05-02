@@ -12,6 +12,7 @@ export function machine(userContext: UserDefinedContext) {
         pageSize: 10,
         siblingCount: 1,
         page: 1,
+        triggerType: "button",
         translations: {
           rootLabel: "pagination",
           pageTriggerLabel({ page, totalPages }) {
