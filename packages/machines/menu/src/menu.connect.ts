@@ -85,7 +85,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Function to reposition the popover
      */
-    setPositioning(options: Partial<PositioningOptions>) {
+    setPositioning(options: Partial<PositioningOptions> = {}) {
       send({ type: "SET_POSITIONING", options })
     },
 
