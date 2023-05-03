@@ -1,5 +1,19 @@
 # @zag-js/pagination
 
+## 0.7.0
+
+### Minor Changes
+
+- [#627](https://github.com/chakra-ui/zag/pull/627)
+  [`a3003490`](https://github.com/chakra-ui/zag/commit/a30034900cc891069027a07d0b1ee45f41277f27) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add `type` property to the pagination's context to control properties
+  used in trigger elements
+
+### Patch Changes
+
+- Updated dependencies [[`413cdf18`](https://github.com/chakra-ui/zag/commit/413cdf180f718469c9c8b879a43aa4501d1ae59c)]:
+  - @zag-js/core@0.7.0
+
 ## 0.5.0
 
 ### Patch Changes
