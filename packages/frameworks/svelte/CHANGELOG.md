@@ -1,5 +1,16 @@
 # @zag-js/svelte
 
+## 0.7.0
+
+### Patch Changes
+
+- [#614](https://github.com/chakra-ui/zag/pull/614)
+  [`745193f6`](https://github.com/chakra-ui/zag/commit/745193f640d54553668adb5b69f221059d8ed73c) Thanks
+  [@renovate](https://github.com/apps/renovate)! - Update dependency svelte to `v3.58.0`
+
+- Updated dependencies [[`413cdf18`](https://github.com/chakra-ui/zag/commit/413cdf180f718469c9c8b879a43aa4501d1ae59c)]:
+  - @zag-js/core@0.7.0
+
 ## 0.5.0
 
 ### Patch Changes

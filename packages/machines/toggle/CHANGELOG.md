@@ -1,5 +1,16 @@
 # @zag-js/toggle
 
+## 0.7.0
+
+### Patch Changes
+
+- [`d3c11c51`](https://github.com/chakra-ui/zag/commit/d3c11c510dedda6d86159ed7e5736d9e7083c028) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure ids of underlying elements can customized based on `ids`
+  context property.
+
+- Updated dependencies [[`413cdf18`](https://github.com/chakra-ui/zag/commit/413cdf180f718469c9c8b879a43aa4501d1ae59c)]:
+  - @zag-js/core@0.7.0
+
 ## 0.5.0
 
 ### Patch Changes

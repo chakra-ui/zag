@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/svelte",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "description": "The svelte wrapper for zag",
   "keywords": [
     "ui-machines",
