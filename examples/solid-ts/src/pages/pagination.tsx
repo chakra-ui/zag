@@ -11,7 +11,11 @@ export default function Page() {
   const controls = useControls(paginationControls)
 
   const [state, send] = useMachine(
-    pagination.machine({ id: createUniqueId(), count: paginationData.length, onChange: console.log }),
+    pagination.machine({
+      id: createUniqueId(),
+      count: paginationData.length,
+      onChange: console.log,
+    }),
     {
       context: controls.context,
     },

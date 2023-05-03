@@ -12,13 +12,16 @@ export function machine(userContext: UserDefinedContext) {
         pageSize: 10,
         siblingCount: 1,
         page: 1,
-        triggerType: "button",
+        type: "button",
         translations: {
           rootLabel: "pagination",
+          prevPageTriggerLabel: "previous page",
+          nextPageTriggerLabel: "next page",
           pageTriggerLabel({ page, totalPages }) {
             const isLastPage = totalPages > 1 && page === totalPages
             return `${isLastPage ? "last page, " : ""}page ${page}`
           },
+          ...ctx.translations,
         },
         ...ctx,
       },

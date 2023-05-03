@@ -1,8 +1,19 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
+export type PageTriggerProps = {
+  type: "page"
+  value: number
+}
+
+export type EllipsisProps = {
+  index: number
+}
+
 type IntlTranslations = {
   rootLabel?: string
+  prevPageTriggerLabel?: string
+  nextPageTriggerLabel?: string
   pageTriggerLabel?(details: { page: number; totalPages: number }): string
 }
 
@@ -50,7 +61,7 @@ type PublicContext = DirectionProperty &
      * The type of the trigger element
      * @default "button"
      */
-    triggerType: "button" | "link"
+    type: "button" | "link"
   }
 
 type PrivateContext = Context<{}>
@@ -60,28 +71,32 @@ type ComputedContext = Readonly<{
    * @computed
    * Total number of pages
    */
-  readonly totalPages: number
+  totalPages: number
   /**
    * @computed
    * Pages to render in pagination
    */
-  readonly items: PaginationRange
+  items: PaginationRange
   /**
    * @computed
    * Index of first and last data items on current page
    */
-  readonly pageRange: { start: number; end: number }
+  pageRange: { start: number; end: number }
   /**
    * @computed
    * The previous page index
    */
-  readonly previousPage: number | null
+  previousPage: number | null
   /**
    * @computed
    * The next page index
    */
-  readonly nextPage: number | null
-  readonly isValidPage: boolean
+  nextPage: number | null
+  /**
+   * @computed
+   * Whether the current page is valid
+   */
+  isValidPage: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">

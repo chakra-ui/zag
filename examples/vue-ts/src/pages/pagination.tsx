@@ -13,7 +13,11 @@ export default defineComponent({
     const controls = useControls(paginationControls)
 
     const [state, send] = useMachine(
-      pagination.machine({ id: "1", count: paginationData.length, onChange: console.log }),
+      pagination.machine({
+        id: "1",
+        count: paginationData.length,
+        onChange: console.log,
+      }),
       {
         context: controls.context,
       },

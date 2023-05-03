@@ -15,7 +15,6 @@ export default function Page() {
       id: useId(),
       count: paginationData.length,
       onChange: console.log,
-      triggerType: "link",
     }),
     {
       context: controls.context,
