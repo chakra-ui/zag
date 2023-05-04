@@ -1,6 +1,6 @@
 import { createMachine, subscribe } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getScrollParents, isHTMLElement, isSafari, raf } from "@zag-js/dom-query"
+import { getScrollParents, isHTMLElement, isSafari } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
@@ -134,19 +134,17 @@ export function machine(userContext: UserDefinedContext) {
       activities: {
         trackPositioning(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
-          let cleanup: VoidFunction | undefined
-          raf(() => {
-            cleanup = getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
-              ...ctx.positioning,
-              onComplete(data) {
-                ctx.currentPlacement = data.placement
-              },
-              onCleanup() {
-                ctx.currentPlacement = undefined
-              },
-            })
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
+            ...ctx.positioning,
+            defer: true,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
+            onCleanup() {
+              ctx.currentPlacement = undefined
+            },
           })
-          return () => cleanup?.()
         },
         trackPointerlockChange(ctx, _evt, { send }) {
           const onChange = () => send("POINTER_LOCK_CHANGE")
@@ -213,12 +211,12 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         setPositioning(ctx, evt) {
-          raf(() => {
-            getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
-              ...ctx.positioning,
-              ...evt.options,
-              listeners: false,
-            })
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
+            ...ctx.positioning,
+            ...evt.options,
+            defer: true,
+            listeners: false,
           })
         },
         toggleVisibility(ctx, _evt, { send }) {

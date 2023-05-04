@@ -6,7 +6,7 @@ import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { proxyTabFocus } from "@zag-js/tabbable"
 import { compact, runIfFn } from "@zag-js/utils"
-import { createFocusTrap, FocusTrap } from "focus-trap"
+import { FocusTrap, createFocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
 
@@ -27,7 +27,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         currentPlacement: undefined,
         ...ctx,
-        focusTriggerOnClose: true,
         renderedElements: {
           title: true,
           description: true,
@@ -46,10 +45,15 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         closed: {
-          entry: "invokeOnClose",
           on: {
-            TOGGLE: "open",
-            OPEN: "open",
+            TOGGLE: {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
+            OPEN: {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
           },
         },
 
@@ -62,14 +66,20 @@ export function machine(userContext: UserDefinedContext) {
             "trackDismissableElement",
             "proxyTabFocus",
           ],
-          entry: ["setInitialFocus", "invokeOnOpen"],
+          entry: ["setInitialFocus"],
           on: {
-            CLOSE: "closed",
+            CLOSE: {
+              target: "closed",
+              actions: ["invokeOnClose"],
+            },
             REQUEST_CLOSE: {
               target: "closed",
-              actions: "focusTriggerIfNeeded",
+              actions: ["restoreFocusIfNeeded", "invokeOnClose"],
             },
-            TOGGLE: "closed",
+            TOGGLE: {
+              target: "closed",
+              actions: ["invokeOnClose"],
+            },
             SET_POSITIONING: {
               actions: "setPositioning",
             },
@@ -82,8 +92,10 @@ export function machine(userContext: UserDefinedContext) {
         trackPositioning(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
           const anchorEl = dom.getAnchorEl(ctx) ?? dom.getTriggerEl(ctx)
-          return getPlacement(anchorEl, dom.getPositionerEl(ctx), {
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(anchorEl, getPositionerEl, {
             ...ctx.positioning,
+            defer: true,
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
@@ -93,19 +105,21 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackDismissableElement(ctx, _evt, { send }) {
-          return trackDismissableElement(dom.getContentEl(ctx), {
+          const getContentEl = () => dom.getContentEl(ctx)
+          let restoreFocus = true
+          return trackDismissableElement(getContentEl, {
             pointerBlocking: ctx.modal,
             exclude: dom.getTriggerEl(ctx),
+            defer: true,
             onEscapeKeyDown(event) {
               ctx.onEscapeKeyDown?.(event)
               if (ctx.closeOnEsc) return
-              ctx.focusTriggerOnClose = true
               event.preventDefault()
             },
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
-              ctx.focusTriggerOnClose = !(event.detail.focusable || event.detail.contextmenu)
+              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
               if (!ctx.closeOnInteractOutside) {
                 event.preventDefault()
               }
@@ -117,23 +131,25 @@ export function machine(userContext: UserDefinedContext) {
               ctx.onFocusOutside?.(event)
             },
             onDismiss() {
-              send({ type: "REQUEST_CLOSE", src: "#interact-outside" })
+              send({ type: "REQUEST_CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         },
         proxyTabFocus(ctx) {
           if (ctx.modal || !ctx.portalled) return
-          return proxyTabFocus(dom.getContentEl(ctx), dom.getTriggerEl(ctx), (el) => {
-            el.focus({ preventScroll: true })
+          const getContentEl = () => dom.getContentEl(ctx)
+          return proxyTabFocus(getContentEl, {
+            triggerElement: dom.getTriggerEl(ctx),
+            defer: true,
+            onFocus(el) {
+              el.focus({ preventScroll: true })
+            },
           })
         },
         hideContentBelow(ctx) {
           if (!ctx.modal) return
-          let cleanup: VoidFunction | undefined
-          nextTick(() => {
-            cleanup = ariaHidden([dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
-          })
-          return () => cleanup?.()
+          const getElements = () => [dom.getContentEl(ctx), dom.getTriggerEl(ctx)]
+          return ariaHidden(getElements, { defer: true })
         },
         preventScroll(ctx) {
           if (!ctx.modal) return
@@ -162,13 +178,13 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         setPositioning(ctx, evt) {
-          raf(() => {
-            const anchorEl = dom.getAnchorEl(ctx) ?? dom.getTriggerEl(ctx)
-            getPlacement(anchorEl, dom.getPositionerEl(ctx), {
-              ...ctx.positioning,
-              ...evt.options,
-              listeners: false,
-            })
+          const anchorEl = dom.getAnchorEl(ctx) ?? dom.getTriggerEl(ctx)
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          getPlacement(anchorEl, getPositionerEl, {
+            ...ctx.positioning,
+            ...evt.options,
+            defer: true,
+            listeners: false,
           })
         },
         checkRenderedElements(ctx) {
@@ -184,9 +200,11 @@ export function machine(userContext: UserDefinedContext) {
             dom.getInitialFocusEl(ctx)?.focus()
           })
         },
-        focusTriggerIfNeeded(ctx) {
-          if (!ctx.focusTriggerOnClose) return
-          raf(() => dom.getTriggerEl(ctx)?.focus())
+        restoreFocusIfNeeded(ctx, evt) {
+          if (!evt.restoreFocus) return
+          raf(() => {
+            dom.getTriggerEl(ctx)?.focus()
+          })
         },
         invokeOnOpen(ctx) {
           ctx.onOpen?.()

@@ -21,22 +21,33 @@ const fetchMachine = createMachine({
   },
   states: {
     closed: {
-      entry: "invokeOnClose",
       on: {
-        TOGGLE: "open",
-        OPEN: "open"
+        TOGGLE: {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        },
+        OPEN: {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        }
       }
     },
     open: {
       activities: ["trapFocus", "preventScroll", "hideContentBelow", "trackPositioning", "trackDismissableElement", "proxyTabFocus"],
-      entry: ["setInitialFocus", "invokeOnOpen"],
+      entry: ["setInitialFocus"],
       on: {
-        CLOSE: "closed",
+        CLOSE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        },
         REQUEST_CLOSE: {
           target: "closed",
-          actions: "focusTriggerIfNeeded"
+          actions: ["restoreFocusIfNeeded", "invokeOnClose"]
         },
-        TOGGLE: "closed",
+        TOGGLE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        },
         SET_POSITIONING: {
           actions: "setPositioning"
         }

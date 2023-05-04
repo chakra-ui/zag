@@ -334,15 +334,19 @@ export function machine(userContext: UserDefinedContext) {
         trackPositioning(ctx) {
           if (ctx.anchorPoint) return
           ctx.currentPlacement = ctx.positioning.placement
-          return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
             ...ctx.positioning,
+            defer: true,
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
           })
         },
         trackInteractOutside(ctx, _evt, { send }) {
-          return trackDismissableElement(dom.getContentEl(ctx), {
+          const getContentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(getContentEl, {
+            defer: true,
             exclude: [dom.getTriggerEl(ctx)],
             onEscapeKeyDown(event) {
               if (ctx.isSubmenu) event.preventDefault()
@@ -403,12 +407,12 @@ export function machine(userContext: UserDefinedContext) {
           ctx.positioning.gutter = 0
         },
         setPositioning(ctx, evt) {
-          raf(() => {
-            getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
-              ...ctx.positioning,
-              ...evt.options,
-              listeners: false,
-            })
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
+            ...ctx.positioning,
+            ...evt.options,
+            defer: true,
+            listeners: false,
           })
         },
         invokeOnValueChange(ctx, evt) {
