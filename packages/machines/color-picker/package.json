@@ -45,7 +45,6 @@
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
-    "@zag-js/number-utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
     "@zag-js/types": "workspace:*"

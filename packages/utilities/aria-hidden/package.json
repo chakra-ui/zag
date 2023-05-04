@@ -34,6 +34,9 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "main": "src/index.ts",
+  "dependencies": {
+    "@zag-js/dom-query": "workspace:*"
+  },
   "devDependencies": {
     "clean-package": "2.2.0"
   }

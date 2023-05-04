@@ -1421,9 +1421,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../utilities/number
       '@zag-js/numeric-range':
         specifier: workspace:*
         version: link:../../utilities/numeric-range
@@ -2215,6 +2212,10 @@ importers:
         version: 2.2.0
 
   packages/utilities/aria-hidden:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -2422,12 +2423,20 @@ importers:
         version: 2.2.0
 
   packages/utilities/tabbable:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
     devDependencies:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
 
   packages/utilities/text-selection:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
     devDependencies:
       clean-package:
         specifier: 2.2.0
