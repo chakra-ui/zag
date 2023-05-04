@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { nextTick, raf } from "@zag-js/dom-query"
+import { trackElementRect } from "@zag-js/element-rect"
 import { getFocusables } from "@zag-js/tabbable"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
@@ -21,7 +22,7 @@ export function machine(userContext: UserDefinedContext) {
         focusedValue: null,
         previousValues: [],
         indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
-        hasMeasuredRect: false,
+        canIndicatorTransition: false,
         isIndicatorRendered: false,
         loop: true,
         translations: {},
@@ -35,10 +36,20 @@ export function machine(userContext: UserDefinedContext) {
 
       created: ["setPrevSelectedTabs"],
 
+      entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
+
+      exit: ["cleanupObserver"],
+
       watch: {
         focusedValue: "invokeOnFocus",
-        value: ["invokeOnChange", "setPrevSelectedTabs", "setIndicatorRect", "setContentTabIndex"],
-        dir: ["clearMeasured", "setIndicatorRect"],
+        value: [
+          "enableIndicatorTransition",
+          "invokeOnChange",
+          "setPrevSelectedTabs",
+          "syncIndicatorRect",
+          "setContentTabIndex",
+        ],
+        dir: ["syncIndicatorRect"],
       },
 
       on: {
@@ -48,9 +59,10 @@ export function machine(userContext: UserDefinedContext) {
         CLEAR_VALUE: {
           actions: "clearValue",
         },
+        SET_INDICATOR_RECT: {
+          actions: "setIndicatorRect",
+        },
       },
-
-      entry: ["checkRenderedElements", "setIndicatorRect", "setContentTabIndex"],
 
       states: {
         idle: {
@@ -119,6 +131,7 @@ export function machine(userContext: UserDefinedContext) {
         isHorizontal: (ctx) => ctx.isHorizontal,
         selectOnFocus: (ctx) => ctx.activationMode === "automatic",
       },
+
       actions: {
         setFocusedValue(ctx, evt) {
           ctx.focusedValue = evt.value
@@ -131,9 +144,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearValue(ctx) {
           ctx.value = null
-        },
-        invokeOnDelete(ctx, evt) {
-          ctx.onDelete?.({ value: evt.value })
         },
         focusFirstTab(ctx) {
           raf(() => dom.getFirstEl(ctx)?.focus())
@@ -151,21 +161,8 @@ export function machine(userContext: UserDefinedContext) {
           const prev = dom.getPrevEl(ctx, ctx.focusedValue)
           raf(() => prev?.focus())
         },
-        setIndicatorRect(ctx) {
-          nextTick(() => {
-            if (!ctx.isIndicatorRendered || !ctx.value) return
-            ctx.indicatorRect = dom.getRectById(ctx, ctx.value)
-            if (ctx.hasMeasuredRect) return
-            nextTick(() => {
-              ctx.hasMeasuredRect = true
-            })
-          })
-        },
         checkRenderedElements(ctx) {
           ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
-        },
-        clearMeasured(ctx) {
-          ctx.hasMeasuredRect = false
         },
         invokeOnChange(ctx) {
           ctx.onChange?.({ value: ctx.value })
@@ -175,7 +172,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setPrevSelectedTabs(ctx) {
           if (ctx.value != null) {
-            ctx.previousValues = pushUnique(Array.from(ctx.previousValues), ctx.value)
+            ctx.previousValues = pushUnique(ctx.previousValues, ctx.value)
           }
         },
         // if tab panel contains focusable elements, remove the tabindex attribute
@@ -191,14 +188,53 @@ export function machine(userContext: UserDefinedContext) {
             }
           })
         },
+        cleanupObserver(ctx) {
+          ctx.cleanup?.()
+        },
+        enableIndicatorTransition(ctx) {
+          ctx.canIndicatorTransition = true
+        },
+        setIndicatorRect(ctx, evt) {
+          const value = evt.id ?? ctx.value
+          if (!ctx.isIndicatorRendered || !value) return
+
+          const tabEl = dom.getTriggerEl(ctx, value)
+          if (!tabEl) return
+
+          ctx.indicatorRect = dom.getRectById(ctx, value)
+          nextTick(() => {
+            ctx.canIndicatorTransition = false
+          })
+        },
+        syncIndicatorRect(ctx) {
+          ctx.cleanup?.()
+
+          const value = ctx.value
+          if (!ctx.isIndicatorRendered || !value) return
+
+          const tabEl = dom.getActiveTabEl(ctx)
+          if (!tabEl) return
+
+          ctx.cleanup = trackElementRect(tabEl, {
+            getRect(el) {
+              return dom.getOffsetRect(el)
+            },
+            onChange(rect) {
+              ctx.indicatorRect = dom.resolveRect(rect, ctx.orientation)
+              nextTick(() => {
+                ctx.canIndicatorTransition = false
+              })
+            },
+          })
+        },
       },
     },
   )
 }
 
 // function to push value array and remove previous instances of value
-function pushUnique(arr: any[], value: any) {
-  const newArr = arr.slice()
+function pushUnique(arr: string[], value: any) {
+  const newArr = Array.from(arr).slice()
   const index = newArr.indexOf(value)
   if (index > -1) {
     newArr.splice(index, 1)

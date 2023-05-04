@@ -34,6 +34,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     clearValue() {
       send({ type: "CLEAR_VALUE" })
     },
+    /**
+     * Sets the indicator rect to the tab with the given id.
+     */
+    setIndicatorRect(id: string | null | undefined) {
+      send({ type: "SET_INDICATOR_RECT", id })
+    },
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -148,12 +154,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.indicator.attrs,
       "data-orientation": state.context.orientation,
       style: {
-        "--transition-duration": "200ms",
+        "--transition-duration": "150ms",
         "--transition-property": "left, right, top, bottom, width, height",
         position: "absolute",
         willChange: "var(--transition-property)",
         transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.hasMeasuredRect ? "var(--transition-duration)" : "0ms",
+        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
         ...state.context.indicatorRect,
       },
