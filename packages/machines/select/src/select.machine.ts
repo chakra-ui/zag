@@ -230,10 +230,12 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         proxyTabFocus(ctx) {
-          const focus = (el: HTMLElement) => {
-            raf(() => el.focus({ preventScroll: true }))
-          }
-          return proxyTabFocus(dom.getContentElement(ctx), dom.getTriggerElement(ctx), focus)
+          return proxyTabFocus(dom.getContentElement(ctx), {
+            triggerElement: dom.getTriggerElement(ctx),
+            onFocus(el: HTMLElement) {
+              raf(() => el.focus({ preventScroll: true }))
+            },
+          })
         },
         trackFormControlState(ctx) {
           return trackFormControl(dom.getHiddenSelectElement(ctx), {
