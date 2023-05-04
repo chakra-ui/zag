@@ -543,6 +543,9 @@ importers:
       '@internationalized/date':
         specifier: ^3.1.0
         version: 3.1.0
+      '@solidjs/router':
+        specifier: ^0.8.2
+        version: 0.8.2(solid-js@1.7.4)
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -723,12 +726,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
-      solid-app-router:
-        specifier: 0.4.2
-        version: 0.4.2(solid-js@1.6.15)
       solid-js:
-        specifier: 1.6.15
-        version: 1.6.15
+        specifier: 1.7.4
+        version: 1.7.4
     devDependencies:
       '@types/form-serialize':
         specifier: 0.7.2
@@ -738,7 +738,7 @@ importers:
         version: 4.2.0(@types/node@18.15.11)
       vite-plugin-solid:
         specifier: 2.6.1
-        version: 2.6.1(solid-js@1.6.15)(vite@4.2.0)
+        version: 2.6.1(solid-js@1.7.4)(vite@4.2.0)
 
   examples/svelte-kit:
     dependencies:
@@ -1288,8 +1288,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.7.3
-        version: 1.7.3
+        specifier: 1.7.4
+        version: 1.7.4
 
   packages/frameworks/svelte:
     dependencies:
@@ -1814,6 +1814,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/element-rect':
+        specifier: workspace:*
+        version: link:../../utilities/element-rect
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
@@ -4085,6 +4088,14 @@ packages:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}
     dev: true
 
+  /@solidjs/router@0.8.2(solid-js@1.7.4):
+    resolution: {integrity: sha512-gUKW+LZqxtX6y/Aw6JKyy4gQ9E7dLqp513oB9pSYJR1HM5c56Pf7eijzyXX+b3WuXig18Cxqah4tMtF0YGu80w==}
+    peerDependencies:
+      solid-js: ^1.5.3
+    dependencies:
+      solid-js: 1.7.4
+    dev: false
+
   /@sveltejs/adapter-auto@2.0.0(@sveltejs/kit@1.9.1):
     resolution: {integrity: sha512-b+gkHFZgD771kgV3aO4avHFd7y1zhmMYy9i6xOK7m/rwmwaRO8gnF5zBc0Rgca80B2PMU1bKNxyBTHA14OzUAQ==}
     peerDependencies:
@@ -5774,10 +5785,10 @@ packages:
 
   /csstype@3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
+    dev: true
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
-    dev: false
 
   /csv-generate@3.4.3:
     resolution: {integrity: sha512-w/T+rqR0vwvHqWs/1ZyMDWtHHSJaN06klRqJXBEpDJaM/+dZkso0OKh1VcuuYvK3XM53KysVNq8Ko/epCK8wOw==}
@@ -9110,7 +9121,6 @@ packages:
   /seroval@0.5.1:
     resolution: {integrity: sha512-ZfhQVB59hmIauJG5Ydynupy8KHyr5imGNtdDhbZG68Ufh1Ynkv9KOYOAABf71oVbQxJ8VkWnMHAjEHE7fWkH5g==}
     engines: {node: '>=10'}
-    dev: true
 
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
@@ -9230,27 +9240,13 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /solid-app-router@0.4.2(solid-js@1.6.15):
-    resolution: {integrity: sha512-+NrLcmqYssx8DcbpcLBaYPqfTRtS+rkfbxMhLH8MHfTcTkdZfrkWQK7lsUvuPCebGEzfaPZJvHqBwhPrCXAmxg==}
-    peerDependencies:
-      solid-js: ^1.3.5
+  /solid-js@1.7.4:
+    resolution: {integrity: sha512-hD/bzIpaa7DL/LGRRTLFvejQuxQaoXyH+DBgPputJW7zvFigCewQIoDvbwDR4VHTsa8VsMDPzV8BT0F9OqsS1Q==}
     dependencies:
-      solid-js: 1.6.15
-    dev: false
-
-  /solid-js@1.6.15:
-    resolution: {integrity: sha512-xEuMUIdDf4YRFT4i3XEJCNg4Y21lZiWWPSEqj0R3UnLLpENGJVXkqpmbIyRU5CuMImKPIEu5CYgmFKL7Npfe1A==}
-    dependencies:
-      csstype: 3.1.1
-
-  /solid-js@1.7.3:
-    resolution: {integrity: sha512-4hwaF/zV/xbNeBBIYDyu3dcReOZBECbO//mrra6GqOrKy4Soyo+fnKjpZSa0nODm6j1aL0iQRh/7ofYowH+jzw==}
-    dependencies:
-      csstype: 3.1.1
+      csstype: 3.1.2
       seroval: 0.5.1
-    dev: true
 
-  /solid-refresh@0.5.2(solid-js@1.6.15):
+  /solid-refresh@0.5.2(solid-js@1.7.4):
     resolution: {integrity: sha512-I69HmFj0LsGRJ3n8CEMVjyQFgVtuM2bSjznu2hCnsY+i5oOxh8ioWj00nnHBv0UYD3WpE/Sq4Q3TNw2IKmKN7A==}
     peerDependencies:
       solid-js: ^1.3
@@ -9258,7 +9254,7 @@ packages:
       '@babel/generator': 7.21.4
       '@babel/helper-module-imports': 7.18.6
       '@babel/types': 7.21.4
-      solid-js: 1.6.15
+      solid-js: 1.7.4
     dev: true
 
   /sorcery@0.11.0:
@@ -10063,7 +10059,7 @@ packages:
       - terser
     dev: false
 
-  /vite-plugin-solid@2.6.1(solid-js@1.6.15)(vite@4.2.0):
+  /vite-plugin-solid@2.6.1(solid-js@1.7.4)(vite@4.2.0):
     resolution: {integrity: sha512-/khM/ha3B5/pTWQWVJd/0n6ODPIrOcajwhbrD8Gnv37XmJJssu+KA8ssN73raMIicf2eiQKiTAV39w7dSl4Irg==}
     peerDependencies:
       solid-js: ^1.3.17 || ^1.4.0 || ^1.5.0 || ^1.6.0
@@ -10074,8 +10070,8 @@ packages:
       '@types/babel__core': 7.20.0
       babel-preset-solid: 1.6.10(@babel/core@7.21.0)
       merge-anything: 5.1.4
-      solid-js: 1.6.15
-      solid-refresh: 0.5.2(solid-js@1.6.15)
+      solid-js: 1.7.4
+      solid-refresh: 0.5.2(solid-js@1.7.4)
       vite: 4.2.0(@types/node@18.15.11)
       vitefu: 0.2.4(vite@4.2.0)
     transitivePeerDependencies:

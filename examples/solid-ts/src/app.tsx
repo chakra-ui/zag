@@ -1,9 +1,9 @@
+import { Link, useMatch, useRoutes } from "@solidjs/router"
 import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
-import { Link, useMatch, useRoutes } from "solid-app-router"
 import { Component, For } from "solid-js"
-import { routes } from "./routes"
 import "../../../shared/src/style.css"
+import { routes } from "./routes"
 
 const App: Component = () => {
   const Route = useRoutes(routes)

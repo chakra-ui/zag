@@ -78,7 +78,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "solid-app-router": "0.4.2",
-    "solid-js": "1.6.15"
+    "@solidjs/router": "^0.8.2",
+    "solid-js": "1.7.4"
   }
 }

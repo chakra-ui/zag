@@ -36,6 +36,7 @@ export const router = createRouter({
     { path: "/radio-group", component: () => import("./pages/radio-group") },
     { path: "/rating-group", component: () => import("./pages/rating-group") },
     { path: "/slider", component: () => import("./pages/slider") },
+    { path: "/segment-control", component: () => import("./pages/segment-control") },
     { path: "/tabs", component: () => import("./pages/tabs") },
     { path: "/tags-input", component: () => import("./pages/tags-input") },
     { path: "/toast", component: () => import("./pages/toast") },

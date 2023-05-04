@@ -40,9 +40,9 @@ export default function Page() {
         >
           <fieldset>
             <label {...api.rootProps}>
+              <div {...api.controlProps} />
               <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
               <input {...inputProps} />
-              <div {...api.controlProps} />
             </label>
 
             <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>
