@@ -69,14 +69,11 @@ body {
 .page main {
   flex: auto;
   display: flex;
+  gap: 10px;
   flex-direction: column;
   align-items: flex-start;
   padding: 40px;
   overflow-y: auto;
-}
-
-.page main > * {
-  width: 100%;
 }
 
 .nav {
@@ -129,28 +126,24 @@ a[aria-current="page"] {
 }
 
 [data-scope="checkbox"][data-part="root"] {
-  display: block;
+  display: flex;
+  align-items: center;
   position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   width: fit-content;
+  margin-bottom: 10px;
+  gap: 8px;
 }
 
 [data-scope="checkbox"][data-part="control"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
+  height: 16px;
+  width: 16px;
   background-color: #eee;
   border: solid 2px grey;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 [data-scope="checkbox"][data-part="control"][data-hover] {
   background-color: #ccc;
@@ -167,17 +160,15 @@ a[aria-current="page"] {
 
 [data-scope="checkbox"][data-part="control"]::after {
   content: "";
-  position: absolute;
   display: none;
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
+  position: relative;
+  width: 4px;
+  height: 9px;
   border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
+  border-width: 0 2px 2px 0;
   transform: rotate(45deg);
+  position: relative;
+  top: -1px;
 }
 
 [data-scope="checkbox"][data-part="control"][data-indeterminate] {
@@ -200,12 +191,12 @@ a[aria-current="page"] {
 * Combobox
 * -----------------------------------------------------------------------------*/
 
-.combobox [data-part="root"] {
+[data-scope="combobox"][data-part="root"] {
   display: inline-flex;
   flex-direction: column;
 }
 
-.combobox [data-part="content"] {
+[data-scope="combobox"][data-part="content"] {
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -213,26 +204,26 @@ a[aria-current="page"] {
   max-height: 240px;
   overflow: auto;
 }
-.combobox [data-part="option"][data-highlighted] {
+[data-scope="combobox"][data-part="option"][data-highlighted] {
   background-color: red;
   color: white;
 }
 
-.combobox [data-part="option"][data-disabled] {
+[data-scope="combobox"][data-part="option"][data-disabled] {
   opacity: 0.5;
 }
 
-.combobox [data-part="label"] {
+[data-scope="combobox"][data-part="label"] {
   display: block;
   margin-top: 12px;
   margin-bottom: 4px;
 }
-.combobox [data-part="control"] {
+[data-scope="combobox"][data-part="control"] {
   display: inline-flex;
   width: 300px;
 }
 
-.combobox [data-part="input"] {
+[data-scope="combobox"][data-part="input"] {
   flex: 1;
 }
 
@@ -1074,74 +1065,95 @@ main > .toggle[data-pressed] {
 * Radio
 * -----------------------------------------------------------------------------*/
 
-.radio [data-part="radio-control"][data-focus] {
+[data-scope="radio-group"][data-part="radio-control"][data-focus] {
   outline: 2px solid royalblue;
 }
 
-.radio [data-part="radio-label"][data-disabled] {
+[data-scope="radio-group"][data-part="radio-label"][data-disabled] {
   opacity: 0.4;
 }
 
-.radio [data-part="root"] {
+[data-scope="radio-group"][data-part="root"] {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.radio [data-part="radio"] {
-  display: block;
+[data-scope="radio-group"][data-part="radio"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: fit-content;
+  z-index: 2;
 }
 
-.radio [data-part="radio"][data-disabled] {
+[data-scope="radio-group"][data-part="radio"][data-disabled] {
   cursor: not-allowed;
 }
 
-.radio [data-part="radio-control"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
+[data-scope="radio-group"][data-part="radio-control"] {
+  height: 20px;
+  width: 20px;
   background-color: #eee;
   border: solid 2px grey;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.radio [data-part="radio-control"][data-hover] {
+
+[data-scope="radio-group"][data-part="radio-control"][data-hover] {
   background-color: #ccc;
 }
 
-.radio [data-part="radio-control"][data-checked] {
+[data-scope="radio-group"][data-part="radio-control"][data-checked] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-.radio [data-part="radio-control"][data-checked]::after {
-  display: block;
+[data-scope="radio-group"][data-part="radio-control"][data-checked]::after {
+  display: initial;
 }
 
-.radio [data-part="radio-control"]::after {
+[data-scope="radio-group"][data-part="radio-control"]::after {
   content: "";
-  position: absolute;
   display: none;
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
+  width: 4px;
+  height: 9px;
   border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
+  border-width: 0 2px 2px 0;
   transform: rotate(45deg);
+  position: relative;
+  top: -1px;
+}
+
+[data-scope="radio-group"][data-part="indicator"] {
+  height: 4px;
+  background-color: red;
+  z-index: 1;
+  border-radius: 0.25rem;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0.0625rem 0.1875rem, rgba(0, 0, 0, 0.1) 0px 0.0625rem 0.125rem;
+  background-color: rgb(255, 255, 255);
+}
+
+/* -----------------------------------------------------------------------------
+* Segment Control
+* -----------------------------------------------------------------------------*/
+
+.segmented-control [data-part="root"] {
+  width: fit-content;
+  padding: 4px;
+  background-color: #f1f3f5;
+  border-radius: 4px;
+  gap: 8px;
+}
+
+.segmented-control [data-part="radio"] {
+  padding-left: 0;
+  padding: 8px;
+  width: 100%;
+  text-align: center;
 }
 
 /* -----------------------------------------------------------------------------

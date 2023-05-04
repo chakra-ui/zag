@@ -163,7 +163,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.radioInput.attrs,
         "data-ownedby": dom.getRootId(state.context),
         id: dom.getRadioInputId(state.context, props.value),
-
         type: "radio",
         name: state.context.name || state.context.id,
         form: state.context.form,
@@ -205,5 +204,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: visuallyHiddenStyle,
       })
     },
+
+    indicatorProps: normalize.element({
+      id: dom.getIndicatorId(state.context),
+      ...parts.indicator.attrs,
+      "data-orientation": state.context.orientation,
+      style: {
+        "--transition-duration": "150ms",
+        "--transition-property": "left, top, width, height",
+        position: "absolute",
+        willChange: "var(--transition-property)",
+        transitionProperty: "var(--transition-property)",
+        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration)" : "0ms",
+        transitionTimingFunction: "var(--transition-timing-function)",
+        ...state.context.indicatorRect,
+      },
+    }),
   }
 }

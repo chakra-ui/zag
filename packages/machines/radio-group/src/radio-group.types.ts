@@ -4,6 +4,7 @@ import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@
 type ElementIds = Partial<{
   root: string
   label: string
+  indicator: string
   radio(value: string): string
   radioLabel(value: string): string
   radioControl(value: string): string
@@ -52,11 +53,6 @@ type PublicContext = DirectionProperty &
 type PrivateContext = Context<{
   /**
    * @internal
-   * The initial radio value.
-   */
-  initialValue: string | null
-  /**
-   * @internal
    * The id of the active radio
    */
   activeId: string | null
@@ -70,6 +66,26 @@ type PrivateContext = Context<{
    * The id of the hovered radio
    */
   hoveredId: string | null
+  /**
+   * @internal
+   * The active tab indicator's dom rect
+   */
+  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
+  /**
+   * @internal
+   * Whether the active tab indicator's rect can transition
+   */
+  canIndicatorTransition?: boolean
+  /**
+   * @internal
+   * Function to clean up the observer for the active tab's rect
+   */
+  indicatorCleanup?: VoidFunction | null
+  /**
+   * @internal
+   * The previous value of the radio group
+   */
+  previousValue: string | null
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

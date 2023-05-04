@@ -41,6 +41,7 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/element-rect": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/utils": "workspace:*",

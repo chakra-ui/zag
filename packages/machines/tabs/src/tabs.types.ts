@@ -80,14 +80,14 @@ type ComputedContext = Readonly<{
 type PrivateContext = Context<{
   /**
    * @internal
-   * Whether the indicator is rendered.
-   */
-  isIndicatorRendered: boolean
-  /**
-   * @internal
    * The focused tab id
    */
   focusedValue: string | null
+  /**
+   * @internal
+   * Whether the indicator is rendered.
+   */
+  isIndicatorRendered: boolean
   /**
    * @internal
    * The active tab indicator's dom rect
@@ -107,7 +107,7 @@ type PrivateContext = Context<{
    * @internal
    * Function to clean up the observer for the active tab's rect
    */
-  cleanup?: VoidFunction | null
+  indicatorCleanup?: VoidFunction | null
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

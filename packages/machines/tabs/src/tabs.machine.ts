@@ -189,7 +189,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         cleanupObserver(ctx) {
-          ctx.cleanup?.()
+          ctx.indicatorCleanup?.()
         },
         enableIndicatorTransition(ctx) {
           ctx.canIndicatorTransition = true
@@ -207,7 +207,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         syncIndicatorRect(ctx) {
-          ctx.cleanup?.()
+          ctx.indicatorCleanup?.()
 
           const value = ctx.value
           if (!ctx.isIndicatorRendered || !value) return
@@ -215,7 +215,7 @@ export function machine(userContext: UserDefinedContext) {
           const tabEl = dom.getActiveTabEl(ctx)
           if (!tabEl) return
 
-          ctx.cleanup = trackElementRect(tabEl, {
+          ctx.indicatorCleanup = trackElementRect(tabEl, {
             getRect(el) {
               return dom.getOffsetRect(el)
             },

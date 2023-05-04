@@ -13,6 +13,8 @@ const fetchMachine = createMachine({
   id: "radio",
   initial: "idle",
   context: {},
+  entry: ["syncIndicatorRect"],
+  exit: ["cleanupObserver"],
   activities: ["trackFormControlState"],
   on: {
     SET_VALUE: {
@@ -28,7 +30,6 @@ const fetchMachine = createMachine({
       actions: "setFocused"
     }
   },
-  entry: ["checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
