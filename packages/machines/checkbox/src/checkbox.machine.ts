@@ -2,90 +2,50 @@ import { createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./checkbox.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
+import type { CheckedState, MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "checkbox",
-      initial: ctx.checked ? "checked" : "unchecked",
+      initial: "ready",
 
       context: {
-        active: false,
-        hovered: false,
-        focused: false,
-        disabled: false,
-        readOnly: false,
+        checked: false,
+        value: "on",
         ...ctx,
       },
 
       watch: {
-        indeterminate: "syncInputIndeterminate",
         disabled: "removeFocusIfNeeded",
-        checked: ["toggleChecked", "invokeOnChange"],
-      },
-
-      computed: {
-        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
+        checked: ["invokeOnChange", "syncInputElement"],
       },
 
       activities: ["trackFormControlState"],
 
       on: {
-        SET_STATE: [
-          {
-            guard: "shouldCheck",
-            target: "checked",
-            actions: ["invokeOnChange", "dispatchChangeEvent"],
-          },
-          {
-            target: "unchecked",
-            actions: ["invokeOnChange", "dispatchChangeEvent"],
-          },
-        ],
+        "CHECKED.TOGGLE": {
+          actions: ["toggleChecked"],
+        },
+        "CHECKED.SET": {
+          actions: ["dispatchChangeEvent"],
+        },
+        "CONTEXT.SET": {
+          actions: ["setContext"],
+        },
+      },
 
-        SET_ACTIVE: {
-          actions: "setActive",
-        },
-        SET_HOVERED: {
-          actions: "setHovered",
-        },
-        SET_FOCUSED: {
-          actions: "setFocused",
-        },
-        SET_INDETERMINATE: {
-          actions: "setIndeterminate",
-        },
+      computed: {
+        isIndeterminate: (ctx) => isIndeterminate(ctx.checked),
+        isChecked: (ctx) => (ctx.isIndeterminate ? false : !!ctx.checked),
       },
 
       states: {
-        checked: {
-          on: {
-            TOGGLE: {
-              target: "unchecked",
-              guard: "isInteractive",
-              actions: ["invokeOnChange"],
-            },
-          },
-        },
-        unchecked: {
-          on: {
-            TOGGLE: {
-              target: "checked",
-              guard: "isInteractive",
-              actions: ["invokeOnChange"],
-            },
-          },
-        },
+        ready: {},
       },
     },
     {
-      guards: {
-        shouldCheck: (_, evt) => evt.checked,
-        isInteractive: (ctx) => ctx.isInteractive,
-      },
-
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getInputEl(ctx), {
@@ -93,49 +53,48 @@ export function machine(userContext: UserDefinedContext) {
               ctx.disabled = true
             },
             onFormReset() {
-              send({ type: "SET_STATE", checked: !!initialContext.checked })
+              send({ type: "CHECKED.SET", checked: !!initialContext.checked })
             },
           })
         },
       },
 
       actions: {
-        invokeOnChange(ctx, _evt, { state }) {
-          const checked = state.matches("checked")
-          ctx.onChange?.({ checked: ctx.indeterminate ? "indeterminate" : checked })
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ checked: ctx.checked })
         },
-        setActive(ctx, evt) {
-          ctx.active = evt.value
-        },
-        setHovered(ctx, evt) {
-          ctx.hovered = evt.value
-        },
-        setFocused(ctx, evt) {
-          ctx.focused = evt.value
-        },
-        setIndeterminate(ctx, evt) {
-          ctx.indeterminate = evt.value
+        setContext(ctx, evt) {
+          Object.assign(ctx, evt.context)
         },
         syncInputIndeterminate(ctx) {
-          const el = dom.getInputEl(ctx)
-          if (!el) return
-          el.indeterminate = Boolean(ctx.indeterminate)
+          const inputEl = dom.getInputEl(ctx)
+          inputEl.indeterminate = ctx.isIndeterminate
+        },
+        syncInputElement(ctx) {
+          const inputEl = dom.getInputEl(ctx)
+          inputEl.checked = !!ctx.checked
         },
         dispatchChangeEvent(ctx, evt) {
-          if (!evt.manual) return
-          const el = dom.getInputEl(ctx)
-          if (!el) return
-          dispatchInputCheckedEvent(el, evt.checked)
+          const inputEl = dom.getInputEl(ctx)
+          const checked = isIndeterminate(evt.checked) ? false : evt.checked
+          dispatchInputCheckedEvent(inputEl, checked)
         },
         removeFocusIfNeeded(ctx) {
           if (ctx.disabled && ctx.focused) {
             ctx.focused = false
           }
         },
-        toggleChecked(ctx, _evt, { send }) {
-          send({ type: "SET_STATE", checked: ctx.checked, controlled: true })
+        setChecked(ctx, evt) {
+          ctx.checked = evt.checked
+        },
+        toggleChecked(ctx) {
+          ctx.checked = isIndeterminate(ctx.checked) ? true : !ctx.checked
         },
       },
     },
   )
+}
+
+function isIndeterminate(checked?: CheckedState): checked is "indeterminate" {
+  return checked === "indeterminate"
 }

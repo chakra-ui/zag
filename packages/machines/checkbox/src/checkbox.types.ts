@@ -8,18 +8,14 @@ type ElementIds = Partial<{
   label: string
 }>
 
+export type CheckedState = boolean | "indeterminate"
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
      * The ids of the elements in the checkbox. Useful for composition.
      */
     ids?: ElementIds
-    /**
-     * If `true`, the checkbox will be indeterminate.
-     * This only affects the icon shown inside checkbox
-     * and does not modify the isChecked property.
-     */
-    indeterminate?: boolean
     /**
      * If `true`, the checkbox will be disabled
      */
@@ -44,41 +40,37 @@ type PublicContext = DirectionProperty &
     /**
      * If `true`, the checkbox will be checked.
      */
-    checked?: boolean
+    checked: CheckedState
     /**
      * The callback invoked when the checked state of the `Checkbox` changes.
      */
-    onChange?: (details: { checked: boolean | "indeterminate" }) => void
+    onChange?: (details: { checked: CheckedState }) => void
     /**
-     * The name of the input field in a checkbox
-     * (Useful for form submission).
+     * The name of the input field in a checkbox. Useful for form submission.
      */
     name?: string
     /**
-     * The associate form of the underlying checkbox.
+     * The id of the form that the checkbox belongs to.
      */
     form?: string
     /**
-     * The value to be used in the checkbox input.
-     * This is the value that will be returned on form submission.
+     * The value of checkbox input. Useful for form submission.
+     * @default "on"
      */
-    value?: string | number
-    /**
-     * Defines the string that labels the checkbox element.
-     */
-    "aria-label"?: string
-    "aria-labelledby"?: string
-    "aria-describedby"?: string
+    value: string
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
-   * Whether the checkbox is interactive
+   * Whether the checkbox is checked
    */
-  readonly isInteractive: boolean
+  isIndeterminate: boolean
+  /**
+   * Whether the checkbox is checked
+   */
+  isChecked: boolean
 }>
 
 type PrivateContext = Context<{
@@ -86,23 +78,23 @@ type PrivateContext = Context<{
    * @internal
    * Whether the checkbox is pressed
    */
-  active: boolean
+  active?: boolean
   /**
    * @internal
    * Whether the checkbox has focus
    */
-  focused: boolean
+  focused?: boolean
   /**
    * @internal
    * Whether the checkbox is hovered
    */
-  hovered: boolean
+  hovered?: boolean
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "checked" | "unchecked"
+  value: "ready"
 }
 
 export type State = S.State<MachineContext, MachineState>

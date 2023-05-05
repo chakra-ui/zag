@@ -11,33 +11,18 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "checkbox",
-  initial: ctx.checked ? "checked" : "unchecked",
-  context: {
-    "shouldCheck": false,
-    "isInteractive": false,
-    "isInteractive": false
-  },
+  initial: "ready",
+  context: {},
   activities: ["trackFormControlState"],
   on: {
-    SET_STATE: [{
-      cond: "shouldCheck",
-      target: "checked",
-      actions: ["invokeOnChange", "dispatchChangeEvent"]
-    }, {
-      target: "unchecked",
-      actions: ["invokeOnChange", "dispatchChangeEvent"]
-    }],
-    SET_ACTIVE: {
-      actions: "setActive"
+    "CHECKED.TOGGLE": {
+      actions: ["toggleChecked"]
     },
-    SET_HOVERED: {
-      actions: "setHovered"
+    "CHECKED.SET": {
+      actions: ["dispatchChangeEvent"]
     },
-    SET_FOCUSED: {
-      actions: "setFocused"
-    },
-    SET_INDETERMINATE: {
-      actions: "setIndeterminate"
+    "CONTEXT.SET": {
+      actions: ["setContext"]
     }
   },
   on: {
@@ -46,24 +31,7 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    checked: {
-      on: {
-        TOGGLE: {
-          target: "unchecked",
-          cond: "isInteractive",
-          actions: ["invokeOnChange"]
-        }
-      }
-    },
-    unchecked: {
-      on: {
-        TOGGLE: {
-          target: "checked",
-          cond: "isInteractive",
-          actions: ["invokeOnChange"]
-        }
-      }
-    }
+    ready: {}
   }
 }, {
   actions: {
@@ -73,8 +41,5 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {
-    "shouldCheck": ctx => ctx["shouldCheck"],
-    "isInteractive": ctx => ctx["isInteractive"]
-  }
+  guards: {}
 });

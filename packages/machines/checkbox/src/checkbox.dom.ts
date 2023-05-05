@@ -6,7 +6,6 @@ export const dom = createScope({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `checkbox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `checkbox:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `checkbox:${ctx.id}:input`,
-
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.queryById(ctx, dom.getRootId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.queryById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
 })
