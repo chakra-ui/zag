@@ -2,7 +2,7 @@ import * as toggle from "@zag-js/toggle"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "src/components/toolbar"
+import { Toolbar } from "../components/toolbar"
 
 export default defineComponent({
   name: "Toggle",
