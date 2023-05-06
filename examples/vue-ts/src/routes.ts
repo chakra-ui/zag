@@ -38,6 +38,7 @@ export const router = createRouter({
     { path: "/slider", component: () => import("./pages/slider") },
     { path: "/segment-control", component: () => import("./pages/segment-control") },
     { path: "/tabs", component: () => import("./pages/tabs") },
+    { path: "/toggle", component: () => import("./pages/toggle") },
     { path: "/tags-input", component: () => import("./pages/tags-input") },
     { path: "/toast", component: () => import("./pages/toast") },
     { path: "/tooltip", component: () => import("./pages/tooltip") },

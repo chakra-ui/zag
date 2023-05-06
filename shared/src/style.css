@@ -915,22 +915,21 @@ main [data-testid="scrubber"] {
 * Toggle
 * -----------------------------------------------------------------------------*/
 
-main > .toggle {
+[data-scope="toggle"][data-part="button"] {
   background-color: white;
   color: rgb(111, 110, 119);
   height: 40px;
   width: 40px;
-  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
+  font-size: 20px;
 }
 
-main > .toggle[data-pressed] {
-  font-weight: bold;
-  background-color: rgb(215, 207, 249);
-  color: rgb(32, 19, 75);
+[data-scope="toggle"][data-part="button"][data-pressed] {
+  background-color: rgb(63, 139, 77);
+  color: white;
 }
 
 /* -----------------------------------------------------------------------------
