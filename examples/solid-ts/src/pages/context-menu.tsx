@@ -17,22 +17,18 @@ export default function Page() {
 
   return (
     <>
-      <main>
-        <div>
-          <div {...api().contextTriggerProps}>
-            <div style={{ border: "solid 1px red" }}>Open context menu</div>
+      <main class="context-menu">
+        <div {...api().contextTriggerProps}>Right click here</div>
+        <Portal>
+          <div {...api().positionerProps}>
+            <ul {...api().contentProps}>
+              <li {...api().getItemProps({ id: "edit" })}>Edit</li>
+              <li {...api().getItemProps({ id: "duplicate" })}>Duplicate</li>
+              <li {...api().getItemProps({ id: "delete" })}>Delete</li>
+              <li {...api().getItemProps({ id: "export" })}>Export...</li>
+            </ul>
           </div>
-          <Portal>
-            <div {...api().positionerProps}>
-              <ul {...api().contentProps}>
-                <li {...api().getItemProps({ id: "edit" })}>Edit</li>
-                <li {...api().getItemProps({ id: "duplicate" })}>Duplicate</li>
-                <li {...api().getItemProps({ id: "delete" })}>Delete</li>
-                <li {...api().getItemProps({ id: "export" })}>Export...</li>
-              </ul>
-            </div>
-          </Portal>
-        </div>
+        </Portal>
       </main>
 
       <Toolbar>

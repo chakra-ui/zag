@@ -204,8 +204,13 @@ a[aria-current="page"] {
   max-height: 240px;
   overflow: auto;
 }
+
+[data-scope="combobox"][data-part="option"] {
+  padding: 4px 8px;
+}
+
 [data-scope="combobox"][data-part="option"][data-highlighted] {
-  background-color: red;
+  background-color: blue;
   color: white;
 }
 
@@ -284,6 +289,15 @@ a[aria-current="page"] {
 
 [data-scope="menu"][data-part*="item"][data-disabled] {
   opacity: 0.4;
+}
+
+.context-menu [data-part="trigger"] {
+  border: 2px dashed blue;
+  border-radius: 4px;
+  font-size: 15px;
+  padding-block: 40px;
+  width: 300px;
+  text-align: center;
 }
 
 /* -----------------------------------------------------------------------------
@@ -397,6 +411,10 @@ main [data-testid="scrubber"] {
 /* -----------------------------------------------------------------------------
 * Slider
 * -----------------------------------------------------------------------------*/
+
+.slider > * {
+  width: 100%;
+}
 
 [data-scope="slider"][data-part="root"] {
   max-width: 320px;
@@ -1185,6 +1203,10 @@ main [data-testid="scrubber"] {
 * Pagination
 * -----------------------------------------------------------------------------*/
 
+.pagination > * {
+  width: 100%;
+}
+
 .pagination ul {
   display: flex;
   gap: 4px;
@@ -1193,6 +1215,10 @@ main [data-testid="scrubber"] {
 
 .pagination th {
   text-align: start;
+}
+
+.pagination td {
+  padding-block: 4px;
 }
 
 [data-scope="pagination"][data-part*="trigger"],
@@ -1217,7 +1243,8 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="pagination"][data-part*="trigger"][data-selected] {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: blue;
+  color: white;
 }
 
 [data-scope="pagination"][data-part*="trigger"]:focus {
@@ -1393,7 +1420,7 @@ main [data-testid="scrubber"] {
 * -----------------------------------------------------------------------------*/
 
 [data-scope="carousel"][data-part="viewport"] {
-  max-width: 600px;
+  width: 600px;
   margin-top: 40px;
   overflow-x: hidden;
 }
@@ -1403,7 +1430,7 @@ main [data-testid="scrubber"] {
 * -----------------------------------------------------------------------------*/
 
 [data-scope="color-picker"][data-part="content"] {
-  max-width: 260px;
+  width: 260px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
