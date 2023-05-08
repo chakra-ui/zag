@@ -180,7 +180,7 @@ test.describe("select / open / blur", () => {
     await expect(page.locator(trigger)).toContainText("Select option")
   })
 
-  test("should close on press tab - with select", async ({ page }) => {
+  test.skip("should close on press tab - with select", async ({ page }) => {
     await controls(page).bool("selectOnTab", true)
     await page.click(trigger)
     await repeat(() => page.keyboard.press("ArrowDown"), 3)

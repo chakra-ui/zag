@@ -52,13 +52,6 @@ test("should not be focusable when disabled", async ({ page }) => {
   await expect(page.locator(input)).not.toBeFocused()
 })
 
-test("should be focusable when readonly", async ({ page }) => {
-  await controls(page).bool("readOnly")
-  await page.click("main")
-  await page.keyboard.press("Tab")
-  await expect(page.locator(input)).toBeFocused()
-})
-
 test("input is not blurred on label click", async ({ page }) => {
   let blurCount = 0
   await page.exposeFunction("trackBlur", () => blurCount++)

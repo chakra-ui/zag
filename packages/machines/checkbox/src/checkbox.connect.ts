@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to set the checked state of the checkbox
      */
     setChecked(checked: CheckedState) {
-      if (!isDisabled) return
+      if (isDisabled) return
       send({ type: "CHECKED.SET", checked })
     },
 
@@ -55,15 +55,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       htmlFor: dom.getInputId(state.context),
       onPointerMove() {
-        if (!isDisabled) return
+        if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: true } })
       },
       onPointerLeave() {
-        if (!isDisabled) return
+        if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: false } })
       },
       onPointerDown(event) {
-        if (!isDisabled) return
+        if (isDisabled) return
         // On pointerdown, the input blurs and returns focus to the `body`,
         // we need to prevent this.
         if (isFocused && event.pointerType === "mouse") {
@@ -72,7 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "CONTEXT.SET", context: { active: true } })
       },
       onPointerUp() {
-        if (!isDisabled) return
+        if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { active: false } })
       },
     }),
