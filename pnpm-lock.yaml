@@ -6,7 +6,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.6.1
-        version: 4.6.1(playwright@1.32.3)
+        version: 4.6.1(playwright@1.33.0)
       '@babel/generator':
         specifier: 7.21.4
         version: 7.21.4
@@ -38,8 +38,8 @@ importers:
         specifier: 19.0.7
         version: 19.0.7
       '@playwright/test':
-        specifier: 1.32.3
-        version: 1.32.3
+        specifier: 1.33.0
+        version: 1.33.0
       '@swc/core':
         specifier: 1.3.41
         version: 1.3.41
@@ -92,8 +92,8 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
       playwright:
-        specifier: 1.32.3
-        version: 1.32.3
+        specifier: 1.33.0
+        version: 1.33.0
       plop:
         specifier: 3.1.2
         version: 3.1.2
@@ -117,7 +117,7 @@ importers:
         version: 5.0.2
       vitest:
         specifier: ^0.29.3
-        version: 0.29.8(playwright@1.32.3)
+        version: 0.29.8(playwright@1.33.0)
 
   examples/next-ts:
     dependencies:
@@ -2474,13 +2474,13 @@ packages:
       '@jridgewell/trace-mapping': 0.3.17
     dev: true
 
-  /@axe-core/playwright@4.6.1(playwright@1.32.3):
+  /@axe-core/playwright@4.6.1(playwright@1.33.0):
     resolution: {integrity: sha512-XMKP2OzGfGIYpU9G9FgI2ulyjEXQDP6qtZerOwdQ7YC1w4SFgofK3ogSk0qVoy0QI+q6XWLUJMfMMkUwdTR2dA==}
     peerDependencies:
       playwright: '>= 1.0.0'
     dependencies:
       axe-core: 4.6.3
-      playwright: 1.32.3
+      playwright: 1.33.0
     dev: false
 
   /@babel/code-frame@7.18.6:
@@ -4003,13 +4003,13 @@ packages:
       '@octokit/openapi-types': 16.0.0
     dev: false
 
-  /@playwright/test@1.32.3:
-    resolution: {integrity: sha512-BvWNvK0RfBriindxhLVabi8BRe3X0J9EVjKlcmhxjg4giWBD/xleLcg2dz7Tx0agu28rczjNIPQWznwzDwVsZQ==}
+  /@playwright/test@1.33.0:
+    resolution: {integrity: sha512-YunBa2mE7Hq4CfPkGzQRK916a4tuZoVx/EpLjeWlTVOnD4S2+fdaQZE0LJkbfhN5FTSKNLdcl7MoT5XB37bTkg==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@types/node': 18.15.3
-      playwright-core: 1.32.3
+      playwright-core: 1.33.0
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
@@ -8648,19 +8648,19 @@ packages:
       pathe: 1.1.0
     dev: false
 
-  /playwright-core@1.32.3:
-    resolution: {integrity: sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==}
+  /playwright-core@1.33.0:
+    resolution: {integrity: sha512-aizyPE1Cj62vAECdph1iaMILpT0WUDCq3E6rW6I+dleSbBoGbktvJtzS6VHkZ4DKNEOG9qJpiom/ZxO+S15LAw==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
 
-  /playwright@1.32.3:
-    resolution: {integrity: sha512-h/ylpgoj6l/EjkfUDyx8cdOlfzC96itPpPe8BXacFkqpw/YsuxkpPyVbzEq4jw+bAJh5FLgh31Ljg2cR6HV3uw==}
+  /playwright@1.33.0:
+    resolution: {integrity: sha512-+zzU3V2TslRX2ETBRgQKsKytYBkJeLZ2xzUj4JohnZnxQnivoUvOvNbRBYWSYykQTO0Y4zb8NwZTYFUO+EpPBQ==}
     engines: {node: '>=14'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      playwright-core: 1.32.3
+      playwright-core: 1.33.0
     dev: false
 
   /plop@3.1.2:
@@ -10234,7 +10234,7 @@ packages:
       vite: 4.2.0(@types/node@18.15.11)
     dev: true
 
-  /vitest@0.29.8(playwright@1.32.3):
+  /vitest@0.29.8(playwright@1.33.0):
     resolution: {integrity: sha512-JIAVi2GK5cvA6awGpH0HvH/gEG9PZ0a/WoxdiV3PmqK+3CjQMf8c+J/Vhv4mdZ2nRyXFw66sAg6qz7VNkaHfDQ==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -10280,7 +10280,7 @@ packages:
       local-pkg: 0.4.3
       pathe: 1.1.0
       picocolors: 1.0.0
-      playwright: 1.32.3
+      playwright: 1.33.0
       source-map: 0.6.1
       std-env: 3.3.2
       strip-literal: 1.0.1
