@@ -1244,8 +1244,8 @@ importers:
         specifier: workspace:*
         version: link:../../types
       proxy-compare:
-        specifier: 2.5.0
-        version: 2.5.0
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       '@types/react':
         specifier: 18.0.28
@@ -2200,8 +2200,8 @@ importers:
   packages/store:
     dependencies:
       proxy-compare:
-        specifier: 2.5.0
-        version: 2.5.0
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -8778,8 +8778,8 @@ packages:
       react-is: 16.13.1
     dev: true
 
-  /proxy-compare@2.5.0:
-    resolution: {integrity: sha512-f1us0OsVAJ3tdIMXGQx2lmseYS4YXe4W+sKF5g5ww/jV+5ogMadPt+sIZ+88Ga9kvMJsrRNWzCrKPpr6pMWYbA==}
+  /proxy-compare@2.5.1:
+    resolution: {integrity: sha512-oyfc0Tx87Cpwva5ZXezSp5V9vht1c7dZBhvuV/y3ctkgMVUmiAGDVeeB0dKhGSyT0v1ZTEQYpe/RXlBVBNuCLA==}
     dev: false
 
   /pseudomap@1.0.2:
