@@ -60,7 +60,7 @@ export default function Page() {
             <div {...api().controlProps}>
               <For each={api().sizeArray}>
                 {(index) => {
-                  const state = createMemo(() => api().getRatingState(index))
+                  const state = createMemo(() => api().getRatingState({ index }))
                   return <span {...api().getRatingProps({ index })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
                 }}
               </For>

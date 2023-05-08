@@ -16,7 +16,6 @@ export function machine(userContext: UserDefinedContext) {
         max: 5,
         dir: "ltr",
         value: -1,
-        initialValue: -1,
         hoveredValue: -1,
         disabled: false,
         readOnly: false,
@@ -40,7 +39,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: ["trackFormControlState"],
-      entry: ["checkValue"],
 
       on: {
         SET_VALUE: {
@@ -125,21 +123,18 @@ export function machine(userContext: UserDefinedContext) {
         isRadioFocused: (ctx) => !!dom.getControlEl(ctx)?.contains(dom.getActiveEl(ctx)),
       },
       activities: {
-        trackFormControlState(ctx) {
+        trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              ctx.value = ctx.initialValue
+              ctx.value = initialContext.value
             },
           })
         },
       },
       actions: {
-        checkValue(ctx) {
-          ctx.initialValue = ctx.value
-        },
         clearHoveredValue(ctx) {
           ctx.hoveredValue = -1
         },
