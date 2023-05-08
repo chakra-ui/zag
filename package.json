@@ -80,7 +80,7 @@
     "@types/signale": "1.4.4",
     "@typescript-eslint/eslint-plugin": "5.55.0",
     "@typescript-eslint/parser": "5.55.0",
-    "axe-core": "4.6.3",
+    "axe-core": "4.7.0",
     "commitlint": "17.6.1",
     "dotenv": "16.0.3",
     "eslint": "8.36.0",
