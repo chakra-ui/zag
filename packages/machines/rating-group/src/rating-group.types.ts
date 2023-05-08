@@ -9,6 +9,14 @@ export type ItemProps = {
   index: number
 }
 
+export type ItemState = {
+  isEqual: boolean
+  isValueEmpty: boolean
+  isHighlighted: boolean
+  isHalf: boolean
+  isChecked: boolean
+}
+
 type ElementIds = Partial<{
   root: string
   label: string

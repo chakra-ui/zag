@@ -3,7 +3,7 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
-import type { ItemProps, Send, State } from "./rating-group.types"
+import type { ItemProps, ItemState, Send, State } from "./rating-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
@@ -48,7 +48,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Returns the state of a rating item
      */
-    getRatingState(props: ItemProps) {
+    getRatingState(props: ItemProps): ItemState {
       const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
       const isEqual = Math.ceil(value) === props.index
 
