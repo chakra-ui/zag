@@ -21,15 +21,6 @@ type PublicContext = DirectionProperty &
      */
     disabled?: boolean
     /**
-     * If `true` and `disabled` is passed, the checkbox will
-     * remain tabbable but not interactive
-     */
-    focusable?: boolean
-    /**
-     * If `true`, the checkbox will be readonly
-     */
-    readOnly?: boolean
-    /**
      * If `true`, the checkbox is marked as invalid.
      */
     invalid?: boolean

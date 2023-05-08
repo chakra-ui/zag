@@ -36,6 +36,7 @@ export default function Page() {
               <div {...api.controlProps} />
               <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
               <input {...api.inputProps} />
+              <input type="checkbox" readOnly disabled />
             </label>
 
             <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>

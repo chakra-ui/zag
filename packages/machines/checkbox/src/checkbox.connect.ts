@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./checkbox.anatomy"
@@ -7,18 +7,12 @@ import type { CheckedState, Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isDisabled = state.context.disabled
-  const isReadOnly = state.context.readOnly
-  const isInteractive = !(isReadOnly || isDisabled)
   const isFocused = !isDisabled && state.context.focused
-
-  const isFocusable = state.context.focusable
-  const trulyDisabled = isDisabled && !isFocusable
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
     "data-focus": dataAttr(isFocused),
     "data-hover": dataAttr(state.context.hovered),
-    "data-readonly": dataAttr(isReadOnly),
     "data-disabled": dataAttr(isDisabled),
     "data-checked": dataAttr(state.context.isChecked),
     "data-invalid": dataAttr(state.context.invalid),
@@ -44,10 +38,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     isFocused,
     /**
-     * Whether the checkbox is readonly
-     */
-    isReadOnly,
-    /**
      *  The checked state of the checkbox
      */
     checkedState: state.context.checked,
@@ -55,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * Function to set the checked state of the checkbox
      */
     setChecked(checked: CheckedState) {
-      if (!isInteractive) return
+      if (!isDisabled) return
       send({ type: "CHECKED.SET", checked })
     },
 
@@ -65,15 +55,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       htmlFor: dom.getInputId(state.context),
       onPointerMove() {
-        if (!isInteractive) return
+        if (!isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: true } })
       },
       onPointerLeave() {
-        if (!isInteractive) return
+        if (!isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: false } })
       },
       onPointerDown(event) {
-        if (!isInteractive) return
+        if (!isDisabled) return
         // On pointerdown, the input blurs and returns focus to the `body`,
         // we need to prevent this.
         if (isFocused && event.pointerType === "mouse") {
@@ -82,7 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "CONTEXT.SET", context: { active: true } })
       },
       onPointerUp() {
-        if (!isInteractive) return
+        if (!isDisabled) return
         send({ type: "CONTEXT.SET", context: { active: false } })
       },
     }),
@@ -106,9 +96,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "checkbox",
       required: state.context.required,
       defaultChecked: state.context.isChecked,
-      disabled: trulyDisabled,
+      disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
-      "aria-readonly": ariaAttr(isReadOnly),
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-invalid": state.context.invalid,
       name: state.context.name,
