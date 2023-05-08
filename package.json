@@ -97,7 +97,7 @@
     "prettier": "2.8.5",
     "signale": "1.4.0",
     "tsup": "6.7.0",
-    "tsx": "3.12.5",
+    "tsx": "3.12.7",
     "ts-morph": "^18.0.0",
     "typescript": "5.0.2",
     "vitest": "^0.29.3"
