@@ -1,79 +1,42 @@
-"use strict";
+"use strict"
 
-var _xstate = require("xstate");
-const {
-  actions,
-  createMachine,
-  assign
-} = _xstate;
-const {
-  choose
-} = actions;
-const fetchMachine = createMachine({
-  id: "switch",
-  initial: ctx.checked ? "checked" : "unchecked",
-  context: {
-    "shouldCheck && isInteractive": false,
-    "isInteractive": false,
-    "isInteractive": false,
-    "isInteractive": false
-  },
-  activities: ["trackFormControlState"],
-  on: {
-    SET_STATE: [{
-      cond: "shouldCheck && isInteractive",
-      target: "checked",
-      actions: ["invokeOnChange", "dispatchChangeEvent"]
-    }, {
-      cond: "isInteractive",
-      target: "unchecked",
-      actions: ["invokeOnChange", "dispatchChangeEvent"]
-    }],
-    SET_ACTIVE: {
-      actions: "setActive"
+var _xstate = require("xstate")
+const { actions, createMachine, assign } = _xstate
+const { choose } = actions
+const fetchMachine = createMachine(
+  {
+    id: "switch",
+    initial: "ready",
+    context: {},
+    activities: ["trackFormControlState"],
+    on: {
+      "CHECKED.TOGGLE": {
+        actions: ["toggleChecked"],
+      },
+      "CHECKED.SET": {
+        actions: ["dispatchChangeEvent"],
+      },
+      "CONTEXT.SET": {
+        actions: ["setContext"],
+      },
     },
-    SET_HOVERED: {
-      actions: "setHovered"
+    on: {
+      UPDATE_CONTEXT: {
+        actions: "updateContext",
+      },
     },
-    SET_FOCUSED: {
-      actions: "setFocused"
-    }
+    states: {
+      ready: {},
+    },
   },
-  on: {
-    UPDATE_CONTEXT: {
-      actions: "updateContext"
-    }
-  },
-  states: {
-    checked: {
-      on: {
-        TOGGLE: {
-          target: "unchecked",
-          cond: "isInteractive",
-          actions: ["invokeOnChange"]
+  {
+    actions: {
+      updateContext: assign((context, event) => {
+        return {
+          [event.contextKey]: true,
         }
-      }
+      }),
     },
-    unchecked: {
-      on: {
-        TOGGLE: {
-          target: "checked",
-          cond: "isInteractive",
-          actions: ["invokeOnChange"]
-        }
-      }
-    }
-  }
-}, {
-  actions: {
-    updateContext: assign((context, event) => {
-      return {
-        [event.contextKey]: true
-      };
-    })
+    guards: {},
   },
-  guards: {
-    "shouldCheck && isInteractive": ctx => ctx["shouldCheck && isInteractive"],
-    "isInteractive": ctx => ctx["isInteractive"]
-  }
-});
+)
