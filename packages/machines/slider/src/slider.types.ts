@@ -9,6 +9,7 @@ type ElementIds = Partial<{
   range: string
   label: string
   output: string
+  hiddenInput: string
 }>
 
 type PublicContext = DirectionProperty &

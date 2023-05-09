@@ -60,7 +60,7 @@ function getRootStyle(ctx: Ctx): Style {
   }
 }
 
-export const styles = {
+export const styleGetterFns = {
   getRootStyle,
   getControlStyle: sliderDom.getControlStyle,
   getThumbStyle,

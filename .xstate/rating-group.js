@@ -17,7 +17,6 @@ const fetchMachine = createMachine({
     "isRadioFocused": false
   },
   activities: ["trackFormControlState"],
-  entry: ["checkValue"],
   on: {
     SET_VALUE: {
       actions: ["setValue"]

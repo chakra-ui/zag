@@ -2,10 +2,11 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./toggle.dom"
 import type { Send, State } from "./toggle.types"
+import { parts } from "./toggle.anatomy"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const isPressed = state.matches("pressed")
-  const disabled = state.context.disabled
+  const isPressed = state.context.pressed
+  const isDisabled = state.context.disabled
 
   return {
     /**
@@ -15,20 +16,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Function to set the pressed state of the toggle.
      */
-    setPressed(value: boolean) {
-      send({ type: "SET_STATE", pressed: value })
+    setPressed(pressed: boolean) {
+      send({ type: "PRESSED.SET", pressed })
     },
     buttonProps: normalize.button({
+      ...parts.button.attrs,
       id: dom.getButtonId(state.context),
       type: "button",
-      disabled,
-      "aria-label": state.context.label,
+      disabled: isDisabled,
+      "aria-label": state.context["aria-label"],
       "aria-pressed": isPressed,
-      "data-disabled": dataAttr(disabled),
+      "data-disabled": dataAttr(isDisabled),
       "data-pressed": dataAttr(isPressed),
       onClick() {
-        if (disabled) return
-        send({ type: "TOGGLE", pressed: isPressed })
+        if (isDisabled) return
+        send({ type: "PRESSED.TOGGLE" })
       },
     }),
   }

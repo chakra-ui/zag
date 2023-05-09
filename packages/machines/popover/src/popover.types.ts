@@ -10,6 +10,8 @@ type ElementIds = Partial<{
   title: string
   description: string
   closeTrigger: string
+  positioner: string
+  arrow: string
 }>
 
 type PublicContext = DismissableElementHandlers &
@@ -91,10 +93,6 @@ type PrivateContext = Context<{
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
-  /**
-   * Whether to prevent returning focus to the trigger
-   */
-  focusTriggerOnClose?: boolean
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

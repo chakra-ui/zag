@@ -1,6 +1,6 @@
 import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -11,23 +11,20 @@ export default defineComponent({
   setup() {
     const controls = useControls(checkboxControls)
 
-    const [state, send] = useMachine(checkbox.machine({ id: "checkbox" }), {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      checkbox.machine({
+        name: "checkbox",
+        id: "v1",
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const apiRef = computed(() => checkbox.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value
-
-      const inputProps = mergeProps(api.inputProps, {
-        onChange() {
-          if (api.isIndeterminate && !api.isReadOnly) {
-            api.setIndeterminate(false)
-            api.setChecked(true)
-          }
-        },
-      })
 
       return (
         <>
@@ -35,9 +32,9 @@ export default defineComponent({
             <form>
               <fieldset>
                 <label {...api.rootProps}>
-                  <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
-                  <input {...inputProps} />
                   <div {...api.controlProps} />
+                  <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
+                  <input {...api.inputProps} />
                 </label>
 
                 <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>

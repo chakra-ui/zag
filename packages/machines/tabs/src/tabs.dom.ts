@@ -8,7 +8,7 @@ export const dom = createScope({
   getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,
   getContentGroupId: (ctx: Ctx) => ctx.ids?.contentGroup ?? `tabs:${ctx.id}:content-group`,
   getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`,
-  getIndicatorId: (ctx: Ctx) => `tabs:${ctx.id}:indicator`,
+  getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`,
 
   getTablistEl: (ctx: Ctx) => dom.getById(ctx, dom.getTablistId(ctx)),
   getContentEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getContentId(ctx, id)),
@@ -27,30 +27,33 @@ export const dom = createScope({
   getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loop),
   getActiveContentEl: (ctx: Ctx) => {
     if (!ctx.value) return
-    const id = dom.getContentId(ctx, ctx.value)
-    return dom.getById(ctx, id)
+    return dom.getContentEl(ctx, ctx.value)
+  },
+  getActiveTabEl: (ctx: Ctx) => {
+    if (!ctx.value) return
+    return dom.getTriggerEl(ctx, ctx.value)
+  },
+
+  getOffsetRect: (el: HTMLElement | undefined) => {
+    return {
+      left: el?.offsetLeft ?? 0,
+      top: el?.offsetTop ?? 0,
+      width: el?.offsetWidth ?? 0,
+      height: el?.offsetHeight ?? 0,
+    }
   },
 
   getRectById: (ctx: Ctx, id: string) => {
-    const empty = {
-      offsetLeft: 0,
-      offsetTop: 0,
-      offsetWidth: 0,
-      offsetHeight: 0,
-    }
+    const tab = itemById(dom.getElements(ctx), dom.getTriggerId(ctx, id))
+    return dom.resolveRect(dom.getOffsetRect(tab), ctx.orientation)
+  },
 
-    const tab = itemById(dom.getElements(ctx), dom.getTriggerId(ctx, id)) ?? empty
-
-    if (ctx.isVertical) {
-      return {
-        top: `${tab.offsetTop}px`,
-        height: `${tab.offsetHeight}px`,
-      }
-    }
-
+  resolveRect(rect: Record<"width" | "height" | "left" | "top", number>, orientation?: "horizontal" | "vertical") {
+    const prop = orientation === "vertical" ? "height" : "width"
     return {
-      left: `${tab.offsetLeft}px`,
-      width: `${tab.offsetWidth}px`,
+      left: `${rect.left}px`,
+      top: `${rect.top}px`,
+      [prop]: `${rect[prop]}px`,
     }
   },
 })

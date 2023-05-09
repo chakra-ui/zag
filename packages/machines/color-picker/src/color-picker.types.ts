@@ -2,24 +2,24 @@ import { Color, ColorAxes, ColorChannel } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, Orientation, RequiredBy } from "@zag-js/types"
 
-export type ChannelProps = {
+export type ColorChannelProps = {
   channel: ColorChannel
   orientation?: Orientation
 }
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
-export type ChannelInputProps = {
+export type ColorChannelInputProps = {
   channel: ExtendedColorChannel
   orientation?: Orientation
 }
 
-export type AreaProps = {
+export type ColorAreaProps = {
   xChannel: ColorChannel
   yChannel: ColorChannel
 }
 
-export type SwatchProps = {
+export type ColorSwatchProps = {
   readOnly?: boolean
   value: string | Color
 }
@@ -29,7 +29,21 @@ type ChangeDetails = {
   valueAsColor: Color
 }
 
+type ElementIds = Partial<{
+  content: string
+  area: string
+  areaGradient: string
+  areaThumb: string
+  channelInput(id: string): string
+  channelSliderTrack(id: ColorChannel): string
+  channelSliderThumb(id: ColorChannel): string
+}>
+
 type PublicContext = CommonProperties & {
+  /**
+   * The ids of the elements in the color picker. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * The direction of the color picker
    */

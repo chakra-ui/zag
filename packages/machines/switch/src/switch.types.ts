@@ -47,19 +47,19 @@ type PublicContext = DirectionProperty &
     /**
      * Whether the switch is checked.
      */
-    checked?: boolean
+    checked: boolean
     /**
      * The name of the input field in a switch
      * (Useful for form submission).
      */
     name?: string
     /**
-     * The associate form of the underlying input.
+     * The id of the form that the switch belongs to
      */
     form?: string
     /**
-     * The value to be used in the switch input.
-     * This is the value that will be returned on form submission.
+     * The value of switch input. Useful for form submission.
+     * @default "on"
      */
     value?: string | number
     /**
@@ -72,36 +72,30 @@ type PublicContext = DirectionProperty &
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the checkbox is interactive
-   */
-  readonly isInteractive: boolean
-}>
+type ComputedContext = Readonly<{}>
 
 type PrivateContext = Context<{
   /**
    * @internal
    * Whether the checkbox is pressed
    */
-  active: boolean
+  active?: boolean
   /**
    * @internal
    * Whether the checkbox has focus
    */
-  focused: boolean
+  focused?: boolean
   /**
    * @internal
    * Whether the checkbox is hovered
    */
-  hovered: boolean
+  hovered?: boolean
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
-  value: "checked" | "unchecked"
+  value: "ready"
 }
 
 export type State = S.State<MachineContext, MachineState>

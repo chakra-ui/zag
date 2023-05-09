@@ -14,12 +14,14 @@ type TupleTypes<T extends any[]> = T[number]
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
 
+const eventRegex = /^on[A-Z]/
+
 export function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<TupleTypes<T[]>> {
   let result: Props = {}
 
   for (let props of args) {
     for (let key in result) {
-      if (/^on[A-Z]/.test(key) && typeof result[key] === "function" && typeof props[key] === "function") {
+      if (eventRegex.test(key) && typeof result[key] === "function" && typeof props[key] === "function") {
         result[key] = callAll(result[key], props[key])
         continue
       }

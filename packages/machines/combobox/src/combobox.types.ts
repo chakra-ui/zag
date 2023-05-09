@@ -20,6 +20,7 @@ type ElementIds = Partial<{
   trigger: string
   clearTrigger: string
   option(id: string, index?: number): string
+  positioner: string
 }>
 
 type PublicContext = DirectionProperty &

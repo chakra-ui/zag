@@ -1,20 +1,20 @@
 import { defineControls } from "./define-controls"
 
 export const accordionControls = defineControls({
-  collapsible: { type: "boolean", defaultValue: false, label: "Allow Toggle" },
-  multiple: { type: "boolean", defaultValue: false, label: "Allow Multiple" },
+  collapsible: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
 export const checkboxControls = defineControls({
-  indeterminate: { type: "boolean", defaultValue: false, label: "Indeterminate" },
-  disabled: { type: "boolean", defaultValue: false, label: "disabled" },
-  readOnly: { type: "boolean", defaultValue: false, label: "readonly" },
+  name: { type: "string", defaultValue: "checkbox" },
+  disabled: { type: "boolean", defaultValue: false },
+  value: { type: "string", defaultValue: "on" },
 })
 
 export const switchControls = defineControls({
-  disabled: { type: "boolean", defaultValue: false, label: "disabled" },
-  readOnly: { type: "boolean", defaultValue: false, label: "readonly" },
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
 })
 
 export const comboboxControls = defineControls({
@@ -40,23 +40,24 @@ export const editableControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   autoResize: { type: "boolean", defaultValue: false },
-  placeholder: { type: "string", defaultValue: "Type something...", label: "placeholder" },
+  placeholder: {
+    type: "string",
+    defaultValue: "Type something...",
+  },
   submitMode: {
     type: "select",
-    label: "submit mode?",
     options: ["enter", "blur", "both", "none"] as const,
     defaultValue: "both",
   },
   activationMode: {
     type: "select",
     options: ["focus", "dblclick", "none"] as const,
-    label: "activation mode",
     defaultValue: "focus",
   },
 })
 
 export const menuControls = defineControls({
-  closeOnSelect: { type: "boolean", defaultValue: true, label: "Close on select" },
+  closeOnSelect: { type: "boolean", defaultValue: true },
 })
 
 export const hoverCardControls = defineControls({
@@ -103,8 +104,8 @@ export const sliderControls = defineControls({
 })
 
 export const radioControls = defineControls({
-  disabled: { type: "boolean", defaultValue: false, label: "Disabled" },
-  readOnly: { type: "boolean", defaultValue: false, label: "Readonly" },
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
 })
 
 export const rangeSliderControls = defineControls({
@@ -120,7 +121,7 @@ export const rangeSliderControls = defineControls({
 
 export const tabsControls = defineControls({
   activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
-  loop: { type: "boolean", defaultValue: true, label: "loop?" },
+  loop: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
@@ -161,7 +162,7 @@ export const toastControls = defineControls({
 
 export const selectControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  loop: { type: "boolean", defaultValue: false, label: "Loop navigation" },
+  loop: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   selectOnTab: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },

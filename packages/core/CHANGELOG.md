@@ -1,5 +1,12 @@
 # @zag-js/core
 
+## 0.7.0
+
+### Patch Changes
+
+- [`413cdf18`](https://github.com/chakra-ui/zag/commit/413cdf180f718469c9c8b879a43aa4501d1ae59c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor regex for `mergeProps`
+
 ## 0.5.0
 
 ### Patch Changes

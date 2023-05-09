@@ -1,4 +1,4 @@
-import { contains, getEventTarget } from "@zag-js/dom-query"
+import { contains, getEventTarget, raf } from "@zag-js/dom-query"
 import {
   FocusOutsideEvent,
   InteractOutsideHandlers,
@@ -10,7 +10,9 @@ import { trackEscapeKeydown } from "./escape-keydown"
 import { Layer, layerStack } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
-type Container = HTMLElement | null | Array<HTMLElement | null>
+type MaybeElement = HTMLElement | null
+type Container = MaybeElement | Array<MaybeElement>
+type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 export type DismissableElementHandlers = InteractOutsideHandlers & {
   onEscapeKeyDown?: (event: KeyboardEvent) => void
@@ -21,9 +23,10 @@ export type DismissableElementOptions = DismissableElementHandlers & {
   pointerBlocking?: boolean
   onDismiss: () => void
   exclude?: Container | (() => Container)
+  defer?: boolean
 }
 
-export function trackDismissableElement(node: HTMLElement | null, options: DismissableElementOptions) {
+function trackDismissableElementImpl(node: MaybeElement, options: DismissableElementOptions) {
   if (!node) {
     warn("[@zag-js/dismissable] node is `null` or `undefined`")
     return
@@ -88,6 +91,21 @@ export function trackDismissableElement(node: HTMLElement | null, options: Dismi
     assignPointerEventToLayers()
     // remove pointer event from removed layer
     clearPointerEvent(node!)
+    cleanups.forEach((fn) => fn?.())
+  }
+}
+
+export function trackDismissableElement(nodeOrFn: NodeOrFn, options: DismissableElementOptions) {
+  const { defer } = options
+  const func = defer ? raf : (v: any) => v()
+  const cleanups: (VoidFunction | undefined)[] = []
+  cleanups.push(
+    func(() => {
+      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
+      cleanups.push(trackDismissableElementImpl(node, options))
+    }),
+  )
+  return () => {
     cleanups.forEach((fn) => fn?.())
   }
 }

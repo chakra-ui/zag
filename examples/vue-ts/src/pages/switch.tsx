@@ -7,13 +7,19 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default defineComponent({
-  name: "switch",
+  name: "Switch",
   setup() {
     const controls = useControls(switchControls)
 
-    const [state, send] = useMachine(zagSwitch.machine({ id: "1" }), {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      zagSwitch.machine({
+        name: "switch",
+        id: "v1",
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const apiRef = computed(() => zagSwitch.connect(state.value, send, normalizeProps))
 
@@ -24,7 +30,7 @@ export default defineComponent({
         <>
           <main class="switch">
             <label {...api.rootProps}>
-              <input type="checkbox" {...api.inputProps} />
+              <input {...api.inputProps} />
               <span {...api.controlProps}>
                 <span {...api.thumbProps} />
               </span>

@@ -9,6 +9,10 @@ type ElementIds = Partial<{
   trigger: string
   label: string
   option(id: string | number): string
+  hiddenSelect: string
+  positioner: string
+  optionGroup(id: string | number): string
+  optionGroupLabel(id: string | number): string
 }>
 
 type PublicContext = DirectionProperty &

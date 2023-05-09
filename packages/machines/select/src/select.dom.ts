@@ -6,10 +6,11 @@ export const dom = createScope({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `select:${ctx.id}:trigger`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `select:${ctx.id}:label`,
   getOptionId: (ctx: Ctx, id: string | number) => ctx.ids?.option?.(id) ?? `select:${ctx.id}:option:${id}`,
-  getHiddenSelectId: (ctx: Ctx) => `select:${ctx.id}:select`,
-  getPositionerId: (ctx: Ctx) => `select:${ctx.id}:positioner`,
-  getOptionGroupId: (ctx: Ctx, id: string | number) => `select:${ctx.id}:optgroup:${id}`,
-  getOptionGroupLabelId: (ctx: Ctx, id: string | number) => `select:${ctx.id}:optgroup-label:${id}`,
+  getHiddenSelectId: (ctx: Ctx) => ctx.ids?.hiddenSelect ?? `select:${ctx.id}:select`,
+  getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `select:${ctx.id}:positioner`,
+  getOptionGroupId: (ctx: Ctx, id: string | number) => ctx.ids?.optionGroup?.(id) ?? `select:${ctx.id}:optgroup:${id}`,
+  getOptionGroupLabelId: (ctx: Ctx, id: string | number) =>
+    ctx.ids?.optionGroupLabel?.(id) ?? `select:${ctx.id}:optgroup-label:${id}`,
 
   getHiddenSelectElement: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
   getContentElement: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),

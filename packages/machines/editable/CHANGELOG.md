@@ -1,5 +1,21 @@
 # @zag-js/editable
 
+## 0.7.0
+
+### Minor Changes
+
+- [`cc765619`](https://github.com/chakra-ui/zag/commit/cc7656191b896008a3aa2907c34e9bb3cf6833e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `finalFocusEl` to allow for better return focus management
+
+### Patch Changes
+
+- [`acead399`](https://github.com/chakra-ui/zag/commit/acead3997d921894726a17dc541b1ec79d577aea) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where focus is hijacked on blur when interacting outside
+  on a focusable element
+
+- Updated dependencies [[`413cdf18`](https://github.com/chakra-ui/zag/commit/413cdf180f718469c9c8b879a43aa4501d1ae59c)]:
+  - @zag-js/core@0.7.0
+
 ## 0.6.0
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/color-picker",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Core logic for the color-picker widget implemented as a state machine",
   "keywords": [
     "js",
@@ -45,7 +45,6 @@
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
-    "@zag-js/number-utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
     "@zag-js/types": "workspace:*"

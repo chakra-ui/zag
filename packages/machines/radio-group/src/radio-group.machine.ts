@@ -1,6 +1,8 @@
 import { createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
-import { compact } from "@zag-js/utils"
+import { nextTick } from "@zag-js/dom-query"
+import { trackElementRect } from "@zag-js/element-rect"
+import { trackFormControl } from "@zag-js/form-utils"
+import { compact, isString } from "@zag-js/utils"
 import { dom } from "./radio-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
 
@@ -11,15 +13,32 @@ export function machine(userContext: UserDefinedContext) {
       id: "radio",
       initial: "idle",
       context: {
+        previousValue: null,
         value: null,
-        initialValue: null,
         activeId: null,
         focusedId: null,
         hoveredId: null,
+        indicatorRect: {},
+        canIndicatorTransition: false,
         ...ctx,
       },
 
+      entry: ["syncIndicatorRect"],
+
+      exit: ["cleanupObserver"],
+
       activities: ["trackFormControlState"],
+
+      watch: {
+        value: [
+          "setIndicatorTransition",
+          // important to set this after `setIndicatorTransition`
+          "setPreviousValue",
+          "invokeOnChange",
+          "syncIndicatorRect",
+          "syncInputElements",
+        ],
+      },
 
       on: {
         SET_VALUE: {
@@ -36,12 +55,6 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      watch: {
-        value: ["dispatchChangeEvent", "invokeOnChange", "syncInputElements"],
-      },
-
-      entry: ["checkValue"],
-
       states: {
         idle: {},
       },
@@ -49,22 +62,19 @@ export function machine(userContext: UserDefinedContext) {
 
     {
       activities: {
-        trackFormControlState(ctx, _evt, { send }) {
+        trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getRootEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              send({ type: "SET_VALUE", value: ctx.initialValue })
+              send({ type: "SET_VALUE", value: initialContext.value })
             },
           })
         },
       },
 
       actions: {
-        checkValue(ctx) {
-          ctx.initialValue = ctx.value
-        },
         setValue(ctx, evt) {
           ctx.value = evt.value
         },
@@ -80,15 +90,46 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnChange(ctx, evt) {
           ctx.onChange?.({ value: evt.value })
         },
-        dispatchChangeEvent(ctx, evt) {
-          if (!evt.manual) return
-          const el = dom.getRadioInputEl(ctx, evt.value)
-          dispatchInputCheckedEvent(el, !!evt.value)
-        },
         syncInputElements(ctx) {
           const inputs = dom.getInputEls(ctx)
           inputs.forEach((input) => {
             input.checked = input.value === ctx.value
+          })
+        },
+        setPreviousValue(ctx) {
+          ctx.previousValue = ctx.value
+        },
+        setIndicatorTransition(ctx) {
+          ctx.canIndicatorTransition = isString(ctx.previousValue) && isString(ctx.value)
+        },
+        cleanupObserver(ctx) {
+          ctx.indicatorCleanup?.()
+        },
+        syncIndicatorRect(ctx) {
+          ctx.indicatorCleanup?.()
+
+          if (!dom.getIndicatorEl(ctx)) return
+
+          const value = ctx.value
+
+          if (value == null) {
+            ctx.indicatorRect = {}
+            return
+          }
+
+          const radioEl = dom.getActiveRadioEl(ctx)
+          if (!radioEl) return
+
+          ctx.indicatorCleanup = trackElementRect(radioEl, {
+            getRect(el) {
+              return dom.getOffsetRect(el)
+            },
+            onChange(rect) {
+              ctx.indicatorRect = dom.resolveRect(rect)
+              nextTick(() => {
+                ctx.canIndicatorTransition = false
+              })
+            },
           })
         },
       },

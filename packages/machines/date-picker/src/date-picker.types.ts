@@ -11,6 +11,22 @@ type IntlMessages = {
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
+type ElementIds = Partial<{
+  grid(id: string): string
+  header: string
+  content: string
+  cellTrigger(id: string): string
+  prevTrigger(view: DateView): string
+  nextTrigger(view: DateView): string
+  viewTrigger(view: DateView): string
+  clearTrigger: string
+  control: string
+  input: string
+  trigger: string
+  monthSelect: string
+  yearSelect: string
+}>
+
 export type SelectionMode = "single" | "multiple" | "range"
 
 type PublicContext = DirectionProperty &
@@ -19,6 +35,10 @@ type PublicContext = DirectionProperty &
      * The localized messages to use.
      */
     messages?: IntlMessages
+    /**
+     * The ids of the elements in the date picker. Useful for composition.
+     */
+    ids?: ElementIds
     /**
      * The `name` attribute of the input element.
      */

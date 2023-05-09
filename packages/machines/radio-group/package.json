@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/radio-group",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "description": "Core logic for the radio group widget implemented as a state machine",
   "keywords": [
     "js",
@@ -41,6 +41,7 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/element-rect": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/utils": "workspace:*",

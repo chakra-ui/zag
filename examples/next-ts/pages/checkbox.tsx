@@ -1,5 +1,5 @@
 import * as checkbox from "@zag-js/checkbox"
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { checkboxControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { useId } from "react"
@@ -13,6 +13,7 @@ export default function Page() {
   const [state, send] = useMachine(
     checkbox.machine({
       id: useId(),
+      name: "checkbox",
     }),
     {
       context: controls.context,
@@ -21,28 +22,20 @@ export default function Page() {
 
   const api = checkbox.connect(state, send, normalizeProps)
 
-  const inputProps = mergeProps(api.inputProps, {
-    onChange() {
-      if (api.isIndeterminate && !api.isReadOnly) {
-        api.setIndeterminate(false)
-        api.setChecked(true)
-      }
-    },
-  })
-
   return (
     <>
       <main className="checkbox">
         <form
           onChange={(e) => {
-            console.log(serialize(e.currentTarget, { hash: true }))
+            const result = serialize(e.currentTarget, { hash: true })
+            console.log(result)
           }}
         >
           <fieldset>
             <label {...api.rootProps}>
-              <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
-              <input {...inputProps} />
               <div {...api.controlProps} />
+              <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
+              <input {...api.inputProps} />
             </label>
 
             <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>

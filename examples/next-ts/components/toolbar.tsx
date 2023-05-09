@@ -2,7 +2,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import { ReactNode, useState } from "react"
 
 type ToolbarProps = {
-  controls: null | (() => JSX.Element)
+  controls?: null | (() => JSX.Element)
   children: ReactNode
   viz?: boolean
 }

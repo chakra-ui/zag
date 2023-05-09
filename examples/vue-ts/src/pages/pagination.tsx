@@ -13,7 +13,11 @@ export default defineComponent({
     const controls = useControls(paginationControls)
 
     const [state, send] = useMachine(
-      pagination.machine({ id: "1", count: paginationData.length, onChange: console.log }),
+      pagination.machine({
+        id: "1",
+        count: paginationData.length,
+        onChange: console.log,
+      }),
       {
         context: controls.context,
       },
@@ -56,21 +60,17 @@ export default defineComponent({
               <nav {...api.rootProps}>
                 <ul>
                   <li>
-                    <a href="#previous" {...api.prevPageTriggerProps}>
+                    <button {...api.prevPageTriggerProps}>
                       Previous <span style={visuallyHiddenStyle}>Page</span>
-                    </a>
+                    </button>
                   </li>
                   {api.pages.map((page, i) => {
                     if (page.type === "page")
                       return (
                         <li key={page.value}>
-                          <a
-                            href={`#${page.value}`}
-                            data-testid={`item-${page.value}`}
-                            {...api.getPageTriggerProps(page)}
-                          >
+                          <button data-testid={`item-${page.value}`} {...api.getPageTriggerProps(page)}>
                             {page.value}
-                          </a>
+                          </button>
                         </li>
                       )
                     else
@@ -81,9 +81,9 @@ export default defineComponent({
                       )
                   })}
                   <li>
-                    <a href="#next" {...api.nextPageTriggerProps}>
+                    <button {...api.nextPageTriggerProps}>
                       Next <span style={visuallyHiddenStyle}>Page</span>
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </nav>

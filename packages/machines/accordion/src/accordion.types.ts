@@ -74,3 +74,9 @@ export type ItemProps = {
   value: string
   disabled?: boolean
 }
+
+export type ItemState = {
+  isOpen: boolean
+  isFocused: boolean
+  isDisabled: boolean
+}

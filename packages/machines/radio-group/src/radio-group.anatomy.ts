@@ -7,5 +7,6 @@ export const anatomy = createAnatomy("radio-group").parts(
   "radioLabel",
   "radioControl",
   "radioInput",
+  "indicator",
 )
 export const parts = anatomy.build()

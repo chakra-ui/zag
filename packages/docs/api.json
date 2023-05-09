@@ -14,7 +14,7 @@
         "description": "Sets the value of the accordion."
       },
       "getItemState": {
-        "type": "(props: ItemProps) => { isOpen: boolean; isFocused: boolean; isDisabled: boolean; }",
+        "type": "(props: ItemState",
         "description": "Gets the state of an accordion item."
       }
     },
@@ -77,6 +77,10 @@
         "type": "number",
         "description": "The current index of the carousel"
       },
+      "scrollProgress": {
+        "type": "number",
+        "description": "The current scroll progress of the carousel"
+      },
       "isAutoplay": {
         "type": "boolean",
         "description": "Whether the carousel is currently auto-playing"
@@ -85,12 +89,12 @@
         "type": "boolean",
         "description": "Whether the carousel is can scroll to the next slide"
       },
-      "canScrollPrevious": {
+      "canScrollPrev": {
         "type": "boolean",
         "description": "Whether the carousel is can scroll to the previous slide"
       },
       "scrollTo": {
-        "type": "(index: number) => void",
+        "type": "(index: number, jump?: boolean) => void",
         "description": "Function to scroll to a specific slide index"
       },
       "scrollToNext": {
@@ -102,8 +106,16 @@
         "description": "Function to scroll to the previous slide"
       },
       "getSlideState": {
-        "type": "(props: SlideProps) => { valueText: string; isCurrent: boolean; isNext: boolean; isPrevious: boolean; }",
+        "type": "(props: SlideProps) => { valueText: string; isCurrent: boolean; isNext: boolean; isPrevious: boolean; isInView: boolean; }",
         "description": "Returns the state of a specific slide"
+      },
+      "play": {
+        "type": "() => void",
+        "description": "Function to start/resume autoplay"
+      },
+      "pause": {
+        "type": "() => void",
+        "description": "Function to pause autoplay"
       }
     },
     "context": {
@@ -120,6 +132,46 @@
       "getRootNode": {
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.",
+        "defaultValue": null
+      },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the carousel.",
+        "defaultValue": "\"horizontal\""
+      },
+      "align": {
+        "type": "\"start\" | \"end\" | \"center\"",
+        "description": "The alignment of the slides in the carousel.",
+        "defaultValue": null
+      },
+      "slidesPerView": {
+        "type": "number | \"auto\"",
+        "description": "The number of slides to show at a time.",
+        "defaultValue": null
+      },
+      "loop": {
+        "type": "boolean",
+        "description": "Whether the carousel should loop around.",
+        "defaultValue": null
+      },
+      "index": {
+        "type": "number",
+        "description": "The current slide index.",
+        "defaultValue": null
+      },
+      "spacing": {
+        "type": "string",
+        "description": "The amount of space between slides.",
+        "defaultValue": null
+      },
+      "onSlideChange": {
+        "type": "(details: ChangeDetails) => void",
+        "description": "Function called when the slide changes.",
+        "defaultValue": null
+      },
+      "ids": {
+        "type": "Partial<{ root: string; viewport: string; slide(index: number): string; slideGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator(index: number): string; }>",
+        "description": "The ids of the elements in the carousel. Useful for composition.",
         "defaultValue": null
       }
     }
@@ -142,21 +194,13 @@
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
-      "isReadOnly": {
-        "type": "boolean",
-        "description": "Whether the checkbox is readonly"
-      },
-      "view": {
-        "type": "string",
-        "description": "The current view of the checkbox (checked, unchecked, mixed)"
+      "checkedState": {
+        "type": "CheckedState",
+        "description": "The checked state of the checkbox"
       },
       "setChecked": {
-        "type": "(checked: boolean) => void",
+        "type": "(checked: CheckedState) => void",
         "description": "Function to set the checked state of the checkbox"
-      },
-      "setIndeterminate": {
-        "type": "(indeterminate: boolean) => void",
-        "description": "Function to set the indeterminate state of the checkbox"
       }
     },
     "context": {
@@ -180,24 +224,9 @@
         "description": "The ids of the elements in the checkbox. Useful for composition.",
         "defaultValue": null
       },
-      "indeterminate": {
-        "type": "boolean",
-        "description": "If `true`, the checkbox will be indeterminate.\nThis only affects the icon shown inside checkbox\nand does not modify the isChecked property.",
-        "defaultValue": null
-      },
       "disabled": {
         "type": "boolean",
         "description": "If `true`, the checkbox will be disabled",
-        "defaultValue": null
-      },
-      "focusable": {
-        "type": "boolean",
-        "description": "If `true` and `disabled` is passed, the checkbox will\nremain tabbable but not interactive",
-        "defaultValue": null
-      },
-      "readOnly": {
-        "type": "boolean",
-        "description": "If `true`, the checkbox will be readonly",
         "defaultValue": null
       },
       "invalid": {
@@ -211,34 +240,29 @@
         "defaultValue": null
       },
       "checked": {
-        "type": "boolean",
+        "type": "CheckedState",
         "description": "If `true`, the checkbox will be checked.",
         "defaultValue": null
       },
       "onChange": {
-        "type": "(details: { checked: boolean | \"indeterminate\"; }) => void",
+        "type": "(details: { checked: CheckedState; }) => void",
         "description": "The callback invoked when the checked state of the `Checkbox` changes.",
         "defaultValue": null
       },
       "name": {
         "type": "string",
-        "description": "The name of the input field in a checkbox\n(Useful for form submission).",
+        "description": "The name of the input field in a checkbox. Useful for form submission.",
         "defaultValue": null
       },
       "form": {
         "type": "string",
-        "description": "The associate form of the underlying checkbox.",
+        "description": "The id of the form that the checkbox belongs to.",
         "defaultValue": null
       },
       "value": {
-        "type": "string | number",
-        "description": "The value to be used in the checkbox input.\nThis is the value that will be returned on form submission.",
-        "defaultValue": null
-      },
-      "aria-label": {
         "type": "string",
-        "description": "Defines the string that labels the checkbox element.",
-        "defaultValue": null
+        "description": "The value of checkbox input. Useful for form submission.",
+        "defaultValue": "\"on\""
       }
     }
   },
@@ -282,6 +306,11 @@
       "getRootNode": {
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.",
+        "defaultValue": null
+      },
+      "ids": {
+        "type": "Partial<{ content: string; area: string; areaGradient: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
+        "description": "The ids of the elements in the color picker. Useful for composition.",
         "defaultValue": null
       },
       "dir": {
@@ -376,7 +405,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; option(id: string, index?: number): string; }>",
+        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; option(id: string, index?: number): string; positioner: string; }>",
         "description": "The ids of the elements in the combobox. Useful for composition.",
         "defaultValue": null
       },
@@ -678,6 +707,11 @@
         "description": "The localized messages to use.",
         "defaultValue": null
       },
+      "ids": {
+        "type": "Partial<{ grid(id: string): string; header: string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input: string; trigger: string; monthSelect: string; yearSelect: string; }>",
+        "description": "The ids of the elements in the date picker. Useful for composition.",
+        "defaultValue": null
+      },
       "name": {
         "type": "string",
         "description": "The `name` attribute of the input element.",
@@ -764,7 +798,7 @@
         "defaultValue": null
       },
       "selectionMode": {
-        "type": "\"single\" | \"multiple\" | \"range\"",
+        "type": "SelectionMode",
         "description": "The selection mode of the calendar.\n- `single` - only one date can be selected\n- `multiple` - multiple dates can be selected\n- `range` - a range of dates can be selected",
         "defaultValue": null
       },
@@ -1053,6 +1087,11 @@
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states",
         "defaultValue": null
+      },
+      "finalFocusEl": {
+        "type": "() => HTMLElement",
+        "description": "The element that should receive focus when the editable is closed.\nBy default, it will focus on the trigger element.",
+        "defaultValue": null
       }
     }
   },
@@ -1071,7 +1110,7 @@
         "description": "Function to close the hover card"
       },
       "setPositioning": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
@@ -1092,13 +1131,18 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ trigger: string; content: string; }>",
+        "type": "Partial<{ trigger: string; content: string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the popover. Useful for composition.",
         "defaultValue": null
       },
-      "onOpenChange": {
-        "type": "(open: boolean) => void",
+      "onOpen": {
+        "type": "VoidFunction",
         "description": "Function invoked when the hover card is opened.",
+        "defaultValue": null
+      },
+      "onClose": {
+        "type": "VoidFunction",
+        "description": "Function invoked when the hover card is closed.",
         "defaultValue": null
       },
       "openDelay": {
@@ -1166,7 +1210,7 @@
         "description": "Function to check if an option is checked"
       },
       "setPositioning": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
@@ -1187,7 +1231,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; label(id: string): string; group(id: string): string; }>",
+        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; label(id: string): string; group(id: string): string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the menu. Useful for composition.",
         "defaultValue": null
       },
@@ -1557,6 +1601,11 @@
         "type": "(details: { page: number; pageSize: number; srcElement: HTMLElement; }) => void",
         "description": "Called when the page number is changed, and it takes the resulting page number argument",
         "defaultValue": null
+      },
+      "type": {
+        "type": "\"button\" | \"link\"",
+        "description": "The type of the trigger element",
+        "defaultValue": "\"button\""
       }
     }
   },
@@ -1718,7 +1767,7 @@
         "description": "Function to close the popover"
       },
       "setPositioning": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
@@ -1734,7 +1783,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ anchor: string; trigger: string; content: string; title: string; description: string; closeTrigger: string; }>",
+        "type": "Partial<{ anchor: string; trigger: string; content: string; title: string; description: string; closeTrigger: string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the popover. Useful for composition.",
         "defaultValue": null
       },
@@ -1904,7 +1953,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; radio(value: string): string; radioLabel(value: string): string; radioControl(value: string): string; radioInput(value: string): string; }>",
+        "type": "Partial<{ root: string; label: string; indicator: string; radio(value: string): string; radioLabel(value: string): string; radioControl(value: string): string; radioInput(value: string): string; }>",
         "description": "The ids of the elements in the radio. Useful for composition.",
         "defaultValue": null
       },
@@ -2025,7 +2074,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; output: string; }>",
+        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; output: string; marker(index: number): string; }>",
         "description": "The ids of the elements in the range slider. Useful for composition.",
         "defaultValue": null
       },
@@ -2152,7 +2201,7 @@
         "description": "The array of rating values. Returns an array of numbers from 1 to the max value."
       },
       "getRatingState": {
-        "type": "(index: number) => { isEqual: boolean; isValueEmpty: boolean; isHighlighted: boolean; isHalf: boolean; isChecked: boolean; }",
+        "type": "(props: ItemState",
         "description": "Returns the state of a rating item"
       }
     },
@@ -2294,7 +2343,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ content: string; trigger: string; label: string; option(id: string | number): string; }>",
+        "type": "Partial<{ content: string; trigger: string; label: string; option(id: string | number): string; hiddenSelect: string; positioner: string; optionGroup(id: string | number): string; optionGroupLabel(id: string | number): string; }>",
         "description": "The ids of the elements in the accordion. Useful for composition.",
         "defaultValue": null
       },
@@ -2440,7 +2489,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ root: string; thumb: string; control: string; track: string; range: string; label: string; output: string; }>",
+        "type": "Partial<{ root: string; thumb: string; control: string; track: string; range: string; label: string; output: string; hiddenInput: string; }>",
         "description": "The ids of the elements in the slider. Useful for composition.",
         "defaultValue": null
       },
@@ -2591,6 +2640,36 @@
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.",
         "defaultValue": null
+      },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the splitter. Can be `horizontal` or `vertical`",
+        "defaultValue": null
+      },
+      "size": {
+        "type": "PanelSizeData[]",
+        "description": "The size data of the panels",
+        "defaultValue": null
+      },
+      "onResize": {
+        "type": "(details: ResizeDetails) => void",
+        "description": "Function called when the splitter is resized.",
+        "defaultValue": null
+      },
+      "onResizeStart": {
+        "type": "(details: ResizeDetails) => void",
+        "description": "Function called when the splitter resize starts.",
+        "defaultValue": null
+      },
+      "onResizeEnd": {
+        "type": "(details: ResizeDetails) => void",
+        "description": "Function called when the splitter resize ends.",
+        "defaultValue": null
+      },
+      "ids": {
+        "type": "Partial<{ root: string; resizeTrigger(id: string): string; toggleTrigger(id: string): string; label(id: string): string; panel(id: string | number): string; }>",
+        "description": "The ids of the elements in the splitter. Useful for composition.",
+        "defaultValue": null
       }
     }
   },
@@ -2685,13 +2764,13 @@
       },
       "form": {
         "type": "string",
-        "description": "The associate form of the underlying input.",
+        "description": "The id of the form that the switch belongs to",
         "defaultValue": null
       },
       "value": {
         "type": "string | number",
-        "description": "The value to be used in the switch input.\nThis is the value that will be returned on form submission.",
-        "defaultValue": null
+        "description": "The value of switch input. Useful for form submission.",
+        "defaultValue": "\"on\""
       },
       "aria-label": {
         "type": "string",
@@ -2721,6 +2800,10 @@
       "clearValue": {
         "type": "() => void",
         "description": "Clears the value of the tabs."
+      },
+      "setIndicatorRect": {
+        "type": "(id: string) => void",
+        "description": "Sets the indicator rect to the tab with the given id."
       }
     },
     "context": {
@@ -2740,7 +2823,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; tablist: string; contentGroup: string; content: string; }>",
+        "type": "Partial<{ root: string; trigger: string; tablist: string; contentGroup: string; content: string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition.",
         "defaultValue": null
       },
@@ -3030,7 +3113,7 @@
         "description": "Whether the toggle is pressed."
       },
       "setPressed": {
-        "type": "(value: boolean) => void",
+        "type": "(pressed: boolean) => void",
         "description": "Function to set the pressed state of the toggle."
       }
     },
@@ -3051,11 +3134,11 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ root: string; button: string; }>",
+        "type": "Partial<{ button: string; }>",
         "description": "The ids of the elements in the toggle. Useful for composition.",
         "defaultValue": null
       },
-      "label": {
+      "aria-label": {
         "type": "string",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states",
         "defaultValue": null
@@ -3070,7 +3153,7 @@
         "description": "Function to call when the toggle is clicked.",
         "defaultValue": null
       },
-      "defaultPressed": {
+      "pressed": {
         "type": "boolean",
         "description": "Whether the toggle is initially pressed.",
         "defaultValue": null
@@ -3096,7 +3179,7 @@
         "description": "Returns the animation state of the tooltip."
       },
       "setPositioning": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
     },
@@ -3107,7 +3190,7 @@
         "defaultValue": null
       },
       "ids": {
-        "type": "Partial<{ trigger: string; content: string; }>",
+        "type": "Partial<{ trigger: string; content: string; arrow: string; positioner: string; }>",
         "description": "The ids of the elements in the tooltip. Useful for composition.",
         "defaultValue": null
       },

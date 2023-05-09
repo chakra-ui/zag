@@ -1,5 +1,5 @@
 import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
-import { contains, getDocument, getEventTarget, getWindow, isHTMLElement } from "@zag-js/dom-query"
+import { contains, getDocument, getEventTarget, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
 import { isFocusable } from "@zag-js/tabbable"
 import { callAll } from "@zag-js/utils"
 import { getWindowFrames } from "./get-window-frames"
@@ -12,6 +12,7 @@ export type InteractOutsideHandlers = {
 
 export type InteractOutsideOptions = InteractOutsideHandlers & {
   exclude?: (target: HTMLElement) => boolean
+  defer?: boolean
 }
 
 type EventDetails<T> = {
@@ -24,8 +25,13 @@ const POINTER_OUTSIDE_EVENT = "pointerdown.outside"
 const FOCUS_OUTSIDE_EVENT = "focus.outside"
 
 export type PointerDownOutsideEvent = CustomEvent<EventDetails<PointerEvent>>
+
 export type FocusOutsideEvent = CustomEvent<EventDetails<FocusEvent>>
+
 export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
+
+type MaybeElement = HTMLElement | null | undefined
+type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 function isComposedPathFocusable(event: Event) {
   const composedPath = event.composedPath() ?? [event.target as HTMLElement]
@@ -35,7 +41,7 @@ function isComposedPathFocusable(event: Event) {
   return false
 }
 
-export function trackInteractOutside(node: HTMLElement | null, options: InteractOutsideOptions) {
+function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
   const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options
 
   if (!node) return
@@ -130,5 +136,20 @@ export function trackInteractOutside(node: HTMLElement | null, options: Interact
       doc.removeEventListener("click", clickHandler)
     }
     cleanups.forEach((fn) => fn())
+  }
+}
+
+export function trackInteractOutside(nodeOrFn: NodeOrFn, options: InteractOutsideOptions) {
+  const { defer } = options
+  const func = defer ? raf : (v: any) => v()
+  const cleanups: (VoidFunction | undefined)[] = []
+  cleanups.push(
+    func(() => {
+      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
+      cleanups.push(trackInteractOutsideImpl(node, options))
+    }),
+  )
+  return () => {
+    cleanups.forEach((fn) => fn?.())
   }
 }

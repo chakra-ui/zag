@@ -1,5 +1,5 @@
 import * as select from "@zag-js/select"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "solid-js/web"
 import { selectControls, selectData } from "@zag-js/shared"

@@ -1,25 +1,22 @@
+import { isIos, nextTick, raf } from "@zag-js/dom-query"
+
 type State = "default" | "disabled" | "restoring"
 
 let state: State = "default"
 let userSelect = ""
 let elementMap = new WeakMap<HTMLElement, string>()
 
-const isIos = () => {
-  const userAgent = navigator.userAgent.toLowerCase()
-  return /iphone|ipad|ipod/.test(userAgent)
+export type DisableTextSelectionOptions<T = MaybeElement> = {
+  target?: T
+  doc?: Document
+  defer?: boolean
 }
 
-const nextTick = (fn: () => void) => {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      fn()
-    })
-  })
-}
+function disableTextSelectionImpl(options: DisableTextSelectionOptions = {}) {
+  const { target, doc } = options
 
-export function disableTextSelection({ target, doc }: { target?: HTMLElement; doc?: Document } = {}) {
-  const _document = doc ?? document
-  const rootEl = _document.documentElement
+  const docNode = doc ?? document
+  const rootEl = docNode.documentElement
 
   if (isIos()) {
     if (state === "default") {
@@ -33,12 +30,14 @@ export function disableTextSelection({ target, doc }: { target?: HTMLElement; do
     target.style.userSelect = "none"
   }
 
-  return () => restoreTextSelection({ target, doc: _document })
+  return () => restoreTextSelection({ target, doc: docNode })
 }
 
-export function restoreTextSelection({ target, doc }: { target?: HTMLElement; doc?: Document } = {}) {
-  const _document = doc ?? document
-  const rootEl = _document.documentElement
+export function restoreTextSelection(options: DisableTextSelectionOptions = {}) {
+  const { target, doc } = options
+
+  const docNode = doc ?? document
+  const rootEl = docNode.documentElement
 
   if (isIos()) {
     if (state !== "disabled") return
@@ -68,5 +67,24 @@ export function restoreTextSelection({ target, doc }: { target?: HTMLElement; do
       }
       elementMap.delete(target)
     }
+  }
+}
+
+type MaybeElement = HTMLElement | null | undefined
+
+type NodeOrFn = MaybeElement | (() => MaybeElement)
+
+export function disableTextSelection(options: DisableTextSelectionOptions<NodeOrFn> = {}) {
+  const { defer, target, ...restOptions } = options
+  const func = defer ? raf : (v: any) => v()
+  const cleanups: (VoidFunction | undefined)[] = []
+  cleanups.push(
+    func(() => {
+      const node = typeof target === "function" ? target() : target
+      cleanups.push(disableTextSelectionImpl({ ...restOptions, target: node }))
+    }),
+  )
+  return () => {
+    cleanups.forEach((fn) => fn?.())
   }
 }

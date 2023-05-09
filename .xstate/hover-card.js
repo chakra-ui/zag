@@ -24,7 +24,7 @@ const fetchMachine = createMachine({
   states: {
     closed: {
       tags: ["closed"],
-      entry: ["invokeOnClose", "clearIsPointer"],
+      entry: ["clearIsPointer"],
       on: {
         POINTER_ENTER: {
           target: "opening",
@@ -37,31 +37,47 @@ const fetchMachine = createMachine({
     opening: {
       tags: ["closed"],
       after: {
-        OPEN_DELAY: "open"
+        OPEN_DELAY: {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        }
       },
       on: {
-        POINTER_LEAVE: "closed",
+        POINTER_LEAVE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        },
         TRIGGER_BLUR: {
           cond: "!isPointer",
-          target: "closed"
+          target: "closed",
+          actions: ["invokeOnClose"]
         },
-        CLOSE: "closed"
+        CLOSE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        }
       }
     },
     open: {
       tags: ["open"],
       activities: ["trackDismissableElement", "trackPositioning"],
-      entry: ["invokeOnOpen"],
       on: {
         POINTER_ENTER: {
           actions: ["setIsPointer"]
         },
         POINTER_LEAVE: "closing",
-        DISMISS: "closed",
-        CLOSE: "closed",
+        DISMISS: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        },
+        CLOSE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        },
         TRIGGER_BLUR: {
           cond: "!isPointer",
-          target: "closed"
+          target: "closed",
+          actions: ["invokeOnClose"]
         },
         SET_POSITIONING: {
           actions: "setPositioning"
@@ -72,11 +88,15 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trackPositioning"],
       after: {
-        CLOSE_DELAY: "closed"
+        CLOSE_DELAY: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        }
       },
       on: {
         POINTER_ENTER: {
           target: "open",
+          // no need to invokeOnOpen here because it's still open (but about to close)
           actions: ["setIsPointer"]
         }
       }

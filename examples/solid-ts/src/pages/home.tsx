@@ -1,5 +1,5 @@
 import { routesData } from "@zag-js/shared"
-import { Link } from "solid-app-router"
+import { Link } from "@solidjs/router"
 import { For } from "solid-js/web"
 
 export default function Home() {
