@@ -3,7 +3,7 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
-import type { Send, State } from "./rating-group.types"
+import type { ItemProps, ItemState, Send, State } from "./rating-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isInteractive = state.context.isInteractive
@@ -48,19 +48,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Returns the state of a rating item
      */
-    getRatingState(index: number) {
+    getRatingState(props: ItemProps): ItemState {
       const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
-      const isEqual = Math.ceil(value) === index
+      const isEqual = Math.ceil(value) === props.index
 
-      const isHighlighted = index <= value || isEqual
-      const isHalf = isEqual && Math.abs(value - index) === 0.5
+      const isHighlighted = props.index <= value || isEqual
+      const isHalf = isEqual && Math.abs(value - props.index) === 0.5
 
       return {
         isEqual,
         isValueEmpty: state.context.value === -1,
         isHighlighted,
         isHalf,
-        isChecked: isEqual || (state.context.value === -1 && index === 1),
+        isChecked: isEqual || (state.context.value === -1 && props.index === 1),
       }
     },
 
@@ -104,8 +104,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getRatingProps({ index }: { index: number }) {
-      const { isHalf, isHighlighted, isChecked } = api.getRatingState(index)
+    getRatingProps(props: ItemProps) {
+      const { index } = props
+      const { isHalf, isHighlighted, isChecked } = api.getRatingState(props)
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({

@@ -16,11 +16,8 @@ export default function Page() {
 
   return (
     <>
-      <main>
-        <div {...api.contextTriggerProps}>
-          <div style={{ border: "solid 1px red" }}>Open context menu</div>
-        </div>
-
+      <main className="context-menu">
+        <div {...api.contextTriggerProps}>Right Click here</div>
         <Portal>
           <div {...api.positionerProps}>
             <ul {...api.contentProps}>

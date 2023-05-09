@@ -13,7 +13,7 @@ const expectToBeChecked = async (page: Page) => {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/checkbox")
+  await page.goto("/switch")
 })
 
 test("should have no accessibility violation", async ({ page }) => {

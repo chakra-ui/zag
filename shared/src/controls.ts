@@ -9,7 +9,7 @@ export const accordionControls = defineControls({
 export const checkboxControls = defineControls({
   name: { type: "string", defaultValue: "checkbox" },
   disabled: { type: "boolean", defaultValue: false },
-  readOnly: { type: "boolean", defaultValue: false },
+  value: { type: "string", defaultValue: "on" },
 })
 
 export const switchControls = defineControls({

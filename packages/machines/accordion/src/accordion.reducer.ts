@@ -1,4 +1,4 @@
-import type { ItemProps, Send, State } from "./accordion.types"
+import type { ItemProps, ItemState, Send, State } from "./accordion.types"
 
 export function createReducer(state: State, send: Send) {
   const focusedValue = state.context.focusedValue
@@ -13,7 +13,7 @@ export function createReducer(state: State, send: Send) {
     send({ type: "VALUE.SET", value: nextValue })
   }
 
-  function getItemState(props: ItemProps) {
+  function getItemState(props: ItemProps): ItemState {
     return {
       isOpen: Array.isArray(value) ? value.includes(props.value) : props.value === value,
       isFocused: focusedValue === props.value,

@@ -4,16 +4,21 @@ import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 
 export default function Page() {
-  const [state, send] = useMachine(toggle.machine({ id: createUniqueId(), label: "toggle italic" }))
+  const [state, send] = useMachine(
+    toggle.machine({
+      id: createUniqueId(),
+      "aria-label": "Toggle italic",
+    }),
+  )
 
   const api = createMemo(() => toggle.connect(state, send, normalizeProps))
 
   return (
-    <div>
-      <button class="toggle" {...api().buttonProps}>
-        B
-      </button>
+    <>
+      <main class="toggle">
+        <button {...api().buttonProps}>B</button>
+      </main>
       <StateVisualizer state={state} />
-    </div>
+    </>
   )
 }

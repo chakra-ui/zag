@@ -204,8 +204,13 @@ a[aria-current="page"] {
   max-height: 240px;
   overflow: auto;
 }
+
+[data-scope="combobox"][data-part="option"] {
+  padding: 4px 8px;
+}
+
 [data-scope="combobox"][data-part="option"][data-highlighted] {
-  background-color: red;
+  background-color: blue;
   color: white;
 }
 
@@ -284,6 +289,15 @@ a[aria-current="page"] {
 
 [data-scope="menu"][data-part*="item"][data-disabled] {
   opacity: 0.4;
+}
+
+.context-menu [data-part="trigger"] {
+  border: 2px dashed blue;
+  border-radius: 4px;
+  font-size: 15px;
+  padding-block: 40px;
+  width: 300px;
+  text-align: center;
 }
 
 /* -----------------------------------------------------------------------------
@@ -397,6 +411,10 @@ main [data-testid="scrubber"] {
 /* -----------------------------------------------------------------------------
 * Slider
 * -----------------------------------------------------------------------------*/
+
+.slider > * {
+  width: 100%;
+}
 
 [data-scope="slider"][data-part="root"] {
   max-width: 320px;
@@ -577,7 +595,6 @@ main [data-testid="scrubber"] {
   display: flex;
   align-items: center;
   position: relative;
-  line-height: 0;
   width: fit-content;
 
   --switch-track-diff: calc(var(--switch-track-width) - var(--switch-track-height));
@@ -915,22 +932,21 @@ main [data-testid="scrubber"] {
 * Toggle
 * -----------------------------------------------------------------------------*/
 
-main > .toggle {
+[data-scope="toggle"][data-part="button"] {
   background-color: white;
   color: rgb(111, 110, 119);
   height: 40px;
   width: 40px;
-  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
+  font-size: 20px;
 }
 
-main > .toggle[data-pressed] {
-  font-weight: bold;
-  background-color: rgb(215, 207, 249);
-  color: rgb(32, 19, 75);
+[data-scope="toggle"][data-part="button"][data-pressed] {
+  background-color: rgb(63, 139, 77);
+  color: white;
 }
 
 /* -----------------------------------------------------------------------------
@@ -1186,6 +1202,10 @@ main > .toggle[data-pressed] {
 * Pagination
 * -----------------------------------------------------------------------------*/
 
+.pagination > * {
+  width: 100%;
+}
+
 .pagination ul {
   display: flex;
   gap: 4px;
@@ -1194,6 +1214,10 @@ main > .toggle[data-pressed] {
 
 .pagination th {
   text-align: start;
+}
+
+.pagination td {
+  padding-block: 4px;
 }
 
 [data-scope="pagination"][data-part*="trigger"],
@@ -1218,7 +1242,8 @@ main > .toggle[data-pressed] {
 }
 
 [data-scope="pagination"][data-part*="trigger"][data-selected] {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: blue;
+  color: white;
 }
 
 [data-scope="pagination"][data-part*="trigger"]:focus {
@@ -1394,7 +1419,7 @@ main > .toggle[data-pressed] {
 * -----------------------------------------------------------------------------*/
 
 [data-scope="carousel"][data-part="viewport"] {
-  max-width: 600px;
+  width: 600px;
   margin-top: 40px;
   overflow-x: hidden;
 }
@@ -1404,7 +1429,7 @@ main > .toggle[data-pressed] {
 * -----------------------------------------------------------------------------*/
 
 [data-scope="color-picker"][data-part="content"] {
-  max-width: 260px;
+  width: 260px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

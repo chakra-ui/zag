@@ -20,10 +20,8 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <main>
-            <div {...api.contextTriggerProps}>
-              <div style={{ border: "solid 1px red" }}>Open context menu</div>
-            </div>
+          <main class="context-menu">
+            <div {...api.contextTriggerProps}>Right click here</div>
             <Teleport to="body">
               <div {...api.positionerProps}>
                 <ul {...api.contentProps}>

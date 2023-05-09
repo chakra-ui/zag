@@ -9,9 +9,15 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(switchControls)
 
-  const [state, send] = useMachine(zagSwitch.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    zagSwitch.machine({
+      name: "switch",
+      id: createUniqueId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = createMemo(() => zagSwitch.connect(state, send, normalizeProps))
 

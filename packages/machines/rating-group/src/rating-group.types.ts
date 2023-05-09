@@ -5,6 +5,18 @@ type IntlTranslations = {
   ratingValueText(index: number): string
 }
 
+export type ItemProps = {
+  index: number
+}
+
+export type ItemState = {
+  isEqual: boolean
+  isValueEmpty: boolean
+  isHighlighted: boolean
+  isHalf: boolean
+  isChecked: boolean
+}
+
 type ElementIds = Partial<{
   root: string
   label: string
@@ -83,11 +95,6 @@ type PrivateContext = Context<{
    * @internal The value of the hovered rating.
    */
   hoveredValue: number
-  /**
-   * @internal
-   * The initial rating value.
-   */
-  initialValue: number
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

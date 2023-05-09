@@ -7,37 +7,38 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "toggle",
-      initial: ctx.defaultPressed ? "pressed" : "unpressed",
-
+      initial: "ready",
       context: {
+        "aria-label": "Toggle",
         disabled: false,
-        label: "toggle",
+        pressed: false,
         ...ctx,
       },
-
-      on: {
-        SET_STATE: [
-          { guard: "isPressed", target: "pressed", actions: ["invokeOnChange"] },
-          { target: "unpressed", actions: ["invokeOnChange"] },
-        ],
+      watch: {
+        pressed: ["invokeOnChange"],
       },
-
+      on: {
+        "PRESSED.SET": {
+          actions: ["setPressed"],
+        },
+        "PRESSED.TOGGLE": {
+          actions: ["togglePressed"],
+        },
+      },
       states: {
-        pressed: {
-          on: { TOGGLE: "unpressed" },
-        },
-        unpressed: {
-          on: { TOGGLE: "pressed" },
-        },
+        ready: {},
       },
     },
     {
-      guards: {
-        isPressed: (_ctx, evt) => evt.pressed,
-      },
       actions: {
-        invokeOnChange(ctx, evt) {
-          ctx.onChange?.({ pressed: evt.pressed })
+        invokeOnChange(ctx) {
+          ctx.onChange?.({ pressed: !!ctx.pressed })
+        },
+        togglePressed(ctx) {
+          ctx.pressed = !ctx.pressed
+        },
+        setPressed(ctx, evt) {
+          ctx.pressed = evt.pressed
         },
       },
     },
