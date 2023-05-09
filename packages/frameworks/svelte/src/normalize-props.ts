@@ -18,6 +18,7 @@ function styleObjectToString(styleObject: Dict) {
 }
 
 export const normalizeProps = createNormalizer<PropTypes<SplitArgs<Dict>>>((v: Dict) => {
+  // console.log('in normalize props', v)
   const { events, attributes, styles } = getAttributesAndHandlers(v)
   const normalizedAttributes = normalizeAttributes(attributes) as SplitArgs["attrs"]
   const normalizedHandlers = normalizeHandlers(events) as SplitArgs["handlers"]["events"]
