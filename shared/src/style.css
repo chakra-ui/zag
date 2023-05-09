@@ -595,7 +595,6 @@ main [data-testid="scrubber"] {
   display: flex;
   align-items: center;
   position: relative;
-  line-height: 0;
   width: fit-content;
 
   --switch-track-diff: calc(var(--switch-track-width) - var(--switch-track-height));
