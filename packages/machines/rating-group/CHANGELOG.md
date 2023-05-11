@@ -1,5 +1,15 @@
 # @zag-js/rating-group
 
+## 0.8.0
+
+### Patch Changes
+
+- [`063808af`](https://github.com/chakra-ui/zag/commit/063808af3baeca371dc2e46b82039fd97759e55b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update signature of getRatingState to use object for consistency
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

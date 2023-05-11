@@ -1,5 +1,17 @@
 # @zag-js/checkbox
 
+## 0.8.0
+
+### Patch Changes
+
+- [`c673547c`](https://github.com/chakra-ui/zag/commit/c673547c211739b88375e3bc546a45a7b577bded) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `readOnly` property from checkbox, it is not supported in
+  native checkbox element.
+
+- [`41550949`](https://github.com/chakra-ui/zag/commit/41550949e16b9f4879b89ed7e3658271912ebfaf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor checkbox machine to fix transition bugs in controlled
+  mode.
+
 ## 0.7.0
 
 ### Patch Changes

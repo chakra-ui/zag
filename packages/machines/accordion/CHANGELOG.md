@@ -1,5 +1,15 @@
 # @zag-js/accordion
 
+## 0.8.0
+
+### Patch Changes
+
+- [`eba6f6f3`](https://github.com/chakra-ui/zag/commit/eba6f6f34ba0e44767386550a2d47c840a3bae57) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export more types
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

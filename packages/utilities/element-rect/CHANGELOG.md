@@ -1,5 +1,12 @@
 # @zag-js/element-rect
 
+## 0.8.0
+
+### Minor Changes
+
+- [`bf136f6e`](https://github.com/chakra-ui/zag/commit/bf136f6ef8c9499bd0fbc4be057d02697e97a010) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support customizing the element rect calculation function
+
 ## 0.3.0
 
 ### Minor Changes

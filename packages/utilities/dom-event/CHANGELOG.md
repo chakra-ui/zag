@@ -1,5 +1,12 @@
 # @zag-js/dom-event
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies [[`fb4fb42d`](https://github.com/chakra-ui/zag/commit/fb4fb42d8aacc5844945dd7b1bd27b94c978ca4e)]:
+  - @zag-js/text-selection@0.8.0
+
 ## 0.6.0
 
 ### Patch Changes
