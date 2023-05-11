@@ -1,5 +1,16 @@
 # @zag-js/popper
 
+## 0.8.0
+
+### Patch Changes
+
+- [`fb4fb42d`](https://github.com/chakra-ui/zag/commit/fb4fb42d8aacc5844945dd7b1bd27b94c978ca4e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `defer` option to allow defering the execution of
+  a function to the next tick
+
+- Updated dependencies [[`bf136f6e`](https://github.com/chakra-ui/zag/commit/bf136f6ef8c9499bd0fbc4be057d02697e97a010)]:
+  - @zag-js/element-rect@0.8.0
+
 ## 0.2.7
 
 ### Patch Changes

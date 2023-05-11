@@ -1,5 +1,19 @@
 # @zag-js/tabs
 
+## 0.8.0
+
+### Patch Changes
+
+- [`bf136f6e`](https://github.com/chakra-ui/zag/commit/bf136f6ef8c9499bd0fbc4be057d02697e97a010) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where tab indicator doesn't adjust when the active
+  tab's rect or size changes.
+  - Add `setIndicatorRect` to the `api` methods.
+- Updated dependencies [[`fb4fb42d`](https://github.com/chakra-ui/zag/commit/fb4fb42d8aacc5844945dd7b1bd27b94c978ca4e),
+  [`bf136f6e`](https://github.com/chakra-ui/zag/commit/bf136f6ef8c9499bd0fbc4be057d02697e97a010)]:
+  - @zag-js/tabbable@0.8.0
+  - @zag-js/element-rect@0.8.0
+  - @zag-js/dom-event@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

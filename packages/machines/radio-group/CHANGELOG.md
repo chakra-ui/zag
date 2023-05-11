@@ -1,5 +1,16 @@
 # @zag-js/radio-group
 
+## 0.8.0
+
+### Patch Changes
+
+- [`45503699`](https://github.com/chakra-ui/zag/commit/4550369900e712d4c4676539b97012d82c50f2b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `indicator` part to allow creating segmented
+  controls.
+
+- Updated dependencies [[`bf136f6e`](https://github.com/chakra-ui/zag/commit/bf136f6ef8c9499bd0fbc4be057d02697e97a010)]:
+  - @zag-js/element-rect@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

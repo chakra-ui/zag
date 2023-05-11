@@ -1,5 +1,13 @@
 # @zag-js/range-slider
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.8.0
+  - @zag-js/slider@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes
