@@ -102,6 +102,28 @@ describe("Anatomy", () => {
     `)
   })
 
+  it("should rename component scope", () => {
+    const anatomy = createAnatomy("radio-group").parts("root", "control").rename("segmented-control")
+    expect(anatomy.build()).toMatchInlineSnapshot(`
+      {
+        "control": {
+          "attrs": {
+            "data-part": "control",
+            "data-scope": "segmented-control",
+          },
+          "selector": "&[data-scope=\\"segmented-control\\"][data-part=\\"control\\"], & [data-scope=\\"segmented-control\\"][data-part=\\"control\\"]",
+        },
+        "root": {
+          "attrs": {
+            "data-part": "root",
+            "data-scope": "segmented-control",
+          },
+          "selector": "&[data-scope=\\"segmented-control\\"][data-part=\\"root\\"], & [data-scope=\\"segmented-control\\"][data-part=\\"root\\"]",
+        },
+      }
+    `)
+  })
+
   it("should not allow to invoke .parts more than once", () => {
     // @ts-expect-error
     expect(() => createAnatomy("accordion").parts("a").parts("b")).toThrow()
