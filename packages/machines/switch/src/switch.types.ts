@@ -62,12 +62,6 @@ type PublicContext = DirectionProperty &
      * @default "on"
      */
     value?: string | number
-    /**
-     * Defines the string that labels the switch element.
-     */
-    "aria-label"?: string
-    "aria-labelledby"?: string
-    "aria-describedby"?: string
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
