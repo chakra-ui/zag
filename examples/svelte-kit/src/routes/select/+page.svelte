@@ -3,6 +3,7 @@
   import { events, useMachine, normalizeProps } from "@zag-js/svelte"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
+  import { writable } from "svelte/store"
 
   const selectData = [
     { label: "Nigeria", value: "NG" },
@@ -14,11 +15,18 @@
     { label: "Uganda", value: "UG" },
   ]
 
-  const [state, send] = useMachine(select.machine({ id: "my-select" }))
+  let readOnly = false
+  let loop = true
+  const context = writable({ readOnly, loop })
+
+  const [state, send] = useMachine(select.machine({ id: "my-select" }), { context })
+
+  $: $context = { readOnly, loop }
   $: api = select.connect($state, send, normalizeProps)
 </script>
 
 <div style="min-width: 50%;">
+  <button on:click={() => readOnly = !readOnly}>Toggle readonly</button>
   <div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label {...api.labelProps.attrs} use:events={api.labelProps.handlers}>Label</label>
@@ -34,10 +42,7 @@
   <div {...api.positionerProps.attrs} use:events={api.positionerProps.handlers}>
     <ul {...api.contentProps.attrs} use:events={api.contentProps.handlers}>
       {#each selectData as { label, value }}
-        <li 
-          {...api.getOptionProps({ label, value }).attrs} 
-          use:events={api.getOptionProps({ label, value }).handlers}
-        >
+        <li {...api.getOptionProps({ label, value }).attrs} use:events={api.getOptionProps({ label, value }).handlers}>
           <span>{label}</span>
           {#if api.selectedOption && value === api.selectedOption.value}✓{/if}
         </li>

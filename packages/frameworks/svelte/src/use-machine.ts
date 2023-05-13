@@ -1,6 +1,6 @@
 import { onMount } from "svelte/internal"
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { writable } from "svelte/store"
+import { get, writable } from "svelte/store"
 
 export function useService<
   TContext extends Record<string, any>,
@@ -9,7 +9,7 @@ export function useService<
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: any) {
   const { actions, state: hydratedState, context } = options ?? {}
   const _machine = typeof machine === "function" ? machine() : machine
-  const service = context ? _machine.withContext(context) : _machine
+  const service = get(context) ? _machine.withContext(get(context)) : _machine
 
   onMount(() => {
     service.start(hydratedState)
@@ -25,7 +25,9 @@ export function useService<
 
   service.setOptions({ actions })
 
-  service.setContext(context)
+  context.subscribe((nextContext: TContext) => {
+    service.setContext(nextContext)
+  })
 
   return service
 }
@@ -34,7 +36,7 @@ export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
->(machine: MachineSrc<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
+>(machine: MachineSrc<TContext, TState, TEvent>, options?: any) {
   const service = useService(machine, options)
 
   const state = writable(service.state)
