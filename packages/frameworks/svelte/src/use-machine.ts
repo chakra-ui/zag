@@ -25,9 +25,11 @@ export function useService<
 
   service.setOptions({ actions })
 
-  context.subscribe((nextContext: TContext) => {
-    service.setContext(nextContext)
-  })
+  if (context) {
+    context.subscribe((nextContext: TContext) => {
+      service.setContext(nextContext)
+    })
+  }
 
   return service
 }
