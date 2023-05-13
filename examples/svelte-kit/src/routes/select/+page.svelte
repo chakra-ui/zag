@@ -3,30 +3,19 @@
   import { events, useMachine, normalizeProps } from "@zag-js/svelte"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
-  import { writable } from "svelte/store"
+  import { ControlsUI, useControls } from "../../stores/controls"
+  import { selectControls } from "../../../../../shared/src/controls"
+  import { selectData } from "../../../../../shared/src/data"
 
-  const selectData = [
-    { label: "Nigeria", value: "NG" },
-    { label: "Japan", value: "JP" },
-    { label: "Korea", value: "KO" },
-    { label: "Kenya", value: "KE" },
-    { label: "United Kingdom", value: "UK" },
-    { label: "Ghana", value: "GH" },
-    { label: "Uganda", value: "UG" },
-  ]
-
-  let readOnly = false
-  let loop = true
-  const context = writable({ readOnly, loop })
+  const [context, defaultValues] = useControls(selectControls)
+  $: $context = defaultValues
 
   const [state, send] = useMachine(select.machine({ id: "my-select" }), { context })
 
-  $: $context = { readOnly, loop }
   $: api = select.connect($state, send, normalizeProps)
 </script>
 
 <div style="min-width: 50%;">
-  <button on:click={() => readOnly = !readOnly}>Toggle readonly</button>
   <div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label {...api.labelProps.attrs} use:events={api.labelProps.handlers}>Label</label>
@@ -52,5 +41,6 @@
 </div>
 
 <Toolbar>
+  <ControlsUI slot="controls" {context} controls={selectControls} />
   <StateVisualizer state={$state} />
 </Toolbar>

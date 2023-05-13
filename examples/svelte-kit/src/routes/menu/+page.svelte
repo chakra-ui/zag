@@ -1,11 +1,16 @@
 <script lang="ts">
   import * as menu from "@zag-js/menu"
   import { useMachine, events, normalizeProps } from "@zag-js/svelte"
+  import { ControlsUI, useControls } from "../../stores/controls"
+  import { menuControls } from "../../../../../shared/src/controls"
 
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
 
-  const [state, send] = useMachine(menu.machine({ id: "accordion" }))
+  const [context, defaultValues] = useControls(menuControls)
+  $: $context = defaultValues
+
+  const [state, send] = useMachine(menu.machine({ id: "accordion" }), { context })
 
   $: api = menu.connect($state, send, normalizeProps)
 </script>
@@ -36,5 +41,6 @@
   </div>
 </main>
 <Toolbar>
+  <ControlsUI slot="controls" {context} controls={menuControls} />
   <StateVisualizer state={$state} />
 </Toolbar>
