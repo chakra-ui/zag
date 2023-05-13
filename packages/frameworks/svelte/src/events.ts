@@ -26,12 +26,11 @@ export function events(node: HTMLElement, props: Record<string, any>) {
 
       // Attach styles
       const splitStyles = styles?.split(";")
-      if (splitStyles)
-        splitStyles.forEach((singleProperty: string) => {
-          const [key, value] = singleProperty.split(":")
+      splitStyles.forEach((singleProperty: string) => {
+        const [key, value] = singleProperty.split(":")
 
-          node.style.setProperty(key, value)
-        })
+        node.style.setProperty(key.trimStart(), value)
+      })
 
       events = updateEvents(events, handlers)
     },
