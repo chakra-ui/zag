@@ -919,6 +919,9 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../packages/utilities/visually-hidden
+      form-serialize:
+        specifier: 0.7.2
+        version: 0.7.2
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^2.0.0
@@ -929,6 +932,9 @@ importers:
       '@sveltejs/package':
         specifier: ^2.0.0
         version: 2.0.2(svelte@3.55.1)(typescript@4.9.5)
+      '@types/form-serialize':
+        specifier: 0.7.2
+        version: 0.7.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.45.0
         version: 5.53.0(@typescript-eslint/parser@5.53.0)(eslint@8.34.0)(typescript@4.9.5)
