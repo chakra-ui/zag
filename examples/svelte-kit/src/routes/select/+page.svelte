@@ -1,20 +1,16 @@
 <script lang="ts">
   import * as select from "@zag-js/select"
   import { events, useMachine, normalizeProps } from "@zag-js/svelte"
+  import { selectControls, selectData } from "@zag-js/shared"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
+  import { ControlsUI, useControls } from "../../stores/controls"
 
-  const selectData = [
-    { label: "Nigeria", value: "NG" },
-    { label: "Japan", value: "JP" },
-    { label: "Korea", value: "KO" },
-    { label: "Kenya", value: "KE" },
-    { label: "United Kingdom", value: "UK" },
-    { label: "Ghana", value: "GH" },
-    { label: "Uganda", value: "UG" },
-  ]
+  const [context, defaultValues] = useControls(selectControls)
+  $: $context = defaultValues
 
-  const [state, send] = useMachine(select.machine({ id: "my-select" }))
+  const [state, send] = useMachine(select.machine({ id: "my-select" }), { context })
+
   $: api = select.connect($state, send, normalizeProps)
 </script>
 
@@ -34,10 +30,7 @@
   <div {...api.positionerProps.attrs} use:events={api.positionerProps.handlers}>
     <ul {...api.contentProps.attrs} use:events={api.contentProps.handlers}>
       {#each selectData as { label, value }}
-        <li 
-          {...api.getOptionProps({ label, value }).attrs} 
-          use:events={api.getOptionProps({ label, value }).handlers}
-        >
+        <li {...api.getOptionProps({ label, value }).attrs} use:events={api.getOptionProps({ label, value }).handlers}>
           <span>{label}</span>
           {#if api.selectedOption && value === api.selectedOption.value}✓{/if}
         </li>
@@ -47,5 +40,6 @@
 </div>
 
 <Toolbar>
+  <ControlsUI slot="controls" {context} controls={selectControls} />
   <StateVisualizer state={$state} />
 </Toolbar>
