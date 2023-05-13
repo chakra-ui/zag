@@ -17,7 +17,7 @@ export default function Page() {
       slidesPerView: 2,
     }),
     {
-      // context: controls.context,
+      context: controls.context,
     },
   )
 
