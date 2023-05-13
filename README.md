@@ -57,6 +57,7 @@ For framework specific solutions, we provide simple wrappers to help you consume
 - ⚛️ `@zag-js/react` - React hooks for consuming machines in React applications
 - 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
 - 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
+- 🚗 `@zag-js/svelte` - Svelte utilities for consuming machines in Svelte applications
 
 ## Usage
 
@@ -126,6 +127,7 @@ projects for the frameworks we support.
 - `start-react` : Starts the Next.js TypeScript project
 - `start-vue` : Starts the Vue 3 TypeScript project
 - `start-solid` : Starts the Solid TypeScript project
+- `start-svelte` : Starts the Svelte TypeScript project
 
 ### E2E Tests
 
@@ -135,6 +137,7 @@ ensure that the component works the same way regardless of the framework.
 - `e2e-react` : Starts the E2E tests for the React project
 - `e2e-vue` : Starts the E2E tests for the Vue project
 - `e2e-solid` : Starts the E2E tests for the Solid project
+- `e2e-svelte` : Starts the E2E tests for the Svelte project
 
 ### Contributing new machines/features
 
