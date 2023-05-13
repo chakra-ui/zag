@@ -13,5 +13,7 @@ function getDefaultValues<T extends ControlRecord>(obj: T) {
 }
 
 export function useControls<T extends ControlRecord>(config: T) {
-  return writable(getDefaultValues(config))
+  const defaultValues = getDefaultValues(config)
+  const ctx = writable(defaultValues)
+  return [ctx, defaultValues] as const
 }

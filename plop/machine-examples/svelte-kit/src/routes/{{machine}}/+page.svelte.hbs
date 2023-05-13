@@ -1,0 +1,28 @@
+<script>
+  import * as {{machine}} from "@zag-js/{{machine}}"
+  import { events, normalizeProps, useMachine } from "@zag-js/svelte"
+  import { {{machine}}Controls, {{machine}}Data } from "@zag-js/shared"
+  import { StateVisualizer } from "../../components/state-visualizer.svelte"
+  import { Toolbar } from "../../components/toolbar.svelte"
+  import { useControls } from "../hooks/use-controls"
+
+  import { ControlsUI, useControls } from "../../stores/controls"
+
+  const [context, defaultValues] = useControls({{machine}}Controls)
+  $: $context = defaultValues
+
+  $: [state, send] = useMachine({{machine}}.machine({ id: "{{machine}}" }), { context })
+
+  $: api = {{machine}}.connect($state, send, normalizeProps)
+</script>
+
+
+<main class="{{machine}}"> 
+  <div {...api.rootProps.attributes} use:events={api.rootProps.handlers}> 
+      
+  </div>
+</main>
+
+<Toolbar controls={controls.ui}>
+  <StateVisualizer state={state} />
+</Toolbar>

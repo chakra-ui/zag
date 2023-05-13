@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { useControls } from "."
-
   export let controls: Record<string, any>
-  export let ctx: ReturnType<typeof useControls>
+  export let context: any
 </script>
 
 <div class="controls-container">
@@ -14,22 +12,25 @@
           data-testid={key}
           id={label}
           type="checkbox"
-          on:change={(e) => ctx.update((s) => ({ ...s, [key]: e.currentTarget?.checked }))}
-          checked={$ctx[key]}
+          on:change={(e) => {
+            $context = { ...$context, [key]: e.currentTarget?.checked }
+          }}
+          checked={$context[key]}
         />
         <label for={label}>{label}</label>
       </div>
     {:else if type === "string"}
       <div class="text">
-        <label style="margin-right:10px">{label}</label>
+        <label for={label} style="margin-right:10px">{label}</label>
         <input
+          id={label}
           data-testid={key}
           type="text"
           {placeholder}
-          value={$ctx[key]}
+          value={$context[key]}
           on:keydown={(e) => {
             if (e.key === "Enter") {
-              ctx.update((s) => ({ ...s, [key]: e.currentTarget.value }))
+              $context = { ...$context, [key]: e.currentTarget.value }
             }
           }}
         />
@@ -42,9 +43,9 @@
         <select
           data-testid={key}
           id={label}
-          value={$ctx[key]}
+          value={$context[key]}
           on:change={(e) => {
-            ctx.update((s) => ({ ...s, [key]: e.currentTarget.value }))
+            $context = { ...$context, [key]: e.currentTarget.value }
           }}
         >
           <option>-----</option>
@@ -66,11 +67,11 @@
           type="number"
           {min}
           {max}
-          value={$ctx[key]}
+          value={$context[key]}
           on:keydown={(e) => {
             if (e.key === "Enter") {
               const val = parseFloat(e.currentTarget.value)
-              ctx.update((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
+              $context = { ...$context, [key]: isNaN(val) ? 0 : val }
             }
           }}
         />
