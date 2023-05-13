@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { useControls } from "."
-
   export let controls: Record<string, any>
-  export let context: ReturnType<typeof useControls>[0]
+  export let context: any
 </script>
 
 <div class="controls-container">
@@ -14,7 +12,9 @@
           data-testid={key}
           id={label}
           type="checkbox"
-          on:change={(e) => context.update((s) => ({ ...s, [key]: e.currentTarget?.checked }))}
+          on:change={(e) => {
+            $context = { ...$context, [key]: e.currentTarget?.checked }
+          }}
           checked={$context[key]}
         />
         <label for={label}>{label}</label>
@@ -30,7 +30,7 @@
           value={$context[key]}
           on:keydown={(e) => {
             if (e.key === "Enter") {
-              context.update((s) => ({ ...s, [key]: e.currentTarget.value }))
+              $context = { ...$context, [key]: e.currentTarget.value }
             }
           }}
         />
@@ -45,7 +45,7 @@
           id={label}
           value={$context[key]}
           on:change={(e) => {
-            context.update((s) => ({ ...s, [key]: e.currentTarget.value }))
+            $context = { ...$context, [key]: e.currentTarget.value }
           }}
         >
           <option>-----</option>
@@ -71,7 +71,7 @@
           on:keydown={(e) => {
             if (e.key === "Enter") {
               const val = parseFloat(e.currentTarget.value)
-              context.update((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
+              $context = { ...$context, [key]: isNaN(val) ? 0 : val }
             }
           }}
         />
