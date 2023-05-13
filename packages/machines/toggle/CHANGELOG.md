@@ -1,5 +1,12 @@
 # @zag-js/toggle
 
+## 0.8.0
+
+### Patch Changes
+
+- [`086da1fd`](https://github.com/chakra-ui/zag/commit/086da1fd2feeca9a7d6da0cc2789982b7c619b66) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor toggle machine to improve controlled usage
+
 ## 0.7.0
 
 ### Patch Changes

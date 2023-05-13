@@ -1,5 +1,6 @@
 export type { ContextFrom, EventFrom, StateFrom } from "@zag-js/core"
 export { mergeProps } from "./merge-props"
 export * from "./normalize-props"
+export { propTraps } from "./prop-trap"
 export * from "./use-actor"
 export * from "./use-machine"

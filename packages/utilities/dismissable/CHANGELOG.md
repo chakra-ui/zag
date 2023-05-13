@@ -1,5 +1,17 @@
 # @zag-js/dismissable
 
+## 0.8.0
+
+### Patch Changes
+
+- [`fb4fb42d`](https://github.com/chakra-ui/zag/commit/fb4fb42d8aacc5844945dd7b1bd27b94c978ca4e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `defer` option to allow defering the execution of
+  a function to the next tick
+
+- Updated dependencies [[`fb4fb42d`](https://github.com/chakra-ui/zag/commit/fb4fb42d8aacc5844945dd7b1bd27b94c978ca4e)]:
+  - @zag-js/interact-outside@0.8.0
+  - @zag-js/dom-event@0.8.0
+
 ## 0.6.0
 
 ### Patch Changes

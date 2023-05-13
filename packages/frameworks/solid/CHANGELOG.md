@@ -1,5 +1,17 @@
 # @zag-js/solid
 
+## 0.8.0
+
+### Minor Changes
+
+- [`bb037fb9`](https://github.com/chakra-ui/zag/commit/bb037fb985c54fe508d274c7e8fa0b4c7b20909d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose propTraps from solid package
+
+### Patch Changes
+
+- [`f17f0363`](https://github.com/chakra-ui/zag/commit/f17f036309bda6c11199a49ce09e5f35fd880a71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Update solid-js version
+
 ## 0.7.0
 
 ### Patch Changes

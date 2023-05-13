@@ -1,5 +1,12 @@
 # @zag-js/toast
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

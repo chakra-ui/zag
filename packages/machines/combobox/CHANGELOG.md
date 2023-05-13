@@ -1,5 +1,18 @@
 # @zag-js/combobox
 
+## 0.8.0
+
+### Patch Changes
+
+- [`bf88ff5e`](https://github.com/chakra-ui/zag/commit/bf88ff5e153a2c7fbf322a0d6c35412a1f9e7c91) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose prop definitions defined in types
+
+- Updated dependencies [[`fb4fb42d`](https://github.com/chakra-ui/zag/commit/fb4fb42d8aacc5844945dd7b1bd27b94c978ca4e)]:
+  - @zag-js/interact-outside@0.8.0
+  - @zag-js/aria-hidden@0.8.0
+  - @zag-js/popper@0.8.0
+  - @zag-js/dom-event@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

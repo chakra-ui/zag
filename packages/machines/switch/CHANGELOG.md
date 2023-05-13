@@ -1,5 +1,13 @@
 # @zag-js/switch
 
+## 0.8.0
+
+### Patch Changes
+
+- [#629](https://github.com/chakra-ui/zag/pull/629)
+  [`ec44e039`](https://github.com/chakra-ui/zag/commit/ec44e03941628f28b3799f8278a90355f1d73dcf) Thanks
+  [@junghyeonsu](https://github.com/junghyeonsu)! - Refactor switch machine to fix transition bugs in controlled mode.
+
 ## 0.7.0
 
 ### Patch Changes
