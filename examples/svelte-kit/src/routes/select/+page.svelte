@@ -1,11 +1,10 @@
 <script lang="ts">
   import * as select from "@zag-js/select"
   import { events, useMachine, normalizeProps } from "@zag-js/svelte"
+  import { selectControls, selectData } from "@zag-js/shared"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
   import { ControlsUI, useControls } from "../../stores/controls"
-  import { selectControls } from "../../../../../shared/src/controls"
-  import { selectData } from "../../../../../shared/src/data"
 
   const [context, defaultValues] = useControls(selectControls)
   $: $context = defaultValues

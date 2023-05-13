@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as menu from "@zag-js/menu"
   import { useMachine, events, normalizeProps } from "@zag-js/svelte"
+  import { menuControls } from "@zag-js/shared"
   import { ControlsUI, useControls } from "../../stores/controls"
-  import { menuControls } from "../../../../../shared/src/controls"
 
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
