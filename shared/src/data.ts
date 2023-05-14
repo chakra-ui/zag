@@ -1,8 +1,8 @@
-import { getData } from "country-list"
+import data from "country-list/data.json"
 
 export { paginationData } from "./pagination-data"
 
-export const selectData = getData().map((country) => ({
+export const selectData = data.map((country) => ({
   label: `${country.name} (${country.code})`,
   value: country.code,
 }))
