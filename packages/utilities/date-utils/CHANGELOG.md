@@ -1,5 +1,12 @@
 # @zag-js/date-utils
 
+## 0.9.0
+
+### Patch Changes
+
+- [`9d7c3bbe`](https://github.com/chakra-ui/zag/commit/9d7c3bbed06e44897a7fc2bfc16cd71ba9fc26df) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `null` from getDaysInWeek
+
 ## 0.5.0
 
 ### Patch Changes

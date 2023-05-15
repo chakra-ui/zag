@@ -1,5 +1,16 @@
 # @zag-js/tabs
 
+## 0.9.0
+
+### Patch Changes
+
+- [`9d7c3bbe`](https://github.com/chakra-ui/zag/commit/9d7c3bbed06e44897a7fc2bfc16cd71ba9fc26df) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Remove unneeded style property on tab indicator (depending on
+  orientation)
+  - Fix bug where keyboard navigation doesn't work in manual activation mode
+- Updated dependencies [[`6274ed5e`](https://github.com/chakra-ui/zag/commit/6274ed5e460400ef7038d2b3b6c1f0ce679ca649)]:
+  - @zag-js/anatomy@0.9.0
+
 ## 0.8.0
 
 ### Patch Changes

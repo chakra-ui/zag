@@ -1,5 +1,12 @@
 # @zag-js/anatomy
 
+## 0.9.0
+
+### Minor Changes
+
+- [`6274ed5e`](https://github.com/chakra-ui/zag/commit/6274ed5e460400ef7038d2b3b6c1f0ce679ca649) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support renaming component scope/name
+
 ## 0.1.4
 
 ### Patch Changes
