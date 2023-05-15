@@ -25,7 +25,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import type { DateView, DayCellProps, Offset, Send, State, ViewProps } from "./date-picker.types"
+import type { CellProps, DateView, DayCellProps, GridProps, Offset, Send, State, ViewProps } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   ensureValidCharacters,
@@ -37,6 +37,7 @@ import {
   getViewTriggerLabel,
   isDateWithinRange,
   isValidCharacter,
+  matchView,
 } from "./date-picker.utils"
 
 const pretty = (value: DateValue) => value.toString().split("T")[0]
@@ -86,6 +87,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      * The current view of the date picker
      */
     view: state.context.view,
+
+    /**
+     * Matcher for the current view of the date picker
+     */
+    matchView,
 
     /**
      * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
@@ -234,12 +240,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     visibleRange: state.context.visibleRange,
 
     /**
+     * Returns the months of the year
+     */
+    getYears() {
+      return getDecadeRange(focusedValue.year).map((year) => ({ label: year.toString(), value: year }))
+    },
+
+    /**
      * Returns the years of the decade based on the columns.
      * Represented as an array of arrays of years.
      */
-    getYears(props: { columns?: number } = {}) {
+    getYearsGrid(props: { columns?: number } = {}) {
       const { columns = 1 } = props
-      return chunk(getDecadeRange(focusedValue.year), columns)
+      return chunk(api.getYears(), columns)
     },
 
     /**
@@ -251,12 +264,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     /**
+     * Returns the months of the year
+     */
+    getMonths(props: { format?: "short" | "long" } = {}) {
+      const { format } = props
+      return getMonthNames(locale, format).map((label, index) => ({ label, value: index + 1 }))
+    },
+
+    /**
      * Returns the months of the year based on the columns.
      * Represented as an array of arrays of months.
      */
-    getMonths(props: { columns?: number; format?: "short" | "long" } = {}) {
+    getMonthsGrid(props: { columns?: number; format?: "short" | "long" } = {}) {
       const { columns = 1, format } = props
-      return chunk(getMonthNames(locale, format), columns)
+      return chunk(api.getMonths({ format }), columns)
     },
 
     /**
@@ -302,7 +323,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "calendar",
     }),
 
-    getGridProps(props: { view?: DateView; columns?: number; id?: string } = {}) {
+    getGridProps(props: GridProps = {}) {
       const { view = "day", columns = view === "day" ? 7 : 4, id } = props
       const uid = [view, id].filter(Boolean).join(" ")
       return normalize.element({
@@ -461,7 +482,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMonthCellState(props: { value: number }) {
+    getMonthCellState(props: CellProps) {
       const { value } = props
       const normalized = focusedValue.set({ month: value })
       const formatter = getMonthFormatter(locale, timeZone)
@@ -477,7 +498,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return cellState
     },
 
-    getMonthCellProps(props: { value: number }) {
+    getMonthCellProps(props: CellProps) {
       const { value } = props
       const cellState = api.getMonthCellState(props)
       return normalize.element({
@@ -489,7 +510,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMonthCellTriggerProps(props: { value: number }) {
+    getMonthCellTriggerProps(props: CellProps) {
       const { value } = props
       const cellState = api.getMonthCellState(props)
       return normalize.element({
@@ -514,7 +535,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getYearCellState(props: { value: number }) {
+    getYearCellState(props: CellProps) {
       const { value } = props
       const normalized = focusedValue.set({ year: value })
       const cellState = {
@@ -529,14 +550,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return cellState
     },
 
-    getYearCellProps(props: { value: number }) {
+    getYearCellProps(props: CellProps) {
+      const { value } = props
+      const cellState = api.getYearCellState(props)
+      return normalize.element({
+        role: "gridcell",
+        "aria-selected": ariaAttr(cellState.isSelected),
+        "data-selected": dataAttr(cellState.isSelected),
+        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "data-value": value,
+      })
+    },
+
+    getYearCellTriggerProps(props: CellProps) {
       const { value } = props
       const cellState = api.getYearCellState(props)
       return normalize.element({
         ...parts.cellTrigger.attrs,
-        role: "gridcell",
+        role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
-        "aria-selected": ariaAttr(cellState.isSelected),
         "data-selected": dataAttr(cellState.isSelected),
         "data-focused": dataAttr(cellState.isFocused),
         "aria-disabled": ariaAttr(!cellState.isSelectable),

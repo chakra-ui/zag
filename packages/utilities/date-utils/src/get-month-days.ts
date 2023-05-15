@@ -3,7 +3,7 @@ import { getStartOfWeek } from "./get-start-of-week"
 
 export function getDaysInWeek(weekIndex: number, from: DateValue, locale: string, firstDayOfWeek?: number) {
   const weekDate = from.add({ weeks: weekIndex })
-  const dates: (DateValue | null)[] = []
+  const dates: DateValue[] = []
   let date = getStartOfWeek(weekDate, locale, firstDayOfWeek)
   while (dates.length < 7) {
     dates.push(date)

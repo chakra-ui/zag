@@ -1,9 +1,8 @@
-import { CalendarDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { getYearsRange } from "@zag-js/date-utils"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -48,7 +47,7 @@ export default function Page() {
               <For each={api().getMonths()}>
                 {(month, i) => (
                   <option value={i() + 1} selected={api().focusedValue.month === i() + 1}>
-                    {month}
+                    {month.label}
                   </option>
                 )}
               </For>
@@ -101,14 +100,11 @@ export default function Page() {
                   {(week) => (
                     <tr>
                       <For each={week}>
-                        {(value, i) => {
-                          if (value === null) return <td />
-                          return (
-                            <td {...api().getDayCellProps({ value })}>
-                              <div {...api().getDayCellTriggerProps({ value })}>{value.day}</div>
-                            </td>
-                          )
-                        }}
+                        {(value) => (
+                          <td {...api().getDayCellProps({ value })}>
+                            <div {...api().getDayCellTriggerProps({ value })}>{value.day}</div>
+                          </td>
+                        )}
                       </For>
                     </tr>
                   )}
@@ -134,18 +130,15 @@ export default function Page() {
 
               <table {...api().getGridProps({ view: "month", columns: 4 })}>
                 <tbody>
-                  <For each={api().getMonths({ columns: 4, format: "short" })}>
-                    {(months, row) => (
+                  <For each={api().getMonthsGrid({ columns: 4, format: "short" })}>
+                    {(months) => (
                       <tr>
                         <For each={months}>
-                          {(month, index) => {
-                            const value = row() * 4 + index() + 1
-                            return (
-                              <td {...api().getMonthCellProps({ value })}>
-                                <div {...api().getMonthCellTriggerProps({ value })}>{month}</div>
-                              </td>
-                            )
-                          }}
+                          {(month) => (
+                            <td {...api().getMonthCellProps(month)}>
+                              <div {...api().getMonthCellTriggerProps(month)}>{month.label}</div>
+                            </td>
+                          )}
                         </For>
                       </tr>
                     )}
@@ -172,13 +165,13 @@ export default function Page() {
 
               <table {...api().getGridProps({ view: "year", columns: 4 })}>
                 <tbody>
-                  <For each={api().getYears({ columns: 4 })}>
+                  <For each={api().getYearsGrid({ columns: 4 })}>
                     {(years) => (
                       <tr>
                         <For each={years}>
                           {(year) => (
-                            <td colSpan={4} {...api().getYearCellProps({ value: year })}>
-                              {year}
+                            <td colSpan={4} {...api().getYearCellProps(year)}>
+                              <div {...api().getYearCellTriggerProps(year)}>{year.label}</div>
                             </td>
                           )}
                         </For>
