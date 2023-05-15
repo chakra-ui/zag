@@ -48,6 +48,6 @@ export const dom = createScope({
   dispatchChangeEvent(ctx: Ctx) {
     const input = dom.getHiddenInputEl(ctx)
     if (!input) return
-    dispatchInputValueEvent(input, ctx.value)
+    dispatchInputValueEvent(input, { value: ctx.value })
   },
 })

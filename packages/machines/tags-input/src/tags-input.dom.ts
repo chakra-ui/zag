@@ -47,8 +47,8 @@ export const dom = createScope({
     delete tag.dataset.deleteIntent
   },
   dispatchInputEvent(ctx: Ctx) {
-    const el = dom.getHiddenInputEl(ctx)
-    if (!el) return
-    dispatchInputValueEvent(el, ctx.valueAsString)
+    const inputEl = dom.getHiddenInputEl(ctx)
+    if (!inputEl) return
+    dispatchInputValueEvent(inputEl, { value: ctx.valueAsString })
   },
 })

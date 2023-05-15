@@ -174,7 +174,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onChange?.({ value: Array.from(ctx.value) })
         },
         dispatchInputEvent: (ctx) => {
-          dispatchInputValueEvent(dom.getHiddenInputEl(ctx), ctx.valueAsString)
+          const inputEl = dom.getHiddenInputEl(ctx)
+          dispatchInputValueEvent(inputEl, { value: ctx.valueAsString })
         },
         invokeOnInvalid: (ctx, evt) => {
           ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })

@@ -387,7 +387,8 @@ export function machine(userContext: UserDefinedContext) {
           cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
         },
         dispatchChangeEvent(ctx) {
-          dispatchInputValueEvent(dom.getInputEl(ctx), ctx.formattedValue)
+          const inputEl = dom.getInputEl(ctx)
+          dispatchInputValueEvent(inputEl, { value: ctx.formattedValue })
         },
       },
     },

@@ -17,7 +17,8 @@ export const dom = createScope({
   getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)),
 
   dispatchChangeEvent: (ctx: Ctx) => {
-    const hiddenInput = dom.getHiddenInputEl(ctx)
-    if (hiddenInput) dispatchInputValueEvent(hiddenInput, ctx.value)
+    const inputEl = dom.getHiddenInputEl(ctx)
+    if (!inputEl) return
+    dispatchInputValueEvent(inputEl, { value: ctx.value })
   },
 })

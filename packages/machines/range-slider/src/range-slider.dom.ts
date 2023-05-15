@@ -52,9 +52,9 @@ export const dom = createScope({
   dispatchChangeEvent(ctx: Ctx) {
     const valueArray = Array.from(ctx.value)
     valueArray.forEach((value, index) => {
-      const input = dom.getHiddenInputEl(ctx, index)
-      if (!input) return
-      dispatchInputValueEvent(input, value)
+      const inputEl = dom.getHiddenInputEl(ctx, index)
+      if (!inputEl) return
+      dispatchInputValueEvent(inputEl, { value })
     })
   },
 })

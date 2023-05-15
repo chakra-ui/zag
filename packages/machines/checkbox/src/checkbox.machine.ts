@@ -32,7 +32,7 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["setChecked"],
         },
         "DISPATCH.CHANGE": {
-          actions: ["dispatchChangeEvent"],
+          actions: ["dispatchCheckedEvent"],
         },
         "CONTEXT.SET": {
           actions: ["setContext"],
@@ -69,18 +69,15 @@ export function machine(userContext: UserDefinedContext) {
         setContext(ctx, evt) {
           Object.assign(ctx, evt.context)
         },
-        syncInputIndeterminate(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          inputEl.indeterminate = ctx.isIndeterminate
-        },
         syncInputElement(ctx) {
           const inputEl = dom.getInputEl(ctx)
-          inputEl.checked = !!ctx.checked
+          inputEl.checked = ctx.isChecked
+          inputEl.indeterminate = ctx.isIndeterminate
         },
-        dispatchChangeEvent(ctx, evt) {
+        dispatchCheckedEvent(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)
           const checked = isIndeterminate(evt.checked) ? false : evt.checked
-          dispatchInputCheckedEvent(inputEl, checked)
+          dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
         },
         removeFocusIfNeeded(ctx) {
           if (ctx.disabled && ctx.focused) {

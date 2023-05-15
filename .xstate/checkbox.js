@@ -22,7 +22,7 @@ const fetchMachine = createMachine({
       actions: ["setChecked"]
     },
     "DISPATCH.CHANGE": {
-      actions: ["dispatchChangeEvent"]
+      actions: ["dispatchCheckedEvent"]
     },
     "CONTEXT.SET": {
       actions: ["setContext"]
