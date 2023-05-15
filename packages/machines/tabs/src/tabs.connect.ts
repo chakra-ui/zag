@@ -3,7 +3,7 @@ import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
-import type { Send, State, TabProps } from "./tabs.types"
+import type { ContentProps, Send, State, TriggerProps } from "./tabs.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const translations = state.context.translations
@@ -92,7 +92,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getTriggerProps(props: TabProps) {
+    getTriggerProps(props: TriggerProps) {
       const { value, disabled } = props
       const selected = state.context.value === value
 
@@ -136,7 +136,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
     }),
 
-    getContentProps({ value }: { value: string }) {
+    getContentProps({ value }: ContentProps) {
       const selected = state.context.value === value
       return normalize.element({
         ...parts.content.attrs,

@@ -977,6 +977,10 @@ main [data-testid="scrubber"] {
   max-width: 20em;
 }
 
+[data-scope="tabs"][data-part="root"][data-orientation="vertical"] {
+  display: flex;
+}
+
 [data-scope="tabs"][data-part="tablist"] {
   margin: 0 0 -0.1em;
   overflow: visible;
@@ -1072,9 +1076,16 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="tabs"][data-part="indicator"] {
-  height: 4px;
   background-color: red;
   z-index: 10;
+}
+
+[data-scope="tabs"][data-part="indicator"][data-orientation="horizontal"] {
+  height: 4px;
+}
+
+[data-scope="tabs"][data-part="indicator"][data-orientation="vertical"] {
+  width: 4px;
 }
 
 /* -----------------------------------------------------------------------------

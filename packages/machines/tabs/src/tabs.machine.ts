@@ -21,7 +21,12 @@ export function machine(userContext: UserDefinedContext) {
         value: null,
         focusedValue: null,
         previousValues: [],
-        indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
+        indicatorRect: {
+          left: "0px",
+          top: "0px",
+          width: "0px",
+          height: "0px",
+        },
         canIndicatorTransition: false,
         isIndicatorRendered: false,
         loop: true,
@@ -50,6 +55,7 @@ export function machine(userContext: UserDefinedContext) {
           "setContentTabIndex",
         ],
         dir: ["syncIndicatorRect"],
+        orientation: ["syncIndicatorRect"],
       },
 
       on: {
@@ -67,11 +73,17 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            TAB_FOCUS: {
-              guard: "selectOnFocus",
-              target: "focused",
-              actions: ["setFocusedValue", "setValue"],
-            },
+            TAB_FOCUS: [
+              {
+                guard: "selectOnFocus",
+                target: "focused",
+                actions: ["setFocusedValue", "setValue"],
+              },
+              {
+                target: "focused",
+                actions: "setFocusedValue",
+              },
+            ],
             TAB_CLICK: {
               target: "focused",
               actions: ["setFocusedValue", "setValue"],

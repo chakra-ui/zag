@@ -49,11 +49,11 @@ export const dom = createScope({
   },
 
   resolveRect(rect: Record<"width" | "height" | "left" | "top", number>, orientation?: "horizontal" | "vertical") {
-    const prop = orientation === "vertical" ? "height" : "width"
+    const sizeProp = orientation === "vertical" ? "height" : "width"
+    const placementProp = orientation === "vertical" ? "top" : "left"
     return {
-      left: `${rect.left}px`,
-      top: `${rect.top}px`,
-      [prop]: `${rect[prop]}px`,
+      [placementProp]: `${rect[placementProp]}px`,
+      [sizeProp]: `${rect[sizeProp]}px`,
     }
   },
 })

@@ -41,11 +41,14 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        TAB_FOCUS: {
+        TAB_FOCUS: [{
           cond: "selectOnFocus",
           target: "focused",
           actions: ["setFocusedValue", "setValue"]
-        },
+        }, {
+          target: "focused",
+          actions: "setFocusedValue"
+        }],
         TAB_CLICK: {
           target: "focused",
           actions: ["setFocusedValue", "setValue"]

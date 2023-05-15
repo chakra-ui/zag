@@ -14,6 +14,15 @@ type ElementIds = Partial<{
   indicator: string
 }>
 
+export type TriggerProps = {
+  value: string
+  disabled?: boolean
+}
+
+export type ContentProps = {
+  value: string
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -119,8 +128,3 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
-
-export type TabProps = {
-  value: string
-  disabled?: boolean
-}
