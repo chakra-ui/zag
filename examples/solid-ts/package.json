@@ -13,11 +13,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "4.2.0",
-    "vite-plugin-solid": "2.6.1"
+    "vite": "4.3.5",
+    "vite-plugin-solid": "2.7.0"
   },
   "dependencies": {
-    "@internationalized/date": "^3.1.0",
+    "@internationalized/date": "^3.2.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
