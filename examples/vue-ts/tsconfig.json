@@ -1,5 +1,5 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "strict": true,
@@ -7,7 +7,7 @@
     "paths": {
       "@zag-js/*": ["../../node_modules/@zag-js/*"]
     },
-    "jsx":"preserve"
+    "jsx": "preserve"
   },
 
   "references": [
