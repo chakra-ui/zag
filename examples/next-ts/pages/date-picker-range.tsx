@@ -48,7 +48,7 @@ export default function Page() {
             <select {...api.monthSelectProps}>
               {api.getMonths().map((month, i) => (
                 <option key={i} value={i + 1}>
-                  {month}
+                  {month.label}
                 </option>
               ))}
             </select>
@@ -89,14 +89,11 @@ export default function Page() {
                 <tbody>
                   {api.weeks.map((week, i) => (
                     <tr key={i}>
-                      {week.map((value, i) => {
-                        if (value === null) return <td key={i} />
-                        return (
-                          <td key={i} {...api.getDayCellProps({ value })}>
-                            <div {...api.getDayCellTriggerProps({ value })}>{value.day}</div>
-                          </td>
-                        )
-                      })}
+                      {week.map((value, i) => (
+                        <td key={i} {...api.getDayCellProps({ value })}>
+                          <div {...api.getDayCellTriggerProps({ value })}>{value.day}</div>
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
