@@ -483,7 +483,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getMonthCellState(props: CellProps) {
-      const { value } = props
+      const { value, disabled } = props
       const normalized = focusedValue.set({ month: value })
       const formatter = getMonthFormatter(locale, timeZone)
       const cellState = {
@@ -492,7 +492,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isSelected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
         valueText: formatter.format(normalized.toDate(timeZone)),
         get isDisabled() {
-          return !cellState.isSelectable
+          return disabled || !cellState.isSelectable
         },
       }
       return cellState
@@ -536,7 +536,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getYearCellState(props: CellProps) {
-      const { value } = props
+      const { value, disabled } = props
       const normalized = focusedValue.set({ year: value })
       const cellState = {
         isFocused: focusedValue.year === props.value,
@@ -544,7 +544,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isSelected: !!selectedValue.find((date) => date.year === value),
         valueText: value.toString(),
         get isDisabled() {
-          return !cellState.isSelectable
+          return disabled || !cellState.isSelectable
         },
       }
       return cellState

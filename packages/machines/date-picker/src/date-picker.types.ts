@@ -52,6 +52,7 @@ export type GridProps = {
 }
 
 export type CellProps = {
+  disabled?: boolean
   value: number
 }
 
