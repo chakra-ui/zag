@@ -9,6 +9,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDisabled = state.context.disabled
   const isFocusable = state.context.focusable
   const isFocused = !isDisabled && state.context.focused
+  const isChecked = state.context.checked
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
@@ -25,21 +26,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     /**
      * Whether the checkbox is checked
      */
-    isChecked: state.context.checked,
+    isChecked,
+
     /**
      * Whether the checkbox is disabled
      */
     isDisabled,
+
     /**
      * Whether the checkbox is focused
      */
     isFocused,
+
     /**
      * Function to set the checked state of the switch.
      */
-    setChecked(value: boolean) {
-      if (isDisabled) return
-      send({ type: "CHECKED.SET", checked: value })
+    setChecked(checked: boolean) {
+      send({ type: "DISPATCH.CHANGE", checked })
+    },
+
+    /**
+     * Function to toggle the checked state of the checkbox
+     */
+    toggleChecked() {
+      send({ type: "CHECKED.TOGGLE", checked: isChecked })
     },
 
     rootProps: normalize.label({
@@ -93,7 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       type: "checkbox",
       required: state.context.required,
-      defaultChecked: state.context.checked,
+      defaultChecked: isChecked,
       "data-focus": dataAttr(isFocused),
       "data-hover": dataAttr(state.context.hovered),
       disabled: trulyDisabled,
@@ -104,8 +114,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       form: state.context.form,
       value: state.context.value,
       style: visuallyHiddenStyle,
-      onChange() {
-        send({ type: "CHECKED.TOGGLE" })
+      onChange(event) {
+        const checked = event.currentTarget.checked
+        send({ type: "CHECKED.SET", checked })
       },
       onBlur() {
         send({ type: "CONTEXT.SET", context: { focused: false } })

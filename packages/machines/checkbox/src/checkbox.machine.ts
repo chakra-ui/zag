@@ -29,6 +29,9 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["toggleChecked"],
         },
         "CHECKED.SET": {
+          actions: ["setChecked"],
+        },
+        "DISPATCH.CHANGE": {
           actions: ["dispatchChangeEvent"],
         },
         "CONTEXT.SET": {

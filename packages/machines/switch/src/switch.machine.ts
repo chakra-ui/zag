@@ -30,6 +30,9 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["toggleChecked"],
         },
         "CHECKED.SET": {
+          actions: ["setChecked"],
+        },
+        "DISPATCH.CHANGE": {
           actions: ["dispatchChangeEvent"],
         },
         "CONTEXT.SET": {
@@ -42,10 +45,6 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      guards: {
-        shouldCheck: (_, evt) => evt.checked,
-      },
-
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getInputEl(ctx), {
