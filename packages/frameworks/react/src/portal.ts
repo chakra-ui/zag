@@ -31,8 +31,8 @@ export function Portal(props: PortalProps): JSX.Element {
   const targetNode = target?.current ?? portalNode.current
 
   if (targetNode) {
-    return createPortal(children, targetNode) as any
+    return createPortal(children as any, targetNode)
   }
 
-  return createElement("span", { ref: node }) as any
+  return createElement("span", { ref: node })
 }
