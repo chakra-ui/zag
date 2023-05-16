@@ -1,5 +1,18 @@
 # @zag-js/switch
 
+## 0.9.0
+
+### Patch Changes
+
+- [`a1cccb88`](https://github.com/chakra-ui/zag/commit/a1cccb889afbf60d03c27dcde14a1de2b57ca9d6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove unused attributes and make it consistent with checkbox
+
+- [`669e2a4e`](https://github.com/chakra-ui/zag/commit/669e2a4e680adc860cc901251039169b5956fe97) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor machines to wire out state and transitions correctly
+
+- Updated dependencies [[`6274ed5e`](https://github.com/chakra-ui/zag/commit/6274ed5e460400ef7038d2b3b6c1f0ce679ca649)]:
+  - @zag-js/anatomy@0.9.0
+
 ## 0.8.0
 
 ### Patch Changes
