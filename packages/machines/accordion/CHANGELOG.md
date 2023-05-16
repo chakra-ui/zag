@@ -1,5 +1,20 @@
 # @zag-js/accordion
 
+## 0.9.1
+
+### Patch Changes
+
+- [`8469daa1`](https://github.com/chakra-ui/zag/commit/8469daa15fd7f2c0a80869a8715b0342bd3c355f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Force release every package to fix regression
+
+- Updated dependencies [[`8469daa1`](https://github.com/chakra-ui/zag/commit/8469daa15fd7f2c0a80869a8715b0342bd3c355f)]:
+  - @zag-js/anatomy@0.9.1
+  - @zag-js/core@0.9.1
+  - @zag-js/types@0.9.1
+  - @zag-js/utils@0.9.1
+  - @zag-js/dom-event@0.9.1
+  - @zag-js/dom-query@0.9.1
+
 ## 0.9.0
 
 ### Patch Changes
