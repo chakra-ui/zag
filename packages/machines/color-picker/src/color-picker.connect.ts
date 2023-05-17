@@ -1,5 +1,13 @@
 import { Color, ColorChannel, ColorFormat, normalizeColor } from "@zag-js/color-utils"
-import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import {
+  EventKeyMap,
+  getEventKey,
+  getEventPoint,
+  getEventStep,
+  getNativeEvent,
+  isLeftClick,
+  isModifiedEvent,
+} from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
@@ -83,7 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
-          const point = { x: evt.clientX, y: evt.clientY }
+          const point = getEventPoint(evt)
           const channel = { xChannel, yChannel }
 
           send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
@@ -189,7 +197,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
-          const point = { x: evt.clientX, y: evt.clientY }
+          const point = getEventPoint(evt)
           send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
         },
         style: {

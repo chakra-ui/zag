@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { EventKeyMap, getEventPoint, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -231,14 +231,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "presentation",
       onMouseDown(event) {
         if (isDisabled) return
-        const evt = getNativeEvent(event)
-        event.preventDefault()
-        const point = { x: evt.clientX, y: evt.clientY }
 
+        const evt = getNativeEvent(event)
+
+        const point = getEventPoint(evt)
         point.x = point.x - roundToDevicePixel(7.5)
         point.y = point.y - roundToDevicePixel(7.5)
 
         send({ type: "PRESS_DOWN_SCRUBBER", point })
+        event.preventDefault()
       },
       style: {
         cursor: isDisabled ? undefined : "ew-resize",

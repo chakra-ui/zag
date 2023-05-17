@@ -2,6 +2,7 @@ export function getElementOffset(element: HTMLElement) {
   let left = 0
   let top = 0
   let el = element
+  const win = element.ownerDocument.defaultView || window
 
   if (el.parentNode) {
     do {
@@ -19,8 +20,8 @@ export function getElementOffset(element: HTMLElement) {
 
   return {
     top: top,
-    right: innerWidth - left - element.offsetWidth,
-    bottom: innerHeight - top - element.offsetHeight,
+    right: win.innerWidth - left - element.offsetWidth,
+    bottom: win.innerHeight - top - element.offsetHeight,
     left: left,
   }
 }

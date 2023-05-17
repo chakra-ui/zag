@@ -1,4 +1,12 @@
-import { EventKeyMap, getEventKey, getEventStep, getNativeEvent, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import {
+  EventKeyMap,
+  getEventKey,
+  getEventPoint,
+  getEventStep,
+  getNativeEvent,
+  isLeftClick,
+  isModifiedEvent,
+} from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -278,7 +286,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifiedEvent(evt)) return
 
-        const point = { x: evt.clientX, y: evt.clientY }
+        const point = getEventPoint(evt)
         send({ type: "POINTER_DOWN", point })
 
         event.preventDefault()

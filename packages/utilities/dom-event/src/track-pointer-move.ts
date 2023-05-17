@@ -1,5 +1,6 @@
 import { disableTextSelection } from "@zag-js/text-selection"
 import { addDomEvent } from "./add-dom-event"
+import { getEventPoint } from "./get-event-point"
 
 type Point = {
   x: number
@@ -15,10 +16,9 @@ export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
   const { onPointerMove, onPointerUp } = handlers
 
   const handleMove = (event: PointerEvent) => {
-    const x = event.clientX
-    const y = event.clientY
+    const point = getEventPoint(event)
 
-    const distance = Math.sqrt(x ** 2 + y ** 2)
+    const distance = Math.sqrt(point.x ** 2 + point.y ** 2)
     const moveBuffer = event.pointerType === "touch" ? 10 : 5
 
     if (distance < moveBuffer) return
@@ -29,7 +29,7 @@ export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
       return
     }
 
-    onPointerMove({ point: { x, y }, event })
+    onPointerMove({ point, event })
   }
 
   const cleanups = [
