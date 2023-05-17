@@ -41,11 +41,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             CLOSE: {
               target: "closed",
-              actions: ["invokeOnClose"],
+              actions: ["invokeOnClose", "restoreFocus"],
             },
             TOGGLE: {
               target: "closed",
-              actions: ["invokeOnClose"],
+              actions: ["invokeOnClose", "restoreFocus"],
             },
           },
         },
@@ -98,16 +98,15 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.trapFocus) return
           let trap: FocusTrap
           nextTick(() => {
-            const el = dom.getContentEl(ctx)
-            if (!el) return
-            trap = createFocusTrap(el, {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
+            trap = createFocusTrap(contentEl, {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
-              fallbackFocus: el,
+              returnFocusOnDeactivate: false,
+              fallbackFocus: contentEl,
               allowOutsideClick: true,
-              returnFocusOnDeactivate: ctx.restoreFocus,
               initialFocus: runIfFn(ctx.initialFocusEl),
-              setReturnFocus: runIfFn(ctx.finalFocusEl) ?? dom.getTriggerEl(ctx),
             })
             try {
               trap.activate()
@@ -136,6 +135,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         toggleVisibility(ctx, _evt, { send }) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+        },
+        restoreFocus(ctx) {
+          if (!ctx.restoreFocus) return
+          raf(() => {
+            const el = runIfFn(ctx.finalFocusEl) ?? dom.getTriggerEl(ctx)
+            el?.focus({ preventScroll: true })
+          })
         },
       },
     },
