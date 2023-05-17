@@ -1,5 +1,7 @@
 # @zag-js/visually-hidden
 
+## 0.9.2
+
 ## 0.9.1
 
 ### Patch Changes

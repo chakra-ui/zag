@@ -1,5 +1,7 @@
 # @zag-js/anatomy
 
+## 0.9.2
+
 ## 0.9.1
 
 ### Patch Changes
