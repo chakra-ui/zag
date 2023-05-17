@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@1.4.0/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "chakra-ui/zag" }],
   "commit": false,
-  "linked": [["@zag-js/**"]],
+  "fixed": [["@zag-js/**"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
