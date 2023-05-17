@@ -147,6 +147,7 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         setupValue: (ctx) => {
+          if (ctx.value.length) return
           const inputs = dom.getElements(ctx)
           const emptyValues = Array.from<string>({ length: inputs.length }).fill("")
           assign(ctx, emptyValues)
