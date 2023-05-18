@@ -1,5 +1,12 @@
 # @zag-js/core
 
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.9.2
+
 ## 0.9.1
 
 ### Patch Changes
