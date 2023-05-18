@@ -20,7 +20,7 @@ export default function Page() {
       <main className="avatar">
         <div {...api.rootProps}>
           <span {...api.fallbackProps}>PA</span>
-          {showImage && <img referrerPolicy="no-referrer" src={src} {...api.imageProps} />}
+          {showImage && <img alt="" referrerPolicy="no-referrer" src={src} {...api.imageProps} />}
         </div>
 
         <div className="controls">
