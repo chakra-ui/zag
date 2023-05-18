@@ -2,7 +2,6 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
 
 type PublicContext = CommonProperties & {
-  delayMs?: number
   onLoad?: () => void
   onError?: () => void
 }

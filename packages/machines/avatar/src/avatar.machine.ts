@@ -15,9 +15,6 @@ export function machine(userContext: UserDefinedContext) {
       context: ctx,
 
       on: {
-        "FALLBACK.SHOW": {
-          actions: ["showFallback"],
-        },
         "SRC.CHANGE": {
           target: "loading",
         },
@@ -64,22 +61,14 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackImageRemoval(ctx, _evt, { send }) {
-          return observeChildren(dom.getRootEl(ctx), (record) => {
-            const removedNodes = Array.from(record[0].removedNodes) as HTMLElement[]
+          const rootEl = dom.getRootEl(ctx)
+          return observeChildren(rootEl, (records) => {
+            const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
             const removed = removedNodes.find((node) => node.matches("[data-scope=avatar][data-part=image]"))
             if (removed) {
               send({ type: "IMG.UNMOUNT" })
             }
           })
-        },
-        trackDelayMs(ctx, _evt, { send }) {
-          if (ctx.delayMs == null) return
-          const id = setTimeout(() => {
-            send({ type: "FALLBACK.SHOW" })
-          }, ctx.delayMs)
-          return () => {
-            clearTimeout(id)
-          }
         },
       },
       actions: {

@@ -15,9 +15,6 @@ const fetchMachine = createMachine({
   activities: ["trackImageRemoval"],
   context: {},
   on: {
-    "FALLBACK.SHOW": {
-      actions: ["showFallback"]
-    },
     "SRC.CHANGE": {
       target: "loading"
     },
