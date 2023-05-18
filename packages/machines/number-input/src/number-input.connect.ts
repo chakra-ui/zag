@@ -141,12 +141,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("BLUR")
       },
       onChange(event) {
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
         send({ type: "CHANGE", target: event.currentTarget, hint: "set" })
       },
       onKeyDown(event) {
         const evt = getNativeEvent(event)
+        // TODO: This blocks non-ascii characters
         if (evt.isComposing) return
 
         if (!utils.isValidNumericEvent(state.context, event)) {

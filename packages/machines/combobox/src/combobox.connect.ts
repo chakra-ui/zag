@@ -157,8 +157,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("FOCUS")
       },
       onChange(event) {
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
         send({ type: "CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
