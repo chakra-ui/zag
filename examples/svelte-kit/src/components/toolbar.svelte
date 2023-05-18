@@ -1,15 +1,15 @@
 <script lang="ts">
   import { dataAttr } from "@zag-js/dom-query"
 
-  export let controls: boolean = true
-  export let viz: boolean = false
+  export let controls = true
+  export let viz = false
 
-  let active = viz ? 1 : controls === null ? 1 : 0
+  let active = viz ? 1 : !controls ? 1 : 0
 </script>
 
 <div class="toolbar">
   <nav>
-    {#if controls !== null}
+    {#if controls}
       <button
         data-active={dataAttr(active === 0)}
         on:click={() => {
@@ -30,7 +30,7 @@
     </button>
   </nav>
   <div>
-    {#if controls !== null}
+    {#if controls}
       <div data-content data-active={dataAttr(active === 0)}>
         <slot name="controls" />
       </div>
