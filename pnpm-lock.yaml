@@ -136,6 +136,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -353,6 +356,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -558,6 +564,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -754,6 +763,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -986,6 +998,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -1343,6 +1358,31 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/avatar:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/mutation-observer':
+        specifier: workspace:*
+        version: link:../../utilities/mutation-observer
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

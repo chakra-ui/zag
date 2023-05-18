@@ -1,15 +1,25 @@
 {
-  "name": "@zag-js/{{machine}}",
+  "name": "@zag-js/avatar",
   "version": "0.0.0",
-  "description": "Core logic for the {{machine}} widget implemented as a state machine",
-  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "{{machine}}"],
+  "description": "Core logic for the avatar widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "avatar"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-    "main": "src/index.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/{{machine}}",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/avatar",
   "sideEffects": false,
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build-fast": "tsup src",
     "start": "pnpm build --watch",
@@ -30,6 +40,7 @@
   },
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
+    "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",

@@ -18,10 +18,12 @@
   },
   "dependencies": {
     "@internationalized/date": "^3.2.0",
+    "@solidjs/router": "^0.8.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
+    "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
@@ -78,7 +80,6 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "@solidjs/router": "^0.8.2",
     "solid-js": "1.7.5"
   }
 }
