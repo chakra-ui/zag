@@ -14,25 +14,25 @@ export function machine(userContext: UserDefinedContext) {
       id: "pressable",
       initial: "idle",
       context: {
+        longPressDelay: 500,
         ...ctx,
-        ignoreClickAfterPress: false,
-        activePointerId: null,
-        target: null,
-        pointerType: null,
-        pointerdownEvent: null,
-        cleanups: ref([]),
         wasPressedDown: false,
+        ignoreClickAfterPress: false,
+        target: null,
+        pointerId: null,
+        pointerType: null,
+        cleanups: ref([]),
       },
 
       exit: ["restoreTextSelection", "removeDocumentListeners"],
 
       states: {
         idle: {
-          entry: ["removeDocumentListeners", "resetContext", "restoreTextSelection", "resetIgnoreClick"],
+          entry: ["resetPointerContext", "restoreTextSelection", "removeDocumentListeners"],
           on: {
             POINTER_DOWN: [
               {
-                guard: "isVirtualPointerEvent",
+                guard: "isVirtualPointer",
                 actions: "setPointerType",
               },
               {
@@ -51,10 +51,16 @@ export function machine(userContext: UserDefinedContext) {
             ],
             KEY_DOWN: {
               target: "pressed:in",
-              actions: ["setTarget", "invokeOnPressStart", "trackDocumentKeyup"],
+              actions: ["setTarget", "setPointerType", "invokeOnPressStart", "trackDocumentKeyup"],
             },
             CLICK: {
-              actions: ["focusIfNeeded", "invokeOnPressStart", "invokeOnPressEnd", "invokeOnPress", "resetIgnoreClick"],
+              actions: [
+                "focusIfNeeded",
+                "invokeOnPressStart",
+                "enableClickAfterPress",
+                "invokeOnPressEnd",
+                "invokeOnPress",
+              ],
             },
           },
         },
@@ -63,7 +69,7 @@ export function machine(userContext: UserDefinedContext) {
           tags: "pressed",
           entry: "preventContextMenu",
           after: {
-            500: {
+            LONG_PRESS_DELAY: {
               guard: "wasPressedDown",
               actions: ["clearPressedDown", "invokeOnLongPress"],
             },
@@ -84,23 +90,38 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "wasPressedDown",
                 target: "idle",
-                actions: ["clearPressedDown", "invokeOnPressUp", "invokeOnPressEnd", "invokeOnPress"],
+                actions: [
+                  "clearPressedDown",
+                  "invokeOnPressUp",
+                  "enableClickAfterPress",
+                  "invokeOnPressEnd",
+                  "invokeOnPress",
+                ],
               },
               {
                 target: "idle",
-                actions: ["clearPressedDown", "invokeOnPressUp", "invokeOnPressEnd"],
+                actions: ["clearPressedDown", "invokeOnPressUp", "enableClickAfterPress", "invokeOnPressEnd"],
               },
             ],
             DOC_KEY_UP: {
               target: "idle",
-              actions: ["clearPressedDown", "invokeOnPressEnd", "triggerClick"],
+              actions: [
+                "clearPressedDown",
+                "invokeOnPressUp",
+                "disableClickAfterPress",
+                "invokeOnPressEnd",
+                "invokeOnPress",
+                "triggerClickIfAnchor",
+              ],
             },
-            KEY_UP: {
+            DOC_POINTER_CANCEL: {
               target: "idle",
-              actions: ["clearPressedDown", "invokeOnPressUp"],
+              actions: "clearPressedDown",
             },
-            DOC_POINTER_CANCEL: { target: "idle", actions: "clearPressedDown" },
-            DRAG_START: { target: "idle", actions: "clearPressedDown" },
+            DRAG_START: {
+              target: "idle",
+              actions: "clearPressedDown",
+            },
           },
         },
 
@@ -121,8 +142,11 @@ export function machine(userContext: UserDefinedContext) {
     },
 
     {
+      delays: {
+        LONG_PRESS_DELAY: (ctx) => ctx.longPressDelay,
+      },
       guards: {
-        isVirtualPointerEvent: (_ctx, evt) => evt.pointerType === "virtual",
+        isVirtualPointer: (_ctx, evt) => evt.pointerType === "virtual",
         cancelOnPointerExit: (ctx) => !!ctx.cancelOnPointerExit,
         wasPressedDown: (ctx) => ctx.wasPressedDown,
       },
@@ -131,18 +155,29 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
 
           const onPointerMove = (event: PointerEvent) => {
-            if (event.pointerId !== ctx.activePointerId) return
+            if (event.pointerId !== ctx.pointerId) return
             const isOver = isOverTarget(event, ctx.target)
-            send({ type: isOver ? "POINTER_ENTER" : "POINTER_LEAVE", event })
+            send({
+              type: isOver ? "POINTER_ENTER" : "POINTER_LEAVE",
+              currentTarget: event.currentTarget,
+              pointerType: event.pointerType,
+            })
           }
 
           const onPointerUp = (event: PointerEvent) => {
-            if (event.pointerId !== ctx.activePointerId || event.button !== 0) return
-            send({ type: "DOC_POINTER_UP", event })
+            if (event.pointerId !== ctx.pointerId || event.button !== 0) return
+            send({
+              type: "DOC_POINTER_UP",
+              currentTarget: event.currentTarget,
+              pointerType: event.pointerType,
+            })
           }
 
           const onPointerCancel = (event: PointerEvent | MouseEvent) => {
-            send({ type: "DOC_POINTER_CANCEL", event })
+            send({
+              type: "DOC_POINTER_CANCEL",
+              currentTarget: event.currentTarget,
+            })
           }
 
           const cleanup = [
@@ -158,7 +193,7 @@ export function machine(userContext: UserDefinedContext) {
 
           ctx.cleanups.push(...cleanup)
         },
-        trackDocumentKeyup(ctx, _evt, { send }) {
+        trackDocumentKeyup(ctx, evt, { send }) {
           const doc = dom.getDoc(ctx)
 
           const onKeyup = (event: KeyboardEvent) => {
@@ -168,7 +203,11 @@ export function machine(userContext: UserDefinedContext) {
               event.preventDefault()
             }
 
-            send({ type: "DOC_KEY_UP", event })
+            send({
+              type: "DOC_KEY_UP",
+              // forward the previously store keyboard type
+              pointerType: evt.pointerType,
+            })
           }
 
           const cleanup = addDomEvent(doc, "keyup", onKeyup, false)
@@ -178,10 +217,13 @@ export function machine(userContext: UserDefinedContext) {
           ctx.cleanups.forEach((fn) => fn?.())
           ctx.cleanups = ref([])
         },
-        resetContext(ctx) {
-          ctx.activePointerId = null
+        resetPointerContext(ctx) {
+          ctx.pointerId = null
           ctx.pointerType = null
-          ctx.pointerdownEvent = null
+        },
+        disableTextSelection(ctx) {
+          if (!ctx.target || ctx.allowTextSelectionOnPress) return
+          disableTextSelection({ target: ctx.target, doc: dom.getDoc(ctx) })
         },
         restoreTextSelection(ctx) {
           if (ctx.allowTextSelectionOnPress || !ctx.target) return
@@ -190,70 +232,54 @@ export function machine(userContext: UserDefinedContext) {
         setPointerToVirtual(ctx) {
           ctx.pointerType = "virtual"
         },
-        setPointerType(ctx, { event }) {
-          ctx.pointerType = event.pointerType
+        setPointerType(ctx, evt) {
+          ctx.pointerType = evt.pointerType
         },
-        setPointerId(ctx, { event }) {
-          ctx.activePointerId = event.pointerId
-          ctx.pointerdownEvent = ref(event)
+        setPointerId(ctx, evt) {
+          ctx.pointerId = evt.pointerId
         },
-        setTarget(ctx, { event }) {
-          ctx.target = ref(event.currentTarget)
+        setTarget(ctx, evt) {
+          ctx.target = ref(evt.currentTarget)
         },
-        focusIfNeeded(ctx, { event }) {
+        focusIfNeeded(ctx, evt) {
           if (ctx.disabled || ctx.preventFocusOnPress) return
-          event.currentTarget.focus({ preventScroll: true })
+          evt.currentTarget.focus({ preventScroll: true })
         },
         invokeOnPressStart(ctx, evt) {
           if (ctx.disabled) return
-
-          let { event: originalEvent, pressEvent, pointerType } = evt
-          const event = pressEvent || originalEvent
-
           ctx.onPressStart?.({
             type: "pressstart",
-            pointerType: pointerType || ctx.pointerType,
-            target: event.currentTarget,
-            originalEvent: event,
+            pointerType: evt.pointerType || ctx.pointerType,
+            target: evt.currentTarget,
           })
         },
-        disableTextSelection(ctx) {
-          if (!ctx.target || ctx.allowTextSelectionOnPress) return
-          disableTextSelection({ target: ctx.target, doc: dom.getDoc(ctx) })
-        },
-        invokeOnPressUp(ctx, { event, pointerType }) {
+        invokeOnPressUp(ctx, evt) {
           if (ctx.disabled) return
           ctx.onPressUp?.({
             type: "pressup",
-            pointerType: pointerType || ctx.pointerType,
-            target: event.currentTarget,
-            originalEvent: event,
+            pointerType: evt.pointerType || ctx.pointerType,
+            target: evt.currentTarget,
           })
         },
-        invokeOnPressEnd(ctx, { event, pointerType }) {
-          ctx.ignoreClickAfterPress = true
+        invokeOnPressEnd(ctx, evt) {
+          if (ctx.disabled) return
           ctx.onPressEnd?.({
             type: "pressend",
-            pointerType: pointerType || ctx.pointerType,
-            target: event.currentTarget,
-            originalEvent: event,
+            pointerType: evt.pointerType || ctx.pointerType,
+            target: evt.currentTarget,
           })
         },
-        invokeOnPress(ctx, { event, pointerType }) {
+        invokeOnPress(ctx, evt) {
           if (ctx.disabled) return
           ctx.onPress?.({
             type: "press",
-            pointerType: pointerType || ctx.pointerType,
-            target: event.currentTarget,
-            originalEvent: event,
+            pointerType: evt.pointerType || ctx.pointerType,
+            target: evt.currentTarget,
           })
         },
-        triggerClick(ctx, { event }) {
-          let target = event.target as Element
-
-          if (!isHTMLElement(ctx.target)) {
-            return
-          }
+        triggerClickIfAnchor(ctx, evt) {
+          let target = evt.currentTarget as Element
+          if (!isHTMLElement(ctx.target)) return
 
           const isAnchor = isHTMLAnchorLink(ctx.target) || ctx.target.getAttribute("role") === "link"
 
@@ -261,23 +287,18 @@ export function machine(userContext: UserDefinedContext) {
             ctx.target.click()
           }
         },
-        dispatchPointerCancel(ctx) {
-          if (!ctx.target) return
-          const win = dom.getWin(ctx)
-          // Prevent other pressable handlers from also handling this event.
-          const evt = new win.PointerEvent("pointercancel", { bubbles: true })
-          ctx.target.dispatchEvent(evt)
-        },
-        invokeOnLongPress(ctx, { pointerType }) {
+        invokeOnLongPress(ctx, evt) {
           if (!ctx.target) return
           ctx.onLongPress?.({
             type: "longpress",
-            pointerType: pointerType || ctx.pointerType,
+            pointerType: evt.pointerType || ctx.pointerType,
             target: ctx.target,
-            originalEvent: ctx.pointerdownEvent!,
           })
         },
-        resetIgnoreClick(ctx) {
+        disableClickAfterPress(ctx) {
+          ctx.ignoreClickAfterPress = true
+        },
+        enableClickAfterPress(ctx) {
           ctx.ignoreClickAfterPress = false
         },
         setPressedDown(ctx) {

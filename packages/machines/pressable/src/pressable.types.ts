@@ -32,10 +32,6 @@ export interface PressEvent {
    * The target element of the press event.
    */
   target: HTMLElement
-  /**
-   * The original fired event
-   */
-  originalEvent?: PointerEvent
 }
 
 export type PressHandlers = {
@@ -88,15 +84,18 @@ type PublicContext = DirectionProperty &
      * Whether text selection should be enabled on the pressable element.
      */
     allowTextSelectionOnPress?: boolean
+    /**
+     * The amount of time (in milliseconds) to wait before firing the `onLongPress` event.
+     */
+    longPressDelay: number
   }
 
 interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
 
 type PrivateContext = Context<{
   ignoreClickAfterPress: boolean
-  activePointerId: number | null
   target: FocusableElement | null
-  pointerdownEvent: PointerEvent | null
+  pointerId: number | null
   pointerType: PointerType | null
   cleanups: VoidFunction[]
   wasPressedDown: boolean
