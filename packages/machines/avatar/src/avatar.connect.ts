@@ -58,6 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       style: {
         gridArea: "1 / 1 / 2 / 2",
+        visibility: !isLoaded ? "hidden" : undefined,
       },
     }),
 
