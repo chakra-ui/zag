@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 0.9.2
+
+### Patch Changes
+
+- [`280015e3`](https://github.com/chakra-ui/zag/commit/280015e36539f23731cba09a28e1371d5760b8b4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where event point calculation is incorrect when the page
+  is scrolled
+
+- Updated dependencies [[`280015e3`](https://github.com/chakra-ui/zag/commit/280015e36539f23731cba09a28e1371d5760b8b4)]:
+  - @zag-js/dom-event@0.9.2
+  - @zag-js/dismissable@0.9.2
+  - @zag-js/anatomy@0.9.2
+  - @zag-js/core@0.9.2
+  - @zag-js/types@0.9.2
+  - @zag-js/utils@0.9.2
+  - @zag-js/dom-query@0.9.2
+  - @zag-js/popper@0.9.2
+  - @zag-js/rect-utils@0.9.2
+
 ## 0.9.1
 
 ### Patch Changes

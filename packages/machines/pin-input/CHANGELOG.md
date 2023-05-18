@@ -1,5 +1,23 @@
 # @zag-js/pin-input
 
+## 0.9.2
+
+### Patch Changes
+
+- [`780cab7e`](https://github.com/chakra-ui/zag/commit/780cab7eb84dda1123779f997a29c4016c7a38e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where default value is always overriden with an array
+  with empty strings when the component is mounted.
+
+- Updated dependencies [[`280015e3`](https://github.com/chakra-ui/zag/commit/280015e36539f23731cba09a28e1371d5760b8b4)]:
+  - @zag-js/dom-event@0.9.2
+  - @zag-js/anatomy@0.9.2
+  - @zag-js/core@0.9.2
+  - @zag-js/types@0.9.2
+  - @zag-js/utils@0.9.2
+  - @zag-js/dom-query@0.9.2
+  - @zag-js/form-utils@0.9.2
+  - @zag-js/visually-hidden@0.9.2
+
 ## 0.9.1
 
 ### Patch Changes
