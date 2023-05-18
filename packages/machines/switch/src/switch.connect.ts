@@ -76,6 +76,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { active: false } })
       },
+      onClick(event) {
+        if (event.target === dom.getInputEl(state.context)) {
+          event.stopPropagation()
+        }
+      },
     }),
 
     labelProps: normalize.element({
