@@ -1588,8 +1588,8 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
       focus-trap:
-        specifier: 7.4.1
-        version: 7.4.1
+        specifier: 7.4.3
+        version: 7.4.3
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -1808,8 +1808,8 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
       focus-trap:
-        specifier: 7.4.1
-        version: 7.4.1
+        specifier: 7.4.3
+        version: 7.4.3
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -6233,8 +6233,8 @@ packages:
   /flatted@3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
 
-  /focus-trap@7.4.1:
-    resolution: {integrity: sha512-rnXP5ERIjlo1gEZp7hQb4ekYqUxRuSDQeyWvxhahH3/GkWtd8h8g1C8Eu/KGpuvbUWNVeogK0kuzzrM4u2Z9jA==}
+  /focus-trap@7.4.3:
+    resolution: {integrity: sha512-BgSSbK4GPnS2VbtZ50VtOv1Sti6DIkj3+LkVjiWMNjLeAp1SH1UlLx3ULu/DCu4vq5R4/uvTm+zrvsMsuYmGLg==}
     dependencies:
       tabbable: 6.1.2
     dev: false
