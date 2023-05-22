@@ -164,6 +164,7 @@ export function machine(userContext: UserDefinedContext) {
             trap = createFocusTrap(el, {
               escapeDeactivates: false,
               allowOutsideClick: true,
+              preventScroll: true,
               returnFocusOnDeactivate: true,
               document: dom.getDoc(ctx),
               fallbackFocus: el,

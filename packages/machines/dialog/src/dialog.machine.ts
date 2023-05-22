@@ -103,6 +103,7 @@ export function machine(userContext: UserDefinedContext) {
             trap = createFocusTrap(contentEl, {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
+              preventScroll: true,
               returnFocusOnDeactivate: false,
               fallbackFocus: contentEl,
               allowOutsideClick: true,
