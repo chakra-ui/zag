@@ -473,7 +473,7 @@ export function machine(userContext: UserDefinedContext) {
             const activeEl = dom.getActiveElement(ctx)
             const contentEl = dom.getContentEl(ctx)
             if (contains(contentEl, activeEl)) return
-            contentEl?.focus()
+            contentEl?.focus({ preventScroll: true })
           })
         },
         focusFirstItem(ctx) {
@@ -503,7 +503,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
-          raf(() => dom.getTriggerEl(ctx)?.focus())
+          raf(() => dom.getTriggerEl(ctx)?.focus({ preventScroll: true }))
         },
         focusMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)

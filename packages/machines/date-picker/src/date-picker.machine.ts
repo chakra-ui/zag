@@ -618,7 +618,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusInputElement(ctx) {
           raf(() => {
-            dom.getInputEl(ctx)?.focus()
+            dom.getInputEl(ctx)?.focus({ preventScroll: true })
           })
         },
         syncMonthSelectElement(ctx) {

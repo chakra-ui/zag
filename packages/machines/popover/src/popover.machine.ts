@@ -198,13 +198,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         setInitialFocus(ctx) {
           raf(() => {
-            dom.getInitialFocusEl(ctx)?.focus()
+            dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
           })
         },
         restoreFocusIfNeeded(ctx, evt) {
           if (!evt.restoreFocus) return
           raf(() => {
-            dom.getTriggerEl(ctx)?.focus()
+            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })
         },
         invokeOnOpen(ctx) {
