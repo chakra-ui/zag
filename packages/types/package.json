@@ -12,7 +12,8 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/types",
   "sideEffects": false,
   "files": [
-    "dist/**/*"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"

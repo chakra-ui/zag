@@ -18,7 +18,8 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/avatar",
   "sideEffects": false,
   "files": [
-    "dist/**/*"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build-fast": "tsup src",

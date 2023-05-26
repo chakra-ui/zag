@@ -13,7 +13,8 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/form-utils",
   "sideEffects": false,
   "files": [
-    "dist/**/*"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@zag-js/mutation-observer": "workspace:*"

@@ -16,8 +16,8 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/api-docs",
   "sideEffects": false,
   "files": [
-    "dist/**/*",
-    "api.json"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build-fast": "tsup src",

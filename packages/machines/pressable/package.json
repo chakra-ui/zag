@@ -17,7 +17,8 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/pressable",
   "sideEffects": false,
   "files": [
-    "dist/**/*"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
