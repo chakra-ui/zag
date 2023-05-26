@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { createAnatomy } from "./create-anatomy"
+import { createAnatomy } from "../src"
 
 describe("Anatomy", () => {
   it("should allow to set parts", () => {
