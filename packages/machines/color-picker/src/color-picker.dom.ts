@@ -1,9 +1,7 @@
 import { ColorChannel } from "@zag-js/color-utils"
-import { getRelativePointPercent } from "@zag-js/dom-event"
+import { getRelativePoint, type Point } from "@zag-js/dom-event"
 import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./color-picker.types"
-
-type Point = { x: number; y: number }
 
 export const dom = createScope({
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `color-picker:${ctx.id}:content`,
@@ -26,16 +24,16 @@ export const dom = createScope({
 
   getAreaEl: (ctx: Ctx) => dom.queryById(ctx, dom.getAreaId(ctx)),
   getAreaValueFromPoint(ctx: Ctx, point: Point) {
-    const areaEl = dom.getAreaEl(ctx)
-    return getRelativePointPercent(point, areaEl)
+    const { percent } = getRelativePoint(point, dom.getAreaEl(ctx))
+    return percent
   },
 
   getChannelSliderTrackEl: (ctx: Ctx, channel: ColorChannel) => {
     return dom.queryById(ctx, dom.getChannelSliderTrackId(ctx, channel))
   },
   getChannelSliderValueFromPoint(ctx: Ctx, point: Point, channel: ColorChannel) {
-    const areaEl = dom.getChannelSliderTrackEl(ctx, channel)
-    return getRelativePointPercent(point, areaEl)
+    const { percent } = getRelativePoint(point, dom.getChannelSliderTrackEl(ctx, channel))
+    return percent
   },
   getChannelInputEls: (ctx: Ctx) => {
     return queryAll<HTMLInputElement>(dom.getContentEl(ctx), "input[data-channel]")

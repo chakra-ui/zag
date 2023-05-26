@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { getRelativePointPercent, trackPointerMove } from "@zag-js/dom-event"
+import { getRelativePoint, trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./splitter.dom"
@@ -262,11 +262,17 @@ export function machine(userContext: UserDefinedContext) {
         setPointerValue(ctx, evt) {
           const panels = getHandlePanels(ctx)
           const bounds = getHandleBounds(ctx)
+
+          if (!panels || !bounds) return
+
           const rootEl = dom.getRootEl(ctx)
+          const relativePoint = getRelativePoint(evt.point, rootEl)
+          const percentValue = relativePoint.getPercentValue({
+            dir: ctx.dir,
+            orientation: ctx.orientation,
+          })
 
-          if (!panels || !rootEl || !bounds) return
-
-          let pointValue = getRelativePointPercent(evt.point, rootEl).normalize(ctx) * 100
+          let pointValue = percentValue * 100
 
           // update active resize state here because we use `previousPanels` in the calculations
           ctx.activeResizeState = {

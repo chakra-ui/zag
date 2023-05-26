@@ -164,10 +164,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setHoveredValue(ctx, evt) {
           const half = ctx.allowHalf && evt.isMidway
-          let factor = half ? 0.5 : 0
-          if (ctx.dir === "rtl") {
-            factor = half ? 0 : 0.5
-          }
+          const factor = half ? 0.5 : 0
           let value = evt.index - factor
           ctx.hoveredValue = value
         },

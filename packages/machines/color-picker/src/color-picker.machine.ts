@@ -38,6 +38,8 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
+      created: ["setValueAsColor"],
+
       watch: {
         value: ["setValueAsColor", "syncChannelInputs", "invokeOnChange"],
       },
@@ -229,9 +231,9 @@ export function machine(userContext: UserDefinedContext) {
           const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
 
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
-          const position = ctx.activeOrientation || "horizontal"
+          const orientation = ctx.activeOrientation || "horizontal"
 
-          const point = position === "horizontal" ? percent.x : percent.y
+          const point = orientation === "horizontal" ? percent.x : percent.y
           const channelValue = getPercentValue(point, minValue, maxValue, step)
 
           const value = snapValueToStep(channelValue - step, minValue, maxValue, step)

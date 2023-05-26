@@ -1,5 +1,5 @@
+import { getRelativePoint } from "@zag-js/dom-event"
 import { createScope } from "@zag-js/dom-query"
-import { getRelativePointValue } from "@zag-js/dom-event"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { getPercentValue } from "@zag-js/numeric-range"
 import { styles } from "./slider.style"
@@ -20,28 +20,16 @@ export const dom = createScope({
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getThumbId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.queryById(ctx, dom.getControlId(ctx)),
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
-    // get the slider root element
-    const el = dom.getControlEl(ctx)
-    if (!el) return
-
-    // get the position/progress % of the point relative to the root's width/height
-    const relativePoint = getRelativePointValue(point, el)
-    const percentX = relativePoint.x / el.offsetWidth
-    const percentY = relativePoint.y / el.offsetHeight
-
-    // get the progress % depending on the orientation
-    let percent: number
-
-    if (ctx.isHorizontal) {
-      percent = ctx.isRtl ? 1 - percentX : percentX
-    } else {
-      percent = 1 - percentY
-    }
-
+    const relativePoint = getRelativePoint(point, dom.getControlEl(ctx))
+    const percent = relativePoint.getPercentValue({
+      orientation: ctx.orientation,
+      dir: ctx.dir,
+      inverted: { y: true },
+    })
     return getPercentValue(percent, ctx.min, ctx.max, ctx.step)
   },
 

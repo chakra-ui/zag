@@ -1,29 +1,9 @@
-import { getRelativePointValue } from "@zag-js/dom-event"
+import { getRelativePoint, type Point } from "@zag-js/dom-event"
 import { createScope, queryAll } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { getPercentValue } from "@zag-js/numeric-range"
 import { styleGetterFns } from "./range-slider.style"
 import type { MachineContext as Ctx } from "./range-slider.types"
-import { clampPercent } from "./range-slider.utils"
-
-type Point = { x: number; y: number }
-
-function getPointProgress(ctx: Ctx, point: Point) {
-  const el = dom.getControlEl(ctx)!
-  const relativePoint = getRelativePointValue(point, el)
-  const percentX = relativePoint.x / el.offsetWidth
-  const percentY = relativePoint.y / el.offsetHeight
-
-  let percent: number
-
-  if (ctx.isHorizontal) {
-    percent = ctx.isRtl ? 1 - percentX : percentX
-  } else {
-    percent = 1 - percentY
-  }
-
-  return clampPercent(percent)
-}
 
 export const dom = createScope({
   ...styleGetterFns,
@@ -40,13 +20,18 @@ export const dom = createScope({
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getThumbId(ctx, index)),
   getHiddenInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx, index)),
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.queryById(ctx, dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
   getRangeEl: (ctx: Ctx) => dom.getById(ctx, dom.getRangeId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point) {
-    const percent = getPointProgress(ctx, point)
+    const relativePoint = getRelativePoint(point, dom.getControlEl(ctx))
+    const percent = relativePoint.getPercentValue({
+      orientation: ctx.orientation,
+      dir: ctx.dir,
+      inverted: { y: true },
+    })
     return getPercentValue(percent, ctx.min, ctx.max, ctx.step)
   },
   dispatchChangeEvent(ctx: Ctx) {

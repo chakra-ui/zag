@@ -1,39 +1,36 @@
-import { getElementOffset } from "./get-element-offset"
-
-const clamp = (value: number) => Math.max(0, Math.min(1, value))
-
-type Point = { x: number; y: number }
-
-export function getRelativePointValue(absolutePoint: Point, element: HTMLElement) {
-  const offset = getElementOffset(element)
-  const x = absolutePoint.x - offset.left
-  const y = absolutePoint.y - offset.top
-  return {
-    x,
-    y,
-    getDelta(origin: Point) {
-      return { x: x - origin.x, y: y - origin.y }
-    },
-  }
+function clamp(value: number) {
+  return Math.max(0, Math.min(1, value))
 }
 
-export function getRelativePointPercent(absolutePoint: Point, element: HTMLElement) {
-  const relativePoint = getRelativePointValue(absolutePoint, element)
-  const x = clamp(relativePoint.x / element.offsetWidth)
-  const y = clamp(relativePoint.y / element.offsetHeight)
-  return {
-    x,
-    y,
-    normalize(options: NormalizeOptions = {}) {
-      const { dir = "ltr", orientation = "horizontal" } = options
-      let newX = x
-      if (orientation === "horizontal" && dir === "rtl") newX = 1 - newX
-      return orientation === "horizontal" ? newX : y
-    },
-  }
+export type Point = {
+  x: number
+  y: number
 }
 
-type NormalizeOptions = {
+type PercentValueOptions = {
+  inverted?: boolean | { x?: boolean; y?: boolean }
   dir?: "ltr" | "rtl"
   orientation?: "vertical" | "horizontal"
+}
+
+export function getRelativePoint(point: Point, element: HTMLElement) {
+  const { left, top, width, height } = element.getBoundingClientRect()
+
+  const offset = { x: point.x - left, y: point.y - top }
+  const percent = { x: clamp(offset.x / width), y: clamp(offset.y / height) }
+
+  function getPercentValue(options: PercentValueOptions = {}) {
+    const { dir = "ltr", orientation = "horizontal", inverted } = options
+
+    const invertX = typeof inverted === "object" ? inverted.x : inverted
+    const invertY = typeof inverted === "object" ? inverted.y : inverted
+
+    if (orientation === "horizontal") {
+      return dir === "rtl" || invertX ? 1 - percent.x : percent.x
+    }
+
+    return invertY ? 1 - percent.y : percent.y
+  }
+
+  return { offset, percent, getPercentValue }
 }
