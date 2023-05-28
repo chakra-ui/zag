@@ -8,14 +8,12 @@ import {
   isLeftClick,
   isModifiedEvent,
 } from "@zag-js/dom-event"
-import { contains, dataAttr, isEditableElement } from "@zag-js/dom-query"
-import { getPlacementStyles, PositioningOptions } from "@zag-js/popper"
+import { dataAttr, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
+import { PositioningOptions, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { Api, GroupProps, ItemProps, LabelProps, OptionItemProps, Send, Service, State } from "./menu.types"
-
-const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target">) => contains(event.currentTarget, event.target)
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isSubmenu = state.context.isSubmenu

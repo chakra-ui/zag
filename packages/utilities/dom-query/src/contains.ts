@@ -7,3 +7,6 @@ export function contains(parent: Target, child: Target) {
   if (!isHTMLElement(parent) || !isHTMLElement(child)) return false
   return parent === child || parent.contains(child)
 }
+
+export const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target">) =>
+  contains(event.currentTarget, event.target)

@@ -1,5 +1,5 @@
 import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
-import { isEditableElement, getByTypeahead, dataAttr, ariaAttr } from "@zag-js/dom-query"
+import { isEditableElement, getByTypeahead, dataAttr, ariaAttr, isSelfEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -280,7 +280,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "OPTION_CLICK", src: "click", id: option.id })
       },
       onKeyDown(event) {
-        if (!isInteractive) return
+        if (!isInteractive || !isSelfEvent(event)) return
+
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "ARROW_UP" })
