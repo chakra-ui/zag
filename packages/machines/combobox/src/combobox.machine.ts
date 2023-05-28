@@ -354,13 +354,9 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: {
         syncInputValue: (ctx) => {
-          const input = dom.getInputEl(ctx)
-          return observeAttributes(input, ["data-value"], () => {
-            if (!input) return
-            const value = input.dataset.value || ""
-            input.value = value
-            input.selectionStart = value.length
-            input.selectionEnd = value.length
+          const inputEl = dom.getInputEl(ctx)
+          return observeAttributes(inputEl, ["data-value"], () => {
+            inputEl.value = inputEl.dataset.value || ""
           })
         },
         trackInteractOutside(ctx, _evt, { send }) {
@@ -401,8 +397,8 @@ export function machine(userContext: UserDefinedContext) {
           return observeChildren(dom.getContentEl(ctx), exec)
         },
         scrollOptionIntoView(ctx, _evt, { getState }) {
-          const input = dom.getInputEl(ctx)
-          return observeAttributes(input, ["aria-activedescendant"], () => {
+          const inputEl = dom.getInputEl(ctx)
+          return observeAttributes(inputEl, ["aria-activedescendant"], () => {
             const evt = getState().event
             const isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
             if (!isKeyboardEvent) return
