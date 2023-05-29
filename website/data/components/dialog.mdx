@@ -1,0 +1,179 @@
+---
+title: Dialog
+description: Using the dialog machine in your project.
+package: "@zag-js/dialog"
+---
+
+# Dialog
+
+A dialog is a window overlaid on either the primary window or another dialog
+window. Content behind a modal dialog is inert, meaning that users cannot
+interact with it.
+
+<Resources pkg="@zag-js/dialog" />
+
+<Showcase id="Dialog" />
+
+**Features**
+
+- Supports modal and non-modal modes.
+- Focus is trapped and scrolling is blocked in the modal mode.
+- Provides screen reader announcements via rendered title and description.
+- Pressing `Esc` closes the dialog.
+
+## Installation
+
+To use the dialog machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="dialog/installation.mdx" />
+
+This command will install the framework agnostic dialog logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To use the dialog component correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="dialog" />
+
+The dialog pattern consists of:
+
+- **Trigger**: The button that triggers the dialog
+- **Backdrop**: The dim background overlay that's usually behind the dialog
+  element.
+- **Container**: The container for the dialog's content.
+- **Content**: Used to house the content of the dialog.
+
+The dialog's content consists of:
+
+- **Title**: The title of the dialog.
+- **Description**: The description that supports the title.
+- **Close Button**: The button used to close the dialog.
+
+## Usage
+
+First, import the dialog package into your project
+
+```jsx
+import * as dialog from "@zag-js/dialog"
+```
+
+The dialog package exports two key functions:
+
+- `machine` — The state machine logic for the dialog widget as described in
+  WAI-ARIA specification.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
+> ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+dialog machine in your project 🔥
+
+<CodeSnippet id="dialog/usage.mdx" />
+
+
+## Managing focus within the dialog
+
+When the dialog opens, it automatically sets focus on the first focusable
+elements and traps focus within it, so that tabbing is constrained to it.
+
+To control the element that should receive focus on open, pass the
+`initialFocusEl` context (which can be an element or a function that returns an
+element)
+
+<CodeSnippet id="dialog/initial-focus.mdx" />
+
+To set the element that receives focus when the dialog closes, pass the
+`finalFocusEl` in the similar fashion as shown above.
+
+## Closing the dialog on overlay click
+
+By default, the dialog closes when you click its overlay. You can set
+`closeOnOutsideClick` to `false` if you want the modal to stay visible.
+
+```jsx {3}
+const [state, send] = useMachine(
+  dialog.machine({
+    closeOnOutsideClick: false,
+  }),
+)
+```
+
+## Controlling the scroll behavior
+
+When the dialog is open, it prevents scrolling on the `body` element. To disable
+this behavior, set the `preventScroll` context to `false`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  dialog.machine({
+    preventScroll: false,
+  }),
+)
+```
+
+## Creating an Alert dialog
+
+The dialog has support for dialog and alert dialog roles. It's set to `dialog`
+by default. To change it's role, pass the `role: alertdialog` property to the
+machine's context.
+
+That's it! Now you have an alert dialog.
+
+```jsx {3}
+const [state, send] = useMachine(
+  dialog.machine({
+    role: "alertdialog",
+  }),
+)
+```
+
+> By definition, an alert dialog will contain two or more action buttons. We
+> recommended setting focus to the least destructive action via `initialFocusEl`
+
+## Styling guide
+
+Earlier, we mentioned that each accordion part has a `data-part` attribute added
+to them to select and style them in the DOM.
+
+```css
+[data-part="trigger"] {
+  /* styles for the trigger element */
+}
+
+[data-part="backdrop"] {
+  /* styles for the backdrop element */
+}
+
+[data-part="container"] {
+  /* styles for the container element */
+}
+
+[data-part="content"] {
+  /* styles for the content element */
+}
+
+[data-part="title"] {
+  /* styles for the title element */
+}
+
+[data-part="description"] {
+  /* styles for the description element */
+}
+
+[data-part="close-trigger"] {
+  /* styles for the close trigger element */
+}
+```
+
+## Methods and Properties
+
+The dialog's `api` exposes the following methods:
+
+<ApiTable name="dialog" />

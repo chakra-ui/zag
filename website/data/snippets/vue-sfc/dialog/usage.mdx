@@ -1,0 +1,30 @@
+```md
+<script setup>
+import * as dialog from "@zag-js/dialog";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed, Teleport } from "vue";
+
+const [state, send] = useMachine(dialog.machine({ id: "1" }));
+const api = computed(() => dialog.connect(state.value, send, normalizeProps));
+</script>
+
+<template>
+  <button ref="ref" v-bind="api.triggerProps">Open Dialog</button>
+  <Teleport to="body">
+    <div v-if="api.isOpen">
+      <div v-bind="api.backdropProps" />
+      <div v-bind="api.containerProps">
+        <div v-bind="api.contentProps">
+          <h2 v-bind="api.titleProps">Edit profile</h2>
+          <p v-bind="api.descriptionProps">
+            Make changes to your profile here. Click save when you are done.
+          </p>
+          <button v-bind="api.closeTriggerProps">X</button>
+          <input placeholder="Enter name..." />
+          <button>Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>
+```

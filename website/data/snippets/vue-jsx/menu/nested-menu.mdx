@@ -1,0 +1,85 @@
+```jsx
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  Teleport,
+  Fragment,
+  h,
+} from "vue"
+
+export default defineComponent({
+  name: "NestedMenu",
+  setup() {
+    // Level 1 - File Menu
+    const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
+      menu.machine({ id: "1", "aria-label": "File" }),
+    )
+
+    const fileMenuApi = computed(() =>
+      menu.connect(fileMenuState.value, fileMenuSend, normalizeProps),
+    )
+
+    // Level 2 - Share Menu
+    const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
+      menu.machine({ "aria-label": "Share" }),
+    )
+
+    const shareMenuApi = computed(() =>
+      menu.connect(shareMenuState.value, shareMenuSend, normalizeProps),
+    )
+
+    onMounted(() => {
+      setTimeout(() => {
+        fileMenu.value.setChild(shareMenuMachine)
+        shareMenu.value.setParent(fileMenuMachine)
+      })
+    })
+
+    // Share menu trigger
+    const shareMenuTriggerProps = computed(() =>
+      fileMenu.value.getTriggerItemProps(shareMenuApi.value)
+    )
+
+    return () => {
+      const fileMenu = fileMenuApi.value
+      const shareMenu = shareMenuApi.value
+      return (
+        <>
+          <button {...fileMenu.triggerProps}>Click me</button>
+
+          <Teleport to="body">
+            <div {...fileMenu.positionerProps}>
+              <ul {...fileMenu.contentProps}>
+                <li {...fileMenu.getItemProps({ id: "new-tab" })}>New tab</li>
+                <li {...fileMenu.getItemProps({ id: "new-win" })}>
+                  New window
+                </li>
+                <li {...shareMenuTriggerProps.value}>Share</li>
+                <li {...fileMenu.getItemProps({ id: "print" })}>Print...</li>
+                <li {...fileMenu.getItemProps({ id: "help" })}>Help</li>
+              </ul>
+            </div>
+          </Teleport>
+
+          <Teleport to="body">
+            <div {...shareMenu.positionerProps}>
+              <ul {...shareMenu.contentProps}>
+                <li {...shareMenu.getItemProps({ id: "messages" })}>
+                  Messages
+                </li>
+                <li {...shareMenu.getItemProps({ id: "airdrop" })}>Airdrop</li>
+                <li {...shareMenu.getItemProps({ id: "whatsapp" })}>
+                  WhatsApp
+                </li>
+              </ul>
+            </div>
+          </Teleport>
+        </>
+      )
+    }
+  },
+})
+```

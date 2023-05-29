@@ -1,0 +1,46 @@
+{
+  "projectName": "zag",
+  "projectOwner": "chakra-ui",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 32,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "segunadebayo",
+      "name": "Segun Adebayo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6916170?v=4",
+      "profile": "https://twitter.com/thesegunadebayo",
+      "contributions": [
+        "maintenance",
+        "code",
+        "doc",
+        "content"
+      ]
+    },
+    {
+      "login": "estheragbaje",
+      "name": "Folasade Agbaje",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53586167?v=4",
+      "profile": "https://estheragbaje.dev/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "anubra266",
+      "name": "Abraham",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30869823?v=4",
+      "profile": "https://github.com/anubra266",
+      "contributions": [
+        "code",
+        "example"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

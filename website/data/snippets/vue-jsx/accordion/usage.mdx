@@ -1,0 +1,41 @@
+```tsx
+import * as accordion from "@zag-js/accordion"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+const data = [
+  { title: "Watercraft", content: "Sample accordion content" },
+  { title: "Automobiles", content: "Sample accordion content" },
+  { title: "Aircrafts", content: "Sample accordion content" },
+]
+
+export default defineComponent({
+  name: "Accordion",
+  setup() {
+    const [state, send] = useMachine(accordion.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      accordion.connect(state.value, send, normalizeProps),
+    )
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          {data.map((item) => (
+            <div {...api.getItemProps({ value: item.title })}>
+              <h3>
+                <button {...api.getTriggerProps({ value: item.title })}>
+                  {item.title}
+                </button>
+              </h3>
+              <div {...api.getContentProps({ value: item.title })}>
+                {item.content}
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  },
+})
+```

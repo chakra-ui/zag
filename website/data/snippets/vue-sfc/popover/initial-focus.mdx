@@ -1,0 +1,18 @@
+```md
+<script setup>
+import { ref } from "vue";
+
+// initial focused element ref
+const inputRef = ref(null);
+
+const [state, send] = useMachine(
+  popover.machine({
+    initialFocusEl: () => inputRef.value,
+  })
+);
+</script>
+
+<template>
+  <input ref="inputRef" />
+</template>
+```

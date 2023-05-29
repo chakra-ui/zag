@@ -1,0 +1,117 @@
+---
+title: Introduction
+description: The why and the what behind Zag
+---
+
+# Introduction to Zag
+
+Zag is a framework agnostic toolkit for implementing complex, interactive, and
+accessible UI components in your design system and web applications.
+
+> Zag is part of the next evolution of Chakra UI, and one of the four arms of
+> the future of Chakra UI.
+> [**Watch the talk here**](https://www.youtube.com/watch?v=I5xEc9t-HZg)
+
+With Zag, you can build accessible UI components in React, Solid and Vue without
+sweating over the logic.
+
+## Motivation
+
+In [Chakra UI React](https://chakra-ui.com/), we've experienced too many hiccups
+and bugs in the past related to how we coordinate events, manage state, and side
+effects. Most these bugs are associated with the orchestration within
+`useEffect`, `useMemo`, `useCallback`, etc.
+
+These issues were replicated in our [Chakra UI Vue](https://vue.chakra-ui.com/)
+pursuit as well, and created a maintenance hell for us. We're grateful for this
+experience because it made us take a step back to define how we would like to
+build components in the future.
+
+We believe that most widgets should function the same way regardless of the
+framework they're built with. That's why we built Zag.
+
+> Don't re-invent the wheel, **let the machines do the work 😊**
+
+## Why Zag?
+
+- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in
+  Statecharts. We don't follow the SCXML specifications, but we've created an
+  API that we think will help us build more complex components fast.
+
+- **Write once, use everywhere 🦄**: The component interactions are modelled in
+  a framework agnostic way. We provide adapters for JS frameworks so you can use
+  it in React, Solid, or Vue 3.
+
+- **Focus on accessibility ♿️**: Zag is built with accessibility in mind. We
+  handle many details related to keyboard interactions, focus management, aria
+  roles and attributes.
+
+- **Headless ✨**: The machine APIs are completely unstyled and gives you the
+  control to use any styling solution you prefer.
+
+- **Incremental adoption ✨**: Adopt the machines as you need them. Each
+  component machine is an NPM package and can be installed individually so you
+  can use them incrementally.
+
+## Fun Facts
+
+**Zag** means to _take a sharp change in direction_. This clearly describes our
+approach of using state machines to power the logic behind UI components.
+
+### Teasers
+
+- When you see someone using classic react, vue or solid to build an interactive
+  UI component that exists in Zag, tell them to **"zag it!"** ⚡️
+
+- Anyone using Zag will be called a **"zagger"** 💥
+
+- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
+
+- The Zag community will be called **"zag nation"** 🔥
+
+## Community
+
+### Discord
+
+To get involved with the Zag community, ask questions, and chat with the
+maintainers, join our Discord.
+
+[Join our Discord](https://zagjs.com/discord)
+
+### Twitter
+
+To receive updates on new components, enhancements, blog posts, and tips, follow
+our Twitter account.
+
+[Follow us on Twitter](https://twitter.com/zag_js)
+
+## Prior art
+
+We strongly believe in open source and the power of open collaboration. In the
+past, we've been inspired by other meaningful projects and amazing people who
+have inspire(d) us to keep improving our ideas.
+
+Some of the projects we've been inspired by include:
+
+- Chakra UI - [https://chakra-ui.com/](https://chakra-ui.com/)
+- Radix UI - [https://www.radix-ui.com/](https://www.radix-ui.com/)
+- Material Web Components -
+  [https://github.com/material-components/material-components-web](https://github.com/material-components/material-components-web)
+- React Aria -
+  [https://react-spectrum.adobe.com/react-aria](https://react-spectrum.adobe.com/react-aria)
+- Goldman Sachs Design System - [https://design.gs.com/](https://design.gs.com/)
+- Reakit - [https://reakit.io/](https://reakit.io/)
+- Fast -
+  [https://explore.fast.design/components](https://explore.fast.design/components)
+
+## Additional Thanks
+
+- [Guillermo](https://rauchg.com/2015/pure-ui) for writing a great article that
+  sparked the idea for Zag.
+- [Open UI](https://open-ui.org/) for inspiring the pattern behind this library
+- [XState](https://xstate.js.org/) for inspiring the base implementation of the
+  state machine
+- [Vue.js](https://vuejs.org/) and [Lit](https://lit.dev/) for inspiring new
+  patterns in the machine (`computed` and `watch`)
+- [David Khourshid](https://twitter.com/DavidKPiano) for talking about state
+  machines long enough to get me started on this project

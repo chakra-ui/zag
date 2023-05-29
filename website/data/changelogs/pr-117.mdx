@@ -1,0 +1,28 @@
+---
+releaseUrl: https://github.com/chakra-ui/zag/pull/117
+releaseDate: June 6, 2022
+---
+
+## New
+
+- Added `@zag-js/focus-visible` package to handle focus-visible state
+- Added `@zag-js/remove-scroll` package to remove scroll from the body
+
+## Patch Changes
+
+### Core `0.1.6`
+
+- Fixed issue where transition object gets mutated
+  - Added `onChange` method to machine to listen for context changes
+  - Added support for `debug: true` to visualize state transitions
+  - Added support for explicit state re-entry (to get rid of the `after: 0` hack)
+
+### Dialog `0.1.7`
+
+- Added `open` property to machine's context to allow user open dialog initially
+
+### Popover `0.1.7`
+
+- Fix issue where focus doesn't get set on the content when the popover includes non-focusable descendants
+
+- Added `open` to machine context to allow user open dialog initially

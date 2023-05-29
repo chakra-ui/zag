@@ -1,0 +1,27 @@
+```md
+<script setup>
+import * as menu from "@zag-js/menu";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(menu.machine({ id: "1", "aria-label": "File" }));
+
+const api = computed(() => menu.connect(state.value, send, normalizeProps));
+</script>
+
+<template>
+  <div ref="ref">
+    <button v-bind="api.contextTriggerProps">
+      <div :style="{ border: 'solid 1px red' }">Open context menu</div>
+    </button>
+    <div v-bind="api.positionerProps">
+      <ul v-bind="api.contentProps">
+        <li v-bind="api.getItemProps({ id: 'edit' })">Edit</li>
+        <li v-bind="api.getItemProps({ id: 'duplicate' })">Duplicate</li>
+        <li v-bind="api.getItemProps({ id: 'delete' })">Delete</li>
+        <li v-bind="api.getItemProps({ id: 'export' })">Export...</li>
+      </ul>
+    </div>
+  </div>
+</template>
+```

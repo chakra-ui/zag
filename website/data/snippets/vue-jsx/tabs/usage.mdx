@@ -1,0 +1,48 @@
+```jsx
+import * as tabs from "@zag-js/tabs"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, computed, h, Fragment } from "vue"
+
+const data = [
+  { value: "item-1", label: "Item one", content: "Item one content" },
+  { value: "item-2", label: "Item two", content: "Item two content" },
+  { value: "item-3", label: "Item three", content: "Item three content" },
+]
+
+export default defineComponent({
+  name: "Tabs",
+  setup() {
+    const [state, send] = useMachine(tabs.machine({ id: "tabs", value: "item-1" }))
+    
+    const apiRef = computed(() =>
+      tabs.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <div {...api.tablistProps}>
+            {data.map((item) => (
+              <button
+                {...api.getTriggerProps({ value: item.value })}
+                key={item.value}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          {data.map((item) => (
+            <div
+              {...api.getContentProps({ value: item.value })}
+              key={item.value}
+            >
+              <p>{item.content}</p>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  },
+})
+```

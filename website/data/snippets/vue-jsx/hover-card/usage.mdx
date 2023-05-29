@@ -1,0 +1,44 @@
+```jsx
+import * as hoverCard from "@zag-js/hover-card"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed, Teleport } from "vue"
+
+export default defineComponent({
+  name: "HoverCard",
+  setup() {
+    const [state, send] = useMachine(hoverCard.machine({ id: "hoverCard" }))
+
+    const apiRef = computed(() =>
+      hoverCard.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <>
+          <a
+            href="https://twitter.com/zag_js"
+            target="_blank"
+            {...api.triggerProps}
+          >
+            Twitter
+          </a>
+
+          {api.isOpen && (
+            <Teleport to="body">
+              <div {...api.positionerProps}>
+                <div {...api.contentProps}>
+                  <div {...api.arrowProps}>
+                    <div {...api.arrowTipProps} />
+                  </div>
+                  Twitter Preview
+                </div>
+              </div>
+            </Teleport>
+          )}
+        </>
+      )
+    }
+  },
+})
+```

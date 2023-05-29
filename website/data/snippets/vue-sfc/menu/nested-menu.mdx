@@ -1,0 +1,64 @@
+```md
+<script setup>
+import * as menu from "@zag-js/menu";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed, onMounted, Teleport } from "vue";
+
+// Level 1 - File Menu
+const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
+  menu.machine({ id:"1", "aria-label": "File" })
+);
+
+const fileMenu = computed(() =>
+  menu.connect(fileMenuState.value, fileMenuSend, normalizeProps)
+);
+
+// Level 2 - Share Menu
+const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
+  menu.machine({ id:"2", "aria-label": "Share" })
+);
+
+const shareMenu = computed(() => 
+  menu.connect(shareMenuState.value, shareMenuSend, normalizeProps)
+);
+
+onMounted(() => {
+  setTimeout(() => {
+    fileMenu.value.setChild(shareMenuMachine);
+    shareMenu.value.setParent(fileMenuMachine);
+  });
+});
+
+// Share menu trigger
+const shareMenuTriggerProps = computed(() => 
+  fileMenu.value.getTriggerItemProps(shareMenu.value)
+);
+
+</script>
+
+<template>
+  <button v-bind="fileMenu.triggerProps">Click me</button>
+
+  <Teleport to="body">
+    <div v-bind="fileMenu.positionerProps">
+      <ul ref="fileMenuRef" v-bind="fileMenu.contentProps">
+        <li v-bind="fileMenu.getItemProps({ id: 'new-tab' })">New tab</li>
+        <li v-bind="fileMenu.getItemProps({ id: 'new-win' })">New window</li>
+        <li v-bind="shareMenuTriggerProps">Share</li>
+        <li v-bind="fileMenu.getItemProps({ id: 'print' })">Print...</li>
+        <li v-bind="fileMenu.getItemProps({ id: 'help' })">Help</li>
+      </ul>
+    </div>
+  </Teleport>
+
+  <Teleport to="body">
+    <div v-bind="shareMenu.positionerProps">
+      <ul ref="shareMenuRef" v-bind="shareMenu.contentProps">
+        <li v-bind="shareMenu.getItemProps({ id: 'messages' })">Messages</li>
+        <li v-bind="shareMenu.getItemProps({ id: 'airdrop' })">Airdrop</li>
+        <li v-bind="shareMenu.getItemProps({ id: 'whatsapp' })">WhatsApp</li>
+      </ul>
+    </div>
+  </Teleport>
+</template>
+```

@@ -1,0 +1,29 @@
+```jsx
+import * as checkbox from "@zag-js/checkbox"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+export default defineComponent({
+  name: "Checkbox",
+  setup() {
+    const [state, send] = useMachine(checkbox.machine({ id: "checkbox" }))
+
+    const apiRef = computed(() =>
+      checkbox.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <label {...api.rootProps}>
+          <span {...api.labelProps}>
+            Input is {api.isChecked ? "checked" : "unchecked"}
+          </span>
+          <input {...api.inputProps} />
+          <div {...api.controlProps} />
+        </label>
+      )
+    }
+  },
+})
+```

@@ -1,0 +1,27 @@
+```md
+<script setup>
+import * as popover from "@zag-js/popover";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed, Teleport, Fragment } from "vue";
+
+const [state, send] = useMachine(popover.machine({ id: "1" }));
+const api = computed(() => popover.connect(state.value, send, normalizeProps));
+const Wrapper = api.value.portalled ? Teleport : Fragment;
+</script>
+
+<template>
+  <div ref="ref">
+    <button v-bind="api.triggerProps">Click me</button>
+    <Wrapper>
+      <div v-bind="api.positionerProps">
+        <div v-bind="api.contentProps">
+          <div v-bind="api.titleProps">Presenters</div>
+          <div v-bind="api.descriptionProps">Description</div>
+          <button>Action Button</button>
+          <button v-bind="api.closeTriggerProps">X</button>
+        </div>
+      </div>
+    </Wrapper>
+  </div>
+</template>
+```

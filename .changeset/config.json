@@ -1,13 +1,30 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.4.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "chakra-ui/zag" }],
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "chakra-ui/zag"
+    }
+  ],
   "commit": false,
-  "fixed": [["@zag-js/**"]],
+  "fixed": [
+    [
+      "@zag-js/**"
+    ]
+  ],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
     "onlyUpdatePeerDependentsWhenOutOfRange": true
   },
-  "ignore": ["@zag-js/shared", "next-ts", "vue-ts", "solid-ts", "shadow-dom", "svelte-kit"]
+  "ignore": [
+    "@zag-js/shared",
+    "next-ts",
+    "vue-ts",
+    "solid-ts",
+    "shadow-dom",
+    "svelte-kit",
+    "website"
+  ]
 }

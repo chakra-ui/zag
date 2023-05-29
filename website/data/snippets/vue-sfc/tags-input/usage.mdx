@@ -1,0 +1,32 @@
+```md
+<script setup>
+import * as tagsInput from "@zag-js/tags-input";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(
+  tagsInput.machine({
+    id: "1",
+    value: ["React", "Vue"],
+  })
+);
+const api = computed(() =>
+  tagsInput.connect(state.value, send, normalizeProps)
+);
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.rootProps">
+    <span v-for="(value, index) in api.value" :key="index">
+      <div v-bind="api.getTagProps({ index, value })">
+        <span>{value} </span>
+        <button v-bind="api.getTagDeleteTriggerProps({ index, value })">
+          &#x2715;
+        </button>
+      </div>
+      <input v-bind="api.getTagInputProps({ index, value })" />
+    </span>
+    <input placeholder="Add tag..." v-bind="api.inputProps" />
+  </div>
+</template>
+```

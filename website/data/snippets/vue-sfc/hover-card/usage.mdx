@@ -1,0 +1,31 @@
+```md
+<script setup>
+import * as hoverCard from "@zag-js/hover-card"
+import { normalizeProps, useMachine, Teleport } from "@zag-js/vue"
+import { computed } from "vue"
+
+const [state, send] = useMachine(hoverCard.machine({ id: "1" }))
+
+const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <a 
+    href="https://twitter.com/zag_js"
+    target="_blank" 
+    v-bind="api.triggerProps"
+  >
+    Twitter
+  </a>
+  <Teleport to="body" v-if="api.isOpen">
+    <div v-bind="api.positionerProps">
+      <div v-bind="api.contentProps">
+        <div v-bind="api.arrowProps">
+          <div v-bind="api.arrowTipProps" />
+        </div>
+        Twitter Preview
+      </div>
+    </div>
+  </Teleport>
+</template>
+```

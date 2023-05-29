@@ -1,0 +1,21 @@
+```jsx {14}
+import * as numberInput from "@zag-js/number-input"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+export function NumberInput() {
+  const [state, send] = useMachine(numberInput.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => numberInput.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <label {...api().labelProps}>Enter number:</label>
+      <div>
+        <div {...api.scrubberProps} />
+        <input {...api().inputProps} />
+      </div>
+    </div>
+  )
+}
+```

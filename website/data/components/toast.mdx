@@ -1,0 +1,470 @@
+---
+title: Toast
+description: Using the toast machine in your project.
+package: "@zag-js/toast"
+---
+
+# Toast
+
+The toast component is used to give feedback to users after an action has taken
+place.
+
+<Resources pkg="@zag-js/toast" />
+
+<Showcase id="Toast" />
+
+**Features**
+
+- Support for screen readers.
+- Limit the number of visible toasts.
+- Manage promises within toast.
+- Pause on hover, focus or page idle.
+- Can remove or update toast programmatically.
+- Support for progress bars.
+
+## Installation
+
+To use the toast machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="toast/installation.mdx" />
+
+This command will install the framework agnostic toast logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the toast correctly, you'll need to understand its anatomy and how we
+name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="toast" />
+
+On a high level, the toast consists of:
+
+- **Group**: The element that serves as a container for all the toasts.
+- **Root**: The root container for the toast.
+- **Title**: The element that contains the title of the toast.
+- **Description**: The element that contains the description of the toast.
+- **Close Button**: The action button that is used to dimiss a toast.
+
+## Usage
+
+First, import the toast package into your project
+
+```jsx
+import * as toast from "@zag-js/toast"
+```
+
+Next, import the required hooks and functions for your framework and use the
+toast machine in your project 🔥
+
+<CodeSnippet id="toast/usage.mdx" />
+
+The toast consists of three key aspects:
+
+### Toast Item
+
+- `toast.machine` — The state machine representation of a single toast.
+- `toast.connect` — The function that takes the toast machine and returns
+  methods and JSX properties.
+
+### Toast Group
+
+- `toast.group.machine` — The state machine representation of a group of toasts.
+  It is responsible for spawning, updating and removing toasts.
+- `toast.group.connect` — function gives you access to methods you can use to
+  add, update, and remove a toast.
+
+  > We recommend setting up the toast group machine once at the root of your
+  > project.
+
+### External (Experimental)
+
+- `toast.api` — The external function that can be used to control toasts from
+  outside the framework.
+
+## Creating a toast
+
+There are five toast types that can be created with the toast machine. `info`,
+`success`, `loading`, `custom` and `error`.
+
+To create a toast, use the `toast.create(...)` method.
+
+```jsx
+toast.create({
+  title: "Hello World",
+  description: "This is a toast",
+  type: "info",
+})
+```
+
+The options you can pass in are:
+
+- `title` — The title of the toast.
+- `description` — The description of the toast.
+- `type` — The type of the toast. Can be either `error`, `success` , `info`,
+  `loading`, or `custom`.
+- `duration` — The duration of the toast. The default duration is computed based
+  on the specified `type`.
+- `onClose` — A function that is called when the toast is closed.
+- `placement` — The placement of the toast.
+- `render` — A function that returns the toast JSX (Useful for library authors).
+
+> **Important note 🚨**: When a toast is created and its visible duration has
+> elapsed , we add `500ms` delay before removing it from the DOM. You can use
+> this delay to animate the toast out.
+
+## Setting custom duration
+
+Every toast has a default visible duration depending on the `type` set. Here's
+the table showing the toast type and duration.
+
+| type      | duration   |
+| --------- | ---------- |
+| `info`    | `5000`     |
+| `error`   | `5000`     |
+| `success` | `2000`     |
+| `custom`  | `5000`     |
+| `loading` | `Infinity` |
+
+You can override the duration of the toast by passing the `duration` property to
+the `toast.create(...)` function.
+
+```jsx {5}
+toast.create({
+  title: "Hello World",
+  description: "This is a toast",
+  type: "info",
+  duration: 6000,
+})
+```
+
+> You can also use the `toast.upsert(...)` function which creates or updates a
+> toast.
+
+## Using portals
+
+Using a portal is helpful to ensure that the toast is rendered outside the DOM
+hierarchy of the parent component. To render the toast in a portal, wrap the
+rendered toasts in the `ToastProvider` within your framework-specific portal.
+
+<CodeSnippet id="toast/using-portal.mdx" />
+
+## Positioning toast
+
+To position a toast when created, you can pass the `placement` property when you
+call the `toast.create(...)` methods provided by the toast group's connect
+funtion.
+
+```jsx {6}
+toast.create({
+  title: "Hello World",
+  description: "This is a toast",
+  type: "info",
+  duration: 6000,
+  placement: "top-start",
+})
+```
+
+## Programmatic control
+
+To update a toast programmatically, you need access to the unique identifier of
+the toast.
+
+This identifier can be either:
+
+- the `id` passed into `toast.create(...)` or,
+- the returned random `id` when the `toast.create(...)` is called.
+
+You can use any of the following methods to control a toast:
+
+- `toast.upsert(...)` — Creates or updates a toast.
+- `toast.update(...)` — Updates a toast.
+- `toast.remove(...)` — Removes a toast instantly without delay.
+- `toast.dismiss(...)` — Removes a toast with delay.
+- `toast.pause(...)` — Pauses a toast.
+- `toast.resume(...)` — Resumes a toast.
+
+```jsx {2,11-15}
+// grab the id from the created toast
+const id = toast.create({
+  title: "Hello World",
+  description: "This is a toast",
+  type: "info",
+  duration: 6000,
+  placement: "top-start",
+})
+
+// update the toast
+toast.update(id, {
+  title: "Hello World",
+  description: "This is a toast",
+  type: "success",
+})
+
+// remove the toast
+toast.remove(id)
+
+// dismiss the toast
+toast.dismiss(id)
+```
+
+## Handling promises
+
+The toast group API exposes a `toast.promise()` function to allow you update the
+toast when it resolves or rejects.
+
+> With the promise API, you can pass the toast options for each promise
+> lifecycle.
+
+```jsx
+toast.promise(promise, {
+  loading: {
+    title: "Loading",
+    description: "Please wait...",
+  },
+  success: (data) => ({
+    title: "Success",
+    description: "Your request has been completed",
+  }),
+  error: (err) => ({
+    title: "Error",
+    description: "An error has occurred",
+  }),
+})
+```
+
+## Using progressbars
+
+The toast machine allows you render a custom progress bar to visualize the time
+left before the toast closes.
+
+The `toast.connect` api exposes a `progressbarProps` object you can use for this
+purpose.
+
+```jsx {4}
+// ...
+return (
+  <pre {...api.rootProps}>
+    <div {...api.progressbarProps} />
+    <p {...api.titleProps}>{api.title}</p>
+    <p {...api.descriptionProps}>{api.description}</p>
+    <button onClick={api.dismiss}>Close</button>
+  </pre>
+)
+```
+
+## Pausing the toasts
+
+There are three scenarios we provide to pause a toast from timing out:
+
+- When the document loses focus or the page is idle (e.g. switching to a new
+  browser tab), controlled via the `pauseOnPageIdle` context property.
+- When the toast is hovered or focused, controlled by the `pauseOnInteraction`
+  context property.
+- When the `toast.pause(id)` provided by the `toast.group.connect(...)` is
+  called.
+
+```jsx
+// Global pause options
+const [state, send] = useMachine(
+  toast.group.machine({
+    pauseOnPageIdle: true,
+    pauseOnInteraction: true,
+  }),
+)
+
+// Programmatically pause a toast (by `id`)
+// `id` is the return value of `api.create(...)`
+toast.pause(id)
+```
+
+## Limiting the number of toasts
+
+Toasts are great but displaying too many of them can sometimes hamper the user
+experience. To limit the number of visible toasts, pass the `max` property to
+the group machine's context.
+
+```jsx {3}
+const [state, send] = useMachine(
+  toast.group.machine({
+    max: 10,
+  }),
+)
+```
+
+## Using toast outside component
+
+The toast module exports an `api` function you can invoke to get access to
+specific methods from the `toast.group.connect`.
+
+The methods available are `count`, `isVisible`, `upsert`, `dismiss`, `remove`,
+`promise`.
+
+> For toast to work outside component, ensure you've setup the toast group as
+> defined in the [usage guide](#usage)
+
+```jsx
+import * as toast from "@zag-js/toast"
+
+function fetchData() {
+  const promise = fetch("/api/data").then((res) => res.json())
+  toast.api().promise(promise, {
+    loading: {
+      title: "Loading",
+      description: "Please wait...",
+    },
+    success: (data) => ({
+      title: "Success",
+      description: "Your request has been completed",
+    }),
+    error: (err) => ({
+      title: "Error",
+      description: "An error has occurred",
+    }),
+  })
+}
+```
+
+## Changing the space between toasts
+
+When multiple toasts are rendered, a gutter of `1rem` is applied between each
+toast. To change this value, pass the `gutter` context property.
+
+```jsx {3}
+const [state, send] = useMachine(
+  toast.group.machine({
+    gutter: "50px",
+  }),
+)
+```
+
+## Changing the viewport offsets
+
+The toast group's container has `position: fixed` css property applied to it
+based on the placement set. To change the viewport offsets of the toast group's
+container, pass the `offsets` context property.
+
+```jsx {4-8}
+const [state, send] = useMachine(
+  toast.group.machine({
+    offsets: {
+      top: "10px",
+      right: "10px",
+      bottom: "10px",
+      left: "10px",
+    },
+  }),
+)
+```
+
+## Custom render functions
+
+When using the toast within a design system, you might want consumers to provide
+custom render functions that return the toast's JSX element.
+
+Here's how to achieve that:
+
+```jsx
+// 1. Update toast to support custom render
+function ToastItem(props) {
+  const [state, send] = useActor(props.actor)
+  const api = toast.connect(state, send)
+
+  // Custom toast JSX defined when `toast.create()` is called
+  const jsx = api.render()
+
+  if (jsx) {
+    return <div {...api.rootProps}>{jsx}</div>
+  }
+
+  // Default toast JSX
+  return (
+    <div {...api.rootProps}>
+      <p {...api.titleProps}>{api.title}</p>
+      <p {...api.descriptionProps}>{api.description}</p>
+      <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
+      <button onClick={api.dismiss}>Close</button>
+    </div>
+  )
+}
+
+// 2. Later in the app, provide custom JSX
+toast.create({
+  title: "Welcome",
+  description: "This is a toast",
+  type: "info",
+  render(props) {
+    return (
+      <div
+        id={props.id}
+        style={{ background: props.type === "loading" ? "pink" : "red" }}
+      >
+        <p>{props.title}</p>
+        <p>{props.description}</p>
+        <button onClick={props.dismiss}>Close</button>
+      </div>
+    )
+  },
+})
+```
+
+## Styling guide
+
+### Toast styling
+
+When a toast is created and the `api.rootProps` from the `toast.connect` is
+used, the toast will have a `data-type` that matches the specified `type` at its
+creation.
+
+You can use this property to style the toast.
+
+```css
+[data-part="root"][data-type="info"] {
+  /* Styles for the specific toast type */
+}
+
+[data-part="root"][data-type="error"] {
+  /* Styles for the error toast type */
+}
+
+[data-part="root"][data-type="success"] {
+  /* Styles for the success toast type */
+}
+
+[data-part="root"][data-type="custom"] {
+  /* Styles for the custom toast type */
+}
+
+[data-part="root"][data-type="loading"] {
+  /* Styles for the loading toast type */
+}
+```
+
+When the toast is visible, we attach a `data-open` attribute to the toast's
+root. A common use-case for this is to specify the entry and exit animations for
+the toast.
+
+> Remember every toast has a `500ms` delay before it is removed from the DOM.
+> Keep your exit animations within this range.
+
+```css
+[data-part="root"] {
+  animation-name: fadein;
+  animation-fill-mode: forwards;
+  animation-duration: 0.2s;
+}
+
+[data-part="root"]:not([data-open]) {
+  animation-duration: 0.3s;
+  animation-name: fadeout;
+}
+```
+
+## Methods and Properties
+
+The toast's `api` exposes the following methods:
+
+<ApiTable name="toast" />

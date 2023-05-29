@@ -1,0 +1,19 @@
+```jsx {11-15}
+//...
+<div>
+  <div {...api.controlProps}>
+    <div {...api.trackProps}>
+      <div {...api.rangeProps} />
+    </div>
+    <div {...api.thumbProps}>
+      <input {...api.hiddenInputProps} />
+    </div>
+  </div>
+  <div {...api.markerGroupProps}>
+    <span {...api.getMarkerProps({ value: 10 })}>|</span>
+    <span {...api.getMarkerProps({ value: 30 })}>|</span>
+    <span {...api.getMarkerProps({ value: 90 })}>|</span>
+  </div>
+</div>
+//...
+```

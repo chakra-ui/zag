@@ -1,0 +1,29 @@
+```jsx
+import * as zagSwitch from "@zag-js/switch"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+export default defineComponent({
+  name: "Switch",
+  setup() {
+    const [state, send] = useMachine(zagSwitch.machine({ id: "switch" }))
+
+    const apiRef = computed(() =>
+      zagSwitch.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <label {...api.rootProps}>
+          <input {...api.inputProps} />
+          <span {...api.controlProps}>
+            <span {...api.thumbProps} />
+          </span>
+          <span {...api.labelProps}>{api.isChecked ? "On" : "Off"}</span>
+        </label>
+      )
+    }
+  },
+})
+```

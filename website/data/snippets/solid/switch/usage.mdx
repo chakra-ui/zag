@@ -1,0 +1,21 @@
+```jsx
+import * as zagSwitch from "@zag-js/switch"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Checkbox() {
+  const [state, send] = useMachine(zagSwitch.machine({ id: "1" }))
+
+  const api = createMemo(() => zagSwitch.connect(state, send, normalizeProps))
+
+  return (
+    <label {...api().rootProps}>
+      <input {...api().inputProps} />
+      <span {...api().controlProps}>
+        <span {...api().thumbProps} />
+      </span>
+      <span {...api().labelProps}>{api.isChecked ? "On" : "Off"}</span>
+    </label>
+  )
+}
+```

@@ -1,0 +1,44 @@
+```jsx
+import * as dialog from "@zag-js/dialog"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, h, Fragment, Teleport } from "vue"
+
+export default defineComponent({
+  name: "Dialog",
+  setup() {
+    const [state, send] = useMachine(dialog.machine({ id: "1" }))
+    
+    const apiRef = computed(() =>
+      dialog.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <>
+          <button {...api.triggerProps}>
+            Open Dialog
+          </button>
+          {api.isOpen && (
+            <Teleport to="body">
+              <div {...api.backdropProps} />
+              <div {...api.containerProps}>
+                <div {...api.contentProps}>
+                  <h2 {...api.titleProps}>Edit profile</h2>
+                  <p {...api.descriptionProps}>
+                    Make changes to your profile here. Click save when you are
+                    done.
+                  </p>
+                  <button {...api.closeTriggerProps}>X</button>
+                  <input placeholder="Enter name..." />
+                  <button>Save Changes</button>
+                </div>
+              </div>
+            </Teleport>
+          )}
+        </>
+      )
+    }
+  },
+})
+```

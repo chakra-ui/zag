@@ -1,0 +1,34 @@
+```md
+<script setup>
+import * as checkbox from "@zag-js/checkbox"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed } from "vue"
+
+const items = [
+  { id: "apple", label: "Apples" },
+  { id: "orange", label: "Oranges" },
+  { id: "mango", label: "Mangoes" },
+  { id: "grape", label: "Grapes" },
+]
+
+const [state, send] = useMachine(checkbox.machine({ id: "1" }))
+
+const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <h3 v-bind="api.labelProps">Fruits</h3>
+    <div
+      v-for="opt in items"
+      :key="opt.id"
+    >
+      <label v-bind="api.getRadioProps({ value: opt.id })">
+        <span v-bind="api.getRadioLabelProps({ value: opt.id })">{{ opt.label }}</span>
+        <input v-bind="api.getRadioInputProps({ value: opt.id })" />
+        <div v-bind="api.getRadioControlProps({ value: opt.id })" />
+      </label>
+    </div>
+  </div>
+</template>
+```

@@ -1,0 +1,31 @@
+```jsx
+import * as editable from "@zag-js/editable"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, Show } from "solid-js"
+
+export default function Editable() {
+  const [state, send] = useMachine(editable.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => editable.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <div {...api().areaProps}>
+        <input {...api().inputProps} />
+        <span {...api().previewProps} />
+      </div>
+      <div>
+        <Show when={!api().isEditing}>
+          <button {...api().editTriggerProps}>Edit</button>{" "}
+        </Show>
+        <Show when={api().isEditing}>
+          <div>
+            <button {...api().submitTriggerProps}>Save</button>
+            <button {...api().cancelTriggerProps}>Cancel</button>
+          </div>
+        </Show>
+      </div>
+    </div>
+  )
+}
+```

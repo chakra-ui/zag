@@ -1,0 +1,38 @@
+```jsx
+import * as editable from "@zag-js/editable"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, h, Fragment } from "vue"
+
+export default defineComponent({
+  name: "Editable",
+  setup() {
+    const [state, send] = useMachine(editable.machine({ id: "1" }))
+  
+    const apiRef = computed(() =>
+      editable.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+
+      return (
+        <div {...api.rootProps}>
+          <div {...api.areaProps}>
+            <input {...api.inputProps} />
+            <span {...api.previewProps} />
+          </div>
+          <div>
+            {!api.isEditing && <button {...api.editTriggerProps}>Edit</button>}
+            {api.isEditing && (
+              <div>
+                <button {...api.submitTriggerProps}>Save</button>
+                <button {...api.cancelTriggerProps}>Cancel</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    }
+  },
+})
+```

@@ -1,0 +1,70 @@
+---
+releaseUrl: https://github.com/chakra-ui/zag/pull/584
+releaseDate: March 28, 2023
+---
+
+## Minor Changes
+
+### All Packages
+
+Add `api.setPositioning` to allow for programmatic re-positioning of the popover. This API supports all the positioning
+options.
+
+```js
+api.setPositioning({ placement: "top" })
+```
+
+## Patch Changes
+
+### Element Rect`0.3.0`
+
+Add support for scoping the element rect tracking to size, position or rect.
+
+```js
+import { trackElementRect } from "@zag-js/element-rect"
+
+trackElementRect(element, update, { scope: "size" }) // only track size
+trackElementRect(element, update, { scope: "position" }) // only track position
+trackElementRect(element, update, { scope: "rect" }) // track size and position (default)
+```
+
+### Core `0.2.12`
+
+Fix issue where `machine.getState` returned a snapshot that is incompatible with Solid.js
+
+### Vue `0.2.12`
+
+Fix issue where normalize prop shows warning when `children` is `null` or `undefined`
+
+### Checkbox `0.2.16`
+
+Fix issue where shows console warning due to `preventDefault` call in pointer event on mobile
+
+### DatePicker `0.0.10`
+
+Fix performance issue on React.js due to excessive `.focus()` calls in day cell trigger
+
+- Fix issue where HOME and END keys don't work as expected
+- Fix keyboard selection when `selectionMode` is set to `range`
+
+### Popover `0.2.15`
+
+Refactor machine to use the `proxyTabFocus` helper for better keyboard accessibility when portalled.
+
+### RadioGroup `0.2.3`
+
+Fix issue where shows console warning due to `preventDefault` call in pointer event on mobile
+
+### RatingGroup `0.3.1`
+
+Fix regression rating group that made it difficult to select half values
+
+### Select `0.2.1`
+
+Improve keyboard accessibility by managing focus between the content, trigger and other tabbable elements in the natural
+DOM order.
+
+### Popper `0.2.7`
+
+- Simplify `getPlacementStyles` logic
+- Fix issue where `autoUpdate` prevented manual positioning updates from working due to rect tracking.

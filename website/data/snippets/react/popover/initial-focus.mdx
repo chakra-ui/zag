@@ -1,0 +1,21 @@
+```jsx {3,7,15}
+export function Popover() {
+  // initial focused element ref
+  const inputRef = useRef(null)
+
+  const [state, send] = useMachine(
+    popover.machine({
+      id: "1",
+      initialFocusEl: () => inputRef.current,
+    }),
+  )
+
+  // ...
+
+  return (
+    //...
+    <input ref={inputRef} />
+    // ...
+  )
+}
+```

@@ -1,0 +1,56 @@
+```jsx
+import * as menu from "@zag-js/menu"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+const data = {
+  order: [
+    { label: "Ascending", id: "asc" },
+    { label: "Descending", id: "desc" },
+    { label: "None", id: "none" },
+  ],
+  type: [
+    { label: "Email", id: "email" },
+    { label: "Phone", id: "phone" },
+    { label: "Address", id: "address" },
+  ],
+}
+
+export function Menu() {
+  const [state, send] = useMachine(
+    menu.machine({
+      id: "1",
+      "aria-label": "Sort by",
+      values: { order: "", type: [] },
+    }),
+  )
+
+  const api = menu.connect(state, send, normalizeProps)
+
+  return (
+    <>
+      <button {...api.triggerProps}>Trigger</button>
+      <div {...api.positionerProps}>
+        <div {...api.contentProps}>
+          {data.order.map((item) => {
+            const option = { type: "radio", name: "order", value: item.id }
+            return (
+              <div key={item.id} {...api.getOptionItemProps(option)}>
+                {api.isOptionChecked(option) ? "✅" : null} {item.label}
+              </div>
+            )
+          })}
+          <hr {...api.separatorProps} />
+          {data.type.map((item) => {
+            const option = { type: "checkbox", name: "type", value: item.id }
+            return (
+              <div key={item.id} {...api.getOptionItemProps(option)}>
+                {api.isOptionChecked(option) ? "✅" : null} {item.label}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </>
+  )
+}
+```

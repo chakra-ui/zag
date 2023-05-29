@@ -1,0 +1,37 @@
+```jsx
+import * as tagsInput from "@zag-js/tags-input"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+export function TagsInput() {
+  const [state, send] = useMachine(
+    tagsInput.machine({
+      id: createUniqueId(),
+      value: ["React", "Vue"],
+    }),
+  )
+
+  const api = createMemo(() => tagsInput.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <For each={api().value}>
+        {(value, index) => (
+          <span>
+            <div {...api().getTagProps({ index: index(), value })}>
+              <span>{value} </span>
+              <button
+                {...api().getTagDeleteTriggerProps({ index: index(), value })}
+              >
+                &#x2715;
+              </button>
+            </div>
+            <input {...api().getTagInputProps({ index: index(), value })} />
+          </span>
+        )}
+      </For>
+      <input placeholder="Add tag..." {...api().inputProps} />
+    </div>
+  )
+}
+```
