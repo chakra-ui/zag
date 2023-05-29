@@ -72,7 +72,7 @@ export function machine(userContext: UserDefinedContext) {
         dispatchChangeEvent(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)
           const checked = evt.checked
-          dispatchInputCheckedEvent(inputEl, checked)
+          dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
         },
         removeFocusIfNeeded(ctx) {
           if (ctx.disabled && ctx.focused) {
