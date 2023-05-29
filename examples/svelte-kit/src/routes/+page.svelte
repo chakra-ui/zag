@@ -1,5 +1,5 @@
 <script>
-	import { routesData } from '../../../../shared/src/routes';
+	import { routesData } from '@zag-js/shared/src/routes';
 
 	const routes = routesData.sort((a, b) => a.label.localeCompare(b.label));
 </script>
