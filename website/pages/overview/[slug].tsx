@@ -1,5 +1,5 @@
 import { useMDX } from "components/mdx-components"
-import { Overview } from "contentlayer/generated"
+import { Overview } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
 import { getOverviewDoc, getOverviewPaths } from "lib/contentlayer-utils"
 import { GetStaticPaths, GetStaticProps } from "next"

@@ -355,6 +355,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: {
         syncInputValue: (ctx) => {
           const inputEl = dom.getInputEl(ctx)
+          if (!inputEl) return
           return observeAttributes(inputEl, ["data-value"], () => {
             inputEl.value = inputEl.dataset.value || ""
           })
@@ -549,7 +550,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusPrevOption(ctx) {
           raf(() => {
-            let option = dom.getPrevEl(ctx, ctx.focusedId ?? "")
+            const option = dom.getPrevEl(ctx, ctx.focusedId ?? "")
             setFocus(ctx, option)
           })
         },

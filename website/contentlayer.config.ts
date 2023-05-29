@@ -1,22 +1,21 @@
 import {
   ComputedFields,
-  defineDocumentType,
   FieldDefs,
-  makeSource,
   LocalDocument,
+  defineDocumentType,
+  makeSource,
 } from "contentlayer/source-files"
+import fs from "fs"
+import toc from "markdown-toc"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeCodeTitles from "rehype-code-titles"
 import rehypePrism from "rehype-prism-plus"
 import rehypeSlug from "rehype-slug"
-import remarkGfm from "remark-gfm"
 import remarkDirective from "remark-directive"
-import toc from "markdown-toc"
-import siteConfig from "./site.config"
+import remarkGfm from "remark-gfm"
 import { remarkAdmonition } from "./lib/remark-utils"
 import { toKebabCase } from "./lib/to-kebab-case"
-
-import fs from "fs"
+import siteConfig from "./site.config"
 
 const fields: FieldDefs = {
   title: { type: "string" },
@@ -166,9 +165,12 @@ const Changelog = defineDocumentType(() => {
   }
 })
 
-const contentLayerConfig = makeSource({
-  contentDirPath: "data",
+export default makeSource({
+  contentDirPath: "./data",
+  contentDirExclude: ["*/node_modules", "dist"],
   documentTypes: [Overview, Guide, Snippet, Component, Changelog],
+  disableImportAliasWarning: true,
+  onUnknownDocuments: "skip-ignore",
   mdx: {
     remarkPlugins: [remarkGfm, remarkDirective, remarkAdmonition],
     rehypePlugins: [
@@ -186,5 +188,3 @@ const contentLayerConfig = makeSource({
     ],
   },
 })
-
-export default contentLayerConfig

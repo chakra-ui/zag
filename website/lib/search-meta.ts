@@ -1,4 +1,4 @@
-import { allComponents, allOverviews } from "contentlayer/generated"
+import { allComponents, allOverviews } from "@/contentlayer"
 
 type SearchMetaItem = {
   content: string

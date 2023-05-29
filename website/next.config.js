@@ -3,9 +3,12 @@ const { withContentlayer } = require("next-contentlayer")
 /**
  * @type {import('next').NextConfig}
  */
-module.exports = withContentlayer({
+const nextConfig = {
   swcMinify: false,
-  experimental: { esmExternals: true, externalDir: true },
+  experimental: {
+    appDir: true,
+    externalDir: true,
+  },
   redirects: () => [
     {
       source: "/discord",
@@ -13,4 +16,6 @@ module.exports = withContentlayer({
       permanent: true,
     },
   ],
-})
+}
+
+module.exports = withContentlayer(nextConfig)

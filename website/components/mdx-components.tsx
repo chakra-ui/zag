@@ -5,15 +5,15 @@ import { chakra } from "@chakra-ui/system"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { MDX } from "contentlayer/core"
-import { allComponents, allSnippets } from "contentlayer/generated"
-import { frameworks, FRAMEWORKS } from "lib/framework-utils"
+import { allComponents, allSnippets } from "@/contentlayer"
 import { useMDXComponent } from "next-contentlayer/hooks"
 import NextImage from "next/image"
 import Link from "next/link"
-import React, { FC } from "react"
+import { FC } from "react"
 import { HiOutlineCode } from "react-icons/hi"
 import { ImMagicWand } from "react-icons/im"
 import { RiNpmjsFill } from "react-icons/ri"
+import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
 import { ApiTable } from "./api-table"
 import { CopyButton } from "./copy-button"
 import { useFramework } from "./framework"
@@ -230,8 +230,10 @@ const components: Record<string, FC<any>> = {
 }
 
 export function useMDX(code: string | undefined) {
-  const MDXComponent = useMDXComponent(code ?? "") as unknown as (
-    ...props: any
-  ) => JSX.Element
+  const defaultCode = `
+return { default: () => React.createElement('div', null, '') }
+`
+  const pageCode = code && code?.length ? code : defaultCode
+  const MDXComponent = useMDXComponent(pageCode)
   return <MDXComponent components={components} />
 }

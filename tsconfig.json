@@ -1,8 +1,5 @@
 {
-  "exclude": ["node_modules"],
-  "include": ["packages", "scripts", "shared", "scripts"],
   "compilerOptions": {
-    "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "downlevelIteration": true,

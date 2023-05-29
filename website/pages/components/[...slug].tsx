@@ -1,6 +1,6 @@
 import { FrameworkProvider } from "components/framework"
 import { useMDX } from "components/mdx-components"
-import type { Component } from "contentlayer/generated"
+import type { Component } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
 import {
   extractParams,

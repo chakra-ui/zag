@@ -37,7 +37,7 @@
     "@zag-js/popper": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "focus-trap": "7.4.1"
+    "focus-trap": "7.4.3"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

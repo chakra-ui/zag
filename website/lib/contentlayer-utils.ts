@@ -4,7 +4,7 @@ import {
   allGuides,
   allSnippets,
   allChangelogs,
-} from "contentlayer/generated"
+} from "@/contentlayer"
 import { Framework, FRAMEWORKS, isFramework } from "./framework-utils"
 
 function toParams(str: string | string[]) {

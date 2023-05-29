@@ -16,7 +16,7 @@ export const dom = createScope({
 
   getActiveOptionEl: (ctx: Ctx) => (ctx.focusedId ? dom.getById(ctx, ctx.focusedId) : null),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.queryById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),

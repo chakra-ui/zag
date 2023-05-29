@@ -1,19 +1,20 @@
 {
+  "root": true,
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "allowJs": true,
     "baseUrl": ".",
+    "jsx": "preserve",
     "paths": {
-      "contentlayer/generated": [
-        "./.contentlayer/generated"
-      ]
+      "@/panda/*": ["./panda/*"],
+      "@/contentlayer": [".contentlayer/generated"],
+      "@/*": ["src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "plugins": [{ "name": "next" }],
+  "target": "es6",
+  "verbatimModuleSyntax": false,
+  "isolatedModules": true,
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

@@ -1,6 +1,6 @@
 import { Heading, HStack, Stack, Text } from "@chakra-ui/layout"
 import { ResourceLink, useMDX } from "components/mdx-components"
-import { Changelog } from "contentlayer/generated"
+import { Changelog } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
 import {
   getChangelogPaths,
