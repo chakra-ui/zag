@@ -6,7 +6,8 @@ import { GetStaticPaths, GetStaticProps } from "next"
 import { NextSeo } from "next-seo"
 
 export default function OverviewPage({ doc }: { doc: Overview }) {
-  const Component = useMDX(doc.body.code)
+  const Component = useMDX(doc?.body.code)
+  if (!doc) return null
   return (
     <>
       <NextSeo title={doc.title} description={doc.description} />
@@ -22,5 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<{ doc: Overview }> = async (
   ctx,
 ) => {
-  return { props: { doc: getOverviewDoc(ctx.params.slug) } }
+  return {
+    props: { doc: getOverviewDoc(ctx.params?.slug as string) as Overview },
+  }
 }

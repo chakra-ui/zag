@@ -88,7 +88,7 @@ const sidebarLink: SystemStyleObject = {
   },
 }
 
-export const textStyles = {
+export const textStyles: Record<string, any> = {
   display,
   text,
   link,

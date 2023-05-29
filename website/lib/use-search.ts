@@ -28,6 +28,7 @@ export function useSearch() {
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
       onSelect({ label }) {
+        if (!label) return
         try {
           const { pathname, slug, url } = JSON.parse(label)
           router.push({ pathname, query: { slug } }, url)

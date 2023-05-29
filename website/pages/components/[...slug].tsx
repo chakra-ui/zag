@@ -31,7 +31,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const { framework, slug } = extractParams(ctx.params.slug as string[])
+  const { framework, slug } = extractParams(ctx.params?.slug as string[])
   const doc = getComponentDoc(slug)
   return { props: { doc, framework } }
 }

@@ -4,7 +4,10 @@ import { chakra } from "@chakra-ui/system"
 import { Button } from "components/button"
 import { useId } from "react"
 
-export function Tooltip(props) {
+type TooltipProps = {
+  controls: {}
+}
+export function Tooltip(props: TooltipProps) {
   const [state, send] = useMachine(tooltip.machine({ id: useId() }), {
     context: props.controls,
   })

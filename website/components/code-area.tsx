@@ -4,7 +4,7 @@ import { useMDX } from "./mdx-components"
 
 export function CodeArea({ slug }: { slug: string }) {
   const doc = getSnippetDoc(slug)
-  const Component = useMDX(doc.body.code)
+  const Component = useMDX(doc?.body.code ?? "")
   return (
     <Box
       height="full"
@@ -17,7 +17,7 @@ export function CodeArea({ slug }: { slug: string }) {
         },
       }}
     >
-      {Component}
+      {doc ? Component : "Code not available!"}
     </Box>
   )
 }

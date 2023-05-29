@@ -5,7 +5,7 @@ import { layerStyles } from "./layer-styles"
 import { textStyles } from "./text-styles"
 import { semanticTokens } from "./semantic-tokens"
 
-const theme = {
+const theme: Record<string, any> = {
   ...foundations,
   fonts: {
     ...foundations.fonts,

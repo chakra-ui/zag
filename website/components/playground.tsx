@@ -16,7 +16,7 @@ const Header = (props: any) => (
 )
 
 type PlaygroundProps = {
-  component: React.ElementType
+  component: (props: any) => JSX.Element
   defaultContext?: Record<string, any>
   defaultProps?: Record<
     string,
@@ -161,7 +161,7 @@ export function Playground(props: PlaygroundProps) {
                   }}
                 >
                   <option>-----</option>
-                  {(type as any).options.map((option) => (
+                  {type.options.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>

@@ -2,7 +2,7 @@ import Icon from "@chakra-ui/icon"
 import { chakra, forwardRef, HTMLChakraProps } from "@chakra-ui/system"
 import { HiOutlineSearch } from "react-icons/hi"
 
-export const SearchTrigger = forwardRef(
+export const SearchTrigger: any = forwardRef(
   (props: HTMLChakraProps<"button">, ref) => {
     return (
       <chakra.button

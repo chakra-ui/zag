@@ -5,7 +5,7 @@ import "../styles/prism.css"
 import "../styles/other.css"
 import siteConfig from "site.config"
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: any) {
   return (
     <ChakraProvider theme={theme}>
       <DefaultSeo {...siteConfig.seo} />

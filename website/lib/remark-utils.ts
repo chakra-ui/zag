@@ -10,7 +10,7 @@ function isDirective(node: { type: string }) {
 }
 
 export function remarkAdmonition() {
-  return function parse(tree) {
+  return function parse(tree: any) {
     visit(tree, (node) => {
       if (isDirective(node)) {
         const data = node.data || (node.data = {})

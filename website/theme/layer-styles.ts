@@ -30,7 +30,7 @@ const inlineCode: SystemStyleObject = {
   _dark: { color: "pink.400" },
 }
 
-export const layerStyles = {
+export const layerStyles: Record<string, any> = {
   contain,
   blockquote,
   inlineCode,

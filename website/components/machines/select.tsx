@@ -27,7 +27,11 @@ const CaretIcon = () => (
   </svg>
 )
 
-export function Select(props) {
+type SelectProps = {
+  controls: {}
+}
+
+export function Select(props: SelectProps) {
   const [state, send] = useMachine(select.machine({ id: useId() }), {
     context: props.controls,
   })

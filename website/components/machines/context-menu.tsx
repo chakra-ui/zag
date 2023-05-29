@@ -10,7 +10,11 @@ const data = [
   { label: "Duplicate", value: "duplicate" },
 ]
 
-export function ContextMenu(props) {
+type ContextMenuProps = {
+  controls: {}
+}
+
+export function ContextMenu(props: ContextMenuProps) {
   const [state, send] = useMachine(menu.machine({ id: useId() }), {
     context: props.controls,
   })

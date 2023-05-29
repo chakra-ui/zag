@@ -67,7 +67,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (ctx) => {
   return {
     props: {
-      doc: getChanglogDoc(ctx.params.slug),
+      doc: getChanglogDoc(ctx.params?.slug as string),
       toc: getChangelogToc(),
     },
   }

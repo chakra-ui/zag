@@ -10,7 +10,7 @@ import { frameworks, FRAMEWORKS } from "lib/framework-utils"
 import { useMDXComponent } from "next-contentlayer/hooks"
 import NextImage from "next/image"
 import Link from "next/link"
-import { FC } from "react"
+import React, { FC } from "react"
 import { HiOutlineCode } from "react-icons/hi"
 import { ImMagicWand } from "react-icons/im"
 import { RiNpmjsFill } from "react-icons/ri"
@@ -31,7 +31,7 @@ function SnippetItem({ body, id }: { body: MDX; id: string }) {
 }
 
 type ResourceLinkProps = {
-  href: string
+  href: string | undefined
   icon: FC
   children: any
 }
@@ -54,13 +54,14 @@ export function ResourceLink({ href, icon, children }: ResourceLinkProps) {
   )
 }
 
-const components: Record<string, FC<Record<string, any>>> = {
+const components: Record<string, FC<any>> = {
   Showcase,
   Admonition(props) {
     return <div {...props} />
   },
   Resources(props) {
     const comp = allComponents.find((c) => c.package === props.pkg)
+    if (!comp) return null
     return (
       <Wrap mt="6" spacingX="4">
         <ResourceLink icon={RiNpmjsFill} href={comp.npmUrl}>
@@ -228,7 +229,9 @@ const components: Record<string, FC<Record<string, any>>> = {
   },
 }
 
-export function useMDX(code: string) {
-  const MDXComponent = useMDXComponent(code)
+export function useMDX(code: string | undefined) {
+  const MDXComponent = useMDXComponent(code ?? "") as unknown as (
+    ...props: any
+  ) => JSX.Element
   return <MDXComponent components={components} />
 }

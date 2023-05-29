@@ -5,7 +5,7 @@ const options: IntersectionObserverInit = {
 }
 
 export function useScrollSpy(selectors: string[]) {
-  const [activeId, setActiveId] = useState<string>()
+  const [activeId, setActiveId] = useState<string | null>(null)
   const observer = useRef<IntersectionObserver | null>(null)
   const str = selectors.toString()
 

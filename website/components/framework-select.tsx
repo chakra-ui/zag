@@ -25,7 +25,7 @@ export function FrameworkSelect() {
         defaultValue={framework}
         onChange={(event) => {
           const newFramework = event.currentTarget.value as Framework
-          setFramework(newFramework)
+          setFramework?.(newFramework)
           if (asPath.includes(framework) && newFramework !== framework) {
             const url = asPath.replace(framework, newFramework)
             replace(url)

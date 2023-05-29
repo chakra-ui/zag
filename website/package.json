@@ -64,9 +64,6 @@
     "unist-util-visit": "4.1.2",
     "use-match-media-hook": "^1.0.1"
   },
-  "resolutions": {
-    "@types/react": "^18.0.15"
-  },
   "devDependencies": {
     "@types/react": "^18.0.28",
     "all-contributors-cli": "^6.24.0",

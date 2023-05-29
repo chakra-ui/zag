@@ -10,8 +10,11 @@ const data = [
   { label: "Export", value: "export" },
   { label: "Duplicate", value: "duplicate" },
 ]
+type MenuProps = {
+  controls: {}
+}
 
-export function Menu(props) {
+export function Menu(props: MenuProps) {
   const [state, send] = useMachine(menu.machine({ id: useId() }), {
     context: props.controls,
   })
