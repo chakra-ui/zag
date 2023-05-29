@@ -1,0 +1,34 @@
+```jsx
+import * as pressable from "@zag-js/pressable"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+export default defineComponent({
+  name: "Pressable",
+  setup() {
+    const [state, send] = useMachine(
+      pressable.machine({
+        id: "pressable",
+        onPress() {
+          console.log("press")
+        },
+        onLongPress() {
+          console.log("long press")
+        },
+      }),
+    )
+
+    const apiRef = computed(() =>
+      pressable.connect(state.value, send, normalizeProps),
+    )
+    return () => {
+      const api = apiRef.value
+      return (
+        <button {...api.pressableProps}>
+          {api.isPressed ? "Pressed!" : "Press Me"}
+        </button>
+      )
+    }
+  },
+})
+```

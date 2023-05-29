@@ -1,0 +1,293 @@
+---
+title: Select
+description: Using the select machine in your project.
+package: "@zag-js/select"
+---
+
+# Select
+
+A Select component allows users pick a value from predefined options.
+
+<Resources pkg="@zag-js/select" />
+
+<Showcase id="Select" />
+
+**Features**
+
+- Support for selecting a single option
+- Keyboard support for opening the listbox using the arrow keys, including
+  automatically focusing the first or last item.
+- Support for looping keyboard navigation.
+- Support for selecting an option with tab key.
+- Typeahead to allow selecting options by typing text, even without opening the
+  listbox
+- Support for Right to Left direction.
+
+## Installation
+
+To use the select machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="select/installation.mdx" />
+
+This command will install the framework agnostic menu logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the select correctly, you'll need to understand its anatomy and how we
+name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="select" />
+
+On a high level, the select consists of:
+
+- **Label**: The element that labels the select.
+- **Trigger**: The element that is used to open/close the select.
+- **Positioner**: The element that positions the select dynamically.
+- **Menu**: The popup element that contains the options.
+- **Option**: The option element.
+- **OptionGroup**: The element used to group options.
+
+## Usage
+
+First, import the select package into your project
+
+```jsx
+import * as select from "@zag-js/select"
+```
+
+The select package exports two key functions:
+
+- `machine` — The state machine logic for the select.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
+> ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+select machine in your project 🔥
+
+<CodeSnippet id="select/usage.mdx" />
+
+## Usage within a form
+
+To use select within a form, you'll need to:
+
+- Pass the `name` property to the select machine's context
+- Render a hidden `select` element using `api.selectProps`
+
+<CodeSnippet id="select/usage-with-form.mdx" />
+
+## Selecting option on tab key
+
+While navigating the options, pressing the `Tab` key blurs the select and does
+nothing. In some cases, you might what the `Tab`key to select the currently
+highlighted option. To enable this behaviour, set `selectOnTab` to `true`.
+
+```jsx {4}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    selectOnTab: true,
+  }),
+)
+```
+
+## Disabling the select
+
+To disable the select, set the `disabled` property in the machine's context to
+`true`.
+
+```jsx {4}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    disabled: true,
+  }),
+)
+```
+
+## Disabling an option
+
+To disable an option, pass the `disabled` property in the
+`api.getOptionProps(...)` function. This will make it unselectable via mouse and
+keyboard, and it will be skipped on keyboard navigation.
+
+```jsx
+//...
+<li {...api.getOptionProps({ label, value, disabled: true })}>
+  {option.label}
+</li>
+//...
+```
+
+## Close on select
+
+This behaviour ensures that the menu is closed when an option is selected and is
+`true` by default. It's only concerned with when an option is selected with
+pointer, space key or enter key. To disable the behaviour, set the
+`closeOnSelect` property in the machine's context to `false`.
+
+```jsx {4}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    closeOnSelect: false,
+  }),
+)
+```
+
+## Looping the keyboard navigation
+
+When navigating with the select using the arrow down and up keys, the select
+stops at the first and last options. If you need want the navigation to loop
+back to the first or last option, set the `loop: true` in the machine's context.
+
+```jsx {4}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    loop: true,
+  }),
+)
+```
+
+## Listening for highlight changes
+
+When an option is highlighted with the pointer or keyboard, the
+`highlightedOption` property in the machine's context is updated. You can listen
+for this change and do something with it.
+
+```jsx {4-7}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    onHighlight(details) {
+      // details => { label: string, value: string }
+      console.log(details)
+    },
+  }),
+)
+```
+
+## Listening for selection changes
+
+When an option is selected, the `selectedOption` property in the machine's
+context is updated. You can listen for this change and do something with it.
+
+```jsx {4-7}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    onSelect(details) {
+      // details => { label: string, value: string }
+      console.log(details)
+    },
+  }),
+)
+```
+
+## Listening for open and close events
+
+When the select is opened or closed, the `onOpen` and `onClose` properties in
+the machine's context are called. You can listen for these events and do
+something with it.
+
+```jsx {4-9}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    onOpen() {
+      console.log("Select opened")
+    },
+    onClose() {
+      console.log("Select closed")
+    },
+  }),
+)
+```
+
+
+## Styling guide
+
+Earlier, we mentioned that each select part has a `data-part` attribute added to
+them to select and style them in the DOM.
+
+### Selected state
+
+When an option is selected, it is given a `data-selected` attribute.
+
+```css
+[data-part="option"][data-selected] {
+  /* styles for selected state */
+}
+```
+
+### Highlighted state
+
+When an option is higlighted, via keyboard navigation or pointer, it is given a
+`data-focus` attribute.
+
+```css
+[data-part="option"][data-focus] {
+  /* styles for highlighted state */
+}
+```
+
+### Invalid state
+
+When the select is invalid, the label and trigger is given a `data-invalid`
+attribute.
+
+```css
+[data-part="label"][data-invalid] {
+  /* styles for invalid state */
+}
+
+[data-part="trigger"][data-invalid] {
+  /* styles for invalid state */
+}
+```
+
+### Disabled state
+
+When the select is disabled, the trigger and label is given a `data-disabled`
+attribute.
+
+```css
+[data-part="trigger"][data-disabled] {
+  /* styles for disabled select state */
+}
+
+[data-part="label"][data-disabled] {
+  /* styles for disabled label state */
+}
+
+[data-part="option"][data-disabled] {
+  /* styles for disabled option state */
+}
+```
+
+> Optionally, when an option is disabled, it is given a `data-disabled`
+> attribute.
+
+### Empty state
+
+When no option is selected, the trigger is given a `data-placeholder-shown`
+attribute.
+
+```css
+[data-part="trigger"][data-placeholder-shown] {
+  /* styles for empty select state */
+}
+```
+
+## Methods and Properties
+
+The select's `api` exposes the following methods:
+
+<ApiTable name="select" />

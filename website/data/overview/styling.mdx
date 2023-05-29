@@ -1,0 +1,74 @@
+---
+title: Styling
+description: Using CSS to style Zag components
+---
+
+# Styling
+
+Zag's API is intentionally very low level and unstyled, giving you control over
+how you want to style them. Unlike Chakra UI, it provides no styles or UI, just
+behavior or logic, accessibility and helpful methods.
+
+Each machine provides an idea of the DOM structure and styling guide to show you
+how to style the states and parts.
+
+## Styling a component part
+
+Every component comprises of multiple parts that can be styled. For example, the
+dialog component has the following parts: content, trigger, title, and backdrop.
+
+The `data-part` attribute can be used to select and style a component part.
+
+Here's what a sample HTML for the dialog looks like:
+
+```html
+<div data-part="backdrop"></div>
+<div data-part="container">
+  <div data-part="content">
+    <h2 data-part="title">Dialog Title</h2>
+    <p data-part="description">Dialog Description</p>
+    <button data-part="close-trigger">Close</button>
+  </div>
+</div>
+```
+
+You can style each part using the CSS attribute selector.
+
+```css
+[data-part="backdrop"] {
+  background-color: #000;
+  opacity: 0.5;
+}
+
+[data-part="content"] {
+  padding: 24px;
+  border-radius: 6px;
+}
+```
+
+## Styling a state
+
+When a component or its parts can have multiple states, we automatically attach
+`data-*` attributes that represents the specific state. For example, an
+accordion's trigger can have:
+
+- `data-disabled` — When the trigger is disabled.
+- `data-expanded` — When the trigger is expanded.
+
+You can style the accordion's trigger using the CSS attribute selector.
+
+```css
+[data-part="trigger"][data-expanded] {
+  background: red;
+}
+
+[data-part="trigger"][data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+```
+
+You'll see this pattern across every components within the library.
+
+> Zag was designed to encapsulate logic, accessibility and interactions, while
+> giving you full control control over styling.

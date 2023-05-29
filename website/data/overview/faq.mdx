@@ -1,0 +1,66 @@
+---
+title: Frequently Asked Questions
+description: Common questions and answers about the project
+---
+
+# Frequently Asked Questions
+
+## Why the need for `normalizeProps`?
+
+The goal of `normalizeProps` is to convert the props of the component into the
+format that is compatible with the respective framework.
+
+It is also used to ensure that the returned properties are strongly typed.
+
+There are subtle difference between how element attributes are named across
+frameworks like React, Solid and Vue. Here are some examples:
+
+**Keydown listener**
+
+- React and Solid: The keydown listener property is `onKeyDown`.
+- Vue: The keydown listener property is `onKeydown`.
+
+**Styles**
+
+- React: Pass a numeric value for margin attributes like `{ marginBottom: 4 }`.
+- Solid: It has to be `{ "margin-bottom": "4px" }`.
+- Vue: You need to ensure the value is a string with unit.
+  `{ marginBottom: "4px" }`.
+
+These little nuances between frameworks are handled automatically when you use
+`normalizeProps`.
+
+## How can I attach custom extra event handlers to the elements?
+
+See the approach [here](/overview/composition#event-composition).
+
+## How can I get Zag working in a custom window environment?
+
+See the approach [here](/overview/composition#custom-window-environment).
+
+## What would it take to support other frameworks?
+
+We're currently interested in supporting as many frameworks as possible. The key
+requirements are:
+
+- **Support for "spread props"**: The framework should have support for
+  spreading attributes and event handlers.
+
+- **Exposed Typings**: The framework should expose the typings for the
+  attributes and event handlers. This is optional but would provide the best DX.
+
+## How do I upgrade all zag dependencies?
+
+Since we use independent versioning for each zag package, it can sometimes be
+inconvenient to upgrade all dependencies individually.
+
+You can use scoped upgrades feature in your package manager to update all zag
+packages seamlessly.
+
+```bash
+pnpm up "@zag-js/*"
+# or
+yarn upgrade --scope @zag-js
+# or
+npm up @zag-js/...
+```

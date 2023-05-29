@@ -1,0 +1,27 @@
+```jsx
+import * as pressable from "@zag-js/pressable"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Pressable() {
+  const [state, send] = useMachine(
+    pressable.machine({
+      id: createUniqueId(),
+      onPress() {
+        console.log("press")
+      },
+      onLongPress() {
+        console.log("long press")
+      },
+    }),
+  )
+
+  const api = createMemo(() => pressable.connect(state, send, normalizeProps))
+
+  return (
+    <button {...api().pressableProps}>
+      {api().isPressed ? "Pressed!" : "Press Me"}
+    </button>
+  )
+}
+```

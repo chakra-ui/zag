@@ -1,0 +1,50 @@
+```jsx
+import * as pagination from "@zag-js/pagination"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { data } from "./data"
+
+function Pagination() {
+  const [state, send] = useMachine(
+    pagination.machine({ id: "1", count: data.length }),
+  )
+
+  const api = pagination.connect(state, send, normalizeProps)
+
+  return (
+    <div>
+      {api.totalPages > 1 && (
+        <nav {...api.rootProps}>
+          <ul>
+            <li>
+              <a href="#previous" {...api.prevPageTriggerProps}>
+                Previous <span className="visually-hidden">Page</span>
+              </a>
+            </li>
+            {api.pages.map((page, i) => {
+              if (page.type === "page")
+                return (
+                  <li key={page.value}>
+                    <a href={`#${page.value}`} {...api.getPageTriggerProps(page)}>
+                      {page.value}
+                    </a>
+                  </li>
+                )
+              else
+                return (
+                  <li key={`ellipsis-${i}`}>
+                    <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+                  </li>
+                )
+            })}
+            <li>
+              <a href="#next" {...api.nextPageTriggerProps}>
+                Next <span className="visually-hidden">Page</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      )}
+    </div>
+  )
+}
+```

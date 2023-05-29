@@ -1,0 +1,148 @@
+---
+title: Getting Started
+description: Setting up Zag UI machines in your project
+---
+
+# Getting Started
+
+Zag can be used within most JS frameworks like Vue, React and Solid.
+
+To get Zag running, you'll need to:
+
+1. Install the machine for the component you're interested in. Let's say you
+   want to use the `toggle` machine.
+
+```bash
+npm install @zag-js/toggle
+# or
+yarn add @zag-js/toggle
+```
+
+2. Install the adapter for the framework of your choice. At the moment, Zag is
+   available for React, Vue 3 and Solid.js. Let's say you use React.
+
+```bash
+npm install @zag-js/react
+# or
+yarn add @zag-js/react
+```
+
+> Congrats! You're ready to use toggle machine in your project.
+
+## Using the machine
+
+Here's an example of the toggle machine used in a React.js project.
+
+```jsx
+import { useMachine, normalizeProps } from "@zag-js/react"
+import * as toggle from "@zag-js/toggle"
+
+export function Toggle() {
+  const [state, send] = useMachine(toggle.machine({
+    id: "1"
+  }))
+  const api = toggle.connect(state, send, normalizeProps)
+  return (
+    <button {...api.buttonProps}>
+      {api.isPressed ? "On" : "Off"}
+    </button>
+  )
+}
+```
+
+> Zag uses [`valtio`](https://github.com/pmndrs/valtio) behind the scenes to
+> provide automatic render optimizations due to the `useSnapshot` hook used
+> within the machine hook.
+> [Learn more](https://github.com/pmndrs/valtio#react-via-usesnapshot)
+
+### Usage with Vue 3 (JSX)
+
+Zag works seamlessly with Vue's JSX approach. Here's how to use the same toggle
+logic in Vue:
+
+```jsx
+import { computed, defineComponent, h, Fragment } from "vue"
+import * as toggle from "@zag-js/toggle"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+
+export default defineComponent({
+  name: "Toggle",
+  setup() {
+    const [state, send] = useMachine(toggle.machine({
+      id: "1"
+    }))
+    const apiRef = computed(() => toggle.connect(state, send, normalizeProps))
+    return () => {
+      const api = apiRef.value
+      return (
+        <button {...api.buttonProps}>
+          {api.isPressed ? "On" : "Off"}
+        </button>
+      )
+    }
+  },
+})
+```
+
+There are some extra functions that need to be used in order to make it work:
+
+- `normalizeProps` - Converts the props of the component into the format that is
+  compatible with Vue.
+- `computed` - Ensures that the toggle's `api` is always up to date with the
+  current state of the machine.
+
+### Usage with Solid.js
+
+We love Solid.js and we've added support for it. Here's how to use the same
+toggle logic in Solid:
+
+```jsx
+import { createMemo } from "solid-js"
+import * as toggle from "@zag-js/toggle"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+
+export default function Toggle() {
+  const [state, send] = useMachine(toggle.machine({
+    id: "1"
+  }))
+  const api = createMemo(() => toggle.connect(state, send, normalizeProps))
+  return (
+    <button {...api().buttonProps}>
+      {api().isPressed ? "On" : "Off"}
+    </button>
+  )
+}
+```
+
+There are some extra functions that need to be used in order to make it work:
+
+- `normalizeProps` - Converts the props of the component into the format that is
+  compatible with Solid.
+- `createMemo` - Ensures that the toggle's `api` is always up to date with the
+  current state of the machine.
+
+### About prop normalization
+
+There are subtle difference between how JSX attributes are named across
+frameworks like React, Solid and Vue. Here are some examples:
+
+**Keydown listener**
+
+- React and Solid: The keydown listener property is `onKeyDown`.
+- Vue: The keydown listener property is `onKeydown`.
+
+**Styles**
+
+- React: Pass a numeric value for margin attributes like `{ marginBottom: 4 }`.
+- Solid: It has to be `{ "margin-bottom": "4px" }`.
+- Vue: You need to ensure the value is a string with unit.
+  `{ marginBottom: "4px" }`.
+
+These little nuances between frameworks are handled automatically when you use
+`normalizeProps`.
+
+> The goal of Zag is to help you abstract the interaction and accessibility
+> patterns into a statechart so you never have to re-invent the wheel.
+
+Thanks for reading! If you're curious about how state machines work, the next
+page will give you a quick overview.

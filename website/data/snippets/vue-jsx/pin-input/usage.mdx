@@ -1,0 +1,29 @@
+```jsx
+import * as pinInput from "@zag-js/pin-input"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, h, Fragment } from "vue"
+
+export default defineComponent({
+  name: "PinInput",
+  setup() {
+    const [state, send] = useMachine(pinInput.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      pinInput.connect(state.value, send, normalizeProps),
+    )
+    return () => {
+      const api = apiRef.value
+      return (
+        <div>
+          <div {...api.rootProps}>
+            <input {...api.getInputProps({ index: 0 })} />
+            <input {...api.getInputProps({ index: 1 })} />
+            <input {...api.getInputProps({ index: 2 })} />
+          </div>
+          <button onClick={api.clearValue}>Clear</button>
+        </div>
+      )
+    }
+  },
+})
+```

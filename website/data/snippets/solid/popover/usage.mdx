@@ -1,0 +1,24 @@
+```jsx
+import * as popover from "@zag-js/popover"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+export function Popover() {
+  const [state, send] = useMachine(popover.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => popover.connect(state, send, normalizeProps))
+
+  return (
+    <div>
+      <button {...api().triggerProps}>Click me</button>
+      <div {...api().positionerProps}>
+        <div {...api().contentProps}>
+          <div {...api().titleProps}>Popover Title</div>
+          <div {...api().descriptionProps}>Description</div>
+          <button {...api().closeTriggerProps}>X</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

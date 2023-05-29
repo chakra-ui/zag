@@ -1,0 +1,60 @@
+```jsx
+import * as select from "@zag-js/select"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+const selectData = [
+  { label: "Nigeria", value: "NG" },
+  { label: "Japan", value: "JP" },
+  { label: "Korea", value: "KO" },
+  { label: "Kenya", value: "KE" },
+  { label: "United Kingdom", value: "UK" },
+  { label: "Ghana", value: "GH" },
+  { label: "Uganda", value: "UG" },
+]
+
+export function SelectWithForm() {
+  const [state, send] = useMachine(
+    select.machine({ id: createUniqueId(), name: "country" }),
+  )
+
+  const api = createMemo(() => select.connect(state, send, normalizeProps))
+
+  return (
+    <div>
+      <div className="select">
+        {/* Hidden select */}
+        <select {...api().hiddenSelectProps}>
+          {selectData.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+
+        {/* Custom Select */}
+        <div className="control">
+          <label {...api().labelProps}>Label</label>
+          <button type="button" {...api().triggerProps}>
+            <span>{api().selectedOption?.label ?? "Select option"}</span>
+            <CaretIcon />
+          </button>
+        </div>
+
+        <Portal>
+          <div {...api().positionerProps}>
+            <ul {...api().contentProps}>
+              {selectData.map(({ label, value }) => (
+                <li key={value} {...api().getOptionProps({ label, value })}>
+                  <span>{label}</span>
+                  {value === api().selectedOption?.value && "✓"}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Portal>
+      </div>
+    </div>
+  )
+}
+```

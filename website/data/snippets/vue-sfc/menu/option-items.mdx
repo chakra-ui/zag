@@ -1,0 +1,51 @@
+```md
+<script setup>
+import * as menu from "@zag-js/menu";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+import { data } from "./data";
+
+const [state, send] = useMachine(
+  menu.machine({
+    id: "1",
+    "aria-label": "Sort by",
+    values: { order: "", type: [] },
+  })
+);
+
+const api = computed(() => menu.connect(state.value, send, normalizeProps));
+const orderOptions = data.order.map((item) => ({
+  ...item,
+  option: { type: "radio", name: "order", value: item.id },
+}));
+const typeOptions = data.type.map((item) => ({
+  ...item,
+  option: { type: "checkbox", name: "type", value: item.id },
+}));
+</script>
+
+<template>
+  <button ref="ref" v-bind="api.triggerProps">Trigger</button>
+  <div v-bind="api.positionerProps">
+    <div v-bind="api.contentProps">
+      <div
+        v-for="item in orderOptions"
+        :key="item.id"
+        v-bind="api.getOptionItemProps(item.option)"
+      >
+        {{ api.isOptionChecked(item.option) ? "✅" : null }} {{ item.label }}
+      </div>
+      <hr v-bind="api.separatorProps" />
+
+      <div
+        v-for="item in typeOptions"
+        :key="item.id"
+        v-bind="api.getOptionItemProps(item.option)"
+      >
+        {{ api.isOptionChecked(item.option) ? "✅" : null }} {{ item.label }}
+      </div>
+    </div>
+
+  </div>
+</template>
+```

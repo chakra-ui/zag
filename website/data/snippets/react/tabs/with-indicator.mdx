@@ -1,0 +1,23 @@
+```jsx {13}
+// ...
+return (
+  <div {...api.rootProps}>
+    <div {...api.tablistProps}>
+      {data.map((item) => (
+        <button
+          {...api.getTriggerProps({ value: item.value })}
+          key={item.value}
+        >
+          {item.label}
+        </button>
+      ))}
+      <div {...api.indicatorProps} />
+    </div>
+    {data.map((item) => (
+      <div {...api.getContentProps({ value: item.value })} key={item.value}>
+        <p>{item.content}</p>
+      </div>
+    ))}
+  </div>
+)
+```

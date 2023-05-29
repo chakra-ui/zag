@@ -1,0 +1,234 @@
+---
+title: Menu
+description: Using the menu machine in your project.
+package: "@zag-js/menu"
+---
+
+# Menu
+
+An accessible dropdown and context menu that is used to display a list of
+actions or options that a user can choose.
+
+<Resources pkg="@zag-js/menu" />
+
+<Showcase id="Menu" />
+
+**Features**
+
+- Support for items, labels, groups of items.
+- Focus is fully managed using `aria-activedescendant` pattern.
+- Typeahead to allow focusing items by typing text.
+- Keyboard navigation support including arrow keys, home/end, page up/down.
+
+## Installation
+
+To use the menu machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="menu/installation.mdx" />
+
+This command will install the framework agnostic menu logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the menu correctly, you'll need to understand its anatomy and how we
+name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="menu" />
+
+On a high level, the menu consists of:
+
+- **Trigger**: The element that toggles the menu.
+- **Positioner**: The element that positions the menu dynamically.
+- **Content**: The element that contains the menu items and groups.
+- **Item**: The menu item used to trigger an action.
+
+The optional parts include:
+
+- **Option Item**: The menu item that acts as a radio or checkbox.
+- **Context Trigger**: The trigger for the menu item.
+- **Separator**: The element that is used to visually separate menu items.
+
+## Usage
+
+First, import the menu package into your project
+
+```jsx
+import * as menu from "@zag-js/menu"
+```
+
+The menu package exports two key functions:
+
+- `machine` — The state machine logic for the menu widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
+> ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+menu machine in your project 🔥
+
+<CodeSnippet id="menu/usage.mdx" />
+
+## Listening to item selection
+
+Pass `onSelect` to the machine's context to perform some custom logic when an
+item is selected. When an item is selected, the machine invokes the `onSelect`
+callback. This callback is invoked with the `value` of the item.
+
+```jsx {4-7}
+const [state, send] = useMachine(
+  menu.machine({
+    values: { order: "", type: [] },
+    onSelect(value) {
+      // value => "nigeria"
+      console.log("selected value is ", value)
+    },
+  }),
+)
+```
+
+## Methods and Properties
+
+The menu's `api` exposes the following methods:
+
+- `isOpen` — Whether the menu is open.
+- `open(...)` — Function to open the menu.
+- `close(...)` — Function to close the menu.
+- `activeId` — The `id` of the active menu item.
+- `setActiveId(...)` — Function to set the value active menu item.
+- `isOptionChecked(...)` — Function to check whether an option item is checked.
+
+When building nested menus, you'll need to use:
+
+- `setParent(...)` — Function to register a parent menu's machine in the child
+  menu's context.
+- `setChild(...)` — Function to register a child menu's machine in the parent
+  menu's context.
+
+## Grouping menu items
+
+When the number of menu items gets much, it might be useful to group related
+menu items. To achieve this:
+
+- Wrap the menu items within an element.
+- Spread the `api.groupProps(...)` JSX properties unto the element, providing an
+  `id`.
+- Render a label for the menu group, providing the `id` of the group element.
+
+```jsx
+//...
+<div {...api.contentProps}>
+  {/* ... */}
+  <hr {...api.separatorProps} />
+  <p {...api.getLabelProps({ htmlFor: "account" })}>Accounts</p>
+  <div {...api.getGroupProps({ id: "account" })}>
+    <button {...api.getItemProps({ id: "account-1" })}>Account 1</button>
+    <button {...api.getItemProps({ id: "account-2" })}>Account 2</button>
+  </div>
+</div>
+//...
+```
+
+## Checkbox and Radio option items
+
+To use checkbox or radio option items, you'll need to:
+
+- Add a `values` property to the machine's context whose value is an object
+  describing the state of the option items.
+- Use the `api.getOptionItemProps(...)` function to get the props for the option
+  item.
+- Optionally use the `api.isOptionChecked(...)` function to check whether an
+  option item is checked.
+
+A common requirement for the option item that you pass the `name`, `value` and
+`type` properties.
+
+- `name` — The property key in the `values` context that this option is for.
+- `type` — The type of option item. Either `"checkbox"` or `"radio"`.
+- `value` — The value of the option item.
+
+<CodeSnippet id="menu/option-items.mdx" />
+
+The machine invokes an `onValueChange` callback when an radio or checkbox
+option checked state changes. This callback is invoked with the `name` of the
+option and its new value.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  menu.machine({
+    values: { order: "", type: [] },
+    onValueChange(data) {
+      // data => { name: string, value: string | string[] }
+      console.log("values changed", data.value)
+    },
+  }),
+)
+```
+
+
+## Styling guide
+
+Earlier, we mentioned that each menu part has a `data-part` attribute added to
+them to select and style them in the DOM.
+
+### Focused item state
+
+When an item is focused, via keyboard navigation or pointer, it is given a
+`data-focus` attribute.
+
+```css
+[data-part="item"][data-focus] {
+  /* styles for focused state */
+}
+
+[data-part="option-item"][data-focus] {
+  /* styles for focused state */
+}
+```
+
+### Disabled item state
+
+When an item or an option item is disabled, it is given a `data-disabled`
+attribute.
+
+```css
+[data-part="item"][data-disabled] {
+  /* styles for disabled state */
+}
+
+[data-part="option-item"][data-disabled] {
+  /* styles for disabled state */
+}
+```
+
+### Using arrows
+
+When using arrows within the menu, you can style it using css variables.
+
+```css
+[data-part="arrow"] {
+  --arrow-size: 20px;
+  --arrow-background: red;
+}
+```
+
+### Checked option item state
+
+When an option item is checked, it is given a `data-checked` attribute.
+
+```css
+[data-part="option-item"][data-checked] {
+  /* styles for checked state */
+}
+```
+
+## Methods and Properties
+
+The menu's `api` method exposes the following methods:
+
+<ApiTable name="menu" />

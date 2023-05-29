@@ -1,0 +1,64 @@
+```jsx
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, onMount } from "solid-js"
+import { Portal } from "solid-js/web"
+
+export default function Page() {
+  // Level 1 - File Menu
+  const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
+    menu.machine({ "aria-label": "File", id: createUniqueId() }),
+  )
+
+  const fileMenu = createMemo(() => menu.connect(state, send, normalizeProps))
+
+  // Level 2 - Share Menu
+  const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
+    menu.machine({ "aria-label": "Share", id: createUniqueId() }),
+  )
+
+  const shareMenu = createMemo(() =>
+    menu.connect(subState, subSend, normalizeProps),
+  )
+
+  onMount(() => {
+    setTimeout(() => {
+      fileMenu().setChild(shareMenuMachine)
+      shareMenu().setParent(fileMenuMachine)
+    })
+  })
+
+  // Share menu trigger
+  const shareMenuTriggerProps = createMemo(() =>
+    fileMenu().getTriggerItemProps(shareMenu()),
+  )
+
+  return (
+    <>
+      <button {...fileMenu().triggerProps}>Click me</button>
+
+      <Portal>
+        <div {...fileMenu().positionerProps}>
+          <ul {...fileMenu().contentProps}>
+            <li {...fileMenu().getItemProps({ id: "new-tab" })}>New tab</li>
+            <li {...fileMenu().getItemProps({ id: "new-win" })}>New window</li>
+            <li {...shareMenuTriggerProps()}>Share</li>
+            <li {...fileMenu().getItemProps({ id: "print" })}>Print...</li>
+            <li {...fileMenu().getItemProps({ id: "help" })}>Help</li>
+          </ul>
+        </div>
+      </Portal>
+
+      <Portal>
+        <div {...shareMenu().positionerProps}>
+          <ul {...shareMenu().contentProps}>
+            <li {...shareMenu().getItemProps({ id: "messages" })}>Messages</li>
+            <li {...shareMenu().getItemProps({ id: "airdrop" })}>Airdrop</li>
+            <li {...shareMenu().getItemProps({ id: "whatsapp" })}>WhatsApp</li>
+          </ul>
+        </div>
+      </Portal>
+    </>
+  )
+}
+```

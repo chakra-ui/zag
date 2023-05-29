@@ -1,0 +1,42 @@
+```md
+<script setup>
+import * as pagination from "@zag-js/pagination"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed } from "vue"
+import { data } from "./data"
+
+const [state, send] = useMachine(pagination.machine({ id: "1", count: data.length }))
+
+const api = computed(() => pagination.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <nav v-if="api.totalPages > 1" v-bind="api.rootProps">
+    <ul>
+      <li>
+        <a href="#previous" v-bind="api.prevPageTriggerProps">
+          Previous <span class="visually-hidden">Page</span>
+        </a>
+      </li>
+      <li
+        v-for="(page, i) in api.pages"
+        :key="page.type === 'page' ? page.value : `ellipsis-${i}`"
+      >
+        <span v-if="page.type === 'page'">
+          <a :href="`#${page.value}`" v-bind="api.getPageTriggerProps(page)">
+            {{page.value}}
+          </a></span
+        >
+        <span v-else>
+          <span v-bind="api.getEllipsisProps({ index: i })">&#8230;</span>
+        </span>
+      </li>
+      <li>
+        <a href="#next" v-bind="api.nextPageTriggerProps">
+          Next <span class="visually-hidden">Page</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+```

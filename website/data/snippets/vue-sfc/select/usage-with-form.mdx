@@ -1,0 +1,65 @@
+```html
+<script setup>
+import * as select from "@zag-js/select"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { Teleport } from "vue"
+
+const selectData = [
+  { label: "Nigeria", value: "NG" },
+  { label: "Japan", value: "JP" },
+  { label: "Korea", value: "KO" },
+  { label: "Kenya", value: "KE" },
+  { label: "United Kingdom", value: "UK" },
+  { label: "Ghana", value: "GH" },
+  { label: "Uganda", value: "UG" },
+]
+const [state, send] = useMachine(
+  select.machine({
+    id: "1",
+    name: "country",
+  }),
+)
+
+const api = computed(() =>
+  select.connect(state.value, send, normalizeProps),
+)
+</script>
+<template>
+  <div>
+    <!-- Hidden select  -->
+    <select v-bind="api.hiddenSelectProps">
+      <option
+        v-for="option in selectData"
+        :key="option.value"
+        :value="option.value"
+      >
+        {{option.label}}
+      </option>
+    </select>
+
+    <!-- Custom Select  -->
+    <div class="control">
+      <label v-bind="api.labelProps">Label</label>
+      <button type="button" v-bind="api.triggerProps">
+        <span>{{api.selectedOption?.label ?? "Select option"}}</span>
+        <CaretIcon />
+      </button>
+    </div>
+
+    <Teleport to="body">
+      <div v-bind="api.positionerProps">
+        <ul v-bind="api.contentProps">
+          <li
+            v-for="{label, value} in selectData"
+            :key="value"
+            v-bind="api.getOptionProps({ label, value })"
+          >
+            <span>{{label}}</span>
+            {{value === api.selectedOption?.value && "✓"}}
+          </li>
+        </ul>
+      </div>
+    </Teleport>
+  </div>
+</template>
+```

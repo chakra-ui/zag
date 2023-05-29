@@ -1,0 +1,25 @@
+```md
+<script setup>
+import * as tooltip from "@zag-js/tooltip";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(tooltip.machine({ id: "1" }));
+
+const api = computed(() => tooltip.connect(state.value, send, normalizeProps));
+</script>
+
+<template>
+  <div>
+    <button ref="ref" v-bind="api.triggerProps">Hover me</button>
+    <div v-if="isOpen" v-bind="api.positionerProps">
+      <div v-bind="api.contentProps">
+        {{/* rendered */}}
+        <span>Tooltip</span>
+        {{/* announced */}}
+        <div v-bind="api.labelProps" />
+      </div>
+    </div>
+  </div>
+</template>
+```

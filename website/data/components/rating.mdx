@@ -1,0 +1,207 @@
+---
+title: Rating
+description: Using the rating machine in your project.
+package: "@zag-js/rating"
+---
+
+# Rating
+
+Rating allows a user to add and remove rating to an item.
+
+<Resources pkg="@zag-js/rating" />
+
+<Showcase id="Rating" />
+
+**Features**
+
+- Syncs with `disabled` state of fieldset
+- Syncs with form `reset` events
+
+## Installation
+
+To use the rating machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="rating/installation.mdx" />
+
+This command will install the framework agnostic rating logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the rating correctly, you'll need to understand its anatomy and how we
+name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="rating" />
+
+On a high level, the rating consists of:
+
+- **Root**: The root container for the rating
+- **Label**: The label that gives the user information on the rating
+- **Item**: The element that visually represents the each rating item.
+- **Item Group**: The radiogroup wrapper for the rating items.
+- **Input**: The native html input that is visually hidden in the rating.
+
+## Usage
+
+First, import the rating package into your project
+
+```jsx
+import * as rating from "@zag-js/rating"
+```
+
+The rating package exports two key functions:
+
+- `machine` — The state machine logic for the rating widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+rating machine in your project 🔥
+
+<CodeSnippet id="rating/usage.mdx" />
+
+## Disabling the rating
+
+To make rating disabled, set the context's `disabled` property to true
+
+```jsx {3}
+const [state, send] = useMachine(
+  rating.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Making the rating readonly
+
+To make rating readonly, set the context's `readOnly` property to true
+
+```jsx {3}
+const [state, send] = useMachine(
+  rating.machine({
+    readOnly: true,
+  }),
+)
+```
+
+## Setting the initial value
+
+To set the rating's initial value, set the context's `value` property.
+
+```jsx {3}
+const [state, send] = useMachine(
+  rating.machine({
+    value: 2.5,
+  }),
+)
+```
+
+## Listening for changes
+
+When the rating value changes, the `onChange` callback is invoked.
+
+```jsx {3-8}
+const [state, send] = useMachine(
+  rating.machine({
+    onChange({ value }) {
+      console.log("rating value is:", value)
+      // '1' | '2.5' | '4'
+    },
+  }),
+)
+```
+
+
+## Usage within forms
+
+To use rating within forms, use the exposed `inputProps` from the `connect`
+function and ensure you pass `name` value to the machine's context. It will
+render a hidden input and ensure the value changes get propagated to the form
+correctly.
+
+```jsx {3}
+const [state, send] = useMachine(
+  rating.machine({
+    name: "rating",
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each rating part has a `data-part` attribute added to
+them to select and style them in the DOM.
+
+### Disabled State
+
+When the rating is disabled, the `data-disabled` attribute is added to the
+rating, control and label parts.
+
+```css
+[data-part="rating"][data-disabled] {
+  /* styles for rating disabled state */
+}
+
+[data-part="label"][data-disabled] {
+  /* styles for rating control disabled state */
+}
+
+[data-part="input"][data-disabled] {
+  /* styles for rating label disabled state */
+}
+```
+
+### Checked State
+
+When the rating is checked, the `data-checked` attribute is added to the rating
+part.
+
+```css
+[data-part="rating"][data-checked] {
+  /* styles for rating checked state */
+}
+```
+
+### Readonly State
+
+When the rating is readonly, the `data-readonly` attribute is added to the
+rating part.
+
+```css
+[data-part="rating"][data-readonly] {
+  /* styles for rating readonly state */
+}
+```
+
+### Highlighted
+
+When a rating is highlighted, the `data-highlighted` attribute is added to the
+rating part.
+
+```css
+[data-part="rating"][data-highlighted] {
+  /* styles for highlighted rating */
+}
+```
+
+### Half rating
+
+When a rating is half, the `data-half` attribute is added to the rating part.
+
+```css
+[data-part="rating"][data-half] {
+  /* styles for half rating */
+}
+```
+
+## Methods and Properties
+
+The rating's `api` provides helpful properties and methods
+
+<ApiTable name="rating-group" />

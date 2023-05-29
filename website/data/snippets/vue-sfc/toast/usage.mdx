@@ -1,0 +1,78 @@
+```md
+<script setup>
+//imports
+import * as toast from "@zag-js/toast"
+import { normalizeProps, useActor, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, inject, reactive } from "vue"
+</script>
+
+<script setup>
+// 1. Create the single toast
+const props = defineProps<{ actor: string}>()
+const [state, send] = useActor(props.actor)
+const api = computed(() => toast.connect(state.value, send, normalizeProps))
+</script>
+<template>
+    <div v-bind="api.rootProps">
+      <h3 v-bind="api.titleProps">{{ api.title }}</h3>
+      <p v-bind="api.descriptionProps">{{ api.description }}</p>
+      <button @click="api.dismiss()">Close</button>
+    </div>
+</template>
+
+<script setup>
+// 2. Add toast to your global context so it can be called anywhere in the app
+const [state, send] = useMachine(toast.group.machine({ id: "1" }))
+const toastApi = toast.group.connect(state.value, send, normalizeProps)
+
+// E.g. Store
+export const store = reactive({
+  toast: toastApi,
+})
+// Maybe Vue app provide / inject
+VueApp.provide("toast", toastApi)
+</script>
+
+
+<script setup>
+// 3. Register the toast placements in the root of your app
+
+// Get toast from global context; you could also be getting from a store,
+// this example uses the Vue app provide method
+const api = computed(() => inject("toast"))
+</script>
+
+<template>
+    <div v-for="(toasts, placement, index) in api.toastsByPlacement">
+        <div :key="placement" v-bind="api.getGroupProps({ placement })" >
+            <Toast v-for="toast in toasts" :key="toast.id" :actor="toast" />
+        </div>
+    </div>
+    <RestOfYourApp />
+</template>
+
+<script setup>
+// 4. Within your app
+
+// Get toast from global context; you could also be getting from a store,
+// this example uses the Vue app provide method
+const toast = computed(() => inject("toast"))
+
+const topRightToast = () => toast.create({ title: 'Hello', placement: 'top-right' })
+const bottomRightToast = () =>
+  toast.create({
+    title: "Data submitted!",
+    type: "success",
+    placement: "bottom-right",
+  });
+</script>
+
+<template>
+    <button @click="topRightToast">
+        Add top-right toast
+    </button>
+    <button @click="bottomRightToast">
+        Add bottom-right toast
+    </button>
+</template>
+```

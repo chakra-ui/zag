@@ -1,0 +1,122 @@
+---
+title: What is a machine?
+description: A brief explanation of the state machine concept
+---
+
+# What is a state machine?
+
+A state machine is a tool for modeling stateful, reactive systems. It is useful
+for declaratively describing the behavior of an application or component.
+
+To model any logic as using the state machine pattern, it must have:
+
+- A finite number of states.
+- A finite number of transitions between states.
+
+## Example of state machine
+
+Consider a simple toggle or switch component that consists of two states,
+`active` and `inactive`. The initial state will be `active`
+
+The supported transitions that can happen here:
+
+- In the `active` state, when we click the toggle, it should transition to the
+  `inactive` state
+- In the `inactive` state, when we click the toggle, it should transition to the
+  `active` state
+
+Here's how we'll model the logic in code:
+
+```jsx
+import { createMachine } from "@zag-js/core"
+
+const machine = createMachine({
+  // initial state
+  initial: "active",
+  // the finite states
+  states: {
+    active: {
+      on: {
+        CLICK: {
+          // go to inactive
+          target: "inactive",
+        },
+      },
+    },
+    inactive: {
+      on: {
+        CLICK: {
+          // go to active
+          target: "active",
+        },
+      },
+    },
+  },
+})
+```
+
+The `machine` gives you access to these key information:
+
+- `state`: State is a representation of the machine at a specific point in time
+  and contains the following properties:
+
+  - `value`: the current state value
+  - `context`: the current context or data stored in the machine
+  - `event`: the event object that triggered the transition of this current
+    state
+  - `matches(...)`: the function to check whether the machine is in a specific
+    state. It's similar to `state.value === <state>`
+
+- `send`: A function to send events or signals to the machine.
+
+Now that we've modelled the component logic, let's map that to DOM attributes
+and event handlers following the
+[WAI-ARIA](https://www.w3.org/TR/wai-aria-practices-1.1/examples/checkbox/checkbox-1/checkbox-1.html)
+specification for the switch component.
+
+We'll write a function called `connect` to do this.
+
+```jsx
+function connect(state, send) {
+  const active = state.matches("active")
+  return {
+    active,
+    buttonProps: {
+      type: "button",
+      role: "switch",
+      "aria-checked": active,
+      onClick() {
+        send("CLICK")
+      },
+    },
+  }
+}
+```
+
+Here's how to consume the toggle machine logic and connect in React.js.
+
+```jsx
+import { useMachine } from "@zag-js/react"
+import { machine, connect } from "./toggle"
+
+function Toggle() {
+  const [state, send] = useMachine(machine)
+  const api = connect(state, send)
+
+  return (
+    <button
+      {...api.buttonProps}
+      style={{
+        width: "40px",
+        height: "24px",
+        borderRadius: "999px",
+        background: api.active ? "green" : "gray",
+      }}
+    >
+      {api.active ? "ON" : "OFF"}
+    </button>
+  )
+}
+```
+
+That's it! Now you've learned the fundamentals of a component state machine.

@@ -1,0 +1,33 @@
+---
+releaseUrl: https://github.com/chakra-ui/zag/pull/600
+releaseDate: April 15, 2023
+---
+
+## New Component
+
+Initial release of the color utilities and picker.
+
+## Breaking Changes
+
+### HoverCard, Popover `0.6.0`
+
+Rename `onOpenChange` to `onOpen` and `onClose`
+
+## Patch Changes
+
+### Vue `0.6.0`
+
+Fix issue where `defaultValue` does not get applied to input element. The fix was to normalize `defaultValue` to `value`
+
+### Checkbox `0.6.0`
+
+Fix issue where checkbox `toggleChecked` was not defined
+
+### DatePicker `0.6.0`
+
+- Fix issue where `focusedValue` was not synced with `value` property.
+- Fix issue where input value was not updated when `locale` and `value` changed.
+
+### RatingGroup, Splitter `0.6.0`
+
+Update point calculations based on changes in `getRelativePointPercent` output

@@ -1,0 +1,37 @@
+```jsx
+import * as rating from "@zag-js/rating-group"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+import { HalfStar, Star } from "./icons"
+
+export default function defineComponent({
+  name: "Rating"
+  setup() {
+    const [state, send] = useMachine(rating.machine({ id: "rating" }))
+
+    const apiRef = computed(() =>
+      rating.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <label {...api.labelProps}>Rate:</label>
+          <div {...api.controlProps}>
+            {api.sizeArray.map((index) => {
+              const state = api.getRatingState(index)
+              return (
+                <span key={index} {...api.getRatingProps({ index })}>
+                  {state.isHalf ? <HalfStar /> : <Star />}
+                </span>
+              )
+            })}
+          </div>
+          <input {...api.hiddenInputProps} />
+        </div>
+      )
+    }
+  }
+ })
+```
