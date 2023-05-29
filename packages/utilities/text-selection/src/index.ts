@@ -4,7 +4,7 @@ type State = "default" | "disabled" | "restoring"
 
 let state: State = "default"
 let userSelect = ""
-let elementMap = new WeakMap<HTMLElement, string>()
+const elementMap = new WeakMap<HTMLElement, string>()
 
 export type DisableTextSelectionOptions<T = MaybeElement> = {
   target?: T
@@ -56,7 +56,7 @@ export function restoreTextSelection(options: DisableTextSelectionOptions = {}) 
     }, 300)
   } else {
     if (target && elementMap.has(target)) {
-      let prevUserSelect = elementMap.get(target)
+      const prevUserSelect = elementMap.get(target)
 
       if (target.style.userSelect === "none") {
         target.style.userSelect = prevUserSelect ?? ""

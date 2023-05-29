@@ -3,7 +3,7 @@ import { isIos } from "@zag-js/dom-query"
 const LOCK_CLASSNAME = "data-zag-scroll-lock"
 
 function assignStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
-  if (!el) return () => {}
+  if (!el) return
   const previousStyle = el.style.cssText
   Object.assign(el.style, style)
   return () => {
@@ -12,7 +12,7 @@ function assignStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyle
 }
 
 function setCSSProperty(el: HTMLElement | null | undefined, property: string, value: string) {
-  if (!el) return () => {}
+  if (!el) return
   const previousValue = el.style.getPropertyValue(property)
   el.style.setProperty(property, value)
   return () => {
@@ -70,7 +70,7 @@ export function preventBodyScroll(_document?: Document) {
     })
 
     return () => {
-      restoreStyle()
+      restoreStyle?.()
       win.scrollTo(scrollX, scrollY)
     }
   }
@@ -78,7 +78,7 @@ export function preventBodyScroll(_document?: Document) {
   const cleanups = [setScrollbarWidthProperty(), isIos() ? setIOSStyle() : setStyle()]
 
   return () => {
-    cleanups.forEach((cleanup) => cleanup())
+    cleanups.forEach((fn) => fn?.())
     body.removeAttribute(LOCK_CLASSNAME)
   }
 }

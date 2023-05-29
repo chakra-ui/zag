@@ -1,19 +1,22 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  // "extends": [
+  //   "eslint:recommended",
+  //   "plugin:@typescript-eslint/eslint-recommended",
+  //   "plugin:@typescript-eslint/recommended"
+  // ],
   "plugins": ["@typescript-eslint/eslint-plugin"],
   "env": { "node": true },
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "no-param-reassign": "off",
+    "prefer-spread": "off",
     "no-console": "off",
+    "prefer-const": "off",
     "jsx-a11y/no-autofocus": "off",
     "import/named": "off",
     "import/prefer-default-export": "off",
