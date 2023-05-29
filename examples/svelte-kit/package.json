@@ -88,6 +88,7 @@
     "@zag-js/visually-hidden": "workspace:*"
   },
   "devDependencies": {
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@sveltejs/adapter-auto": "^2.0.1",
     "@sveltejs/kit": "^1.16.3",
     "@sveltejs/package": "^2.0.2",
