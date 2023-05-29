@@ -1,0 +1,37 @@
+```jsx
+import * as popover from "@zag-js/popover"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, computed, h, Fragment, Teleport } from "vue"
+
+export default defineComponent({
+  name: "Popover",
+  setup() {
+    const [state, send] = useMachine(
+      popover.machine({ id: "1", portalled: true }),
+    )
+
+    const apiRef = computed(() =>
+      popover.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div>
+          <button {...api.triggerProps}>Click me</button>
+          <Teleport to="body">
+            <div {...api.positionerProps}>
+              <div {...api.contentProps}>
+                <div {...api.titleProps}>Presenters</div>
+                <div {...api.descriptionProps}>Description</div>
+                <button>Action Button</button>
+                <button {...api.closeTriggerProps}>X</button>
+              </div>
+            </div>
+          </Teleport>
+        </div>
+      )
+    }
+  },
+})
+```

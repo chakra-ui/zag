@@ -1,0 +1,26 @@
+```jsx {1,13,21}
+import { Portal } from "@zag-js/react"
+
+// ...
+
+// 3. Create the toast group provider, wrap your app with it
+export function ToastProvider() {
+  const [state, send] = useMachine(toast.group.machine({ id: "1" }))
+
+  const api = toast.group.connect(state, send, normalizeProps)
+
+  return (
+    <ToastContext.Provider value={api}>
+      <Portal>
+        {Object.entries(api.toastsByPlacement).map(([placement, toasts]) => (
+          <div key={placement} {...api.getGroupProps({ placement })}>
+            {toasts.map((toast) => (
+              <Toast key={toast.id} actor={toast} />
+            ))}
+          </div>
+        ))}
+      </Portal>
+    </ToastContext.Provider>
+  )
+}
+```

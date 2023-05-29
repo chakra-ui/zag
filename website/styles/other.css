@@ -1,0 +1,11 @@
+.icon-gr-return path {
+  stroke: currentColor;
+}
+
+#home-illustration {
+    color: #D1E1DA;
+}
+
+[data-theme="dark"] #home-illustration {
+    color: #283E35;
+}

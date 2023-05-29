@@ -1,0 +1,32 @@
+```jsx
+import * as radio from "@zag-js/radio-group"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+const items = [
+  { label: "React", value: "react" },
+  { label: "Angular", value: "ng" },
+  { label: "Vue", value: "vue" },
+  { label: "Svelte", value: "svelte" },
+]
+
+function Radio() {
+  const [state, send] = useMachine(radio.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => radio.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <div {...api().indicatorProps} />
+      {items.map((opt) => (
+        <label key={opt.id} {...api().getRadioProps({ value: opt.id })}>
+          <span {...api().getRadioLabelProps({ value: opt.id })}>
+            {opt.label}
+          </span>
+          <input {...api().getRadioInputProps({ value: opt.id })} />
+        </label>
+      ))}
+    </div>
+  )
+}
+```

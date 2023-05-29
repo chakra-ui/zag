@@ -1,0 +1,35 @@
+```html
+<script setup>
+import * as select from "@zag-js/select"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, Teleport } from "vue"
+
+const [state, send] = useMachine(select.machine({ id: "1" }))
+
+const api = computed(() => select.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <label v-bind="api.labelProps">Label</label>
+    <button v-bind="api.triggerProps">
+      <span>{{ api.selectedOption?.label ?? "Select option" }}</span>
+    </button>
+  </div>
+
+  <Teleport to="body">
+    <div v-bind="api.positionerProps">
+      <ul v-bind="api.contentProps">
+        <li
+          v-for="{label, value} in selectData"
+          :key="value"
+          v-bind="api.getOptionProps({ label, value })"
+        >
+          <span>{{ label }}</span>
+          {{ value === api.selectedOption?.value && "✓" }}
+        </li>
+      </ul>
+    </div>
+  </Teleport>
+</template>
+```

@@ -1,0 +1,99 @@
+```jsx
+import * as toast from "@zag-js/toast"
+import { normalizeProps, useActor, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, inject, reactive } from "vue"
+
+// 1. Create the single toast
+const Toast = defineComponent({
+  setup(props) {
+    const [state, send] = useActor(props.actor)
+    const apiRef = computed(() =>
+      toast.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <h3 {...api.titleProps}>{api.title}</h3>
+          <p {...api.descriptionProps}>{api.description}</p>
+          <button onClick={api.dismiss}>Close</button>
+        </div>
+      )
+    }
+  },
+})
+
+// 2. Add toast to your global context so it can be called anywhere in the app
+const [state, send] = useMachine(toast.group.machine({ id: "1" }))
+const toastApi = toast.group.connect(state, send, normalizeProps)
+
+// E.g. Store
+export const store = reactive({
+  toast: toastApi,
+})
+// Maybe Vue app provide / inject
+VueApp.provide("toast", toastApi)
+
+// 3. Register the toast placements in the root of your app
+const App = defineComponent({
+  name: "App",
+  setup() {
+    //Get toast from global context; you could also be getting from a store,
+    // this example uses the Vue app provide method
+    const $toastRef = computed(() => inject("toast"))
+
+    return () => {
+      const api = $toastRef.value
+
+      return (
+        <>
+          {Object.entries(api.toastsByPlacement).map(([placement, toasts]) => (
+            <div key={placement} {...api.getGroupProps({ placement })}>
+              {toasts.map((toast) => (
+                <Toast key={toast.id} actor={toast} />
+              ))}
+            </div>
+          ))}
+          <RestOfYourApp />
+        </>
+      )
+    }
+  },
+})
+
+export default App
+
+// 4. Within your app
+defineComponent({
+  name: "Component",
+  setup() {
+    const $toastRef = computed(() => inject("toast"))
+    return () => {
+      const toast = $toastRef.value
+      return (
+        <div>
+          <button
+            onClick={() => {
+              toast.create({ title: "Hello", placement: "top-right" })
+            }}
+          >
+            Add top-right toast
+          </button>
+          <button
+            onClick={() => {
+              toast.create({
+                title: "Data submitted!",
+                type: "success",
+                placement: "bottom-right",
+              })
+            }}
+          >
+            Add bottom-right toast
+          </button>
+        </div>
+      )
+    }
+  },
+})
+```

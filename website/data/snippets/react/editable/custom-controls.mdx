@@ -1,0 +1,29 @@
+```jsx
+import * as editable from "@zag-js/editable"
+import { useMachine } from "@zag-js/react"
+
+export default function Editable() {
+  const [state, send] = useMachine(editable.machine({ id: "1" }))
+
+
+  const api = editable.connect(state, send)
+
+  return (
+    <div {...api.rootProps}>
+      <div {...api.areaProps}>
+        <input {...api.inputProps} />
+        <span {...api.previewProps} />
+      </div>
+      <div>
+        {!api.isEditing && <button {...api.editTriggerProps}>Edit</button>}
+        {api.isEditing && (
+          <div>
+            <button {...api.submitTriggerProps}>Save</button>
+            <button {...api.cancelTriggerProps}>Cancel</button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```

@@ -1,0 +1,22 @@
+```jsx {5,9,16}
+export default defineComponent({
+  name: "Dialog",
+  setup() {
+    // initial focused element ref
+    const inputRef = ref(null)
+
+    const [state, send] = useMachine(
+      dialog.machine({
+        initialFocusEl: () => inputRef.value,
+      }),
+    )
+    // ...
+
+    return () => (
+      //...
+      <input ref={inputRef} />
+      // ...
+    )
+  },
+})
+```

@@ -1,0 +1,85 @@
+```jsx
+import { useActor, useMachine, normalizeProps } from "@zag-js/solid"
+import * as toast from "@zag-js/toast"
+import { createMemo, createUniqueId, createSignal, createContext, useContext, For } from "solid-js"
+
+// 1. Create the single toast
+function Toast(props) {
+  const [state, send] = useActor(props.actor)
+  const api = createMemo(() => toast.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <h3 {...api().titleProps}>{api().title}</h3>
+      <p {...api().descriptionProps}>{api().description}</p>
+      <button onClick={api().dismiss}>Close</button>
+    </div>
+  )
+}
+
+// 2. Create the toast context
+const ToastContext = createContext()
+const useToast = () => useContext(ToastContext)
+
+// 3. Create the toast group provider
+export function ToastProvider(props) {
+  const [state, send] = useMachine(toast.group.machine({  id: createUniqueId() }))
+
+  const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
+
+  return (
+    <ToastContext.Provider value={api}>
+      <For each={Object.entries(api().toastsByPlacement)}>
+        {([placement, toasts]) => (
+          <div key={placement} {...api().getGroupProps({ placement })}>
+            <For each={toasts}>
+              {(toast) => (
+                <Toast key={toast.id} actor={toast} />
+              )}
+            </For>
+          </div>
+        )}
+      </For>
+
+      {props.children}
+    </ToastContext.Provider>
+  )
+}
+
+// 4. Wrap your app with the toast group provider
+export function App() {
+  return (
+    <ToastProvider>
+      <ExampleComponent />
+    </ToastProvider>
+  )
+}
+
+// 4. Within your app
+function ExampleComponent() {
+  const toast = useToast()
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          toast().create({ title: "Hello", placement: "top-right" })
+        }}
+      >
+        Add top-right toast
+      </button>
+      <button
+        onClick={() => {
+          toast.create({
+            title: "Data submitted!",
+            type: "success",
+            placement: "bottom-right",
+          })
+        }}
+      >
+        Add bottom-right toast
+      </button>
+    </div>
+  )
+}
+```

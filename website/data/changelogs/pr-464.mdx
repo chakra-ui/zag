@@ -1,0 +1,41 @@
+---
+releaseUrl: https://github.com/chakra-ui/zag/pull/464
+releaseDate: January 16, 2023
+---
+
+## Minor Changes
+
+### Hover Card `0.2.0`
+
+- Add `open` and `close` functions to the connect api:
+
+  ```ts
+  import * as hoverCard from "@zag-js/hover-card"
+
+  const api = hoverCard.connect(state, send, normalizeProps)
+
+  // call `open` to open the hover card
+  api.open()
+
+  // call `close` to close the hover card
+  api.close()
+  ```
+
+### Core `0.2.5`
+
+- Added support for watching all context properties via the `*` key.
+
+## Patch Changes
+
+### Pin Input `0.2.8`
+
+- Fixed issue where pasting value in non-empty field results in the value being truncated
+
+### Slider `0.2.8`
+
+- Refactored style calculations for consistency
+- Fixed issue where the thumb cannot go back to its original position when `min` is greater than `0`
+
+### Splitter `0.2.7`
+
+- [BREAKING💥] Redesigned API to be more flexible and support multiple splitters.

@@ -1,0 +1,27 @@
+```md
+<script setup>
+import * as editable from "@zag-js/editable";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(editable.machine({ id: "1" }));
+
+const api = computed(() => editable.connect(state.value, send, normalizeProps));
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.rootProps">
+    <div v-bind="api.areaProps">
+      <input v-bind="api.inputProps" />
+      <span v-bind="api.previewProps" />
+    </div>
+    <div>
+      <div v-if="api.isEditing">
+        <button v-bind="api.submitTriggerProps">Save</button>
+        <button v-bind="api.cancelTriggerProps">Cancel</button>
+      </div>
+      <button v-else v-bind="api.editTriggerProps">Edit</button>
+    </div>
+  </div>
+</template>
+```

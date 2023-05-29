@@ -1,0 +1,43 @@
+---
+releaseUrl: https://github.com/chakra-ui/zag/pull/162
+releaseDate: July 7, 2022
+---
+
+## Patch Changes
+
+### All frameworks
+
+**BREAKING 💥**
+
+Refactored `connect` function to ensure a uniform APIs across frameworks
+
+Due to the fact that we tried to make "React" the baseline, there was a lot of inherent complexity in how we managed
+types in the codebase.
+
+We've now removed the `PropTypes` export in favor of passing `normalizeProps` in the `api.connect` function. This is now
+required for React as well.
+
+You can remove the `<PropTypes>` generic and Zag will auto-infer the types from `normalizeProps`.
+
+**For Vue and Solid**
+
+```diff
+-api.connect<PropTypes>(state, send, normalizeProps)
++api.connect(state, send, normalizeProps)
+```
+
+**For React**
+
+```diff
+-api.connect(state, send)
++api.connect(state, send, normalizeProps)
+```
+
+### Checkbox `0.1.1`
+
+- Update `inputProps` to use `defaultChecked` instead of `checked` for progressive enhancement
+
+### Combobox `0.1.9`
+
+- Use option `value` to handle component logic instead of `label`, to account for usecases where label could be the
+  same. e.g. a list of people where some might have the same names.

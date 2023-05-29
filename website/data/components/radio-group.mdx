@@ -1,0 +1,206 @@
+---
+title: Radio Group
+description: Using the radio group machine in your project.
+package: "@zag-js/radio-group"
+---
+
+# Radio Group
+
+A radio group allows users to make a single choice from a select number of
+option
+
+<Resources pkg="@zag-js/radio-group" />
+
+<Showcase id="Radio" />
+
+**Features**
+
+- Syncs with `disabled` state of fieldset
+- Syncs with form `reset` events
+- Can programmatically set radio group value
+- Can programmatically focus and blur radio items
+
+## Installation
+
+To use the radio machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="radio-group/installation.mdx" />
+
+This command will install the framework agnostic radio group logic and the
+reactive utilities for your framework of choice.
+
+## Anatomy
+
+To set up the radio group correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+On a high level, the radio group consists of:
+
+- **Root**: The root container for the radio group
+- **Label**: The label that gives the user information on the radio group
+- **Radio**: The root container for the each radio item
+- **Radio Label**: The label that gives the user information on each radio item
+- **Radio Control**: The element that visually represents the each radio item.
+- **Radio Input**: The native html input that is visually hidden in each radio
+  item.
+
+## Usage
+
+First, import the radio group package into your project
+
+```jsx
+import * as radio from "@zag-js/radio-group"
+```
+
+The radio package exports two key functions:
+
+- `machine` — The state machine logic for the radio widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+radio machine in your project 🔥
+
+<CodeSnippet id="radio-group/usage.mdx" />
+
+## Disabling the radio group
+
+To make a radio group disabled, set the context's `disabled` property to true
+
+```jsx {3}
+const [state, send] = useMachine(
+  radio.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Making the radio group readonly
+
+To make a radio group readonly, set the context's `readOnly` property to true
+
+```jsx {3}
+const [state, send] = useMachine(
+  radio.machine({
+    readOnly: true,
+  }),
+)
+```
+
+## Setting the initial value
+
+To set the radio group's initial value, set the context's `value` property to
+the value of the radio item to be selected by default
+
+```jsx {3}
+const [state, send] = useMachine(
+  radio.machine({
+    value: "apple",
+  }),
+)
+```
+
+## Listening for changes
+
+When the radio group value changes, the `onChange` callback is invoked.
+
+```jsx {3-8}
+const [state, send] = useMachine(
+  radio.machine({
+    onChange({ value }) {
+      console.log("radio value is:", value)
+      // 'apple' | 'orange' | 'grape'
+    },
+  }),
+)
+```
+
+## Usage within forms
+
+To use radio group within forms, use the exposed `inputProps` from the `connect`
+function and ensure you pass `name` value to the machine's context. It will
+render a hidden input and ensure the value changes get propagated to the form
+correctly.
+
+```jsx {3}
+const [state, send] = useMachine(
+  radio.machine({
+    name: "fruits",
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each radio part has a `data-part` attribute added to
+them to select and style them in the DOM.
+
+### Focused State
+
+When the radio input is focused, the `data-focus` attribute is added to the
+root, control and label parts.
+
+```css
+[data-part="radio"][data-focus] {
+  /* styles for radio focus state */
+}
+
+[data-part="radio-control"][data-focus] {
+  /* styles for radio control focus state */
+}
+
+[data-part="radio-label"][data-focus] {
+  /* styles for radio label focus state */
+}
+```
+
+### Disabled State
+
+When the radio is disabled, the `data-disabled` attribute is added to the root,
+control and label parts.
+
+```css
+[data-part="radio"][data-disabled] {
+  /* styles for radio disabled state */
+}
+
+[data-part="radio-control"][data-disabled] {
+  /* styles for radio control disabled state */
+}
+
+[data-part="radio-label"][data-disabled] {
+  /* styles for radio label disabled state */
+}
+```
+
+### Invalid State
+
+When the radio is invalid, the `data-invalid` attribute is added to the root,
+control and label parts.
+
+```css
+[data-part="radio"][data-invalid] {
+  /* styles for radio invalid state */
+}
+
+[data-part="radio-control"][data-invalid] {
+  /* styles for radio control invalid state */
+}
+
+[data-part="radio-label"][data-invalid] {
+  /* styles for radio label invalid state */
+}
+```
+
+## Methods and Properties
+
+The radio's `api` provides properties and methods you can use to
+programmatically read and set the radio group's value.
+
+<ApiTable name="radio-group" />

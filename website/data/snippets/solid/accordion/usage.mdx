@@ -1,0 +1,36 @@
+```jsx
+import * as accordion from "@zag-js/accordion"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+const data = [
+  { title: "Watercraft", content: "Sample accordion content" },
+  { title: "Automobiles", content: "Sample accordion content" },
+  { title: "Aircrafts", content: "Sample accordion content" },
+]
+
+function Accordion() {
+  const [state, send] = useMachine(accordion.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => accordion.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <For each={data}>
+        {(item) => (
+          <div {...api().getItemProps({ value: item.title })}>
+            <h3>
+              <button {...api().getTriggerProps({ value: item.title })}>
+                {item.title}
+              </button>
+            </h3>
+            <div {...api().getContentProps({ value: item.title })}>
+              {item.content}
+            </div>
+          </div>
+        )}
+      </For>
+    </div>
+  )
+}
+```

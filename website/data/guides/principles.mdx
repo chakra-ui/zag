@@ -1,0 +1,48 @@
+# Principles
+
+## Getting element references
+
+Due to the framework-agnostic approach of the machine, it's recommended to use
+vanilla JS approach to grabbing element references instead of framework-specific
+tools like `ref`, `useRef`, etc.
+
+Prefer using `getElementById`, `querySelector`, `querySelectorAll`, etc. Ensure
+you're using the correct owner document to make them work within iframes and
+custom window environments like `Electron.js`
+
+## Measuring geometry (point, rect, size, etc)
+
+Geometry and measurement is a core aspect of designing UI components logic. We
+provide a lot of utilities to help to achieve this. See the `package/utilities`
+packages, it provides utilities like `getEventPoint`, `getElementRect`,
+`alignRects`, etc.
+
+## Storing large objects in context
+
+We use the `valtio` library under the hood. Based on its design, it doesn't
+track large objects like DOM elements (`window` or `document`) and even machine
+instances (aka services).
+
+You'll notice that it'll throw an `Illegal Invocation Error` when assigning
+large objects to context. To fix this, you'll need to wrap them in a `ref`
+function exported by `valtio`
+
+```jsx
+ctx.doc = document // ❌ Illegal Invocation Error
+
+import { ref } from "@zag-js/core"
+ctx.doc = ref(document) // ✅ Works
+```
+
+## Use pointer events
+
+The Pointer event API is supported is most browsers by default
+[(See support)](https://caniuse.com/pointer). When checking for pointer down,
+consider using `onPointerDown` instead of `onMouseDown` or `onTouchStart` except
+you're designing for a specific pointer type.
+
+## Naming states
+
+State name should active and not passive. It should represents something
+happening, e.g. `searching`, `scrubbing` or an identifiable situation, e.g.
+`focused`, `visited`, `logged-in`

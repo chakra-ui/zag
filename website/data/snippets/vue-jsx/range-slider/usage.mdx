@@ -1,0 +1,38 @@
+```jsx
+import * as rangeSlider from "@zag-js/range-slider"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, computed, h, Fragment } from "vue"
+
+export default defineComponent({
+  name: "RangeSlider",
+  setup() {
+    const [state, send] = useMachine(
+      rangeSlider.machine({
+        id: "1",
+        name: ["min", "max"],
+        value: [10, 60],
+      }),
+    )
+
+    const apiRef = computed(() =>
+      rangeSlider.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <div {...api.trackProps}>
+            <div {...api.rangeProps} />
+          </div>
+          {api.value.map((_, index) => (
+            <div key={index} {...api.getThumbProps(index)}>
+              <input {...api.getHiddenInputProps(index)} />
+            </div>
+          ))}
+        </div>
+      )
+    }
+  },
+})
+```

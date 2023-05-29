@@ -1,0 +1,50 @@
+```jsx
+import * as menu from "@zag-js/menu"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+export function Menu() {
+  const [state, send] = useMachine(
+    menu.machine({
+      id: createUniqueId(),
+      "aria-label": "Sort by",
+      values: { order: "", type: [] },
+    }),
+  )
+
+  const api = createMemo(() => menu.connect(state, send, normalizeProps))
+
+  return (
+    <>
+      <button {...api().triggerProps}>
+        Trigger
+      </button>
+      <div {...api().positionerProps}>
+        <div {...api().contentProps}>
+          <For each={data.order}>
+            {(item) => {
+              const option = { type: "radio", name: "order", value: item.id }
+              return (
+                <div {...api().getOptionItemProps(option)}>
+                  {api().isOptionChecked(option) ? "✅" : null} {item.label}
+                </div>
+              )
+            }}
+          </For>
+          <hr  {...api.separatorProps/>
+          <For each={data.type}>
+            {(item) => {
+              const option = { type: "checkbox", name: "type", value: item.id }
+              return (
+                <div {...api().getOptionItemProps(option)}>
+                  {api().isOptionChecked(option) ? "✅" : null} {item.label}
+                </div>
+              )
+            }}
+          </For>
+        </div>
+      </div>
+    </>
+  )
+}
+```

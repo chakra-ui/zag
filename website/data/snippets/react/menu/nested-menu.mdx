@@ -1,0 +1,59 @@
+```jsx
+import * as menu from "@zag-js/menu"
+import { useMachine, normalizeProps, Portal } from "@zag-js/react"
+import { useEffect } from "react"
+
+export function NestedMenu() {
+  // Level 1 - File Menu
+  const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
+    menu.machine({ id: "1", "aria-label": "File" }),
+  )
+
+  const fileMenu = menu.connect(fileMenuState, fileMenuSend, normalizeProps)
+
+  // Level 2 - Share Menu
+  const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
+    menu.machine({ id: "2", "aria-label": "Share" }),
+  )
+
+  const shareMenu = menu.connect(shareMenuState, shareMenuSend, normalizeProps)
+
+  useEffect(() => {
+    setTimeout(() => {
+      fileMenu.setChild(shareMenuMachine)
+      shareMenu.setParent(fileMenuMachine)
+    })
+  }, [])
+
+  // Share menu trigger
+  const shareMenuTriggerProps = fileMenu.getTriggerItemProps(shareMenu)
+
+  return (
+    <>
+      <button {...fileMenu.triggerProps}>Click me</button>
+
+      <Portal>
+        <div {...fileMenu.positionerProps}>
+          <ul {...fileMenu.contentProps}>
+            <li {...fileMenu.getItemProps({ id: "new-tab" })}>New tab</li>
+            <li {...fileMenu.getItemProps({ id: "new-win" })}>New window</li>
+            <li {...shareMenuTriggerProps}>Share</li>
+            <li {...fileMenu.getItemProps({ id: "print" })}>Print...</li>
+            <li {...fileMenu.getItemProps({ id: "help" })}>Help</li>
+          </ul>
+        </div>
+      </Portal>
+
+      <Portal>
+        <div {...shareMenu.positionerProps}>
+          <ul {...shareMenu.contentProps}>
+            <li {...shareMenu.getItemProps({ id: "messages" })}>Messages</li>
+            <li {...shareMenu.getItemProps({ id: "airdrop" })}>Airdrop</li>
+            <li {...shareMenu.getItemProps({ id: "whatsapp" })}>WhatsApp</li>
+          </ul>
+        </div>
+      </Portal>
+    </>
+  )
+}
+```

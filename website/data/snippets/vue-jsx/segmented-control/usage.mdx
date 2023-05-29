@@ -1,0 +1,38 @@
+```tsx
+import * as radio from "@zag-js/radio-group"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+const items = [
+  { label: "React", value: "react" },
+  { label: "Angular", value: "ng" },
+  { label: "Vue", value: "vue" },
+  { label: "Svelte", value: "svelte" },
+]
+
+export default defineComponent({
+  name: "Radio",
+  setup() {
+    const [state, send] = useMachine(radio.machine({ id: "radio" }))
+
+    const apiRef = computed(() =>
+      radio.connect(state.value, send, normalizeProps),
+    )
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          {items.map((opt) => (
+            <label {...api.getRadioProps({ value: opt.id })}>
+              <span {...api.getRadioLabelProps({ value: opt.id })}>
+                {opt.label}
+              </span>
+              <input {...api.getRadioInputProps({ value: opt.id })} />
+            </label>
+          ))}
+        </div>
+      )
+    }
+  },
+})
+```

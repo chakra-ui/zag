@@ -1,0 +1,61 @@
+```html
+<script setup>
+  import * as combobox from "@zag-js/combobox"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, ref } from "vue"
+
+  const comboboxData = [
+    { label: "Zambia", code: "ZA" },
+    { label: "Benin", code: "BN" },
+    //...
+  ]
+
+  const options = ref(comboboxData)
+
+  const [state, send] = useMachine(
+    combobox.machine({
+      id: "combobox",
+      onOpen() {
+        options.value = comboboxData
+      },
+      onInputChange({ value }) {
+        const filtered = comboboxData.filter((item) =>
+          item.label.toLowerCase().includes(value.toLowerCase()),
+        )
+        options.value = filtered.length > 0 ? filtered : comboboxData
+      },
+    }),
+  )
+
+  const api = computed(() =>
+    combobox.connect(state.value, send, normalizeProps),
+  )
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <label v-bind="api.labelProps">Select country</label>
+
+    <div v-bind="api.controlProps">
+      <input v-bind="api.inputProps" />
+      <button v-bind="api.triggerProps">▼</button>
+    </div>
+  </div>
+  <div v-bind="api.positionerProps">
+    <ul v-if="options.length > 0" v-bind="api.contentProps">
+      <li
+        v-for="(item, index) in options"
+        :key="item.code"
+        v-bind="api.getOptionProps({
+          label: item.label,
+          value: item.code,
+          index,
+          disabled: item.disabled,
+        })"
+      >
+        {{item.label}}
+      </li>
+    </ul>
+  </div>
+</template>
+```

@@ -1,0 +1,20 @@
+```jsx {3,7,15}
+export function Dialog() {
+  // initial focused element ref
+  const inputRef = useRef(null)
+
+  const [state, send] = useMachine(
+    dialog.machine({
+      initialFocusEl: () => inputRef.current,
+    }),
+  )
+
+  // ...
+
+  return (
+    //...
+    <input ref={inputRef} />
+    // ...
+  )
+}
+```

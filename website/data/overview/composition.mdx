@@ -1,0 +1,161 @@
+---
+title: Composition
+description: Best practices to compose events and components
+---
+
+# Composition
+
+## Event composition
+
+Zag encourages the use of spread props to ensure we automatically attach all the
+event handlers and properties to elements.
+
+Sometimes, you may want to attach your own event handlers to the elements. To do
+that, import the `mergeProps` utility provided by zag for your framework.
+
+```jsx
+// 1. import mergeProps utility
+import { useMachine, mergeProps } from "@zag-js/react"
+import * as toggle from "@zag-js/toggle"
+
+export function Toggle() {
+  const [state, send] = useMachine(
+    toggle.machine({
+      id: "1",
+    }),
+  )
+  const api = toggle.connect(state, send)
+
+  // 2. write your custom event handlers
+  const handleClick = () => {
+    // do something
+  }
+
+  // 3. merge the props
+  const buttonProps = mergeProps(api.buttonProps, {
+    onClick: handleClick,
+  })
+
+  return (
+    // 4. spread the new props
+    <button {...buttonProps}>{api.isPressed ? "On" : "Off"}</button>
+  )
+}
+```
+
+## Id composition
+
+Zag depends heavily on pure DOM queries to identify elements. This means every
+element part needs to have a unique id.
+
+Each time you initiate the machine with the `useMachine` hook, you'll need to
+ensure that you provide a unique id.
+
+You can rely on framework-specific utilities to generate unique ids. React
+provides `useId()` hook and Solid.js provides a `createId()` function for this
+purpose.
+
+```js
+/// ...                                          👇 must be unique
+const [state, send] = useMachine(toggle.machine({ id: useId() }))
+/// ...
+```
+
+Internally, Zag maps the unique id provided to each component parts needed for
+the widget to work.
+
+In some cases, you might want to compose different machines together in a single
+component. For example, you want to use the same trigger as a popover and
+tooltip trigger at the same time.
+
+To achieve this, you will need to pass custom `ids` to the machine's context.
+This will ensure that calling `document.getElementById(...)` within the toolip
+and/or popover will return the same element.
+
+```js {7,12}
+import * as tooltip from "@zag-js/tooltip"
+import * as popover from "@zag-js/popover"
+
+function Example() {
+  const [tooltipState, tooltipSend] = useMachine(
+    tooltip.machine({
+      ids: { trigger: "id-1" },
+    }),
+  )
+  const [popoverState, popoverSend] = useMachine(
+    popover.machine({
+      ids: { trigger: "id-1" },
+    }),
+  )
+}
+
+// render UI
+return </>
+```
+
+In the example above, you will notice that the popover and tooltip trigger share
+the same id. That's how to compose machines together.
+
+## Custom window environment
+
+Internally, we use DOM query methods like `document.querySelectorAll` and
+`document.getElementById` to locate elements within the machine.
+
+In custom environments like iframe, Shadow DOM, Electron, etc., the machine
+might not work as expected because `document` may not be available.
+
+To provide the correct reference to root node or document, you can pass
+`getRootNode` function it to the machine's context.
+
+> In shadow DOM, the root node can be derived from calling
+> `element.getRootNode()` method on any element.
+
+```jsx {12,15,42}
+import * as accordion from "@zag-js/accordion"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import Frame, { useFrame } from "react-frame-component"
+
+const data = [
+  { title: "Watercraft", content: "Sample accordion content" },
+  { title: "Automobiles", content: "Sample accordion content" },
+  { title: "Aircrafts", content: "Sample accordion content" },
+]
+
+function Accordion({ id }) {
+  const { document } = useFrame()
+
+  const [state, send] = useMachine(
+    accordion.machine({ id, getRootNode: () => document }),
+  )
+
+  const api = accordion.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      {data.map((item, index) => (
+        <div key={index} {...api.getItemProps({ value: item.title })}>
+          <h3>
+            <button {...api.getTriggerProps({ value: item.title })}>
+              {item.title}
+            </button>
+          </h3>
+          <div {...api.getContentProps({ value: item.title })}>
+            {item.content}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <h1>ZagJs in Iframe</h1>
+      <Frame height="200px" width="100%">
+        <Accordion id="2" />
+      </Frame>
+    </div>
+  )
+}
+```

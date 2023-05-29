@@ -1,0 +1,157 @@
+---
+title: Pagination
+description: Using the pagination machine in your project.
+package: "@zag-js/pagination"
+---
+
+# Pagination
+
+Pagination is an interface that allows navigating between pages that contain
+split information, instead of being shown on a single page.
+
+<Resources pkg="@zag-js/pagination" />
+
+<Showcase id="Pagination" />
+
+**Features**
+
+- Full keyboard navigation.
+- Optimized for screen readers.
+
+## Installation
+
+To use the pagination machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="pagination/installation.mdx" />
+
+This command will install the framework agnostic pagination logic and the
+reactive utilities for your framework of choice.
+
+## Anatomy
+
+To set up the pagination correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+On a high level, the pagination consists of:
+
+- **Root**: The root container for the pagination
+- **Item**: Each pagination item
+- **Ellipsis**: Ellipsis shown when some items are hidden
+- **Previous Button**: Used to go to previous page in pagination
+- **Next Button**: Used to go to next page in pagination
+
+## Usage
+
+First, import the pagination package into your project
+
+```jsx
+import * as pagination from "@zag-js/pagination"
+```
+
+The pagination package exports two key functions:
+
+- `machine` — The state machine logic for the pagination widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+<CodeSnippet id="pagination/usage.mdx" />
+
+
+```jsx
+const api = connect(state, send)
+
+// You can slice the data, to get data for current page
+const currentPageData = data.slice(api.pageRange.start, api.pageRange.end)
+
+api.page
+// => 1
+
+api.isFirstPage()
+// => true
+
+api.setPage(3)
+// page => 3
+
+api.previousPage
+// => 2
+
+api.nextPage
+// => 4
+
+api.pages
+/*
+    [
+      {
+        "type": "page",
+        "value": 1,
+      },
+      {
+        "type": "page",
+        "value": 2,
+      },
+      {
+        "type": "ellipsis",
+      },
+      {
+        "type": "page",
+        "value": 3,
+      },
+      {
+        "type": "page",
+        "value": 4,
+      },
+    ]
+*/
+
+api.pageRange
+// => { start: 4, end: 13 }
+```
+
+## Styling guide
+
+Earlier, we mentioned that each pagination part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+```css
+[data-part="root"] {
+  /* styles for the pagination's root */
+}
+
+[data-part="page-trigger"] {
+  /* styles for the pagination's items */
+}
+
+[data-part="ellipsis"] {
+  /* styles for the pagination's ellipsis */
+}
+
+[data-part="prev-page-trigger"] {
+  /* styles for the pagination's previous page trigger */
+}
+
+[data-part="next-page-trigger"] {
+  /* styles for the pagination's next page trigger */
+}
+
+/* We add a data-disabled attribute to the prev/next items when on the first/last page  */
+
+[data-part="prev-page-trigger"][data-disabled] {
+  /* styles for the pagination's previous page trigger when on first page */
+}
+
+[data-part="next-page-trigger"][data-disabled] {
+  /* styles for the pagination's next page trigger when on first page */
+}
+```
+
+## Methods and Properties
+
+The pagination's `api` exposes the following methods and properties:
+
+<ApiTable name="pagination" />

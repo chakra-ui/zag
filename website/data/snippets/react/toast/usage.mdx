@@ -1,0 +1,81 @@
+```jsx
+import { useActor, useMachine, normalizeProps } from "@zag-js/react"
+import * as toast from "@zag-js/toast"
+import { createContext } from "react"
+
+// 1. Create the single toast
+function Toast(props) {
+  const [state, send] = useActor(props.actor)
+  const api = toast.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <h3 {...api.titleProps}>{api.title}</h3>
+      <p {...api.descriptionProps}>{api.description}</p>
+      <button onClick={api.dismiss}>Close</button>
+    </div>
+  )
+}
+
+// 2. Create the toast context
+const ToastContext = createContext()
+const useToast = () => useContext(ToastContext)
+
+// 3. Create the toast group provider
+export function ToastProvider({ children }) {
+  const [state, send] = useMachine(toast.group.machine({ id: "1" }))
+
+  const api = toast.group.connect(state, send, normalizeProps)
+
+  return (
+    <ToastContext.Provider value={api}>
+      {Object.entries(api.toastsByPlacement).map(([placement, toasts]) => (
+        <div key={placement} {...api.getGroupProps({ placement })}>
+          {toasts.map((toast) => (
+            <Toast key={toast.id} actor={toast} />
+          ))}
+        </div>
+      ))}
+
+      {children}
+    </ToastContext.Provider>
+  )
+}
+
+// 4. Wrap your app with the toast group provider
+export function App() {
+  return (
+    <ToastProvider>
+      <ExampleComponent />
+    </ToastProvider>
+  )
+}
+
+// 4. Within your app
+function ExampleComponent() {
+  const toast = useToast()
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          toast.create({ title: "Hello", placement: "top-right" })
+        }}
+      >
+        Add top-right toast
+      </button>
+      <button
+        onClick={() => {
+          toast.create({
+            title: "Data submitted!",
+            type: "success",
+            placement: "bottom-right",
+          })
+        }}
+      >
+        Add bottom-right toast
+      </button>
+    </div>
+  )
+}
+```

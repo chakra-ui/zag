@@ -1,0 +1,214 @@
+---
+title: Checkbox
+description: Using the checkbox machine in your project.
+package: "@zag-js/checkbox"
+---
+
+# Checkbox
+
+A checkbox allows users to make a binary choice, i.e. a choice between one of
+two possible mutually exclusive options.
+
+<Resources pkg="@zag-js/checkbox" />
+
+<Showcase id="Checkbox" />
+
+**Features**
+
+- Tri-state checkbox. i.e. `indeterminate` state
+- Syncs with `disabled` state of fieldset
+- Syncs with form `reset` events
+- Can be toggled programmatically
+
+## Installation
+
+To use the checkbox machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="checkbox/installation.mdx" />
+
+This command will install the framework agnostic checkbox logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the checkbox correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="checkbox" />
+
+On a high level, the checkbox consists of:
+
+- **Root**: The root container for the checkbox
+- **Label**: The label that gives the user information on the checkbox
+- **Control**: The element that visually represents the checkbox.
+- **Input**: The native html input that is visually hidden.
+
+## Usage
+
+First, import the checkbox package into your project
+
+```jsx
+import * as checkbox from "@zag-js/checkbox"
+```
+
+The checkbox package exports two key functions:
+
+- `machine` — The state machine logic for the checkbox widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+checkbox machine in your project 🔥
+
+<CodeSnippet id="checkbox/usage.mdx" />
+
+## Indeterminate checkboxes
+
+To make a checkbox indeterminate, set the context's `indeterminate` property to
+true
+
+```jsx {3}
+const [state, send] = useMachine(
+  checkbox.machine({
+    indeterminate: true,
+  }),
+)
+```
+
+## Disabling the checkbox
+
+To make a checkbox disabled, set the context's `disabled` property to true
+
+```jsx {3}
+const [state, send] = useMachine(
+  checkbox.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Making the checkbox readonly
+
+To make a checkbox readonly, set the context's `readOnly` property to true
+
+```jsx {3}
+const [state, send] = useMachine(
+  checkbox.machine({
+    readOnly: true,
+  }),
+)
+```
+
+## Making it checked by default
+
+To make a checkbox checked by default, set the context's `checked` property to
+`true`
+
+```jsx {3}
+const [state, send] = useMachine(
+  checkbox.machine({
+    checked: true,
+  }),
+)
+```
+
+## Listening for changes
+
+When the checkbox value changes, the `onChange` callback is invoked.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  checkbox.machine({
+    onChange({ checked }) {
+      console.log("checkbox is:", checked)
+      // 'checked' | 'unchecked' | 'indeterminate'
+    },
+  }),
+)
+```
+
+## Usage within forms
+
+To use checkbox within forms, use the exposed `inputProps` from the `connect`
+function and ensure you pass `name` value to the machine's context. It will
+render a hidden input and ensure the value changes get propagated to the form
+correctly.
+
+```jsx {3}
+const [state, send] = useMachine(
+  checkbox.machine({
+    name: "fruits",
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each checkbox part has a `data-part` attribute added
+to them to select and style them in the DOM.
+
+### Focused State
+
+When the checkbox input is focused, the `data-focus` attribute is added to the
+root, control and label parts.
+
+```css
+[data-part="root"][data-focus] {
+  /* styles for root focus state */
+}
+
+[data-part="control"][data-focus] {
+  /* styles for control focus state */
+}
+
+[data-part="label"][data-focus] {
+  /* styles for label focus state */
+}
+```
+
+### Disabled State
+
+When the checkbox is disabled, the `data-disabled` attribute is added to the
+root, control and label parts.
+
+```css
+[data-part="root"][data-disabled] {
+  /* styles for root disabled state */
+}
+
+[data-part="control"][data-disabled] {
+  /* styles for control disabled state */
+}
+
+[data-part="label"][data-disabled] {
+  /* styles for label disabled state */
+}
+```
+
+### Invalid State
+
+When the checkbox is invalid, the `data-invalid` attribute is added to the root,
+control and label parts.
+
+```css
+[data-part="root"][data-invalid] {
+  /* styles for root invalid state */
+}
+
+[data-part="control"][data-invalid] {
+  /* styles for control invalid state */
+}
+
+[data-part="label"][data-invalid] {
+  /* styles for label invalid state */
+}
+```
+
+## Methods and Properties
+
+The checkbox's `api` provides properties and methods:
+
+<ApiTable name="checkbox" />

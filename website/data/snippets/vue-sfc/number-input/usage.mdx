@@ -1,0 +1,23 @@
+```md
+<script setup>
+import * as numberInput from "@zag-js/number-input";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(numberInput.machine({ id: "1" }));
+const api = computed(() =>
+  numberInput.connect(state.value, send, normalizeProps)
+);
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.rootProps">
+    <label v-bind="api.labelProps">Enter number</label>
+    <div>
+      <button v-bind="api.decrementTriggerProps">DEC</button>
+      <input v-bind="api.inputProps" />
+      <button v-bind="api.incrementTriggerProps">INC</button>
+    </div>
+  </div>
+</template>
+```

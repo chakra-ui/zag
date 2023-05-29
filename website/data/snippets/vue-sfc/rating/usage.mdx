@@ -1,0 +1,29 @@
+```md
+<script setup>
+  import * as rating from "@zag-js/rating-group"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+  import { HalfStar, Star } from "./icons"
+
+  const [state, send] = useMachine(rating.machine({ id: "1" }))
+
+  const api = computed(() => rating.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <label v-bind="api.labelProps">Rate:</label>
+    <div v-bind="api.controlProps">
+      <span
+        v-for="index in api.sizeArray"
+        :key="index"
+        v-bind="api.getRatingProps({ index })"
+      >
+        <HalfStar v-if="api.getRatingState(index).isHalf" />
+        <Star v-else />
+      </span>
+    </div>
+    <input {...api.hiddenInputProps} />
+  </div>
+</template>
+```

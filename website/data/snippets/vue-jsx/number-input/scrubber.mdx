@@ -1,0 +1,29 @@
+```jsx {20}
+import * as numberInput from "@zag-js/number-input"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, h, Fragment } from "vue"
+
+export default defineComponent({
+  name: "NumberInput",
+  setup() {
+    const [state, send] = useMachine(numberInput.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      numberInput.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <label {...api.labelProps}>Enter number</label>
+          <div>
+            <div {...api.scrubberProps} />
+            <input {...api.inputProps} />
+          </div>
+        </div>
+      )
+    }
+  },
+})
+```

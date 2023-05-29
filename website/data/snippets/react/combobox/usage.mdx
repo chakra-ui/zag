@@ -1,0 +1,62 @@
+```jsx
+import * as combobox from "@zag-js/combobox"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+const comboboxData = [
+  { label: "Zambia", code: "ZA" },
+  { label: "Benin", code: "BN" },
+  //...
+]
+
+export function Combobox() {
+  const [options, setOptions] = useState(comboboxData)
+
+  const [state, send] = useMachine(
+    combobox.machine({
+      id: useId(),
+      onOpen() {
+        setOptions(comboboxData)
+      },
+      onInputChange({ value }) {
+        const filtered = comboboxData.filter((item) =>
+          item.label.toLowerCase().includes(value.toLowerCase()),
+        )
+        setOptions(filtered.length > 0 ? filtered : comboboxData)
+      },
+    }),
+  )
+
+  const api = combobox.connect(state, send, normalizeProps)
+
+  return (
+    <div>
+      <div {...api.rootProps}>
+        <label {...api.labelProps}>Select country</label>
+        <div {...api.controlProps}>
+          <input {...api.inputProps} />
+          <button {...api.triggerProps}>▼</button>
+        </div>
+      </div>
+      <div {...api.positionerProps}>
+        {options.length > 0 && (
+          <ul {...api.contentProps}>
+            {options.map((item, index) => (
+              <li
+                key={`${item.code}:${index}`}
+                {...api.getOptionProps({
+                  label: item.label,
+                  value: item.code,
+                  index,
+                  disabled: item.disabled,
+                })}
+              >
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  )
+}
+```

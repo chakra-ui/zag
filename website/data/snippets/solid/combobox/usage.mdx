@@ -1,0 +1,64 @@
+```jsx
+import * as combobox from "@zag-js/combobox"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+
+const comboboxData = [
+  { label: "Zambia", code: "ZA", disabled: false },
+  { label: "Benin", code: "BN", disabled: false },
+  //...
+]
+
+export function Combobox() {
+  const [options, setOptions] = createSignal(comboboxData)
+
+  const [state, send] = useMachine(
+    combobox.machine({
+      id: createUniqueId(),
+      onOpen() {
+        setOptions(comboboxData)
+      },
+      onInputChange({ value }) {
+        const filtered = comboboxData.filter((item) =>
+          item.label.toLowerCase().includes(value.toLowerCase()),
+        )
+        setOptions(filtered.length > 0 ? filtered : comboboxData)
+      },
+    }),
+  )
+
+  const api = createMemo(() => combobox.connect(state, send, normalizeProps))
+
+  return (
+    <div>
+      <div {...api().rootProps}>
+        <label {...api().labelProps}>Select country</label>
+        <div {...api().controlProps}>
+          <input {...api().inputProps} />
+          <button {...api().triggerProps}>▼</button>
+        </div>
+      </div>
+      <div {...api().positionerProps}>
+        <Show when={options().length > 0}>
+          <ul {...api().contentProps}>
+            <For each={options()}>
+              {(item, index) => (
+                <li
+                  {...api().getOptionProps({
+                    label: item.label,
+                    value: item.code,
+                    index: index(),
+                    disabled: item.disabled,
+                  })}
+                >
+                  {item.label}
+                </li>
+              )}
+            </For>
+          </ul>
+        </Show>
+      </div>
+    </div>
+  )
+}
+```
