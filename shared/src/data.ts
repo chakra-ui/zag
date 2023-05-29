@@ -1,4 +1,6 @@
-import { getData } from "country-list"
+import countryList from "country-list"
+
+const { getData } = countryList
 
 export { paginationData } from "./pagination-data"
 
