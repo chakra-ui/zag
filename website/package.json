@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "rm -rf .next && next dev",
     "start": "next start",
     "lint": "next lint",
     "theme": "chakra-cli tokens theme/index.ts",
@@ -24,6 +24,7 @@
     "@chakra-ui/theme": "3.1.1",
     "@emotion/react": "11.11.0",
     "@emotion/styled": "11.11.0",
+    "@pandacss/dev": "^0.0.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/combobox": "workspace:*",

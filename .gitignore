@@ -179,3 +179,7 @@ public/feed.xml
 
 # Contentlayer
 .contentlayer
+
+## Panda
+styled-system
+styled-system-static

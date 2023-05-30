@@ -1,11 +1,13 @@
+@layer reset, base, tokens, recipes, utilities;
+
 .icon-gr-return path {
   stroke: currentColor;
 }
 
 #home-illustration {
-    color: #D1E1DA;
+  color: #d1e1da;
 }
 
 [data-theme="dark"] #home-illustration {
-    color: #283E35;
+  color: #283e35;
 }
