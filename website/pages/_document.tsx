@@ -1,3 +1,4 @@
+import { ColorModeScript } from "lib/ColorModeScript"
 import { Html, Head, Main, NextScript } from "next/document"
 
 export default function Document() {
@@ -36,6 +37,7 @@ export default function Document() {
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        <ColorModeScript />
         {process.env.NODE_ENV === "production" && (
           <script
             async

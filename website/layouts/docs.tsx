@@ -1,6 +1,4 @@
-import Icon from "@chakra-ui/icon"
-import { Box, HStack, Spacer } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Box, Spacer, panda } from "styled-system/jsx"
 import { FrameworkSelect } from "components/framework-select"
 import { MdxFooter } from "components/mdx-footer"
 import { Search } from "components/search-dialog"
@@ -9,7 +7,8 @@ import { SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNavigation } from "components/top-navigation"
 import React from "react"
-import { HiPencilAlt } from "react-icons/hi"
+import { hstack } from "styled-system/patterns"
+import { icon } from "styled-system/recipes"
 
 type DocsLayoutProps = {
   children: React.ReactNode
@@ -29,7 +28,7 @@ export default function DocsLayout({ children, doc, toc }: DocsLayoutProps) {
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
       <TopNavigation />
-      <chakra.div pt="10">
+      <panda.div pt="10">
         <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
           <Box
             display={{ base: "none", lg: "block" }}
@@ -56,8 +55,7 @@ export default function DocsLayout({ children, doc, toc }: DocsLayoutProps) {
             </Box>
           </Box>
 
-          <Box
-            as="main"
+          <panda.main
             className="mdx-content"
             pl={{ lg: "19.5rem" }}
             pt="4"
@@ -65,20 +63,20 @@ export default function DocsLayout({ children, doc, toc }: DocsLayoutProps) {
           >
             <Box mr={{ xl: "15.5rem" }}>
               {children}
-              <HStack
-                as="a"
-                display="inline-flex"
+              <panda.a
+                className={hstack({ display: "inline-flex" })}
                 href={doc.editUrl}
-                textStyle="a"
                 fontSize="sm"
                 mt="14"
               >
-                <Icon as={HiPencilAlt} />
+                <span
+                  className={icon({ name: "heroicons-outline:pencil-alt" })}
+                />
                 <p>Edit this page on GitHub</p>
-              </HStack>
+              </panda.a>
               <MdxFooter />
             </Box>
-          </Box>
+          </panda.main>
 
           <Box
             py="10"
@@ -99,7 +97,7 @@ export default function DocsLayout({ children, doc, toc }: DocsLayoutProps) {
             />
           </Box>
         </Box>
-      </chakra.div>
+      </panda.div>
     </Box>
   )
 }

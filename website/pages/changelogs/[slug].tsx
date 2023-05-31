@@ -1,4 +1,3 @@
-import { Heading, HStack, Stack, Text } from "@chakra-ui/layout"
 import { ResourceLink, useMDX } from "components/mdx-components"
 import { Changelog } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
@@ -10,6 +9,8 @@ import {
 import { GetStaticPaths, GetStaticProps } from "next"
 import { NextSeo } from "next-seo"
 import { BiCalendarAlt, BiLinkAlt } from "react-icons/bi"
+import { HStack, Stack } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 
 type PageProps = {
   doc: Changelog
@@ -35,12 +36,12 @@ export default function Page(props: PageProps) {
       >
         <div>
           <Stack>
-            <Heading as="h1" textStyle="display.lg">
-              Changelog
-            </Heading>
-            <Text textStyle="text.xl">Zag releases and their changelogs.</Text>
+            <panda.h1 textStyle="display.lg">Changelog</panda.h1>
+            <panda.p textStyle="text.xl">
+              Zag releases and their changelogs.
+            </panda.p>
 
-            <HStack spacing="4" pt="3">
+            <HStack gap="4" pt="3">
               <ResourceLink icon={BiLinkAlt} href={doc.releaseUrl}>
                 Release PR
               </ResourceLink>
