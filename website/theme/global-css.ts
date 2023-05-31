@@ -1,6 +1,4 @@
-import { Config } from "@pandacss/types"
-
-export const globalCss: Config["globalCss"] = {
+export const globalCss = {
   "@font-face": {
     fontFamily: "'Spline Sans'",
     src: "url('/fonts/spline-sans.woff2') format('woff2')",
@@ -8,7 +6,7 @@ export const globalCss: Config["globalCss"] = {
   },
 
   "body, html": {
-    fontFamily: "body",
+    fontFamily: "Spline Sans",
     textRendering: "geometricprecision",
     textSizeAdjust: "100%",
     WebkitFontSmoothing: "antialiased",
@@ -18,6 +16,12 @@ export const globalCss: Config["globalCss"] = {
   "*": {
     borderColor: "border-bold",
     borderStyle: "solid",
+  },
+
+  a: {
+    textDecoration: "inherit",
+    color: "inherit",
+    background: "transparent",
   },
 
   ".focus-outline": {
