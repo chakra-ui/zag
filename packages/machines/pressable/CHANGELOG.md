@@ -1,5 +1,18 @@
 # @zag-js/pressable
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.1
+  - @zag-js/core@0.10.1
+  - @zag-js/types@0.10.1
+  - @zag-js/utils@0.10.1
+  - @zag-js/dom-event@0.10.1
+  - @zag-js/dom-query@0.10.1
+  - @zag-js/text-selection@0.10.1
+
 ## 0.10.0
 
 ### Patch Changes

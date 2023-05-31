@@ -1,5 +1,16 @@
 # @zag-js/focus-scope
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.10.1
+  - @zag-js/dom-event@0.10.1
+  - @zag-js/dom-query@0.10.1
+  - @zag-js/tabbable@0.10.1
+  - @zag-js/visually-hidden@0.10.1
+
 ## 0.10.0
 
 ### Patch Changes
