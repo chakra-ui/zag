@@ -52,6 +52,9 @@ export function machine(userContext: UserDefinedContext) {
             actions: "setStartPanelToMin",
           },
         ],
+        SET_SIZE: {
+          actions: "setPanelSize",
+        },
       },
       states: {
         idle: {
@@ -201,6 +204,13 @@ export function machine(userContext: UserDefinedContext) {
             id: panel.id,
             size: panel.size,
           }))
+        },
+        setPanelSize(ctx, evt) {
+          const { id, size } = evt
+          ctx.size = ctx.size.map((panel) => {
+            const panelSize = clamp(size, panel.minSize ?? 0, panel.maxSize ?? 100)
+            return panel.id === id ? { ...panel, size: panelSize } : panel
+          })
         },
         setStartPanelToMin(ctx) {
           const bounds = getPanelBounds(ctx)

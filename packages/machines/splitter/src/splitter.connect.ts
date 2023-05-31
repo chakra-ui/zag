@@ -10,6 +10,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isHorizontal = state.context.isHorizontal
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
+  const panels = state.context.panels
 
   const api = {
     /**
@@ -25,22 +26,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     bounds: getHandleBounds(state.context),
     /**
-     * Function to collapse a panel.
+     * Function to set a panel to its minimum size.
      */
-    collapse(id: PanelId) {
-      send({ type: "COLLAPSE", id })
+    setToMinSize(id: PanelId) {
+      const panel = panels.find((panel) => panel.id === id)
+      send({ type: "SET_SIZE", id, size: panel?.minSize, src: "collapse" })
     },
     /**
-     * Function to expand a panel.
+     * Function to set a panel to its maximum size.
      */
-    expand(id: PanelId) {
-      send({ type: "EXPAND", id })
-    },
-    /**
-     * Function to toggle a panel between collapsed and expanded.
-     */
-    toggle(id: PanelId) {
-      send({ type: "TOGGLE", id })
+    setToMaxSize(id: PanelId) {
+      const panel = panels.find((panel) => panel.id === id)
+      send({ type: "SET_SIZE", id, size: panel?.maxSize, src: "expand" })
     },
     /**
      * Function to set the size of a panel.
@@ -91,15 +88,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: dom.getPanelStyle(state.context, id),
       })
     },
-
-    // toggleTriggerProps: normalize.element({
-    //   ...parts.toggleButton.attrs,
-    //   id: dom.getToggleButtonId(state.context),
-    //   "aria-label": state.context.isAtMin ? "Expand Primary Pane" : "Collapse Primary Pane",
-    //   onClick() {
-    //     send("TOGGLE")
-    //   },
-    // }),
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       const { id, disabled, step = 1 } = props

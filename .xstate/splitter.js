@@ -32,7 +32,10 @@ const fetchMachine = createMachine({
       actions: "setStartPanelToMax"
     }, {
       actions: "setStartPanelToMin"
-    }]
+    }],
+    SET_SIZE: {
+      actions: "setPanelSize"
+    }
   },
   on: {
     UPDATE_CONTEXT: {
