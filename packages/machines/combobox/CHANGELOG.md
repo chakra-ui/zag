@@ -1,5 +1,22 @@
 # @zag-js/combobox
 
+## 0.10.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.2
+  - @zag-js/core@0.10.2
+  - @zag-js/types@0.10.2
+  - @zag-js/aria-hidden@0.10.2
+  - @zag-js/utils@0.10.2
+  - @zag-js/dom-event@0.10.2
+  - @zag-js/dom-query@0.10.2
+  - @zag-js/interact-outside@0.10.2
+  - @zag-js/live-region@0.10.2
+  - @zag-js/mutation-observer@0.10.2
+  - @zag-js/popper@0.10.2
+
 ## 0.10.1
 
 ### Patch Changes
