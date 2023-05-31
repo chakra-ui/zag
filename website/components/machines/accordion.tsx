@@ -1,5 +1,5 @@
-import { Box } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Box } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as accordion from "@zag-js/accordion"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -50,7 +50,7 @@ export function Accordion(props: AccordionProps) {
           {...api.getItemProps({ value: item.title })}
         >
           <h3>
-            <chakra.button
+            <panda.button
               width="full"
               py="2"
               px="3"
@@ -65,7 +65,7 @@ export function Accordion(props: AccordionProps) {
               <Box fontSize="xs" color="text-subtle">
                 {item.desc}
               </Box>
-            </chakra.button>
+            </panda.button>
           </h3>
           <Box
             width="full"

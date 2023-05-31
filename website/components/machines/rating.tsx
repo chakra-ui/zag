@@ -1,5 +1,5 @@
-import { Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Stack } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -68,36 +68,37 @@ export function Rating(props: RadioProps) {
         }}
       >
         <label {...api.labelProps}>Rate Us:</label>
-        <chakra.div {...api.controlProps} display="inline-flex">
+        <panda.div {...api.controlProps} display="inline-flex">
           {api.sizeArray.map((index) => {
             const state = api.getRatingState({ index })
             return (
-              <chakra.span
+              <panda.span
                 key={index}
                 {...api.getRatingProps({ index })}
-                boxSize="8"
+                height="8"
+                width="8"
                 p="1"
-                sx={{
-                  '[data-part="star"]': {
+                css={{
+                  '&[data-part="star"]': {
                     color: "#bdbdbd",
                   },
                 }}
                 _highlighted={{
-                  '[data-part="star"]': {
+                  '&[data-part="star"]': {
                     color: "#ffb400",
                   },
                   _disabled: {
-                    '[data-part="star"]': {
+                    '&[data-part="star"]': {
                       color: "#a1a1a1",
                     },
                   },
                 }}
               >
                 {state.isHalf ? <HalfStar /> : <Star />}
-              </chakra.span>
+              </panda.span>
             )
           })}
-        </chakra.div>
+        </panda.div>
         <input {...api.hiddenInputProps} />
       </Stack>
     </div>

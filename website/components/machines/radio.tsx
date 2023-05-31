@@ -1,5 +1,5 @@
-import { Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Stack } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -32,7 +32,7 @@ export function Radio(props: RadioProps) {
       <h2 {...api.labelProps}>Fruits</h2>
       <Stack gap="2">
         {items.map((opt) => (
-          <chakra.label
+          <panda.label
             display="flex"
             gap="2"
             userSelect="none"
@@ -48,17 +48,18 @@ export function Radio(props: RadioProps) {
             key={opt.id}
             {...api.getRadioProps({ value: opt.id })}
           >
-            <chakra.span
+            <panda.span
               order="2"
               {...api.getRadioLabelProps({ value: opt.id })}
             >
               {opt.label}
-            </chakra.span>
+            </panda.span>
             <input data-peer {...api.getRadioInputProps({ value: opt.id })} />
-            <chakra.div
+            <panda.div
               order="1"
               data-testid={`control-${opt.id}`}
-              boxSize="25px"
+              height="25px"
+              width="25px"
               rounded="full"
               border="solid 2px"
               borderColor="gray.400"
@@ -83,16 +84,16 @@ export function Radio(props: RadioProps) {
               {...api.getRadioControlProps({ value: opt.id })}
             >
               {api.value === opt.id && (
-                <chakra.svg
+                <panda.svg
                   viewBox="0 0 24 24"
                   fill="currentcolor"
                   transform="scale(0.7)"
                 >
                   <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-                </chakra.svg>
+                </panda.svg>
               )}
-            </chakra.div>
-          </chakra.label>
+            </panda.div>
+          </panda.label>
         ))}
       </Stack>
     </Stack>

@@ -1,6 +1,6 @@
 import * as tagsInput from "@zag-js/tags-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { useId } from "react"
 
 export function TagsInput(props: any) {
@@ -15,10 +15,10 @@ export function TagsInput(props: any) {
   const api = tagsInput.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div width="400px">
-      <chakra.div {...api.rootProps}>
+    <panda.div width="400px">
+      <panda.div {...api.rootProps}>
         <label {...api.labelProps}>Enter frameworks:</label>
-        <chakra.div
+        <panda.div
           className="focus-outline"
           bg="bg-subtle"
           borderWidth="1px"
@@ -31,7 +31,7 @@ export function TagsInput(props: any) {
             const opt = { index, value }
             return (
               <span key={index}>
-                <chakra.div
+                <panda.div
                   bg="bg-bold"
                   px="2"
                   display="inline-block"
@@ -41,11 +41,11 @@ export function TagsInput(props: any) {
                   {...api.getTagProps(opt)}
                 >
                   <span>{value}</span>
-                  <chakra.button ml="1" {...api.getTagDeleteTriggerProps(opt)}>
+                  <panda.button ml="1" {...api.getTagDeleteTriggerProps(opt)}>
                     &#x2715;
-                  </chakra.button>
-                </chakra.div>
-                <chakra.input
+                  </panda.button>
+                </panda.div>
+                <panda.input
                   px="2"
                   width="10"
                   outline="0"
@@ -54,7 +54,7 @@ export function TagsInput(props: any) {
               </span>
             )
           })}
-          <chakra.input
+          <panda.input
             margin="4px"
             px="2"
             placeholder="Add tag..."
@@ -62,8 +62,8 @@ export function TagsInput(props: any) {
             bg="bg-subtle"
             {...api.inputProps}
           />
-        </chakra.div>
-      </chakra.div>
-    </chakra.div>
+        </panda.div>
+      </panda.div>
+    </panda.div>
   )
 }

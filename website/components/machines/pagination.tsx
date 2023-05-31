@@ -1,7 +1,8 @@
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import { cva } from "styled-system/css"
 
 type PaginationProps = {
   controls: {
@@ -25,10 +26,10 @@ export function Pagination(props: PaginationProps) {
   const api = pagination.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div px="2" w="full" display="flex" justifyContent="center">
+    <panda.div px="2" w="full" display="flex" justifyContent="center">
       {api.totalPages > 1 && (
         <nav {...api.rootProps}>
-          <chakra.ul
+          <panda.ul
             display="flex"
             flexWrap={{ base: "wrap", md: "nowrap" }}
             gap="1"
@@ -36,48 +37,57 @@ export function Pagination(props: PaginationProps) {
             listStyleType="none"
           >
             <li>
-              <PaginationLink href="#previous" {...api.prevPageTriggerProps}>
-                &lt; <chakra.span srOnly>Previous Page</chakra.span>
-              </PaginationLink>
+              <a
+                className={paginationLink()}
+                href="#previous"
+                {...api.prevPageTriggerProps}
+              >
+                &lt; <panda.span srOnly={true}>Previous Page</panda.span>
+              </a>
             </li>
             {api.pages.map((page, i) => {
               if (page.type === "page")
                 return (
                   <li key={page.value}>
-                    <PaginationLink
+                    <a
+                      className={paginationLink()}
                       href={`#${page.value}`}
                       {...api.getPageTriggerProps(page)}
                     >
                       {page.value}
-                    </PaginationLink>
+                    </a>
                   </li>
                 )
               else
                 return (
                   <li key={`ellipsis-${i}`}>
-                    <chakra.span
+                    <panda.span
                       cursor="default"
                       {...api.getEllipsisProps({ index: i })}
                     >
                       &#8230;
-                    </chakra.span>
+                    </panda.span>
                   </li>
                 )
             })}
             <li>
-              <PaginationLink href="#next" {...api.nextPageTriggerProps}>
-                &gt; <chakra.span srOnly>Next Page</chakra.span>
-              </PaginationLink>
+              <a
+                className={paginationLink()}
+                href="#next"
+                {...api.nextPageTriggerProps}
+              >
+                &gt; <panda.span srOnly={true}>Next Page</panda.span>
+              </a>
             </li>
-          </chakra.ul>
+          </panda.ul>
         </nav>
       )}
-    </chakra.div>
+    </panda.div>
   )
 }
 
-const PaginationLink = chakra("a", {
-  baseStyle: {
+const paginationLink = cva({
+  base: {
     px: 3,
     h: 8,
     textAlign: "center",

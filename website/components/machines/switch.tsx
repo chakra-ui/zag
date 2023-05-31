@@ -1,4 +1,4 @@
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import * as zagSwitch from "@zag-js/switch"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -19,14 +19,14 @@ export function Switch(props: SwitchProps) {
 
   return (
     <div>
-      <chakra.label
+      <panda.label
         {...api.rootProps}
         display="flex"
         alignItems="center"
         position="relative"
         lineHeight={0}
         width="fit-content"
-        sx={{
+        css={{
           "--switch-track-diff":
             "calc(var(--switch-track-width) - var(--switch-track-height))",
           "--switch-thumb-x": "var(--switch-track-diff)",
@@ -35,7 +35,7 @@ export function Switch(props: SwitchProps) {
         }}
       >
         <input {...api.inputProps} />
-        <chakra.span
+        <panda.span
           {...api.controlProps}
           display="inline-flex"
           flexShrink="0"
@@ -49,7 +49,7 @@ export function Switch(props: SwitchProps) {
           transitionProperty="background-color, border-color, color, fill, stroke, opacity, box-shadow, transform"
           transitionDuration="150ms"
           background="var(--switch-bg)"
-          sx={{
+          css={{
             "--switch-bg": "#cbd5e0",
             WebkitBoxPack: "start",
             _checked: {
@@ -65,7 +65,7 @@ export function Switch(props: SwitchProps) {
             },
           }}
         >
-          <chakra.span
+          <panda.span
             {...api.thumbProps}
             background="white"
             transitionProperty="transform"
@@ -92,15 +92,15 @@ export function Switch(props: SwitchProps) {
               transform: "translateX(var(--switch-thumb-x))",
             }}
           />
-        </chakra.span>
-        <chakra.span
+        </panda.span>
+        <panda.span
           {...api.labelProps}
           userSelect="none"
           marginInlineStart="0.5rem"
         >
           {api.isChecked ? "On" : "Off"}
-        </chakra.span>
-      </chakra.label>
+        </panda.span>
+      </panda.label>
     </div>
   )
 }

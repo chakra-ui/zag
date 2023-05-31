@@ -1,8 +1,8 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import * as React from "react"
-import { chakra } from "@chakra-ui/system"
-import { Stack } from "@chakra-ui/layout"
+import { panda } from "styled-system/jsx"
+import { Stack } from "styled-system/jsx"
 import { HiX } from "react-icons/hi"
 import { Button } from "components/button"
 import { useId } from "react"
@@ -23,7 +23,7 @@ export function Popover(props: any) {
       </Button>
       <Wrapper>
         <div {...api.positionerProps}>
-          <chakra.div
+          <panda.div
             className="focus-outline"
             bg="bg-subtle"
             padding="4"
@@ -35,15 +35,15 @@ export function Popover(props: any) {
             width="full"
             {...api.contentProps}
           >
-            <chakra.div
+            <panda.div
               sx={{
                 "--arrow-background": "bg-subtle",
                 "--arrow-size": "8px",
               }}
               {...api.arrowProps}
             >
-              <chakra.div rounded="sm" {...api.arrowTipProps} />
-            </chakra.div>
+              <panda.div rounded="sm" {...api.arrowTipProps} />
+            </panda.div>
 
             <Stack>
               <div {...api.titleProps}>
@@ -53,7 +53,7 @@ export function Popover(props: any) {
                 Tabs are used to organize and group content into sections that
                 the user can navigate between.
               </div>
-              <chakra.button
+              <panda.button
                 className="focus-outline"
                 bg="bg-subtle"
                 px="4"
@@ -61,9 +61,9 @@ export function Popover(props: any) {
                 borderWidth="1px"
               >
                 Action Button
-              </chakra.button>
+              </panda.button>
             </Stack>
-            <chakra.button
+            <panda.button
               position="absolute"
               top="3"
               right="3"
@@ -71,8 +71,8 @@ export function Popover(props: any) {
               {...api.closeTriggerProps}
             >
               <HiX />
-            </chakra.button>
-          </chakra.div>
+            </panda.button>
+          </panda.div>
         </div>
       </Wrapper>
     </div>

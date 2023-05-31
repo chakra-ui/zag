@@ -1,8 +1,8 @@
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
-import { chakra } from "@chakra-ui/system"
 import { Button } from "components/button"
 import { useId } from "react"
+import { panda } from "styled-system/jsx"
 
 type TooltipProps = {
   controls: {}
@@ -16,13 +16,14 @@ export function Tooltip(props: TooltipProps) {
 
   return (
     <>
+      {/* @ts-expect-error */}
       <Button variant="green" size="sm" {...api.triggerProps}>
         Hover me
       </Button>
       <Portal>
         {api.isOpen && (
           <div {...api.positionerProps}>
-            <chakra.div
+            <panda.div
               px="2"
               py="1"
               fontSize="sm"
@@ -31,7 +32,7 @@ export function Tooltip(props: TooltipProps) {
               {...api.contentProps}
             >
               Tooltip
-            </chakra.div>
+            </panda.div>
           </div>
         )}
       </Portal>

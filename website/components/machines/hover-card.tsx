@@ -1,5 +1,5 @@
-import { Flex, Stack, Text } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Flex, Stack } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId } from "react"
@@ -20,24 +20,25 @@ export function HoverCard(props: HoverCardProps) {
 
   return (
     <div>
-      <chakra.a
+      <panda.a
         href="https://twitter.com/zag_js"
         target="_blank"
         rel="noreferrer noopener"
         {...api.triggerProps}
       >
-        <chakra.img
+        <panda.img
           alt="Twitter"
           src="/favicon/apple-touch-icon.png"
-          boxSize="12"
+          height="12"
+          width="12"
           shadow="xl"
         />
-      </chakra.a>
+      </panda.a>
 
       {api.isOpen && (
         <Portal>
           <div {...api.positionerProps}>
-            <chakra.div
+            <panda.div
               bg="bg-subtle"
               padding="4"
               borderWidth="1px"
@@ -48,51 +49,52 @@ export function HoverCard(props: HoverCardProps) {
               width="full"
               {...api.contentProps}
             >
-              <chakra.div
+              <panda.div
                 sx={{
                   "--arrow-background": "bg-subtle",
                   "--arrow-size": "8px",
                 }}
                 {...api.arrowProps}
               >
-                <chakra.div rounded="sm" {...api.arrowTipProps} />
-              </chakra.div>
-              <Stack spacing="3">
-                <chakra.img
+                <panda.div rounded="sm" {...api.arrowTipProps} />
+              </panda.div>
+              <Stack gap="3">
+                <panda.img
                   alt="Twitter"
                   src="/favicon/apple-touch-icon.png"
-                  boxSize="14"
+                  height="14"
+                  width="14"
                 />
-                <Stack spacing="4">
-                  <Text>
-                    <Text fontWeight="bold">Zag JS</Text>
-                    <Text color="gray.500"> @zag_js</Text>
-                  </Text>
-                  <Text>
-                    <Text>UI components powered by Finite State Machines.</Text>
+                <Stack gap="4">
+                  <p>
+                    <panda.p fontWeight="bold">Zag JS</panda.p>
+                    <panda.p color="gray.500"> @zag_js</panda.p>
+                  </p>
+                  <p>
+                    <p>UI components powered by Finite State Machines.</p>
                     Created by{" "}
-                    <chakra.a
+                    <panda.a
                       href="https://twitter.com/thesegunadebayo"
                       target="_blank"
                       rel="noreferrer noopener"
                       color="royalblue"
                     >
                       @thesegunadebayo
-                    </chakra.a>
-                  </Text>
+                    </panda.a>
+                  </p>
                   <Flex gap="4">
                     <Flex gap="1.5">
-                      <Text fontWeight="bold">2</Text>{" "}
-                      <Text color="gray.500">Following</Text>
+                      <panda.p fontWeight="bold">2</panda.p>{" "}
+                      <panda.p color="gray.500">Following</panda.p>
                     </Flex>
                     <Flex gap="1.5">
-                      <Text fontWeight="bold">4,000</Text>{" "}
-                      <Text color="gray.500">Followers</Text>
+                      <panda.p fontWeight="bold">4,000</panda.p>{" "}
+                      <panda.p color="gray.500">Followers</panda.p>
                     </Flex>
                   </Flex>
                 </Stack>
               </Stack>
-            </chakra.div>
+            </panda.div>
           </div>
         </Portal>
       )}

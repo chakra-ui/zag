@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { useId } from "react"
 
 const data = [
@@ -23,11 +23,11 @@ export function ContextMenu(props: ContextMenuProps) {
 
   return (
     <div>
-      <chakra.div bg="bg-subtle" p="4" {...api.contextTriggerProps}>
+      <panda.div bg="bg-subtle" p="4" {...api.contextTriggerProps}>
         <div>Open context menu</div>
-      </chakra.div>
+      </panda.div>
       <div {...api.positionerProps}>
-        <chakra.ul
+        <panda.ul
           bg="bg-subtle"
           width="240px"
           padding="2"
@@ -38,7 +38,7 @@ export function ContextMenu(props: ContextMenuProps) {
           {...api.contentProps}
         >
           {data.map((item) => (
-            <chakra.li
+            <panda.li
               px="2"
               py="1"
               cursor="pointer"
@@ -50,9 +50,9 @@ export function ContextMenu(props: ContextMenuProps) {
               {...api.getItemProps({ id: item.value })}
             >
               {item.label}
-            </chakra.li>
+            </panda.li>
           ))}
-        </chakra.ul>
+        </panda.ul>
       </div>
     </div>
   )

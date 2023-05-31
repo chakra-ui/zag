@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { useId } from "react"
 
 const data = [
@@ -20,10 +20,10 @@ export function Tabs(props: any) {
   const api = tabs.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div width="full" maxW="400px" borderWidth="1px" fontSize="sm">
-      <chakra.div bg="bg-subtle" borderBottomWidth="1px" {...api.tablistProps}>
+    <panda.div width="full" maxW="400px" borderWidth="1px" fontSize="sm">
+      <panda.div bg="bg-subtle" borderBottomWidth="1px" {...api.tablistProps}>
         {data.map((item) => (
-          <chakra.button
+          <panda.button
             py="2"
             px="4"
             borderBottomWidth="2px"
@@ -36,11 +36,11 @@ export function Tabs(props: any) {
             key={item.value}
           >
             {item.label}
-          </chakra.button>
+          </panda.button>
         ))}
-      </chakra.div>
+      </panda.div>
       {data.map((item) => (
-        <chakra.div
+        <panda.div
           padding="4"
           bg="bg-subtle"
           minHeight="20"
@@ -48,8 +48,8 @@ export function Tabs(props: any) {
           key={item.value}
         >
           <p>{item.content}</p>
-        </chakra.div>
+        </panda.div>
       ))}
-    </chakra.div>
+    </panda.div>
   )
 }

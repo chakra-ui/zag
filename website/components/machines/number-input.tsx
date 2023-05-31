@@ -1,6 +1,6 @@
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { BiChevronDown, BiChevronUp } from "react-icons/bi"
 import { useId } from "react"
 
@@ -18,8 +18,8 @@ export function NumberInput(props: any) {
     <div {...api.rootProps}>
       <label {...api.labelProps}>Enter number:</label>
       <br />
-      <chakra.div position="relative" display="inline-block">
-        <chakra.input
+      <panda.div position="relative" display="inline-block">
+        <panda.input
           borderWidth="1px"
           height="10"
           pr="5"
@@ -28,7 +28,7 @@ export function NumberInput(props: any) {
           borderColor="border-subtle"
           {...api.inputProps}
         />
-        <chakra.div
+        <panda.div
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -37,7 +37,7 @@ export function NumberInput(props: any) {
           right="3px"
           top="3px"
         >
-          <chakra.button
+          <panda.button
             width="full"
             bg="bg-bold"
             display="flex"
@@ -46,8 +46,8 @@ export function NumberInput(props: any) {
             {...api.incrementTriggerProps}
           >
             <BiChevronUp />
-          </chakra.button>
-          <chakra.button
+          </panda.button>
+          <panda.button
             mt="2px"
             width="full"
             bg="bg-bold"
@@ -57,9 +57,9 @@ export function NumberInput(props: any) {
             {...api.decrementTriggerProps}
           >
             <BiChevronDown />
-          </chakra.button>
-        </chakra.div>
-      </chakra.div>
+          </panda.button>
+        </panda.div>
+      </panda.div>
     </div>
   )
 }

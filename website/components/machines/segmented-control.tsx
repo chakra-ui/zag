@@ -1,5 +1,5 @@
-import { Flex } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Flex } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -40,7 +40,7 @@ export function SegmentedControl(props: SegmentedControlProps) {
       rounded="md"
       {...api.rootProps}
     >
-      <chakra.div
+      <panda.div
         h="1"
         bg="bg-subtle"
         zIndex="1"
@@ -49,7 +49,7 @@ export function SegmentedControl(props: SegmentedControlProps) {
         {...api.indicatorProps}
       />
       {items.map((opt) => (
-        <chakra.label
+        <panda.label
           display="flex"
           gap="2"
           userSelect="none"
@@ -68,14 +68,14 @@ export function SegmentedControl(props: SegmentedControlProps) {
           key={opt.value}
           {...api.getRadioProps({ value: opt.value })}
         >
-          <chakra.span
+          <panda.span
             order="2"
             {...api.getRadioLabelProps({ value: opt.value })}
           >
             {opt.label}
-          </chakra.span>
+          </panda.span>
           <input data-peer {...api.getRadioInputProps({ value: opt.value })} />
-        </chakra.label>
+        </panda.label>
       ))}
     </Flex>
   )

@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { Button } from "components/button"
 import { useId } from "react"
 
@@ -23,15 +23,16 @@ export function Menu(props: MenuProps) {
 
   return (
     <div>
+      {/* @ts-expect-error */}
       <Button size="sm" variant="green" {...api.triggerProps}>
         Actions{" "}
-        <chakra.span ml="2" aria-hidden>
+        <panda.span ml="2" aria-hidden>
           ▾
-        </chakra.span>
+        </panda.span>
       </Button>
       <Portal>
         <div {...api.positionerProps}>
-          <chakra.ul
+          <panda.ul
             bg="bg-subtle"
             width="240px"
             padding="2"
@@ -42,7 +43,7 @@ export function Menu(props: MenuProps) {
             {...api.contentProps}
           >
             {data.map((item) => (
-              <chakra.li
+              <panda.li
                 px="2"
                 py="1"
                 cursor="pointer"
@@ -54,9 +55,9 @@ export function Menu(props: MenuProps) {
                 {...api.getItemProps({ id: item.value })}
               >
                 {item.label}
-              </chakra.li>
+              </panda.li>
             ))}
-          </chakra.ul>
+          </panda.ul>
         </div>
       </Portal>
     </div>

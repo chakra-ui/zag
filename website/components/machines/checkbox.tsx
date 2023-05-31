@@ -1,4 +1,4 @@
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -20,7 +20,7 @@ export function Checkbox(props: CheckboxProps) {
 
   return (
     <div>
-      <chakra.label
+      <panda.label
         display="flex"
         flexDirection="row-reverse"
         gap="2"
@@ -38,8 +38,9 @@ export function Checkbox(props: CheckboxProps) {
       >
         <span {...api.labelProps}>Checkbox Input</span>
         <input data-peer {...api.inputProps} />
-        <chakra.div
-          boxSize="25px"
+        <panda.div
+          height="25px"
+          width="25px"
           rounded="md"
           border="solid 2px"
           borderColor="gray.400"
@@ -68,25 +69,25 @@ export function Checkbox(props: CheckboxProps) {
           {...api.controlProps}
         >
           {api.checkedState === true && (
-            <chakra.svg
+            <panda.svg
               viewBox="0 0 24 24"
               fill="currentcolor"
               transform="scale(0.7)"
             >
               <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-            </chakra.svg>
+            </panda.svg>
           )}
           {api.checkedState === "indeterminate" && (
-            <chakra.svg
+            <panda.svg
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth="4"
             >
               <line x1="21" x2="3" y1="12" y2="12" />
-            </chakra.svg>
+            </panda.svg>
           )}
-        </chakra.div>
-      </chakra.label>
+        </panda.div>
+      </panda.label>
     </div>
   )
 }

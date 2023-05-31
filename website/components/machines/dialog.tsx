@@ -1,11 +1,10 @@
-import Icon from "@chakra-ui/icon"
-import { Center, HStack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Center, HStack } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { Button } from "components/button"
-import { HiX } from "react-icons/hi"
 import { useId } from "react"
+import { icon } from "styled-system/recipes"
 
 export function Dialog(props: { controls: any }) {
   const [state, send] = useMachine(dialog.machine({ id: useId() }), {
@@ -16,12 +15,13 @@ export function Dialog(props: { controls: any }) {
 
   return (
     <>
+      {/* @ts-expect-error */}
       <Button size="sm" variant="green" {...api.triggerProps}>
         Open Dialog
       </Button>
       {api.isOpen && (
         <Portal>
-          <chakra.div
+          <panda.div
             position="fixed"
             inset="0"
             bg="blackAlpha.600"
@@ -35,7 +35,7 @@ export function Dialog(props: { controls: any }) {
             inset="0"
             {...api.containerProps}
           >
-            <chakra.div
+            <panda.div
               width="full"
               maxW="400px"
               rounded="md"
@@ -45,20 +45,20 @@ export function Dialog(props: { controls: any }) {
               pointerEvents="auto"
               {...api.contentProps}
             >
-              <chakra.h2
+              <panda.h2
                 fontWeight="semibold"
                 fontSize="lg"
                 mb="2"
                 {...api.titleProps}
               >
                 Edit profile
-              </chakra.h2>
-              <chakra.p fontSize="sm" mb="3" {...api.descriptionProps}>
+              </panda.h2>
+              <panda.p fontSize="sm" mb="3" {...api.descriptionProps}>
                 Make changes to your profile here. Click save when you are done.
-              </chakra.p>
+              </panda.p>
 
               <HStack>
-                <chakra.input
+                <panda.input
                   flex="1"
                   fontSize="sm"
                   borderWidth="1px"
@@ -70,16 +70,16 @@ export function Dialog(props: { controls: any }) {
                   Save
                 </Button>
               </HStack>
-              <chakra.button
+              <panda.button
                 display="flex"
                 position="absolute"
                 top="3"
                 right="3"
                 {...api.closeTriggerProps}
               >
-                <Icon as={HiX} />
-              </chakra.button>
-            </chakra.div>
+                <panda.span className={icon({ name: "heroicons-outline:x" })} />
+              </panda.button>
+            </panda.div>
           </Center>
         </Portal>
       )}

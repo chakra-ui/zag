@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { Button } from "components/button"
 import { useEffect } from "react"
 
@@ -47,14 +47,14 @@ export function NestedMenu() {
     <div>
       <Button size="sm" variant="green" {...fileMenu.triggerProps}>
         Click me
-        <chakra.span ml="2" aria-hidden>
+        <panda.span ml="2" aria-hidden>
           ▾
-        </chakra.span>
+        </panda.span>
       </Button>
 
       <Portal>
         <div {...fileMenu.positionerProps}>
-          <chakra.ul
+          <panda.ul
             bg="bg-subtle"
             width="240px"
             padding="2"
@@ -65,7 +65,7 @@ export function NestedMenu() {
             {...fileMenu.contentProps}
           >
             {data.map((item) => (
-              <chakra.li
+              <panda.li
                 px="2"
                 py="1"
                 cursor="pointer"
@@ -77,9 +77,9 @@ export function NestedMenu() {
                 {...fileMenu.getItemProps({ id: item.value })}
               >
                 {item.label}
-              </chakra.li>
+              </panda.li>
             ))}
-            <chakra.li
+            <panda.li
               px="2"
               py="1"
               cursor="pointer"
@@ -90,17 +90,17 @@ export function NestedMenu() {
               {...shareMenuTriggerProps}
             >
               Share
-              <chakra.span ml="2" aria-hidden>
+              <panda.span ml="2" aria-hidden>
                 »
-              </chakra.span>
-            </chakra.li>
-          </chakra.ul>
+              </panda.span>
+            </panda.li>
+          </panda.ul>
         </div>
       </Portal>
 
       <Portal>
         <div {...shareMenu.positionerProps}>
-          <chakra.ul
+          <panda.ul
             bg="bg-subtle"
             width="240px"
             padding="2"
@@ -111,7 +111,7 @@ export function NestedMenu() {
             {...shareMenu.contentProps}
           >
             {shareMenuData.map((item) => (
-              <chakra.li
+              <panda.li
                 px="2"
                 py="1"
                 cursor="pointer"
@@ -123,9 +123,9 @@ export function NestedMenu() {
                 {...shareMenu.getItemProps({ id: item.value })}
               >
                 {item.label}
-              </chakra.li>
+              </panda.li>
             ))}
-          </chakra.ul>
+          </panda.ul>
         </div>
       </Portal>
     </div>

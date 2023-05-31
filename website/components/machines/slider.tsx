@@ -1,7 +1,7 @@
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
-import { Center, Flex } from "@chakra-ui/layout"
+import { panda } from "styled-system/jsx"
+import { Center, Flex } from "styled-system/jsx"
 import { useId } from "react"
 
 export function Slider(props: any) {
@@ -13,11 +13,11 @@ export function Slider(props: any) {
   const api = slider.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div width="240px" {...api.rootProps}>
+    <panda.div width="240px" {...api.rootProps}>
       <Flex justify="space-between">
-        <chakra.label mr="2" {...api.labelProps}>
+        <panda.label mr="2" {...api.labelProps}>
           Quantity
-        </chakra.label>
+        </panda.label>
         <output {...api.outputProps}>
           <b>{api.value}</b>
         </output>
@@ -30,23 +30,24 @@ export function Slider(props: any) {
         py="2.5"
         {...api.controlProps}
       >
-        <chakra.div
+        <panda.div
           height="4px"
           rounded="full"
           flex="1"
           bg="bg-bold"
           {...api.trackProps}
         >
-          <chakra.div
+          <panda.div
             height="100%"
             bg="green.500"
             rounded="inherit"
             _disabled={{ bg: "green.200" }}
             {...api.rangeProps}
           />
-        </chakra.div>
+        </panda.div>
         <Center
-          boxSize="20px"
+          height="20px"
+          width="20px"
           rounded="full"
           bg="white"
           shadow="base"
@@ -57,6 +58,6 @@ export function Slider(props: any) {
           <input {...api.hiddenInputProps} />
         </Center>
       </Flex>
-    </chakra.div>
+    </panda.div>
   )
 }

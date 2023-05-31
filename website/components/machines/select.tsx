@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { Button } from "components/button"
 import { useId } from "react"
 import { MdCheck } from "react-icons/md"
@@ -40,8 +40,8 @@ export function Select(props: SelectProps) {
 
   return (
     <div>
-      <chakra.div display="flex" flexDir="column" gap="1">
-        <chakra.label
+      <panda.div display="flex" flexDir="column" gap="1">
+        <panda.label
           fontSize="lg"
           _disabled={{
             opacity: 0.6,
@@ -49,7 +49,7 @@ export function Select(props: SelectProps) {
           {...api.labelProps}
         >
           Label
-        </chakra.label>
+        </panda.label>
         <Button
           minW="200px"
           size="sm"
@@ -60,15 +60,15 @@ export function Select(props: SelectProps) {
           }}
           {...api.triggerProps}
         >
-          <chakra.span p="1" flex="1">
+          <panda.span p="1" flex="1">
             {api.selectedOption?.label ?? "Select option"}
-          </chakra.span>
+          </panda.span>
           <CaretIcon />
         </Button>
-      </chakra.div>
+      </panda.div>
       <Portal>
         <div {...api.positionerProps}>
-          <chakra.ul
+          <panda.ul
             bg="bg-subtle"
             width="240px"
             padding="2"
@@ -79,7 +79,7 @@ export function Select(props: SelectProps) {
             {...api.contentProps}
           >
             {data.map(({ label, value }) => (
-              <chakra.li
+              <panda.li
                 px="2"
                 py="1"
                 display="flex"
@@ -89,11 +89,11 @@ export function Select(props: SelectProps) {
                 key={value}
                 {...api.getOptionProps({ label, value })}
               >
-                <chakra.span flex={1}>{label}</chakra.span>
+                <panda.span flex={1}>{label}</panda.span>
                 {value === api.selectedOption?.value && <MdCheck />}
-              </chakra.li>
+              </panda.li>
             ))}
-          </chakra.ul>
+          </panda.ul>
         </div>
       </Portal>
     </div>

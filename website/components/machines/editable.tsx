@@ -1,7 +1,7 @@
 import * as editable from "@zag-js/editable"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
-import { HStack } from "@chakra-ui/layout"
+import { panda } from "styled-system/jsx"
+import { HStack } from "styled-system/jsx"
 import { Button } from "components/button"
 import { useId } from "react"
 
@@ -13,18 +13,19 @@ export function Editable(props: any) {
   const api = editable.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div width="300px" {...api.rootProps}>
-      <chakra.div mb="3" {...api.areaProps}>
-        <chakra.input
+    <panda.div width="300px" {...api.rootProps}>
+      <panda.div mb="3" {...api.areaProps}>
+        <panda.input
           className="focus-outline"
           bg="transparent"
           {...api.inputProps}
         />
         <span {...api.previewProps} />
-      </chakra.div>
+      </panda.div>
 
       <div>
         {!api.isEditing && (
+          // @ts-expect-error
           <Button
             size="sm"
             variant="outline"
@@ -36,9 +37,11 @@ export function Editable(props: any) {
         )}
         {api.isEditing && (
           <HStack>
+            {/* @ts-expect-error */}
             <Button size="sm" variant="green" {...api.submitTriggerProps}>
               Save
             </Button>
+            {/* @ts-expect-error */}
             <Button size="sm" variant="outline" {...api.cancelTriggerProps}>
               Cancel
             </Button>
@@ -46,6 +49,6 @@ export function Editable(props: any) {
           </HStack>
         )}
       </div>
-    </chakra.div>
+    </panda.div>
   )
 }

@@ -1,7 +1,7 @@
 import { normalizeProps, useActor, useMachine } from "@zag-js/react"
 import * as toast from "@zag-js/toast"
 import { useId, useRef } from "react"
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import { HiX } from "react-icons/hi"
 import { Button } from "components/button"
 
@@ -10,8 +10,8 @@ function Toast({ actor }: { actor: toast.Service }) {
   const api = toast.connect(state, send, normalizeProps)
   const changed = api.type === "info"
   return (
-    <chakra.div
-      sx={{
+    <panda.div
+      css={{
         width: "400px",
         position: "relative",
         bg: changed ? "gray.600" : "green.500",
@@ -32,7 +32,7 @@ function Toast({ actor }: { actor: toast.Service }) {
         [{api.type}] {api.title}
       </p>
 
-      <chakra.button
+      <panda.button
         display="flex"
         position="absolute"
         top="3"
@@ -40,8 +40,8 @@ function Toast({ actor }: { actor: toast.Service }) {
         onClick={api.dismiss}
       >
         <HiX />
-      </chakra.button>
-    </chakra.div>
+      </panda.button>
+    </panda.div>
   )
 }
 
@@ -89,14 +89,14 @@ export function ToastGroup(props: any) {
           Update
         </Button>
       </div>
-      <chakra.div
+      <panda.div
         maxWidth="420px"
         {...api.getGroupProps({ placement: "bottom-end" })}
       >
         {api.toasts.map((actor) => (
           <Toast key={actor.id} actor={actor} />
         ))}
-      </chakra.div>
+      </panda.div>
     </>
   )
 }

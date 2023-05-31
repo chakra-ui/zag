@@ -1,4 +1,4 @@
-import { chakra } from "@chakra-ui/system"
+import { panda } from "styled-system/jsx"
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -83,13 +83,13 @@ export function Combobox(props: ComboboxProps) {
 
   return (
     <div>
-      <chakra.div
+      <panda.div
         display="flex"
         flexDirection="column"
         gap="1"
         {...api.rootProps}
       >
-        <chakra.label
+        <panda.label
           fontSize="lg"
           _disabled={{
             opacity: 0.6,
@@ -97,8 +97,8 @@ export function Combobox(props: ComboboxProps) {
           {...api.labelProps}
         >
           Nationality
-        </chakra.label>
-        <chakra.div
+        </panda.label>
+        <panda.div
           display="inline-flex"
           width="300px"
           className="focus-outline"
@@ -111,7 +111,7 @@ export function Combobox(props: ComboboxProps) {
           px="3"
           {...api.controlProps}
         >
-          <chakra.input
+          <panda.input
             bg="bg-subtle"
             _focus={{ outline: "0" }}
             flex="1"
@@ -121,12 +121,12 @@ export function Combobox(props: ComboboxProps) {
           <button {...api.triggerProps}>
             <CaretIcon />
           </button>
-        </chakra.div>
-      </chakra.div>
+        </panda.div>
+      </panda.div>
       <Portal>
         <div {...api.positionerProps}>
           {options.length > 0 && (
-            <chakra.ul
+            <panda.ul
               listStyleType="none"
               m="0"
               maxH="56"
@@ -138,7 +138,7 @@ export function Combobox(props: ComboboxProps) {
               {...api.contentProps}
             >
               {options.map((item, index) => (
-                <chakra.li
+                <panda.li
                   px="2"
                   py="1"
                   display="flex"
@@ -157,9 +157,9 @@ export function Combobox(props: ComboboxProps) {
                   })}
                 >
                   {item.label}
-                </chakra.li>
+                </panda.li>
               ))}
-            </chakra.ul>
+            </panda.ul>
           )}
         </div>
       </Portal>

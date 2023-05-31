@@ -1,5 +1,5 @@
-import { Stack, Text } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Stack } from "styled-system/jsx"
+import { panda } from "styled-system/jsx"
 import * as pressable from "@zag-js/pressable"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
@@ -36,8 +36,8 @@ export function Pressable(props: PressableProps) {
   const api = pressable.connect(state, send, normalizeProps)
 
   return (
-    <Stack spacing="8" align="center">
-      <chakra.button
+    <Stack gap="8" align="center">
+      <panda.button
         {...api.pressableProps}
         px="4"
         py="3"
@@ -59,15 +59,15 @@ export function Pressable(props: PressableProps) {
         }}
       >
         {api.isPressed ? "Pressed!" : "Press Me"}
-      </chakra.button>
+      </panda.button>
 
       <Stack align="center">
-        <Text>
+        <p>
           Pressed {timesPressed} time{timesPressed !== 1 && "s"}
-        </Text>
-        <Text>
+        </p>
+        <p>
           Long Pressed {timesLongPressed} time{timesLongPressed !== 1 && "s"}
-        </Text>
+        </p>
       </Stack>
     </Stack>
   )
