@@ -5,4 +5,4 @@
 "@zag-js/date-picker": patch
 ---
 
-Prevent scroll for initial and return focus
+Fix scroll hijacking issue during initial and return focus

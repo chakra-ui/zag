@@ -3,4 +3,4 @@
 "@zag-js/dialog": patch
 ---
 
-Upgrade focus-trap package to ensure that trap works when the active element within the content is removed
+Upgrade `focus-trap` package to ensure that trap works when the active element within the content is removed
