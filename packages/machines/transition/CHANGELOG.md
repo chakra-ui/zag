@@ -1,5 +1,16 @@
 # @zag-js/transition
 
+## 0.10.0
+
+### Patch Changes
+
+- Updated dependencies [[`e8ac03ef`](https://github.com/chakra-ui/zag/commit/e8ac03ef4b820773a5875db861735e2aac8f29da),
+  [`2a1fb4a0`](https://github.com/chakra-ui/zag/commit/2a1fb4a0740e6ad8e2902265e14597f087007675)]:
+  - @zag-js/dom-query@0.10.0
+  - @zag-js/types@0.10.0
+  - @zag-js/core@0.10.0
+  - @zag-js/utils@0.10.0
+
 ## 0.9.2
 
 ### Patch Changes

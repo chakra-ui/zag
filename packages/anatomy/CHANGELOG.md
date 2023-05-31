@@ -1,5 +1,18 @@
 # @zag-js/anatomy
 
+## 0.10.0
+
+### Minor Changes
+
+- [`a30258e8`](https://github.com/chakra-ui/zag/commit/a30258e8137bfba5811471919e463b79039848b6) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - The `createAnatomy` function has been updated to return an array of
+  the Anatomy instance's part names
+
+### Patch Changes
+
+- [`d2838286`](https://github.com/chakra-ui/zag/commit/d2838286fc13acae3f0818653d5feee982703f23) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue with anatomy package bundling
+
 ## 0.9.2
 
 ## 0.9.1
