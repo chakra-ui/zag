@@ -1,5 +1,29 @@
 # @zag-js/switch
 
+## 0.10.0
+
+### Patch Changes
+
+- [`be223fbe`](https://github.com/chakra-ui/zag/commit/be223fbecf49ca3587c975289f4da867dc0d9a16) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where Checkbox and Switch emits `onClick` twice when
+  parent element is clicked
+
+- [#665](https://github.com/chakra-ui/zag/pull/665)
+  [`f6c81e90`](https://github.com/chakra-ui/zag/commit/f6c81e9096a43b482cc24aa6325a1ae24fd43498) Thanks
+  [@ongyuxing](https://github.com/ongyuxing)! - Fix issue where `setChecked` doesn't work
+
+- Updated dependencies [[`e8ac03ef`](https://github.com/chakra-ui/zag/commit/e8ac03ef4b820773a5875db861735e2aac8f29da),
+  [`d2838286`](https://github.com/chakra-ui/zag/commit/d2838286fc13acae3f0818653d5feee982703f23),
+  [`2a1fb4a0`](https://github.com/chakra-ui/zag/commit/2a1fb4a0740e6ad8e2902265e14597f087007675),
+  [`a30258e8`](https://github.com/chakra-ui/zag/commit/a30258e8137bfba5811471919e463b79039848b6)]:
+  - @zag-js/dom-query@0.10.0
+  - @zag-js/anatomy@0.10.0
+  - @zag-js/types@0.10.0
+  - @zag-js/core@0.10.0
+  - @zag-js/utils@0.10.0
+  - @zag-js/form-utils@0.10.0
+  - @zag-js/visually-hidden@0.10.0
+
 ## 0.9.2
 
 ### Patch Changes

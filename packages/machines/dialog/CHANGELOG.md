@@ -1,5 +1,29 @@
 # @zag-js/dialog
 
+## 0.10.0
+
+### Patch Changes
+
+- [`cca48d7a`](https://github.com/chakra-ui/zag/commit/cca48d7a9e0d87e85669fc2c2788b4b630d62774) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Upgrade `focus-trap` package to ensure that trap works when the
+  active element within the content is removed
+
+- [`b54e658d`](https://github.com/chakra-ui/zag/commit/b54e658d1eb007479deb8a34b48672b92507d0ba) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix scroll hijacking issue during initial and return focus
+
+- Updated dependencies [[`e8ac03ef`](https://github.com/chakra-ui/zag/commit/e8ac03ef4b820773a5875db861735e2aac8f29da),
+  [`d2838286`](https://github.com/chakra-ui/zag/commit/d2838286fc13acae3f0818653d5feee982703f23),
+  [`2a1fb4a0`](https://github.com/chakra-ui/zag/commit/2a1fb4a0740e6ad8e2902265e14597f087007675),
+  [`a30258e8`](https://github.com/chakra-ui/zag/commit/a30258e8137bfba5811471919e463b79039848b6)]:
+  - @zag-js/dom-query@0.10.0
+  - @zag-js/anatomy@0.10.0
+  - @zag-js/types@0.10.0
+  - @zag-js/dismissable@0.10.0
+  - @zag-js/aria-hidden@0.10.0
+  - @zag-js/remove-scroll@0.10.0
+  - @zag-js/core@0.10.0
+  - @zag-js/utils@0.10.0
+
 ## 0.9.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/popper",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "description": "Dynamic positioning logic for ui machines",
   "keywords": [
     "js",

@@ -1,5 +1,16 @@
 # @zag-js/dom-event
 
+## 0.10.0
+
+### Patch Changes
+
+- [`dbc13547`](https://github.com/chakra-ui/zag/commit/dbc13547deeef869640f637f3c0affab8fb82c17) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor point calculation algorithm
+
+- Updated dependencies [[`2a1fb4a0`](https://github.com/chakra-ui/zag/commit/2a1fb4a0740e6ad8e2902265e14597f087007675)]:
+  - @zag-js/types@0.10.0
+  - @zag-js/text-selection@0.10.0
+
 ## 0.9.2
 
 ### Patch Changes

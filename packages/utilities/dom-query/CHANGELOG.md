@@ -1,5 +1,13 @@
 # @zag-js/dom-query
 
+## 0.10.0
+
+### Patch Changes
+
+- [`e8ac03ef`](https://github.com/chakra-ui/zag/commit/e8ac03ef4b820773a5875db861735e2aac8f29da) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `isSelfEvent` function to check if an event originated from an
+  element's descendant
+
 ## 0.9.2
 
 ## 0.9.1
