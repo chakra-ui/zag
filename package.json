@@ -93,7 +93,6 @@
     "json-format-highlight": "1.0.4",
     "lint-staged": "13.2.2",
     "node-fetch": "^3.3.1",
-    "playwright": "1.34.3",
     "plop": "3.1.2",
     "prettier": "2.8.8",
     "signale": "1.4.0",
