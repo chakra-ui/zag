@@ -1,5 +1,22 @@
 # @zag-js/splitter
 
+## 0.10.2
+
+### Patch Changes
+
+- [`058ae53d`](https://github.com/chakra-ui/zag/commit/058ae53d28334fd0a31404875147a3c5544d4712) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where api for controlling panel sizes was not
+  implemented in machine
+  - Set the panel's default `minSize` to `0`
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.2
+  - @zag-js/core@0.10.2
+  - @zag-js/types@0.10.2
+  - @zag-js/utils@0.10.2
+  - @zag-js/dom-event@0.10.2
+  - @zag-js/dom-query@0.10.2
+  - @zag-js/number-utils@0.10.2
+
 ## 0.10.1
 
 ### Patch Changes
