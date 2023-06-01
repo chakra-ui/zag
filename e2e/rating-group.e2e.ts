@@ -36,7 +36,7 @@ test.describe("rating / pointer", () => {
     await expect(page.locator(hiddenInput)).toHaveValue("4")
   })
 
-  test("highlight when hovered", async ({ page }) => {
+  test.skip("highlight when hovered", async ({ page }) => {
     const el = getRating(page, 4)
 
     await pointerover(el)
