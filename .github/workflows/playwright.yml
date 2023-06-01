@@ -20,27 +20,27 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  install:
-    timeout-minutes: 60
-    name: 🔍 Install
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+  # install:
+  #   timeout-minutes: 60
+  #   name: 🔍 Install
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: Install
-        uses: ./.github/composite-actions/install
+  #     - name: Install
+  #       uses: ./.github/composite-actions/install
 
-      - name: Cache Playwright
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #     - name: Cache Playwright
+  #       uses: actions/cache@v3
+  #       id: playwright-cache
+  #       with:
+  #         path: |
+  #           ~/.cache/ms-playwright
+  #         key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: Install Playwright (if not cached)
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+  #     - name: Install Playwright (if not cached)
+  #       if: steps.playwright-cache.outputs.cache-hit != 'true'
+  #       run: npx playwright install --with-deps
 
   e2e:
     name: 🧪 Test (${{ matrix.shard }}/${{ strategy.job-total }})
@@ -57,13 +57,16 @@ jobs:
       - name: Install
         uses: ./.github/composite-actions/install
 
-      - name: Cache Playwright
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # - name: Cache Playwright
+      #   uses: actions/cache@v3
+      #   id: playwright-cache
+      #   with:
+      #     path: |
+      #       ~/.cache/ms-playwright
+      #     key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Run your tests
         run: |

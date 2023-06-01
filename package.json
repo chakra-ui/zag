@@ -102,5 +102,9 @@
     "ts-morph": "^18.0.0",
     "typescript": "5.0.4",
     "vitest": "^0.31.1"
-  }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@8.6.0"
 }
