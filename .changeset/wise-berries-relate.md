@@ -2,4 +2,4 @@
 "@zag-js/avatar": patch
 ---
 
-Export Avatar anatomy
+Fix issue where anatomy was no exported
