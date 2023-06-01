@@ -30,14 +30,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
      */
     setToMinSize(id: PanelId) {
       const panel = panels.find((panel) => panel.id === id)
-      send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "collapse" })
+      send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "setToMinSize" })
     },
     /**
      * Function to set a panel to its maximum size.
      */
     setToMaxSize(id: PanelId) {
       const panel = panels.find((panel) => panel.id === id)
-      send({ type: "SET_PANEL_SIZE", id, size: panel?.maxSize, src: "expand" })
+      send({ type: "SET_PANEL_SIZE", id, size: panel?.maxSize, src: "setToMaxSize" })
     },
     /**
      * Function to set the size of a panel.
