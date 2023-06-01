@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/editable",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Core logic for the editable widget implemented as a state machine",
   "keywords": [
     "js",

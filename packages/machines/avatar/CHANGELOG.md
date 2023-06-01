@@ -1,5 +1,20 @@
 # @zag-js/avatar
 
+## 0.10.2
+
+### Patch Changes
+
+- [`9f126165`](https://github.com/chakra-ui/zag/commit/9f1261651dd1ba717fece245d3718244583dff6c) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix issue where anatomy was no exported
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.2
+  - @zag-js/core@0.10.2
+  - @zag-js/types@0.10.2
+  - @zag-js/utils@0.10.2
+  - @zag-js/dom-query@0.10.2
+  - @zag-js/mutation-observer@0.10.2
+
 ## 0.10.1
 
 ### Patch Changes
