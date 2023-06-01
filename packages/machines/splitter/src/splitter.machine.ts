@@ -37,22 +37,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       on: {
-        COLLAPSE: {
-          actions: "setStartPanelToMin",
-        },
-        EXPAND: {
-          actions: "setStartPanelToMax",
-        },
-        TOGGLE: [
-          {
-            guard: "isStartPanelAtMin",
-            actions: "setStartPanelToMax",
-          },
-          {
-            actions: "setStartPanelToMin",
-          },
-        ],
-        SET_SIZE: {
+        SET_PANEL_SIZE: {
           actions: "setPanelSize",
         },
       },

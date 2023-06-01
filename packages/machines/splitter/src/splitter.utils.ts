@@ -12,7 +12,7 @@ export function getNormalizedPanels(ctx: Ctx): NormalizedPanelData {
   let totalMinSize = 0
 
   const panels = ctx.size.map((panel) => {
-    const minSize = panel.minSize ?? 10
+    const minSize = panel.minSize ?? 0
     const maxSize = panel.maxSize ?? 100
 
     totalMinSize += minSize
