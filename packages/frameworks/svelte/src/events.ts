@@ -1,6 +1,9 @@
+import { handleChangeEvents } from "./handle-change-events"
+
 export function events(node: HTMLElement, props: Record<string, any>) {
   const { events: handlers } = props
   let events = { ...handlers }
+  handleChangeEvents(node as HTMLInputElement)
 
   Object.entries(events).forEach(([key, value]) => {
     node.addEventListener(key, value as EventListener)

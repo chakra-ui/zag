@@ -30,7 +30,6 @@
         id="check-id"
         disabled={api.isChecked}
         on:click={() => {
-          console.log("in")
           api.setChecked(true)
         }}
       >

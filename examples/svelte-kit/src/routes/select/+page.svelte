@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as select from "@zag-js/select"
   import { events, useMachine, normalizeProps } from "@zag-js/svelte"
-  import { selectControls } from "@zag-js/shared"
+  import { selectControls, selectData } from "@zag-js/shared"
   import StateVisualizer from "../../components/state-visualizer.svelte"
   import Toolbar from "../../components/toolbar.svelte"
   import { ControlsUI, useControls } from "../../stores/controls"
@@ -29,12 +29,12 @@
 
   <div {...api.positionerProps.attrs} use:events={api.positionerProps.handlers}>
     <ul {...api.contentProps.attrs} use:events={api.contentProps.handlers}>
-      <!-- {#each selectData as { label, value }}
+      {#each selectData as { label, value }}
         <li {...api.getOptionProps({ label, value }).attrs} use:events={api.getOptionProps({ label, value }).handlers}>
           <span>{label}</span>
           {#if api.selectedOption && value === api.selectedOption.value}✓{/if}
         </li>
-      {/each} -->
+      {/each}
     </ul>
   </div>
 </div>
