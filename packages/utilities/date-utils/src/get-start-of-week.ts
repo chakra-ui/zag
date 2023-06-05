@@ -1,4 +1,4 @@
-import { DateValue, getDayOfWeek } from "@internationalized/date"
+import { type DateValue, getDayOfWeek } from "@internationalized/date"
 
 export function getStartOfWeek(date: DateValue, locale: string, firstDayOfWeek: number = 0) {
   const day = getDayOfWeek(date, locale)

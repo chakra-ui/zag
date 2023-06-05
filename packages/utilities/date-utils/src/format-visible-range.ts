@@ -1,4 +1,4 @@
-import { DateValue, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
+import { type DateValue, endOfMonth, isSameDay, startOfMonth } from "@internationalized/date"
 import { getDayFormatter } from "./get-day-formatter"
 import { getMonthFormatter } from "./get-month-formatter"
 

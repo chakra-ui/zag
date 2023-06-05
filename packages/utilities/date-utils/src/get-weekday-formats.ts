@@ -1,4 +1,4 @@
-import { DateValue, DateFormatter } from "@internationalized/date"
+import { type DateValue, DateFormatter } from "@internationalized/date"
 
 export function getWeekdayFormats(locale: string, timeZone: string) {
   const longFormat = new DateFormatter(locale, { weekday: "long", timeZone })

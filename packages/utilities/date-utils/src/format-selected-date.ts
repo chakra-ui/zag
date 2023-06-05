@@ -1,4 +1,4 @@
-import { DateValue, isSameDay } from "@internationalized/date"
+import { type DateValue, isSameDay } from "@internationalized/date"
 import { formatRange } from "./format-range"
 import { getDayFormatter } from "./get-day-formatter"
 

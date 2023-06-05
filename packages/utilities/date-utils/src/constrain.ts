@@ -1,6 +1,6 @@
 import {
-  DateDuration,
-  DateValue,
+  type DateDuration,
+  type DateValue,
   maxDate,
   minDate,
   startOfMonth,

@@ -1,4 +1,4 @@
-import { DateValue, toCalendarDateTime } from "@internationalized/date"
+import { type DateValue, toCalendarDateTime } from "@internationalized/date"
 
 function createRegEx(sign: string) {
   let symbols = "\\s|\\.|-|/|\\\\|,|\\$|\\!|\\?|:|;"

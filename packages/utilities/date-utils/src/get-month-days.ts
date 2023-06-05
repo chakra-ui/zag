@@ -1,4 +1,4 @@
-import { DateValue, getWeeksInMonth, isSameDay } from "@internationalized/date"
+import { type DateValue, getWeeksInMonth, isSameDay } from "@internationalized/date"
 import { getStartOfWeek } from "./get-start-of-week"
 
 export function getDaysInWeek(weekIndex: number, from: DateValue, locale: string, firstDayOfWeek?: number) {
