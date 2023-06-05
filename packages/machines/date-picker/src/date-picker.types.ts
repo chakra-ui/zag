@@ -234,3 +234,5 @@ export type MachineContext = PublicContext & PrivateContext & ComputedContext
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export { DateDuration, DateValue }

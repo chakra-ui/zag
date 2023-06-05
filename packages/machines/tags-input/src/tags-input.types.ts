@@ -233,3 +233,5 @@ export type TagProps = {
   value: string
   disabled?: boolean
 }
+
+export type { InteractOutsideEvent }
