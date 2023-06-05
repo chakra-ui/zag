@@ -1,4 +1,4 @@
-import { Color, type ColorAxes, type ColorChannel } from "@zag-js/color-utils"
+import { Color, type ColorAxes, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, Orientation, RequiredBy } from "@zag-js/types"
 
@@ -112,4 +112,4 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { Color, ColorChannel }
+export type { Color, ColorChannel, ColorFormat }

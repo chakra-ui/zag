@@ -1,4 +1,4 @@
-import { ColorChannel } from "@zag-js/color-utils"
+import { type ColorChannel } from "@zag-js/color-utils"
 import { getRelativePoint, type Point } from "@zag-js/dom-event"
 import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./color-picker.types"

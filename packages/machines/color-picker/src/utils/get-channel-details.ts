@@ -1,5 +1,5 @@
-import { Color, ColorChannel } from "@zag-js/color-utils"
-import { snapValueToStep, getPercentValue } from "@zag-js/numeric-range"
+import { Color, type ColorChannel } from "@zag-js/color-utils"
+import { getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
 
 export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel: ColorChannel) {
   const channels = color.getColorSpaceAxes({ xChannel, yChannel })
