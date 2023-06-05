@@ -23,7 +23,6 @@
   "scripts": {
     "start": "pnpm build --watch",
     "build": "vite build -c ../../../vite.config.ts",
-    "test": "jest --config ../../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
     "test-watch": "pnpm test --watch -u",
