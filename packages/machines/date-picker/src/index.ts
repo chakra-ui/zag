@@ -6,6 +6,7 @@ export type {
   CellProps,
   UserDefinedContext as Context,
   DateDuration,
+  DateFormatter,
   DateValue,
   DateView,
   DayCellProps,

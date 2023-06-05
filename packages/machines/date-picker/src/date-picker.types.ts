@@ -1,4 +1,4 @@
-import type { CalendarDate, DateDuration, DateValue } from "@internationalized/date"
+import type { CalendarDate, DateDuration, DateFormatter, DateValue } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
@@ -235,4 +235,4 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { CalendarDate, DateDuration, DateValue }
+export type { CalendarDate, DateDuration, DateValue, DateFormatter }
