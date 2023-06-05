@@ -11,6 +11,7 @@ export type {
   DayCellProps,
   GridProps,
   Offset,
+  SelectionMode,
   Send,
   State,
   ViewProps,
