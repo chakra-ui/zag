@@ -11,7 +11,6 @@
     "packages": "pnpm --filter=./packages/** -r",
     "build": "pnpm packages -- build",
     "postbuild": "pnpm typedocs",
-    "start": "pnpm packages -- start",
     "prepare": "husky install",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",

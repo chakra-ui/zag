@@ -115,8 +115,6 @@ power the logic behind UI components.
 Our build is managed with esbuild and turborepo to provide fast, concurrent builds across the packages.
 
 - `build` : Build the CJS, ESM and DTS files. This is the actual production build that we run in the CI.
-- `start` : The command to run when developing for Zag. It runs the `build:fast` command, watches for changes and
-  rebuilds as needed.
 
 ### Examples
 
