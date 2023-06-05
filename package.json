@@ -9,7 +9,6 @@
   "license": "MIT",
   "scripts": {
     "packages": "pnpm --filter=./packages/** -r",
-    "build-fast": "pnpm packages -- build-fast",
     "build": "pnpm packages -- build",
     "postbuild": "pnpm typedocs",
     "start": "pnpm packages -- start",
@@ -96,10 +95,12 @@
     "plop": "3.1.2",
     "prettier": "2.8.8",
     "signale": "1.4.0",
+    "ts-morph": "^18.0.0",
     "tsup": "6.7.0",
     "tsx": "3.12.7",
-    "ts-morph": "^18.0.0",
     "typescript": "5.0.4",
+    "vite": "4.3.9",
+    "vite-plugin-dts": "2.3.0",
     "vitest": "^0.31.1"
   },
   "engines": {

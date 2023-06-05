@@ -25,9 +25,8 @@
     "csstype": "3.1.2"
   },
   "scripts": {
-    "build-fast": "tsup src",
     "start": "pnpm build --watch",
-    "build": "tsup src --dts",
+    "build": "vite build -c ../../vite.config.ts",
     "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
