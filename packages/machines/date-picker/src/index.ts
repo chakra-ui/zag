@@ -4,6 +4,7 @@ export { machine } from "./date-picker.machine"
 export type {
   Calendar,
   CalendarDate,
+  CalendarDateTime,
   CellProps,
   UserDefinedContext as Context,
   DateDuration,
@@ -17,4 +18,5 @@ export type {
   Send,
   State,
   ViewProps,
+  ZonedDateTime,
 } from "./date-picker.types"
