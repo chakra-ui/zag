@@ -1,4 +1,4 @@
-import { CalendarDate, DateFormatter, DateValue, isWeekend } from "@internationalized/date"
+import { CalendarDate, DateFormatter, isWeekend, type DateValue } from "@internationalized/date"
 import {
   constrainValue,
   getDayFormatter,
@@ -19,7 +19,7 @@ import {
   setMonth,
   setYear,
 } from "@zag-js/date-utils"
-import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"

@@ -1,4 +1,4 @@
-import { DateValue, DateFormatter } from "@internationalized/date"
+import { DateFormatter, type DateValue } from "@internationalized/date"
 import type { DateView, MachineContext } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: DateValue[]) {

@@ -6,7 +6,11 @@ export type {
   UserDefinedContext as Context,
   DateDuration,
   DateValue,
+  DateView,
   DayCellProps,
   GridProps,
+  Offset,
+  Send,
+  State,
   ViewProps,
 } from "./date-picker.types"
