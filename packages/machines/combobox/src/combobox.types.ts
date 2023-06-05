@@ -268,3 +268,5 @@ export type OptionGroupProps = {
    */
   label: string
 }
+
+export type { Placement, PositioningOptions, InteractOutsideEvent }
