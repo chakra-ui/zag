@@ -41,7 +41,6 @@
     "clean-package": "2.2.0"
   },
   "scripts": {
-    "start": "pnpm build --watch",
     "build": "vite build -c ../../../vite.config.ts",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",

@@ -23,7 +23,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "scripts": {
-    "start": "pnpm build --watch",
     "build": "vite build -c ../../../vite.config.ts",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",

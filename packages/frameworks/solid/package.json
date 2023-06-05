@@ -40,7 +40,6 @@
     "solid-js": ">=1.1.3"
   },
   "scripts": {
-    "start": "pnpm build --watch",
     "build": "vite build -c ../../../vite.config.ts",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand",
