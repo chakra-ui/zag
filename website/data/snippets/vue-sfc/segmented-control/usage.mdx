@@ -1,6 +1,6 @@
 ```md
 <script setup>
-import * as checkbox from "@zag-js/checkbox";
+import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/vue";
 import { computed } from "vue";
 
@@ -11,9 +11,9 @@ const items = [
   { label: "Svelte", value: "svelte" },
 ];
 
-const [state, send] = useMachine(checkbox.machine({ id: "1" }));
+const [state, send] = useMachine(radio.machine({ id: "1" }));
 
-const api = computed(() => checkbox.connect(state.value, send, normalizeProps));
+const api = computed(() => radio.connect(state.value, send, normalizeProps));
 </script>
 
 <template>
