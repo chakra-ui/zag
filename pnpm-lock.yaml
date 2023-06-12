@@ -2381,6 +2381,10 @@ importers:
         version: 2.2.0
 
   packages/utilities/focus-visible:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
     devDependencies:
       clean-package:
         specifier: 2.2.0
