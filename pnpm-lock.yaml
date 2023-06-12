@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@axe-core/playwright':
-        specifier: 4.7.1
-        version: 4.7.1(playwright@1.34.3)
+        specifier: 4.7.3
+        version: 4.7.3(playwright-core@1.34.3)
       '@babel/generator':
         specifier: 7.22.3
         version: 7.22.3
@@ -124,7 +124,7 @@ importers:
         version: 2.3.0(@types/node@20.2.5)(vite@4.3.9)
       vitest:
         specifier: ^0.31.1
-        version: 0.31.1(playwright@1.34.3)
+        version: 0.31.1
 
   examples/next-ts:
     dependencies:
@@ -2708,13 +2708,13 @@ packages:
       '@jridgewell/trace-mapping': 0.3.17
     dev: true
 
-  /@axe-core/playwright@4.7.1(playwright@1.34.3):
-    resolution: {integrity: sha512-09UDwLChlGiqw9004QJib6Maesy99EOZ9zsLfhBYAt2s5UwufabnD+MoTAmwe+PCv2Jex9k1taeUhebDwIJKqw==}
+  /@axe-core/playwright@4.7.3(playwright-core@1.34.3):
+    resolution: {integrity: sha512-v2PRgAyGvop7bamrTpNJtc5b1R7giAPnMzZXrS/VDZBCY5+uwVYtCNgDvBsqp5P1QMZxUMoBN+CERJUTMjFN0A==}
     peerDependencies:
-      playwright: '>= 1.0.0'
+      playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.7.2
-      playwright: 1.34.3
+      playwright-core: 1.34.3
     dev: false
 
   /@babel/code-frame@7.21.4:
@@ -11597,15 +11597,6 @@ packages:
     hasBin: true
     dev: false
 
-  /playwright@1.34.3:
-    resolution: {integrity: sha512-UOOVE4ZbGfGkP1KVqWTdXOmm8Pw2pBhfbmlqKMkpiRCQjL5W+J+xRQXpgutFr0iM4pWl8g0GyyASMsqjQfFohw==}
-    engines: {node: '>=14'}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      playwright-core: 1.34.3
-    dev: false
-
   /plop@3.1.2:
     resolution: {integrity: sha512-39SOtQ3WlePXSNqKqAh/QlUSHXHO25iCnyCO3Qs/9UzPVmwVledRTDGvPd2csh+JnHVXz4c63F6fBwdqZHgbUg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -13594,7 +13585,7 @@ packages:
       vite: 4.3.9(@types/node@20.2.5)
     dev: true
 
-  /vitest@0.31.1(playwright@1.34.3):
+  /vitest@0.31.1:
     resolution: {integrity: sha512-/dOoOgzoFk/5pTvg1E65WVaobknWREN15+HF+0ucudo3dDG/vCZoXTQrjIfEaWvQXmqScwkRodrTbM/ScMpRcQ==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -13643,7 +13634,6 @@ packages:
       magic-string: 0.30.0
       pathe: 1.1.0
       picocolors: 1.0.0
-      playwright: 1.34.3
       std-env: 3.3.2
       strip-literal: 1.0.1
       tinybench: 2.5.0
