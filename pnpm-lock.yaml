@@ -66,8 +66,8 @@ importers:
         specifier: 17.6.3
         version: 17.6.3(@swc/core@1.3.60)
       dotenv:
-        specifier: 16.1.4
-        version: 16.1.4
+        specifier: 16.3.1
+        version: 16.3.1
       eslint:
         specifier: 8.41.0
         version: 8.41.0
@@ -7548,8 +7548,8 @@ packages:
       is-obj: 2.0.0
     dev: true
 
-  /dotenv@16.1.4:
-    resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
     dev: false
 
