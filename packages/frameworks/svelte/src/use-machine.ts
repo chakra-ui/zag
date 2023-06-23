@@ -1,5 +1,5 @@
-import { onMount } from "svelte/internal"
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
+import { onMount } from "svelte"
 import { get, writable } from "svelte/store"
 
 export function useService<
