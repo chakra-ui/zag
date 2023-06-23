@@ -1,5 +1,26 @@
 # @zag-js/popover
 
+## 0.10.3
+
+### Patch Changes
+
+- [`c59a8dec`](https://github.com/chakra-ui/zag/commit/c59a8dec15ab57d218823bfe7af6d723972be6c7) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Use vite to build packages
+
+- Updated dependencies [[`6344f8a1`](https://github.com/chakra-ui/zag/commit/6344f8a11aa0f6d5f633431ce47519d74e35b62b),
+  [`c59a8dec`](https://github.com/chakra-ui/zag/commit/c59a8dec15ab57d218823bfe7af6d723972be6c7),
+  [`775f11c9`](https://github.com/chakra-ui/zag/commit/775f11c96759197fcbad14b5b8a0fbde095efc55)]:
+  - @zag-js/popper@0.10.3
+  - @zag-js/anatomy@0.10.3
+  - @zag-js/core@0.10.3
+  - @zag-js/types@0.10.3
+  - @zag-js/aria-hidden@0.10.3
+  - @zag-js/utils@0.10.3
+  - @zag-js/dismissable@0.10.3
+  - @zag-js/dom-query@0.10.3
+  - @zag-js/remove-scroll@0.10.3
+  - @zag-js/tabbable@0.10.3
+
 ## 0.10.2
 
 ### Patch Changes

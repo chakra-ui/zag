@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/aria-hidden",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Hide targets from screen readers",
   "keywords": [
     "js",

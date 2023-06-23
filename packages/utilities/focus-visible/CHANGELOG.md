@@ -1,5 +1,20 @@
 # @zag-js/focus-visible
 
+## 0.10.3
+
+### Patch Changes
+
+- [`c59a8dec`](https://github.com/chakra-ui/zag/commit/c59a8dec15ab57d218823bfe7af6d723972be6c7) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Use vite to build packages
+
+- [#694](https://github.com/chakra-ui/zag/pull/694)
+  [`775f11c9`](https://github.com/chakra-ui/zag/commit/775f11c96759197fcbad14b5b8a0fbde095efc55) Thanks
+  [@pawelblaszczyk5](https://github.com/pawelblaszczyk5)! - Improve DOM detection code
+
+- Updated dependencies [[`c59a8dec`](https://github.com/chakra-ui/zag/commit/c59a8dec15ab57d218823bfe7af6d723972be6c7),
+  [`775f11c9`](https://github.com/chakra-ui/zag/commit/775f11c96759197fcbad14b5b8a0fbde095efc55)]:
+  - @zag-js/dom-query@0.10.3
+
 ## 0.10.2
 
 ## 0.10.1

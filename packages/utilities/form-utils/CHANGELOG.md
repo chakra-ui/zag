@@ -1,5 +1,15 @@
 # @zag-js/form-utils
 
+## 0.10.3
+
+### Patch Changes
+
+- [`c59a8dec`](https://github.com/chakra-ui/zag/commit/c59a8dec15ab57d218823bfe7af6d723972be6c7) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Use vite to build packages
+
+- Updated dependencies [[`c59a8dec`](https://github.com/chakra-ui/zag/commit/c59a8dec15ab57d218823bfe7af6d723972be6c7)]:
+  - @zag-js/mutation-observer@0.10.3
+
 ## 0.10.2
 
 ### Patch Changes
