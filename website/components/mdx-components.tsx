@@ -235,5 +235,5 @@ return { default: () => React.createElement('div', null, '') }
 `
   const pageCode = code && code?.length ? code : defaultCode
   const MDXComponent = useMDXComponent(pageCode)
-  return <MDXComponent components={components} />
+  return <MDXComponent components={components as any} />
 }
