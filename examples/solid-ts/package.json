@@ -80,6 +80,6 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "solid-js": "1.7.5"
+    "solid-js": "1.7.6"
   }
 }
