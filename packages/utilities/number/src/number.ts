@@ -12,7 +12,7 @@ export function round(v: number | string, t?: number) {
 }
 
 export function roundToDevicePixel(num: number) {
-  if (typeof window === "undefined") return Math.round(num)
+  if (typeof window.devicePixelRatio !== "number") return Math.round(num)
   const dp = window.devicePixelRatio
   return Math.floor(num * dp + 0.5) / dp
 }

@@ -1,4 +1,4 @@
-export const isDom = () => typeof window !== "undefined"
+export const isDom = () => typeof document !== "undefined"
 
 export function getPlatform() {
   const agent = (navigator as any).userAgentData

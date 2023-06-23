@@ -1,3 +1,5 @@
+import { isDom } from "@zag-js/dom-query"
+
 type Modality = "keyboard" | "pointer" | "virtual"
 type HandlerEvent = PointerEvent | MouseEvent | KeyboardEvent | FocusEvent
 type Handler = (modality: Modality, e: HandlerEvent | null) => void
@@ -96,7 +98,7 @@ function isFocusVisible() {
 }
 
 function setupGlobalFocusEvents() {
-  if (typeof window === "undefined" || hasSetup) {
+  if (!isDom() || hasSetup) {
     return
   }
 
