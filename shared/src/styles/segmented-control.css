@@ -1,0 +1,14 @@
+.segmented-control [data-part="root"] {
+  width: fit-content;
+  padding: 4px;
+  background-color: #f1f3f5;
+  border-radius: 4px;
+  gap: 8px;
+}
+
+.segmented-control [data-part="radio"] {
+  padding-left: 0;
+  padding: 8px;
+  width: 100%;
+  text-align: center;
+}

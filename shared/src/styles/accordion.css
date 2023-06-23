@@ -1,0 +1,4 @@
+[data-scope="accordion"][data-part="root"] {
+  width: 100%;
+  max-width: 40ch;
+}

@@ -1,0 +1,3 @@
+.pressable button[data-pressed] {
+  background: red;
+}

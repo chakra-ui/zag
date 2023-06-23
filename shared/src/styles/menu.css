@@ -1,0 +1,42 @@
+[data-scope="menu"][data-part="content"] {
+  margin: 0;
+  width: 160px;
+  background-color: white;
+  border-radius: 6px;
+  padding: 5px;
+  border: 1px solid lightgray;
+  list-style-type: none;
+}
+
+[data-scope="menu"][data-part*="item"] {
+  all: unset;
+  font-size: 14px;
+  line-height: 1;
+  color: rgb(87, 70, 175);
+  display: flex;
+  align-items: center;
+  height: 25px;
+  position: relative;
+  user-select: none;
+  border-radius: 3px;
+  padding: 0px 5px;
+}
+
+[data-scope="menu"][data-part*="item"][data-focus] {
+  outline: none;
+  background-color: rgb(110, 86, 207);
+  color: rgb(253, 252, 254);
+}
+
+[data-scope="menu"][data-part*="item"][data-disabled] {
+  opacity: 0.4;
+}
+
+.context-menu [data-part="trigger"] {
+  border: 2px dashed blue;
+  border-radius: 4px;
+  font-size: 15px;
+  padding-block: 40px;
+  width: 300px;
+  text-align: center;
+}

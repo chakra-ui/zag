@@ -1,0 +1,13 @@
+[data-scope="hover-card"][data-part="trigger"] {
+  background: rgb(110, 86, 207);
+  color: white;
+  width: fit-content;
+  padding: 6px;
+}
+
+[data-scope="hover-card"][data-part="content"] {
+  background: rgb(225, 223, 228);
+  padding: 6px;
+  height: 150px;
+  width: 300px;
+}

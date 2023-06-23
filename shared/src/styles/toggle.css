@@ -1,0 +1,16 @@
+[data-scope="toggle"][data-part="button"] {
+  background-color: white;
+  color: rgb(111, 110, 119);
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 20px;
+}
+
+[data-scope="toggle"][data-part="button"][data-pressed] {
+  background-color: rgb(63, 139, 77);
+  color: white;
+}
