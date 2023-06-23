@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Icon } from "@chakra-ui/icon"
-import { Box, HStack, Wrap } from "@chakra-ui/layout"
+import { Box, Flex, HStack, Wrap } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
@@ -18,6 +18,7 @@ import { ApiTable } from "./api-table"
 import { CopyButton } from "./copy-button"
 import { useFramework } from "./framework"
 import { Showcase } from "./showcase"
+import { BsFiletypeCss } from "react-icons/bs"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)
@@ -125,82 +126,9 @@ const components: Record<string, FC<any>> = {
     }
     return <div className="prose">{props.children}</div>
   },
-  CodeSnippet(props) {
-    const { framework: userFramework } = useFramework()
-
-    const snippets = allSnippets.filter((p) => {
-      const [_, __, ...rest] = p.params
-      const str = rest.join("/") + ".mdx"
-      return str === props.id
-    })
-
-    const [state, send] = useMachine(
-      tabs.machine({
-        id: props.id,
-        value: userFramework ?? "react",
-      }),
-    )
-
-    const api = tabs.connect(state, send, normalizeProps)
-
-    return (
-      <Box
-        width="full"
-        maxW="768px"
-        borderWidth="1px"
-        my="8"
-        bg="bg-code-block"
-        rounded="6px"
-        {...api.rootProps}
-      >
-        <Box {...api.tablistProps}>
-          {FRAMEWORKS.map((framework) => (
-            <chakra.button
-              py="2"
-              px="8"
-              fontSize="sm"
-              fontWeight="medium"
-              borderBottom="2px solid transparent"
-              bg="bg-code-block"
-              _selected={{
-                borderColor: "border-primary-subtle",
-                color: "text-primary-bold",
-              }}
-              _focusVisible={{ outline: "2px solid blue" }}
-              {...api.getTriggerProps({ value: framework })}
-              key={framework}
-            >
-              <HStack>
-                <Icon as={frameworks[framework].icon} />
-                <p>{frameworks[framework].label}</p>
-              </HStack>
-            </chakra.button>
-          ))}
-        </Box>
-        <Box {...api.contentGroupProps}>
-          {FRAMEWORKS.map((framework) => {
-            const snippet = snippets.find((p) => p.framework === framework)
-            return (
-              <Box
-                {...api.getContentProps({ value: framework })}
-                position="relative"
-                key={framework}
-                mt="-6"
-                _focusVisible={{ outline: "2px solid blue" }}
-              >
-                {snippet ? (
-                  <SnippetItem id={framework} body={snippet.body} />
-                ) : (
-                  <Box mt="6" padding="4" fontSize="sm" opacity="0.5">
-                    Snippet not found :(
-                  </Box>
-                )}
-              </Box>
-            )
-          })}
-        </Box>
-      </Box>
-    )
+  CodeSnippet,
+  UsageCodeSnippet(props) {
+    return <CodeSnippet {...props} isUsageSnippet />
   },
   a(props) {
     const href = props.href
@@ -236,4 +164,109 @@ return { default: () => React.createElement('div', null, '') }
   const pageCode = code && code?.length ? code : defaultCode
   const MDXComponent = useMDXComponent(pageCode)
   return <MDXComponent components={components as any} />
+}
+
+type CodeSnippetProps =
+  | { id: string; isUsageSnippet: true; style: string }
+  | { id: string; isUsageSnippet?: false; style: never }
+
+function CodeSnippet(props: CodeSnippetProps) {
+  const { framework: userFramework } = useFramework()
+
+  const snippets = allSnippets.filter((p) => {
+    const [_, __, ...rest] = p.params
+    const str = rest.join("/") + ".mdx"
+    return str === props.id
+  })
+
+  const [state, send] = useMachine(
+    tabs.machine({
+      id: props.id,
+      value: userFramework ?? "react",
+    }),
+  )
+
+  const api = tabs.connect(state, send, normalizeProps)
+
+  const tabStyles = {
+    py: "2",
+    px: "8",
+    fontSize: "sm",
+    fontWeight: "medium",
+    borderBottom: "2px solid transparent",
+    bg: "bg-code-block",
+    _selected: {
+      borderColor: "border-primary-subtle",
+      color: "text-primary-bold",
+    },
+    _focusVisible: { outline: "2px solid blue" },
+  }
+
+  return (
+    <Box
+      width="full"
+      maxW="768px"
+      borderWidth="1px"
+      my="8"
+      bg="bg-code-block"
+      rounded="6px"
+      {...api.rootProps}
+    >
+      <Flex {...api.tablistProps}>
+        {FRAMEWORKS.map((framework) => (
+          <chakra.button
+            {...tabStyles}
+            {...api.getTriggerProps({ value: framework })}
+            key={framework}
+          >
+            <HStack>
+              <Icon as={frameworks[framework].icon} />
+              <p>{frameworks[framework].label}</p>
+            </HStack>
+          </chakra.button>
+        ))}
+        {props.isUsageSnippet && (
+          <>
+            <chakra.button
+              {...tabStyles}
+              ml="auto"
+              {...api.getTriggerProps({ value: "styles" })}
+            >
+              <HStack>
+                <Icon as={BsFiletypeCss} />
+                <p>styles.css</p>
+              </HStack>
+            </chakra.button>
+          </>
+        )}
+      </Flex>
+      <Box {...api.contentGroupProps}>
+        {FRAMEWORKS.map((framework) => {
+          const snippet = snippets.find((p) => p.framework === framework)
+          return (
+            <Box
+              {...api.getContentProps({ value: framework })}
+              position="relative"
+              key={framework}
+              mt="-6"
+              _focusVisible={{ outline: "2px solid blue" }}
+            >
+              {snippet ? (
+                <SnippetItem id={framework} body={snippet.body} />
+              ) : (
+                <Box mt="6" padding="4" fontSize="sm" opacity="0.5">
+                  Snippet not found :(
+                </Box>
+              )}
+            </Box>
+          )
+        })}
+        {props.isUsageSnippet && <StylesCodeSnippet style={props.style} />}
+      </Box>
+    </Box>
+  )
+}
+
+function StylesCodeSnippet({ style }: { style: string }) {
+  return <Box>{style}</Box>
 }
