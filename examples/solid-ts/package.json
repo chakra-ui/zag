@@ -17,7 +17,7 @@
     "vite-plugin-solid": "2.7.0"
   },
   "dependencies": {
-    "@internationalized/date": "^3.2.0",
+    "@internationalized/date": "^3.3.0",
     "@solidjs/router": "^0.8.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -80,6 +80,6 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "solid-js": "1.7.6"
+    "solid-js": "1.7.7"
   }
 }
