@@ -81,11 +81,6 @@ type PrivateContext = Context<{
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup?: VoidFunction | null
-  /**
-   * @internal
-   * The previous value of the radio group
-   */
-  previousValue: string | null
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
