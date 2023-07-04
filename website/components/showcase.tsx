@@ -1,29 +1,30 @@
-import { Checkbox } from "./machines/checkbox"
-import { Radio } from "./machines/radio"
+import { Combobox } from "components/machines/combobox"
+import { ContextMenu } from "components/machines/context-menu"
+import { HoverCard } from "components/machines/hover-card"
+import { NestedMenu } from "components/machines/nested-menu"
+import { Pagination } from "components/machines/pagination"
+import { Pressable } from "components/machines/pressable"
+import { Rating } from "components/machines/rating"
+import { SegmentedControl } from "components/machines/segmented-control"
+import { Switch } from "components/machines/switch"
 import { Accordion } from "./machines/accordion"
+import { Avatar } from "./machines/avatar"
+import { Checkbox } from "./machines/checkbox"
 import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { Menu } from "./machines/menu"
 import { NumberInput } from "./machines/number-input"
 import { PinInput } from "./machines/pin-input"
 import { Popover } from "./machines/popover"
+import { Radio } from "./machines/radio"
 import { RangeSlider } from "./machines/range-slider"
+import { Select } from "./machines/select"
 import { Slider } from "./machines/slider"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
 import { ToastGroup } from "./machines/toast"
 import { Tooltip } from "./machines/tooltip"
 import { Playground } from "./playground"
-import { Rating } from "components/machines/rating"
-import { Pressable } from "components/machines/pressable"
-import { ContextMenu } from "components/machines/context-menu"
-import { NestedMenu } from "components/machines/nested-menu"
-import { HoverCard } from "components/machines/hover-card"
-import { Pagination } from "components/machines/pagination"
-import { Select } from "./machines/select"
-import { Combobox } from "components/machines/combobox"
-import { Switch } from "components/machines/switch"
-import { SegmentedControl } from "components/machines/segmented-control"
 
 const components = {
   Dialog: () => (
@@ -275,6 +276,15 @@ const components = {
       defaultProps={{
         disabled: false,
         readOnly: false,
+      }}
+    />
+  ),
+  Avatar: () => (
+    <Playground
+      component={Avatar}
+      defaultProps={{
+        name: "Segun Adebayo",
+        src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
       }}
     />
   ),

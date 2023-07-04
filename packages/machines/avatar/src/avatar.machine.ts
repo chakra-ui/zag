@@ -49,6 +49,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         loaded: {
           activities: ["trackSrcChange"],
+          on: {
+            "IMG.ERROR": {
+              target: "error",
+              actions: ["invokeOnError"],
+            },
+          },
         },
       },
     },

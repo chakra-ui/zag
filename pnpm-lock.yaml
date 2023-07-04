@@ -2547,6 +2547,9 @@ importers:
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../packages/machines/accordion
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../packages/machines/avatar
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../packages/machines/checkbox

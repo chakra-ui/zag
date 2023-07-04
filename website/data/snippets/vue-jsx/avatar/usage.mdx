@@ -1,0 +1,25 @@
+```jsx
+import * as avatar from "@zag-js/avatar"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+
+export default defineComponent({
+  name: "Avatar",
+  setup() {
+    const [state, send] = useMachine(avatar.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      avatar.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <span {...api.fallbackProps}>PA</span>
+          <img alt="PA" src={src} {...api.imageProps} />
+        </div>
+      )
+    }
+  },
+})
+```

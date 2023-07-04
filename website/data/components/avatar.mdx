@@ -1,0 +1,109 @@
+---
+title: Avatar
+description: Using the avatar machine in your project.
+package: "@zag-js/avatar"
+---
+
+# Avatar
+
+The Avatar component is a React component that represents a user avatar or
+profile picture. It displays an image or initials within container.
+
+Avatar provides support for fallback text or elements when the image fails to
+load, or when the image is not provided.
+
+<Resources pkg="@zag-js/avatar" />
+
+<Showcase id="Avatar" />
+
+## Installation
+
+To use the avatar machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="avatar/installation.mdx" />
+
+This command will install the framework agnostic avatar logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the avatar correctly, you'll need to understand its anatomy and how we
+name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="avatar" />
+
+On a high level, the avatar consists of:
+
+- **Root**: The root container for the avatar
+- **Fallback**: The fallback element to display when the image fails to load or
+  is not provided
+- **Image**: The image element for the avatar
+
+## Usage
+
+First, import the avatar package into your project
+
+```jsx
+import * as avatar from "@zag-js/avatar"
+```
+
+The avatar package exports two key functions:
+
+- `machine` — The state machine logic for the avatar widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+avatar machine in your project 🔥
+
+<CodeSnippet id="avatar/usage.mdx" />
+
+## Listening to loading status changes
+
+The avatar machine provides a `onLoad` and `onError` event that you can listen
+to. This is useful when you want to perform an action when the image loads or
+fails to load.
+
+```jsx {3}
+const [state, send] = useMachine(
+  avatar.machine({
+    onLoad() {
+      // Do something when the image loads
+    },
+    onError() {
+      // Do something when the image fails to load
+    },
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each avatar part has a `data-part` attribute added to
+them to select and style them in the DOM.
+
+```css
+[data-scope="avatar"][data-part="root"] {
+  /* Styles for the root part */
+}
+
+[data-scope="avatar"][data-part="image"] {
+  /* Styles for the image part */
+}
+
+[data-scope="avatar"][data-part="fallback"] {
+  /* Styles for the fallback part */
+}
+```
+
+## Methods and Properties
+
+The avatar's `api` exposes the following methods and properties:
+
+<ApiTable name="avatar" />

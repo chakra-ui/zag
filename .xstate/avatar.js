@@ -52,7 +52,13 @@ const fetchMachine = createMachine({
       }
     },
     loaded: {
-      activities: ["trackSrcChange"]
+      activities: ["trackSrcChange"],
+      on: {
+        "IMG.ERROR": {
+          target: "error",
+          actions: ["invokeOnError"]
+        }
+      }
     }
   }
 }, {

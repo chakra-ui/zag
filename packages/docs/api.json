@@ -71,6 +71,42 @@
       }
     }
   },
+  "avatar": {
+    "api": {
+      "isLoaded": {
+        "type": "boolean",
+        "description": "Whether the image is loaded."
+      },
+      "showFallback": {
+        "type": "boolean",
+        "description": "Whether the fallback is shown."
+      },
+      "setSrc": {
+        "type": "(src: string) => void",
+        "description": "Function to set new src."
+      },
+      "setLoaded": {
+        "type": "() => void",
+        "description": "Function to set loaded state."
+      },
+      "setError": {
+        "type": "() => void",
+        "description": "Function to set error state."
+      }
+    },
+    "context": {
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine.",
+        "defaultValue": null
+      },
+      "getRootNode": {
+        "type": "() => Node | ShadowRoot | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.",
+        "defaultValue": null
+      }
+    }
+  },
   "carousel": {
     "api": {
       "index": {
@@ -130,7 +166,7 @@
         "defaultValue": null
       },
       "getRootNode": {
-        "type": "() => Node | ShadowRoot | Document",
+        "type": "() => Node | Document | ShadowRoot",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.",
         "defaultValue": null
       },
@@ -201,6 +237,10 @@
       "setChecked": {
         "type": "(checked: CheckedState) => void",
         "description": "Function to set the checked state of the checkbox"
+      },
+      "toggleChecked": {
+        "type": "() => void",
+        "description": "Function to toggle the checked state of the checkbox"
       }
     },
     "context": {
@@ -565,6 +605,10 @@
         "type": "DateView",
         "description": "The current view of the date picker"
       },
+      "matchView": {
+        "type": "typeof matchView",
+        "description": "Matcher for the current view of the date picker"
+      },
       "getDaysInWeek": {
         "type": "(weekIndex: number, from?: DateValue[]",
         "description": "Returns an array of days in the week index counted from the provided start date, or the first visible date if not given."
@@ -654,7 +698,11 @@
         "description": "The visible range of dates."
       },
       "getYears": {
-        "type": "(props?: { columns?: number; }) => number[][]",
+        "type": "() => { label: string; value: number; }[]",
+        "description": "Returns the months of the year"
+      },
+      "getYearsGrid": {
+        "type": "(props?: { columns?: number; }) => { label: string; value: number; }[][]",
         "description": "Returns the years of the decade based on the columns.\nRepresented as an array of arrays of years."
       },
       "getDecade": {
@@ -662,7 +710,11 @@
         "description": "Returns the start and end years of the decade."
       },
       "getMonths": {
-        "type": "(props?: { columns?: number; format?: \"short\" | \"long\"; }) => string[][]",
+        "type": "(props?: { format?: \"short\" | \"long\"; }) => { label: string; value: number; }[]",
+        "description": "Returns the months of the year"
+      },
+      "getMonthsGrid": {
+        "type": "(props?: { columns?: number; format?: \"short\" | \"long\"; }) => { label: string; value: number; }[][]",
         "description": "Returns the months of the year based on the columns.\nRepresented as an array of arrays of months."
       },
       "format": {
@@ -1906,6 +1958,11 @@
         "type": "boolean",
         "description": "Whether text selection should be enabled on the pressable element.",
         "defaultValue": null
+      },
+      "longPressDelay": {
+        "type": "number",
+        "description": "The amount of time (in milliseconds) to wait before firing the `onLongPress` event.",
+        "defaultValue": null
       }
     }
   },
@@ -2604,17 +2661,13 @@
         "type": "{ min: number; max: number; }",
         "description": "The bounds of the currently dragged splitter handle."
       },
-      "collapse": {
+      "setToMinSize": {
         "type": "(id: PanelId) => void",
-        "description": "Function to collapse a panel."
+        "description": "Function to set a panel to its minimum size."
       },
-      "expand": {
+      "setToMaxSize": {
         "type": "(id: PanelId) => void",
-        "description": "Function to expand a panel."
-      },
-      "toggle": {
-        "type": "(id: PanelId) => void",
-        "description": "Function to toggle a panel between collapsed and expanded."
+        "description": "Function to set a panel to its maximum size."
       },
       "setSize": {
         "type": "(id: PanelId, size: number) => void",
@@ -2687,13 +2740,13 @@
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
-      "isReadOnly": {
-        "type": "boolean",
-        "description": "Whether the checkbox is readonly"
-      },
       "setChecked": {
-        "type": "(value: boolean) => void",
+        "type": "(checked: boolean) => void",
         "description": "Function to set the checked state of the switch."
+      },
+      "toggleChecked": {
+        "type": "() => void",
+        "description": "Function to toggle the checked state of the checkbox"
       }
     },
     "context": {
@@ -2771,11 +2824,6 @@
         "type": "string | number",
         "description": "The value of switch input. Useful for form submission.",
         "defaultValue": "\"on\""
-      },
-      "aria-label": {
-        "type": "string",
-        "description": "Defines the string that labels the switch element.",
-        "defaultValue": null
       }
     }
   },

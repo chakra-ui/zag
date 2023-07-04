@@ -4,4 +4,3 @@ coverage
 .next
 build
 *.hbs
-website/data/**/*.mdx
