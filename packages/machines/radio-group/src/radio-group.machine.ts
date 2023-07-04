@@ -13,7 +13,6 @@ export function machine(userContext: UserDefinedContext) {
       id: "radio",
       initial: "idle",
       context: {
-        previousValue: null,
         value: null,
         activeId: null,
         focusedId: null,
@@ -96,11 +95,8 @@ export function machine(userContext: UserDefinedContext) {
             input.checked = input.value === ctx.value
           })
         },
-        setPreviousValue(ctx) {
-          ctx.previousValue = ctx.value
-        },
         setIndicatorTransition(ctx) {
-          ctx.canIndicatorTransition = isString(ctx.previousValue) && isString(ctx.value)
+          ctx.canIndicatorTransition = isString(ctx.value)
         },
         cleanupObserver(ctx) {
           ctx.indicatorCleanup?.()
