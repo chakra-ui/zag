@@ -71,6 +71,7 @@ export function Select(props: SelectProps) {
           <chakra.ul
             bg="bg-subtle"
             width="240px"
+            maxHeight="min(var(--available-height), 400px)"
             padding="2"
             isolation="isolate"
             listStyleType="none"
