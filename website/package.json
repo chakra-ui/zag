@@ -50,7 +50,7 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
-    "contentlayer": "0.3.3",
+    "contentlayer": "0.3.4",
     "hastscript": "7.2.0",
     "markdown-toc": "1.2.0",
     "match-sorter": "6.3.1",
