@@ -1,5 +1,15 @@
 # @zag-js/transition
 
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.10.4
+  - @zag-js/types@0.10.4
+  - @zag-js/utils@0.10.4
+  - @zag-js/dom-query@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes

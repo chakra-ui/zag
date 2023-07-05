@@ -1,5 +1,17 @@
 # @zag-js/solid
 
+## 0.10.4
+
+### Patch Changes
+
+- [`2e2524e9`](https://github.com/chakra-ui/zag/commit/2e2524e9cfdb829037da8073d7fc5ad895556672) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Declare solid-js, react and vue as external dependencies
+
+- Updated dependencies []:
+  - @zag-js/core@0.10.4
+  - @zag-js/store@0.10.4
+  - @zag-js/types@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes

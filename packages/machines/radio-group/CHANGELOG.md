@@ -1,5 +1,23 @@
 # @zag-js/radio-group
 
+## 0.10.4
+
+### Patch Changes
+
+- [#718](https://github.com/chakra-ui/zag/pull/718)
+  [`14f28dbc`](https://github.com/chakra-ui/zag/commit/14f28dbcac93920971cac39095d22b205cd3d48e) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix segmented control not transitioning after first render
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.4
+  - @zag-js/core@0.10.4
+  - @zag-js/types@0.10.4
+  - @zag-js/utils@0.10.4
+  - @zag-js/dom-query@0.10.4
+  - @zag-js/element-rect@0.10.4
+  - @zag-js/form-utils@0.10.4
+  - @zag-js/visually-hidden@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes
