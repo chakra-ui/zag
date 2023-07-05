@@ -11,11 +11,8 @@ export default defineConfig(() => {
   return {
     plugins: [
       dts({
-        skipDiagnostics: false,
         entryRoot: "src",
         staticImport: true,
-        rollupTypes: false,
-        logLevel: "info",
       }),
     ],
     build: {
