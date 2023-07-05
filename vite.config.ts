@@ -27,7 +27,15 @@ export default defineConfig(() => {
         fileName: (format) => (format === "es" ? "index.mjs" : "index.js"),
       },
       rollupOptions: {
-        external: [...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.peerDependencies ?? {})],
+        external: [
+          ...Object.keys(pkg.dependencies ?? {}),
+          ...Object.keys(pkg.peerDependencies ?? {}),
+          "react/jsx-runtime",
+          "solid-js",
+          "solid-js/web",
+          "solid-js/store",
+          "vue",
+        ],
         output: [
           {
             format: "cjs",
