@@ -1,5 +1,21 @@
 # @zag-js/avatar
 
+## 0.10.4
+
+### Patch Changes
+
+- [`31029c92`](https://github.com/chakra-ui/zag/commit/31029c928d69448cd375fac5da3118b537e44fd0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix avatar machine transition when in loaded state and src is
+  removed.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.4
+  - @zag-js/core@0.10.4
+  - @zag-js/types@0.10.4
+  - @zag-js/utils@0.10.4
+  - @zag-js/dom-query@0.10.4
+  - @zag-js/mutation-observer@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes

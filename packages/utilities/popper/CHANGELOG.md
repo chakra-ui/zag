@@ -1,5 +1,14 @@
 # @zag-js/popper
 
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.10.4
+  - @zag-js/dom-query@0.10.4
+  - @zag-js/element-rect@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes

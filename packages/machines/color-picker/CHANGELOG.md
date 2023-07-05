@@ -1,5 +1,20 @@
 # @zag-js/color-picker
 
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.4
+  - @zag-js/core@0.10.4
+  - @zag-js/types@0.10.4
+  - @zag-js/color-utils@0.10.4
+  - @zag-js/utils@0.10.4
+  - @zag-js/dom-event@0.10.4
+  - @zag-js/dom-query@0.10.4
+  - @zag-js/numeric-range@0.10.4
+  - @zag-js/text-selection@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes
