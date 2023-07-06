@@ -1,5 +1,23 @@
 # @zag-js/select
 
+## 0.10.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.10.5
+  - @zag-js/core@0.10.5
+  - @zag-js/types@0.10.5
+  - @zag-js/utils@0.10.5
+  - @zag-js/dismissable@0.10.5
+  - @zag-js/dom-event@0.10.5
+  - @zag-js/dom-query@0.10.5
+  - @zag-js/form-utils@0.10.5
+  - @zag-js/mutation-observer@0.10.5
+  - @zag-js/popper@0.10.5
+  - @zag-js/tabbable@0.10.5
+  - @zag-js/visually-hidden@0.10.5
+
 ## 0.10.4
 
 ### Patch Changes

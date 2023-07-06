@@ -1,5 +1,17 @@
 # @zag-js/vue
 
+## 0.10.5
+
+### Patch Changes
+
+- [`622eea18`](https://github.com/chakra-ui/zag/commit/622eea1834d575d2ddd225e96121561b334597eb) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix an issue with type declarations
+
+- Updated dependencies []:
+  - @zag-js/core@0.10.5
+  - @zag-js/store@0.10.5
+  - @zag-js/types@0.10.5
+
 ## 0.10.4
 
 ### Patch Changes
