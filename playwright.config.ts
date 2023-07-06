@@ -22,12 +22,6 @@ export function getWebServer() {
       url: "http://localhost:3002",
       reuseExistingServer: !process.env.CI,
     },
-    svelte: {
-      cwd: "./examples/svelte-kit",
-      command: "pnpm vite --port 3003",
-      url: "http://localhost:3003",
-      reuseExistingServer: !process.env.CI,
-    },
   }
 
   return frameworks[framework]
