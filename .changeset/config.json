@@ -7,24 +7,12 @@
     }
   ],
   "commit": false,
-  "fixed": [
-    [
-      "@zag-js/**"
-    ]
-  ],
+  "fixed": [["@zag-js/**"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
     "onlyUpdatePeerDependentsWhenOutOfRange": true
   },
-  "ignore": [
-    "@zag-js/shared",
-    "next-ts",
-    "vue-ts",
-    "solid-ts",
-    "shadow-dom",
-    "svelte-kit",
-    "website"
-  ]
+  "ignore": ["@zag-js/shared", "next-ts", "vue-ts", "solid-ts", "shadow-dom", "website"]
 }

@@ -15,7 +15,6 @@
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",
     "clean": "pnpm clean-pkgs && rm -rf node_modules",
-    "svelte": "pnpm --filter \"./examples/svelte-kit\"",
     "react": "pnpm --filter \"./examples/next-ts\"",
     "vue": "pnpm --filter \"./examples/vue-ts\"",
     "solid": "pnpm --filter \"./examples/solid-ts\"",
