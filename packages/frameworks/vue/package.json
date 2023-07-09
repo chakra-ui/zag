@@ -39,7 +39,7 @@
     "vue": ">=3.0.0"
   },
   "scripts": {
-    "build": "vite build -c ../../../vite.config.ts",
+    "build": "tsup",
     "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

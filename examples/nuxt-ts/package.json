@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "nuxt-ts",
   "private": true,
   "scripts": {
     "build": "nuxt build",

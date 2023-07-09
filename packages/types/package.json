@@ -25,7 +25,7 @@
     "csstype": "3.1.2"
   },
   "scripts": {
-    "build": "vite build -c ../../vite.config.ts",
+    "build": "tsup",
     "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",

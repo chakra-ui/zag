@@ -11,12 +11,8 @@
   "sideEffects": false,
   "files": ["dist/**/*"],
   "scripts": {
-   
-    "build": "vite build -c ../../../vite.config.ts",
-   
+    "build": "tsup",
     "lint": "eslint src --ext .ts,.tsx",
-    
-
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

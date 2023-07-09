@@ -21,7 +21,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build -c ../../../vite.config.ts",
+    "build": "tsup",
     "test": "jest --config ../../../jest.config.js --rootDir tests",
     "lint": "eslint src --ext .ts,.tsx",
     "test-ci": "pnpm test --ci --runInBand -u",
