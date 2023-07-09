@@ -239,6 +239,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
       '@zag-js/pressable':
         specifier: workspace:*
         version: link:../../packages/machines/pressable
@@ -462,6 +465,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
       '@zag-js/pressable':
         specifier: workspace:*
         version: link:../../packages/machines/pressable
@@ -661,6 +667,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
       '@zag-js/pressable':
         specifier: workspace:*
         version: link:../../packages/machines/pressable
@@ -869,6 +878,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
       '@zag-js/pressable':
         specifier: workspace:*
         version: link:../../packages/machines/pressable
@@ -1071,6 +1083,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
       '@zag-js/pressable':
         specifier: workspace:*
         version: link:../../packages/machines/pressable
@@ -1771,6 +1786,28 @@ importers:
       focus-trap:
         specifier: 7.5.1
         version: 7.5.1
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/presence:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0

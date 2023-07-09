@@ -4,6 +4,7 @@ import { lazy } from "solid-js"
 import Home from "./pages/home"
 
 export const routes: RouteDefinition[] = [
+  { path: "/presence", component: lazy(() => import("./pages/presence")) },
   { path: "/avatar", component: lazy(() => import("./pages/avatar")) },
   { path: "/color-picker", component: lazy(() => import("./pages/color-picker")) },
   { path: "/switch", component: lazy(() => import("./pages/switch")) },

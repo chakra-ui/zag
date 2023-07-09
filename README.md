@@ -153,6 +153,7 @@ ensure that the component works the same way regardless of the framework.
 - [Pure UI Control](https://asolove.medium.com/pure-ui-control-ac8d1be97a8d) - Adam Solve
 - [Material Components Web](https://github.com/material-components/material-components-web) for inspiring my first
   prototype
+- [Radix UI](https://radix-ui.com/) for inspiring the dimissable and presence pattern
 - [XState](https://xstate.js.org/) for inspiring the base implementation of the state machine
 - [Vue.js](https://vuejs.org/) and [Lit](https://lit-element.polymer-project.org/) for inspiring new patterns in the
   machine (`computed` and `watch`)

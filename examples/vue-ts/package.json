@@ -47,6 +47,7 @@
     "@zag-js/pin-input": "workspace:*",
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
+    "@zag-js/presence": "workspace:*",
     "@zag-js/pressable": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/range-slider": "workspace:*",
