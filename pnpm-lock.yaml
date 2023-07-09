@@ -1793,21 +1793,12 @@ importers:
 
   packages/machines/presence:
     dependencies:
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../anatomy
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../utilities/dom-query
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
