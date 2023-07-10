@@ -1,14 +1,12 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, defineComponent, ref, watchEffect, type Ref, watch } from "vue"
+import { computed, defineComponent, ref, watch, type Ref } from "vue"
 
 function usePresence(present: Ref<boolean>) {
-  const [state, send, service] = useMachine(presence.machine({ present: present.value }))
-
-  watchEffect(() => {
-    service.setContext({ present: present.value })
+  const context = computed(() => ({ present: present.value }))
+  const [state, send] = useMachine(presence.machine({ present: present.value }), {
+    context,
   })
-
   return computed(() => presence.connect(state.value, send, normalizeProps))
 }
 

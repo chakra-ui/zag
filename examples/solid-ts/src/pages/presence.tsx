@@ -1,11 +1,11 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Accessor, Show, createEffect, createMemo, createSignal } from "solid-js"
+import { Accessor, Show, createMemo, createSignal } from "solid-js"
 
 function usePresence(present: Accessor<boolean>) {
-  const [state, send, service] = useMachine(presence.machine({ present: present() }))
-  createEffect(() => {
-    service.setContext({ present: present() })
+  const context = createMemo(() => ({ present: present() }))
+  const [state, send] = useMachine(presence.machine({ present: present() }), {
+    context,
   })
   return createMemo(() => presence.connect(state, send, normalizeProps))
 }
