@@ -5,7 +5,12 @@ import { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types
 import { clampValue, toFixedNumber } from "./utils"
 
 export class RGBColor extends Color {
-  constructor(private red: number, private green: number, private blue: number, private alpha: number) {
+  constructor(
+    private red: number,
+    private green: number,
+    private blue: number,
+    private alpha: number,
+  ) {
     super()
   }
 

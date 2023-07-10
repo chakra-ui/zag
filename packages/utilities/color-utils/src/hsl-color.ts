@@ -8,7 +8,12 @@ export const HSL_REGEX =
   /hsl\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%)\)|hsla\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d(.\d+)?)\)/
 
 export class HSLColor extends Color {
-  constructor(private hue: number, private saturation: number, private lightness: number, private alpha: number) {
+  constructor(
+    private hue: number,
+    private saturation: number,
+    private lightness: number,
+    private alpha: number,
+  ) {
     super()
   }
 

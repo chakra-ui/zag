@@ -8,7 +8,12 @@ const HSB_REGEX =
   /hsb\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%)\)|hsba\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d(.\d+)?)\)/
 
 export class HSBColor extends Color {
-  constructor(private hue: number, private saturation: number, private brightness: number, private alpha: number) {
+  constructor(
+    private hue: number,
+    private saturation: number,
+    private brightness: number,
+    private alpha: number,
+  ) {
     super()
   }
 

@@ -33,13 +33,16 @@ function extract(pattern: string | RegExp, str: string) {
       }
       return group.match(/<(.+)>/)?.[1]
     })
-    .reduce((acc, curr, index) => {
-      if (!curr) return acc
-      if (matches && matches.length > index) {
-        acc[curr] = matches[index + 1]
-      } else {
-        acc[curr] = null
-      }
-      return acc
-    }, {} as { year: string; month: string; day: string })
+    .reduce(
+      (acc, curr, index) => {
+        if (!curr) return acc
+        if (matches && matches.length > index) {
+          acc[curr] = matches[index + 1]
+        } else {
+          acc[curr] = null
+        }
+        return acc
+      },
+      {} as { year: string; month: string; day: string },
+    )
 }
