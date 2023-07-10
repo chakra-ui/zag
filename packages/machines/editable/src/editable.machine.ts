@@ -80,25 +80,25 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "submitOnBlur",
                 target: "preview",
-                actions: ["restoreFocusIfNeeded", "invokeOnSubmit"],
+                actions: ["restoreFocus", "invokeOnSubmit"],
               },
               {
                 target: "preview",
-                actions: ["resetValueIfNeeded", "restoreFocusIfNeeded", "invokeOnCancel"],
+                actions: ["revertValue", "restoreFocus", "invokeOnCancel"],
               },
             ],
             CANCEL: {
               target: "preview",
-              actions: ["restoreFocusIfNeeded", "resetValueIfNeeded", "invokeOnCancel"],
+              actions: ["revertValue", "restoreFocus", "invokeOnCancel"],
             },
             ENTER: {
               guard: "submitOnEnter",
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocusIfNeeded"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocus"],
             },
             SUBMIT: {
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocusIfNeeded"],
+              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocus"],
             },
           },
         },
@@ -131,7 +131,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        restoreFocusIfNeeded(ctx, evt) {
+        restoreFocus(ctx, evt) {
           if (evt.focusable) return
           raf(() => {
             const finalEl = ctx.finalFocusEl?.() ?? dom.getEditTriggerEl(ctx)
@@ -173,8 +173,7 @@ export function machine(userContext: UserDefinedContext) {
         setPreviousValue(ctx) {
           ctx.previousValue = ctx.value
         },
-        resetValueIfNeeded(ctx) {
-          if (!ctx.previousValue) return
+        revertValue(ctx) {
           ctx.value = ctx.previousValue
         },
         blurInputIfNeeded(ctx) {
