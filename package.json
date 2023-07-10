@@ -89,7 +89,7 @@
     "lint-staged": "13.2.3",
     "node-fetch": "^3.3.1",
     "plop": "3.1.2",
-    "prettier": "2.8.8",
+    "prettier": "3.0.0",
     "signale": "1.4.0",
     "ts-morph": "^19.0.0",
     "tsup": "7.1.0",
