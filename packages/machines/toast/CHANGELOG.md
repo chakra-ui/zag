@@ -1,5 +1,20 @@
 # @zag-js/toast
 
+## 0.11.0
+
+### Patch Changes
+
+- [`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rebuild all packages using tsup
+
+- Updated dependencies [[`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce)]:
+  - @zag-js/dom-event@0.11.0
+  - @zag-js/dom-query@0.11.0
+  - @zag-js/utils@0.11.0
+  - @zag-js/anatomy@0.11.0
+  - @zag-js/types@0.11.0
+  - @zag-js/core@0.11.0
+
 ## 0.10.5
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # @zag-js/editable
 
+## 0.11.0
+
+### Patch Changes
+
+- [`06d4b11f`](https://github.com/chakra-ui/zag/commit/06d4b11f3a262c56fde68119757c2f87a96a0a9c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where initially cancelling the value by pressing the
+  escape key doesn't work
+
+- [`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rebuild all packages using tsup
+
+- Updated dependencies [[`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce)]:
+  - @zag-js/interact-outside@0.11.0
+  - @zag-js/form-utils@0.11.0
+  - @zag-js/dom-event@0.11.0
+  - @zag-js/dom-query@0.11.0
+  - @zag-js/utils@0.11.0
+  - @zag-js/anatomy@0.11.0
+  - @zag-js/types@0.11.0
+  - @zag-js/core@0.11.0
+
 ## 0.10.5
 
 ### Patch Changes
