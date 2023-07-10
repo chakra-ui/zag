@@ -77,9 +77,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send("POINTER_DOWN")
         }
       },
-      onPointerMove() {
-        if (isDisabled) return
-        send("POINTER_ENTER")
+      onPointerMove(event) {
+        if (isDisabled || event.pointerType === "touch") return
+        send("POINTER_MOVE")
       },
       onPointerLeave() {
         if (isDisabled) return
@@ -115,10 +115,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: hasAriaLabel ? undefined : contentId,
       "data-placement": state.context.currentPlacement,
       onPointerEnter() {
-        send("TOOLTIP_POINTER_ENTER")
+        send("CONTENT.POINTER_MOVE")
       },
       onPointerLeave() {
-        send("TOOLTIP_POINTER_LEAVE")
+        send("CONTENT.POINTER_LEAVE")
       },
       style: {
         pointerEvents: state.context.interactive ? "auto" : "none",

@@ -81,6 +81,11 @@ type PrivateContext = RootProperties & {
    * The computed placement of the tooltip.
    */
   currentPlacement?: Placement
+  /**
+   * @internal
+   * Whether the pointermove already opened the tooltip.
+   */
+  hasPointerMoveOpened?: boolean
 }
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

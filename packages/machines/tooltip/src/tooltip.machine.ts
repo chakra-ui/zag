@@ -1,4 +1,4 @@
-import { createMachine, subscribe } from "@zag-js/core"
+import { createMachine, subscribe, guards } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
 import { getScrollParents, isHTMLElement, isSafari } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
@@ -6,6 +6,8 @@ import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tooltip.types"
+
+const { and, not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -22,6 +24,7 @@ export function machine(userContext: UserDefinedContext) {
         interactive: true,
         currentPlacement: undefined,
         ...ctx,
+        hasPointerMoveOpened: false,
         positioning: {
           placement: "bottom",
           ...ctx.positioning,
@@ -48,12 +51,19 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["clearGlobalId", "invokeOnClose"],
           on: {
             FOCUS: "open",
-            POINTER_ENTER: [
+            POINTER_LEAVE: {
+              actions: ["clearPointerMoveOpened"],
+            },
+            POINTER_MOVE: [
               {
-                guard: "noVisibleTooltip",
+                guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
                 target: "opening",
               },
-              { target: "open" },
+              {
+                guard: not("hasPointerMoveOpened"),
+                target: "open",
+                actions: ["setPointerMoveOpened"],
+              },
             ],
           },
         },
@@ -62,10 +72,16 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["closed"],
           activities: ["trackScroll", "trackPointerlockChange"],
           after: {
-            OPEN_DELAY: "open",
+            OPEN_DELAY: {
+              target: "open",
+              actions: ["setPointerMoveOpened"],
+            },
           },
           on: {
-            POINTER_LEAVE: "closed",
+            POINTER_LEAVE: {
+              target: "closed",
+              actions: ["clearPointerMoveOpened"],
+            },
             BLUR: "closed",
             SCROLL: "closed",
             POINTER_LOCK_CHANGE: "closed",
@@ -91,14 +107,18 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "isVisible",
                 target: "closing",
+                actions: ["clearPointerMoveOpened"],
               },
-              { target: "closed" },
+              {
+                target: "closed",
+                actions: ["clearPointerMoveOpened"],
+              },
             ],
             BLUR: "closed",
             ESCAPE: "closed",
             SCROLL: "closed",
             POINTER_LOCK_CHANGE: "closed",
-            TOOLTIP_POINTER_LEAVE: {
+            "CONTENT.POINTER_LEAVE": {
               guard: "isInteractive",
               target: "closing",
             },
@@ -121,8 +141,11 @@ export function machine(userContext: UserDefinedContext) {
           },
           on: {
             FORCE_CLOSE: "closed",
-            POINTER_ENTER: "open",
-            TOOLTIP_POINTER_ENTER: {
+            POINTER_MOVE: {
+              target: "open",
+              actions: ["setPointerMoveOpened"],
+            },
+            "CONTENT.POINTER_MOVE": {
               guard: "isInteractive",
               target: "open",
             },
@@ -197,7 +220,7 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         invokeOnOpen(ctx, evt) {
-          const omit = ["TOOLTIP_POINTER_ENTER", "POINTER_ENTER"]
+          const omit = ["CONTENT.POINTER_MOVE", "POINTER_MOVE"]
           if (!omit.includes(evt.type)) {
             ctx.onOpen?.()
           }
@@ -206,9 +229,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onClose?.()
         },
         closeIfDisabled(ctx, _evt, { send }) {
-          if (ctx.disabled) {
-            send("CLOSE")
-          }
+          if (!ctx.disabled) return
+          send("CLOSE")
         },
         setPositioning(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)
@@ -222,12 +244,19 @@ export function machine(userContext: UserDefinedContext) {
         toggleVisibility(ctx, _evt, { send }) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
+        setPointerMoveOpened(ctx) {
+          ctx.hasPointerMoveOpened = true
+        },
+        clearPointerMoveOpened(ctx) {
+          ctx.hasPointerMoveOpened = false
+        },
       },
       guards: {
         closeOnPointerDown: (ctx) => ctx.closeOnPointerDown,
         noVisibleTooltip: () => store.id === null,
         isVisible: (ctx) => ctx.id === store.id,
         isInteractive: (ctx) => ctx.interactive,
+        hasPointerMoveOpened: (ctx) => !!ctx.hasPointerMoveOpened,
       },
       delays: {
         OPEN_DELAY: (ctx) => ctx.openDelay,
