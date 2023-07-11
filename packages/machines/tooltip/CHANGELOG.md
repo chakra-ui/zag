@@ -1,5 +1,26 @@
 # @zag-js/tooltip
 
+## 0.11.0
+
+### Patch Changes
+
+- [`4678c19b`](https://github.com/chakra-ui/zag/commit/4678c19baedb0abf1c2151dc74548cd7d91fef87) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where tooltip re-opens after clicking the trigger and
+  moving the cursor slightly.
+
+- [`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rebuild all packages using tsup
+
+- Updated dependencies [[`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce)]:
+  - @zag-js/visually-hidden@0.11.0
+  - @zag-js/dom-event@0.11.0
+  - @zag-js/dom-query@0.11.0
+  - @zag-js/popper@0.11.0
+  - @zag-js/utils@0.11.0
+  - @zag-js/anatomy@0.11.0
+  - @zag-js/types@0.11.0
+  - @zag-js/core@0.11.0
+
 ## 0.10.5
 
 ### Patch Changes

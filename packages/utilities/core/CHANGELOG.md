@@ -1,5 +1,12 @@
 # @zag-js/utils
 
+## 0.11.0
+
+### Patch Changes
+
+- [`4f371874`](https://github.com/chakra-ui/zag/commit/4f3718742dc88a2cd8726bdd889c9bbde94f5bce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rebuild all packages using tsup
+
 ## 0.10.5
 
 ## 0.10.4
