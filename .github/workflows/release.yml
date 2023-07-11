@@ -65,16 +65,3 @@ jobs:
         run: pnpm slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Dispatch update to docs
-        if: steps.changesets.outputs.published == 'true'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.SAGE_PAT }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: 'chakra-ui',
-              repo: 'zag-docs',
-              workflow_id: 'deps.yml',
-              ref: 'main'
-            })
