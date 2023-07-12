@@ -19,10 +19,6 @@ type PublicContext = CommonProperties & {
    */
   disabled?: boolean
   /**
-   * Whether to disable the click event. Useful of the root element is a label
-   */
-  disableClick?: boolean
-  /**
    * Whether to allow dropping files
    */
   dropzone?: boolean
@@ -39,29 +35,13 @@ type PublicContext = CommonProperties & {
    */
   maxFiles: number
   /**
-   * Function called the user drops files
-   */
-  onDrop?: (details: DropDetails) => void
-  /**
-   * Function called when the user drags files over the dropzone
-   */
-  onDragOver?: () => void
-  /**
    * Function called when files are dropped but rejected
    */
-  onDropRejected?: (details: DropDetails) => void
+  onAccepted?: (details: DropDetails) => void
   /**
    * Function called when files are dropped and accepted
    */
-  onDropAccepted?: (details: DropDetails) => void
-  /**
-   * Function called when the user drags files over the dropzone
-   */
-  onDragEnter?: () => void
-  /**
-   * Function called when the user drags files out of the dropzone
-   */
-  onDragLeave?: () => void
+  onRejected?: (details: DropDetails) => void
   /**
    * Function to validate a file
    */

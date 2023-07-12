@@ -16,9 +16,14 @@ const fetchMachine = createMachine({
     "isOutOfMaxFilesRange": false
   },
   on: {
-    "INPUT.CHANGE": {},
+    "INPUT.CHANGE": {
+      actions: ["setFilesFromEvent", "invokeOnChange"]
+    },
     "TARGET.SET": {
       actions: ["addDragTarget"]
+    },
+    "VALUE.SET": {
+      actions: ["setValue", "invokeOnChange"]
     }
   },
   on: {

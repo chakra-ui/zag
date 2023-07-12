@@ -45,12 +45,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       tabIndex: disabled ? undefined : 0,
       "aria-disabled": disabled,
+      "aria-invalid": state.context.invalid,
       "data-disabled": dataAttr(disabled),
       "data-dragging": dataAttr(isDragging),
       onKeyDown(event) {
         if (!isSelfEvent(event)) return
         if (event.key !== "Enter" && event.key !== " ") return
-        send("ROOT.CLICK")
+        send({ type: "ROOT.CLICK", src: "keydown" })
       },
       onClick(event) {
         if (disableClick) event.preventDefault()
@@ -105,18 +106,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
+      id: dom.getInputId(state.context),
       tabIndex: -1,
       disabled,
       type: "file",
       name: state.context.name,
       accept: state.context.acceptAttr,
-      multiple: state.context.multiple,
-      id: dom.getInputId(state.context),
+      multiple: state.context.multiple || state.context.maxFiles > 1,
       onClick(event) {
         event.stopPropagation()
       },
       onChange(event) {
-        send({ type: "INPUT.CHANGE", files: event.currentTarget.files })
+        if (disabled) return
+        const { files } = event.currentTarget
+        send({ type: "INPUT.CHANGE", files: files ? Array.from(files) : [] })
       },
       style: visuallyHiddenStyle,
     }),

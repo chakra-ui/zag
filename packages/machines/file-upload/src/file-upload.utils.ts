@@ -15,14 +15,15 @@ function isExt(v: string) {
   return /^.*\.[\w]+$/.test(v)
 }
 
-function accepts(file: File | null, acceptedFiles: string[] | string | undefined) {
-  if (file && acceptedFiles) {
-    const acceptedFilesArray = Array.isArray(acceptedFiles) ? acceptedFiles : acceptedFiles.split(",")
+function isAccepted(file: File | null, accept: string[] | string | undefined) {
+  if (file && accept) {
+    const types = Array.isArray(accept) ? accept : accept.split(",")
+
     const fileName = file.name || ""
     const mimeType = (file.type || "").toLowerCase()
     const baseMimeType = mimeType.replace(/\/.*$/, "")
 
-    return acceptedFilesArray.some((type) => {
+    return types.some((type) => {
       const validType = type.trim().toLowerCase()
 
       if (validType.charAt(0) === ".") {
@@ -41,7 +42,7 @@ function accepts(file: File | null, acceptedFiles: string[] | string | undefined
 
 const isDefined = <T>(v: T | undefined): v is T => v !== undefined && v !== null
 
-function fileMatchSize(file: File, minSize?: number, maxSize?: number): [boolean, string | null] {
+function isValidFileSize(file: File, minSize?: number, maxSize?: number): [boolean, string | null] {
   if (isDefined(file.size)) {
     if (isDefined(minSize) && isDefined(maxSize)) {
       if (file.size > maxSize) return [false, "TOO_LARGE"]
@@ -55,8 +56,8 @@ function fileMatchSize(file: File, minSize?: number, maxSize?: number): [boolean
   return [true, null]
 }
 
-function fileAccepted(file: File, accept: string | undefined): [boolean, string | null] {
-  const isAcceptable = file.type === "application/x-moz-file" || accepts(file, accept)
+function isValidFileType(file: File, accept: string | undefined): [boolean, string | null] {
+  const isAcceptable = file.type === "application/x-moz-file" || isAccepted(file, accept)
   return [isAcceptable, isAcceptable ? null : "FILE_INVALID_TYPE"]
 }
 
@@ -74,8 +75,8 @@ export function getFilesFromEvent(ctx: MachineContext, files: File[]) {
   const fileRejections: FileRejection[] = []
 
   files.forEach((file) => {
-    const [accepted, acceptError] = fileAccepted(file, ctx.acceptAttr)
-    const [sizeMatch, sizeError] = fileMatchSize(file, ctx.minSize, ctx.maxSize)
+    const [accepted, acceptError] = isValidFileType(file, ctx.acceptAttr)
+    const [sizeMatch, sizeError] = isValidFileSize(file, ctx.minSize, ctx.maxSize)
     const valid = !!ctx.isValidFile?.(file)
 
     if (accepted && sizeMatch && !valid) {

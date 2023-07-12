@@ -25,9 +25,14 @@ export function machine(userContext: UserDefinedContext) {
         acceptAttr: (ctx) => getAcceptAttrString(ctx.accept),
       },
       on: {
-        "INPUT.CHANGE": {},
+        "INPUT.CHANGE": {
+          actions: ["setFilesFromEvent", "invokeOnChange"],
+        },
         "TARGET.SET": {
           actions: ["addDragTarget"],
+        },
+        "VALUE.SET": {
+          actions: ["setValue", "invokeOnChange"],
         },
       },
       states: {
@@ -114,24 +119,14 @@ export function machine(userContext: UserDefinedContext) {
           ctx.validityState = null
         },
         setFilesFromEvent(ctx, evt) {
-          console.log("-----called")
           const result = getFilesFromEvent(ctx, evt.files)
           const { acceptedFiles, fileRejections } = result
-          console.log({ acceptedFiles, fileRejections })
-          // ctx.onDrop?.(result)
-          // if (result.fileRejections.length > 0) {
-          //   ctx.onDropRejected?.({ fileRejections, acceptedFiles: [] })
-          // }
-          // if (result.acceptedFiles.length > 0) {
-          //   ctx.onDropAccepted?.({ acceptedFiles, fileRejections: [] })
-          // }
-        },
-        invokeOnDragEnter(ctx) {
-          ctx.onDragEnter?.()
-        },
-        invokeOnDragLeave(ctx, evt) {
-          if (!evt.hasFiles) return
-          ctx.onDragLeave?.()
+          if (result.fileRejections.length > 0) {
+            ctx.onAccepted?.({ fileRejections, acceptedFiles: [] })
+          }
+          if (result.acceptedFiles.length > 0) {
+            ctx.onRejected?.({ acceptedFiles, fileRejections: [] })
+          }
         },
         invokeOnChange(ctx, evt) {
           ctx.onChange?.({ files: evt.files })
