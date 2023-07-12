@@ -2,7 +2,7 @@ import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { Send, SlideProps, State } from "./carousel.types"
+import type { Send, SlideIndicatorProps, SlideProps, State } from "./carousel.types"
 import { getSlidesInView } from "./utils/get-slide-in-view"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
@@ -168,18 +168,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     indicatorGroupProps: normalize.element({
       ...parts.indicatorGroup.attrs,
+      id: dom.getIndicatorGroupId(state.context),
       "data-orientation": state.context.orientation,
     }),
 
-    getIndicatorProps(props: { index: number }) {
-      const { index } = props
+    getIndicatorProps(props: SlideIndicatorProps) {
+      const { index, readOnly } = props
       return normalize.button({
         ...parts.indicator.attrs,
         id: dom.getIndicatorId(state.context, index),
         type: "button",
         "data-orientation": state.context.orientation,
         "data-index": index,
+        "data-readonly": dataAttr(readOnly),
         "data-current": dataAttr(index === state.context.index),
+        onClick() {
+          if (readOnly) return
+          send({ type: "GOTO", index })
+        },
       })
     },
   }

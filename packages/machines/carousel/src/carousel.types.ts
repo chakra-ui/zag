@@ -5,6 +5,11 @@ export type SlideProps = {
   index: number
 }
 
+export type SlideIndicatorProps = {
+  index: number
+  readOnly?: boolean
+}
+
 type ElementIds = Partial<{
   root: string
   viewport: string
