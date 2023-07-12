@@ -1,7 +1,7 @@
-import { focusContainmentEffect, FocusContainmentOptions } from "./focus-containment"
+import { focusContainmentEffect, type FocusContainmentOptions } from "./focus-containment"
 import { createFocusContext } from "./focus-context"
 import { focusGuardEffect } from "./focus-guard"
-import { focusMoveEffect, FocusMoveEffectOptions } from "./focus-move"
+import { focusMoveEffect, type FocusMoveEffectOptions } from "./focus-move"
 import { focusOnChildUnmountEffect } from "./focus-on-child-unmount"
 import { focusOutsideEffect } from "./focus-outside"
 
