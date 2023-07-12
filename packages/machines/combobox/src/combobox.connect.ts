@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
