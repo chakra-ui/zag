@@ -3,6 +3,8 @@ export { connect } from "./color-picker.connect"
 export { machine } from "./color-picker.machine"
 export type {
   Color,
+  ColorAxes,
+  ColorFormat,
   ColorAreaProps,
   ColorChannel,
   ColorChannelProps,
