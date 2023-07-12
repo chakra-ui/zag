@@ -200,6 +200,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -426,6 +429,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -628,6 +634,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -839,6 +848,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1044,6 +1056,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1603,6 +1618,28 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/file-upload:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/visually-hidden':
+        specifier: workspace:*
+        version: link:../../utilities/visually-hidden
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -2857,25 +2894,6 @@ packages:
       - supports-color
     dev: true
 
-  /@babel/helper-create-class-features-plugin@7.21.0(@babel/core@7.22.5):
-    resolution: {integrity: sha512-Q8wNiMIdwsv5la5SPxNYzzkPnjgC0Sy0i7jLkVOCdllu/xcVNkr3TeZzbHBJrj+XXRqzX5uCyCoV9eu6xUG7KQ==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-    dependencies:
-      '@babel/core': 7.22.5
-      '@babel/helper-annotate-as-pure': 7.18.6
-      '@babel/helper-environment-visitor': 7.22.5
-      '@babel/helper-function-name': 7.22.5
-      '@babel/helper-member-expression-to-functions': 7.21.0
-      '@babel/helper-optimise-call-expression': 7.18.6
-      '@babel/helper-replace-supers': 7.20.7
-      '@babel/helper-skip-transparent-expression-wrappers': 7.20.0
-      '@babel/helper-split-export-declaration': 7.22.6
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@babel/helper-create-class-features-plugin@7.22.6(@babel/core@7.22.5):
     resolution: {integrity: sha512-iwdzgtSiBxF6ni6mzVnZCF3xt5qE6cEA0J7nFt8QOAWZ0zjCFceEgpn3vtb2V7WFR6QzP2jmIFOHMTRo7eNJjQ==}
     engines: {node: '>=6.9.0'}
@@ -3160,16 +3178,6 @@ packages:
       '@babel/helper-plugin-utils': 7.20.2
     dev: true
 
-  /@babel/plugin-syntax-typescript@7.20.0(@babel/core@7.22.5):
-    resolution: {integrity: sha512-rd9TkG+u1CExzS4SM1BlMEhMXwFLKVjOAFFCDx9PbX5ycJWDoWMcwdJH9RhkPu1dOgn5TrxLot/Gx6lWFuAUNQ==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.22.5
-      '@babel/helper-plugin-utils': 7.20.2
-    dev: true
-
   /@babel/plugin-syntax-typescript@7.22.5(@babel/core@7.22.5):
     resolution: {integrity: sha512-1mS2o03i7t1c6VzH6fdQ3OA8tcEIxwG18zIPRp+UY1Ihv6W+XZzBCVxExF9upussPXJ0xE9XRHwMoNs1ep/nRQ==}
     engines: {node: '>=6.9.0'}
@@ -3210,20 +3218,6 @@ packages:
       '@babel/helper-create-class-features-plugin': 7.21.0(@babel/core@7.21.0)
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/plugin-syntax-typescript': 7.20.0(@babel/core@7.21.0)
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@babel/plugin-transform-typescript@7.21.0(@babel/core@7.22.5):
-    resolution: {integrity: sha512-xo///XTPp3mDzTtrqXoBlK9eiAYW3wv9JXglcn/u1bi60RW11dEUxIgA8cbnDhutS1zacjMRmAwxE0gMklLnZg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.22.5
-      '@babel/helper-create-class-features-plugin': 7.21.0(@babel/core@7.22.5)
-      '@babel/helper-plugin-utils': 7.22.5
-      '@babel/plugin-syntax-typescript': 7.20.0(@babel/core@7.22.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6792,9 +6786,9 @@ packages:
       vite: ^4.0.0
       vue: ^3.0.0
     dependencies:
-      '@babel/core': 7.22.5
-      '@babel/plugin-transform-typescript': 7.21.0(@babel/core@7.22.5)
-      '@vue/babel-plugin-jsx': 1.1.1(@babel/core@7.22.5)
+      '@babel/core': 7.21.0
+      '@babel/plugin-transform-typescript': 7.21.0(@babel/core@7.21.0)
+      '@vue/babel-plugin-jsx': 1.1.1(@babel/core@7.21.0)
       vite: 4.3.9(@types/node@20.4.1)
       vue: 3.3.4
     transitivePeerDependencies:

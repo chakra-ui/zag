@@ -940,7 +940,9 @@ main [data-testid="scrubber"] {
 [data-scope="dialog"][data-part="content"] {
   background-color: white;
   border-radius: 6px;
-  box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px;
+  box-shadow:
+    rgb(14 18 22 / 35%) 0px 10px 38px -10px,
+    rgb(14 18 22 / 20%) 0px 10px 20px -15px;
   width: 100%;
   max-width: 450px;
   max-height: 85vh;
@@ -1199,7 +1201,9 @@ main [data-testid="scrubber"] {
   background-color: red;
   z-index: 1;
   border-radius: 0.25rem;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 0.0625rem 0.1875rem, rgba(0, 0, 0, 0.1) 0px 0.0625rem 0.125rem;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 0.0625rem 0.1875rem,
+    rgba(0, 0, 0, 0.1) 0px 0.0625rem 0.125rem;
   background-color: rgb(255, 255, 255);
 }
 
@@ -1506,7 +1510,9 @@ main [data-testid="scrubber"] {
   border-radius: 9999px;
   box-sizing: border-box;
   transform: translate(-50%, -50%);
-  box-shadow: black 0px 0px 0px 1px, black 0px 0px 0px 1px inset;
+  box-shadow:
+    black 0px 0px 0px 1px,
+    black 0px 0px 0px 1px inset;
   width: 16px;
   height: 16px;
 }
@@ -1578,6 +1584,20 @@ main [data-testid="scrubber"] {
     opacity: 0;
     scale: 0.9;
   }
+}
+
+/* -----------------------------------------------------------------------------
+* File Upload
+* -----------------------------------------------------------------------------*/
+
+[data-scope="file-upload"][data-part="root"] {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: 16px;
+  padding: 24px;
+  border: 2px dashed #d5d5d5;
 }
 
 /* -----------------------------------------------------------------------------
