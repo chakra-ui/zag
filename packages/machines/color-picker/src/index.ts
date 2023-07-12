@@ -6,6 +6,7 @@ export type {
   ColorAreaProps,
   ColorChannel,
   ColorChannelProps,
+  ColorChannelInputProps,
   ColorSwatchProps,
   UserDefinedContext as Context,
 } from "./color-picker.types"
