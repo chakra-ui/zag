@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 0.11.1
+
+### Patch Changes
+
+- [`aa30f407`](https://github.com/chakra-ui/zag/commit/aa30f40792cf5b953a99e7ce97e43fb0cbc4afa2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix types exports
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.11.1
+  - @zag-js/core@0.11.1
+  - @zag-js/types@0.11.1
+  - @zag-js/color-utils@0.11.1
+  - @zag-js/utils@0.11.1
+  - @zag-js/dom-event@0.11.1
+  - @zag-js/dom-query@0.11.1
+  - @zag-js/numeric-range@0.11.1
+  - @zag-js/text-selection@0.11.1
+
 ## 0.11.0
 
 ### Patch Changes

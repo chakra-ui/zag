@@ -1,5 +1,19 @@
 # @zag-js/carousel
 
+## 0.11.1
+
+### Patch Changes
+
+- [`a88bee43`](https://github.com/chakra-ui/zag/commit/a88bee43969a8dc217619d14bd1b7c26a6305915) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose the types and add `onClick` to carousel indicator
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.11.1
+  - @zag-js/core@0.11.1
+  - @zag-js/types@0.11.1
+  - @zag-js/utils@0.11.1
+  - @zag-js/dom-query@0.11.1
+
 ## 0.11.0
 
 ### Patch Changes
