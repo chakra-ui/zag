@@ -1,4 +1,4 @@
-import { MachineContext } from "../carousel.types"
+import type { MachineContext } from "../carousel.types"
 import { getAlignment } from "./get-alignment"
 import { getLimit } from "./get-limit"
 import { getSlidesToScroll } from "./get-slide-groups"

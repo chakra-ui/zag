@@ -1,15 +1,15 @@
 import { mergeProps } from "@zag-js/core"
 import {
-  EventKeyMap,
   getEventKey,
   getEventPoint,
   getNativeEvent,
   isContextMenuEvent,
   isLeftClick,
   isModifiedEvent,
+  type EventKeyMap,
 } from "@zag-js/dom-event"
 import { dataAttr, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
-import { PositioningOptions, getPlacementStyles } from "@zag-js/popper"
+import { getPlacementStyles, type PositioningOptions } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"

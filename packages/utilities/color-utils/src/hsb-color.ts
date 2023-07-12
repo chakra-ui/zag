@@ -1,7 +1,7 @@
 import { Color } from "./color"
 import { HSLColor } from "./hsl-color"
 import { RGBColor } from "./rgb-color"
-import { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
+import type { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
 import { clampValue, mod, toFixedNumber } from "./utils"
 
 const HSB_REGEX =

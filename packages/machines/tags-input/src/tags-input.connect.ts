@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { type EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"

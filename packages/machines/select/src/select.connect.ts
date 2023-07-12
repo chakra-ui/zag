@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { type EventKeyMap, getEventKey } from "@zag-js/dom-event"
 import { isEditableElement, getByTypeahead, dataAttr, ariaAttr, isSelfEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"

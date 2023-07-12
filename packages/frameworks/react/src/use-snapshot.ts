@@ -1,8 +1,8 @@
 /// <reference types="react/experimental" />
 
-import { Snapshot, snapshot, subscribe } from "@zag-js/store"
-import ReactExports, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
+import { snapshot, subscribe, type Snapshot } from "@zag-js/store"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
+import ReactExports, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 
 const { use } = ReactExports
 

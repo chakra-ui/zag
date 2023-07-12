@@ -1,5 +1,5 @@
 import { isNumber } from "@zag-js/utils"
-import { MachineContext } from "../carousel.types"
+import type { MachineContext } from "../carousel.types"
 
 export function getSlidesToScroll(
   containerSize: number,

@@ -18,7 +18,15 @@ import { deepMerge } from "./deep-merge"
 import { determineDelayFn } from "./delay-utils"
 import { determineActionsFn, determineGuardFn } from "./guard-utils"
 import { determineTransitionFn } from "./transition-utils"
-import { ActionTypes, Dict, MachineStatus, MachineType, StateMachine as S, VoidFunction, Writable } from "./types"
+import {
+  ActionTypes,
+  MachineStatus,
+  MachineType,
+  type Dict,
+  type StateMachine as S,
+  type VoidFunction,
+  type Writable,
+} from "./types"
 import { structuredClone, toArray, toEvent } from "./utils"
 
 export class Machine<

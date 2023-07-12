@@ -1,4 +1,4 @@
-import { createRect, Rect } from "./rect"
+import { createRect, type Rect } from "./rect"
 
 const styleCache = new WeakMap<HTMLElement, any>()
 function getCacheComputedStyle(el: HTMLElement) {

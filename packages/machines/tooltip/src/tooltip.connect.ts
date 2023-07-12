@@ -1,5 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles, PositioningOptions } from "@zag-js/popper"
+import { getPlacementStyles, type PositioningOptions } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./tooltip.anatomy"

@@ -1,5 +1,5 @@
 import { isFocusable } from "./focusable"
-import { IncludeContainerType, focusableSelector, isFrame, hasNegativeTabIndex } from "./shared"
+import { focusableSelector, hasNegativeTabIndex, isFrame, type IncludeContainerType } from "./shared"
 
 /**
  * Returns the tabbable elements within the element

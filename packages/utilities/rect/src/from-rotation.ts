@@ -1,4 +1,4 @@
-import { createRect, getRectCorners, Rect } from "./rect"
+import { createRect, getRectCorners, type Rect } from "./rect"
 import type { Point } from "./types"
 
 export function toRad(d: number) {

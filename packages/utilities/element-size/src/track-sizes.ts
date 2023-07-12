@@ -1,4 +1,4 @@
-import { ElementSize, trackElementSize } from "./track-size"
+import { trackElementSize, type ElementSize } from "./track-size"
 
 export type TrackElementsSizeOptions<T extends HTMLElement | null> = {
   getNodes: () => T[]

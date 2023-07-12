@@ -1,4 +1,4 @@
-import { getRectCorners, isRect, Rect } from "./rect"
+import { getRectCorners, isRect, type Rect } from "./rect"
 import type { Point } from "./types"
 
 export function containsPoint(r: Rect, p: Point): boolean {

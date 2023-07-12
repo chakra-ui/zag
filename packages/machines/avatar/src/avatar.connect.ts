@@ -1,8 +1,8 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./avatar.anatomy"
 import { dom } from "./avatar.dom"
-import { Send, State } from "./avatar.types"
+import type { Send, State } from "./avatar.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isLoaded = state.matches("loaded")

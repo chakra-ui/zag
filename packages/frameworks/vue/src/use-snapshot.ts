@@ -1,5 +1,5 @@
 import { snapshot, subscribe } from "@zag-js/store"
-import { UnwrapRef, onUnmounted, ref } from "vue"
+import { onUnmounted, ref, type UnwrapRef } from "vue"
 
 export const useSnapshot = <T extends object>(object: T) => {
   const state = ref({} as T)

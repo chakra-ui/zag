@@ -4,7 +4,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { nextTick, raf } from "@zag-js/dom-query"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { compact, runIfFn } from "@zag-js/utils"
-import { createFocusTrap, FocusTrap } from "focus-trap"
+import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.types"
 

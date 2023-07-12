@@ -1,13 +1,13 @@
 import { contains, getEventTarget, raf } from "@zag-js/dom-query"
 import {
-  FocusOutsideEvent,
-  InteractOutsideHandlers,
-  PointerDownOutsideEvent,
   trackInteractOutside,
+  type FocusOutsideEvent,
+  type InteractOutsideHandlers,
+  type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
 import { warn } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { Layer, layerStack } from "./layer-stack"
+import { layerStack, type Layer } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null

@@ -1,4 +1,4 @@
-import { MachineContext } from "../carousel.types"
+import type { MachineContext } from "../carousel.types"
 
 export type SlideSizesType = {
   slideSizes: number[]

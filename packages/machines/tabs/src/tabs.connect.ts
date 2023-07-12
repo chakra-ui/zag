@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { type EventKeyMap, getEventKey } from "@zag-js/dom-event"
 import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"

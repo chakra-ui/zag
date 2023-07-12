@@ -1,4 +1,4 @@
-import { EventKeyMap, getEventPoint, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { type EventKeyMap, getEventPoint, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"

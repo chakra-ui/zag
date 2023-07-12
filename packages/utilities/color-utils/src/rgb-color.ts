@@ -1,7 +1,7 @@
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
-import { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
+import type { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
 import { clampValue, toFixedNumber } from "./utils"
 
 export class RGBColor extends Color {

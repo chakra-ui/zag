@@ -1,10 +1,10 @@
 import {
-  EventKeyMap,
   getEventKey,
   getEventPoint,
   getNativeEvent,
   getRelativePoint,
   isLeftClick,
+  type EventKeyMap,
 } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"

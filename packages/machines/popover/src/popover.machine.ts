@@ -6,7 +6,7 @@ import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { proxyTabFocus } from "@zag-js/tabbable"
 import { compact, runIfFn } from "@zag-js/utils"
-import { FocusTrap, createFocusTrap } from "focus-trap"
+import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
 

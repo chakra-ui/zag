@@ -1,5 +1,5 @@
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
-import { State, Send } from "./presence.types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { State, Send } from "./presence.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   void normalize
