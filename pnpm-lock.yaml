@@ -1637,6 +1637,9 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
