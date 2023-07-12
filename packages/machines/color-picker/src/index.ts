@@ -10,5 +10,6 @@ export type {
   ColorChannelProps,
   ColorChannelInputProps,
   ColorSwatchProps,
+  ColorType,
   UserDefinedContext as Context,
 } from "./color-picker.types"

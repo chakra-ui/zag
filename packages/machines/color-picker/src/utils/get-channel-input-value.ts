@@ -1,4 +1,4 @@
-import { Color } from "@zag-js/color-utils"
+import { type Color } from "@zag-js/color-utils"
 import { ExtendedColorChannel } from "../color-picker.types"
 
 export function getChannelInputValue(color: Color, channel: ExtendedColorChannel) {

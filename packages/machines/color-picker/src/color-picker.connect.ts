@@ -1,18 +1,18 @@
-import { Color, normalizeColor, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
+import { normalizeColor, type Color, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
 import {
-  EventKeyMap,
   getEventKey,
   getEventPoint,
   getEventStep,
   getNativeEvent,
   isLeftClick,
   isModifiedEvent,
+  type EventKeyMap,
 } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
-import {
+import type {
   ColorAreaProps,
   ColorChannelInputProps,
   ColorChannelProps,

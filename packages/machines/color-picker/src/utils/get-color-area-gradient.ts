@@ -1,4 +1,4 @@
-import { type ColorChannel } from "@zag-js/color-utils"
+import type { ColorChannel } from "@zag-js/color-utils"
 import { Style } from "@zag-js/types"
 import { MachineContext } from "../color-picker.types"
 import {
