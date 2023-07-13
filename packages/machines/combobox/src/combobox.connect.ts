@@ -4,9 +4,9 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
-import type { OptionData, OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
+import type { OptionData, OptionGroupProps, OptionProps, PublicApi, Send, State } from "./combobox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const translations = state.context.translations
 
   const isDisabled = state.context.disabled

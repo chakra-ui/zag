@@ -25,7 +25,17 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
-import type { CellProps, DateView, DayCellProps, GridProps, Offset, Send, State, ViewProps } from "./date-picker.types"
+import type {
+  CellProps,
+  DateView,
+  DayCellProps,
+  GridProps,
+  Offset,
+  PublicApi,
+  Send,
+  State,
+  ViewProps,
+} from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   ensureValidCharacters,
@@ -42,7 +52,7 @@ import {
 
 const pretty = (value: DateValue) => value.toString().split("T")[0]
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const startValue = state.context.startValue
   const endValue = state.context.endValue
   const selectedValue = state.context.value
@@ -73,36 +83,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const separator = getLocaleSeparator(locale)
 
   const api = {
-    /**
-     * Whether the input is focused
-     */
     isFocused,
-
-    /**
-     * Whether the date picker is open
-     */
     isOpen,
-
-    /**
-     * The current view of the date picker
-     */
     view: state.context.view,
 
-    /**
-     * Matcher for the current view of the date picker
-     */
     matchView,
 
-    /**
-     * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
-     */
     getDaysInWeek(weekIndex: number, from = startValue) {
       return getDaysInWeek(weekIndex, from, locale, startOfWeek)
     },
 
-    /**
-     * Returns the offset of the month based on the provided number of months.
-     */
     getOffset(months: number) {
       const from = startValue.add({ months })
       return {
@@ -112,101 +102,46 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
     },
 
-    /**
-     * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
-     */
     getMonthDays(from = startValue) {
       const numOfWeeks = state.context.fixedWeeks ? 6 : undefined
       return getMonthDays(from, locale, numOfWeeks, startOfWeek)
     },
 
-    /**
-     * Returns whether the provided date is available (or can be selected)
-     */
     isUnavailable(date: DateValue) {
       return isDateUnavailable(date, isDateUnavailableFn, locale, min, max)
     },
 
-    /**
-     * The weeks of the month. Represented as an array of arrays of dates.
-     */
     get weeks() {
       return api.getMonthDays()
     },
 
-    /**
-     * The days of the week. Represented as an array of strings.
-     */
     weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
-
-    /**
-     * The human readable text for the visible range of dates.
-     */
     visibleRangeText: state.context.visibleRangeText,
-
-    /**
-     * The selected date.
-     */
     value: selectedValue,
-
-    /**
-     * The selected date as a Date object.
-     */
     valueAsDate: selectedValue.map((date) => date.toDate(timeZone)),
-
-    /**
-     * The selected date as a string.
-     */
     valueAsString: selectedValue.map(pretty),
-
-    /**
-     * The focused date.
-     */
     focusedValue: focusedValue,
-
-    /**
-     * The focused date as a Date object.
-     */
     focusedValueAsDate: focusedValue?.toDate(timeZone),
-
-    /**
-     * The focused date as a string.
-     */
     focusedValueAsString: pretty(focusedValue),
 
-    /**
-     * Sets the selected date to today.
-     */
     selectToday() {
       const value = constrainValue(getTodayDate(timeZone), min, max)
       send({ type: "VALUE.SET", value })
     },
 
-    /**
-     * Sets the selected date to the given date.
-     */
     setValue(values: CalendarDate[]) {
       const computedValue = values.map((date) => constrainValue(date, min, max))
       send({ type: "VALUE.SET", value: computedValue })
     },
 
-    /**
-     * Sets the focused date to the given date.
-     */
     setFocusedValue(value: CalendarDate) {
       send({ type: "FOCUS.SET", value })
     },
 
-    /**
-     * Clears the selected date(s).
-     */
     clearValue() {
       send("VALUE.CLEAR")
     },
 
-    /**
-     * Function to open the calendar.
-     */
     open() {
       send("OPEN")
     },
@@ -218,92 +153,54 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
 
-    /**
-     * Function to set the selected month.
-     */
     focusMonth(month: number) {
       const value = setMonth(focusedValue ?? getTodayDate(timeZone), month)
       send({ type: "FOCUS.SET", value })
     },
 
-    /**
-     * Function to set the selected year.
-     */
     focusYear(year: number) {
       const value = setYear(focusedValue ?? getTodayDate(timeZone), year)
       send({ type: "FOCUS.SET", value })
     },
 
-    /**
-     * The visible range of dates.
-     */
     visibleRange: state.context.visibleRange,
 
-    /**
-     * Returns the months of the year
-     */
     getYears() {
       return getDecadeRange(focusedValue.year).map((year) => ({ label: year.toString(), value: year }))
     },
 
-    /**
-     * Returns the years of the decade based on the columns.
-     * Represented as an array of arrays of years.
-     */
     getYearsGrid(props: { columns?: number } = {}) {
       const { columns = 1 } = props
       return chunk(api.getYears(), columns)
     },
 
-    /**
-     * Returns the start and end years of the decade.
-     */
     getDecade() {
       const years = getDecadeRange(focusedValue.year)
       return { start: years.at(0), end: years.at(-1) }
     },
 
-    /**
-     * Returns the months of the year
-     */
     getMonths(props: { format?: "short" | "long" } = {}) {
       const { format } = props
       return getMonthNames(locale, format).map((label, index) => ({ label, value: index + 1 }))
     },
 
-    /**
-     * Returns the months of the year based on the columns.
-     * Represented as an array of arrays of months.
-     */
     getMonthsGrid(props: { columns?: number; format?: "short" | "long" } = {}) {
       const { columns = 1, format } = props
       return chunk(api.getMonths({ format }), columns)
     },
 
-    /**
-     * Formats the given date value based on the provided options.
-     */
     format(value: CalendarDate, opts: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" }) {
       return new DateFormatter(locale, opts).format(value.toDate(timeZone))
     },
 
-    /**
-     * Sets the view of the date picker.
-     */
     setView(view: DateView) {
       send({ type: "VIEW.SET", cell: view })
     },
 
-    /**
-     * Goes to the next month/year/decade.
-     */
     goToNext() {
       send({ type: "GOTO.NEXT", view: state.context.view })
     },
 
-    /**
-     * Goes to the previous month/year/decade.
-     */
     goToPrev() {
       send({ type: "GOTO.PREV", view: state.context.view })
     },
@@ -391,9 +288,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    /**
-     * Returns the state details for a given cell.
-     */
     getDayCellState(props: DayCellProps) {
       const { value, disabled, offset = defaultOffset } = props
       const { visibleRange } = offset

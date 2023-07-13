@@ -14,6 +14,7 @@ export type {
   DayCellProps,
   GridProps,
   Offset,
+  PublicApi,
   SelectionMode,
   Send,
   State,
