@@ -1,14 +1,22 @@
-import { type EventKeyMap, getEventKey } from "@zag-js/dom-event"
-import { isEditableElement, getByTypeahead, dataAttr, ariaAttr, isSelfEvent } from "@zag-js/dom-query"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr, getByTypeahead, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
-import type { Option, OptionGroupLabelProps, OptionGroupProps, OptionProps, Send, State } from "./select.types"
+import type {
+  Option,
+  OptionGroupLabelProps,
+  OptionGroupProps,
+  OptionProps,
+  PublicApi,
+  Send,
+  State,
+} from "./select.types"
 import * as utils from "./select.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const disabled = state.context.disabled
   const invalid = state.context.invalid
   const isInteractive = state.context.isInteractive
@@ -33,59 +41,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    /**
-     * Whether the select is open
-     */
     isOpen,
-    /**
-     * The currently highlighted option
-     */
     highlightedOption,
-    /**
-     * The currently selected option
-     */
     selectedOption,
-    /**
-     * Function to focus the select
-     */
+
     focus() {
       dom.getTriggerElement(state.context)?.focus()
     },
-    /**
-     * Function to open the select
-     */
+
     open() {
       send("OPEN")
     },
-    /**
-     * Function to close the select
-     */
+
     close() {
       send("CLOSE")
     },
-    /**
-     * Function to set the selected option
-     */
+
     setSelectedOption(value: Option) {
       utils.validateOptionData(value)
       send({ type: "SELECT_OPTION", value })
     },
-    /**
-     * Function to set the highlighted option
-     */
+
     setHighlightedOption(value: Option) {
       utils.validateOptionData(value)
       send({ type: "HIGHLIGHT_OPTION", value })
     },
-    /**
-     * Function to clear the selected option
-     */
+
     clearSelectedOption() {
       send({ type: "CLEAR_SELECTED" })
     },
-    /**
-     * Returns the state details of an option
-     */
+
     getOptionState,
 
     labelProps: normalize.label({
