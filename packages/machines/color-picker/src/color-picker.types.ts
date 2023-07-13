@@ -1,6 +1,6 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, Orientation, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type ColorChannelProps = {
   channel: ColorChannel
@@ -68,6 +68,48 @@ type PublicContext = CommonProperties & {
    * Handler that is called when the user stops dragging.
    */
   onChangeEnd?: (details: ChangeDetails) => void
+}
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the color picker is being dragged
+   */
+  isDragging: boolean
+  /**
+   * The current color value (as a string)
+   */
+  value: string
+  /**
+   * The current color value (as a Color object)
+   */
+  valueAsColor: Color
+  /**
+   * The current color channels of the color
+   */
+  channels: [ColorChannel, ColorChannel, ColorChannel]
+  /**
+   * Function to set the color value
+   */
+  setColor(value: string | Color): void
+  /**
+   * Function to set the color value of a specific channel
+   */
+  setChannelValue(channel: ColorChannel, value: number): void
+  /**
+   * Function to set the color format
+   */
+  setFormat(format: ColorFormat): void
+  contentProps: T["element"]
+  getAreaProps(props: ColorAreaProps): T["element"]
+  getAreaGradientProps(props: ColorAreaProps): T["element"]
+  getAreaThumbProps(props: ColorAreaProps): T["element"]
+  getChannelSliderTrackProps(props: ColorChannelProps): T["element"]
+  getChannelSliderBackgroundProps(props: ColorChannelProps): T["element"]
+  getChannelSliderThumbProps(props: ColorChannelProps): T["element"]
+  getChannelInputProps(props: ColorChannelInputProps): T["input"]
+  eyeDropperTriggerProps: T["button"]
+  getSwatchBackgroundProps(props: ColorSwatchProps): T["element"]
+  getSwatchProps(props: ColorSwatchProps): T["element"]
 }
 
 type PrivateContext = Context<{

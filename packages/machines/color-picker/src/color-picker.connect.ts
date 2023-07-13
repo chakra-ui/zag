@@ -35,38 +35,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const channels = valueAsColor.getColorChannels()
 
   return {
-    /**
-     * Whether the color picker is being dragged
-     */
     isDragging,
-    /**
-     * The current color value (as a string)
-     */
     value: state.context.value,
-    /**
-     * The current color value (as a Color object)
-     */
     valueAsColor,
-    /**
-     * The current color channels of the color
-     */
     channels,
-    /**
-     * Function to set the color value
-     */
+
     setColor(value: string | Color) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
     },
-    /**
-     * Function to set the color value of a specific channel
-     */
+
     setChannelValue(channel: ColorChannel, value: number) {
       const color = valueAsColor.withChannelValue(channel, value)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-    /**
-     * Function to set the color format
-     */
+
     setFormat(format: ColorFormat) {
       const value = valueAsColor.toFormat(format)
       send({ type: "VALUE.SET", value, src: "set-format" })
