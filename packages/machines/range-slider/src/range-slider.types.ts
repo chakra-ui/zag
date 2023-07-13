@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -93,6 +93,79 @@ type PublicContext = DirectionProperty &
      */
     thumbAlignment?: "contain" | "center"
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The value of the slider.
+   */
+  value: number[]
+  /**
+   * Whether the slider is being dragged.
+   */
+  isDragging: boolean
+  /**
+   * Whether the slider is focused.
+   */
+  isFocused: boolean
+  /**
+   * Function to set the value of the slider.
+   */
+  setValue(value: number[]): void
+  /**
+   * Returns the value of the thumb at the given index.
+   */
+  getThumbValue(index: number): number
+  /**
+   * Sets the value of the thumb at the given index.
+   */
+  setThumbValue(index: number, value: number): void
+  /**
+   * Returns the percent of the thumb at the given index.
+   */
+  getValuePercent: (value: number) => number
+  /**
+   * Returns the value of the thumb at the given percent.
+   */
+  getPercentValue: (percent: number) => number
+  /**
+   * Returns the percent of the thumb at the given index.
+   */
+  getThumbPercent(index: number): number
+  /**
+   * Sets the percent of the thumb at the given index.
+   */
+  setThumbPercent(index: number, percent: number): void
+  /**
+   * Returns the min value of the thumb at the given index.
+   */
+  getThumbMin(index: number): number
+  /**
+   * Returns the max value of the thumb at the given index.
+   */
+  getThumbMax(index: number): number
+  /**
+   * Function to increment the value of the slider at the given index.
+   */
+  increment(index: number): void
+  /**
+   * Function to decrement the value of the slider at the given index.
+   */
+  decrement(index: number): void
+  /**
+   * Function to focus the slider. This focuses the first thumb.
+   */
+  focus(): void
+  labelProps: T["label"]
+  rootProps: T["element"]
+  outputProps: T["output"]
+  trackProps: T["element"]
+  getThumbProps(index: number): T["element"]
+  getHiddenInputProps(index: number): T["input"]
+  rangeProps: T["element"]
+  controlProps: T["element"]
+  markerGroupProps: T["element"]
+  getMarkerProps({ value }: { value: number }): T["element"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

@@ -12,10 +12,10 @@ import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./range-slider.anatomy"
 import { dom } from "./range-slider.dom"
-import type { Send, State } from "./range-slider.types"
+import type { PublicApi, Send, State } from "./range-slider.types"
 import { getRangeAtIndex } from "./range-slider.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const sliderValue = state.context.value
@@ -38,84 +38,51 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   // TODO - getThumbState
 
   return {
-    /**
-     * The value of the slider.
-     */
     value: state.context.value,
-    /**
-     * Whether the slider is being dragged.
-     */
     isDragging,
-    /**
-     * Whether the slider is focused.
-     */
     isFocused,
-    /**
-     * Function to set the value of the slider.
-     */
+
     setValue(value: number[]) {
       send({ type: "SET_VALUE", value: value })
     },
-    /**
-     * Returns the value of the thumb at the given index.
-     */
+
     getThumbValue(index: number) {
       return sliderValue[index]
     },
-    /**
-     * Sets the value of the thumb at the given index.
-     */
+
     setThumbValue(index: number, value: number) {
       send({ type: "SET_VALUE", index, value })
     },
-    /**
-     * Returns the percent of the thumb at the given index.
-     */
+
     getValuePercent: getValuePercentFn,
-    /**
-     * Returns the value of the thumb at the given percent.
-     */
+
     getPercentValue: getPercentValueFn,
-    /**
-     * Returns the percent of the thumb at the given index.
-     */
+
     getThumbPercent(index: number) {
       return getValuePercentFn(sliderValue[index])
     },
-    /**
-     * Sets the percent of the thumb at the given index.
-     */
+
     setThumbPercent(index: number, percent: number) {
       const value = getPercentValueFn(percent)
       send({ type: "SET_VALUE", index, value })
     },
-    /**
-     * Returns the min value of the thumb at the given index.
-     */
+
     getThumbMin(index: number) {
       return getRangeAtIndex(state.context, index).min
     },
-    /**
-     * Returns the max value of the thumb at the given index.
-     */
+
     getThumbMax(index: number) {
       return getRangeAtIndex(state.context, index).max
     },
-    /**
-     * Function to increment the value of the slider at the given index.
-     */
+
     increment(index: number) {
       send({ type: "INCREMENT", index })
     },
-    /**
-     * Function to decrement the value of the slider at the given index.
-     */
+
     decrement(index: number) {
       send({ type: "DECREMENT", index })
     },
-    /**
-     * Function to focus the slider. This focuses the first thumb.
-     */
+
     focus() {
       if (!isInteractive) return
       send({ type: "FOCUS", index: 0 })
