@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
@@ -153,6 +153,68 @@ type PublicContext = DirectionProperty &
      */
     spinOnPress?: boolean
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the input is focused.
+   */
+  isFocused: boolean
+  /**
+   * Whether the input is invalid.
+   */
+  isInvalid: boolean
+  /**
+   * Whether the input value is empty.
+   */
+  isValueEmpty: boolean
+  /**
+   * The formatted value of the input.
+   */
+  value: string
+  /**
+   * The value of the input as a number.
+   */
+  valueAsNumber: number
+  /**
+   * Function to set the value of the input.
+   */
+  setValue(value: string | number): void
+  /**
+   * Function to clear the value of the input.
+   */
+  clearValue(): void
+  /**
+   * Function to increment the value of the input by the step.
+   */
+  increment(): void
+  /**
+   * Function to decrement the value of the input by the step.
+   */
+  decrement(): void
+  /**
+   * Function to set the value of the input to the max.
+   */
+  setToMax(): void
+  /**
+   * Function to set the value of the input to the min.
+   */
+  setToMin(): void
+  /**
+   * Function to focus the input.
+   */
+  focus(): void
+  /**
+   * Function to blur the input.
+   */
+  blur(): void
+  rootProps: T["element"]
+  labelProps: T["label"]
+  controlProps: T["element"]
+  inputProps: T["input"]
+  decrementTriggerProps: T["button"]
+  incrementTriggerProps: T["button"]
+  scrubberProps: T["element"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
