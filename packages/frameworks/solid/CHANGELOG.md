@@ -1,5 +1,17 @@
 # @zag-js/solid
 
+## 0.11.2
+
+### Patch Changes
+
+- [`0a2af673`](https://github.com/chakra-ui/zag/commit/0a2af67370de5ad4a4fd501f51c78aa76e6f3bf2) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/core@0.11.2
+  - @zag-js/store@0.11.2
+  - @zag-js/types@0.11.2
+
 ## 0.11.1
 
 ### Patch Changes
