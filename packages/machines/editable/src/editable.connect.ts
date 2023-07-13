@@ -3,9 +3,9 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
-import type { Send, State } from "./editable.types"
+import type { PublicApi, Send, State } from "./editable.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
   const isReadOnly = state.context.readOnly
@@ -22,33 +22,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
 
   return {
-    /**
-     * Whether the editable is in edit mode
-     */
     isEditing,
-    /**
-     * Whether the editable value is empty
-     */
     isValueEmpty: isValueEmpty,
-    /**
-     * The current value of the editable
-     */
     value: state.context.value,
-    /**
-     * Function to set the value of the editable
-     */
+
     setValue(value: string) {
       send({ type: "SET_VALUE", value })
     },
-    /**
-     * Function to clear the value of the editable
-     */
+
     clearValue() {
       send({ type: "SET_VALUE", value: "" })
     },
-    /**
-     * Function to enter edit mode
-     */
+
     edit() {
       if (!isInteractive) return
       send("EDIT")
@@ -60,9 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       if (!isInteractive) return
       send("CANCEL")
     },
-    /**
-     * Function to exit edit mode, and submit any changes
-     */
+
     submit() {
       if (!isInteractive) return
       send("SUBMIT")
