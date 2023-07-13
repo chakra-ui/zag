@@ -21,41 +21,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    /**
-     * Whether the checkbox is checked
-     */
     isChecked,
-
-    /**
-     * Whether the checkbox is disabled
-     */
     isDisabled,
-
-    /**
-     * Whether the checkbox is indeterminate
-     */
     isIndeterminate: state.context.isIndeterminate,
-
-    /**
-     * Whether the checkbox is focused
-     */
     isFocused,
-
-    /**
-     *  The checked state of the checkbox
-     */
     checkedState: state.context.checked,
 
-    /**
-     * Function to set the checked state of the checkbox
-     */
     setChecked(checked: CheckedState) {
       send({ type: "DISPATCH.CHANGE", checked })
     },
 
-    /**
-     * Function to toggle the checked state of the checkbox
-     */
     toggleChecked() {
       send({ type: "CHECKED.TOGGLE", checked: isChecked })
     },
