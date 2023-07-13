@@ -3,26 +3,6 @@ import { join } from "path"
 import { ModuleResolutionKind, Project, SourceFile, Symbol, TypeChecker } from "ts-morph"
 import { getMachinePackages } from "./get-packages"
 
-function getConnectReturnType(sourceFile: SourceFile | undefined, typeChecker?: TypeChecker) {
-  if (!sourceFile) return {}
-
-  const returnType = sourceFile.getFunction("connect")?.getReturnType()
-
-  const result: Record<string, { type: string; description: string }> = {}
-
-  returnType?.getProperties().forEach((property) => {
-    const name = property.getName()
-    const type = property.getValueDeclaration()?.getType().getText()
-    const description = getDescription(property, typeChecker)
-
-    if (type && description) {
-      result[name] = { type: trimType(type), description }
-    }
-  })
-
-  return result
-}
-
 function trimType(value: string) {
   return value.replace(/import\(".*"\)\./, "")
 }
@@ -30,7 +10,7 @@ function trimType(value: string) {
 function getDefaultValue(property: Symbol) {
   const tags = property.getJsDocTags()
   const [defaultValue] = tags.find((tag) => tag.getName() === "default")?.getText() ?? []
-  return defaultValue?.text ?? null
+  return defaultValue?.text
 }
 
 function getDescription(property: Symbol, typeChecker?: TypeChecker) {
@@ -39,16 +19,17 @@ function getDescription(property: Symbol, typeChecker?: TypeChecker) {
   return description?.text
 }
 
-function getContextReturnType(sourceFile: SourceFile | undefined, typeChecker?: TypeChecker) {
+function getContextReturnType(sourceFile: SourceFile | undefined, typeAlias: string, typeChecker?: TypeChecker) {
   if (!sourceFile) return {}
 
   const result: Record<string, { type: string; description: string; defaultValue: string | null }> = {}
 
-  const contextType = sourceFile.getTypeAlias("PublicContext")?.getType()
+  const contextType = sourceFile.getTypeAlias(typeAlias)?.getType()
 
   contextType?.getProperties().forEach((property) => {
     const name = property.getName()
     const type = property.getValueDeclaration()?.getType()?.getText()
+
     const defaultValue = getDefaultValue(property)
     const description = getDescription(property, typeChecker)
 
@@ -77,18 +58,16 @@ async function main() {
     const baseDir = dir.split("/").pop()!
     const glob = `${dir}/src/**/*.ts`
 
-    const connectFilePath = `${dir}/src/${baseDir}.connect.ts`
     const typesFilePath = `${dir}/src/${baseDir}.types.ts`
 
     project.addSourceFilesAtPaths(glob)
 
-    const connectSrc = project.getSourceFile(connectFilePath)
-    const connectType = getConnectReturnType(connectSrc, typeChecker)
-
     const contextSrc = project.getSourceFile(typesFilePath)
-    const contextType = getContextReturnType(contextSrc, typeChecker)
 
-    result[baseDir] = { api: connectType, context: contextType }
+    const publicContext = getContextReturnType(contextSrc, "PublicContext", typeChecker)
+    const publicApi = getContextReturnType(contextSrc, "PublicApi", typeChecker)
+
+    result[baseDir] = { api: publicApi, context: publicContext }
   }
 
   const outPath = join(process.cwd(), "packages", "docs", "api.json")

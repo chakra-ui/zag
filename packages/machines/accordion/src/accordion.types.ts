@@ -47,9 +47,21 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   getItemProps(props: ItemProps): T["element"]
   getContentProps(props: ItemProps): T["element"]
   getTriggerProps(props: ItemProps): T["button"]
+  /**
+   * The value of the focused accordion item.
+   */
   focusedValue: string | null
+  /**
+   * The value of the accordion
+   */
   value: string | string[] | null
+  /**
+   * Sets the value of the accordion.
+   */
   setValue: (value: string | string[]) => void
+  /**
+   * Gets the state of an accordion item.
+   */
   getItemState: (props: ItemProps) => ItemState
 }
 
