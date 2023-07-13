@@ -1,9 +1,35 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, PropTypes, RequiredBy } from "@zag-js/types"
 
 type PublicContext = CommonProperties & {
   onLoad?: () => void
   onError?: () => void
+}
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the image is loaded.
+   */
+  isLoaded: boolean
+  /**
+   * Whether the fallback is shown.
+   */
+  showFallback: boolean
+  /**
+   * Function to set new src.
+   */
+  setSrc(src: string): void
+  /**
+   * Function to set loaded state.
+   */
+  setLoaded(): void
+  /**
+   * Function to set error state.
+   */
+  setError(): void
+  rootProps: T["element"]
+  imageProps: T["img"]
+  fallbackProps: T["element"]
 }
 
 type PrivateContext = Context<{}>

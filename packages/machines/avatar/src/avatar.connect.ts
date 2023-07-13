@@ -2,36 +2,23 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./avatar.anatomy"
 import { dom } from "./avatar.dom"
-import type { Send, State } from "./avatar.types"
+import type { PublicApi, Send, State } from "./avatar.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isLoaded = state.matches("loaded")
   const showFallback = !isLoaded
 
   return {
-    /**
-     * Whether the image is loaded.
-     */
     isLoaded,
-    /**
-     * Whether the fallback is shown.
-     */
     showFallback,
-    /**
-     * Function to set new src.
-     */
     setSrc(src: string) {
       send({ type: "SRC.SET", src })
     },
-    /**
-     * Function to set loaded state.
-     */
+
     setLoaded() {
       send({ type: "IMG.LOADED", src: "api" })
     },
-    /**
-     * Function to set error state.
-     */
+
     setError() {
       send({ type: "IMG.ERROR", src: "api" })
     },
