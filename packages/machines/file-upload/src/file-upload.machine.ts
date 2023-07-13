@@ -2,7 +2,7 @@ import { createMachine, guards, ref } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
-import { MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
 import { getAcceptAttrString, getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
 
 const { not } = guards
