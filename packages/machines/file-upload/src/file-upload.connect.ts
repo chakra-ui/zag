@@ -1,9 +1,9 @@
 import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
 import { dom } from "./file-upload.dom"
-import { Send, State } from "./file-upload.types"
+import { type Send, type State } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {

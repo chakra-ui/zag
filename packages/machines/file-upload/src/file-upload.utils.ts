@@ -1,4 +1,4 @@
-import { MachineContext, RejectedFile } from "./file-upload.types"
+import { type MachineContext, type RejectedFile } from "./file-upload.types"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
   if (!event.dataTransfer) {
