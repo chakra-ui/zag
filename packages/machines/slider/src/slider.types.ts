@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -98,6 +98,59 @@ type PublicContext = DirectionProperty &
      */
     thumbAlignment?: "contain" | "center"
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the slider is focused.
+   */
+  isFocused: boolean
+  /**
+   * Whether the slider is being dragged.
+   */
+  isDragging: boolean
+  /**
+   * The value of the slider.
+   */
+  value: number
+  /**
+   * The value of the slider as a percent.
+   */
+  percent: number
+  /**
+   * Function to set the value of the slider.
+   */
+  setValue(value: number): void
+  /**
+   * Returns the value of the slider at the given percent.
+   */
+  getPercentValue: (percent: number) => number
+  /**
+   * Returns the percent of the slider at the given value.
+   */
+  getValuePercent: (value: number) => number
+  /**
+   * Function to focus the slider.
+   */
+  focus(): void
+  /**
+   * Function to increment the value of the slider by the step.
+   */
+  increment(): void
+  /**
+   * Function to decrement the value of the slider by the step.
+   */
+  decrement(): void
+  rootProps: T["element"]
+  labelProps: T["label"]
+  thumbProps: T["element"]
+  hiddenInputProps: T["input"]
+  outputProps: T["output"]
+  trackProps: T["element"]
+  rangeProps: T["element"]
+  controlProps: T["element"]
+  markerGroupProps: T["element"]
+  getMarkerProps({ value }: { value: number }): T["element"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
