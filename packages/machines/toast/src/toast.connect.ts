@@ -2,9 +2,9 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { Send, State } from "./toast.types"
+import type { PublicApi, Send, State } from "./toast.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
 
@@ -12,55 +12,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const placement = state.context.placement
 
   return {
-    /**
-     * The type of the toast.
-     */
     type: state.context.type,
-    /**
-     * The title of the toast.
-     */
     title: state.context.title,
-    /**
-     *  The description of the toast.
-     */
     description: state.context.description,
-    /**
-     * The current placement of the toast.
-     */
     placement,
-    /**
-     * Whether the toast is visible.
-     */
     isVisible,
-    /**
-     * Whether the toast is paused.
-     */
     isPaused,
-    /**
-     * Whether the toast is in RTL mode.
-     */
     isRtl: state.context.dir === "rtl",
-    /**
-     * Function to pause the toast (keeping it visible).
-     */
+
     pause() {
       send("PAUSE")
     },
-    /**
-     * Function to resume the toast dismissing.
-     */
+
     resume() {
       send("RESUME")
     },
-    /**
-     * Function to instantly dismiss the toast.
-     */
+
     dismiss() {
       send("DISMISS")
     },
-    /**
-     * Function render the toast in the DOM (based on the defined `render` property)
-     */
+
     render() {
       return state.context.render?.({
         id: state.context.id,

@@ -11,6 +11,7 @@ export type {
   MachineContext,
   MachineState,
   Placement,
+  PublicApi,
   Service,
   ToastOptions,
   Type,

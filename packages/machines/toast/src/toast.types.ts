@@ -1,5 +1,13 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, Direction, DirectionProperty, RequiredBy, RootProperties } from "@zag-js/types"
+import type {
+  CommonProperties,
+  Context,
+  Direction,
+  DirectionProperty,
+  PropTypes,
+  RequiredBy,
+  RootProperties,
+} from "@zag-js/types"
 
 export type Type = "success" | "error" | "loading" | "info" | "custom"
 
@@ -128,6 +136,57 @@ type GroupPublicContext = SharedContext &
      */
     offsets: string | Record<"left" | "right" | "bottom" | "top", string>
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The type of the toast.
+   */
+  type: Type
+  /**
+   * The title of the toast.
+   */
+  title: string | undefined
+  /**
+   *  The description of the toast.
+   */
+  description: string | undefined
+  /**
+   * The current placement of the toast.
+   */
+  placement: Placement
+  /**
+   * Whether the toast is visible.
+   */
+  isVisible: boolean
+  /**
+   * Whether the toast is paused.
+   */
+  isPaused: boolean
+  /**
+   * Whether the toast is in RTL mode.
+   */
+  isRtl: boolean
+  /**
+   * Function to pause the toast (keeping it visible).
+   */
+  pause(): void
+  /**
+   * Function to resume the toast dismissing.
+   */
+  resume(): void
+  /**
+   * Function to instantly dismiss the toast.
+   */
+  dismiss(): void
+  /**
+   * Function render the toast in the DOM (based on the defined `render` property)
+   */
+  render(): any
+  rootProps: T["element"]
+  titleProps: T["element"]
+  descriptionProps: T["element"]
+  closeTriggerProps: T["button"]
+}
 
 export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
 
