@@ -5,9 +5,9 @@ import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { Send, State } from "./tooltip.types"
+import type { PublicApi, Send, State } from "./tooltip.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const id = state.context.id
   const hasAriaLabel = state.context.hasAriaLabel
 
@@ -23,34 +23,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    /**
-     * Whether the tooltip is open.
-     */
     isOpen,
-    /**
-     * Function to open the tooltip.
-     */
     open() {
       send("OPEN")
     },
-    /**
-     * Function to close the tooltip.
-     */
     close() {
       send("CLOSE")
     },
-    /**
-     * Returns the animation state of the tooltip.
-     */
     getAnimationState() {
       return {
         enter: store.prevId === null && id === store.id,
         exit: store.id === null,
       }
     },
-    /**
-     * Function to reposition the popover
-     */
     setPositioning(options: Partial<PositioningOptions> = {}) {
       send({ type: "SET_POSITIONING", options })
     },
