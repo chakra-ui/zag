@@ -1,4 +1,4 @@
-import { SystemStyleObject } from "@chakra-ui/system"
+import { type SystemStyleObject } from "@chakra-ui/system"
 
 const display: Record<string, SystemStyleObject> = {
   "2xl": {

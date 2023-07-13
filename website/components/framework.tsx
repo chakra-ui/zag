@@ -1,4 +1,4 @@
-import { Framework } from "lib/framework-utils"
+import { type Framework } from "lib/framework-utils"
 import { createContext, useContext, useMemo, useState } from "react"
 
 export const FrameworkContext = createContext<{

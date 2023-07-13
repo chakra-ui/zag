@@ -1,4 +1,4 @@
-import { SystemStyleObject } from "@chakra-ui/system"
+import { type SystemStyleObject } from "@chakra-ui/system"
 
 export const globalStyles: SystemStyleObject = {
   "@font-face": {

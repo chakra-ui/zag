@@ -1,4 +1,4 @@
-import { SystemStyleObject } from "@chakra-ui/system"
+import { type SystemStyleObject } from "@chakra-ui/system"
 
 const contain: SystemStyleObject = {
   maxW: "8xl",

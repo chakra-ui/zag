@@ -4,7 +4,7 @@ import { DiGithubBadge } from "react-icons/di"
 import { IoLogoLinkedin, IoLogoTwitter } from "react-icons/io"
 import { MdEmail } from "react-icons/md"
 import siteConfig from "site.config"
-import { FooterLink, FooterLinkProps } from "./footer-link"
+import { FooterLink, type FooterLinkProps } from "./footer-link"
 import { NigeriaFlag } from "./nigeria-flag"
 
 const links: FooterLinkProps[] = [

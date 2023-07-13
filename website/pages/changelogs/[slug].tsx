@@ -1,13 +1,13 @@
+import { type Changelog } from "@/contentlayer"
 import { Heading, HStack, Stack, Text } from "@chakra-ui/layout"
 import { ResourceLink, useMDX } from "components/mdx-components"
-import { Changelog } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
 import {
   getChangelogPaths,
   getChangelogToc,
   getChanglogDoc,
 } from "lib/contentlayer-utils"
-import { GetStaticPaths, GetStaticProps } from "next"
+import type { GetStaticPaths, GetStaticProps } from "next"
 import { NextSeo } from "next-seo"
 import { BiCalendarAlt, BiLinkAlt } from "react-icons/bi"
 

@@ -1,4 +1,4 @@
-import Icon, { IconProps } from "@chakra-ui/icon"
+import Icon, { type IconProps } from "@chakra-ui/icon"
 import { Link } from "@chakra-ui/layout"
 import React from "react"
 

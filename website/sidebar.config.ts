@@ -1,4 +1,4 @@
-import { ElementType } from "react"
+import { type ElementType } from "react"
 import { AiOutlineCompass } from "react-icons/ai"
 import { HiOutlineViewGrid } from "react-icons/hi"
 

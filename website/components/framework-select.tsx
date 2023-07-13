@@ -1,5 +1,5 @@
 import { HStack } from "@chakra-ui/layout"
-import { Framework } from "lib/framework-utils"
+import { type Framework } from "lib/framework-utils"
 import { useRouter } from "next/router"
 import { chakra } from "@chakra-ui/system"
 import { useFramework } from "./framework"

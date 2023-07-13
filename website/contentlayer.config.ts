@@ -1,9 +1,9 @@
 import {
-  ComputedFields,
-  FieldDefs,
-  LocalDocument,
   defineDocumentType,
   makeSource,
+  type ComputedFields,
+  type FieldDefs,
+  type LocalDocument,
 } from "contentlayer/source-files"
 import fs from "fs"
 import toc from "markdown-toc"

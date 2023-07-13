@@ -5,7 +5,7 @@ import {
   allSnippets,
   allChangelogs,
 } from "@/contentlayer"
-import { Framework, FRAMEWORKS, isFramework } from "./framework-utils"
+import { type Framework, FRAMEWORKS, isFramework } from "./framework-utils"
 
 function toParams(str: string | string[]) {
   const slug = Array.isArray(str) ? str : [str]

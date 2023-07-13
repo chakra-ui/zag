@@ -1,6 +1,6 @@
 import Icon from "@chakra-ui/icon"
 import { Box, Center } from "@chakra-ui/layout"
-import { ElementType } from "react"
+import { type ElementType } from "react"
 
 type IconLinkProps = {
   label: string
