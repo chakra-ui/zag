@@ -1,8 +1,11 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
 import { MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
-import { getAcceptAttrString, getFilesFromEvent } from "./file-upload.utils"
+import { getAcceptAttrString, getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
+
+const { not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -11,28 +14,25 @@ export function machine(userContext: UserDefinedContext) {
       id: "fileupload",
       initial: "idle",
       context: {
-        maxSize: Infinity,
-        multiple: false,
-        maxFiles: 0,
-        value: [],
         minSize: 0,
+        maxSize: Infinity,
+        maxFiles: 1,
+        files: ref([]),
         dropzone: true,
         ...ctx,
+        rejectedFiles: ref([]),
         invalid: false,
-        validityState: null,
       },
       computed: {
         acceptAttr: (ctx) => getAcceptAttrString(ctx.accept),
+        multiple: (ctx) => ctx.maxFiles > 1,
       },
       on: {
-        "INPUT.CHANGE": {
+        "FILES.SET": {
           actions: ["setFilesFromEvent", "invokeOnChange"],
         },
-        "TARGET.SET": {
-          actions: ["addDragTarget"],
-        },
-        "VALUE.SET": {
-          actions: ["setValue", "invokeOnChange"],
+        "FILE.DELETE": {
+          actions: ["removeFile", "invokeOnChange"],
         },
       },
       states: {
@@ -40,21 +40,21 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             OPEN: "open",
             "ROOT.CLICK": "open",
+            "ROOT.FOCUS": "focused",
             "ROOT.DRAG_OVER": [
               {
-                guard: "isOutOfMaxFilesRange",
+                guard: not("isWithinRange"),
                 target: "dragging",
-                actions: ["setOverflowValidation", "setInvalid"],
+                actions: ["setInvalid"],
               },
-              {
-                target: "dragging",
-              },
+              { target: "dragging" },
             ],
           },
         },
         focused: {
           on: {
             OPEN: "open",
+            "ROOT.CLICK": "open",
             "ROOT.ENTER": "open",
             "ROOT.BLUR": "idle",
           },
@@ -63,11 +63,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "ROOT.DROP": {
               target: "idle",
-              actions: ["clearInvalid", "clearValidation", "setFilesFromEvent", "invokeOnChange"],
+              actions: ["clearInvalid", "setFilesFromEvent", "invokeOnChange"],
             },
             "ROOT.DRAG_LEAVE": {
               target: "idle",
-              actions: ["clearInvalid", "clearValidation"],
+              actions: ["clearInvalid"],
             },
           },
         },
@@ -75,25 +75,20 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackWindowFocus"],
           entry: ["openFilePicker"],
           on: {
-            CLOSE: "focused",
+            CLOSE: "idle",
           },
         },
       },
     },
     {
       guards: {
-        isOutOfMaxFilesRange: (ctx, evt) => evt.count > ctx.maxFiles || evt.count + ctx.value.length > ctx.maxFiles,
+        isWithinRange: (ctx, evt) => isFilesWithinRange(ctx, evt.count),
       },
       activities: {
         trackWindowFocus(ctx, _evt, { send }) {
           const win = dom.getWin(ctx)
           const onWindowFocus = () => {
-            setTimeout(() => {
-              const inputEl = dom.getInputEl(ctx)
-              if (!inputEl?.files?.length) {
-                send("CLOSE")
-              }
-            }, 300)
+            raf(() => send("CLOSE"))
           }
           win.addEventListener("focus", onWindowFocus)
           return () => win.removeEventListener("focus", onWindowFocus)
@@ -101,9 +96,8 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         openFilePicker(ctx) {
-          requestAnimationFrame(() => {
-            const inputEl = dom.getInputEl(ctx)
-            inputEl?.click()
+          raf(() => {
+            dom.getInputEl(ctx)?.click()
           })
         },
         setInvalid(ctx) {
@@ -112,25 +106,29 @@ export function machine(userContext: UserDefinedContext) {
         clearInvalid(ctx) {
           ctx.invalid = false
         },
-        setOverflowValidation(ctx) {
-          ctx.validityState = "rangeOverflow"
-        },
-        clearValidation(ctx) {
-          ctx.validityState = null
-        },
         setFilesFromEvent(ctx, evt) {
           const result = getFilesFromEvent(ctx, evt.files)
-          const { acceptedFiles, fileRejections } = result
-          if (result.fileRejections.length > 0) {
-            ctx.onAccepted?.({ fileRejections, acceptedFiles: [] })
-          }
-          if (result.acceptedFiles.length > 0) {
-            ctx.onRejected?.({ acceptedFiles, fileRejections: [] })
+          const { acceptedFiles, rejectedFiles } = result
+          ctx.rejectedFiles = ref(rejectedFiles)
+          if (ctx.multiple) {
+            ctx.files = ref([...ctx.files, ...acceptedFiles])
+          } else {
+            ctx.files = ref([acceptedFiles[0]])
           }
         },
-        invokeOnChange(ctx, evt) {
-          ctx.onChange?.({ files: evt.files })
+        removeFile(ctx, evt) {
+          const nextFiles = ctx.files.filter((file) => file !== evt.file)
+          ctx.files = ref(nextFiles)
         },
+        invokeOnChange(ctx) {
+          ctx.onChange?.({
+            acceptedFiles: ctx.files,
+            rejectedFiles: ctx.rejectedFiles,
+          })
+        },
+      },
+      compareFns: {
+        files: (a, b) => a.length === b.length && a.every((file, i) => file === b[i]),
       },
     },
   )

@@ -11,13 +11,13 @@ type PublicContext = CommonProperties & {
    */
   accept?: Record<string, string[]> | string
   /**
-   * Whether to allow multiple files
-   */
-  multiple?: boolean
-  /**
    * Whether the file input is disabled
    */
   disabled?: boolean
+  /**
+   * Whether to disable the click event. Useful of the root element is a label
+   */
+  disableClick?: boolean
   /**
    * Whether to allow dropping files
    */
@@ -35,43 +35,43 @@ type PublicContext = CommonProperties & {
    */
   maxFiles: number
   /**
-   * Function called when files are dropped but rejected
-   */
-  onAccepted?: (details: DropDetails) => void
-  /**
-   * Function called when files are dropped and accepted
-   */
-  onRejected?: (details: DropDetails) => void
-  /**
    * Function to validate a file
    */
   isValidFile?: (file: File) => boolean
   /**
    * The current value of the file input
    */
-  value: File[]
+  files: File[]
   /**
    * Function called when the value changes
    */
   onChange?: (details: ChangeDetails) => void
 }
 
-type ChangeDetails = {
-  files: File[]
+export type RejectedFile = {
+  file: File
+  errors: (string | null)[]
 }
 
-type DropDetails = {
+type ChangeDetails = {
   acceptedFiles: File[]
-  fileRejections: FileRejection[]
+  rejectedFiles: RejectedFile[]
 }
 
 type PrivateContext = {
+  /**
+   * Whether the files includes any rejection
+   */
   invalid: boolean
-  validityState: string | null
+  /**
+   * The rejected files
+   */
+  rejectedFiles: RejectedFile[]
 }
 
 type ComputedContext = Readonly<{
   acceptAttr: string | undefined
+  multiple: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -85,8 +85,3 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
-
-export type FileRejection = {
-  file: File
-  errors: any[]
-}

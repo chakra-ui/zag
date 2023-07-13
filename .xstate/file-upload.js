@@ -13,17 +13,14 @@ const fetchMachine = createMachine({
   id: "fileupload",
   initial: "idle",
   context: {
-    "isOutOfMaxFilesRange": false
+    "!isWithinRange": false
   },
   on: {
-    "INPUT.CHANGE": {
+    "FILES.SET": {
       actions: ["setFilesFromEvent", "invokeOnChange"]
     },
-    "TARGET.SET": {
-      actions: ["addDragTarget"]
-    },
-    "VALUE.SET": {
-      actions: ["setValue", "invokeOnChange"]
+    "FILE.DELETE": {
+      actions: ["removeFile", "invokeOnChange"]
     }
   },
   on: {
@@ -36,10 +33,11 @@ const fetchMachine = createMachine({
       on: {
         OPEN: "open",
         "ROOT.CLICK": "open",
+        "ROOT.FOCUS": "focused",
         "ROOT.DRAG_OVER": [{
-          cond: "isOutOfMaxFilesRange",
+          cond: "!isWithinRange",
           target: "dragging",
-          actions: ["setOverflowValidation", "setInvalid"]
+          actions: ["setInvalid"]
         }, {
           target: "dragging"
         }]
@@ -48,6 +46,7 @@ const fetchMachine = createMachine({
     focused: {
       on: {
         OPEN: "open",
+        "ROOT.CLICK": "open",
         "ROOT.ENTER": "open",
         "ROOT.BLUR": "idle"
       }
@@ -56,11 +55,11 @@ const fetchMachine = createMachine({
       on: {
         "ROOT.DROP": {
           target: "idle",
-          actions: ["clearInvalid", "clearValidation", "setFilesFromEvent", "invokeOnChange"]
+          actions: ["clearInvalid", "setFilesFromEvent", "invokeOnChange"]
         },
         "ROOT.DRAG_LEAVE": {
           target: "idle",
-          actions: ["clearInvalid", "clearValidation"]
+          actions: ["clearInvalid"]
         }
       }
     },
@@ -68,7 +67,7 @@ const fetchMachine = createMachine({
       activities: ["trackWindowFocus"],
       entry: ["openFilePicker"],
       on: {
-        CLOSE: "focused"
+        CLOSE: "idle"
       }
     }
   }
@@ -81,6 +80,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isOutOfMaxFilesRange": ctx => ctx["isOutOfMaxFilesRange"]
+    "!isWithinRange": ctx => ctx["!isWithinRange"]
   }
 });

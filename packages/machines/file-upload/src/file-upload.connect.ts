@@ -1,4 +1,4 @@
-import { dataAttr, isSelfEvent } from "@zag-js/dom-query"
+import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
 import { NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
@@ -27,17 +27,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     openFilePicker() {
       send("OPEN")
     },
+    deleteFile(file: File) {
+      send({ type: "FILE.DELETE", file })
+    },
+    /**
+     * The files that have been dropped or selected
+     */
+    files: state.context.files,
     /**
      * Function to set the value
      */
     setValue(files: File[]) {
-      send({ type: "VALUE.SET", files })
+      const count = files.length
+      send({ type: "VALUE.SET", files, count })
     },
     /**
      * Function to clear the value
      */
     clearValue() {
-      send("VALUE.CLEAR")
+      send({ type: "VALUE.SET", files: [] })
     },
 
     rootProps: normalize.element({
@@ -46,6 +54,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: disabled ? undefined : 0,
       "aria-disabled": disabled,
       "aria-invalid": state.context.invalid,
+      "data-invalid": dataAttr(state.context.invalid),
       "data-disabled": dataAttr(disabled),
       "data-dragging": dataAttr(isDragging),
       onKeyDown(event) {
@@ -71,8 +80,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const count = event.dataTransfer.items.length
         send({ type: "ROOT.DRAG_OVER", count })
       },
-      onDragLeave() {
+      onDragLeave(event) {
         if (!state.context.dropzone || disabled) return
+        if (contains(event.currentTarget, event.relatedTarget)) return
         send({ type: "ROOT.DRAG_LEAVE" })
       },
       onDrop(event) {
@@ -115,13 +125,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       multiple: state.context.multiple || state.context.maxFiles > 1,
       onClick(event) {
         event.stopPropagation()
+        // allow for re-selection of the same file
+        event.currentTarget.value = ""
       },
       onChange(event) {
         if (disabled) return
         const { files } = event.currentTarget
-        send({ type: "INPUT.CHANGE", files: files ? Array.from(files) : [] })
+        send({ type: "FILES.SET", files: files ? Array.from(files) : [] })
       },
       style: visuallyHiddenStyle,
     }),
+
+    getDeleteTriggerProps(props: { file: File }) {
+      const { file } = props
+      return normalize.button({
+        ...parts.deleteTrigger.attrs,
+        type: "button",
+        "aria-label": `Delete ${file.name} file`,
+        onClick() {
+          if (disabled) return
+          send({ type: "FILE.DELETE", file })
+        },
+      })
+    },
   }
 }

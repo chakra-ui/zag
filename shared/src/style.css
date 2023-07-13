@@ -1600,6 +1600,16 @@ main [data-testid="scrubber"] {
   border: 2px dashed #d5d5d5;
 }
 
+[data-scope="file-upload"][data-part="root"][data-dragging] {
+  border-color: blue;
+  background-color: lightblue;
+}
+
+[data-scope="file-upload"][data-part="root"][data-invalid] {
+  border-color: red;
+  background-color: lightpink;
+}
+
 /* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/
