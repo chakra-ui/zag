@@ -10,9 +10,9 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
-import type { ItemProps, ItemState, Send, State } from "./rating-group.types"
+import type { ItemProps, ItemState, PublicApi, Send, State } from "./rating-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isInteractive = state.context.isInteractive
   const value = state.context.value
   const hoveredValue = state.context.hoveredValue
@@ -20,41 +20,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
 
   const api = {
-    /**
-     * Sets the value of the rating group
-     */
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
-    /**
-     * Clears the value of the rating group
-     */
+
     clearValue() {
       send("CLEAR_VALUE")
     },
-    /**
-     * Whether the rating group is being hovered
-     */
+
     isHovering: state.context.isHovering,
-    /**
-     * The current value of the rating group
-     */
     value,
-    /**
-     * The value of the currently hovered rating
-     */
     hoveredValue,
-    /**
-     * The maximum value of the rating group
-     */
     size: state.context.max,
-    /**
-     * The array of rating values. Returns an array of numbers from 1 to the max value.
-     */
     sizeArray: Array.from({ length: state.context.max }).map((_, index) => index + 1),
-    /**
-     * Returns the state of a rating item
-     */
+
     getRatingState(props: ItemProps): ItemState {
       const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
       const isEqual = Math.ceil(value) === props.index

@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
   ratingValueText(index: number): string
@@ -76,6 +76,46 @@ type PublicContext = DirectionProperty &
      */
     onHover?: (details: { value: number }) => void
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Sets the value of the rating group
+   */
+  setValue(value: number): void
+  /**
+   * Clears the value of the rating group
+   */
+  clearValue(): void
+  /**
+   * Whether the rating group is being hovered
+   */
+  isHovering: boolean
+  /**
+   * The current value of the rating group
+   */
+  value: number
+  /**
+   * The value of the currently hovered rating
+   */
+  hoveredValue: number
+  /**
+   * The maximum value of the rating group
+   */
+  size: number
+  /**
+   * The array of rating values. Returns an array of numbers from 1 to the max value.
+   */
+  sizeArray: number[]
+  /**
+   * Returns the state of a rating item
+   */
+  getRatingState(props: ItemProps): ItemState
+  rootProps: T["element"]
+  hiddenInputProps: T["input"]
+  labelProps: T["element"]
+  controlProps: T["element"]
+  getRatingProps(props: ItemProps): T["element"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
