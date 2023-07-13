@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Context } from "@zag-js/types"
+import type { Context, PropTypes } from "@zag-js/types"
 
 type PublicContext = {
   /**
@@ -30,6 +30,29 @@ type PublicContext = {
    * Function called when the transition has exited.
    */
   onExited?: VoidFunction
+}
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The current status of the transition.
+   */
+  status: "enter" | "exit"
+  /**
+   * Whether to unmount the element
+   */
+  unmount: boolean
+  /**
+   * Function to toggle the transition.
+   */
+  toggle(): void
+  /**
+   * Returns the transition styles to apply to the element.
+   */
+  transition: (config: TransitionConfig) => T["style"]
+  /**
+   * Returns the transition styles to apply to a group of elements.
+   */
+  transitionGroup<K extends string>(configs: Record<K, TransitionConfig>): Record<K, Record<string, any>>
 }
 
 type PrivateContext = Context<{}>
