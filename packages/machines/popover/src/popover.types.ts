@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
-import type { PositioningOptions, Placement } from "@zag-js/popper"
-import type { CommonProperties, Context, MaybeElement, RequiredBy } from "@zag-js/types"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, Context, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   anchor: string
@@ -69,6 +69,38 @@ type PublicContext = DismissableElementHandlers &
     open?: boolean
   }
 
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the popover is portalled
+   */
+  portalled: boolean
+  /**
+   * Whether the popover is open
+   */
+  isOpen: boolean
+  /**
+   * Function to open the popover
+   */
+  open(): void
+  /**
+   * Function to close the popover
+   */
+  close(): void
+  /**
+   * Function to reposition the popover
+   */
+  setPositioning(options?: Partial<PositioningOptions>): void
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  anchorProps: T["element"]
+  triggerProps: T["button"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+  titleProps: T["element"]
+  descriptionProps: T["element"]
+  closeTriggerProps: T["button"]
+}
+
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
@@ -105,4 +137,4 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { PositioningOptions, Placement }
+export type { Placement, PositioningOptions }
