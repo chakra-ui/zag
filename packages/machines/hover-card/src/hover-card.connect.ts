@@ -3,9 +3,9 @@ import { getPlacementStyles, type PositioningOptions } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import { dom } from "./hover-card.dom"
-import type { Send, State } from "./hover-card.types"
+import type { PublicApi, Send, State } from "./hover-card.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isOpen = state.hasTag("open")
 
   const popperStyles = getPlacementStyles({
@@ -13,25 +13,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    /**
-     * Whether the hover card is open
-     */
     isOpen,
-    /**
-     * Function to open the hover card
-     */
+
     open() {
       send("OPEN")
     },
-    /**
-     * Function to close the hover card
-     */
+
     close() {
       send("CLOSE")
     },
-    /**
-     * Function to reposition the popover
-     */
+
     setPositioning(options: Partial<PositioningOptions> = {}) {
       send({ type: "SET_POSITIONING", options })
     },
