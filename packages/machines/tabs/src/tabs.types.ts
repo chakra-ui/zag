@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
   tablistLabel?: string
@@ -70,6 +70,39 @@ type PublicContext = DirectionProperty &
      */
     onDelete?: (details: { value: string }) => void
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The current value of the tabs.
+   */
+  value: string | null
+  /**
+   * The value of the tab that is currently focused.
+   */
+  focusedValue: string | null
+  /**
+   * The previous values of the tabs in sequence of selection.
+   */
+  previousValues: string[]
+  /**
+   * Sets the value of the tabs.
+   */
+  setValue(value: string): void
+  /**
+   * Clears the value of the tabs.
+   */
+  clearValue(): void
+  /**
+   * Sets the indicator rect to the tab with the given id.
+   */
+  setIndicatorRect(id: string | null | undefined): void
+  rootProps: T["element"]
+  tablistProps: T["element"]
+  getTriggerProps(props: TriggerProps): T["button"]
+  contentGroupProps: T["element"]
+  getContentProps({ value }: ContentProps): T["element"]
+  indicatorProps: T["element"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
