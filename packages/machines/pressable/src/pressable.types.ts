@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type PointerType = "mouse" | "pen" | "touch" | "keyboard" | "virtual"
 
@@ -89,6 +89,14 @@ type PublicContext = DirectionProperty &
      */
     longPressDelay: number
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the element is pressed.
+   */
+  isPressed: boolean
+  pressableProps: T["element"]
+}
 
 interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
 

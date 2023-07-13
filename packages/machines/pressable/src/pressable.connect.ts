@@ -2,16 +2,13 @@ import { getNativeEvent, isVirtualClick, isVirtualPointerEvent } from "@zag-js/d
 import { contains, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./pressable.dom"
-import type { Send, State } from "./pressable.types"
+import type { PublicApi, Send, State } from "./pressable.types"
 import { isValidKeyboardEvent, shouldPreventDefault, shouldPreventDefaultKeyboard } from "./pressable.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isPressed = state.hasTag("pressed")
   const isDisabled = state.context.disabled
   return {
-    /**
-     * Whether the element is pressed.
-     */
     isPressed,
     pressableProps: normalize.element({
       id: dom.getPressableId(state.context),
