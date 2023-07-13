@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   button: string
@@ -28,6 +28,18 @@ type PublicContext = DirectionProperty &
      */
     pressed: boolean
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the toggle is pressed.
+   */
+  isPressed: boolean
+  /**
+   * Function to set the pressed state of the toggle.
+   */
+  setPressed(pressed: boolean): void
+  buttonProps: T["button"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
