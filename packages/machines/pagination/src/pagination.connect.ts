@@ -2,10 +2,10 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
-import type { EllipsisProps, PageTriggerProps, Send, State } from "./pagination.types"
+import type { EllipsisProps, PageTriggerProps, PublicApi, Send, State } from "./pagination.types"
 import { utils } from "./pagination.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const totalPages = state.context.totalPages
   const page = state.context.page
   const translations = state.context.translations
@@ -21,59 +21,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isLastPage = page === totalPages
 
   return {
-    /**
-     * The current page.
-     */
     page,
-    /**
-     * The total number of pages.
-     */
     totalPages,
-    /**
-     * The page range. Represented as an array of page numbers (including ellipsis)
-     */
     pages: utils.getRange(state.context),
-    /**
-     * The previous page.
-     */
     previousPage,
-    /**
-     * The next page.
-     */
     nextPage,
-    /**
-     * The page range. Represented as an object with `start` and `end` properties.
-     */
     pageRange,
-    /**
-     * Function to slice an array of data based on the current page.
-     */
+    isFirstPage,
+    isLastPage,
+
     slice<T>(data: T[]) {
       return data.slice(pageRange.start, pageRange.end)
     },
-    /**
-     * Whether the current page is the first page.
-     */
-    isFirstPage,
-    /**
-     * Whether the current page is the last page.
-     */
-    isLastPage,
-    /**
-     * Function to set the total number of pages.
-     */
+
     setCount(count: number) {
       send({ type: "SET_COUNT", count })
     },
-    /**
-     * Function to set the page size.
-     */
+
     setPageSize(size: number) {
       send({ type: "SET_PAGE_SIZE", size })
     },
-    /**
-     * Function to set the current page.
-     */
+
     setPage(page: number) {
       send({ type: "SET_PAGE", page, srcElement: null })
     },

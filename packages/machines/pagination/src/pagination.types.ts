@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type PageTriggerProps = {
   type: "page"
@@ -63,6 +63,65 @@ type PublicContext = DirectionProperty &
      */
     type: "button" | "link"
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The current page.
+   */
+  page: number
+  /**
+   * The total number of pages.
+   */
+  totalPages: number
+  /**
+   * The page range. Represented as an array of page numbers (including ellipsis)
+   */
+  pages: PaginationRange
+  /**
+   * The previous page.
+   */
+  previousPage: number | null
+  /**
+   * The next page.
+   */
+  nextPage: number | null
+  /**
+   * The page range. Represented as an object with `start` and `end` properties.
+   */
+  pageRange: {
+    start: number
+    end: number
+  }
+  /**
+   * Function to slice an array of data based on the current page.
+   */
+  slice<T_1>(data: T_1[]): T_1[]
+  /**
+   * Whether the current page is the first page.
+   */
+  isFirstPage: boolean
+  /**
+   * Whether the current page is the last page.
+   */
+  isLastPage: boolean
+  /**
+   * Function to set the total number of pages.
+   */
+  setCount(count: number): void
+  /**
+   * Function to set the page size.
+   */
+  setPageSize(size: number): void
+  /**
+   * Function to set the current page.
+   */
+  setPage(page: number): void
+  rootProps: T["element"]
+  getEllipsisProps(props: EllipsisProps): T["element"]
+  getPageTriggerProps(page: PageTriggerProps): T["element"]
+  prevPageTriggerProps: T["element"]
+  nextPageTriggerProps: T["element"]
+}
 
 type PrivateContext = Context<{}>
 
