@@ -2,10 +2,10 @@ import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { Send, SlideIndicatorProps, SlideProps, State } from "./carousel.types"
+import type { PublicApi, Send, SlideIndicatorProps, SlideProps, State } from "./carousel.types"
 import { getSlidesInView } from "./utils/get-slide-in-view"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const isHorizontal = state.context.isHorizontal
@@ -26,57 +26,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    /**
-     * The current index of the carousel
-     */
     index: state.context.index,
-    /**
-     * The current scroll progress of the carousel
-     */
     scrollProgress: state.context.scrollProgress,
-    /**
-     * Whether the carousel is currently auto-playing
-     */
     isAutoplay,
-    /**
-     * Whether the carousel is can scroll to the next slide
-     */
     canScrollNext,
-    /**
-     * Whether the carousel is can scroll to the previous slide
-     */
     canScrollPrev,
-    /**
-     * Function to scroll to a specific slide index
-     */
+
     scrollTo(index: number, jump?: boolean) {
       send({ type: "GOTO", index, jump })
     },
-    /**
-     * Function to scroll to the next slide
-     */
+
     scrollToNext() {
       send("NEXT")
     },
-    /**
-     * Function to scroll to the previous slide
-     */
+
     scrollToPrevious() {
       send("PREV")
     },
-    /**
-     *  Returns the state of a specific slide
-     */
+
     getSlideState,
-    /**
-     * Function to start/resume autoplay
-     */
+
     play() {
       send("PLAY")
     },
-    /**
-     * Function to pause autoplay
-     */
+
     pause() {
       send("PAUSE")
     },
