@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, MaybeElement, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   trigger: string
@@ -79,6 +79,28 @@ type PublicContext = DirectionProperty &
      */
     open?: boolean
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the dialog is open
+   */
+  isOpen: boolean
+  /**
+   * Function to open the dialog
+   */
+  open(): void
+  /**
+   * Function to close the dialog
+   */
+  close(): void
+  triggerProps: T["button"]
+  backdropProps: T["element"]
+  containerProps: T["element"]
+  contentProps: T["element"]
+  titleProps: T["element"]
+  descriptionProps: T["element"]
+  closeTriggerProps: T["button"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
