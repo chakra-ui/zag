@@ -1,22 +1,23 @@
-import { Color, normalizeColor, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
+import { normalizeColor, type Color, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
 import {
-  EventKeyMap,
   getEventKey,
   getEventPoint,
   getEventStep,
   getNativeEvent,
   isLeftClick,
   isModifiedEvent,
+  type EventKeyMap,
 } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
-import { NormalizeProps, type PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
-import {
+import type {
   ColorAreaProps,
   ColorChannelInputProps,
   ColorChannelProps,
   ColorSwatchProps,
+  PublicApi,
   Send,
   State,
 } from "./color-picker.types"
@@ -26,7 +27,7 @@ import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-
 import { getColorAreaGradient } from "./utils/get-color-area-gradient"
 import { getSliderBgImage } from "./utils/get-slider-background"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const valueAsColor = state.context.valueAsColor
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
@@ -35,38 +36,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const channels = valueAsColor.getColorChannels()
 
   return {
-    /**
-     * Whether the color picker is being dragged
-     */
     isDragging,
-    /**
-     * The current color value (as a string)
-     */
     value: state.context.value,
-    /**
-     * The current color value (as a Color object)
-     */
     valueAsColor,
-    /**
-     * The current color channels of the color
-     */
     channels,
-    /**
-     * Function to set the color value
-     */
+
     setColor(value: string | Color) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
     },
-    /**
-     * Function to set the color value of a specific channel
-     */
+
     setChannelValue(channel: ColorChannel, value: number) {
       const color = valueAsColor.withChannelValue(channel, value)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-    /**
-     * Function to set the color format
-     */
+
     setFormat(format: ColorFormat) {
       const value = valueAsColor.toFormat(format)
       send({ type: "VALUE.SET", value, src: "set-format" })

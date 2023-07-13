@@ -32,7 +32,7 @@ import { TopNavigation } from "components/top-navigation"
 import { NextSeo } from "next-seo"
 import Image from "next/image"
 import Link from "next/link"
-import { ElementType } from "react"
+import { type ElementType } from "react"
 import siteConfig from "site.config"
 
 type FeatureItemProps = {

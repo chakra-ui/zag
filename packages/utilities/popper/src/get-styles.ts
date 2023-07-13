@@ -1,7 +1,7 @@
 import type { Placement } from "@floating-ui/dom"
 import { cssVars } from "./middleware"
 
-type Options = {
+export type GetPlacementStylesOptions = {
   placement?: Placement
 }
 
@@ -12,7 +12,7 @@ const ARROW_FLOATING_STYLE = {
   right: "rotate(315deg)",
 } as const
 
-export function getPlacementStyles(options: Options) {
+export function getPlacementStyles(options: GetPlacementStylesOptions) {
   const { placement = "bottom" } = options
 
   return {

@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, RequiredBy, RootProperties } from "@zag-js/types"
+import type { CommonProperties, PropTypes, RequiredBy, RootProperties } from "@zag-js/types"
 
 type ElementIds = Partial<{
   trigger: string
@@ -64,6 +64,38 @@ type PublicContext = CommonProperties & {
    * Whether the tooltip is open
    */
   open?: boolean
+}
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the tooltip is open.
+   */
+  isOpen: boolean
+  /**
+   * Function to open the tooltip.
+   */
+  open(): void
+  /**
+   * Function to close the tooltip.
+   */
+  close(): void
+  /**
+   * Returns the animation state of the tooltip.
+   */
+  getAnimationState(): {
+    enter: boolean
+    exit: boolean
+  }
+  /**
+   * Function to reposition the popover
+   */
+  setPositioning(options?: Partial<PositioningOptions>): void
+  triggerProps: T["button"]
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+  labelProps: T["element"]
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

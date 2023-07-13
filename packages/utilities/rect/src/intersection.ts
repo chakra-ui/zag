@@ -1,4 +1,4 @@
-import { createRect, Rect } from "./rect"
+import { createRect, type Rect } from "./rect"
 import type { RectSide } from "./types"
 
 /**

@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -49,6 +49,50 @@ type PublicContext = DirectionProperty &
      */
     orientation?: "horizontal" | "vertical"
   }
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The current value of the radio group
+   */
+  value: string | null
+  /**
+   * Function to set the value of the radio group
+   */
+  setValue(value: string): void
+  /**
+   * Function to clear the value of the radio group
+   */
+  clearValue(): void
+  /**
+   * Function to focus the radio group
+   */
+  focus: () => void
+  /**
+   * Function to blur the currently focused radio input in the radio group
+   */
+  blur(): void
+  /**
+   * Returns the state details of a radio input
+   */
+  getRadioState: <T_1 extends RadioProps>(
+    props: T_1,
+  ) => {
+    isInteractive: boolean
+    isReadOnly: boolean | undefined
+    isInvalid: boolean | undefined
+    isDisabled: boolean | undefined
+    isChecked: boolean
+    isFocused: boolean
+    isHovered: boolean
+    isActive: boolean
+  }
+  rootProps: T["element"]
+  labelProps: T["element"]
+  getRadioProps(props: RadioProps): T["label"]
+  getRadioLabelProps(props: RadioProps): T["element"]
+  getRadioControlProps(props: RadioProps): T["element"]
+  getRadioInputProps(props: InputProps): T["input"]
+  indicatorProps: T["element"]
+}
 
 type PrivateContext = Context<{
   /**

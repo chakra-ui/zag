@@ -3,7 +3,7 @@
  * https://github.com/solidjs-community/solid-primitives/blob/acc8b7aff2fc95307461aac94642f7fd296390e4/packages/utils/LICENSE
  */
 
-import { JSX, mergeProps as solidMergeProps, MergeProps } from "solid-js"
+import { mergeProps as solidMergeProps, type JSX, type MergeProps } from "solid-js"
 import { propTraps } from "./prop-trap"
 
 type MaybeAccessor<T> = T | (() => T)

@@ -20,6 +20,7 @@
     "stripInternal": true,
     "ignoreDeprecations": "5.0",
     "suppressImplicitAnyIndexErrors": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "verbatimModuleSyntax": true
   }
 }

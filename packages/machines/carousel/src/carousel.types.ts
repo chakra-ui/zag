@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type SlideProps = {
   index: number
@@ -59,6 +59,67 @@ type PublicContext = DirectionProperty &
      */
     ids?: ElementIds
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The current index of the carousel
+   */
+  index: number
+  /**
+   * The current scroll progress of the carousel
+   */
+  scrollProgress: number
+  /**
+   * Whether the carousel is currently auto-playing
+   */
+  isAutoplay: boolean
+  /**
+   * Whether the carousel is can scroll to the next slide
+   */
+  canScrollNext: boolean
+  /**
+   * Whether the carousel is can scroll to the previous slide
+   */
+  canScrollPrev: boolean
+  /**
+   * Function to scroll to a specific slide index
+   */
+  scrollTo(index: number, jump?: boolean): void
+  /**
+   * Function to scroll to the next slide
+   */
+  scrollToNext(): void
+  /**
+   * Function to scroll to the previous slide
+   */
+  scrollToPrevious(): void
+  /**
+   *  Returns the state of a specific slide
+   */
+  getSlideState: (props: SlideProps) => {
+    valueText: string
+    isCurrent: boolean
+    isNext: boolean
+    isPrevious: boolean
+    isInView: boolean
+  }
+  /**
+   * Function to start/resume autoplay
+   */
+  play(): void
+  /**
+   * Function to pause autoplay
+   */
+  pause(): void
+  rootProps: T["element"]
+  viewportProps: T["element"]
+  slideGroupProps: T["element"]
+  getSlideProps(props: SlideProps): T["element"]
+  prevTriggerProps: T["button"]
+  nextTriggerProps: T["button"]
+  indicatorGroupProps: T["element"]
+  getIndicatorProps(props: SlideIndicatorProps): T["button"]
+}
 
 type PrivateContext = Context<{
   slideRects: DOMRect[]

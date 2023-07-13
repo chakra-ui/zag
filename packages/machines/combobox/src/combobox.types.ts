@@ -2,7 +2,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideEvent } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
   triggerLabel?: string
@@ -149,6 +149,64 @@ type PublicContext = DirectionProperty &
     translations: IntlTranslations
   }
 
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the combobox is focused
+   */
+  isFocused: boolean
+  /**
+   * Whether the combobox content or listbox is open
+   */
+  isOpen: boolean
+  /**
+   * Whether the combobox input is empty
+   */
+  isInputValueEmpty: boolean
+  /**
+   * The current value of the combobox input
+   */
+  inputValue: string
+  /**
+   * The currently focused option (by pointer or keyboard)
+   */
+  focusedOption: OptionData | null
+  /**
+   * The currently selected option value
+   */
+  selectedValue: string | undefined
+  /**
+   * Function to set the combobox value
+   */
+  setValue(value: string | OptionData): void
+  /**
+   * Function to set the combobox input value
+   */
+  setInputValue(value: string): void
+  /**
+   * Function to clear the combobox input value and selected value
+   */
+  clearValue(): void
+  /**
+   * Function to focus the combobox input
+   */
+  focus(): void
+  rootProps: T["element"]
+  labelProps: T["label"]
+  controlProps: T["element"]
+  positionerProps: T["element"]
+  inputProps: T["input"]
+  triggerProps: T["button"]
+  contentProps: T["element"]
+  clearTriggerProps: T["button"]
+  getOptionState(props: OptionProps): {
+    disabled: boolean | undefined
+    focused: boolean
+    checked: boolean
+  }
+  getOptionProps(props: OptionProps): T["element"]
+  getOptionGroupProps(props: OptionGroupProps): T["element"]
+}
+
 /**
  * This is the actual context exposed to the user.
  */
@@ -269,4 +327,4 @@ export type OptionGroupProps = {
   label: string
 }
 
-export type { Placement, PositioningOptions, InteractOutsideEvent }
+export type { InteractOutsideEvent, Placement, PositioningOptions }

@@ -1,4 +1,4 @@
-import { createRect, Rect } from "./rect"
+import { createRect, type Rect } from "./rect"
 import { getElementRect } from "./from-element"
 import { union } from "./union"
 

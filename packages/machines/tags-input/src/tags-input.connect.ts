@@ -1,11 +1,11 @@
-import { EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { type EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
-import type { Send, State, TagProps } from "./tags-input.types"
+import type { PublicApi, Send, State, TagProps } from "./tags-input.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
   const isReadOnly = state.context.readOnly
@@ -18,39 +18,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isEmpty = state.context.count === 0
 
   return {
-    /**
-     * Whether the tags are empty
-     */
     isEmpty,
-    /**
-     * The value of the tags entry input.
-     */
     inputValue: state.context.trimmedInputValue,
-    /**
-     * The value of the tags as an array of strings.
-     */
     value: state.context.value,
-    /**
-     * The value of the tags as a string.
-     */
     valueAsString: state.context.valueAsString,
-    /**
-     * The number of the tags.
-     */
     count: state.context.count,
-    /**
-     * Whether the tags have reached the max limit.
-     */
     isAtMax: state.context.isAtMax,
-    /**
-     * Function to set the value of the tags.
-     */
+
     setValue(value: string[]) {
       send({ type: "SET_VALUE", value })
     },
-    /**
-     * Function to clear the value of the tags.
-     */
+
     clearValue(id?: string) {
       if (id) {
         send({ type: "CLEAR_TAG", id })
@@ -58,33 +36,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("CLEAR_VALUE")
       }
     },
-    /**
-     * Function to add a tag to the tags.
-     */
+
     addValue(value: string) {
       send({ type: "ADD_TAG", value })
     },
-    /**
-     * Function to set the value of a tag at the given index.
-     */
+
     setValueAtIndex(index: number, value: string) {
       send({ type: "SET_VALUE_AT_INDEX", index, value })
     },
-    /**
-     * Function to set the value of the tags entry input.
-     */
+
     setInputValue(value: string) {
       send({ type: "SET_INPUT_VALUE", value })
     },
-    /**
-     * Function to clear the value of the tags entry input.
-     */
+
     clearInputValue() {
       send({ type: "SET_INPUT_VALUE", value: "" })
     },
-    /**
-     * Function to focus the tags entry input.
-     */
+
     focus() {
       dom.getInputEl(state.context)?.focus()
     },

@@ -1,20 +1,20 @@
 import {
-  EventKeyMap,
   getEventKey,
   getEventPoint,
   getEventStep,
   getNativeEvent,
   isLeftClick,
   isModifiedEvent,
+  type EventKeyMap,
 } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./slider.anatomy"
 import { dom } from "./slider.dom"
-import type { Send, State } from "./slider.types"
+import type { PublicApi, Send, State } from "./slider.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const ariaValueText = state.context.getAriaValueText?.(state.context.value)
@@ -36,39 +36,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   // TODO - getMarkerState
 
   return {
-    /**
-     * Whether the slider is focused.
-     */
     isFocused,
-    /**
-     * Whether the slider is being dragged.
-     */
     isDragging,
-    /**
-     * The value of the slider.
-     */
     value: state.context.value,
-    /**
-     * The value of the slider as a percent.
-     */
     percent: getValuePercent(state.context.value, state.context.min, state.context.max),
-    /**
-     * Function to set the value of the slider.
-     */
+
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
-    /**
-     * Returns the value of the slider at the given percent.
-     */
+
     getPercentValue: getPercentValueFn,
-    /**
-     * Returns the percent of the slider at the given value.
-     */
+
     getValuePercent: getValuePercentFn,
-    /**
-     * Function to focus the slider.
-     */
+
     focus() {
       dom.getThumbEl(state.context)?.focus()
     },
@@ -78,9 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     increment() {
       send("INCREMENT")
     },
-    /**
-     * Function to decrement the value of the slider by the step.
-     */
+
     decrement() {
       send("DECREMENT")
     },

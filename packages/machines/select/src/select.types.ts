@@ -2,7 +2,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { InteractOutsideEvent } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   content: string
@@ -88,6 +88,61 @@ type PublicContext = DirectionProperty &
      */
     loop?: boolean
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the select is open
+   */
+  isOpen: boolean
+  /**
+   * The currently highlighted option
+   */
+  highlightedOption: Option | null
+  /**
+   * The currently selected option
+   */
+  selectedOption: Option | null
+  /**
+   * Function to focus the select
+   */
+  focus(): void
+  /**
+   * Function to open the select
+   */
+  open(): void
+  /**
+   * Function to close the select
+   */
+  close(): void
+  /**
+   * Function to set the selected option
+   */
+  setSelectedOption(value: Option): void
+  /**
+   * Function to set the highlighted option
+   */
+  setHighlightedOption(value: Option): void
+  /**
+   * Function to clear the selected option
+   */
+  clearSelectedOption(): void
+  /**
+   * Returns the state details of an option
+   */
+  getOptionState: (props: OptionProps) => {
+    isDisabled: boolean
+    isHighlighted: boolean
+    isSelected: boolean
+  }
+  labelProps: T["label"]
+  positionerProps: T["element"]
+  triggerProps: T["button"]
+  getOptionProps(props: OptionProps): T["element"]
+  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
+  getOptionGroupProps(props: OptionGroupProps): T["element"]
+  hiddenSelectProps: T["select"]
+  contentProps: T["element"]
+}
 
 type PrivateContext = Context<{
   /**

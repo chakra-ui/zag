@@ -1,4 +1,4 @@
-import { chakra, HTMLChakraProps } from "@chakra-ui/system"
+import { chakra, type HTMLChakraProps } from "@chakra-ui/system"
 import React from "react"
 
 export const NigeriaFlag = (props: HTMLChakraProps<"svg">) => (

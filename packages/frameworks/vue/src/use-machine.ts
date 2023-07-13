@@ -1,5 +1,5 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { ComputedRef, onBeforeUnmount, onMounted, Ref, shallowRef, watch, watchEffect } from "vue"
+import { onBeforeUnmount, onMounted, shallowRef, watch, watchEffect, type ComputedRef, type Ref } from "vue"
 
 type MachineOptions<
   TContext extends Record<string, any>,

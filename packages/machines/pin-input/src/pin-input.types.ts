@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
   inputLabel: (index: number, length: number) => string
@@ -89,6 +89,42 @@ type PublicContext = DirectionProperty &
      */
     translations: IntlTranslations
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The value of the input as an array of strings.
+   */
+  value: string[]
+  /**
+   * The value of the input as a string.
+   */
+  valueAsString: string
+  /**
+   * Whether all inputs are filled.
+   */
+  isValueComplete: boolean
+  /**
+   * Function to set the value of the inputs.
+   */
+  setValue(value: string[]): void
+  /**
+   * Function to clear the value of the inputs.
+   */
+  clearValue(): void
+  /**
+   * Function to set the value of the input at a specific index.
+   */
+  setValueAtIndex(index: number, value: string): void
+  /**
+   * Function to focus the pin-input. This will focus the first input.
+   */
+  focus: () => void
+  rootProps: T["element"]
+  labelProps: T["label"]
+  hiddenInputProps: T["input"]
+  controlProps: T["element"]
+  getInputProps({ index }: { index: number }): T["input"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

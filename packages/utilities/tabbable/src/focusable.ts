@@ -1,4 +1,4 @@
-import { IncludeContainerType, focusableSelector, isHTMLElement, isFrame, isVisible } from "./shared"
+import { focusableSelector, isFrame, isHTMLElement, isVisible, type IncludeContainerType } from "./shared"
 
 /**
  * Returns the focusable elements within the element

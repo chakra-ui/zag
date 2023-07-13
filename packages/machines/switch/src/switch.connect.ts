@@ -3,9 +3,9 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./switch.anatomy"
 import { dom } from "./switch.dom"
-import type { Send, State } from "./switch.types"
+import type { PublicApi, Send, State } from "./switch.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isDisabled = state.context.disabled
   const isFocusable = state.context.focusable
   const isFocused = !isDisabled && state.context.focused
@@ -23,31 +23,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const trulyDisabled = isDisabled && !isFocusable
 
   return {
-    /**
-     * Whether the checkbox is checked
-     */
     isChecked,
-
-    /**
-     * Whether the checkbox is disabled
-     */
     isDisabled,
-
-    /**
-     * Whether the checkbox is focused
-     */
     isFocused,
 
-    /**
-     * Function to set the checked state of the switch.
-     */
     setChecked(checked: boolean) {
       send({ type: "DISPATCH.CHANGE", checked })
     },
 
-    /**
-     * Function to toggle the checked state of the checkbox
-     */
     toggleChecked() {
       send({ type: "CHECKED.TOGGLE", checked: isChecked })
     },

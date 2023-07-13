@@ -1,4 +1,8 @@
-import { chakra, HTMLChakraProps, SystemStyleObject } from "@chakra-ui/system"
+import {
+  chakra,
+  type HTMLChakraProps,
+  type SystemStyleObject,
+} from "@chakra-ui/system"
 
 const baseStyle: SystemStyleObject = {
   userSelect: "none",

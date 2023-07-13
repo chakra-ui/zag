@@ -1,12 +1,12 @@
-import { EventKeyMap, getEventKey } from "@zag-js/dom-event"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
 import { createReducer } from "./accordion.reducer"
-import type { ItemProps, Send, State } from "./accordion.types"
+import type { ItemProps, PublicApi, Send, State } from "./accordion.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const reducer = createReducer(state, send)
 
   return {

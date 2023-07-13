@@ -1,6 +1,6 @@
-import { type ColorChannel } from "@zag-js/color-utils"
-import { Style } from "@zag-js/types"
-import { MachineContext } from "../color-picker.types"
+import type { ColorChannel } from "@zag-js/color-utils"
+import type { Style } from "@zag-js/types"
+import type { MachineContext } from "../color-picker.types"
 import {
   generateHSB_B,
   generateHSB_H,

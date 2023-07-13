@@ -1,9 +1,9 @@
 import {
   chakra,
   forwardRef,
-  HTMLChakraProps,
-  ThemingProps,
   useStyleConfig,
+  type HTMLChakraProps,
+  type ThemingProps,
 } from "@chakra-ui/system"
 
 type ButtonProps = HTMLChakraProps<"button"> &

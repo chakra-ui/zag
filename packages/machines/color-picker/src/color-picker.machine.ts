@@ -1,4 +1,4 @@
-import { Color, parseColor } from "@zag-js/color-utils"
+import { type Color, parseColor } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
@@ -6,7 +6,7 @@ import { clampValue, getPercentValue, snapValueToStep } from "@zag-js/numeric-ra
 import { disableTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
-import { ExtendedColorChannel, MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
+import type { ExtendedColorChannel, MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
 import { getChannelDetails } from "./utils/get-channel-details"
 import { getChannelInputValue } from "./utils/get-channel-input-value"
 

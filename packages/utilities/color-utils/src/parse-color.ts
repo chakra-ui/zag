@@ -1,7 +1,7 @@
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
 import { RGBColor } from "./rgb-color"
-import { ColorType } from "./types"
+import type { ColorType } from "./types"
 
 export function parseColor(value: string): ColorType {
   let result = RGBColor.parse(value) || HSBColor.parse(value) || HSLColor.parse(value)

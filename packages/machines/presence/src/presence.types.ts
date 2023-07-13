@@ -5,6 +5,17 @@ type PublicContext = {
   onExitComplete?: () => void
 }
 
+export type PublicApi = {
+  /**
+   * Whether the node is present in the DOM.
+   */
+  isPresent: boolean
+  /**
+   * Function to set the node (as early as possible)
+   */
+  setNode(node: HTMLElement | null): void
+}
+
 type PrivateContext = {
   node: HTMLElement | null
   styles: CSSStyleDeclaration | null

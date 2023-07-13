@@ -4,9 +4,9 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
 import { dom } from "./popover.dom"
-import type { Send, State } from "./popover.types"
+import type { PublicApi, Send, State } from "./popover.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isOpen = state.matches("open")
 
   const currentPlacement = state.context.currentPlacement
@@ -18,29 +18,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    /**
-     * Whether the popover is portalled
-     */
     portalled,
-    /**
-     * Whether the popover is open
-     */
     isOpen,
-    /**
-     * Function to open the popover
-     */
+
     open() {
       send("OPEN")
     },
-    /**
-     * Function to close the popover
-     */
+
     close() {
       send("CLOSE")
     },
-    /**
-     * Function to reposition the popover
-     */
+
     setPositioning(options: Partial<PositioningOptions> = {}) {
       send({ type: "SET_POSITIONING", options })
     },

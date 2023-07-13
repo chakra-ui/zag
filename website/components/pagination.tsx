@@ -1,5 +1,5 @@
 import Icon from "@chakra-ui/icon"
-import { Box, HStack, StackProps } from "@chakra-ui/layout"
+import { Box, HStack, type StackProps } from "@chakra-ui/layout"
 import { paginate } from "lib/pagination-utils"
 import Link from "next/link"
 import { useRouter } from "next/router"

@@ -15,7 +15,7 @@ export type InteractOutsideOptions = InteractOutsideHandlers & {
   defer?: boolean
 }
 
-type EventDetails<T> = {
+export type EventDetails<T> = {
   originalEvent: T
   contextmenu: boolean
   focusable: boolean
@@ -30,8 +30,8 @@ export type FocusOutsideEvent = CustomEvent<EventDetails<FocusEvent>>
 
 export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
 
-type MaybeElement = HTMLElement | null | undefined
-type NodeOrFn = MaybeElement | (() => MaybeElement)
+export type MaybeElement = HTMLElement | null | undefined
+export type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 function isComposedPathFocusable(event: Event) {
   const composedPath = event.composedPath() ?? [event.target as HTMLElement]

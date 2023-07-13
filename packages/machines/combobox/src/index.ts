@@ -9,4 +9,5 @@ export type {
   OptionProps,
   Placement,
   PositioningOptions,
+  PublicApi,
 } from "./combobox.types"

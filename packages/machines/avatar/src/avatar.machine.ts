@@ -1,8 +1,8 @@
 import { createMachine } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
-import { MachineContext, MachineState, UserDefinedContext } from "./avatar.types"
+import { compact } from "@zag-js/utils"
 import { dom } from "./avatar.dom"
+import type { MachineContext, MachineState, UserDefinedContext } from "./avatar.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)

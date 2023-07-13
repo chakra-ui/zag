@@ -1,12 +1,12 @@
-import { EventKeyMap, getEventKey, getNativeEvent, isLeftClick } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
-import type { OptionData, OptionGroupProps, OptionProps, Send, State } from "./combobox.types"
+import type { OptionData, OptionGroupProps, OptionProps, PublicApi, Send, State } from "./combobox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const translations = state.context.translations
 
   const isDisabled = state.context.disabled
@@ -28,33 +28,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   const api = {
-    /**
-     * Whether the combobox is focused
-     */
     isFocused,
-    /**
-     * Whether the combobox content or listbox is open
-     */
     isOpen,
-    /**
-     * Whether the combobox input is empty
-     */
     isInputValueEmpty: state.context.isInputValueEmpty,
-    /**
-     * The current value of the combobox input
-     */
     inputValue: state.context.inputValue,
-    /**
-     * The currently focused option (by pointer or keyboard)
-     */
     focusedOption: state.context.focusedOptionData,
-    /**
-     * The currently selected option value
-     */
     selectedValue: state.context.selectionData?.value,
-    /**
-     * Function to set the combobox value
-     */
+
     setValue(value: string | OptionData) {
       let data: OptionData
       if (typeof value === "string") {
@@ -64,21 +44,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
       send({ type: "SET_VALUE", ...data })
     },
-    /**
-     * Function to set the combobox input value
-     */
+
     setInputValue(value: string) {
       send({ type: "SET_INPUT_VALUE", value })
     },
-    /**
-     * Function to clear the combobox input value and selected value
-     */
+
     clearValue() {
       send("CLEAR_VALUE")
     },
-    /**
-     * Function to focus the combobox input
-     */
+
     focus() {
       dom.getInputEl(state.context)?.focus()
     },

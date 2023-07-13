@@ -1,17 +1,17 @@
 import {
   clamp,
   decrement,
+  formatDecimal,
   increment,
   isAtMax,
   isAtMin,
   isWithinRange,
-  Num,
   percentToValue,
-  FormatDecimalOptions,
-  formatDecimal,
   snapToStep,
   valueOf,
   valueToPercent,
+  type FormatDecimalOptions,
+  type Num,
 } from "./number"
 
 export type RangeOptions<T = string | number> = Num<"min" | "max"> &

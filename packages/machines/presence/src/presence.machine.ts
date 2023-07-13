@@ -1,5 +1,5 @@
 import { createMachine, ref, guards } from "@zag-js/core"
-import { MachineContext, MachineState, UserDefinedContext } from "./presence.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./presence.types"
 
 const { and, or } = guards
 

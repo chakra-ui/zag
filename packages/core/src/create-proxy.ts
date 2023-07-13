@@ -1,6 +1,6 @@
 import { proxy, proxyWithComputed } from "@zag-js/store"
 import { cast } from "@zag-js/utils"
-import { ActionTypes, Dict, StateMachine as S } from "./types"
+import { ActionTypes, type Dict, type StateMachine as S } from "./types"
 
 export function createProxy<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   config: S.MachineConfig<TContext, TState, TEvent>,

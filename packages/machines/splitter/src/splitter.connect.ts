@@ -1,53 +1,36 @@
-import { EventKeyMap, getEventKey, getEventStep } from "@zag-js/dom-event"
+import { getEventKey, getEventStep, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
-import type { PanelId, PanelProps, ResizeTriggerProps, Send, State } from "./splitter.types"
+import type { PanelId, PanelProps, PublicApi, ResizeTriggerProps, Send, State } from "./splitter.types"
 import { getHandleBounds } from "./splitter.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isHorizontal = state.context.isHorizontal
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")
   const panels = state.context.panels
 
   const api = {
-    /**
-     * Whether the splitter is focused.
-     */
     isFocused,
-    /**
-     * Whether the splitter is being dragged.
-     */
     isDragging,
-    /**
-     *  The bounds of the currently dragged splitter handle.
-     */
     bounds: getHandleBounds(state.context),
-    /**
-     * Function to set a panel to its minimum size.
-     */
+
     setToMinSize(id: PanelId) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "setToMinSize" })
     },
-    /**
-     * Function to set a panel to its maximum size.
-     */
+
     setToMaxSize(id: PanelId) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.maxSize, src: "setToMaxSize" })
     },
-    /**
-     * Function to set the size of a panel.
-     */
+
     setSize(id: PanelId, size: number) {
       send({ type: "SET_PANEL_SIZE", id, size })
     },
-    /**
-     * Returns the state details for a resize trigger.
-     */
+
     getResizeTriggerState(props: ResizeTriggerProps) {
       const { id, disabled } = props
       const ids = id.split(":")

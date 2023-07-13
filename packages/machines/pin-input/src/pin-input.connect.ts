@@ -1,13 +1,13 @@
-import { EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-event"
+import { type EventKeyMap, getEventKey, getNativeEvent, isModifiedEvent } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./pin-input.anatomy"
 import { dom } from "./pin-input.dom"
-import type { Send, State } from "./pin-input.types"
+import type { PublicApi, Send, State } from "./pin-input.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isValueComplete = state.context.isValueComplete
   const isInvalid = state.context.invalid
   const focusedIndex = state.context.focusedIndex
@@ -18,42 +18,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    /**
-     * The value of the input as an array of strings.
-     */
     value: state.context.value,
-    /**
-     * The value of the input as a string.
-     */
     valueAsString: state.context.valueAsString,
-    /**
-     * Whether all inputs are filled.
-     */
     isValueComplete: isValueComplete,
-    /**
-     * Function to set the value of the inputs.
-     */
+
     setValue(value: string[]) {
       if (!Array.isArray(value)) {
         invariant("[pin-input/setValue] value must be an array")
       }
       send({ type: "SET_VALUE", value })
     },
-    /**
-     * Function to clear the value of the inputs.
-     */
+
     clearValue() {
       send({ type: "CLEAR_VALUE" })
     },
-    /**
-     * Function to set the value of the input at a specific index.
-     */
+
     setValueAtIndex(index: number, value: string) {
       send({ type: "SET_VALUE", value, index })
     },
-    /**
-     * Function to focus the pin-input. This will focus the first input.
-     */
+
     focus,
 
     rootProps: normalize.element({

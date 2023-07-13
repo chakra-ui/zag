@@ -1,8 +1,8 @@
 import { useMDX } from "components/mdx-components"
-import { Overview } from "@/contentlayer"
+import type { Overview } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
 import { getOverviewDoc, getOverviewPaths } from "lib/contentlayer-utils"
-import { GetStaticPaths, GetStaticProps } from "next"
+import type { GetStaticPaths, GetStaticProps } from "next"
 import { NextSeo } from "next-seo"
 
 export default function OverviewPage({ doc }: { doc: Overview }) {

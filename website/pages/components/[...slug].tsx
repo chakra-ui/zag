@@ -1,14 +1,14 @@
+import type { Component } from "@/contentlayer"
 import { FrameworkProvider } from "components/framework"
 import { useMDX } from "components/mdx-components"
-import type { Component } from "@/contentlayer"
 import DocsLayout from "layouts/docs"
 import {
   extractParams,
   getComponentDoc,
   getComponentPaths,
 } from "lib/contentlayer-utils"
-import { Framework } from "lib/framework-utils"
-import { GetStaticPaths, GetStaticProps } from "next"
+import type { Framework } from "lib/framework-utils"
+import type { GetStaticPaths, GetStaticProps } from "next"
 import { NextSeo } from "next-seo"
 
 type PageProps = {

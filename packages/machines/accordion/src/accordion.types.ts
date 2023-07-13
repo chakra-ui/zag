@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { RequiredBy, CommonProperties, Context, DirectionProperty } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -41,6 +41,17 @@ type PublicContext = DirectionProperty &
      */
     orientation?: "horizontal" | "vertical"
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  rootProps: T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getContentProps(props: ItemProps): T["element"]
+  getTriggerProps(props: ItemProps): T["button"]
+  focusedValue: string | null
+  value: string | string[] | null
+  setValue: (value: string | string[]) => void
+  getItemState: (props: ItemProps) => ItemState
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

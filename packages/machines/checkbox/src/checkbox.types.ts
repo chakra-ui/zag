@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
   root: string
@@ -50,6 +50,41 @@ type PublicContext = DirectionProperty &
      */
     value: string
   }
+
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the checkbox is checked
+   */
+  isChecked: boolean
+  /**
+   * Whether the checkbox is disabled
+   */
+  isDisabled: boolean | undefined
+  /**
+   * Whether the checkbox is indeterminate
+   */
+  isIndeterminate: boolean
+  /**
+   * Whether the checkbox is focused
+   */
+  isFocused: boolean | undefined
+  /**
+   *  The checked state of the checkbox
+   */
+  checkedState: CheckedState
+  /**
+   * Function to set the checked state of the checkbox
+   */
+  setChecked(checked: CheckedState): void
+  /**
+   * Function to toggle the checked state of the checkbox
+   */
+  toggleChecked(): void
+  rootProps: T["label"]
+  labelProps: T["element"]
+  controlProps: T["element"]
+  inputProps: T["input"]
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

@@ -1,4 +1,4 @@
-import { proxy, snapshot, Snapshot } from "./proxy"
+import { proxy, snapshot, type Snapshot } from "./proxy"
 
 export function proxyWithComputed<T extends object, U extends object>(
   initialObject: T,

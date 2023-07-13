@@ -1,4 +1,4 @@
-import { ColorChannelProps, MachineContext } from "../color-picker.types"
+import type { ColorChannelProps, MachineContext } from "../color-picker.types"
 
 function getSliderBgDirection(orientation: "vertical" | "horizontal", dir: "ltr" | "rtl") {
   if (orientation === "vertical") {
