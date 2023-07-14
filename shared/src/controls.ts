@@ -203,3 +203,10 @@ export const colorPickerControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
+
+export const fileUploadControls = defineControls({
+  accept: { type: "string", defaultValue: "" },
+  maxFiles: { type: "number", defaultValue: 1 },
+  disabled: { type: "boolean", defaultValue: false },
+  dropzone: { type: "boolean", defaultValue: true },
+})
