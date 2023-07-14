@@ -28,7 +28,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFocused,
 
     setChecked(checked: boolean) {
-      send({ type: "DISPATCH.CHANGE", checked })
+      send({ type: "CHECKED.SET", checked })
     },
 
     toggleChecked() {
