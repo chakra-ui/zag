@@ -28,7 +28,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     checkedState: state.context.checked,
 
     setChecked(checked: CheckedState) {
-      send({ type: "DISPATCH.CHANGE", checked })
+      send({ type: "CHECKED.SET", checked })
     },
 
     toggleChecked() {
