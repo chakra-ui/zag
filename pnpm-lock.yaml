@@ -311,9 +311,6 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
-      '@zag-js/transition':
-        specifier: workspace:*
-        version: link:../../packages/machines/transition
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -537,9 +534,6 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
-      '@zag-js/transition':
-        specifier: workspace:*
-        version: link:../../packages/machines/transition
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -742,9 +736,6 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
-      '@zag-js/transition':
-        specifier: workspace:*
-        version: link:../../packages/machines/transition
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -959,9 +950,6 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
-      '@zag-js/transition':
-        specifier: workspace:*
-        version: link:../../packages/machines/transition
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -1164,9 +1152,6 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
-      '@zag-js/transition':
-        specifier: workspace:*
-        version: link:../../packages/machines/transition
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -2248,25 +2233,6 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/machines/transition:
-    dependencies:
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../utilities/dom-query
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
