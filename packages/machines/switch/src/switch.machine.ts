@@ -32,9 +32,6 @@ export function machine(userContext: UserDefinedContext) {
         "CHECKED.SET": {
           actions: ["setChecked"],
         },
-        "DISPATCH.CHANGE": {
-          actions: ["dispatchChangeEvent"],
-        },
         "CONTEXT.SET": {
           actions: ["setContext"],
         },
