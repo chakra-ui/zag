@@ -81,18 +81,6 @@ const [state, send] = useMachine(
 )
 ```
 
-## Making the radio group readonly
-
-To make a radio group readonly, set the context's `readOnly` property to true
-
-```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    readOnly: true,
-  }),
-)
-```
-
 ## Setting the initial value
 
 To set the radio group's initial value, set the context's `value` property to
@@ -140,6 +128,24 @@ const [state, send] = useMachine(
 
 Earlier, we mentioned that each radio part has a `data-part` attribute added to
 them to select and style them in the DOM.
+
+### Checked State
+
+When the radio input is checked, the `data-state` attribute is added to the
+
+```css
+[data-part="radio"][data-state="checked|unchecked"] {
+  /* styles for radio checked or unchecked state */
+}
+
+[data-part="radio-control"][data-state="checked|unchecked"] {
+  /* styles for radio checked or unchecked state */
+}
+
+[data-part="radio-label"][data-state="checked|unchecked"] {
+  /* styles for radio checked or unchecked state */
+}
+```
 
 ### Focused State
 

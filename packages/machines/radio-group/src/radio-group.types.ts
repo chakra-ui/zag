@@ -77,7 +77,6 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
     props: T_1,
   ) => {
     isInteractive: boolean
-    isReadOnly: boolean | undefined
     isInvalid: boolean | undefined
     isDisabled: boolean | undefined
     isChecked: boolean

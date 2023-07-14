@@ -42,9 +42,7 @@ const components = {
     <Playground
       component={Checkbox}
       defaultProps={{
-        indeterminate: false,
         disabled: false,
-        readOnly: false,
       }}
     />
   ),
@@ -68,7 +66,6 @@ const components = {
       component={Radio}
       defaultProps={{
         disabled: false,
-        readOnly: false,
       }}
     />
   ),

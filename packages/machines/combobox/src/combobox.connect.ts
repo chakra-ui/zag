@@ -77,7 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
-      "data-expanded": dataAttr(isOpen),
+      "data-state": isOpen ? "open" : "closed",
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -94,7 +94,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
-      "data-expanded": dataAttr(isOpen),
       hidden: !isOpen,
       style: popperStyles.floating,
     }),
@@ -121,6 +120,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
+      "data-state": isOpen ? "open" : "closed",
       "aria-activedescendant": state.context.focusedId ?? undefined,
       onClick() {
         if (!isInteractive) return
@@ -191,6 +191,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       "aria-label": translations.triggerLabel,
       "aria-expanded": isOpen,
+      "data-state": isOpen ? "open" : "closed",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       disabled: isDisabled,
       "data-readonly": dataAttr(isReadOnly),
@@ -212,6 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
       role: "listbox",
       hidden: !isOpen,
+      "data-state": isOpen ? "open" : "closed",
       "aria-labelledby": dom.getLabelId(state.context),
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus

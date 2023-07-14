@@ -19,12 +19,17 @@ function Toast({ actor }: { actor: toast.Service }) {
         rounded: "sm",
         padding: "6",
         shadow: "rgba(0, 0, 0, 0.12) 0px 5px 10px 0px",
-        animationName: api.isVisible ? "toast-in" : "toast-out",
-        animationDuration: api.isVisible ? "0.35s" : "0.4s",
-        animationTimingFunction: api.isVisible
-          ? "cubic-bezier(.21,1.02,.73,1)"
-          : "cubic-bezier(.06,.71,.55,1)",
         animationFillMode: "forwards",
+        "&[data-state=open]": {
+          animationName: "toast-in",
+          animationDuration: "0.35s",
+          animationTimingFunction: "cubic-bezier(.21,1.02,.73,1)",
+        },
+        "&[data-state=closed]": {
+          animationName: "toast-out",
+          animationDuration: "0.4s",
+          animationTimingFunction: "cubic-bezier(.06,.71,.55,1)",
+        },
       }}
       {...api.rootProps}
     >
@@ -68,6 +73,7 @@ export function ToastGroup(props: any) {
             id.current = api.create({
               title: "The Evil Rabbit jumped over the fence.",
               type: "info",
+              removeDelay: 500,
             })
           }}
         >

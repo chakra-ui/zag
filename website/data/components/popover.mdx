@@ -198,23 +198,41 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each popover part has a `data-part` attribute added
 to them to select and style them in the DOM.
 
-### Expanded state
+### Open and closed state
 
-When the popover is expanded, we add a `data-expanded` and `data-placement`
+When the popover is expanded, we add a `data-state` and `data-placement`
 attribute to the trigger.
 
 ```css
-[data-part="trigger"][data-expanded] {
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the expanded state */
+}
+
+[data-part="content"][data-state="open|closed"] {
   /* styles for the expanded state */
 }
 
 [data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
+  /* styles for computed placement */
+}
+```
+
+### Position aware
+
+When the popover is expanded, we add a `data-state` and `data-placement`
+attribute to the trigger.
+
+```css
+[data-part="trigger"][data-placement="(top|bottom)-(start|end)"] {
+  /* styles for computed placement */
+}
+
+[data-part="content"][data-placement="(top|bottom)-(start|end)"] {
   /* styles for computed placement */
 }
 ```

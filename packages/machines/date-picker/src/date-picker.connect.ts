@@ -214,6 +214,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contentProps: normalize.element({
       ...parts.content.attrs,
       hidden: !isOpen,
+      "data-state": isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
       role: "application",
       "aria-roledescription": "datepicker",
@@ -537,6 +538,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       type: "button",
       "aria-label": isOpen ? "Close calendar" : "Open calendar",
+      "data-state": isOpen ? "open" : "closed",
       "aria-haspopup": "grid",
       disabled,
       onClick() {
@@ -568,6 +570,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       dir: state.context.dir,
       name: state.context.name,
+      "data-state": isOpen ? "open" : "closed",
       readOnly,
       disabled,
       placeholder: getInputPlaceholder(locale),

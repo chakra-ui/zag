@@ -3,14 +3,34 @@ import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
-import { createReducer } from "./accordion.reducer"
-import type { ItemProps, PublicApi, Send, State } from "./accordion.types"
+import type { ItemProps, ItemState, PublicApi, Send, State } from "./accordion.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
-  const reducer = createReducer(state, send)
+  const focusedValue = state.context.focusedValue
+  const value = state.context.value
+  const multiple = state.context.multiple
+
+  function setValue(value: string | string[]) {
+    let nextValue = value
+    if (multiple && !Array.isArray(nextValue)) {
+      nextValue = [nextValue]
+    }
+    send({ type: "VALUE.SET", value: nextValue })
+  }
+
+  function getItemState(props: ItemProps): ItemState {
+    return {
+      isOpen: Array.isArray(value) ? value.includes(props.value) : props.value === value,
+      isFocused: focusedValue === props.value,
+      isDisabled: Boolean(props.disabled ?? state.context.disabled),
+    }
+  }
 
   return {
-    ...reducer,
+    focusedValue,
+    value,
+    setValue,
+    getItemState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -18,32 +38,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getItemProps(props: ItemProps) {
-      const { isOpen, isFocused } = reducer.getItemState(props)
+      const { isOpen, isFocused } = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
-        "data-expanded": dataAttr(isOpen),
+        "data-state": isOpen ? "open" : "closed",
         "data-focus": dataAttr(isFocused),
       })
     },
 
     getContentProps(props: ItemProps) {
-      const { isOpen, isFocused, isDisabled } = reducer.getItemState(props)
+      const { isOpen, isFocused, isDisabled } = getItemState(props)
       return normalize.element({
         ...parts.content.attrs,
         role: "region",
         id: dom.getContentId(state.context, props.value),
         "aria-labelledby": dom.getTriggerId(state.context, props.value),
         hidden: !isOpen,
+        "data-state": isOpen ? "open" : "closed",
         "data-disabled": dataAttr(isDisabled),
         "data-focus": dataAttr(isFocused),
-        "data-expanded": dataAttr(isOpen),
       })
     },
 
     getTriggerProps(props: ItemProps) {
       const { value } = props
-      const itemState = reducer.getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.button({
         ...parts.trigger.attrs,
@@ -53,7 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-expanded": itemState.isOpen,
         disabled: itemState.isDisabled,
         "aria-disabled": itemState.isDisabled,
-        "data-expanded": dataAttr(itemState.isOpen),
+        "data-state": itemState.isOpen ? "open" : "closed",
         "data-ownedby": dom.getRootId(state.context),
         onFocus() {
           if (itemState.isDisabled) return

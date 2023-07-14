@@ -184,16 +184,17 @@ a[aria-current="page"] {
   align-items: center;
   justify-content: center;
 }
+
 [data-scope="checkbox"][data-part="control"][data-hover] {
   background-color: #ccc;
 }
 
-[data-scope="checkbox"][data-part="control"][data-checked] {
+[data-scope="checkbox"][data-part="control"][data-state="checked"] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-[data-scope="checkbox"][data-part="control"][data-checked]::after {
+[data-scope="checkbox"][data-part="control"][data-state="checked"]::after {
   display: block;
 }
 
@@ -210,12 +211,12 @@ a[aria-current="page"] {
   top: -1px;
 }
 
-[data-scope="checkbox"][data-part="control"][data-indeterminate] {
+[data-scope="checkbox"][data-part="control"][data-state="indeterminate"] {
   background-color: white;
   border-color: gray;
 }
 
-[data-scope="checkbox"][data-part="control"][data-indeterminate]::after {
+[data-scope="checkbox"][data-part="control"][data-state="indeterminate"]::after {
   display: block;
   left: 50%;
   top: 50%;
@@ -381,7 +382,7 @@ main [data-testid="scrubber"] {
   transform-origin: var(--transform-origin);
 }
 
-[data-scope="popover"][data-part="content"][data-expanded] {
+[data-scope="popover"][data-part="content"][data-state="open"] {
   animation: scale 0.1s ease-out;
 }
 
@@ -660,7 +661,7 @@ main [data-testid="scrubber"] {
   background: var(--switch-bg);
 }
 
-[data-scope="switch"][data-part="control"][data-checked] {
+[data-scope="switch"][data-part="control"][data-state="checked"] {
   --switch-bg: #3182ce;
 }
 
@@ -701,11 +702,11 @@ main [data-testid="scrubber"] {
 [data-scope="switch"][data-part="thumb"][data-hover]:before {
   background-color: rgba(0, 0, 0, 0.048);
 }
-[data-scope="switch"][data-part="thumb"][data-hover][data-checked]:before {
+[data-scope="switch"][data-part="thumb"][data-hover][data-state="checked"]:before {
   background-color: rgba(144, 202, 249, 0.295);
 }
 
-[data-scope="switch"][data-part="thumb"][data-checked] {
+[data-scope="switch"][data-part="thumb"][data-state="checked"] {
   transform: translateX(var(--switch-thumb-x));
 }
 
@@ -863,11 +864,14 @@ main [data-testid="scrubber"] {
   padding: 12px;
   width: 400px;
   animation-fill-mode: forwards;
+}
+
+[data-scope="toast"][data-part="root"][data-state="open"] {
   animation-duration: 0.2s;
   animation-name: fadeIn;
 }
 
-[data-scope="toast"][data-part="root"]:not([data-open]) {
+[data-scope="toast"][data-part="root"][data-state="closed"] {
   animation-duration: var(--toast-remove-delay);
   animation-name: fadeOut;
 }
@@ -1175,12 +1179,12 @@ main [data-testid="scrubber"] {
   background-color: #ccc;
 }
 
-[data-scope="radio-group"][data-part="radio-control"][data-checked] {
+[data-scope="radio-group"][data-part="radio-control"][data-state="checked"] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-[data-scope="radio-group"][data-part="radio-control"][data-checked]::after {
+[data-scope="radio-group"][data-part="radio-control"][data-state="checked"]::after {
   display: initial;
 }
 

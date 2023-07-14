@@ -122,7 +122,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen || undefined,
-      "data-expanded": dataAttr(isOpen),
+      "data-state": isOpen ? "open" : "closed",
       onPointerMove(event) {
         if (event.pointerType !== "mouse") return
         const disabled = dom.isTargetDisabled(event.currentTarget)
@@ -207,6 +207,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
       "aria-label": state.context["aria-label"],
       hidden: !isOpen,
+      "data-state": isOpen ? "open" : "closed",
       role: "menu",
       tabIndex: 0,
       dir: state.context.dir,

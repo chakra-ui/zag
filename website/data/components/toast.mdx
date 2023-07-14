@@ -443,21 +443,23 @@ You can use this property to style the toast.
 }
 ```
 
-When the toast is visible, we attach a `data-open` attribute to the toast's
-root. A common use-case for this is to specify the entry and exit animations for
-the toast.
+### Open and close state
+
+When the toast is open or closed, we attach a `data-state` attribute to the
+toast's root. A common use-case for this is to specify the entry and exit
+animations for the toast.
 
 > Remember every toast has a `500ms` delay before it is removed from the DOM.
 > Keep your exit animations within this range.
 
 ```css
-[data-part="root"] {
+[data-part="root"][data-state="open"] {
   animation-name: fadein;
   animation-fill-mode: forwards;
   animation-duration: 0.2s;
 }
 
-[data-part="root"]:not([data-open]) {
+[data-part="root"][data-state="closed"] {
   animation-duration: 0.3s;
   animation-name: fadeout;
 }

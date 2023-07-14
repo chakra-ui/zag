@@ -242,27 +242,32 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each tooltip part has a `data-part` attribute added
 to them to select and style them in the DOM.
 
-### Open and close states
-
-When the tooltip is open, the `data-expanded` attribute is added to the trigger
-
 ```css
-[data-part="trigger"][data-expanded] {
-  /* styles for the trigger's expanded state */
+[data-part="trigger"] {
+  /* styles for the content */
+}
+
+[data-part="content"] {
+  /* styles for the content */
 }
 ```
 
-### Styling the tooltip
+### Open and close states
+
+When the tooltip is open, the `data-state` attribute is added to the trigger
 
 ```css
-[data-part="content"] {
-  /* styles for the content */
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the trigger's expanded state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the trigger's expanded state */
 }
 ```
 

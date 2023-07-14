@@ -9,21 +9,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDisabled = state.context.disabled
   const isFocused = !isDisabled && state.context.focused
   const isChecked = state.context.isChecked
+  const isIndeterminate = state.context.isIndeterminate
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
     "data-focus": dataAttr(isFocused),
     "data-hover": dataAttr(state.context.hovered),
     "data-disabled": dataAttr(isDisabled),
-    "data-checked": dataAttr(state.context.isChecked),
+    "data-state": isIndeterminate ? "indeterminate" : state.context.checked ? "checked" : "unchecked",
     "data-invalid": dataAttr(state.context.invalid),
-    "data-indeterminate": dataAttr(state.context.isIndeterminate),
   }
 
   return {
     isChecked,
     isDisabled,
-    isIndeterminate: state.context.isIndeterminate,
+    isIndeterminate,
     isFocused,
     checkedState: state.context.checked,
 

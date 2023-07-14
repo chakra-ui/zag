@@ -90,18 +90,6 @@ const [state, send] = useMachine(
 )
 ```
 
-## Making the checkbox readonly
-
-To make a checkbox readonly, set the context's `readOnly` property to true
-
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    readOnly: true,
-  }),
-)
-```
-
 ## Making it checked by default
 
 To make a checkbox checked by default, set the context's `checked` property to
@@ -149,6 +137,25 @@ const [state, send] = useMachine(
 
 Earlier, we mentioned that each checkbox part has a `data-part` attribute added
 to them to select and style them in the DOM.
+
+### Checked state
+
+When the checkbox input is checked, the `data-checked` attribute is added to the
+root, control and label parts.
+
+```css
+[data-part="root"][data-state="checked|unchecked|indeterminate"] {
+  /* styles for when checkbox is checked */
+}
+
+[data-part="control"][data-state="checked|unchecked|indeterminate"] {
+  /* styles for when checkbox is checked */
+}
+
+[data-part="label"][data-state="checked|unchecked|indeterminate"] {
+  /* styles for when checkbox is checked */
+}
+```
 
 ### Focused State
 

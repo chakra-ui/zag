@@ -80,13 +80,6 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
    */
   close(): void
   /**
-   * Returns the animation state of the tooltip.
-   */
-  getAnimationState(): {
-    enter: boolean
-    exit: boolean
-  }
-  /**
    * Function to reposition the popover
    */
   setPositioning(options?: Partial<PositioningOptions>): void

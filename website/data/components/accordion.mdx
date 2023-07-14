@@ -164,22 +164,23 @@ const [state, send] = useMachine(
 Earlier, we mentioned that each accordion part has a `data-part` attribute added
 to them to select and style them in the DOM.
 
-### Selected state
+### Open and closed state
 
-When an accordion item is expanded, a `data-expanded` attribute is set on the
-item, trigger and content elements. This attribute is removed when it is closed.
+When an accordion item is expanded or collapsed, a `data-state` attribute is set
+on the item, trigger and content elements. This attribute is removed when it is
+closed.
 
 ```css
-[data-part="item"][data-expanded] {
-  /* styles for the item's expanded state */
+[data-part="item"][data-state="open|closed"] {
+  /* styles for the item is open or closed state */
 }
 
-[data-part="trigger"][data-expanded] {
-  /* styles for the trigger's expanded state */
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the item is open or closed state */
 }
 
-[data-part="content"][data-expanded] {
-  /* styles for the content's expanded state */
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the item is open or closed state */
 }
 ```
 

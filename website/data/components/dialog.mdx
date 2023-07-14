@@ -77,7 +77,6 @@ dialog machine in your project 🔥
 
 <CodeSnippet id="dialog/usage.mdx" />
 
-
 ## Managing focus within the dialog
 
 When the dialog opens, it automatically sets focus on the first focusable
@@ -169,6 +168,21 @@ to them to select and style them in the DOM.
 
 [data-part="close-trigger"] {
   /* styles for the close trigger element */
+}
+```
+
+### Open and closed state
+
+The dialog has two states: `open` and `closed`. You can use the `data-state`
+attribute to style the dialog or trigger based on its state.
+
+```css
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the open state */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the open state */
 }
 ```
 

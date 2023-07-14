@@ -154,9 +154,9 @@ A common requirement for the option item that you pass the `name`, `value` and
 
 <CodeSnippet id="menu/option-items.mdx" />
 
-The machine invokes an `onValueChange` callback when an radio or checkbox
-option checked state changes. This callback is invoked with the `name` of the
-option and its new value.
+The machine invokes an `onValueChange` callback when an radio or checkbox option
+checked state changes. This callback is invoked with the `name` of the option
+and its new value.
 
 ```jsx {3-6}
 const [state, send] = useMachine(
@@ -170,11 +170,25 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each menu part has a `data-part` attribute added to
 them to select and style them in the DOM.
+
+### Open and closed state
+
+When the menu is open or closed, the content and trigger parts will have the
+`data-state` attribute.
+
+```css
+[data-part="content"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+```
 
 ### Focused item state
 

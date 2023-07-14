@@ -56,7 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       "aria-expanded": isOpen,
-      "data-expanded": dataAttr(isOpen),
+      "data-state": isOpen ? "open" : "closed",
       "aria-controls": dom.getContentId(state.context),
       onClick() {
         send("TOGGLE")
@@ -78,6 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       role: "dialog",
       hidden: !isOpen,
+      "data-state": isOpen ? "open" : "closed",
       "data-expanded": dataAttr(isOpen),
       "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
       "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,

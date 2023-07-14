@@ -7,11 +7,9 @@ import type { InputProps, PublicApi, RadioProps, Send, State } from "./radio-gro
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const isGroupDisabled = state.context.disabled
-  const isGroupReadOnly = state.context.readOnly
 
   function getRadioState<T extends RadioProps>(props: T) {
     const radioState = {
-      isReadOnly: props.readOnly || isGroupReadOnly,
       isInvalid: props.invalid,
       isDisabled: props.disabled || isGroupDisabled,
       isChecked: state.context.value === props.value,
@@ -21,7 +19,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }
     return {
       ...radioState,
-      isInteractive: !(radioState.isReadOnly || radioState.isDisabled),
+      isInteractive: !radioState.isDisabled,
     }
   }
 
@@ -30,10 +28,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       "data-focus": dataAttr(radioState.isFocused),
       "data-disabled": dataAttr(radioState.isDisabled),
-      "data-checked": dataAttr(radioState.isChecked),
+      "data-state": radioState.isChecked ? "checked" : "unchecked",
       "data-hover": dataAttr(radioState.isHovered),
       "data-invalid": dataAttr(radioState.isInvalid),
-      "data-readonly": dataAttr(radioState.isReadOnly),
     }
   }
 
@@ -155,9 +152,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         value: props.value,
         onChange(event) {
-          if (inputState.isReadOnly || inputState.isDisabled) {
-            return
-          }
+          if (inputState.isDisabled) return
+
           if (event.target.checked) {
             send({ type: "SET_VALUE", value: props.value })
           }
@@ -184,8 +180,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(inputState.isDisabled),
         "aria-required": ariaAttr(isRequired),
         "aria-invalid": ariaAttr(inputState.isInvalid),
-        readOnly: inputState.isReadOnly,
-        "data-readonly": dataAttr(inputState.isReadOnly),
         "aria-disabled": ariaAttr(trulyDisabled),
         "aria-checked": ariaAttr(inputState.isChecked),
         style: visuallyHiddenStyle,

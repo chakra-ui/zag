@@ -30,12 +30,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     close() {
       send("CLOSE")
     },
-    getAnimationState() {
-      return {
-        enter: store.prevId === null && id === store.id,
-        exit: store.id === null,
-      }
-    },
     setPositioning(options: Partial<PositioningOptions> = {}) {
       send({ type: "SET_POSITIONING", options })
     },
@@ -44,6 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       id: triggerId,
       "data-expanded": dataAttr(isOpen),
+      "data-state": isOpen ? "open" : "closed",
       "aria-describedby": isOpen ? contentId : undefined,
       onClick() {
         send("CLICK")
@@ -96,6 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contentProps: normalize.element({
       ...parts.content.attrs,
       hidden: !isOpen,
+      "data-state": isOpen ? "open" : "closed",
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
       "data-placement": state.context.currentPlacement,

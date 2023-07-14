@@ -10,7 +10,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isPressed,
-
     setPressed(pressed: boolean) {
       send({ type: "PRESSED.SET", pressed })
     },
@@ -22,7 +21,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": state.context["aria-label"],
       "aria-pressed": isPressed,
       "data-disabled": dataAttr(isDisabled),
-      "data-pressed": dataAttr(isPressed),
+      "data-state": isPressed ? "on" : "off",
       onClick() {
         if (isDisabled) return
         send({ type: "PRESSED.TOGGLE" })

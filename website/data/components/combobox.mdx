@@ -165,11 +165,33 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each combobox part has a `data-part` attribute added
 to them to select and style them in the DOM.
+
+### Open and closed state
+
+When the combobox is open or closed, the `data-state` attribute is added to the
+content,control, input and control parts.
+
+```css
+[data-part="control"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+
+[data-part="input"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+```
 
 ### Focused State
 

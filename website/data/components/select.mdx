@@ -211,11 +211,25 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each select part has a `data-part` attribute added to
 them to select and style them in the DOM.
+
+### Open and closed state
+
+When the select is open, the trigger and content is given a `data-state`
+attribute.
+
+```css
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+```
 
 ### Selected state
 

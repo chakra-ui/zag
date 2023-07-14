@@ -66,8 +66,7 @@ hover-card machine in your project 🔥
 
 ## Making it opened initially
 
-To make an hover card open by default, set the context's `open` property
-to true
+To make an hover card open by default, set the context's `open` property to true
 
 ```jsx {3}
 const [state, send] = useMachine(
@@ -93,7 +92,6 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each hover card part has a `data-part` attribute
@@ -103,7 +101,28 @@ added to them to select and style them in the DOM.
 [data-part="trigger"] {
   /* styles for trigger */
 }
+
+[data-part="content"] {
+  /* styles for content */
+}
 ```
+
+### Open and closed state
+
+The hover card exposes a `data-state` attribute that can be used to style the
+hover card based on its open-close state.
+
+```css
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+```
+
+### Arrow
 
 Zag exposes some variable that can be used to style the arrow.
 
@@ -120,7 +139,6 @@ Zag exposes some variable that can be used to style the arrow.
   /* styles for content */
 }
 ```
-
 
 ## Methods and Properties
 
