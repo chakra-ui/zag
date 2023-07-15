@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 import { a11y, testid } from "./__utils"
 
 const dialog_1 = {

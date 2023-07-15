@@ -171,22 +171,27 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 ### Selected state
 
-When a tab is selected, a `data-selected` attribute is added to it.
+When a tab is selected, a `data-selected` attribute is added to the trigger and
+content elements.
 
 ```css
-[data-part="trigger"][data-selected] {
+[data-part="trigger"][data-state="active"] {
+  /* Styles for selected tab */
+}
+
+[data-part="content"][data-state="active"] {
   /* Styles for selected tab */
 }
 ```
 
 ### Disabled state
 
-When a tab is disabled, a `data-disabled` attribute is added to it.
+When a tab is disabled, a `data-disabled` attribute is added to the trigger
+element.
 
 ```css
 [data-part="trigger"][data-disabled] {

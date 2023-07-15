@@ -238,11 +238,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getOptionState(props: OptionProps) {
-      const { value, index, disabled } = props
-      const id = dom.getOptionId(state.context, value, index)
-      const focused = state.context.focusedId === id
-      const checked = state.context.selectionData?.value === value
-      return { disabled, focused, checked }
+      const id = dom.getOptionId(state.context, props.value, props.index)
+      return {
+        isDisabled: !!props.disabled,
+        isHighlighted: state.context.focusedId === id,
+        isChecked: state.context.selectionData?.value === props.value,
+      }
     },
 
     getOptionProps(props: OptionProps) {
@@ -255,11 +256,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(optionState.focused),
-        "data-disabled": dataAttr(optionState.disabled),
-        "data-checked": dataAttr(optionState.checked),
-        "aria-selected": optionState.focused,
-        "aria-disabled": optionState.disabled,
+        "data-highlighted": dataAttr(optionState.isHighlighted),
+        "data-state": optionState.isChecked ? "checked" : "unchecked",
+        "aria-selected": optionState.isHighlighted,
+        "aria-disabled": optionState.isDisabled,
+        "data-disabled": dataAttr(optionState.isDisabled),
         "aria-posinset": count && index != null ? index + 1 : undefined,
         "aria-setsize": count,
         "data-value": value,
@@ -267,19 +268,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
         // NOTE: for perf, we may want to move these handlers to the listbox
         onPointerMove() {
-          if (optionState.disabled) return
+          if (optionState.isDisabled) return
           send({ type: "POINTEROVER_OPTION", id, value, label })
         },
         onPointerUp() {
-          if (optionState.disabled) return
+          if (optionState.isDisabled) return
           send({ type: "CLICK_OPTION", src: "pointerup", id, value, label })
         },
         onClick() {
-          if (optionState.disabled) return
+          if (optionState.isDisabled) return
           send({ type: "CLICK_OPTION", src: "click", id, value, label })
         },
         onAuxClick(event) {
-          if (optionState.disabled) return
+          if (optionState.isDisabled) return
           event.preventDefault()
           send({ type: "CLICK_OPTION", src: "auxclick", id, value, label })
         },

@@ -70,7 +70,7 @@ export function NestedMenu() {
                 py="1"
                 cursor="pointer"
                 key={item.value}
-                _focus={{
+                _highlighted={{
                   bg: "bg-primary-bold",
                   color: "white",
                 }}
@@ -83,7 +83,7 @@ export function NestedMenu() {
               px="2"
               py="1"
               cursor="pointer"
-              _focus={{
+              _highlighted={{
                 bg: "bg-primary-bold",
                 color: "white",
               }}
@@ -116,7 +116,7 @@ export function NestedMenu() {
                 py="1"
                 cursor="pointer"
                 key={item.value}
-                _focus={{
+                _highlighted={{
                   bg: "bg-primary-bold",
                   color: "white",
                 }}

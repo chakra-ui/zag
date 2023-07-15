@@ -130,6 +130,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
         "data-ownedby": dom.getTablistId(state.context),
+        "data-selected": dataAttr(selected),
         hidden: !selected,
       })
     },

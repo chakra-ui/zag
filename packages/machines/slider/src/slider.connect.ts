@@ -178,6 +178,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.output.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
+      "data-orientation": state.context.orientation,
       id: dom.getOutputId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       "aria-live": "off",

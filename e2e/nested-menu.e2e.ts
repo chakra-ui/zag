@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 import { clickOutside, rect, testid } from "./__utils"
 
 const menu_1 = {
@@ -19,7 +19,7 @@ const menu_3 = {
 }
 
 const expectToBeFocused = async (page: Page, id: string) => {
-  return await expect(page.locator(id).first()).toHaveAttribute("data-focus", "")
+  return await expect(page.locator(id).first()).toHaveAttribute("data-highlighted", "")
 }
 
 const navigateToSubmenuTrigger = async (page: Page) => {

@@ -199,9 +199,9 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   contentProps: T["element"]
   clearTriggerProps: T["button"]
   getOptionState(props: OptionProps): {
-    disabled: boolean | undefined
-    focused: boolean
-    checked: boolean
+    isDisabled: boolean
+    isHighlighted: boolean
+    isChecked: boolean
   }
   getOptionProps(props: OptionProps): T["element"]
   getOptionGroupProps(props: OptionGroupProps): T["element"]

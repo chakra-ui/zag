@@ -29,7 +29,6 @@ export function SegmentedControl(props: SegmentedControlProps) {
 
   return (
     <Flex
-      gap="4"
       align="center"
       pos="relative"
       bg="blackAlpha.200"
@@ -45,7 +44,7 @@ export function SegmentedControl(props: SegmentedControlProps) {
         bg="bg-subtle"
         zIndex="1"
         rounded="md"
-        shadow="md"
+        shadow="base"
         {...api.indicatorProps}
       />
       {items.map((opt) => (
@@ -55,7 +54,7 @@ export function SegmentedControl(props: SegmentedControlProps) {
           userSelect="none"
           cursor="pointer"
           fontSize="16"
-          px="2"
+          px="3"
           py="1"
           zIndex="2"
           _disabled={{

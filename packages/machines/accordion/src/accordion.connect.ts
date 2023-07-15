@@ -35,15 +35,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
+      "data-orientation": state.context.orientation,
     }),
 
     getItemProps(props: ItemProps) {
-      const { isOpen, isFocused } = getItemState(props)
+      const { isOpen, isFocused, isDisabled } = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
         "data-state": isOpen ? "open" : "closed",
         "data-focus": dataAttr(isFocused),
+        "data-disabled": dataAttr(isDisabled),
+        "data-orientation": state.context.orientation,
       })
     },
 
@@ -58,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-state": isOpen ? "open" : "closed",
         "data-disabled": dataAttr(isDisabled),
         "data-focus": dataAttr(isFocused),
+        "data-orientation": state.context.orientation,
       })
     },
 
@@ -72,6 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-controls": dom.getContentId(state.context, value),
         "aria-expanded": itemState.isOpen,
         disabled: itemState.isDisabled,
+        "data-orientation": state.context.orientation,
         "aria-disabled": itemState.isDisabled,
         "data-state": itemState.isOpen ? "open" : "closed",
         "data-ownedby": dom.getRootId(state.context),

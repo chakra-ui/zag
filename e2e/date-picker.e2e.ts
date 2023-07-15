@@ -1,5 +1,5 @@
 import { getLocalTimeZone, parseDate, today, startOfMonth, endOfMonth } from "@internationalized/date"
-import { expect, Page, test } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 import { a11y, part } from "./__utils"
 
 const createScreen = (page: Page) => ({

@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     contextTriggerProps: normalize.element({
-      ...parts.trigger.attrs,
+      ...parts.contextTrigger.attrs,
       id: dom.getContextTriggerId(state.context),
       onPointerDown(event) {
         if (event.pointerType === "mouse") return
@@ -297,7 +297,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
         "data-ownedby": dom.getContentId(state.context),
-        "data-focus": dataAttr(state.context.highlightedId === id),
+        "data-highlighted": dataAttr(state.context.highlightedId === id),
         "data-valuetext": valueText,
         onClick(event) {
           if (disabled) return
@@ -349,7 +349,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "data-value": option.value,
           role: `menuitem${type}`,
           "aria-checked": !!checked,
-          "data-checked": dataAttr(checked),
+          "data-state": checked ? "checked" : "unchecked",
           onClick(event) {
             if (disabled) return
             send({ type: "ITEM_CLICK", src: "click", target: event.currentTarget, option })

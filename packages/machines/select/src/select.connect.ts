@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       isDisabled: Boolean(props.disabled || disabled),
       isHighlighted: state.context.highlightedId === id,
-      isSelected: state.context.selectedOption?.value === props.value,
+      isChecked: state.context.selectedOption?.value === props.value,
     }
   }
 
@@ -186,9 +186,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-label": label,
         "data-value": value,
         "data-valuetext": valueText ?? label,
-        "aria-selected": optionState.isSelected,
-        "data-selected": dataAttr(optionState.isSelected),
-        "data-focus": dataAttr(optionState.isHighlighted),
+        "aria-selected": optionState.isChecked,
+        "data-state": optionState.isChecked ? "checked" : "unchecked",
+        "data-highlighted": dataAttr(optionState.isHighlighted),
         "data-disabled": dataAttr(optionState.isDisabled),
         "aria-disabled": ariaAttr(optionState.isDisabled),
       })

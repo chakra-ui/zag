@@ -1,11 +1,11 @@
-import { expect, Page, test } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 import { controls, testid } from "./__utils"
 
 const trigger = testid("trigger")
 const menu = testid("menu")
 
 const expectToBeFocused = async (page: Page, id: string) => {
-  return expect(page.locator(`[id=${id}]`).first()).toHaveAttribute("data-focus", "")
+  return expect(page.locator(`[id=${id}]`).first()).toHaveAttribute("data-highlighted", "")
 }
 
 test.describe("menu", () => {

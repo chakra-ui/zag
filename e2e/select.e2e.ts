@@ -1,4 +1,4 @@
-import { expect, Locator, test } from "@playwright/test"
+import { expect, type Locator, test } from "@playwright/test"
 import { a11y, controls, isInViewport, part, pointer, repeat } from "./__utils"
 
 const label = part("label")
@@ -10,12 +10,12 @@ const options = {
   get: (id: string) => `[role=option][data-value="${id}"]`,
 }
 
-const expectToBeSelected = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-selected", "")
+const expectToBeChecked = async (el: Locator) => {
+  await expect(el).toHaveAttribute("data-state", "checked")
 }
 
 const expectToBeHighlighted = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-focus", "")
+  await expect(el).toHaveAttribute("data-highlighted", "")
 }
 
 const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
@@ -66,7 +66,7 @@ test.describe("select / pointer", () => {
     const albania = page.locator(options.get("AL"))
     await pointer.move(albania)
     await pointer.up(albania)
-    await expectToBeSelected(albania)
+    await expectToBeChecked(albania)
     await expect(page.locator(trigger)).toContainText("Albania")
   })
 
@@ -136,7 +136,7 @@ test.describe("select / keyboard / select", () => {
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("Enter")
     const andorra = page.locator(options.get("AD"))
-    await expectToBeSelected(andorra)
+    await expectToBeChecked(andorra)
     await expect(page.locator(trigger)).toContainText("Andorra")
   })
 
@@ -145,7 +145,7 @@ test.describe("select / keyboard / select", () => {
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press(" ")
     const andorra = page.locator(options.get("AD"))
-    await expectToBeSelected(andorra)
+    await expectToBeChecked(andorra)
     await expect(page.locator(trigger)).toContainText("Andorra")
   })
 
@@ -188,7 +188,7 @@ test.describe("select / open / blur", () => {
     const afganistan = page.locator(options.get("AF"))
     await page.keyboard.press("Tab")
     await expect(page.locator(menu)).not.toBeVisible()
-    await expectToBeSelected(afganistan)
+    await expectToBeChecked(afganistan)
   })
 })
 
@@ -224,35 +224,35 @@ test.describe("select / focused / select option", () => {
   test("should select last option on arrow left", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.press("ArrowLeft")
-    await expectToBeSelected(page.locator(options.get("ZW")))
+    await expectToBeChecked(page.locator(options.get("ZW")))
   })
 
   test("should select last option on arrow right", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.press("ArrowRight")
-    await expectToBeSelected(page.locator(options.get("AD")))
+    await expectToBeChecked(page.locator(options.get("AD")))
   })
 
   test("should select with typeahead", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.type("Nigeri")
-    await expectToBeSelected(page.locator(options.get("NG")))
+    await expectToBeChecked(page.locator(options.get("NG")))
   })
 
   test("should cycle selected value with typeahead", async ({ page }) => {
     await page.focus(trigger)
 
     await page.keyboard.type("P") // select Panama
-    await expectToBeSelected(page.locator(options.get("PA")))
+    await expectToBeChecked(page.locator(options.get("PA")))
 
     await page.keyboard.type("P") // select Panama
-    await expectToBeSelected(page.locator(options.get("PE")))
+    await expectToBeChecked(page.locator(options.get("PE")))
 
     await page.keyboard.type("P") // select papua new guinea
-    await expectToBeSelected(page.locator(options.get("PG")))
+    await expectToBeChecked(page.locator(options.get("PG")))
 
     await page.waitForTimeout(350) // default timeout for typeahead to reset
     await page.keyboard.type("K") // select papua new guinea
-    await expectToBeSelected(page.locator(options.get("KE")))
+    await expectToBeChecked(page.locator(options.get("KE")))
   })
 })

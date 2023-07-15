@@ -86,7 +86,7 @@ export function Select(props: SelectProps) {
                 display="flex"
                 alignItems="center"
                 cursor="pointer"
-                _focus={{ bg: "bg-primary-subtle", color: "white" }}
+                _highlighted={{ bg: "bg-primary-subtle", color: "white" }}
                 key={value}
                 {...api.getOptionProps({ label, value })}
               >

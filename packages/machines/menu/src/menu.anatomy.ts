@@ -1,6 +1,7 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("menu").parts(
+  "contextTrigger",
   "trigger",
   "triggerItem",
   "positioner",

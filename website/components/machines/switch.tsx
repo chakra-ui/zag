@@ -52,13 +52,12 @@ export function Switch(props: SwitchProps) {
           sx={{
             "--switch-bg": "#cbd5e0",
             WebkitBoxPack: "start",
-            _checked: {
+            "&[data-state=checked]": {
               "--switch-bg": "#2AB26B",
             },
             _focus: {
-              boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)",
+              boxShadow: "0 0 0 2px rgba(66, 153, 225, 0.6)",
             },
-
             _disabled: {
               opacity: "0.4",
               cursor: "not-allowed",
@@ -88,8 +87,10 @@ export function Switch(props: SwitchProps) {
               transform: "translate(-50%, -50%)",
               borderRadius: "inherit",
             }}
-            _checked={{
-              transform: "translateX(var(--switch-thumb-x))",
+            sx={{
+              "&[data-state=checked]": {
+                transform: "translateX(var(--switch-thumb-x))",
+              },
             }}
           />
         </chakra.span>

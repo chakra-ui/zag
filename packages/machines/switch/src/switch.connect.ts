@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     "data-focus": dataAttr(isFocused),
     "data-hover": dataAttr(state.context.hovered),
     "data-disabled": dataAttr(isDisabled),
-    "data-checked": dataAttr(state.context.checked),
+    "data-state": state.context.checked ? "checked" : "unchecked",
     "data-invalid": dataAttr(state.context.invalid),
   }
 

@@ -47,7 +47,7 @@ export function Menu(props: MenuProps) {
                 py="1"
                 cursor="pointer"
                 key={item.value}
-                _focus={{
+                _highlighted={{
                   bg: "bg-primary-bold",
                   color: "white",
                 }}

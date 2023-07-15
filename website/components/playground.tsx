@@ -73,7 +73,12 @@ export function Playground(props: PlaygroundProps) {
 
       <Box flexBasis="1px" alignSelf="stretch" bg="bg-bold" />
 
-      <Box width={{ md: "240px" }} fontSize="sm" hidden={isEmpty}>
+      <Box
+        bg="bg-subtle"
+        width={{ md: "240px" }}
+        fontSize="sm"
+        hidden={isEmpty}
+      >
         <Header>Properties</Header>
         <Stack direction="column" spacing="4" px="5" py="4">
           {Object.keys(state).map((key) => {

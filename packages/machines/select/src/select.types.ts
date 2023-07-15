@@ -132,7 +132,7 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   getOptionState: (props: OptionProps) => {
     isDisabled: boolean
     isHighlighted: boolean
-    isSelected: boolean
+    isChecked: boolean
   }
   labelProps: T["label"]
   positionerProps: T["element"]

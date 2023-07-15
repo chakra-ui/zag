@@ -1,4 +1,4 @@
-import { expect, test, Locator, Page } from "@playwright/test"
+import { expect, test, type Locator, type Page } from "@playwright/test"
 import { a11y, controls as testControls, part } from "./__utils"
 
 const control = part("control")

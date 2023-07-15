@@ -36,7 +36,7 @@ export function TagsInput(props: any) {
                   px="2"
                   display="inline-block"
                   margin="4px"
-                  _selected={{ bg: "bg-primary-bold", color: "white" }}
+                  _highlighted={{ bg: "bg-primary-bold", color: "white" }}
                   _disabled={{ opacity: 0.6 }}
                   {...api.getTagProps(opt)}
                 >

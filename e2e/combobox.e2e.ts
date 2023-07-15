@@ -1,4 +1,4 @@
-import { expect, Locator, test } from "@playwright/test"
+import { expect, type Locator, test } from "@playwright/test"
 import { a11y, controls, isInViewport, testid } from "./__utils"
 
 const input = testid("input")
@@ -13,12 +13,12 @@ const expectToBeHighlighted = async (el: Locator) => {
   await expect(el).toHaveAttribute("data-highlighted", "")
 }
 
-const expectToBeSelected = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-checked", "")
+const expectToBeChecked = async (el: Locator) => {
+  await expect(el).toHaveAttribute("data-state", "checked")
 }
 
-const expectNotToBeSelected = async (el: Locator) => {
-  await expect(el).not.toHaveAttribute("data-checked", "")
+const expectNotToBeChecked = async (el: Locator) => {
+  await expect(el).not.toHaveAttribute("data-state", "checked")
 }
 
 const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
@@ -158,7 +158,7 @@ test.describe("combobox", () => {
     const option_els = page.locator(options)
     await option_els.first().click()
     await page.click(trigger)
-    await expectToBeSelected(option_els.first())
+    await expectToBeChecked(option_els.first())
   })
 
   test("can clear value", async ({ page }) => {
@@ -169,7 +169,7 @@ test.describe("combobox", () => {
     await page.locator(clear_value_button).click()
 
     await expect(page.locator(input)).toHaveValue("")
-    await expectNotToBeSelected(option_els.first())
+    await expectNotToBeChecked(option_els.first())
   })
 
   test("should scroll selected option into view", async ({ page }) => {

@@ -188,7 +188,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: isEditingTag ? state.context.editedId === id : false,
         "data-value": value,
         "data-disabled": dataAttr(isDisabled),
-        "data-selected": dataAttr(id === state.context.focusedId),
+        "data-highlighted": dataAttr(id === state.context.focusedId),
         onPointerDown(event) {
           if (!isInteractive) return
           event.preventDefault()

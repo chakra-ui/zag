@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 import { a11y, controls, part } from "./__utils"
 
 const root = part("root")
@@ -7,9 +7,9 @@ const control = part("control")
 const input = part("input")
 
 const expectToBeChecked = async (page: Page) => {
-  await expect(page.locator(root)).toHaveAttribute("data-checked", "")
-  await expect(page.locator(label)).toHaveAttribute("data-checked", "")
-  await expect(page.locator(control)).toHaveAttribute("data-checked", "")
+  await expect(page.locator(root)).toHaveAttribute("data-state", "checked")
+  await expect(page.locator(label)).toHaveAttribute("data-state", "checked")
+  await expect(page.locator(control)).toHaveAttribute("data-state", "checked")
 }
 
 test.beforeEach(async ({ page }) => {

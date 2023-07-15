@@ -43,7 +43,7 @@ export function ContextMenu(props: ContextMenuProps) {
               py="1"
               cursor="pointer"
               key={item.value}
-              _focus={{
+              _highlighted={{
                 bg: "bg-primary-bold",
                 color: "white",
               }}

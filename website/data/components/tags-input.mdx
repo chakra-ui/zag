@@ -250,7 +250,6 @@ const [state, send] = useMachine(
 )
 ```
 
-
 ## Styling guide
 
 Earlier, we mentioned that each accordion part has a `data-part` attribute added
@@ -327,13 +326,13 @@ When a tag is disabled, the `data-disabled` attribute is set on the tag.
 }
 ```
 
-### Selected state
+### Highlighted state
 
-When a tag is selected via the keyboard navigation or pointer hover, a
-`data-selected` attribute is set on the tag.
+When a tag is highlighted via the keyboard navigation or pointer hover, a
+`data-highlighted` attribute is set on the tag.
 
 ```css
-[data-part="tag"][data-selected] {
+[data-part="tag"][data-highlighted] {
   /* styles for visual focus */
 }
 ```

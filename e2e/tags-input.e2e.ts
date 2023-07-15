@@ -1,4 +1,4 @@
-import { expect, test, Locator } from "@playwright/test"
+import { expect, test, type Locator } from "@playwright/test"
 import { clickViz, paste, testid } from "./__utils"
 
 const input = testid("input")
@@ -10,8 +10,8 @@ const item = (id: string) => ({
   input: testid(`${id.toLowerCase()}-input`),
 })
 
-const expectToBeSelected = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-selected", "")
+const expectToBeHighlighted = async (el: Locator) => {
+  await expect(el).toHaveAttribute("data-highlighted", "")
 }
 
 test.describe("tags-input", () => {
@@ -34,7 +34,7 @@ test.describe("tags-input", () => {
     await page.keyboard.press("Enter")
     await page.keyboard.press("Backspace")
 
-    await expectToBeSelected(page.locator(svelte.tag))
+    await expectToBeHighlighted(page.locator(svelte.tag))
 
     await page.keyboard.press("Backspace")
 
@@ -74,16 +74,16 @@ test.describe("tags-input", () => {
 
     await page.keyboard.press("ArrowLeft")
 
-    await expectToBeSelected(page.locator(solid.tag))
+    await expectToBeHighlighted(page.locator(solid.tag))
 
     await page.keyboard.press("ArrowLeft")
     await page.keyboard.press("ArrowLeft")
 
     const vue = item("Vue")
-    await expectToBeSelected(page.locator(vue.tag))
+    await expectToBeHighlighted(page.locator(vue.tag))
 
     await page.keyboard.press("ArrowRight")
-    await expectToBeSelected(page.locator(svelte.tag))
+    await expectToBeHighlighted(page.locator(svelte.tag))
   })
 
   test("should clear focused tag on blur", async ({ page }) => {
@@ -136,7 +136,7 @@ test.describe("tags-input", () => {
     await page.keyboard.type(jenkins.text)
     await page.keyboard.press("Enter")
 
-    await expectToBeSelected(page.locator(jenkins.tag))
+    await expectToBeHighlighted(page.locator(jenkins.tag))
     await expect(page.locator(jenkins.input)).toBeHidden()
 
     await expect(page.locator(input)).toBeFocused()
