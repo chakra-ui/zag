@@ -1,4 +1,3 @@
-import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./avatar.anatomy"
 import { dom } from "./avatar.dom"
@@ -36,7 +35,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     imageProps: normalize.img({
       ...parts.image.attrs,
       id: dom.getImageId(state.context),
-      "data-loaded": dataAttr(isLoaded),
+      "data-state": isLoaded ? "visible" : "hidden",
       onLoad() {
         send({ type: "IMG.LOADED", src: "element" })
       },
@@ -53,6 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.fallback.attrs,
       id: dom.getFallbackId(state.context),
       hidden: !showFallback,
+      "data-state": isLoaded ? "hidden" : "visible",
       style: {
         gridArea: "1 / 1 / 2 / 2",
       },

@@ -144,7 +144,7 @@ a[aria-current="page"] {
   background-color: #777;
 }
 
-[data-scope="avatar"][data-part="fallback"]:not([hidden]) {
+[data-scope="avatar"][data-part="fallback"][data-state="visible"] {
   display: flex;
   align-items: center;
   justify-content: center;
