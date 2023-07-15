@@ -87,7 +87,8 @@ export function machine(userContext: UserDefinedContext) {
         checkImgStatus(ctx, _evt, { send }) {
           const img = dom.getImageEl(ctx)
           if (img?.complete) {
-            send({ type: "IMG.LOADED", src: "ssr" })
+            const type = img.currentSrc ? "IMG.LOADED" : "IMG.ERROR"
+            send({ type, src: "ssr" })
           }
         },
       },
