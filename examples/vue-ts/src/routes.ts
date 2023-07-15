@@ -10,7 +10,6 @@ export const router = createRouter({
     { path: "/color-picker", component: () => import("./pages/color-picker") },
     { path: "/switch", component: () => import("./pages/switch") },
     { path: "/carousel", component: () => import("./pages/carousel") },
-    { path: "/transition", component: () => import("./pages/transition") },
     { path: "/date-picker", component: () => import("./pages/date-picker") },
     { path: "/select", component: () => import("./pages/select") },
     {

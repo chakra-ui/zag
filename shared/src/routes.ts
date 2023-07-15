@@ -10,7 +10,6 @@ export const routesData: RouteData[] = [
   { label: "Color Picker", path: "/color-picker" },
   { label: "Switch", path: "/switch" },
   { label: "Carousel", path: "/carousel" },
-  { label: "Transition", path: "/transition" },
   { label: "Date Picker (Single)", path: "/date-picker" },
   { label: "Date Picker (Range)", path: "/date-picker-range" },
   { label: "Date Picker (Multi)", path: "/date-picker-multi" },
