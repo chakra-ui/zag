@@ -2,10 +2,11 @@
 
 
 ## Latest Release
-### July 13, 2023: [#736](/.changelog/pr-736.mdx)
+### July 16, 2023: [#743](/.changelog/pr-743.mdx)
 
 
 ## Previous Releases
+### July 13, 2023: [#736](/.changelog/pr-736.mdx)
 ### July 12, 2023: [#735](/.changelog/pr-735.mdx)
 ### July 11, 2023: [#732](/.changelog/pr-732.mdx)
 ### July 6, 2023: [#722](/.changelog/pr-722.mdx)
