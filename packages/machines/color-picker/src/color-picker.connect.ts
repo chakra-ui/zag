@@ -129,6 +129,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onBlur() {
           send("AREA.BLUR")
         },
+        onFocus() {
+          send({ type: "AREA.FOCUS", id: "area" })
+        },
         onKeyDown(event) {
           if (!isInteractive) return
 

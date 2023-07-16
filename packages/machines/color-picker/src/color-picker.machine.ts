@@ -54,6 +54,10 @@ export function machine(userContext: UserDefinedContext) {
               target: "dragging",
               actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
             },
+            "AREA.FOCUS": {
+              target: "focused",
+              actions: ["setActiveChannel"],
+            },
             "CHANNEL_SLIDER.POINTER_DOWN": {
               target: "dragging",
               actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
