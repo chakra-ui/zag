@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/color-utils",
-  "version": "0.11.2",
+  "version": "0.12.0",
   "description": "Color utilities for zag.js",
   "keywords": [
     "js",

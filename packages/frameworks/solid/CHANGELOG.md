@@ -1,5 +1,17 @@
 # @zag-js/solid
 
+## 0.12.0
+
+### Patch Changes
+
+- [`1da42934`](https://github.com/chakra-ui/zag/commit/1da429345166a0c00602f305cfd8ac11c5b14c10) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export `PropType` utility for usage in the `PublicApi`
+
+- Updated dependencies []:
+  - @zag-js/core@0.12.0
+  - @zag-js/store@0.12.0
+  - @zag-js/types@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes

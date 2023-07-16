@@ -1,5 +1,21 @@
 # @zag-js/avatar
 
+## 0.12.0
+
+### Patch Changes
+
+- [`41a93b70`](https://github.com/chakra-ui/zag/commit/41a93b70f502b68c6729bba1265a9ed8ce33e330) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where avatar doesn't show fallback when image src is
+  initially empty
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.12.0
+  - @zag-js/core@0.12.0
+  - @zag-js/types@0.12.0
+  - @zag-js/utils@0.12.0
+  - @zag-js/dom-query@0.12.0
+  - @zag-js/mutation-observer@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes

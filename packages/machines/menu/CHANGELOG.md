@@ -1,5 +1,35 @@
 # @zag-js/menu
 
+## 0.12.0
+
+### Minor Changes
+
+- [`72946ada`](https://github.com/chakra-ui/zag/commit/72946ada6d247fcd3442ca3b76b9f3db2d985e38) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-state` attribute to allow styling the open/closed state
+  or checked/unchecked states
+
+  **Potential breaking change:**
+
+  We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
+  - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
+  - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
+  - `data-indeterminate` maps to `data-state="indeterminate"`
+  - `data-open` maps to `data-state="open"`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.12.0
+  - @zag-js/core@0.12.0
+  - @zag-js/types@0.12.0
+  - @zag-js/utils@0.12.0
+  - @zag-js/dismissable@0.12.0
+  - @zag-js/dom-event@0.12.0
+  - @zag-js/dom-query@0.12.0
+  - @zag-js/popper@0.12.0
+  - @zag-js/rect-utils@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes
