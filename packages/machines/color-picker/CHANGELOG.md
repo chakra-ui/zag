@@ -1,5 +1,24 @@
 # @zag-js/color-picker
 
+## 0.12.0
+
+### Patch Changes
+
+- [`cf90c4f5`](https://github.com/chakra-ui/zag/commit/cf90c4f561e6193f5bdfeae0393e3a8fdee76241) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where focusing on area thumb doesn't transition to
+  focused state, making keyboard navigation not work.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.12.0
+  - @zag-js/core@0.12.0
+  - @zag-js/types@0.12.0
+  - @zag-js/color-utils@0.12.0
+  - @zag-js/utils@0.12.0
+  - @zag-js/dom-event@0.12.0
+  - @zag-js/dom-query@0.12.0
+  - @zag-js/numeric-range@0.12.0
+  - @zag-js/text-selection@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes

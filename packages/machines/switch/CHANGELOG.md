@@ -1,5 +1,23 @@
 # @zag-js/switch
 
+## 0.12.0
+
+### Patch Changes
+
+- [#741](https://github.com/chakra-ui/zag/pull/741)
+  [`f43741ab`](https://github.com/chakra-ui/zag/commit/f43741ab4598be444b91a67eab0eb7eb35c87cc3) Thanks
+  [@dasmikko](https://github.com/dasmikko)! - Fix issue where `api.setChecked` does not work for Checkbox and Switch
+  components
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.12.0
+  - @zag-js/core@0.12.0
+  - @zag-js/types@0.12.0
+  - @zag-js/utils@0.12.0
+  - @zag-js/dom-query@0.12.0
+  - @zag-js/form-utils@0.12.0
+  - @zag-js/visually-hidden@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes
