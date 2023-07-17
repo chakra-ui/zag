@@ -32,6 +32,8 @@ type PublicContext = DismissableElementHandlers &
     modal?: boolean
     /**
      * Whether the popover is rendered in a portal
+     *
+     * @default true
      */
     portalled?: boolean
     /**

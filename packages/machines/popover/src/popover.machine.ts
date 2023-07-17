@@ -21,6 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         closeOnEsc: true,
         autoFocus: true,
         modal: false,
+        portalled: true,
         positioning: {
           placement: "bottom",
           ...ctx.positioning,
