@@ -1,6 +1,7 @@
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { normalizeProps, useActor, useMachine } from "@zag-js/vue"
+//@ts-ignore
 import { HollowDotsSpinner } from "epic-spinners"
 import type { PropType } from "vue"
 import { computed, defineComponent, ref } from "vue"
@@ -51,12 +52,21 @@ export default defineComponent({
   setup() {
     const controls = useControls(toastControls)
 
-    const [state, send] = useMachine(toast.group.machine({ id: "toast.group" }), {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      toast.group.machine({
+        id: "v1",
+        defaultOptions: {
+          placement: "top-start",
+        },
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const apiRef = computed(() => toast.group.connect(state.value, send, normalizeProps))
 
+    const placementsRef = computed(() => Object.keys(apiRef.value.toastsByPlacement) as toast.Placement[])
     const id = ref<string>()
 
     return () => {
@@ -79,6 +89,7 @@ export default defineComponent({
               <button
                 onClick={() => {
                   api.create({
+                    placement: "bottom-start",
                     title: "Ooops! Something was wrong",
                     type: "error",
                   })
@@ -101,11 +112,13 @@ export default defineComponent({
               <button onClick={() => api.pause()}>Pause all</button>
               <button onClick={() => api.resume()}>Resume all</button>
             </div>
-            <div {...api.getGroupProps({ placement: "bottom" })}>
-              {api.toasts.map((actor) => (
-                <ToastItem key={actor.id} actor={actor} />
-              ))}
-            </div>
+            {placementsRef.value.map((placement) => (
+              <div key={placement} {...api.getGroupProps({ placement })}>
+                {api.toastsByPlacement[placement]!.map((actor) => (
+                  <ToastItem key={actor.id} actor={actor} />
+                ))}
+              </div>
+            ))}
           </main>
 
           <Toolbar controls={controls.ui}>
