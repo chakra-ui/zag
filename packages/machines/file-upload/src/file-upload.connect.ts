@@ -107,6 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
+      "data-disabled": dataAttr(disabled),
       type: "button",
       onClick() {
         if (disabled) return
@@ -141,6 +142,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.deleteTrigger.attrs,
         type: "button",
+        "data-disabled": dataAttr(disabled),
         "aria-label": `Delete ${file.name} file`,
         onClick() {
           if (disabled) return
