@@ -41,6 +41,9 @@ export default function Page() {
   const [state, send] = useMachine(
     toast.group.machine({
       id: useId(),
+      defaultOptions: {
+        placement: "top-start",
+      },
     }),
     {
       context: controls.context,
@@ -49,6 +52,7 @@ export default function Page() {
 
   const api = toast.group.connect(state, send, normalizeProps)
 
+  const placements = Object.keys(api.toastsByPlacement) as toast.Placement[]
   const id = useRef<string>()
 
   return (
@@ -69,6 +73,7 @@ export default function Page() {
           <button
             onClick={() => {
               api.create({
+                placement: "bottom-start",
                 title: "Ooops! Something was wrong",
                 type: "error",
               })
@@ -91,11 +96,13 @@ export default function Page() {
           <button onClick={() => api.pause()}>Pause all</button>
           <button onClick={() => api.resume()}>Resume all</button>
         </div>
-        <div {...api.getGroupProps({ placement: "bottom" })}>
-          {api.toasts.map((actor) => (
-            <ToastItem key={actor.id} actor={actor} />
-          ))}
-        </div>
+        {placements.map((placement) => (
+          <div key={placement} {...api.getGroupProps({ placement })}>
+            {api.toastsByPlacement[placement].map((actor) => (
+              <ToastItem key={actor.id} actor={actor} />
+            ))}
+          </div>
+        ))}
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />

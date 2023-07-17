@@ -22,6 +22,11 @@ type SharedContext = {
    * Whether to pause the toast when interacted with
    */
   pauseOnInteraction?: boolean
+
+  /**
+   * The default options for the toast
+   */
+  defaultOptions?: Partial<Pick<ToastOptions, "duration" | "removeDelay" | "placement">>
 }
 
 export type ToastOptions = {

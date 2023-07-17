@@ -56,6 +56,7 @@ export function groupMachine(userContext: UserDefinedGroupContext) {
         guard: (ctx) => ctx.toasts.length < ctx.max,
         actions: (ctx, evt, { self }) => {
           const options = {
+            ...ctx.defaultOptions,
             ...evt.toast,
             pauseOnPageIdle: ctx.pauseOnPageIdle,
             pauseOnInteraction: ctx.pauseOnInteraction,

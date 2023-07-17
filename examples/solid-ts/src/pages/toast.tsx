@@ -52,10 +52,14 @@ function ToastItem(props: { actor: toast.Service }) {
 export default function Page() {
   const controls = useControls(toastControls)
 
-  const [state, send] = useMachine(toast.group.machine({ id: createUniqueId() }), { context: controls.context })
+  const [state, send] = useMachine(
+    toast.group.machine({ id: createUniqueId(), defaultOptions: { placement: "top-start" } }),
+    { context: controls.context },
+  )
 
   const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
 
+  const placements = createMemo(() => Object.keys(api().toastsByPlacement) as toast.Placement[])
   const [id, setId] = createSignal<string>()
 
   return (
@@ -77,6 +81,7 @@ export default function Page() {
           <button
             onClick={() => {
               api().create({
+                placement: "bottom-start",
                 title: "Ooops! Something was wrong",
                 type: "error",
               })
@@ -100,10 +105,13 @@ export default function Page() {
           <button onClick={() => api().pause()}>Pause all</button>
           <button onClick={() => api().resume()}>Resume all</button>
         </div>
-
-        <div {...api().getGroupProps({ placement: "bottom" })}>
-          <For each={api().toasts}>{(actor) => <ToastItem actor={actor} />}</For>
-        </div>
+        <For each={placements()}>
+          {(placement) => (
+            <div {...api().getGroupProps({ placement })}>
+              <For each={api().toastsByPlacement[placement]}>{(actor) => <ToastItem actor={actor} />}</For>
+            </div>
+          )}
+        </For>
       </main>
 
       <Toolbar controls={controls.ui}>
