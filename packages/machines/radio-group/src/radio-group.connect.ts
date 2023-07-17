@@ -31,6 +31,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": radioState.isChecked ? "checked" : "unchecked",
       "data-hover": dataAttr(radioState.isHovered),
       "data-invalid": dataAttr(radioState.isInvalid),
+      "data-orientation": state.context.orientation,
     }
   }
 
@@ -74,12 +75,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       "aria-labelledby": dom.getLabelId(state.context),
       "data-orientation": state.context.orientation,
+      "data-disabled": dataAttr(isGroupDisabled),
       "aria-orientation": state.context.orientation,
       dir: state.context.dir,
     }),
 
     labelProps: normalize.element({
       ...parts.label.attrs,
+      "data-orientation": state.context.orientation,
+      "data-disabled": dataAttr(isGroupDisabled),
       id: dom.getLabelId(state.context),
       onClick: focus,
     }),
@@ -189,6 +193,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
+      "data-disabled": dataAttr(isGroupDisabled),
       "data-orientation": state.context.orientation,
       style: {
         "--transition-duration": "150ms",
