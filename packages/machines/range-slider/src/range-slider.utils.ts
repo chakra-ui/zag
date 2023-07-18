@@ -31,21 +31,25 @@ export function constrainValue(ctx: Ctx, value: number, index: number) {
 export function decrement(ctx: Ctx, index?: number, step?: number) {
   const idx = index ?? ctx.activeIndex
   const range = getRangeAtIndex(ctx, idx)
-  return getPreviousStepValue(idx, {
+  const nextValues = getPreviousStepValue(idx, {
     ...range,
     step: step ?? ctx.step,
     values: ctx.value,
   })
+  nextValues[idx] = clampValue(nextValues[idx], range.min, range.max)
+  return nextValues
 }
 
 export function increment(ctx: Ctx, index?: number, step?: number) {
   const idx = index ?? ctx.activeIndex
   const range = getRangeAtIndex(ctx, idx)
-  return getNextStepValue(idx, {
+  const nextValues = getNextStepValue(idx, {
     ...range,
     step: step ?? ctx.step,
     values: ctx.value,
   })
+  nextValues[idx] = clampValue(nextValues[idx], range.min, range.max)
+  return nextValues
 }
 
 export function getClosestIndex(ctx: Ctx, pointValue: number) {
