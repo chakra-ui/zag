@@ -20,11 +20,11 @@ export function SelectAnatomy(props: AnatomyIconProps) {
         opacity="0.8"
         d="M1054 291.5L1036 309.5L1018 291.5"
         stroke={palette[0]}
-        stroke-width="8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <rect x="348" y="237" width="749" height="127" stroke={palette[8]} stroke-width="4" />
+      <rect x="348" y="237" width="749" height="127" stroke={palette[8]} strokeWidth="4" />
       <rect x="346" y="377" width="753" height="279" fill={palette[4]} />
       <rect x="366" y="527" width="713" height="110" fill={palette[2]} />
       <path

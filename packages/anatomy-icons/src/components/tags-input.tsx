@@ -7,16 +7,8 @@ export function TagsInputAnatomy(props: AnatomyIconProps) {
 
   return (
     <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect
-        x="156.5"
-        y="211.5"
-        width="1122"
-        height="338"
-        stroke={palette[9]}
-        stroke-width="3"
-        stroke-dasharray="12 12"
-      />
-      <rect x="200" y="359" width="1037" height="121" fill={palette[5]} stroke={palette[8]} stroke-width="4" />
+      <rect x="156.5" y="211.5" width="1122" height="338" stroke={palette[9]} strokeWidth="3" strokeDasharray="12 12" />
+      <rect x="200" y="359" width="1037" height="121" fill={palette[5]} stroke={palette[8]} strokeWidth="4" />
       <rect x="898" y="382" width="316" height="78" fill={palette[4]} />
       <path d="M912.794 438.12V404.697H916.109V438.12H912.794Z" fill={palette[0]} />
       <rect width="227" height="78" transform="translate(229 382)" fill={palette[12]} />
@@ -25,8 +17,8 @@ export function TagsInputAnatomy(props: AnatomyIconProps) {
         fill={palette[0]}
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M426.498 411.926C427.167 411.257 427.167 410.172 426.498 409.502C425.828 408.833 424.743 408.833 424.073 409.502L415 418.576L405.926 409.502C405.257 408.833 404.172 408.833 403.502 409.502C402.833 410.172 402.833 411.257 403.502 411.926L412.576 421L403.502 430.073C402.833 430.743 402.833 431.828 403.502 432.498C404.172 433.167 405.257 433.167 405.926 432.498L415 423.424L424.073 432.498C424.743 433.167 425.828 433.167 426.498 432.498C427.167 431.828 427.167 430.743 426.498 430.073L417.424 421L426.498 411.926Z"
         fill={palette[0]}
       />
@@ -36,8 +28,8 @@ export function TagsInputAnatomy(props: AnatomyIconProps) {
         fill={palette[0]}
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M648.498 411.926C649.167 411.257 649.167 410.172 648.498 409.502C647.828 408.833 646.743 408.833 646.073 409.502L637 418.576L627.926 409.502C627.257 408.833 626.172 408.833 625.502 409.502C624.833 410.172 624.833 411.257 625.502 411.926L634.576 421L625.502 430.073C624.833 430.743 624.833 431.828 625.502 432.498C626.172 433.167 627.257 433.167 627.926 432.498L637 423.424L646.073 432.498C646.743 433.167 647.828 433.167 648.498 432.498C649.167 431.828 649.167 430.743 648.498 430.073L639.424 421L648.498 411.926Z"
         fill={palette[0]}
       />
@@ -47,8 +39,8 @@ export function TagsInputAnatomy(props: AnatomyIconProps) {
         fill={palette[0]}
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M849.498 411.926C850.167 411.257 850.167 410.172 849.498 409.502C848.828 408.833 847.743 408.833 847.073 409.502L838 418.576L828.926 409.502C828.257 408.833 827.172 408.833 826.502 409.502C825.833 410.172 825.833 411.257 826.502 411.926L835.576 421L826.502 430.073C825.833 430.743 825.833 431.828 826.502 432.498C827.172 433.167 828.257 433.167 828.926 432.498L838 423.424L847.073 432.498C847.743 433.167 848.828 433.167 849.498 432.498C850.167 431.828 850.167 430.743 849.498 430.073L840.424 421L849.498 411.926Z"
         fill={palette[0]}
       />
