@@ -30,9 +30,9 @@ We can find the colors in the svg code with this:
 
 ```js
 function findColors(code) {
-  const pattern = /"#.*?"/g
-  const matches = code.match(pattern) || []
-  return matches.map((match) => match.slice(1, -1))
+  const pattern = /"#.*?"/g;
+  const matches = code.match(pattern) || [];
+  return Array.from(new Set(matches.map((match) => match.slice(1, -1))));
 }
 ```
 
@@ -40,8 +40,7 @@ We then check for the colors that are not yet defined in the palette with this:
 
 ```js
 function findUndefinedColors(codeString) {
-  const cleanedMatches = findColors(codeString);
-  const colors: string[] = Array.from(new Set(cleanedMatches));
+  const colors = findColors(codeString);
   return colors.filter((c) => !Object.values(defaultPalette).includes(c));
 }
 ```
