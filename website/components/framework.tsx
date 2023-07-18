@@ -1,10 +1,12 @@
 import { type Framework } from "lib/framework-utils"
 import { createContext, useContext, useMemo, useState } from "react"
 
-export const FrameworkContext = createContext<{
+type Context = {
   framework: Framework
-  setFramework?: (value: Framework) => void
-}>({
+  setFramework: (value: Framework) => void
+}
+
+export const FrameworkContext = createContext<Context>({
   framework: "react",
   setFramework: () => {},
 })
