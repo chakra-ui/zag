@@ -47,7 +47,7 @@ function findUndefinedColors(codeString) {
 
 We add those colors to the palette.
 
-We're able to find the relationship between the accentColor and it's accompanying palette with this tool
+We're able to find the relationship between the `accentColor` and it's accompanying palette with this tool
 http://ethanmuller.github.io/sass-color-function-generator-thing/, so we use it to find the relationship for any new
 colors we just added, then we define the relationship with `color2k` E.g.
 
@@ -57,7 +57,7 @@ colors we just added, then we define the relationship with `color2k` E.g.
 }
 ```
 
-Lastly, to save time, you can replace the colors in your svg code with the dynamic relationships with this script:
+Lastly, to save time, you can replace the colors in your svg code with the dynamic relationships using this script:
 
 ```js
 function replaceColors(code) {
