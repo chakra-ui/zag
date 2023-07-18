@@ -73,24 +73,9 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
       padding: options.overflowPadding,
       apply({ rects, availableHeight, availableWidth }) {
         const referenceWidth = Math.round(rects.reference.width)
-
         floating.style.setProperty("--reference-width", `${referenceWidth}px`)
         floating.style.setProperty("--available-width", `${availableWidth}px`)
         floating.style.setProperty("--available-height", `${availableHeight}px`)
-
-        if (options.sameWidth) {
-          Object.assign(floating.style, {
-            width: `${referenceWidth}px`,
-            minWidth: "unset",
-          })
-        }
-
-        if (options.fitViewport) {
-          Object.assign(floating.style, {
-            maxWidth: `${availableWidth}px`,
-            maxHeight: `${availableHeight}px`,
-          })
-        }
       },
     }),
   )
@@ -110,14 +95,10 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
       ...config,
     }).then((data) => {
       const x = Math.round(data.x)
-      const y = Math.round(data.y)
+      floating.style.setProperty("--x", `${x}px`)
 
-      Object.assign(floating.style, {
-        position: data.strategy,
-        top: "0px",
-        left: "0px",
-        transform: `translate3d(${x}px, ${y}px, 0)`,
-      })
+      const y = Math.round(data.y)
+      floating.style.setProperty("--y", `${y}px`)
 
       onComplete?.(data)
     })

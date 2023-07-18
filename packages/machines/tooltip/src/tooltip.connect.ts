@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDisabled = state.context.disabled
 
   const popperStyles = getPlacementStyles({
+    ...state.context.positioning,
     placement: state.context.currentPlacement,
   })
 

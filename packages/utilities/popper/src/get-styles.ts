@@ -1,5 +1,6 @@
 import type { Placement } from "@floating-ui/dom"
 import { cssVars } from "./middleware"
+import type { PositioningOptions } from "./types"
 
 export type GetPlacementStylesOptions = {
   placement?: Placement
@@ -12,8 +13,8 @@ const ARROW_FLOATING_STYLE = {
   right: "rotate(315deg)",
 } as const
 
-export function getPlacementStyles(options: GetPlacementStylesOptions) {
-  const { placement = "bottom" } = options
+export function getPlacementStyles(options: PositioningOptions = {}) {
+  const { placement = "bottom", sameWidth, fitViewport, strategy = "absolute" } = options
 
   return {
     arrow: {
@@ -36,10 +37,14 @@ export function getPlacementStyles(options: GetPlacementStylesOptions) {
     } as const,
 
     floating: {
-      position: "absolute",
-      minWidth: "max-content",
+      position: strategy,
+      minWidth: sameWidth ? undefined : "max-content",
+      width: sameWidth ? "var(--reference-width)" : undefined,
+      maxWidth: fitViewport ? "var(--available-width)" : undefined,
+      maxHeight: fitViewport ? "var(--available-height)" : undefined,
       top: "0px",
       left: "0px",
+      transform: `translate3d(var(--x), var(--y), 0)`,
     } as const,
   }
 }

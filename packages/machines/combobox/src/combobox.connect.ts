@@ -24,6 +24,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const value = autofill ? state.context.navigationData?.label : state.context.inputValue
 
   const popperStyles = getPlacementStyles({
+    ...state.context.positioning,
     placement: state.context.currentPlacement,
   })
 

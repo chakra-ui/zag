@@ -33,6 +33,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isOpen = state.hasTag("visible")
 
   const popperStyles = getPlacementStyles({
+    ...state.context.positioning,
     placement: state.context.currentPlacement,
   })
 
