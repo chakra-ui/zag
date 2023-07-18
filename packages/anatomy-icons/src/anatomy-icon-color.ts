@@ -20,6 +20,8 @@ export class AnatomyIconColor {
       7: darken(desaturate(adjustHue(this.accentColor, 5), 0.38), 0.16),
       8: darken(desaturate(adjustHue(this.accentColor, 6), 0.44), 0.33),
       9: lighten(adjustHue(this.accentColor, 5), 0.29),
+      10: darken(desaturate(adjustHue(this.accentColor, 9), 0.52), 0.1),
+      11: darken(desaturate(adjustHue(this.accentColor, 9), 0.43), 0.22),
     }
 
     return Object.entries(palette).reduce((acc, [key, value]) => Object.assign(acc, { [key]: toHex(value) }), {})

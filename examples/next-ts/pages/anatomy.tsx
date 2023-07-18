@@ -1,4 +1,6 @@
-import { AccordionAnatomy } from "@zag-js/anatomy-icons"
+import * as Anatomies from "@zag-js/anatomy-icons"
+
+const Anatomy = Anatomies.CheckboxAnatomy
 
 export default function Page() {
   return (
@@ -9,7 +11,7 @@ export default function Page() {
           background: "linear-gradient(112deg, #41B883 0%, #299464 100%)",
         }}
       >
-        <AccordionAnatomy accentColor="#2CFF80" />
+        <Anatomy accentColor="#2CFF80" />
       </div>
       <div
         style={{
@@ -17,7 +19,15 @@ export default function Page() {
           background: "linear-gradient(112deg, #BB4141 0%, #942929 100%)",
         }}
       >
-        <AccordionAnatomy accentColor="red" />
+        <Anatomy accentColor="red" />
+      </div>
+      <div
+        style={{
+          padding: "12px",
+          background: "linear-gradient(112deg, #4341B8 0%, #2B2994 100%)",
+        }}
+      >
+        <Anatomy accentColor="blue" />
       </div>
     </div>
   )

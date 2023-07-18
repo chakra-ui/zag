@@ -1,4 +1,4 @@
-import { MenuAnatomy } from "./menu"
-import { AccordionAnatomy } from "./accordion"
-
-export { AccordionAnatomy, MenuAnatomy }
+export * from "./components/menu"
+export * from "./components/accordion"
+export * from "./components/avatar"
+export * from "./components/checkbox"

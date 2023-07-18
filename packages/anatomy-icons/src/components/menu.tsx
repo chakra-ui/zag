@@ -1,5 +1,5 @@
-import { AnatomyIconColor } from "./anatomy-icon-color"
-import type { AnatomyIconProps } from "./types"
+import { AnatomyIconColor } from "../anatomy-icon-color"
+import type { AnatomyIconProps } from "../types"
 
 export function MenuAnatomy(props: AnatomyIconProps) {
   const anc = new AnatomyIconColor(props)
