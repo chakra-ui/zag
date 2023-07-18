@@ -30,9 +30,9 @@ We can find the colors in the svg code with this:
 
 ```js
 function findColors(code) {
-  const pattern = /"#.*?"/g;
-  const matches = code.match(pattern) || [];
-  return Array.from(new Set(matches.map((match) => match.slice(1, -1))));
+  const pattern = /"#.*?"/g
+  const matches = code.match(pattern) || []
+  return Array.from(new Set(matches.map((match) => match.slice(1, -1))))
 }
 ```
 
@@ -40,14 +40,14 @@ We then check for the colors that are not yet defined in the palette with this:
 
 ```js
 function findUndefinedColors(codeString) {
-  const colors = findColors(codeString);
-  return colors.filter((c) => !Object.values(defaultPalette).includes(c));
+  const colors = findColors(codeString)
+  return colors.filter((c) => !Object.values(defaultPalette).includes(c))
 }
 ```
 
 We add those colors to the palette.
 
-We're able to find the releationship between the accentColor and it's accompanying palette with this tool
+We're able to find the relationship between the accentColor and it's accompanying palette with this tool
 http://ethanmuller.github.io/sass-color-function-generator-thing/, so we use it to find the relationship for any new
 colors we just added, then we define the relationship with `color2k` E.g.
 
