@@ -1232,18 +1232,9 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
     devDependencies:
-      '@types/react':
-        specifier: ^18.2.15
-        version: 18.2.15
-      '@types/react-dom':
-        specifier: ^18.2.7
-        version: 18.2.7
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
 
   packages/core:
     dependencies:
