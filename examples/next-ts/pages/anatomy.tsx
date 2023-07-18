@@ -1,6 +1,6 @@
 import * as Anatomies from "@zag-js/anatomy-icons"
 
-const Anatomy = Anatomies.CheckboxAnatomy
+const Anatomy = Anatomies.TooltipAnatomy
 
 export default function Page() {
   return (
