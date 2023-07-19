@@ -2,11 +2,12 @@ import { AnatomyIconColor } from "../anatomy-icon-color"
 import type { AnatomyIconProps } from "../types"
 
 export function SegmentedControlAnatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props)
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor })
   const palette = anc.getColorPalette()
 
   return (
-    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <rect x="447" y="351" width="562" height="121" fill={palette[5]} stroke={palette[8]} strokeWidth="4" />
       <rect width="162" height="78" transform="translate(476 374)" fill={palette[12]} />
       <path

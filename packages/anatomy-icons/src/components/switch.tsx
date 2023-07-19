@@ -2,11 +2,12 @@ import { AnatomyIconColor } from "../anatomy-icon-color"
 import type { AnatomyIconProps } from "../types"
 
 export function SwitchAnatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props)
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor })
   const palette = anc.getColorPalette()
 
   return (
-    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <rect x="421" y="350" width="200" height="111" rx="55.5" fill={palette[5]} />
       <g filter="url(#filter0_d_1301_2)">
         <circle cx="477" cy="406" r="40" fill={palette[0]} />

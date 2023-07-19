@@ -2,11 +2,12 @@ import { AnatomyIconColor } from "../anatomy-icon-color"
 import type { AnatomyIconProps } from "../types"
 
 export function MenuAnatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props)
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor })
   const palette = anc.getColorPalette()
 
   return (
-    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <rect x="273" y="229" width="441" height="365" fill={palette[4]} />
       <rect x="298.5" y="248.5" width="387" height="80" stroke={palette[2]} strokeWidth="3" strokeDasharray="12 12" />
       <path

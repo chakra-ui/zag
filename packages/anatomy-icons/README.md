@@ -88,7 +88,8 @@ import { AnatomyIconColor } from "../anatomy-icon-color";
 import type { AnatomyIconProps } from "../types";
 
 export function Template_Anatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props);
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor });
   const palette = anc.getColorPalette();
 
   return ();

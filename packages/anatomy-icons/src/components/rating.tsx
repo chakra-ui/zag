@@ -2,11 +2,12 @@ import { AnatomyIconColor } from "../anatomy-icon-color"
 import type { AnatomyIconProps } from "../types"
 
 export function RatingAnatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props)
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor })
   const palette = anc.getColorPalette()
 
   return (
-    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <g filter="url(#filter0_d_1025_9)">
         <path
           d="M360.736 361.749C363.595 355.55 372.405 355.55 375.264 361.749L389.824 393.314C390.989 395.841 393.384 397.58 396.146 397.908L430.665 402C437.445 402.804 440.167 411.183 435.155 415.818L409.634 439.419C407.592 441.308 406.677 444.123 407.219 446.852L413.994 480.946C415.324 487.642 408.197 492.82 402.24 489.486L371.908 472.507C369.48 471.148 366.52 471.148 364.092 472.507L333.76 489.486C327.803 492.82 320.676 487.642 322.006 480.946L328.781 446.852C329.323 444.123 328.408 441.308 326.366 439.419L300.845 415.818C295.833 411.183 298.555 402.804 305.335 402L339.854 397.908C342.616 397.58 345.011 395.841 346.176 393.314L360.736 361.749Z"

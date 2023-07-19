@@ -25,6 +25,7 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/combobox": "workspace:*",

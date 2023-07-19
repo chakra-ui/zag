@@ -2,11 +2,12 @@ import { AnatomyIconColor } from "../anatomy-icon-color"
 import type { AnatomyIconProps } from "../types"
 
 export function PinInputAnatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props)
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor })
   const palette = anc.getColorPalette()
 
   return (
-    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <rect opacity="0.5" x="198" y="329" width="216" height="274" fill={palette[3]} />
       <rect x="479" y="329" width="216" height="274" fill={palette[4]} />
       <rect opacity="0.5" x="760" y="329" width="216" height="274" fill={palette[3]} />

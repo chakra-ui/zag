@@ -7,7 +7,6 @@ import * as tabs from "@zag-js/tabs"
 import { type MDX } from "contentlayer/core"
 import { allComponents, allSnippets } from "@/contentlayer"
 import { useMDXComponent } from "next-contentlayer/hooks"
-import NextImage from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
 import { HiOutlineCode } from "react-icons/hi"
@@ -18,6 +17,7 @@ import { ApiTable } from "./api-table"
 import { CopyButton } from "./copy-button"
 import { useFramework } from "./framework"
 import { Showcase } from "./showcase"
+import * as Anatomies from "@zag-js/anatomy-icons"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)
@@ -220,10 +220,10 @@ const components: Record<string, FC<any>> = {
     )
   },
   Anatomy: ({ id }: { id: string }) => {
-    const src = `/illustrations/${id}.svg`
+    const Anatomy = chakra(Anatomies[getAnatomyFromId(id)])
     return (
       <Box my="8" bg="linear-gradient(90deg, #41B883 -2.23%, #299464 92.64%)">
-        <NextImage src={src} alt="" width="1456" height="812" />
+        <Anatomy accentColor="#2CFF80" maxW="100%" h="auto" />
       </Box>
     )
   },
@@ -236,4 +236,18 @@ return { default: () => React.createElement('div', null, '') }
   const pageCode = code && code?.length ? code : defaultCode
   const MDXComponent = useMDXComponent(pageCode)
   return <MDXComponent components={components as any} />
+}
+
+function getAnatomyFromId(str: string) {
+  const anatomy = str
+    .split("-")
+    .map((word, index) => {
+      if (index === 0) {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    })
+    .join("")
+
+  return anatomy + "Anatomy"
 }

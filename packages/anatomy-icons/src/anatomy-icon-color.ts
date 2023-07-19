@@ -4,7 +4,7 @@ import { adjustHue, darken, desaturate, lighten, toHex } from "color2k"
 export class AnatomyIconColor {
   public accentColor: string
 
-  constructor(params: AnatomyIconProps) {
+  constructor(params: Pick<AnatomyIconProps, "accentColor">) {
     this.accentColor = params.accentColor
   }
 

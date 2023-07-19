@@ -2,11 +2,12 @@ import { AnatomyIconColor } from "../anatomy-icon-color"
 import type { AnatomyIconProps } from "../types"
 
 export function EditableAnatomy(props: AnatomyIconProps) {
-  const anc = new AnatomyIconColor(props)
+  const { accentColor, ...rest } = props
+  const anc = new AnatomyIconColor({ accentColor })
   const palette = anc.getColorPalette()
 
   return (
-    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <rect x="367.5" y="257.5" width="700" height="169" stroke={palette[9]} strokeWidth="3" strokeDasharray="12 12" />
       <rect x="402" y="282" width="625" height="127" fill={palette[5]} stroke={palette[8]} strokeWidth="4" />
       <rect width="107" height="101" transform="translate(922 448)" fill={palette[4]} />

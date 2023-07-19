@@ -35,9 +35,14 @@
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "clean-package": "2.2.0"
+    "@types/react": "^18.2.15",
+    "clean-package": "2.2.0",
+    "react": "^18.2.0"
   },
   "dependencies": {
     "color2k": "^2.0.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
   }
 }
