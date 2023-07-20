@@ -210,3 +210,10 @@ export const fileUploadControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   dropzone: { type: "boolean", defaultValue: true },
 })
+
+export const toggleGroupControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  loop: { type: "boolean", defaultValue: true },
+  multiple: { type: "boolean", defaultValue: false },
+  rovingFocus: { type: "boolean", defaultValue: true },
+})

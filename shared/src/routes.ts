@@ -40,6 +40,7 @@ export const routesData: RouteData[] = [
   { label: "Tags Input", path: "/tags-input" },
   { label: "Toast", path: "/toast" },
   { label: "Toggle", path: "/toggle" },
+  { label: "Toggle Group", path: "/toggle-group" },
   { label: "Tooltip", path: "/tooltip" },
   { label: "Segment Control", path: "/segment-control" },
   { label: "Splitter", path: "/splitter" },

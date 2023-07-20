@@ -138,3 +138,9 @@ export const carouselData = [
   "https://tinyurl.com/6jurv23t",
   "https://tinyurl.com/yp4rfum7",
 ]
+
+export const toggleGroupData = [
+  { value: "bold", label: "B" },
+  { value: "italic", label: "I" },
+  { value: "underline", label: "U" },
+]
