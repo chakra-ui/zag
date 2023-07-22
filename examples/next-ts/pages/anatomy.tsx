@@ -1,22 +1,22 @@
 import * as Anatomies from "@zag-js/anatomy-icons"
+import { adjustHue, darken, desaturate } from "color2k"
 
-const ACCENTS = {
-  "#2CFF80": "linear-gradient(112deg, #41B883 0%, #299464 100%)",
-  red: "linear-gradient(112deg, #BB4141 0%, #942929 100%)",
-  blue: "linear-gradient(112deg, #4341B8 0%, #2B2994 100%)",
-}
+const ACCENTS = ["red", "#2CFF80", "blue"]
 
 export default function Page() {
   return (
     <div className="anatomy">
       {Object.entries(Anatomies).map(([name, Anatomy], i) => (
         <div className="anatomy__item" key={i}>
-          <span>{name}</span>
-          {Object.entries(ACCENTS).map(([accent, background], i) => (
+          <span>{name.replace("Anatomy", "")}</span>
+          {ACCENTS.map((accent, i) => (
             <div
               key={i}
               style={{
-                background,
+                background: `linear-gradient(112deg, ${darken(
+                  desaturate(adjustHue(accent, 9), 0.52),
+                  0.1,
+                )} 0%, ${darken(desaturate(adjustHue(accent, 9), 0.43), 0.22)} 100%)`,
               }}
             >
               <Anatomy accentColor={accent} />
