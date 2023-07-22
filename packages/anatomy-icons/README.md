@@ -1,5 +1,13 @@
 # Anatomy Icons
 
+## Usage
+
+```js
+import { AccordionAnatomy } from "@zag-js/anatomy-icons"
+
+return <AccordionAnatomy accentColor="#2CFF80" />
+```
+
 ## How do I add a new icon?
 
 We first grab the svg from figma of course.
