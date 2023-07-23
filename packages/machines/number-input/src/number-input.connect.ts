@@ -61,11 +61,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
       "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(isInvalid),
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
@@ -75,6 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.control.attrs,
       role: "group",
       "aria-disabled": isDisabled,
+      "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       "aria-invalid": ariaAttr(state.context.invalid),
