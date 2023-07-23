@@ -91,6 +91,7 @@ export class Machine<
     // create mutatable state
     this.state = createProxy(this.config)
     this.initialContext = snapshot(this.state.context)
+    this.transformContext(this.state.context)
 
     // created actions
     const event = toEvent<TEvent>(ActionTypes.Created)
@@ -355,18 +356,22 @@ export class Machine<
     }
   }
 
+  private transformContext = (context: Partial<Writable<TContext>> | Partial<TContext>) => {
+    this.options?.transformContext?.(context)
+    return context as TContext
+  }
+
   /**
    * To used within side effects for React or Vue to update context
    */
   public setContext = (context: Partial<Writable<TContext>> | undefined) => {
     if (!context) return
-    const ctx = this.options?.transformContext?.(context) ?? context
-    deepMerge(this.state.context, ctx)
+    deepMerge(this.state.context, this.transformContext(context))
   }
 
   public withContext = (context: Partial<Writable<TContext>>) => {
-    let _context = this.options?.transformContext?.(context) ?? context
-    const newContext = { ...this.config.context, ...compact(_context) } as TContext
+    const transformed = this.transformContext(context)
+    const newContext = { ...this.config.context, ...compact(transformed) } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 

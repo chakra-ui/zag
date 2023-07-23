@@ -384,7 +384,7 @@ export declare namespace StateMachine {
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
     sync?: boolean
-    transformContext?: (context: Partial<Writable<TContext>>) => Partial<TContext>
+    transformContext?: (context: Partial<Writable<TContext>>) => void
     compareFns?: { [K in keyof TContext]?: CompareFn<TContext[K]> }
   }
 
