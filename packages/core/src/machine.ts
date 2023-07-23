@@ -360,11 +360,13 @@ export class Machine<
    */
   public setContext = (context: Partial<Writable<TContext>> | undefined) => {
     if (!context) return
-    deepMerge(this.state.context, context)
+    const ctx = this.options?.transformContext?.(context) ?? context
+    deepMerge(this.state.context, ctx)
   }
 
   public withContext = (context: Partial<Writable<TContext>>) => {
-    const newContext = { ...this.config.context, ...compact(context) } as TContext
+    let _context = this.options?.transformContext?.(context) ?? context
+    const newContext = { ...this.config.context, ...compact(_context) } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
 
