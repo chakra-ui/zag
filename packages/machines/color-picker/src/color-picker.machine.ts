@@ -258,7 +258,7 @@ export function machine(userContext: UserDefinedContext) {
         syncChannelInputs(ctx) {
           const inputs = dom.getChannelInputEls(ctx)
           inputs.forEach((input) => {
-            const channel = input.getAttribute("data-channel") as ExtendedColorChannel | null
+            const channel = input.dataset.channel as ExtendedColorChannel | null
             if (!channel) return
             const value = getChannelInputValue(ctx.valueAsColor, channel)
             input.value = value.toString()
