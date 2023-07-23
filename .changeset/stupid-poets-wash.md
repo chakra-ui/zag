@@ -2,4 +2,4 @@
 "@zag-js/radio-group": patch
 ---
 
-Removed unimplemented setPreviousValue action
+Removed unimplemented `setPreviousValue` action
