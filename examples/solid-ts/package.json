@@ -13,7 +13,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "4.4.4",
+    "vite": "4.4.7",
     "vite-plugin-solid": "2.7.0"
   },
   "dependencies": {
