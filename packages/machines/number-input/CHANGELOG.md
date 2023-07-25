@@ -1,5 +1,23 @@
 # @zag-js/number-input
 
+## 0.13.0
+
+### Patch Changes
+
+- [`a8f3bb4a`](https://github.com/chakra-ui/zag/commit/a8f3bb4a1c1beed2c3b930ea2b12e29ad0b7d706) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-focus` to the parts
+
+- Updated dependencies [[`4a2d8b77`](https://github.com/chakra-ui/zag/commit/4a2d8b77d1e71ad6b6c10134bc4186db6e6c0414)]:
+  - @zag-js/core@0.13.0
+  - @zag-js/anatomy@0.13.0
+  - @zag-js/types@0.13.0
+  - @zag-js/utils@0.13.0
+  - @zag-js/dom-event@0.13.0
+  - @zag-js/dom-query@0.13.0
+  - @zag-js/form-utils@0.13.0
+  - @zag-js/mutation-observer@0.13.0
+  - @zag-js/number-utils@0.13.0
+
 ## 0.12.0
 
 ### Patch Changes
