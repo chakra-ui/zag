@@ -1,5 +1,24 @@
 # @zag-js/color-picker
 
+## 0.13.0
+
+### Patch Changes
+
+- [`ed617a86`](https://github.com/chakra-ui/zag/commit/ed617a864cd4420e727641963239aba030ba3cf2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `isEqual` doesn't consider alpha channel.
+  - Fix keyboard navigation in color picker between area and channel slider thumb.
+- Updated dependencies [[`ed617a86`](https://github.com/chakra-ui/zag/commit/ed617a864cd4420e727641963239aba030ba3cf2),
+  [`4a2d8b77`](https://github.com/chakra-ui/zag/commit/4a2d8b77d1e71ad6b6c10134bc4186db6e6c0414)]:
+  - @zag-js/color-utils@0.13.0
+  - @zag-js/core@0.13.0
+  - @zag-js/anatomy@0.13.0
+  - @zag-js/types@0.13.0
+  - @zag-js/utils@0.13.0
+  - @zag-js/dom-event@0.13.0
+  - @zag-js/dom-query@0.13.0
+  - @zag-js/numeric-range@0.13.0
+  - @zag-js/text-selection@0.13.0
+
 ## 0.12.0
 
 ### Patch Changes

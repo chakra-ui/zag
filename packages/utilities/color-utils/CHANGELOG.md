@@ -1,5 +1,13 @@
 # @zag-js/color-utils
 
+## 0.13.0
+
+### Patch Changes
+
+- [`ed617a86`](https://github.com/chakra-ui/zag/commit/ed617a864cd4420e727641963239aba030ba3cf2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `isEqual` doesn't consider alpha channel.
+  - Fix keyboard navigation in color picker between area and channel slider thumb.
+
 ## 0.12.0
 
 ## 0.11.2
