@@ -1,5 +1,18 @@
 # @zag-js/core
 
+## 0.13.0
+
+### Minor Changes
+
+- [`4a2d8b77`](https://github.com/chakra-ui/zag/commit/4a2d8b77d1e71ad6b6c10134bc4186db6e6c0414) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for transforming context before settings it in the
+  machine's context. This is useful when some values need to passed to `ref` function
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.13.0
+
 ## 0.12.0
 
 ### Patch Changes

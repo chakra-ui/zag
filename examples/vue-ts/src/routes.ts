@@ -41,6 +41,7 @@ export const router = createRouter({
     { path: "/segment-control", component: () => import("./pages/segment-control") },
     { path: "/tabs", component: () => import("./pages/tabs") },
     { path: "/toggle", component: () => import("./pages/toggle") },
+    { path: "/toggle-group", component: () => import("./pages/toggle-group") },
     { path: "/tags-input", component: () => import("./pages/tags-input") },
     { path: "/toast", component: () => import("./pages/toast") },
     { path: "/tooltip", component: () => import("./pages/tooltip") },

@@ -1,5 +1,25 @@
 # @zag-js/range-slider
 
+## 0.13.0
+
+### Patch Changes
+
+- [`91502f27`](https://github.com/chakra-ui/zag/commit/91502f27b8639bf357564cf5cce37367c717115a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `minStepsBetweenThumbs` isn't respected when using
+  keyboard
+
+- Updated dependencies [[`4a2d8b77`](https://github.com/chakra-ui/zag/commit/4a2d8b77d1e71ad6b6c10134bc4186db6e6c0414)]:
+  - @zag-js/core@0.13.0
+  - @zag-js/slider@0.13.0
+  - @zag-js/anatomy@0.13.0
+  - @zag-js/types@0.13.0
+  - @zag-js/utils@0.13.0
+  - @zag-js/dom-event@0.13.0
+  - @zag-js/dom-query@0.13.0
+  - @zag-js/element-size@0.13.0
+  - @zag-js/form-utils@0.13.0
+  - @zag-js/numeric-range@0.13.0
+
 ## 0.12.0
 
 ### Patch Changes

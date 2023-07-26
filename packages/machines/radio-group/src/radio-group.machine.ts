@@ -29,14 +29,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControlState"],
 
       watch: {
-        value: [
-          "setIndicatorTransition",
-          // important to set this after `setIndicatorTransition`
-          "setPreviousValue",
-          "invokeOnChange",
-          "syncIndicatorRect",
-          "syncInputElements",
-        ],
+        value: ["setIndicatorTransition", "invokeOnChange", "syncIndicatorRect", "syncInputElements"],
       },
 
       on: {

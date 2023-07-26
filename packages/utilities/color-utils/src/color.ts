@@ -39,6 +39,6 @@ export abstract class Color implements ColorType {
   }
 
   isEqual(color: ColorType): boolean {
-    return this.toHexInt() === color.toHexInt()
+    return this.toHexInt() === color.toHexInt() && this.getChannelValue("alpha") === color.getChannelValue("alpha")
   }
 }

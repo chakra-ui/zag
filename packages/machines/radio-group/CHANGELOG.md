@@ -1,5 +1,25 @@
 # @zag-js/radio-group
 
+## 0.13.0
+
+### Patch Changes
+
+- [`61fc484f`](https://github.com/chakra-ui/zag/commit/61fc484f8c052b04954c2c3a52aafd900a760fb9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-orientation` to all parts
+
+- [`0cf24c0d`](https://github.com/chakra-ui/zag/commit/0cf24c0dbb89ca2aa41e226ba05557ac96aaf0b2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Removed unimplemented `setPreviousValue` action
+
+- Updated dependencies [[`4a2d8b77`](https://github.com/chakra-ui/zag/commit/4a2d8b77d1e71ad6b6c10134bc4186db6e6c0414)]:
+  - @zag-js/core@0.13.0
+  - @zag-js/anatomy@0.13.0
+  - @zag-js/types@0.13.0
+  - @zag-js/utils@0.13.0
+  - @zag-js/dom-query@0.13.0
+  - @zag-js/element-rect@0.13.0
+  - @zag-js/form-utils@0.13.0
+  - @zag-js/visually-hidden@0.13.0
+
 ## 0.12.0
 
 ### Minor Changes

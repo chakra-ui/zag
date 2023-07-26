@@ -118,10 +118,6 @@ type PrivateContext = Context<{
    */
   activeId: string | null
   /**
-   * The color value as a Color object
-   */
-  valueAsColor: Color
-  /**
    * The channel that is currently being interacted with
    */
   activeChannel: Partial<ColorAxes> | null
@@ -140,6 +136,10 @@ type ComputedContext = Readonly<{
    * Whether the color picker is interactive
    */
   isInteractive: boolean
+  /**
+   * The color value as a Color object
+   */
+  valueAsColor: Color
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

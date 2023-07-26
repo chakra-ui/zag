@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 0.13.0
+
+### Patch Changes
+
+- [`e2cb53c7`](https://github.com/chakra-ui/zag/commit/e2cb53c7c7a9dc2b1d462ad4e85d25f7e718d848) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `sameWidth` doesn't work consistently in Vue.js
+  and Solid.js during re-render.
+
+- Updated dependencies [[`4a2d8b77`](https://github.com/chakra-ui/zag/commit/4a2d8b77d1e71ad6b6c10134bc4186db6e6c0414),
+  [`e2cb53c7`](https://github.com/chakra-ui/zag/commit/e2cb53c7c7a9dc2b1d462ad4e85d25f7e718d848)]:
+  - @zag-js/core@0.13.0
+  - @zag-js/popper@0.13.0
+  - @zag-js/anatomy@0.13.0
+  - @zag-js/types@0.13.0
+  - @zag-js/aria-hidden@0.13.0
+  - @zag-js/utils@0.13.0
+  - @zag-js/dom-event@0.13.0
+  - @zag-js/dom-query@0.13.0
+  - @zag-js/interact-outside@0.13.0
+  - @zag-js/live-region@0.13.0
+  - @zag-js/mutation-observer@0.13.0
+
 ## 0.12.0
 
 ### Minor Changes

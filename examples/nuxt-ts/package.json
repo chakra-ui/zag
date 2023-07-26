@@ -66,6 +66,7 @@
     "@zag-js/text-selection": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
+    "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
@@ -76,7 +77,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^20.4.1",
-    "nuxt": "^3.6.2"
+    "@types/node": "^20.4.4",
+    "nuxt": "^3.6.5"
   }
 }

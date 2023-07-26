@@ -1,4 +1,4 @@
-import { type Color, parseColor } from "@zag-js/color-utils"
+import { parseColor, type Color } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
@@ -24,12 +24,12 @@ export function machine(userContext: UserDefinedContext) {
         activeOrientation: null,
         value: "#D9D9D9",
         ...ctx,
-        valueAsColor: parseColor(ctx.value || "#D9D9D9"),
       },
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
+        valueAsColor: (ctx) => parseColor(ctx.value),
       },
 
       on: {
@@ -38,10 +38,8 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      created: ["setValueAsColor"],
-
       watch: {
-        value: ["setValueAsColor", "syncChannelInputs", "invokeOnChange"],
+        value: ["syncChannelInputs", "invokeOnChange"],
       },
 
       states: {
@@ -61,6 +59,10 @@ export function machine(userContext: UserDefinedContext) {
             "CHANNEL_SLIDER.POINTER_DOWN": {
               target: "dragging",
               actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
+            },
+            "CHANNEL_SLIDER.FOCUS": {
+              target: "focused",
+              actions: ["setActiveChannel"],
             },
             "CHANNEL_INPUT.FOCUS": {
               target: "focused",
@@ -248,17 +250,10 @@ export function machine(userContext: UserDefinedContext) {
         setValue(ctx, evt) {
           setColor(ctx, evt.value)
         },
-        setValueAsColor(ctx) {
-          try {
-            const color = parseColor(ctx.value)
-            if (color.isEqual(ctx.valueAsColor)) return
-            ctx.valueAsColor = color
-          } catch {}
-        },
         syncChannelInputs(ctx) {
           const inputs = dom.getChannelInputEls(ctx)
           inputs.forEach((input) => {
-            const channel = input.getAttribute("data-channel") as ExtendedColorChannel | null
+            const channel = input.dataset.channel as ExtendedColorChannel | null
             if (!channel) return
             const value = getChannelInputValue(ctx.valueAsColor, channel)
             input.value = value.toString()
@@ -358,5 +353,4 @@ export function machine(userContext: UserDefinedContext) {
 
 const setColor = (ctx: MachineContext, color: Color) => {
   ctx.value = color.toString("css")
-  ctx.valueAsColor = color
 }

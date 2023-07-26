@@ -43,6 +43,10 @@ const fetchMachine = createMachine({
           target: "dragging",
           actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"]
         },
+        "CHANNEL_SLIDER.FOCUS": {
+          target: "focused",
+          actions: ["setActiveChannel"]
+        },
         "CHANNEL_INPUT.FOCUS": {
           target: "focused",
           actions: ["setActiveChannel"]
