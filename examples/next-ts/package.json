@@ -73,7 +73,6 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
-    "color2k": "^2.0.2",
     "form-serialize": "0.7.2",
     "next": "13.4.10",
     "react": "18.2.0",

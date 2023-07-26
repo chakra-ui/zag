@@ -1,10 +1,7 @@
-import { AnatomyIconColor } from "../anatomy-icon-color"
-import type { AnatomyIconProps } from "../types"
+import { createComponent } from "../create-component"
 
-export function PinInputAnatomy(props: AnatomyIconProps) {
-  const { accentColor, ...rest } = props
-  const anc = new AnatomyIconColor({ accentColor })
-  const palette = anc.getColorPalette()
+export const PinInputAnatomy = createComponent((props) => {
+  const { palette, ...rest } = props
 
   return (
     <svg width="1456" height="812" viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
@@ -50,4 +47,4 @@ export function PinInputAnatomy(props: AnatomyIconProps) {
       />
     </svg>
   )
-}
+})
