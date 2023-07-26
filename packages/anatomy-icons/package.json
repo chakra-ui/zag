@@ -22,6 +22,8 @@
     "build": "tsup",
     "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
+    "gen": "node scripts/generate.mjs",
+    "gen-dry": "node scripts/generate.mjs --dry-run",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
@@ -40,7 +42,9 @@
     "react": "^18.2.0"
   },
   "dependencies": {
-    "color2k": "^2.0.2"
+    "color2k": "^2.0.2",
+    "@svgr/core": "^8.0.0",
+    "@svgr/plugin-jsx": "8.0.1"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
