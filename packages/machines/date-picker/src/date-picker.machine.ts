@@ -20,6 +20,7 @@ import {
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
+import { getPlacement } from "@zag-js/popper"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
@@ -62,6 +63,10 @@ const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
     valueText: "",
     hoveredValue: null,
     ...ctx,
+    positioning: {
+      placement: "bottom",
+      ...ctx.positioning,
+    },
   } as MachineContext
 }
 
@@ -170,7 +175,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: "open",
-          activities: ["trackDismissableElement"],
+          activities: ["trackDismissableElement", "trackPositioning"],
           entry: ctx.inline ? undefined : ["focusActiveCell"],
           exit: ["clearHoveredDate", "resetView"],
           on: {
@@ -367,6 +372,21 @@ export function machine(userContext: UserDefinedContext) {
         isInline: (ctx) => !!ctx.inline,
       },
       activities: {
+        trackPositioning(ctx) {
+          ctx.currentPlacement = ctx.positioning.placement
+          const anchorEl = dom.getControlEl(ctx)
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(anchorEl, getPositionerEl, {
+            ...ctx.positioning,
+            defer: true,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
+            onCleanup() {
+              ctx.currentPlacement = undefined
+            },
+          })
+        },
         setupLiveRegion(ctx) {
           const doc = dom.getDoc(ctx)
           ctx.announcer = createLiveRegion({ level: "assertive", document: doc })

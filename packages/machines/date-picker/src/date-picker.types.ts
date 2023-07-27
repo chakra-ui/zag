@@ -7,6 +7,7 @@ import type {
   DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
 import * as _internationalized_date from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -35,6 +36,7 @@ type ElementIds = Partial<{
   trigger: string
   monthSelect: string
   yearSelect: string
+  positioner: string
 }>
 
 export type SelectionMode = "single" | "multiple" | "range"
@@ -177,6 +179,10 @@ type PublicContext = DirectionProperty &
      * block interaction with the rest of the page, and trap focus within it.
      */
     modal?: boolean
+    /**
+     * The user provided options used to position the date picker content
+     */
+    positioning: PositioningOptions
   }
 
 export type PublicApi<T extends PropTypes = PropTypes> = {
@@ -358,6 +364,8 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   goToPrev(): void
   controlProps: T["element"]
   contentProps: T["element"]
+  positionerProps: T["element"]
+
   getGridProps(props?: GridProps): T["element"]
   /**
    * Returns the state details for a given cell.
@@ -427,6 +435,11 @@ type PrivateContext = Context<{
    * Used in range selection mode.
    */
   activeIndex: number
+  /**
+   * @internal
+   * The computed placement (maybe different from initial placement)
+   */
+  currentPlacement?: Placement
 }>
 
 type ComputedContext = Readonly<{

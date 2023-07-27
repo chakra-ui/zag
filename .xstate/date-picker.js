@@ -130,7 +130,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: "open",
-      activities: ["trackDismissableElement"],
+      activities: ["trackDismissableElement", "trackPositioning"],
       entry: ctx.inline ? undefined : ["focusActiveCell"],
       exit: ["clearHoveredDate", "resetView"],
       on: {
