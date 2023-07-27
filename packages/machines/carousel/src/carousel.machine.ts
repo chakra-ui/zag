@@ -93,27 +93,29 @@ export function machine(userContext: UserDefinedContext) {
     {
       activities: {
         trackSlideMutation(ctx, _evt, { send }) {
-          const container = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          if (!slideGroupEl) return
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
             send({ type: "MEASURE_DOM", src: "mutation" })
           })
-          observer.observe(container, { childList: true })
+          observer.observe(slideGroupEl, { childList: true })
           return () => {
             observer.disconnect()
           }
         },
         trackContainerResize(ctx, _evt, { send }) {
-          const container = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          if (!slideGroupEl) return
           const win = dom.getWin(ctx)
           const observer = new win.ResizeObserver((entries) => {
             entries.forEach((entry) => {
-              if (entry.target === container) {
+              if (entry.target === slideGroupEl) {
                 send({ type: "MEASURE_DOM", src: "resize" })
               }
             })
           })
-          observer.observe(container)
+          observer.observe(slideGroupEl)
           return () => {
             observer.disconnect()
           }
@@ -161,8 +163,9 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const measureElements = (ctx: MachineContext) => {
-  const container = dom.getSlideGroupEl(ctx)
-  ctx.containerRect = ref(container.getBoundingClientRect())
+  const slideGroupEl = dom.getSlideGroupEl(ctx)
+  if (!slideGroupEl) return
+  ctx.containerRect = ref(slideGroupEl.getBoundingClientRect())
   ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
   ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
 }

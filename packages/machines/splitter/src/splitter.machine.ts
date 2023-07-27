@@ -261,6 +261,8 @@ export function machine(userContext: UserDefinedContext) {
           if (!panels || !bounds) return
 
           const rootEl = dom.getRootEl(ctx)
+          if (!rootEl) return
+
           const relativePoint = getRelativePoint(evt.point, rootEl)
           const percentValue = relativePoint.getPercentValue({
             dir: ctx.dir,

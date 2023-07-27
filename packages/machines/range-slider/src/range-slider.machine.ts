@@ -206,6 +206,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setClosestThumbIndex(ctx, evt) {
           const pointValue = dom.getValueFromPoint(ctx, evt.point)
+          if (pointValue == null) return
           ctx.activeIndex = getClosestIndex(ctx, pointValue)
         },
         setActiveIndex(ctx, evt) {

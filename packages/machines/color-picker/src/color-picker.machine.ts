@@ -226,6 +226,8 @@ export function machine(userContext: UserDefinedContext) {
           const { xChannel, yChannel } = evt.channel || ctx.activeChannel
 
           const percent = dom.getAreaValueFromPoint(ctx, evt.point)
+          if (!percent) return
+
           const { getColorFromPoint } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
           const color = getColorFromPoint(percent.x, percent.y)
 
@@ -234,7 +236,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         setChannelColorFromPoint(ctx, evt) {
           const channel = evt.channel || ctx.activeId
+
           const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
+          if (!percent) return
 
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
           const orientation = ctx.activeOrientation || "horizontal"

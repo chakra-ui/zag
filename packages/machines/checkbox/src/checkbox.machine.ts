@@ -68,6 +68,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         syncInputElement(ctx) {
           const inputEl = dom.getInputEl(ctx)
+          if (!inputEl) return
           inputEl.checked = ctx.isChecked
           inputEl.indeterminate = ctx.isIndeterminate
         },

@@ -20,11 +20,14 @@ export const dom = createScope({
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getThumbId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.queryById(ctx, dom.getControlId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point): number | undefined {
-    const relativePoint = getRelativePoint(point, dom.getControlEl(ctx))
+    const controlEl = dom.getControlEl(ctx)
+    if (!controlEl) return
+
+    const relativePoint = getRelativePoint(point, controlEl)
     const percent = relativePoint.getPercentValue({
       orientation: ctx.orientation,
       dir: ctx.dir,

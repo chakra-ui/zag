@@ -20,13 +20,15 @@ export const dom = createScope({
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getThumbEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getThumbId(ctx, index)),
   getHiddenInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx, index)),
-  getControlEl: (ctx: Ctx) => dom.queryById(ctx, dom.getControlId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
   getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
   getRangeEl: (ctx: Ctx) => dom.getById(ctx, dom.getRangeId(ctx)),
 
   getValueFromPoint(ctx: Ctx, point: Point) {
-    const relativePoint = getRelativePoint(point, dom.getControlEl(ctx))
+    const controlEl = dom.getControlEl(ctx)
+    if (!controlEl) return
+    const relativePoint = getRelativePoint(point, controlEl)
     const percent = relativePoint.getPercentValue({
       orientation: ctx.orientation,
       dir: ctx.dir,

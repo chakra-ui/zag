@@ -42,8 +42,9 @@ export const dom = createScope({
   },
 
   getRectById: (ctx: Ctx, id: string) => {
-    const tab = dom.queryById(ctx, dom.getRadioId(ctx, id))
-    return dom.resolveRect(dom.getOffsetRect(tab))
+    const radioEl = dom.getById(ctx, dom.getRadioId(ctx, id))
+    if (!radioEl) return
+    return dom.resolveRect(dom.getOffsetRect(radioEl))
   },
 
   resolveRect(rect: Record<"width" | "height" | "left" | "top", number>) {
