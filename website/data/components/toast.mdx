@@ -20,7 +20,6 @@ place.
 - Manage promises within toast.
 - Pause on hover, focus or page idle.
 - Can remove or update toast programmatically.
-- Support for progress bars.
 
 ## Installation
 
@@ -234,26 +233,6 @@ toast.promise(promise, {
     description: "An error has occurred",
   }),
 })
-```
-
-## Using progressbars
-
-The toast machine allows you render a custom progress bar to visualize the time
-left before the toast closes.
-
-The `toast.connect` api exposes a `progressbarProps` object you can use for this
-purpose.
-
-```jsx {4}
-// ...
-return (
-  <pre {...api.rootProps}>
-    <div {...api.progressbarProps} />
-    <p {...api.titleProps}>{api.title}</p>
-    <p {...api.descriptionProps}>{api.description}</p>
-    <button onClick={api.dismiss}>Close</button>
-  </pre>
-)
 ```
 
 ## Pausing the toasts
