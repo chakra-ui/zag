@@ -21,6 +21,7 @@ import {
 } from "@zag-js/date-utils"
 import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
@@ -74,6 +75,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isOpen = state.matches("open") || state.context.inline
   const isRangePicker = state.context.selectionMode === "range"
   const isDateUnavailableFn = state.context.isDateUnavailable
+
+  const currentPlacement = state.context.currentPlacement
+  const popperStyles = getPlacementStyles({
+    ...state.context.positioning,
+    placement: currentPlacement,
+  })
 
   const defaultOffset: Offset = {
     amount: 0,
@@ -620,6 +627,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onChange(event) {
         api.focusYear(Number(event.currentTarget.value))
       },
+    }),
+
+    positionerProps: normalize.element({
+      id: dom.getPositionerId(state.context),
+      ...parts.positioner.attrs,
+      style: popperStyles.floating,
     }),
   }
 
