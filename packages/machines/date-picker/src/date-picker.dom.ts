@@ -13,6 +13,7 @@ export const dom = createScope({
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `datepicker:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `datepicker:${ctx.id}:input`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `datepicker:${ctx.id}:trigger`,
+  getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `datepicker:${ctx.id}:positioner`,
   getMonthSelectId: (ctx: Ctx) => ctx.ids?.monthSelect ?? `datepicker:${ctx.id}:month-select`,
   getYearSelectId: (ctx: Ctx) => ctx.ids?.yearSelect ?? `datepicker:${ctx.id}:year-select`,
 
@@ -24,4 +25,6 @@ export const dom = createScope({
   getYearSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getYearSelectId(ctx)),
   getMonthSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getMonthSelectId(ctx)),
   getClearTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getClearTriggerId(ctx)),
+  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
 })
