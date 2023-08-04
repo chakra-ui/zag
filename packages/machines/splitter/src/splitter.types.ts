@@ -18,7 +18,6 @@ type ResizeDetails = {
 type ElementIds = Partial<{
   root: string
   resizeTrigger(id: string): string
-  toggleTrigger(id: string): string
   label(id: string): string
   panel(id: string | number): string
 }>

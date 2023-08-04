@@ -5,14 +5,14 @@ export const anatomy = createAnatomy("color-picker", [
   "areaThumb",
   "areaGradient",
   "channelSliderTrack",
-  "channelSliderTrackBg",
+  "channelSliderTrackBackground",
   "channelSliderThumb",
   "channelInput",
   "swatch",
-  "swatchBg",
+  "swatchBackground",
   "content",
   "label",
-  "eyeDropTrigger",
+  "eyeDropperTrigger",
 ])
 
 export const parts = anatomy.build()

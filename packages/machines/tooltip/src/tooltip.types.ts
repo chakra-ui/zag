@@ -88,7 +88,6 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   arrowTipProps: T["element"]
   positionerProps: T["element"]
   contentProps: T["element"]
-  labelProps: T["element"]
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

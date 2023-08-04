@@ -33,7 +33,6 @@
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
