@@ -5,8 +5,8 @@ export const anatomy = createAnatomy("carousel").parts(
   "viewport",
   "slideGroup",
   "slide",
-  "previousTrigger",
-  "nextTrigger",
+  "nextSlideTrigger",
+  "prevSlideTrigger",
   "indicatorGroup",
   "indicator",
 )

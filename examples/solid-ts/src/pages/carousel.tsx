@@ -19,8 +19,8 @@ export default function Page() {
     <>
       <main class="carousel">
         <div {...api().rootProps}>
-          <button {...api().prevTriggerProps}>Prev</button>
-          <button {...api().nextTriggerProps}>Next</button>
+          <button {...api().prevSlideTriggerProps}>Prev</button>
+          <button {...api().nextSlideTriggerProps}>Next</button>
           <div {...api().viewportProps}>
             <div {...api().slideGroupProps}>
               <For each={carouselData}>
