@@ -5,7 +5,6 @@ import type { MachineContext as Ctx, PanelId } from "./splitter.types"
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `splitter:${ctx.id}`,
   getResizeTriggerId: (ctx: Ctx, id: string) => ctx.ids?.resizeTrigger?.(id) ?? `splitter:${ctx.id}:splitter:${id}`,
-  getToggleTriggerId: (ctx: Ctx) => ctx.ids?.toggleTrigger?.(ctx.id) ?? `splitter:${ctx.id}:toggle-btn`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `splitter:${ctx.id}:label`,
   getPanelId: (ctx: Ctx, id: string | number) => ctx.ids?.panel?.(id) ?? `splitter:${ctx.id}:panel:${id}`,
   globalCursorId: (ctx: Ctx) => `splitter:${ctx.id}:global-cursor`,
