@@ -71,14 +71,14 @@ export function Radio(props: RadioProps) {
                 bg: "gray.400",
                 borderColor: "gray.400",
               }}
-              _checked={{
-                "&:not([data-disabled])": {
+              _peerFocusVisible={{
+                outline: "2px solid royalblue",
+              }}
+              sx={{
+                "&[data-state=checked]:not([data-disabled])": {
                   bg: "blue.500",
                   borderColor: "blue.500",
                 },
-              }}
-              _peerFocusVisible={{
-                outline: "2px solid royalblue",
               }}
               {...api.getRadioControlProps({ value: opt.id })}
             >
