@@ -520,7 +520,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getHeaderProps(props: ViewProps = {}) {
       const { view = "day" } = props
       return normalize.element({
-        ...parts.header.attrs,
+        ...parts.rowHeader.attrs,
         "aria-hidden": true,
         dir: state.context.dir,
         "data-type": view,
