@@ -110,10 +110,8 @@ The options you can pass in are:
 - `onClose` — A function that is called when the toast is closed.
 - `placement` — The placement of the toast.
 - `render` — A function that returns the toast JSX (Useful for library authors).
-
-> **Important note 🚨**: When a toast is created and its visible duration has
-> elapsed , we add `500ms` delay before removing it from the DOM. You can use
-> this delay to animate the toast out.
+- `removeDelay` — The delay before removing the toast from the DOM. This is
+  useful for managing exit animations. It is set to `0` by default.
 
 ## Setting custom duration
 
@@ -428,8 +426,8 @@ When the toast is open or closed, we attach a `data-state` attribute to the
 toast's root. A common use-case for this is to specify the entry and exit
 animations for the toast.
 
-> Remember every toast has a `500ms` delay before it is removed from the DOM.
-> Keep your exit animations within this range.
+> Remember to set the `removeDelay` to a value that matches the exit animation
+> duration.
 
 ```css
 [data-part="root"][data-state="open"] {
