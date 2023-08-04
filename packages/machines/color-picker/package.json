@@ -40,7 +40,9 @@
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
+    "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
     "@zag-js/types": "workspace:*"

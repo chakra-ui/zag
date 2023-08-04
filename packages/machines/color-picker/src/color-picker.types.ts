@@ -39,6 +39,8 @@ type ElementIds = Partial<{
   channelSliderThumb(id: ColorChannel): string
 }>
 
+export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }
+
 type PublicContext = CommonProperties & {
   /**
    * The ids of the elements in the color picker. Useful for composition.
@@ -68,48 +70,10 @@ type PublicContext = CommonProperties & {
    * Handler that is called when the user stops dragging.
    */
   onChangeEnd?: (details: ChangeDetails) => void
-}
-
-export type PublicApi<T extends PropTypes = PropTypes> = {
   /**
-   * Whether the color picker is being dragged
+   *  The name for the form input
    */
-  isDragging: boolean
-  /**
-   * The current color value (as a string)
-   */
-  value: string
-  /**
-   * The current color value (as a Color object)
-   */
-  valueAsColor: Color
-  /**
-   * The current color channels of the color
-   */
-  channels: [ColorChannel, ColorChannel, ColorChannel]
-  /**
-   * Function to set the color value
-   */
-  setColor(value: string | Color): void
-  /**
-   * Function to set the color value of a specific channel
-   */
-  setChannelValue(channel: ColorChannel, value: number): void
-  /**
-   * Function to set the color format
-   */
-  setFormat(format: ColorFormat): void
-  contentProps: T["element"]
-  getAreaProps(props: ColorAreaProps): T["element"]
-  getAreaGradientProps(props: ColorAreaProps): T["element"]
-  getAreaThumbProps(props: ColorAreaProps): T["element"]
-  getChannelSliderTrackProps(props: ColorChannelProps): T["element"]
-  getChannelSliderBackgroundProps(props: ColorChannelProps): T["element"]
-  getChannelSliderThumbProps(props: ColorChannelProps): T["element"]
-  getChannelInputProps(props: ColorChannelInputProps): T["input"]
-  eyeDropperTriggerProps: T["button"]
-  getSwatchBackgroundProps(props: ColorSwatchProps): T["element"]
-  getSwatchProps(props: ColorSwatchProps): T["element"]
+  name?: string
 }
 
 type PrivateContext = Context<{
@@ -154,4 +118,53 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }
+export type PublicApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the color picker is being dragged
+   */
+  isDragging: boolean
+  /**
+   * The current color value (as a string)
+   */
+  value: string
+  /**
+   * The current color value (as a Color object)
+   */
+  valueAsColor: Color
+  /**
+   * The alpha value of the color
+   */
+  alpha: number
+  /**
+   * The current color channels of the color
+   */
+  channels: [ColorChannel, ColorChannel, ColorChannel]
+  /**
+   * Function to set the color value
+   */
+  setColor(value: string | Color): void
+  /**
+   * Function to set the color value of a specific channel
+   */
+  setChannelValue(channel: ColorChannel, value: number): void
+  /**
+   * Function to set the color format
+   */
+  setFormat(format: ColorFormat): void
+  /**
+   * Function to set the color alpha
+   */
+  setAlpha(value: number): void
+  contentProps: T["element"]
+  hiddenInputProps: T["input"]
+  getAreaProps(props: ColorAreaProps): T["element"]
+  getAreaGradientProps(props: ColorAreaProps): T["element"]
+  getAreaThumbProps(props: ColorAreaProps): T["element"]
+  getChannelSliderTrackProps(props: ColorChannelProps): T["element"]
+  getChannelSliderBackgroundProps(props: ColorChannelProps): T["element"]
+  getChannelSliderThumbProps(props: ColorChannelProps): T["element"]
+  getChannelInputProps(props: ColorChannelInputProps): T["input"]
+  eyeDropperTriggerProps: T["button"]
+  getSwatchBackgroundProps(props: ColorSwatchProps): T["element"]
+  getSwatchProps(props: ColorSwatchProps): T["element"]
+}

@@ -10,6 +10,7 @@ import {
 } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
 import type {
@@ -29,6 +30,7 @@ import { getSliderBgImage } from "./utils/get-slider-background"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const valueAsColor = state.context.valueAsColor
+  const value = state.context.value
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
   const isDragging = state.matches("dragging")
@@ -37,8 +39,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isDragging,
-    value: state.context.value,
+    value,
     valueAsColor,
+    alpha: valueAsColor.getChannelValue("alpha"),
     channels,
 
     setColor(value: string | Color) {
@@ -53,6 +56,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setFormat(format: ColorFormat) {
       const value = valueAsColor.toFormat(format)
       send({ type: "VALUE.SET", value, src: "set-format" })
+    },
+
+    setAlpha(value: number) {
+      const color = valueAsColor.withChannelValue("alpha", value)
+      send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
     contentProps: normalize.element({
@@ -344,9 +352,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    hiddenInputProps: normalize.input({
+      ...parts.hiddenInput.attrs,
+      type: "text",
+      disabled: isDisabled,
+      name: state.context.name,
+      id: dom.getHiddenInputId(state.context),
+      style: visuallyHiddenStyle,
+      defaultValue: value,
+      onChange(event) {
+        const value = event.currentTarget.value
+        send({ type: "VALUE.SET", value, src: "input.change" })
+      },
+    }),
+
     eyeDropperTriggerProps: normalize.button({
       ...parts.eyeDropTrigger.attrs,
+      disabled: isDisabled,
+      "data-disabled": dataAttr(isDisabled),
+      "aria-label": "Pick a color from the screen",
       onClick() {
+        if (!isInteractive) return
         send("EYEDROPPER.CLICK")
       },
     }),
@@ -382,7 +408,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.swatch.attrs,
         onClick() {
-          if (readOnly) return
+          if (readOnly || !isInteractive) return
           send({ type: "VALUE.SET", value: color })
         },
         style: {

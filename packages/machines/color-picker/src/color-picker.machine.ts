@@ -2,6 +2,7 @@ import { parseColor, type Color } from "@zag-js/color-utils"
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
+import { trackFormControl } from "@zag-js/form-utils"
 import { clampValue, getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
 import { disableTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
@@ -38,8 +39,10 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
+      activities: ["trackFormControl"],
+
       watch: {
-        value: ["syncChannelInputs", "invokeOnChange"],
+        value: ["syncInputElements", "invokeOnChange"],
       },
 
       states: {
@@ -176,6 +179,17 @@ export function machine(userContext: UserDefinedContext) {
         isTextField: (_ctx, evt) => !!evt.isTextField,
       },
       activities: {
+        trackFormControl(ctx, _evt, { send, initialContext }) {
+          const inputEl = dom.getHiddenInputEl(ctx)
+          return trackFormControl(inputEl, {
+            onFieldsetDisabled() {
+              ctx.disabled = true
+            },
+            onFormReset() {
+              send({ type: "VALUE.SET", value: initialContext.value, src: "form.reset" })
+            },
+          })
+        },
         trackPointerMove(ctx, _evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove({ point }) {
@@ -254,14 +268,19 @@ export function machine(userContext: UserDefinedContext) {
         setValue(ctx, evt) {
           setColor(ctx, evt.value)
         },
-        syncChannelInputs(ctx) {
+        syncInputElements(ctx) {
+          // sync channel inputs
           const inputs = dom.getChannelInputEls(ctx)
           inputs.forEach((input) => {
             const channel = input.dataset.channel as ExtendedColorChannel | null
             if (!channel) return
-            const value = getChannelInputValue(ctx.valueAsColor, channel)
-            input.value = value.toString()
+            input.value = getChannelInputValue(ctx.valueAsColor, channel)
           })
+
+          // sync hidden input
+          const hiddenInput = dom.getHiddenInputEl(ctx)
+          if (!hiddenInput) return
+          hiddenInput.value = ctx.value
         },
         setChannelColorFromInput(ctx, evt) {
           const { channel, isTextField, value } = evt

@@ -14,6 +14,7 @@ export const dom = createScope({
     ctx.ids?.channelInput?.(channel) ?? `color-picker:${ctx.id}:input:${channel}`,
   getChannelSliderThumbId: (ctx: Ctx, channel: ColorChannel) =>
     ctx.ids?.channelSliderThumb?.(channel) ?? `color-picker:${ctx.id}:slider-thumb:${channel}`,
+  getHiddenInputId: (ctx: Ctx) => `color-picker:${ctx.id}:hidden-input`,
 
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getAreaThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaThumbId(ctx)),
@@ -22,6 +23,7 @@ export const dom = createScope({
   getChannelInputEl: (ctx: Ctx, channel: string) =>
     dom.getById<HTMLInputElement>(ctx, dom.getChannelInputId(ctx, channel)),
 
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getAreaEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaId(ctx)),
   getAreaValueFromPoint(ctx: Ctx, point: Point) {
     const areaEl = dom.getAreaEl(ctx)
