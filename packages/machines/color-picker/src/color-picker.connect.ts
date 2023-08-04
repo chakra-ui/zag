@@ -198,7 +198,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getChannelSliderBackgroundProps(props: ColorChannelProps) {
       const { orientation = "horizontal", channel } = props
       return normalize.element({
-        ...parts.channelSliderTrackBg.attrs,
+        ...parts.channelSliderTrackBackground.attrs,
         "data-orientation": orientation,
         "data-channel": channel,
         style: {
@@ -345,7 +345,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     eyeDropperTriggerProps: normalize.button({
-      ...parts.eyeDropTrigger.attrs,
+      ...parts.eyeDropperTrigger.attrs,
       onClick() {
         send("EYEDROPPER.CLICK")
       },
@@ -355,7 +355,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { value } = props
       const alpha = normalizeColor(value).getChannelValue("alpha")
       return normalize.element({
-        ...parts.swatchBg.attrs,
+        ...parts.swatchBackground.attrs,
         "data-alpha": alpha,
         style: {
           width: "100%",
