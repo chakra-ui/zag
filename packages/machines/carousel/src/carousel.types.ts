@@ -15,8 +15,8 @@ type ElementIds = Partial<{
   viewport: string
   slide(index: number): string
   slideGroup: string
-  nextTrigger: string
-  prevTrigger: string
+  nextSlideTrigger: string
+  prevSlideTrigger: string
   indicatorGroup: string
   indicator(index: number): string
 }>
@@ -115,8 +115,8 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   viewportProps: T["element"]
   slideGroupProps: T["element"]
   getSlideProps(props: SlideProps): T["element"]
-  prevTriggerProps: T["button"]
-  nextTriggerProps: T["button"]
+  prevSlideTriggerProps: T["button"]
+  nextSlideTriggerProps: T["button"]
   indicatorGroupProps: T["element"]
   getIndicatorProps(props: SlideIndicatorProps): T["button"]
 }

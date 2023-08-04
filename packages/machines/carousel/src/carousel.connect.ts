@@ -111,9 +111,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevTriggerProps: normalize.button({
-      ...parts.previousTrigger.attrs,
-      id: dom.getPrevTriggerId(state.context),
+    prevSlideTriggerProps: normalize.button({
+      ...parts.prevSlideTrigger.attrs,
+      id: dom.getPrevSliderTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       disabled: !canScrollPrev,
@@ -125,9 +125,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    nextTriggerProps: normalize.button({
-      ...parts.nextTrigger.attrs,
-      id: dom.getNextTriggerId(state.context),
+    nextSlideTriggerProps: normalize.button({
+      ...parts.nextSlideTrigger.attrs,
+      id: dom.getNextSliderTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       "aria-label": "Next Slide",
