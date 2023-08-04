@@ -214,17 +214,6 @@ const [state, send] = useMachine(
 )
 ```
 
-## Using custom labels
-
-By default, the only content announced to them is whatever is in the tooltip. On
-some cases you may want the screen readers to know more information about the
-trigger (e.g. a notifications system with count).
-
-For this use-case, pass the `aria-label` context property and use the
-`labelProps` exposed in the tooltip's connect function.
-
-<CodeSnippet id="tooltip/custom-label.mdx" />
-
 ## Events
 
 When the tooltip open or closes, the `onOpen` and `onClose` callbacks are fired.

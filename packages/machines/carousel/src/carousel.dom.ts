@@ -11,8 +11,8 @@ export const dom = createScope({
   getIndicatorGroupId: (ctx: Ctx) => ctx.ids?.indicatorGroup ?? `carousel:${ctx.id}:indicator-group`,
   getIndicatorId: (ctx: Ctx, index: number) => ctx.ids?.indicator?.(index) ?? `carousel:${ctx.id}:indicator:${index}`,
 
-  getRootEl: (ctx: Ctx) => dom.queryById(ctx, dom.getRootId(ctx)),
-  getViewportEl: (ctx: Ctx) => dom.queryById(ctx, dom.getViewportId(ctx)),
-  getSlideGroupEl: (ctx: Ctx) => dom.queryById(ctx, dom.getSlideGroupId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
+  getViewportEl: (ctx: Ctx) => dom.getById(ctx, dom.getViewportId(ctx)),
+  getSlideGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getSlideGroupId(ctx)),
   getSlideEls: (ctx: Ctx) => queryAll(dom.getSlideGroupEl(ctx), `[data-part=slide]`),
 })

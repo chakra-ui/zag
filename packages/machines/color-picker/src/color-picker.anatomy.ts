@@ -12,6 +12,7 @@ export const anatomy = createAnatomy("color-picker", [
   "swatchBackground",
   "content",
   "label",
+  "hiddenInput",
   "eyeDropperTrigger",
 ])
 

@@ -20,6 +20,7 @@ const fetchMachine = createMachine({
       actions: ["setValue"]
     }
   },
+  activities: ["trackFormControl"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

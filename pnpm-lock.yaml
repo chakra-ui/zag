@@ -1483,6 +1483,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/form-utils':
+        specifier: workspace:*
+        version: link:../../utilities/form-utils
       '@zag-js/numeric-range':
         specifier: workspace:*
         version: link:../../utilities/numeric-range
@@ -1495,6 +1498,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
+      '@zag-js/visually-hidden':
+        specifier: workspace:*
+        version: link:../../utilities/visually-hidden
     devDependencies:
       clean-package:
         specifier: 2.2.0

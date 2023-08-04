@@ -9,7 +9,7 @@ export const dom = createScope({
   getPanelId: (ctx: Ctx, id: string | number) => ctx.ids?.panel?.(id) ?? `splitter:${ctx.id}:panel:${id}`,
   globalCursorId: (ctx: Ctx) => `splitter:${ctx.id}:global-cursor`,
 
-  getRootEl: (ctx: Ctx) => dom.queryById(ctx, dom.getRootId(ctx)),
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getResizeTriggerEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getResizeTriggerId(ctx, id)),
   getPanelEl: (ctx: Ctx, id: string | number) => dom.getById(ctx, dom.getPanelId(ctx, id)),
 

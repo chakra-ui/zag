@@ -14,25 +14,31 @@ export const dom = createScope({
     ctx.ids?.channelInput?.(channel) ?? `color-picker:${ctx.id}:input:${channel}`,
   getChannelSliderThumbId: (ctx: Ctx, channel: ColorChannel) =>
     ctx.ids?.channelSliderThumb?.(channel) ?? `color-picker:${ctx.id}:slider-thumb:${channel}`,
+  getHiddenInputId: (ctx: Ctx) => `color-picker:${ctx.id}:hidden-input`,
 
-  getContentEl: (ctx: Ctx) => dom.queryById(ctx, dom.getContentId(ctx)),
-  getAreaThumbEl: (ctx: Ctx) => dom.queryById(ctx, dom.getAreaThumbId(ctx)),
+  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
+  getAreaThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaThumbId(ctx)),
   getChannelSliderThumbEl: (ctx: Ctx, channel: ColorChannel) =>
-    dom.queryById(ctx, dom.getChannelSliderThumbId(ctx, channel)),
+    dom.getById(ctx, dom.getChannelSliderThumbId(ctx, channel)),
   getChannelInputEl: (ctx: Ctx, channel: string) =>
-    dom.queryById<HTMLInputElement>(ctx, dom.getChannelInputId(ctx, channel)),
+    dom.getById<HTMLInputElement>(ctx, dom.getChannelInputId(ctx, channel)),
 
-  getAreaEl: (ctx: Ctx) => dom.queryById(ctx, dom.getAreaId(ctx)),
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
+  getAreaEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaId(ctx)),
   getAreaValueFromPoint(ctx: Ctx, point: Point) {
-    const { percent } = getRelativePoint(point, dom.getAreaEl(ctx))
+    const areaEl = dom.getAreaEl(ctx)
+    if (!areaEl) return
+    const { percent } = getRelativePoint(point, areaEl)
     return percent
   },
 
   getChannelSliderTrackEl: (ctx: Ctx, channel: ColorChannel) => {
-    return dom.queryById(ctx, dom.getChannelSliderTrackId(ctx, channel))
+    return dom.getById(ctx, dom.getChannelSliderTrackId(ctx, channel))
   },
   getChannelSliderValueFromPoint(ctx: Ctx, point: Point, channel: ColorChannel) {
-    const { percent } = getRelativePoint(point, dom.getChannelSliderTrackEl(ctx, channel))
+    const trackEl = dom.getChannelSliderTrackEl(ctx, channel)
+    if (!trackEl) return
+    const { percent } = getRelativePoint(point, trackEl)
     return percent
   },
   getChannelInputEls: (ctx: Ctx) => {
