@@ -1,0 +1,228 @@
+---
+title: File Upload
+description: Using the file-upload machine in your project.
+package: "@zag-js/file-upload"
+---
+
+# File Upload
+
+File upload component is used to upload multiple files.
+
+The native input file element is quite difficult to style and doesn't provide a
+drag-n-drop version.
+
+> The file upload component doesn't handle the actual file uploading process. It
+> only handles the UI and the state of the file upload.
+
+<Resources pkg="@zag-js/file-upload" />
+
+<Showcase id="FileUpload" />
+
+**Features**
+
+- Supports a button to open the file dialog.
+- Supports drag and drop to upload files.
+- Set the maximum number of files that can be uploaded.
+- Set the maximum size of the files that can be uploaded.
+- Set the accepted file types.
+
+## Installation
+
+To use the file upload machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="file-upload/installation.mdx" />
+
+This command will install the framework agnostic file upload logic and the
+reactive utilities for your framework of choice.
+
+## Anatomy
+
+To set up the file upload correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+{/* <Anatomy id="file-upload" /> */}
+
+On a high level, the file upload consists of:
+
+- **Root**: The root element of the file upload.
+- **Input**: The underlying input element that handles the file upload.
+- **Trigger**: The element that triggers the file upload.
+- **Delete Trigger**: The element that triggers the deletion of a file.
+
+## Usage
+
+First, import the file upload package into your project
+
+```jsx
+import * as fileUpload from "@zag-js/file-upload"
+```
+
+The file upload package exports two key functions:
+
+- `machine` — The state machine logic for the file upload widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+file uplaod machine in your project 🔥
+
+<CodeSnippet id="file-upload/usage.mdx" />
+
+## Setting the accepted file types
+
+Use the `accept` attribute to set the accepted file types.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    accept: "image/*",
+  }),
+)
+```
+
+## Setting the maximum number of files
+
+Use the `maxFiles` attribute to set the maximum number of files that can be
+uploaded. This will set the `multiple` attribute on the underlying input
+element.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    maxFiles: 5,
+  }),
+)
+```
+
+## Setting the maximum size per file
+
+Use the `maxFileSize` attribute to set the maximum size per file that can be
+uploaded.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    maxFileSize: 1024 * 1024 * 10, // 10MB
+  }),
+)
+```
+
+## Listening to file upload events
+
+When files are uploaded, the `onChange` callback is invoked with the details of
+the accepted and rejected files.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    onChange: (details) => {
+      console.log(details.acceptedFiles) // File[]
+      console.log(details.rejectedFiles) // { file: File, errors: [] }
+    },
+  }),
+)
+```
+
+## Usage within a form
+
+To use the file upload within a form, set the `name` attribute in the machine's
+context, and ensure you render the input element `api.inputProps`
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    name: "avatar",
+  }),
+)
+```
+
+## Displaying image preview
+
+To display a preview of the uploaded image, use the built-in FileReader API to
+read the file and set the `src` attribute of an image element.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    onChange: (details) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const image = event.target.result
+        // set the image as the src of an image element
+      }
+      reader.readAsDataURL(details.acceptedFiles[0])
+    },
+  }),
+)
+```
+
+## Disabling dropzone
+
+To disable the drag and drop functionalty, set the `dropzone` context property
+to `false`.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    dropzone: false,
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each file upload part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+```css
+[data-part="root"] {
+  /* styles for root element*/
+}
+
+[data-part="trigger"] {
+  /* styles for file picker trigger */
+}
+
+[data-part="label"] {
+  /* styles for the input's label */
+}
+```
+
+### Dragging State
+
+When the user drags a file over the file upload, the `data-dragging` attribute
+is added to the root element.
+
+```css
+[data-part="root"] [data-dragging] {
+  /* styles for when the user is dragging a file over the file upload */
+}
+```
+
+### Disabled State
+
+When the file upload is disabled, the `data-disabled` attribute is added to the
+root element.
+
+```css
+[data-part="root"] [data-disabled] {
+  /* styles for when the file upload is disabled */
+}
+
+[data-part="trigger"] [data-disabled] {
+  /* styles for when the file upload trigger is disabled */
+}
+
+[data-part="label"] [data-disabled] {
+  /* styles for when the file upload label is disabled */
+}
+```
+
+## Methods and Properties
+
+The file upload's `api` method exposes the following methods:
+
+<ApiTable name="file-upload" />

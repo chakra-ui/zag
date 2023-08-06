@@ -65,6 +65,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Combobox", id: "combobox" },
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },
+        { type: "doc", label: "File Upload", id: "file-upload" },
         { type: "doc", label: "Hover Card", id: "hover-card" },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Context Menu", id: "context-menu" },

@@ -3,47 +3,29 @@ import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
 import { dom } from "./file-upload.dom"
-import { type Send, type State } from "./file-upload.types"
+import { type PublicApi, type Send, type State } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
   const disableClick = state.context.disableClick
   const disabled = state.context.disabled
   const isDragging = state.matches("dragging")
   const isFocused = state.matches("focused") && !disabled
 
   return {
-    /**
-     * Whether the user is dragging something over the root element
-     */
     isDragging,
-    /**
-     * Whether the user is focused on the root element
-     */
     isFocused,
-    /**
-     * Function to open the file dialog
-     */
-    openFilePicker() {
+    open() {
       send("OPEN")
     },
     deleteFile(file: File) {
       send({ type: "FILE.DELETE", file })
     },
-    /**
-     * The files that have been dropped or selected
-     */
     files: state.context.files,
-    /**
-     * Function to set the value
-     */
     setValue(files: File[]) {
       const count = files.length
       send({ type: "VALUE.SET", files, count })
     },
-    /**
-     * Function to clear the value
-     */
     clearValue() {
       send({ type: "VALUE.SET", files: [] })
     },
@@ -107,6 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
+      disabled,
       "data-disabled": dataAttr(disabled),
       type: "button",
       onClick() {
@@ -142,6 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.deleteTrigger.attrs,
         type: "button",
+        disabled,
         "data-disabled": dataAttr(disabled),
         "aria-label": `Delete ${file.name} file`,
         onClick() {
@@ -150,5 +134,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
       })
     },
+
+    labelProps: normalize.label({
+      ...parts.label.attrs,
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getInputId(state.context),
+      "data-disabled": dataAttr(disabled),
+    }),
   }
 }

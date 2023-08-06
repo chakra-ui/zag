@@ -5,9 +5,6 @@ export const dom = createScope({
   getRootId: (ctx: Ctx) => `fileupload:${ctx.id}`,
   getInputId: (ctx: Ctx) => `fileupload:${ctx.id}:input`,
   getTriggerId: (ctx: Ctx) => `fileupload:${ctx.id}:trigger`,
+  getLabelId: (ctx: Ctx) => `fileupload:${ctx.id}:label`,
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
-  canUseFs: (ctx: Ctx) => {
-    const win = dom.getWin(ctx)
-    return typeof win !== "undefined" && win.isSecureContext && "showOpenFilePicker" in win
-  },
 })

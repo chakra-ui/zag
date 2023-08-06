@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 type PublicContext = CommonProperties & {
   /**
@@ -25,11 +25,11 @@ type PublicContext = CommonProperties & {
   /**
    * The maximum file size in bytes
    */
-  maxSize: number
+  maxFileSize: number
   /**
    * The minimum file size in bytes
    */
-  minSize: number
+  minFileSize: number
   /**
    * The maximum number of files
    */
@@ -85,3 +85,39 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type PublicApi<T extends PropTypes> = {
+  /**
+   * Whether the user is dragging something over the root element
+   */
+  isDragging: boolean
+  /**
+   * Whether the user is focused on the root element
+   */
+  isFocused: boolean
+  /**
+   * Function to open the file dialog
+   */
+  open(): void
+  /**
+   * Function to delete the file from the list
+   */
+  deleteFile(file: File): void
+  /**
+   * The files that have been dropped or selected
+   */
+  files: File[]
+  /**
+   * Function to set the value
+   */
+  setValue(files: File[]): void
+  /**
+   * Function to clear the value
+   */
+  clearValue(): void
+  rootProps: T["element"]
+  triggerProps: T["button"]
+  inputProps: T["input"]
+  getDeleteTriggerProps(props: { file: File }): T["button"]
+  labelProps: T["label"]
+}

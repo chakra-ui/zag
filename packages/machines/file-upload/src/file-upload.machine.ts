@@ -14,8 +14,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "fileupload",
       initial: "idle",
       context: {
-        minSize: 0,
-        maxSize: Infinity,
+        minFileSize: 0,
+        maxFileSize: Infinity,
         maxFiles: 1,
         dropzone: true,
         ...ctx,
@@ -109,10 +109,15 @@ export function machine(userContext: UserDefinedContext) {
         setFilesFromEvent(ctx, evt) {
           const result = getFilesFromEvent(ctx, evt.files)
           const { acceptedFiles, rejectedFiles } = result
+
           ctx.rejectedFiles = ref(rejectedFiles)
+
           if (ctx.multiple) {
             ctx.files = ref([...ctx.files, ...acceptedFiles])
-          } else {
+            return
+          }
+
+          if (acceptedFiles.length) {
             ctx.files = ref([acceptedFiles[0]])
           }
         },
