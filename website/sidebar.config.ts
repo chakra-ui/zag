@@ -77,7 +77,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Radio Group", id: "radio-group" },
         { type: "doc", label: "Segmented Control", id: "segmented-control" },
         { type: "doc", label: "Range Slider", id: "range-slider" },
-        { type: "doc", label: "Rating", id: "rating" },
+        { type: "doc", label: "Rating Group", id: "rating-group" },
         { type: "doc", label: "Select", id: "select" },
         { type: "doc", label: "Slider", id: "slider" },
         { type: "doc", label: "Switch", id: "switch" },

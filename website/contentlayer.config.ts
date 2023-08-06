@@ -78,7 +78,10 @@ const Component = defineDocumentType(() => ({
   name: "Component",
   filePathPattern: "components/**/*.mdx",
   contentType: "mdx",
-  fields,
+  fields: {
+    ...fields,
+    slugAlias: { type: "string" },
+  },
   computedFields: {
     ...computedFields,
     npmUrl: {
@@ -92,11 +95,14 @@ const Component = defineDocumentType(() => ({
     sourceUrl: {
       type: "string",
       resolve: (doc) =>
-        `${siteConfig.repo.url}/tree/main/packages/machines/${getSlug(doc)}`,
+        `${siteConfig.repo.url}/tree/main/packages/machines/${
+          doc.slugAlias ?? getSlug(doc)
+        }`,
     },
     visualizeUrl: {
       type: "string",
-      resolve: (doc) => `https://state-machine-viz.vercel.app/${getSlug(doc)}`,
+      resolve: (doc) =>
+        `https://state-machine-viz.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
     },
     version: {
       type: "string",
