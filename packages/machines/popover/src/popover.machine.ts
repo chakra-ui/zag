@@ -125,12 +125,8 @@ export function machine(userContext: UserDefinedContext) {
                 event.preventDefault()
               }
             },
-            onPointerDownOutside(event) {
-              ctx.onPointerDownOutside?.(event)
-            },
-            onFocusOutside(event) {
-              ctx.onFocusOutside?.(event)
-            },
+            onPointerDownOutside: ctx.onPointerDownOutside,
+            onFocusOutside: ctx.onFocusOutside,
             onDismiss() {
               send({ type: "REQUEST_CLOSE", src: "interact-outside", restoreFocus })
             },
