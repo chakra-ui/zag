@@ -67,15 +67,15 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.16",
+    "@types/react": "18.2.18",
     "all-contributors-cli": "6.26.1",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
-    "prettier": "3.0.0",
+    "prettier": "3.0.1",
     "rehype": "12.0.1",
     "rehype-autolink-headings": "6.1.1",
     "rehype-code-titles": "1.2.0",
-    "rehype-prism-plus": "1.6.1",
+    "rehype-prism-plus": "1.6.2",
     "rehype-slug": "5.1.0",
     "remark-directive": "2.0.1",
     "remark-gfm": "3.0.1",
