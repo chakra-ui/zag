@@ -120,6 +120,8 @@ export function machine(userContext: UserDefinedContext) {
               const ignore = [dom.getCancelTriggerEl(ctx), dom.getSubmitTriggerEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
+            onFocusOutside: ctx.onFocusOutside,
+            onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return

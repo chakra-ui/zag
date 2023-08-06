@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideEvent } from "@zag-js/interact-outside"
+import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -24,7 +24,8 @@ type ElementIds = Partial<{
 }>
 
 type PublicContext = DirectionProperty &
-  CommonProperties & {
+  CommonProperties &
+  InteractOutsideHandlers & {
     /**
      * The ids of the elements in the combobox. Useful for composition.
      */
@@ -138,11 +139,6 @@ type PublicContext = DirectionProperty &
      * Function called when the popup is closed
      */
     onClose?: () => void
-    /**
-     * Callback fired when an outside interaction was triggered.
-     * Useful for preventing blur on combobox when composing it with other components.
-     */
-    onInteractOutside?(event: InteractOutsideEvent): void
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */

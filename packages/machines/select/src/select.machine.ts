@@ -252,6 +252,8 @@ export function machine(userContext: UserDefinedContext) {
           let focusable = false
           return trackDismissableElement(dom.getContentElement(ctx), {
             exclude: [dom.getTriggerElement(ctx)],
+            onFocusOutside: ctx.onFocusOutside,
+            onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside(event) {
               focusable = event.detail.focusable
               ctx.onInteractOutside?.(event)

@@ -270,6 +270,8 @@ export function machine(userContext: UserDefinedContext) {
             exclude(target) {
               return contains(dom.getRootEl(ctx), target)
             },
+            onFocusOutside: ctx.onFocusOutside,
+            onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return

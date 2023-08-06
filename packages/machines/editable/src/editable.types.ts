@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideEvent } from "@zag-js/interact-outside"
+import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type ActivationMode = "focus" | "dblclick" | "none"
@@ -26,7 +26,8 @@ type ElementIds = Partial<{
 }>
 
 type PublicContext = DirectionProperty &
-  CommonProperties & {
+  CommonProperties &
+  InteractOutsideHandlers & {
     /**
      * The ids of the elements in the editable. Useful for composition.
      */
@@ -108,11 +109,6 @@ type PublicContext = DirectionProperty &
      * The callback that is called when in the edit mode.
      */
     onEdit?: () => void
-    /**
-     * Callback fired when an outside interaction was triggered.
-     * Useful for preventing blur on editable when composing it with other components.
-     */
-    onInteractOutside?(event: InteractOutsideEvent): void
     /**
      * The placeholder value to show when the `value` is empty
      */

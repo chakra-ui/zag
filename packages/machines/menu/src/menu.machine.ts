@@ -348,12 +348,15 @@ export function machine(userContext: UserDefinedContext) {
           return trackDismissableElement(getContentEl, {
             defer: true,
             exclude: [dom.getTriggerEl(ctx)],
+            onInteractOutside: ctx.onInteractOutside,
+            onFocusOutside: ctx.onFocusOutside,
             onEscapeKeyDown(event) {
               if (ctx.isSubmenu) event.preventDefault()
               closeRootMenu(ctx)
             },
             onPointerDownOutside(event) {
               ctx.focusTriggerOnClose = !event.detail.focusable
+              ctx.onPointerDownOutside?.(event)
             },
             onDismiss() {
               send({ type: "REQUEST_CLOSE", src: "interact-outside" })

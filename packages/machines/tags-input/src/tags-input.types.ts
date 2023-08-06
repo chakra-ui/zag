@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { InteractOutsideEvent } from "@zag-js/interact-outside"
+import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
 
 type IntlTranslations = {
   clearTriggerLabel: string
@@ -34,7 +34,8 @@ type ElementIds = Partial<{
 }>
 
 type PublicContext = DirectionProperty &
-  CommonProperties & {
+  CommonProperties &
+  InteractOutsideHandlers & {
     /**
      * The ids of the elements in the tags input. Useful for composition.
      */
@@ -105,11 +106,6 @@ type PublicContext = DirectionProperty &
      * Useful for preventing duplicates or invalid tag values.
      */
     validate?(details: { inputValue: string; values: string[] }): boolean
-    /**
-     * Callback fired when an outside interaction was triggered.
-     * Useful for preventing blur on the tags input when composing it with other components (e.g. combobox).
-     */
-    onInteractOutside?(event: InteractOutsideEvent): void
     /**
      * The behavior of the tags input when the input is blurred
      * - `"add"`: add the input value as a new tag
