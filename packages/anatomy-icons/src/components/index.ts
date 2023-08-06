@@ -10,7 +10,7 @@ import { NumberInputAnatomy } from "./number-input"
 import { PaginationAnatomy } from "./pagination"
 import { PinInputAnatomy } from "./pin-input"
 import { PopoverAnatomy } from "./popover"
-import { RatingAnatomy } from "./rating"
+import { RatingGroupAnatomy } from "./rating-group"
 import { SegmentedControlAnatomy } from "./segmented-control"
 import { SelectAnatomy } from "./select"
 import { SliderAnatomy } from "./slider"
@@ -34,7 +34,7 @@ export const allComponents = {
   popover: PopoverAnatomy,
   menu: MenuAnatomy,
   "number-input": NumberInputAnatomy,
-  rating: RatingAnatomy,
+  "rating-group": RatingGroupAnatomy,
   "segmented-control": SegmentedControlAnatomy,
   slider: SliderAnatomy,
   "tags-input": TagsInputAnatomy,

@@ -1,6 +1,6 @@
 import { createComponent } from "../create-component"
 
-export const RatingAnatomy = createComponent((props) => {
+export const RatingGroupAnatomy = createComponent((props) => {
   const { palette, ...rest } = props
 
   return (

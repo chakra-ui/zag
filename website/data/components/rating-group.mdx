@@ -4,9 +4,9 @@ description: Using the rating machine in your project.
 package: "@zag-js/rating-group"
 ---
 
-# Rating
+# Rating Group
 
-Rating allows a user to add and remove rating to an item.
+Rating group allows a user to assign rating to an item within a product.
 
 <Resources pkg="@zag-js/rating-group" />
 
@@ -14,15 +14,15 @@ Rating allows a user to add and remove rating to an item.
 
 **Features**
 
-- Syncs with `disabled` state of fieldset
-- Syncs with form `reset` events
+- Support for syncing `disabled` state of with `fieldset` element
+- Support for form `reset` events
 
 ## Installation
 
-To use the rating machine in your project, run the following command in your
-command line:
+To use the rating group machine in your project, run the following command in
+your command line:
 
-<CodeSnippet id="rating/installation.mdx" />
+<CodeSnippet id="rating-group/installation.mdx" />
 
 This command will install the framework agnostic rating logic and the reactive
 utilities for your framework of choice.
@@ -34,7 +34,7 @@ name its parts.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
-<Anatomy id="rating" />
+<Anatomy id="rating-group" />
 
 On a high level, the rating consists of:
 
@@ -49,7 +49,7 @@ On a high level, the rating consists of:
 First, import the rating package into your project
 
 ```jsx
-import * as rating from "@zag-js/rating"
+import * as rating from "@zag-js/rating-group"
 ```
 
 The rating package exports two key functions:
@@ -64,9 +64,9 @@ The rating package exports two key functions:
 Next, import the required hooks and functions for your framework and use the
 rating machine in your project 🔥
 
-<CodeSnippet id="rating/usage.mdx" />
+<CodeSnippet id="rating-group/usage.mdx" />
 
-## Disabling the rating
+## Disabling the rating group
 
 To make rating disabled, set the context's `disabled` property to true
 
