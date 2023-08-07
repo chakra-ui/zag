@@ -6,6 +6,7 @@ import siteConfig from "site.config"
 import { IconLink } from "./icon-link"
 import { LogoWithLink } from "./logo"
 import { MobileNavigation } from "./mobile-navigation"
+import packageJson from "@zag-js/react/package.json"
 // import { WorkshopLink } from "./workshop-link"
 
 export function TopNavigation() {
@@ -35,6 +36,7 @@ export function TopNavigation() {
           <Badge
             color="text-badge"
             bg="bg-badge"
+            rounded="sm"
             px="2"
             py="0.5"
             fontSize="xs"
@@ -43,7 +45,7 @@ export function TopNavigation() {
             display={{ base: "none", sm: "block" }}
             borderBottomColor="border-subtle"
           >
-            BETA
+            {packageJson.version}
           </Badge>
           {/* <WorkshopLink /> */}
         </HStack>
