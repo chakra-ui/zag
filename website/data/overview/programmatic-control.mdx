@@ -33,6 +33,18 @@ const [state, send] = useMachine(
 )
 ```
 
+## Transient updates
+
+You can pass the context value to the `useMachine` hook directly.
+
+```jsx
+const [state, send] = useMachine(accordion.machine, {
+  context: {
+    value: props.value,
+  },
+})
+```
+
 ## Using exposed methods
 
 The `connect` method of the machines provide helpful methods (APIs) to change
@@ -80,34 +92,6 @@ function Accordion(props) {
 
   return (...)
 }
-```
-
-## Transient updates
-
-In some edge-cases, you may want to update the machine's context
-programmatically without sending an event to the machine or using the provided
-`api`.
-
-You can pass the context value to the `useMachine` hook directly. We recommend
-memoizing the context to ensure it's stable between re-renders.
-
-```jsx
-// ❌  Don't do this
-const [state, send] = useMachine(accordion.machine, {
-  context: {
-    value: props.value,
-  },
-})
-
-// ✅  Do this
-const [state, send] = useMachine(accordion.machine, {
-  context: useMemo(
-    () => ({
-      value: props.value,
-    }),
-    [props.value],
-  ),
-})
 ```
 
 ## Controlled Usage in React
