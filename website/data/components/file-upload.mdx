@@ -48,7 +48,8 @@ how we name its parts.
 On a high level, the file upload consists of:
 
 - **Root**: The root element of the file upload.
-- **Input**: The underlying input element that handles the file upload.
+- **Dropzone**: The element that handles the drag and drop functionality.
+- **Input**: The visually hidden input element.
 - **Trigger**: The element that triggers the file upload.
 - **Delete Trigger**: The element that triggers the deletion of a file.
 
@@ -129,7 +130,7 @@ const [state, send] = useMachine(
 ## Usage within a form
 
 To use the file upload within a form, set the `name` attribute in the machine's
-context, and ensure you render the input element `api.inputProps`
+context, and ensure you render the input element `api.hiddenInputProps`
 
 ```jsx
 const [state, send] = useMachine(
@@ -182,6 +183,10 @@ added to them to select and style them in the DOM.
   /* styles for root element*/
 }
 
+[data-part="dropzone"] {
+  /* styles for root element*/
+}
+
 [data-part="trigger"] {
   /* styles for file picker trigger */
 }
@@ -197,7 +202,7 @@ When the user drags a file over the file upload, the `data-dragging` attribute
 is added to the root element.
 
 ```css
-[data-part="root"] [data-dragging] {
+[data-part="dropzone"] [data-dragging] {
   /* styles for when the user is dragging a file over the file upload */
 }
 ```
@@ -209,6 +214,10 @@ root element.
 
 ```css
 [data-part="root"] [data-disabled] {
+  /* styles for when the file upload is disabled */
+}
+
+[data-part="dropzone"] [data-disabled] {
   /* styles for when the file upload is disabled */
 }
 
