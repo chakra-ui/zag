@@ -322,10 +322,7 @@ export type OptionProps = OptionData & {
 }
 
 export type OptionGroupProps = {
-  /**
-   * The accessible label that describes the group
-   */
-  label: string
+  id: string
 }
 
 export type OptionGroupLabelProps = {

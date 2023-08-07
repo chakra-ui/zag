@@ -13,6 +13,8 @@ export const dom = createScope({
   getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `combobox:${ctx.id}:clear-btn`,
   getOptionGroupId: (ctx: Ctx, id: string | number) =>
     ctx.ids?.optionGroup?.(id) ?? `combobox:${ctx.id}:optgroup:${id}`,
+  getOptionGroupLabelId: (ctx: Ctx, id: string | number) =>
+    ctx.ids?.optionGroupLabel?.(id) ?? `combobox:${ctx.id}:optgroup-label:${id}`,
   getOptionId: (ctx: Ctx, id: string, index?: number) =>
     ctx.ids?.option?.(id, index) ?? [`combobox:${ctx.id}:option:${id}`, index].filter((v) => v != null).join(":"),
 

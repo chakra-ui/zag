@@ -297,11 +297,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getOptionGroupProps(props: OptionGroupProps) {
-      const { label } = props
+      const { id } = props
       return normalize.element({
         ...parts.optionGroup.attrs,
-        role: "group",
-        "aria-label": label,
+        id: dom.getOptionGroupId(state.context, id),
+        "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
       })
     },
 
