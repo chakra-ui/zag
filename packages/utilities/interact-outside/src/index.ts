@@ -41,6 +41,22 @@ function isComposedPathFocusable(event: Event) {
   return false
 }
 
+const isPointerEvent = (event: Event): event is PointerEvent => "clientY" in event
+
+function isEventPointWithin(node: MaybeElement, event: Event) {
+  if (!isPointerEvent(event) || !node) return false
+
+  const rect = node.getBoundingClientRect()
+  if (rect.width === 0 || rect.height === 0) return false
+
+  return (
+    rect.top <= event.clientY &&
+    event.clientY <= rect.top + rect.height &&
+    rect.left <= event.clientX &&
+    event.clientX <= rect.left + rect.width
+  )
+}
+
 function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
   const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options
 
@@ -52,15 +68,9 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   function isEventOutside(event: Event): boolean {
     const target = getEventTarget(event)
-
-    if (!isHTMLElement(target)) {
-      return false
-    }
-
-    if (contains(node, target)) {
-      return false
-    }
-
+    if (!isHTMLElement(target)) return false
+    if (contains(node, target)) return false
+    if (isEventPointWithin(node, event)) return false
     return !exclude?.(target)
   }
 
