@@ -44,7 +44,8 @@ On a high level, the checkbox consists of:
 - **Root**: The root container for the checkbox
 - **Label**: The label that gives the user information on the checkbox
 - **Control**: The element that visually represents the checkbox.
-- **Input**: The native html input that is visually hidden.
+- **HiddenInput**: The hidden input that holds the value of the checkbox. Used
+  within forms.
 
 ## Usage
 
@@ -120,10 +121,10 @@ const [state, send] = useMachine(
 
 ## Usage within forms
 
-To use checkbox within forms, use the exposed `inputProps` from the `connect`
-function and ensure you pass `name` value to the machine's context. It will
-render a hidden input and ensure the value changes get propagated to the form
-correctly.
+To use checkbox within forms, use the exposed `hiddenInputProps` from the
+`connect` function and ensure you pass `name` value to the machine's context. It
+will render a hidden input and ensure the value changes get propagated to the
+form correctly.
 
 ```jsx {3}
 const [state, send] = useMachine(

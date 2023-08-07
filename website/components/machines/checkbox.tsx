@@ -37,7 +37,7 @@ export function Checkbox(props: CheckboxProps) {
         {...api.rootProps}
       >
         <span {...api.labelProps}>Checkbox Input</span>
-        <input data-peer {...api.inputProps} />
+        <input data-peer {...api.hiddenInputProps} />
         <chakra.div
           boxSize="25px"
           rounded="md"

@@ -13,8 +13,8 @@ function Checkbox() {
       <span {...api().labelProps}>
         Input is {api().isChecked ? "checked" : "unchecked"}
       </span>
-      <input {...api().inputProps} />
       <div {...api().controlProps} />
+      <input {...api().hiddenInputProps} />
     </label>
   )
 }

@@ -4,7 +4,7 @@ import { useMachine, normalizeProps } from "@zag-js/react"
 
 function Checkbox() {
   const [state, send] = useMachine(checkbox.machine({ id: "1" }))
-  
+
   const api = checkbox.connect(state, send, normalizeProps)
 
   return (
@@ -12,8 +12,8 @@ function Checkbox() {
       <span {...api.labelProps}>
         Input is {api.isChecked ? "checked" : "unchecked"}
       </span>
-      <input {...api.inputProps} />
       <div {...api.controlProps} />
+      <input {...api.hiddenInputProps} />
     </label>
   )
 }
