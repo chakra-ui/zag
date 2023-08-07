@@ -1,8 +1,8 @@
 import { expect, test, type Locator, type Page } from "@playwright/test"
-import { a11y, controls as testControls, part } from "./__utils"
+import { a11y, controls as testControls, part, testid } from "./__utils"
 
 const control = part("control")
-const hiddenInput = part("hidden-input")
+const hiddenInput = testid("hidden-input")
 const rating = part("rating")
 
 const getRating = (page: Page, value: number) => {

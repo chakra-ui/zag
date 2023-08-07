@@ -66,7 +66,7 @@ export default function Page() {
               </For>
             </div>
           </div>
-          <input {...api().hiddenInputProps} />
+          <input {...api().hiddenInputProps} data-testid="hidden-input" />
         </div>
       </main>
 
