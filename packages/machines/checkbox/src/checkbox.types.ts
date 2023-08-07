@@ -3,7 +3,7 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 
 type ElementIds = Partial<{
   root: string
-  input: string
+  hiddenInput: string
   control: string
   label: string
 }>
@@ -83,7 +83,7 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   rootProps: T["label"]
   labelProps: T["element"]
   controlProps: T["element"]
-  inputProps: T["input"]
+  hiddenInputProps: T["input"]
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

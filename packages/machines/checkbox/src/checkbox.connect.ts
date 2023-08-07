@@ -39,7 +39,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       ...dataAttrs,
       id: dom.getRootId(state.context),
-      htmlFor: dom.getInputId(state.context),
+      htmlFor: dom.getHiddenInputId(state.context),
       onPointerMove() {
         if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: true } })
@@ -62,7 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "CONTEXT.SET", context: { active: false } })
       },
       onClick(event) {
-        if (event.target === dom.getInputEl(state.context)) {
+        if (event.target === dom.getHiddenInputEl(state.context)) {
           event.stopPropagation()
         }
       },
@@ -81,9 +81,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-hidden": true,
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      id: dom.getInputId(state.context),
+    hiddenInputProps: normalize.input({
+      id: dom.getHiddenInputId(state.context),
       type: "checkbox",
       required: state.context.required,
       defaultChecked: isChecked,

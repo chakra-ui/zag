@@ -48,7 +48,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
-          return trackFormControl(dom.getInputEl(ctx), {
+          return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
@@ -67,13 +67,13 @@ export function machine(userContext: UserDefinedContext) {
           Object.assign(ctx, evt.context)
         },
         syncInputElement(ctx) {
-          const inputEl = dom.getInputEl(ctx)
+          const inputEl = dom.getHiddenInputEl(ctx)
           if (!inputEl) return
           inputEl.checked = ctx.isChecked
           inputEl.indeterminate = ctx.isIndeterminate
         },
         dispatchCheckedEvent(ctx, evt) {
-          const inputEl = dom.getInputEl(ctx)
+          const inputEl = dom.getHiddenInputEl(ctx)
           const checked = isIndeterminate(evt.checked) ? false : evt.checked
           dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
         },
