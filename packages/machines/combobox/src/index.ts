@@ -5,6 +5,7 @@ export type {
   UserDefinedContext as Context,
   InteractOutsideEvent,
   OptionData,
+  OptionGroupLabelProps,
   OptionGroupProps,
   OptionProps,
   Placement,
