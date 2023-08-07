@@ -1,5 +1,15 @@
 # @zag-js/dom-query
 
+## 0.14.0
+
+### Patch Changes
+
+- [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
+  causes the machine to throw in React when the `key` of an element is reassigned.
+
+  - Remove `queryById` from the `createScope` function.
+
 ## 0.13.0
 
 ## 0.12.0

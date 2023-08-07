@@ -1,5 +1,21 @@
 # @zag-js/file-upload
 
+## 0.14.0
+
+### Patch Changes
+
+- [`887e231a`](https://github.com/chakra-ui/zag/commit/887e231ad3242895e036b4d04e438606a614ccd7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Rename `minSize` and `maxSize` to `minFileSize` and
+  `maxFileSize` respectively
+  - Rename `openFilePicker` to `open`
+- Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
+  - @zag-js/dom-query@0.14.0
+  - @zag-js/anatomy@0.14.0
+  - @zag-js/core@0.14.0
+  - @zag-js/types@0.14.0
+  - @zag-js/utils@0.14.0
+  - @zag-js/visually-hidden@0.14.0
+
 ## 0.13.0
 
 ### Patch Changes
