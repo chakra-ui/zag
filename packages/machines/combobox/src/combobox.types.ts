@@ -21,6 +21,8 @@ type ElementIds = Partial<{
   clearTrigger: string
   option(id: string, index?: number): string
   positioner: string
+  optionGroup(id: string | number): string
+  optionGroupLabel(id: string | number): string
 }>
 
 type PublicContext = DirectionProperty &
@@ -203,6 +205,7 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   }
   getOptionProps(props: OptionProps): T["element"]
   getOptionGroupProps(props: OptionGroupProps): T["element"]
+  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
 }
 
 /**
@@ -323,6 +326,10 @@ export type OptionGroupProps = {
    * The accessible label that describes the group
    */
   label: string
+}
+
+export type OptionGroupLabelProps = {
+  htmlFor: string
 }
 
 export type { InteractOutsideEvent, Placement, PositioningOptions }

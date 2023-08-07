@@ -11,5 +11,6 @@ export const anatomy = createAnatomy("combobox").parts(
   "clearTrigger",
   "option",
   "optionGroup",
+  "optionGroupLabel",
 )
 export const parts = anatomy.build()
