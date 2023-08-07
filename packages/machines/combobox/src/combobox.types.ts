@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
+import type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -24,8 +24,7 @@ type ElementIds = Partial<{
 }>
 
 type PublicContext = DirectionProperty &
-  CommonProperties &
-  InteractOutsideHandlers & {
+  CommonProperties & {
     /**
      * The ids of the elements in the combobox. Useful for composition.
      */
@@ -143,6 +142,9 @@ type PublicContext = DirectionProperty &
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
     translations: IntlTranslations
+    onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
+    onFocusOutside?: (event: FocusOutsideEvent) => void
+    onInteractOutside?: (event: InteractOutsideEvent) => void
   }
 
 export type PublicApi<T extends PropTypes = PropTypes> = {

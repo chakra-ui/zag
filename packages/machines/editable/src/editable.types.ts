@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
+import type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/interact-outside"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type ActivationMode = "focus" | "dblclick" | "none"
@@ -26,8 +26,7 @@ type ElementIds = Partial<{
 }>
 
 type PublicContext = DirectionProperty &
-  CommonProperties &
-  InteractOutsideHandlers & {
+  CommonProperties & {
     /**
      * The ids of the elements in the editable. Useful for composition.
      */
@@ -122,6 +121,10 @@ type PublicContext = DirectionProperty &
      * By default, it will focus on the trigger element.
      */
     finalFocusEl?: () => HTMLElement | null
+
+    onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
+    onFocusOutside?: (event: FocusOutsideEvent) => void
+    onInteractOutside?: (event: InteractOutsideEvent) => void
   }
 
 export type PublicApi<T extends PropTypes = PropTypes> = {
