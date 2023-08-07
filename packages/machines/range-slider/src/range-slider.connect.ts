@@ -219,7 +219,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getHiddenInputProps(index: number) {
       return normalize.input({
-        ...parts.hiddenInput.attrs,
         name: `${state.context.name}[${index}]`,
         form: state.context.form,
         type: "text",

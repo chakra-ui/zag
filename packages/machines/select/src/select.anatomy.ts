@@ -7,7 +7,6 @@ export const anatomy = createAnatomy("select").parts(
   "option",
   "optionGroup",
   "optionGroupLabel",
-  "hiddenSelect",
   "content",
 )
 export const parts = anatomy.build()

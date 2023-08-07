@@ -6,7 +6,6 @@ export const anatomy = createAnatomy("tagsInput").parts(
   "control",
   "input",
   "clearTrigger",
-  "hiddenInput",
   "tag",
   "tagInput",
   "tagDeleteTrigger",

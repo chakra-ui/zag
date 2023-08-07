@@ -62,7 +62,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     hiddenInputProps: normalize.input({
-      ...parts.hiddenInput.attrs,
       "aria-hidden": true,
       type: "text",
       tabIndex: -1,

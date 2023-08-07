@@ -170,7 +170,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     hiddenInputProps: normalize.input({
-      ...parts.hiddenInput.attrs,
       type: "text",
       hidden: true,
       name: state.context.name,
