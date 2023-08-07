@@ -4,6 +4,7 @@ import { CheckboxAnatomy } from "./checkbox"
 import { ComboboxAnatomy } from "./combobox"
 import { DialogAnatomy } from "./dialog"
 import { EditableAnatomy } from "./editable"
+import { FileUploadAnatomy } from "./file-upload"
 import { HoverCardAnatomy } from "./hover-card"
 import { MenuAnatomy } from "./menu"
 import { NumberInputAnatomy } from "./number-input"
@@ -22,6 +23,7 @@ import { ToastAnatomy } from "./toast"
 import { TooltipAnatomy } from "./tooltip"
 
 export const allComponents = {
+  "file-upload": FileUploadAnatomy,
   accordion: AccordionAnatomy,
   avatar: AvatarAnatomy,
   checkbox: CheckboxAnatomy,

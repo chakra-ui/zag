@@ -7,10 +7,10 @@ import { type PublicApi, type Send, type State } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
-  const disableClick = state.context.disableClick
   const disabled = state.context.disabled
   const isDragging = state.matches("dragging")
   const isFocused = state.matches("focused") && !disabled
+  const allowDrop = state.context.allowDrop
 
   return {
     isDragging,
@@ -33,6 +33,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
+      "data-disabled": dataAttr(disabled),
+      "data-dragging": dataAttr(isDragging),
+    }),
+
+    dropzoneProps: normalize.element({
+      ...parts.dropzone.attrs,
+      id: dom.getDropzoneId(state.context),
       tabIndex: disabled ? undefined : 0,
       "aria-disabled": disabled,
       "aria-invalid": state.context.invalid,
@@ -42,14 +49,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         if (!isSelfEvent(event)) return
         if (event.key !== "Enter" && event.key !== " ") return
-        send({ type: "ROOT.CLICK", src: "keydown" })
+        send({ type: "DROPZONE.CLICK", src: "keydown" })
       },
       onClick(event) {
-        if (disableClick) event.preventDefault()
-        send("ROOT.CLICK")
+        const isLabel = event.currentTarget.localName === "label"
+        // prevent opening the file dialog when clicking on the label (to avoid double opening)
+        if (isLabel) event.preventDefault()
+        send("DROPZONE.CLICK")
       },
       onDragOver(event) {
-        if (!state.context.dropzone || disabled) return
+        if (!allowDrop) return
         event.preventDefault()
         event.stopPropagation()
         try {
@@ -60,15 +69,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!hasFiles) return
 
         const count = event.dataTransfer.items.length
-        send({ type: "ROOT.DRAG_OVER", count })
+        send({ type: "DROPZONE.DRAG_OVER", count })
       },
       onDragLeave(event) {
-        if (!state.context.dropzone || disabled) return
+        if (!allowDrop || disabled) return
         if (contains(event.currentTarget, event.relatedTarget)) return
-        send({ type: "ROOT.DRAG_LEAVE" })
+        send({ type: "DROPZONE.DRAG_LEAVE" })
       },
       onDrop(event) {
-        if (state.context.dropzone) {
+        if (allowDrop) {
           event.preventDefault()
           event.stopPropagation()
         }
@@ -76,13 +85,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const hasFiles = isEventWithFiles(event)
         if (disabled || !hasFiles) return
 
-        send({ type: "ROOT.DROP", files: Array.from(event.dataTransfer.files) })
+        send({ type: "DROPZONE.DROP", files: Array.from(event.dataTransfer.files) })
       },
       onFocus() {
-        send("ROOT.FOCUS")
+        send("DROPZONE.FOCUS")
       },
       onBlur() {
-        send("ROOT.BLUR")
+        send("DROPZONE.BLUR")
       },
     }),
 
@@ -98,9 +107,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      id: dom.getInputId(state.context),
+    hiddenInputProps: normalize.input({
+      id: dom.getHiddenInputId(state.context),
       tabIndex: -1,
       disabled,
       type: "file",
@@ -138,7 +146,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.label({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
-      htmlFor: dom.getInputId(state.context),
+      htmlFor: dom.getHiddenInputId(state.context),
       "data-disabled": dataAttr(disabled),
     }),
   }

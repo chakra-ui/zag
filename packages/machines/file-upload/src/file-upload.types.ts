@@ -15,13 +15,9 @@ type PublicContext = CommonProperties & {
    */
   disabled?: boolean
   /**
-   * Whether to disable the click event. Useful of the root element is a label
+   * Whether to allow drag and drop in the dropzone element
    */
-  disableClick?: boolean
-  /**
-   * Whether to allow dropping files
-   */
-  dropzone?: boolean
+  allowDrop?: boolean
   /**
    * The maximum file size in bytes
    */
@@ -116,8 +112,9 @@ export type PublicApi<T extends PropTypes> = {
    */
   clearValue(): void
   rootProps: T["element"]
+  dropzoneProps: T["element"]
   triggerProps: T["button"]
-  inputProps: T["input"]
+  hiddenInputProps: T["input"]
   getDeleteTriggerProps(props: { file: File }): T["button"]
   labelProps: T["label"]
 }

@@ -24,26 +24,28 @@ export default defineComponent({
         <>
           <main class="file-upload">
             <div {...api.rootProps}>
-              <input {...api.inputProps} />
-              Drag your files here
+              <div {...api.dropzoneProps}>
+                <input {...api.hiddenInputProps} />
+                Drag your files here
+              </div>
+
+              <button {...api.triggerProps}>Choose Files...</button>
+
+              <ul>
+                {api.files.map((file) => {
+                  return (
+                    <li class="file" key={file.name}>
+                      <div>
+                        <b>{file.name}</b>
+                      </div>
+                      <div>{formatFileSize(file.size)}</div>
+                      <div>{file.type}</div>
+                      <button {...api.getDeleteTriggerProps({ file })}>X</button>
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
-
-            <button {...api.triggerProps}>Choose Files...</button>
-
-            <ul>
-              {api.files.map((file) => {
-                return (
-                  <li class="file" key={file.name}>
-                    <div>
-                      <b>{file.name}</b>
-                    </div>
-                    <div>{formatFileSize(file.size)}</div>
-                    <div>{file.type}</div>
-                    <button {...api.getDeleteTriggerProps({ file })}>X</button>
-                  </li>
-                )
-              })}
-            </ul>
           </main>
 
           <Toolbar controls={controls.ui}>

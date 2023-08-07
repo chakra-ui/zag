@@ -291,7 +291,7 @@ const components = {
       component={FileUpload}
       defaultProps={{
         disabled: false,
-        dropzone: true,
+        allowDrop: true,
         accept: "image/png, image/jpeg",
       }}
     />

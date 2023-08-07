@@ -10,7 +10,6 @@ export function FileUpload(props: { controls: any }) {
   const [state, send] = useMachine(
     fileUpload.machine({
       id: useId(),
-      disableClick: true,
     }),
     { context: props.controls },
   )
@@ -18,23 +17,19 @@ export function FileUpload(props: { controls: any }) {
   const api = fileUpload.connect(state, send, normalizeProps)
 
   return (
-    <Stack width="80%">
+    <Stack width="80%" {...api.rootProps}>
       <VStack
         borderWidth="2px"
         borderStyle="dashed"
         py="8"
         px="2"
-        _focus={{
-          shadow: "outline",
-        }}
+        _focus={{ shadow: "outline" }}
         sx={{
-          "&[data-dragging]": {
-            bg: "bg-bold",
-          },
+          "&[data-dragging]": { bg: "bg-bold" },
         }}
-        {...api.rootProps}
+        {...api.dropzoneProps}
       >
-        <input {...api.inputProps} />
+        <input {...api.hiddenInputProps} />
         <span>Drag your files here</span>
         <Button size="sm" variant="green" {...api.triggerProps}>
           Open Dialog

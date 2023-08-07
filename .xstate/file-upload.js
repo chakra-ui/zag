@@ -32,9 +32,9 @@ const fetchMachine = createMachine({
     idle: {
       on: {
         OPEN: "open",
-        "ROOT.CLICK": "open",
-        "ROOT.FOCUS": "focused",
-        "ROOT.DRAG_OVER": [{
+        "DROPZONE.CLICK": "open",
+        "DROPZONE.FOCUS": "focused",
+        "DROPZONE.DRAG_OVER": [{
           cond: "!isWithinRange",
           target: "dragging",
           actions: ["setInvalid"]
@@ -46,18 +46,18 @@ const fetchMachine = createMachine({
     focused: {
       on: {
         OPEN: "open",
-        "ROOT.CLICK": "open",
-        "ROOT.ENTER": "open",
-        "ROOT.BLUR": "idle"
+        "DROPZONE.CLICK": "open",
+        "DROPZONE.ENTER": "open",
+        "DROPZONE.BLUR": "idle"
       }
     },
     dragging: {
       on: {
-        "ROOT.DROP": {
+        "DROPZONE.DROP": {
           target: "idle",
           actions: ["clearInvalid", "setFilesFromEvent", "invokeOnChange"]
         },
-        "ROOT.DRAG_LEAVE": {
+        "DROPZONE.DRAG_LEAVE": {
           target: "idle",
           actions: ["clearInvalid"]
         }

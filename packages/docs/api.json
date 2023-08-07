@@ -1076,13 +1076,9 @@
         "type": "boolean",
         "description": "Whether the file input is disabled"
       },
-      "disableClick": {
+      "allowDrop": {
         "type": "boolean",
-        "description": "Whether to disable the click event. Useful of the root element is a label"
-      },
-      "dropzone": {
-        "type": "boolean",
-        "description": "Whether to allow dropping files"
+        "description": "Whether to allow drag and drop in the dropzone element"
       },
       "maxFileSize": {
         "type": "number",

@@ -43,7 +43,7 @@ how we name its parts.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
-{/* <Anatomy id="file-upload" /> */}
+<Anatomy id="file-upload" />
 
 On a high level, the file upload consists of:
 
@@ -159,15 +159,15 @@ const [state, send] = useMachine(
 )
 ```
 
-## Disabling dropzone
+## Disabling drag and drop
 
-To disable the drag and drop functionalty, set the `dropzone` context property
+To disable the drag and drop functionalty, set the `allowDrop` context property
 to `false`.
 
 ```jsx
 const [state, send] = useMachine(
   fileUpload.machine({
-    dropzone: false,
+    allowDrop: false,
   }),
 )
 ```

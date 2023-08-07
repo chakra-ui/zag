@@ -19,28 +19,30 @@ export default function Page() {
     <>
       <main class="file-upload">
         <div {...api().rootProps}>
-          <input {...api().inputProps} />
-          Drag your files here
+          <div {...api().dropzoneProps}>
+            <input {...api().hiddenInputProps} />
+            Drag your files here
+          </div>
+
+          <button {...api().triggerProps}>Choose Files...</button>
+
+          <ul>
+            <For each={api().files}>
+              {(file) => {
+                return (
+                  <li class="file">
+                    <div>
+                      <b>{file.name}</b>
+                    </div>
+                    <div>{formatFileSize(file.size)}</div>
+                    <div>{file.type}</div>
+                    <button {...api().getDeleteTriggerProps({ file })}>X</button>
+                  </li>
+                )
+              }}
+            </For>
+          </ul>
         </div>
-
-        <button {...api().triggerProps}>Choose Files...</button>
-
-        <ul>
-          <For each={api().files}>
-            {(file) => {
-              return (
-                <li class="file">
-                  <div>
-                    <b>{file.name}</b>
-                  </div>
-                  <div>{formatFileSize(file.size)}</div>
-                  <div>{file.type}</div>
-                  <button {...api().getDeleteTriggerProps({ file })}>X</button>
-                </li>
-              )
-            }}
-          </For>
-        </ul>
       </main>
 
       <Toolbar controls={controls.ui}>
