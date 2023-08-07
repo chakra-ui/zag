@@ -1,5 +1,19 @@
 # @zag-js/tabs
 
+## 0.14.0
+
+### Patch Changes
+
+- Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
+  - @zag-js/dom-query@0.14.0
+  - @zag-js/tabbable@0.14.0
+  - @zag-js/dom-event@0.14.0
+  - @zag-js/anatomy@0.14.0
+  - @zag-js/core@0.14.0
+  - @zag-js/types@0.14.0
+  - @zag-js/utils@0.14.0
+  - @zag-js/element-rect@0.14.0
+
 ## 0.13.0
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @zag-js/checkbox
 
+## 0.14.0
+
+### Patch Changes
+
+- [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
+  causes the machine to throw in React when the `key` of an element is reassigned.
+
+  - Remove `queryById` from the `createScope` function.
+
+- Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
+  - @zag-js/dom-query@0.14.0
+  - @zag-js/anatomy@0.14.0
+  - @zag-js/core@0.14.0
+  - @zag-js/types@0.14.0
+  - @zag-js/utils@0.14.0
+  - @zag-js/form-utils@0.14.0
+  - @zag-js/visually-hidden@0.14.0
+
 ## 0.13.0
 
 ### Patch Changes

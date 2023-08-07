@@ -1,5 +1,34 @@
 # @zag-js/date-picker
 
+## 0.14.0
+
+### Minor Changes
+
+- [#770](https://github.com/chakra-ui/zag/pull/770)
+  [`da816837`](https://github.com/chakra-ui/zag/commit/da81683750f52bab6ea1ea03da2bd4fd81ea0db2) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add positioner part to date picker machine to allow dynamic
+  positioning.
+
+- [`dfa8b390`](https://github.com/chakra-ui/zag/commit/dfa8b390b2669e7619f9d32d6e3750d9cbbe5c03) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Removed unused part label. Renamed header to rowHeader to be more
+  precise.
+
+### Patch Changes
+
+- Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
+  - @zag-js/dom-query@0.14.0
+  - @zag-js/dismissable@0.14.0
+  - @zag-js/popper@0.14.0
+  - @zag-js/text-selection@0.14.0
+  - @zag-js/dom-event@0.14.0
+  - @zag-js/anatomy@0.14.0
+  - @zag-js/core@0.14.0
+  - @zag-js/types@0.14.0
+  - @zag-js/utils@0.14.0
+  - @zag-js/date-utils@0.14.0
+  - @zag-js/form-utils@0.14.0
+  - @zag-js/live-region@0.14.0
+
 ## 0.13.0
 
 ### Patch Changes

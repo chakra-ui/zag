@@ -1,5 +1,18 @@
 # @zag-js/react
 
+## 0.14.0
+
+### Patch Changes
+
+- [`522fbb74`](https://github.com/chakra-ui/zag/commit/522fbb74f5c85c946536a1f0b9972c5f8650f75c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `'use client'` annotation to react package for better RSC
+  support
+
+- Updated dependencies []:
+  - @zag-js/core@0.14.0
+  - @zag-js/store@0.14.0
+  - @zag-js/types@0.14.0
+
 ## 0.13.0
 
 ### Patch Changes

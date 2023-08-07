@@ -1,5 +1,34 @@
 # @zag-js/combobox
 
+## 0.14.0
+
+### Minor Changes
+
+- [`fbe6f586`](https://github.com/chakra-ui/zag/commit/fbe6f58622241fa7fa6a93dfd7d2cea842f31cb3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Forward outside interaction event handlers
+  (`onPointerdownOutside`, `onFocusOutside` and `onInteractOutside`) in relevant machines.
+
+  This can be useful to allow interacting on certain elements outside the content element of the machine, like browser
+  extensions.
+
+  > Affected machines, `combobox`, `editable`, `menu`, `select`, `tags-input`.
+
+### Patch Changes
+
+- Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030),
+  [`f6442bea`](https://github.com/chakra-ui/zag/commit/f6442bea8568e0d4af0e6a4825b0f687cc511eb8)]:
+  - @zag-js/dom-query@0.14.0
+  - @zag-js/interact-outside@0.14.0
+  - @zag-js/aria-hidden@0.14.0
+  - @zag-js/popper@0.14.0
+  - @zag-js/dom-event@0.14.0
+  - @zag-js/anatomy@0.14.0
+  - @zag-js/core@0.14.0
+  - @zag-js/types@0.14.0
+  - @zag-js/utils@0.14.0
+  - @zag-js/live-region@0.14.0
+  - @zag-js/mutation-observer@0.14.0
+
 ## 0.13.0
 
 ### Patch Changes
