@@ -1,5 +1,24 @@
 # @zag-js/checkbox
 
+## 0.15.0
+
+### Minor Changes
+
+- [`086cce09`](https://github.com/chakra-ui/zag/commit/086cce09c935a82e276a45b6c208e9d60cea0d1f) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - BREAKING: Rename inputProps to hiddenInputProps. input is no longer
+  part of the checkbox anatomy
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.15.0
+  - @zag-js/core@0.15.0
+  - @zag-js/types@0.15.0
+  - @zag-js/utils@0.15.0
+  - @zag-js/dom-query@0.15.0
+  - @zag-js/form-utils@0.15.0
+  - @zag-js/visually-hidden@0.15.0
+
 ## 0.14.0
 
 ### Patch Changes

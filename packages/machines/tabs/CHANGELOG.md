@@ -1,5 +1,24 @@
 # @zag-js/tabs
 
+## 0.15.0
+
+### Minor Changes
+
+- [`ed620714`](https://github.com/chakra-ui/zag/commit/ed6207146955ee5ac7694826c29a3c2a101a549b) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - BREAKING: tabs no longer export a content group.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.15.0
+  - @zag-js/core@0.15.0
+  - @zag-js/types@0.15.0
+  - @zag-js/utils@0.15.0
+  - @zag-js/dom-event@0.15.0
+  - @zag-js/dom-query@0.15.0
+  - @zag-js/element-rect@0.15.0
+  - @zag-js/tabbable@0.15.0
+
 ## 0.14.0
 
 ### Patch Changes
