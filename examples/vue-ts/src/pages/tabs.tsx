@@ -32,14 +32,12 @@ export default defineComponent({
                   </button>
                 ))}
               </div>
-              <div {...api.contentGroupProps}>
-                {tabsData.map((data) => (
-                  <div {...api.getContentProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
-                    <p>{data.content}</p>
-                    {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
-                  </div>
-                ))}
-              </div>
+              {tabsData.map((data) => (
+                <div {...api.getContentProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
+                  <p>{data.content}</p>
+                  {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
+                </div>
+              ))}
             </div>
           </main>
 

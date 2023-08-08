@@ -117,12 +117,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    contentGroupProps: normalize.element({
-      ...parts.contentGroup.attrs,
-      id: dom.getContentGroupId(state.context),
-      "data-orientation": state.context.orientation,
-    }),
-
     getContentProps({ value }: ContentProps) {
       const selected = state.context.value === value
       return normalize.element({

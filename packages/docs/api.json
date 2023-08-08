@@ -240,7 +240,7 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "ids": {
-        "type": "Partial<{ root: string; input: string; control: string; label: string; }>",
+        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; }>",
         "description": "The ids of the elements in the checkbox. Useful for composition."
       },
       "disabled": {
@@ -418,7 +418,7 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; option(id: string, index?: number): string; positioner: string; }>",
+        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; option(id: string, index?: number): string; positioner: string; optionGroup(id: string | number): string; optionGroupLabel(id: string | number): string; }>",
         "description": "The ids of the elements in the combobox. Useful for composition."
       },
       "inputValue": {
@@ -2631,7 +2631,7 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; tablist: string; contentGroup: string; content: string; indicator: string; }>",
+        "type": "Partial<{ root: string; trigger: string; tablist: string; content: string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {

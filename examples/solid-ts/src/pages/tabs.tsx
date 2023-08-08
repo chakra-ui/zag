@@ -31,16 +31,14 @@ export default function Page() {
             </For>
           </div>
 
-          <div {...api().contentGroupProps}>
-            <For each={tabsData}>
-              {(item) => (
-                <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
-                  <p>{item.content}</p>
-                  {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
-                </div>
-              )}
-            </For>
-          </div>
+          <For each={tabsData}>
+            {(item) => (
+              <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
+                <p>{item.content}</p>
+                {item.id === "agnes" ? <input placeholder="Agnes" /> : null}
+              </div>
+            )}
+          </For>
         </div>
       </main>
 

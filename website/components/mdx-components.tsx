@@ -177,28 +177,26 @@ const components: Record<string, FC<any>> = {
             </chakra.button>
           ))}
         </Box>
-        <Box {...api.contentGroupProps}>
-          {FRAMEWORKS.map((framework) => {
-            const snippet = snippets.find((p) => p.framework === framework)
-            return (
-              <Box
-                {...api.getContentProps({ value: framework })}
-                position="relative"
-                key={framework}
-                mt="-6"
-                _focusVisible={{ outline: "2px solid blue" }}
-              >
-                {snippet ? (
-                  <SnippetItem id={framework} body={snippet.body} />
-                ) : (
-                  <Box mt="6" padding="4" fontSize="sm" opacity="0.5">
-                    Snippet not found :(
-                  </Box>
-                )}
-              </Box>
-            )
-          })}
-        </Box>
+        {FRAMEWORKS.map((framework) => {
+          const snippet = snippets.find((p) => p.framework === framework)
+          return (
+            <Box
+              {...api.getContentProps({ value: framework })}
+              position="relative"
+              key={framework}
+              mt="-6"
+              _focusVisible={{ outline: "2px solid blue" }}
+            >
+              {snippet ? (
+                <SnippetItem id={framework} body={snippet.body} />
+              ) : (
+                <Box mt="6" padding="4" fontSize="sm" opacity="0.5">
+                  Snippet not found :(
+                </Box>
+              )}
+            </Box>
+          )
+        })}
       </Box>
     )
   },

@@ -67,7 +67,6 @@ export function MultiframeworkTabs() {
           rounded="xl"
           overflow="hidden"
           bg="bg-code-block"
-          {...api.contentGroupProps}
         >
           <Box {...api.getContentProps({ value: "react" })}>
             <CodeArea slug="react/number-input/usage" />

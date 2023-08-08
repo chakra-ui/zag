@@ -9,7 +9,6 @@ type ElementIds = Partial<{
   root: string
   trigger: string
   tablist: string
-  contentGroup: string
   content: string
   indicator: string
 }>
@@ -99,7 +98,6 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   rootProps: T["element"]
   tablistProps: T["element"]
   getTriggerProps(props: TriggerProps): T["button"]
-  contentGroupProps: T["element"]
   getContentProps({ value }: ContentProps): T["element"]
   indicatorProps: T["element"]
 }
