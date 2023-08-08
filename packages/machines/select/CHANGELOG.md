@@ -1,5 +1,28 @@
 # @zag-js/select
 
+## 0.15.0
+
+### Minor Changes
+
+- [`4be63ee4`](https://github.com/chakra-ui/zag/commit/4be63ee426b33944ab6a093772536c5aaed78f3e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Machines no longer export hiddenInput as part of their anatomy API
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.15.0
+  - @zag-js/core@0.15.0
+  - @zag-js/types@0.15.0
+  - @zag-js/utils@0.15.0
+  - @zag-js/dismissable@0.15.0
+  - @zag-js/dom-event@0.15.0
+  - @zag-js/dom-query@0.15.0
+  - @zag-js/form-utils@0.15.0
+  - @zag-js/mutation-observer@0.15.0
+  - @zag-js/popper@0.15.0
+  - @zag-js/tabbable@0.15.0
+  - @zag-js/visually-hidden@0.15.0
+
 ## 0.14.0
 
 ### Minor Changes

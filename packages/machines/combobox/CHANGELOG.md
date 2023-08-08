@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 0.15.0
+
+### Minor Changes
+
+- [`33616b96`](https://github.com/chakra-ui/zag/commit/33616b96661ded1da83d0dac4097991fa0b3bf3a) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add option group label to Combobox
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.15.0
+  - @zag-js/core@0.15.0
+  - @zag-js/types@0.15.0
+  - @zag-js/aria-hidden@0.15.0
+  - @zag-js/utils@0.15.0
+  - @zag-js/dom-event@0.15.0
+  - @zag-js/dom-query@0.15.0
+  - @zag-js/interact-outside@0.15.0
+  - @zag-js/live-region@0.15.0
+  - @zag-js/mutation-observer@0.15.0
+  - @zag-js/popper@0.15.0
+
 ## 0.14.0
 
 ### Minor Changes
