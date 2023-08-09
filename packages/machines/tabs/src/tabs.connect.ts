@@ -35,7 +35,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     tablistProps: normalize.element({
-      ...parts.tablist.attrs,
+      ...parts.list.attrs,
       id: dom.getTablistId(state.context),
       role: "tablist",
       "data-focus": dataAttr(isFocused),
