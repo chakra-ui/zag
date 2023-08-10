@@ -1,5 +1,24 @@
 # @zag-js/tabs
 
+## 0.16.0
+
+### Minor Changes
+
+- [`692ba3f5`](https://github.com/chakra-ui/zag/commit/692ba3f5eadbf38513f035f2c01aadd8733feb44) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Rename tablist part to list to match naming convention
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.16.0
+  - @zag-js/core@0.16.0
+  - @zag-js/types@0.16.0
+  - @zag-js/utils@0.16.0
+  - @zag-js/dom-event@0.16.0
+  - @zag-js/dom-query@0.16.0
+  - @zag-js/element-rect@0.16.0
+  - @zag-js/tabbable@0.16.0
+
 ## 0.15.0
 
 ### Minor Changes

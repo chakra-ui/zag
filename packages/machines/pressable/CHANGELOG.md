@@ -1,5 +1,23 @@
 # @zag-js/pressable
 
+## 0.16.0
+
+### Minor Changes
+
+- [`b31e62cd`](https://github.com/chakra-ui/zag/commit/b31e62cd84a6ce2deaa504e58e00e2627a538da5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `id` usage in pressable for better composition
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.16.0
+  - @zag-js/core@0.16.0
+  - @zag-js/types@0.16.0
+  - @zag-js/utils@0.16.0
+  - @zag-js/dom-event@0.16.0
+  - @zag-js/dom-query@0.16.0
+  - @zag-js/text-selection@0.16.0
+
 ## 0.15.0
 
 ### Patch Changes
