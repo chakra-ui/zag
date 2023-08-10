@@ -231,6 +231,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: {
         proxyTabFocus(ctx) {
           return proxyTabFocus(dom.getContentElement(ctx), {
+            defer: true,
             triggerElement: dom.getTriggerElement(ctx),
             onFocus(el: HTMLElement) {
               raf(() => el.focus({ preventScroll: true }))
@@ -251,6 +252,7 @@ export function machine(userContext: UserDefinedContext) {
         trackInteractOutside(ctx, _evt, { send }) {
           let focusable = false
           return trackDismissableElement(dom.getContentElement(ctx), {
+            defer: true,
             exclude: [dom.getTriggerElement(ctx)],
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
@@ -266,6 +268,7 @@ export function machine(userContext: UserDefinedContext) {
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
           return getPlacement(dom.getTriggerElement(ctx), dom.getPositionerElement(ctx), {
+            defer: true,
             ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement

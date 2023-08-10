@@ -1438,7 +1438,7 @@ main [data-testid="scrubber"] {
   background: #dfdfdf;
 }
 
-[data-scope="select"][data-part="option"][data-focus] {
+[data-scope="select"][data-part="option"][data-state="checked"] {
   background: blue;
   color: white;
 }
