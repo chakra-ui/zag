@@ -19,8 +19,10 @@ function Radio() {
       <h3 {...api.labelProps}>Fruits</h3>
       {items.map((opt) => (
         <label key={opt.id} {...api.getRadioProps({ value: opt.id })}>
-          <span {...api.getRadioLabelProps({ value: opt.id })}>{opt.label}</span>
-          <input {...api.getRadioInputProps({ value: opt.id })} />
+          <span {...api.getRadioLabelProps({ value: opt.id })}>
+            {opt.label}
+          </span>
+          <input {...api.getRadioHiddenInputProps({ value: opt.id })} />
           <div {...api.getRadioControlProps({ value: opt.id })} />
         </label>
       ))}

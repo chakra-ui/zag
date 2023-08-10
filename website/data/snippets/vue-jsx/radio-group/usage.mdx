@@ -28,7 +28,7 @@ export default defineComponent({
               <span {...api.getRadioLabelProps({ value: opt.id })}>
                 {opt.label}
               </span>
-              <input {...api.getRadioInputProps({ value: opt.id })} />
+              <input {...api.getRadioHiddenInputProps({ value: opt.id })} />
               <div {...api.getRadioControlProps({ value: opt.id })} />
             </label>
           ))}

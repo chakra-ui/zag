@@ -22,7 +22,7 @@ function Radio() {
           <span {...api.getRadioLabelProps({ value: opt.value })}>
             {opt.label}
           </span>
-          <input {...api.getRadioInputProps({ value: opt.value })} />
+          <input {...api.getRadioHiddenInputProps({ value: opt.value })} />
         </label>
       ))}
     </div>

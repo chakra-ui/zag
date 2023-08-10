@@ -24,7 +24,7 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps));
         <span v-bind="api.getRadioLabelProps({ value: opt.value })">{{
           opt.label
         }}</span>
-        <input v-bind="api.getRadioInputProps({ value: opt.value })" />
+        <input v-bind="api.getRadioHiddenInputProps({ value: opt.value })" />
       </label>
     </div>
   </div>
