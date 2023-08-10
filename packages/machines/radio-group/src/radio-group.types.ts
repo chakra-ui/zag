@@ -8,7 +8,7 @@ type ElementIds = Partial<{
   radio(value: string): string
   radioLabel(value: string): string
   radioControl(value: string): string
-  radioInput(value: string): string
+  radioHiddenInput(value: string): string
 }>
 
 type PublicContext = DirectionProperty &
@@ -89,7 +89,7 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   getRadioProps(props: RadioProps): T["label"]
   getRadioLabelProps(props: RadioProps): T["element"]
   getRadioControlProps(props: RadioProps): T["element"]
-  getRadioInputProps(props: InputProps): T["input"]
+  getRadioHiddenInputProps(props: InputProps): T["input"]
   indicatorProps: T["element"]
 }
 

@@ -54,7 +54,10 @@ export function Radio(props: RadioProps) {
             >
               {opt.label}
             </chakra.span>
-            <input data-peer {...api.getRadioInputProps({ value: opt.id })} />
+            <input
+              data-peer
+              {...api.getRadioHiddenInputProps({ value: opt.id })}
+            />
             <chakra.div
               order="1"
               data-testid={`control-${opt.id}`}

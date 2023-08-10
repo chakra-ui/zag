@@ -63,8 +63,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     blur() {
       const focusedElement = dom.getActiveElement(state.context)
       const inputEls = dom.getInputEls(state.context)
-      const radioInputIsFocused = inputEls.some((el) => el === focusedElement)
-      if (radioInputIsFocused) focusedElement?.blur()
+      const radioHiddenInputIsFocused = inputEls.some((el) => el === focusedElement)
+      if (radioHiddenInputIsFocused) focusedElement?.blur()
     },
 
     getRadioState,
@@ -94,7 +94,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.label({
         ...parts.radio.attrs,
         id: dom.getRadioId(state.context, props.value),
-        htmlFor: dom.getRadioInputId(state.context, props.value),
+        htmlFor: dom.getRadioHiddenInputId(state.context, props.value),
         ...getRadioDataAttrs(props),
 
         onPointerMove() {
@@ -141,16 +141,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getRadioInputProps(props: InputProps) {
+    getRadioHiddenInputProps(props: InputProps) {
       const inputState = getRadioState(props)
 
       const isRequired = props.required
       const trulyDisabled = inputState.isDisabled && !props.focusable
 
       return normalize.input({
-        ...parts.radioInput.attrs,
         "data-ownedby": dom.getRootId(state.context),
-        id: dom.getRadioInputId(state.context, props.value),
+        id: dom.getRadioHiddenInputId(state.context, props.value),
         type: "radio",
         name: state.context.name || state.context.id,
         form: state.context.form,

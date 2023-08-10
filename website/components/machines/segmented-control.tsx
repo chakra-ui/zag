@@ -73,7 +73,10 @@ export function SegmentedControl(props: SegmentedControlProps) {
           >
             {opt.label}
           </chakra.span>
-          <input data-peer {...api.getRadioInputProps({ value: opt.value })} />
+          <input
+            data-peer
+            {...api.getRadioHiddenInputProps({ value: opt.value })}
+          />
         </chakra.label>
       ))}
     </Flex>
