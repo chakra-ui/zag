@@ -111,12 +111,13 @@ const [state, send] = useMachine(
 ## Adjusting the precision of the value
 
 In some cases, you might need the value to be rounded to specific decimal
-points. Pass the `precision` prop and set it to the number of decimal points.
+points. Pass the `minFractionDigits` to set the minimum number of fractional
+digits and `maxFractionDigits` to set the maximum number of fractional digits.
 
 ```jsx {3}
 const [state, send] = useMachine(
   numberInput.machine({
-    precision: 3,
+    minFractionDigits: 2,
   }),
 )
 ```
@@ -188,7 +189,6 @@ const [state, send] = useMachine(
   }),
 )
 ```
-
 
 ## Styling guide
 
