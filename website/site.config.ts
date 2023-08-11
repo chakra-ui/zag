@@ -1,5 +1,5 @@
 const baseConfig = {
-  repo: "https://github.com/chakra-ui/zag-docs",
+  repo: "https://github.com/chakra-ui/zag",
   title: "Zag - Rapidly build UI components without sweating over the logic.",
   description:
     "State machines for accessible, interactive and performant UI components",
@@ -23,7 +23,7 @@ const siteConfig = {
   },
   repo: {
     url: "https://github.com/chakra-ui/zag",
-    editUrl: `${baseConfig.repo}/edit/main/data`,
+    editUrl: `${baseConfig.repo}/edit/main/website/data`,
     blobUrl: `${baseConfig.repo}/blob/main`,
   },
   discord: {
