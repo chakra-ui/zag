@@ -18,7 +18,7 @@ import type {
   ColorChannelInputProps,
   ColorChannelProps,
   ColorSwatchProps,
-  PublicApi,
+  MachineApi,
   Send,
   State,
 } from "./color-picker.types"
@@ -28,7 +28,7 @@ import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-
 import { getColorAreaGradient } from "./utils/get-color-area-gradient"
 import { getSliderBgImage } from "./utils/get-slider-background"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const valueAsColor = state.context.valueAsColor
   const value = state.context.value
   const isDisabled = state.context.disabled

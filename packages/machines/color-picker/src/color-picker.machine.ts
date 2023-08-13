@@ -13,7 +13,6 @@ import { getChannelInputValue } from "./utils/get-channel-input-value"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
-
   return createMachine<MachineContext, MachineState>(
     {
       id: "color-picker",
@@ -42,7 +41,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControl"],
 
       watch: {
-        value: ["syncInputElements", "invokeOnChange"],
+        value: ["syncInputElements"],
       },
 
       states: {
@@ -217,7 +216,7 @@ export function machine(userContext: UserDefinedContext) {
             .then(({ sRGBHex }: { sRGBHex: string }) => {
               const format = ctx.valueAsColor.getColorSpace()
               const color = parseColor(sRGBHex).toFormat(format)
-              setColor(ctx, color)
+              set.value(ctx, color)
               ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: color })
             })
             .catch(() => void 0)
@@ -246,7 +245,7 @@ export function machine(userContext: UserDefinedContext) {
           const color = getColorFromPoint(percent.x, percent.y)
 
           if (!color) return
-          setColor(ctx, color)
+          set.value(ctx, color)
         },
         setChannelColorFromPoint(ctx, evt) {
           const channel = evt.channel || ctx.activeId
@@ -263,24 +262,24 @@ export function machine(userContext: UserDefinedContext) {
           const value = snapValueToStep(channelValue - step, minValue, maxValue, step)
           const newColor = ctx.valueAsColor.withChannelValue(channel, value)
 
-          setColor(ctx, newColor)
+          set.value(ctx, newColor)
         },
         setValue(ctx, evt) {
-          setColor(ctx, evt.value)
+          set.value(ctx, evt.value)
         },
         syncInputElements(ctx) {
           // sync channel inputs
           const inputs = dom.getChannelInputEls(ctx)
           inputs.forEach((input) => {
             const channel = input.dataset.channel as ExtendedColorChannel | null
-            if (!channel) return
-            input.value = getChannelInputValue(ctx.valueAsColor, channel)
+            dom.setValue(input, getChannelInputValue(ctx.valueAsColor, channel))
           })
 
           // sync hidden input
-          const hiddenInput = dom.getHiddenInputEl(ctx)
-          if (!hiddenInput) return
-          hiddenInput.value = ctx.value
+          dom.setValue(dom.getHiddenInputEl(ctx), ctx.value)
+        },
+        invokeOnChangeEnd(ctx) {
+          invoke.changeEnd(ctx)
         },
         setChannelColorFromInput(ctx, evt) {
           const { channel, isTextField, value } = evt
@@ -291,13 +290,12 @@ export function machine(userContext: UserDefinedContext) {
               ? parseColor(value).toFormat(format)
               : ctx.valueAsColor.withChannelValue(channel, value)
 
-            setColor(ctx, newColor)
+            set.value(ctx, newColor)
             //
           } catch {
             // reset input value
-            const input = dom.getChannelInputEl(ctx, channel)
-            if (!input) return
-            input.value = getChannelInputValue(ctx.valueAsColor, channel)
+            const inputEl = dom.getChannelInputEl(ctx, channel)
+            dom.setValue(inputEl, getChannelInputValue(ctx.valueAsColor, channel))
           }
         },
 
@@ -305,59 +303,52 @@ export function machine(userContext: UserDefinedContext) {
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
           const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
           const value = snapValueToStep(channelValue + evt.step, minValue, maxValue, step)
-          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
+          set.value(ctx, color)
         },
         decrementChannel(ctx, evt) {
           const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
           const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
           const value = snapValueToStep(channelValue - evt.step, minValue, maxValue, step)
-          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
+          set.value(ctx, color)
         },
 
         incrementXChannel(ctx, evt) {
           const { xChannel, yChannel } = evt.channel
           const { incrementX } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const newColor = ctx.valueAsColor.withChannelValue(xChannel, incrementX(evt.step))
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(xChannel, incrementX(evt.step))
+          set.value(ctx, color)
         },
         decrementXChannel(ctx, evt) {
           const { xChannel, yChannel } = evt.channel
           const { decrementX } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const newColor = ctx.valueAsColor.withChannelValue(xChannel, decrementX(evt.step))
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(xChannel, decrementX(evt.step))
+          set.value(ctx, color)
         },
 
         incrementYChannel(ctx, evt) {
           const { xChannel, yChannel } = evt.channel
           const { incrementY } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const newColor = ctx.valueAsColor.withChannelValue(yChannel, incrementY(evt.step))
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(yChannel, incrementY(evt.step))
+          set.value(ctx, color)
         },
         decrementYChannel(ctx, evt) {
           const { xChannel, yChannel } = evt.channel
           const { decrementY } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const newColor = ctx.valueAsColor.withChannelValue(yChannel, decrementY(evt.step))
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(yChannel, decrementY(evt.step))
+          set.value(ctx, color)
         },
 
         setChannelToMax(ctx, evt) {
           const { maxValue } = ctx.valueAsColor.getChannelRange(evt.channel)
-          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, maxValue)
-          setColor(ctx, newColor)
+          const color = ctx.valueAsColor.withChannelValue(evt.channel, maxValue)
+          set.value(ctx, color)
         },
         setChannelToMin(ctx, evt) {
           const { minValue } = ctx.valueAsColor.getChannelRange(evt.channel)
-          const newColor = ctx.valueAsColor.withChannelValue(evt.channel, minValue)
-          setColor(ctx, newColor)
-        },
-
-        invokeOnChangeEnd(ctx) {
-          ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
-        },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value, valueAsColor: ctx.valueAsColor })
+          const color = ctx.valueAsColor.withChannelValue(evt.channel, minValue)
+          set.value(ctx, color)
         },
         focusAreaThumb(ctx) {
           raf(() => {
@@ -374,6 +365,23 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
-const setColor = (ctx: MachineContext, color: Color) => {
-  ctx.value = color.toString("css")
+const getDetails = (ctx: MachineContext) => ({
+  value: ctx.value,
+  valueAsColor: ctx.valueAsColor,
+})
+
+const invoke = {
+  changeEnd(ctx: MachineContext) {
+    ctx.onChangeEnd?.(getDetails(ctx))
+  },
+  change(ctx: MachineContext) {
+    ctx.onChange?.(getDetails(ctx))
+  },
+}
+
+const set = {
+  value(ctx: MachineContext, color: Color) {
+    ctx.value = color.toString("css")
+    invoke.change(ctx)
+  },
 }

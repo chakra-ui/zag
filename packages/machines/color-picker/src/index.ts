@@ -12,5 +12,5 @@ export type {
   ColorSwatchProps,
   ColorType,
   UserDefinedContext as Context,
-  PublicApi,
+  MachineApi as Api,
 } from "./color-picker.types"

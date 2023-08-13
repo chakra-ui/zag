@@ -118,7 +118,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Whether the color picker is being dragged
    */

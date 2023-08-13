@@ -1,7 +1,9 @@
 import type { Color } from "@zag-js/color-utils"
 import type { ExtendedColorChannel } from "../color-picker.types"
 
-export function getChannelInputValue(color: Color, channel: ExtendedColorChannel) {
+export function getChannelInputValue(color: Color, channel: ExtendedColorChannel | null | undefined) {
+  if (channel == null) return
+
   switch (channel) {
     case "hex":
       return color.toString("hex")
