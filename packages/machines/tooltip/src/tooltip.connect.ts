@@ -4,9 +4,9 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { PublicApi, Send, State } from "./tooltip.types"
+import type { MachineApi, Send, State } from "./tooltip.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const id = state.context.id
   const hasAriaLabel = state.context.hasAriaLabel
 
