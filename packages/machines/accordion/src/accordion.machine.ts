@@ -1,11 +1,9 @@
 import { createMachine, guards } from "@zag-js/core"
-import { add, compact, isString, remove, toArray, warn } from "@zag-js/utils"
+import { add, compact, remove, warn } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./accordion.types"
 
 const { and, not } = guards
-
-const valueMismatchMessage = `[accordion/invalid-value] Expected value for multiple accordion to be an 'array' but received 'string'. Value will be coarsed to 'array'`
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -16,7 +14,7 @@ export function machine(userContext: UserDefinedContext) {
 
       context: {
         focusedValue: null,
-        value: null,
+        value: [],
         collapsible: false,
         multiple: false,
         orientation: "vertical",
@@ -24,11 +22,11 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: "sanitizeValue",
-        multiple: "sanitizeValue",
+        value: "coarseValue",
+        multiple: "coarseValue",
       },
 
-      created: "sanitizeValue",
+      created: "coarseValue",
 
       computed: {
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
@@ -36,7 +34,7 @@ export function machine(userContext: UserDefinedContext) {
 
       on: {
         "VALUE.SET": {
-          actions: ["setValue", "invokeOnChange"],
+          actions: ["setValue"],
         },
       },
 
@@ -52,26 +50,26 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           on: {
             "GOTO.NEXT": {
-              actions: "focusNext",
+              actions: "focusNextTrigger",
             },
             "GOTO.PREV": {
-              actions: "focusPrev",
+              actions: "focusPrevTrigger",
             },
             "TRIGGER.CLICK": [
               {
                 guard: and("isExpanded", "canToggle"),
-                actions: ["collapse", "invokeOnChange"],
+                actions: ["collapse"],
               },
               {
                 guard: not("isExpanded"),
-                actions: ["expand", "invokeOnChange"],
+                actions: ["expand"],
               },
             ],
             "GOTO.FIRST": {
-              actions: "focusFirst",
+              actions: "focusFirstTrigger",
             },
             "GOTO.LAST": {
-              actions: "focusLast",
+              actions: "focusLastTrigger",
             },
             "TRIGGER.BLUR": {
               target: "idle",
@@ -84,38 +82,32 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         canToggle: (ctx) => !!ctx.collapsible || !!ctx.multiple,
-        isExpanded: (ctx, evt) => {
-          if (ctx.multiple && Array.isArray(ctx.value)) {
-            return ctx.value.includes(evt.value)
-          }
-          return ctx.value === evt.value
-        },
+        isExpanded: (ctx, evt) => ctx.value.includes(evt.value),
       },
       actions: {
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
         collapse(ctx, evt) {
-          ctx.value = ctx.multiple ? remove(toArray(ctx.value), evt.value) : null
+          const next = ctx.multiple ? remove(ctx.value, evt.value) : []
+          set.value(ctx, ctx.multiple ? next : [])
         },
         expand(ctx, evt) {
-          ctx.value = ctx.multiple ? add(toArray(ctx.value), evt.value) : evt.value
+          const next = ctx.multiple ? add(ctx.value, evt.value) : [evt.value]
+          set.value(ctx, next)
         },
-        focusFirst(ctx) {
+        focusFirstTrigger(ctx) {
           dom.getFirstTriggerEl(ctx)?.focus()
         },
-        focusLast(ctx) {
+        focusLastTrigger(ctx) {
           dom.getLastTriggerEl(ctx)?.focus()
         },
-        focusNext(ctx) {
+        focusNextTrigger(ctx) {
           if (!ctx.focusedValue) return
-          const el = dom.getNextTriggerEl(ctx, ctx.focusedValue)
-          el?.focus()
+          const triggerEl = dom.getNextTriggerEl(ctx, ctx.focusedValue)
+          triggerEl?.focus()
         },
-        focusPrev(ctx) {
+        focusPrevTrigger(ctx) {
           if (!ctx.focusedValue) return
-          const el = dom.getPrevTriggerEl(ctx, ctx.focusedValue)
-          el?.focus()
+          const triggerEl = dom.getPrevTriggerEl(ctx, ctx.focusedValue)
+          triggerEl?.focus()
         },
         setFocusedValue(ctx, evt) {
           ctx.focusedValue = evt.value
@@ -124,17 +116,34 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedValue = null
         },
         setValue(ctx, evt) {
-          ctx.value = evt.value
+          set.value(ctx, evt.value)
         },
-        sanitizeValue(ctx) {
-          if (ctx.multiple && isString(ctx.value)) {
-            warn(valueMismatchMessage)
-            ctx.value = [ctx.value]
-          } else if (!ctx.multiple && Array.isArray(ctx.value) && ctx.value.length > 0) {
-            ctx.value = ctx.value[0]
+        coarseValue(ctx) {
+          if (!ctx.multiple && ctx.value.length > 1) {
+            warn(`The value of accordion should be a single value when multiple is false.`)
+            ctx.value = [ctx.value[0]]
           }
         },
       },
     },
   )
+}
+
+const invoke = {
+  change(ctx: MachineContext) {
+    ctx.onChange?.({ value: ctx.value })
+  },
+  focusChange(ctx: MachineContext) {
+    ctx.onFocusChange?.({ focusedValue: ctx.focusedValue })
+  },
+}
+
+const set = {
+  value(ctx: MachineContext, value: string[]) {
+    ctx.value = value
+    invoke.change(ctx)
+  },
+  focusedValue(ctx: MachineContext, value: string | null) {
+    ctx.focusedValue = value
+  },
 }

@@ -3,24 +3,24 @@ import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
-import type { ItemProps, ItemState, PublicApi, Send, State } from "./accordion.types"
+import type { ItemProps, ItemState, MachineApi, Send, State } from "./accordion.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const focusedValue = state.context.focusedValue
   const value = state.context.value
   const multiple = state.context.multiple
 
-  function setValue(value: string | string[]) {
+  function setValue(value: string[]) {
     let nextValue = value
-    if (multiple && !Array.isArray(nextValue)) {
-      nextValue = [nextValue]
+    if (multiple && nextValue.length > 1) {
+      nextValue = [nextValue[0]]
     }
     send({ type: "VALUE.SET", value: nextValue })
   }
 
   function getItemState(props: ItemProps): ItemState {
     return {
-      isOpen: Array.isArray(value) ? value.includes(props.value) : props.value === value,
+      isOpen: value.includes(props.value),
       isFocused: focusedValue === props.value,
       isDisabled: Boolean(props.disabled ?? state.context.disabled),
     }

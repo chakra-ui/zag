@@ -72,7 +72,7 @@ const fetchMachine = createMachine({
       actions: "clearInputValue"
     }]
   },
-  entry: ["setupDocument", "checkValue"],
+  entry: ["setupDocument"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

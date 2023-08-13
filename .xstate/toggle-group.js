@@ -10,7 +10,7 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "1",
+  id: "toggle-group",
   initial: "idle",
   context: {
     "!(isClickFocus && isTabbingBackward)": false
@@ -21,7 +21,7 @@ const fetchMachine = createMachine({
       actions: ["setValue"]
     },
     "TOGGLE.CLICK": {
-      actions: ["setValue", "invokeOnChange"]
+      actions: ["setValue"]
     },
     "ROOT.MOUSE_DOWN": {
       actions: ["setClickFocus"]
