@@ -90,42 +90,6 @@ type PublicContext = DirectionProperty &
     translations: IntlTranslations
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * The value of the input as an array of strings.
-   */
-  value: string[]
-  /**
-   * The value of the input as a string.
-   */
-  valueAsString: string
-  /**
-   * Whether all inputs are filled.
-   */
-  isValueComplete: boolean
-  /**
-   * Function to set the value of the inputs.
-   */
-  setValue(value: string[]): void
-  /**
-   * Function to clear the value of the inputs.
-   */
-  clearValue(): void
-  /**
-   * Function to set the value of the input at a specific index.
-   */
-  setValueAtIndex(index: number, value: string): void
-  /**
-   * Function to focus the pin-input. This will focus the first input.
-   */
-  focus: () => void
-  rootProps: T["element"]
-  labelProps: T["label"]
-  hiddenInputProps: T["input"]
-  controlProps: T["element"]
-  getInputProps({ index }: { index: number }): T["input"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
@@ -173,3 +137,39 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The value of the input as an array of strings.
+   */
+  value: string[]
+  /**
+   * The value of the input as a string.
+   */
+  valueAsString: string
+  /**
+   * Whether all inputs are filled.
+   */
+  isValueComplete: boolean
+  /**
+   * Function to set the value of the inputs.
+   */
+  setValue(value: string[]): void
+  /**
+   * Function to clear the value of the inputs.
+   */
+  clearValue(): void
+  /**
+   * Function to set the value of the input at a specific index.
+   */
+  setValueAtIndex(index: number, value: string): void
+  /**
+   * Function to focus the pin-input. This will focus the first input.
+   */
+  focus: () => void
+  rootProps: T["element"]
+  labelProps: T["label"]
+  hiddenInputProps: T["input"]
+  controlProps: T["element"]
+  getInputProps({ index }: { index: number }): T["input"]
+}
