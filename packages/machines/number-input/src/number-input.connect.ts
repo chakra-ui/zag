@@ -4,10 +4,10 @@ import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./number-input.anatomy"
 import { dom } from "./number-input.dom"
-import type { PublicApi, Send, State } from "./number-input.types"
+import type { MachineApi, Send, State } from "./number-input.types"
 import { utils } from "./number-input.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isFocused = state.hasTag("focus")
   const isInvalid = state.context.isOutOfRange || !!state.context.invalid
 

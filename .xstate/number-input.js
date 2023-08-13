@@ -13,7 +13,6 @@ const fetchMachine = createMachine({
   id: "number-input",
   initial: "idle",
   context: {
-    "clampOnBlur": false,
     "isInvalidExponential": false,
     "clampOnBlur && !isInRange && !isEmptyValue": false,
     "isIncrementHint": false,
@@ -24,12 +23,9 @@ const fetchMachine = createMachine({
   },
   entry: ["syncInputValue"],
   on: {
-    SET_VALUE: [{
-      cond: "clampOnBlur",
+    SET_VALUE: {
       actions: ["setValue", "clampValue", "setHintToSet"]
-    }, {
-      actions: ["setValue", "setHintToSet"]
-    }],
+    },
     CLEAR_VALUE: {
       actions: ["clearValue"]
     },
@@ -47,17 +43,19 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
-      exit: "invokeOnFocus",
       on: {
         PRESS_DOWN: {
           target: "before:spin",
-          actions: ["focusInput", "setHint"]
+          actions: ["focusInput", "invokeOnFocus", "setHint"]
         },
         PRESS_DOWN_SCRUBBER: {
           target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"]
+          actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"]
         },
-        FOCUS: "focused"
+        FOCUS: {
+          target: "focused",
+          actions: ["focusInput", "invokeOnFocus"]
+        }
       }
     },
     focused: {
@@ -168,7 +166,6 @@ const fetchMachine = createMachine({
     CHANGE_INTERVAL: 50
   },
   guards: {
-    "clampOnBlur": ctx => ctx["clampOnBlur"],
     "isInvalidExponential": ctx => ctx["isInvalidExponential"],
     "clampOnBlur && !isInRange && !isEmptyValue": ctx => ctx["clampOnBlur && !isInRange && !isEmptyValue"],
     "isIncrementHint": ctx => ctx["isIncrementHint"],
