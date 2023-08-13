@@ -27,7 +27,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        page: ["invokeOnChange"],
         pageSize: ["setPageIfNeeded"],
       },
 
@@ -91,27 +90,27 @@ export function machine(userContext: UserDefinedContext) {
         setPageSize(ctx, evt) {
           ctx.pageSize = evt.size
         },
-        invokeOnChange(ctx, evt) {
-          ctx.onChange?.({
-            page: ctx.page,
-            pageSize: ctx.pageSize,
-            srcElement: evt.srcElement || null,
-          })
-        },
         goToFirstPage(ctx) {
-          ctx.page = 1
+          set.page(ctx, 1)
         },
         goToPrevPage(ctx) {
-          ctx.page = ctx.page - 1
+          set.page(ctx, ctx.page - 1)
         },
         goToNextPage(ctx) {
-          ctx.page = ctx.page + 1
+          set.page(ctx, ctx.page + 1)
         },
         setPageIfNeeded(ctx, _evt) {
           if (ctx.isValidPage) return
-          ctx.page = 1
+          set.page(ctx, 1)
         },
       },
     },
   )
+}
+
+const set = {
+  page: (ctx: MachineContext, value: number) => {
+    ctx.page = value
+    ctx.onChange?.({ page: ctx.page, pageSize: ctx.pageSize })
+  },
 }

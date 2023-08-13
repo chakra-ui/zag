@@ -25,6 +25,11 @@ type ElementIds = Partial<{
   pageTrigger(page: number): string
 }>
 
+export type ChangeDetails = {
+  page: number
+  pageSize: number
+}
+
 export type PaginationRange = ({ type: "ellipsis" } | { type: "page"; value: number })[]
 
 type PublicContext = DirectionProperty &
@@ -56,7 +61,7 @@ type PublicContext = DirectionProperty &
     /**
      * Called when the page number is changed, and it takes the resulting page number argument
      */
-    onChange?: (details: { page: number; pageSize: number; srcElement: HTMLElement | null }) => void
+    onChange?: (details: ChangeDetails) => void
     /**
      * The type of the trigger element
      * @default "button"
@@ -64,7 +69,54 @@ type PublicContext = DirectionProperty &
     type: "button" | "link"
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+type PrivateContext = Context<{}>
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Total number of pages
+   */
+  totalPages: number
+  /**
+   * @computed
+   * Pages to render in pagination
+   */
+  items: PaginationRange
+  /**
+   * @computed
+   * Index of first and last data items on current page
+   */
+  pageRange: { start: number; end: number }
+  /**
+   * @computed
+   * The previous page index
+   */
+  previousPage: number | null
+  /**
+   * @computed
+   * The next page index
+   */
+  nextPage: number | null
+  /**
+   * @computed
+   * Whether the current page is valid
+   */
+  isValidPage: boolean
+}>
+
+export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+export type MachineState = {
+  value: "idle"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The current page.
    */
@@ -122,50 +174,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   prevPageTriggerProps: T["element"]
   nextPageTriggerProps: T["element"]
 }
-
-type PrivateContext = Context<{}>
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Total number of pages
-   */
-  totalPages: number
-  /**
-   * @computed
-   * Pages to render in pagination
-   */
-  items: PaginationRange
-  /**
-   * @computed
-   * Index of first and last data items on current page
-   */
-  pageRange: { start: number; end: number }
-  /**
-   * @computed
-   * The previous page index
-   */
-  previousPage: number | null
-  /**
-   * @computed
-   * The next page index
-   */
-  nextPage: number | null
-  /**
-   * @computed
-   * Whether the current page is valid
-   */
-  isValidPage: boolean
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export type MachineState = {
-  value: "idle"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
