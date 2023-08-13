@@ -1,5 +1,27 @@
 # @zag-js/select
 
+## 0.16.0
+
+### Patch Changes
+
+- [`eca3fb6b`](https://github.com/chakra-ui/zag/commit/eca3fb6b05f6701db677026658b4cbf2e14e9e33) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where interaction outside and positioning does not work
+  when select content is conditionally rendered
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.16.0
+  - @zag-js/core@0.16.0
+  - @zag-js/types@0.16.0
+  - @zag-js/utils@0.16.0
+  - @zag-js/dismissable@0.16.0
+  - @zag-js/dom-event@0.16.0
+  - @zag-js/dom-query@0.16.0
+  - @zag-js/form-utils@0.16.0
+  - @zag-js/mutation-observer@0.16.0
+  - @zag-js/popper@0.16.0
+  - @zag-js/tabbable@0.16.0
+  - @zag-js/visually-hidden@0.16.0
+
 ## 0.15.0
 
 ### Minor Changes

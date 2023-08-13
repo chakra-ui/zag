@@ -1,5 +1,24 @@
 # @zag-js/radio-group
 
+## 0.16.0
+
+### Minor Changes
+
+- [`8baba25a`](https://github.com/chakra-ui/zag/commit/8baba25a3af2c768a1148241fbc08c01941892e6) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - BREAKING: Renamed `getRadioInputProps` to `getRadioHiddenInputProps`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.16.0
+  - @zag-js/core@0.16.0
+  - @zag-js/types@0.16.0
+  - @zag-js/utils@0.16.0
+  - @zag-js/dom-query@0.16.0
+  - @zag-js/element-rect@0.16.0
+  - @zag-js/form-utils@0.16.0
+  - @zag-js/visually-hidden@0.16.0
+
 ## 0.15.0
 
 ### Patch Changes
