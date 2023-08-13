@@ -1,9 +1,9 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./avatar.anatomy"
 import { dom } from "./avatar.dom"
-import type { PublicApi, Send, State } from "./avatar.types"
+import type { MachineApi, Send, State } from "./avatar.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isLoaded = state.matches("loaded")
   const showFallback = !isLoaded
 

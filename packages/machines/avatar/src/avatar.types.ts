@@ -6,7 +6,23 @@ type PublicContext = CommonProperties & {
   onError?: () => void
 }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+type PrivateContext = Context<{}>
+
+type ComputedContext = Readonly<{}>
+
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+export type MachineState = {
+  value: "loading" | "error" | "loaded"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Whether the image is loaded.
    */
@@ -31,19 +47,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   imageProps: T["img"]
   fallbackProps: T["element"]
 }
-
-type PrivateContext = Context<{}>
-
-type ComputedContext = Readonly<{}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export type MachineState = {
-  value: "loading" | "error" | "loaded"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
