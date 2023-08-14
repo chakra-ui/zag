@@ -3,9 +3,9 @@ import { dataAttr, isSafari, isSelfEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
 import { dom } from "./toggle-group.dom"
-import type { PublicApi, Send, State } from "./toggle-group.types"
+import type { MachineApi, Send, State } from "./toggle-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.value
   const disabled = state.context.disabled
   const isSingle = !state.context.multiple

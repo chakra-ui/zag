@@ -1,6 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
+import { add, compact, remove } from "@zag-js/utils"
 import { dom } from "./toggle-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./toggle-group.types"
 
@@ -10,7 +10,7 @@ export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
-      id: "1",
+      id: "toggle-group",
       initial: "idle",
 
       context: {
@@ -33,16 +33,12 @@ export function machine(userContext: UserDefinedContext) {
 
       entry: ["checkFocusableToggles", "checkIfWithinToolbar"],
 
-      watch: {
-        value: ["invokeOnChange"],
-      },
-
       on: {
         "VALUE.SET": {
           actions: ["setValue"],
         },
         "TOGGLE.CLICK": {
-          actions: ["setValue", "invokeOnChange"],
+          actions: ["setValue"],
         },
         "ROOT.MOUSE_DOWN": {
           actions: ["setClickFocus"],
@@ -124,19 +120,15 @@ export function machine(userContext: UserDefinedContext) {
         clearFocusedId(ctx) {
           ctx.focusedId = null
         },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
         setValue(ctx, evt) {
           if (!evt.value) return
           let next = Array.from(ctx.value)
           if (ctx.multiple) {
-            if (next.includes(evt.value)) next = next.filter((v) => v !== evt.value)
-            else next.push(evt.value)
+            next = next.includes(evt.value) ? remove(next, evt.value) : add(next, evt.value)
           } else {
             next = [evt.value]
           }
-          ctx.value = next
+          set.value(ctx, next)
         },
         focusNextToggle(ctx) {
           raf(() => {
@@ -163,4 +155,17 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  change(ctx: MachineContext) {
+    ctx.onChange?.({ value: ctx.value })
+  },
+}
+
+const set = {
+  value(ctx: MachineContext, value: string[]) {
+    ctx.value = value
+    invoke.change(ctx)
+  },
 }
