@@ -30,6 +30,7 @@ const fetchMachine = createMachine({
     "isInputRelatedTarget": false
   },
   activities: ["trackFormControlState"],
+  entry: ["setupLiveRegion"],
   exit: ["removeLiveRegion", "clearLog"],
   on: {
     DOUBLE_CLICK_TAG: {
@@ -72,7 +73,6 @@ const fetchMachine = createMachine({
       actions: "clearInputValue"
     }]
   },
-  entry: ["setupDocument"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

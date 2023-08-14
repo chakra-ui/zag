@@ -3,9 +3,9 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
-import type { PublicApi, Send, State, TagProps } from "./tags-input.types"
+import type { MachineApi, Send, State, TagProps } from "./tags-input.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.disabled
   const isReadOnly = state.context.readOnly
@@ -184,7 +184,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.tag.attrs,
         id,
-        hidden: isEditingTag ? state.context.editedId === id : false,
+        hidden: isEditingTag ? state.context.editedTagId === id : false,
         "data-value": value,
         "data-disabled": dataAttr(isDisabled),
         "data-highlighted": dataAttr(id === state.context.focusedId),
@@ -202,7 +202,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getTagInputProps(options: TagProps) {
       const id = dom.getTagId(state.context, options)
-      const active = state.context.editedId === id
+      const active = state.context.editedTagId === id
       return normalize.input({
         ...parts.tagInput.attrs,
         "aria-label": translations.tagEdited(options.value),
