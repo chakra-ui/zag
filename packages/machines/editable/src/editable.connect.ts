@@ -3,9 +3,9 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
-import type { PublicApi, Send, State } from "./editable.types"
+import type { MachineApi, Send, State } from "./editable.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
   const isReadOnly = state.context.readOnly

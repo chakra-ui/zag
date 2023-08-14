@@ -30,7 +30,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["invokeOnChange", "syncInputValue"],
+        value: ["syncInputValue"],
       },
 
       computed: {
@@ -142,13 +142,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusInput(ctx) {
           raf(() => {
-            const input = dom.getInputEl(ctx)
-            if (!input) return
+            const inputEl = dom.getInputEl(ctx)
+            if (!inputEl) return
 
             if (ctx.selectOnFocus) {
-              input.select()
+              inputEl.select()
             } else {
-              input.focus({ preventScroll: true })
+              inputEl.focus({ preventScroll: true })
             }
           })
         },
@@ -161,22 +161,19 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnEdit(ctx) {
           ctx.onEdit?.()
         },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
         syncInputValue(ctx) {
           const input = dom.getInputEl(ctx)
           if (!input) return
           input.value = ctx.value
         },
         setValue(ctx, evt) {
-          ctx.value = evt.value
+          set.value(ctx, evt.value)
         },
         setPreviousValue(ctx) {
           ctx.previousValue = ctx.value
         },
         revertValue(ctx) {
-          ctx.value = ctx.previousValue
+          set.value(ctx, ctx.previousValue)
         },
         blurInputIfNeeded(ctx) {
           dom.getInputEl(ctx)?.blur()
@@ -184,4 +181,17 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  change(ctx: MachineContext) {
+    ctx.onChange?.({ value: ctx.value })
+  },
+}
+
+const set = {
+  value(ctx: MachineContext, value: string) {
+    ctx.value = value
+    invoke.change(ctx)
+  },
 }
