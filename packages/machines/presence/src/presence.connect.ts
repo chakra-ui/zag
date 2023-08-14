@@ -1,7 +1,7 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { PublicApi, Send, State } from "./presence.types"
+import type { MachineApi, Send, State } from "./presence.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi {
   void normalize
   return {
     isPresent: state.matches("mounted", "unmountSuspended"),
