@@ -60,7 +60,40 @@ type PublicContext = DirectionProperty &
     ids?: ElementIds
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+type PrivateContext = Context<{
+  slideRects: DOMRect[]
+  containerRect?: DOMRect
+  containerSize: number
+  scrollSnaps: number[]
+  scrollProgress: number
+}>
+
+type RectEdge = "top" | "right" | "bottom" | "left"
+
+type ComputedContext = Readonly<{
+  isRtl: boolean
+  isHorizontal: boolean
+  isVertical: boolean
+  startEdge: RectEdge
+  endEdge: RectEdge
+  translateValue: string
+  canScrollNext: boolean
+  canScrollPrev: boolean
+}>
+
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+export type MachineState = {
+  value: "idle" | "dragging" | "autoplay"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The current index of the carousel
    */
@@ -120,36 +153,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   indicatorGroupProps: T["element"]
   getIndicatorProps(props: SlideIndicatorProps): T["button"]
 }
-
-type PrivateContext = Context<{
-  slideRects: DOMRect[]
-  containerRect?: DOMRect
-  containerSize: number
-  scrollSnaps: number[]
-  scrollProgress: number
-}>
-
-type RectEdge = "top" | "right" | "bottom" | "left"
-
-type ComputedContext = Readonly<{
-  isRtl: boolean
-  isHorizontal: boolean
-  isVertical: boolean
-  startEdge: RectEdge
-  endEdge: RectEdge
-  translateValue: string
-  canScrollNext: boolean
-  canScrollPrev: boolean
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export type MachineState = {
-  value: "idle" | "dragging" | "autoplay"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>

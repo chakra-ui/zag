@@ -2,10 +2,10 @@ import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { PublicApi, Send, SlideIndicatorProps, SlideProps, State } from "./carousel.types"
+import type { MachineApi, Send, SlideIndicatorProps, SlideProps, State } from "./carousel.types"
 import { getSlidesInView } from "./utils/get-slide-in-view"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const isHorizontal = state.context.isHorizontal
