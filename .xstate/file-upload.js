@@ -17,10 +17,10 @@ const fetchMachine = createMachine({
   },
   on: {
     "FILES.SET": {
-      actions: ["setFilesFromEvent", "invokeOnChange"]
+      actions: ["setFilesFromEvent"]
     },
     "FILE.DELETE": {
-      actions: ["removeFile", "invokeOnChange"]
+      actions: ["removeFile"]
     }
   },
   on: {
@@ -55,7 +55,7 @@ const fetchMachine = createMachine({
       on: {
         "DROPZONE.DROP": {
           target: "idle",
-          actions: ["clearInvalid", "setFilesFromEvent", "invokeOnChange"]
+          actions: ["clearInvalid", "setFilesFromEvent"]
         },
         "DROPZONE.DRAG_LEAVE": {
           target: "idle",
