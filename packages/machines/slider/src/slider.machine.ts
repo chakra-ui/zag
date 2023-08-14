@@ -23,7 +23,6 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         origin: "start",
         orientation: "horizontal",
-        initialValue: null,
         value: 0,
         step: 1,
         min: 0,
@@ -41,7 +40,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["invokeOnChange", "dispatchChangeEvent"],
+        value: ["syncInputElement"],
       },
 
       activities: ["trackFormControlState", "trackThumbSize"],
@@ -132,15 +131,13 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: {
-        trackFormControlState(ctx) {
+        trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              if (ctx.initialValue != null) {
-                ctx.value = ctx.initialValue
-              }
+              set.value(ctx, initialContext.value)
             },
           })
         },
@@ -165,9 +162,7 @@ export function machine(userContext: UserDefinedContext) {
 
       actions: {
         checkValue(ctx) {
-          const value = constrainValue(ctx, ctx.value)
-          ctx.value = value
-          ctx.initialValue = value
+          ctx.value = constrainValue(ctx, ctx.value)
         },
         invokeOnChangeStart(ctx) {
           ctx.onChangeStart?.({ value: ctx.value })
@@ -175,36 +170,51 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.value })
         },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
-        dispatchChangeEvent(ctx) {
-          dom.dispatchChangeEvent(ctx)
-        },
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
           if (value == null) return
-          ctx.value = clampValue(value, ctx.min, ctx.max)
+          set.value(ctx, clampValue(value, ctx.min, ctx.max))
         },
         focusThumb(ctx) {
-          raf(() => dom.getThumbEl(ctx)?.focus())
+          raf(() => dom.getThumbEl(ctx)?.focus({ preventScroll: true }))
         },
         decrement(ctx, evt) {
-          ctx.value = decrement(ctx, evt.step)
+          const value = decrement(ctx, evt.step)
+          set.value(ctx, value)
         },
         increment(ctx, evt) {
-          ctx.value = increment(ctx, evt.step)
+          const value = increment(ctx, evt.step)
+          set.value(ctx, value)
         },
         setToMin(ctx) {
-          ctx.value = ctx.min
+          set.value(ctx, ctx.min)
         },
         setToMax(ctx) {
-          ctx.value = ctx.max
+          set.value(ctx, ctx.max)
         },
         setValue(ctx, evt) {
-          ctx.value = constrainValue(ctx, evt.value)
+          const value = constrainValue(ctx, evt.value)
+          set.value(ctx, value)
+        },
+        syncInputElement(ctx) {
+          const inputEl = dom.getHiddenInputEl(ctx)
+          dom.setValue(inputEl, ctx.value)
         },
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    ctx.onChange?.({ value: ctx.value })
+    dom.dispatchChangeEvent(ctx)
+  },
+}
+
+const set = {
+  value: (ctx: MachineContext, value: number) => {
+    ctx.value = value
+    invoke.change(ctx)
+  },
 }
