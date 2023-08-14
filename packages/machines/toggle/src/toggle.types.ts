@@ -29,18 +29,6 @@ type PublicContext = DirectionProperty &
     pressed: boolean
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the toggle is pressed.
-   */
-  isPressed: boolean
-  /**
-   * Function to set the pressed state of the toggle.
-   */
-  setPressed(pressed: boolean): void
-  buttonProps: T["button"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
@@ -56,3 +44,15 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the toggle is pressed.
+   */
+  isPressed: boolean
+  /**
+   * Function to set the pressed state of the toggle.
+   */
+  setPressed(pressed: boolean): void
+  buttonProps: T["button"]
+}
