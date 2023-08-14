@@ -3,10 +3,10 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
-import type { PanelId, PanelProps, PublicApi, ResizeTriggerProps, Send, State } from "./splitter.types"
+import type { PanelId, PanelProps, MachineApi, ResizeTriggerProps, Send, State } from "./splitter.types"
 import { getHandleBounds } from "./splitter.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isHorizontal = state.context.isHorizontal
   const isFocused = state.hasTag("focus")
   const isDragging = state.matches("dragging")

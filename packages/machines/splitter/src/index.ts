@@ -5,6 +5,6 @@ export type {
   UserDefinedContext as Context,
   MachineState,
   PanelProps,
-  PublicApi,
+  MachineApi as Api,
   ResizeTriggerProps,
 } from "./splitter.types"

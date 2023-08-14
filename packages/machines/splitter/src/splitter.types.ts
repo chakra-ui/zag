@@ -50,52 +50,6 @@ type PublicContext = DirectionProperty &
     ids?: ElementIds
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the splitter is focused.
-   */
-  isFocused: boolean
-  /**
-   * Whether the splitter is being dragged.
-   */
-  isDragging: boolean
-  /**
-   *  The bounds of the currently dragged splitter handle.
-   */
-  bounds:
-    | {
-        min: number
-        max: number
-      }
-    | undefined
-  /**
-   * Function to set a panel to its minimum size.
-   */
-  setToMinSize(id: PanelId): void
-  /**
-   * Function to set a panel to its maximum size.
-   */
-  setToMaxSize(id: PanelId): void
-  /**
-   * Function to set the size of a panel.
-   */
-  setSize(id: PanelId, size: number): void
-  /**
-   * Returns the state details for a resize trigger.
-   */
-  getResizeTriggerState(props: ResizeTriggerProps): {
-    isDisabled: boolean
-    isFocused: boolean
-    panelIds: string[]
-    min: number | undefined
-    max: number | undefined
-    value: number
-  }
-  rootProps: T["element"]
-  getPanelProps(props: PanelProps): T["element"]
-  getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export type NormalizedPanelData = Array<
@@ -142,4 +96,50 @@ export type ResizeTriggerProps = {
   id: `${PanelId}:${PanelId}`
   step?: number
   disabled?: boolean
+}
+
+export type PanelBounds = {
+  min: number
+  max: number
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the splitter is focused.
+   */
+  isFocused: boolean
+  /**
+   * Whether the splitter is being dragged.
+   */
+  isDragging: boolean
+  /**
+   *  The bounds of the currently dragged splitter handle.
+   */
+  bounds: PanelBounds | undefined
+  /**
+   * Function to set a panel to its minimum size.
+   */
+  setToMinSize(id: PanelId): void
+  /**
+   * Function to set a panel to its maximum size.
+   */
+  setToMaxSize(id: PanelId): void
+  /**
+   * Function to set the size of a panel.
+   */
+  setSize(id: PanelId, size: number): void
+  /**
+   * Returns the state details for a resize trigger.
+   */
+  getResizeTriggerState(props: ResizeTriggerProps): {
+    isDisabled: boolean
+    isFocused: boolean
+    panelIds: string[]
+    min: number | undefined
+    max: number | undefined
+    value: number
+  }
+  rootProps: T["element"]
+  getPanelProps(props: PanelProps): T["element"]
+  getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
 }
