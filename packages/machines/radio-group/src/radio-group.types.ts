@@ -49,49 +49,6 @@ type PublicContext = DirectionProperty &
      */
     orientation?: "horizontal" | "vertical"
   }
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * The current value of the radio group
-   */
-  value: string | null
-  /**
-   * Function to set the value of the radio group
-   */
-  setValue(value: string): void
-  /**
-   * Function to clear the value of the radio group
-   */
-  clearValue(): void
-  /**
-   * Function to focus the radio group
-   */
-  focus: () => void
-  /**
-   * Function to blur the currently focused radio input in the radio group
-   */
-  blur(): void
-  /**
-   * Returns the state details of a radio input
-   */
-  getRadioState: <T_1 extends RadioProps>(
-    props: T_1,
-  ) => {
-    isInteractive: boolean
-    isInvalid: boolean | undefined
-    isDisabled: boolean | undefined
-    isChecked: boolean
-    isFocused: boolean
-    isHovered: boolean
-    isActive: boolean
-  }
-  rootProps: T["element"]
-  labelProps: T["element"]
-  getRadioProps(props: RadioProps): T["label"]
-  getRadioLabelProps(props: RadioProps): T["element"]
-  getRadioControlProps(props: RadioProps): T["element"]
-  getRadioHiddenInputProps(props: InputProps): T["input"]
-  indicatorProps: T["element"]
-}
 
 type PrivateContext = Context<{
   /**
@@ -166,4 +123,48 @@ export type InputProps = RadioProps & {
    * If `true`, the radio input is marked as required,
    */
   required?: boolean
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The current value of the radio group
+   */
+  value: string | null
+  /**
+   * Function to set the value of the radio group
+   */
+  setValue(value: string): void
+  /**
+   * Function to clear the value of the radio group
+   */
+  clearValue(): void
+  /**
+   * Function to focus the radio group
+   */
+  focus: () => void
+  /**
+   * Function to blur the currently focused radio input in the radio group
+   */
+  blur(): void
+  /**
+   * Returns the state details of a radio input
+   */
+  getRadioState: <T_1 extends RadioProps>(
+    props: T_1,
+  ) => {
+    isInteractive: boolean
+    isInvalid: boolean | undefined
+    isDisabled: boolean | undefined
+    isChecked: boolean
+    isFocused: boolean
+    isHovered: boolean
+    isActive: boolean
+  }
+  rootProps: T["element"]
+  labelProps: T["element"]
+  getRadioProps(props: RadioProps): T["label"]
+  getRadioLabelProps(props: RadioProps): T["element"]
+  getRadioControlProps(props: RadioProps): T["element"]
+  getRadioHiddenInputProps(props: InputProps): T["input"]
+  indicatorProps: T["element"]
 }

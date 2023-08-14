@@ -3,9 +3,9 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
-import type { InputProps, PublicApi, RadioProps, Send, State } from "./radio-group.types"
+import type { InputProps, MachineApi, RadioProps, Send, State } from "./radio-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isGroupDisabled = state.context.disabled
 
   function getRadioState<T extends RadioProps>(props: T) {
