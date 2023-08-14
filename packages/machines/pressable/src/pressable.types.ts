@@ -90,7 +90,7 @@ type PublicContext = DirectionProperty &
     longPressDelay: number
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Whether the element is pressed.
    */
