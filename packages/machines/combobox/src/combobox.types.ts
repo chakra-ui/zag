@@ -149,65 +149,6 @@ type PublicContext = DirectionProperty &
     onInteractOutside?: (event: InteractOutsideEvent) => void
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the combobox is focused
-   */
-  isFocused: boolean
-  /**
-   * Whether the combobox content or listbox is open
-   */
-  isOpen: boolean
-  /**
-   * Whether the combobox input is empty
-   */
-  isInputValueEmpty: boolean
-  /**
-   * The current value of the combobox input
-   */
-  inputValue: string
-  /**
-   * The currently focused option (by pointer or keyboard)
-   */
-  focusedOption: OptionData | null
-  /**
-   * The currently selected option value
-   */
-  selectedValue: string | undefined
-  /**
-   * Function to set the combobox value
-   */
-  setValue(value: string | OptionData): void
-  /**
-   * Function to set the combobox input value
-   */
-  setInputValue(value: string): void
-  /**
-   * Function to clear the combobox input value and selected value
-   */
-  clearValue(): void
-  /**
-   * Function to focus the combobox input
-   */
-  focus(): void
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  positionerProps: T["element"]
-  inputProps: T["input"]
-  triggerProps: T["button"]
-  contentProps: T["element"]
-  clearTriggerProps: T["button"]
-  getOptionState(props: OptionProps): {
-    isDisabled: boolean
-    isHighlighted: boolean
-    isChecked: boolean
-  }
-  getOptionProps(props: OptionProps): T["element"]
-  getOptionGroupProps(props: OptionGroupProps): T["element"]
-  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
-}
-
 /**
  * This is the actual context exposed to the user.
  */
@@ -330,3 +271,65 @@ export type OptionGroupLabelProps = {
 }
 
 export type { InteractOutsideEvent, Placement, PositioningOptions }
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the combobox is focused
+   */
+  isFocused: boolean
+  /**
+   * Whether the combobox content or listbox is open
+   */
+  isOpen: boolean
+  /**
+   * Whether the combobox input is empty
+   */
+  isInputValueEmpty: boolean
+  /**
+   * The current value of the combobox input
+   */
+  inputValue: string
+  /**
+   * The currently focused option (by pointer or keyboard)
+   */
+  focusedOption: OptionData | null
+  /**
+   * The currently selected option value
+   */
+  selectedValue: string | undefined
+  /**
+   * Function to set the combobox value
+   */
+  setValue(value: string | OptionData): void
+  /**
+   * Function to set the combobox input value
+   */
+  setInputValue(value: string): void
+  /**
+   * Function to clear the combobox input value and selected value
+   */
+  clearValue(): void
+  /**
+   * Function to focus the combobox input
+   */
+  focus(): void
+  rootProps: T["element"]
+  labelProps: T["label"]
+  controlProps: T["element"]
+  positionerProps: T["element"]
+  inputProps: T["input"]
+  triggerProps: T["button"]
+  contentProps: T["element"]
+  clearTriggerProps: T["button"]
+  /**
+   * Returns the state of an option
+   */
+  getOptionState(props: OptionProps): {
+    isDisabled: boolean
+    isHighlighted: boolean
+    isChecked: boolean
+  }
+  getOptionProps(props: OptionProps): T["element"]
+  getOptionGroupProps(props: OptionGroupProps): T["element"]
+  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
+}

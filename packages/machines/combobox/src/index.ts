@@ -10,5 +10,5 @@ export type {
   OptionProps,
   Placement,
   PositioningOptions,
-  PublicApi,
+  MachineApi as Api,
 } from "./combobox.types"
