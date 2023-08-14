@@ -71,38 +71,6 @@ type PublicContext = DismissableElementHandlers &
     open?: boolean
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the popover is portalled
-   */
-  portalled: boolean
-  /**
-   * Whether the popover is open
-   */
-  isOpen: boolean
-  /**
-   * Function to open the popover
-   */
-  open(): void
-  /**
-   * Function to close the popover
-   */
-  close(): void
-  /**
-   * Function to reposition the popover
-   */
-  setPositioning(options?: Partial<PositioningOptions>): void
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  anchorProps: T["element"]
-  triggerProps: T["button"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-  titleProps: T["element"]
-  descriptionProps: T["element"]
-  closeTriggerProps: T["button"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
@@ -140,3 +108,35 @@ export type State = S.State<MachineContext, MachineState>
 export type Send = S.Send<S.AnyEventObject>
 
 export type { Placement, PositioningOptions }
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the popover is portalled
+   */
+  portalled: boolean
+  /**
+   * Whether the popover is open
+   */
+  isOpen: boolean
+  /**
+   * Function to open the popover
+   */
+  open(): void
+  /**
+   * Function to close the popover
+   */
+  close(): void
+  /**
+   * Function to reposition the popover
+   */
+  setPositioning(options?: Partial<PositioningOptions>): void
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  anchorProps: T["element"]
+  triggerProps: T["button"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+  titleProps: T["element"]
+  descriptionProps: T["element"]
+  closeTriggerProps: T["button"]
+}

@@ -4,9 +4,9 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
 import { dom } from "./popover.dom"
-import type { PublicApi, Send, State } from "./popover.types"
+import type { MachineApi, Send, State } from "./popover.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isOpen = state.matches("open")
 
   const currentPlacement = state.context.currentPlacement
