@@ -76,7 +76,7 @@
     "rehype": "12.0.1",
     "rehype-autolink-headings": "6.1.1",
     "rehype-code-titles": "1.2.0",
-    "rehype-prism-plus": "1.6.2",
+    "rehype-prism-plus": "1.6.3",
     "rehype-slug": "5.1.0",
     "remark-directive": "2.0.1",
     "remark-gfm": "3.0.1",
