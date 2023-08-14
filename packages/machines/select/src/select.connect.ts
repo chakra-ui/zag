@@ -10,13 +10,13 @@ import type {
   OptionGroupLabelProps,
   OptionGroupProps,
   OptionProps,
-  PublicApi,
+  MachineApi,
   Send,
   State,
 } from "./select.types"
 import * as utils from "./select.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.disabled
   const invalid = state.context.invalid
   const isInteractive = state.context.isInteractive

@@ -6,5 +6,5 @@ export type {
   OptionGroupLabelProps,
   OptionGroupProps,
   OptionProps,
-  PublicApi,
+  MachineApi as Api,
 } from "./select.types"
