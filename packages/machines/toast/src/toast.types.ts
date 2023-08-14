@@ -142,7 +142,120 @@ type GroupPublicContext = SharedContext &
     offsets: string | Record<"left" | "right" | "bottom" | "top", string>
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
+
+type GroupComputedContext = Readonly<{
+  /**
+   * @computed
+   * The total number of toasts in the group
+   */
+  readonly count: number
+}>
+
+type GroupPrivateContext = Context<{
+  /**
+   * @internal
+   * The child toast machines (spawned by the toast group)
+   */
+  toasts: Service[]
+}>
+
+export type GroupMachineContext = GroupPublicContext & GroupComputedContext & GroupPrivateContext
+
+export type GroupState = S.State<GroupMachineContext>
+
+export type GroupSend = (event: S.Event<S.AnyEventObject>) => void
+
+type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
+
+export type PromiseOptions<Value> = {
+  loading: ToastOptions
+  success: MaybeFunction<ToastOptions, Value>
+  error: MaybeFunction<ToastOptions, Error>
+}
+
+export type GroupProps = {
+  placement: Placement
+  label?: string
+}
+
+export type GroupMachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The total number of toasts
+   */
+  count: number
+  /**
+   * The active toasts
+   */
+  toasts: Service[]
+  /**
+   * The active toasts by placement
+   */
+  toastsByPlacement: Partial<Record<Placement, Service[]>>
+  /**
+   * Returns whether the toast id is visible
+   */
+  isVisible(id: string): boolean
+  /**
+   * Function to create a toast.
+   */
+  create(options: ToastOptions): string | undefined
+  /**
+   * Function to create or update a toast.
+   */
+  upsert(options: ToastOptions): string | undefined
+  /**
+   * Function to update a toast's options by id.
+   */
+  update(id: string, options: ToastOptions): void
+  /**
+   * Function to create a success toast.
+   */
+  success(options: ToastOptions): string | undefined
+  /**
+   * Function to create an error toast.
+   */
+  error(options: ToastOptions): string | undefined
+  /**
+   * Function to create a loading toast.
+   */
+  loading(options: ToastOptions): string | undefined
+  /**
+   * Function to resume a toast by id.
+   */
+  resume(id?: string | undefined): void
+  /**
+   * Function to pause a toast by id.
+   */
+  pause(id?: string | undefined): void
+  /**
+   * Function to dismiss a toast by id.
+   * If no id is provided, all toasts will be dismissed.
+   */
+  dismiss(id?: string | undefined): void
+  /**
+   * Function to dismiss all toasts by placement.
+   */
+  dismissByPlacement(placement: Placement): void
+  /**
+   * Function to remove a toast by id.
+   * If no id is provided, all toasts will be removed.
+   */
+  remove(id?: string | undefined): void
+  /**
+   * Function to create a toast from a promise.
+   * - When the promise resolves, the toast will be updated with the success options.
+   * - When the promise rejects, the toast will be updated with the error options.
+   */
+  promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared?: ToastOptions): Promise<T>
+  /**
+   * Function to subscribe to the toast group.
+   */
+  subscribe(callback: (toasts: Service[]) => void): VoidFunction
+  getGroupProps(options: GroupProps): T["element"]
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The type of the toast.
    */
@@ -191,54 +304,4 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   titleProps: T["element"]
   descriptionProps: T["element"]
   closeTriggerProps: T["button"]
-}
-
-export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
-
-type GroupComputedContext = Readonly<{
-  /**
-   * @computed
-   * The total number of toasts in the group
-   */
-  readonly count: number
-}>
-
-type GroupPrivateContext = Context<{
-  /**
-   * @internal
-   * The child toast machines (spawned by the toast group)
-   */
-  toasts: Service[]
-}>
-
-export type GroupMachineContext = GroupPublicContext & GroupComputedContext & GroupPrivateContext
-
-export type GroupState = S.State<GroupMachineContext>
-
-export type GroupSend = (event: S.Event<S.AnyEventObject>) => void
-
-type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
-
-export type PromiseOptions<Value> = {
-  loading: ToastOptions
-  success: MaybeFunction<ToastOptions, Value>
-  error: MaybeFunction<ToastOptions, Error>
-}
-
-export type GroupProps = {
-  placement: Placement
-  label?: string
-}
-
-export type Toaster = {
-  count: number
-  isVisible(id: string): boolean
-  upsert(options: ToastOptions): string | undefined
-  create(options: ToastOptions): string | undefined
-  success(options: ToastOptions): string | undefined
-  error(options: ToastOptions): string | undefined
-  loading(options: ToastOptions): string | undefined
-  dismiss(id?: string | undefined): void
-  remove(id?: string | undefined): void
-  promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared?: ToastOptions): Promise<T>
 }
