@@ -64,34 +64,6 @@ type PublicContext = DirectionProperty &
     value?: string | number
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the checkbox is checked
-   */
-  isChecked: boolean
-  /**
-   * Whether the checkbox is disabled
-   */
-  isDisabled: boolean | undefined
-  /**
-   * Whether the checkbox is focused
-   */
-  isFocused: boolean | undefined
-  /**
-   * Function to set the checked state of the switch.
-   */
-  setChecked(checked: boolean): void
-  /**
-   * Function to toggle the checked state of the checkbox
-   */
-  toggleChecked(): void
-  rootProps: T["label"]
-  labelProps: T["element"]
-  thumbProps: T["element"]
-  controlProps: T["element"]
-  inputProps: T["input"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
@@ -123,3 +95,31 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the checkbox is checked
+   */
+  isChecked: boolean
+  /**
+   * Whether the checkbox is disabled
+   */
+  isDisabled: boolean | undefined
+  /**
+   * Whether the checkbox is focused
+   */
+  isFocused: boolean | undefined
+  /**
+   * Function to set the checked state of the switch.
+   */
+  setChecked(checked: boolean): void
+  /**
+   * Function to toggle the checked state of the checkbox
+   */
+  toggleChecked(): void
+  rootProps: T["label"]
+  labelProps: T["element"]
+  thumbProps: T["element"]
+  controlProps: T["element"]
+  hiddenInputProps: T["input"]
+}

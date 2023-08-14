@@ -3,9 +3,9 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./switch.anatomy"
 import { dom } from "./switch.dom"
-import type { PublicApi, Send, State } from "./switch.types"
+import type { MachineApi, Send, State } from "./switch.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isDisabled = state.context.disabled
   const isFocusable = state.context.focusable
   const isFocused = !isDisabled && state.context.focused
@@ -39,7 +39,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       ...dataAttrs,
       id: dom.getRootId(state.context),
-      htmlFor: dom.getInputId(state.context),
+      htmlFor: dom.getHiddenInputId(state.context),
       onPointerMove() {
         if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: true } })
@@ -60,7 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "CONTEXT.SET", context: { active: false } })
       },
       onClick(event) {
-        if (event.target === dom.getInputEl(state.context)) {
+        if (event.target === dom.getHiddenInputEl(state.context)) {
           event.stopPropagation()
         }
       },
@@ -86,9 +86,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-hidden": true,
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      id: dom.getInputId(state.context),
+    hiddenInputProps: normalize.input({
+      id: dom.getHiddenInputId(state.context),
       type: "checkbox",
       required: state.context.required,
       defaultChecked: isChecked,

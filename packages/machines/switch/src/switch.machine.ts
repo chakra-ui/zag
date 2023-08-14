@@ -20,7 +20,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         disabled: "removeFocusIfNeeded",
-        checked: ["invokeOnChange", "syncInputElement"],
+        checked: "syncInputElement",
       },
 
       activities: ["trackFormControlState"],
@@ -44,33 +44,25 @@ export function machine(userContext: UserDefinedContext) {
     {
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
-          return trackFormControl(dom.getInputEl(ctx), {
+          return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              send({ type: "CHECKED.SET", checked: !!initialContext.checked })
+              send({ type: "CHECKED.SET", checked: !!initialContext.checked, src: "form-reset" })
             },
           })
         },
       },
 
       actions: {
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ checked: ctx.checked })
-        },
         setContext(ctx, evt) {
           Object.assign(ctx, evt.context)
         },
         syncInputElement(ctx) {
-          const inputEl = dom.getInputEl(ctx)
+          const inputEl = dom.getHiddenInputEl(ctx)
           if (!inputEl) return
           inputEl.checked = !!ctx.checked
-        },
-        dispatchChangeEvent(ctx, evt) {
-          const inputEl = dom.getInputEl(ctx)
-          const checked = evt.checked
-          dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
         },
         removeFocusIfNeeded(ctx) {
           if (ctx.disabled && ctx.focused) {
@@ -78,12 +70,30 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         setChecked(ctx, evt) {
-          ctx.checked = evt.checked
+          set.checked(ctx, evt.checked)
         },
         toggleChecked(ctx, _evt) {
-          ctx.checked = !ctx.checked
+          set.checked(ctx, !ctx.checked)
         },
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    // invoke fn
+    ctx.onChange?.({ checked: ctx.checked })
+
+    // form event
+    const inputEl = dom.getHiddenInputEl(ctx)
+    dispatchInputCheckedEvent(inputEl, { checked: ctx.checked, bubbles: true })
+  },
+}
+
+const set = {
+  checked: (ctx: MachineContext, checked: boolean) => {
+    ctx.checked = checked
+    invoke.change(ctx)
+  },
 }
