@@ -11,7 +11,7 @@ export const dom = createScope({
     ctx.ids?.radioControl?.(value) ?? `radio-group:${ctx.id}:radio:control:${value}`,
   getRadioLabelId: (ctx: Ctx, value: string) =>
     ctx.ids?.radioLabel?.(value) ?? `radio-group:${ctx.id}:radio:label:${value}`,
-  getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`,
+  getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `radio-group:${ctx.id}:indicator`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getRadioHiddenInputEl: (ctx: Ctx, value: string) =>
