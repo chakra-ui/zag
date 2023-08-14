@@ -1,10 +1,10 @@
 import { expect, type Page, test } from "@playwright/test"
-import { a11y, controls, part } from "./__utils"
+import { a11y, controls, part, testid } from "./__utils"
 
 const root = part("root")
 const label = part("label")
 const control = part("control")
-const input = part("input")
+const input = testid("hidden-input")
 
 const expectToBeChecked = async (page: Page) => {
   await expect(page.locator(root)).toHaveAttribute("data-state", "checked")
