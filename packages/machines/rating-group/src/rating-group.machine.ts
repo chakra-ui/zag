@@ -30,7 +30,6 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         allowHalf: ["roundValueIfNeeded"],
-        value: ["invokeOnChange", "dispatchChangeEvent"],
       },
 
       computed: {
@@ -129,60 +128,72 @@ export function machine(userContext: UserDefinedContext) {
               ctx.disabled = true
             },
             onFormReset() {
-              ctx.value = initialContext.value
+              set.value(ctx, initialContext.value)
             },
           })
         },
       },
       actions: {
         clearHoveredValue(ctx) {
-          ctx.hoveredValue = -1
+          set.hoveredValue(ctx, -1)
         },
         focusActiveRadio(ctx) {
           raf(() => dom.getRadioEl(ctx)?.focus())
         },
         setPrevValue(ctx) {
           const factor = ctx.allowHalf ? 0.5 : 1
-          ctx.value = Math.max(0, ctx.value - factor)
+          set.value(ctx, Math.max(0, ctx.value - factor))
         },
         setNextValue(ctx) {
           const factor = ctx.allowHalf ? 0.5 : 1
           const value = ctx.value === -1 ? 0 : ctx.value
-          ctx.value = Math.min(ctx.max, value + factor)
+          set.value(ctx, Math.min(ctx.max, value + factor))
         },
         setValueToMin(ctx) {
-          ctx.value = 1
+          set.value(ctx, 1)
         },
         setValueToMax(ctx) {
-          ctx.value = ctx.max
+          set.value(ctx, ctx.max)
         },
         setValue(ctx, evt) {
-          ctx.value = ctx.hoveredValue === -1 ? evt.value : ctx.hoveredValue
+          const value = ctx.hoveredValue === -1 ? evt.value : ctx.hoveredValue
+          set.value(ctx, value)
         },
         clearValue(ctx) {
-          ctx.value = -1
+          set.value(ctx, -1)
         },
         setHoveredValue(ctx, evt) {
           const half = ctx.allowHalf && evt.isMidway
           const factor = half ? 0.5 : 0
-          let value = evt.index - factor
-          ctx.hoveredValue = value
-        },
-        dispatchChangeEvent(ctx) {
-          dom.dispatchChangeEvent(ctx)
-        },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
-        invokeOnHover(ctx) {
-          ctx.onHover?.({ value: ctx.hoveredValue })
+          set.hoveredValue(ctx, evt.index - factor)
         },
         roundValueIfNeeded(ctx) {
-          if (!ctx.allowHalf) {
-            ctx.value = Math.round(ctx.value)
-          }
+          if (ctx.allowHalf) return
+          // doesn't use set.value(...) because it's an implicit coarsing (used in watch and created)
+          ctx.value = Math.round(ctx.value)
         },
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    ctx.onChange?.({ value: ctx.value })
+    dom.dispatchChangeEvent(ctx)
+  },
+  hoverChange: (ctx: MachineContext) => {
+    ctx.onHover?.({ value: ctx.hoveredValue })
+  },
+}
+
+const set = {
+  value: (ctx: MachineContext, value: number) => {
+    ctx.value = value
+    invoke.change(ctx)
+  },
+  hoveredValue: (ctx: MachineContext, value: number) => {
+    ctx.hoveredValue = value
+    invoke.hoverChange(ctx)
+  },
 }
