@@ -63,6 +63,10 @@ type PublicContext = DirectionProperty &
      */
     onChangeEnd?(details: { value: number[] }): void
     /**
+     * Function invoked when the slider's focused index changes
+     */
+    onFocusChange?(details: { index: number; value: number[] }): void
+    /**
      * Function that returns a human readable value for the slider thumb
      */
     getAriaValueText?(value: number, index: number): string
@@ -94,7 +98,76 @@ type PublicContext = DirectionProperty &
     thumbAlignment?: "contain" | "center"
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the slider thumb has been measured
+   */
+  readonly hasMeasuredThumbSize: boolean
+  /**
+   * @computed
+   * Whether the slider is interactive
+   */
+  readonly isInteractive: boolean
+  /**
+   * @computed
+   * The raw value of the space between each thumb
+   */
+  readonly spacing: number
+  /**
+   * @computed
+   * Whether the slider is vertical
+   */
+  readonly isVertical: boolean
+  /**
+   * @computed
+   * Whether the slider is horizontal
+   */
+  readonly isHorizontal: boolean
+  /**
+   * @computed
+   * Whether the slider is in RTL mode
+   */
+  readonly isRtl: boolean
+  /**
+   * @computed
+   * The percentage of the slider value relative to the slider min/max
+   */
+  readonly valuePercent: number[]
+}>
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The slider thumbs dimensions
+   */
+  thumbSizes: Array<{ width: number; height: number }>
+  /**
+   * @internal
+   * The active index of the range slider. This represents
+   * the currently dragged/focused thumb.
+   */
+  focusedIndex: number
+  /**
+   * @internal
+   * The move threshold of the slider thumb before it is considered to be moved
+   */
+  threshold: number
+}>
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+export type MachineState = {
+  value: "idle" | "dragging" | "focus"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The value of the slider.
    */
@@ -166,78 +239,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   markerGroupProps: T["element"]
   getMarkerProps({ value }: { value: number }): T["element"]
 }
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the slider thumb has been measured
-   */
-  readonly hasMeasuredThumbSize: boolean
-  /**
-   * @computed
-   * Whether the slider is interactive
-   */
-  readonly isInteractive: boolean
-  /**
-   * @computed
-   * The raw value of the space between each thumb
-   */
-  readonly spacing: number
-  /**
-   * @computed
-   * Whether the slider is vertical
-   */
-  readonly isVertical: boolean
-  /**
-   * @computed
-   * Whether the slider is horizontal
-   */
-  readonly isHorizontal: boolean
-  /**
-   * @computed
-   * Whether the slider is in RTL mode
-   */
-  readonly isRtl: boolean
-  /**
-   * @computed
-   * The percentage of the slider value relative to the slider min/max
-   */
-  readonly valuePercent: number[]
-}>
-
-type PrivateContext = Context<{
-  /**
-   * @internal
-   * The slider thumbs dimensions
-   */
-  thumbSizes: Array<{ width: number; height: number }>
-  /**
-   * @internal
-   * The active index of the range slider. This represents
-   * the currently dragged/focused thumb.
-   */
-  activeIndex: number
-  /**
-   * @internal
-   * The move threshold of the slider thumb before it is considered to be moved
-   */
-  threshold: number
-  /**
-   * @internal
-   * The value of the slider when it was initially rendered.
-   * Used when the `form.reset(...)` is called.
-   */
-  initialValues: number[]
-}>
-
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-export type MachineState = {
-  value: "idle" | "dragging" | "focus"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>

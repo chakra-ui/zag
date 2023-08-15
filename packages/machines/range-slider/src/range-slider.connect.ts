@@ -12,10 +12,10 @@ import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./range-slider.anatomy"
 import { dom } from "./range-slider.dom"
-import type { PublicApi, Send, State } from "./range-slider.types"
+import type { MachineApi, Send, State } from "./range-slider.types"
 import { getRangeAtIndex } from "./range-slider.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const sliderValue = state.context.value
@@ -34,8 +34,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getPercentValueFn(percent: number) {
     return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
   }
-
-  // TODO - getThumbState
 
   return {
     value: state.context.value,
@@ -147,7 +145,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getThumbId(state.context, index),
         "data-disabled": dataAttr(isDisabled),
         "data-orientation": state.context.orientation,
-        "data-focus": dataAttr(isFocused && state.context.activeIndex === index),
+        "data-focus": dataAttr(isFocused && state.context.focusedIndex === index),
         draggable: false,
         "aria-disabled": ariaAttr(isDisabled),
         "aria-label": _ariaLabel,
