@@ -199,27 +199,27 @@ export type GroupMachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Function to create a toast.
    */
-  create(options: ToastOptions): string | undefined
+  create(options: Options): string | undefined
   /**
    * Function to create or update a toast.
    */
-  upsert(options: ToastOptions): string | undefined
+  upsert(options: Options): string | undefined
   /**
    * Function to update a toast's options by id.
    */
-  update(id: string, options: ToastOptions): void
+  update(id: string, options: Options): void
   /**
    * Function to create a success toast.
    */
-  success(options: ToastOptions): string | undefined
+  success(options: Options): string | undefined
   /**
    * Function to create an error toast.
    */
-  error(options: ToastOptions): string | undefined
+  error(options: Options): string | undefined
   /**
    * Function to create a loading toast.
    */
-  loading(options: ToastOptions): string | undefined
+  loading(options: Options): string | undefined
   /**
    * Function to resume a toast by id.
    */
