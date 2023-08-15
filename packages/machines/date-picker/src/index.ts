@@ -14,10 +14,10 @@ export type {
   DayCellProps,
   GridProps,
   Offset,
-  PublicApi,
   SelectionMode,
   Send,
   State,
   ViewProps,
   ZonedDateTime,
+  MachineApi as Api,
 } from "./date-picker.types"
