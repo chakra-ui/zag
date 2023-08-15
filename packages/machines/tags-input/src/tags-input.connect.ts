@@ -123,6 +123,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "PASTE", value })
       },
       onKeyDown(event) {
+        const evt = getNativeEvent(event)
+        if (evt.isComposing) return
+
         // handle composition when used as combobox
         const target = event.currentTarget as HTMLElement
         const isCombobox = target.getAttribute("role") === "combobox"
