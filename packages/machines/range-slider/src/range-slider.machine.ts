@@ -157,7 +157,7 @@ export function machine(userContext: UserDefinedContext) {
               ctx.disabled = true
             },
             onFormReset() {
-              assignArray(ctx.value, initialContext.value)
+              set.value(ctx, initialContext.value)
             },
           })
         },
