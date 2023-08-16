@@ -54,6 +54,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
+        value: ["syncInputElement"],
         isOutOfRange: ["invokeOnInvalid"],
         scrubberCursorPoint: ["setVirtualCursorPosition"],
       },
@@ -354,6 +355,10 @@ export function machine(userContext: UserDefinedContext) {
             value: ctx.formattedValue,
             valueAsNumber: ctx.valueAsNumber,
           })
+        },
+        syncInputElement(ctx) {
+          const inputEl = dom.getInputEl(ctx)
+          dom.setValue(inputEl, ctx.formattedValue)
         },
         syncInputValue(ctx) {
           const inputEl = dom.getInputEl(ctx)
