@@ -229,7 +229,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
             TAG_INPUT_ENTER: {
               target: "navigating:tag",
-              actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"],
+              actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
             },
           },
         },
@@ -300,15 +300,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         raiseExternalBlurEvent(_, evt, { self }) {
           self.send({ type: "EXTERNAL_BLUR", id: evt.id })
-        },
-        invokeOnHighlight(ctx) {
-          const value = dom.getFocusedTagValue(ctx)
-          ctx.onHighlight?.({ value })
-        },
-        invokeOnTagUpdate(ctx) {
-          if (ctx.idx == null) return
-          const value = ctx.value[ctx.idx]
-          ctx.onTagUpdate?.({ value, index: ctx.idx })
         },
         dispatchChangeEvent(ctx) {
           dom.dispatchInputEvent(ctx)
@@ -546,14 +537,9 @@ const invoke = {
     ctx.onChange?.({ values: ctx.value })
     dom.dispatchInputEvent(ctx)
   },
-  tagUpdate: (ctx: MachineContext) => {
-    if (ctx.idx == null) return
-    ctx.onTagUpdate?.({ value: ctx.value[ctx.idx], index: ctx.idx })
-    dom.dispatchInputEvent(ctx)
-  },
   focusChange: (ctx: MachineContext) => {
     const value = dom.getFocusedTagValue(ctx)
-    ctx.onHighlight?.({ value })
+    ctx.onFocusChange?.({ value })
   },
 }
 
@@ -564,7 +550,7 @@ const set = {
   },
   valueAtIndex: (ctx: MachineContext, index: number, value: string) => {
     ctx.value[index] = value
-    invoke.tagUpdate(ctx)
+    invoke.change(ctx)
   },
   focusedId: (ctx: MachineContext, id: string | null) => {
     ctx.focusedId = id

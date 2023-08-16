@@ -92,15 +92,11 @@ type PublicContext = DirectionProperty &
     /**
      * Callback fired when a tag is focused by pointer or keyboard navigation
      */
-    onHighlight?(details: { value: string | null }): void
+    onFocusChange?(details: { value: string | null }): void
     /**
      * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
      */
     onInvalid?(details: { reason: ValidityState }): void
-    /**
-     * Callback fired when a tag's value is updated
-     */
-    onTagUpdate?(details: { value: string; index: number }): void
     /**
      * Returns a boolean that determines whether a tag can be added.
      * Useful for preventing duplicates or invalid tag values.

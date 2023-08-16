@@ -190,7 +190,7 @@ const fetchMachine = createMachine({
         }],
         TAG_INPUT_ENTER: {
           target: "navigating:tag",
-          actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"]
+          actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"]
         }
       }
     }
