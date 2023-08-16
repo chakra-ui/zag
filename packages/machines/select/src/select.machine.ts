@@ -408,14 +408,12 @@ const invoke = {
 
 const set = {
   selectedOption: (ctx: MachineContext, value: Option | null | undefined, force = false) => {
-    // TODO: account for change
     if (!value && !force) return
     ctx.prevSelectedOption = ctx.selectedOption
     ctx.selectedOption = value || null
     invoke.change(ctx)
   },
   highlightedOption: (ctx: MachineContext, value: Option | null | undefined, force = false) => {
-    // TODO: account for change
     if (!value && !force) return
     ctx.prevHighlightedOption = ctx.highlightedOption
     ctx.highlightedOption = value || null
